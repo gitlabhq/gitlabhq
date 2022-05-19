@@ -33,4 +33,18 @@ describe('toolbar', () => {
       expect(wrapper.vm.$el.querySelector('.uploading-container')).toBeNull();
     });
   });
+
+  describe('comment tool bar settings', () => {
+    it('does not show comment tool bar div', () => {
+      createMountedWrapper({ showCommentToolBar: false });
+
+      expect(wrapper.find('.comment-toolbar').exists()).toBe(false);
+    });
+
+    it('shows comment tool bar by default', () => {
+      createMountedWrapper();
+
+      expect(wrapper.find('.comment-toolbar').exists()).toBe(true);
+    });
+  });
 });

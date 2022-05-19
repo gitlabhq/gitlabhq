@@ -1,3 +1,5 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import {
   apiParams,
   apiParamsWithSpecialValues,
@@ -24,6 +26,7 @@ import {
   getSortOptions,
   isSortKey,
 } from '~/issues/list/utils';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('getInitialPageParams', () => {
   it.each(Object.keys(urlSortParams))(
@@ -124,24 +127,50 @@ describe('getFilterTokens', () => {
       filteredTokensWithSpecialValues,
     );
   });
+
+  it.each`
+    description              | argument
+    ${'an undefined value'}  | ${undefined}
+    ${'an irrelevant value'} | ${'?unrecognised=parameter'}
+  `('returns an empty filtered search term given $description', ({ argument }) => {
+    expect(getFilterTokens(argument)).toEqual([
+      {
+        id: expect.any(String),
+        type: FILTERED_SEARCH_TERM,
+        value: { data: '' },
+      },
+    ]);
+  });
 });
 
 describe('convertToApiParams', () => {
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+  });
+
   it('returns api params given filtered tokens', () => {
     expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
   });
 
   it('returns api params given filtered tokens with special values', () => {
+    setWindowLocation('?assignee_id=123');
+
     expect(convertToApiParams(filteredTokensWithSpecialValues)).toEqual(apiParamsWithSpecialValues);
   });
 });
 
 describe('convertToUrlParams', () => {
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+  });
+
   it('returns url params given filtered tokens', () => {
     expect(convertToUrlParams(filteredTokens)).toEqual(urlParams);
   });
 
   it('returns url params given filtered tokens with special values', () => {
+    setWindowLocation('?assignee_id=123');
+
     expect(convertToUrlParams(filteredTokensWithSpecialValues)).toEqual(urlParamsWithSpecialValues);
   });
 });

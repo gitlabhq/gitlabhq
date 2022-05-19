@@ -10,6 +10,7 @@ GitLab offers a way to view the changes made within the GitLab server for owners
 on a [paid plan](https://about.gitlab.com/pricing/).
 
 GitLab system administrators can also view all audit events by accessing the [`audit_json.log` file](logs.md#audit_jsonlog).
+The JSON audit log does not include events that are [only streamed](../development/audit_event_guide/index.md#event-streaming).
 
 You can:
 
@@ -33,7 +34,7 @@ permission level, who added a new user, or who removed a user.
 ## Retention policy
 
 There is no retention policy in place for audit events.
-See the [Specify a retention period for audit events](https://gitlab.com/gitlab-org/gitlab/-/issues/8137) for more information.
+See the [Specify a retention period for audit events](https://gitlab.com/groups/gitlab-org/-/epics/7917) for more information.
 
 ## List of events
 
@@ -114,6 +115,8 @@ From there, you can see the following actions:
 - Instance administrator started or stopped impersonation of a group member. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
 - Group deploy token was successfully created, revoked, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 - Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
+- [IP restrictions](../user/group/index.md#restrict-group-access-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0
+- Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
@@ -178,6 +181,11 @@ From there, you can see the following actions:
 - Skipped pipelines are considered successful enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
 - All discussions must be resolved enabled or disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
 - Commit message suggestion is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9)
+- Status check is added, edited, or deleted ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Merge commit message template is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Squash commit message template is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Default description template for merge requests is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
+- Project was scheduled for deletion due to inactivity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 
@@ -258,36 +266,15 @@ Don't see the event you want in any of the epics linked above? You can either:
   request it.
 - [Add it yourself](../development/audit_event_guide/).
 
-### Disabled events
+### Removed events
 
-#### Repository push (DEPRECATED)
+> - Repositories push events was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+> - Repositories push events was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 15.0.
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+The repositories push events feature was:
 
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
-
-The current architecture of audit events is not prepared to receive a very high amount of records.
-It may make the user interface for your project or audit events very busy, and the disk space consumed by the
-`audit_events` PostgreSQL table may increase considerably. It's disabled by default
-to prevent performance degradations on GitLab instances with very high Git write traffic.
-
-If you still wish to enable **Repository push** events in your instance, follow
-the steps below.
-
-**In Omnibus installations:**
-
-1. Enter the Rails console:
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-1. Flip the switch and enable the feature flag:
-
-   ```ruby
-   Feature.enable(:repository_push_audit_event)
-   ```
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 15.0.
 
 ## Search
 

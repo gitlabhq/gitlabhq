@@ -154,8 +154,12 @@ $dark-il: #de935f;
     color: $dark-line-color;
   }
 
-  .line_expansion {
-    @include diff-expansion($dark-main-bg, $dark-border, $dark-na);
+  .old-line_expansion {
+    @include old-diff-expansion($dark-main-bg, $dark-border, $dark-na);
+  }
+
+  .diff-line-expand-button {
+    @include diff-expansion($gray-600, $gray-200, $gray-300, $white);
   }
 
   // Diff line
@@ -164,6 +168,10 @@ $dark-il: #de935f;
     &.old-nonewline .line_content,
     &.new-nonewline .line_content {
       @include dark-diff-match-line;
+    }
+
+    &.diff-grid-row {
+      @include dark-diff-expansion-line;
     }
 
     .diff-td.diff-line-num.hll:not(.empty-cell),

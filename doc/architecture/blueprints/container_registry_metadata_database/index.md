@@ -339,7 +339,7 @@ A more detailed list of all tasks, as well as periodic progress updates can be f
 
 ## Relevant Links
 
-- [Allow admin to run garbage collection with zero downtime](https://gitlab.com/groups/gitlab-org/-/epics/2313)
+- [Allow administrators to run garbage collection with zero downtime](https://gitlab.com/groups/gitlab-org/-/epics/2313)
 - [Proposal for continuous, on-demand online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/issues/199)
 - [Gradual migration proposal for the GitLab.com container registry](https://gitlab.com/gitlab-org/container-registry/-/issues/191)
 - [Create a self-serve registry deployment](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/316)

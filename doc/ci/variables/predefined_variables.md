@@ -14,8 +14,6 @@ Some variables are only available with more recent versions of [GitLab Runner](h
 You can [output the values of all variables available for a job](index.md#list-all-environment-variables)
 with a `script` command.
 
-There are also [Kubernetes-specific deployment variables (deprecated)](../../user/project/clusters/deploy_to_cluster.md#deployment-variables).
-
 There are also a number of [variables you can use to configure runner behavior](../runners/configure_runners.md#configure-runner-behavior-with-variables) globally or for individual jobs.
 
 | Variable                                 | GitLab | Runner | Description |

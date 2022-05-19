@@ -134,10 +134,10 @@ export default {
     :hide-dropdown-with-no-items="hideDropdownWithNoItems"
     :placeholder="placeholderText"
     :aria-labelledby="ariaLabelledby"
-    :text-input-attrs="{
+    :text-input-attrs="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
       'data-testid': 'members-token-select-input',
       'data-qa-selector': 'members_token_select_input',
-    }"
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     @blur="handleBlur"
     @text-input="handleTextInput"
     @input="handleInput"

@@ -1,4 +1,5 @@
 import { basename } from 'path';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { getMergeRequests, getMergeRequestWithChanges } from 'test_helpers/fixtures';
 import { useOverclockTimers } from 'test_helpers/utils/overclock_timers';
 import * as ideHelper from './helpers/ide_helper';
@@ -19,7 +20,7 @@ describe('IDE: User opens Merge Request', () => {
 
     changes = getRelevantChanges();
 
-    setFixtures('<div class="webide-container"></div>');
+    setHTMLFixture('<div class="webide-container"></div>');
     container = document.querySelector('.webide-container');
 
     vm = startWebIDE(container, { mrId });
@@ -31,6 +32,7 @@ describe('IDE: User opens Merge Request', () => {
   afterEach(() => {
     vm.$destroy();
     vm = null;
+    resetHTMLFixture();
   });
 
   const findAllTabs = () => Array.from(document.querySelectorAll('.multi-file-tab'));

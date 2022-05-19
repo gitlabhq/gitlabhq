@@ -1,10 +1,11 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
+import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -20,7 +21,9 @@ describe('WorkItemDetail component', () => {
   const initialSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
+  const findWorkItemState = () => wrapper.findComponent(WorkItemState);
 
   const createComponent = ({
     workItemId = workItemQueryResponse.data.workItem.id,
@@ -55,8 +58,10 @@ describe('WorkItemDetail component', () => {
       createComponent();
     });
 
-    it('renders WorkItemTitle in loading state', () => {
-      expect(findWorkItemTitle().props('loading')).toBe(true);
+    it('renders skeleton loader', () => {
+      expect(findSkeleton().exists()).toBe(true);
+      expect(findWorkItemState().exists()).toBe(false);
+      expect(findWorkItemTitle().exists()).toBe(false);
     });
   });
 
@@ -66,8 +71,10 @@ describe('WorkItemDetail component', () => {
       return waitForPromises();
     });
 
-    it('does not render WorkItemTitle in loading state', () => {
-      expect(findWorkItemTitle().props('loading')).toBe(false);
+    it('does not render skeleton', () => {
+      expect(findSkeleton().exists()).toBe(false);
+      expect(findWorkItemState().exists()).toBe(true);
+      expect(findWorkItemTitle().exists()).toBe(true);
     });
   });
 
@@ -82,6 +89,7 @@ describe('WorkItemDetail component', () => {
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {
     createComponent();
+    await waitForPromises();
 
     findWorkItemTitle().vm.$emit('error', i18n.updateError);
     await waitForPromises();
@@ -95,5 +103,19 @@ describe('WorkItemDetail component', () => {
     expect(initialSubscriptionHandler).toHaveBeenCalledWith({
       issuableId: workItemQueryResponse.data.workItem.id,
     });
+  });
+
+  it('emits workItemUpdated event when fields updated', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    findWorkItemState().vm.$emit('updated');
+
+    expect(wrapper.emitted('workItemUpdated')).toEqual([[]]);
+
+    findWorkItemTitle().vm.$emit('updated');
+
+    expect(wrapper.emitted('workItemUpdated')).toEqual([[], []]);
   });
 });

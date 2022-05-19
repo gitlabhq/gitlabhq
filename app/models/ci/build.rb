@@ -45,6 +45,7 @@ module Ci
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
+    has_one :namespace, through: :project
 
     # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
     # before we delete builds. By doing this, the relation should be empty and not fire any
@@ -74,6 +75,7 @@ module Ci
     delegate :gitlab_deploy_token, to: :project
     delegate :harbor_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
+    delegate :ensure_persistent_ref, to: :pipeline
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after
@@ -325,7 +327,7 @@ module Ci
 
       after_transition pending: :running do |build|
         build.run_after_commit do
-          build.pipeline.persistent_ref.create
+          build.ensure_persistent_ref
 
           BuildHooksWorker.perform_async(id)
         end
@@ -335,7 +337,7 @@ module Ci
         build.run_after_commit do
           build.run_status_commit_hooks!
 
-          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project, default_enabled: :yaml)
+          if Feature.enabled?(:ci_build_finished_worker_namespace_changed, build.project)
             Ci::BuildFinishedWorker.perform_async(id)
           else
             ::BuildFinishedWorker.perform_async(id)
@@ -504,7 +506,7 @@ module Ci
         if metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
-          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project, default_enabled: :yaml)
+          if ::Feature.enabled?(:ci_expand_environment_name_and_url, project)
             ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
           else
             ExpandVariables.expand(environment, -> { simple_variables })
@@ -675,7 +677,7 @@ module Ci
     end
 
     def has_archived_trace?
-      trace.archived_trace_exist?
+      trace.archived?
     end
 
     def artifacts_file
@@ -752,7 +754,7 @@ module Ci
     end
 
     def valid_token?(token)
-      self.token && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
+      self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
     end
 
     # acts_as_taggable uses this method create/remove tags with contexts
@@ -823,7 +825,6 @@ module Ci
       end
     end
 
-    # and use that for `ExpireBuildInstanceArtifactsWorker`?
     def erase_erasable_artifacts!
       job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
     end
@@ -884,10 +885,6 @@ module Ci
       job_artifacts.find_by(file_type: file_types_ids)&.file
     end
 
-    def coverage_regex
-      super || project.try(:build_coverage_regex)
-    end
-
     def steps
       [Gitlab::Ci::Build::Step.from_commands(self),
        Gitlab::Ci::Build::Step.from_release(self),
@@ -910,6 +907,8 @@ module Ci
           single_cache.merge(key: "#{single_cache[:key]}-#{project.jobs_cache_index}")
         end
       end
+
+      return cache unless project.ci_separated_caches
 
       type_suffix = pipeline.protected_ref? ? 'protected' : 'non_protected'
       cache.map do |entry|
@@ -1224,7 +1223,7 @@ module Ci
 
     def job_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        break variables unless Feature.enabled?(:ci_job_jwt, project, default_enabled: true)
+        break variables unless Feature.enabled?(:ci_job_jwt, project)
 
         jwt = Gitlab::Ci::Jwt.for_build(self)
         jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)

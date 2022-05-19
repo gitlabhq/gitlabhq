@@ -9,7 +9,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:label) { create(:label, project: project) }
 
-  let_it_be(:merge_request_a) do
+  let_it_be_with_reload(:merge_request_a) do
     create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label])
   end
 
@@ -96,7 +96,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
       where(:field, :subfield, :is_connection) do
         nested_fields_of('MergeRequest').flat_map do |name, field|
           type = field_type(field)
-          is_connection = type.name.ends_with?('Connection')
+          is_connection = type.graphql_name.ends_with?('Connection')
           type = field_type(type.fields['nodes']) if is_connection
 
           type.fields
@@ -412,6 +412,10 @@ RSpec.describe 'getting merge request listings nested in a project' do
   describe 'sorting and pagination' do
     let(:data_path) { [:project, :mergeRequests] }
 
+    def pagination_results_data(nodes)
+      nodes
+    end
+
     def pagination_query(params)
       graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
         mergeRequests(#{params}) {
@@ -429,7 +433,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           merge_request_c,
           merge_request_e,
           merge_request_a
-        ].map { |mr| global_id_of(mr) }
+        ].map { |mr| a_graphql_entity_for(mr) }
       end
 
       before do
@@ -455,7 +459,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           query = pagination_query(params)
           post_graphql(query, current_user: current_user)
 
-          expect(results.map { |item| item["id"] }).to eq(all_records.last(2))
+          expect(results).to match(all_records.last(2))
         end
       end
     end
@@ -469,7 +473,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           merge_request_c,
           merge_request_e,
           merge_request_a
-        ].map { |mr| global_id_of(mr) }
+        ].map { |mr| a_graphql_entity_for(mr) }
       end
 
       before do
@@ -495,17 +499,19 @@ RSpec.describe 'getting merge request listings nested in a project' do
           query = pagination_query(params)
           post_graphql(query, current_user: current_user)
 
-          expect(results.map { |item| item["id"] }).to eq(all_records.last(2))
+          expect(results).to match(all_records.last(2))
         end
       end
     end
   end
 
   context 'when only the count is requested' do
+    let_it_be(:merged_at) { Time.new(2020, 1, 3) }
+
     context 'when merged at filter is present' do
       let_it_be(:merge_request) do
         create(:merge_request, :unique_branches, source_project: project).tap do |mr|
-          mr.metrics.update!(merged_at: Time.new(2020, 1, 3))
+          mr.metrics.update!(merged_at: merged_at, created_at: merged_at - 2.days)
         end
       end
 
@@ -522,12 +528,18 @@ RSpec.describe 'getting merge request listings nested in a project' do
       it 'does not query the merge requests table for the count' do
         query_recorder = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
 
-        queries = query_recorder.data.each_value.first[:occurrences]
+        queries = query_recorder.log
         expect(queries).not_to include(match(/SELECT COUNT\(\*\) FROM "merge_requests"/))
         expect(queries).to include(match(/SELECT COUNT\(\*\) FROM "merge_request_metrics"/))
       end
 
       context 'when total_time_to_merge and count is queried' do
+        let_it_be(:merge_request_2) do
+          create(:merge_request, :unique_branches, source_project: project).tap do |mr|
+            mr.metrics.update!(merged_at: merged_at, created_at: merged_at - 1.day)
+          end
+        end
+
         let(:query) do
           graphql_query_for(:project, { full_path: project.full_path }, <<~QUERY)
           mergeRequests(mergedAfter: "2020-01-01", mergedBefore: "2020-01-05", first: 0) {
@@ -537,11 +549,18 @@ RSpec.describe 'getting merge request listings nested in a project' do
           QUERY
         end
 
-        it 'does not query the merge requests table for the total_time_to_merge' do
+        it 'uses the merge_request_metrics table for total_time_to_merge' do
           query_recorder = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
 
-          queries = query_recorder.data.each_value.first[:occurrences]
-          expect(queries).to include(match(/SELECT.+SUM.+FROM "merge_request_metrics" WHERE/))
+          expect(query_recorder.log).to include(match(/SELECT.+SUM.+FROM "merge_request_metrics" WHERE/))
+        end
+
+        it 'returns the correct total time to merge' do
+          post_graphql(query, current_user: current_user)
+
+          sum = graphql_data_at(:project, :merge_requests, :total_time_to_merge)
+
+          expect(sum).to eq(3.days.to_f)
         end
       end
 

@@ -1,18 +1,20 @@
 <script>
-import { GlModal, GlSprintf, GlKeysetPagination } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlAlert, GlModal, GlSprintf, GlKeysetPagination } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+  PACKAGE_ERROR_STATUS,
 } from '~/packages_and_registries/package_registry/constants';
 import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
 import Tracking from '~/tracking';
 
 export default {
   components: {
+    GlAlert,
     GlKeysetPagination,
     GlModal,
     GlSprintf,
@@ -40,6 +42,7 @@ export default {
   data() {
     return {
       itemToBeDeleted: null,
+      errorPackages: [],
     };
   },
   computed: {
@@ -70,6 +73,24 @@ export default {
         }
       },
     },
+    errorTitleAlert() {
+      return sprintf(
+        s__('PackageRegistry|There was an error publishing a %{packageName} package'),
+        { packageName: this.errorPackages[0].name },
+      );
+    },
+    showErrorPackageAlert() {
+      return this.errorPackages.length > 0;
+    },
+  },
+  watch: {
+    list(newVal) {
+      this.errorPackages = newVal.filter((pkg) => pkg.status === PACKAGE_ERROR_STATUS);
+    },
+  },
+  created() {
+    this.errorPackages =
+      this.list.length > 0 ? this.list.filter((pkg) => pkg.status === PACKAGE_ERROR_STATUS) : [];
   },
   methods: {
     setItemToBeDeleted(item) {
@@ -83,12 +104,19 @@ export default {
     deleteItemCanceled() {
       this.track(CANCEL_DELETE_PACKAGE_TRACKING_ACTION);
     },
+    showConfirmationModal() {
+      this.setItemToBeDeleted(this.errorPackages[0]);
+    },
   },
   i18n: {
     deleteModalContent: s__(
       'PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?',
     ),
     modalAction: s__('PackageRegistry|Delete package'),
+    errorMessageBodyAlert: s__(
+      'PackageRegistry|There was a timeout and the package was not published. Delete this package and try again.',
+    ),
+    deleteThisPackage: s__('PackageRegistry|Delete this package'),
   },
 };
 </script>
@@ -102,6 +130,14 @@ export default {
     </div>
 
     <template v-else>
+      <gl-alert
+        v-if="showErrorPackageAlert"
+        variant="danger"
+        :title="errorTitleAlert"
+        :primary-button-text="$options.i18n.deleteThisPackage"
+        @primaryAction="showConfirmationModal"
+        >{{ $options.i18n.errorMessageBodyAlert }}</gl-alert
+      >
       <div data-qa-selector="packages-table">
         <packages-list-row
           v-for="packageEntity in list"

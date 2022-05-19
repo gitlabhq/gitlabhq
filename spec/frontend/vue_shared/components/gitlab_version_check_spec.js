@@ -1,7 +1,7 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import flushPromises from 'helpers/flush_promises';
+import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import GitlabVersionCheck from '~/vue_shared/components/gitlab_version_check.vue';
 
@@ -43,7 +43,7 @@ describe('GitlabVersionCheck', () => {
       describe(`is ${description}`, () => {
         beforeEach(async () => {
           createComponent(mockResponse);
-          await flushPromises(); // Ensure we wrap up the axios call
+          await waitForPromises(); // Ensure we wrap up the axios call
         });
 
         it(`does${renders ? '' : ' not'} render GlBadge`, () => {
@@ -61,7 +61,7 @@ describe('GitlabVersionCheck', () => {
       describe(`when response is ${mockResponse.res.severity}`, () => {
         beforeEach(async () => {
           createComponent(mockResponse);
-          await flushPromises(); // Ensure we wrap up the axios call
+          await waitForPromises(); // Ensure we wrap up the axios call
         });
 
         it(`title is ${expectedUI.title}`, () => {

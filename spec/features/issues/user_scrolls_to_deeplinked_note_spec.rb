@@ -10,6 +10,7 @@ RSpec.describe 'User scrolls to deep-linked note' do
 
   context 'on issue page', :js do
     it 'on comment' do
+      stub_feature_flags(gl_avatar_for_all_user_avatars: false)
       visit project_issue_path(project, issue, anchor: "note_#{comment_1.id}")
 
       wait_for_requests

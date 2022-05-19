@@ -56,26 +56,8 @@ RSpec.describe Oauth::AuthorizationsController do
     end
   end
 
-  shared_examples "Implicit grant can't be used in confidential application" do
-    context 'when application is confidential' do
-      before do
-        application.update!(confidential: true)
-        params[:response_type] = 'token'
-      end
-
-      it 'does not allow the implicit flow' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('doorkeeper/authorizations/error')
-      end
-    end
-  end
-
   describe 'GET #new' do
     subject { get :new, params: params }
-
-    include_examples "Implicit grant can't be used in confidential application"
 
     context 'when the user is confirmed' do
       context 'when there is already an access token for the application with a matching scope' do
@@ -219,14 +201,12 @@ RSpec.describe Oauth::AuthorizationsController do
     subject { post :create, params: params }
 
     include_examples 'OAuth Authorizations require confirmed user'
-    include_examples "Implicit grant can't be used in confidential application"
   end
 
   describe 'DELETE #destroy' do
     subject { delete :destroy, params: params }
 
     include_examples 'OAuth Authorizations require confirmed user'
-    include_examples "Implicit grant can't be used in confidential application"
   end
 
   it 'includes Two-factor enforcement concern' do

@@ -88,6 +88,7 @@ class Issue < ApplicationRecord
   has_many :prometheus_alerts, through: :prometheus_alert_events
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
+  has_many :incident_management_timeline_events, class_name: 'IncidentManagement::TimelineEvent', foreign_key: :issue_id, inverse_of: :incident
 
   alias_attribute :escalation_status, :incident_management_issuable_escalation_status
 
@@ -142,14 +143,12 @@ class Issue < ApplicationRecord
   scope :with_issue_type, ->(types) { where(issue_type: types) }
   scope :without_issue_type, ->(types) { where.not(issue_type: types) }
 
-  scope :public_only, -> {
-    without_hidden.where(confidential: false)
-  }
+  scope :public_only, -> { where(confidential: false) }
 
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml)
+    if Feature.enabled?(:ban_user_feature_flag)
       where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
     else
       all

@@ -114,7 +114,6 @@ export default class FilteredSearchManager {
       this.tokenizer = FilteredSearchTokenizer;
 
       const {
-        runnerTagsEndpoint = '',
         labelsEndpoint = '',
         milestonesEndpoint = '',
         releasesEndpoint = '',
@@ -124,7 +123,6 @@ export default class FilteredSearchManager {
       } = this.filteredSearchInput.dataset;
 
       this.dropdownManager = new FilteredSearchDropdownManager({
-        runnerTagsEndpoint,
         labelsEndpoint,
         milestonesEndpoint,
         releasesEndpoint,
@@ -583,7 +581,7 @@ export default class FilteredSearchManager {
      * Eg. not[foo]=%bar
      * key = foo; value = %bar
      */
-    const notKeyValueRegex = new RegExp(/not\[(\w+)\]\[?\]?=(.*)/);
+    const notKeyValueRegex = /not\[(\w+)\]\[?\]?=(.*)/;
 
     return params.map((query) => {
       // Check if there are matches for `not` operator

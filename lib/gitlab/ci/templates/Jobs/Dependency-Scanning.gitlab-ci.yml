@@ -12,10 +12,9 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
-  DS_DEFAULT_ANALYZERS: "bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python"
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
-  DS_MAJOR_VERSION: 2
+  DS_MAJOR_VERSION: 3
 
 dependency_scanning:
   stage: test
@@ -52,6 +51,18 @@ dependency_scanning:
     paths:
       - "**/cyclonedx-*.json"
 
+.gemnasium-shared-rule:
+  exists:
+    - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+    - '{composer.lock,*/composer.lock,*/*/composer.lock}'
+    - '{gems.locked,*/gems.locked,*/*/gems.locked}'
+    - '{go.sum,*/go.sum,*/*/go.sum}'
+    - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
+    - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
+    - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+    - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
+    - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+
 gemnasium-dependency_scanning:
   extends:
     - .ds-analyzer
@@ -66,17 +77,20 @@ gemnasium-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-          $DS_DEFAULT_ANALYZERS =~ /gemnasium([^-]|$)/
-      exists:
-        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
-        - '{composer.lock,*/composer.lock,*/*/composer.lock}'
-        - '{gems.locked,*/gems.locked,*/*/gems.locked}'
-        - '{go.sum,*/go.sum,*/*/go.sum}'
-        - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
-        - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
-        - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
-        - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
-        - '{conan.lock,*/conan.lock,*/*/conan.lock}'
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-shared-rule, exists]
+
+.gemnasium-maven-shared-rule:
+  exists:
+    - '{build.gradle,*/build.gradle,*/*/build.gradle}'
+    - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
+    - '{build.sbt,*/build.sbt,*/*/build.sbt}'
+    - '{pom.xml,*/pom.xml,*/*/pom.xml}'
 
 gemnasium-maven-dependency_scanning:
   extends:
@@ -84,9 +98,6 @@ gemnasium-maven-dependency_scanning:
     - .cyclone-dx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium-maven"
-    # Stop reporting Gradle as "maven".
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
-    DS_REPORT_PACKAGE_MANAGER_MAVEN_WHEN_JAVA: "false"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
@@ -94,12 +105,22 @@ gemnasium-maven-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-          $DS_DEFAULT_ANALYZERS =~ /gemnasium-maven/
-      exists:
-        - '{build.gradle,*/build.gradle,*/*/build.gradle}'
-        - '{build.gradle.kts,*/build.gradle.kts,*/*/build.gradle.kts}'
-        - '{build.sbt,*/build.sbt,*/*/build.sbt}'
-        - '{pom.xml,*/pom.xml,*/*/pom.xml}'
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+
+.gemnasium-python-shared-rule:
+  exists:
+    - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
+    - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
+    - '{Pipfile,*/Pipfile,*/*/Pipfile}'
+    - '{requires.txt,*/requires.txt,*/*/requires.txt}'
+    - '{setup.py,*/setup.py,*/*/setup.py}'
+    - '{poetry.lock,*/poetry.lock,*/*/poetry.lock}'
 
 gemnasium-python-dependency_scanning:
   extends:
@@ -107,9 +128,6 @@ gemnasium-python-dependency_scanning:
     - .cyclone-dx-reports
   variables:
     DS_ANALYZER_NAME: "gemnasium-python"
-    # Stop reporting Pipenv and Setuptools as "pip".
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
-    DS_REPORT_PACKAGE_MANAGER_PIP_WHEN_PYTHON: "false"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
@@ -117,46 +135,39 @@ gemnasium-python-dependency_scanning:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-          $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/
-      exists:
-        - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
-        - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
-        - '{Pipfile,*/Pipfile,*/*/Pipfile}'
-        - '{requires.txt,*/requires.txt,*/*/requires.txt}'
-        - '{setup.py,*/setup.py,*/*/setup.py}'
-        # Support passing of $PIP_REQUIREMENTS_FILE
-        # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+    # Support passing of $PIP_REQUIREMENTS_FILE
+    # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-          $DS_DEFAULT_ANALYZERS =~ /gemnasium-python/ &&
+          $PIP_REQUIREMENTS_FILE &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $PIP_REQUIREMENTS_FILE
 
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
-  variables:
-    DS_ANALYZER_NAME: "bundler-audit"
+  script:
+    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/347491"
+    - exit 1
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
-      when: never
-    - if: $DS_EXCLUDED_ANALYZERS =~ /bundler-audit/
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-          $DS_DEFAULT_ANALYZERS =~ /bundler-audit/
-      exists:
-        - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+    - when: never
 
 retire-js-dependency_scanning:
   extends: .ds-analyzer
-  variables:
-    DS_ANALYZER_NAME: "retire.js"
+  script:
+    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/289830"
+    - exit 1
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
-      when: never
-    - if: $DS_EXCLUDED_ANALYZERS =~ /retire.js/
-      when: never
-    - if: $CI_COMMIT_BRANCH &&
-          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
-          $DS_DEFAULT_ANALYZERS =~ /retire.js/
-      exists:
-        - '{package.json,*/package.json,*/*/package.json}'
+    - when: never

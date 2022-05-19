@@ -26,8 +26,7 @@ module Resolvers
       private
 
       def integrations_by(gid:)
-        id = Types::GlobalIDType[::AlertManagement::HttpIntegration].coerce_isolated_input(gid)
-        object = GitlabSchema.find_by_gid(id)
+        object = GitlabSchema.find_by_gid(gid)
 
         defer { object }.then do |integration|
           ret = integration if project == integration&.project

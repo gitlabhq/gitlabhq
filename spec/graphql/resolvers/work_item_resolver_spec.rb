@@ -12,7 +12,7 @@ RSpec.describe Resolvers::WorkItemResolver do
 
     let(:current_user) { developer }
 
-    subject(:resolved_work_item) { resolve_work_item('id' => work_item.to_gid.to_s) }
+    subject(:resolved_work_item) { resolve_work_item('id' => work_item.to_gid) }
 
     context 'when the user can read the work item' do
       it { is_expected.to eq(work_item) }

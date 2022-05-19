@@ -71,7 +71,7 @@ describe('Pipeline Editor | Commit Form', () => {
       expect(wrapper.emitted('submit')[0]).toEqual([
         {
           message: mockCommitMessage,
-          targetBranch: mockDefaultBranch,
+          sourceBranch: mockDefaultBranch,
           openMergeRequest: false,
         },
       ]);
@@ -127,7 +127,7 @@ describe('Pipeline Editor | Commit Form', () => {
       expect(wrapper.emitted('submit')[0]).toEqual([
         {
           message: anotherMessage,
-          targetBranch: anotherBranch,
+          sourceBranch: anotherBranch,
           openMergeRequest: true,
         },
       ]);

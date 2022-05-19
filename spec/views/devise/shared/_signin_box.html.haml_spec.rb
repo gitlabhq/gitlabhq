@@ -28,6 +28,20 @@ RSpec.describe 'devise/shared/_signin_box' do
     end
   end
 
+  describe 'Base form' do
+    before do
+      stub_devise
+      allow(view).to receive(:captcha_enabled?).and_return(false)
+      allow(view).to receive(:captcha_on_login_required?).and_return(false)
+    end
+
+    it 'renders user_login label' do
+      render
+
+      expect(rendered).to have_content(_('Username or email'))
+    end
+  end
+
   def stub_devise
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:resource).and_return(spy)

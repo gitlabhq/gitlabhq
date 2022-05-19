@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Popen do
     it 'raises error' do
       expect do
         @klass.new.popen(%w[foobar])
-      end.to raise_error
+      end.to raise_error(Errno::ENOENT)
     end
   end
 end

@@ -1,7 +1,6 @@
 /* global $ */
 
 import jQuery from 'jquery';
-import Cookies from 'js-cookie';
 
 // bootstrap webpack, common libs, polyfills, and behaviors
 import './webpack';
@@ -178,9 +177,6 @@ initUserTracking();
 initLayoutNav();
 initAlertHandler();
 
-// Set the default path for all cookies to GitLab's root directory
-Cookies.defaults.path = gon.relative_url_root || '/';
-
 // `hashchange` is not triggered when link target is already in window.location
 $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
   const href = this.getAttribute('href');
@@ -199,7 +195,11 @@ $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
  * Quick fix: Get rid of jQuery for this implementation
  */
 const isBoardsPage = /(projects|groups):boards:show/.test(document.body.dataset.page);
-if (!isBoardsPage && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
+if (
+  !isBoardsPage &&
+  !window.gon?.features?.movedMrSidebar &&
+  (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')
+) {
   const $rightSidebar = $('aside.right-sidebar');
   const $layoutPage = $('.layout-page');
 

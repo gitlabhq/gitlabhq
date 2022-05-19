@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Managed Licenses API **(ULTIMATE)**
 
 WARNING:
-"approval" and "blacklisted" approval statuses are deprecated and scheduled to be changed to "allowed" and "denied" in GitLab 15.0.
+"approval" and "blacklisted" approval statuses are changed to "allowed" and "denied" in GitLab 15.0.
 
 ## List managed licenses
 
@@ -32,12 +32,12 @@ Example response:
   {
     "id": 1,
     "name": "MIT",
-    "approval_status": "approved"
+    "approval_status": "allowed"
   },
   {
     "id": 3,
     "name": "ISC",
-    "approval_status": "blacklisted"
+    "approval_status": "denied"
   }
 ]
 ```
@@ -65,7 +65,7 @@ Example response:
 {
   "id": 1,
   "name": "MIT",
-  "approval_status": "blacklisted"
+  "approval_status": "denied"
 }
 ```
 
@@ -81,7 +81,7 @@ POST /projects/:id/managed_licenses
 | ------------- | ------- | -------- | ---------------------------- |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`        | string  | yes      | The name of the managed license        |
-| `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". "blacklisted" and "approved" are deprecated. |
+| `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". |
 
 ```shell
 curl --data "name=MIT&approval_status=denied" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/managed_licenses"
@@ -93,7 +93,7 @@ Example response:
 {
   "id": 1,
   "name": "MIT",
-  "approval_status": "approved"
+  "approval_status": "allowed"
 }
 ```
 
@@ -128,7 +128,7 @@ PATCH /projects/:id/managed_licenses/:managed_license_id
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `managed_license_id`      | integer/string    | yes      | The ID or URL-encoded name of the license belonging to the project |
-| `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". "blacklisted" and "approved" are deprecated. |
+| `approval_status`       | string  | yes      | The approval status of the license. "allowed" or "denied". |
 
 ```shell
 curl --request PATCH --data "approval_status=denied" \
@@ -141,6 +141,6 @@ Example response:
 {
   "id": 1,
   "name": "MIT",
-  "approval_status": "blacklisted"
+  "approval_status": "denied"
 }
 ```

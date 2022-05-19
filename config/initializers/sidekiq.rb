@@ -8,13 +8,13 @@ end
 def enable_reliable_fetch?
   return true unless Feature::FlipperFeature.table_exists?
 
-  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, type: :ops, default_enabled: true)
+  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, type: :ops)
 end
 
 def enable_semi_reliable_fetch_mode?
   return true unless Feature::FlipperFeature.table_exists?
 
-  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, type: :ops, default_enabled: true)
+  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, type: :ops)
 end
 
 # Custom Queues configuration
@@ -56,13 +56,24 @@ Sidekiq.configure_server do |config|
   config.on :startup do
     # Clear any connections that might have been obtained before starting
     # Sidekiq (e.g. in an initializer).
-    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
 
     # Start monitor to track running jobs. By default, cancel job is not enabled
     # To cancel job, it requires `SIDEKIQ_MONITOR_WORKER=1` to enable notification channel
     Gitlab::SidekiqDaemon::Monitor.instance.start
 
     Gitlab::SidekiqDaemon::MemoryKiller.instance.start if enable_sidekiq_memory_killer && use_sidekiq_daemon_memory_killer
+
+    first_sidekiq_worker = !ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0'
+    health_checks = Settings.monitoring.sidekiq_health_checks
+
+    # Start health-check in-process server
+    if first_sidekiq_worker && health_checks.enabled
+      Gitlab::HealthChecks::Server.instance(
+        address: health_checks.address,
+        port: health_checks.port
+      ).start
+    end
   end
 
   if enable_reliable_fetch?

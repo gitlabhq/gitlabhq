@@ -42,7 +42,7 @@ RSpec.describe 'Getting starredProjects of the user' do
 
   it 'found only public project' do
     expect(starred_projects).to contain_exactly(
-      a_hash_including('id' => global_id_of(project_a))
+      a_graphql_entity_for(project_a)
     )
   end
 
@@ -51,9 +51,9 @@ RSpec.describe 'Getting starredProjects of the user' do
 
     it 'found all projects' do
       expect(starred_projects).to contain_exactly(
-        a_hash_including('id' => global_id_of(project_a)),
-        a_hash_including('id' => global_id_of(project_b)),
-        a_hash_including('id' => global_id_of(project_c))
+        a_graphql_entity_for(project_a),
+        a_graphql_entity_for(project_b),
+        a_graphql_entity_for(project_c)
       )
     end
   end
@@ -69,8 +69,8 @@ RSpec.describe 'Getting starredProjects of the user' do
 
     it 'finds public and member projects' do
       expect(starred_projects).to contain_exactly(
-        a_hash_including('id' => global_id_of(project_a)),
-        a_hash_including('id' => global_id_of(project_b))
+        a_graphql_entity_for(project_a),
+        a_graphql_entity_for(project_b)
       )
     end
   end
@@ -93,9 +93,9 @@ RSpec.describe 'Getting starredProjects of the user' do
 
       it 'finds all projects starred by the user, which the current user has access to' do
         expect(starred_projects).to contain_exactly(
-          a_hash_including('id' => global_id_of(project_a)),
-          a_hash_including('id' => global_id_of(project_b)),
-          a_hash_including('id' => global_id_of(project_c))
+          a_graphql_entity_for(project_a),
+          a_graphql_entity_for(project_b),
+          a_graphql_entity_for(project_c)
         )
       end
     end

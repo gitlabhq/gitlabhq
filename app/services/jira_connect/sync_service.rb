@@ -39,7 +39,7 @@ module JiraConnect
     end
 
     def logger
-      Gitlab::ProjectServiceLogger
+      Gitlab::IntegrationsLogger
     end
   end
 end

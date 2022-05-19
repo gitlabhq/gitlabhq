@@ -35,6 +35,10 @@ module API
         expose :members do |project|
           expose_url(api_v4_projects_members_path(id: project.id))
         end
+
+        expose :cluster_agents do |project|
+          expose_url(api_v4_projects_cluster_agents_path(id: project.id))
+        end
       end
 
       expose :packages_enabled
@@ -99,6 +103,7 @@ module API
       expose :ci_default_git_depth
       expose :ci_forward_deployment_enabled
       expose :ci_job_token_scope_enabled
+      expose :ci_separated_caches
       expose :public_builds, as: :public_jobs
       expose :build_git_strategy, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
         project.build_allow_git_fetch ? 'fetch' : 'clone'
@@ -121,6 +126,7 @@ module API
       expose :printing_merge_request_link_enabled
       expose :merge_method
       expose :squash_option
+      expose :enforce_auth_checks_on_uploads
       expose :suggestion_commit_message
       expose :merge_commit_template
       expose :squash_commit_template

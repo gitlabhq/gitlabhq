@@ -1,6 +1,6 @@
 ---
 stage: Monitor
-group: Respond
+group: Observability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -32,7 +32,7 @@ For error tracking to work, you need two pieces:
 
 ### Deploying Sentry
 
-You can sign up to the cloud hosted [Sentry](https://sentry.io), deploy your own [on-premise instance](https://github.com/getsentry/onpremise/), or use GitLab to [install Sentry to a Kubernetes cluster](../user/clusters/applications.md#install-sentry-using-gitlab-cicd).
+You can sign up to the cloud hosted [Sentry](https://sentry.io), deploy your own [on-premise instance](https://github.com/getsentry/onpremise/), or use GitLab to [install Sentry to a Kubernetes cluster](../user/infrastructure/clusters/manage/management_project_applications/sentry.md).
 
 ### Enabling Sentry
 

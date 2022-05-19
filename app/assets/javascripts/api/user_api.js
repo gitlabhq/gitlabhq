@@ -10,6 +10,9 @@ const USER_PATH = '/api/:version/users/:id';
 const USER_STATUS_PATH = '/api/:version/users/:id/status';
 const USER_PROJECTS_PATH = '/api/:version/users/:id/projects';
 const USER_POST_STATUS_PATH = '/api/:version/user/status';
+const USER_FOLLOW_PATH = '/api/:version/users/:id/follow';
+const USER_UNFOLLOW_PATH = '/api/:version/users/:id/unfollow';
+const CURRENT_USER_PATH = '/api/:version/user';
 
 export function getUsers(query, options) {
   const url = buildApiUrl(USERS_PATH);
@@ -68,4 +71,19 @@ export function updateUserStatus({ emoji, message, availability, clearStatusAfte
     availability,
     clear_status_after: clearStatusAfter,
   });
+}
+
+export function followUser(userId) {
+  const url = buildApiUrl(USER_FOLLOW_PATH).replace(':id', encodeURIComponent(userId));
+  return axios.post(url);
+}
+
+export function unfollowUser(userId) {
+  const url = buildApiUrl(USER_UNFOLLOW_PATH).replace(':id', encodeURIComponent(userId));
+  return axios.post(url);
+}
+
+export function getCurrentUser(options) {
+  const url = buildApiUrl(CURRENT_USER_PATH);
+  return axios.get(url, { ...options });
 }

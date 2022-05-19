@@ -7,10 +7,6 @@ comments: false
 
 # Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
 
-NOTE:
-Users wishing to upgrade to 12.0.0 must take some extra steps. See the
-version specific upgrade instructions for 12.0.0 for more details.
-
 Make sure you view this update guide from the branch (version) of GitLab you
 would like to install (for example, `11.8`). You can select the required version of documentation in the dropdown at the top right corner of GitLab documentation page.
 
@@ -73,9 +69,9 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
-echo '3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b ruby-2.7.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.4.tar.gz
-cd ruby-2.7.4
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.gz"
+echo '2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1 ruby-2.7.5.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.5.tar.gz
+cd ruby-2.7.5
 
 ./configure --disable-install-rdoc --enable-shared
 make
@@ -150,7 +146,7 @@ Remember to set `git -> bin_path` to `/usr/local/bin/git` in `config/gitlab.yml`
 ### 7. Update PostgreSQL
 
 WARNING:
-From GitLab 14.0, you must use at least PostgreSQL 12.
+GitLab 14.0 requires at least PostgreSQL 12.
 
 The latest version of GitLab might depend on a more recent PostgreSQL version
 than what you are running. You may also have to enable some
@@ -420,6 +416,39 @@ Example:
 
 Additional instructions here.
 -->
+
+### 15.0.0
+
+Support for more than one database has been added to GitLab. [As part of this](https://gitlab.com/gitlab-org/gitlab/-/issues/338182),
+`config/database.yml` needs to include a database name in the database configuration.
+The `main: database` must be first. If an invalid or deprecated syntax is used, an error is generated
+during application start:
+
+```plaintext
+ERROR: This installation of GitLab uses unsupported 'config/database.yml'.
+The main: database needs to be defined as a first configuration item instead of primary. (RuntimeError)
+```
+
+Previously, the `config/database.yml` file looked like the following:
+
+```yaml
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: gitlabhq_production
+  ...
+```
+
+Starting with GitLab 15.0, it needs to define a `main` database first:
+
+```yaml
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    ...
+```
 
 ### 14.5.0
 

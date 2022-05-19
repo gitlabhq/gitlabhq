@@ -286,6 +286,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def render_409(message = nil)
+    respond_to do |format|
+      format.html { render template: "errors/request_conflict", formats: :html, layout: "errors", status: :conflict, locals: { message: message } }
+      format.any { head :conflict }
+    end
+  end
+
   def respond_422
     head :unprocessable_entity
   end

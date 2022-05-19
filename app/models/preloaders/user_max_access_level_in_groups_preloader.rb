@@ -10,7 +10,7 @@ module Preloaders
     end
 
     def execute
-      if ::Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
+      if ::Feature.enabled?(:use_traversal_ids)
         preload_with_traversal_ids
       else
         preload_direct_memberships

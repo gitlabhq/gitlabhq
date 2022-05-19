@@ -65,6 +65,7 @@ describe('Dashboard Panel', () => {
       },
       store,
       mocks,
+      provide: { glFeatures: { monitorLogging: true } },
       ...options,
     });
   };
@@ -379,6 +380,21 @@ describe('Dashboard Panel', () => {
       expect(findViewLogsLink().attributes('href')).toMatch(mockLogsHref);
     });
 
+    describe(':monitor_logging feature flag', () => {
+      it.each`
+        flagState | logsState  | expected
+        ${true}   | ${'shows'} | ${true}
+        ${false}  | ${'hides'} | ${false}
+      `('$logsState logs when flag state is $flagState', async ({ flagState, expected }) => {
+        createWrapper({}, { provide: { glFeatures: { monitorLogging: flagState } } });
+        state.logsPath = mockLogsPath;
+        state.timeRange = mockTimeRange;
+        await nextTick();
+
+        expect(findViewLogsLink().exists()).toBe(expected);
+      });
+    });
+
     it('it is overridden when a datazoom event is received', async () => {
       state.logsPath = mockLogsPath;
       state.timeRange = mockTimeRange;
@@ -488,15 +504,7 @@ describe('Dashboard Panel', () => {
       store.registerModule(mockNamespace, monitoringDashboard);
       store.state.embedGroup.modules.push(mockNamespace);
 
-      wrapper = shallowMount(DashboardPanel, {
-        propsData: {
-          graphData,
-          settingsPath: dashboardProps.settingsPath,
-          namespace: mockNamespace,
-        },
-        store,
-        mocks,
-      });
+      createWrapper({ namespace: mockNamespace });
     });
 
     it('handles namespaced time range and logs path state', async () => {

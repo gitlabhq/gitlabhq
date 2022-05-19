@@ -24,6 +24,17 @@ RSpec.describe Projects::IssueLinksController do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to eq(list_service_response.as_json)
     end
+
+    context 'when linked issue is a task' do
+      let(:issue_b) { create :issue, :task, project: project }
+
+      it 'returns a work item path for the linked task' do
+        get namespace_project_issue_links_path(issue_links_params)
+
+        expect(json_response.count).to eq(1)
+        expect(json_response.first).to include('path' => project_work_items_path(issue_b.project, issue_b.id))
+      end
+    end
   end
 
   describe 'POST /*namespace_id/:project_id/issues/:issue_id/links' do

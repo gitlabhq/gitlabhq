@@ -16,11 +16,11 @@ RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker do
     let_it_be(:user) { create(:user) }
 
     context 'with a large batch' do
+      let_it_be_with_reload(:keys) { create_list(:key, 20, :expired_today, user: user) }
+
       before do
         stub_const("SshKeys::ExpiredNotificationWorker::BATCH_SIZE", 5)
       end
-
-      let_it_be_with_reload(:keys) { create_list(:key, 20, expires_at: Time.current, user: user) }
 
       it 'updates all keys regardless of batch size' do
         worker.perform
@@ -30,7 +30,7 @@ RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker do
     end
 
     context 'with expiring key today' do
-      let_it_be_with_reload(:expired_today) { create(:key, expires_at: Time.current, user: user) }
+      let_it_be_with_reload(:expired_today) { create(:key, :expired_today, user: user) }
 
       it 'invoke the notification service' do
         expect_next_instance_of(Keys::ExpiryNotificationService) do |expiry_service|
@@ -52,7 +52,7 @@ RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker do
     end
 
     context 'when key has expired in the past' do
-      let_it_be(:expired_past) { create(:key, expires_at: 1.day.ago, user: user) }
+      let_it_be(:expired_past) { create(:key, :expired, user: user) }
 
       it 'does not update notified column' do
         expect { worker.perform }.not_to change { expired_past.reload.expiry_notification_delivered_at }
@@ -60,7 +60,7 @@ RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker do
 
       context 'when key has already been notified of expiration' do
         before do
-          expired_past.update!(expiry_notification_delivered_at: 1.day.ago)
+          expired_past.update_attribute(:expiry_notification_delivered_at, 1.day.ago)
         end
 
         it 'does not update notified column' do

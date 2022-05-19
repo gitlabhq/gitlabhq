@@ -40,6 +40,11 @@
   redis_slot: edit
   expiry: 29
   aggregation: daily
+- name: g_edit_by_live_preview
+  category: ide_edit
+  redis_slot: edit
+  expiry: 29
+  aggregation: daily
 - name: i_search_total
   category: search
   redis_slot: search

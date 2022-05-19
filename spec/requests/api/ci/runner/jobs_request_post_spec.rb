@@ -496,15 +496,15 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               job2.success
             end
 
-            it 'returns dependent jobs' do
+            it 'returns dependent jobs with the token of the test job' do
               request_job
 
               expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
               expect(json_response['dependencies']).to include(
-                { 'id' => job.id, 'name' => job.name, 'token' => job.token },
-                { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+                { 'id' => job.id, 'name' => job.name, 'token' => test_job.token },
+                { 'id' => job2.id, 'name' => job2.name, 'token' => test_job.token })
             end
 
             describe 'preloading job_artifacts_archive' do
@@ -526,14 +526,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               job.success
             end
 
-            it 'returns dependent jobs' do
+            it 'returns dependent jobs with the token of the test job' do
               request_job
 
               expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
-                { 'id' => job.id, 'name' => job.name, 'token' => job.token,
+                { 'id' => job.id, 'name' => job.name, 'token' => test_job.token,
                   'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 107464 } })
             end
           end
@@ -552,13 +552,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               job2.success
             end
 
-            it 'returns dependent jobs' do
+            it 'returns dependent jobs with the token of the test job' do
               request_job
 
               expect(response).to have_gitlab_http_status(:created)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
-              expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => job2.token)
+              expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => test_job.token)
             end
           end
 

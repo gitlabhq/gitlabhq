@@ -23,5 +23,7 @@ module Types
 
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
+
+    expose_permissions Types::PermissionTypes::WorkItem
   end
 end

@@ -122,7 +122,7 @@ export default {
   <div>
     <h3>{{ $options.i18n.yAxisTitle }}</h3>
     <gl-alert v-if="loadingError" variant="danger" :dismissible="false" class="gl-mt-3">
-      {{ this.$options.i18n.loadUserChartError }}
+      {{ $options.i18n.loadUserChartError }}
     </gl-alert>
     <chart-skeleton-loader v-else-if="isLoading" />
     <gl-alert v-else-if="!chartUserData.length" variant="info" :dismissible="false" class="gl-mt-3">
@@ -132,12 +132,12 @@ export default {
       v-else
       :option="options"
       :include-legend-avg-max="true"
-      :data="[
+      :data="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
         {
           name: $options.i18n.yAxisTitle,
           data: chartUserData,
         },
-      ]"
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     />
   </div>
 </template>

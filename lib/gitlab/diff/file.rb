@@ -50,11 +50,11 @@ module Gitlab
       end
 
       def use_semantic_ipynb_diff?
-        strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project, default_enabled: :yaml) }
+        strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project) }
       end
 
       def use_renderable_diff?
-        strong_memoize(:_renderable_diff_enabled) { Feature.enabled?(:rendered_diffs_viewer, repository.project, default_enabled: :yaml) }
+        strong_memoize(:_renderable_diff_enabled) { Feature.enabled?(:rendered_diffs_viewer, repository.project) }
       end
 
       def has_renderable?
@@ -386,6 +386,10 @@ module Gitlab
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end
 
+      def ipynb?
+        file_path.ends_with?('.ipynb')
+      end
+
       private
 
       def diffable_by_attribute?
@@ -413,10 +417,6 @@ module Gitlab
 
       def modified_file?
         new_file? || deleted_file? || content_changed?
-      end
-
-      def ipynb?
-        file_path.ends_with?('.ipynb')
       end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but

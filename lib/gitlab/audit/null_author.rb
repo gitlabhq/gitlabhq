@@ -13,8 +13,8 @@ module Gitlab
       #
       # @param [Integer] id
       # @param [String] name
-      #
-      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor, Gitlab::Audit::CiRunnerTokenAuthor]
+      # rubocop: disable Layout/LineLength
+      # @return [Gitlab::Audit::UnauthenticatedAuthor, Gitlab::Audit::DeletedAuthor, Gitlab::Audit::CiRunnerTokenAuthor, Gitlab::Audit::DeployTokenAuthor]
       def self.for(id, audit_event)
         name = audit_event[:author_name] || audit_event.details[:author_name]
 
@@ -22,6 +22,8 @@ module Gitlab
           Gitlab::Audit::CiRunnerTokenAuthor.new(audit_event)
         elsif id == -1
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)
+        elsif id == -2
+          Gitlab::Audit::DeployTokenAuthor.new(name: name)
         else
           Gitlab::Audit::DeletedAuthor.new(id: id, name: name)
         end

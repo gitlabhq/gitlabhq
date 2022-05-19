@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['ContainerExpirationPolicy'] do
 
   specify { expect(described_class.description).to eq('A tag expiration policy designed to keep only the images that matter most') }
 
-  specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_container_image) }
 
   describe 'older_than field' do
     subject { described_class.fields['olderThan'] }

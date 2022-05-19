@@ -68,7 +68,7 @@ class Admin::SessionsController < ApplicationController
 
   def valid_otp_attempt?(user)
     otp_validation_result =
-      ::Users::ValidateOtpService.new(user).execute(user_params[:otp_attempt])
+      ::Users::ValidateManualOtpService.new(user).execute(user_params[:otp_attempt])
     valid_otp_attempt = otp_validation_result[:status] == :success
 
     return valid_otp_attempt if Gitlab::Database.read_only?

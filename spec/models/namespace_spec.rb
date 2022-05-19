@@ -32,6 +32,10 @@ RSpec.describe Namespace do
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
 
+    it do
+      is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
+    end
+
     describe '#children' do
       let_it_be(:group) { create(:group) }
       let_it_be(:subgroup) { create(:group, parent: group) }
@@ -334,6 +338,15 @@ RSpec.describe Namespace do
   describe 'delegate' do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix.with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:avatar_url).to(:owner).with_arguments(allow_nil: true) }
+    it do
+      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy)
+                       .to(:namespace_settings).with_arguments(allow_nil: true)
+    end
+
+    it do
+      is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=)
+                       .to(:namespace_settings).with_arguments(allow_nil: true)
+    end
   end
 
   describe "Respond to" do
@@ -2235,5 +2248,41 @@ RSpec.describe Namespace do
     let(:object) { build(:namespace) }
 
     it_behaves_like 'blocks unsafe serialization'
+  end
+
+  describe '#certificate_based_clusters_enabled?' do
+    it 'does not call Feature.enabled? twice with request_store', :request_store do
+      expect(Feature).to receive(:enabled?).once
+
+      namespace.certificate_based_clusters_enabled?
+      namespace.certificate_based_clusters_enabled?
+    end
+
+    it 'call Feature.enabled? twice without request_store' do
+      expect(Feature).to receive(:enabled?).twice
+
+      namespace.certificate_based_clusters_enabled?
+      namespace.certificate_based_clusters_enabled?
+    end
+
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: false)
+      end
+
+      it 'is truthy' do
+        expect(namespace.certificate_based_clusters_enabled?).to be_falsy
+      end
+    end
+
+    context 'with ff enabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: true)
+      end
+
+      it 'is truthy' do
+        expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+      end
+    end
   end
 end

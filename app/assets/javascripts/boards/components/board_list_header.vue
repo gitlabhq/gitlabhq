@@ -126,7 +126,7 @@ export default {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
     },
     chevronIcon() {
-      return this.list.collapsed ? 'chevron-down' : 'chevron-right';
+      return this.list.collapsed ? 'chevron-right' : 'chevron-down';
     },
     isNewIssueShown() {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
@@ -248,7 +248,6 @@ export default {
 <template>
   <header
     :class="{
-      'has-border': list.label && list.label.color,
       'gl-h-full': list.collapsed,
       'board-inner gl-rounded-top-left-base gl-rounded-top-right-base': isSwimlanesHeader,
     }"
@@ -279,28 +278,6 @@ export default {
         @click="toggleExpanded"
       />
       <!-- EE start -->
-      <span
-        v-if="showMilestoneListDetails"
-        aria-hidden="true"
-        class="milestone-icon"
-        :class="{
-          'gl-mt-3 gl-rotate-90': list.collapsed,
-          'gl-mr-2': !list.collapsed,
-        }"
-      >
-        <gl-icon name="timer" />
-      </span>
-
-      <span
-        v-if="showIterationListDetails"
-        aria-hidden="true"
-        :class="{
-          'gl-mt-3 gl-rotate-90': list.collapsed,
-          'gl-mr-2': !list.collapsed,
-        }"
-      >
-        <gl-icon name="iteration" />
-      </span>
 
       <a
         v-if="showAssigneeListDetails"
@@ -399,7 +376,7 @@ export default {
         <span class="gl-display-inline-flex">
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
           <span ref="itemCount" class="gl-display-inline-flex gl-align-items-center">
-            <gl-icon class="gl-mr-2" :name="countIcon" />
+            <gl-icon class="gl-mr-2" :name="countIcon" :size="16" />
             <item-count
               v-if="!isLoading"
               :items-size="isEpicBoard ? list.epicsCount : boardList.issuesCount"

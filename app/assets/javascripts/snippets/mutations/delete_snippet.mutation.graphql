@@ -1,4 +1,4 @@
-mutation DeleteSnippet($id: ID!) {
+mutation DeleteSnippet($id: SnippetID!) {
   destroySnippet(input: { id: $id }) {
     errors
   }

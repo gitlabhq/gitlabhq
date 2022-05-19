@@ -12,6 +12,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
     include Presentable
+    include EachBatch
 
     add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
 
@@ -59,7 +60,7 @@ module Ci
 
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
-    AVAILABLE_STATUSES = %w[active paused online offline not_connected never_contacted stale].freeze # TODO: Remove in %15.0: not_connected. In %16.0: active, paused. Relevant issues: https://gitlab.com/gitlab-org/gitlab/-/issues/347303, https://gitlab.com/gitlab-org/gitlab/-/issues/347305, https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    AVAILABLE_STATUSES = %w[active paused online offline never_contacted stale].freeze # TODO: Remove in %16.0: active, paused. Relevant issue: https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
@@ -83,7 +84,6 @@ module Ci
     scope :recent, -> { where('ci_runners.created_at >= :date OR ci_runners.contacted_at >= :date', date: stale_deadline) }
     scope :stale, -> { where('ci_runners.created_at < :date AND (ci_runners.contacted_at IS NULL OR ci_runners.contacted_at < :date)', date: stale_deadline) }
     scope :offline, -> { where(arel_table[:contacted_at].lteq(online_contact_time_deadline)) }
-    scope :not_connected, -> { where(contacted_at: nil) } # TODO: Remove in 15.0
     scope :never_contacted, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 
@@ -289,7 +289,7 @@ module Ci
 
     def assign_to(project, current_user = nil)
       if instance_type?
-        self.runner_type = :project_type
+        raise ArgumentError, 'Transitioning an instance runner to a project runner is not supported'
       elsif group_type?
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
@@ -322,6 +322,9 @@ module Ci
     end
 
     def status(legacy_mode = nil)
+      # TODO Deprecate legacy_mode in %16.0 and make it a no-op
+      #   (see https://gitlab.com/gitlab-org/gitlab/-/issues/360545)
+      # TODO Remove legacy_mode in %17.0
       return deprecated_rest_status if legacy_mode == '14.5'
 
       return :stale if stale?
@@ -331,10 +334,12 @@ module Ci
     end
 
     # DEPRECATED
-    # TODO Remove in %16.0 in favor of `status` for REST calls
+    # TODO Remove in %16.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     def deprecated_rest_status
-      if contacted_at.nil? # TODO Remove in %15.0, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
-        :not_connected
+      return :stale if stale?
+
+      if contacted_at.nil?
+        :never_contacted
       elsif active?
         online? ? :online : :offline
       else
@@ -462,7 +467,7 @@ module Ci
     end
 
     def self.token_expiration_enforced?
-      Feature.enabled?(:enforce_runner_token_expires_at, default_enabled: :yaml)
+      Feature.enabled?(:enforce_runner_token_expires_at)
     end
 
     private

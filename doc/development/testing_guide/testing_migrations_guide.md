@@ -227,6 +227,18 @@ expect('MigrationClass').to have_scheduled_batched_migration(
 )
 ```
 
+#### `be_finalize_background_migration_of`
+
+Verifies that a migration calls `finalize_background_migration` with the expected background migration class.
+
+```ruby
+# Migration
+finalize_background_migration('MigrationClass')
+
+# Spec
+expect(described_class).to be_finalize_background_migration_of('MigrationClass')
+```
+
 ### Examples of migration tests
 
 Migration tests depend on what the migration does exactly, the most common types are data migrations and scheduling background migrations.

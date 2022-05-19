@@ -14,6 +14,7 @@ RSpec.describe 'IDE merge request', :js do
   end
 
   it 'user opens merge request' do
+    click_button 'Code'
     click_link 'Open in Web IDE'
 
     wait_for_requests

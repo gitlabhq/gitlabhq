@@ -9,19 +9,16 @@
 }
 
 .tanuki-logo {
-  .tanuki-left-ear,
-  .tanuki-right-ear,
-  .tanuki-nose {
+  .tanuki {
     @include tanuki-logo-colors($tanuki-red);
   }
 
-  .tanuki-left-eye,
-  .tanuki-right-eye {
+  .left-cheek,
+  .right-cheek {
     @include tanuki-logo-colors($tanuki-orange);
   }
 
-  .tanuki-left-cheek,
-  .tanuki-right-cheek {
+  .chin {
     @include tanuki-logo-colors($tanuki-yellow);
   }
 
@@ -31,98 +28,54 @@
       @include webkit-prefix(animation-iteration-count, infinite);
     }
 
-    .tanuki-left-cheek {
-      @include include-keyframes(animate-tanuki-left-cheek) {
+    .tanuki {
+      @include include-keyframes(animate-tanuki-base) {
         0%,
-        10%,
-        100% {
-          fill: lighten($tanuki-yellow, 25%);
-        }
-
-        90% {
-          fill: $tanuki-yellow;
-        }
-      }
-    }
-
-    .tanuki-left-eye {
-      @include include-keyframes(animate-tanuki-left-eye) {
-        10%,
-        80% {
-          fill: $tanuki-orange;
-        }
-
-        20%,
-        90% {
-          fill: lighten($tanuki-orange, 25%);
-        }
-      }
-    }
-
-    .tanuki-left-ear {
-      @include include-keyframes(animate-tanuki-left-ear) {
-        10%,
-        80% {
+        50% {
           fill: $tanuki-red;
         }
 
-        20%,
-        90% {
+        25% {
           fill: lighten($tanuki-red, 25%);
         }
       }
     }
 
-    .tanuki-nose {
-      @include include-keyframes(animate-tanuki-nose) {
-        20%,
-        70% {
-          fill: $tanuki-red;
-        }
-
-        30%,
-        80% {
-          fill: lighten($tanuki-red, 25%);
-        }
-      }
-    }
-
-    .tanuki-right-eye {
-      @include include-keyframes(animate-tanuki-right-eye) {
-        30%,
-        60% {
-          fill: $tanuki-orange;
-        }
-
-        40%,
-        70% {
-          fill: lighten($tanuki-orange, 25%);
-        }
-      }
-    }
-
-    .tanuki-right-ear {
-      @include include-keyframes(animate-tanuki-right-ear) {
-        30%,
-        60% {
-          fill: $tanuki-red;
-        }
-
-        40%,
-        70% {
-          fill: lighten($tanuki-red, 25%);
-        }
-      }
-    }
-
-    .tanuki-right-cheek {
+    .right-cheek {
       @include include-keyframes(animate-tanuki-right-cheek) {
-        40% {
+        25%,
+        75% {
+          fill: $tanuki-orange;
+        }
+
+        50% {
+          fill: lighten($tanuki-orange, 25%);
+        }
+      }
+    }
+
+    .chin {
+      @include include-keyframes(animate-tanuki-chin) {
+        50%,
+        100% {
           fill: $tanuki-yellow;
         }
 
-        60% {
+        75% {
           fill: lighten($tanuki-yellow, 25%);
+        }
+      }
+    }
+
+    .left-cheek {
+      @include include-keyframes(animate-tanuki-left-cheek) {
+        25%,
+        75% {
+          fill: $tanuki-orange;
+        }
+
+        100% {
+          fill: lighten($tanuki-orange, 25%);
         }
       }
     }

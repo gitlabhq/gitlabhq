@@ -68,9 +68,71 @@ In this example, the change to ignore the column went into release 12.5.
 
 Continuing our example, dropping the column goes into a _post-deployment_ migration in release 12.6:
 
-```ruby
- remove_column :user, :updated_at
+Start by creating the **post-deployment migration**:
+
+```shell
+bundle exec rails g post_deployment_migration remove_users_updated_at_column
 ```
+
+There are two scenarios that you need to consider
+to write a migration that removes a column:
+
+#### A. The removed column has no indexes or constraints that belong to it 
+
+In this case, a **transactional migration** can be used. Something as simple as:
+
+```ruby
+class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.0]
+  def up
+    remove_column :users, :updated_at
+  end
+
+  def down
+    add_column :users, :updated_at, :datetime
+  end
+end
+```
+
+You can consider [enabling lock retries](
+https://docs.gitlab.com/ee/development/migration_style_guide.html#usage-with-transactional-migrations
+) when you run a migration on big tables, because it might take some time to
+acquire a lock on this table.
+
+#### B. The removed column has an index or constraint that belongs to it
+
+If the `down` method requires adding back any dropped indexes or constraints, that cannot
+be done within a transactional migration, then the migration would look like this:
+
+```ruby
+class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
+  def up
+    remove_column :users, :updated_at
+  end
+
+  def down
+    unless column_exists?(:users, :updated_at)
+      add_column :users, :updated_at, :datetime
+    end
+
+    # Make sure to add back any indexes or constraints,
+    # that were dropped in the `up` method. For example:
+    add_concurrent_index(:users, :updated_at)
+  end
+end
+```
+
+In the `down` method, we check to see if the column already exists before adding it again.
+We do this because the migration is non-transactional and might have failed while it was running.
+
+The [`disable_ddl_transaction!`](
+https://docs.gitlab.com/ee/development/migration_style_guide.html#usage-with-non-transactional-migrations-disable_ddl_transaction
+) is used to disable the transaction that wraps the whole migration.
+
+You can refer to the page [Migration Style Guide](
+https://docs.gitlab.com/ee/development/migration_style_guide.html
+) for more information about database migrations.
 
 ### Step 3: Removing the ignore rule (release M+2)
 
@@ -272,7 +334,7 @@ Renaming a table is possible without downtime by following our multi-release
 Adding foreign keys usually works in 3 steps:
 
 1. Start a transaction
-1. Run `ALTER TABLE` to add the constraint(s)
+1. Run `ALTER TABLE` to add the constraints
 1. Check all existing data
 
 Because `ALTER TABLE` typically acquires an exclusive lock until the end of a

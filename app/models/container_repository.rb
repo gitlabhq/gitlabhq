@@ -43,7 +43,8 @@ class ContainerRepository < ApplicationRecord
     migration_canceled: 4,
     not_found: 5,
     native_import: 6,
-    migration_forced_canceled: 7
+    migration_forced_canceled: 7,
+    migration_canceled_by_registry: 8
   }
 
   delegate :client, :gitlab_api_client, to: :registry
@@ -214,9 +215,9 @@ class ContainerRepository < ApplicationRecord
       container_repository.migration_skipped_at = Time.zone.now
     end
 
-    before_transition any => %i[import_done import_aborted] do |container_repository|
+    before_transition any => %i[import_done import_aborted import_skipped] do |container_repository|
       container_repository.run_after_commit do
-        ::ContainerRegistry::Migration::EnqueuerWorker.perform_async
+        ::ContainerRegistry::Migration::EnqueuerWorker.enqueue_a_job
       end
     end
   end
@@ -325,17 +326,13 @@ class ContainerRepository < ApplicationRecord
       return if importing?
 
       start_import(forced: true)
-    when 'import_canceled', 'pre_import_canceled'
-      return if import_skipped?
-
-      skip_import(reason: :migration_canceled)
     when 'import_complete'
       finish_import
-    when 'import_failed'
+    when 'import_failed', 'import_canceled'
       retry_import
     when 'pre_import_complete'
       finish_pre_import_and_start_import
-    when 'pre_import_failed'
+    when 'pre_import_failed', 'pre_import_canceled'
       retry_pre_import
     else
       yield
@@ -374,6 +371,10 @@ class ContainerRepository < ApplicationRecord
 
   def retried_too_many_times?
     migration_retries_count >= ContainerRegistry::Migration.max_retries
+  end
+
+  def nearing_or_exceeded_retry_limit?
+    migration_retries_count >= ContainerRegistry::Migration.max_retries - 1
   end
 
   def last_import_step_done_at
@@ -460,12 +461,8 @@ class ContainerRepository < ApplicationRecord
     client.delete_repository_tag_by_name(self.path, name)
   end
 
-  def reset_expiration_policy_started_at!
-    update!(expiration_policy_started_at: nil)
-  end
-
   def start_expiration_policy!
-    update!(expiration_policy_started_at: Time.zone.now)
+    update!(expiration_policy_started_at: Time.zone.now, last_cleanup_deleted_tags_count: nil)
   end
 
   def size

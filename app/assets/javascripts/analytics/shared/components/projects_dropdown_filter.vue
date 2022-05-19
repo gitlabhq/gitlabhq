@@ -7,6 +7,7 @@ import {
   GlDropdownSectionHeader,
   GlDropdownItem,
   GlSearchBoxByType,
+  GlTruncate,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { filterBySearchTerm } from '~/analytics/shared/utils';
@@ -28,6 +29,7 @@ export default {
     GlDropdownSectionHeader,
     GlDropdownItem,
     GlSearchBoxByType,
+    GlTruncate,
   },
   props: {
     groupId: {
@@ -212,30 +214,29 @@ export default {
   <gl-dropdown
     ref="projectsDropdown"
     class="dropdown dropdown-projects"
-    toggle-class="gl-shadow-none"
+    toggle-class="gl-shadow-none gl-mb-0"
     :loading="loadingDefaultProjects"
     :show-clear-all="hasSelectedProjects"
     show-highlighted-items-title
     highlighted-items-title-class="gl-p-3"
+    block
     @clear-all.stop="onClearAll"
     @hide="onHide"
   >
     <template #button-content>
-      <gl-loading-icon v-if="loadingDefaultProjects" class="gl-mr-2" />
-      <div class="gl-display-flex gl-flex-grow-1">
-        <gl-avatar
-          v-if="isOnlyOneProjectSelected"
-          :src="selectedProjects[0].avatarUrl"
-          :entity-id="getEntityId(selectedProjects[0])"
-          :entity-name="selectedProjects[0].name"
-          :size="16"
-          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-          :alt="selectedProjects[0].name"
-          class="gl-display-inline-flex gl-vertical-align-middle gl-mr-2"
-        />
-        {{ selectedProjectsLabel }}
-      </div>
-      <gl-icon class="gl-ml-2" name="chevron-down" />
+      <gl-loading-icon v-if="loadingDefaultProjects" class="gl-mr-2 gl-flex-shrink-0" />
+      <gl-avatar
+        v-if="isOnlyOneProjectSelected"
+        :src="selectedProjects[0].avatarUrl"
+        :entity-id="getEntityId(selectedProjects[0])"
+        :entity-name="selectedProjects[0].name"
+        :size="16"
+        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+        :alt="selectedProjects[0].name"
+        class="gl-display-inline-flex gl-vertical-align-middle gl-mr-2 gl-flex-shrink-0"
+      />
+      <gl-truncate :text="selectedProjectsLabel" class="gl-min-w-0 gl-flex-grow-1" />
+      <gl-icon class="gl-ml-2 gl-flex-shrink-0" name="chevron-down" />
     </template>
     <template #header>
       <gl-dropdown-section-header>{{ __('Projects') }}</gl-dropdown-section-header>

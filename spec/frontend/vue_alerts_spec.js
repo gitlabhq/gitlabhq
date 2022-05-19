@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import initVueAlerts from '~/vue_alerts';
 
@@ -38,6 +38,10 @@ describe('VueAlerts', () => {
         )
         .join('\n'),
     );
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   const findJsHooks = () => document.querySelectorAll('.js-vue-alert');

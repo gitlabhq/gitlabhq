@@ -30,14 +30,35 @@ module Gitlab
 
       private
 
+      # Skipping initializers may be needed if those attempt to access
+      # encrypted data on initialization and could fail because of it.
+      #
+      # format example:
+      # {
+      #   model_class => {
+      #     [
+      #       { action: :create, filters: [:before, :filter_name1] },
+      #       { action: :update, filters: [:after,  :filter_name2] }
+      #     ]
+      #   }
+      # }
+      MODEL_INITIALIZERS_TO_SKIP = {
+        Integration => [
+          { action: :initialize, filters: [:after, :initialize_properties] }
+        ]
+      }.freeze
+
       def check_model_attributes(models_with_attributes)
         running_failures = 0
 
         models_with_attributes.each do |model, attributes|
           failures_per_row = Hash.new { |h, k| h[k] = [] }
-          model.find_each do |data|
-            attributes.each do |att|
-              failures_per_row[data.id] << att unless valid_attribute?(data, att)
+
+          with_skipped_callbacks_for(model) do
+            model.find_each do |data|
+              attributes.each do |att|
+                failures_per_row[data.id] << att unless valid_attribute?(data, att)
+              end
             end
           end
 
@@ -81,6 +102,32 @@ module Gitlab
         logger.debug "> Something went wrong for #{data.class.name}[#{data.id}].#{attr}: #{e}".color(:red)
 
         false
+      end
+
+      # WARNING: using this logic in other places than a Rake task will need a
+      # different approach, as simply setting the callback again is not thread-safe
+      def with_skipped_callbacks_for(model)
+        raise StandardError, 'can only be used in a Rake environment' unless Gitlab::Runtime.rake?
+
+        skip_callbacks_for_model(model)
+
+        yield
+
+        skip_callbacks_for_model(model, reset: true)
+      end
+
+      def skip_callbacks_for_model(model, reset: false)
+        MODEL_INITIALIZERS_TO_SKIP.each do |klass, initializers|
+          next unless model <= klass
+
+          initializers.each do |initializer|
+            if reset
+              model.set_callback(initializer[:action], *initializer[:filters])
+            else
+              model.skip_callback(initializer[:action], *initializer[:filters])
+            end
+          end
+        end
       end
     end
   end

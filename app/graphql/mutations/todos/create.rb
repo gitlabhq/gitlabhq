@@ -17,8 +17,7 @@ module Mutations
             description: 'To-do item created.'
 
       def resolve(target_id:)
-        id = ::Types::GlobalIDType[Todoable].coerce_isolated_input(target_id)
-        target = authorized_find!(id)
+        target = authorized_find!(target_id)
 
         todo = TodoService.new.mark_todo(target, current_user)&.first
         errors = errors_on_object(todo) if todo

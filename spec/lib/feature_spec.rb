@@ -45,7 +45,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect_any_instance_of(Flipper::DSL).to receive(:feature).with(key)
         .and_return(feature)
 
-      expect(described_class.get(key)).to be(feature)
+      expect(described_class.get(key)).to eq(feature)
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe Feature, stub_feature_flags: false do
       expect(Gitlab::ProcessMemoryCache.cache_backend)
         .to receive(:fetch)
         .once
-        .with('flipper/v1/features', expires_in: 1.minute)
+        .with('flipper/v1/features', { expires_in: 1.minute })
         .and_call_original
 
       2.times do
@@ -157,14 +157,65 @@ RSpec.describe Feature, stub_feature_flags: false do
   describe '.enabled?' do
     before do
       allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
+
+      stub_feature_flag_definition(:disabled_feature_flag)
+      stub_feature_flag_definition(:enabled_feature_flag, default_enabled: true)
     end
 
-    it 'returns false for undefined feature' do
+    context 'when self-recursive' do
+      before do
+        allow(Feature).to receive(:with_feature).and_wrap_original do |original, name, &block|
+          original.call(name) do |ff|
+            Feature.enabled?(name)
+            block.call(ff)
+          end
+        end
+      end
+
+      it 'returns the default value' do
+        expect(described_class.enabled?(:enabled_feature_flag)).to eq true
+      end
+
+      it 'detects self recursion' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(have_attributes(message: 'self recursion'), { stack: [:enabled_feature_flag] })
+
+        described_class.enabled?(:enabled_feature_flag)
+      end
+    end
+
+    context 'when deeply recursive' do
+      before do
+        allow(Feature).to receive(:with_feature).and_wrap_original do |original, name, &block|
+          original.call(name) do |ff|
+            Feature.enabled?(:"deeper_#{name}", type: :undefined, default_enabled_if_undefined: true)
+            block.call(ff)
+          end
+        end
+      end
+
+      it 'detects deep recursion' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(have_attributes(message: 'deep recursion'), stack: have_attributes(size: be > 10))
+
+        described_class.enabled?(:enabled_feature_flag)
+      end
+    end
+
+    it 'returns false (and tracks / raises exception for dev) for undefined feature' do
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
       expect(described_class.enabled?(:some_random_feature_flag)).to be_falsey
     end
 
-    it 'returns true for undefined feature with default_enabled' do
-      expect(described_class.enabled?(:some_random_feature_flag, default_enabled: true)).to be_truthy
+    it 'returns false for undefined feature with default_enabled_if_undefined: false' do
+      expect(described_class.enabled?(:some_random_feature_flag, default_enabled_if_undefined: false)).to be_falsey
+    end
+
+    it 'returns true for undefined feature with default_enabled_if_undefined: true' do
+      expect(described_class.enabled?(:some_random_feature_flag, default_enabled_if_undefined: true)).to be_truthy
     end
 
     it 'returns false for existing disabled feature in the database' do
@@ -184,23 +235,23 @@ RSpec.describe Feature, stub_feature_flags: false do
 
     it 'caches the status in L1 and L2 caches',
        :request_store, :use_clean_rails_memory_store_caching do
-      described_class.enable(:enabled_feature_flag)
-      flipper_key = "flipper/v1/feature/enabled_feature_flag"
+      described_class.enable(:disabled_feature_flag)
+      flipper_key = "flipper/v1/feature/disabled_feature_flag"
 
       expect(described_class.send(:l2_cache_backend))
         .to receive(:fetch)
         .once
-        .with(flipper_key, expires_in: 1.hour)
+        .with(flipper_key, { expires_in: 1.hour })
         .and_call_original
 
       expect(described_class.send(:l1_cache_backend))
         .to receive(:fetch)
         .once
-        .with(flipper_key, expires_in: 1.minute)
+        .with(flipper_key, { expires_in: 1.minute })
         .and_call_original
 
       2.times do
-        expect(described_class.enabled?(:enabled_feature_flag)).to be_truthy
+        expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
       end
     end
 
@@ -208,22 +259,14 @@ RSpec.describe Feature, stub_feature_flags: false do
       fake_default = double('fake default')
       expect(ActiveRecord::Base).to receive(:connection) { raise ActiveRecord::NoDatabaseError, "No database" }
 
-      expect(described_class.enabled?(:a_feature, default_enabled: fake_default)).to eq(fake_default)
+      expect(described_class.enabled?(:a_feature, default_enabled_if_undefined: fake_default)).to eq(fake_default)
     end
 
     context 'logging is enabled', :request_store do
       before do
         allow(Feature).to receive(:log_feature_flag_states?).and_call_original
 
-        definition = Feature::Definition.new("development/enabled_feature_flag.yml",
-                                                         name: :enabled_feature_flag,
-                                                         type: 'development',
-                                                         log_state_changes: true,
-                                                         default_enabled: false)
-
-        allow(Feature::Definition).to receive(:definitions) do
-          { definition.key => definition }
-        end
+        stub_feature_flag_definition(:enabled_feature_flag, log_state_changes: true)
 
         described_class.enable(:feature_flag_state_logs)
         described_class.enable(:enabled_feature_flag)
@@ -241,18 +284,16 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'cached feature flag', :request_store do
-      let(:flag) { :some_feature_flag }
-
       before do
         described_class.send(:flipper).memoize = false
-        described_class.enabled?(flag)
+        described_class.enabled?(:disabled_feature_flag)
       end
 
       it 'caches the status in L1 cache for the first minute' do
         expect do
           expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
           expect(described_class.send(:l2_cache_backend)).not_to receive(:fetch)
-          expect(described_class.enabled?(flag)).to be_truthy
+          expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
         end.not_to exceed_query_limit(0)
       end
 
@@ -261,7 +302,7 @@ RSpec.describe Feature, stub_feature_flags: false do
           expect do
             expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
-            expect(described_class.enabled?(flag)).to be_truthy
+            expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
           end.not_to exceed_query_limit(0)
         end
       end
@@ -271,7 +312,7 @@ RSpec.describe Feature, stub_feature_flags: false do
           expect do
             expect(described_class.send(:l1_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
-            expect(described_class.enabled?(flag)).to be_truthy
+            expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
           end.not_to exceed_query_limit(1)
         end
       end
@@ -338,21 +379,38 @@ RSpec.describe Feature, stub_feature_flags: false do
           .to raise_error(/The `type:` of/)
       end
 
-      it 'when invalid default_enabled is used' do
-        expect { described_class.enabled?(:my_feature_flag, default_enabled: true) }
-          .to raise_error(/The `default_enabled:` of/)
+      context 'when default_enabled: is false in the YAML definition' do
+        it 'reads the default from the YAML definition' do
+          expect(described_class.enabled?(:my_feature_flag)).to eq(default_enabled)
+        end
       end
 
-      context 'when `default_enabled: :yaml` is used in code' do
+      context 'when default_enabled: is true in the YAML definition' do
+        let(:default_enabled) { true }
+
         it 'reads the default from the YAML definition' do
-          expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(false)
+          expect(described_class.enabled?(:my_feature_flag)).to eq(true)
         end
 
-        context 'when default_enabled is true in the YAML definition' do
-          let(:default_enabled) { true }
+        context 'and feature has been disabled' do
+          before do
+            described_class.disable(:my_feature_flag)
+          end
 
-          it 'reads the default from the YAML definition' do
-            expect(described_class.enabled?(:my_feature_flag, default_enabled: :yaml)).to eq(true)
+          it 'is not enabled' do
+            expect(described_class.enabled?(:my_feature_flag)).to eq(false)
+          end
+        end
+
+        context 'with a cached value and the YAML definition is changed thereafter' do
+          before do
+            described_class.enabled?(:my_feature_flag)
+          end
+
+          it 'reads new default value' do
+            allow(definition).to receive(:default_enabled).and_return(true)
+
+            expect(described_class.enabled?(:my_feature_flag)).to eq(true)
           end
         end
 
@@ -361,7 +419,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
           context 'when in dev or test environment' do
             it 'raises an error for dev' do
-              expect { described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml) }
+              expect { described_class.enabled?(:non_existent_flag, type: optional_type) }
                 .to raise_error(
                   Feature::InvalidFeatureFlagError,
                   "The feature flag YAML definition for 'non_existent_flag' does not exist")
@@ -379,9 +437,9 @@ RSpec.describe Feature, stub_feature_flags: false do
               end
 
               it 'checks the persisted status and returns false' do
-                expect(described_class).to receive(:get).with(:non_existent_flag).and_call_original
+                expect(described_class).to receive(:with_feature).with(:non_existent_flag).and_call_original
 
-                expect(described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml)).to eq(false)
+                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to eq(false)
               end
             end
 
@@ -393,7 +451,7 @@ RSpec.describe Feature, stub_feature_flags: false do
               it 'returns false without checking the status in the database' do
                 expect(described_class).not_to receive(:get)
 
-                expect(described_class.enabled?(:non_existent_flag, type: optional_type, default_enabled: :yaml)).to eq(false)
+                expect(described_class.enabled?(:non_existent_flag, type: optional_type)).to eq(false)
               end
             end
           end
@@ -403,21 +461,29 @@ RSpec.describe Feature, stub_feature_flags: false do
   end
 
   describe '.disable?' do
-    it 'returns true for undefined feature' do
+    it 'returns true (and tracks / raises exception for dev) for undefined feature' do
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
       expect(described_class.disabled?(:some_random_feature_flag)).to be_truthy
     end
 
-    it 'returns false for undefined feature with default_enabled' do
-      expect(described_class.disabled?(:some_random_feature_flag, default_enabled: true)).to be_falsey
+    it 'returns true for undefined feature with default_enabled_if_undefined: false' do
+      expect(described_class.disabled?(:some_random_feature_flag, default_enabled_if_undefined: false)).to be_truthy
+    end
+
+    it 'returns false for undefined feature with default_enabled_if_undefined: true' do
+      expect(described_class.disabled?(:some_random_feature_flag, default_enabled_if_undefined: true)).to be_falsey
     end
 
     it 'returns true for existing disabled feature in the database' do
+      stub_feature_flag_definition(:disabled_feature_flag)
       described_class.disable(:disabled_feature_flag)
 
       expect(described_class.disabled?(:disabled_feature_flag)).to be_truthy
     end
 
     it 'returns false for existing enabled feature in the database' do
+      stub_feature_flag_definition(:enabled_feature_flag)
       described_class.enable(:enabled_feature_flag)
 
       expect(described_class.disabled?(:enabled_feature_flag)).to be_falsey
@@ -556,14 +622,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     let(:log_state_changes) { false }
     let(:milestone) { "0.0" }
     let(:flag_name) { :some_flag }
-    let(:definition) do
-      Feature::Definition.new("development/#{flag_name}.yml",
-                              name: flag_name,
-                              type: 'development',
-                              milestone: milestone,
-                              log_state_changes: log_state_changes,
-                              default_enabled: false)
-    end
+    let(:flag_type) { 'development' }
 
     before do
       Feature.enable(:feature_flag_state_logs)
@@ -573,9 +632,10 @@ RSpec.describe Feature, stub_feature_flags: false do
       allow(Feature).to receive(:log_feature_flag_states?).with(:feature_flag_state_logs).and_call_original
       allow(Feature).to receive(:log_feature_flag_states?).with(:some_flag).and_call_original
 
-      allow(Feature::Definition).to receive(:definitions) do
-        { definition.key => definition }
-      end
+      stub_feature_flag_definition(flag_name,
+        type: flag_type,
+        milestone: milestone,
+        log_state_changes: log_state_changes)
     end
 
     subject { described_class.log_feature_flag_states?(flag_name) }
@@ -583,6 +643,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     context 'when flag is feature_flag_state_logs' do
       let(:milestone) { "14.6" }
       let(:flag_name) { :feature_flag_state_logs }
+      let(:flag_type) { 'ops' }
       let(:log_state_changes) { true }
 
       it { is_expected.to be_falsey }
@@ -593,13 +654,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'when flag is old while log_state_changes is not present ' do
-      let(:definition) do
-        Feature::Definition.new("development/#{flag_name}.yml",
-                                name: flag_name,
-                                type: 'development',
-                                milestone: milestone,
-                                default_enabled: false)
-      end
+      let(:log_state_changes) { nil }
 
       it { is_expected.to be_falsey }
     end
@@ -621,12 +676,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'when milestone is nil' do
-      let(:definition) do
-        Feature::Definition.new("development/#{flag_name}.yml",
-                                name: flag_name,
-                                type: 'development',
-                                default_enabled: false)
-      end
+      let(:milestone) { nil }
 
       it { is_expected.to be_falsey }
     end

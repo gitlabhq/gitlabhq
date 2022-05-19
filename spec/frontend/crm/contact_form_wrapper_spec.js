@@ -1,22 +1,23 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import ContactFormWrapper from '~/crm/contacts/components/contact_form_wrapper.vue';
 import ContactForm from '~/crm/components/form.vue';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
 import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
 import updateContactMutation from '~/crm/contacts/components/graphql/update_contact.mutation.graphql';
+import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
+import { getGroupContactsQueryResponse, getGroupOrganizationsQueryResponse } from './mock_data';
 
 describe('Customer relations contact form wrapper', () => {
+  Vue.use(VueApollo);
   let wrapper;
+  let fakeApollo;
 
   const findContactForm = () => wrapper.findComponent(ContactForm);
 
-  const $apollo = {
-    queries: {
-      contacts: {
-        loading: false,
-      },
-    },
-  };
   const $route = {
     params: {
       id: 7,
@@ -33,56 +34,79 @@ describe('Customer relations contact form wrapper', () => {
         groupFullPath: 'flightjs',
         groupId: 26,
       },
-      mocks: {
-        $apollo,
-        $route,
-      },
+      apolloProvider: fakeApollo,
+      mocks: { $route },
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
+  beforeEach(() => {
+    fakeApollo = createMockApollo([
+      [getGroupContactsQuery, jest.fn().mockResolvedValue(getGroupContactsQueryResponse)],
+      [getGroupOrganizationsQuery, jest.fn().mockResolvedValue(getGroupOrganizationsQueryResponse)],
+    ]);
   });
 
-  describe('in edit mode', () => {
-    it('should render contact form with correct props', () => {
-      mountComponent({ isEditMode: true });
+  afterEach(() => {
+    wrapper.destroy();
+    fakeApollo = null;
+  });
 
-      const contactForm = findContactForm();
-      expect(contactForm.props('fields')).toHaveLength(5);
-      expect(contactForm.props('title')).toBe('Edit contact');
-      expect(contactForm.props('successMessage')).toBe('Contact has been updated.');
-      expect(contactForm.props('mutation')).toBe(updateContactMutation);
-      expect(contactForm.props('getQuery')).toMatchObject({
-        query: getGroupContactsQuery,
-        variables: { groupFullPath: 'flightjs' },
-      });
-      expect(contactForm.props('getQueryNodePath')).toBe('group.contacts');
-      expect(contactForm.props('existingId')).toBe(contacts[0].id);
-      expect(contactForm.props('additionalCreateParams')).toMatchObject({
+  describe.each`
+    mode        | title             | successMessage                 | mutation                 | existingId
+    ${'edit'}   | ${'Edit contact'} | ${'Contact has been updated.'} | ${updateContactMutation} | ${contacts[0].id}
+    ${'create'} | ${'New contact'}  | ${'Contact has been added.'}   | ${createContactMutation} | ${null}
+  `('in $mode mode', ({ mode, title, successMessage, mutation, existingId }) => {
+    beforeEach(() => {
+      const isEditMode = mode === 'edit';
+      mountComponent({ isEditMode });
+
+      return waitForPromises();
+    });
+
+    it('renders correct getQuery prop', () => {
+      expect(findContactForm().props('getQueryNodePath')).toBe('group.contacts');
+    });
+
+    it('renders correct mutation prop', () => {
+      expect(findContactForm().props('mutation')).toBe(mutation);
+    });
+
+    it('renders correct additionalCreateParams prop', () => {
+      expect(findContactForm().props('additionalCreateParams')).toMatchObject({
         groupId: 'gid://gitlab/Group/26',
       });
     });
-  });
 
-  describe('in create mode', () => {
-    it('should render contact form with correct props', () => {
-      mountComponent();
+    it('renders correct existingId prop', () => {
+      expect(findContactForm().props('existingId')).toBe(existingId);
+    });
 
-      const contactForm = findContactForm();
-      expect(contactForm.props('fields')).toHaveLength(5);
-      expect(contactForm.props('title')).toBe('New contact');
-      expect(contactForm.props('successMessage')).toBe('Contact has been added.');
-      expect(contactForm.props('mutation')).toBe(createContactMutation);
-      expect(contactForm.props('getQuery')).toMatchObject({
-        query: getGroupContactsQuery,
-        variables: { groupFullPath: 'flightjs' },
-      });
-      expect(contactForm.props('getQueryNodePath')).toBe('group.contacts');
-      expect(contactForm.props('existingId')).toBeNull();
-      expect(contactForm.props('additionalCreateParams')).toMatchObject({
-        groupId: 'gid://gitlab/Group/26',
-      });
+    it('renders correct fields prop', () => {
+      expect(findContactForm().props('fields')).toEqual([
+        { name: 'firstName', label: 'First name', required: true },
+        { name: 'lastName', label: 'Last name', required: true },
+        { name: 'email', label: 'Email', required: true },
+        { name: 'phone', label: 'Phone' },
+        {
+          name: 'organizationId',
+          label: 'Organization',
+          values: [
+            { text: 'No organization', value: null },
+            { text: 'ABC Company', value: 'gid://gitlab/CustomerRelations::Organization/2' },
+            { text: 'GitLab', value: 'gid://gitlab/CustomerRelations::Organization/3' },
+            { text: 'Test Inc', value: 'gid://gitlab/CustomerRelations::Organization/1' },
+          ],
+        },
+        { name: 'description', label: 'Description' },
+      ]);
+    });
+
+    it('renders correct title prop', () => {
+      expect(findContactForm().props('title')).toBe(title);
+    });
+
+    it('renders correct successMessage prop', () => {
+      expect(findContactForm().props('successMessage')).toBe(successMessage);
     });
   });
 });

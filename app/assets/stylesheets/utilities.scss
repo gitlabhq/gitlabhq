@@ -366,3 +366,30 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   /* stylelint-disable property-no-vendor-prefix */
   -webkit-backdrop-filter: blur(2px); // still required by Safari
 }
+
+/*
+ * The below style will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1792
+ */
+.gl-text-purple-800 {
+  color: $purple-800;
+}
+
+.gl-bg-theme-indigo-800 {
+  background-color: $theme-indigo-800;
+}
+
+.gl-border-indigo-700 {
+  border-color: $theme-indigo-700;
+}
+
+.gl-border-gray-75 {
+  border-color: $gl-text-color-quaternary;
+}
+
+.gl-min-h-8 {
+  min-height: $gl-spacing-scale-8;
+}
+
+/* End gitlab-ui#1751 */
+

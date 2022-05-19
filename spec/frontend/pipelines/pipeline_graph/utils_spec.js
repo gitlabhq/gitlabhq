@@ -1,4 +1,5 @@
-import { createJobsHash, generateJobNeedsDict } from '~/pipelines/utils';
+import { createJobsHash, generateJobNeedsDict, getPipelineDefaultTab } from '~/pipelines/utils';
+import { TAB_QUERY_PARAM, validPipelineTabNames } from '~/pipelines/constants';
 
 describe('utils functions', () => {
   const jobName1 = 'build_1';
@@ -166,6 +167,23 @@ describe('utils functions', () => {
         [jobPrepareA1]: [],
         [jobPrepareA2]: [],
         [jobPrepareA3]: [],
+      });
+    });
+  });
+
+  describe('getPipelineDefaultTab', () => {
+    const baseUrl = 'http://gitlab.com/user/multi-projects-small/-/pipelines/332/';
+    it('returns null if there was no `tab` params', () => {
+      expect(getPipelineDefaultTab(baseUrl)).toBe(null);
+    });
+
+    it('returns null if there was no valid tab param', () => {
+      expect(getPipelineDefaultTab(`${baseUrl}?${TAB_QUERY_PARAM}=invalid`)).toBe(null);
+    });
+
+    it('returns the correct tab name if present', () => {
+      validPipelineTabNames.forEach((tabName) => {
+        expect(getPipelineDefaultTab(`${baseUrl}?${TAB_QUERY_PARAM}=${tabName}`)).toBe(tabName);
       });
     });
   });

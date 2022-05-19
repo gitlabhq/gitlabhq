@@ -16,6 +16,7 @@ exports[`Design management index page designs renders error 1`] = `
       primarybuttontext=""
       secondarybuttonlink=""
       secondarybuttontext=""
+      showicon="true"
       title=""
       variant="danger"
     >

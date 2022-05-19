@@ -8,8 +8,8 @@
 - if @conflict
   = render Pajamas::AlertComponent.new(variant: :danger,
     dismissible: false,
-    alert_class: 'gl-mb-5') do
-    .gl-alert-body
+    alert_class: 'gl-mb-5') do |c|
+    = c.body do
       Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
       Please check out
       = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project, issuable]), target: "_blank", rel: 'noopener noreferrer'

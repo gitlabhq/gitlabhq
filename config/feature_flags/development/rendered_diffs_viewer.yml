@@ -2,7 +2,7 @@
 name: rendered_diffs_viewer
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75500
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352831
-milestone: '14.9'
+milestone: '15.0'
 type: development
 group: group::incubation
-default_enabled: false
+default_enabled: true

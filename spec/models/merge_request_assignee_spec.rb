@@ -41,22 +41,11 @@ RSpec.describe MergeRequestAssignee do
 
   it_behaves_like 'having unique enum values'
 
-  it_behaves_like 'having reviewer state'
-
-  describe 'syncs to reviewer state' do
-    before do
-      reviewer = merge_request.merge_request_reviewers.build(reviewer: assignee)
-      reviewer.update!(state: :reviewed)
-    end
-
-    it { is_expected.to have_attributes(state: 'reviewed') }
-  end
-
   describe '#attention_requested_by' do
     let(:current_user) { create(:user) }
 
     before do
-      subject.update!(updated_state_by: current_user)
+      subject.update!(updated_state_by: current_user, state: :attention_requested)
     end
 
     context 'attention requested' do

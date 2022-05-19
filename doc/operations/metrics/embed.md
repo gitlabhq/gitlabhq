@@ -6,6 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Embedding metric charts within GitLab Flavored Markdown **(FREE)**
 
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
+for use in GitLab 14.7, and is planned for removal in GitLab 16.0.
+
 You can display metrics charts within
 [GitLab Flavored Markdown (GLFM)](../../user/markdown.md)
 fields such as issue or merge request descriptions. The maximum number of embedded

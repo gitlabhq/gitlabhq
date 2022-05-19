@@ -4,6 +4,9 @@ module Projects
   class CreateService < BaseService
     include ValidatesClassificationLabel
 
+    ImportSourceDisabledError = Class.new(StandardError)
+    INTERNAL_IMPORT_SOURCES = %w[bare_repository gitlab_custom_project_template gitlab_project_migration].freeze
+
     def initialize(user, params)
       @current_user = user
       @params = params.dup
@@ -24,6 +27,8 @@ module Projects
       end
 
       @project = Project.new(params)
+
+      validate_import_source_enabled!
 
       @project.visibility_level = @project.group.visibility_level unless @project.visibility_level_allowed_by_group?
 
@@ -77,6 +82,9 @@ module Projects
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(", ")}"
       fail(error: message)
+    rescue ImportSourceDisabledError => e
+      @project.errors.add(:import_source_disabled, e.message) if @project
+      fail(error: e.message)
     rescue StandardError => e
       @project.errors.add(:base, e.message) if @project
       fail(error: e.message)
@@ -124,11 +132,7 @@ module Projects
     end
 
     def create_project_settings
-      if Feature.enabled?(:create_project_settings, default_enabled: :yaml)
-        @project.project_setting.save if @project.project_setting.changed?
-      else
-        @project.create_project_setting unless @project.project_setting
-      end
+      @project.project_setting.save if @project.project_setting.changed?
     end
 
     # Add an authorization for the current user authorizations inline
@@ -157,6 +161,13 @@ module Projects
         )
       else
         @project.add_owner(@project.namespace.owner, current_user: current_user)
+        # During the process of adding a project owner, a check on permissions is made on the user which caches
+        # the max member access for that user on this project.
+        # Since that is `0` before the member is created - and we are still inside the request
+        # cycle when we need to do other operations that might check those permissions (e.g. write a commit)
+        # we need to purge that cache so that the updated permissions is fetched instead of using the outdated cached value of 0
+        # from before member creation
+        @project.team.purge_member_access_cache_for_user_id(@project.namespace.owner.id)
       end
     end
 
@@ -241,6 +252,18 @@ module Projects
     end
 
     private
+
+    def validate_import_source_enabled!
+      return unless @params[:import_type]
+
+      import_type = @params[:import_type].to_s
+
+      return if INTERNAL_IMPORT_SOURCES.include?(import_type)
+
+      unless ::Gitlab::CurrentSettings.import_sources&.include?(import_type)
+        raise ImportSourceDisabledError, "#{import_type} import source is disabled"
+      end
+    end
 
     def parent_namespace
       @parent_namespace ||= Namespace.find_by_id(@params[:namespace_id]) || current_user.namespace

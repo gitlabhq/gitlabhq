@@ -548,15 +548,6 @@ pre.light-well {
   }
 }
 
-.git-clone-holder,
-.mobile-git-clone {
-  .btn {
-    .icon {
-      fill: $white;
-    }
-  }
-}
-
 .new-protected-branch,
 .new-protected-tag {
   label {
@@ -711,22 +702,6 @@ pre.light-well {
 
 .services-installation-info .row {
   margin-bottom: 10px;
-}
-
-.service-installation {
-  padding: 32px;
-  margin: 32px;
-  border-radius: 3px;
-  background-color: $white;
-
-  h3 {
-    margin-top: 0;
-  }
-
-  hr {
-    margin: 32px 0;
-    border-color: $border-color;
-  }
 }
 
 .project-badge {

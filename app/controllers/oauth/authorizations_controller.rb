@@ -5,7 +5,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
 
-  before_action :verify_confirmed_email!, :verify_confidential_application!
+  before_action :verify_confirmed_email!
 
   layout 'profile'
 
@@ -37,8 +37,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   # limit scopes when signing in with GitLab
   def downgrade_scopes!
-    return unless Feature.enabled?(:omniauth_login_minimal_scopes, current_user,
-                                   default_enabled: :yaml)
+    return unless Feature.enabled?(:omniauth_login_minimal_scopes, current_user)
 
     auth_type = params.delete('gl_auth_type')
     return unless auth_type == 'login'
@@ -76,18 +75,6 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
   def application_has_api_scope?
     doorkeeper_application&.includes_scope?(*::Gitlab::Auth::API_SCOPES)
-  end
-
-  # Confidential apps require the client_secret to be sent with the request.
-  # Doorkeeper allows implicit grant flow requests (response_type=token) to
-  # work without client_secret regardless of the confidential setting.
-  # This leads to security vulnerabilities and we want to block it.
-  def verify_confidential_application!
-    render 'doorkeeper/authorizations/error' if authorizable_confidential?
-  end
-
-  def authorizable_confidential?
-    pre_auth.authorizable? && pre_auth.response_type == 'token' && pre_auth.client.application.confidential
   end
 
   def verify_confirmed_email!

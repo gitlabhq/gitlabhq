@@ -10,7 +10,7 @@ GitLab can check your application for security vulnerabilities including:
 
 - Unauthorized access.
 - Data leaks.
-- Denial of service attacks.
+- Denial of Service (DoS) attacks.
 
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
@@ -19,9 +19,6 @@ GitLab also provides high-level statistics of vulnerabilities across projects an
 
 - The [Security Dashboard](security_dashboard/index.md) provides a
   high-level view of vulnerabilities detected in your projects, pipeline, and groups.
-- The [Threat Monitoring](threat_monitoring/index.md) page provides runtime security metrics
-  for application environments. With the information provided,
-  you can immediately begin risk analysis and remediation.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).
@@ -51,8 +48,8 @@ The following vulnerability scanners and their databases are regularly updated:
 
 | Secure scanning tool                                            | Vulnerabilities database updates |
 |:----------------------------------------------------------------|:---------------------------------|
-| [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. For more details, see [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database-update). |
-| [Dependency Scanning](dependency_scanning/index.md)          | Relies on `bundler-audit` (for Ruby gems), `retire.js` (for npm packages), and `gemnasium` (the GitLab tool for all libraries). Both `bundler-audit` and `retire.js` fetch their vulnerabilities data from GitHub repositories, so vulnerabilities added to `ruby-advisory-db` and `retire.js` are immediately available. The tools themselves are updated once per month if there's a new version. The [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
+| [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. For more details, see [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
+| [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). See our [current measurement of time from CVE being issued to our product being updated](https://about.gitlab.com/handbook/engineering/development/performance-indicators/#cve-issue-to-update). |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | The scanning engine is updated on a periodic basis. See the [version of the underlying tool `zaproxy`](https://gitlab.com/gitlab-org/security-products/dast/blob/main/Dockerfile#L1). The scanning rules are downloaded at scan runtime. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | Relies exclusively on [the tools GitLab wraps](sast/index.md#supported-languages-and-frameworks). The underlying analyzers are updated at least once per month if a relevant update is available. The vulnerabilities database is updated by the upstream tools. |
 
@@ -145,7 +142,7 @@ Jobs pass if they are able to complete a scan. A _pass_ result does NOT indicate
 
 Jobs fail if they are unable to complete a scan. You can view the pipeline logs for more information.
 
-All jobs are permitted to fail by default. This means that if they fail it do not fail the pipeline.
+All jobs are permitted to fail by default. This means that if they fail, it does not fail the pipeline.
 
 If you want to prevent vulnerabilities from being merged, you should do this by adding [Security Approvals in Merge Requests](#security-approvals-in-merge-requests) which prevents unknown, high or critical findings from being merged without an approval from a specific group of people that you choose.
 
@@ -174,7 +171,7 @@ reports are available to download. To download a report, select
 
 A merge request contains a security widget which displays a summary of the NEW results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
 
-We recommended you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
+We recommend you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both NEW and EXISTING findings.
 
@@ -204,56 +201,24 @@ By default, the vulnerability report does not show vulnerabilities of `dismissed
 
 ## Security approvals in merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 
 You can enforce an additional approval for merge requests that would introduce one of the following
 security issues:
 
-- A security vulnerability. For more details, read
-  [Vulnerability-Check rule](#vulnerability-check-rule).
+- A security vulnerability. For more details, read [Scan result policies](policies/scan-result-policies.md).
 - A software license compliance violation. For more details, read
   [Enabling license approvals within a project](../compliance/license_compliance/index.md#enabling-license-approvals-within-a-project).
 
-### Vulnerability-Check rule
+### Migration of existing Vulnerability-Check rules
 
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](../../update/deprecations.md#vulnerability-check)
-in GitLab 14.8, and is planned for removal in GitLab 15.0. Users should migrate to the new
-[Security Approval Policies](policies/scan-result-policies.md).
+If your projects have rules that have a security orchestration project, a new MR with 
+the existing rule's content is created automatically against the default branch belonging
+to the security orchestration project. To maintain the same security approval rules you 
+had before GitLab 15.0, we recommend merging this new MR.
 
-To prevent a merge request introducing a security vulnerability in a project, enable the
-Vulnerability-Check rule. While this rule is enabled, additional merge request approval by
-[eligible approvers](../project/merge_requests/approvals/rules.md#eligible-approvers)
-is required when the latest security report in a merge request:
-
-- Contains vulnerabilities with states (for example, `previously detected`, `dismissed`) matching the rule's vulnerability states. Only `newly detected` are considered if the target branch differs from the project default branch.
-- Contains vulnerabilities with severity levels (for example, `high`, `critical`, or `unknown`)
-  matching the rule's severity levels.
-- Contains a vulnerability count higher than the rule allows.
-- Is not yet generated (until pipeline completion).
-
-An approval is optional when the security report:
-
-- Contains only vulnerabilities with states (for example, `newly detected`, `resolved`) **NOT** matching the rule's vulnerability states.
-- Contains only vulnerabilities with severity levels (for example, `low`, `medium`) **NOT** matching
-  the rule's severity levels.
-- Contains a vulnerability count equal to or less than what the rule allows.
-
-Project members with at least the Maintainer role can enable or edit
-the Vulnerability-Check rule.
-
-#### Enable the Vulnerability-Check rule
-
-To enable or edit the Vulnerability-Check rule:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Merge request approvals**.
-1. Select **Activate** or **Edit** of the Vulnerability-Check.
-1. Complete the fields. **Approvals required** must be at least 1.
-1. Select **Add approval rule**.
-
-The approval rule is enabled for all merge requests. Any code changes reset the approvals required.
+If your projects have rules without a security orchestration project, a new security orchestration project is created automatically with the content of the existing rule. No additional action is required.
 
 ## Using private Maven repositories
 
@@ -443,7 +408,7 @@ You can interact with the results of the security scanning tools in several loca
 
 For more details about which findings or vulnerabilities you can view in each of those locations,
 select the respective link. Each page details the ways in which you can interact with the findings
-and vulnerabilities. As an example, in most cases findings start out as _detected_ status.
+and vulnerabilities. As an example, in most cases findings start out as a _detected_ status.
 
 You have the option to:
 
@@ -507,7 +472,7 @@ Additional details about the differences between the two solutions are outlined 
 | ------ | ------ | ------ |
 | **Flexibility** | Supports anything that can be done in a CI file. | Limited to only the items for which GitLab has explicitly added support. DAST, SAST, Secret Detection, and Container Scanning scans are supported. |
 | **Usability** | Requires knowledge of CI YAML. | Follows a `rules` and `actions`-based YAML structure. |
-| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `gitlab-ci.yml` file. To include the project's `gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are normally available to the CI job. |
+| **Inclusion in CI pipeline** | The compliance pipeline is executed instead of the project's `.gitlab-ci.yml` file. To include the project's `.gitlab-ci.yml` file, use an `include` statement. Defined variables aren't allowed to be overwritten by the included project's YAML file. | Forced inclusion of a new job into the CI pipeline. DAST jobs that must be customized on a per-project basis can have project-level Site Profiles and Scan Profiles defined. To ensure separation of duties, these profiles are immutable when referenced in a scan execution policy. All jobs can be customized as part of the security policy itself with the same variables that are normally available to the CI job. |
 | **Schedulable** | Can be scheduled through a scheduled pipeline on the group. | Can be scheduled natively through the policy configuration itself. |
 | **Separation of Duties** | Only group owners can create compliance framework labels. Only project owners can apply compliance framework labels to projects. The ability to make or approve changes to the compliance pipeline definition is limited to individuals who are explicitly given access to the project that contains the compliance pipeline. | Only project owners can define a linked security policy project. The ability to make or approve changes to security policies is limited to individuals who are explicitly given access to the security policy project. |
 | **Ability to apply one standard to multiple projects** | The same compliance framework label can be applied to multiple projects inside a group. | The same security policy project can be used for multiple projects across GitLab with no requirement of being located in the same group. |
@@ -657,7 +622,7 @@ involve pinning to the previous template versions, for example:
   ```
 
 Additionally, we provide a dedicated project containing the versioned legacy templates.
-This can be used for offline setups or anyone wishing to use [Auto DevOps](../../topics/autodevops/index.md).
+This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/index.md).
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
@@ -694,3 +659,6 @@ These security pages can be populated by running the jobs from the manual step o
 There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
 Please upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).
+  doc/user/project/merge_requests/approvals/settings.md 
++
+0

@@ -77,6 +77,22 @@ $white-gc-bg: #eaf2f5;
   background-color: $gray-light;
 }
 
+@mixin diff-match-line {
+  &.expansion {
+    &.match .diff-td {
+      color: $gray-400;
+    }
+
+    .diff-td {
+      background-color: $gray-50;
+
+      &:first-child {
+        border-color: $gray-100;
+      }
+    }
+  }
+}
+
 // Line numbers
 .file-line-num {
   @include line-number-link($black-transparent);
@@ -117,8 +133,8 @@ pre.code,
   color: $white-code-color;
 }
 
-.line_expansion {
-  @include diff-expansion($gray-light, $border-color, $blue-600);
+.old-line_expansion {
+  @include old-diff-expansion($gray-light, $border-color, $blue-600);
 
   &.diff-tr:last-child {
     border-bottom-right-radius: 4px;
@@ -130,12 +146,20 @@ pre.code,
   }
 }
 
+.diff-line-expand-button {
+  @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
+}
+
 // Diff line
 .line_holder {
   &.match .line_content,
   .new-nonewline.line_content,
   .old-nonewline.line_content {
     @include match-line;
+  }
+
+  &.diff-grid-row {
+    @include diff-match-line;
   }
 
   &:not(.match) .diff-grid-left:hover,

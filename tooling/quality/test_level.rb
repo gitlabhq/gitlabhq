@@ -139,8 +139,7 @@ module Quality
       case level
       when :migration
         "{#{migration_and_background_migration_folders.join(',')}}"
-      # Geo specs aren't in a specific folder, but they all have the :geo tag, so we must search for them globally
-      when :all, :geo
+      when :all
         '**'
       else
         "{#{TEST_LEVEL_FOLDERS.fetch(level).join(',')}}"
@@ -151,8 +150,7 @@ module Quality
       case level
       when :migration
         "(#{migration_and_background_migration_folders.join('|')})"
-      # Geo specs aren't in a specific folder, but they all have the :geo tag, so we must search for them globally
-      when :all, :geo
+      when :all
         ''
       else
         "(#{TEST_LEVEL_FOLDERS.fetch(level).join('|')})"

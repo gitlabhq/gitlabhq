@@ -112,8 +112,6 @@ The **Metrics and profiling** settings contain:
 - [Self monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#create-the-self-monitoring-project) -
   Enable or disable instance self monitoring.
 - [Usage statistics](usage_statistics.md) - Enable or disable version check and Service Ping.
-- [Pseudonymizer data collection](../../../administration/pseudonymizer.md) -
-  Enable or disable the Pseudonymizer data collection.
 
 ### Network
 
@@ -179,8 +177,10 @@ The **Repository** settings contain:
 - Repository maintenance:
   - [Repository checks](../../../administration/repository_checks.md) - Configure
     automatic Git checks on repositories.
-  - [Housekeeping](../../../administration/housekeeping.md)). Configure automatic
+  - [Housekeeping](../../../administration/housekeeping.md). Configure automatic
     Git housekeeping on repositories.
+  - [Inactive project deletion](../../../administration/inactive_project_deletion.md). Configure inactive
+    project deletion.
 - [Repository static objects](../../../administration/static_objects_external_storage.md) -
   Serve repository static objects (for example, archives and blobs) from an external storage (for example, a CDN).
 

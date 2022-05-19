@@ -17,17 +17,17 @@ module ClustersHelper
       clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
       empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
-      new_cluster_path: clusterable.new_path,
       add_cluster_path: clusterable.connect_path,
       new_cluster_docs_path: clusterable.new_cluster_docs_path,
       can_add_cluster: clusterable.can_add_cluster?.to_s,
       can_admin_cluster: clusterable.can_admin_cluster?.to_s,
       display_cluster_agents: display_cluster_agents?(clusterable).to_s,
-      certificate_based_clusters_enabled: Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops).to_s,
+      certificate_based_clusters_enabled: clusterable.certificate_based_clusters_enabled?.to_s,
       default_branch_name: default_branch_name(clusterable),
       project_path: clusterable_project_path(clusterable),
       kas_address: Gitlab::Kas.external_url,
-      gitlab_version: Gitlab.version_info
+      gitlab_version: Gitlab.version_info,
+      kas_version: Gitlab::Kas.version_info
     }
   end
 
@@ -39,13 +39,7 @@ module ClustersHelper
       base_domain: cluster.base_domain,
       application_ingress_external_ip: cluster.application_ingress_external_ip,
       auto_devops_help_path: help_page_path('topics/autodevops/index'),
-      external_endpoint_help_path: help_page_path('user/project/clusters/index.md', anchor: 'base-domain')
-    }
-  end
-
-  def js_cluster_new
-    {
-      cluster_connect_help_path: help_page_path('user/project/clusters/add_remove_clusters', anchor: 'add-existing-cluster')
+      external_endpoint_help_path: help_page_path('user/project/clusters/gitlab_managed_clusters.md', anchor: 'base-domain')
     }
   end
 

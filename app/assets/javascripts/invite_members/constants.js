@@ -35,8 +35,11 @@ export const MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
 export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
   "InviteMembersModal|Congratulations on creating your project, you're almost there!",
 );
-export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|GitLab member or email address');
+export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username or email address');
 export const MEMBERS_PLACEHOLDER = s__('InviteMembersModal|Select members or type email addresses');
+export const MEMBERS_PLACEHOLDER_DISABLED = s__(
+  'InviteMembersModal|This feature is disabled until this group has space for more members.',
+);
 export const MEMBERS_TASKS_TO_BE_DONE_TITLE = s__(
   'InviteMembersModal|Create issues for your new team member to work on (optional)',
 );
@@ -66,7 +69,9 @@ export const READ_MORE_TEXT = s__(
   `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions`,
 );
 export const INVITE_BUTTON_TEXT = s__('InviteMembersModal|Invite');
+export const INVITE_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Manage members');
 export const CANCEL_BUTTON_TEXT = s__('InviteMembersModal|Cancel');
+export const CANCEL_BUTTON_TEXT_DISABLED = s__('InviteMembersModal|Explore paid plans');
 export const HEADER_CLOSE_LABEL = s__('InviteMembersModal|Close invite team members');
 
 export const MEMBER_MODAL_LABELS = {
@@ -94,6 +99,7 @@ export const MEMBER_MODAL_LABELS = {
   },
   searchField: MEMBERS_SEARCH_FIELD,
   placeHolder: MEMBERS_PLACEHOLDER,
+  placeHolderDisabled: MEMBERS_PLACEHOLDER_DISABLED,
   tasksToBeDone: {
     title: MEMBERS_TASKS_TO_BE_DONE_TITLE,
     noProjects: MEMBERS_TASKS_TO_BE_DONE_NO_PROJECTS,
@@ -118,3 +124,27 @@ export const GROUP_MODAL_LABELS = {
 };
 
 export const LEARN_GITLAB = 'learn_gitlab';
+export const ON_SHOW_TRACK_LABEL = 'locked_modal_viewed';
+export const ON_CLOSE_TRACK_LABEL = 'explore_paid_plans_clicked';
+export const ON_SUBMIT_TRACK_LABEL = 'manage_members_clicked';
+
+export const WARNING_ALERT_TITLE = s__(
+  'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
+);
+export const DANGER_ALERT_TITLE = s__(
+  "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
+);
+
+export const REACHED_LIMIT_MESSAGE = s__(
+  'InviteMembersModal|You cannot add more members, but you can remove members who no longer need access.',
+);
+
+export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.concat(
+  s__(
+    'InviteMembersModal| To get more members and access to additional paid features, an owner of this namespace can start a trial or upgrade to a paid tier.',
+  ),
+);
+
+export const CLOSE_TO_LIMIT_MESSAGE = s__(
+  'InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
+);

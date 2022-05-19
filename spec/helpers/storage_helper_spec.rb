@@ -88,14 +88,26 @@ RSpec.describe StorageHelper do
           expect(helper.storage_enforcement_banner_info(free_group)).to be(nil)
         end
 
-        it 'returns a hash when current_user can access usage quotas page' do
-          expect(helper.storage_enforcement_banner_info(free_group)).to eql({
-            text: "From #{storage_enforcement_date} storage limits will apply to this namespace. View and manage your usage in <strong>Group settings &gt; Usage quotas</strong>.",
-            variant: 'warning',
-            callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
-            callouts_path: '/-/users/group_callouts',
-            learn_more_link: '<a rel="noopener noreferrer" target="_blank" href="/help//">Learn more.</a>'
-          })
+        context 'when current_user can access the usage quotas page' do
+          it 'returns a hash' do
+            expect(helper.storage_enforcement_banner_info(free_group)).to eql({
+              text: "From #{storage_enforcement_date} storage limits will apply to this namespace. You are currently using 0 Bytes of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>.",
+              variant: 'warning',
+              callouts_feature_name: 'storage_enforcement_banner_second_enforcement_threshold',
+              callouts_path: '/-/users/group_callouts',
+              learn_more_link: '<a rel="noopener noreferrer" target="_blank" href="/help//">Learn more.</a>'
+            })
+          end
+
+          context 'when namespace has used storage' do
+            before do
+              create(:namespace_root_storage_statistics, namespace: free_group, storage_size: 102400)
+            end
+
+            it 'returns a hash with the correct storage size text' do
+              expect(helper.storage_enforcement_banner_info(free_group)[:text]).to eql("From #{storage_enforcement_date} storage limits will apply to this namespace. You are currently using 100 KB of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>.")
+            end
+          end
         end
       end
 

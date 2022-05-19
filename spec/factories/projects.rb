@@ -183,6 +183,10 @@ FactoryBot.define do
       request_access_enabled { false }
     end
 
+    trait :with_namespace_settings do
+      namespace factory: [:namespace, :with_namespace_settings]
+    end
+
     trait :with_avatar do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
@@ -304,6 +308,8 @@ FactoryBot.define do
 
     trait :wiki_repo do
       after(:create) do |project|
+        stub_feature_flags(main_branch_over_master: false)
+
         raise 'Failed to create wiki repository!' unless project.create_wiki
       end
     end

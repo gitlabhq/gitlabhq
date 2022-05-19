@@ -1,5 +1,7 @@
 %tr{ role: 'row' }
-  %td{ role: 'cell', data: { label: _('Migration') } }= migration.job_class_name + ': ' + migration.table_name
+  %td{ role: 'cell', data: { label: _('Migration') } }
+    = link_to admin_background_migration_path(migration, database: params[:database]) do
+      = migration.job_class_name + ': ' + migration.table_name
   %td{ role: 'cell', data: { label: _('Progress') } }
     - progress = batched_migration_progress(migration, @successful_rows_counts[migration.id])
     - if progress
@@ -10,14 +12,14 @@
     = gl_badge_tag migration.status_name.to_s.humanize, { size: :sm, variant: batched_migration_status_badge_variant(migration) }
   %td{ role: 'cell', data: { label: _('Action') } }
     - if migration.active?
-      = button_to pause_admin_background_migration_path(migration),
+      = button_to pause_admin_background_migration_path(migration, database: params[:database]),
         class: 'gl-button btn btn-icon has-tooltip', title: _('Pause'), 'aria-label' => _('Pause') do
         = sprite_icon('pause', css_class: 'gl-button-icon gl-icon')
     - elsif migration.paused?
-      = button_to resume_admin_background_migration_path(migration),
+      = button_to resume_admin_background_migration_path(migration, database: params[:database]),
         class: 'gl-button btn btn-icon has-tooltip', title: _('Resume'), 'aria-label' => _('Resume') do
         = sprite_icon('play', css_class: 'gl-button-icon gl-icon')
     - elsif migration.failed?
-      = button_to retry_admin_background_migration_path(migration),
+      = button_to retry_admin_background_migration_path(migration, database: params[:database]),
         class: 'gl-button btn btn-icon has-tooltip', title: _('Retry'), 'aria-label' => _('Retry') do
         = sprite_icon('retry', css_class: 'gl-button-icon gl-icon')

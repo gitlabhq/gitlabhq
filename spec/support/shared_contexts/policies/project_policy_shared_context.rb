@@ -25,7 +25,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_reporter_permissions) do
     %i[
-      admin_issue admin_issue_link admin_label admin_issue_board_list
+      admin_issue admin_issue_link admin_label admin_milestone admin_issue_board_list
       create_snippet create_incident daily_statistics create_merge_request_in download_code
       download_wiki_code fork_project metrics_dashboard read_build
       read_commit_status read_confidential_issues read_container_image
@@ -41,7 +41,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:developer_permissions) do
     %i[
-      admin_merge_request admin_milestone admin_tag create_build
+      admin_merge_request admin_tag create_build
       create_commit_status create_container_image create_deployment
       create_environment create_merge_request_from
       create_metrics_dashboard_annotation create_pipeline create_release

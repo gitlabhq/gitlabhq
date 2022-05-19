@@ -10,6 +10,32 @@ GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
 
+## GitLab 15.0
+
+Fields removed in GitLab 15.0.
+
+### GraphQL Mutations
+
+[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85382) in GitLab 15.0:
+
+| Argument name        | Mutation                 | Deprecated in | Use instead                |
+| -------------------- | --------------------     | ------------- | -------------------------- |
+| -                    | `clusterAgentTokenDelete`| 14.7          | `clusterAgentTokenRevoke`  |
+
+### GraphQL Fields
+
+[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/342882) in GitLab 15.0:
+
+| Argument name        | Field name          | Deprecated in | Use instead                |
+| -------------------- | --------------------| ------------- | -------------------------- |
+| -                    | `pipelines`         | 14.5          | None                       |
+
+### GraphQL Types
+
+| Field name                                 | GraphQL type             | Deprecated in | Use instead                                                                        |
+| ------------------------------------------ | ------------------------ | ------------- | ---------------------------------------------------------------------------------- |
+| `defaultMergeCommitMessageWithDescription` | `GraphQL::Types::String` | 14.5          | None. Define a [merge commit template](../../user/project/merge_requests/commit_templates.md) in your project and use `defaultMergeCommitMessage`. |
+
 ## GitLab 14.0
 
 Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63293) in GitLab 14.0:

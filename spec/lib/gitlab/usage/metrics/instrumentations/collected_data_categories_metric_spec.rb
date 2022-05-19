@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CollectedDataCategories
     let(:expected_value) { %w[standard subscription operational optional] }
 
     before do
-      allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
+      allow_next_instance_of(ServicePing::PermitDataCategories) do |instance|
         expect(instance).to receive(:execute).and_return(expected_value)
       end
     end

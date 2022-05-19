@@ -1,0 +1,8 @@
+---
+name: moved_mr_sidebar
+introduced_by_url:
+rollout_issue_url:
+milestone: '14.10'
+type: development
+group: group::code review
+default_enabled: false

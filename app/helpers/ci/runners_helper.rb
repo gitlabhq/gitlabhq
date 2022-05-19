@@ -17,7 +17,7 @@ module Ci
         title = s_("Runners|Runner is online; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
         icon = 'status-active'
         span_class = 'gl-text-green-500'
-      when :not_connected, :never_contacted
+      when :never_contacted
         title = s_("Runners|Runner has never contacted this instance")
         icon = 'warning-solid'
       when :offline
@@ -72,11 +72,11 @@ module Ci
     def group_shared_runners_settings_data(group)
       {
         update_path: api_v4_groups_path(id: group.id),
-        shared_runners_availability: group.shared_runners_setting,
-        parent_shared_runners_availability: group.parent&.shared_runners_setting,
-        runner_enabled: Namespace::SR_ENABLED,
-        runner_disabled: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        runner_allow_override: Namespace::SR_DISABLED_WITH_OVERRIDE
+        shared_runners_setting: group.shared_runners_setting,
+        parent_shared_runners_setting: group.parent&.shared_runners_setting,
+        runner_enabled_value: Namespace::SR_ENABLED,
+        runner_disabled_value: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
+        runner_allow_override_value: Namespace::SR_DISABLED_WITH_OVERRIDE
       }
     end
 

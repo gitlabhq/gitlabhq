@@ -26,6 +26,7 @@ import {
   AWS_TIP_DISMISSED_COOKIE_NAME,
   AWS_TIP_MESSAGE,
   CONTAINS_VARIABLE_REFERENCE_MESSAGE,
+  ENVIRONMENT_SCOPE_LINK_TITLE,
   EVENT_LABEL,
   EVENT_ACTION,
 } from '../constants';
@@ -40,6 +41,7 @@ export default {
   tokenList: awsTokenList,
   awsTipMessage: AWS_TIP_MESSAGE,
   containsVariableReferenceMessage: CONTAINS_VARIABLE_REFERENCE_MESSAGE,
+  environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   components: {
     CiEnvironmentsDropdown,
     GlAlert,
@@ -81,6 +83,7 @@ export default {
       'containsVariableReferenceLink',
       'protectedEnvironmentVariablesLink',
       'maskedEnvironmentVariablesLink',
+      'environmentScopeLink',
     ]),
     ...mapComputed(
       [
@@ -109,7 +112,7 @@ export default {
       return regex.test(this.variable.secret_value);
     },
     containsVariableReference() {
-      const regex = RegExp(/\$/);
+      const regex = /\$/;
       return regex.test(this.variable.secret_value);
     },
     displayMaskedError() {
@@ -278,12 +281,18 @@ export default {
           <gl-form-select id="ci-variable-type" v-model="variable_type" :options="typeOptions" />
         </gl-form-group>
 
-        <gl-form-group
-          :label="__('Environment scope')"
-          label-for="ci-variable-env"
-          class="w-50"
-          data-testid="environment-scope"
-        >
+        <gl-form-group label-for="ci-variable-env" class="w-50" data-testid="environment-scope">
+          <template #label>
+            {{ __('Environment scope') }}
+            <gl-link
+              :title="$options.environmentScopeLinkTitle"
+              :href="environmentScopeLink"
+              target="_blank"
+              data-testid="environment-scope-link"
+            >
+              <gl-icon name="question" :size="12" />
+            </gl-link>
+          </template>
           <ci-environments-dropdown
             v-if="scopedVariablesAvailable"
             class="w-100"

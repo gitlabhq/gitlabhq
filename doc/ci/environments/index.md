@@ -560,11 +560,8 @@ GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
 #### Multiple stop actions for an environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`.
-On GitLab.com, this feature is not available. We are enabling in phases and the status can be tracked in [issue 358911](https://gitlab.com/gitlab-org/gitlab/-/issues/358911).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
 
 This feature is useful when you need to perform multiple **parallel** stop actions on an environment.
 
@@ -645,17 +642,14 @@ To delete a stopped environment in the GitLab UI:
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog box, select **Delete environment**.
 
-### Prepare an environment without creating a deployment
+### Access an environment for preparation or verification purposes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
-By default, when GitLab CI/CD runs a job for a specific environment, it
-triggers a deployment and [(optionally) cancels outdated
-deployments](deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
+You can define a job that accesses an environment for various purposes, such as verification or preparation. This 
+effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
 
-To use an environment without creating a new deployment, and without
-cancelling outdated deployments, append the keyword `action: prepare` to your
-job:
+To do so, add either `action: prepare`, `action: verify`, or `action: access` to the `environment` section of your job:
 
 ```yaml
 build:
@@ -668,8 +662,8 @@ build:
     url: https://staging.example.com
 ```
 
-This gives you access to [environment-scoped variables](#scope-environments-with-specs),
-and can be used to [protect builds from unauthorized access](protected_environments.md).
+This gives you access to environment-scoped variables, and can be used to protect builds from unauthorized access. Also,
+it's effective to avoid the [skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs) feature.
 
 ### Group similar environments
 

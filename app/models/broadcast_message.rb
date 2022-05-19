@@ -131,7 +131,7 @@ class BroadcastMessage < ApplicationRecord
   end
 
   def matches_current_user_access_level?(user_access_level)
-    return false if target_access_levels.present? && Feature.disabled?(:role_targeted_broadcast_messages, default_enabled: :yaml)
+    return false if target_access_levels.present? && Feature.disabled?(:role_targeted_broadcast_messages)
     return true unless target_access_levels.present?
 
     target_access_levels.include? user_access_level

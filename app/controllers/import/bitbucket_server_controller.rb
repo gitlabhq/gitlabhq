@@ -52,13 +52,12 @@ class Import::BitbucketServerController < Import::BaseController
     redirect_to status_import_bitbucket_server_path
   end
 
+  # We need to re-expose controller's internal method 'status' as action.
+  # rubocop:disable Lint/UselessMethodDefinition
   def status
     super
   end
-
-  def realtime_changes
-    super
-  end
+  # rubocop:enable Lint/UselessMethodDefinition
 
   protected
 

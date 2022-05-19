@@ -70,4 +70,18 @@ module StubFeatureFlags
   def skip_default_enabled_yaml_check
     allow(Feature::Definition).to receive(:default_enabled?).and_return(false)
   end
+
+  def stub_feature_flag_definition(name, opts = {})
+    opts = opts.with_defaults(
+      name: name,
+      type: 'development',
+      default_enabled: false
+    )
+
+    Feature::Definition.new("#{opts[:type]}/#{name}.yml", opts).tap do |definition|
+      all_definitions = Feature::Definition.definitions
+      all_definitions[definition.key] = definition
+      allow(Feature::Definition).to receive(:definitions).and_return(all_definitions)
+    end
+  end
 end

@@ -29,7 +29,7 @@ RSpec.describe 'Profile > SSH Keys' do
 
       expect(page).to have_content("Title: #{attrs[:title]}")
       expect(page).to have_content(attrs[:key])
-      expect(find('.breadcrumbs-sub-title')).to have_link(attrs[:title])
+      expect(find('[data-testid="breadcrumb-current-link"]')).to have_link(attrs[:title])
     end
 
     it 'shows a confirmable warning if the key begins with an algorithm name that is unsupported' do

@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import PANEL_STATE from '~/prometheus_metrics/constants';
@@ -9,7 +10,7 @@ describe('PrometheusMetrics', () => {
   const FIXTURE = 'services/prometheus/prometheus_service.html';
 
   beforeEach(() => {
-    loadFixtures(FIXTURE);
+    loadHTMLFixture(FIXTURE);
   });
 
   describe('constructor', () => {
@@ -17,6 +18,10 @@ describe('PrometheusMetrics', () => {
 
     beforeEach(() => {
       prometheusMetrics = new PrometheusMetrics('.js-prometheus-metrics-monitoring');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should initialize wrapper element refs on class object', () => {

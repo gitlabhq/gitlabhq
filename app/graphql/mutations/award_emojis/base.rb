@@ -26,12 +26,6 @@ module Mutations
 
       private
 
-      # TODO: remove this method when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      def find_object(id:)
-        super(id: ::Types::GlobalIDType[::Awardable].coerce_isolated_input(id))
-      end
-
       def authorize!(object)
         super
         raise_resource_not_available_error!(NOT_EMOJI_AWARDABLE) unless object.emoji_awardable?

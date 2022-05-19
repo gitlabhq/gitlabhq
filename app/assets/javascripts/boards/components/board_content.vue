@@ -75,7 +75,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-px-3 gl-white-space-nowrap"
+      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap"
       @end="moveList"
     >
       <board-column
@@ -85,10 +85,11 @@ export default {
         :list="list"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :disabled="disabled"
+        :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
       />
 
       <transition name="slide" @after-enter="afterFormEnters">
-        <board-add-new-column v-if="addColumnFormVisible" />
+        <board-add-new-column v-if="addColumnFormVisible" class="gl-xs-w-full!" />
       </transition>
     </component>
 

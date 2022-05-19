@@ -108,7 +108,7 @@ export default {
       by
       <user-avatar-image
         css-classes="ide-status-avatar"
-        :size="18"
+        :size="16"
         :img-src="latestPipeline && latestPipeline.commit.author_gravatar_url"
         :img-alt="lastCommit.author_name"
         :tooltip-text="lastCommit.author_name"

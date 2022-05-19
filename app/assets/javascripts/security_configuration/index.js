@@ -37,6 +37,7 @@ export const initSecurityConfiguration = (el) => {
   return new Vue({
     el,
     apolloProvider,
+    name: 'SecurityConfigurationRoot',
     provide: {
       projectFullPath,
       upgradePath,

@@ -2,7 +2,6 @@
 stage: Create
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Gitaly reference **(FREE SELF)**
@@ -71,7 +70,7 @@ Remember to disable `transitioning` when you are done
 changing your token settings.
 
 All authentication attempts are counted in Prometheus under
-the [`gitaly_authentications_total` metric](index.md#useful-queries).
+the [`gitaly_authentications_total` metric](monitoring.md#useful-queries).
 
 ### TLS
 

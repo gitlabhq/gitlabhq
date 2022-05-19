@@ -5,6 +5,10 @@ RSpec.shared_examples 'a correct instrumented metric value' do |params|
   let(:options) { params[:options] }
   let(:metric) { described_class.new(time_frame: time_frame, options: options) }
 
+  around do |example|
+    freeze_time { example.run }
+  end
+
   before do
     if described_class.respond_to?(:relation) && described_class.relation.respond_to?(:connection)
       allow(described_class.relation.connection).to receive(:transaction_open?).and_return(false)

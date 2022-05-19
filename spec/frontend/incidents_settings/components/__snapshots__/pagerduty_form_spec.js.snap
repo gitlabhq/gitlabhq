@@ -57,6 +57,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       </gl-button-stub>
        
       <gl-modal-stub
+        arialabel=""
         dismisslabel="Close"
         modalclass=""
         modalid="resetWebhookModal"

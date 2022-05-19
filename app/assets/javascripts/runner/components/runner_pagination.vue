@@ -21,10 +21,10 @@ export default {
   },
   computed: {
     prevPage() {
-      return this.pageInfo?.hasPreviousPage ? this.value?.page - 1 : null;
+      return this.pageInfo?.hasPreviousPage ? this.value.page - 1 : null;
     },
     nextPage() {
-      return this.pageInfo?.hasNextPage ? this.value?.page + 1 : null;
+      return this.pageInfo?.hasNextPage ? this.value.page + 1 : null;
     },
   },
   methods: {

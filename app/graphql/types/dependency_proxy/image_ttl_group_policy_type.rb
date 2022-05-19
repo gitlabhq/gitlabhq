@@ -6,7 +6,7 @@ module Types
 
     description 'Group-level Dependency Proxy TTL policy settings'
 
-    authorize :read_dependency_proxy
+    authorize :admin_dependency_proxy
 
     field :created_at, Types::TimeType, null: true, description: 'Timestamp of creation.'
     field :enabled, GraphQL::Types::Boolean, null: false, description: 'Indicates whether the policy is enabled or disabled.'

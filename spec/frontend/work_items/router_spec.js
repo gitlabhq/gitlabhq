@@ -17,6 +17,7 @@ describe('Work items router', () => {
       router,
       provide: {
         fullPath: 'full-path',
+        issuesListPath: 'full-path/-/issues',
       },
       mocks: {
         $apollo: {

@@ -27,5 +27,7 @@ module Types
           description: 'Uploads size of the project in bytes.'
     field :wiki_size, GraphQL::Types::Float, null: true,
           description: 'Wiki size of the project in bytes.'
+    field :container_registry_size, GraphQL::Types::Float, null: true,
+          description: 'Container Registry size of the project in bytes.'
   end
 end

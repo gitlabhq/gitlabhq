@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import '~/performance_bar/components/performance_bar_app.vue';
 import performanceBar from '~/performance_bar';
@@ -11,7 +12,7 @@ describe('performance bar wrapper', () => {
   let vm;
 
   beforeEach(() => {
-    setFixtures('<div id="js-peek"></div>');
+    setHTMLFixture('<div id="js-peek"></div>');
     const peekWrapper = document.getElementById('js-peek');
     performance.getEntriesByType = jest.fn().mockReturnValue([]);
 
@@ -49,6 +50,7 @@ describe('performance bar wrapper', () => {
     vm.$destroy();
     document.getElementById('js-peek').remove();
     mock.restore();
+    resetHTMLFixture();
   });
 
   describe('addRequest', () => {

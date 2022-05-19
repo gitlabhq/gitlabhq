@@ -336,6 +336,7 @@ export default {
             :images="images"
             :metadata-loading="$apollo.queries.additionalDetails.loading"
             :page-info="pageInfo"
+            :expiration-policy="config.expirationPolicy"
             @delete="deleteImage"
             @prev-page="fetchPreviousPage"
             @next-page="fetchNextPage"
@@ -370,7 +371,10 @@ export default {
             ref="deleteModal"
             size="sm"
             modal-id="delete-image-modal"
-            :action-primary="{ text: __('Remove'), attributes: { variant: 'danger' } }"
+            :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+              text: __('Remove'),
+              attributes: { variant: 'danger' },
+            } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
             @primary="doDelete"
             @cancel="track('cancel_delete')"
           >

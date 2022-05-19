@@ -462,6 +462,66 @@ RSpec.describe API::Files do
         expect(range['commit']['committer_email']).to eq('dmitriy.zaporozhets@gmail.com')
       end
 
+      context 'with a range parameter' do
+        let(:params) { super().merge(range: { start: 2, end: 4 }) }
+
+        it 'returns file blame attributes as json for the range' do
+          get api(route(file_path) + '/blame', current_user), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(2)
+
+          lines = json_response.map { |x| x['lines'] }
+
+          expect(lines.map(&:size)).to eq(expected_blame_range_sizes[1..2])
+          expect(lines.flatten).to eq(["require 'open3'", '', 'module Popen'])
+        end
+
+        context 'when start > end' do
+          let(:params) { super().merge(range: { start: 4, end: 2 }) }
+
+          it 'returns 400 error' do
+            get api(route(file_path) + '/blame', current_user), params: params
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq('range[start] must be less than or equal to range[end]')
+          end
+        end
+
+        context 'when range is incomplete' do
+          let(:params) { super().merge(range: { start: 1 }) }
+
+          it 'returns 400 error' do
+            get api(route(file_path) + '/blame', current_user), params: params
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('range[end] is missing, range[end] is empty')
+          end
+        end
+
+        context 'when range contains negative integers' do
+          let(:params) { super().merge(range: { start: -2, end: -5 }) }
+
+          it 'returns 400 error' do
+            get api(route(file_path) + '/blame', current_user), params: params
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('range[start] does not have a valid value, range[end] does not have a valid value')
+          end
+        end
+
+        context 'when range is missing' do
+          let(:params) { super().merge(range: { start: '', end: '' }) }
+
+          it 'returns 400 error' do
+            get api(route(file_path) + '/blame', current_user), params: params
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('range[start] is empty, range[end] is empty')
+          end
+        end
+      end
+
       it 'returns blame file info for files with dots' do
         url = route('.gitignore') + '/blame'
 

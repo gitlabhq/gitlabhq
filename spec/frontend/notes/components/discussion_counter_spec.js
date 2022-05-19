@@ -45,7 +45,7 @@ describe('DiscussionCounter component', () => {
 
   describe('has no discussions', () => {
     it('does not render', () => {
-      wrapper = shallowMount(DiscussionCounter, { store });
+      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
       expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -55,7 +55,7 @@ describe('DiscussionCounter component', () => {
     it('does not render', () => {
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [{ ...discussionMock, resolvable: false }]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = shallowMount(DiscussionCounter, { store });
+      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
       expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(false);
     });
@@ -75,20 +75,34 @@ describe('DiscussionCounter component', () => {
 
     it('renders', () => {
       updateStore();
-      wrapper = shallowMount(DiscussionCounter, { store });
+      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
 
       expect(wrapper.find({ ref: 'discussionCounter' }).exists()).toBe(true);
     });
 
     it.each`
-      title                | resolved | isActive | groupLength
-      ${'not allResolved'} | ${false} | ${false} | ${3}
-      ${'allResolved'}     | ${true}  | ${true}  | ${1}
-    `('renders correctly if $title', ({ resolved, isActive, groupLength }) => {
-      updateStore({ resolvable: true, resolved });
-      wrapper = shallowMount(DiscussionCounter, { store });
+      blocksMerge | color
+      ${true}     | ${'gl-bg-orange-50'}
+      ${false}    | ${'gl-bg-gray-50'}
+    `(
+      'changes background color to $color if blocksMerge is $blocksMerge',
+      ({ blocksMerge, color }) => {
+        updateStore();
+        store.state.unresolvedDiscussionsCount = 1;
+        wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge } });
 
-      expect(wrapper.find(`.is-active`).exists()).toBe(isActive);
+        expect(wrapper.find('[data-testid="discussions-counter-text"]').classes()).toContain(color);
+      },
+    );
+
+    it.each`
+      title                | resolved | groupLength
+      ${'not allResolved'} | ${false} | ${4}
+      ${'allResolved'}     | ${true}  | ${1}
+    `('renders correctly if $title', ({ resolved, groupLength }) => {
+      updateStore({ resolvable: true, resolved });
+      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
+
       expect(wrapper.findAll(GlButton)).toHaveLength(groupLength);
     });
   });
@@ -99,7 +113,7 @@ describe('DiscussionCounter component', () => {
       const discussion = { ...discussionMock, expanded };
       store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');
-      wrapper = shallowMount(DiscussionCounter, { store });
+      wrapper = shallowMount(DiscussionCounter, { store, propsData: { blocksMerge: true } });
       toggleAllButton = wrapper.find('.toggle-all-discussions-btn');
     };
 
@@ -117,26 +131,26 @@ describe('DiscussionCounter component', () => {
       updateStoreWithExpanded(true);
 
       expect(wrapper.vm.allExpanded).toBe(true);
-      expect(toggleAllButton.props('icon')).toBe('angle-up');
+      expect(toggleAllButton.props('icon')).toBe('collapse');
 
       toggleAllButton.vm.$emit('click');
 
       await nextTick();
       expect(wrapper.vm.allExpanded).toBe(false);
-      expect(toggleAllButton.props('icon')).toBe('angle-down');
+      expect(toggleAllButton.props('icon')).toBe('expand');
     });
 
     it('expands all discussions if collapsed', async () => {
       updateStoreWithExpanded(false);
 
       expect(wrapper.vm.allExpanded).toBe(false);
-      expect(toggleAllButton.props('icon')).toBe('angle-down');
+      expect(toggleAllButton.props('icon')).toBe('expand');
 
       toggleAllButton.vm.$emit('click');
 
       await nextTick();
       expect(wrapper.vm.allExpanded).toBe(true);
-      expect(toggleAllButton.props('icon')).toBe('angle-up');
+      expect(toggleAllButton.props('icon')).toBe('collapse');
     });
   });
 });

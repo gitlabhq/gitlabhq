@@ -34,8 +34,8 @@ module QA
             expect(show).to have_no_new_mr_checkbox
           end
 
-          # The new MR checkbox is visible after a new target branch name is set
-          show.set_target_branch(SecureRandom.hex(10))
+          # The new MR checkbox is visible after a new branch name is set
+          show.set_source_branch(SecureRandom.hex(10))
           expect(show).to have_new_mr_checkbox
 
           show.select_new_mr_checkbox

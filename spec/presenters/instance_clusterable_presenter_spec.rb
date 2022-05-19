@@ -9,22 +9,10 @@ RSpec.describe InstanceClusterablePresenter do
   let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
   let(:instance) { cluster.instance }
 
-  describe '#create_aws_clusters_path' do
-    subject { described_class.new(instance).create_aws_clusters_path }
-
-    it { is_expected.to eq(create_aws_admin_clusters_path) }
-  end
-
   describe '#connect_path' do
     subject { described_class.new(instance).connect_path }
 
     it { is_expected.to eq(connect_admin_clusters_path) }
-  end
-
-  describe '#authorize_aws_role_path' do
-    subject { described_class.new(instance).authorize_aws_role_path }
-
-    it { is_expected.to eq(authorize_aws_role_admin_clusters_path) }
   end
 
   describe '#clear_cluster_cache_path' do

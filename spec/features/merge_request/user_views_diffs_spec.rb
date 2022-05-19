@@ -30,7 +30,7 @@ RSpec.describe 'User views diffs', :js do
 
     it 'unfolds diffs in the middle' do
       page.within('.file-holder[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"]') do
-        all('.js-unfold-all')[1].click
+        first('.js-unfold-all').click
 
         expect(page).to have_selector('[data-interop-type="new"] [data-linenumber="24"]', count: 1)
         expect(page).not_to have_selector('[data-interop-type="new"] [data-linenumber="1"]')

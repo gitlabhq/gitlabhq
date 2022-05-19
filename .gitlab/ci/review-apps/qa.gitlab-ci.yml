@@ -1,21 +1,19 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 0.3.6
+    ref: 0.6.0
     file:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
-.review-qa-base:
-  extends:
-    - .use-docker-in-docker
-  image:
-    name: ${QA_IMAGE}
-    entrypoint: [""]
-  stage: qa
-  needs: ["review-deploy"]
+.bundler_variables:
+  variables:
+    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+    BUNDLE_SILENCE_ROOT_WARNING: "true"
+    BUNDLE_PATH: vendor
+
+.test_variables:
   variables:
     QA_DEBUG: "true"
-    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
     QA_GENERATE_ALLURE_REPORT: "true"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
@@ -23,19 +21,40 @@ include:
     GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITLAB_QA_ADMIN_ACCESS_TOKEN: "${REVIEW_APPS_ROOT_TOKEN}"
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
-    SIGNUP_DISABLED: "true"
+
+.review-qa-base:
+  extends:
+    - .use-docker-in-docker
+    - .qa-cache
+    - .test_variables
+    - .bundler_variables
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
+  stage: qa
+  needs:
+    - review-deploy
+    - download-knapsack-report
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: /certs
+    DOCKER_CERT_PATH: /certs/client
+    DOCKER_TLS_VERIFY: 1
   before_script:
-    # Use $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA so that GitLab image built in omnibus-gitlab-mirror and QA image are in sync.
     - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
-    - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
-        git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
-      fi
-    - export CI_ENVIRONMENT_URL="$(cat environment_url.txt)"
-    - echo "${CI_ENVIRONMENT_URL}"
-    - cd qa
+    - export QA_GITLAB_URL="$(cat environment_url.txt)"
+    - cd qa && bundle install
   script:
     - qa_run_status=0
-    - bin/test "${QA_SCENARIO}" "${CI_ENVIRONMENT_URL}" -- --color --format documentation --format RspecJunitFormatter --out tmp/rspec.xml || qa_run_status=$?
+    - |
+      bundle exec rake "knapsack:rspec[\
+        ${RSPEC_TAGS} \
+        --tag ~orchestrated \
+        --tag ~transient \
+        --tag ~skip_signup_disabled \
+        --force-color \
+        --order random \
+        --format documentation \
+        --format RspecJunitFormatter --out tmp/rspec.xml \
+      ]" || qa_run_status=$?
     - if [ ${qa_run_status} -ne 0 ]; then
         release_sha=$(echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-${CI_COMMIT_SHA}}" | cut -c1-11);
         echo "Errors can be found at https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/${release_sha}/all-events/.";
@@ -58,25 +77,41 @@ include:
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     ALLURE_RESULTS_GLOB: qa/tmp/allure-results/*
 
+# Store knapsack report as artifact so the same report is reused across all jobs
+download-knapsack-report:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-99
+  extends:
+    - .qa-cache
+    - .bundler_variables
+    - .review:rules:review-qa-reliable
+  stage: prepare
+  before_script:
+    - cd qa && bundle install
+  script:
+    - QA_KNAPSACK_REPORT_NAME=review-qa-reliable bundle exec rake "knapsack:download"
+    - QA_KNAPSACK_REPORT_NAME=review-qa-all bundle exec rake "knapsack:download"
+  allow_failure: true
+  artifacts:
+    paths:
+      - qa/knapsack/review-qa-*.json
+    expire_in: 1 day
+
 review-qa-smoke:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-smoke
-  retry: 1  # This is confusing but this means "2 runs at max".
   variables:
     QA_RUN_TYPE: review-qa-smoke
-    QA_SCENARIO: Test::Instance::Smoke
-
+    RSPEC_TAGS: --tag smoke
 
 review-qa-reliable:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-reliable
-  parallel: 8
-  retry: 1
+  parallel: 10
   variables:
     QA_RUN_TYPE: review-qa-reliable
-    QA_SCENARIO: Test::Instance::Reliable
+    RSPEC_TAGS: --tag reliable
 
 review-qa-all:
   extends:
@@ -85,8 +120,7 @@ review-qa-all:
   parallel: 5
   variables:
     QA_RUN_TYPE: review-qa-all
-    QA_SCENARIO: Test::Instance::All
-    QA_SKIP_SMOKE_RELIABLE: "true"
+    RSPEC_TAGS: --tag ~reliable --tag ~smoke
 
 review-performance:
   extends:
@@ -136,9 +170,11 @@ allure-report-qa-all:
   variables:
     ALLURE_JOB_NAME: review-qa-all
 
-knapsack-report:
+upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
   stage: post-qa
   variables:
-    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/tmp/knapsack/*/*.json
+    # knapsack report upload uses gitlab-qa image with code already there
+    GIT_STRATEGY: none
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json

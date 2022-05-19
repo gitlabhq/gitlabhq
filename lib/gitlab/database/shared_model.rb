@@ -15,14 +15,16 @@ module Gitlab
           previous_connection = self.overriding_connection
 
           unless previous_connection.nil? || previous_connection.equal?(connection)
-            raise 'cannot nest connection overrides for shared models with different connections'
+            raise "Cannot change connection for Gitlab::Database::SharedModel "\
+              "from '#{Gitlab::Database.db_config_name(previous_connection)}' "\
+              "to '#{Gitlab::Database.db_config_name(connection)}'"
           end
 
           self.overriding_connection = connection
 
           yield
         ensure
-          self.overriding_connection = nil unless previous_connection.equal?(self.overriding_connection)
+          self.overriding_connection = previous_connection
         end
 
         def connection

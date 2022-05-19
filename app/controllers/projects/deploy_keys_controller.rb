@@ -11,6 +11,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout 'project_settings'
 
   feature_category :continuous_delivery
+  urgency :low
 
   def index
     respond_to do |format|

@@ -63,8 +63,7 @@ in
 This should make it easier to contribute for developers who are less
 comfortable writing Go code.
 
-There is documentation for this approach in [the Gitaly
-repository](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/ruby_endpoint.md).
+For more information, see the [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md).
 
 ## Gitaly-Related Test Failures
 
@@ -372,3 +371,20 @@ the integration by using GDK:
       ```shell
       curl --silent "http://localhost:9236/metrics" | grep go_find_all_tags
       ```
+
+## Using Praefect in test
+
+By default Praefect in test uses an in-memory election strategy. This strategy
+is deprecated and no longer used in production. It mainly is kept for
+unit-testing purposes.
+
+A more modern election strategy requires a connection with a PostgreSQL
+database. This behavior is disabled by default when running tests, but you can
+enable it by setting `GITALY_PRAEFECT_WITH_DB=1` in your environment.
+
+This requires you have PostgreSQL running, and you have the database created.
+When you are using GDK, you can set it up with:
+
+1. Start the database: `gdk start db`
+1. Load the environment from GDK: `eval $(cd ../gitaly && gdk env)`
+1. Create the database: `createdb --encoding=UTF8 --locale=C --echo praefect_test`

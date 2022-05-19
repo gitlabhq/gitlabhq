@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -189,7 +190,9 @@ func WatchKey(key, value string, timeout time.Duration) (WatchKeyStatus, error) 
 	defer delKeyChan(kw)
 
 	currentValue, err := GetString(key)
-	if err != nil {
+	if errors.Is(err, redis.ErrNil) {
+		currentValue = ""
+	} else if err != nil {
 		return WatchKeyStatusNoChange, fmt.Errorf("keywatcher: redis GET: %v", err)
 	}
 	if currentValue != value {

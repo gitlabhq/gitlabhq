@@ -2,26 +2,38 @@
 require 'spec_helper'
 
 RSpec.describe ProjectServiceWorker, '#perform' do
-  let(:worker) { described_class.new }
-  let(:integration) { Integrations::Jira.new }
+  let_it_be(:integration) { create(:jira_integration) }
 
-  before do
-    allow(Integration).to receive(:find).and_return(integration)
-  end
+  let(:worker) { described_class.new }
 
   it 'executes integration with given data' do
     data = { test: 'test' }
-    expect(integration).to receive(:execute).with(data)
 
-    worker.perform(1, data)
+    expect_next_found_instance_of(integration.class) do |integration|
+      expect(integration).to receive(:execute).with(data)
+    end
+
+    worker.perform(integration.id, data)
   end
 
   it 'logs error messages' do
     error = StandardError.new('invalid URL')
-    allow(integration).to receive(:execute).and_raise(error)
 
-    expect(Gitlab::ErrorTracking).to receive(:log_exception).with(error, integration_class: 'Integrations::Jira')
+    expect_next_found_instance_of(integration.class) do |integration|
+      expect(integration).to receive(:execute).and_raise(error)
+      expect(integration).to receive(:log_exception).with(error)
+    end
 
-    worker.perform(1, {})
+    worker.perform(integration.id, {})
+  end
+
+  context 'when integration cannot be found' do
+    it 'completes silently and does not log an error' do
+      expect(Gitlab::IntegrationsLogger).not_to receive(:error)
+
+      expect do
+        worker.perform(non_existing_record_id, {})
+      end.not_to raise_error
+    end
   end
 end

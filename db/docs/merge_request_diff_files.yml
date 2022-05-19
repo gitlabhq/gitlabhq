@@ -4,6 +4,6 @@ classes:
 - MergeRequestDiffFile
 feature_categories:
 - code_review
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9a73b634ab4220f68a8296ccb582a68293874489
+description: Store file related information within a merge request diff
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12047
 milestone: '9.4'

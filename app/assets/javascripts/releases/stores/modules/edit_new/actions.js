@@ -1,3 +1,4 @@
+import { getTag } from '~/rest_api';
 import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -7,6 +8,7 @@ import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_
 import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
 import oneReleaseForEditingQuery from '~/releases/graphql/queries/one_release_for_editing.query.graphql';
 import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+
 import * as types from './mutation_types';
 
 export const initializeRelease = ({ commit, dispatch, getters }) => {
@@ -223,4 +225,24 @@ export const updateRelease = async ({ commit, dispatch, state, getters }) => {
       message: s__('Release|Something went wrong while saving the release details.'),
     });
   }
+};
+
+export const fetchTagNotes = ({ commit, state }, tagName) => {
+  commit(types.REQUEST_TAG_NOTES);
+
+  return getTag(state.projectId, tagName)
+    .then(({ data }) => {
+      commit(types.RECEIVE_TAG_NOTES_SUCCESS, data);
+    })
+    .catch((error) => {
+      createFlash({
+        message: s__('Release|Unable to fetch the tag notes.'),
+      });
+
+      commit(types.RECEIVE_TAG_NOTES_ERROR, error);
+    });
+};
+
+export const updateIncludeTagNotes = ({ commit }, includeTagNotes) => {
+  commit(types.UPDATE_INCLUDE_TAG_NOTES, includeTagNotes);
 };

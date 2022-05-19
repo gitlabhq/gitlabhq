@@ -11,7 +11,7 @@ module Gitlab
           include ::Gitlab::Ci::Config::Entry::Processable
 
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
-          ALLOWED_KEYS = %i[tags script type image services start_in artifacts
+          ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script
                             environment coverage retry parallel interruptible timeout
                             release].freeze
@@ -54,11 +54,6 @@ module Gitlab
           entry :script, Entry::Commands,
             description: 'Commands that will be executed in this job.',
             inherit: false
-
-          entry :type, Entry::Stage,
-            description: 'Deprecated: stage this job will be executed into.',
-            inherit: false,
-            deprecation: { deprecated: '9.0', warning: '14.8', removed: '15.0' }
 
           entry :after_script, Entry::Commands,
             description: 'Commands that will be executed when finishing job.',
@@ -133,19 +128,6 @@ module Gitlab
 
           def self.visible?
             true
-          end
-
-          def compose!(deps = nil)
-            super do
-              # The type keyword will be removed in 15.0:
-              # https://gitlab.com/gitlab-org/gitlab/-/issues/346823
-              if type_defined? && !stage_defined?
-                @entries[:stage] = @entries[:type]
-                log_and_warn_deprecated_entry(@entries[:type])
-              end
-
-              @entries.delete(:type)
-            end
           end
 
           def delayed?

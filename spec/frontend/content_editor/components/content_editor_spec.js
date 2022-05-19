@@ -4,7 +4,7 @@ import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
-import FormattingBubbleMenu from '~/content_editor/components/formatting_bubble_menu.vue';
+import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/formatting.vue';
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import { emitEditorEvent } from '../test_utils';

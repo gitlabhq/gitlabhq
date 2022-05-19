@@ -9,7 +9,7 @@ module Gitlab
 
       delegate :feature_category_not_owned?, :generated_queue_name, :get_feature_category,
                :get_sidekiq_options, :get_tags, :get_urgency, :get_weight,
-               :get_worker_resource_boundary, :idempotent?, :queue_namespace,
+               :get_worker_resource_boundary, :idempotent?, :queue_namespace, :queue,
                :worker_has_external_dependencies?,
                to: :klass
 

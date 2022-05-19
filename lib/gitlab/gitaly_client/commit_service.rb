@@ -276,7 +276,36 @@ module Gitlab
           )
 
           response = GitalyClient.call(@repository.storage, :commit_service, :list_all_commits, request, timeout: GitalyClient.medium_timeout)
-          consume_commits_response(response)
+
+          quarantined_commits = consume_commits_response(response)
+
+          if Feature.enabled?(:filter_quarantined_commits)
+            quarantined_commit_ids = quarantined_commits.map(&:id)
+
+            # While in general the quarantine directory would only contain objects
+            # which are actually new, this is not guaranteed by Git. In fact,
+            # git-push(1) may sometimes push objects which already exist in the
+            # target repository. We do not want to return those from this method
+            # though given that they're not actually new.
+            #
+            # To fix this edge-case we thus have to filter commits down to those
+            # which don't yet exist. To do so, we must check for object existence
+            # in the main repository, but the object directory of our repository
+            # points into the object quarantine. This can be fixed by unsetting
+            # it, which will cause us to use the normal repository as indicated by
+            # its relative path again.
+            main_repo = @gitaly_repo.dup
+            main_repo.git_object_directory = ""
+
+            # Check object existence of all quarantined commits' IDs.
+            quarantined_commit_existence = object_existence_map(quarantined_commit_ids, gitaly_repo: main_repo)
+
+            # And then we reject all quarantined commits which exist in the main
+            # repository already.
+            quarantined_commits.reject! { |c| quarantined_commit_existence[c.id] }
+          end
+
+          quarantined_commits
         else
           list_commits(Array.wrap(revisions) + %w[--not --all])
         end
@@ -385,6 +414,35 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request, timeout: GitalyClient.medium_timeout)
         consume_commits_response(response)
+      end
+
+      # Check whether the given revisions exist. Returns a hash mapping the revision name to either `true` if the
+      # revision exists, or `false` otherwise. This function accepts all revisions as specified by
+      # gitrevisions(1).
+      def object_existence_map(revisions, gitaly_repo: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          # This is a bug in Gitaly: revisions of the initial request are ignored. This will be fixed in v15.0 via
+          # https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4510, so we can merge initial request and the initial
+          # set of revisions starting with v15.1.
+          y.yield Gitaly::CheckObjectsExistRequest.new(repository: gitaly_repo)
+
+          revisions.each_slice(100) do |revisions_subset|
+            y.yield Gitaly::CheckObjectsExistRequest.new(revisions: revisions_subset)
+          end
+        end
+
+        response = GitalyClient.call(
+          @repository.storage, :commit_service, :check_objects_exist, enum, timeout: GitalyClient.medium_timeout
+        )
+
+        existence_by_revision = {}
+        response.each do |message|
+          message.revisions.each do |revision|
+            existence_by_revision[revision.name] = revision.exists
+          end
+        end
+
+        existence_by_revision
       end
 
       def filter_shas_with_signatures(shas)

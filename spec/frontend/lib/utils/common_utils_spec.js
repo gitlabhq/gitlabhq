@@ -283,6 +283,75 @@ describe('common_utils', () => {
     });
   });
 
+  describe('insertText', () => {
+    let textArea;
+
+    beforeAll(() => {
+      textArea = document.createElement('textarea');
+      document.querySelector('body').appendChild(textArea);
+      textArea.value = 'two';
+      textArea.setSelectionRange(0, 0);
+      textArea.focus();
+    });
+
+    afterAll(() => {
+      textArea.parentNode.removeChild(textArea);
+    });
+
+    describe('using execCommand', () => {
+      beforeAll(() => {
+        document.execCommand = jest.fn(() => true);
+      });
+
+      it('inserts the text', () => {
+        commonUtils.insertText(textArea, 'one');
+
+        expect(document.execCommand).toHaveBeenCalledWith('insertText', false, 'one');
+      });
+
+      it('removes selected text', () => {
+        textArea.setSelectionRange(0, textArea.value.length);
+
+        commonUtils.insertText(textArea, '');
+
+        expect(document.execCommand).toHaveBeenCalledWith('delete');
+      });
+    });
+
+    describe('using fallback', () => {
+      beforeEach(() => {
+        document.execCommand = jest.fn(() => false);
+        jest.spyOn(textArea, 'dispatchEvent');
+        textArea.value = 'two';
+        textArea.setSelectionRange(0, 0);
+      });
+
+      it('inserts the text', () => {
+        commonUtils.insertText(textArea, 'one');
+
+        expect(textArea.value).toBe('onetwo');
+        expect(textArea.dispatchEvent).toHaveBeenCalled();
+      });
+
+      it('replaces the selection', () => {
+        textArea.setSelectionRange(0, textArea.value.length);
+
+        commonUtils.insertText(textArea, 'one');
+
+        expect(textArea.value).toBe('one');
+        expect(textArea.selectionStart).toBe(textArea.value.length);
+      });
+
+      it('removes selected text', () => {
+        textArea.setSelectionRange(0, textArea.value.length);
+
+        commonUtils.insertText(textArea, '');
+
+        expect(textArea.value).toBe('');
+      });
+    });
+  });
+
   describe('normalizedHeaders', () => {
     it('should upperCase all the header keys to keep them consistent', () => {
       const apiHeaders = {

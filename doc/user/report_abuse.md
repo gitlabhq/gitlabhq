@@ -53,10 +53,8 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from a merge request
 
-1. On the merge request, in the top right corner, either:
-   - Select **Report abuse**. This option is displayed if you do not have permission to close the merge request.
-   - Next to **Mark as draft**, select the down arrow (**{chevron-down}**) and then select **Report abuse**.
-     This option is displayed if you have permission to close the merge request.
+1. On the merge request, in the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Report abuse**.
 1. Submit an abuse report.
 1. Select **Send report**.
 

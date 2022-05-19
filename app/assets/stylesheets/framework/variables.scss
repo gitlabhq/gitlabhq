@@ -453,7 +453,7 @@ $border-radius-small: 2px;
 $border-radius-large: 8px;
 $default-icon-size: 16px;
 $layout-link-gray: #7e7c7c;
-$btn-side-margin: 10px;
+$btn-side-margin: $grid-size;
 $btn-sm-side-margin: 7px;
 $btn-margin-5: 5px;
 $count-arrow-border: #dce0e5;
@@ -658,7 +658,6 @@ $calendar-user-contrib-text: #959494;
 $cycle-analytics-box-padding: 30px;
 $cycle-analytics-box-text-color: #8c8c8c;
 $cycle-analytics-big-font: 19px;
-$cycle-analytics-light-gray: #bfbfbf;
 $cycle-analytics-dismiss-icon-color: #b2b2b2;
 
 /*
@@ -934,7 +933,6 @@ $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
 Merge requests
 */
 $mr-tabs-height: 48px;
-$mr-version-controls-height: 56px;
 
 /*
 Compare Branches

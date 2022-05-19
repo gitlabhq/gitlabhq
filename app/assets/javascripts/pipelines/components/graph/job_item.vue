@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { sprintf, __ } from '~/locale';
@@ -7,7 +7,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { reportToSentry } from '../../utils';
 import ActionComponent from '../jobs_shared/action_component.vue';
 import JobNameComponent from '../jobs_shared/job_name_component.vue';
-import { SINGLE_JOB } from './constants';
+import { BRIDGE_KIND, SINGLE_JOB } from './constants';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -35,11 +35,16 @@ import { SINGLE_JOB } from './constants';
  */
 
 export default {
+  i18n: {
+    bridgeBadgeText: __('Trigger job'),
+    unauthorizedTooltip: __('You are not authorized to run this manual job'),
+  },
   hoverClass: 'gl-shadow-x0-y0-b3-s1-blue-500',
   components: {
     ActionComponent,
     CiIcon,
     JobNameComponent,
+    GlBadge,
     GlLink,
   },
   directives: {
@@ -112,6 +117,12 @@ export default {
     },
     isSingleItem() {
       return this.type === SINGLE_JOB;
+    },
+    isBridge() {
+      return this.kind === BRIDGE_KIND;
+    },
+    kind() {
+      return this.job?.kind || '';
     },
     nameComponent() {
       return this.hasDetails ? 'gl-link' : 'div';
@@ -187,6 +198,7 @@ export default {
           [this.$options.hoverClass]:
             this.relatedDownstreamHovered || this.relatedDownstreamExpanded,
         },
+        { 'gl-rounded-lg': this.isBridge },
         this.cssClassJobName,
       ];
     },
@@ -212,9 +224,6 @@ export default {
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
     },
-  },
-  i18n: {
-    unauthorizedTooltip: __('You are not authorized to run this manual job'),
   },
 };
 </script>
@@ -253,6 +262,9 @@ export default {
           </div>
         </div>
       </div>
+      <gl-badge v-if="isBridge" class="gl-mt-3" variant="info" size="sm">
+        {{ $options.i18n.bridgeBadgeText }}
+      </gl-badge>
     </component>
 
     <action-component

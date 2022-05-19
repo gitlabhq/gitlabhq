@@ -3,12 +3,34 @@
   svg {
     fill: $green-500;
   }
+
+  &.interactive {
+    &:hover {
+      background: $green-500;
+
+      svg {
+        --svg-status-bg: #{$green-100};
+        box-shadow: 0 0 0 1px $green-500;
+      }
+    }
+  }
 }
 
 .ci-status-icon-error,
 .ci-status-icon-failed {
   svg {
     fill: $red-500;
+  }
+
+  &.interactive {
+    &:hover {
+      background: $red-500;
+
+      svg {
+        --svg-status-bg: #{$red-100};
+        box-shadow: 0 0 0 1px $red-500;
+      }
+    }
   }
 }
 
@@ -19,11 +41,33 @@
   svg {
     fill: $orange-500;
   }
+
+  &.interactive {
+    &:hover {
+      background: $orange-500;
+
+      svg {
+        --svg-status-bg: #{$orange-100};
+        box-shadow: 0 0 0 1px $orange-500;
+      }
+    }
+  }
 }
 
 .ci-status-icon-running {
   svg {
-    fill: $blue-400;
+    fill: $blue-500;
+  }
+
+  &.interactive {
+    &:hover {
+      background: $blue-500;
+
+      svg {
+        --svg-status-bg: #{$blue-100};
+        box-shadow: 0 0 0 1px $blue-500;
+      }
+    }
   }
 }
 
@@ -32,7 +76,18 @@
 .ci-status-icon-scheduled,
 .ci-status-icon-manual {
   svg {
-    fill: $gl-text-color;
+    fill: $gray-900;
+  }
+
+  &.interactive {
+    &:hover {
+      background: $gray-900;
+
+      svg {
+        --svg-status-bg: #{$gray-100};
+        box-shadow: 0 0 0 1px $gray-900;
+      }
+    }
   }
 }
 
@@ -42,7 +97,18 @@
 .ci-status-icon-skipped,
 .ci-status-icon-notfound {
   svg {
-    fill: var(--gray-400, $gray-400);
+    fill: $gray-500;
+  }
+
+  &.interactive {
+    &:hover {
+      background: $gray-500;
+
+      svg {
+        --svg-status-bg: #{$gray-100};
+        box-shadow: 0 0 0 1px $gray-500;
+      }
+    }
   }
 }
 

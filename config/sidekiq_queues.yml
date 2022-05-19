@@ -161,8 +161,6 @@
   - 1
 - - experiments_record_conversion_event
   - 1
-- - expire_build_instance_artifacts
-  - 1
 - - export_csv
   - 1
 - - external_service_reactive_caching
@@ -263,6 +261,8 @@
   - 1
 - - merge_request_reset_approvals
   - 1
+- - merge_requests_close_issue
+  - 1
 - - merge_requests_delete_source_branch
   - 1
 - - merge_requests_handle_assignees_change
@@ -355,7 +355,11 @@
   - 1
 - - project_template_export
   - 1
+- - projects_after_import
+  - 1
 - - projects_git_garbage_collect
+  - 1
+- - projects_inactive_projects_deletion_notification
   - 1
 - - projects_post_creation
   - 1
@@ -415,10 +419,14 @@
   - 1
 - - security_findings_delete_by_job_id
   - 1
+- - security_generate_scan_finding_rules
+  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_scans
   - 2
+- - security_sync_scan_policies
+  - 1
 - - self_monitoring_project_create
   - 2
 - - self_monitoring_project_delete

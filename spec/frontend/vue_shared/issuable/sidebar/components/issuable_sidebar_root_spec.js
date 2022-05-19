@@ -1,6 +1,7 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import Cookies from 'js-cookie';
 import { nextTick } from 'vue';
+import Cookies from '~/lib/utils/cookies';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import IssuableSidebarRoot from '~/vue_shared/issuable/sidebar/components/issuable_sidebar_root.vue';
@@ -9,7 +10,7 @@ import { USER_COLLAPSED_GUTTER_COOKIE } from '~/vue_shared/issuable/sidebar/cons
 const MOCK_LAYOUT_PAGE_CLASS = 'layout-page';
 
 const createComponent = () => {
-  setFixtures(`<div class="${MOCK_LAYOUT_PAGE_CLASS}"></div>`);
+  setHTMLFixture(`<div class="${MOCK_LAYOUT_PAGE_CLASS}"></div>`);
 
   return shallowMountExtended(IssuableSidebarRoot, {
     slots: {
@@ -38,6 +39,7 @@ describe('IssuableSidebarRoot', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   describe('when sidebar is expanded', () => {

@@ -402,7 +402,7 @@ docker run \
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
 > - Showing related feature flags in issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220333) in GitLab 14.1.
 
-You can link related issues to a feature flag. In the **Linked issues** section,
+You can link related issues to a feature flag. In the Feature Flag **Linked issues** section,
 click the `+` button and input the issue reference number or the full URL of the issue.
 The issues then appear in the related feature flag and the other way round.
 
@@ -430,7 +430,7 @@ Please note that the polling rate is configurable in SDKs. Provided that all cli
 
 For applications looking for more scalable solution, we recommend to use [Unleash Proxy](#unleash-proxy-example).
 This proxy server sits between the server and clients. It requests to the server as a behalf of the client groups,
-so the nubmer of outbound requests can be greatly reduced.
+so the number of outbound requests can be greatly reduced.
 
 There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
 capacity to the current rate limit.

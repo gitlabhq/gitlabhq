@@ -17,7 +17,7 @@ export default () => {
     fileParam,
     settingsLink,
     maxWarnings,
-  } = el?.dataset;
+  } = el.dataset;
 
   const variableParams = JSON.parse(varParam);
   const fileParams = JSON.parse(fileParam);

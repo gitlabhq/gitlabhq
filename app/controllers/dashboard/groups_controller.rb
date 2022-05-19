@@ -7,6 +7,8 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
 
   feature_category :subgroups
 
+  urgency :low, [:index]
+
   def index
     groups = GroupsFinder.new(current_user, all_available: false).execute
     render_group_tree(groups)

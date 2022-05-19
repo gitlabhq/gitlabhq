@@ -4,6 +4,8 @@ classes:
 - Gitlab::Database::BackgroundMigration::BatchedMigration
 feature_categories:
 - database
-description: TODO
+description: >-
+  The batched_background_migrations table stores information about the batched background migrations present in the system.
+  See https://docs.gitlab.com/ee/development/batched_background_migrations.html for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54628
 milestone: '13.10'

@@ -1,4 +1,4 @@
-mutation mergeRequestSetMilestone($fullPath: ID!, $iid: String!, $attributeId: ID) {
+mutation mergeRequestSetMilestone($fullPath: ID!, $iid: String!, $attributeId: MilestoneID) {
   issuableSetAttribute: mergeRequestSetMilestone(
     input: { projectPath: $fullPath, iid: $iid, milestoneId: $attributeId }
   ) {

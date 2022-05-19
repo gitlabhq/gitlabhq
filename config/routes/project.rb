@@ -303,15 +303,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         concerns :clusterable
 
-        namespace :serverless do
-          scope :functions do
-            get '/:environment_id/:id', to: 'functions#show'
-            get '/:environment_id/:id/metrics', to: 'functions#metrics', as: :metrics
-          end
-
-          resources :functions, only: [:index]
-        end
-
         resources :terraform, only: [:index]
 
         resources :google_cloud, only: [:index]
@@ -517,7 +508,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :prometheus do
-        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
           member do
             get :metrics_dashboard # rubocop:todo Cop/PutProjectRoutesUnderScope

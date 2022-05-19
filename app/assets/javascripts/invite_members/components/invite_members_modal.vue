@@ -88,6 +88,11 @@ export default {
       type: Array,
       required: true,
     },
+    usersLimitDataset: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -145,6 +150,18 @@ export default {
     },
     isOnLearnGitlab() {
       return this.source === LEARN_GITLAB;
+    },
+    reachedLimit() {
+      if (this.usersLimitDataset.freeUsersLimit && this.usersLimitDataset.membersCount) {
+        return this.usersLimitDataset.membersCount >= this.usersLimitDataset.freeUsersLimit;
+      }
+
+      return false;
+    },
+    formGroupDescription() {
+      return this.reachedLimit
+        ? this.$options.labels.placeHolderDisabled
+        : this.$options.labels.placeHolder;
     },
   },
   mounted() {
@@ -274,12 +291,14 @@ export default {
     :help-link="helpLink"
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
-    :form-group-description="$options.labels.placeHolder"
+    :form-group-description="formGroupDescription"
     :submit-disabled="inviteDisabled"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
+    :reached-limit="reachedLimit"
+    :users-limit-dataset="usersLimitDataset"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"
@@ -294,7 +313,10 @@ export default {
     </template>
 
     <template #user-limit-notification>
-      <user-limit-notification />
+      <user-limit-notification
+        :reached-limit="reachedLimit"
+        :users-limit-dataset="usersLimitDataset"
+      />
     </template>
 
     <template #select="{ validationState, labelId }">

@@ -117,6 +117,7 @@ export const locationSearch = [
   'not[author_username]=marge',
   'assignee_username[]=bart',
   'assignee_username[]=lisa',
+  'assignee_username[]=5',
   'not[assignee_username][]=patty',
   'not[assignee_username][]=selma',
   'milestone_title=season+3',
@@ -146,6 +147,8 @@ export const locationSearch = [
   'not[epic_id]=34',
   'weight=1',
   'not[weight]=3',
+  'crm_contact_id=123',
+  'crm_organization_id=456',
 ].join('&');
 
 export const locationSearchWithSpecialValues = [
@@ -165,6 +168,7 @@ export const filteredTokens = [
   { type: 'author_username', value: { data: 'marge', operator: OPERATOR_IS_NOT } },
   { type: 'assignee_username', value: { data: 'bart', operator: OPERATOR_IS } },
   { type: 'assignee_username', value: { data: 'lisa', operator: OPERATOR_IS } },
+  { type: 'assignee_username', value: { data: '5', operator: OPERATOR_IS } },
   { type: 'assignee_username', value: { data: 'patty', operator: OPERATOR_IS_NOT } },
   { type: 'assignee_username', value: { data: 'selma', operator: OPERATOR_IS_NOT } },
   { type: 'milestone', value: { data: 'season 3', operator: OPERATOR_IS } },
@@ -194,6 +198,8 @@ export const filteredTokens = [
   { type: 'epic_id', value: { data: '34', operator: OPERATOR_IS_NOT } },
   { type: 'weight', value: { data: '1', operator: OPERATOR_IS } },
   { type: 'weight', value: { data: '3', operator: OPERATOR_IS_NOT } },
+  { type: 'crm_contact', value: { data: '123', operator: OPERATOR_IS } },
+  { type: 'crm_organization', value: { data: '456', operator: OPERATOR_IS } },
   { type: 'filtered-search-term', value: { data: 'find' } },
   { type: 'filtered-search-term', value: { data: 'issues' } },
 ];
@@ -212,7 +218,7 @@ export const filteredTokensWithSpecialValues = [
 
 export const apiParams = {
   authorUsername: 'homer',
-  assigneeUsernames: ['bart', 'lisa'],
+  assigneeUsernames: ['bart', 'lisa', '5'],
   milestoneTitle: ['season 3', 'season 4'],
   labelName: ['cartoon', 'tv'],
   releaseTag: ['v3', 'v4'],
@@ -222,6 +228,8 @@ export const apiParams = {
   iterationId: ['4', '12'],
   epicId: '12',
   weight: '1',
+  crmContactId: '123',
+  crmOrganizationId: '456',
   not: {
     authorUsername: 'marge',
     assigneeUsernames: ['patty', 'selma'],
@@ -251,7 +259,7 @@ export const apiParamsWithSpecialValues = {
 export const urlParams = {
   author_username: 'homer',
   'not[author_username]': 'marge',
-  'assignee_username[]': ['bart', 'lisa'],
+  'assignee_username[]': ['bart', 'lisa', '5'],
   'not[assignee_username][]': ['patty', 'selma'],
   milestone_title: ['season 3', 'season 4'],
   'not[milestone_title]': ['season 20', 'season 30'],
@@ -270,6 +278,8 @@ export const urlParams = {
   'not[epic_id]': '34',
   weight: '1',
   'not[weight]': '3',
+  crm_contact_id: '123',
+  crm_organization_id: '456',
 };
 
 export const urlParamsWithSpecialValues = {

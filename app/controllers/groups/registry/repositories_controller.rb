@@ -8,7 +8,8 @@ module Groups
       before_action :verify_container_registry_enabled!
       before_action :authorize_read_container_image!
 
-      feature_category :package_registry
+      feature_category :container_registry
+      urgency :low
 
       def index
         respond_to do |format|

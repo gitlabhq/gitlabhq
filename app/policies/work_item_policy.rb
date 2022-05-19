@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class WorkItemPolicy < IssuePolicy
-  rule { can?(:owner_access) | is_author }.enable :delete_work_item
+  condition(:is_member_and_author) { is_project_member? & is_author? }
+
+  rule { can?(:destroy_issue) | is_member_and_author }.enable :delete_work_item
 
   rule { can?(:update_issue) }.enable :update_work_item
 

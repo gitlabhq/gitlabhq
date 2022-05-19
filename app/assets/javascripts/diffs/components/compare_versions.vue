@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-version-controls border-top">
+  <div class="mr-version-controls">
     <div class="mr-version-menus-container content-block">
       <gl-button
         v-if="hasChanges"

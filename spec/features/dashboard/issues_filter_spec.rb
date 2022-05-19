@@ -78,14 +78,14 @@ RSpec.describe 'Dashboard Issues filtering', :js do
     end
 
     it 'remembers last sorting value' do
-      sort_by('Created date')
+      pajamas_sort_by(s_('SortOptions|Created date'))
       visit_issues(assignee_username: user.username)
 
       expect(page).to have_button('Created date')
     end
 
     it 'keeps sorting issues after visiting Projects Issues page' do
-      sort_by('Created date')
+      pajamas_sort_by(s_('SortOptions|Created date'))
       visit project_issues_path(project)
 
       expect(page).to have_button('Created date')

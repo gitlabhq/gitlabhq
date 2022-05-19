@@ -265,7 +265,7 @@ RSpec.describe Resolvers::TimelogResolver do
   context 'when > `default_max_page_size` records' do
     let(:object) { nil }
     let!(:timelog_list) { create_list(:timelog, 101, issue: issue) }
-    let(:args) { { project_id: "gid://gitlab/Project/#{project.id}" } }
+    let(:args) { { project_id: global_id_of(project) } }
     let(:extra_args) { {} }
 
     it 'pagination returns `default_max_page_size` and sets `has_next_page` true' do

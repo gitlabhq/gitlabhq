@@ -2,6 +2,7 @@ import { GlModal } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import * as timeago from 'timeago.js';
 import { nextTick } from 'vue';
+import { timeagoLanguageCode } from '~/lib/utils/datetime/timeago_utility';
 import UserListsTable from '~/user_lists/components/user_lists_table.vue';
 import { userList } from 'jest/feature_flags/mock_data';
 
@@ -31,7 +32,7 @@ describe('User Lists Table', () => {
       userList.user_xids.replace(/,/g, ', '),
     );
     expect(wrapper.find('[data-testid="ffUserListTimestamp"]').text()).toBe('created 2 weeks ago');
-    expect(timeago.format).toHaveBeenCalledWith(userList.created_at);
+    expect(timeago.format).toHaveBeenCalledWith(userList.created_at, timeagoLanguageCode);
   });
 
   it('should set the title for a tooltip on the created stamp', () => {

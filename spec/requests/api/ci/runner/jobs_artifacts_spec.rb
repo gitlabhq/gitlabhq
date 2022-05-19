@@ -7,7 +7,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
   include RedisHelpers
   include WorkhorseHelpers
 
+  let_it_be_with_reload(:parent_group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+  let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be(:user) { create(:user) }
+
   let(:registration_token) { 'abcdefg123456' }
+
+  before_all do
+    project.add_developer(user)
+  end
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
@@ -17,12 +29,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
-    let(:parent_group) { create(:group) }
-    let(:group) { create(:group, parent: parent_group) }
-    let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
-    let(:runner) { create(:ci_runner, :project, projects: [project]) }
-    let(:user) { create(:user) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
@@ -571,14 +577,21 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when artifact_type is archive' do
             context 'when artifact_format is zip' do
+              subject(:request) { upload_artifacts(file_upload, headers_with_token, params) }
+
               let(:params) { { artifact_type: :archive, artifact_format: :zip } }
+              let(:expected_params) { { artifact_size: job.reload.artifacts_size } }
+              let(:subject_proc) { proc { subject } }
 
               it 'stores junit test report' do
-                upload_artifacts(file_upload, headers_with_token, params)
+                subject
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(job.reload.job_artifacts_archive).not_to be_nil
               end
+
+              it_behaves_like 'storing arguments in the application context'
+              it_behaves_like 'not executing any extra queries for the application context'
             end
 
             context 'when artifact_format is gzip' do
@@ -817,25 +830,23 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when job has artifacts' do
-          let(:job) { create(:ci_build) }
+          let(:job) { create(:ci_build, pipeline: pipeline, user: user) }
           let(:store) { JobArtifactUploader::Store::LOCAL }
 
           before do
             create(:ci_job_artifact, :archive, file_store: store, job: job)
           end
 
-          context 'when using job token' do
+          shared_examples 'successful artifact download' do
             context 'when artifacts are stored locally' do
               let(:download_headers) do
                 { 'Content-Transfer-Encoding' => 'binary',
                   'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
               end
 
-              before do
+              it 'downloads artifacts' do
                 download_artifact
-              end
 
-              it 'download artifacts' do
                 expect(response).to have_gitlab_http_status(:ok)
                 expect(response.headers.to_h).to include download_headers
               end
@@ -843,26 +854,20 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
             context 'when artifacts are stored remotely' do
               let(:store) { JobArtifactUploader::Store::REMOTE }
-              let!(:job) { create(:ci_build) }
 
               context 'when proxy download is being used' do
-                before do
-                  download_artifact(direct_download: false)
-                end
-
                 it 'uses workhorse send-url' do
+                  download_artifact(direct_download: false)
+
                   expect(response).to have_gitlab_http_status(:ok)
-                  expect(response.headers.to_h).to include(
-                    'Gitlab-Workhorse-Send-Data' => /send-url:/)
+                  expect(response.headers.to_h).to include('Gitlab-Workhorse-Send-Data' => /send-url:/)
                 end
               end
 
               context 'when direct download is being used' do
-                before do
+                it 'receives redirect for downloading artifacts' do
                   download_artifact(direct_download: true)
-                end
 
-                it 'receive redirect for downloading artifacts' do
                   expect(response).to have_gitlab_http_status(:found)
                   expect(response.headers).to include('Location')
                 end
@@ -870,16 +875,119 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
+          shared_examples 'forbidden request' do
+            it 'responds with forbidden' do
+              download_artifact
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+
+          context 'when using job token' do
+            let(:token) { job.token }
+
+            it_behaves_like 'successful artifact download'
+
+            context 'when the job is no longer running' do
+              before do
+                job.success!
+              end
+
+              it_behaves_like 'successful artifact download'
+            end
+          end
+
+          context 'when using token belonging to the dependent job' do
+            let!(:dependent_job) { create(:ci_build, :running, :dependent, user: user, pipeline: pipeline) }
+            let!(:job) { dependent_job.all_dependencies.first }
+
+            let(:token) { dependent_job.token }
+
+            it_behaves_like 'successful artifact download'
+
+            context 'when the dependent job is no longer running' do
+              before do
+                dependent_job.success!
+              end
+
+              it_behaves_like 'forbidden request'
+            end
+          end
+
+          context 'when using token belonging to another job created by another project member' do
+            let!(:ci_build) { create(:ci_build, :running, :dependent, user: user, pipeline: pipeline) }
+            let!(:job) { ci_build.all_dependencies.first }
+
+            let!(:another_dev) { create(:user) }
+
+            let(:token) { ci_build.token }
+
+            before do
+              project.add_developer(another_dev)
+              ci_build.update!(user: another_dev)
+            end
+
+            it_behaves_like 'successful artifact download'
+          end
+
+          context 'when using token belonging to a pending dependent job' do
+            let!(:ci_build) { create(:ci_build, :pending, :dependent, user: user, project: project, pipeline: pipeline) }
+            let!(:job) { ci_build.all_dependencies.first }
+
+            let(:token) { ci_build.token }
+
+            it_behaves_like 'forbidden request'
+          end
+
+          context 'when using a token from a cross pipeline build' do
+            let!(:ci_build) { create(:ci_build, :pending, :dependent, user: user, project: project, pipeline: pipeline) }
+            let!(:job) { ci_build.all_dependencies.first }
+
+            let!(:options) do
+              {
+                cross_dependencies: [
+                  {
+                    pipeline: pipeline.id,
+                    job: job.name,
+                    artifacts: true
+                  }
+                ]
+
+              }
+            end
+
+            let!(:cross_pipeline) { create(:ci_pipeline, project: project, child_of: pipeline) }
+            let!(:cross_pipeline_build) { create(:ci_build, :running, project: project, user: user, options: options, pipeline: cross_pipeline) }
+
+            let(:token) { cross_pipeline_build.token }
+
+            before do
+              job.success!
+            end
+
+            it_behaves_like 'successful artifact download'
+          end
+
+          context 'when using a token from an unrelated project' do
+            let!(:ci_build) { create(:ci_build, :running, :dependent, user: user, project: project, pipeline: pipeline) }
+            let!(:job) { ci_build.all_dependencies.first }
+
+            let!(:unrelated_ci_build) { create(:ci_build, :running, user: create(:user)) }
+            let(:token) { unrelated_ci_build.token }
+
+            it_behaves_like 'forbidden request'
+          end
+
           context 'when using runnners token' do
             let(:token) { job.project.runners_token }
 
-            before do
-              download_artifact
-            end
+            it_behaves_like 'forbidden request'
+          end
 
-            it 'responds with forbidden' do
-              expect(response).to have_gitlab_http_status(:forbidden)
-            end
+          context 'when using an invalid token' do
+            let(:token) { 'invalid-token' }
+
+            it_behaves_like 'forbidden request'
           end
         end
 

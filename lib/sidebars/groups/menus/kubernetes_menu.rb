@@ -23,7 +23,7 @@ module Sidebars
         def render?
           clusterable = context.group
 
-          Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
+          clusterable.certificate_based_clusters_enabled? &&
             can?(context.current_user, :read_cluster, clusterable)
         end
 

@@ -103,10 +103,6 @@ module Gitlab
             }.compact }.compact
         end
 
-        def merged_yaml
-          @ci_config&.to_hash&.deep_stringify_keys&.to_yaml
-        end
-
         def variables_with_data
           @ci_config.variables_with_data
         end
@@ -125,6 +121,10 @@ module Gitlab
 
         def stage_for(job_name)
           jobs.dig(job_name, :stage)
+        end
+
+        def config_metadata
+          @ci_config&.metadata || {}
         end
 
         private

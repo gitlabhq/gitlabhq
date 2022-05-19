@@ -168,6 +168,11 @@ export default {
       required: false,
       default: '',
     },
+    syncFilterAndSort: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -282,6 +287,7 @@ export default {
       :sort-options="sortOptions"
       :initial-filter-value="initialFilterValue"
       :initial-sort-by="initialSortBy"
+      :sync-filter-and-sort="syncFilterAndSort"
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
       class="gl-flex-grow-1 gl-border-t-none row-content-block"

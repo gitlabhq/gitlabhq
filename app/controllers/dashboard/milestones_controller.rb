@@ -5,6 +5,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   before_action :groups, only: :index
 
   feature_category :team_planning
+  urgency :low
 
   def index
     respond_to do |format|

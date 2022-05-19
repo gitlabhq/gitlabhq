@@ -12,12 +12,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
 
     subject { described_class.new(dashboard_hash, project: project, dashboard_path: dashboard_path) }
 
-    before do
-      allow_next_instance_of(::Clusters::Applications::ScheduleUpdateService) do |update_service|
-        allow(update_service).to receive(:execute)
-      end
-    end
-
     context 'valid dashboard' do
       let(:dashboard_hash) { load_sample_dashboard }
 
@@ -45,13 +39,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
           create(:prometheus_metric, existing_metric_attributes)
         end
 
-        let!(:existing_alert) do
-          alert = create(:prometheus_alert, project: project, prometheus_metric: existing_metric)
-          existing_metric.prometheus_alerts << alert
-
-          alert
-        end
-
         it 'updates existing PrometheusMetrics' do
           subject.execute
 
@@ -68,15 +55,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
           expect { subject.execute }.to change { PrometheusMetric.count }.by(2)
         end
 
-        it 'updates affected environments' do
-          expect(::Clusters::Applications::ScheduleUpdateService).to receive(:new).with(
-            existing_alert.environment.cluster_prometheus_adapter,
-            project
-          ).and_return(double('ScheduleUpdateService', execute: true))
-
-          subject.execute
-        end
-
         context 'with stale metrics' do
           let!(:stale_metric) do
             create(:prometheus_metric,
@@ -85,13 +63,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
               dashboard_path: dashboard_path,
               group: 3
             )
-          end
-
-          let!(:stale_alert) do
-            alert = create(:prometheus_alert, project: project, prometheus_metric: stale_metric)
-            stale_metric.prometheus_alerts << alert
-
-            alert
           end
 
           it 'updates existing PrometheusMetrics' do
@@ -110,21 +81,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Importers::PrometheusMetrics do
             subject.execute
 
             expect { stale_metric.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          end
-
-          it 'deletes stale alert' do
-            subject.execute
-
-            expect { stale_alert.reload }.to raise_error(ActiveRecord::RecordNotFound)
-          end
-
-          it 'updates affected environments' do
-            expect(::Clusters::Applications::ScheduleUpdateService).to receive(:new).with(
-              existing_alert.environment.cluster_prometheus_adapter,
-              project
-            ).and_return(double('ScheduleUpdateService', execute: true))
-
-            subject.execute
           end
         end
       end

@@ -1,5 +1,6 @@
 import { flattenDeep, clone } from 'lodash';
-import { statusBoxState } from '~/issuable/components/status_box.vue';
+import { match } from '~/diffs/utils/diff_file';
+import { badgeState } from '~/issuable/components/status_box.vue';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
@@ -84,8 +85,7 @@ export const getBlockedByIssues = (state) => state.noteableData.blocked_by_issue
 
 export const userCanReply = (state) => Boolean(state.noteableData.current_user.can_create_note);
 
-export const openState = (state) =>
-  isInMRPage() ? statusBoxState.state : state.noteableData.state;
+export const openState = (state) => (isInMRPage() ? badgeState.state : state.noteableData.state);
 
 export const getUserData = (state) => state.userData || {};
 
@@ -179,29 +179,42 @@ export const unresolvedDiscussionsIdsByDate = (state, getters) =>
 // Sorts the array of resolvable yet unresolved discussions by
 // comparing file names first. If file names are the same, compares
 // line numbers.
-export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
-  getters.allResolvableDiscussions
+export const unresolvedDiscussionsIdsByDiff = (state, getters, allState) => {
+  const authoritativeFiles = allState.diffs.diffFiles;
+
+  return getters.allResolvableDiscussions
     .filter((d) => !d.resolved && d.active)
     .sort((a, b) => {
+      let order = 0;
+
       if (!a.diff_file || !b.diff_file) {
-        return 0;
+        return order;
       }
 
-      // Get file names comparison result
-      const filenameComparison = a.diff_file.file_path.localeCompare(b.diff_file.file_path);
+      const authoritativeA = authoritativeFiles.find((source) =>
+        match({ fileA: source, fileB: a.diff_file, mode: 'mr' }),
+      );
+      const authoritativeB = authoritativeFiles.find((source) =>
+        match({ fileA: source, fileB: b.diff_file, mode: 'mr' }),
+      );
+
+      if (authoritativeA && authoritativeB) {
+        order = authoritativeA.order - authoritativeB.order;
+      }
 
       // Get the line numbers, to compare within the same file
       const aLines = [a.position.new_line, a.position.old_line];
       const bLines = [b.position.new_line, b.position.old_line];
 
-      return filenameComparison < 0 ||
-        (filenameComparison === 0 &&
+      return order < 0 ||
+        (order === 0 &&
           // .max() because one of them might be zero (if removed/added)
           Math.max(aLines[0], aLines[1]) < Math.max(bLines[0], bLines[1]))
         ? -1
         : 1;
     })
     .map((d) => d.id);
+};
 
 export const resolvedDiscussionCount = (state, getters) => {
   const resolvedMap = getters.resolvedDiscussionsById;

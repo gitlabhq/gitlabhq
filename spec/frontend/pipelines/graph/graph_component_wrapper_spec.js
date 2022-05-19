@@ -16,7 +16,7 @@ import {
 } from '~/performance/constants';
 import * as perfUtils from '~/performance/utils';
 import {
-  IID_FAILURE,
+  ACTION_FAILURE,
   LAYER_VIEW,
   STAGE_VIEW,
   VIEW_TYPE_KEY,
@@ -188,11 +188,34 @@ describe('Pipeline graph wrapper', () => {
 
     it('displays the no iid alert', () => {
       expect(getAlert().exists()).toBe(true);
-      expect(getAlert().text()).toBe(wrapper.vm.$options.errorTexts[IID_FAILURE]);
+      expect(getAlert().text()).toBe(
+        'The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data.',
+      );
     });
 
     it('does not display the graph', () => {
       expect(getGraph().exists()).toBe(false);
+    });
+  });
+
+  describe('when there is an error with an action in the graph', () => {
+    beforeEach(async () => {
+      createComponentWithApollo();
+      await waitForPromises();
+      await getGraph().vm.$emit('error', { type: ACTION_FAILURE });
+    });
+
+    it('does not display the loading icon', () => {
+      expect(getLoadingIcon().exists()).toBe(false);
+    });
+
+    it('displays the action error alert', () => {
+      expect(getAlert().exists()).toBe(true);
+      expect(getAlert().text()).toBe('An error occurred while performing this action.');
+    });
+
+    it('displays the graph', () => {
+      expect(getGraph().exists()).toBe(true);
     });
   });
 

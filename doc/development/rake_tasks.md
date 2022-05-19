@@ -366,8 +366,8 @@ The docs generator code comes from our side giving us more flexibility, like usi
 
 To edit the content, you may need to edit the following:
 
-- The template. You can edit the template at `lib/gitlab/graphql/docs/templates/default.md.haml`.
-  The actual renderer is at `Gitlab::Graphql::Docs::Renderer`.
+- The template. You can edit the template at `tooling/graphql/docs/templates/default.md.haml`.
+  The actual renderer is at `Tooling::Graphql::Docs::Renderer`.
 - The applicable `description` field in the code, which
   [Updates machine-readable schema files](#update-machine-readable-schema-files),
   which is then used by the `rake` task described earlier.

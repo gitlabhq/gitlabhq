@@ -4,6 +4,7 @@ classes:
 - IncidentManagement::OncallSchedule
 feature_categories:
 - incident_management
-description: TODO
+- on_call_schedule_management
+description: Persists on-call schedules for incident management in a project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47407
 milestone: '13.7'

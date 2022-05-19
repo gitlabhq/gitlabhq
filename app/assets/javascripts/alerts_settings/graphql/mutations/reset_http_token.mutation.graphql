@@ -1,10 +1,8 @@
 #import "../fragments/http_integration_item.fragment.graphql"
 
-mutation resetHttpIntegrationToken($id: ID!) {
+mutation resetHttpIntegrationToken($id: AlertManagementHttpIntegrationID!) {
   httpIntegrationResetToken(input: { id: $id }) {
     errors
-    # We have ID in a deeply nested fragment
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     integration {
       ...HttpIntegrationItem
     }

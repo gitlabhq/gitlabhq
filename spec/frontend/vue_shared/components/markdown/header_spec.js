@@ -166,4 +166,26 @@ describe('Markdown field header component', () => {
 
     expect(wrapper.findByTestId('preview-tab').exists()).toBe(false);
   });
+
+  describe('restricted tool bar items', () => {
+    let defaultCount;
+
+    beforeEach(() => {
+      defaultCount = findToolbarButtons().length;
+    });
+
+    it('restricts items as per input', () => {
+      createWrapper({
+        restrictedToolBarItems: ['quote'],
+      });
+
+      expect(findToolbarButtons().length).toBe(defaultCount - 1);
+    });
+
+    it('shows all items by default', () => {
+      createWrapper();
+
+      expect(findToolbarButtons().length).toBe(defaultCount);
+    });
+  });
 });

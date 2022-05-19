@@ -16,7 +16,7 @@ This guide also lists common issues and possible solutions.
 An early source of problems can be incorrect syntax. The pipeline shows a `yaml invalid`
 badge and does not start running if any syntax or formatting problems are found.
 
-### Edit `gitlab-ci.yml` with the pipeline editor
+### Edit `.gitlab-ci.yml` with the pipeline editor
 
 The [pipeline editor](pipeline_editor/index.md) is the recommended editing
 experience (rather than the single file editor or the Web IDE). It includes:
@@ -330,6 +330,12 @@ busy_resources.pluck(:build_id)
 # free up busy resources
 busy_resources.update_all(build_id: nil)
 ```
+
+### Job log slow to update
+
+When you visit the job log page for a running job, there could be a delay of up to
+60 seconds before the log updates. The default refresh time is 60 seconds, but after
+the log is viewed in the UI, the following log updates should occur every 3 seconds.
 
 ## How to get help
 

@@ -2,6 +2,7 @@
 
 exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
 <gl-modal-stub
+  arialabel=""
   body-class="add-review-item pt-0"
   cancel-variant="light"
   dismisslabel="Close"

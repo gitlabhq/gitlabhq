@@ -22,24 +22,19 @@ RSpec.describe 'nuget package details' do
   it_behaves_like 'a package with files'
 
   it 'has the correct metadata' do
-    expect(metadata_response).to include(
-      'id' => global_id_of(package.nuget_metadatum),
-      'licenseUrl' => package.nuget_metadatum.license_url,
-      'projectUrl' => package.nuget_metadatum.project_url,
-      'iconUrl' => package.nuget_metadatum.icon_url
+    expect(metadata_response).to match a_graphql_entity_for(
+      package.nuget_metadatum, :license_url, :project_url, :icon_url
     )
   end
 
   it 'has dependency links' do
-    expect(dependency_link_response).to include(
-      'id' => global_id_of(dependency_link),
+    expect(dependency_link_response).to match a_graphql_entity_for(
+      dependency_link,
       'dependencyType' => dependency_link.dependency_type.upcase
     )
 
-    expect(dependency_response).to include(
-      'id' => global_id_of(dependency_link.dependency),
-      'name' => dependency_link.dependency.name,
-      'versionPattern' => dependency_link.dependency.version_pattern
+    expect(dependency_response).to match a_graphql_entity_for(
+      dependency_link.dependency, :name, :version_pattern
     )
   end
 

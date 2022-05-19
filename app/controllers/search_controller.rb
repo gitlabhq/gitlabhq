@@ -25,8 +25,7 @@ class SearchController < ApplicationController
   layout 'search'
 
   feature_category :global_search
-  urgency :high, [:opensearch]
-  urgency :low, [:count]
+  urgency :low
 
   def show
     @project = search_service.project
@@ -169,17 +168,17 @@ class SearchController < ApplicationController
 
     search_allowed = case params[:scope]
                      when 'blobs'
-                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops, default_enabled: :yaml)
+                       Feature.enabled?(:global_search_code_tab, current_user, type: :ops)
                      when 'commits'
-                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops, default_enabled: :yaml)
+                       Feature.enabled?(:global_search_commits_tab, current_user, type: :ops)
                      when 'issues'
-                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops, default_enabled: :yaml)
+                       Feature.enabled?(:global_search_issues_tab, current_user, type: :ops)
                      when 'merge_requests'
-                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops, default_enabled: :yaml)
+                       Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops)
                      when 'wiki_blobs'
-                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops, default_enabled: :yaml)
+                       Feature.enabled?(:global_search_wiki_tab, current_user, type: :ops)
                      when 'users'
-                       Feature.enabled?(:global_search_users_tab, current_user, type: :ops, default_enabled: :yaml)
+                       Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
                      else
                        true
                      end

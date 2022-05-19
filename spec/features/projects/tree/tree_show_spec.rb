@@ -81,7 +81,7 @@ RSpec.describe 'Projects tree', :js do
       wait_for_requests
 
       page.within('.project-last-commit') do
-        expect(page).to have_selector('.user-avatar-link')
+        expect(page).to have_selector('.gl-avatar')
         expect(page).to have_content('Merge branch')
       end
     end
@@ -150,6 +150,20 @@ RSpec.describe 'Projects tree', :js do
         expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
         expect(page).to have_selector '.gpg-status-box.invalid'
       end
+    end
+  end
+
+  context 'ref switcher' do
+    it 'switches ref to branch' do
+      ref_name = 'feature'
+      visit project_tree_path(project, 'master')
+      first('.js-project-refs-dropdown').click
+
+      page.within '.project-refs-form' do
+        click_link ref_name
+      end
+
+      expect(page).to have_selector '.dropdown-menu-toggle', text: ref_name
     end
   end
 end

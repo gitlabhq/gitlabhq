@@ -21,7 +21,7 @@ For advanced CI/CD teams, [custom project templates](../../user/admin_area/custo
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
 
-## `config.yml` vs `gitlab-ci.yml`
+## `config.yml` vs `.gitlab-ci.yml`
 
 CircleCI's `config.yml` configuration file defines scripts, jobs, and workflows (known as "stages" in GitLab). In GitLab, a similar approach is used with a `.gitlab-ci.yml` file in the root directory of your repository.
 
@@ -166,7 +166,7 @@ job1:
   script:
     - make build
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_REF_NAME == "try-schedule-workflow"'
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_REF_NAME == "try-schedule-workflow"
 ```
 
 After the pipeline configuration is saved, you configure the cron schedule in the [GitLab UI](../pipelines/schedules.md#add-a-pipeline-schedule), and can enable or disable schedules in the UI as well.
@@ -221,7 +221,7 @@ deploy:
   script:
     - echo "Deploy job"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^rc-/'
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^rc-/
 ```
 
 ### Caching

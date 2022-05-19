@@ -1,5 +1,4 @@
 import { formatNumber } from '~/locale';
-import { DEFAULT_TH_CLASSES } from '~/lib/utils/constants';
 import { RUNNER_JOB_COUNT_LIMIT } from './constants';
 
 /**
@@ -28,7 +27,7 @@ export const tableField = ({ key, label = '', thClasses = [], ...options }) => {
   return {
     key,
     label,
-    thClass: [DEFAULT_TH_CLASSES, ...thClasses],
+    thClass: thClasses,
     tdAttr: {
       'data-testid': `td-${key}`,
     },

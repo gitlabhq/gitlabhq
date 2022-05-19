@@ -17,6 +17,8 @@ RSpec.describe 'Labels Hierarchy', :js do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     grandparent.add_owner(user)
 
     sign_in(user)
@@ -34,8 +36,6 @@ RSpec.describe 'Labels Hierarchy', :js do
           click_on 'Close'
         end
 
-        wait_for_requests
-
         expect(page).to have_selector('.gl-label', text: label.title)
       end
     end
@@ -43,8 +43,6 @@ RSpec.describe 'Labels Hierarchy', :js do
     it 'does not find child group labels on dropdown' do
       page.within('.block.labels') do
         click_on 'Edit'
-
-        wait_for_requests
 
         expect(page).not_to have_text(child_group_label.title)
       end
@@ -54,15 +52,21 @@ RSpec.describe 'Labels Hierarchy', :js do
   shared_examples 'filtering by ancestor labels for projects' do |board = false|
     it 'filters by ancestor labels' do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
-        select_label_on_dropdown(label.title)
-
-        wait_for_requests
-
         if board
+          select_label_on_dropdown(label.title)
+
           expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
         else
+          within '[data-testid="filtered-search-input"]' do
+            click_filtered_search_bar
+            click_on 'Label'
+            click_on '= is'
+            click_on label.title
+            send_keys :enter
+          end
+
           expect_issues_list_count(1)
           expect(page).to have_selector('.issue-title', text: labeled_issue.title)
         end
@@ -70,9 +74,11 @@ RSpec.describe 'Labels Hierarchy', :js do
     end
 
     it 'does not filter by descendant group labels' do
-      filtered_search.set("label=")
-
-      wait_for_requests
+      if board
+        filtered_search.set("label=")
+      else
+        select_tokens 'Label', '='
+      end
 
       expect(page).not_to have_link child_group_label.title
     end
@@ -93,11 +99,9 @@ RSpec.describe 'Labels Hierarchy', :js do
 
     it 'filters by ancestors and current group labels' do
       [grandparent_group_label, parent_group_label].each do |label|
-        select_label_on_dropdown(label.title)
-
-        wait_for_requests
-
         if board
+          select_label_on_dropdown(label.title)
+
           expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
@@ -106,6 +110,14 @@ RSpec.describe 'Labels Hierarchy', :js do
             expect(card).to have_selector('a', text: labeled_issue_2.title)
           end
         else
+          within '[data-testid="filtered-search-input"]' do
+            click_filtered_search_bar
+            click_on 'Label'
+            click_on '= is'
+            click_on label.title
+            send_keys :enter
+          end
+
           expect_issues_list_count(3)
           expect(page).to have_selector('.issue-title', text: labeled_issue.title)
           expect(page).to have_selector('.issue-title', text: labeled_issue_2.title)
@@ -115,11 +127,9 @@ RSpec.describe 'Labels Hierarchy', :js do
     end
 
     it 'filters by descendant group labels' do
-      wait_for_requests
-
-      select_label_on_dropdown(group_label_3.title)
-
       if board
+        select_label_on_dropdown(group_label_3.title)
+
         expect(page).to have_selector('.board-card-title') do |card|
           expect(card).not_to have_selector('a', text: labeled_issue_2.title)
         end
@@ -128,17 +138,23 @@ RSpec.describe 'Labels Hierarchy', :js do
           expect(card).to have_selector('a', text: labeled_issue_3.title)
         end
       else
+        select_tokens 'Label', '=', group_label_3.title, submit: true
+
         expect_issues_list_count(1)
         expect(page).to have_selector('.issue-title', text: labeled_issue_3.title)
       end
     end
 
     it 'does not filter by descendant group project labels' do
-      filtered_search.set("label=")
+      if board
+        filtered_search.set("label=")
 
-      wait_for_requests
+        expect(page).not_to have_selector('.btn-link', text: project_label_3.title)
+      else
+        select_tokens 'Label', '='
 
-      expect(page).not_to have_selector('.btn-link', text: project_label_3.title)
+        expect(page).not_to have_link project_label_3.title
+      end
     end
   end
 
@@ -195,9 +211,7 @@ RSpec.describe 'Labels Hierarchy', :js do
       it_behaves_like 'filtering by ancestor labels for projects'
 
       it 'does not filter by descendant group labels' do
-        filtered_search.set("label=")
-
-        wait_for_requests
+        select_tokens 'Label', '='
 
         expect(page).not_to have_link child_group_label.title
       end

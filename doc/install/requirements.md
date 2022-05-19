@@ -121,6 +121,8 @@ the following table) as these were used for development and testing:
 |----------------|----------------------------|
 | 13.0           | 11                         |
 | 14.0           | 12.10                      |
+| 15.0           | 12.0                       |
+| 16.0 (planned) | 13.0                       |
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).
@@ -132,7 +134,7 @@ GitLab database. [Read more about this requirement, and troubleshooting](postgre
 | `plpgsql`    | 11.7                   |
 
 NOTE:
-Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning. For the schedule of transitioning to PostgreSQL 12, see [the related epic](https://gitlab.com/groups/gitlab-org/-/epics/2184).
+Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning.
 
 #### Additional requirements for GitLab Geo
 

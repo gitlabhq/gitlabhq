@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Database::SharedModel do
 
             expect do
               described_class.using_connection(second_connection) {}
-            end.to raise_error(/cannot nest connection overrides/)
+            end.to raise_error(/Cannot change connection for Gitlab::Database::SharedModel/)
 
             expect(described_class.connection).to be(new_connection)
           end

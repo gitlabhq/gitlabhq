@@ -10,4 +10,5 @@ export const STATUSES = {
   NONE: 'none',
   SCHEDULING: 'scheduling',
   CANCELLED: 'cancelled',
+  TIMEOUT: 'timeout',
 };

@@ -10,6 +10,7 @@ module API
     ALLOWED_STATUSES = %w[default hidden].freeze
 
     feature_category :package_registry
+    urgency :low
 
     before do
       require_packages_enabled!

@@ -56,6 +56,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       end
     end
 
+    context 'when the key is valid' do
+      it 'records the checked key in request storage', :request_store do
+        subject.throttled?(:test_action, scope: [user])
+
+        expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
+          .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action])
+
+        subject.throttled?(:another_action, scope: [user], peek: true)
+
+        expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
+          .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action, :another_action])
+      end
+    end
+
     shared_examples 'throttles based on key and scope' do
       let(:start_time) { Time.current.beginning_of_hour }
 

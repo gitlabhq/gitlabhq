@@ -1,5 +1,4 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { i18n } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -7,16 +6,10 @@ import ItemTitle from './item_title.vue';
 
 export default {
   components: {
-    GlLoadingIcon,
     ItemTitle,
   },
   mixins: [Tracking.mixin()],
   props: {
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemId: {
       type: String,
       required: false,
@@ -59,6 +52,7 @@ export default {
           },
         });
         this.track('updated_title');
+        this.$emit('updated');
       } catch {
         this.$emit('error', i18n.updateError);
       }
@@ -68,6 +62,5 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loading" class="gl-mt-3" size="md" />
-  <item-title v-else :title="workItemTitle" @title-changed="updateTitle" />
+  <item-title :title="workItemTitle" @title-changed="updateTitle" />
 </template>

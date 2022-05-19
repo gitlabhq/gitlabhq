@@ -37,7 +37,7 @@ RSpec.describe Mutations::DependencyProxy::GroupSettings::Update do
 
     where(:user_role, :shared_examples_name) do
       :maintainer | 'updating the dependency proxy group settings'
-      :developer  | 'updating the dependency proxy group settings'
+      :developer  | 'denying access to dependency proxy group settings'
       :reporter   | 'denying access to dependency proxy group settings'
       :guest      | 'denying access to dependency proxy group settings'
       :anonymous  | 'denying access to dependency proxy group settings'

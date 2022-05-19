@@ -68,6 +68,20 @@ module Emails
       mail(to: user.notification_email_for(@project.group), subject: subject(subject_text))
     end
 
+    def inactive_project_deletion_warning_email(project, user, deletion_date)
+      @project = project
+      @user = user
+      @deletion_date = deletion_date
+      subject_text = "Action required: Project #{project.name} is scheduled to be deleted on " \
+      "#{deletion_date} due to inactivity"
+
+      mail(to: user.notification_email_for(project.group),
+           subject: subject(subject_text)) do |format|
+        format.html { render layout: 'mailer' }
+        format.text { render layout: 'mailer' }
+      end
+    end
+
     private
 
     def add_alert_headers

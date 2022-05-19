@@ -1,4 +1,4 @@
-import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlModal, GlSprintf, GlFormGroup } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -15,6 +15,7 @@ import {
   MEMBERS_MODAL_CELEBRATE_INTRO,
   MEMBERS_MODAL_CELEBRATE_TITLE,
   MEMBERS_PLACEHOLDER,
+  MEMBERS_PLACEHOLDER_DISABLED,
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   LEARN_GITLAB,
 } from '~/invite_members/constants';
@@ -28,6 +29,8 @@ import {
   propsData,
   inviteSource,
   newProjectPath,
+  freeUsersLimit,
+  membersCount,
   user1,
   user2,
   user3,
@@ -45,12 +48,13 @@ describe('InviteMembersModal', () => {
   let wrapper;
   let mock;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, stubs = {}) => {
     wrapper = shallowMountExtended(InviteMembersModal, {
       provide: {
         newProjectPath,
       },
       propsData: {
+        usersLimitDataset: {},
         ...propsData,
         ...props,
       },
@@ -62,16 +66,17 @@ describe('InviteMembersModal', () => {
           template: '<div><slot></slot><slot name="modal-footer"></slot></div>',
         }),
         GlEmoji,
+        ...stubs,
       },
     });
   };
 
-  const createInviteMembersToProjectWrapper = () => {
-    createComponent({ isProject: true });
+  const createInviteMembersToProjectWrapper = (usersLimitDataset = {}, stubs = {}) => {
+    createComponent({ usersLimitDataset, isProject: true }, stubs);
   };
 
-  const createInviteMembersToGroupWrapper = () => {
-    createComponent({ isProject: false });
+  const createInviteMembersToGroupWrapper = (usersLimitDataset = {}, stubs = {}) => {
+    createComponent({ usersLimitDataset, isProject: false }, stubs);
   };
 
   beforeEach(() => {
@@ -95,7 +100,7 @@ describe('InviteMembersModal', () => {
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
     findMembersFormGroup().attributes('invalid-feedback');
-  const membersFormGroupDescription = () => findMembersFormGroup().attributes('description');
+  const membersFormGroupText = () => findMembersFormGroup().text();
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
   const findTasksToBeDone = () => wrapper.findByTestId('invite-members-modal-tasks-to-be-done');
   const findTasks = () => wrapper.findByTestId('invite-members-modal-tasks');
@@ -259,16 +264,33 @@ describe('InviteMembersModal', () => {
           expect(wrapper.findComponent(ModalConfetti).exists()).toBe(false);
         });
 
-        it('includes the correct invitee, type, and formatted name', () => {
+        it('includes the correct invitee', () => {
           expect(findIntroText()).toBe("You're inviting members to the test name project.");
           expect(findCelebrationEmoji().exists()).toBe(false);
-          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
+        });
+
+        describe('members form group description', () => {
+          it('renders correct description', () => {
+            createInviteMembersToProjectWrapper({ freeUsersLimit, membersCount }, { GlFormGroup });
+            expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER);
+          });
+
+          describe('when reached user limit', () => {
+            it('renders correct description', () => {
+              createInviteMembersToProjectWrapper(
+                { freeUsersLimit, membersCount: 5 },
+                { GlFormGroup },
+              );
+
+              expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER_DISABLED);
+            });
+          });
         });
       });
 
       describe('when inviting members with celebration', () => {
         beforeEach(async () => {
-          createComponent({ isProject: true });
+          createInviteMembersToProjectWrapper();
           await triggerOpenModal({ mode: 'celebrate' });
         });
 
@@ -285,7 +307,28 @@ describe('InviteMembersModal', () => {
             `${MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT}  ${MEMBERS_MODAL_CELEBRATE_INTRO}`,
           );
           expect(findCelebrationEmoji().exists()).toBe(true);
-          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
+        });
+
+        describe('members form group description', () => {
+          it('renders correct description', async () => {
+            createInviteMembersToProjectWrapper({ freeUsersLimit, membersCount }, { GlFormGroup });
+            await triggerOpenModal({ mode: 'celebrate' });
+
+            expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER);
+          });
+
+          describe('when reached user limit', () => {
+            it('renders correct description', async () => {
+              createInviteMembersToProjectWrapper(
+                { freeUsersLimit, membersCount: 5 },
+                { GlFormGroup },
+              );
+
+              await triggerOpenModal({ mode: 'celebrate' });
+
+              expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER_DISABLED);
+            });
+          });
         });
       });
     });
@@ -295,7 +338,20 @@ describe('InviteMembersModal', () => {
         createInviteMembersToGroupWrapper();
 
         expect(findIntroText()).toBe("You're inviting members to the test name group.");
-        expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
+      });
+
+      describe('members form group description', () => {
+        it('renders correct description', () => {
+          createInviteMembersToGroupWrapper({ freeUsersLimit, membersCount }, { GlFormGroup });
+          expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER);
+        });
+
+        describe('when reached user limit', () => {
+          it('renders correct description', () => {
+            createInviteMembersToGroupWrapper({ freeUsersLimit, membersCount: 5 }, { GlFormGroup });
+            expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER_DISABLED);
+          });
+        });
       });
     });
   });

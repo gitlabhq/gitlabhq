@@ -33,6 +33,7 @@ module MergeRequests
     def trigger_approval_hooks(merge_request)
       yield
 
+      notification_service.async.unapprove_mr(merge_request, current_user)
       execute_hooks(merge_request, 'unapproved')
     end
 

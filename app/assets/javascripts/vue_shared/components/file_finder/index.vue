@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import Mousetrap from 'mousetrap';
 import VirtualList from 'vue-virtual-scroll-list';
@@ -9,13 +9,13 @@ import Item from './item.vue';
 
 export const MAX_FILE_FINDER_RESULTS = 40;
 export const FILE_FINDER_ROW_HEIGHT = 55;
-export const FILE_FINDER_EMPTY_ROW_HEIGHT = 33;
 
 const originalStopCallback = Mousetrap.prototype.stopCallback;
 
 export default {
   components: {
     GlIcon,
+    GlLoadingIcon,
     Item,
     VirtualList,
   },
@@ -71,7 +71,7 @@ export default {
       return this.filteredBlobsLength ? Math.min(this.filteredBlobsLength, 5) : 1;
     },
     listHeight() {
-      return this.filteredBlobsLength ? FILE_FINDER_ROW_HEIGHT : FILE_FINDER_EMPTY_ROW_HEIGHT;
+      return FILE_FINDER_ROW_HEIGHT;
     },
     showClearInputButton() {
       return this.searchText.trim() !== '';
@@ -265,9 +265,9 @@ export default {
             </li>
           </template>
           <li v-else class="dropdown-menu-empty-item">
-            <div class="gl-mr-3 gl-ml-3 gl-mt-3 gl-mb-3">
+            <div class="gl-mr-3 gl-ml-3 gl-mt-5 gl-mb-3">
               <template v-if="loading">
-                {{ __('Loading...') }}
+                <gl-loading-icon />
               </template>
               <template v-else>
                 {{ __('No files found.') }}

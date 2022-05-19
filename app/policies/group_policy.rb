@@ -22,6 +22,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
+  condition(:migration_bot, scope: :user) { @user.migration_bot? }
 
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
@@ -54,11 +55,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:dependency_proxy_access_allowed) do
-    if Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true)
-      access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
-    else
-      can?(:read_group)
-    end
+    access_level(for_any_session: true) >= GroupMember::GUEST || valid_dependency_proxy_deploy_token
   end
 
   desc "Deploy token with read_package_registry scope"
@@ -81,7 +78,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) && @subject.crm_enabled? }
 
   condition(:group_runner_registration_allowed) do
-    Feature.disabled?(:runner_registration_control, default_enabled: :yaml) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+    Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+  end
+
+  condition(:change_prevent_sharing_groups_outside_hierarchy_available) do
+    change_prevent_sharing_groups_outside_hierarchy_available?
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do
@@ -134,13 +135,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { has_access }.enable :read_namespace
 
   rule { developer }.policy do
-    enable :admin_milestone
     enable :create_metrics_dashboard_annotation
     enable :delete_metrics_dashboard_annotation
     enable :update_metrics_dashboard_annotation
     enable :create_custom_emoji
     enable :create_package
-    enable :create_package_settings
     enable :developer_access
     enable :admin_crm_organization
     enable :admin_crm_contact
@@ -152,18 +151,19 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_container_image
     enable :admin_issue_board
     enable :admin_label
+    enable :admin_milestone
     enable :admin_issue_board_list
     enable :admin_issue
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus
     enable :read_package
-    enable :read_package_settings
     enable :read_crm_organization
     enable :read_crm_contact
   end
 
   rule { maintainer }.policy do
     enable :destroy_package
+    enable :admin_package
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build
@@ -188,13 +188,16 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
     enable :set_note_created_at
     enable :set_emails_disabled
-    enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_new_user_signups_cap
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
     enable :update_runners_registration_token
     enable :owner_access
+  end
+
+  rule { owner & change_prevent_sharing_groups_outside_hierarchy_available }.policy do
+    enable :change_prevent_sharing_groups_outside_hierarchy
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -248,7 +251,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { dependency_proxy_access_allowed & dependency_proxy_available }
     .enable :read_dependency_proxy
 
-  rule { developer & dependency_proxy_available }.policy do
+  rule { maintainer & dependency_proxy_available }.policy do
     enable :admin_dependency_proxy
   end
 
@@ -283,6 +286,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :register_group_runners
   end
 
+  rule { migration_bot }.policy do
+    enable :read_resource_access_tokens
+    enable :destroy_resource_access_tokens
+  end
+
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?
@@ -314,6 +322,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   def valid_dependency_proxy_deploy_token
     @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
+  end
+
+  def change_prevent_sharing_groups_outside_hierarchy_available?
+    true
   end
 end
 

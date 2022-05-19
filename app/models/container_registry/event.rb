@@ -2,6 +2,8 @@
 
 module ContainerRegistry
   class Event
+    include Gitlab::Utils::StrongMemoize
+
     ALLOWED_ACTIONS = %w(push delete).freeze
     PUSH_ACTION = 'push'
     EVENT_TRACKING_CATEGORY = 'container_registry:notification'
@@ -17,7 +19,7 @@ module ContainerRegistry
     end
 
     def handle!
-      # no op
+      update_project_statistics
     end
 
     def track!
@@ -58,10 +60,25 @@ module ContainerRegistry
     end
 
     def container_registry_path
-      path = event.dig('target', 'repository')
-      return unless path
+      strong_memoize(:container_registry_path) do
+        path = event.dig('target', 'repository')
+        next unless path
 
-      ContainerRegistry::Path.new(path)
+        ContainerRegistry::Path.new(path)
+      end
+    end
+
+    def project
+      container_registry_path&.repository_project
+    end
+
+    def update_project_statistics
+      return unless supported?
+      return unless target_tag?
+      return unless project
+      return unless Feature.enabled?(:container_registry_project_statistics, project)
+
+      ProjectCacheWorker.perform_async(project.id, [], [:container_registry_size])
     end
   end
 end

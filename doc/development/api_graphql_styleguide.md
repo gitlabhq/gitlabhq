@@ -97,7 +97,7 @@ discussed in [Nullable fields](#nullable-fields).
 Fields that use the [`feature_flag` property](#feature_flag-property) and the flag is disabled by default are exempt
 from the deprecation process, and can be removed at any time without notice.
 
-See the [deprecating fields, arguments, and enum values](#deprecating-fields-arguments-and-enum-values) section for how to deprecate items.
+See the [deprecating schema items](#deprecating-schema-items) section for how to deprecate items.
 
 ## Global IDs
 
@@ -540,19 +540,39 @@ def foo
 end
 ```
 
-## Deprecating fields, arguments, and enum values
+## Deprecating schema items
 
 The GitLab GraphQL API is versionless, which means we maintain backwards
 compatibility with older versions of the API with every change.
 
-Rather than removing fields, arguments, or [enum values](#enums), they
-must be _deprecated_ instead.
+Rather than removing fields, arguments, [enum values](#enums), or [mutations](#mutations),
+they must be _deprecated_ instead.
 
 The deprecated parts of the schema can then be removed in a future release
 in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-and-removal-process).
 
-Fields, arguments, and enum values are deprecated using the `deprecated` property.
-The value of the property is a `Hash` of:
+To deprecate a schema item in GraphQL:
+
+1. [Create a deprecation issue](#create-a-deprecation-issue) for the item.
+1. [Mark the item as deprecated](#mark-the-item-as-deprecated) in the schema.
+
+See also:
+
+- [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
+- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
+
+### Create a deprecation issue
+
+Every GraphQL deprecation should have a deprecation issue created [using the `Deprecations` issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Deprecations) to track its deprecation and removal.
+
+Apply these two labels to the deprecation issue:
+
+- `~GraphQL`
+- `~deprecation`
+
+### Mark the item as deprecated
+
+Fields, arguments, enum values, and mutations are deprecated using the `deprecated` property. The value of the property is a `Hash` of:
 
 - `reason` - Reason for the deprecation.
 - `milestone` - Milestone that the field was deprecated.
@@ -569,7 +589,7 @@ The original `description` of the things being deprecated should be maintained,
 and should _not_ be updated to mention the deprecation. Instead, the `reason`
 is appended to the `description`.
 
-### Deprecation reason style guide
+#### Deprecation reason style guide
 
 Where the reason for deprecation is due to the field, argument, or enum value being
 replaced, the `reason` must indicate the replacement. For example, the
@@ -601,7 +621,7 @@ end
 If the field, argument, or enum value being deprecated is not being replaced,
 a descriptive deprecation `reason` should be given.
 
-### Deprecate Global IDs
+#### Deprecate Global IDs
 
 We use the [`rails/globalid`](https://github.com/rails/globalid) gem to generate and parse
 Global IDs, so as such they are coupled to model names. When we rename a
@@ -698,11 +718,6 @@ aware of the support.
 
 The documentation will mention that the old Global ID style is now deprecated.
 
-See also:
-
-- [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
-- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
-
 ## Enums
 
 GitLab GraphQL enums are defined in `app/graphql/types`. When defining new enums, the
@@ -748,7 +763,7 @@ end
 ```
 
 Enum values can be deprecated using the
-[`deprecated` keyword](#deprecating-fields-arguments-and-enum-values).
+[`deprecated` keyword](#deprecating-schema-items).
 
 ### Defining GraphQL enums dynamically from Rails enums
 
@@ -1713,7 +1728,7 @@ mount_aliased_mutation 'BarMutation', Mutations::FooMutation
 ```
 
 This allows us to rename a mutation and continue to support the old name,
-when coupled with the [`deprecated`](#deprecating-fields-arguments-and-enum-values)
+when coupled with the [`deprecated`](#deprecating-schema-items)
 argument.
 
 Example:

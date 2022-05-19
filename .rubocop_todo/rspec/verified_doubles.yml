@@ -7,7 +7,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/controllers/groups/sso_controller_spec.rb
     - ee/spec/controllers/oauth/geo_auth_controller_spec.rb
     - ee/spec/controllers/projects/clusters_controller_spec.rb
-    - ee/spec/controllers/projects/security/network_policies_controller_spec.rb
     - ee/spec/db/production/license_spec.rb
     - ee/spec/elastic/migrate/20210510113500_delete_merge_requests_from_original_index_spec.rb
     - ee/spec/elastic/migrate/20210510143200_delete_notes_from_original_index_spec.rb
@@ -90,8 +89,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/gitlab/middleware/ip_restrictor_spec.rb
     - ee/spec/lib/gitlab/patch/legacy_database_config_spec.rb
     - ee/spec/lib/gitlab/prometheus/queries/cluster_query_spec.rb
-    - ee/spec/lib/gitlab/prometheus/queries/packet_flow_metrics_query_spec.rb
-    - ee/spec/lib/gitlab/prometheus/queries/packet_flow_query_spec.rb
     - ee/spec/lib/gitlab/subscription_portal/clients/rest_spec.rb
     - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
     - ee/spec/lib/system_check/app/elasticsearch_check_spec.rb
@@ -181,7 +178,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/services/ee/service_ping/permit_data_categories_service_spec.rb
     - ee/spec/services/ee/service_ping/service_ping_settings_spec.rb
     - ee/spec/services/geo/blob_download_service_spec.rb
-    - ee/spec/services/geo/file_download_service_spec.rb
     - ee/spec/services/geo/graphql_request_service_spec.rb
     - ee/spec/services/geo/node_status_request_service_spec.rb
     - ee/spec/services/geo/replication_toggle_request_service_spec.rb
@@ -197,10 +193,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/services/merge_requests/build_service_spec.rb
     - ee/spec/services/merge_requests/reset_approvals_service_spec.rb
     - ee/spec/services/namespaces/in_product_marketing_emails_service_spec.rb
-    - ee/spec/services/network_policies/delete_resource_service_spec.rb
-    - ee/spec/services/network_policies/deploy_resource_service_spec.rb
-    - ee/spec/services/network_policies/find_resource_service_spec.rb
-    - ee/spec/services/network_policies/resources_service_spec.rb
     - ee/spec/services/projects/update_mirror_service_spec.rb
     - ee/spec/services/projects/update_pages_service_spec.rb
     - ee/spec/services/security/ingestion/ingest_report_slice_service_spec.rb
@@ -232,8 +224,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/workers/geo/design_repository_sync_worker_spec.rb
     - ee/spec/workers/geo/destroy_worker_spec.rb
     - ee/spec/workers/geo/event_worker_spec.rb
-    - ee/spec/workers/geo/file_download_dispatch_worker_spec.rb
-    - ee/spec/workers/geo/file_download_worker_spec.rb
     - ee/spec/workers/geo/metrics_update_worker_spec.rb
     - ee/spec/workers/geo/prune_event_log_worker_spec.rb
     - ee/spec/workers/geo/registry_sync_worker_spec.rb
@@ -301,9 +291,6 @@ RSpec/VerifiedDoubles:
     - spec/controllers/projects/blob_controller_spec.rb
     - spec/controllers/projects/branches_controller_spec.rb
     - spec/controllers/projects/clusters_controller_spec.rb
-    - spec/controllers/projects/error_tracking/projects_controller_spec.rb
-    - spec/controllers/projects/error_tracking/stack_traces_controller_spec.rb
-    - spec/controllers/projects/error_tracking_controller_spec.rb
     - spec/controllers/projects/import/jira_controller_spec.rb
     - spec/controllers/projects/jobs_controller_spec.rb
     - spec/controllers/projects/merge_requests/diffs_controller_spec.rb
@@ -335,7 +322,6 @@ RSpec/VerifiedDoubles:
     - spec/features/projects/integrations/user_activates_jira_spec.rb
     - spec/finders/ci/auth_job_finder_spec.rb
     - spec/finders/merge_requests/oldest_per_commit_finder_spec.rb
-    - spec/finders/projects/serverless/functions_finder_spec.rb
     - spec/finders/repositories/changelog_commits_finder_spec.rb
     - spec/finders/repositories/changelog_tag_finder_spec.rb
     - spec/graphql/features/authorization_spec.rb
@@ -351,9 +337,6 @@ RSpec/VerifiedDoubles:
     - spec/graphql/mutations/merge_requests/accept_spec.rb
     - spec/graphql/mutations/merge_requests/create_spec.rb
     - spec/graphql/resolvers/design_management/versions_resolver_spec.rb
-    - spec/graphql/resolvers/error_tracking/sentry_detailed_error_resolver_spec.rb
-    - spec/graphql/resolvers/error_tracking/sentry_error_collection_resolver_spec.rb
-    - spec/graphql/resolvers/error_tracking/sentry_errors_resolver_spec.rb
     - spec/graphql/resolvers/kas/agent_connections_resolver_spec.rb
     - spec/graphql/resolvers/projects/jira_projects_resolver_spec.rb
     - spec/graphql/types/ci/detailed_status_type_spec.rb
@@ -434,9 +417,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/constraints/user_url_constrainer_spec.rb
     - spec/lib/csv_builder_spec.rb
     - spec/lib/csv_builders/stream_spec.rb
-    - spec/lib/error_tracking/collector/dsn_spec.rb
-    - spec/lib/error_tracking/collector/sentry_auth_parser_spec.rb
-    - spec/lib/error_tracking/collector/sentry_request_parser_spec.rb
     - spec/lib/extracts_path_spec.rb
     - spec/lib/feature_spec.rb
     - spec/lib/gitaly/server_spec.rb
@@ -1015,8 +995,6 @@ RSpec/VerifiedDoubles:
     - spec/services/container_expiration_policies/cleanup_service_spec.rb
     - spec/services/deployments/create_service_spec.rb
     - spec/services/discussions/capture_diff_note_position_service_spec.rb
-    - spec/services/error_tracking/base_service_spec.rb
-    - spec/services/error_tracking/issue_update_service_spec.rb
     - spec/services/event_create_service_spec.rb
     - spec/services/git/base_hooks_service_spec.rb
     - spec/services/git/process_ref_changes_service_spec.rb
@@ -1053,7 +1031,7 @@ RSpec/VerifiedDoubles:
     - spec/services/packages/nuget/metadata_extraction_service_spec.rb
     - spec/services/pages/zip_directory_service_spec.rb
     - spec/services/post_receive_service_spec.rb
-    - spec/services/projects/after_import_service_spec.rb
+    - spec/workers/projects/after_import_worker_spec.rb
     - spec/services/projects/branches_by_mode_service_spec.rb
     - spec/services/projects/create_service_spec.rb
     - spec/services/projects/destroy_service_spec.rb

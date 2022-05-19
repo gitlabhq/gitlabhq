@@ -302,7 +302,7 @@ gitlab_rails['incoming_email_mailbox_name'] = "inbox"
 # The IDLE command timeout.
 gitlab_rails['incoming_email_idle_timeout'] = 60
 
-# Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
@@ -340,7 +340,7 @@ incoming_email:
     # The IDLE command timeout.
     idle_timeout: 60
 
-    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
     expunge_deleted: true
 ```
 
@@ -384,7 +384,7 @@ gitlab_rails['incoming_email_mailbox_name'] = "inbox"
 # The IDLE command timeout.
 gitlab_rails['incoming_email_idle_timeout'] = 60
 
-# Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
@@ -422,7 +422,7 @@ incoming_email:
     # The IDLE command timeout.
     idle_timeout: 60
 
-    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
     expunge_deleted: true
 ```
 
@@ -463,6 +463,9 @@ gitlab_rails['incoming_email_host'] = "exchange.example.com"
 gitlab_rails['incoming_email_port'] = 993
 # Whether the IMAP server uses SSL
 gitlab_rails['incoming_email_ssl'] = true
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 Example for source installs:
@@ -491,6 +494,9 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    expunge_deleted: true
 ```
 
 ##### Dedicated email address
@@ -521,6 +527,9 @@ gitlab_rails['incoming_email_host'] = "exchange.example.com"
 gitlab_rails['incoming_email_port'] = 993
 # Whether the IMAP server uses SSL
 gitlab_rails['incoming_email_ssl'] = true
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 Example for source installs:
@@ -545,6 +554,9 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    expunge_deleted: true
 ```
 
 #### Microsoft Office 365
@@ -599,6 +611,9 @@ gitlab_rails['incoming_email_host'] = "outlook.office365.com"
 gitlab_rails['incoming_email_port'] = 993
 # Whether the IMAP server uses SSL
 gitlab_rails['incoming_email_ssl'] = true
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 This example for source installs assumes the mailbox `incoming@office365.example.com`:
@@ -626,6 +641,9 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    expunge_deleted: true
 ```
 
 ##### Catch-all mailbox
@@ -654,6 +672,9 @@ gitlab_rails['incoming_email_host'] = "outlook.office365.com"
 gitlab_rails['incoming_email_port'] = 993
 # Whether the IMAP server uses SSL
 gitlab_rails['incoming_email_ssl'] = true
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 This example for source installs assumes the catch-all mailbox `incoming@office365.example.com`:
@@ -681,6 +702,9 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    expunge_deleted: true
 ```
 
 ##### Dedicated email address
@@ -708,6 +732,9 @@ gitlab_rails['incoming_email_host'] = "outlook.office365.com"
 gitlab_rails['incoming_email_port'] = 993
 # Whether the IMAP server uses SSL
 gitlab_rails['incoming_email_ssl'] = true
+
+# Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
 This example for source installs assumes the dedicated email address `incoming@office365.example.com`:
@@ -730,6 +757,9 @@ incoming_email:
     port: 993
     # Whether the IMAP server uses SSL
     ssl: true
+
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
+    expunge_deleted: true
 ```
 
 #### Microsoft Graph

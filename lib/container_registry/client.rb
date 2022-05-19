@@ -130,7 +130,7 @@ module ContainerRegistry
 
     def blob(name, digest, type = nil)
       type ||= 'application/octet-stream'
-      response_body faraday_blob.get("/v2/#{name}/blobs/#{digest}", nil, 'Accept' => type), allow_redirect: true
+      response_body faraday_blob.get("/v2/#{name}/blobs/#{digest}", nil, 'Accept' => type)
     end
 
     def delete_blob(name, digest)
@@ -152,9 +152,7 @@ module ContainerRegistry
       @faraday_blob ||= faraday_base do |conn|
         initialize_connection(conn, @options)
 
-        if Feature.enabled?(:container_registry_follow_redirects_middleware, default_enabled: :yaml)
-          conn.use ::FaradayMiddleware::FollowRedirects, REDIRECT_OPTIONS
-        end
+        conn.use ::FaradayMiddleware::FollowRedirects, REDIRECT_OPTIONS
       end
     end
   end

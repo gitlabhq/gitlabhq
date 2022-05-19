@@ -31,7 +31,7 @@ class IssueEntity < IssuableEntity
   end
 
   expose :web_url do |issue|
-    project_issue_path(issue.project, issue)
+    Gitlab::UrlBuilder.build(issue, only_path: true)
   end
 
   expose :current_user do

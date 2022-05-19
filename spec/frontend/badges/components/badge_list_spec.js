@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeList from '~/badges/components/badge_list.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
@@ -11,7 +12,7 @@ describe('BadgeList component', () => {
   let vm;
 
   beforeEach(() => {
-    setFixtures('<div id="dummy-element"></div>');
+    setHTMLFixture('<div id="dummy-element"></div>');
     const badges = [];
     for (let id = 0; id < numberOfDummyBadges; id += 1) {
       badges.push({ id, ...createDummyBadge() });
@@ -34,6 +35,7 @@ describe('BadgeList component', () => {
 
   afterEach(() => {
     vm.$destroy();
+    resetHTMLFixture();
   });
 
   it('renders a header with the badge count', () => {

@@ -1,4 +1,4 @@
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setupCollapsibleInputs from '~/snippet/collapsible_input';
 
 describe('~/snippet/collapsible_input', () => {
@@ -36,6 +36,10 @@ describe('~/snippet/collapsible_input', () => {
     fooEl = formEl.querySelector('.js-foo');
 
     setupCollapsibleInputs();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   const findInput = (el) => el.querySelector('textarea,input');

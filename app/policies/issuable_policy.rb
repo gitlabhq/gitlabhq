@@ -34,6 +34,14 @@ class IssuablePolicy < BasePolicy
     prevent :resolve_note
     prevent :award_emoji
   end
+
+  rule { can?(:read_issue) }.policy do
+    enable :read_incident_management_timeline_event
+  end
+
+  rule { can?(:read_issue) & can?(:developer_access) }.policy do
+    enable :admin_incident_management_timeline_event
+  end
 end
 
 IssuablePolicy.prepend_mod_with('IssuablePolicy')

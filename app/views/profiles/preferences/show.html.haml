@@ -127,7 +127,12 @@
           = _('Language')
         = f.select :preferred_language, language_choices, {}, class: 'select2'
         .form-text.text-muted
-          = s_('Preferences|This feature is experimental and translations are not complete yet')
+          = s_('Preferences|This feature is experimental and translations are not yet complete.')
+          %p
+            = link_to help_page_url('development/i18n/translation'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
+              = _("Help translate GitLab into your language")
+              %span{ aria: { label: _('Open new window') } }
+                = sprite_icon('external-link')
       .form-group
         = f.label :first_day_of_week, class: 'label-bold' do
           = _('First day of the week')

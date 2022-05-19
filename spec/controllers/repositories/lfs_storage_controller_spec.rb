@@ -155,7 +155,7 @@ RSpec.describe Repositories::LfsStorageController do
         context 'with an invalid file' do
           let(:uploaded_file) { 'test' }
 
-          it_behaves_like 'returning response status', :unprocessable_entity
+          it_behaves_like 'returning response status', :bad_request
         end
 
         context 'when an expected error' do
@@ -179,12 +179,10 @@ RSpec.describe Repositories::LfsStorageController do
         end
 
         context 'when existing file has been deleted' do
-          let(:lfs_object) { create(:lfs_object, :with_file) }
+          let(:lfs_object) { create(:lfs_object, :with_file, size: params[:size], oid: params[:oid]) }
 
           before do
             FileUtils.rm(lfs_object.file.path)
-            params[:oid] = lfs_object.oid
-            params[:size] = lfs_object.size
           end
 
           it 'replaces the file' do
@@ -204,10 +202,10 @@ RSpec.describe Repositories::LfsStorageController do
               end
             end
 
-            it 'renders LFS forbidden' do
+            it 'renders bad request' do
               subject
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response).to have_gitlab_http_status(:bad_request)
               expect(lfs_object.reload.file).not_to exist
             end
           end
@@ -239,8 +237,9 @@ RSpec.describe Repositories::LfsStorageController do
 
       FileUtils.mkdir_p(upload_path)
       File.write(file_path, 'test')
+      File.truncate(file_path, params[:size].to_i)
 
-      UploadedFile.new(file_path, filename: File.basename(file_path))
+      UploadedFile.new(file_path, filename: File.basename(file_path), sha256: params[:oid])
     end
   end
 end

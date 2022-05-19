@@ -400,7 +400,7 @@ We are still learning the best practices for both **type policies** and **reacti
 Take a moment to improve this guide or [leave a comment](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/100)
 if you use it!
 
-In the example below we define a `@client` query and its `typedefs`: 
+In the example below we define a `@client` query and its `typedefs`:
 
 ```javascript
 // ./graphql/typedefs.graphql
@@ -1987,7 +1987,7 @@ To improve performance, sometimes we want to make initial GraphQL queries early.
   }
   ```
 
-- Add startup call(s) with correct variables to the HAML file that serves as a view
+- Add startup calls with correct variables to the HAML file that serves as a view
 for your application. To add GraphQL startup calls, we use
 `add_page_startup_graphql_call` helper where the first parameter is a path to the
 query, the second one is an object containing query variables. Path to the query is

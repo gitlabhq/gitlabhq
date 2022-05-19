@@ -1,0 +1,7 @@
+.row
+  .col-lg-3
+    %h4.gl-mt-0
+      = s_('PrometheusService|Metrics')
+
+.row.gl-mb-3.prometheus-metrics-monitoring.js-prometheus-metrics-monitoring
+  = render 'shared/integrations/prometheus/metrics', project: @project, integration: integration

@@ -17,14 +17,16 @@ RSpec.describe Gitlab::GithubImport::Stage::FinishImportWorker do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
               .with(
-                message: 'GitHub project import finished',
-                import_stage: 'Gitlab::GithubImport::Stage::FinishImportWorker',
-                object_counts: {
-                  'fetched' => {},
-                  'imported' => {}
-                },
-                project_id: project.id,
-                duration_s: 3.01
+                {
+                  message: 'GitHub project import finished',
+                  import_stage: 'Gitlab::GithubImport::Stage::FinishImportWorker',
+                  object_counts: {
+                    'fetched' => {},
+                    'imported' => {}
+                  },
+                  project_id: project.id,
+                  duration_s: 3.01
+                }
               )
 
       worker.import(double(:client), project)

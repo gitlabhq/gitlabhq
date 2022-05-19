@@ -131,7 +131,14 @@ describe('DiffsStoreMutations', () => {
       const options = {
         lineNumbers: { oldLineNumber: 1, newLineNumber: 2 },
         contextLines: [
-          { old_line: 1, new_line: 1, line_code: 'ff9200_1_1', discussions: [], hasForm: false },
+          {
+            old_line: 1,
+            new_line: 1,
+            line_code: 'ff9200_1_1',
+            discussions: [],
+            hasForm: false,
+            type: 'expanded',
+          },
         ],
         fileHash: 'ff9200',
         params: {

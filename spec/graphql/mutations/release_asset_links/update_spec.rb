@@ -186,18 +186,12 @@ RSpec.describe Mutations::ReleaseAssetLinks::Update do
     end
 
     context "when the link doesn't exist" do
-      let(:mutation_arguments) { super().merge(id: "gid://gitlab/Releases::Link/#{non_existing_record_id}") }
+      let(:mutation_arguments) do
+        super().merge(id: global_id_of(id: non_existing_record_id, model_name: "Releases::Link"))
+      end
 
       it 'raises an error' do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-      end
-    end
-
-    context "when the provided ID is invalid" do
-      let(:mutation_arguments) { super().merge(id: 'not-a-valid-gid') }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(::GraphQL::CoercionError)
       end
     end
   end

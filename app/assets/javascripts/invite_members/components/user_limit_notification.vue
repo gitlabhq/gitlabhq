@@ -1,35 +1,51 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
-import { s__, n__, sprintf } from '~/locale';
+import { n__, sprintf } from '~/locale';
+
+import {
+  WARNING_ALERT_TITLE,
+  DANGER_ALERT_TITLE,
+  REACHED_LIMIT_MESSAGE,
+  REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
+  CLOSE_TO_LIMIT_MESSAGE,
+} from '../constants';
 
 const CLOSE_TO_LIMIT_COUNT = 2;
-
-const WARNING_ALERT_TITLE = s__(
-  'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
-);
-
-const DANGER_ALERT_TITLE = s__(
-  "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
-);
-
-const CLOSE_TO_LIMIT_MESSAGE = s__(
-  'InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
-);
-
-const REACHED_LIMIT_MESSAGE = s__(
-  'InviteMembersModal|New members will be unable to participate. You can manage your members by removing ones you no longer need.',
-).concat(' ', CLOSE_TO_LIMIT_MESSAGE);
 
 export default {
   name: 'UserLimitNotification',
   components: { GlAlert, GlSprintf, GlLink },
-  inject: ['name', 'newTrialRegistrationPath', 'purchasePath', 'freeUsersLimit', 'membersCount'],
+  inject: ['name'],
+  props: {
+    reachedLimit: {
+      type: Boolean,
+      required: true,
+    },
+    usersLimitDataset: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+  },
   computed: {
-    reachedLimit() {
-      return this.isLimit();
+    freeUsersLimit() {
+      return this.usersLimitDataset.freeUsersLimit;
+    },
+    membersCount() {
+      return this.usersLimitDataset.membersCount;
+    },
+    newTrialRegistrationPath() {
+      return this.usersLimitDataset.newTrialRegistrationPath;
+    },
+    purchasePath() {
+      return this.usersLimitDataset.purchasePath;
     },
     closeToLimit() {
-      return this.isLimit(CLOSE_TO_LIMIT_COUNT);
+      if (this.freeUsersLimit && this.membersCount) {
+        return this.membersCount >= this.freeUsersLimit - CLOSE_TO_LIMIT_COUNT;
+      }
+
+      return false;
     },
     warningAlertTitle() {
       return sprintf(WARNING_ALERT_TITLE, {
@@ -51,28 +67,29 @@ export default {
     title() {
       return this.reachedLimit ? this.dangerAlertTitle : this.warningAlertTitle;
     },
+    reachedLimitMessage() {
+      if (this.usersLimitDataset.userNamespace) {
+        return this.$options.i18n.reachedLimitMessage;
+      }
+
+      return this.$options.i18n.reachedLimitUpgradeSuggestionMessage;
+    },
     message() {
       if (this.reachedLimit) {
-        return this.$options.i18n.reachedLimitMessage;
+        return this.reachedLimitMessage;
       }
 
       return this.$options.i18n.closeToLimitMessage;
     },
   },
   methods: {
-    isLimit(deviation = 0) {
-      if (this.freeUsersLimit && this.membersCount) {
-        return this.membersCount >= this.freeUsersLimit - deviation;
-      }
-
-      return false;
-    },
     pluralMembers(count) {
       return n__('member', 'members', count);
     },
   },
   i18n: {
     reachedLimitMessage: REACHED_LIMIT_MESSAGE,
+    reachedLimitUpgradeSuggestionMessage: REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
     closeToLimitMessage: CLOSE_TO_LIMIT_MESSAGE,
   },
 };

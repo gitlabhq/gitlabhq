@@ -29,12 +29,6 @@ exports[`PackageTitle renders with tags 1`] = `
           <div
             class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-3"
           >
-            <gl-icon-stub
-              class="gl-mr-3"
-              name="eye"
-              size="16"
-            />
-             
             <span
               data-testid="sub-header"
             >
@@ -127,12 +121,6 @@ exports[`PackageTitle renders without tags 1`] = `
           <div
             class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-3"
           >
-            <gl-icon-stub
-              class="gl-mr-3"
-              name="eye"
-              size="16"
-            />
-             
             <span
               data-testid="sub-header"
             >

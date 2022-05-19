@@ -40,7 +40,7 @@ RSpec.shared_examples 'multiple reviewers merge request' do |action, save_button
         # Closing dropdown to persist
         click_link 'Edit'
 
-        expect(page).to have_content user2.username
+        expect(page).to have_content user2.name
       end
     end
   end

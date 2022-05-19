@@ -102,7 +102,7 @@ malicious party without causing build failures.
 
 Go 1.12+ can be configured to use a checksum database. If configured to do so,
 when Go fetches a dependency and there is no corresponding entry in `go.sum`, Go
-queries the configured checksum database(s) for the checksum of the
+queries the configured checksum databases for the checksum of the
 dependency instead of calculating it from the downloaded dependency. If the
 dependency cannot be found in the checksum database, the build fails. If the
 downloaded dependency's checksum does not match the result from the checksum

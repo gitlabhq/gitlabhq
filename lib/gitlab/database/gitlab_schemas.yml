@@ -217,7 +217,6 @@ geo_event_log: :gitlab_main
 geo_events: :gitlab_main
 geo_hashed_storage_attachments_events: :gitlab_main
 geo_hashed_storage_migrated_events: :gitlab_main
-geo_job_artifact_deleted_events: :gitlab_main
 geo_lfs_object_deleted_events: :gitlab_main
 geo_node_namespace_links: :gitlab_main
 geo_nodes: :gitlab_main
@@ -327,6 +326,7 @@ namespace_aggregation_schedules: :gitlab_main
 namespace_limits: :gitlab_main
 namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main
+namespace_ci_cd_settings: :gitlab_main
 namespace_settings: :gitlab_main
 namespaces: :gitlab_main
 namespaces_sync_events: :gitlab_main
@@ -348,6 +348,7 @@ operations_strategies: :gitlab_main
 operations_strategies_user_lists: :gitlab_main
 operations_user_lists: :gitlab_main
 packages_build_infos: :gitlab_main
+packages_cleanup_policies: :gitlab_main
 packages_composer_cache_files: :gitlab_main
 packages_composer_metadata: :gitlab_main
 packages_conan_file_metadata: :gitlab_main
@@ -388,6 +389,7 @@ plan_limits: :gitlab_main
 plans: :gitlab_main
 pool_repositories: :gitlab_main
 postgres_async_indexes: :gitlab_shared
+postgres_autovacuum_activity: :gitlab_shared
 postgres_foreign_keys: :gitlab_shared
 postgres_index_bloat_estimates: :gitlab_shared
 postgres_indexes: :gitlab_shared

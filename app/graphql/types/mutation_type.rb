@@ -47,6 +47,10 @@ module Types
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
     mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Create
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Update
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Destroy
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetCrmContacts
@@ -69,7 +73,9 @@ module Types
     mount_mutation Mutations::MergeRequests::SetDraft, calls_gitaly: true
     mount_mutation Mutations::MergeRequests::SetAssignees
     mount_mutation Mutations::MergeRequests::ReviewerRereview
-    mount_mutation Mutations::MergeRequests::ToggleAttentionRequested, feature_flag: :mr_attention_requests
+    mount_mutation Mutations::MergeRequests::RequestAttention
+    mount_mutation Mutations::MergeRequests::RemoveAttentionRequest
+    mount_mutation Mutations::MergeRequests::ToggleAttentionRequested
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Delete
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
@@ -88,6 +94,7 @@ module Types
     mount_mutation Mutations::Terraform::State::Delete
     mount_mutation Mutations::Terraform::State::Lock
     mount_mutation Mutations::Terraform::State::Unlock
+    mount_mutation Mutations::Timelogs::Delete
     mount_mutation Mutations::Todos::Create
     mount_mutation Mutations::Todos::MarkDone
     mount_mutation Mutations::Todos::Restore
@@ -108,7 +115,12 @@ module Types
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
-    mount_mutation Mutations::Ci::CiCdSettingsUpdate
+    mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
+      reason: :renamed,
+      replacement: 'ProjectCiCdSettingsUpdate',
+      milestone: '15.0'
+    }
+    mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Ci::Job::Cancel
@@ -128,6 +140,7 @@ module Types
     mount_mutation Mutations::WorkItems::Create
     mount_mutation Mutations::WorkItems::CreateFromTask
     mount_mutation Mutations::WorkItems::Delete
+    mount_mutation Mutations::WorkItems::DeleteTask
     mount_mutation Mutations::WorkItems::Update
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update

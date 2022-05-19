@@ -13,19 +13,7 @@ module Prometheus
     idempotent!
 
     def perform(project_id)
-      project = Project.find_by_id(project_id)
-
-      return unless project
-
-      result = ::Prometheus::CreateDefaultAlertsService.new(project: project).execute
-
-      log_info(result.message) if result.error?
-    end
-
-    private
-
-    def log_info(message)
-      logger.info(structured_payload(message: message))
+      # No-op Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/360756
     end
   end
 end

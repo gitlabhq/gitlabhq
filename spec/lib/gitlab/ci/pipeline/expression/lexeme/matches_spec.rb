@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'support/helpers/stubbed_feature'
+require 'support/helpers/stub_feature_flags'
 require_dependency 're2'
 
 RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
+  include StubFeatureFlags
+
   let(:left) { double('left') }
   let(:right) { double('right') }
 
@@ -147,6 +151,30 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
       let(:right_value) { Gitlab::UntrustedRegexp.new('(?i)terrible') }
 
       it { is_expected.to eq(false) }
+    end
+
+    context 'when right value is a regexp string' do
+      let(:right_value) { '/^ab.*/' }
+
+      context 'when matching' do
+        let(:left_value) { 'abcde' }
+
+        it { is_expected.to eq(true) }
+
+        context 'when the FF ci_fix_rules_if_comparison_with_regexp_variable is disabled' do
+          before do
+            stub_feature_flags(ci_fix_rules_if_comparison_with_regexp_variable: false)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+
+      context 'when not matching' do
+        let(:left_value) { 'dfg' }
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 end

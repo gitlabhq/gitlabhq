@@ -6,9 +6,13 @@ import {
   GlIcon,
   GlSafeHtmlDirective,
   GlSprintf,
+  GlButton,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 import { glEmojiTag } from '~/emoji';
+import createFlash from '~/flash';
+import { followUser, unfollowUser } from '~/rest_api';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 
 const MAX_SKELETON_LINES = 4;
@@ -24,6 +28,7 @@ export default {
     UserAvatarImage,
     UserNameWithStatus,
     GlSprintf,
+    GlButton,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -38,6 +43,16 @@ export default {
       required: true,
       default: null,
     },
+    placement: {
+      type: String,
+      required: false,
+      default: 'top',
+    },
+  },
+  data() {
+    return {
+      toggleFollowLoading: false,
+    };
   },
   computed: {
     statusHtml() {
@@ -59,6 +74,59 @@ export default {
     availabilityStatus() {
       return this.user?.status?.availability || '';
     },
+    isNotCurrentUser() {
+      return !this.userIsLoading && this.user.username !== gon.current_username;
+    },
+    shouldRenderToggleFollowButton() {
+      return this.isNotCurrentUser && typeof this.user?.isFollowed !== 'undefined';
+    },
+    toggleFollowButtonText() {
+      if (this.toggleFollowLoading) return null;
+
+      return this.user?.isFollowed ? __('Unfollow') : __('Follow');
+    },
+    toggleFollowButtonVariant() {
+      return this.user?.isFollowed ? 'default' : 'confirm';
+    },
+  },
+  methods: {
+    async toggleFollow() {
+      if (this.user.isFollowed) {
+        this.unfollow();
+      } else {
+        this.follow();
+      }
+    },
+    async follow() {
+      this.toggleFollowLoading = true;
+      try {
+        await followUser(this.user.id);
+        this.$emit('follow');
+      } catch (error) {
+        createFlash({
+          message: __('An error occurred while trying to follow this user, please try again.'),
+          error,
+          captureError: true,
+        });
+      } finally {
+        this.toggleFollowLoading = false;
+      }
+    },
+    async unfollow() {
+      this.toggleFollowLoading = true;
+      try {
+        await unfollowUser(this.user.id);
+        this.$emit('unfollow');
+      } catch (error) {
+        createFlash({
+          message: __('An error occurred while trying to unfollow this user, please try again.'),
+          error,
+          captureError: true,
+        });
+      } finally {
+        this.toggleFollowLoading = false;
+      }
+    },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
@@ -66,12 +134,24 @@ export default {
 
 <template>
   <!-- 200ms delay so not every mouseover triggers Popover -->
-  <gl-popover :target="target" :delay="200" boundary="viewport" placement="top">
+  <gl-popover :target="target" :delay="200" :placement="placement" boundary="viewport">
     <div class="gl-p-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
-      <div class="gl-p-2 flex-shrink-1">
-        <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-mr-3!" />
+      <div
+        class="gl-p-2 flex-shrink-1 gl-display-flex gl-flex-direction-column align-items-center gl-w-70p"
+      >
+        <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-m-0!" />
+        <div v-if="shouldRenderToggleFollowButton" class="gl-mt-3">
+          <gl-button
+            :variant="toggleFollowButtonVariant"
+            :loading="toggleFollowLoading"
+            size="small"
+            data-testid="toggle-follow-button"
+            @click="toggleFollow"
+            >{{ toggleFollowButtonText }}</gl-button
+          >
+        </div>
       </div>
-      <div class="gl-p-2 gl-w-full gl-min-w-0">
+      <div class="gl-w-full gl-min-w-0 gl-word-break-word">
         <template v-if="userIsLoading">
           <gl-skeleton-loader
             :lines="$options.maxSkeletonLines"
@@ -94,7 +174,7 @@ export default {
           <div class="gl-text-gray-500">
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
               <gl-icon name="profile" class="gl-flex-shrink-0" />
-              <span ref="bio" class="gl-ml-2 gl-overflow-hidden">{{ user.bio }}</span>
+              <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
             </div>
             <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
               <gl-icon name="work" class="gl-flex-shrink-0" />

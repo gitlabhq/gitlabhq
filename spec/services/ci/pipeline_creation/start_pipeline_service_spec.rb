@@ -16,5 +16,11 @@ RSpec.describe Ci::PipelineCreation::StartPipelineService do
 
       service.execute
     end
+
+    it 'creates pipeline ref' do
+      expect(pipeline.persistent_ref).to receive(:create).once
+
+      service.execute
+    end
   end
 end

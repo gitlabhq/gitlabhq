@@ -8,6 +8,7 @@ RSpec.describe Project, factory_default: :keep do
   include ExternalAuthorizationServiceHelpers
   include ReloadHelpers
   include StubGitlabCalls
+  include ProjectHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:namespace) { create_default(:namespace).freeze }
@@ -135,10 +136,10 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
+    it { is_expected.to have_one(:packages_cleanup_policy).class_name('Packages::Cleanup::Policy').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
-    it { is_expected.to have_many(:error_tracking_errors).class_name('ErrorTracking::Error') }
     it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
     it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
     it { is_expected.to have_many(:ci_feature_usages).class_name('Projects::CiFeatureUsage') }
@@ -832,6 +833,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
@@ -844,6 +846,9 @@ RSpec.describe Project, factory_default: :keep do
         warn_about_potentially_unwanted_characters
         warn_about_potentially_unwanted_characters=
         warn_about_potentially_unwanted_characters?
+        enforce_auth_checks_on_uploads
+        enforce_auth_checks_on_uploads=
+        enforce_auth_checks_on_uploads?
       ).each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(allow_nil: true) }
       end
@@ -2025,7 +2030,7 @@ RSpec.describe Project, factory_default: :keep do
         it 'returns nil if the path detection throws an error' do
           expect(Rails.application.routes).to receive(:recognize_path).with(url) { raise ActionController::RoutingError, 'test' }
 
-          expect { subject }.not_to raise_error(ActionController::RoutingError)
+          expect { subject }.not_to raise_error
           expect(subject).to be_nil
         end
       end
@@ -7153,11 +7158,33 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#add_export_job' do
-    context 'if not already present' do
-      it 'starts project export job' do
-        user = create(:user)
-        project = build(:project)
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
 
+    context 'when project storage_size does not exceed the application setting max_export_size' do
+      it 'starts project export worker' do
+        stub_application_setting(max_export_size: 1)
+        allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
+
+        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+        project.add_export_job(current_user: user)
+      end
+    end
+
+    context 'when project storage_size exceeds the application setting max_export_size' do
+      it 'raises Project::ExportLimitExceeded' do
+        stub_application_setting(max_export_size: 1)
+        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+
+        expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
+        expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
+      end
+    end
+
+    context 'when application setting max_export_size is not set' do
+      it 'starts project export worker' do
+        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
         expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
 
         project.add_export_job(current_user: user)
@@ -8239,6 +8266,28 @@ RSpec.describe Project, factory_default: :keep do
     let_it_be_with_reload(:project) { create(:project, name: 'test-project') }
 
     it_behaves_like 'returns true if project is inactive'
+  end
+
+  describe '.inactive' do
+    before do
+      stub_application_setting(inactive_projects_min_size_mb: 5)
+      stub_application_setting(inactive_projects_send_warning_email_after_months: 12)
+    end
+
+    it 'returns projects that are inactive' do
+      create_project_with_statistics.tap do |project|
+        project.update!(last_activity_at: Time.current)
+      end
+      create_project_with_statistics.tap do |project|
+        project.update!(last_activity_at: 13.months.ago)
+      end
+      inactive_large_project = create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
+                                 .tap { |project| project.update!(last_activity_at: 2.years.ago) }
+      create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
+                               .tap { |project| project.update!(last_activity_at: 1.month.ago) }
+
+      expect(described_class.inactive).to contain_exactly(inactive_large_project)
+    end
   end
 
   private

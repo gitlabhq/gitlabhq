@@ -4,6 +4,7 @@ class Projects::TerraformController < Projects::ApplicationController
   before_action :authorize_can_read_terraform_state!
 
   feature_category :infrastructure_as_code
+  urgency :low
 
   def index
   end

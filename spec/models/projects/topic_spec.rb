@@ -25,6 +25,8 @@ RSpec.describe Projects::Topic do
     it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(1024) }
+    it { expect(Projects::Topic.new).to validate_presence_of(:title) }
+    it { expect(Projects::Topic.new).to validate_length_of(:title).is_at_most(255) }
   end
 
   describe 'scopes' do
@@ -102,6 +104,18 @@ RSpec.describe Projects::Topic do
         expect(topic.avatar_url).to eq(topic.avatar.url)
         expect(topic.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, topic.avatar.url].join)
       end
+    end
+  end
+
+  describe '#title_or_name' do
+    it 'returns title if set' do
+      topic.title = 'My title'
+      expect(topic.title_or_name).to eq('My title')
+    end
+
+    it 'returns name if title not set' do
+      topic.title = nil
+      expect(topic.title_or_name).to eq('topic')
     end
   end
 end

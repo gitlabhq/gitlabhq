@@ -1,6 +1,6 @@
 <script>
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
-import { flatten, isEqual } from 'lodash';
+import { flatten, isEqual, keyBy } from 'lodash';
 import createFlash from '~/flash';
 import { sprintf, s__ } from '~/locale';
 import { METRICS_POPOVER_CONTENT } from '../constants';
@@ -28,6 +28,23 @@ const fetchMetricsData = (reqs = [], path, params) => {
   );
 };
 
+const extractMetricsGroupData = (keyList = [], data = []) => {
+  if (!keyList.length || !data.length) return [];
+  const kv = keyBy(data, 'identifier');
+  return keyList.map((id) => kv[id] || null).filter((obj) => Boolean(obj));
+};
+
+const groupRawMetrics = (groups = [], rawData = []) => {
+  return groups.map((curr) => {
+    const { keys, ...rest } = curr;
+    return {
+      data: extractMetricsGroupData(keys, rawData),
+      keys,
+      ...rest,
+    };
+  });
+};
+
 export default {
   name: 'ValueStreamMetrics',
   components: {
@@ -52,12 +69,23 @@ export default {
       required: false,
       default: null,
     },
+    groupBy: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
       metrics: [],
+      groupedMetrics: [],
       isLoading: false,
     };
+  },
+  computed: {
+    hasGroupedMetrics() {
+      return Boolean(this.groupBy.length);
+    },
   },
   watch: {
     requestParams(newVal, oldVal) {
@@ -76,6 +104,11 @@ export default {
       return fetchMetricsData(this.requests, this.requestPath, this.requestParams)
         .then((data) => {
           this.metrics = this.filterFn ? this.filterFn(data) : data;
+
+          if (this.hasGroupedMetrics) {
+            this.groupedMetrics = groupRawMetrics(this.groupBy, this.metrics);
+          }
+
           this.isLoading = false;
         })
         .catch(() => {
@@ -86,14 +119,35 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-wrap" data-testid="vsa-metrics">
+  <div class="gl-display-flex gl-mt-6" data-testid="vsa-metrics">
     <gl-skeleton-loading v-if="isLoading" class="gl-h-auto gl-py-3 gl-pr-9 gl-my-6" />
-    <metric-tile
-      v-for="metric in metrics"
-      v-show="!isLoading"
-      :key="metric.identifier"
-      :metric="metric"
-      class="gl-my-6 gl-pr-9"
-    />
+    <template v-else>
+      <div v-if="hasGroupedMetrics" class="gl-flex-direction-column">
+        <div
+          v-for="group in groupedMetrics"
+          :key="group.key"
+          class="gl-mb-7"
+          data-testid="vsa-metrics-group"
+        >
+          <h4 class="gl-my-0">{{ group.title }}</h4>
+          <div class="gl-display-flex gl-flex-wrap">
+            <metric-tile
+              v-for="metric in group.data"
+              :key="metric.identifier"
+              :metric="metric"
+              class="gl-mt-5 gl-pr-10"
+            />
+          </div>
+        </div>
+      </div>
+      <div v-else class="gl-display-flex gl-flex-wrap gl-mb-7">
+        <metric-tile
+          v-for="metric in metrics"
+          :key="metric.identifier"
+          :metric="metric"
+          class="gl-mt-5 gl-pr-10"
+        />
+      </div>
+    </template>
   </div>
 </template>

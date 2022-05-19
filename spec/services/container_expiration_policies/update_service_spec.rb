@@ -63,7 +63,7 @@ RSpec.describe ContainerExpirationPolicies::UpdateService do
     context 'with existing container expiration policy' do
       where(:user_role, :shared_examples_name) do
         :maintainer | 'updating the container expiration policy'
-        :developer  | 'updating the container expiration policy'
+        :developer  | 'denying access to container expiration policy'
         :reporter   | 'denying access to container expiration policy'
         :guest      | 'denying access to container expiration policy'
         :anonymous  | 'denying access to container expiration policy'
@@ -83,7 +83,7 @@ RSpec.describe ContainerExpirationPolicies::UpdateService do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the container expiration policy'
-        :developer  | 'creating the container expiration policy'
+        :developer  | 'denying access to container expiration policy'
         :reporter   | 'denying access to container expiration policy'
         :guest      | 'denying access to container expiration policy'
         :anonymous  | 'denying access to container expiration policy'

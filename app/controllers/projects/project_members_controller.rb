@@ -9,6 +9,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   feature_category :projects
+  urgency :low
 
   def index
     @sort = params[:sort].presence || sort_value_name

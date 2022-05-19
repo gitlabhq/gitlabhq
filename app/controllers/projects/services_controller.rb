@@ -10,8 +10,6 @@ class Projects::ServicesController < Projects::ApplicationController
   before_action :integration
   before_action :default_integration, only: [:edit, :update]
   before_action :web_hook_logs, only: [:edit, :update]
-  before_action :set_deprecation_notice_for_prometheus_integration, only: [:edit, :update]
-  before_action :redirect_deprecated_prometheus_integration, only: [:update]
 
   respond_to :html
 
@@ -116,18 +114,6 @@ class Projects::ServicesController < Projects::ApplicationController
     integration
       .as_json(only: integration.json_fields)
       .merge(errors: integration.errors.as_json)
-  end
-
-  def redirect_deprecated_prometheus_integration
-    redirect_to edit_project_integration_path(project, integration) if integration.is_a?(::Integrations::Prometheus) && Feature.enabled?(:settings_operations_prometheus_service, project)
-  end
-
-  def set_deprecation_notice_for_prometheus_integration
-    return if !integration.is_a?(::Integrations::Prometheus) || !Feature.enabled?(:settings_operations_prometheus_service, project)
-
-    operations_link_start = "<a href=\"#{project_settings_operations_path(project)}\">"
-    message = s_('PrometheusService|You can now manage your Prometheus settings on the %{operations_link_start}Operations%{operations_link_end} page. Fields on this page have been deprecated.') % { operations_link_start: operations_link_start, operations_link_end: "</a>" }
-    flash.now[:alert] = message.html_safe
   end
 
   def use_inherited_settings?(attributes)

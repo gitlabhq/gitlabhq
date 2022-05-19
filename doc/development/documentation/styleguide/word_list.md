@@ -164,7 +164,15 @@ Use lowercase for **boards**, **issue boards**, and **epic boards**.
 
 Use **text box** to refer to the UI field. Do not use **field** or **box**. For example:
 
-- In the **Variable name** text box, enter `my text`.
+- In the **Variable name** text box, enter a value.
+
+
+## bullet
+
+Don't refer to individual items in an ordered or unordered list as **bullets**. Use **list item** instead. If you need to be less ambiguous, you can use:
+
+- **Ordered list item** for items in an ordered list.
+- **Unordered list item** for items in an unordered list.
 
 ## button
 
@@ -318,7 +326,22 @@ Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionA
 
 ## enter
 
-Use **enter** instead of **type** when talking about putting values into text boxes.
+In most cases, use **enter** rather than **type**.
+
+- **Enter** encompasses multiple ways to enter information, including speech and keyboard.
+- **Enter** assumes that the user puts a value in a field and then moves the cursor outside the field (or presses <kbd>Enter</kbd>).
+  **Enter** includes both the entering of the content and the action to validate the content.
+
+For example:
+
+- In the **Variable name** text box, enter a value.
+- In the **Variable name** text box, enter `my text`.
+
+When you use **Enter** to refer to the key on a keyboard, use the HTML `<kbd>` tag:
+
+- To view the list of results, press <kbd>Enter</kbd>.
+
+See also [**type**](#type).
 
 ## epic
 
@@ -356,7 +379,7 @@ Use **box** instead of **field** or **text box**.
 
 Use:
 
-- In the **Variable name** box, enter `my text`.
+- In the **Variable name** text box, enter `my text`.
 
 Instead of:
 
@@ -391,6 +414,13 @@ Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trad
 ## GitLab.com
 
 **GitLab.com** refers to the GitLab instance managed by GitLab itself.
+
+## GitLab Flavored Markdown
+
+When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
+([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
 
 ## GitLab SaaS
 
@@ -518,6 +548,25 @@ Instead of:
 Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
 Use the full phrase **dropdown list** instead.
 
+## license
+
+When writing about licenses:
+
+- Do not use variations such as **cloud license**, **offline license**, or **legacy license**.
+- Do not use interchangeably with **subscription**:
+  - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
+  - A subscription is the subscription tier that the user purchases.
+
+Use:
+
+  - Add a license to your instance.
+  - Purchase a subscription.
+
+Instead of:
+
+  - Buy a license.
+  - Purchase a license.
+
 ## log in, log on
 
 Do not use **log in** or **log on**. Use [sign in](#sign-in) instead. If the user interface has **Log in**, you can use it.
@@ -575,6 +624,11 @@ Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it
 ## milestones
 
 Use lowercase for **milestones**.
+
+## n/a, N/A, not applicable
+
+When possible, use **not applicable**. Spelling out the phrase helps non-English speaking users and avoids
+capitalization inconsistencies.
 
 ## navigate
 
@@ -950,7 +1004,17 @@ Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) 
 
 ## type
 
-Do not use **type** if you can avoid it. Use **enter** instead.
+Use **type** when the cursor remains in the field you're typing in. For example,
+in a search dialog, you begin typing and the field populates results. You do not
+click out of the field.
+
+For example:
+
+- To view all users named Alex, type `Al`.
+- To view all labels for the documentation team, type `doc`.
+- For a list of quick actions, type `/`.
+
+See also [**enter**](#enter).
 
 ## update
 
@@ -1031,7 +1095,7 @@ Sometimes you might need to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
 in present tense, active voice.
 
-[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
+[View guidance about how to write about future features](../versions.md#promising-features-in-future-versions).
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
 ## you, your, yours

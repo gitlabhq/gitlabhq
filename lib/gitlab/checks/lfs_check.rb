@@ -9,7 +9,7 @@ module Gitlab
       def validate!
         # This feature flag is used for disabling integrity check on some envs
         # because these costy calculations may cause performance issues
-        return unless Feature.enabled?(:lfs_check, project, default_enabled: :yaml)
+        return unless Feature.enabled?(:lfs_check, project)
 
         return unless project.lfs_enabled?
 

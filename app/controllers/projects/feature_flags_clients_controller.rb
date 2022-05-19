@@ -5,6 +5,7 @@ class Projects::FeatureFlagsClientsController < Projects::ApplicationController
   before_action :feature_flags_client
 
   feature_category :feature_flags
+  urgency :low
 
   def reset_token
     feature_flags_client.reset_token!

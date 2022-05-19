@@ -37,9 +37,11 @@ export default {
 <template>
   <div class="gl-py-6 gl-px-6 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100">
     <gl-link
+      v-if="feature.image_url"
       :href="feature.url"
       target="_blank"
       class="gl-display-block"
+      data-testid="whats-new-image-link"
       data-track-action="click_whats_new_item"
       :data-track-label="feature.title"
       :data-track-property="feature.url"
@@ -67,9 +69,11 @@ export default {
         v-for="packageName in feature.packages"
         :key="packageName"
         size="md"
-        class="whats-new-item-badge gl-mr-2"
+        variant="tier"
+        icon="license"
+        class="gl-mr-2"
       >
-        <gl-icon name="license" />{{ packageName }}
+        {{ packageName }}
       </gl-badge>
     </div>
     <div

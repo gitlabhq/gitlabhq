@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
         expect_add_concurrent_index_and_call_original(partition2_identifier, column_name, partition2_index)
 
         expect(migration).to receive(:with_lock_retries).ordered.and_yield
-        expect(migration).to receive(:add_index).with(table_name, column_name, name: index_name).ordered.and_call_original
+        expect(migration).to receive(:add_index).with(table_name, column_name, { name: index_name }).ordered.and_call_original
 
         migration.add_concurrent_partitioned_index(table_name, column_name, name: index_name)
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
       end
 
       def expect_add_concurrent_index_and_call_original(table, column, index)
-        expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, name: index)
+        expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, { name: index })
           .and_wrap_original { |_, table, column, options| connection.add_index(table, column, **options) }
       end
     end
@@ -90,13 +90,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
       it 'forwards them to the index helper methods', :aggregate_failures do
         expect(migration).to receive(:add_concurrent_index)
-          .with(partition1_identifier, column_name, name: partition1_index, where: 'x > 0', unique: true)
+          .with(partition1_identifier, column_name, { name: partition1_index, where: 'x > 0', unique: true })
 
         expect(migration).to receive(:add_index)
-          .with(table_name, column_name, name: index_name, where: 'x > 0', unique: true)
+          .with(table_name, column_name, { name: index_name, where: 'x > 0', unique: true })
 
         migration.add_concurrent_partitioned_index(table_name, column_name,
-            name: index_name, where: 'x > 0', unique: true)
+                                                   { name: index_name, where: 'x > 0', unique: true })
       end
     end
 

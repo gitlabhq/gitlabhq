@@ -49,6 +49,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 NOTE:
 The upload request is sent with `Content-Type: application/gzip` header. Ensure that your pre-signed URL includes this as part of the signature.
 
+NOTE:
+As an administrator, you can modify the maximum export file size. By default,
+it is set to `0`, for unlimited. To change this value, edit `max_export_size`
+in the [Application settings API](settings.md#change-application-settings)
+or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md).
+
 ## Export status
 
 Get the status of export.
@@ -184,7 +190,7 @@ requests.post(url, headers=headers, data=data, files=files)
 
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited)..
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin UI](../user/admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../user/admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
 
 ## Import a file from a remote object storage
 

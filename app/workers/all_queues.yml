@@ -3,24 +3,6 @@
 #
 # Do not edit it manually!
 ---
-- :name: authorized_project_update:authorized_project_update_project_create
-  :worker_name: AuthorizedProjectUpdate::ProjectCreateWorker
-  :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: authorized_project_update:authorized_project_update_project_group_link_create
-  :worker_name: AuthorizedProjectUpdate::ProjectGroupLinkCreateWorker
-  :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :authentication_and_authorization
@@ -597,6 +579,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:projects_inactive_projects_deletion_cron
+  :worker_name: Projects::InactiveProjectsDeletionCronWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
   :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
   :feature_category: :build_artifacts
@@ -671,15 +662,6 @@
   :tags: []
 - :name: cronjob:repository_check_dispatch
   :worker_name: RepositoryCheck::DispatchWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
-- :name: cronjob:requests_profiles
-  :worker_name: RequestsProfilesWorker
   :feature_category: :source_code_management
   :has_external_dependencies:
   :urgency: :low
@@ -2290,15 +2272,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: expire_build_instance_artifacts
-  :worker_name: ExpireBuildInstanceArtifactsWorker
-  :feature_category: :build_artifacts
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: export_csv
   :worker_name: ExportCsvWorker
   :feature_category: :team_planning
@@ -2528,6 +2501,15 @@
   :worker_name: MergeRequestMergeabilityCheckWorker
   :feature_category: :code_review
   :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: merge_requests_close_issue
+  :worker_name: MergeRequests::CloseIssueWorker
+  :feature_category: :code_review
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -2803,6 +2785,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: projects_after_import
+  :worker_name: Projects::AfterImportWorker
+  :feature_category: :importers
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
   :feature_category: :gitaly
@@ -2811,6 +2802,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: projects_inactive_projects_deletion_notification
+  :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: projects_post_creation
   :worker_name: Projects::PostCreationWorker
@@ -3123,7 +3123,7 @@
   :worker_name: WebHooks::DestroyWorker
   :feature_category: :integrations
   :has_external_dependencies:
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

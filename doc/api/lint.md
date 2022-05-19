@@ -268,7 +268,7 @@ a JSON payload, you can use `jq`. For example, create a file named `example-gitl
 ```yaml
 .api_test:
   rules:
-    - if: '$CI_PIPELINE_SOURCE=="merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE=="merge_request_event"
       changes:
         - src/api/*
 deploy:

@@ -13,7 +13,7 @@ module Gitlab
           cleanup_gin_index('routes')
 
           batch_metrics.time_operation(:update_all) do
-            ActiveRecord::Base.connection.execute <<~SQL
+            ApplicationRecord.connection.execute <<~SQL
               WITH route_and_ns(route_id, project_namespace_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
                 #{sub_batch.to_sql}
               )
@@ -48,7 +48,7 @@ module Gitlab
       end
 
       def relation_scoped_to_range(source_table, source_key_column, start_id, stop_id)
-        define_batchable_model(source_table, connection: ActiveRecord::Base.connection)
+        define_batchable_model(source_table, connection: ApplicationRecord.connection)
           .joins('INNER JOIN projects ON routes.source_id = projects.id')
           .where(source_key_column => start_id..stop_id)
           .where(namespace_id: nil)

@@ -1,4 +1,5 @@
 import * as Pikaday from 'pikaday';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initDatePickers from '~/behaviors/date_picker';
 import * as utils from '~/lib/utils/datetime_utility';
 
@@ -12,13 +13,17 @@ describe('date_picker behavior', () => {
   beforeEach(() => {
     pikadayMock = jest.spyOn(Pikaday, 'default');
     parseMock = jest.spyOn(utils, 'parsePikadayDate');
-    setFixtures(`
+    setHTMLFixture(`
       <div>
         <input class="datepicker" value="2020-10-01" />
       </div>
       <div>
         <input class="datepicker" value="" />
       </div>`);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('Instantiates Pickaday for every instance of a .datepicker class', () => {

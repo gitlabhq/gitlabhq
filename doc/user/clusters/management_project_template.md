@@ -32,7 +32,7 @@ If you have already configured the agent and connected a cluster with GitLab:
 
 1. [Create a project from the cluster management project template](#create-a-project-based-on-the-cluster-management-project-template).
 1. In the project where you configured your agent,
-   [grant the agent access to the new project](agent/ci_cd_tunnel.md#authorize-the-agent).
+   [grant the agent access to the new project](agent/ci_cd_workflow.md#authorize-the-agent).
 1. In the new project, create an
    [environment variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project) named `$KUBE_CONTEXT`
    and set the value to `path/to/agent-configuration-project:your-agent-name`.
@@ -78,7 +78,7 @@ This image contains a set of Bash utility scripts to support [Helm v3 releases](
 The template contains a [Helmfile](https://github.com/roboll/helmfile) you can use to manage
 cluster applications with [Helm v3](https://helm.sh/).
 
-This file has a list of paths to other Helmfiles for each app. They're all commented out by default, so you must uncomment
+This file has a list of paths to other Helm files for each app. They're all commented out by default, so you must uncomment
 the paths for the apps that you would like to use in your cluster.
 
 By default, each `helmfile.yaml` in these sub-paths has the attribute `installed: true`. This means that every time
@@ -93,12 +93,7 @@ application in the template.
 
 The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/master/applications) are:
 
-- [Apparmor](../infrastructure/clusters/manage/management_project_applications/apparmor.md)
 - [Cert-manager](../infrastructure/clusters/manage/management_project_applications/certmanager.md)
-- [Cilium](../infrastructure/clusters/manage/management_project_applications/cilium.md)
-- [Elastic Stack](../infrastructure/clusters/manage/management_project_applications/elasticstack.md)
-- [Falco](../infrastructure/clusters/manage/management_project_applications/falco.md)
-- [Fluentd](../infrastructure/clusters/manage/management_project_applications/fluentd.md)
 - [GitLab Runner](../infrastructure/clusters/manage/management_project_applications/runner.md)
 - [Ingress](../infrastructure/clusters/manage/management_project_applications/ingress.md)
 - [Prometheus](../infrastructure/clusters/manage/management_project_applications/prometheus.md)

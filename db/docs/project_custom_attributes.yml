@@ -4,6 +4,6 @@ classes:
 - ProjectCustomAttribute
 feature_categories:
 - projects
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/6902848a9c54f9eb1bfd82fe173ad0d5d62fe2d5
+description: Stores custom attributes per project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14593
 milestone: '10.2'

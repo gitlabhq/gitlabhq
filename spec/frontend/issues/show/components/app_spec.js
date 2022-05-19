@@ -1,10 +1,12 @@
-import { GlIntersectionObserver } from '@gitlab/ui';
+import { GlIcon, GlIntersectionObserver } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import '~/behaviors/markdown/render_gfm';
-import { IssuableStatus, IssuableStatusText } from '~/issues/constants';
+import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
 import DescriptionComponent from '~/issues/show/components/description.vue';
 import EditedComponent from '~/issues/show/components/edited.vue';
@@ -70,7 +72,7 @@ describe('Issuable output', () => {
   };
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div>
         <title>Title</title>
         <div class="detail-page-description content-block">
@@ -105,6 +107,7 @@ describe('Issuable output', () => {
     realtimeRequestCount = 0;
     wrapper.vm.poll.stop();
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', () => {
@@ -465,6 +468,31 @@ describe('Issuable output', () => {
         expect(findStickyHeader().text()).toContain('Sticky header title');
       });
 
+      it('shows with title for an epic', async () => {
+        wrapper.setProps({ issuableType: 'epic' });
+
+        await nextTick();
+
+        expect(findStickyHeader().text()).toContain('Sticky header title');
+      });
+
+      it.each`
+        issuableType          | issuableStatus           | statusIcon
+        ${IssuableType.Issue} | ${IssuableStatus.Open}   | ${'issues'}
+        ${IssuableType.Issue} | ${IssuableStatus.Closed} | ${'issue-closed'}
+        ${IssuableType.Epic}  | ${IssuableStatus.Open}   | ${'epic'}
+        ${IssuableType.Epic}  | ${IssuableStatus.Closed} | ${'epic-closed'}
+      `(
+        'shows with state icon "$statusIcon" for $issuableType when status is $issuableStatus',
+        async ({ issuableType, issuableStatus, statusIcon }) => {
+          wrapper.setProps({ issuableType, issuableStatus });
+
+          await nextTick();
+
+          expect(findStickyHeader().findComponent(GlIcon).props('name')).toBe(statusIcon);
+        },
+      );
+
       it.each`
         title                                        | state
         ${'shows with Open when status is opened'}   | ${IssuableStatus.Open}
@@ -487,7 +515,14 @@ describe('Issuable output', () => {
 
         await nextTick();
 
-        expect(findConfidentialBadge().exists()).toBe(isConfidential);
+        const confidentialEl = findConfidentialBadge();
+        expect(confidentialEl.exists()).toBe(isConfidential);
+        if (isConfidential) {
+          expect(confidentialEl.props()).toMatchObject({
+            workspaceType: 'project',
+            issuableType: 'issue',
+          });
+        }
       });
 
       it.each`
@@ -611,6 +646,16 @@ describe('Issuable output', () => {
       expect(wrapper.vm.poll.enable).toHaveBeenCalled();
       expect(wrapper.vm.poll.makeDelayedRequest).toHaveBeenCalledWith(POLLING_DELAY);
       expect(wrapper.vm.updateStoreState).toHaveBeenCalled();
+    });
+  });
+
+  describe('listItemReorder event', () => {
+    it('makes request to update issue', async () => {
+      const description = 'I have been updated!';
+      findDescription().vm.$emit('listItemReorder', description);
+      await waitForPromises();
+
+      expect(mock.history.put[0].data).toContain(description);
     });
   });
 });

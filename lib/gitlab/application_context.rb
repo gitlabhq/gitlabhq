@@ -19,7 +19,8 @@ module Gitlab
       :job_id,
       :pipeline_id,
       :related_class,
-      :feature_category
+      :feature_category,
+      :artifact_size
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -32,7 +33,8 @@ module Gitlab
       Attribute.new(:remote_ip, String),
       Attribute.new(:job, ::Ci::Build),
       Attribute.new(:related_class, String),
-      Attribute.new(:feature_category, String)
+      Attribute.new(:feature_category, String),
+      Attribute.new(:artifact, ::Ci::JobArtifact)
     ].freeze
 
     def self.known_keys
@@ -74,6 +76,8 @@ module Gitlab
       assign_attributes(args)
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity
+    # rubocop: disable Metrics/PerceivedComplexity
     def to_lazy_hash
       {}.tap do |hash|
         hash[:user] = -> { username } if include_user?
@@ -86,8 +90,11 @@ module Gitlab
         hash[:feature_category] = feature_category if set_values.include?(:feature_category)
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
+        hash[:artifact_size] = -> { artifact&.size } if set_values.include?(:artifact)
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
+    # rubocop: enable Metrics/PerceivedComplexity
 
     def use
       Labkit::Context.with_context(to_lazy_hash) { yield }

@@ -22,6 +22,7 @@ module API
           }.freeze
 
           feature_category :infrastructure_as_code
+          urgency :low
 
           after_validation do
             require_packages_enabled!

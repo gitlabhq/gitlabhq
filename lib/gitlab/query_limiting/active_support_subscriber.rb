@@ -8,7 +8,7 @@ module Gitlab
       def sql(event)
         return if !::Gitlab::QueryLimiting::Transaction.current || event.payload.fetch(:cached, event.payload[:name] == 'CACHE')
 
-        ::Gitlab::QueryLimiting::Transaction.current.increment
+        ::Gitlab::QueryLimiting::Transaction.current.increment(event.payload[:sql])
         ::Gitlab::QueryLimiting::Transaction.current.executed_sql(event.payload[:sql])
       end
     end

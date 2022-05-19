@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Admin Runners" do
   include Spec::Support::Helpers::Features::RunnersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:admin) { create(:admin) }
 
@@ -429,12 +430,6 @@ RSpec.describe "Admin Runners" do
     end
 
     context "when visiting outdated URLs" do
-      it 'updates NOT_CONNECTED runner status to NEVER_CONNECTED' do
-        visit admin_runners_path('status[]': 'NOT_CONNECTED')
-
-        expect(page).to have_current_path(admin_runners_path('status[]': 'NEVER_CONTACTED') )
-      end
-
       it 'updates ACTIVE runner status to paused=false' do
         visit admin_runners_path('status[]': 'ACTIVE')
 
@@ -467,7 +462,7 @@ RSpec.describe "Admin Runners" do
     describe 'runner show page breadcrumbs' do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
-          expect(page.find('h2')).to have_link("##{runner.id} (#{runner.short_sha})")
+          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_link("##{runner.id} (#{runner.short_sha})")
         end
       end
     end
@@ -483,10 +478,28 @@ RSpec.describe "Admin Runners" do
         expect(page).to have_content 'Tags tag1'
       end
     end
+
+    describe 'when a runner is deleted' do
+      before do
+        click_on 'Delete runner'
+
+        within_modal do
+          click_on 'Delete runner'
+        end
+      end
+
+      it 'deletes runner' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content('deleted')
+      end
+
+      it 'redirects to runner list' do
+        expect(current_url).to match(admin_runners_path)
+      end
+    end
   end
 
   describe "Runner edit page" do
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project) }
 
     before do
       @project1 = create(:project)
@@ -500,14 +513,29 @@ RSpec.describe "Admin Runners" do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do
           expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
-          expect(page.find('h2')).to have_content("Edit")
+          expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
         end
       end
     end
 
     describe 'runner header', :js do
       it 'contains the runner status, type and id' do
-        expect(page).to have_content("never contacted shared Runner ##{runner.id} created")
+        expect(page).to have_content("never contacted specific Runner ##{runner.id} created")
+      end
+    end
+
+    describe 'when a runner is updated', :js do
+      before do
+        click_on _('Save changes')
+        wait_for_requests
+      end
+
+      it 'show success alert' do
+        expect(page.find('[data-testid="alert-success"]')).to have_content('saved')
+      end
+
+      it 'redirects to runner page' do
+        expect(current_url).to match(admin_runner_path(runner))
       end
     end
 
@@ -559,17 +587,6 @@ RSpec.describe "Admin Runners" do
         let(:runner) { create(:ci_runner, :project, projects: [@project1], locked: true) }
 
         before do
-          visit edit_admin_runner_path(runner)
-        end
-
-        it_behaves_like 'assignable runner'
-      end
-
-      context 'with shared runner' do
-        let(:runner) { create(:ci_runner, :instance) }
-
-        before do
-          @project1.destroy!
           visit edit_admin_runner_path(runner)
         end
 

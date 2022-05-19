@@ -136,8 +136,19 @@ information in the logs to check:
 
 1. The table loads information for the busiest endpoints by
    default. To speed the response, add both:
-   - A filter for `json.caller_id.keyword`.
-   - The identifier you're interested in, such as `Projects::RawController#show`.
+
+   - A filter for `json.meta.caller_id.keyword`.
+   - The identifier you're interested in, for example:
+
+     ```ruby
+     Projects::RawController#show
+     ```
+
+     or:
+
+     ```plaintext
+     GET /api/:version/projects/:id/snippets/:snippet_id/raw
+     ```
 
 1. Check the [appropriate percentile duration](#request-apdex-slo) for
    the service handling the endpoint. The overall duration should

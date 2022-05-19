@@ -1,30 +1,22 @@
-= form_for runner, url: runner_form_url do |f|
+= gitlab_ui_form_for runner, url: runner_form_url do |f|
   = form_errors(runner)
   .form-group.row
     = label :active, _("Active"), class: 'col-form-label col-sm-2'
     .col-sm-10
-      .form-check
-        = f.check_box :active, { class: 'form-check-input' }
-        %label.light{ for: :runner_active }= _("Paused runners don't accept new jobs")
+      = f.gitlab_ui_checkbox_component :active, _("Paused runners don't accept new jobs")
   .form-group.row
     = label :protected, _("Protected"), class: 'col-form-label col-sm-2'
     .col-sm-10
-      .form-check
-        = f.check_box :access_level, { class: 'form-check-input' }, 'ref_protected', 'not_protected'
-        %label.light{ for: :runner_access_level }= _('This runner will only run on pipelines triggered on protected branches')
+      = f.gitlab_ui_checkbox_component :access_level, _('This runner will only run on pipelines triggered on protected branches'), checked_value: 'ref_protected', unchecked_value: 'not_protected'
   .form-group.row
     = label :run_untagged, _('Run untagged jobs'), class: 'col-form-label col-sm-2'
     .col-sm-10
-      .form-check
-        = f.check_box :run_untagged, { class: 'form-check-input' }
-        %label.light{ for: :runner_run_untagged }= _('Indicates whether this runner can pick jobs without tags')
+      = f.gitlab_ui_checkbox_component :run_untagged, _('Indicates whether this runner can pick jobs without tags')
   - unless runner.group_type?
     .form-group.row
       = label :locked, _('Lock to current projects'), class: 'col-form-label col-sm-2'
       .col-sm-10
-        .form-check
-          = f.check_box :locked, { class: 'form-check-input' }
-          %label.light{ for: :runner_locked }= _('When a runner is locked, it cannot be assigned to other projects')
+        = f.gitlab_ui_checkbox_component :locked, _('When a runner is locked, it cannot be assigned to other projects')
   .form-group.row
     = label_tag :ip_address, class: 'col-form-label col-sm-2' do
       = _('IP Address')

@@ -18,7 +18,6 @@ module Clusters
       default_value_for :version, VERSION
 
       scope :preload_cluster_platform, -> { preload(cluster: [:platform_kubernetes]) }
-      scope :with_clusters_with_cilium, -> { joins(:cluster).merge(Clusters::Cluster.with_available_cilium) }
 
       attr_encrypted :alert_manager_token,
         mode: :per_attribute_iv,

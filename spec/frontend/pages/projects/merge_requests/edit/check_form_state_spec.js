@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'jest/__helpers__/fixtures';
 import initCheckFormState from '~/pages/projects/merge_requests/edit/check_form_state';
 
 describe('Check form state', () => {
@@ -7,7 +8,7 @@ describe('Check form state', () => {
   let setDialogContent;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <form class="merge-request-form">
         <input type="text" name="test" id="form-input"/>
       </form>`);
@@ -22,6 +23,8 @@ describe('Check form state', () => {
   afterEach(() => {
     beforeUnloadEvent.preventDefault.mockRestore();
     setDialogContent.mockRestore();
+
+    resetHTMLFixture();
   });
 
   it('shows confirmation dialog when there are unsaved changes', () => {

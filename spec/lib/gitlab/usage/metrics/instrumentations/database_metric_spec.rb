@@ -71,6 +71,33 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
       end
     end
 
+    context 'with availability defined' do
+      subject do
+        described_class.tap do |metric_class|
+          metric_class.relation { Issue }
+          metric_class.operation :count
+          metric_class.available? { false }
+        end.new(time_frame: 'all')
+      end
+
+      it 'responds to #available? properly' do
+        expect(subject.available?).to eq(false)
+      end
+    end
+
+    context 'with availability not defined' do
+      subject do
+        Class.new(described_class) do
+          relation { Issue }
+          operation :count
+        end.new(time_frame: 'all')
+      end
+
+      it 'responds to #available? properly' do
+        expect(subject.available?).to eq(true)
+      end
+    end
+
     context 'with cache_start_and_finish_as called' do
       subject do
         described_class.tap do |metric_class|
@@ -132,6 +159,19 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
           subject.value
         end
       end
+    end
+  end
+
+  context 'with unimplemented operation method used' do
+    subject do
+      described_class.tap do |metric_class|
+        metric_class.relation { Issue }
+        metric_class.operation :invalid_operation
+      end.new(time_frame: 'all')
+    end
+
+    it 'raises an error' do
+      expect { subject }.to raise_error(described_class::UnimplementedOperationError)
     end
   end
 end

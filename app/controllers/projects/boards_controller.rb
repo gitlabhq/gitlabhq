@@ -7,8 +7,8 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :check_issues_available!
   before_action :assign_endpoint_vars
   before_action do
-    push_frontend_feature_flag(:board_multi_select, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:realtime_labels, project&.group, default_enabled: :yaml)
+    push_frontend_feature_flag(:board_multi_select, project)
+    push_frontend_feature_flag(:realtime_labels, project&.group)
     experiment(:prominent_create_board_btn, subject: current_user) do |e|
       e.control { }
       e.candidate { }
@@ -16,6 +16,7 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   feature_category :team_planning
+  urgency :low
 
   private
 

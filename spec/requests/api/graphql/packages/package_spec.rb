@@ -65,32 +65,6 @@ RSpec.describe 'package details' do
       end
     end
 
-    context 'there are other versions of this package' do
-      let(:depth) { 3 }
-      let(:excluded) { %w[metadata project tags pipelines] } # to limit the query complexity
-
-      let_it_be(:siblings) { create_list(:composer_package, 2, project: project, name: composer_package.name) }
-
-      it 'includes the sibling versions' do
-        subject
-
-        expect(graphql_data_at(:package, :versions, :nodes)).to match_array(
-          siblings.map { |p| a_hash_including('id' => global_id_of(p)) }
-        )
-      end
-
-      context 'going deeper' do
-        let(:depth) { 6 }
-
-        it 'does not create a cycle of versions' do
-          subject
-
-          expect(graphql_data_at(:package, :versions, :nodes, :version)).to be_present
-          expect(graphql_data_at(:package, :versions, :nodes, :versions, :nodes)).to match_array [nil, nil]
-        end
-      end
-    end
-
     context 'with package files pending destruction' do
       let_it_be(:package_file) { create(:package_file, package: composer_package) }
       let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: composer_package) }

@@ -6,5 +6,11 @@ FactoryBot.define do
 
     track { 'create' }
     series { 0 }
+
+    trait :campaign do
+      track { nil }
+      series { nil }
+      campaign { Users::InProductMarketingEmail::BUILD_IOS_APP_GUIDE }
+    end
   end
 end

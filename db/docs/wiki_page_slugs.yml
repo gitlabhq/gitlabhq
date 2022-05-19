@@ -4,6 +4,6 @@ classes:
 - WikiPage::Slug
 feature_categories:
 - wiki
-description: TODO
+description: Stores wiki page slug metadata for when we create events.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26529
 milestone: '13.0'

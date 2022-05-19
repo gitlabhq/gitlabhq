@@ -11,7 +11,7 @@ RSpec.describe CookiesHelper do
       value = 'secure value'
 
       expect_next_instance_of(ActionDispatch::Cookies::EncryptedKeyRotatingCookieJar) do |instance|
-        expect(instance).to receive(:[]=).with(key, httponly: true, secure: true, expires: expiration, value: value)
+        expect(instance).to receive(:[]=).with(key, { httponly: true, secure: true, expires: expiration, value: value })
       end
 
       helper.set_secure_cookie(key, value, httponly: true, expires: expiration, type: CookiesHelper::COOKIE_TYPE_ENCRYPTED)
@@ -22,7 +22,7 @@ RSpec.describe CookiesHelper do
       value = 'permanent value'
 
       expect_next_instance_of(ActionDispatch::Cookies::PermanentCookieJar) do |instance|
-        expect(instance).to receive(:[]=).with(key, httponly: false, secure: false, expires: nil, value: value)
+        expect(instance).to receive(:[]=).with(key, { httponly: false, secure: false, expires: nil, value: value })
       end
 
       helper.set_secure_cookie(key, value, type: CookiesHelper::COOKIE_TYPE_PERMANENT)
@@ -33,7 +33,7 @@ RSpec.describe CookiesHelper do
       value = 'regular value'
 
       expect_next_instance_of(ActionDispatch::Cookies::CookieJar) do |instance|
-        expect(instance).to receive(:[]=).with(key, httponly: false, secure: false, expires: nil, value: value)
+        expect(instance).to receive(:[]=).with(key, { httponly: false, secure: false, expires: nil, value: value })
       end
 
       helper.set_secure_cookie(key, value)

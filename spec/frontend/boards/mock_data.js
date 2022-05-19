@@ -17,6 +17,10 @@ export const mockBoard = {
     id: 'gid://gitlab/Iteration/124',
     title: 'Iteration 9',
   },
+  iterationCadence: {
+    id: 'gid://gitlab/Iteration::Cadence/134',
+    title: 'Cadence 3',
+  },
   assignee: {
     id: 'gid://gitlab/User/1',
     username: 'admin',
@@ -32,6 +36,7 @@ export const mockBoardConfig = {
   milestoneTitle: '14.9',
   iterationId: 'gid://gitlab/Iteration/124',
   iterationTitle: 'Iteration 9',
+  iterationCadenceId: 'gid://gitlab/Iteration::Cadence/134',
   assigneeId: 'gid://gitlab/User/1',
   assigneeUsername: 'admin',
   labels: [{ id: 'gid://gitlab/Label/32', title: 'Deliverable' }],

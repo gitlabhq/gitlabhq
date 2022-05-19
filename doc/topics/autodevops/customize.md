@@ -26,7 +26,7 @@ used for the build.
 
 Specify either:
 
-- The CI/CD variable `BUILDPACK_URL` according to [`pack`'s specifications](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
+- The CI/CD variable `BUILDPACK_URL` with any of [`pack`'s URI specification formats](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
 - A [`project.toml` project descriptor](https://buildpacks.io/docs/app-developer-guide/using-project-descriptor/) with the buildpacks you would like to include.
 
 ### Custom buildpacks with Herokuish
@@ -431,7 +431,7 @@ applications.
 | `HELM_UPGRADE_EXTRA_ARGS`               | Allows extra options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
 | `INCREMENTAL_ROLLOUT_MODE`              | If present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
 | `K8S_SECRET_*`                          | Any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) is made available by Auto DevOps as environment variables to the deployed application. |
-| `KUBE_CONTEXT`                          | From GitLab 14.5, can be used to select a context to use from `KUBECONFIG`. When `KUBE_CONTEXT` is blank, the default context in `KUBECONFIG` (if any) is used. A context must be selected when used [with the agent for Kubernetes](../../user/clusters/agent/ci_cd_tunnel.md). |
+| `KUBE_CONTEXT`                          | From GitLab 14.5, can be used to select a context to use from `KUBECONFIG`. When `KUBE_CONTEXT` is blank, the default context in `KUBECONFIG` (if any) is used. A context must be selected when used [with the agent for Kubernetes](../../user/clusters/agent/ci_cd_workflow.md). |
 | `KUBE_INGRESS_BASE_DOMAIN`              | Can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) for more information. |
 | `KUBE_NAMESPACE`                        | The namespace used for deployments. When using certificate-based clusters, [this value should not be overwritten directly](../../user/project/clusters/deploy_to_cluster.md#custom-namespace). |
 | `KUBECONFIG`                            | The kubeconfig to use for deployments. User-provided values take priority over GitLab-provided values. |
@@ -479,7 +479,6 @@ The following table lists variables used to disable jobs.
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `bandit-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `brakeman-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `bundler-audit-dependency_scanning`    | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
 | `canary`                               | `CANARY_ENABLED`                |                       | This manual job is created if the variable is present. |
 | `cluster_image_scanning`               | `CLUSTER_IMAGE_SCANNING_DISABLED` |                     | If the variable is present, the job isn't created. |
 | `code_intelligence`                    | `CODE_INTELLIGENCE_DISABLED`    | From GitLab 13.6      | If the variable is present, the job isn't created. |
@@ -503,7 +502,6 @@ The following table lists variables used to disable jobs.
 | `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  | From GitLab 14.0      | Browser performance. If the variable is present, the job isn't created. Replaces `performance`. |
 | `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `retire-js-dependency_scanning`        | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
 | `review`                               | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |
 | `review:stop`                          | `REVIEW_DISABLED`               |                       | Manual job. If the variable is present, the job isn't created. |
 | `sast`                                 | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |

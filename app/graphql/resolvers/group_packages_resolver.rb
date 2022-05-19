@@ -26,7 +26,10 @@ module Resolvers
     def resolve(sort:, **filters)
       return unless packages_available?
 
-      ::Packages::GroupPackagesFinder.new(current_user, object, filters.merge(GROUP_SORT_TO_PARAMS_MAP.fetch(sort))).execute
+      params = filters.merge(GROUP_SORT_TO_PARAMS_MAP.fetch(sort))
+      params[:preload_pipelines] = false
+
+      ::Packages::GroupPackagesFinder.new(current_user, object, params).execute
     end
   end
 end

@@ -276,7 +276,6 @@ You can use these fake tokens as examples:
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
 | Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
 | Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
 ### Contractions
 
@@ -400,6 +399,39 @@ Backticks are more precise than quotes. For example, in this string:
 - In the **Commit message** box, type "This is my merge request."
 
 It's not clear whether the user should include the period in the string.
+
+### Inline code
+
+Inline code style is applied inline with regular text. Use inline code style:
+
+- For filenames or fragments of configuration files. For example, `.gitlab-ci.yml`, `CODEOWNERS`, and `only: [main]`.
+- For HTTP methods (`HTTP POST`) and HTTP status codes, both full (`404 File Not Found`) and abbreviated (`404`).
+  For example: Send a `DELETE` request to delete the runner. Send a `POST` request to create one.
+
+To apply inline code style, wrap the text in a single backtick (`` ` ``). For example, `this is inline code style`.
+
+### Code blocks
+
+Code block style separates code text from regular text. Use code block style for commands run in the command-line
+interface. Code block style is easier to copy and paste in a user's terminal window.
+
+To apply code block style, wrap the text in triple backticks (three `` ` ``) and add a syntax highlighting hint. For
+example:
+
+````plaintext
+```plaintext
+This is codeblock style
+```
+````
+
+When using code block style:
+
+- Use quadruple backticks (four `` ` ``) to apply code block style when the code block you are styling has triple
+  backticks in it. For example, when illustrating code block style.
+- Add a blank line above and below code blocks.
+- Syntax highlight hints are required for code blocks. See the
+  [list of supported languages and lexers](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
+  for available syntax highlighters. Use `plaintext` if no better hint is available.
 
 ## Lists
 
@@ -622,7 +654,10 @@ In the Markdown document:
 For the heading text, **do**:
 
 - Be clear and direct. Make every word count.
-- Use active verbs for tasks. For example, `Configure GDK` instead of `Configuring GDK`.
+- Use active, imperative verbs for [tasks](../structure.md#task). For example, `Create an issue`.
+- Use `ing` (gerund) verbs only when you need a topic that introduces tasks. For example, `Configuring GDK`.
+- Use nouns for [concepts](../structure.md#concept). For example, `GDK dependency management`. If a noun is
+  ambiguous, you can add a gerund. For example, `Documenting versions` instead of `Versions`.
 - Talk about what the product does, realistically but from a positive perspective. Instead of
   `Limitations`, move the content near other similar information. If you must, you can
   use the title `Known issues`.
@@ -695,7 +730,6 @@ We include guidance for links in these categories:
   for authoritative sources.
 - When to use [links requiring permissions](#links-requiring-permissions).
 - How to set up a [link to a video](#link-to-video).
-- How to [include links with version text](#where-to-put-version-text).
 - How to [link to specific lines of code](#link-to-specific-lines-of-code)
 
 ### Basic link criteria
@@ -949,7 +983,7 @@ If you are documenting multiple fields and only one field needs explanation, do 
 1. Expand **Push rules**.
 1. Complete the fields. **Branch name** must be a regular expression.
 
-To describe multiple fields, use bullets:
+To describe multiple fields, use unordered list items:
 
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -1166,80 +1200,6 @@ different mobile devices.
 `/help`, because the GitLab Markdown processor doesn't support iframes. It's
 hidden on the documentation site, but is displayed by `/help`.
 
-## Code blocks
-
-- Always wrap code added to a sentence in inline code blocks (`` ` ``).
-  For example, `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, or `only: [main]`.
-  File names, commands, entries, and anything that refers to code should be
-  added to code blocks. To make things easier for the user, always add a full
-  code block for things that can be useful to copy and paste, as they can do it
-  with the button on code blocks.
-- HTTP methods (`HTTP POST`) and HTTP status codes, both full (`404 File Not Found`)
-  and abbreviated (`404`), should be wrapped in inline code blocks when used in sentences.
-  For example: Send a `DELETE` request to delete the runner. Send a `POST` request to create one.
-- Add a blank line above and below code blocks.
-- When providing a shell command and its output, prefix the shell command with `$`
-  and leave a blank line between the command and the output.
-- When providing a command without output, don't prefix the shell command with `$`.
-- If you need to include triple backticks inside a code block, use four backticks
-  for the code block fences instead of three.
-- For regular fenced code blocks, always use a highlighting class corresponding to
-  the language for better readability. Examples:
-
-  ````markdown
-  ```ruby
-  Ruby code
-  ```
-
-  ```javascript
-  JavaScript code
-  ```
-
-  ```markdown
-  [Markdown code example](example.md)
-  ```
-
-  ```plaintext
-  Code or text for which no specific highlighting class is available.
-  ```
-  ````
-
-Syntax highlighting is required for fenced code blocks added to the GitLab
-documentation. Refer to this table for the most common language classes,
-or check the [complete list](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers)
-of available language classes:
-
-| Preferred language tags | Language aliases and notes                                                   |
-|-------------------------|------------------------------------------------------------------------------|
-| `asciidoc`              |                                                                              |
-| `dockerfile`            | Alias: `docker`.                                                             |
-| `elixir`                |                                                                              |
-| `erb`                   |                                                                              |
-| `golang`                | Alias: `go`.                                                                 |
-| `graphql`               |                                                                              |
-| `haml`                  |                                                                              |
-| `html`                  |                                                                              |
-| `ini`                   | For some simple configuration files that are not in TOML format.             |
-| `javascript`            | Alias `js`.                                                                  |
-| `json`                  |                                                                              |
-| `markdown`              | Alias: `md`.                                                                 |
-| `mermaid`               |                                                                              |
-| `nginx`                 |                                                                              |
-| `perl`                  |                                                                              |
-| `php`                   |                                                                              |
-| `plaintext`             | Examples with no defined language, such as output from shell commands or API calls. If a code block has no language, it defaults to `plaintext`. Alias: `text`.|
-| `prometheus`            | Prometheus configuration examples.                                           |
-| `python`                |                                                                              |
-| `ruby`                  | Alias: `rb`.                                                                 |
-| `shell`                 | Aliases: `bash` or `sh`.                                                     |
-| `sql`                   |                                                                              |
-| `toml`                  | Runner configuration examples, and other TOML-formatted configuration files. |
-| `typescript`            | Alias: `ts`.                                                                 |
-| `xml`                   |                                                                              |
-| `yaml`                  | Alias: `yml`.                                                                |
-
-For a complete reference on code blocks, see the [Kramdown guide](https://about.gitlab.com/handbook/markdown-guide/#code-blocks).
-
 ## GitLab SVG icons
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
@@ -1379,7 +1339,7 @@ you don't need to supply your username and password each time.
 ### Disclaimer
 
 Use to describe future functionality only.
-For more information, see [Legal disclaimer for future features](#legal-disclaimer-for-future-features).
+For more information, see [Legal disclaimer for future features](../versions.md#legal-disclaimer-for-future-features).
 
 ## Blockquotes
 
@@ -1429,222 +1389,6 @@ application:
 - For elements with a tooltip or hover label, use that label in bold with
   matching case. For example, `Select **Add status emoji**`.
 
-## GitLab versions
-
-GitLab product documentation pages (not including [Contributor and Development](../../index.md)
-pages in the `/development` directory) can include version information to help
-users be aware of recent improvements or additions.
-
-The GitLab Technical Writing team determines which versions of
-documentation to display on this site based on the GitLab
-[Statement of Support](https://about.gitlab.com/support/statement-of-support.html#version-support).
-
-### View older GitLab documentation versions
-
-Older versions of GitLab may no longer have documentation available from `docs.gitlab.com`.
-If documentation for your version is no longer available from `docs.gitlab.com`, you can still view a
-tagged and released set of documentation for your installed version:
-
-- In the [documentation archives](https://docs.gitlab.com/archives/).
-- At the `/help` URL of your GitLab instance.
-- In the documentation repository based on the respective branch (for example,
-  the [13.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/13-2-stable-ee/doc)).
-
-### Where to put version text
-
-When a feature is added or updated, you can include its version information
-either as a **Version history** item or as an inline text reference.
-
-#### Version text in the **Version History**
-
-If all content in a section is related, add version text after the header for
-the section. The version information must:
-
-- Be surrounded by blank lines.
-- Start with `>`. If there are multiple bullets, each line must start with `> -`.
-- The string must include these words in this order (capitalization doesn't matter):
-  - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended` (as in the
-  [feature flag documentation](../feature_flags.md)), `removed`, or `renamed`
-  - `in` or `to`
-  - `GitLab`
-- Whenever possible, include a link to the completed issue, merge request, or epic
-  that introduced the feature. An issue is preferred over a merge request, and
-  a merge request is preferred over an epic.
-- Do not include information about the tier, unless documenting a tier change
-  (for example, `Feature X [moved](issue-link) to Premium in GitLab 19.2`).
-- Do not link to the pricing page.
-  The tier is provided by the [product badge](#product-tier-badges) on the heading.
-
-```markdown
-## Feature name
-
-> [Introduced](<link-to-issue>) in GitLab 11.3.
-
-This feature does something.
-
-## Feature name 2
-
-> - [Introduced](<link-to-issue>) in GitLab 11.3.
-> - [Enabled by default](<link-to-issue>) in GitLab 11.4.
-
-This feature does something else.
-```
-
-If you're documenting elements of a feature, start with the feature name or a gerund:
-
-```markdown
-> - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 11.3.
-> - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 13.1.
-```
-
-If a feature is moved to another tier:
-
-```markdown
-> - [Moved](<link-to-issue>) from GitLab Ultimate to GitLab Premium in 11.8.
-> - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
-```
-
-#### Inline version text
-
-If you're adding content to an existing topic, you can add version information
-inline with the existing text.
-
-In this case, add `([introduced/deprecated](<link-to-issue>) in GitLab X.X)`.
-
-Including the issue link is encouraged, but isn't a requirement. For example:
-
-```markdown
-The voting strategy in GitLab 13.4 and later requires the primary and secondary
-voters to agree.
-```
-
-#### Deprecated features
-
-When a feature is deprecated, add `(DEPRECATED)` to the page title or to
-the heading of the section documenting the feature, immediately before
-the tier badge:
-
-```markdown
-<!-- Page title example: -->
-# Feature A (DEPRECATED) **(ALL TIERS)**
-
-<!-- Doc section example: -->
-## Feature B (DEPRECATED) **(PREMIUM SELF)**
-```
-
-Add the deprecation to the version history note (you can include a link
-to a replacement when available):
-
-```markdown
-> - [Deprecated](<link-to-issue>) in GitLab 11.3. Replaced by [meaningful text](<link-to-appropriate-documentation>).
-```
-
-You can also describe the replacement in surrounding text, if available. If the
-deprecation isn't obvious in existing text, you may want to include a warning:
-
-```markdown
-WARNING:
-This feature was [deprecated](link-to-issue) in GitLab 12.3 and replaced by
-[Feature name](link-to-feature-documentation).
-```
-
-If you add `(DEPRECATED)` to the page's title and the document is linked from the docs
-navigation, either remove the page from the nav or update the nav item to include the
-same text before the feature name:
-
-```yaml
- - doc_title: (DEPRECATED) Feature A
-```
-
-In the first major GitLab version after the feature was deprecated, be sure to
-remove information about that deprecated feature.
-
-#### End-of-life for features or products
-
-When a feature or product enters its end-of-life, indicate its status by
-creating a [warning alert](#alert-boxes) directly after its relevant header.
-If possible, link to its deprecation and removal issues.
-
-For example:
-
-```markdown
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](link-to-issue)
-in GitLab X.X, and is planned for [removal](link-to-issue) in GitLab X.X.
-```
-
-After the feature or product is officially deprecated and removed, remove
-its information from the GitLab documentation.
-
-### Versions in the past or future
-
-When describing functionality available in past or future versions, use:
-
-- Earlier, and not older or before.
-- Later, and not newer or after.
-
-For example:
-
-- Available in GitLab 13.1 and earlier.
-- Available in GitLab 12.4 and later.
-- In GitLab 12.2 and earlier, ...
-- In GitLab 11.6 and later, ...
-
-### Promising features in future versions
-
-Do not promise to deliver features in a future release. For example, avoid phrases like,
-"Support for this feature is planned."
-
-We cannot guarantee future feature work, and promises
-like these can raise legal issues. Instead, say that an issue exists.
-For example:
-
-- Support for improvements is tracked `[in this issue](LINK)`.
-- You cannot do this thing, but `[an issue exists](LINK)` to change this behavior.
-
-You can say that we plan to remove a feature.
-
-#### Legal disclaimer for future features
-
-If you **must** write about features we have not yet delivered, put this exact disclaimer near the content it applies to.
-
-```markdown
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
-```
-
-It renders on the GitLab documentation site as:
-
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
-
-If all of the content on the page is not available, use the disclaimer once at the top of the page.
-
-If the content in a topic is not ready, use the disclaimer in the topic.
-
-### Removing versions after each major release
-
-When a major GitLab release occurs, we remove all references
-to now-unsupported versions. This removal includes version-specific instructions. For example,
-if GitLab version 12.1 and later are supported,
-instructions for users of GitLab 11 should be removed.
-
-[View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
-
-To view historical information about a feature, review GitLab
-[release posts](https://about.gitlab.com/releases/), or search for the issue or
-merge request where the work was done.
-
 ## Products and features
 
 Refer to the information in this section when describing products and features
@@ -1664,7 +1408,7 @@ pricing page. For example:
 
 You must assign a tier badge:
 
-- To all H1 topic headings.
+- To all H1 topic headings, except the pages under `doc/development/*`.
 - To topic headings that don't apply to the same tier as the H1.
 
 To add a tier badge to a heading, add the relevant tier badge
@@ -1692,10 +1436,15 @@ functionality is described.
 | Only GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
 | Only GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
 
-Topics that mention the `gitlab.rb` file are referring to
-self-managed instances of GitLab. To prevent confusion, include the relevant `TIER SELF`
-tier badge on the highest applicable heading level on
-the page.
+Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
+administrator documentation often includes sections that mention:
+
+- Changing the `gitlab.rb` or `gitlab.yml` files.
+- Accessing the rails console or running Rake tasks.
+- Doing things in the Admin Area.
+
+These pages should also mention if the tasks can only be accomplished by an
+instance administrator.
 
 ## Specific sections
 

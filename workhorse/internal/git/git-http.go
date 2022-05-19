@@ -22,11 +22,11 @@ const (
 )
 
 func ReceivePack(a *api.API) http.Handler {
-	return postRPCHandler(a, "handleReceivePack", handleReceivePack)
+	return postRPCHandler(a, "handleReceivePack", handleReceivePack, writeReceivePackError)
 }
 
 func UploadPack(a *api.API) http.Handler {
-	return postRPCHandler(a, "handleUploadPack", handleUploadPack)
+	return postRPCHandler(a, "handleUploadPack", handleUploadPack, writeUploadPackError)
 }
 
 func gitConfigOptions(a *api.Response) []string {
@@ -39,7 +39,12 @@ func gitConfigOptions(a *api.Response) []string {
 	return out
 }
 
-func postRPCHandler(a *api.API, name string, handler func(*HttpResponseWriter, *http.Request, *api.Response) error) http.Handler {
+func postRPCHandler(
+	a *api.API,
+	name string,
+	handler func(*HttpResponseWriter, *http.Request, *api.Response) error,
+	errWriter func(io.Writer) error,
+) http.Handler {
 	return repoPreAuthorizeHandler(a, func(rw http.ResponseWriter, r *http.Request, ar *api.Response) {
 		cr := &countReadCloser{ReadCloser: r.Body}
 		r.Body = cr
@@ -50,7 +55,8 @@ func postRPCHandler(a *api.API, name string, handler func(*HttpResponseWriter, *
 		}()
 
 		if err := handler(w, r, ar); err != nil {
-			// If the handler already wrote a response this WriteHeader call is a
+			handleLimitErr(err, w, errWriter)
+			// If the handler, or handleLimitErr already wrote a response this WriteHeader call is a
 			// no-op. It never reaches net/http because GitHttpResponseWriter calls
 			// WriteHeader on its underlying ResponseWriter at most once.
 			w.WriteHeader(500)

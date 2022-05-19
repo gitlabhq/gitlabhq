@@ -1,7 +1,12 @@
 import * as Sentry from '@sentry/browser';
 import { pickBy } from 'lodash';
-import { SUPPORTED_FILTER_PARAMETERS, NEEDS_PROPERTY } from './constants';
-
+import { getParameterValues } from '~/lib/utils/url_utility';
+import {
+  NEEDS_PROPERTY,
+  SUPPORTED_FILTER_PARAMETERS,
+  TAB_QUERY_PARAM,
+  validPipelineTabNames,
+} from './constants';
 /*
     The following functions are the main engine in transforming the data as
     received from the endpoint into the format the d3 graph expects.
@@ -137,4 +142,14 @@ export const reportMessageToSentry = (component, message, context) => {
     scope.setTag('component', component);
     Sentry.captureMessage(message);
   });
+};
+
+export const getPipelineDefaultTab = (url) => {
+  const [tabQueryValue] = getParameterValues(TAB_QUERY_PARAM, url);
+
+  if (tabQueryValue && validPipelineTabNames.includes(tabQueryValue)) {
+    return tabQueryValue;
+  }
+
+  return null;
 };

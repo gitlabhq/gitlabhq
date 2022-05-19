@@ -7,7 +7,11 @@ module Integrations
 
     ALLOWED_STATES = %w[failed canceled running pending success success-with-warnings skipped not_found].freeze
 
-    prop_accessor :mock_service_url
+    field :mock_service_url,
+      title: s_('ProjectService|Mock service URL'),
+      placeholder: 'http://localhost:4004',
+      required: true
+
     validates :mock_service_url, presence: true, public_url: true, if: :activated?
 
     def title
@@ -20,18 +24,6 @@ module Integrations
 
     def self.to_param
       'mock_ci'
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'mock_service_url',
-          title: s_('ProjectService|Mock service URL'),
-          placeholder: 'http://localhost:4004',
-          required: true
-        }
-      ]
     end
 
     # Return complete url to build page

@@ -11,12 +11,8 @@ RSpec.describe 'maven package details' do
 
   shared_examples 'correct maven metadata' do
     it 'has the correct metadata' do
-      expect(metadata_response).to include(
-        'id' => global_id_of(package.maven_metadatum),
-        'path' => package.maven_metadatum.path,
-        'appGroup' => package.maven_metadatum.app_group,
-        'appVersion' => package.maven_metadatum.app_version,
-        'appName' => package.maven_metadatum.app_name
+      expect(metadata_response).to match a_graphql_entity_for(
+        package.maven_metadatum, :path, :app_group, :app_version, :app_name
       )
     end
   end

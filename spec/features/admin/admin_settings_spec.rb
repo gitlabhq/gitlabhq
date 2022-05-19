@@ -71,7 +71,7 @@ RSpec.describe 'Admin updates settings' do
 
       it 'change Visibility and Access Controls' do
         page.within('.as-visibility-access') do
-          uncheck 'Project export enabled'
+          uncheck 'Enabled'
           click_button 'Save changes'
         end
 
@@ -108,6 +108,16 @@ RSpec.describe 'Admin updates settings' do
         end
 
         expect(current_settings.gravatar_enabled).to be_falsey
+        expect(page).to have_content "Application settings saved successfully"
+      end
+
+      it 'change Maximum export size' do
+        page.within('.as-account-limit') do
+          fill_in 'Maximum export size (MB)', with: 25
+          click_button 'Save changes'
+        end
+
+        expect(current_settings.max_export_size).to eq 25
         expect(page).to have_content "Application settings saved successfully"
       end
 
@@ -370,7 +380,7 @@ RSpec.describe 'Admin updates settings' do
             expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
 
             page.within('.as-runner') do
-              find_all('.form-check-input').each(&:click)
+              find_all('input[type="checkbox"]').each(&:click)
 
               click_button 'Save changes'
             end
@@ -396,7 +406,6 @@ RSpec.describe 'Admin updates settings' do
       end
 
       context 'Container Registry' do
-        let(:feature_flag_enabled) { true }
         let(:client_support) { true }
         let(:settings_titles) do
           {
@@ -409,16 +418,7 @@ RSpec.describe 'Admin updates settings' do
 
         before do
           stub_container_registry_config(enabled: true)
-          stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
           allow(ContainerRegistry::Client).to receive(:supports_tag_delete?).and_return(client_support)
-        end
-
-        shared_examples 'not having container registry setting' do |registry_setting|
-          it "lacks the container setting #{registry_setting}" do
-            visit ci_cd_admin_application_settings_path
-
-            expect(page).not_to have_content(settings_titles[registry_setting])
-          end
         end
 
         %i[container_registry_delete_tags_service_timeout container_registry_expiration_policies_worker_capacity container_registry_cleanup_tags_service_max_list_size].each do |setting|
@@ -433,12 +433,6 @@ RSpec.describe 'Admin updates settings' do
 
               expect(current_settings.public_send(setting)).to eq(400)
               expect(page).to have_content "Application settings saved successfully"
-            end
-
-            context 'with feature flag disabled' do
-              let(:feature_flag_enabled) { false }
-
-              it_behaves_like 'not having container registry setting', setting
             end
           end
         end
@@ -456,12 +450,6 @@ RSpec.describe 'Admin updates settings' do
 
             expect(current_settings.container_registry_expiration_policies_caching).to eq(!old_value)
             expect(page).to have_content "Application settings saved successfully"
-          end
-
-          context 'with feature flag disabled' do
-            let(:feature_flag_enabled) { false }
-
-            it_behaves_like 'not having container registry setting', :container_registry_expiration_policies_caching
           end
         end
       end
@@ -665,12 +653,24 @@ RSpec.describe 'Admin updates settings' do
         visit network_admin_application_settings_path
 
         page.within('.as-issue-limits') do
-          fill_in 'Max requests per minute per user', with: 0
+          fill_in 'Maximum number of requests per minute', with: 0
           click_button 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.issues_create_limit).to eq(0)
+      end
+
+      it 'changes Pipelines rate limits settings' do
+        visit network_admin_application_settings_path
+
+        page.within('.as-pipeline-limits') do
+          fill_in 'Maximum number of requests per minute', with: 10
+          click_button 'Save changes'
+        end
+
+        expect(page).to have_content "Application settings saved successfully"
+        expect(current_settings.pipeline_limit_per_project_user_sha).to eq(10)
       end
 
       it 'changes Users API rate limits settings' do
@@ -856,10 +856,9 @@ RSpec.describe 'Admin updates settings' do
         stub_database_flavor_check
       end
 
-      context 'when service data cached', :clean_gitlab_redis_cache do
+      context 'when service data cached', :use_clean_rails_memory_store_caching do
         before do
-          allow(Rails.cache).to receive(:exist?).with('usage_data').and_return(true)
-
+          visit usage_data_admin_application_settings_path
           visit service_usage_data_admin_application_settings_path
         end
 

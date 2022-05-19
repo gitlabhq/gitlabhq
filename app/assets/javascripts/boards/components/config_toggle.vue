@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { mapGetters } from 'vuex';
 import { formType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
 import { s__, __ } from '~/locale';
@@ -14,8 +15,9 @@ export default {
     GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['canAdminList', 'hasScope'],
+  inject: ['canAdminList'],
   computed: {
+    ...mapGetters(['hasScope']),
     buttonText() {
       return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
     },

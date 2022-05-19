@@ -12,10 +12,10 @@ the event of unplanned outage, but it can be used in conjunction with a planned
 failover to migrate your GitLab instance between regions without extended
 downtime.
 
-As replication between Geo nodes is asynchronous, a planned failover requires
-a maintenance window in which updates to the **primary** node are blocked. The
+As replication between Geo sites is asynchronous, a planned failover requires
+a maintenance window in which updates to the **primary** site are blocked. The
 length of this window is determined by your replication capacity - once the
-**secondary** node is completely synchronized with the **primary** node, the failover can occur without
+**secondary** site is completely synchronized with the **primary** site, the failover can occur without
 data loss.
 
 This document assumes you already have a fully configured, working Geo setup.
@@ -28,7 +28,7 @@ have a high degree of confidence in being able to perform them accurately.
 ## Not all data is automatically replicated
 
 If you are using any GitLab features that Geo [doesn't support](../replication/datatypes.md#limitations-on-replicationverification),
-you must make separate provisions to ensure that the **secondary** node has an
+you must make separate provisions to ensure that the **secondary** site has an
 up-to-date copy of any data associated with that feature. This may extend the
 required scheduled maintenance period significantly.
 
@@ -36,7 +36,7 @@ A common strategy for keeping this period as short as possible for data stored
 in files is to use `rsync` to transfer the data. An initial `rsync` can be
 performed ahead of the maintenance window; subsequent `rsync`s (including a
 final transfer inside the maintenance window) then transfers only the
-*changes* between the **primary** node and the **secondary** nodes.
+*changes* between the **primary** site and the **secondary** sites.
 
 Repository-centric strategies for using `rsync` effectively can be found in the
 [moving repositories](../../operations/moving_repositories.md) documentation; these strategies can
@@ -98,31 +98,31 @@ Doing so reduces both the length of the maintenance window, and the risk of data
 loss as a result of a poorly executed planned failover.
 
 In GitLab 12.4, you can optionally allow GitLab to manage replication of Object Storage for
-**secondary** nodes. For more information, see [Object Storage replication](../replication/object_storage.md).
+**secondary** sites. For more information, see [Object Storage replication](../replication/object_storage.md).
 
-### Review the configuration of each **secondary** node
+### Review the configuration of each **secondary** site
 
-Database settings are automatically replicated to the **secondary**  node, but the
+Database settings are automatically replicated to the **secondary**  site, but the
 `/etc/gitlab/gitlab.rb` file must be set up manually, and differs between
-nodes. If features such as Mattermost, OAuth or LDAP integration are enabled
-on the **primary** node but not the **secondary** node, they are lost during failover.
+sites. If features such as Mattermost, OAuth or LDAP integration are enabled
+on the **primary** site but not the **secondary** site, they are lost during failover.
 
-Review the `/etc/gitlab/gitlab.rb` file for both nodes and ensure the **secondary** node
-supports everything the **primary** node does **before** scheduling a planned failover.
+Review the `/etc/gitlab/gitlab.rb` file for both sites and ensure the **secondary** site
+supports everything the **primary** site does **before** scheduling a planned failover.
 
 ### Run system checks
 
-Run the following on both **primary** and **secondary** nodes:
+Run the following on both **primary** and **secondary** sites:
 
 ```shell
 gitlab-rake gitlab:check
 gitlab-rake gitlab:geo:check
 ```
 
-If any failures are reported on either node, they should be resolved **before**
+If any failures are reported on either site, they should be resolved **before**
 scheduling a planned failover.
 
-### Check that secrets match between nodes
+### Check that secrets and SSH host keys match between nodes
 
 The SSH host keys and `/etc/gitlab/gitlab-secrets.json` files should be
 identical on all nodes. Check this by running the following on all nodes and
@@ -132,8 +132,14 @@ comparing the output:
 sudo sha256sum /etc/ssh/ssh_host* /etc/gitlab/gitlab-secrets.json
 ```
 
-If any files differ, replace the content on the **secondary** node with the
-content from the **primary** node.
+If any files differ, [manually replicate GitLab secrets](../replication/configuration.md#step-1-manually-replicate-secret-gitlab-values) and [replicate SSH host keys](../replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys)
+to the **secondary** site as necessary.
+
+### Check that the correct certificates are installed for HTTPS
+
+This step can be safely skipped if the **primary** site and all external sites accessed by the **primary** site use public CA-issued certificates.
+
+If the **primary** site uses custom or self-signed TLS certificates to secure inbound connections or if the **primary** site connects to external services that use custom or self-signed certificates, the correct certificates should also be installed on the **secondary** site. Follow instructions for [using custom certificates](../replication/configuration.md#step-4-optional-using-custom-certificates) with **secondary** sites.
 
 ### Ensure Geo replication is up-to-date
 
@@ -141,13 +147,13 @@ The maintenance window won't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
-On the **secondary** node:
+On the **secondary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. On the left sidebar, select **Geo > Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
-   objects aren't yet replicated (shown in gray), consider giving the node more
+   objects aren't yet replicated (shown in gray), consider giving the site more
    time to complete
 
    ![Replication status](../replication/img/geo_dashboard_v14_0.png)
@@ -160,7 +166,7 @@ You can use the [Geo status API](../../../api/geo_nodes.md#retrieve-project-sync
 the reasons for failure.
 
 A common cause of replication failures is the data being missing on the
-**primary** node - you can resolve these failures by restoring the data from backup,
+**primary** site - you can resolve these failures by restoring the data from backup,
 or removing references to the missing data.
 
 ### Verify the integrity of replicated data
@@ -169,21 +175,21 @@ This [content was moved to another location](background_verification.md).
 
 ### Notify users of scheduled maintenance
 
-On the **primary** node:
+On the **primary** site:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Messages**.
 1. Add a message notifying users on the maintenance window.
-   You can check under **Geo > Nodes** to estimate how long it
+   You can check under **Geo > Sites** to estimate how long it
    takes to finish syncing.
 1. Select **Add broadcast message**.
 
-## Prevent updates to the **primary** node
+## Prevent updates to the **primary** site
 
 To ensure that all data is replicated to a secondary site, updates (write requests) need to
 be disabled on the **primary** site:
 
-1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** node.
+1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
@@ -199,22 +205,22 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary
 
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
-1. On the **primary** node:
+1. On the **primary** site:
    1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
       those with `geo` in the name to drop to 0.
       These queues contain work that has been submitted by your users; failing over
       before it is completed, causes the work to be lost.
-   1. On the left sidebar, select **Geo > Nodes** and wait for the
-      following conditions to be true of the **secondary** node you are failing over to:
+   1. On the left sidebar, select **Geo > Sites** and wait for the
+      following conditions to be true of the **secondary** site you are failing over to:
 
       - All replication meters reach 100% replicated, 0% failures.
       - All verification meters reach 100% verified, 0% failures.
       - Database replication lag is 0ms.
       - The Geo log cursor is up to date (0 events behind).
 
-1. On the **secondary** node:
+1. On the **secondary** site:
    1. On the top bar, select **Menu > Admin**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
@@ -222,16 +228,16 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary
    1. [Run an integrity check](../../raketasks/check.md) to verify the integrity
       of CI artifacts, LFS objects, and uploads in file storage.
 
-At this point, your **secondary** node contains an up-to-date copy of everything the
-**primary** node has, meaning nothing was lost when you fail over.
+At this point, your **secondary** site contains an up-to-date copy of everything the
+**primary** site has, meaning nothing was lost when you fail over.
 
-## Promote the **secondary** node
+## Promote the **secondary** site
 
-After the replication is finished, [promote the **secondary** node to a **primary** node](index.md). This process causes a brief outage on the **secondary** node, and users may need to log in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
+After the replication is finished, [promote the **secondary** site to a **primary** site](index.md). This process causes a brief outage on the **secondary** site, and users may need to log in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
 
-When the promotion is completed, the maintenance window is over, and your new **primary** node now
+When the promotion is completed, the maintenance window is over, and your new **primary** site now
 begins to diverge from the old one. If problems do arise at this point, failing
-back to the old **primary** node [is possible](bring_primary_back.md), but likely to result
+back to the old **primary** site [is possible](bring_primary_back.md), but likely to result
 in the loss of any data uploaded to the new **primary** in the meantime.
 
 Don't forget to remove the broadcast message after the failover is complete.

@@ -6,12 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Linked epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353473) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `related_epics_widget`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flag](../../../administration/feature_flags.md)
-named `related_epics_widget`. On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353473) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `related_epics_widget`. Enabled by default.
+> - [Feature flag `related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089) removed in GitLab 15.0.
 
 Linked epics are a bi-directional relationship between any two epics and appear in a block below
 the epic description. You can link epics in different groups.
@@ -38,7 +34,11 @@ To link one epic to another:
    - **relates to**
    - **[blocks](#blocking-epics)**
    - **[is blocked by](#blocking-epics)**
-1. Enter the epic number or paste in the full URL of the epic.
+1. To enter the linked epic, either:
+
+   - Enter `&`, followed by the epic's number. For example, `&123`.
+   - Enter `&`, followed by a word from the epic's title. For example, `&Deliver`.
+   - Paste in the epic's full URL.
 
    ![Adding a related epic](img/related_epics_add_v14_9.png)
 

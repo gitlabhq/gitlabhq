@@ -6,7 +6,7 @@
 # Use this template to run MATLAB and Simulink as part of your CI/CD pipeline. The template has three jobs:
 # - `command`: Run MATLAB scripts, functions, and statements.
 # - `test`: Run tests authored using the MATLAB unit testing framework or Simulink Test.
-# - `test_artifacts_job`: Run MATLAB and Simulink tests, and generate test and coverage artifacts.
+# - `test_artifacts`: Run MATLAB and Simulink tests, and generate test and coverage artifacts.
 #
 # You can copy and paste one or more jobs in this template into your `.gitlab-ci.yml` file.
 # You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
@@ -17,20 +17,20 @@
 # - The jobs in this template use the `matlab -batch` syntax to start MATLAB. The `-batch` option is supported
 #   in MATLAB R2019a and later.
 
-# The `command` runs MATLAB scripts, functions, and statements. To use the job in your pipeline,
-# substitute `command` with the code you want to run.
+# The `command` job runs MATLAB scripts, functions, and statements. To use the job in your pipeline,
+# substitute `mycommand` with the code you want to run.
 #
 command:
-  script: matlab -batch command
+  script: matlab -batch mycommand
 
-# If the value of `command` is the name of a MATLAB script or function, do not specify the file extension.
-# For example, to run a script named `myscript.m` in the root of your repository, specify the `command` like this:
+# If the value of `mycommand` is the name of a MATLAB script or function, do not specify the file extension.
+# For example, to run a script named `myscript.m` in the root of your repository, specify `mycommand` like this:
 #
 # "myscript"
 #
 # If you specify more than one script, function, or statement, use a comma or semicolon to separate them.
 # For example, to run `myscript.m` in a folder named `myfolder` located in the root of the repository,
-# you can specify the `command` like this:
+# you can specify `mycommand` like this:
 #
 # "addpath('myfolder'), myscript"
 #
@@ -41,7 +41,7 @@ command:
 # [1] https://www.mathworks.com/help/matlab/ref/assert.html
 # [2] https://www.mathworks.com/help/matlab/ref/error.html
 
-# The `test` runs the MATLAB and Simulink tests in your project. It calls the [`runtests`][3] function
+# The `test` job runs the MATLAB and Simulink tests in your project. It calls the [`runtests`][3] function
 # to run the tests and then the [`assertSuccess`][4] method to fail the job if any of the tests fail.
 #
 test:
@@ -55,12 +55,12 @@ test:
 # [4] https://www.mathworks.com/help/matlab/ref/matlab.unittest.testresult.assertsuccess.html
 # [5] https://www.mathworks.com/help/matlab/projects.html
 
-# The `test_artifacts_job` runs your tests and additionally generates test and coverage artifacts.
+# The `test_artifacts` job runs your tests and additionally generates test and coverage artifacts.
 # It uses the plugin classes in the [`matlab.unittest.plugins`][6] package to generate a JUnit test results
-# report and a Cobertura code coverage report. Like the `run_tests` job, this job runs all the tests in your
+# report and a Cobertura code coverage report. Like the `test` job, this job runs all the tests in your
 # project and fails the build if any of the tests fail.
 #
-test_artifacts_job:
+test_artifacts:
   script: |
     matlab -batch "
     import matlab.unittest.TestRunner
@@ -84,11 +84,13 @@ test_artifacts_job:
   artifacts:
     reports:
       junit: "./artifacts/results.xml"
-      cobertura: "./artifacts/cobertura.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "./artifacts/cobertura.xml"
     paths:
       - "./artifacts"
 
-# You can modify the contents of the `test_artifacts_job` depending on your goals. For more
+# You can modify the contents of the `test_artifacts` job depending on your goals. For more
 # information on how to customize the test runner and generate various test and coverage artifacts,
 # see [Generate Artifacts Using MATLAB Unit Test Plugins][7].
 #

@@ -6,12 +6,14 @@ module API
 
     before { authenticate! }
 
-    feature_category :authentication_and_authorization
     urgency :low
 
     helpers ::API::Helpers::MembersHelpers
 
-    %w[group project].each do |source_type|
+    {
+      "group" => :subgroups,
+      "project" => :projects
+    }.each do |source_type, feature_category|
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
@@ -27,7 +29,7 @@ module API
           use :pagination
         end
 
-        get ":id/members" do
+        get ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
           members = paginate(retrieve_members(source, params: params))
@@ -46,7 +48,7 @@ module API
           use :pagination
         end
 
-        get ":id/members/all" do
+        get ":id/members/all", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
           members = paginate(retrieve_members(source, params: params, deep: true))
@@ -61,7 +63,7 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the member'
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        get ":id/members/:user_id" do
+        get ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
           members = source_members(source)
@@ -78,7 +80,7 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the member'
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        get ":id/members/all/:user_id" do
+        get ":id/members/all/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
           members = find_all_members(source)
@@ -100,16 +102,15 @@ module API
           optional :tasks_project_id, type: Integer, desc: 'The project ID in which to create the task issues'
         end
 
-        post ":id/members" do
+        post ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
-          user_id = params[:user_id].to_s
-          create_service_params = params.except(:user_id).merge({ user_ids: user_id, source: source })
+          create_service_params = params.merge(source: source)
 
-          if add_multiple_members?(user_id)
+          if add_multiple_members?(params[:user_id].to_s)
             ::Members::CreateService.new(current_user, create_service_params).execute
-          elsif add_single_member?(user_id)
+          elsif add_single_member?(params[:user_id].to_s)
             add_single_member_by_user_id(create_service_params)
           end
         end
@@ -123,7 +124,7 @@ module API
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        put ":id/members/:user_id" do
+        put ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params.delete(:id))
           authorize_admin_source!(source_type, source)
 
@@ -152,7 +153,7 @@ module API
                    desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        delete ":id/members/:user_id" do
+        delete ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
           member = source_members(source).find_by!(user_id: params[:user_id])
 

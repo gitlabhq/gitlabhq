@@ -1,4 +1,4 @@
-import { GlForm } from '@gitlab/ui';
+import { GlBadge, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '@sentry/browser';
@@ -18,11 +18,18 @@ import {
   integrationLevels,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
+  billingPlans,
+  billingPlanNames,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
 import httpStatus from '~/lib/utils/http_status';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import { mockIntegrationProps, mockField, mockSectionConnection } from '../mock_data';
+import {
+  mockIntegrationProps,
+  mockField,
+  mockSectionConnection,
+  mockSectionJiraIssues,
+} from '../mock_data';
 
 jest.mock('@sentry/browser');
 jest.mock('~/lib/utils/url_utility');
@@ -72,6 +79,7 @@ describe('IntegrationForm', () => {
   const findInstanceOrGroupSaveButton = () => wrapper.findByTestId('save-button-instance-group');
   const findTestButton = () => wrapper.findByTestId('test-button');
   const findTriggerFields = () => wrapper.findComponent(TriggerFields);
+  const findGlBadge = () => wrapper.findComponent(GlBadge);
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
   const findDynamicField = () => wrapper.findComponent(DynamicField);
@@ -327,7 +335,19 @@ describe('IntegrationForm', () => {
 
       expect(connectionSection.find('h4').text()).toBe(mockSectionConnection.title);
       expect(connectionSection.find('p').text()).toBe(mockSectionConnection.description);
+      expect(findGlBadge().exists()).toBe(false);
       expect(findConnectionSectionComponent().exists()).toBe(true);
+    });
+
+    it('renders GlBadge when `plan` is present', () => {
+      createComponent({
+        customStateProps: {
+          sections: [mockSectionConnection, mockSectionJiraIssues],
+        },
+      });
+
+      expect(findGlBadge().exists()).toBe(true);
+      expect(findGlBadge().text()).toMatchInterpolatedText(billingPlanNames[billingPlans.PREMIUM]);
     });
 
     it('passes only fields with section type', () => {

@@ -40,12 +40,17 @@ export default class SidebarMediator {
     const data = { assignee_ids: assignees };
 
     try {
+      const { currentUserHasAttention } = this.store;
       const res = await this.service.update(field, data);
 
       this.store.overwrite('assignees', res.data.assignees);
 
       if (res.data.reviewers) {
         this.store.overwrite('reviewers', res.data.reviewers);
+      }
+
+      if (currentUserHasAttention && this.store.isAddingAssignee) {
+        toast(__('Assigned user(s). Your attention request was removed.'));
       }
 
       return Promise.resolve(res);
@@ -63,10 +68,15 @@ export default class SidebarMediator {
     const data = { reviewer_ids: reviewers };
 
     try {
+      const { currentUserHasAttention } = this.store;
       const res = await this.service.update(field, data);
 
       this.store.overwrite('reviewers', res.data.reviewers);
       this.store.overwrite('assignees', res.data.assignees);
+
+      if (currentUserHasAttention && this.store.isAddingAssignee) {
+        toast(__('Requested review. Your attention request was removed.'));
+      }
 
       return Promise.resolve(res);
     } catch (e) {
@@ -98,14 +108,19 @@ export default class SidebarMediator {
     }
   }
 
-  async toggleAttentionRequested(type, { user, callback }) {
+  async toggleAttentionRequested(type, { user, callback, direction }) {
+    const mutations = {
+      add: (id) => this.service.requestAttention(id),
+      remove: (id) => this.service.removeAttentionRequest(id),
+    };
+
     try {
       const isReviewer = type === 'reviewer';
       const reviewerOrAssignee = isReviewer
         ? this.store.findReviewer(user)
         : this.store.findAssignee(user);
 
-      await this.service.toggleAttentionRequested(user.id);
+      await mutations[direction]?.(user.id);
 
       if (reviewerOrAssignee.attention_requested) {
         toast(
@@ -115,12 +130,22 @@ export default class SidebarMediator {
         );
       } else {
         const currentUserId = gon.current_user_id;
+        const { currentUserHasAttention } = this.store;
 
         if (currentUserId !== user.id) {
           this.removeCurrentUserAttentionRequested();
         }
 
-        toast(sprintf(__('Requested attention from @%{username}'), { username: user.username }));
+        toast(
+          currentUserHasAttention && currentUserId !== user.id
+            ? sprintf(
+                __(
+                  'Requested attention from @%{username}. Your own attention request was removed.',
+                ),
+                { username: user.username },
+              )
+            : sprintf(__('Requested attention from @%{username}'), { username: user.username }),
+        );
       }
 
       this.store.updateReviewer(user.id, 'attention_requested');
@@ -138,7 +163,7 @@ export default class SidebarMediator {
         captureError: true,
         actionConfig: {
           title: __('Try again'),
-          clickHandler: () => this.toggleAttentionRequired(type, { user, callback }),
+          clickHandler: () => this.toggleAttentionRequired(type, { user, callback, direction }),
         },
       });
     }

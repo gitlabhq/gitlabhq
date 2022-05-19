@@ -5,7 +5,6 @@ module API
   module Internal
     class Kubernetes < ::API::Base
       feature_category :kubernetes_management
-
       before do
         check_feature_enabled
         authenticate_gitlab_kas_request!
@@ -48,7 +47,7 @@ module API
         end
 
         def check_feature_enabled
-          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api, default_enabled: true, type: :ops)
+          not_found! unless Feature.enabled?(:kubernetes_agent_internal_api, type: :ops)
         end
 
         def check_agent_token
@@ -68,7 +67,7 @@ module API
             detail 'Retrieves agent info for the given token'
           end
           route_setting :authentication, cluster_agent_token_allowed: true
-          get '/agent_info' do
+          get '/agent_info', urgency: :low do
             project = agent.project
 
             status 200
@@ -82,7 +81,7 @@ module API
           end
         end
 
-        namespace 'kubernetes/agent_configuration' do
+        namespace 'kubernetes/agent_configuration', urgency: :low do
           desc 'POST agent configuration' do
             detail 'Store configuration for an agent'
           end

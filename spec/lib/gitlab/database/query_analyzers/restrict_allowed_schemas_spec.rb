@@ -155,7 +155,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas, query_a
       yield if block_given?
 
       # Skip load balancer and retrieve connection assigned to model
-      Gitlab::Database::QueryAnalyzer.instance.process_sql(sql, model.retrieve_connection)
+      Gitlab::Database::QueryAnalyzer.instance.send(:process_sql, sql, model.retrieve_connection)
     end
   end
 end

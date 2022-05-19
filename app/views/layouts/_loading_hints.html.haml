@@ -12,4 +12,4 @@
     = preload_link_tag(path_to_stylesheet('application'), crossorigin: css_crossorigin)
   = preload_link_tag(path_to_stylesheet("highlight/themes/#{user_color_scheme}"), crossorigin: css_crossorigin)
   - if Gitlab::Tracking.enabled? && Gitlab::Tracking.collector_hostname
-    %link{ rel: 'preconnect', href: Gitlab::Tracking.collector_hostname, crossorigin: '' }
+    %link{ rel: 'preconnect', href: "https://#{Gitlab::Tracking.collector_hostname}", crossorigin: '' }

@@ -23,21 +23,25 @@ it's rendered into HTML when you view it:
 Interactive features, including JavaScript plots, don't work when viewed in
 GitLab.
 
-## Cleaner diffs
+## Cleaner diffs and raw diffs
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6589) in GitLab 14.5 as an [Alpha](../../../../policy/alpha-beta-support.md#alpha-features) release [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75500) in GitLab 14.9. Feature flag `jupyter_clean_diffs` removed.
 > - [Reintroduced toggle](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079) in GitLab 15.0 [with a flag](../../../../administration/feature_flags.md) named `ipynb_semantic_diff`. Enabled by default.
+> - Selecting between raw and cleaner diffs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85203) in GitLab 15.0 [with a flag](../../../../administration/feature_flags.md) named `rendered_diffs_viewer`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `ipynb_semantic_diff`.
+On self-managed GitLab, by default semantic diffs are available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `ipynb_semantic_diff`.
 On GitLab.com, this feature is available.
-This feature is ready for production use.
+
+FLAG:
+On self-managed GitLab, by default the ability to switch between raw and rendered diffs is available. To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)named `rendered_diffs_viewer`. On GitLab.com, this feature is available.
 
 When commits include changes to Jupyter Notebook files, GitLab:
 
 - Transforms the machine-readable `.ipynb` file into a human-readable Markdown file.
 - Displays a cleaner version of the diff that includes syntax highlighting.
+- Enables switching between raw and rendered diffs on the Commit and Compare pages. (Not available on merge request pages.)
 
 Code suggestions are not available on diffs and merge requests for `.ipynb` files.
 

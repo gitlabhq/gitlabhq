@@ -7,6 +7,10 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   PumaProcessSupervisor = Class.new(Gitlab::ProcessSupervisor)
 
   class << self
+    def version
+      Rails.root.join('GITLAB_METRICS_EXPORTER_VERSION').read.chomp
+    end
+
     def start_for_puma
       metrics_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
 
@@ -18,22 +22,54 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
       supervisor = PumaProcessSupervisor.instance
       supervisor.supervise(start_server.call) do
-        next unless supervisor.alive
-
         Gitlab::AppLogger.info('Puma metrics server terminated, restarting...')
         start_server.call
       end
     end
 
-    def spawn(target, metrics_dir:, gitlab_config: nil, wipe_metrics_dir: false)
+    def start_for_sidekiq(**options)
+      if new_metrics_server?
+        self.spawn('sidekiq', **options)
+      else
+        self.fork('sidekiq', **options)
+      end
+    end
+
+    def spawn(target, metrics_dir:, **options)
+      return spawn_ruby_server(target, metrics_dir: metrics_dir, **options) unless new_metrics_server?
+
+      name = settings_key(target)
+      settings = ::Settings.monitoring[name]
+      path = options[:path]&.then { |p| Pathname.new(p) } || Pathname.new('')
+      cmd = path.join('gitlab-metrics-exporter').to_path
+      env = {
+        'GME_MMAP_METRICS_DIR' => metrics_dir.to_s,
+        'GME_PROBES' => 'self,mmap',
+        'GME_SERVER_HOST' => settings['address'],
+        'GME_SERVER_PORT' => settings['port'].to_s
+      }
+
+      if settings['log_enabled']
+        env['GME_LOG_FILE'] = File.join(Rails.root, 'log', "#{name}.log")
+        env['GME_LOG_LEVEL'] = 'info'
+      else
+        env['GME_LOG_LEVEL'] = 'quiet'
+      end
+
+      Process.spawn(env, cmd, err: $stderr, out: $stdout, pgroup: true).tap do |pid|
+        Process.detach(pid)
+      end
+    end
+
+    def spawn_ruby_server(target, metrics_dir:, wipe_metrics_dir: false, **options)
       ensure_valid_target!(target)
 
       cmd = "#{Rails.root}/bin/metrics-server"
       env = {
         'METRICS_SERVER_TARGET' => target,
-        'WIPE_METRICS_DIR' => wipe_metrics_dir ? '1' : '0'
+        'WIPE_METRICS_DIR' => wipe_metrics_dir ? '1' : '0',
+        'GITLAB_CONFIG' => ENV['GITLAB_CONFIG']
       }
-      env['GITLAB_CONFIG'] = gitlab_config if gitlab_config
 
       Process.spawn(env, cmd, err: $stderr, out: $stdout, pgroup: true).tap do |pid|
         Process.detach(pid)
@@ -66,8 +102,20 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
     private
 
+    def new_metrics_server?
+      Gitlab::Utils.to_boolean(ENV['GITLAB_GOLANG_METRICS_SERVER'])
+    end
+
     def ensure_valid_target!(target)
       raise "Target must be one of [puma,sidekiq]" unless %w(puma sidekiq).include?(target)
+    end
+
+    def settings_key(target)
+      case target
+      when 'puma' then 'web_exporter'
+      when 'sidekiq' then 'sidekiq_exporter'
+      else ensure_valid_target!(target)
+      end
     end
   end
 

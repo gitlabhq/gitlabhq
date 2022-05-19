@@ -15,6 +15,7 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   feature_category :team_planning
+  urgency :low
 
   def index
     respond_to do |format|

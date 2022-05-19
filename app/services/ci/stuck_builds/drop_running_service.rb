@@ -16,7 +16,7 @@ module Ci
       private
 
       def running_timed_out_builds
-        if Feature.enabled?(:ci_new_query_for_running_stuck_jobs, default_enabled: :yaml)
+        if Feature.enabled?(:ci_new_query_for_running_stuck_jobs)
           Ci::Build
             .running
             .created_at_before(BUILD_RUNNING_OUTDATED_TIMEOUT.ago)

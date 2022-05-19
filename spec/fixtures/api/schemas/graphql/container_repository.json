@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus", "project"],
+  "required": ["id", "name", "path", "location", "createdAt", "updatedAt", "tagsCount", "canDelete", "expirationPolicyCleanupStatus", "project", "lastCleanupDeletedTagsCount"],
   "properties": {
     "id": {
       "type": "string"
@@ -38,6 +38,9 @@
     },
     "project": {
       "type": "object"
+    },
+    "lastCleanupDeletedTagsCount": {
+      "type": ["string", "null"]
     }
   }
 }

@@ -1,4 +1,4 @@
-# Terraform/Base.latest
+# Terraform/Base
 #
 # The purpose of this template is to provide flexibility to the user so
 # they are able to only include the jobs that they find interesting.
@@ -7,10 +7,9 @@
 # create hidden jobs. See: https://docs.gitlab.com/ee/ci/yaml/#hide-jobs
 #
 # There is a more opinionated template which we suggest the users to abide,
-# which is the lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
-
+# which is the lib/gitlab/ci/templates/Terraform.gitlab-ci.yml
 image:
-  name: registry.gitlab.com/gitlab-org/terraform-images/releases/terraform:1.0.3
+  name: registry.gitlab.com/gitlab-org/terraform-images/releases/terraform:1.1.9
 
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
@@ -21,43 +20,46 @@ cache:
   paths:
     - ${TF_ROOT}/.terraform/
 
-.init: &init
-  stage: init
+.terraform:fmt: &terraform_fmt
+  stage: validate
   script:
     - cd "${TF_ROOT}"
-    - gitlab-terraform init
+    - gitlab-terraform fmt
+  allow_failure: true
 
-.validate: &validate
+.terraform:validate: &terraform_validate
   stage: validate
   script:
     - cd "${TF_ROOT}"
     - gitlab-terraform validate
 
-.build: &build
+.terraform:build: &terraform_build
   stage: build
   script:
     - cd "${TF_ROOT}"
     - gitlab-terraform plan
     - gitlab-terraform plan-json
+  resource_group: ${TF_STATE_NAME}
   artifacts:
     paths:
       - ${TF_ROOT}/plan.cache
     reports:
       terraform: ${TF_ROOT}/plan.json
 
-.deploy: &deploy
+.terraform:deploy: &terraform_deploy
   stage: deploy
   script:
     - cd "${TF_ROOT}"
     - gitlab-terraform apply
-  when: manual
-  only:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  resource_group: ${TF_STATE_NAME}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
 
-.destroy: &destroy
+.terraform:destroy: &terraform_destroy
   stage: cleanup
   script:
     - cd "${TF_ROOT}"
     - gitlab-terraform destroy
+  resource_group: ${TF_STATE_NAME}
   when: manual

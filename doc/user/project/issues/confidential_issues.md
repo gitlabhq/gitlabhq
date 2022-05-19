@@ -36,7 +36,7 @@ The second way is to locate the Confidentiality section in the sidebar and click
 
 | Turn off confidentiality | Turn on confidentiality |
 | :-----------: | :----------: |
-| ![Turn off confidentiality](img/turn_off_confidentiality.png) | ![Turn on confidentiality](img/turn_on_confidentiality.png) |
+| ![Turn off confidentiality](img/turn_off_confidentiality_v15_0.png) | ![Turn on confidentiality](img/turn_on_confidentiality_v15_0.png) |
 
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the issue's comments.
@@ -97,5 +97,5 @@ sees in the project's search results respectively.
 
 - [Merge requests for confidential issues](../merge_requests/confidential.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)
-- [Mark a comment as confidential](../../discussions/index.md#mark-a-comment-as-confidential)
+- [Add an internal note](../../discussions/index.md#add-an-internal-note)
 - [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer) at GitLab

@@ -1080,7 +1080,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       it 'reports collected data categories' do
         expected_value = %w[standard subscription operational optional]
 
-        allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
+        allow_next_instance_of(ServicePing::PermitDataCategories) do |instance|
           expect(instance).to receive(:execute).and_return(expected_value)
         end
 
@@ -1467,6 +1467,33 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         }
 
         expect(subject).to eq(expected_data)
+      end
+    end
+  end
+
+  describe ".with_duration" do
+    context 'with feature flag measure_service_ping_metric_collection turned off' do
+      before do
+        stub_feature_flags(measure_service_ping_metric_collection: false)
+      end
+
+      it 'does NOT record duration and return block response' do
+        expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator).not_to receive(:new)
+
+        expect(described_class.with_duration { 1 + 1 }).to be 2
+      end
+    end
+
+    context 'with feature flag measure_service_ping_metric_collection turned off' do
+      before do
+        stub_feature_flags(measure_service_ping_metric_collection: true)
+      end
+
+      it 'records duration' do
+        expect(::Gitlab::Usage::ServicePing::LegacyMetricTimingDecorator)
+          .to receive(:new).with(2, kind_of(Float))
+
+        described_class.with_duration { 1 + 1 }
       end
     end
   end

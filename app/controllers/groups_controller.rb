@@ -31,7 +31,7 @@ class GroupsController < Groups::ApplicationController
   before_action :user_actions, only: [:show]
 
   before_action do
-    push_frontend_feature_flag(:vue_issues_list, @group, default_enabled: :yaml)
+    push_frontend_feature_flag(:vue_issues_list, @group)
   end
 
   before_action :check_export_rate_limit!, only: [:export, :download_export]
@@ -57,10 +57,13 @@ class GroupsController < Groups::ApplicationController
   feature_category :code_review, [:merge_requests, :unfoldered_environment_names]
   feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]
+  urgency :low, [:export, :download_export]
 
   urgency :high, [:unfoldered_environment_names]
+
+  urgency :low, [:issues, :issues_calendar, :preview_markdown]
   # TODO: Set #show to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/334795
-  urgency :low, [:merge_requests, :show]
+  urgency :low, [:merge_requests, :show, :create, :new, :update, :projects, :destroy, :edit, :activity]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)
@@ -209,7 +212,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
-    return super if !html_request? || Feature.disabled?(:vue_issues_list, group, default_enabled: :yaml)
+    return super if !html_request? || Feature.disabled?(:vue_issues_list, group)
 
     @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
       .non_archived
@@ -227,6 +230,8 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def render_show_html
+    Gitlab::Tracking.event('group_overview', 'render', user: current_user, namespace: @group)
+
     render 'groups/show', locals: { trial: params[:trial] }
   end
 

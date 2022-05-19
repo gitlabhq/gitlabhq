@@ -18,7 +18,7 @@
     increase throughput and reduce Go garbage collection latency. For more information, see
     the [relevant epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463).
 # The following items are not published on the docs page, but may be used in the future.
-  stage:  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  stage: platform
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url:  # (optional) This is a link to the deprecation issue in GitLab
   documentation_url:  # (optional) This is a link to the current documentation page

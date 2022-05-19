@@ -42,8 +42,10 @@ class Feature
       flipper.features.to_a
     end
 
+    RecursionError = Class.new(RuntimeError)
+
     def get(key)
-      flipper.feature(key)
+      with_feature(key, &:itself)
     end
 
     def persisted_names
@@ -65,34 +67,29 @@ class Feature
       persisted_names.include?(feature_name.to_s)
     end
 
-    # use `default_enabled: true` to default the flag to being `enabled`
-    # unless set explicitly.  The default is `disabled`
-    # TODO: remove the `default_enabled:` and read it from the `definition_yaml`
-    # check: https://gitlab.com/gitlab-org/gitlab/-/issues/30228
-    def enabled?(key, thing = nil, type: :development, default_enabled: false)
+    # The default state of feature flag is read from `YAML`:
+    # 1. If feature flag does not have YAML it will fallback to `default_enabled: false`
+    #    in production environment, but raise exception in development or tests.
+    # 2. The `default_enabled_if_undefined:` is tech debt related to Gitaly flags
+    #    and should not be used outside of Gitaly's `lib/feature/gitaly.rb`
+    def enabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
       if check_feature_flags_definition?
         if thing && !thing.respond_to?(:flipper_id)
           raise InvalidFeatureFlagError,
             "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
         end
 
-        Feature::Definition.valid_usage!(key, type: type, default_enabled: default_enabled)
+        Feature::Definition.valid_usage!(key, type: type)
       end
 
-      # If `default_enabled: :yaml` we fetch the value from the YAML definition instead.
-      default_enabled = Feature::Definition.default_enabled?(key) if default_enabled == :yaml
+      default_enabled = Feature::Definition.default_enabled?(key, default_enabled_if_undefined: default_enabled_if_undefined)
 
-      # During setup the database does not exist yet. So we haven't stored a value
-      # for the feature yet and return the default.
-      return default_enabled unless ApplicationRecord.database.exists?
+      feature_value = with_feature(key) do |feature|
+        feature_value = current_feature_value(feature, thing, default_enabled: default_enabled)
+      end
 
-      feature = get(key)
-
-      # If we're not default enabling the flag or the feature has been set, always evaluate.
-      # `persisted?` can potentially generate DB queries and also checks for inclusion
-      # in an array of feature names (177 at last count), possibly reducing performance by half.
-      # So we only perform the `persisted` check if `default_enabled: true`
-      feature_value = !default_enabled || Feature.persisted_name?(feature.name) ? feature.enabled?(thing) : true
+      # If not yielded, then either recursion is happening, or the database does not exist yet, so use default_enabled.
+      feature_value = default_enabled if feature_value.nil?
 
       # If we don't filter out this flag here we will enter an infinite loop
       log_feature_flag_state(key, feature_value) if log_feature_flag_states?(key)
@@ -100,46 +97,46 @@ class Feature
       feature_value
     end
 
-    def disabled?(key, thing = nil, type: :development, default_enabled: false)
+    def disabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
       # we need to make different method calls to make it easy to mock / define expectations in test mode
-      thing.nil? ? !enabled?(key, type: type, default_enabled: default_enabled) : !enabled?(key, thing, type: type, default_enabled: default_enabled)
+      thing.nil? ? !enabled?(key, type: type, default_enabled_if_undefined: default_enabled_if_undefined) : !enabled?(key, thing, type: type, default_enabled_if_undefined: default_enabled_if_undefined)
     end
 
     def enable(key, thing = true)
       log(key: key, action: __method__, thing: thing)
-      get(key).enable(thing)
+      with_feature(key) { _1.enable(thing) }
     end
 
     def disable(key, thing = false)
       log(key: key, action: __method__, thing: thing)
-      get(key).disable(thing)
+      with_feature(key) { _1.disable(thing) }
     end
 
     def enable_percentage_of_time(key, percentage)
       log(key: key, action: __method__, percentage: percentage)
-      get(key).enable_percentage_of_time(percentage)
+      with_feature(key) { _1.enable_percentage_of_time(percentage) }
     end
 
     def disable_percentage_of_time(key)
       log(key: key, action: __method__)
-      get(key).disable_percentage_of_time
+      with_feature(key, &:disable_percentage_of_time)
     end
 
     def enable_percentage_of_actors(key, percentage)
       log(key: key, action: __method__, percentage: percentage)
-      get(key).enable_percentage_of_actors(percentage)
+      with_feature(key) { _1.enable_percentage_of_actors(percentage) }
     end
 
     def disable_percentage_of_actors(key)
       log(key: key, action: __method__)
-      get(key).disable_percentage_of_actors
+      with_feature(key, &:disable_percentage_of_actors)
     end
 
     def remove(key)
       return unless persisted_name?(key)
 
       log(key: key, action: __method__)
-      get(key).remove
+      with_feature(key, &:remove)
     end
 
     def reset
@@ -180,6 +177,52 @@ class Feature
     end
 
     private
+
+    # Evaluate if `default enabled: false` or the feature has been persisted.
+    # `persisted_name?` can potentially generate DB queries and also checks for inclusion
+    # in an array of feature names (177 at last count), possibly reducing performance by half.
+    # So we only perform the `persisted` check if `default_enabled: true`
+    def current_feature_value(feature, thing, default_enabled:)
+      return true if default_enabled && !Feature.persisted_name?(feature.name)
+
+      feature.enabled?(thing)
+    end
+
+    # NOTE: it is not safe to call `Flipper::Feature#enabled?` outside the block
+    def with_feature(key)
+      feature = unsafe_get(key)
+      yield feature if feature.present?
+    ensure
+      pop_recursion_stack
+    end
+
+    def unsafe_get(key)
+      # During setup the database does not exist yet. So we haven't stored a value
+      # for the feature yet and return the default.
+      return unless ApplicationRecord.database.exists?
+
+      flag_stack = ::Thread.current[:feature_flag_recursion_check] || []
+      Thread.current[:feature_flag_recursion_check] = flag_stack
+
+      # Prevent more than 10 levels of recursion. This limit was chosen as a fairly
+      # low limit while allowing some nesting of flag evaluation. We have not seen
+      # this limit hit in production.
+      if flag_stack.size > 10
+        Gitlab::ErrorTracking.track_exception(RecursionError.new('deep recursion'), stack: flag_stack)
+        return
+      elsif flag_stack.include?(key)
+        Gitlab::ErrorTracking.track_exception(RecursionError.new('self recursion'), stack: flag_stack)
+        return
+      end
+
+      flag_stack.push(key)
+      flipper.feature(key)
+    end
+
+    def pop_recursion_stack
+      flag_stack = Thread.current[:feature_flag_recursion_check]
+      flag_stack.pop if flag_stack
+    end
 
     def flipper
       if Gitlab::SafeRequestStore.active?

@@ -77,6 +77,27 @@ RSpec.describe Gitlab::InstrumentationHelper do
       end
     end
 
+    context 'rate-limiting gates' do
+      context 'when the request did not pass through any rate-limiting gates' do
+        it 'logs an empty array of gates' do
+          subject
+
+          expect(payload[:rate_limiting_gates]).to eq([])
+        end
+      end
+
+      context 'when the request passed through rate-limiting gates' do
+        it 'logs an array of gates used' do
+          Gitlab::Instrumentation::RateLimitingGates.track(:foo)
+          Gitlab::Instrumentation::RateLimitingGates.track(:bar)
+
+          subject
+
+          expect(payload[:rate_limiting_gates]).to contain_exactly(:foo, :bar)
+        end
+      end
+    end
+
     it 'logs cpu_s duration' do
       subject
 

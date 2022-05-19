@@ -111,7 +111,7 @@ class Projects::BranchesController < Projects::ApplicationController
         flash_type = result.error? ? :alert : :notice
         flash[flash_type] = result.message
 
-        redirect_to project_branches_path(@project), status: :see_other
+        redirect_back_or_default(default: project_branches_path(@project), options: { status: :see_other })
       end
 
       format.js { head result.http_status }

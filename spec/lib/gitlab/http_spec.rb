@@ -246,10 +246,10 @@ RSpec.describe Gitlab::HTTP do
     context 'when :timeout is set' do
       it 'does not set any default timeouts' do
         expect(described_class).to receive(:httparty_perform_request).with(
-          Net::HTTP::Get, 'http://example.org', timeout: 1
+          Net::HTTP::Get, 'http://example.org', { timeout: 1 }
         ).and_call_original
 
-        described_class.get('http://example.org', timeout: 1)
+        described_class.get('http://example.org', { timeout: 1 })
       end
     end
 

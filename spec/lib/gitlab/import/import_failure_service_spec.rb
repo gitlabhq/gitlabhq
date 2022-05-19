@@ -64,19 +64,23 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures do
           .to receive(:track_exception)
           .with(
             exception,
-            project_id: project.id,
-            import_type: import_type,
-            source: 'SomeImporter'
+            {
+              project_id: project.id,
+              import_type: import_type,
+              source: 'SomeImporter'
+            }
           )
 
         expect(Gitlab::Import::Logger)
           .to receive(:error)
           .with(
-            message: 'importer failed',
-            'error.message': 'some error',
-            project_id: project.id,
-            import_type: import_type,
-            source: 'SomeImporter'
+            {
+              message: 'importer failed',
+              'error.message': 'some error',
+              project_id: project.id,
+              import_type: import_type,
+              source: 'SomeImporter'
+            }
           )
 
         service.execute
@@ -96,19 +100,23 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures do
           .to receive(:track_exception)
           .with(
             exception,
-            project_id: project.id,
-            import_type: import_type,
-            source: 'SomeImporter'
+            {
+              project_id: project.id,
+              import_type: import_type,
+              source: 'SomeImporter'
+            }
           )
 
         expect(Gitlab::Import::Logger)
           .to receive(:error)
           .with(
-            message: 'importer failed',
-            'error.message': 'some error',
-            project_id: project.id,
-            import_type: import_type,
-            source: 'SomeImporter'
+            {
+              message: 'importer failed',
+              'error.message': 'some error',
+              project_id: project.id,
+              import_type: import_type,
+              source: 'SomeImporter'
+            }
           )
 
         service.execute

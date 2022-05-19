@@ -1,9 +1,12 @@
+import { Emitter } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditBlob from '~/blob_edit/edit_blob';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
+import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
 
 jest.mock('~/editor/source_editor');
@@ -11,11 +14,13 @@ jest.mock('~/editor/extensions/source_editor_extension_base');
 jest.mock('~/editor/extensions/source_editor_file_template_ext');
 jest.mock('~/editor/extensions/source_editor_markdown_ext');
 jest.mock('~/editor/extensions/source_editor_markdown_livepreview_ext');
+jest.mock('~/editor/extensions/source_editor_toolbar_ext');
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const defaultExtensions = [
   { definition: SourceEditorExtension },
   { definition: FileTemplateExtension },
+  { definition: ToolbarExtension },
 ];
 const markdownExtensions = [
   { definition: EditorMarkdownExtension },
@@ -26,15 +31,20 @@ const markdownExtensions = [
 ];
 
 describe('Blob Editing', () => {
-  const useMock = jest.fn();
+  let blobInstance;
+  const useMock = jest.fn(() => markdownExtensions);
+  const unuseMock = jest.fn();
+  const emitter = new Emitter();
   const mockInstance = {
     use: useMock,
+    unuse: unuseMock,
     setValue: jest.fn(),
     getValue: jest.fn().mockReturnValue('test value'),
     focus: jest.fn(),
+    onDidChangeModelLanguage: emitter.event,
   };
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <form class="js-edit-blob-form">
         <div id="file_path"></div>
         <div id="editor"></div>
@@ -44,17 +54,18 @@ describe('Blob Editing', () => {
     jest.spyOn(SourceEditor.prototype, 'createInstance').mockReturnValue(mockInstance);
   });
   afterEach(() => {
-    SourceEditorExtension.mockClear();
-    EditorMarkdownExtension.mockClear();
-    EditorMarkdownPreviewExtension.mockClear();
-    FileTemplateExtension.mockClear();
+    jest.clearAllMocks();
+    unuseMock.mockClear();
+    useMock.mockClear();
+    resetHTMLFixture();
   });
 
   const editorInst = (isMarkdown) => {
-    return new EditBlob({
+    blobInstance = new EditBlob({
       isMarkdown,
       previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
     });
+    return blobInstance;
   };
 
   const initEditor = async (isMarkdown = false) => {
@@ -78,6 +89,22 @@ describe('Blob Editing', () => {
       await initEditor(true);
       expect(useMock).toHaveBeenCalledTimes(2);
       expect(useMock.mock.calls[1]).toEqual([markdownExtensions]);
+    });
+
+    it('correctly handles switching from markdown and un-uses markdown extensions', async () => {
+      await initEditor(true);
+      expect(unuseMock).not.toHaveBeenCalled();
+      await emitter.fire({ newLanguage: 'plaintext', oldLanguage: 'markdown' });
+      expect(unuseMock).toHaveBeenCalledWith(markdownExtensions);
+    });
+
+    it('correctly handles switching from non-markdown to markdown extensions', async () => {
+      const mdSpy = jest.fn();
+      await initEditor();
+      blobInstance.fetchMarkdownExtension = mdSpy;
+      expect(mdSpy).not.toHaveBeenCalled();
+      await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
+      expect(mdSpy).toHaveBeenCalled();
     });
   });
 

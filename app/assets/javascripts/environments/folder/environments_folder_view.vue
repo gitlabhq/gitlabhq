@@ -54,7 +54,9 @@ export default {
         :key="`${tab.name}-${i}`"
         :active="tab.isActive"
         :title-item-class="tab.isActive ? 'gl-outline-none' : ''"
-        :title-link-attributes="{ 'data-testid': `environments-tab-${tab.scope}` }"
+        :title-link-attributes="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          'data-testid': `environments-tab-${tab.scope}`,
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
         @click="onChangeTab(tab.scope)"
       >
         <template #title>

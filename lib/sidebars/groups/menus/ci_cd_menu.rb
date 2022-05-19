@@ -35,8 +35,7 @@ module Sidebars
         end
 
         def show_runners?
-          can?(context.current_user, :read_group_runners, context.group) &&
-            Feature.enabled?(:runner_list_group_view_vue_ui, context.group, default_enabled: :yaml)
+          can?(context.current_user, :read_group_runners, context.group)
         end
       end
     end

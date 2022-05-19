@@ -32,7 +32,7 @@ const compilerFactory = (renderer) =>
  * the MDast tree
  */
 export const render = async ({ markdown, renderer }) => {
-  const { value } = await createParser().use(compilerFactory(renderer)).process(markdown);
+  const { result } = await createParser().use(compilerFactory(renderer)).process(markdown);
 
-  return value;
+  return result;
 };

@@ -18,7 +18,7 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
       it 'raises an error' do
         expect do
           described_class.for_tracking_database('notvalid')
-        end.to raise_error(ArgumentError, /tracking_database must be one of/)
+        end.to raise_error(ArgumentError, /must be one of/)
       end
     end
   end

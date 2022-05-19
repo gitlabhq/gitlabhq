@@ -220,7 +220,7 @@ production: &base
     #
     # log_path: log/mail_room_json.log
 
-    # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+    # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
     expunge_deleted: false
 
     # For Microsoft Graph support
@@ -288,7 +288,6 @@ production: &base
     # object_store:
     #   enabled: false
     #   remote_directory: artifacts # The bucket name
-    #   background_upload: false # Temporary option to limit automatic upload (Default: true)
     #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
     #   connection:
     #     provider: AWS # Only AWS supported at the moment
@@ -308,7 +307,6 @@ production: &base
     # object_store:
     #   enabled: false
     #   remote_directory: external-diffs
-    #   background_upload: false
     #   proxy_download: false
     #   connection:
     #     provider: AWS
@@ -324,8 +322,6 @@ production: &base
     object_store:
       enabled: false
       remote_directory: lfs-objects # Bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
@@ -346,8 +342,6 @@ production: &base
     object_store:
       enabled: false
       remote_directory: uploads # Bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
@@ -368,8 +362,6 @@ production: &base
     object_store:
       enabled: false
       remote_directory: packages # The bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
@@ -389,8 +381,6 @@ production: &base
     object_store:
       enabled: false
       remote_directory: dependency_proxy # The bucket name
-      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
-      # background_upload: false # Temporary option to limit automatic upload (Default: true)
       # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
         provider: AWS
@@ -592,19 +582,10 @@ production: &base
     geo_secondary_registry_consistency_worker:
       cron: "* * * * *"
 
-    # GitLab Geo file download dispatch worker
-    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
-    geo_file_download_dispatch_worker:
-      cron: "*/1 * * * *"
-
     # GitLab Geo registry sync worker (for backfilling)
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_registry_sync_worker:
       cron: "*/1 * * * *"
-
-    # Export pseudonymized data in CSV format for analysis
-    pseudonymizer_worker:
-      cron: "0 * * * *"
 
     # Elasticsearch bulk updater for incremental updates.
     # NOTE: This will only take effect if elasticsearch is enabled.
@@ -620,6 +601,10 @@ production: &base
     # NOTE: This will only take effect if elasticsearch is enabled.
     elastic_index_initial_bulk_cron_worker:
       cron: "*/10 * * * *"
+
+    # Periodically prune stale runners from namespaces having opted-in.
+    ci_runners_stale_group_runners_prune_worker_cron:
+      cron: "30 * * * *"
 
   registry:
     # enabled: true
@@ -1215,20 +1200,6 @@ production: &base
     #   #   server_side_encryption: 'aws:kms'
     #   #   server_side_encryption_kms_key_id: 'arn:aws:kms:YOUR-KEY-ID-HERE'
 
-  ## Pseudonymizer exporter
-  pseudonymizer:
-    # Tables manifest that specifies the fields to extract and pseudonymize.
-    manifest: config/pseudonymizer.yml
-    upload:
-      remote_directory: 'gitlab-elt'
-      # Fog storage connection settings, see http://fog.io/storage/ .
-      connection:
-      #   provider: AWS
-      #   region: eu-west-1
-      #   aws_access_key_id: AKIAKIAKI
-      #   aws_secret_access_key: 'secret123'
-      #   # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
-
   ## GitLab Shell settings
   gitlab_shell:
     path: /home/git/gitlab-shell/
@@ -1304,9 +1275,8 @@ production: &base
 
     sidekiq_health_checks:
     #  enabled: true
-    #  log_enabled: false
     #  address: localhost
-    #  port: 8082
+    #  port: 8092
 
     # Web exporter is a dedicated Rack server running alongside Puma to expose Prometheus metrics
     # It runs alongside the `/metrics` endpoints to ease the publish of metrics
@@ -1438,7 +1408,6 @@ test:
     object_store:
       enabled: false
       remote_directory: artifacts # The bucket name
-      background_upload: false
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -1534,17 +1503,6 @@ test:
   backup:
     path: tmp/tests/backups
     gitaly_backup_path: tmp/tests/gitaly/_build/bin/gitaly-backup
-  pseudonymizer:
-    manifest: config/pseudonymizer.yml
-    upload:
-      # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
-      remote_directory: gitlab-elt.test
-      # Fog storage connection settings, see http://fog.io/storage/
-      connection:
-        provider: AWS # Only AWS supported at the moment
-        aws_access_key_id: AWS_ACCESS_KEY_ID
-        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: us-east-1
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     authorized_keys_file: tmp/tests/authorized_keys

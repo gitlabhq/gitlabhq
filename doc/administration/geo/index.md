@@ -254,7 +254,7 @@ Omnibus GitLab-managed database. External databases are not supported.
 
 In some circumstances, like during [upgrades](replication/updating_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
-Pausing and resuming replication is done via a command line tool from the a node in the secondary site where the `postgresql` service is enabled.
+Pausing and resuming replication is done via a command line tool from the node in the secondary site where the `postgresql` service is enabled.
 
 If `postgresql` is on a standalone database node, ensure that `gitlab.rb` on that node contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_name_name` on the application node.
 
@@ -288,7 +288,7 @@ For more information on how to replicate the Container Registry, see [Docker Reg
 
 ### Geo secondary proxy
 
-For more information on using Geo proxying on secondary nodes, see [Geo proxying for secondary sites](secondary_proxy/index.md).
+For more information on using Geo proxying on secondary sites, see [Geo proxying for secondary sites](secondary_proxy/index.md).
 
 ### Security Review
 

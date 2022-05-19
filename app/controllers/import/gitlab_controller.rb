@@ -16,9 +16,12 @@ class Import::GitlabController < Import::BaseController
     redirect_to status_import_gitlab_url
   end
 
+  # We need to re-expose controller's internal method 'status' as action.
+  # rubocop:disable Lint/UselessMethodDefinition
   def status
     super
   end
+  # rubocop:enable Lint/UselessMethodDefinition
 
   def create
     repo = client.project(params[:repo_id].to_i)

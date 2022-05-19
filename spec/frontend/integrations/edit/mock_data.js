@@ -37,3 +37,11 @@ export const mockSectionConnection = {
   title: 'Connection details',
   description: 'Learn more on how to configure this integration.',
 };
+
+export const mockSectionJiraIssues = {
+  type: 'jira_issues',
+  title: 'Issues',
+  description:
+    'Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. Learn more.',
+  plan: 'premium',
+};

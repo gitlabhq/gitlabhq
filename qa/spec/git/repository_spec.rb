@@ -206,19 +206,19 @@ RSpec.describe QA::Git::Repository do
 
       it_behaves_like 'command with retries' do
         let(:command) { "git ls-remote #{repo_uri_with_credentials}" }
-        let(:result_output) { +'packet: git< version 2' }
+        let(:result_output) { +'packet: ls-remote< version 2' }
         let(:command_return) { '2' }
         let(:extra_env_vars) { ["GIT_TRACE_PACKET=1"] }
       end
 
       it "reports the detected version" do
-        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0, "packet: git< version 2"))
+        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0, "packet: ls-remote< version 2"))
 
         expect(call_method).to eq('2')
       end
 
       it 'reports unknown if version is unknown' do
-        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0, "packet: git< version -1"))
+        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0, "packet: ls-remote< version -1"))
 
         expect(call_method).to eq('unknown')
       end

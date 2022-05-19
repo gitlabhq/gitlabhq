@@ -348,7 +348,7 @@ The following table shows the possible return codes for API requests.
 
 | Return values            | Description |
 |--------------------------|-------------|
-| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, and the resource(s) itself is returned as JSON. |
+| `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, and the resource itself is returned as JSON. |
 | `204 No Content`         | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body. |
 | `201 Created`            | The `POST` request was successful, and the resource is returned as JSON. |
 | `304 Not Modified`       | The resource hasn't been modified since the last request. |

@@ -28,6 +28,8 @@ module Gitlab
           compare_url(object, **options)
         when Group
           instance.group_canonical_url(object, **options)
+        when WorkItem
+          instance.work_item_url(object, **options)
         when Issue
           instance.issue_url(object, **options)
         when MergeRequest

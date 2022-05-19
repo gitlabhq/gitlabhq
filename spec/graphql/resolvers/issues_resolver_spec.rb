@@ -389,6 +389,34 @@ RSpec.describe Resolvers::IssuesResolver do
         end
       end
 
+      describe 'filtering by crm' do
+        let_it_be(:organization) { create(:organization, group: group) }
+        let_it_be(:contact1) { create(:contact, group: group, organization: organization) }
+        let_it_be(:contact2) { create(:contact, group: group, organization: organization) }
+        let_it_be(:contact3) { create(:contact, group: group) }
+        let_it_be(:crm_issue1) { create(:issue, project: project) }
+        let_it_be(:crm_issue2) { create(:issue, project: project) }
+        let_it_be(:crm_issue3) { create(:issue, project: project) }
+
+        before_all do
+          create(:issue_customer_relations_contact, issue: crm_issue1, contact: contact1)
+          create(:issue_customer_relations_contact, issue: crm_issue2, contact: contact2)
+          create(:issue_customer_relations_contact, issue: crm_issue3, contact: contact3)
+        end
+
+        context 'contact' do
+          it 'returns only the issues for the contact' do
+            expect(resolve_issues({ crm_contact_id: contact1.id })).to contain_exactly(crm_issue1)
+          end
+        end
+
+        context 'organization' do
+          it 'returns only the issues for the contact' do
+            expect(resolve_issues({ crm_organization_id: organization.id })).to contain_exactly(crm_issue1, crm_issue2)
+          end
+        end
+      end
+
       describe 'sorting' do
         context 'when sorting by created' do
           it 'sorts issues ascending' do
@@ -603,13 +631,13 @@ RSpec.describe Resolvers::IssuesResolver do
       end
 
       it 'finds a specific issue with iid', :request_store do
-        result = batch_sync(max_queries: 6) { resolve_issues(iid: issue1.iid).to_a }
+        result = batch_sync(max_queries: 7) { resolve_issues(iid: issue1.iid).to_a }
 
         expect(result).to contain_exactly(issue1)
       end
 
       it 'batches queries that only include IIDs', :request_store do
-        result = batch_sync(max_queries: 6) do
+        result = batch_sync(max_queries: 7) do
           [issue1, issue2]
             .map { |issue| resolve_issues(iid: issue.iid.to_s) }
             .flat_map(&:to_a)
@@ -619,7 +647,7 @@ RSpec.describe Resolvers::IssuesResolver do
       end
 
       it 'finds a specific issue with iids', :request_store do
-        result = batch_sync(max_queries: 6) do
+        result = batch_sync(max_queries: 7) do
           resolve_issues(iids: [issue1.iid]).to_a
         end
 

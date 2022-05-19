@@ -137,7 +137,6 @@ module Clusters
     scope :aws_installed, -> { aws_provided.joins(:provider_aws).merge(Clusters::Providers::Aws.with_status(:created)) }
 
     scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
-    scope :with_available_cilium, -> { joins(:application_cilium).merge(::Clusters::Applications::Cilium.available) }
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
 
     scope :managed, -> { where(managed: true) }

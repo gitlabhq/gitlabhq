@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import createComponent from 'helpers/vue_mount_component_helper';
 import CommitMessageField from '~/ide/components/commit_sidebar/message_field.vue';
 
@@ -7,7 +8,7 @@ describe('IDE commit message field', () => {
   let vm;
 
   beforeEach(() => {
-    setFixtures('<div id="app"></div>');
+    setHTMLFixture('<div id="app"></div>');
 
     vm = createComponent(
       Component,
@@ -21,6 +22,8 @@ describe('IDE commit message field', () => {
 
   afterEach(() => {
     vm.$destroy();
+
+    resetHTMLFixture();
   });
 
   it('adds is-focused class on focus', async () => {

@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { getParameterValues, setUrlParams } from './lib/utils/url_utility';
@@ -31,8 +32,16 @@ function MergeRequest(opts) {
       selector: '.detail-page-description',
       lockVersion: this.$el.data('lockVersion'),
       onSuccess: (result) => {
-        document.querySelector('#task_status').innerText = result.task_status;
-        document.querySelector('#task_status_short').innerText = result.task_status_short;
+        const taskStatus = document.querySelector('#task_status');
+        const taskStatusShort = document.querySelector('#task_status_short');
+
+        if (taskStatus) {
+          taskStatus.innerText = result.task_status;
+        }
+
+        if (taskStatusShort) {
+          document.querySelector('#task_status_short').innerText = result.task_status_short;
+        }
       },
       onError: () => {
         createFlash({
@@ -72,8 +81,7 @@ MergeRequest.prototype.initMRBtnListeners = function () {
         const wipEvent = getParameterValues('merge_request[wip_event]', url)[0];
         const mobileDropdown = draftToggle.closest('.dropdown.show');
 
-        const loader = document.createElement('span');
-        loader.classList.add('gl-spinner', 'gl-mr-3');
+        const loader = loadingIconForLegacyJS({ inline: true, classes: ['gl-mr-3'] });
 
         if (mobileDropdown) {
           $(mobileDropdown.firstElementChild).dropdown('toggle');
@@ -90,10 +98,13 @@ MergeRequest.prototype.initMRBtnListeners = function () {
             MergeRequest.toggleDraftStatus(data.title, wipEvent === 'unwip');
           })
           .catch(() => {
-            draftToggle.removeAttribute('disabled');
             createFlash({
               message: __('Something went wrong. Please try again.'),
             });
+          })
+          .finally(() => {
+            draftToggle.removeAttribute('disabled');
+            loader.remove();
           });
       });
     });
@@ -145,7 +156,11 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
   } else {
     toast(__('Marked as draft. Can only be merged when marked as ready.'));
   }
-  const titleEl = document.querySelector('.merge-request .detail-page-description .title');
+  const titleEl = document.querySelector(
+    `.merge-request .detail-page-${
+      window.gon?.features?.updatedMrHeader ? 'header' : 'description'
+    } .title`,
+  );
 
   if (titleEl) {
     titleEl.textContent = title;
@@ -162,7 +177,9 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
       );
 
       draftToggle.setAttribute('href', url);
-      draftToggle.textContent = isReady ? __('Mark as draft') : __('Mark as ready');
+      draftToggle.querySelector('.gl-new-dropdown-item-text-wrapper').textContent = isReady
+        ? __('Mark as draft')
+        : __('Mark as ready');
     });
   }
 };

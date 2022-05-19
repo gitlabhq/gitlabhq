@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow */
 
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Activities from '~/activities';
 import Pager from '~/pager';
 
@@ -38,9 +39,13 @@ describe('Activities', () => {
   }
 
   beforeEach(() => {
-    loadFixtures(fixtureTemplate);
+    loadHTMLFixture(fixtureTemplate);
     jest.spyOn(Pager, 'init').mockImplementation(() => {});
     new Activities();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   for (let i = 0; i < filters.length; i += 1) {

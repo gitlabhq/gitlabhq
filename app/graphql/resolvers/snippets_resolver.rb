@@ -38,11 +38,9 @@ module Resolvers
     private
 
     def snippet_finder_params(args)
-      # TODO: remove the type arguments when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
       super
-        .merge(author: resolve_ids(args[:author_id], ::Types::GlobalIDType[::User]),
-               project: resolve_ids(args[:project_id], ::Types::GlobalIDType[::Project]),
+        .merge(author: resolve_ids(args[:author_id]),
+               project: resolve_ids(args[:project_id]),
                explore: args[:explore])
     end
   end

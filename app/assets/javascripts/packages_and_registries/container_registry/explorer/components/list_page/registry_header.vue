@@ -7,7 +7,6 @@ import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 import {
   CONTAINER_REGISTRY_TITLE,
-  LIST_INTRO_TEXT,
   EXPIRATION_POLICY_WILL_RUN_IN,
   EXPIRATION_POLICY_DISABLED_TEXT,
   SET_UP_CLEANUP,
@@ -87,19 +86,12 @@ export default {
         ? sprintf(EXPIRATION_POLICY_WILL_RUN_IN, { time: this.timeTillRun })
         : EXPIRATION_POLICY_DISABLED_TEXT;
     },
-    infoMessages() {
-      return [{ text: LIST_INTRO_TEXT, link: this.helpPagePath }];
-    },
   },
 };
 </script>
 
 <template>
-  <title-area
-    :title="$options.i18n.CONTAINER_REGISTRY_TITLE"
-    :info-messages="infoMessages"
-    :metadata-loading="metadataLoading"
-  >
+  <title-area :title="$options.i18n.CONTAINER_REGISTRY_TITLE" :metadata-loading="metadataLoading">
     <template #right-actions>
       <slot name="commands"></slot>
     </template>

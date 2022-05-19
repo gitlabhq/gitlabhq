@@ -275,6 +275,18 @@ To add a star to a project:
    - Number of open merge requests.
    - Number of open issues.
 
+## View personal projects
+
+Personal projects are projects created under your personal namespace.
+
+For example, if you create an account with the username `alex`, and create a project
+called `my-project` under your username, the project is created at `https://gitlab.example.com/alex/my-project`.
+
+To view your personal projects:
+
+1. On the top bar, select **Menu > Projects > Your Projects**.
+1. Under **Your projects**, select **Personal**.
+
 ## Delete a project
 
 After you delete a project, projects in personal namespaces are deleted immediately. To delay deletion of projects in a group

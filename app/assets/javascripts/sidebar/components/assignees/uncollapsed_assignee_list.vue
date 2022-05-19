@@ -35,13 +35,6 @@ export default {
     firstUser() {
       return this.users[0];
     },
-    hasOneUser() {
-      if (this.showVerticalList) {
-        return false;
-      }
-
-      return this.users.length === 1;
-    },
     hiddenAssigneesLabel() {
       const { numberOfHiddenAssignees } = this;
       return sprintf(__('+ %{numberOfHiddenAssignees} more'), { numberOfHiddenAssignees });
@@ -90,30 +83,15 @@ export default {
 </script>
 
 <template>
-  <assignee-avatar-link
-    v-if="hasOneUser"
-    tooltip-placement="left"
-    :tooltip-has-name="false"
-    :user="firstUser"
-    :issuable-type="issuableType"
-  >
-    <div class="ml-2 gl-line-height-normal">
-      <user-name-with-status :name="firstUser.name" :availability="userAvailability(firstUser)" />
-      <div>{{ username }}</div>
-    </div>
-  </assignee-avatar-link>
-  <div v-else>
+  <div>
     <div class="gl-display-flex gl-flex-wrap">
       <div
         v-for="(user, index) in uncollapsedUsers"
         :key="user.id"
         :class="{
-          'user-item': !showVerticalList,
-          'gl-display-inline-block': !showVerticalList,
-          'gl-display-grid gl-align-items-center': showVerticalList,
-          'gl-mb-3': index !== users.length - 1 && showVerticalList,
+          'gl-mb-3': index !== users.length - 1,
         }"
-        class="assignee-grid"
+        class="assignee-grid gl-display-grid gl-align-items-center gl-w-full"
       >
         <assignee-avatar-link
           :user="user"
@@ -123,12 +101,10 @@ export default {
           data-css-area="user"
         >
           <div
-            v-if="showVerticalList"
-            class="gl-ml-3 gl-line-height-normal gl-display-grid"
+            class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center"
             data-testid="username"
           >
             <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
-            <span>@{{ user.username }}</span>
           </div>
         </assignee-avatar-link>
         <attention-requested-toggle

@@ -151,6 +151,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
       before do
         assignee = merge_request6.find_assignee(user2)
         assignee.update!(state: :reviewed)
+        merge_request2.find_reviewer(user2).update!(state: :attention_requested)
+        merge_request5.find_assignee(user2).update!(state: :attention_requested)
       end
 
       it 'returns MRs that have any attention requests' do
@@ -3534,50 +3536,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
         it 'returns true' do
           expect(merge_request.mergeable_discussions_state?).to be_truthy
         end
-      end
-    end
-  end
-
-  describe "#legacy_environments" do
-    subject { merge_request.legacy_environments }
-
-    let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
-    let(:project) { merge_request.project }
-
-    let(:pipeline) do
-      create(:ci_pipeline,
-        source: :merge_request_event,
-        merge_request: merge_request, project: project,
-        sha: merge_request.diff_head_sha,
-        merge_requests_as_head_pipeline: [merge_request])
-    end
-
-    let!(:job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
-
-    it 'returns environments' do
-      is_expected.to eq(pipeline.environments_in_self_and_descendants.to_a)
-      expect(subject.count).to be(1)
-    end
-
-    context 'when pipeline is not associated with environments' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, project: project) }
-
-      it 'returns empty array' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when pipeline is not a pipeline for merge request' do
-      let(:pipeline) do
-        create(:ci_pipeline,
-          project: project,
-          ref: 'feature',
-          sha: merge_request.diff_head_sha,
-          merge_requests_as_head_pipeline: [merge_request])
-      end
-
-      it 'returns empty relation' do
-        is_expected.to be_empty
       end
     end
   end

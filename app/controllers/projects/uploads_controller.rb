@@ -23,6 +23,10 @@ class Projects::UploadsController < Projects::ApplicationController
     FileUploader
   end
 
+  def target_project
+    model
+  end
+
   def find_model
     return @project if @project
 

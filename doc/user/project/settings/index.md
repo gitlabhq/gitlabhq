@@ -88,11 +88,11 @@ read-only view to discourage this behavior.
 
 Compliance framework pipelines allow group owners to define
 a compliance pipeline in a separate repository that gets
-executed in place of the local project's `gitlab-ci.yml` file. As part of this pipeline, an
-`include` statement can reference the local project's `gitlab-ci.yml` file. This way, the compliance
+executed in place of the local project's `.gitlab-ci.yml` file. As part of this pipeline, an
+`include` statement can reference the local project's `.gitlab-ci.yml` file. This way, the compliance
 pipeline jobs can run alongside the project-specific jobs any time the pipeline runs.
 Jobs and variables defined in the compliance
-pipeline can't be changed by variables in the local project's `gitlab-ci.yml` file.
+pipeline can't be changed by variables in the local project's `.gitlab-ci.yml` file.
 
 When you set up the compliance framework, use the **Compliance pipeline configuration** box to link
 the compliance framework to specific CI/CD configuration. Use the
@@ -314,7 +314,7 @@ related to the project by selecting the **Disable email notifications** checkbox
 
 Set up your project's merge request settings:
 
-- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.md)).
+- Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
 - Add merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
 - Enable [status checks](../merge_requests/status_checks.md).
@@ -409,10 +409,13 @@ NOTE:
 Only project owners and administrators have the [permissions](../../permissions.md#project-members-permissions)
 to transfer a project.
 
-You can transfer an existing project into a [group](../../group/index.md).
+You can transfer an existing project to another [group](../../group/index.md),
+or you can transfer a [personal project](../working_with_projects.md#view-personal-projects) to a group.
 
 Prerequisites:
 
+- A group for your project. You can [view your existing groups](../../group/index.md#view-groups)
+  to find a suitable group. If you don't have a group, [create one](../../group/index.md#create-a-group).
 - You must have at least the Maintainer role in that group.
 - You must be the Owner of that project.
 - The group to which the project is being transferred to must allow creation of new projects.
@@ -423,15 +426,15 @@ Prerequisites:
 
 To transfer a project:
 
-1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, click **Expand**.
-1. Under "Transfer project", choose the namespace you want to transfer the
-   project to.
-1. Confirm the transfer by typing the project's path as instructed.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. Under **Transfer project**, choose the namespace to transfer the project to.
+1. Select **Transfer project**.
+1. Enter the project's name and select **Confirm**.
 
-Once done, you are redirected to the new project's namespace. At this point,
-read what happens with the
-[redirects from the old project to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
+You are redirected to the project's new URL. Read what happens with the
+[redirects from the old URL to the new one](../repository/index.md#what-happens-when-a-repository-path-changes).
 
 NOTE:
 GitLab administrators can use the [administration interface](../../admin_area/index.md#administering-projects)
@@ -520,7 +523,8 @@ If you want to use the fork for yourself and don't need to send
 you can safely remove the fork relationship.
 
 WARNING:
-Once removed, the fork relationship cannot be restored. You can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
+Once removed, you can't send merge requests to the source, and if anyone has forked your project, their fork also loses the relationship.
+To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
 
 To do so:
 
@@ -555,10 +559,6 @@ Automatically [create](../../../operations/incident_management/incidents.md#crea
 ### Error Tracking
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
-
-### Jaeger tracing
-
-Add the URL of a Jaeger server to allow your users to [easily access the Jaeger UI from within GitLab](../../../operations/tracing.md).
 
 ### Status Page **(ULTIMATE)**
 

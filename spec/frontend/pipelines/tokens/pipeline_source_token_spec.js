@@ -20,6 +20,7 @@ describe('Pipeline Source Token', () => {
     value: {
       data: '',
     },
+    cursorPosition: 'start',
   };
 
   const createComponent = () => {

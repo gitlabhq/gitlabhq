@@ -7,7 +7,7 @@ module BulkImports
     include Pipeline
 
     included do
-      ndjson_pipeline!
+      file_extraction_pipeline!
 
       def transform(context, data)
         return unless data

@@ -1,6 +1,6 @@
 #import "ee_else_ce/boards/graphql/board_scope.fragment.graphql"
 
-query ProjectBoard($fullPath: ID!, $boardId: ID!) {
+query ProjectBoard($fullPath: ID!, $boardId: BoardID!) {
   workspace: project(fullPath: $fullPath) {
     id
     board(id: $boardId) {

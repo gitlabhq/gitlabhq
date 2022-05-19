@@ -5,6 +5,6 @@ classes:
 feature_categories:
 - projects
 - subgroups
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7d02bcd2e0165a90a9f2c1edb34b064ff76afd69
+description: Stores routes for redirect after changing the path to group or project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11136
 milestone: '9.2'

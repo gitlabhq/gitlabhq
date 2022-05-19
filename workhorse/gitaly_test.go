@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"math/rand"
 	"net"
@@ -21,19 +20,14 @@ import (
 
 	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
-	gitalyclient "gitlab.com/gitlab-org/gitaly/v14/client"
-
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
@@ -45,7 +39,7 @@ func TestFailedCloneNoGitaly(t *testing.T) {
 		GL_ID:       "user-123",
 		GL_USERNAME: "username",
 		// This will create a failure to connect to Gitaly
-		GitalyServer: gitaly.Server{Address: "unix:/nonexistent"},
+		GitalyServer: api.GitalyServer{Address: "unix:/nonexistent"},
 	}
 
 	// Prepare test server and backend
@@ -380,24 +374,14 @@ func TestPostReceivePackRouting(t *testing.T) {
 	}
 }
 
-type gitalyServerStarter func(*testing.T, codes.Code) (*combinedServer, string)
-
 // ReaderFunc is an adapter to turn a conforming function into an io.Reader.
 type ReaderFunc func(b []byte) (int, error)
 
 func (r ReaderFunc) Read(b []byte) (int, error) { return r(b) }
 
 func TestPostUploadPackProxiedToGitalySuccessfully(t *testing.T) {
-	testPostUploadPackProxiedToGitalySuccessfully(t, startGitalyServer, gitOkBody(t))
-}
+	apiResponse := gitOkBody(t)
 
-func TestPostUploadPackWithSidechannelProxiedToGitalySuccessfully(t *testing.T) {
-	testPostUploadPackProxiedToGitalySuccessfully(
-		t, startGitalyServerWithSideChannel(testhelper.PostUploadPackWithSidechannel), gitOkBodyWithSidechannel(t),
-	)
-}
-
-func testPostUploadPackProxiedToGitalySuccessfully(t *testing.T, startGitaly gitalyServerStarter, apiResponse *api.Response) {
 	for i, tc := range []struct {
 		showAllRefs bool
 		code        codes.Code
@@ -410,7 +394,7 @@ func testPostUploadPackProxiedToGitalySuccessfully(t *testing.T, startGitaly git
 		t.Run(fmt.Sprintf("Case %d", i), func(t *testing.T) {
 			apiResponse.ShowAllRefs = tc.showAllRefs
 
-			gitalyServer, socketPath := startGitaly(t, tc.code)
+			gitalyServer, socketPath := startGitalyServer(t, tc.code)
 			defer gitalyServer.GracefulStop()
 
 			apiResponse.GitalyServer.Address = "unix:" + socketPath
@@ -476,16 +460,8 @@ func testPostUploadPackProxiedToGitalySuccessfully(t *testing.T, startGitaly git
 
 func TestPostUploadPackProxiedToGitalyInterrupted(t *testing.T) {
 	apiResponse := gitOkBody(t)
-	testPostUploadPackProxiedToGitalyInterrupted(t, startGitalyServer, apiResponse)
-}
 
-func TestPostUploadPackWithSidechannelProxiedToGitalyInterrupted(t *testing.T) {
-	apiResponse := gitOkBodyWithSidechannel(t)
-	testPostUploadPackProxiedToGitalyInterrupted(t, startGitalyServerWithSideChannel(testhelper.PostUploadPackWithSidechannel), apiResponse)
-}
-
-func testPostUploadPackProxiedToGitalyInterrupted(t *testing.T, startGitaly gitalyServerStarter, apiResponse *api.Response) {
-	gitalyServer, socketPath := startGitaly(t, codes.OK)
+	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
@@ -518,16 +494,7 @@ func testPostUploadPackProxiedToGitalyInterrupted(t *testing.T, startGitaly gita
 
 func TestPostUploadPackRouting(t *testing.T) {
 	apiResponse := gitOkBody(t)
-	testPostUploadPackRouting(t, startGitalyServer, apiResponse)
-}
-
-func TestPostUploadPackWithSidechannelRouting(t *testing.T) {
-	apiResponse := gitOkBodyWithSidechannel(t)
-	testPostUploadPackRouting(t, startGitalyServerWithSideChannel(testhelper.PostUploadPackWithSidechannel), apiResponse)
-}
-
-func testPostUploadPackRouting(t *testing.T, startGitaly gitalyServerStarter, apiResponse *api.Response) {
-	gitalyServer, socketPath := startGitaly(t, codes.OK)
+	gitalyServer, socketPath := startGitalyServer(t, codes.OK)
 	defer gitalyServer.GracefulStop()
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
@@ -888,7 +855,7 @@ func startGitalyServer(t *testing.T, finalMessageCode codes.Code) (*combinedServ
 	if err := os.Remove(socketPath); err != nil && !os.IsNotExist(err) {
 		t.Fatal(err)
 	}
-	server := grpc.NewServer()
+	server := grpc.NewServer(testhelper.WithSidechannel())
 	listener, err := net.Listen("unix", socketPath)
 	require.NoError(t, err)
 
@@ -901,22 +868,4 @@ func startGitalyServer(t *testing.T, finalMessageCode codes.Code) (*combinedServ
 	go server.Serve(listener)
 
 	return &combinedServer{Server: server, GitalyTestServer: gitalyServer}, socketPath
-}
-
-func startGitalyServerWithSideChannel(handler func(interface{}, grpc.ServerStream, io.ReadWriteCloser) error) gitalyServerStarter {
-	return func(t *testing.T, finalMessageCode codes.Code) (*combinedServer, string) {
-		socketPath := path.Join(scratchDir, fmt.Sprintf("gitaly-%d.sock", rand.Int()))
-		if err := os.Remove(socketPath); err != nil && !os.IsNotExist(err) {
-			t.Fatal(err)
-		}
-		server := grpc.NewServer(gitalyclient.TestSidechannelServer(logrus.NewEntry(logrus.StandardLogger()), insecure.NewCredentials(), handler)...)
-		listener, err := net.Listen("unix", socketPath)
-		require.NoError(t, err)
-
-		gitalyServer := testhelper.NewGitalyServer(finalMessageCode)
-
-		go server.Serve(listener)
-
-		return &combinedServer{Server: server, GitalyTestServer: gitalyServer}, socketPath
-	}
 }

@@ -65,6 +65,7 @@ export default {
     :suggestions="branches"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveBranch"
+    v-bind="$attrs"
     @fetch-suggestions="fetchBranches"
     v-on="$listeners"
   >

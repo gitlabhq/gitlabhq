@@ -23,11 +23,11 @@ module Ci
       # Cloning a job requires a strict type check to ensure
       # the attributes being used for the clone are taken straight
       # from the model and not overridden by other abstractions.
-      raise TypeError unless job.instance_of?(Ci::Build)
+      raise TypeError unless job.instance_of?(Ci::Build) || job.instance_of?(Ci::Bridge)
 
       check_access!(job)
 
-      new_job = clone_job(job)
+      new_job = job.clone(current_user: current_user)
 
       new_job.run_after_commit do
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
@@ -53,9 +53,12 @@ module Ci
 
     private
 
+    def check_assignable_runners!(job); end
+
     def retry_job(job)
       clone!(job).tap do |new_job|
-        check_assignable_runners!(new_job)
+        check_assignable_runners!(new_job) if new_job.is_a?(Ci::Build)
+
         next if new_job.failed?
 
         Gitlab::OptimisticLocking.retry_lock(new_job, name: 'retry_build', &:enqueue)
@@ -67,26 +70,6 @@ module Ci
       unless can?(current_user, :update_build, job)
         raise Gitlab::Access::AccessDeniedError, '403 Forbidden'
       end
-    end
-
-    def check_assignable_runners!(job); end
-
-    def clone_job(job)
-      project.builds.new(job_attributes(job))
-    end
-
-    def job_attributes(job)
-      attributes = job.class.clone_accessors.to_h do |attribute|
-        [attribute, job.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      if job.persisted_environment.present?
-        attributes[:metadata_attributes] ||= {}
-        attributes[:metadata_attributes][:expanded_environment_name] = job.expanded_environment_name
-      end
-
-      attributes[:user] = current_user
-      attributes
     end
   end
 end

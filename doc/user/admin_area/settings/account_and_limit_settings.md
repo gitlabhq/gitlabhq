@@ -51,11 +51,13 @@ For GitLab.com repository size limits, read [accounts and limit settings](../../
 
 ## Max push size
 
-You can change the maximum push size for your repository:
+You can change the maximum push size for your instance:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum push size (MB)**.
+
+For GitLab.com application limits, read [GitLab application limits](../../../administration/instance_limits.md#max-push-size).
 
 NOTE:
 When you [add files to a repository](../../project/repository/web_editor.md#create-a-file)
@@ -64,9 +66,19 @@ because the [web server](../../../development/architecture.md#components)
 must receive the file before GitLab can generate the commit.
 Use [Git LFS](../../../topics/git/lfs/index.md) to add large files to a repository.
 
+## Max export size
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86124) in GitLab 15.0.
+
+To modify the maximum file size for exports in GitLab:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum export size (MB)**.
+
 ## Max import size
 
-> [Modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
 
 To modify the maximum file size for imports in GitLab:
 
@@ -158,22 +170,6 @@ wiki, packages, or snippets. The repository size limit applies to both private a
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
-## Troubleshooting
-
-### 413 Request Entity Too Large
-
-When attaching a file to a comment or reply in GitLab displays a `413 Request Entity Too Large`
-error, the [max attachment size](#max-attachment-size)
-is probably larger than the web server's allowed value.
-
-To increase the max attachment size to 200 MB in a
-[Omnibus GitLab](https://docs.gitlab.com/omnibus/) install, you may need to
-add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
-
-```ruby
-nginx['client_max_body_size'] = "200m"
-```
-
 ## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
@@ -229,35 +225,28 @@ Once a lifetime for SSH keys is set, GitLab:
 NOTE:
 When a user's SSH key becomes invalid they can delete and re-add the same key again.
 
-## Allow expired SSH keys to be used (DEPRECATED) **(ULTIMATE SELF)**
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+## Allow expired SSH keys to be used (removed) **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 15.0.
 
-WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8.
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 15.0.
+<!--- end_remove -->
 
-By default, expired SSH keys **are not usable**.
-
-To allow the use of expired SSH keys:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Account and limit** section.
-1. Uncheck the **Enforce SSH key expiration** checkbox.
-
-Disabling SSH key expiration immediately enables all expired SSH keys.
-
-## Limit the lifetime of personal access tokens **(ULTIMATE SELF)**
+## Limit the lifetime of access tokens **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
 Users can optionally specify a lifetime for
-[personal access tokens](../../profile/personal_access_tokens.md).
+access tokens, this includes [personal](../../profile/personal_access_tokens.md),
+[group](../../group/settings/group_access_tokens.md), and [project](../../project/settings/project_access_tokens.md) access tokens.
 This lifetime is not a requirement, and can be set to any arbitrary number of days.
 
-Personal access tokens are the only tokens needed for programmatic access to GitLab.
+Access tokens are the only tokens needed for programmatic access to GitLab.
 However, organizations with security requirements may want to enforce more protection by
 requiring the regular rotation of these tokens.
 
@@ -266,15 +255,15 @@ requiring the regular rotation of these tokens.
 Only a GitLab administrator can set a lifetime. Leaving it empty means
 there are no restrictions.
 
-To set a lifetime on how long personal access tokens are valid:
+To set a lifetime on how long access tokens are valid:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
+1. Fill in the **Maximum allowable lifetime for access tokens (days)** field.
 1. Click **Save changes**.
 
-Once a lifetime for personal access tokens is set, GitLab:
+Once a lifetime for access tokens is set, GitLab:
 
 - Applies the lifetime for new personal access tokens, and require users to set an expiration date
   and a date no later than the allowed lifetime.
@@ -282,23 +271,17 @@ Once a lifetime for personal access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-## Allow expired Personal Access Tokens to be used (DEPRECATED) **(ULTIMATE SELF)**
+<!-- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+## Allow expired access tokens to be used (removed) **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab 13.1.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 14.8.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 15.0.
 
-WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 14.8.
-
-By default, expired personal access tokens (PATs) **are not usable**.
-
-To allow the use of expired PATs:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Account and limit** section.
-1. Uncheck the **Enforce personal access token expiration** checkbox.
+This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 15.0.
+<!-- end_remove -->
 
 ## Disable user profile name changes **(PREMIUM SELF)**
 
@@ -314,5 +297,35 @@ To do this:
 
 NOTE:
 When this ability is disabled, GitLab administrators can still use the
-[Admin UI](../index.md#administering-users) or the
+[Admin Area](../index.md#administering-users) or the
 [API](../../../api/users.md#user-modification) to update usernames.
+
+## Troubleshooting
+
+### 413 Request Entity Too Large
+
+When attaching a file to a comment or reply in GitLab displays a `413 Request Entity Too Large`
+error, the [max attachment size](#max-attachment-size)
+is probably larger than the web server's allowed value.
+
+To increase the max attachment size to 200 MB in a
+[Omnibus GitLab](https://docs.gitlab.com/omnibus/) install, you may need to
+add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
+
+```ruby
+nginx['client_max_body_size'] = "200m"
+```
+
+### This repository has exceeded its size limit
+
+If you receive intermittent push errors in your [Rails exceptions log](../../../administration/logs.md#exceptions_jsonlog), like this:
+
+```plaintext
+Your push has been rejected, because this repository has exceeded its size limit.
+```
+
+[Housekeeping](../../../administration/housekeeping.md) tasks may be causing your repository size to grow.
+To resolve this problem, either of these options helps in the short- to middle-term:
+
+- Increase the [repository size limit](#repository-size-limit).
+- [Reduce the repo size](../../project/repository/reducing_the_repo_size_using_git.md).

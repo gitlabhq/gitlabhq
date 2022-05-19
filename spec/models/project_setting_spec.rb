@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ProjectSetting, type: :model do
+  using RSpec::Parameterized::TableSyntax
   it { is_expected.to belong_to(:project) }
 
   describe 'validations' do
@@ -24,6 +25,23 @@ RSpec.describe ProjectSetting, type: :model do
     it 'stringifies and sorts' do
       project_setting = build(:project_setting, target_platforms: [:watchos, :ios])
       expect(project_setting.target_platforms).to eq %w(ios watchos)
+    end
+  end
+
+  describe '#human_squash_option' do
+    where(:squash_option, :human_squash_option) do
+      'never'       | 'Do not allow'
+      'always'      | 'Require'
+      'default_on'  | 'Encourage'
+      'default_off' | 'Allow'
+    end
+
+    with_them do
+      let(:project_setting) { create(:project_setting, squash_option: ProjectSetting.squash_options[squash_option]) }
+
+      subject { project_setting.human_squash_option }
+
+      it { is_expected.to eq(human_squash_option) }
     end
   end
 

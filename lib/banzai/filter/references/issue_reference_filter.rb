@@ -31,6 +31,10 @@ module Banzai
 
         private
 
+        def additional_object_attributes(issue)
+          { issue_type: issue.issue_type }
+        end
+
         def issue_path(issue, project)
           Gitlab::Routing.url_helpers.namespace_project_issue_path(namespace_id: project.namespace, project_id: project, id: issue.iid)
         end

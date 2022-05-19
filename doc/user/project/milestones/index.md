@@ -53,9 +53,13 @@ If you're in a project and select **Issues > Milestones**, GitLab displays only 
 
 ## Creating milestones
 
-Users with at least the Developer role can create milestones.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Milestones can be created either at project or group level.
+
+Prerequisites:
+
+- You must have at least the Reporter role for a group.
 
 To create a milestone:
 
@@ -69,7 +73,13 @@ To create a milestone:
 
 ## Editing milestones
 
-Users with at least the Developer role can edit milestones.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
+Users with at least the Reporter role can edit milestones.
+
+Prerequisites:
+
+- You must have at least the Reporter role for a group.
 
 To edit a milestone:
 

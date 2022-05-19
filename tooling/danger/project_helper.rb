@@ -26,6 +26,7 @@ module Tooling
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
+        %r{\Adb/docs/.yml\z} => :docs,
         %r{\Adata/deprecations/} => :none,
         %r{\Adata/removals/} => :none,
 
@@ -100,6 +101,8 @@ module Tooling
         %r{\A\.editorconfig\z} => :tooling,
         %r{Dangerfile\z} => :tooling,
         %r{\A((ee|jh)/)?(danger/|tooling/danger/)} => :tooling,
+        %r{\A((ee|jh)/)?(lib/)?scripts/.*\.rb} => [:backend, :tooling],
+        %r{\A((ee|jh)/)?(lib/)?scripts/.*\.js} => [:frontend, :tooling],
         %r{\A((ee|jh)/)?scripts/} => :tooling,
         %r{\Atooling/} => :tooling,
         %r{(CODEOWNERS)} => :tooling,

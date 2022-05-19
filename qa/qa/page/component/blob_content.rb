@@ -63,6 +63,17 @@ module QA
           end
         end
 
+        def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
+          if has_element?(:blob_viewer_file_content, wait: 1)
+            # The blob viewer renders line numbers and whitespace in a way that doesn't match the source file
+            # This isn't a visual validation test, so we ignore line numbers and whitespace
+            find_element(:blob_viewer_file_content, wait: 0).text.gsub(/^\d+\s|\s*/, '')
+              .start_with?(text.gsub(/\s*/, ''))
+          else
+            has_text?(text.gsub(/\s+/, " "), wait: wait)
+          end
+        end
+
         def click_copy_file_contents(file_number = nil)
           within_file_by_number(:default_actions_container, file_number) { click_element(:copy_contents_button) }
         end

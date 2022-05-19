@@ -1,0 +1,136 @@
+query getIssuesCountWithoutCrm(
+  $isProject: Boolean = false
+  $fullPath: ID!
+  $iid: String
+  $search: String
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $confidential: Boolean
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $types: [IssueType!]
+  $not: NegatedIssueFilterInput
+) {
+  group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    openedIssues: issues(
+      includeSubgroups: true
+      state: opened
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    closedIssues: issues(
+      includeSubgroups: true
+      state: closed
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    allIssues: issues(
+      includeSubgroups: true
+      state: all
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    openedIssues: issues(
+      state: opened
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    closedIssues: issues(
+      state: closed
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+    allIssues: issues(
+      state: all
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+    ) {
+      count
+    }
+  }
+}

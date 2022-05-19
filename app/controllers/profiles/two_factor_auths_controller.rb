@@ -9,7 +9,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   helper_method :current_password_required?
 
   before_action do
-    push_frontend_feature_flag(:webauthn, default_enabled: :yaml)
+    push_frontend_feature_flag(:webauthn)
   end
 
   feature_category :authentication_and_authorization
@@ -35,7 +35,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     @qr_code = build_qr_code
     @account_string = account_string
 
-    if Feature.enabled?(:webauthn, default_enabled: :yaml)
+    if Feature.enabled?(:webauthn)
       setup_webauthn_registration
     else
       setup_u2f_registration
@@ -44,7 +44,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     otp_validation_result =
-      ::Users::ValidateOtpService.new(current_user).execute(params[:pin_code])
+      ::Users::ValidateManualOtpService.new(current_user).execute(params[:pin_code])
 
     if otp_validation_result[:status] == :success
       ActiveSession.destroy_all_but_current(current_user, session)
@@ -61,7 +61,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       @qr_code = build_qr_code
       @account_string = account_string
 
-      if Feature.enabled?(:webauthn, default_enabled: :yaml)
+      if Feature.enabled?(:webauthn)
         setup_webauthn_registration
       else
         setup_u2f_registration

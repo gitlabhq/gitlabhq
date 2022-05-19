@@ -85,11 +85,15 @@ RSpec.describe Gitlab::Graphql::Queries do
   describe '.all' do
     it 'is the combination of finding queries in CE and EE' do
       expect(described_class)
-        .to receive(:find).with(Rails.root / 'app/assets/javascripts').and_return([:ce])
+        .to receive(:find).with(Rails.root / 'app/assets/javascripts').and_return([:ce_assets])
       expect(described_class)
-        .to receive(:find).with(Rails.root / 'ee/app/assets/javascripts').and_return([:ee])
+        .to receive(:find).with(Rails.root / 'ee/app/assets/javascripts').and_return([:ee_assets])
+      expect(described_class)
+        .to receive(:find).with(Rails.root / 'app/graphql/queries').and_return([:ce_gql])
+      expect(described_class)
+        .to receive(:find).with(Rails.root / 'ee/app/graphql/queries').and_return([:ee_gql])
 
-      expect(described_class.all).to eq([:ce, :ee])
+      expect(described_class.all).to contain_exactly(:ce_assets, :ee_assets, :ce_gql, :ee_gql)
     end
   end
 

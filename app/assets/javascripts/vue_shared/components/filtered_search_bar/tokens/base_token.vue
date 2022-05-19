@@ -211,10 +211,22 @@ export default {
     @select="handleTokenValueSelected"
   >
     <template #view-token="viewTokenProps">
-      <slot name="view-token" :view-token-props="{ ...viewTokenProps, activeTokenValue }"></slot>
+      <slot
+        name="view-token"
+        :view-token-props="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          ...viewTokenProps,
+          activeTokenValue,
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+      ></slot>
     </template>
     <template #view="viewTokenProps">
-      <slot name="view" :view-token-props="{ ...viewTokenProps, activeTokenValue }"></slot>
+      <slot
+        name="view"
+        :view-token-props="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          ...viewTokenProps,
+          activeTokenValue,
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+      ></slot>
     </template>
     <template v-if="suggestionsEnabled" #suggestions>
       <template v-if="showDefaultSuggestions">

@@ -16,7 +16,7 @@ module Gitlab
       private
 
       def execute(sql)
-        @connection ||= ::ActiveRecord::Base.connection
+        @connection ||= ApplicationRecord.connection
         @connection.execute(sql)
       end
 

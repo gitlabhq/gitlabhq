@@ -69,12 +69,12 @@ export default class CreateMergeRequestDropdown {
     // with user's inputs.
     this.regexps = {
       branch: {
-        createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
-        createMrPath: new RegExp('(source_branch%5D=)(.+?)(?=&)'),
+        createBranchPath: /(branch_name=)(.+?)(?=&issue)/,
+        createMrPath: /(source_branch%5D=)(.+?)(?=&)/,
       },
       ref: {
-        createBranchPath: new RegExp('(ref=)(.+?)$'),
-        createMrPath: new RegExp('(target_branch%5D=)(.+?)$'),
+        createBranchPath: /(ref=)(.+?)$/,
+        createMrPath: /(target_branch%5D=)(.+?)$/,
       },
     };
 
@@ -170,7 +170,6 @@ export default class CreateMergeRequestDropdown {
   createMergeRequest() {
     return new Promise(() => {
       this.isCreatingMergeRequest = true;
-
       return this.createBranch().then(() => {
         let path = canCreateConfidentialMergeRequest()
           ? this.createMrPath.replace(

@@ -28,12 +28,12 @@ describe('packages_list_row', () => {
 
   const packageWithoutTags = { ...packageData(), project: packageProject() };
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
+  const packageCannotDestroy = { ...packageData(), canDestroy: false };
 
   const findPackageTags = () => wrapper.find(PackageTags);
   const findPackagePath = () => wrapper.find(PackagePath);
-  const findDeleteButton = () => wrapper.findByTestId('action-delete');
+  const findDeleteDropdown = () => wrapper.findByTestId('action-delete');
   const findPackageIconAndName = () => wrapper.find(PackageIconAndName);
-  const findListItem = () => wrapper.findComponent(ListItem);
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
@@ -102,22 +102,25 @@ describe('packages_list_row', () => {
   });
 
   describe('delete button', () => {
+    it('does not exist when package cannot be destroyed', () => {
+      mountComponent({ packageEntity: packageCannotDestroy });
+
+      expect(findDeleteDropdown().exists()).toBe(false);
+    });
+
     it('exists and has the correct props', () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
-      expect(findDeleteButton().exists()).toBe(true);
-      expect(findDeleteButton().attributes()).toMatchObject({
-        icon: 'remove',
-        category: 'secondary',
+      expect(findDeleteDropdown().exists()).toBe(true);
+      expect(findDeleteDropdown().attributes()).toMatchObject({
         variant: 'danger',
-        title: 'Remove package',
       });
     });
 
     it('emits the packageToDelete event when the delete button is clicked', async () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
-      findDeleteButton().vm.$emit('click');
+      findDeleteDropdown().vm.$emit('click');
 
       await nextTick();
       expect(wrapper.emitted('packageToDelete')).toBeTruthy();
@@ -130,10 +133,6 @@ describe('packages_list_row', () => {
       mountComponent({ packageEntity: { ...packageWithoutTags, status: PACKAGE_ERROR_STATUS } });
     });
 
-    it('list item has a disabled prop', () => {
-      expect(findListItem().props('disabled')).toBe(true);
-    });
-
     it('details link is disabled', () => {
       expect(findPackageLink().props('event')).toBe('');
     });
@@ -141,14 +140,14 @@ describe('packages_list_row', () => {
     it('has a warning icon', () => {
       const icon = findWarningIcon();
       const tooltip = getBinding(icon.element, 'gl-tooltip');
-      expect(icon.props('icon')).toBe('warning');
+      expect(icon.props('name')).toBe('warning');
       expect(tooltip.value).toMatchObject({
         title: 'Invalid Package: failed metadata extraction',
       });
     });
 
-    it('delete button does not exist', () => {
-      expect(findDeleteButton().exists()).toBe(false);
+    it('has a delete dropdown', () => {
+      expect(findDeleteDropdown().exists()).toBe(true);
     });
   });
 

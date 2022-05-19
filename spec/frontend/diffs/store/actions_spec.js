@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';

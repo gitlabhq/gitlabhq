@@ -126,6 +126,7 @@ module MergeRequests
       params = {
         title: push_options[:title],
         description: push_options[:description],
+        draft: push_options[:draft],
         target_branch: push_options[:target],
         force_remove_source_branch: push_options[:remove_source_branch],
         label: push_options[:label],
@@ -145,6 +146,10 @@ module MergeRequests
       if push_options[:milestone]
         milestone = Milestone.for_projects_and_groups(@project, @project.ancestors_upto)&.find_by_name(push_options[:milestone])
         params[:milestone] = milestone if milestone
+      end
+
+      if params.key?(:description)
+        params[:description] = params[:description].gsub('\n', "\n")
       end
 
       params

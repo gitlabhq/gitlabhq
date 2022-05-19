@@ -31,6 +31,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
   <gl-modal-stub
     actioncancel="[object Object]"
     actionprimary="[object Object]"
+    arialabel=""
     dismisslabel="Close"
     footer-class="gl-bg-gray-10 gl-p-5"
     modalclass=""
@@ -49,6 +50,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
         primarybuttontext=""
         secondarybuttonlink=""
         secondarybuttontext=""
+        showicon="true"
         title=""
         variant="danger"
       >

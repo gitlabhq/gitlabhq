@@ -6,11 +6,15 @@ import { folder } from './mock_data';
 describe('Deploy Board Instance', () => {
   let wrapper;
 
-  const createComponent = (props = {}) =>
+  const createComponent = (props = {}, provide) =>
     shallowMount(DeployBoardInstance, {
       propsData: {
         status: 'succeeded',
         ...props,
+      },
+      provide: {
+        glFeatures: { monitorLogging: true },
+        ...provide,
       },
     });
 
@@ -93,6 +97,25 @@ describe('Deploy Board Instance', () => {
       wrapper = createComponent();
 
       expect(wrapper.attributes('title')).toEqual('');
+    });
+  });
+
+  describe(':monitor_logging feature flag', () => {
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it.each`
+      flagState | logsState  | expected
+      ${true}   | ${'shows'} | ${'/root/review-app/-/logs?environment_name=foo&pod_name=tanuki-1'}
+      ${false}  | ${'hides'} | ${undefined}
+    `('$logsState log link when flag state is $flagState', async ({ flagState, expected }) => {
+      wrapper = createComponent(
+        { logsPath: folder.logs_path, podName: 'tanuki-1' },
+        { glFeatures: { monitorLogging: flagState } },
+      );
+
+      expect(wrapper.attributes('href')).toEqual(expected);
     });
   });
 });

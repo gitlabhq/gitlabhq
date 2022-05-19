@@ -27,6 +27,17 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         ])
       end
 
+      it 'ignores empty newlines' do
+        expect(convert_json("Hello\n\nworld")).to eq([
+          { offset: 0, content: [{ text: 'Hello' }] },
+          { offset: 7, content: [{ text: 'world' }] }
+        ])
+        expect(convert_json("Hello\r\n\r\nworld")).to eq([
+          { offset: 0, content: [{ text: 'Hello' }] },
+          { offset: 9, content: [{ text: 'world' }] }
+        ])
+      end
+
       it 'replace the current line when encountering \r' do
         expect(convert_json("Hello\rworld")).to eq([
           { offset: 0, content: [{ text: 'world' }] }

@@ -88,22 +88,6 @@ RSpec.describe 'Group Dependency Proxy' do
         sign_in(owner)
       end
 
-      context 'feature flag is disabled', :js do
-        before do
-          stub_feature_flags(dependency_proxy_for_private_groups: false)
-        end
-
-        context 'group is private' do
-          let(:group) { create(:group, :private) }
-
-          it 'informs user that feature is only available for public groups' do
-            visit path
-
-            expect(page).to have_content('Dependency Proxy feature is limited to public groups for now.')
-          end
-        end
-      end
-
       context 'feature is disabled globally' do
         it 'renders 404 page' do
           disable_feature

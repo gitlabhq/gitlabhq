@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -26,12 +27,14 @@ describe('pager', () => {
     const originalHref = window.location.href;
 
     beforeEach(() => {
-      setFixtures('<div class="content_list"></div><div class="loading"></div>');
+      setHTMLFixture('<div class="content_list"></div><div class="loading"></div>');
       jest.spyOn($.fn, 'endlessScroll').mockImplementation();
     });
 
     afterEach(() => {
       window.history.replaceState({}, null, originalHref);
+
+      resetHTMLFixture();
     });
 
     it('should get initial offset from query parameter', () => {
@@ -57,12 +60,16 @@ describe('pager', () => {
     }
 
     beforeEach(() => {
-      setFixtures(
+      setHTMLFixture(
         '<div class="content_list" data-href="/some_list"></div><div class="loading"></div>',
       );
       jest.spyOn(axios, 'get');
 
       Pager.init();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('shows loader while loading next page', async () => {
@@ -135,7 +142,11 @@ describe('pager', () => {
       const href = `${TEST_HOST}/some_list.json`;
 
       beforeEach(() => {
-        setFixtures(`<div class="content_list" data-href="${href}"></div>`);
+        setHTMLFixture(`<div class="content_list" data-href="${href}"></div>`);
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('should use data-href attribute', () => {
@@ -154,7 +165,11 @@ describe('pager', () => {
 
     describe('no data-href attribute attribute provided from list element', () => {
       beforeEach(() => {
-        setFixtures(`<div class="content_list"></div>`);
+        setHTMLFixture(`<div class="content_list"></div>`);
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
       });
 
       it('should use current url', () => {
@@ -190,7 +205,7 @@ describe('pager', () => {
 
       describe('when `container` is visible', () => {
         it('makes API request', () => {
-          setFixtures(
+          setHTMLFixture(
             `<div id="js-pager"><div class="content_list" data-href="${href}"></div></div>`,
           );
 
@@ -199,12 +214,14 @@ describe('pager', () => {
           endlessScrollCallback();
 
           expect(axios.get).toHaveBeenCalledWith(href, expect.any(Object));
+
+          resetHTMLFixture();
         });
       });
 
       describe('when `container` is not visible', () => {
         it('does not make API request', () => {
-          setFixtures(
+          setHTMLFixture(
             `<div id="js-pager" style="display: none;"><div class="content_list" data-href="${href}"></div></div>`,
           );
 
@@ -213,6 +230,8 @@ describe('pager', () => {
           endlessScrollCallback();
 
           expect(axios.get).not.toHaveBeenCalled();
+
+          resetHTMLFixture();
         });
       });
     });

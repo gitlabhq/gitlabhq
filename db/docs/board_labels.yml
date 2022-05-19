@@ -4,6 +4,6 @@ classes:
 - BoardLabel
 feature_categories:
 - team_planning
-description: TODO
+description: Used by issue boards to filter issues by label as part of the default scope
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2912
 milestone: '10.2'

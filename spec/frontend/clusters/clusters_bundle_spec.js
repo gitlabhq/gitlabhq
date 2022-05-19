@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { loadHTMLFixture } from 'helpers/fixtures';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { setTestTimeout } from 'helpers/timeout';
 import Clusters from '~/clusters/clusters_bundle';
@@ -27,19 +27,17 @@ describe('Clusters', () => {
 
   beforeEach(() => {
     loadHTMLFixture('clusters/show_cluster.html');
-  });
 
-  beforeEach(() => {
     mockGetClusterStatusRequest();
-  });
 
-  beforeEach(() => {
     cluster = new Clusters();
   });
 
   afterEach(() => {
     cluster.destroy();
     mock.restore();
+
+    resetHTMLFixture();
   });
 
   describe('class constructor', () => {

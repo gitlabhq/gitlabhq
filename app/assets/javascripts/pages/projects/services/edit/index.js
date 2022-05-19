@@ -1,5 +1,4 @@
 import initIntegrationSettingsForm from '~/integrations/edit';
-import PrometheusAlerts from '~/prometheus_alerts';
 import CustomMetrics from '~/prometheus_metrics/custom_metrics';
 
 initIntegrationSettingsForm();
@@ -10,5 +9,3 @@ if (prometheusSettingsWrapper) {
   const customMetrics = new CustomMetrics(prometheusSettingsSelector);
   customMetrics.init();
 }
-
-PrometheusAlerts();

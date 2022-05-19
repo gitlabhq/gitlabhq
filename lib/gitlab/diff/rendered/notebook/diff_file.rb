@@ -13,6 +13,7 @@ module Gitlab
           LOG_IPYNBDIFF_GENERATED = 'IPYNB_DIFF_GENERATED'
           LOG_IPYNBDIFF_TIMEOUT = 'IPYNB_DIFF_TIMEOUT'
           LOG_IPYNBDIFF_INVALID = 'IPYNB_DIFF_INVALID'
+          LOG_IPYNBDIFF_TRUNCATED = 'IPYNB_DIFF_TRUNCATED'
 
           attr_reader :source_diff
 
@@ -60,9 +61,16 @@ module Gitlab
 
           def notebook_diff
             strong_memoize(:notebook_diff) do
+              if source_diff.old_blob&.truncated? || source_diff.new_blob&.truncated?
+                log_event(LOG_IPYNBDIFF_TRUNCATED)
+                next
+              end
+
               Timeout.timeout(timeout_time) do
                 IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
-                               raise_if_invalid_nb: true, diffy_opts: { include_diff_info: true })&.tap do
+                               raise_if_invalid_nb: true,
+                               hide_images: true,
+                               diffy_opts: { include_diff_info: true })&.tap do
                   log_event(LOG_IPYNBDIFF_GENERATED)
                 end
               end
@@ -141,7 +149,7 @@ module Gitlab
 
           def log_event(message, error = nil)
             Gitlab::AppLogger.info({ message: message })
-            Gitlab::ErrorTracking.track_exception(error) if error
+            Gitlab::ErrorTracking.log_exception(error) if error
             nil
           end
         end

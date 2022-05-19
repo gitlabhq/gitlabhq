@@ -28,7 +28,7 @@ module ResolvesSnippets
 
   def snippet_finder_params(args)
     {
-      ids: resolve_ids(args[:ids], ::Types::GlobalIDType[::Snippet]),
+      ids: resolve_ids(args[:ids]),
       scope: args[:visibility]
     }.merge(options_by_type(args[:type]))
   end

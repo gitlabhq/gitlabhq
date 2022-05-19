@@ -39,24 +39,22 @@ func TestPrepareWithS3Config(t *testing.T) {
 	}
 
 	p := upload.NewObjectStoragePreparer(c)
-	opts, v, err := p.Prepare(r)
+	opts, err := p.Prepare(r)
 
 	require.NoError(t, err)
 	require.True(t, opts.ObjectStorageConfig.IsAWS())
 	require.True(t, opts.UseWorkhorseClient)
 	require.Equal(t, creds, opts.ObjectStorageConfig.S3Credentials)
 	require.NotNil(t, opts.ObjectStorageConfig.URLMux)
-	require.Equal(t, nil, v)
 }
 
 func TestPrepareWithNoConfig(t *testing.T) {
 	c := config.Config{}
 	r := &api.Response{RemoteObject: api.RemoteObject{ID: "id"}}
 	p := upload.NewObjectStoragePreparer(c)
-	opts, v, err := p.Prepare(r)
+	opts, err := p.Prepare(r)
 
 	require.NoError(t, err)
 	require.False(t, opts.UseWorkhorseClient)
-	require.Nil(t, v)
 	require.Nil(t, opts.ObjectStorageConfig.URLMux)
 }

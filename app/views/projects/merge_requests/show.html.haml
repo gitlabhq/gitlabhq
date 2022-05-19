@@ -1,5 +1,6 @@
 - @gfm_form = true
-- @content_class = "merge-request-container#{' limit-container-width' unless fluid_layout}"
+- unless moved_mr_sidebar_enabled?
+  - @content_class = "merge-request-container#{' limit-container-width' unless fluid_layout}"
 - add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge requests")
@@ -41,14 +42,14 @@
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
-          #js-vue-discussion-counter
+          #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
 
     .tab-content#diff-notes-app
       #js-diff-file-finder
         #js-code-navigation
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
-        .row
-          %section.col-md-12
+        %div{ class: "#{'merge-request-overview' if moved_mr_sidebar_enabled?}" }
+          %section
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
                 .detail-page-description
@@ -70,6 +71,8 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s } }
+          - if moved_mr_sidebar_enabled?
+            = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
       = render "projects/merge_requests/tabs/pane", name: "commits", id: "commits", class: "commits" do
         -# This tab is always loaded via AJAX
@@ -83,7 +86,8 @@
       .loading.hide
         = gl_loading_icon(size: 'lg')
 
-= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
+- unless moved_mr_sidebar_enabled?
+  = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
 - if @merge_request.can_be_reverted?(current_user)
   = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit
@@ -92,7 +96,7 @@
 
 #js-review-bar
 
-- if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+- if current_user&.mr_attention_requests_enabled?
   #js-need-attention-sidebar-onboarding
 
 = render 'projects/invite_members_modal', project: @project

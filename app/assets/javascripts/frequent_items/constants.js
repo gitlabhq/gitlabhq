@@ -7,7 +7,7 @@ export const FREQUENT_ITEMS = {
   ELIGIBLE_FREQUENCY: 3,
 };
 
-export const HOUR_IN_MS = 3600000;
+export const FIFTEEN_MINUTES_IN_MS = 900000;
 
 export const STORAGE_KEY = {
   projects: 'frequent-projects',

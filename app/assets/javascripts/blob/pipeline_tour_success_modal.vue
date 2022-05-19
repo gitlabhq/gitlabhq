@@ -132,7 +132,7 @@ export default {
       <gl-button
         ref="goToPipelines"
         :href="goToPipelinesPath"
-        variant="success"
+        variant="confirm"
         :data-track-property="humanAccess"
         :data-track-value="$options.goToTrackValuePipelines"
         :data-track-action="$options.trackEvent"

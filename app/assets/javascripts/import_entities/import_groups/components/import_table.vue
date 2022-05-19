@@ -25,7 +25,7 @@ import importGroupsMutation from '../graphql/mutations/import_groups.mutation.gr
 import updateImportStatusMutation from '../graphql/mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from '../graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
-import { NEW_NAME_FIELD, i18n } from '../constants';
+import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
 import { isFinished, isAvailableForImport, isNameValid, isSameTarget } from '../utils';
 import ImportActionsCell from './import_actions_cell.vue';
@@ -68,6 +68,10 @@ export default {
       required: true,
     },
     jobsPath: {
+      type: String,
+      required: true,
+    },
+    historyPath: {
       type: String,
       required: true,
     },
@@ -426,10 +430,10 @@ export default {
         return this.importTargets[group.id];
       }
 
-      const defaultTargetNamespace = this.availableNamespaces[0] ?? { fullPath: '', id: null };
+      const defaultTargetNamespace = this.availableNamespaces[0] ?? ROOT_NAMESPACE;
       let importTarget;
       if (group.lastImportTarget) {
-        const targetNamespace = this.availableNamespaces.find(
+        const targetNamespace = [ROOT_NAMESPACE, ...this.availableNamespaces].find(
           (ns) => ns.fullPath === group.lastImportTarget.targetNamespace,
         );
 
@@ -485,12 +489,15 @@ export default {
 
 <template>
   <div>
-    <h1
-      class="gl-my-0 gl-py-4 gl-font-size-h1 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
+    <div
+      class="gl-display-flex gl-align-items-center gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1"
     >
-      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
-      {{ s__('BulkImport|Import groups from GitLab') }}
-    </h1>
+      <h1 class="gl-my-0 gl-py-4 gl-font-size-h1gl-display-flex">
+        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
+        {{ s__('BulkImport|Import groups from GitLab') }}
+      </h1>
+      <gl-link :href="historyPath" class="gl-ml-auto">{{ s__('BulkImport|History') }}</gl-link>
+    </div>
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
       variant="warning"

@@ -72,6 +72,11 @@ Lint/LastKeywordArgument:
   Enabled: true
   Safe: false
 
+Lint/EmptyFile:
+  Exclude:
+    - 'db/seeds.rb'
+    - 'ee/db/geo/seeds.rb'
+
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
 Style/MutableConstant:
@@ -238,6 +243,11 @@ Rails/ApplicationRecord:
     - ee/db/**/*.rb
     - ee/spec/**/*.rb
 
+Rails/ActiveRecordCallbacksOrder:
+  Include:
+    - app/models/**/*.rb
+    - ee/app/models/**/*.rb
+
 Cop/DefaultScope:
   Enabled: true
 
@@ -253,6 +263,11 @@ Rails/IndexBy:
   Exclude:
     - 'tooling/danger/**/*.rb'
 
+Rails/InverseOf:
+  Include:
+    - app/models/**/*.rb
+    - ee/app/models/**/*.rb
+
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update
 # An error occurred while Rails/UniqueValidationWithoutIndex cop was inspecting
@@ -260,6 +275,16 @@ Rails/IndexBy:
 # To see the complete backtrace run rubocop -d.
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Include:
+    - app/models/**/*.rb
+    - ee/app/models/**/*.rb
+
+Rails/HelperInstanceVariable:
+  Include:
+    - app/helpers/**/*.rb
+    - ee/app/helpers/**/*.rb
 
 # GitLab ###################################################################
 
@@ -329,17 +354,11 @@ GitlabSecurity/PublicSend:
 
 Database/MultipleDatabases:
   Enabled: true
-  Include:
-    - 'app/**/*.rb'
-    - 'ee/app/**/*.rb'
-    - 'lib/**/*.rb'
-    - 'ee/lib/**/*.rb'
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
   Exclude:
     - 'ee/db/**/*.rb'
     - 'spec/migrations/**/*.rb'
-    - 'lib/gitlab/background_migration/**/*.rb'
+    - 'lib/tasks/gitlab/db.rake'
+    - 'ee/lib/ee/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/database/**/*.rb'
 
@@ -691,6 +710,7 @@ Gitlab/NamespacedClass:
     - 'scripts/**/*'
     - 'spec/migrations/**/*.rb'
     - 'app/experiments/**/*_experiment.rb'
+    - 'ee/app/experiments/**/*_experiment.rb'
 
 Lint/HashCompareByIdentity:
   Enabled: true
@@ -747,3 +767,9 @@ Performance/ActiveRecordSubtransactionMethods:
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+
+Migration/BackgroundMigrationBaseClass:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: true

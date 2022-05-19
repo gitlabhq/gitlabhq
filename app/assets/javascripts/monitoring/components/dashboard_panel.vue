@@ -19,6 +19,7 @@ import invalidUrl from '~/lib/utils/invalid_url';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { panelTypes } from '../constants';
 
 import { graphDataToCsv } from '../csv_export';
@@ -57,6 +58,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     clipboardText: {
       type: String,
@@ -141,6 +143,9 @@ export default {
       return metrics.some(({ loading }) => loading);
     },
     logsPathWithTimeRange() {
+      if (!this.glFeatures.monitorLogging) {
+        return null;
+      }
       const timeRange = this.zoomedTimeRange || this.timeRange;
 
       if (this.logsPath && this.logsPath !== invalidUrl && timeRange) {

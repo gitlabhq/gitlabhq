@@ -263,7 +263,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
       end
 
       it 'includes a link to CI pipeline docs' do
-        expect(html_data[:latest_pipeline_path]).to eq(help_page_path('ci/pipelines'))
+        expect(html_data[:latest_pipeline_path]).to eq(help_page_path('ci/pipelines/index'))
       end
 
       context 'when gathering feature data' do

@@ -23,19 +23,24 @@ module Mutations
           null: true,
           description: 'Runner token after mutation.'
 
-        def resolve(**args)
+        def resolve(type:, id: nil)
+          scope = authorized_find!(type: type, id: id)
+          new_token = reset_token(scope)
+
           {
-            token: reset_token(**args),
-            errors: []
+            token: new_token,
+            errors: errors_on_object(scope)
           }
         end
 
         private
 
-        def find_object(type:, **args)
-          id = args[:id]
-
+        def find_object(type:, id: nil)
           case type
+          when 'instance_type'
+            raise Gitlab::Graphql::Errors::ArgumentError, "id must not be specified for '#{type}' scope" if id.present?
+
+            ApplicationSetting.current
           when 'group_type'
             GitlabSchema.object_from_id(id, expected_type: ::Group)
           when 'project_type'
@@ -43,20 +48,7 @@ module Mutations
           end
         end
 
-        def reset_token(type:, **args)
-          id = args[:id]
-          scope = nil
-
-          case type
-          when 'instance_type'
-            raise Gitlab::Graphql::Errors::ArgumentError, "id must not be specified for '#{type}' scope" if id.present?
-
-            scope = ApplicationSetting.current
-            authorize!(scope)
-          when 'group_type', 'project_type'
-            scope = authorized_find!(type: type, id: id)
-          end
-
+        def reset_token(scope)
           ::Ci::Runners::ResetRegistrationTokenService.new(scope, current_user).execute if scope
         end
       end

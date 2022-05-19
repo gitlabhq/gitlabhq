@@ -11,7 +11,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be(:project) { create_default(:project, :repository).freeze }
 
-  it 'paginates 15 pipeleines per page' do
+  it 'paginates 15 pipelines per page' do
     expect(described_class.default_per_page).to eq(15)
   end
 
@@ -552,7 +552,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it { is_expected.to be_truthy }
     end
 
-    context 'when both sha and source_sha do not matche' do
+    context 'when both sha and source_sha do not match' do
       let(:pipeline) { build(:ci_pipeline, sha: 'test', source_sha: 'test') }
 
       it { is_expected.to be_falsy }
@@ -1423,7 +1423,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:build_b) { create_build('build2', queued_at: 0) }
     let(:build_c) { create_build('build3', queued_at: 0) }
 
-    %w[succeed! drop! cancel! skip!].each do |action|
+    %w[succeed! drop! cancel! skip! block! delay!].each do |action|
       context "when the pipeline recieved #{action} event" do
         it 'deletes a persistent ref' do
           expect(pipeline.persistent_ref).to receive(:delete).once
@@ -1532,6 +1532,21 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           pipeline.succeed
 
           expect(pipeline.started_at).to be_nil
+        end
+      end
+
+      context 'from success' do
+        let(:started_at) { 2.days.ago }
+        let(:from_status) { :success }
+
+        before do
+          pipeline.update!(started_at: started_at)
+        end
+
+        it 'does not update on transitioning to running' do
+          pipeline.run
+
+          expect(pipeline.started_at).to eq started_at
         end
       end
     end
@@ -1810,6 +1825,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
              queued_at: queued_at,
              started_at: queued_at + started_from,
              **opts)
+    end
+  end
+
+  describe '#ensure_persistent_ref' do
+    subject { pipeline.ensure_persistent_ref }
+
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    context 'when the persistent ref does not exist' do
+      it 'creates a ref' do
+        expect(pipeline.persistent_ref).to receive(:create).once
+
+        subject
+      end
+    end
+
+    context 'when the persistent ref exists' do
+      before do
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
+      end
+
+      it 'does not create a ref' do
+        expect(pipeline.persistent_ref).not_to receive(:create)
+
+        subject
+      end
     end
   end
 
@@ -3424,6 +3465,46 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'ignores cross project ancestors' do
         expect(subject).to eq(pipeline)
+      end
+    end
+  end
+
+  describe '#upstream_root' do
+    subject { pipeline.upstream_root }
+
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    context 'when pipeline is child of child pipeline' do
+      let!(:root_ancestor) { create(:ci_pipeline) }
+      let!(:parent_pipeline) { create(:ci_pipeline, child_of: root_ancestor) }
+      let!(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+
+      it 'returns the root ancestor' do
+        expect(subject).to eq(root_ancestor)
+      end
+    end
+
+    context 'when pipeline is root ancestor' do
+      let!(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+
+      it 'returns itself' do
+        expect(subject).to eq(pipeline)
+      end
+    end
+
+    context 'when pipeline is standalone' do
+      it 'returns itself' do
+        expect(subject).to eq(pipeline)
+      end
+    end
+
+    context 'when pipeline is multi-project downstream pipeline' do
+      let!(:upstream_pipeline) do
+        create(:ci_pipeline, project: create(:project), upstream_of: pipeline)
+      end
+
+      it 'returns the upstream pipeline' do
+        expect(subject).to eq(upstream_pipeline)
       end
     end
   end

@@ -97,10 +97,9 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 
 #### DNS configuration for custom domains
 
-If support for custom domains is needed, the Pages root domain and its subdomains should point to
-the secondary IP (which is dedicated for the Pages daemon). `<namespace>.<pages root domain>` should
-point at Pages directly. Without this, users aren't able to use `CNAME` records to point their
-custom domains to their GitLab Pages.
+If support for custom domains is needed, all subdomains of the Pages root domain should point to the
+secondary IP (which is dedicated for the Pages daemon). Without this configuration, users can't use
+`CNAME` records to point their custom domains to their GitLab Pages.
 
 For example, an entry could look like this:
 
@@ -295,7 +294,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `rate_limit_domain_burst`               | Rate limit per domain maximum burst allowed per second. |
 | `server_read_timeout`                   | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. Default: `5s` |
 | `server_read_header_timeout`            | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. Default: `1s` |
-| `server_write_timeout`                  | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. Default: `5m` |
+| `server_write_timeout`                  | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. Default: `0` |
 | `server_keep_alive`                     | The `Keep-Alive` period for network connections accepted by this listener. If `0`, `Keep-Alive` is enabled if supported by the protocol and operating system. If negative, `Keep-Alive` is disabled. Default: `15s` |
 
 ## Advanced configuration
@@ -386,6 +385,12 @@ To prevent malicious users from hijacking domains that don't belong to them,
 GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#steps).
 When adding a custom domain, users are required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
+
+WARNING:
+Disabling domain verification is unsafe and can lead to various vulnerabilities.
+If you *do* disable it, either ensure that the Pages root domain itself does not point to the
+secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
+domain as a custom domain to their project.
 
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
@@ -1135,7 +1140,7 @@ Rate limits are enforced using the following:
 - `rate_limit_source_ip`: Set the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
 - `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
   For example, when you load a web page that loads a number of resources at the same time.
-- `rate_limit_domain_ip`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_domain`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
 - `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 
 #### Enable source-IP rate limits
@@ -1331,6 +1336,27 @@ To stop `systemd` from cleaning the Pages related content:
 
    ```shell
    echo 'x /tmp/gitlab-pages-*' >> /etc/tmpfiles.d/gitlab-pages-jail.conf
+   ```
+
+1. Restart GitLab Pages:
+
+   ```shell
+   sudo gitlab-ctl restart gitlab-pages
+   ```
+
+### Unable to access GitLab Pages
+
+If you can't access your GitLab Pages (such as receiving `502 Bad Gateway` errors, or a login loop)
+and in your Pages log shows this error:
+
+```plaintext
+"error":"retrieval context done: context deadline exceeded","host":"root.docs-cit.otenet.gr","level":"error","msg":"could not fetch domain information from a source"
+```
+
+1. Add the following to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['internal_gitlab_server'] = 'http://localhost:8080'
    ```
 
 1. Restart GitLab Pages:

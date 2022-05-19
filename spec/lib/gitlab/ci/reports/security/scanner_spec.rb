@@ -103,8 +103,6 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scanner do
 
     context 'when the `external_id` of the scanners are different' do
       where(:scanner_1_attributes, :scanner_2_attributes, :expected_comparison_result) do
-        { external_id: 'bundler_audit', name: 'foo', vendor: 'bar' }    | { external_id: 'retire.js', name: 'foo', vendor: 'bar' }        | -1
-        { external_id: 'retire.js', name: 'foo', vendor: 'bar' }        | { external_id: 'gemnasium', name: 'foo', vendor: 'bar' }        | -1
         { external_id: 'gemnasium', name: 'foo', vendor: 'bar' }        | { external_id: 'gemnasium-maven', name: 'foo', vendor: 'bar' }  | -1
         { external_id: 'gemnasium-maven', name: 'foo', vendor: 'bar' }  | { external_id: 'gemnasium-python', name: 'foo', vendor: 'bar' } | -1
         { external_id: 'gemnasium-python', name: 'foo', vendor: 'bar' } | { external_id: 'bandit', name: 'foo', vendor: 'bar' }           | 1

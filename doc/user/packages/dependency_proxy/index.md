@@ -37,7 +37,8 @@ For a list of planned additions, view the
 
 To enable or turn off the Dependency Proxy for a group:
 
-1. Go to your group's **Settings > Packages & Registries**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Packages & Registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
 
@@ -49,7 +50,8 @@ for the entire GitLab instance.
 
 To view the Dependency Proxy:
 
-- Go to your group's **Packages & Registries > Dependency Proxy**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Packages & Registries > Dependency Proxy**.
 
 The Dependency Proxy is not available for projects.
 
@@ -63,17 +65,8 @@ Prerequisites:
 
 ### Authenticate with the Dependency Proxy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7.
-> - It's [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - It's enabled on GitLab.com.
-> - It's recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication). **(FREE SELF)**
-
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
-The requirement to authenticate is a breaking change added in 13.7. An [administrator can temporarily
-disable it](../../../administration/packages/dependency_proxy.md#disabling-authentication) if it
-has disrupted your existing Dependency Proxy usage.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `dependency_proxy_for_private_groups`. Enabled by default.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
 
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.
@@ -182,8 +175,9 @@ You can also use [custom CI/CD variables](../../../ci/variables/index.md#custom-
 
 To store a Docker image in Dependency Proxy storage:
 
-1. Go to your group's **Packages & Registries > Dependency Proxy**.
-1. Copy the **Dependency Proxy URL**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Packages & Registries > Dependency Proxy**.
+1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
 1. You can also pull images by digest to specify exactly which version of an image to pull.
 

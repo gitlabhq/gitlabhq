@@ -297,7 +297,7 @@ it('tests a promise rejection', async () => {
 You can also simply return a promise from the test function.
 
 Using the `done` and `done.fail` callbacks is discouraged when working with
-promises. They should only be used when testing callback-based code.
+promises. They should not be used.
 
 **Bad**:
 
@@ -466,18 +466,22 @@ it('waits for an Ajax call', () => {
 
 #### Vue rendering
 
-To wait until a Vue component is re-rendered, use either of the equivalent
-[`Vue.nextTick()`](https://vuejs.org/v2/api/#Vue-nextTick) or `vm.$nextTick()`.
+Use [`nextTick()`](https://vuejs.org/v2/api/#Vue-nextTick) to wait until a Vue component is
+re-rendered.
 
 **in Jest:**
 
 ```javascript
-it('renders something', () => {
+import { nextTick } from 'vue';
+
+// ...
+
+it('renders something', async () => {
   wrapper.setProps({ value: 'new value' });
 
-  return wrapper.vm.$nextTick().then(() => {
-    expect(wrapper.text()).toBe('new value');
-  });
+  await nextTick();
+
+  expect(wrapper.text()).toBe('new value');
 });
 ```
 
@@ -487,15 +491,17 @@ If the application triggers an event that you need to wait for in your test, reg
 the assertions:
 
 ```javascript
-it('waits for an event', done => {
+it('waits for an event', () => {
   eventHub.$once('someEvent', eventHandler);
 
   someFunction();
 
-  function eventHandler() {
-    expect(something).toBe('done');
-    done();
-  }
+  return new Promise((resolve) => {
+    function expectEventHandler() {
+      expect(something).toBe('done');
+      resolve();
+    }
+  });
 });
 ```
 
@@ -807,11 +813,14 @@ The following are examples of tests that work for Jest:
 
 ```javascript
 it('uses some HTML element', () => {
-  loadFixtures('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
+  loadHTMLFixture('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
 
   const element = document.getElementById('#my-id');
 
   // ...
+
+  // Jest does not clean up the DOM automatically
+  resetHTMLFixture();
 });
 ```
 

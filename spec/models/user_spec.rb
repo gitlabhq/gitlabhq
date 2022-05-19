@@ -1048,8 +1048,8 @@ RSpec.describe User do
     context 'SSH key expiration scopes' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
-      let_it_be(:expired_today_not_notified) { create(:key, expires_at: Time.current, user: user1) }
-      let_it_be(:expired_today_already_notified) { create(:key, expires_at: Time.current, user: user2, expiry_notification_delivered_at: Time.current) }
+      let_it_be(:expired_today_not_notified) { create(:key, :expired_today, user: user1) }
+      let_it_be(:expired_today_already_notified) { create(:key, :expired_today, user: user2, expiry_notification_delivered_at: Time.current) }
       let_it_be(:expiring_soon_not_notified) { create(:key, expires_at: 2.days.from_now, user: user2) }
       let_it_be(:expiring_soon_notified) { create(:key, expires_at: 2.days.from_now, user: user1, before_expiry_notification_delivered_at: Time.current) }
 
@@ -5006,9 +5006,13 @@ RSpec.describe User do
     let(:archived_project) { create(:project, :public, :archived) }
 
     before do
-      create(:merge_request, source_project: project, author: user, reviewers: [user])
-      create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
-      create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+      mr1 = create(:merge_request, source_project: project, author: user, reviewers: [user])
+      mr2 = create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
+      mr3 = create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
+
+      mr1.find_reviewer(user).update!(state: :attention_requested)
+      mr2.find_reviewer(user).update!(state: :attention_requested)
+      mr3.find_reviewer(user).update!(state: :attention_requested)
     end
 
     it 'returns number of open merge requests from non-archived projects' do
@@ -5335,7 +5339,7 @@ RSpec.describe User do
     let(:deleted_by) { create(:user) }
 
     it 'blocks the user then schedules them for deletion if a hard delete is specified' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, hard_delete: true)
+      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, { hard_delete: true })
 
       user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
 
@@ -6816,5 +6820,24 @@ RSpec.describe User do
 
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :user }
+  end
+
+  describe 'mr_attention_requests_enabled?' do
+    let(:user) { create(:user) }
+
+    before do
+      stub_feature_flags(mr_attention_requests: false)
+    end
+
+    it { expect(user.mr_attention_requests_enabled?).to be(false) }
+
+    it 'feature flag is enabled for user' do
+      stub_feature_flags(mr_attention_requests: user)
+
+      another_user = create(:user)
+
+      expect(user.mr_attention_requests_enabled?).to be(true)
+      expect(another_user.mr_attention_requests_enabled?).to be(false)
+    end
   end
 end

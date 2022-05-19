@@ -455,7 +455,6 @@ Example response:
       "public_jobs":true,
       "build_timeout":3600,
       "auto_cancel_pending_pipelines":"enabled",
-      "build_coverage_regex":null,
       "ci_config_path":null,
       "shared_with_groups":[
          {
@@ -837,6 +836,7 @@ The `default_branch_protection` attribute determines whether users with the Deve
 | `0`   | No protection. Users with the Developer or Maintainer role can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
 | `1`   | Partial protection. Users with the Developer or Maintainer role can:  <br>- Push new commits |
 | `2`   | Full protection. Only users with the Maintainer role can:  <br>- Push new commits |
+| `3`   | Protected against pushes. Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
 
 ## New Subgroup
 

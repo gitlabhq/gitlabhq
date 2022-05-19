@@ -8,7 +8,8 @@
   a {
     color: $gl-text-color;
 
-    &.link {
+    &.link,
+    &.gl-link {
       color: $blue-600;
     }
   }
@@ -25,6 +26,7 @@
 .detail-page-header-body {
   position: relative;
   display: flex;
+  align-items: center;
   flex: 1 1;
   min-width: 0;
 
@@ -38,9 +40,18 @@
   align-self: center;
   flex: 0 0 auto;
 
-  @include media-breakpoint-down(xs) {
-    width: 100%;
-    margin-top: 10px;
+  &:not(.is-merge-request) {
+    @include media-breakpoint-down(xs) {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+
+  &.is-merge-request {
+    @include media-breakpoint-down(sm) {
+      width: 100%;
+      margin-top: 10px;
+    }
   }
 }
 
@@ -55,5 +66,9 @@
 
   .description {
     margin-top: 6px;
+  }
+
+  .author-link {
+    color: $gl-text-color;
   }
 }

@@ -478,28 +478,6 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Con
      --data '{"gitops_sync_count":1}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
 ```
 
-### GitLab agent alert metrics
-
-Called from GitLab agent server (KAS) to save alerts derived from Cilium on Kubernetes
-Cluster.
-
-| Attribute | Type   | Required | Description |
-|:----------|:-------|:---------|:------------|
-| `alert` | Hash | yes | Alerts detail. Same format as [3rd party alert](../../operations/incident_management/integrations.md#customize-the-alert-payload-outside-of-gitlab). |
-
-```plaintext
-POST internal/kubernetes/modules/cilium_alert
-```
-
-Example Request:
-
-```shell
-curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
-     --header "Authorization: Bearer <agent token>" --header "Content-Type: application/json" \
-     --data '"{\"alert\":{\"title\":\"minimal\",\"message\":\"network problem\",\"evalMatches\":[{\"value\":1,\"metric\":\"Count\",\"tags\":{}}]}}"' \
-     "http://localhost:3000/api/v4/internal/kubernetes/modules/cilium_alert"
-```
-
 ### Create Starboard vulnerability
 
 Called from the GitLab agent server (`kas`) to create a security vulnerability

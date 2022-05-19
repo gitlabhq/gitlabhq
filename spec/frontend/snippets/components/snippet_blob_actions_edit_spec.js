@@ -1,6 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { times } from 'lodash';
 import { nextTick } from 'vue';
+import { GlFormGroup } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
 import SnippetBlobEdit from '~/snippets/components/snippet_blob_edit.vue';
 import {
@@ -8,6 +9,7 @@ import {
   SNIPPET_BLOB_ACTION_CREATE,
   SNIPPET_BLOB_ACTION_MOVE,
 } from '~/snippets/constants';
+import { s__ } from '~/locale';
 import { testEntries, createBlobFromTestEntry } from '../test_utils';
 
 const TEST_BLOBS = [
@@ -29,7 +31,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
     });
   };
 
-  const findLabel = () => wrapper.find('label');
+  const findLabel = () => wrapper.findComponent(GlFormGroup);
   const findBlobEdits = () => wrapper.findAll(SnippetBlobEdit);
   const findBlobsData = () =>
     findBlobEdits().wrappers.map((x) => ({
@@ -65,7 +67,7 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
     });
 
     it('renders label', () => {
-      expect(findLabel().text()).toBe('Files');
+      expect(findLabel().attributes('label')).toBe('Files');
     });
 
     it(`renders delete button (show=true)`, () => {
@@ -278,6 +280,34 @@ describe('snippets/components/snippet_blob_actions_edit', () => {
 
     it('should disable add button', () => {
       expect(findAddButton().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('isValid prop', () => {
+    const validationMessage = s__(
+      "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them.",
+    );
+
+    describe('when not present', () => {
+      it('sets the label validation state to true', () => {
+        createComponent();
+
+        const label = findLabel();
+
+        expect(Boolean(label.attributes('state'))).toEqual(true);
+        expect(label.attributes('invalid-feedback')).toEqual(validationMessage);
+      });
+    });
+
+    describe('when present', () => {
+      it('sets the label validation state to the value', () => {
+        createComponent({ isValid: false });
+
+        const label = findLabel();
+
+        expect(Boolean(label.attributes('state'))).toEqual(false);
+        expect(label.attributes('invalid-feedback')).toEqual(validationMessage);
+      });
     });
   });
 });

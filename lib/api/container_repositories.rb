@@ -10,6 +10,7 @@ module API
     before { authenticate! }
 
     feature_category :container_registry
+    urgency :low
 
     namespace 'registry' do
       params do

@@ -1,17 +1,27 @@
 <script>
+import { mapActions } from 'vuex';
 import { GlButton } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { addSubscription } from '~/jira_connect/subscriptions/api';
 import { persistAlert, reloadPage } from '~/jira_connect/subscriptions/utils';
-import { s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GroupItemName from '../group_item_name.vue';
+import {
+  INTEGRATIONS_DOC_LINK,
+  I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
+  I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,
+  I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE,
+} from '../../constants';
 
 export default {
   components: {
     GlButton,
     GroupItemName,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
+    addSubscriptionsPath: {
+      default: '',
+    },
     subscriptionsPath: {
       default: '',
     },
@@ -32,31 +42,41 @@ export default {
       isLoading: false,
     };
   },
+  computed: {
+    oauthEnabled() {
+      return this.glFeatures.jiraConnectOauth;
+    },
+  },
   methods: {
-    onClick() {
+    ...mapActions(['addSubscription']),
+    async onClick() {
+      if (this.oauthEnabled) {
+        this.isLoading = true;
+        await this.addSubscription({
+          namespacePath: this.group.full_path,
+          subscriptionsPath: this.subscriptionsPath,
+        });
+        this.isLoading = false;
+      } else {
+        this.deprecatedAddSubscription();
+      }
+    },
+    deprecatedAddSubscription() {
       this.isLoading = true;
 
-      addSubscription(this.subscriptionsPath, this.group.full_path)
+      addSubscription(this.addSubscriptionsPath, this.group.full_path)
         .then(() => {
           persistAlert({
-            title: s__('Integrations|Namespace successfully linked'),
-            message: s__(
-              'Integrations|You should now see GitLab.com activity inside your Jira Cloud issues. %{linkStart}Learn more%{linkEnd}',
-            ),
-            linkUrl: helpPagePath('integration/jira_development_panel.html', {
-              anchor: 'use-the-integration',
-            }),
+            title: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
+            message: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,
+            linkUrl: INTEGRATIONS_DOC_LINK,
             variant: 'success',
           });
 
           reloadPage();
         })
         .catch((error) => {
-          this.$emit(
-            'error',
-            error?.response?.data?.error ||
-              s__('Integrations|Failed to link namespace. Please try again.'),
-          );
+          this.$emit('error', error?.response?.data?.error || I18N_ADD_SUBSCRIPTIONS_ERROR_MESSAGE);
           this.isLoading = false;
         });
     },

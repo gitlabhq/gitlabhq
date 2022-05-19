@@ -23,6 +23,10 @@ in the relevant projects:
 - <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml>
 - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml>
 - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml>
+- <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml>
+
+We also run some documentation tests in the GitLab Development Kit project:
+<https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml>.
 
 ## Run tests locally
 
@@ -144,6 +148,36 @@ synchronized to the other projects. In `omnibus-gitlab`, `gitlab-runner`, and `c
    is hard coded for specific projects.
 1. Create a merge request and submit it to a technical writer for review and merge.
 
+## Update linting images
+
+Lint tests run in CI/CD pipelines using images from the `gitlab-docs` [container registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry).
+
+If a new version of a dependency is released (like a new version of Ruby), we
+should update the images to use the newer version. Then, we can update the configuration
+files in each of our documentation projects to point to the new image.
+
+To update the linting images:
+
+1. In `gitlab-docs`, open a merge request to update `.gitlab-ci.yml` to use the new tooling
+   version. ([Example MR](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/2571))
+1. When merged, start a `Build docs.gitlab.com every 4 hours` [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules).
+1. Go the pipeline you started, and manually run the relevant build-images job,
+   for example, `image:docs-lint-markdown`.
+1. In the job output, get the name of the new image.
+   ([Example job output](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/2335033884#L334))
+1. Verify that the new image was added to the container registry.
+1. Open merge requests to update each of these configuration files to point to the new image.
+   In each merge request, include a small doc update to trigger the job that uses the image.
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85177))
+   - <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/test.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3408))
+   - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml> ([Example MR](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6037))
+   - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2511))
+   - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/merge_requests/462))
+   - <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2417))
+1. In each merge request, check the relevant job output to confirm the updated image was
+   used for the test. ([Example job output](https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/2335470260#L24))
+1. Assign the merge requests to any technical writer to review and merge.
+
 ## Local linters
 
 To help adhere to the [documentation style guidelines](styleguide/index.md), and improve the content
@@ -173,6 +207,7 @@ markdownlint configuration is found in the following projects:
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [`charts`](https://gitlab.com/gitlab-org/charts/gitlab)
 - [`gitlab-development-kit`](https://gitlab.com/gitlab-org/gitlab-development-kit)
+- [`gitlab-operator`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
 
 This configuration is also used in build pipelines.
 
@@ -311,7 +346,7 @@ To configure Vale in your editor, install one of the following as appropriate:
 - Visual Studio Code [`errata-ai.vale-server` extension](https://marketplace.visualstudio.com/items?itemName=errata-ai.vale-server).
   You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
-- Jetbrains IDEs - No plugin exists, but
+- JetBrains IDEs - No plugin exists, but
   [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)
   contains tips for configuring an external tool.
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck).

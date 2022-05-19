@@ -5,7 +5,7 @@ import {
   EXTENSION_BASE_LINE_NUMBERS_CLASS,
 } from '../constants';
 
-const hashRegexp = new RegExp('#?L', 'g');
+const hashRegexp = /#?L/g;
 
 const createAnchor = (href) => {
   const fragment = new DocumentFragment();
@@ -64,7 +64,7 @@ export class SourceEditorExtension {
     const [start, end] =
       bounds && Array.isArray(bounds)
         ? bounds
-        : window.location.hash?.replace(hashRegexp, '').split('-');
+        : window.location.hash.replace(hashRegexp, '').split('-');
     let startLine = start ? parseInt(start, 10) : null;
     let endLine = end ? parseInt(end, 10) : startLine;
     if (endLine < startLine) {

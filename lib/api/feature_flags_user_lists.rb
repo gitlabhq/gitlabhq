@@ -9,6 +9,7 @@ module API
     }
 
     feature_category :feature_flags
+    urgency :low
 
     before do
       authorize_admin_feature_flags_user_lists!

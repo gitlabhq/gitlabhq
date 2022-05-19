@@ -11,6 +11,18 @@ module Gitlab
           attr_reader :time_frame
           attr_reader :options
 
+          class << self
+            def available?(&block)
+              return @metric_available = block if block_given?
+
+              return @metric_available.call if instance_variable_defined?('@metric_available')
+
+              true
+            end
+
+            attr_reader :metric_available
+          end
+
           def initialize(time_frame:, options: {})
             @time_frame = time_frame
             @options = options
@@ -18,6 +30,10 @@ module Gitlab
 
           def instrumentation
             value
+          end
+
+          def available?
+            self.class.available?
           end
         end
       end

@@ -52,7 +52,7 @@ RSpec.describe 'Updating the dependency proxy image ttl policy' do
 
     context 'with permission' do
       before do
-        group.add_developer(user)
+        group.add_maintainer(user)
       end
 
       it 'returns the updated dependency proxy image ttl policy', :aggregate_failures do

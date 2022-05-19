@@ -81,24 +81,6 @@ module Gitlab
         :update_gateway,
         to: :istio_client
 
-      # NetworkPolicy methods delegate to the apis/networking.k8s.io api
-      # group client
-      delegate :create_network_policy,
-        :get_network_policies,
-        :get_network_policy,
-        :update_network_policy,
-        :delete_network_policy,
-        to: :networking_client
-
-      # CiliumNetworkPolicy methods delegate to the apis/cilium.io api
-      # group client
-      delegate :create_cilium_network_policy,
-        :get_cilium_network_policies,
-        :get_cilium_network_policy,
-        :update_cilium_network_policy,
-        :delete_cilium_network_policy,
-        to: :cilium_networking_client
-
       attr_reader :api_prefix, :kubeclient_options
 
       DEFAULT_KUBECLIENT_OPTIONS = {

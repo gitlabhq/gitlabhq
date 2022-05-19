@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 
 - Caching (mostly via `Rails.cache`).
-- As a job processing queue with [Sidekiq](sidekiq_style_guide.md).
+- As a job processing queue with [Sidekiq](sidekiq/index.md).
 - To manage the shared application state.
 - To store CI trace chunks.
 - As a Pub/Sub queue backend for ActionCable.
@@ -147,12 +147,11 @@ mostly for fine-grained control of Redis usage, so they wouldn't be used
 in combination with the `Rails.cache` wrapper: we'd either use
 `Rails.cache` or these classes and literal Redis commands.
 
-`Rails.cache` or these classes and literal Redis commands. We prefer
-using `Rails.cache` so we can reap the benefits of future optimizations
-done to Rails. It is worth noting that Ruby objects are
+We prefer using `Rails.cache` so we can reap the benefits of future
+optimizations done to Rails. Ruby objects are
 [marshalled](https://github.com/rails/rails/blob/v6.0.3.1/activesupport/lib/active_support/cache/redis_cache_store.rb#L447)
-when written to Redis, so we need to pay attention to not to store huge
-objects, or untrusted user input.
+when written to Redis, so we must pay attention to store neither huge objects,
+nor untrusted user input.
 
 Typically we would only use these classes when at least one of the
 following is true:

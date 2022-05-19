@@ -3,7 +3,8 @@
 #
 # This template shows how to use Qualys IaC Scan with a GitLab CI/CD pipeline.
 # Qualys and GitLab users can use this to scan their IaC templates for misconfigurations.
-# Documentation about this integration: https://www.qualys.com/documentation/qualys-iac-gitlab-integration.pdf
+# The IaC templates are uploaded to Qualys Platform for scanning, which returns the results to GitLab for reporting.
+# Documentation about this integration: https://www.qualys.com/docs/qualys-iac-security-integration-gitlab.pdf
 #
 # This template should not need editing to work in your project.
 # It is not designed to be included in an existing CI/CD configuration with the "include:" keyword.

@@ -96,7 +96,7 @@ module Gitlab
             step = step_class.name.underscore.parameterize(separator: '_')
             logger.observe("pipeline_step_#{step}_duration_s", duration)
 
-            if Feature.enabled?(:ci_pipeline_creation_step_duration_tracking, type: :ops, default_enabled: :yaml)
+            if Feature.enabled?(:ci_pipeline_creation_step_duration_tracking, type: :ops)
               metrics.pipeline_creation_step_duration_histogram
                 .observe({ step: step_class.name }, duration.seconds)
             end

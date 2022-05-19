@@ -75,7 +75,6 @@ GitLab provides built-in tools to help improve performance and availability:
 - [Profiling](profiling.md).
 - [Distributed Tracing](distributed_tracing.md)
 - [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
-- [Request Profiling](../administration/monitoring/performance/request_profiling.md).
 - [QueryRecoder](query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 - [Service measurement](service_measurement.md) for measuring and logging service execution.
@@ -319,7 +318,7 @@ You can do this when using the [performance bar](profiling.md#speedscope-flamegr
 and when [profiling code blocks](https://github.com/jlfwong/speedscope/wiki/Importing-from-stackprof-(ruby)).
 This option isn't supported by `bin/rspec-stackprof`.
 
-You can profile speciific methods by using `--method method_name`:
+You can profile specific methods by using `--method method_name`:
 
 ```shell
 $ stackprof tmp/project_policy_spec.rb.dump --method access_allowed_to

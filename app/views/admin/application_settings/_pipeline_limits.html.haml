@@ -1,0 +1,9 @@
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-pipeline-limits-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :pipeline_limit_per_project_user_sha,  _('Maximum number of requests per minute')
+      = f.number_field :pipeline_limit_per_project_user_sha, class: 'form-control gl-form-input'
+
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

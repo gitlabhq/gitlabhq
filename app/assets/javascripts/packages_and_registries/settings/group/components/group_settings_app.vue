@@ -13,7 +13,7 @@ export default {
     PackagesSettings,
     DependencyProxySettings,
   },
-  inject: ['groupPath', 'dependencyProxyAvailable'],
+  inject: ['groupPath'],
   apollo: {
     group: {
       query: getGroupPackagesSettingsQuery,
@@ -83,7 +83,6 @@ export default {
     />
 
     <dependency-proxy-settings
-      v-if="dependencyProxyAvailable"
       :dependency-proxy-settings="dependencyProxySettings"
       :dependency-proxy-image-ttl-policy="dependencyProxyImageTtlPolicy"
       :is-loading="isLoading"

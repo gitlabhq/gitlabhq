@@ -28,14 +28,22 @@ class Feature
       },
       ops: {
         description: "Long-lived feature flags that control operational aspects of GitLab's behavior",
-        optional: true,
-        rollout_issue: false,
+        optional: false,
+        rollout_issue: true,
         ee_only: false,
         default_enabled: false,
         example: <<-EOS
           Feature.enabled?(:my_ops_flag, type: :ops)
           push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
         EOS
+      },
+      undefined: {
+        description: "Feature flags that are undefined in GitLab codebase (should not be used)",
+        optional: true,
+        rollout_issue: false,
+        ee_only: false,
+        default_enabled: false,
+        example: ''
       },
       experiment: {
         description: 'Short lived, used specifically to run A/B/n experiments.',

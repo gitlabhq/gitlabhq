@@ -20,7 +20,6 @@
 #     sort: string
 #     my_reaction_emoji: string
 #     public_only: boolean
-#     include_hidden: boolean
 #     due_date: date or '0', '', 'overdue', 'week', or 'month'
 #     created_after: datetime
 #     created_before: datetime
@@ -48,6 +47,8 @@ class IssuesFinder < IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def with_confidentiality_access_check
+    return Issue.all if params.user_can_see_all_issues?
+
     # Only admins can see hidden issues, so for non-admins, we filter out any hidden issues
     issues = Issue.without_hidden
 
@@ -75,9 +76,7 @@ class IssuesFinder < IssuableFinder
   private
 
   def init_collection
-    if params.include_hidden?
-      Issue.all
-    elsif params.public_only?
+    if params.public_only?
       Issue.public_only
     else
       with_confidentiality_access_check

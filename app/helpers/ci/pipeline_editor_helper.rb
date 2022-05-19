@@ -21,6 +21,7 @@ module Ci
         "default-branch" => project.default_branch_or_main,
         "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-dag-md.svg'),
         "initial-branch-name" => initial_branch,
+        "includes-help-page-path" => help_page_path('ci/yaml/includes'),
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
         "lint-unavailable-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'configuration-validation-currently-not-available-message'),
         "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),

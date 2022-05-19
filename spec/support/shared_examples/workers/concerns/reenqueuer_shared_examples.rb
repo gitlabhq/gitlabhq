@@ -19,7 +19,13 @@ RSpec.shared_examples 'reenqueuer' do
 
   describe '#perform' do
     it 'tries to obtain a lease' do
-      expect_to_obtain_exclusive_lease(subject.lease_key)
+      lease_key = if subject.respond_to?(:set_custom_lease_key)
+                    subject.set_custom_lease_key(*job_args)
+                  else
+                    subject.lease_key
+                  end
+
+      expect_to_obtain_exclusive_lease(lease_key)
 
       subject_perform
     end

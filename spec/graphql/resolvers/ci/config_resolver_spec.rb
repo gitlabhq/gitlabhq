@@ -37,13 +37,15 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
           merged_yaml: content,
           jobs: [],
           errors: [],
-          warnings: []
+          warnings: [],
+          includes: []
         )
       end
 
       it 'lints the ci config file and returns the merged yaml file' do
         expect(response[:status]).to eq(:valid)
         expect(response[:merged_yaml]).to eq(content)
+        expect(response[:includes]).to eq([])
         expect(response[:errors]).to be_empty
         expect(::Gitlab::Ci::Lint).to have_received(:new).with(current_user: user, project: project, sha: sha)
       end
@@ -69,7 +71,8 @@ RSpec.describe Resolvers::Ci::ConfigResolver do
           jobs: [],
           merged_yaml: content,
           errors: ['Invalid configuration format'],
-          warnings: []
+          warnings: [],
+          includes: []
         )
       end
 

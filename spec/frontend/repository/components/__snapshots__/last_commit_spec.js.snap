@@ -2,13 +2,13 @@
 
 exports[`Repository last commit component renders commit widget 1`] = `
 <div
-  class="well-segment commit gl-p-5 gl-w-full"
+  class="well-segment commit gl-p-5 gl-w-full gl-display-flex"
 >
   <user-avatar-link-stub
-    class="avatar-cell"
+    class="gl-my-2 gl-mr-4"
     imgalt=""
-    imgcssclasses=""
-    imgsize="40"
+    imgcssclasses="gl-mr-0!"
+    imgsize="32"
     imgsrc="https://test.com"
     linkhref="/test"
     tooltipplacement="top"
@@ -55,7 +55,11 @@ exports[`Repository last commit component renders commit widget 1`] = `
     </div>
      
     <div
-      class="commit-actions flex-row"
+      class="gl-flex-grow-1"
+    />
+     
+    <div
+      class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"
     >
       <!---->
        

@@ -308,7 +308,10 @@ When you configure GitLab CI/CD for your project, you can visualize the stages o
 
 ![Multi-project pipeline graph](img/multi_project_pipeline_graph_v14_3.png)
 
-In the merge request, on the **Pipelines** tab, multi-project pipeline mini-graphs are displayed.
-They expand and are shown adjacent to each other when hovering (or tapping on touchscreen devices).
+## Retry or cancel multi-project pipelines
 
-![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
+If you have permission to trigger pipelines in the downstream project, you can
+retry or cancel multi-project pipelines:
+
+- [In the main graph view](index.md#downstream-pipelines).
+- From the downstream pipeline's details page.

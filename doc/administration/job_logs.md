@@ -177,7 +177,7 @@ Here is the detailed data flow:
 
 ### Limitations
 
-- [Redis cluster is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/224171).
+- [Redis Cluster is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/224171).
 - You must configure [object storage for CI/CD artifacts, logs, and builds](job_artifacts.md#object-storage-settings)
   before you enable the feature flag. After the flag is enabled, files cannot be written
   to disk, and there is no protection against misconfiguration.

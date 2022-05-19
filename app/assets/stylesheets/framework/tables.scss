@@ -10,9 +10,6 @@ table {
   * color palette in https://gitlab.com/gitlab-org/gitlab/-/issues/213570
   *
   * The overwrites here affected the following areas:
-  * - The security dashboard tables. When removing
-  *   this code, table-th-transparent and original-text-color classes should
-  *   be removed there.
   * - The subscription seats table. When removing this code, the .seats-table
   *   <th> and margin overrides should be removed there.
   *
@@ -23,8 +20,16 @@ table {
     @include gl-text-gray-500;
   }
 
-  .md &:not(.code),
   &.table {
+    .thead-white {
+      th {
+        background-color: $white;
+      }
+    }
+  }
+
+  .md &:not(.code),
+  &.table:not(.gl-table) {
     margin-bottom: $gl-padding;
 
     .dropdown-menu a {
@@ -58,23 +63,12 @@ table {
         &.wide {
           width: 55%;
         }
-
-        &.table-th-transparent {
-          background: none;
-          color: $gl-text-color-secondary;
-        }
-
-        &.original-gl-th {
-          @include gl-text-gray-500;
-          border-bottom: 1px solid $cycle-analytics-light-gray;
-        }
       }
 
     }
 
     .thead-white {
       th {
-        background-color: $white;
         color: $gl-text-color-secondary;
         border-top: 0;
       }

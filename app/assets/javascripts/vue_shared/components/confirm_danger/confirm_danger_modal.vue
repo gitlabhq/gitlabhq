@@ -12,7 +12,7 @@ import {
   CONFIRM_DANGER_MODAL_TITLE,
   CONFIRM_DANGER_PHRASE_TEXT,
   CONFIRM_DANGER_WARNING,
-  CONFIRM_DANGER_MODAL_ERROR,
+  CONFIRM_DANGER_MODAL_CANCEL,
 } from './constants';
 
 export default {
@@ -40,6 +40,9 @@ export default {
     additionalInformation: {
       default: CONFIRM_DANGER_WARNING,
     },
+    cancelButtonText: {
+      default: CONFIRM_DANGER_MODAL_CANCEL,
+    },
   },
   props: {
     modalId: {
@@ -66,6 +69,11 @@ export default {
         attributes: [{ variant: 'danger', disabled: !this.isValid, class: 'qa-confirm-button' }],
       };
     },
+    actionCancel() {
+      return {
+        text: this.cancelButtonText,
+      };
+    },
   },
   methods: {
     equalString(a, b) {
@@ -77,7 +85,6 @@ export default {
     CONFIRM_DANGER_MODAL_TITLE,
     CONFIRM_DANGER_WARNING,
     CONFIRM_DANGER_PHRASE_TEXT,
-    CONFIRM_DANGER_MODAL_ERROR,
   },
 };
 </script>
@@ -88,6 +95,7 @@ export default {
     :data-testid="modalId"
     :title="$options.i18n.CONFIRM_DANGER_MODAL_TITLE"
     :action-primary="actionPrimary"
+    :action-cancel="actionCancel"
     @primary="$emit('confirm')"
   >
     <gl-alert
@@ -110,7 +118,7 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <gl-form-group :state="isValid" :invalid-feedback="$options.i18n.CONFIRM_DANGER_MODAL_ERROR">
+    <gl-form-group :state="isValid">
       <gl-form-input
         id="confirm_name_input"
         v-model="confirmationPhrase"

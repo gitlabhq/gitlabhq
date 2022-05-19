@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormInput, GlFormGroup, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlFormInput, GlFormGroup, GlLink, GlSprintf } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { isSameOriginUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -12,9 +12,11 @@ import TagField from './tag_field.vue';
 export default {
   name: 'ReleaseEditNewApp',
   components: {
+    GlFormCheckbox,
     GlFormInput,
     GlFormGroup,
     GlButton,
+    GlLink,
     GlSprintf,
     MarkdownField,
     AssetLinksForm,
@@ -28,6 +30,7 @@ export default {
       'fetchError',
       'markdownDocsPath',
       'markdownPreviewPath',
+      'editReleaseDocsPath',
       'releasesPagePath',
       'release',
       'newMilestonePath',
@@ -35,8 +38,9 @@ export default {
       'projectId',
       'groupId',
       'groupMilestonesAvailable',
+      'tagNotes',
     ]),
-    ...mapGetters('editNew', ['isValid', 'isExistingRelease']),
+    ...mapGetters('editNew', ['isValid', 'isExistingRelease', 'formattedReleaseNotes']),
     showForm() {
       return Boolean(!this.isFetchingRelease && !this.fetchError && this.release);
     },
@@ -62,6 +66,14 @@ export default {
       },
       set(milestones) {
         this.updateReleaseMilestones(milestones);
+      },
+    },
+    includeTagNotes: {
+      get() {
+        return this.$store.state.editNew.includeTagNotes;
+      },
+      set(includeTagNotes) {
+        this.updateIncludeTagNotes(includeTagNotes);
       },
     },
     cancelPath() {
@@ -105,6 +117,7 @@ export default {
       'updateReleaseTitle',
       'updateReleaseNotes',
       'updateReleaseMilestones',
+      'updateIncludeTagNotes',
     ]),
     submitForm() {
       if (!this.isFormSubmissionDisabled) {
@@ -161,7 +174,7 @@ export default {
             :markdown-preview-path="markdownPreviewPath"
             :markdown-docs-path="markdownDocsPath"
             :add-spacing-classes="false"
-            :textarea-value="releaseNotes"
+            :textarea-value="formattedReleaseNotes"
             class="gl-mt-3 gl-mb-3"
           >
             <template #textarea>
@@ -177,6 +190,25 @@ export default {
             </template>
           </markdown-field>
         </div>
+      </gl-form-group>
+      <gl-form-group v-if="!isExistingRelease">
+        <gl-form-checkbox v-model="includeTagNotes">
+          {{ s__('Release|Include message from the annotated tag.') }}
+
+          <template #help>
+            <gl-sprintf
+              :message="
+                s__(
+                  'Release|You can edit the content later by editing the release. %{linkStart}How do I edit a release?%{linkEnd}',
+                )
+              "
+            >
+              <template #link="{ content }">
+                <gl-link :href="editReleaseDocsPath">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
+        </gl-form-checkbox>
       </gl-form-group>
 
       <asset-links-form />

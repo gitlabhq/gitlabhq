@@ -4,15 +4,15 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import Cookies from 'js-cookie';
 import { isFunction, defer } from 'lodash';
+import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => {
-  const { page = '' } = document?.body?.dataset;
+  const { page = '' } = document.body.dataset;
   return page.split(':')[index];
 };
 
@@ -105,7 +105,7 @@ export const handleLocationHash = () => {
   }
 
   if (isInIssuePage()) {
-    adjustment -= fixedIssuableTitle?.offsetHeight;
+    adjustment -= fixedIssuableTitle.offsetHeight;
   }
 
   if (isInMRPage()) {
@@ -157,7 +157,7 @@ export const contentTop = () => {
     () => getOuterHeight('#js-peek'),
     () => getOuterHeight('.navbar-gitlab'),
     ({ desktop }) => {
-      const container = document.querySelector('.line-resolve-all-container');
+      const container = document.querySelector('.discussions-counter');
       let size = 0;
 
       if (!desktop && container) {
@@ -282,23 +282,51 @@ export const getSelectedFragment = (restrictToNode) => {
   return documentFragment;
 };
 
-export const insertText = (target, text) => {
-  // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
-  const { selectionStart, selectionEnd, value } = target;
+function execInsertText(text) {
+  if (text === '') return document.execCommand('delete');
 
+  return document.execCommand('insertText', false, text);
+}
+
+/**
+ * This method inserts text into a textarea/input field.
+ * Uses `execCommand` if supported
+ *
+ * @param {HTMLElement} target - textarea/input to have text inserted into
+ * @param {String | function} text - text to be inserted
+ */
+export const insertText = (target, text) => {
+  const { selectionStart, selectionEnd, value } = target;
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
-
   const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
-  const newText = textBefore + insertedText + textAfter;
 
-  // eslint-disable-next-line no-param-reassign
-  target.value = newText;
-  // eslint-disable-next-line no-param-reassign
-  target.selectionStart = selectionStart + insertedText.length;
+  // The `execCommand` is officially deprecated.  However, for `insertText`,
+  // there is currently no alternative. We need to use it in order to trigger
+  // the browser's undo tracking when we insert text.
+  // Per https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand on 2022-04-11,
+  //   The Clipboard API can be used instead of execCommand in many cases,
+  //   but execCommand is still sometimes useful. In particular, the Clipboard
+  //   API doesn't replace the insertText command
+  // So we attempt to use it if possible. Otherwise, fall back to just replacing
+  // the value as before. In this case, Undo will be broken with inserted text.
+  // Testing on older versions of Firefox:
+  //   87 and below: does not work and falls through to just replacing value.
+  //     87 was released in Mar of 2021
+  //   89 and above: works well
+  //     89 was released in May of 2021
+  if (!execInsertText(insertedText)) {
+    const newText = textBefore + insertedText + textAfter;
 
-  // eslint-disable-next-line no-param-reassign
-  target.selectionEnd = selectionStart + insertedText.length;
+    // eslint-disable-next-line no-param-reassign
+    target.value = newText;
+
+    // eslint-disable-next-line no-param-reassign
+    target.selectionStart = selectionStart + insertedText.length;
+
+    // eslint-disable-next-line no-param-reassign
+    target.selectionEnd = selectionStart + insertedText.length;
+  }
 
   // Trigger autosave
   target.dispatchEvent(new Event('input'));

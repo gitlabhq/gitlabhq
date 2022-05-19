@@ -1,0 +1,5 @@
+mutation revokeAgentToken($input: ClusterAgentTokenRevokeInput!) {
+  clusterAgentTokenRevoke(input: $input) {
+    errors
+  }
+}

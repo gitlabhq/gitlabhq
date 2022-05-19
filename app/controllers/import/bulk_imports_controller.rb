@@ -7,6 +7,7 @@ class Import::BulkImportsController < ApplicationController
   before_action :verify_blocked_uri, only: :status
 
   feature_category :importers
+  urgency :low
 
   POLLING_INTERVAL = 3_000
 
@@ -98,7 +99,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def ensure_group_import_enabled
-    render_404 unless Feature.enabled?(:bulk_import, default_enabled: :yaml)
+    render_404 unless Feature.enabled?(:bulk_import)
   end
 
   def access_token_key

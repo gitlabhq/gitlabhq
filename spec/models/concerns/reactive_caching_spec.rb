@@ -237,7 +237,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it 'does not raise the exception' do
-        expect { go! }.not_to raise_exception(ReactiveCaching::ExceededReactiveCacheLimit)
+        expect { go! }.not_to raise_exception
       end
     end
 

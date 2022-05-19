@@ -6,7 +6,7 @@ const MOCK_METRIC = {
   key: 'deployment-frequency',
   label: 'Deployment Frequency',
   value: '10.0',
-  unit: 'per day',
+  unit: '/day',
   description: 'Average number of deployments to production per day.',
   links: [],
 };

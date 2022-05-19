@@ -12,7 +12,7 @@ comments: false
 - Keeps changes isolated
 - Consider a 1-to-1 link to issues
 - Push branches to the server frequently
-  - Hint: This is a cheap backup for your work-in-progress code
+  - Hint: Pushing branches is a cheap backup for your work-in-progress code.
 
 ## Feature branching sample workflow
 

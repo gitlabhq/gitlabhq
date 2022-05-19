@@ -6,7 +6,7 @@ module Gitlab
       module Instrumentations
         class CertBasedClustersFfMetric < GenericMetric
           value do
-            Feature.enabled?(:certificate_based_clusters, default_enabled: :yaml, type: :ops)
+            Feature.enabled?(:certificate_based_clusters, type: :ops)
           end
         end
       end

@@ -207,6 +207,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
         context_sha: '12345',
         type: :file,
         location: '/file.yml',
+        blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit('master').id}/file.yml",
+        raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit('master').id}/file.yml",
         extra: { project: project.full_path, ref: 'HEAD' }
       )
     }
@@ -227,6 +229,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project do
           context_sha: '12345',
           type: :file,
           location: '/file.yml',
+          blob: nil,
+          raw: nil,
           extra: { project: 'xxxxxxxxxxxxxxxxxxxxxxxx', ref: 'xxxxxxxxxxxxxxxxxxxxxxxx' }
         )
       }

@@ -1,0 +1,21 @@
+description: Render event to understand if users view this page more on average
+category: project_overview
+action: show
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: growth
+product_stage:
+product_group: group::conversion
+product_category:
+milestone: "15.0"
+introduced_by_url:
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -70,7 +70,9 @@ describe('new dropdown upload', () => {
     });
 
     it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', async () => {
-      const waitForCreate = new Promise((resolve) => vm.$on('create', resolve));
+      const waitForCreate = new Promise((resolve) => {
+        vm.$on('create', resolve);
+      });
 
       vm.createFile(textTarget, textFile);
 

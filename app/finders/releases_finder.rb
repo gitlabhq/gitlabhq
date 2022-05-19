@@ -29,25 +29,11 @@ class ReleasesFinder
     Release.where(project_id: projects).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
   end
 
-  def include_subgroups?
-    params.fetch(:include_subgroups, false)
-  end
-
   def projects
     strong_memoize(:projects) do
       if parent.is_a?(Project)
         Ability.allowed?(current_user, :read_release, parent) ? [parent] : []
-      elsif parent.is_a?(Group)
-        Ability.allowed?(current_user, :read_release, parent) ? accessible_projects : []
       end
-    end
-  end
-
-  def accessible_projects
-    if include_subgroups?
-      Project.for_group_and_its_subgroups(parent)
-    else
-      parent.projects
     end
   end
 

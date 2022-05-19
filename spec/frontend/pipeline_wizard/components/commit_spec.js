@@ -8,7 +8,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import createCommitMutation from '~/pipeline_wizard/queries/create_commit.graphql';
 import getFileMetadataQuery from '~/pipeline_wizard/queries/get_file_meta.graphql';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import flushPromises from 'helpers/flush_promises';
+import waitForPromises from 'helpers/wait_for_promises';
 import {
   createCommitMutationErrorResult,
   createCommitMutationResult,
@@ -107,7 +107,7 @@ describe('Pipeline Wizard - Commit Page', () => {
 
     it('does not show a load error if call is successful', async () => {
       createComponent({ projectPath, filename });
-      await flushPromises();
+      await waitForPromises();
       expect(wrapper.findByTestId('load-error').exists()).not.toBe(true);
     });
 
@@ -117,7 +117,7 @@ describe('Pipeline Wizard - Commit Page', () => {
         { defaultBranch: branch, projectPath, filename },
         createMockApollo([[getFileMetadataQuery, () => fileQueryErrorResult]]),
       );
-      await flushPromises();
+      await waitForPromises();
       expect(wrapper.findByTestId('load-error').exists()).toBe(true);
       expect(wrapper.findByTestId('load-error').text()).toBe(i18n.errors.loadError);
     });
@@ -131,9 +131,9 @@ describe('Pipeline Wizard - Commit Page', () => {
     describe('successful commit', () => {
       beforeEach(async () => {
         createComponent();
-        await flushPromises();
+        await waitForPromises();
         await getButtonWithLabel(__('Commit')).trigger('click');
-        await flushPromises();
+        await waitForPromises();
       });
 
       it('will not show an error', async () => {
@@ -159,9 +159,9 @@ describe('Pipeline Wizard - Commit Page', () => {
     describe('failed commit', () => {
       beforeEach(async () => {
         createComponent({}, getMockApollo({ commitHasError: true }));
-        await flushPromises();
+        await waitForPromises();
         await getButtonWithLabel(__('Commit')).trigger('click');
-        await flushPromises();
+        await waitForPromises();
       });
 
       it('will show an error', async () => {
@@ -229,7 +229,7 @@ describe('Pipeline Wizard - Commit Page', () => {
             }),
           );
 
-          await flushPromises();
+          await waitForPromises();
 
           consoleSpy = jest.spyOn(console, 'error');
 
@@ -243,7 +243,7 @@ describe('Pipeline Wizard - Commit Page', () => {
           }
           await Vue.nextTick();
 
-          await flushPromises();
+          await waitForPromises();
         });
 
         afterAll(() => {

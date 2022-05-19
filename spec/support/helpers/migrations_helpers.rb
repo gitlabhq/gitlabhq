@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
 module MigrationsHelpers
-  def active_record_base
-    Gitlab::Database.database_base_models.fetch(self.class.metadata[:database] || :main)
+  def active_record_base(database: nil)
+    database_name = database || self.class.metadata[:database] || :main
+
+    unless Gitlab::Database::DATABASE_NAMES.include?(database_name.to_s)
+      raise ArgumentError, "#{database_name} is not a valid argument"
+    end
+
+    Gitlab::Database.database_base_models[database_name] || Gitlab::Database.database_base_models[:main]
   end
 
-  def table(name)
-    Class.new(active_record_base) do
+  def table(name, database: nil)
+    Class.new(active_record_base(database: database)) do
       self.table_name = name
       self.inheritance_column = :_type_disabled
 
@@ -150,6 +156,13 @@ module MigrationsHelpers
   end
 
   def migrate!
+    open_transactions = ActiveRecord::Base.connection.open_transactions
+    allow_next_instance_of(described_class) do |migration|
+      allow(migration).to receive(:transaction_open?) do
+        ActiveRecord::Base.connection.open_transactions > open_transactions
+      end
+    end
+
     migration_context.up do |migration|
       migration.name == described_class.name
     end

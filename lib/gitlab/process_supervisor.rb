@@ -20,7 +20,7 @@ module Gitlab
       health_check_interval_seconds: DEFAULT_HEALTH_CHECK_INTERVAL_SECONDS,
       check_terminate_interval_seconds: DEFAULT_TERMINATE_INTERVAL_SECONDS,
       terminate_timeout_seconds: DEFAULT_TERMINATE_TIMEOUT_SECONDS,
-      term_signals: %i(INT TERM),
+      term_signals: [],
       forwarded_signals: [],
       **options)
       super(**options)
@@ -31,7 +31,7 @@ module Gitlab
       @check_terminate_interval_seconds = check_terminate_interval_seconds
       @terminate_timeout_seconds = terminate_timeout_seconds
 
-      @pids = []
+      @pids = Set.new
       @alive = false
     end
 
@@ -43,7 +43,7 @@ module Gitlab
     # If the block returns a non-empty list of IDs, the supervisor will
     # start observing those processes instead. Otherwise it will shut down.
     def supervise(pid_or_pids, &on_process_death)
-      @pids = Array(pid_or_pids)
+      @pids = Array(pid_or_pids).to_set
       @on_process_death = on_process_death
 
       trap_signals!
@@ -56,7 +56,6 @@ module Gitlab
       return unless @alive
 
       stop_processes(signal)
-      stop
     end
 
     def supervised_pids
@@ -75,26 +74,25 @@ module Gitlab
 
     def run_thread
       while @alive
-        sleep(@health_check_interval_seconds)
-
         check_process_health
+
+        sleep(@health_check_interval_seconds)
       end
     end
 
     def check_process_health
       unless all_alive?
-        existing_pids = live_pids # Capture this value for the duration of the block.
+        existing_pids = live_pids.to_set # Capture this value for the duration of the block.
         dead_pids = @pids - existing_pids
-        new_pids = Array(@on_process_death.call(dead_pids))
-        @pids = existing_pids + new_pids
-        @alive = @pids.any?
+        new_pids = Array(@on_process_death.call(dead_pids.to_a))
+        @pids = existing_pids + new_pids.to_set
       end
     end
 
     def stop_processes(signal)
       # Set this prior to shutting down so that shutdown hooks which read `alive`
       # know the supervisor is about to shut down.
-      @alive = false
+      stop_working
 
       # Shut down supervised processes.
       signal_all(signal)

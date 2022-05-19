@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import initTodoToggle, { initNavUserDropdownTracking } from '~/header';
+import { loadHTMLFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 describe('Header', () => {
   describe('Todos notification', () => {
@@ -17,7 +18,11 @@ describe('Header', () => {
 
     beforeEach(() => {
       initTodoToggle();
-      loadFixtures(fixtureTemplate);
+      loadHTMLFixture(fixtureTemplate);
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should update todos-count after receiving the todo:toggle event', () => {
@@ -57,7 +62,7 @@ describe('Header', () => {
     let trackingSpy;
 
     beforeEach(() => {
-      setFixtures(`
+      setHTMLFixture(`
       <li class="js-nav-user-dropdown">
         <a class="js-buy-pipeline-minutes-link" data-track-action="click_buy_ci_minutes" data-track-label="free" data-track-property="user_dropdown">Buy Pipeline minutes</a>
       </li>`);
@@ -70,6 +75,7 @@ describe('Header', () => {
 
     afterEach(() => {
       unmockTracking();
+      resetHTMLFixture();
     });
 
     it('sends a tracking event when the dropdown is opened and contains Buy Pipeline minutes link', () => {

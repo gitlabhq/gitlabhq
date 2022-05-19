@@ -119,15 +119,8 @@ when more changes are added to it:
 1. Select the **Remove all approvals when commits are added to the source branch** checkbox.
 1. Select **Save changes**.
 
-Approvals aren't reset when a merge request is [rebased from the UI](../fast_forward_merge.md)
+Approvals aren't reset when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
 However, approvals are reset if the target branch is changed.
-
-## Security approvals in merge requests **(ULTIMATE)**
-
-You can require that a member of your security team approves a merge request if a
-merge request could introduce a vulnerability.
-
-To learn more, see [Security approvals in merge requests](../../../application_security/index.md#security-approvals-in-merge-requests).
 
 ## Code coverage check approvals
 

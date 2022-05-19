@@ -8,6 +8,7 @@ module Gitlab
       EDIT_BY_WEB_IDE = 'g_edit_by_web_ide'
       EDIT_BY_SSE = 'g_edit_by_sse'
       EDIT_CATEGORY = 'ide_edit'
+      EDIT_BY_LIVE_PREVIEW = 'g_edit_by_live_preview'
 
       class << self
         def track_web_ide_edit_action(author:, time: Time.zone.now)
@@ -45,6 +46,10 @@ module Gitlab
 
         def count_sse_edit_actions(date_from:, date_to:)
           count_unique(EDIT_BY_SSE, date_from, date_to)
+        end
+
+        def track_live_preview_edit_action(author:, time: Time.zone.now)
+          track_unique_action(EDIT_BY_LIVE_PREVIEW, author, time)
         end
 
         private

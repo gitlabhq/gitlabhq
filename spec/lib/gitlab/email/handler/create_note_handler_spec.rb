@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
         end
 
         it 'does not raise a UserNotFoundError' do
-          expect { receiver.execute }.not_to raise_error(Gitlab::Email::UserNotFoundError)
+          expect { receiver.execute }.not_to raise_error
         end
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
       let(:original_recipient) { User.support_bot }
 
       it 'does not raise a UserNotFoundError' do
-        expect { receiver.execute }.not_to raise_error(Gitlab::Email::UserNotFoundError)
+        expect { receiver.execute }.not_to raise_error
       end
     end
   end

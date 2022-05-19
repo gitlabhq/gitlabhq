@@ -6,7 +6,7 @@ module Types
 
     description 'A tag expiration policy designed to keep only the images that matter most'
 
-    authorize :destroy_container_image
+    authorize :admin_container_image
 
     field :cadence, Types::ContainerExpirationPolicyCadenceEnum, null: false, description: 'This container expiration policy schedule.'
     field :created_at, Types::TimeType, null: false, description: 'Timestamp of when the container expiration policy was created.'

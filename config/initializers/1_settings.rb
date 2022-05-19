@@ -252,7 +252,7 @@ Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci
 Settings['ci_secure_files'] ||= Settingslogic.new({})
 Settings.ci_secure_files['enabled']      = true if Settings.ci_secure_files['enabled'].nil?
 Settings.ci_secure_files['storage_path'] = Settings.absolute(Settings.ci_secure_files['storage_path'] || File.join(Settings.shared['path'], "ci_secure_files"))
-Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'])
+Settings.ci_secure_files['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_secure_files['object_store'], 'secure_files')
 
 #
 # Reply by email
@@ -276,7 +276,7 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
-Settings.artifacts['object_store'] = ObjectStoreSettings.legacy_parse(Settings.artifacts['object_store'])
+Settings.artifacts['object_store'] = ObjectStoreSettings.legacy_parse(Settings.artifacts['object_store'], 'artifacts')
 
 #
 # Registry
@@ -321,7 +321,7 @@ Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_secret')
 # We want pages zip archives to be stored on the same directory as old pages hierarchical structure
 # this will allow us to easier migrate existing instances with NFS
 Settings.pages['storage_path']      = Settings.pages['path']
-Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.pages['object_store'])
+Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.pages['object_store'], 'pages')
 Settings.pages['local_store'] ||= Settingslogic.new({})
 Settings.pages['local_store']['path'] = Settings.absolute(Settings.pages['local_store']['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['local_store']['enabled'] = true if Settings.pages['local_store']['enabled'].nil?
@@ -362,7 +362,7 @@ Settings['external_diffs'] ||= Settingslogic.new({})
 Settings.external_diffs['enabled']      = false if Settings.external_diffs['enabled'].nil?
 Settings.external_diffs['when']         = 'always' if Settings.external_diffs['when'].nil?
 Settings.external_diffs['storage_path'] = Settings.absolute(Settings.external_diffs['storage_path'] || File.join(Settings.shared['path'], 'external-diffs'))
-Settings.external_diffs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.external_diffs['object_store'])
+Settings.external_diffs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.external_diffs['object_store'], 'external_diffs')
 
 #
 # Git LFS
@@ -370,7 +370,7 @@ Settings.external_diffs['object_store'] = ObjectStoreSettings.legacy_parse(Setti
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
-Settings.lfs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.lfs['object_store'])
+Settings.lfs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.lfs['object_store'], 'lfs')
 
 #
 # Uploads
@@ -378,7 +378,7 @@ Settings.lfs['object_store'] = ObjectStoreSettings.legacy_parse(Settings.lfs['ob
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
-Settings.uploads['object_store'] = ObjectStoreSettings.legacy_parse(Settings.uploads['object_store'])
+Settings.uploads['object_store'] = ObjectStoreSettings.legacy_parse(Settings.uploads['object_store'], 'uploads')
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 
 #
@@ -388,7 +388,7 @@ Settings['packages'] ||= Settingslogic.new({})
 Settings.packages['enabled']       = true if Settings.packages['enabled'].nil?
 Settings.packages['dpkg_deb_path'] = '/usr/bin/dpkg-deb' if Settings.packages['dpkg_deb_path'].nil?
 Settings.packages['storage_path']  = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
-Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'])
+Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.packages['object_store'], 'packages')
 
 #
 # Dependency Proxy
@@ -396,7 +396,7 @@ Settings.packages['object_store']  = ObjectStoreSettings.legacy_parse(Settings.p
 Settings['dependency_proxy'] ||= Settingslogic.new({})
 Settings.dependency_proxy['enabled']      = true if Settings.dependency_proxy['enabled'].nil?
 Settings.dependency_proxy['storage_path'] = Settings.absolute(Settings.dependency_proxy['storage_path'] || File.join(Settings.shared['path'], "dependency_proxy"))
-Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'])
+Settings.dependency_proxy['object_store'] = ObjectStoreSettings.legacy_parse(Settings.dependency_proxy['object_store'], 'dependency_proxy')
 
 # For first iteration dependency proxy uses Rails server to download blobs.
 # To ensure acceptable performance we only allow feature to be used with
@@ -410,7 +410,7 @@ Settings.dependency_proxy['enabled'] = false unless Gitlab::Runtime.puma?
 Settings['terraform_state'] ||= Settingslogic.new({})
 Settings.terraform_state['enabled']      = true if Settings.terraform_state['enabled'].nil?
 Settings.terraform_state['storage_path'] = Settings.absolute(Settings.terraform_state['storage_path'] || File.join(Settings.shared['path'], "terraform_state"))
-Settings.terraform_state['object_store'] = ObjectStoreSettings.legacy_parse(Settings.terraform_state['object_store'])
+Settings.terraform_state['object_store'] = ObjectStoreSettings.legacy_parse(Settings.terraform_state['object_store'], 'terraform_state')
 
 #
 # Mattermost
@@ -482,9 +482,6 @@ Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'Impor
 Settings.cron_jobs['ci_archive_traces_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_archive_traces_cron_worker']['cron'] ||= '17 * * * *'
 Settings.cron_jobs['ci_archive_traces_cron_worker']['job_class'] = 'Ci::ArchiveTracesCronWorker'
-Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
-Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'
 Settings.cron_jobs['remove_expired_members_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_expired_members_worker']['cron'] ||= '10 0 * * *'
 Settings.cron_jobs['remove_expired_members_worker']['job_class'] = 'RemoveExpiredMembersWorker'
@@ -629,6 +626,9 @@ Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['job_
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['cron'] ||= '2/17 * * * *'
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['job_class'] = 'Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker'
+Settings.cron_jobs['inactive_projects_deletion_cron_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '0 1 * * *'
+Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Projects::InactiveProjectsDeletionCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -664,9 +664,6 @@ Gitlab.ee do
   Settings.cron_jobs['geo_secondary_usage_data_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_secondary_usage_data_cron_worker']['cron'] ||= '0 0 * * 0'
   Settings.cron_jobs['geo_secondary_usage_data_cron_worker']['job_class'] ||= 'Geo::SecondaryUsageDataCronWorker'
-  Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
   Settings.cron_jobs['geo_registry_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_registry_sync_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_registry_sync_worker']['job_class'] ||= 'Geo::RegistrySyncWorker'
@@ -712,9 +709,9 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
-  Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
+  Settings.cron_jobs['free_user_cap_data_remediation'] ||= Settingslogic.new({})
+  Settings.cron_jobs['free_user_cap_data_remediation']['cron'] ||= '17 6,10,14,18 * * *'
+  Settings.cron_jobs['free_user_cap_data_remediation']['job_class'] = 'Namespaces::FreeUserCapWorker'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
@@ -739,9 +736,6 @@ Gitlab.ee do
   Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
   Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'
-  Settings.cron_jobs['network_policy_metrics_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['network_policy_metrics_worker']['cron'] ||= '0 3 * * 0'
-  Settings.cron_jobs['network_policy_metrics_worker']['job_class'] = 'NetworkPolicyMetricsWorker'
   Settings.cron_jobs['iterations_update_status_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['iterations_update_status_worker']['cron'] ||= '5 0 * * *'
   Settings.cron_jobs['iterations_update_status_worker']['job_class'] = 'IterationsUpdateStatusWorker'
@@ -775,6 +769,12 @@ Gitlab.ee do
   Settings.cron_jobs['ci_project_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['cron'] ||= '2-58/4 * * * *'
   Settings.cron_jobs['ci_project_mirrors_consistency_check_worker']['job_class'] = 'Database::CiProjectMirrorsConsistencyCheckWorker'
+  Settings.cron_jobs['arkose_blocked_users_report_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['arkose_blocked_users_report_worker']['cron'] ||= '0 6 * * *'
+  Settings.cron_jobs['arkose_blocked_users_report_worker']['job_class'] = 'Arkose::BlockedUsersReportWorker'
+  Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron'] ||= Settingslogic.new({})
+  Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['cron'] ||= '30 * * * *'
+  Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['job_class'] = 'Ci::Runners::StaleGroupRunnersPruneCronWorker'
 end
 
 #
@@ -862,16 +862,6 @@ Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['encryption_key'] ||= ENV['GITLAB_BACKUP_ENCRYPTION_KEY']
 Settings.backup['upload']['storage_class'] ||= nil
 Settings.backup['gitaly_backup_path'] ||= Gitlab::Utils.which('gitaly-backup')
-
-#
-# Pseudonymizer
-#
-Gitlab.ee do
-  Settings['pseudonymizer'] ||= Settingslogic.new({})
-  Settings.pseudonymizer['manifest'] = Settings.absolute(Settings.pseudonymizer['manifest'] || Rails.root.join("config/pseudonymizer.yml"))
-  Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
-  # Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600
-end
 
 #
 # Git
@@ -979,15 +969,10 @@ Settings.monitoring.sidekiq_exporter['log_enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
 Settings.monitoring.sidekiq_exporter['port'] ||= 8082
 
-# TODO: Once we split out health checks from SidekiqExporter, we
-# should not let this default to the same settings anymore; we only
-# do this for back-compat currently.
-# https://gitlab.com/gitlab-org/gitlab/-/issues/345804
 Settings.monitoring['sidekiq_health_checks'] ||= Settingslogic.new({})
-Settings.monitoring.sidekiq_health_checks['enabled'] ||= Settings.monitoring.sidekiq_exporter['enabled']
-Settings.monitoring.sidekiq_health_checks['log_enabled'] ||= Settings.monitoring.sidekiq_exporter['log_enabled']
-Settings.monitoring.sidekiq_health_checks['address'] ||= Settings.monitoring.sidekiq_exporter['address']
-Settings.monitoring.sidekiq_health_checks['port'] ||= Settings.monitoring.sidekiq_exporter['port']
+Settings.monitoring.sidekiq_health_checks['enabled'] ||= false
+Settings.monitoring.sidekiq_health_checks['address'] ||= 'localhost'
+Settings.monitoring.sidekiq_health_checks['port'] ||= 8092
 
 Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false

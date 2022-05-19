@@ -46,7 +46,7 @@
     .col-md-6
       .tree-ref-container
         .tree-ref-holder
-          = render 'shared/ref_switcher', destination: 'graphs_commits'
+          = render 'shared/ref_switcher', destination: 'graphs_commits', path: @path
         %ul.breadcrumb.repo-breadcrumb
           = commits_breadcrumbs
 

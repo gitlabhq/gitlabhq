@@ -6,6 +6,7 @@ module API
       include PaginationParams
 
       feature_category :kubernetes_management
+      urgency :low
 
       before do
         authenticated_as_admin!
@@ -136,7 +137,7 @@ module API
         end
 
         def ensure_feature_enabled!
-          not_found! unless Feature.enabled?(:certificate_based_clusters, clusterable_instance, default_enabled: :yaml, type: :ops)
+          not_found! unless clusterable_instance.certificate_based_clusters_enabled?
         end
       end
     end

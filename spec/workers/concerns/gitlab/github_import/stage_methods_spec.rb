@@ -38,17 +38,21 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          message: 'starting stage',
-          project_id: project.id,
-          import_stage: 'DummyStage'
+          {
+            message: 'starting stage',
+            project_id: project.id,
+            import_stage: 'DummyStage'
+          }
         )
 
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          message: 'stage finished',
-          project_id: project.id,
-          import_stage: 'DummyStage'
+          {
+            message: 'stage finished',
+            project_id: project.id,
+            import_stage: 'DummyStage'
+          }
         )
 
       worker.perform(project.id)
@@ -70,18 +74,22 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            message: 'starting stage',
-            project_id: project.id,
-            import_stage: 'DummyStage'
+            {
+              message: 'starting stage',
+              project_id: project.id,
+              import_stage: 'DummyStage'
+            }
           )
 
         expect(Gitlab::Import::ImportFailureService)
           .to receive(:track)
           .with(
-            project_id: project.id,
-            exception: exception,
-            error_source: 'DummyStage',
-            fail_import: false
+            {
+              project_id: project.id,
+              exception: exception,
+              error_source: 'DummyStage',
+              fail_import: false
+            }
           ).and_call_original
 
         expect { worker.perform(project.id) }
@@ -125,9 +133,11 @@ RSpec.describe Gitlab::GithubImport::StageMethods do
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            message: 'starting stage',
-            project_id: project.id,
-            import_stage: 'DummyStage'
+            {
+              message: 'starting stage',
+              project_id: project.id,
+              import_stage: 'DummyStage'
+            }
           )
 
         expect(Gitlab::Import::ImportFailureService)

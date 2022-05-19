@@ -15,8 +15,6 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
 
   context 'when the form partial is used' do
     before do
-      allow(view).to receive(:ssh_key_expires_field_description).and_return('Key can still be used after expiration.')
-
       render
     end
 
@@ -37,7 +35,7 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
     it 'has the expires at field', :aggregate_failures do
       expect(rendered).to have_field('Expiration date', type: 'date')
       expect(page.find_field('Expiration date')['min']).to eq(l(1.day.from_now, format: "%Y-%m-%d"))
-      expect(rendered).to have_text('Key can still be used after expiration.')
+      expect(rendered).to have_text('Key becomes invalid on this date')
     end
 
     it 'has the validation warning', :aggregate_failures do

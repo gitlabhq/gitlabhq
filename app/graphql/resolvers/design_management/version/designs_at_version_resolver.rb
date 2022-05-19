@@ -41,9 +41,6 @@ module Resolvers
         def design_ids(gids)
           return if gids.nil?
 
-          # TODO: remove this line when the compatibility layer is removed
-          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-          gids = gids.map { |id| DesignID.coerce_isolated_input(id) }
           gids.map(&:model_id)
         end
 

@@ -104,7 +104,7 @@ RSpec.shared_examples 'group and project packages query' do
       }
     end
 
-    let(:expected_packages) { sorted_packages.map { |package| global_id_of(package) } }
+    let(:expected_packages) { sorted_packages.map { |package| global_id_of(package).to_s } }
 
     let(:data_path) { [resource_type, :packages] }
 
@@ -189,6 +189,93 @@ RSpec.shared_examples 'group and project packages query' do
       let(:params) { { include_versionless: true } }
 
       it { is_expected.to include({ "name" => versionless_package.name }) }
+    end
+  end
+
+  context 'when reading pipelines' do
+    let(:npm_pipelines) { create_list(:ci_pipeline, 6, project: project1) }
+    let(:npm_pipeline_gids) { npm_pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }
+    let(:composer_pipelines) { create_list(:ci_pipeline, 6, project: project2) }
+    let(:composer_pipeline_gids) { composer_pipelines.sort_by(&:id).map(&:to_gid).map(&:to_s).reverse }
+    let(:npm_end_cursor) { graphql_data_npm_package.dig('pipelines', 'pageInfo', 'endCursor') }
+    let(:npm_start_cursor) { graphql_data_npm_package.dig('pipelines', 'pageInfo', 'startCursor') }
+    let(:pipelines_nodes) do
+      <<~QUERY
+        nodes {
+          id
+        }
+        pageInfo {
+          startCursor
+          endCursor
+        }
+      QUERY
+    end
+
+    before do
+      resource.add_maintainer(current_user)
+
+      npm_pipelines.each do |pipeline|
+        create(:package_build_info, package: npm_package, pipeline: pipeline)
+      end
+
+      composer_pipelines.each do |pipeline|
+        create(:package_build_info, package: composer_package, pipeline: pipeline)
+      end
+    end
+
+    it 'loads the second page with pagination first correctly' do
+      run_query(first: 2)
+      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[0..1])
+      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[0..1])
+
+      run_query(first: 2, after: npm_end_cursor)
+      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[2..3])
+      expect(composer_pipeline_ids).to be_empty
+    end
+
+    it 'loads the second page with pagination last correctly' do
+      run_query(last: 2)
+      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[4..5])
+      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[4..5])
+
+      run_query(last: 2, before: npm_start_cursor)
+      expect(npm_pipeline_ids).to eq(npm_pipeline_gids[2..3])
+      expect(composer_pipeline_ids).to eq(composer_pipeline_gids[4..5])
+    end
+
+    def run_query(args)
+      pipelines_field = query_graphql_field('pipelines', args, pipelines_nodes)
+
+      packages_nodes = <<~QUERY
+        nodes {
+          id
+          #{pipelines_field}
+        }
+      QUERY
+
+      query = graphql_query_for(
+        resource_type,
+        { 'fullPath' => resource.full_path },
+        query_graphql_field('packages', {}, packages_nodes)
+      )
+
+      post_graphql(query, current_user: current_user)
+    end
+
+    def npm_pipeline_ids
+      graphql_data_npm_package.dig('pipelines', 'nodes').map { |pipeline| pipeline['id'] }
+    end
+
+    def composer_pipeline_ids
+      graphql_data_composer_package.dig('pipelines', 'nodes').map { |pipeline| pipeline['id'] }
+    end
+
+    def graphql_data_npm_package
+      graphql_data_at(resource_type, :packages, :nodes).find { |pkg| pkg['id'] == npm_package.to_gid.to_s }
+    end
+
+    def graphql_data_composer_package
+      graphql_data_at(resource_type, :packages, :nodes).find { |pkg| pkg['id'] == composer_package.to_gid.to_s }
     end
   end
 end

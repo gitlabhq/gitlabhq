@@ -20,24 +20,15 @@ Did you run bin/rake frontend:fixtures?`,
   return fs.readFileSync(absolutePath, 'utf8');
 }
 
-/**
- * @deprecated Use `import` to load a JSON fixture instead.
- * See https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html#use-fixtures,
- * https://gitlab.com/gitlab-org/gitlab/-/issues/339346.
- */
-export const getJSONFixture = (relativePath) => JSON.parse(getFixture(relativePath));
-
 export const resetHTMLFixture = () => {
   document.head.innerHTML = '';
   document.body.innerHTML = '';
 };
 
-export const setHTMLFixture = (htmlContent, resetHook = afterEach) => {
+export const setHTMLFixture = (htmlContent) => {
   document.body.innerHTML = htmlContent;
-  resetHook(resetHTMLFixture);
 };
 
-export const loadHTMLFixture = (relativePath, resetHook = afterEach) => {
-  const fileContent = getFixture(relativePath);
-  setHTMLFixture(fileContent, resetHook);
+export const loadHTMLFixture = (relativePath) => {
+  setHTMLFixture(getFixture(relativePath));
 };

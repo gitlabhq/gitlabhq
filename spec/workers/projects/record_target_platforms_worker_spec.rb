@@ -7,11 +7,11 @@ RSpec.describe Projects::RecordTargetPlatformsWorker do
 
   let_it_be(:swift) { create(:programming_language, name: 'Swift') }
   let_it_be(:objective_c) { create(:programming_language, name: 'Objective-C') }
+  let_it_be(:java) { create(:programming_language, name: 'Java') }
+  let_it_be(:kotlin) { create(:programming_language, name: 'Kotlin') }
   let_it_be(:project) { create(:project, :repository, detected_repository_languages: true) }
 
   let(:worker) { described_class.new }
-  let(:service_result) { %w(ios osx watchos) }
-  let(:service_double) { instance_double(Projects::RecordTargetPlatformsService, execute: service_result) }
   let(:lease_key) { "#{described_class.name.underscore}:#{project.id}" }
   let(:lease_timeout) { described_class::LEASE_TIMEOUT }
 
@@ -21,16 +21,20 @@ RSpec.describe Projects::RecordTargetPlatformsWorker do
     stub_exclusive_lease(lease_key, timeout: lease_timeout)
   end
 
-  shared_examples 'performs detection' do
-    it 'creates and executes a Projects::RecordTargetPlatformService instance for the project', :aggregate_failures do
-      expect(Projects::RecordTargetPlatformsService).to receive(:new).with(project) { service_double }
+  shared_examples 'performs detection' do |detector_service_class|
+    let(:service_double) { instance_double(detector_service_class, execute: service_result) }
+
+    it "creates and executes a #{detector_service_class} instance for the project", :aggregate_failures do
+      expect(Projects::RecordTargetPlatformsService).to receive(:new)
+        .with(project, detector_service_class) { service_double }
       expect(service_double).to receive(:execute)
 
       perform
     end
 
     it 'logs extra metadata on done', :aggregate_failures do
-      expect(Projects::RecordTargetPlatformsService).to receive(:new).with(project) { service_double }
+      expect(Projects::RecordTargetPlatformsService).to receive(:new)
+        .with(project, detector_service_class) { service_double }
       expect(worker).to receive(:log_extra_metadata_on_done).with(:target_platforms, service_result)
 
       perform
@@ -45,19 +49,68 @@ RSpec.describe Projects::RecordTargetPlatformsWorker do
     end
   end
 
-  context 'when project uses Swift programming language' do
-    let!(:repository_language) { create(:repository_language, project: project, programming_language: swift) }
-
-    include_examples 'performs detection'
+  def create_language(language)
+    create(:repository_language, project: project, programming_language: language)
   end
 
-  context 'when project uses Objective-C programming language' do
-    let!(:repository_language) { create(:repository_language, project: project, programming_language: objective_c) }
+  context 'when project uses programming language for Apple platform' do
+    let(:service_result) { %w(ios osx watchos) }
 
-    include_examples 'performs detection'
+    context 'when project uses Swift programming language' do
+      before do
+        create_language(swift)
+      end
+
+      it_behaves_like 'performs detection', Projects::AppleTargetPlatformDetectorService
+    end
+
+    context 'when project uses Objective-C programming language' do
+      before do
+        create_language(objective_c)
+      end
+
+      it_behaves_like 'performs detection', Projects::AppleTargetPlatformDetectorService
+    end
   end
 
-  context 'when the project does not contain programming languages for Apple platforms' do
+  context 'when project uses programming language for Android platform' do
+    let(:feature_enabled) { true }
+    let(:service_result) { %w(android) }
+
+    before do
+      stub_feature_flags(detect_android_projects: feature_enabled)
+    end
+
+    context 'when project uses Java' do
+      before do
+        create_language(java)
+      end
+
+      it_behaves_like 'performs detection', Projects::AndroidTargetPlatformDetectorService
+
+      context 'when feature flag is disabled' do
+        let(:feature_enabled) { false }
+
+        it_behaves_like 'does nothing'
+      end
+    end
+
+    context 'when project uses Kotlin' do
+      before do
+        create_language(kotlin)
+      end
+
+      it_behaves_like 'performs detection', Projects::AndroidTargetPlatformDetectorService
+
+      context 'when feature flag is disabled' do
+        let(:feature_enabled) { false }
+
+        it_behaves_like 'does nothing'
+      end
+    end
+  end
+
+  context 'when the project does not use programming languages for Apple or Android platforms' do
     it_behaves_like 'does nothing'
   end
 

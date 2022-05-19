@@ -32,7 +32,7 @@ For a full list of reference architectures, see
 
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
-2. Can be optionally run as reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+2. Can be optionally run as reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Can be optionally run as reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
 <!-- markdownlint-enable MD029 -->
@@ -444,21 +444,18 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- all reference architecture pages
+-->
 
    ```ruby
-   # /etc/gitlab/gitlab.rb
-
-   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
-   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
-   # The following two values must be the same as their respective values
-   # of the GitLab Rails application setup
-   gitaly['auth_token'] = 'gitalysecret'
-   gitlab_shell['secret_token'] = 'shellsecret'
-
    # Avoid running unnecessary services on the Gitaly server
    postgresql['enable'] = false
    redis['enable'] = false
+   nginx['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -467,7 +464,6 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
-   nginx['enable'] = false
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -485,6 +481,13 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    # Comment out following line if you only want to support TLS connections
    gitaly['listen_addr'] = "0.0.0.0:8075"
    gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+
+   # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
+   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
+   # The following two values must be the same as their respective values
+   # of the GitLab Rails application setup
+   gitaly['auth_token'] = 'gitalysecret'
+   gitlab_shell['secret_token'] = 'shellsecret'
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -891,7 +894,7 @@ GitLab has been tested on a number of object storage providers:
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](http://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html)
+- [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
@@ -924,7 +927,6 @@ on what features you intend to use:
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| No |
 | [Packages](../packages/index.md#using-object-storage) (optional feature) | Yes |
 | [Dependency Proxy](../packages/dependency_proxy.md#using-object-storage) (optional feature) | Yes |
-| [Pseudonymizer](../pseudonymizer.md) (optional feature) | No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | No |
 | [Terraform state files](../terraform_state.md#using-object-storage) | Yes |
 
@@ -1000,7 +1002,7 @@ The following tables and diagram detail the hybrid environment using the same fo
 as the normal environment above.
 
 First are the components that run in Kubernetes. The recommendation at this time is to
-use Google Cloud's Kubernetes Engine (GKE) and associated machine types, but the memory
+use Google Cloud's Kubernetes Engine (GKE) or AWS Elastic Kubernetes Service (EKS) and associated machine types, but the memory
 and CPU requirements should translate to most other providers. We hope to update this in the
 future with further specific cloud provider details.
 
@@ -1012,7 +1014,7 @@ future with further specific cloud provider details.
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
 [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
-- Nodes configuration is shown as it is forced to ensure pod vcpu / memory ratios and avoid scaling during **performance testing**.
+- Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to nodes. A minimum of three nodes in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
@@ -1028,7 +1030,7 @@ services where applicable):
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
 3. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
 <!-- markdownlint-enable MD029 -->
 

@@ -20,6 +20,8 @@ module ContainerRegistry
       delegate :container_registry_import_max_step_duration, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_target_plan, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_created_before, to: ::Gitlab::CurrentSettings
+      delegate :container_registry_pre_import_timeout, to: ::Gitlab::CurrentSettings
+      delegate :container_registry_import_timeout, to: ::Gitlab::CurrentSettings
 
       alias_method :max_tags_count, :container_registry_import_max_tags_count
       alias_method :max_retries, :container_registry_import_max_retries
@@ -27,6 +29,8 @@ module ContainerRegistry
       alias_method :max_step_duration, :container_registry_import_max_step_duration
       alias_method :target_plan_name, :container_registry_import_target_plan
       alias_method :created_before, :container_registry_import_created_before
+      alias_method :pre_import_timeout, :container_registry_pre_import_timeout
+      alias_method :import_timeout, :container_registry_import_timeout
     end
 
     def self.enabled?
@@ -52,6 +56,8 @@ module ContainerRegistry
       #
       return 25 if Feature.enabled?(:container_registry_migration_phase2_capacity_25)
       return 10 if Feature.enabled?(:container_registry_migration_phase2_capacity_10)
+      return 5 if Feature.enabled?(:container_registry_migration_phase2_capacity_5)
+      return 2 if Feature.enabled?(:container_registry_migration_phase2_capacity_2)
       return 1 if Feature.enabled?(:container_registry_migration_phase2_capacity_1)
 
       0
@@ -63,6 +69,14 @@ module ContainerRegistry
 
     def self.all_plans?
       Feature.enabled?(:container_registry_migration_phase2_all_plans)
+    end
+
+    def self.enqueue_twice?
+      Feature.enabled?(:container_registry_migration_phase2_enqueue_twice)
+    end
+
+    def self.enqueuer_loop?
+      Feature.enabled?(:container_registry_migration_phase2_enqueuer_loop)
     end
   end
 end

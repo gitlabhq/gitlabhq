@@ -43,13 +43,6 @@ module RuboCop
           File.expand_path("../../../lib/gitlab/usage_data_counters/known_events/*.yml", __dir__)
         ].freeze
 
-        DYNAMIC_FEATURE_FLAGS = [
-          :usage_data_static_site_editor_commits, # https://gitlab.com/gitlab-org/gitlab/-/issues/284082
-          :usage_data_static_site_editor_merge_requests, # https://gitlab.com/gitlab-org/gitlab/-/issues/284083
-          :usage_data_users_clicking_license_testing_visiting_external_website, # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77866
-          :usage_data_users_visiting_testing_license_compliance_full_report # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77866
-        ].freeze
-
         class << self
           # We track feature flags in `on_new_investigation` only once per
           # rubocop whole run instead once per file.
@@ -65,7 +58,6 @@ module RuboCop
 
           self.class.feature_flags_already_tracked = true
 
-          track_dynamic_feature_flags!
           track_usage_data_counters_known_events!
         end
 
@@ -227,12 +219,6 @@ module RuboCop
 
         def trackable_flag?(node)
           feature_method?(node) || experimentation_method?(node) || graphql_method?(node) || self_method?(node)
-        end
-
-        # Marking all event's feature flags as used as Gitlab::UsageDataCounters::HLLRedisCounter.track_event{,context}
-        # is mostly used with dynamic event name.
-        def track_dynamic_feature_flags!
-          DYNAMIC_FEATURE_FLAGS.each(&method(:save_used_feature_flag))
         end
 
         # Marking all event's feature flags as used as Gitlab::UsageDataCounters::HLLRedisCounter.track_event{,context}

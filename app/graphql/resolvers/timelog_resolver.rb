@@ -3,7 +3,6 @@
 module Resolvers
   class TimelogResolver < BaseResolver
     include LooksAhead
-    include ResolvesIds
 
     type ::Types::TimelogType.connection_type, null: false
 
@@ -100,14 +99,13 @@ module Resolvers
     def apply_project_filter(timelogs, args)
       return timelogs unless args[:project_id]
 
-      project = resolve_ids(args[:project_id], ::Types::GlobalIDType[::Project])
-      timelogs.in_project(project)
+      timelogs.in_project(args[:project_id].model_id)
     end
 
     def apply_group_filter(timelogs, args)
       return timelogs unless args[:group_id]
 
-      group = Group.find_by_id(resolve_ids(args[:group_id], ::Types::GlobalIDType[::Group]))
+      group = Group.find_by_id(args[:group_id].model_id)
       timelogs.in_group(group)
     end
 

@@ -30,17 +30,17 @@ RSpec.describe 'Merge requests > User merges immediately', :js do
     it 'enables merge immediately' do
       wait_for_requests
 
-      page.within '.mr-widget-body' do
+      page.within '[data-testid="ready_to_merge_state"]' do
         find('.dropdown-toggle').click
 
         Sidekiq::Testing.fake! do
           click_button 'Merge immediately'
-
-          expect(find('.media-body h4')).to have_content('Merging!')
-
-          wait_for_requests
         end
       end
+
+      expect(find('.media-body h4')).to have_content('Merging!')
+
+      wait_for_requests
     end
   end
 end

@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def process_batch(from_id, to_id)
-        ActiveRecord::Base.connection.execute(update_sql(from_id, to_id))
+        ApplicationRecord.connection.execute(update_sql(from_id, to_id))
 
         logger.info(message: "#{self.class}: Copied container_registry_enabled values for projects with IDs between #{from_id}..#{to_id}")
       end

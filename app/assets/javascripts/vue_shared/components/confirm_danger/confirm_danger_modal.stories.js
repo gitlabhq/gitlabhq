@@ -14,6 +14,8 @@ const Template = (args, { argTypes }) => ({
     additionalInformation: args.additionalInformation || null,
     confirmDangerMessage: args.confirmDangerMessage || 'You require more Vespene Gas',
     htmlConfirmationMessage: args.confirmDangerMessage || false,
+    confirmButtonText: args.confirmButtonText || 'Cancel',
+    cancelButtonText: args.cancelButtonText || 'Confirm',
   },
 });
 

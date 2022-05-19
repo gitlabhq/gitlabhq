@@ -220,3 +220,15 @@ export const getTokenResponse = {
     },
   },
 };
+
+export const mockRevokeResponse = {
+  data: { clusterAgentTokenRevoke: { errors: [] } },
+};
+
+export const mockErrorRevokeResponse = {
+  data: {
+    clusterAgentTokenRevoke: {
+      errors: ['could not revoke token'],
+    },
+  },
+};

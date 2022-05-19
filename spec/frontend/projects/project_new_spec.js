@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import projectNew from '~/projects/project_new';
 
@@ -8,7 +9,7 @@ describe('New Project', () => {
   let $projectName;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div class='toggle-import-form'>
         <div class='import-url-data'>
           <div class="form-group">
@@ -31,6 +32,10 @@ describe('New Project', () => {
     $projectImportUrl = $('#project_import_url');
     $projectPath = $('#project_path');
     $projectName = $('#project_name');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('deriveProjectPathFromUrl', () => {

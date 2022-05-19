@@ -34,6 +34,7 @@ describe('Pipeline Branch Name Token', () => {
     value: {
       data: '',
     },
+    cursorPosition: 'start',
   };
 
   const optionsWithDefaultBranchName = (options) => {

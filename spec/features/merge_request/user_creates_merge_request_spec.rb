@@ -15,28 +15,40 @@ RSpec.describe "User creates a merge request", :js do
     sign_in(user)
   end
 
-  it "creates a merge request" do
-    visit(project_new_merge_request_path(project))
+  context 'when completed the compare branches form' do
+    before do
+      visit(project_new_merge_request_path(project))
 
-    find(".js-source-branch").click
-    click_link("fix")
+      find(".js-source-branch").click
+      click_link("fix")
 
-    find(".js-target-branch").click
-    click_link("feature")
+      find(".js-target-branch").click
+      click_link("feature")
 
-    click_button("Compare branches")
-
-    page.within('.merge-request-form') do
-      expect(page.find('#merge_request_title')['placeholder']).to eq 'Title'
-      expect(page.find('#merge_request_description')['placeholder']).to eq 'Describe the goal of the changes and what reviewers should be aware of.'
+      click_button("Compare branches")
     end
 
-    fill_in("Title", with: title)
-    click_button("Create merge request")
-
-    page.within(".merge-request") do
-      expect(page).to have_content(title)
+    it "shows merge request form" do
+      page.within('.merge-request-form') do
+        expect(page.find('#merge_request_title')['placeholder']).to eq 'Title'
+        expect(page.find('#merge_request_description')['placeholder']).to eq 'Describe the goal of the changes and what reviewers should be aware of.'
+      end
     end
+
+    context "when completed the merge request form" do
+      before do
+        fill_in("Title", with: title)
+        click_button("Create merge request")
+      end
+
+      it "creates a merge request" do
+        page.within(".merge-request") do
+          expect(page).to have_content(title)
+        end
+      end
+    end
+
+    it_behaves_like 'merge request author auto assign'
   end
 
   context "XSS branch name exists" do
@@ -106,7 +118,7 @@ RSpec.describe "User creates a merge request", :js do
 
       click_button("Create merge request")
 
-      expect(page).to have_content(title).and have_content("Request to merge #{user.namespace.path}:#{source_branch} into master")
+      expect(page).to have_content(title).and have_content("requested to merge #{forked_project.full_path}:#{source_branch} into master")
     end
   end
 end

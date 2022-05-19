@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Keyword reference for the `.gitlab-ci.yml` file **(FREE)**
+# `.gitlab-ci.yml` keyword reference **(FREE)**
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
@@ -16,7 +16,7 @@ This document lists the configuration options for your GitLab `.gitlab-ci.yml` f
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](../lint.md) tool.
 
-If you are editing this page, make sure you follow the [CI/CD YAML reference style guide](../../development/cicd/cicd_reference_documentation_guide.md).
+If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
 
 ## Keywords
 
@@ -561,7 +561,7 @@ This same warning is displayed when:
 The default value for `allow_failure` is:
 
 - `true` for [manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
-- `false` for manual jobs that also use [`rules`](#rules).
+- `false` for jobs that use `when: manual` inside [`rules`](#rules).
 - `false` in all other cases.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -1350,8 +1350,6 @@ In this example:
 
 **Additional details**:
 
-- Coverage regular expressions set in `gitlab-ci.yml` take precedence over coverage regular expression set in the
-  [GitLab UI](../pipelines/settings.md#add-test-coverage-results-using-project-settings-deprecated).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched
@@ -1561,7 +1559,7 @@ environment.
 
 #### `environment:action`
 
-Use the `action` keyword to specify jobs that prepare, start, or stop environments.
+Use the `action` keyword to specify how the job interacts with the environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -1570,8 +1568,10 @@ Use the `action` keyword to specify jobs that prepare, start, or stop environmen
 | **Value** | **Description** |
 |:----------|:----------------|
 | `start`   | Default value. Indicates that the job starts the environment. The deployment is created after the job starts. |
-| `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#prepare-an-environment-without-creating-a-deployment). |
+| `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 | `stop`    | Indicates that the job stops a deployment. For more detail, read [Stop an environment](../environments/index.md#stop-an-environment). |
+| `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
+| `access`  | Indicates that the job is only accessing the environment. It does not trigger deployments. [Read more about accessing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 
 **Example of `environment:action`**:
 
@@ -3071,12 +3071,12 @@ to configure the job behavior, or with [`workflow`](#workflow) to configure the 
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH'
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH
       when: never
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/'
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
       when: manual
       allow_failure: true
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME'
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
 ```
 
 **Additional details**:
@@ -3090,6 +3090,8 @@ job:
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
+- In [GitLab 15.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/35438),
+  variables on the right side of `=~` and `!~` expressions are evaluated as regular expressions.
 
 **Related topics**:
 
@@ -3122,7 +3124,7 @@ branch or merge request pipelines.
 docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes:
         - Dockerfile
       when: manual
@@ -3203,7 +3205,7 @@ job to run before continuing.
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH
       when: manual
       allow_failure: true
 ```
@@ -3666,6 +3668,10 @@ trigger_job:
   earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
 - In [GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
   view which job triggered a downstream pipeline in the [pipeline graph](../pipelines/index.md#visualize-pipelines).
+- [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
+  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
+  to forward these variables to downstream pipelines.
 
 **Related topics**:
 
@@ -3796,7 +3802,11 @@ deploy_review_job:
 
 - All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
-  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
+  in [protected variables](../variables/index.md#protected-cicd-variables) or [CI/CD secrets](../secrets/index.md).
+- [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
+  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
+  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
+  to forward these variables to downstream pipelines.
 
 **Related topics**:
 

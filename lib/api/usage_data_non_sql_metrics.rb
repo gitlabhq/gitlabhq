@@ -5,10 +5,11 @@ module API
     before { authenticated_as_admin! }
 
     feature_category :service_ping
+    urgency :low
 
     namespace 'usage_data' do
       before do
-        not_found! unless Feature.enabled?(:usage_data_non_sql_metrics, default_enabled: :yaml, type: :ops)
+        not_found! unless Feature.enabled?(:usage_data_non_sql_metrics, type: :ops)
       end
 
       desc 'Get Non SQL usage ping metrics' do

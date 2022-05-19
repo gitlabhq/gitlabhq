@@ -8,7 +8,7 @@
         %p.gl-mb-0
           = s_('GitLabPages|Removing pages will prevent them from being exposed to the outside world.')
       .card-footer
-        = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn gl-button btn-danger"
+        = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, method: :delete, class: "btn gl-button btn-danger", "aria-label": s_('GitLabPages|Remove pages')
   - else
     .nothing-here-block
       = s_('GitLabPages|Only project maintainers can remove pages')

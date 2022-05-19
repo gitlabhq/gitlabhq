@@ -12,7 +12,7 @@ which itself includes files under
 [`.gitlab/ci/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/ci)
 for easier maintenance.
 
-We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/principles/#dogfooding)
+We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/development/principles/#dogfooding)
 GitLab [CI/CD features and best-practices](../ci/yaml/index.md)
 as much as possible.
 
@@ -53,7 +53,7 @@ In summary:
 
 To identify the minimal set of tests needed, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ci-cd/test_file_finder), with two strategies:
 
-- dynamic mapping from test coverage tracing (generated via the [Crystalball gem](https://github.com/toptal/crystalball))
+- dynamic mapping from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L15))
 - static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
   be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/47d507c93779675d73a05002e2ec9c3c467cd698/tooling/bin/find_tests#L12))
@@ -93,7 +93,7 @@ In addition, there are a few circumstances where we would always run the full Je
 ### Fork pipelines
 
 We only run the minimal RSpec & Jest jobs for fork pipelines unless the `pipeline:run-all-rspec`
-label is set on the MR. The goal is to reduce the CI minutes consumed by fork pipelines.
+label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
 
@@ -160,7 +160,7 @@ Our current RSpec tests parallelization setup is as follows:
    `knapsack/report-master.json` file:
    - The `knapsack/report-master.json` file is fetched from the latest `main` pipeline which runs `update-tests-metadata`
      (for now it's the 2-hourly scheduled master pipeline), if it's not here we initialize the file with `{}`.
-1. Each `[rspec|rspec-ee] [unit|integration|system|geo] n m` job are run with
+1. Each `[rspec|rspec-ee] [migration|unit|integration|system|geo] n m` job are run with
    `knapsack rspec` and should have an evenly distributed share of tests:
    - It works because the jobs have access to the `knapsack/report-master.json`
      since the "artifacts from all previous stages are passed by default".
@@ -170,7 +170,7 @@ Our current RSpec tests parallelization setup is as follows:
      `Report specs`, not under `Leftover specs`.
 1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
    [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
-   `knapsack/rspec*_pg_*.json` files and merge them all together into a single
+   `knapsack/rspec*.json` files and merge them all together into a single
    `knapsack/report-master.json` file that is saved as artifact.
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
@@ -247,12 +247,18 @@ The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `j
 
 The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
+### When to consider applying `pipeline:run-as-if-jh` label
+
+If a Ruby file is renamed and there's a corresponding [`prepend_mod` line](jh_features_review.md#jh-features-based-on-ce-or-ee-features),
+it's likely that GitLab JH is relying on it and requires a corresponding
+change to rename the module or class it's prepending.
+
 ### Corresponding JH branch
 
 You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,
 `* as-if-jh` jobs grab the `jh` folder from the respective branch,
-rather than from the default branch.
+rather than from the default branch `main-jh`.
 
 NOTE:
 For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
@@ -345,7 +351,7 @@ We use the [`rules:`](../ci/yaml/index.md#rules) and [`needs:`](../ci/yaml/index
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
 have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
 
-Following are graphs of the critical paths for each pipeline type. Jobs that aren't part of the critical path are ommitted.
+Following are graphs of the critical paths for each pipeline type. Jobs that aren't part of the critical path are omitted.
 
 ### Documentation pipeline
 
@@ -508,12 +514,9 @@ The current stages are:
 - `test`: This stage includes most of the tests, and DB/migration jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
-- `review-prepare`: This stage includes a job that build the CNG images that are
-  later used by the (Helm) Review App deployment (see
-  [Review Apps](testing_guide/review_apps.md) for details).
-- `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
-- `dast`: This stage includes jobs that run a DAST full scan against the Review App
-that is deployed in stage `review`.
+- `review`: This stage includes jobs that build the CNG images, deploy them, and
+  run end-to-end tests against Review Apps (see [Review Apps](testing_guide/review_apps.md) for details).
+  It also includes Docs Review App jobs.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in stage `review`.
 - `post-qa`: This stage includes jobs that build reports or gather data from

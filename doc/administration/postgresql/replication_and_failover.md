@@ -1123,25 +1123,36 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 ### Reinitialize a replica
 
-If replication is not occurring, it may be necessary to reinitialize a replica.
+If a replica cannot start or rejoin the cluster, or when it lags behind and can not catch up, it might be necessary to reinitialize the replica:
 
-1. On any server in the cluster, determine the Cluster and Member names,
-   and check the replication lag by running `gitlab-ctl patroni members`. Here is an example:
+1. [Check the replication status](#check-replication-status) to confirm which server
+   needs to be reinitialized. For example:
 
    ```plaintext
-   + Cluster: postgresql-ha (6970678148837286213) ------+---------+---------+----+-----------+
-   | Member                              | Host         | Role    | State   | TL | Lag in MB |
-   +-------------------------------------+--------------+---------+---------+----+-----------+
-   | gitlab-database-1.example.com       | 172.18.0.111 | Replica | running |  5 |         0 |
-   | gitlab-database-2.example.com       | 172.18.0.112 | Replica | running |  5 |       100 |
-   | gitlab-database-3.example.com       | 172.18.0.113 | Leader  | running |  5 |           |
-   +-------------------------------------+--------------+---------+---------+----+-----------+
+   + Cluster: postgresql-ha (6970678148837286213) ------+---------+--------------+----+-----------+
+   | Member                              | Host         | Role    | State        | TL | Lag in MB |
+   +-------------------------------------+--------------+---------+--------------+----+-----------+
+   | gitlab-database-1.example.com       | 172.18.0.111 | Replica | running      | 55 |         0 |
+   | gitlab-database-2.example.com       | 172.18.0.112 | Replica | start failed |    |   unknown |
+   | gitlab-database-3.example.com       | 172.18.0.113 | Leader  | running      | 55 |           |
+   +-------------------------------------+--------------+---------+--------------+----+-----------+
    ```
 
-1. Reinitialize the affected replica server:
+1. Sign in to the broken server and reinitialize the database and replication. Patroni will shut
+   down PostgreSQL on that server, remove the data directory, and reinitialize it from scratch:
 
-   ```plaintext
-   gitlab-ctl patroni reinitialize-replica postgresql-ha gitlab-database-2.example.com
+   ```shell
+   sudo gitlab-ctl patroni reinitialize-replica --member gitlab-database-2.example.com
+   ```
+
+   This can be run on any Patroni node, but be aware that `sudo gitlab-ctl patroni
+   reinitialize-replica` without `--member` will reinitialize the server it is run on.
+   It is recommended to run it locally on the broken server to reduce the risk of
+   unintended data loss.
+1. Monitor the logs:
+
+   ```shell
+   sudo gitlab-ctl tail patroni
    ```
 
 ### Reset the Patroni state in Consul

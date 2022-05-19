@@ -4,7 +4,6 @@ import { nextTick } from 'vue';
 import Component from '~/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue';
 import {
   CONTAINER_REGISTRY_TITLE,
-  LIST_INTRO_TEXT,
   EXPIRATION_POLICY_DISABLED_TEXT,
   SET_UP_CLEANUP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
@@ -135,9 +134,7 @@ describe('registry_header', () => {
       it('is correctly bound to title_area props', () => {
         mountComponent({ helpPagePath: 'foo' });
 
-        expect(findTitleArea().props('infoMessages')).toEqual([
-          { text: LIST_INTRO_TEXT, link: 'foo' },
-        ]);
+        expect(findTitleArea().props('infoMessages')).toEqual([]);
       });
     });
   });

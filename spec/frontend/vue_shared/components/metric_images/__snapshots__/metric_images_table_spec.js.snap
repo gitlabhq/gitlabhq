@@ -10,6 +10,7 @@ exports[`Metrics upload item render the metrics image component 1`] = `
   <gl-modal-stub
     actioncancel="[object Object]"
     actionprimary="[object Object]"
+    arialabel=""
     body-class="gl-pb-0! gl-min-h-6!"
     dismisslabel="Close"
     modalclass=""
@@ -26,6 +27,7 @@ exports[`Metrics upload item render the metrics image component 1`] = `
   <gl-modal-stub
     actioncancel="[object Object]"
     actionprimary="[object Object]"
+    arialabel=""
     data-testid="metric-image-edit-modal"
     dismisslabel="Close"
     modalclass=""

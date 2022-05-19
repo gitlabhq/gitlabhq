@@ -48,7 +48,7 @@ RSpec.shared_examples 'an editable merge request' do
       end
 
       page.within '.reviewer' do
-        expect(page).to have_content user.username
+        expect(page).to have_content user.name
       end
 
       page.within '.milestone' do

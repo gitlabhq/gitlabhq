@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlFormGroup } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { s__, sprintf } from '~/locale';
 import { SNIPPET_MAX_BLOBS } from '../constants';
@@ -10,11 +10,17 @@ export default {
   components: {
     SnippetBlobEdit,
     GlButton,
+    GlFormGroup,
   },
   props: {
     initBlobs: {
       type: Array,
       required: true,
+    },
+    isValid: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -124,16 +130,26 @@ export default {
 </script>
 <template>
   <div class="form-group">
-    <label :for="firstInputId">{{ s__('Snippets|Files') }}</label>
-    <snippet-blob-edit
-      v-for="(blobId, index) in blobIds"
-      :key="blobId"
-      :class="{ 'gl-mt-3': index > 0 }"
-      :blob="blobs[blobId]"
-      :can-delete="canDelete"
-      @blob-updated="updateBlob(blobId, $event)"
-      @delete="deleteBlob(blobId)"
-    />
+    <gl-form-group
+      :label="s__('Snippets|Files')"
+      :label-for="firstInputId"
+      :invalid-feedback="
+        s__(
+          'Snippets|Snippets can\'t contain empty files. Ensure all files have content, or delete them.',
+        )
+      "
+      :state="isValid"
+    >
+      <snippet-blob-edit
+        v-for="(blobId, index) in blobIds"
+        :key="blobId"
+        :class="{ 'gl-mt-3': index > 0 }"
+        :blob="blobs[blobId]"
+        :can-delete="canDelete"
+        @blob-updated="updateBlob(blobId, $event)"
+        @delete="deleteBlob(blobId)"
+      />
+    </gl-form-group>
     <gl-button
       :disabled="!canAdd"
       data-testid="add_button"

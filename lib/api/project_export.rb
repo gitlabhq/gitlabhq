@@ -3,6 +3,7 @@
 module API
   class ProjectExport < ::API::Base
     feature_category :importers
+    urgency :low
 
     before do
       not_found! unless Gitlab::CurrentSettings.project_export_enabled?
@@ -65,9 +66,13 @@ module API
         if export_strategy&.invalid?
           render_validation_error!(export_strategy)
         else
-          user_project.add_export_job(current_user: current_user,
-                                      after_export_strategy: export_strategy,
-                                      params: project_export_params)
+          begin
+            user_project.add_export_job(current_user: current_user,
+                                        after_export_strategy: export_strategy,
+                                        params: project_export_params)
+          rescue Project::ExportLimitExceeded => e
+            render_api_error!(e.message, 400)
+          end
         end
 
         accepted!
@@ -75,7 +80,7 @@ module API
 
       resource do
         before do
-          not_found! unless ::Feature.enabled?(:bulk_import, default_enabled: :yaml)
+          not_found! unless ::Feature.enabled?(:bulk_import)
         end
 
         desc 'Start relations export' do

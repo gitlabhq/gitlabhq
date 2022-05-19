@@ -12,6 +12,9 @@ class ApplicationSetting < ApplicationRecord
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column %i[max_package_files_for_package_destruction], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
+  ignore_column :pseudonymizer_enabled, remove_with: '15.1', remove_after: '2022-06-22'
+  ignore_column :enforce_ssh_key_expiration, remove_with: '15.2', remove_after: '2022-07-22'
+  ignore_column :enforce_pat_expiration, remove_with: '15.2', remove_after: '2022-07-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -199,6 +202,10 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :max_export_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :max_import_size,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -370,6 +377,8 @@ class ApplicationSetting < ApplicationRecord
             :container_registry_import_max_retries,
             :container_registry_import_start_max_retries,
             :container_registry_import_max_step_duration,
+            :container_registry_pre_import_timeout,
+            :container_registry_import_timeout,
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -478,6 +487,9 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :raw_blob_request_limit,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :pipeline_limit_per_project_user_sha,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :ci_jwt_signing_key,
@@ -613,6 +625,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :recaptcha_private_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :recaptcha_site_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :slack_app_secret, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :slack_app_signing_secret, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :slack_app_verification_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :ci_jwt_signing_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :customers_dot_jwt_signing_key, encryption_options_base_32_aes_256_gcm
@@ -638,6 +651,7 @@ class ApplicationSetting < ApplicationRecord
     reset_memoized_terms
   end
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
+  after_commit :reset_deletion_warning_redis_key, if: :saved_change_to_inactive_projects_delete_after_months?
 
   def validate_grafana_url
     validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)
@@ -767,6 +781,10 @@ class ApplicationSetting < ApplicationRecord
         "must be a valid relative or absolute URL. #{error_message}"
       )
     end
+  end
+
+  def reset_deletion_warning_redis_key
+    Gitlab::InactiveProjectsDeletionWarningTracker.reset_all
   end
 end
 

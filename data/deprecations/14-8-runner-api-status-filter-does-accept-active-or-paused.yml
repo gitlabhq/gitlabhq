@@ -15,4 +15,4 @@
   stage: Verify
   tiers: [Core, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351109
-  documentation_url: https://docs.gitlab.com/ee/api/runners.html
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#queryrunners

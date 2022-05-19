@@ -1,6 +1,7 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210918201050_remove_old_pending_jobs_for_recalculate_vulnerabilities_occurrences_uuid.rb')
+require_migration!
 
 def create_background_migration_jobs(ids, status, created_at)
   proper_status = case status

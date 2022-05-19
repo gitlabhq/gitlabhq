@@ -20,3 +20,21 @@ Some examples where you would need to do this are:
 
 1. Modifying Rails' `config.autoload_paths`
 1. Changing configuration that Zeitwerk uses, for example, inflections
+
+## Database connections in initializers
+
+Ideally, database connections are not opened from Rails initializers. Opening a
+database connection (e.g. checking the database exists, or making a database
+query) from an initializer means that tasks like `db:drop`, and
+`db:test:prepare` will fail because an active session prevents the database from
+being dropped.
+
+To help detect when database connections are opened from initializers, we now
+warn in stderr. For example:
+
+```shell
+DEPRECATION WARNING: Database connection should not be called during initializers (called from block in <module:HasVariable> at app/models/concerns/ci/has_variable.rb:22)
+```
+
+If you wish to print out the full backtrace, set the
+`DEBUG_INITIALIZER_CONNECTIONS` environment variable.

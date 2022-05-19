@@ -12,7 +12,7 @@ module ReleasesHelper
     image_path(IMAGE_PATH)
   end
 
-  def help_page(anchor: nil)
+  def releases_help_page_path(anchor: nil)
     help_page_path(DOCUMENTATION_PATH, anchor: anchor)
   end
 
@@ -21,7 +21,7 @@ module ReleasesHelper
       project_id: @project.id,
       project_path: @project.full_path,
       illustration_path: illustration,
-      documentation_path: help_page
+      documentation_path: releases_help_page_path
     }.tap do |data|
       if can?(current_user, :create_release, @project)
         data[:new_release_path] = new_project_release_path(@project)
@@ -78,9 +78,10 @@ module ReleasesHelper
       project_path: @project.full_path,
       markdown_preview_path: preview_markdown_path(@project),
       markdown_docs_path: help_page_path('user/markdown'),
-      release_assets_docs_path: help_page(anchor: 'release-assets'),
+      release_assets_docs_path: releases_help_page_path(anchor: 'release-assets'),
       manage_milestones_path: project_milestones_path(@project),
-      new_milestone_path: new_project_milestone_path(@project)
+      new_milestone_path: new_project_milestone_path(@project),
+      edit_release_docs_path: releases_help_page_path(anchor: 'edit-a-release')
     }
   end
 end

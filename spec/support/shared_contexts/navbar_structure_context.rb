@@ -46,8 +46,7 @@ RSpec.shared_context 'project navbar structure' do
           _('List'),
           _('Boards'),
           _('Service Desk'),
-          _('Milestones'),
-          (_('Iterations') if Gitlab.ee?)
+          _('Milestones')
         ]
       },
       {
@@ -74,6 +73,13 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
       {
+        nav_item: _('Infrastructure'),
+        nav_sub_items: [
+          _('Kubernetes clusters'),
+          _('Terraform')
+        ]
+      },
+      {
         nav_item: _('Monitor'),
         nav_sub_items: [
           _('Metrics'),
@@ -86,16 +92,8 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
       {
-        nav_item: _('Infrastructure'),
-        nav_sub_items: [
-          _('Kubernetes clusters'),
-          _('Serverless platform'),
-          _('Terraform')
-        ]
-      },
-      {
         nav_item: _('Analytics'),
-        nav_sub_items: analytics_sub_nav_item
+        nav_sub_items: project_analytics_sub_nav_item
       },
       {
         nav_item: _('Wiki'),
@@ -126,9 +124,7 @@ RSpec.shared_context 'group navbar structure' do
   let(:analytics_nav_item) do
     {
       nav_item: _('Analytics'),
-      nav_sub_items: [
-        _('Contribution')
-      ]
+      nav_sub_items: group_analytics_sub_nav_item
     }
   end
 

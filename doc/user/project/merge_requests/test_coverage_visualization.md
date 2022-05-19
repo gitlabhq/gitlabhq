@@ -28,7 +28,7 @@ between pipeline completion and the visualization loading on the page.
 
 For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
-[`artifacts:reports:cobertura`](../../../ci/yaml/artifacts_reports.md#artifactsreportscobertura-deprecated).
+[`artifacts:reports:coverage_report`](../../../ci/yaml/artifacts_reports.md#artifactsreportscoverage_report).
 This format was originally developed for Java, but most coverage analysis frameworks
 for other languages have plugins to add support for it, like:
 
@@ -196,7 +196,9 @@ coverage-jdk11:
   needs: ["test-jdk11"]
   artifacts:
     reports:
-      cobertura: target/site/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: target/site/cobertura.xml
 ```
 
 #### Gradle example
@@ -232,7 +234,9 @@ coverage-jdk11:
   needs: ["test-jdk11"]
   artifacts:
     reports:
-      cobertura: build/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/cobertura.xml
 ```
 
 ### Python example
@@ -251,9 +255,12 @@ run tests:
     - coverage run -m pytest
     - coverage report
     - coverage xml
+  coverage: '/TOTAL.*\s([.\d]+)%/'
   artifacts:
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 ```
 
 ### PHP example
@@ -263,7 +270,7 @@ to collect test coverage data and generate the report.
 
 With a minimal [`phpunit.xml`](https://phpunit.readthedocs.io/en/9.5/configuration.html) file (you may reference
 [this example repository](https://gitlab.com/yookoala/code-coverage-visualization-with-php/)), you can run the test and
-generate the coverage xml:
+generate the `coverage.xml`:
 
 ```yaml
 run tests:
@@ -283,7 +290,9 @@ run tests:
     - php ./vendor/bin/phpunit --coverage-text --coverage-cobertura=coverage.cobertura.xml
   artifacts:
     reports:
-      cobertura: coverage.cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
 ```
 
 [Codeception](https://codeception.com/), through PHPUnit, also supports generating Cobertura report with
@@ -318,7 +327,9 @@ run tests:
     name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     expire_in: 2 days
     reports:
-      cobertura: build/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/coverage.xml
 ```
 
 ### Go example
@@ -345,7 +356,9 @@ run tests:
     - go run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
   artifacts:
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 ```
 
 ### Ruby example
@@ -372,5 +385,7 @@ run tests:
     - bundle exec rspec
   artifacts:
     reports:
-      cobertura: coverage/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/coverage.xml
 ```

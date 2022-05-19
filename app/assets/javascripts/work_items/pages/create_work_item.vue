@@ -6,6 +6,7 @@ import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import createWorkItemFromTaskMutation from '../graphql/create_work_item_from_task.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import { DEFAULT_MODAL_TYPE } from '../constants';
 
 import ItemTitle from '../components/item_title.vue';
 
@@ -77,6 +78,13 @@ export default {
           text: node.name,
         }));
       },
+      result() {
+        if (!this.selectedWorkItemType && this.isModal) {
+          this.selectedWorkItemType = this.formOptions.find(
+            (options) => options.text === DEFAULT_MODAL_TYPE,
+          )?.value;
+        }
+      },
       error() {
         this.error = this.$options.fetchTypesErrorText;
       },
@@ -115,20 +123,15 @@ export default {
             },
           },
           update(store, { data: { workItemCreate } }) {
-            const { id, title, workItemType } = workItemCreate.workItem;
+            const { workItem } = workItemCreate;
 
             store.writeQuery({
               query: workItemQuery,
               variables: {
-                id,
+                id: workItem.id,
               },
               data: {
-                workItem: {
-                  __typename: 'WorkItem',
-                  id,
-                  title,
-                  workItemType,
-                },
+                workItem,
               },
             });
           },
@@ -185,11 +188,11 @@ export default {
   <form @submit.prevent="createWorkItem">
     <gl-alert v-if="error" variant="danger" @dismiss="error = null">{{ error }}</gl-alert>
     <div :class="{ 'gl-px-5': isModal }" data-testid="content">
-      <item-title :title="title" data-testid="title-input" @title-input="handleTitleInput" />
+      <item-title :title="initialTitle" data-testid="title-input" @title-input="handleTitleInput" />
       <div>
         <gl-loading-icon
           v-if="$apollo.queries.workItemTypes.loading"
-          size="md"
+          size="lg"
           data-testid="loading-types"
         />
         <gl-form-select

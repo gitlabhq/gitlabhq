@@ -5,7 +5,12 @@ import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
 import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
-import { AWS_ACCESS_KEY_ID, EVENT_LABEL, EVENT_ACTION } from '~/ci_variable_list/constants';
+import {
+  AWS_ACCESS_KEY_ID,
+  EVENT_LABEL,
+  EVENT_ACTION,
+  ENVIRONMENT_SCOPE_LINK_TITLE,
+} from '~/ci_variable_list/constants';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
 import ModalStub from '../stubs';
@@ -20,7 +25,11 @@ describe('Ci variable modal', () => {
   const maskableRegex = '^[a-zA-Z0-9_+=/@:.~-]{8,}$';
 
   const createComponent = (method, options = {}) => {
-    store = createStore({ maskableRegex, isGroup: options.isGroup });
+    store = createStore({
+      maskableRegex,
+      isGroup: options.isGroup,
+      environmentScopeLink: '/help/environments',
+    });
     wrapper = method(CiVariableModal, {
       attachTo: document.body,
       stubs: {
@@ -212,6 +221,15 @@ describe('Ci variable modal', () => {
           expect(environmentScopeInput.attributes('readonly')).toBe('readonly');
         });
       });
+    });
+
+    it('renders a link to documentation on scopes', () => {
+      createComponent(mount);
+
+      const link = wrapper.find('[data-testid="environment-scope-link"]');
+
+      expect(link.attributes('title')).toBe(ENVIRONMENT_SCOPE_LINK_TITLE);
+      expect(link.attributes('href')).toBe('/help/environments');
     });
   });
 

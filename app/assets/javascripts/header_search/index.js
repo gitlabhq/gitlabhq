@@ -7,6 +7,7 @@ Vue.use(Translate);
 
 export const initHeaderSearchApp = (search = '') => {
   const el = document.getElementById('js-header-search');
+  let navBarEl = null;
 
   if (!el) {
     return false;
@@ -19,8 +20,21 @@ export const initHeaderSearchApp = (search = '') => {
   return new Vue({
     el,
     store: createStore({ searchPath, issuesPath, mrPath, autocompletePath, searchContext, search }),
+    mounted() {
+      navBarEl = document.querySelector('.header-content');
+    },
     render(createElement) {
-      return createElement(HeaderSearchApp);
+      return createElement(HeaderSearchApp, {
+        on: {
+          toggleDropdown: (isVisible = false) => {
+            if (isVisible) {
+              navBarEl?.classList.add('header-search-is-active');
+            } else {
+              navBarEl?.classList.remove('header-search-is-active');
+            }
+          },
+        },
+      });
     },
   });
 };

@@ -12,6 +12,10 @@ RSpec.describe Projects::IssuesController do
   let(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
+  before do
+    stub_feature_flags(vue_issues_list: true)
+  end
+
   describe "GET #index" do
     context 'external issue tracker' do
       before do
@@ -72,22 +76,6 @@ RSpec.describe Projects::IssuesController do
         project.add_developer(user)
       end
 
-      context 'when issues_full_text_search is disabled' do
-        before do
-          stub_feature_flags(issues_full_text_search: false)
-        end
-
-        it_behaves_like 'issuables list meta-data', :issue
-      end
-
-      context 'when issues_full_text_search is enabled' do
-        before do
-          stub_feature_flags(issues_full_text_search: true)
-        end
-
-        it_behaves_like 'issuables list meta-data', :issue
-      end
-
       it_behaves_like 'set sort order from user preference' do
         let(:sorting_param) { 'updated_asc' }
       end
@@ -96,16 +84,6 @@ RSpec.describe Projects::IssuesController do
         get :index, params: { namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'returns only list type issues' do
-        issue = create(:issue, project: project)
-        incident = create(:issue, project: project, issue_type: 'incident')
-        create(:issue, project: project, issue_type: 'test_case')
-
-        get :index, params: { namespace_id: project.namespace, project_id: project }
-
-        expect(assigns(:issues)).to contain_exactly(issue, incident)
       end
 
       it "returns 301 if request path doesn't match project path" do
@@ -123,17 +101,10 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
-    it_behaves_like 'issuable list with anonymous search disabled' do
-      let(:params) { { namespace_id: project.namespace, project_id: project } }
-
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-    end
-
-    it_behaves_like 'paginated collection' do
+    describe 'pagination' do
       let!(:issue_list) { create_list(:issue, 2, project: project) }
       let(:collection) { project.issues }
+      let(:last_page) { collection.page.total_pages }
       let(:params) do
         {
           namespace_id: project.namespace.to_param,
@@ -153,46 +124,6 @@ RSpec.describe Projects::IssuesController do
 
         expect(response).to have_gitlab_http_status(:redirect)
         expect(response).to redirect_to(action: 'index', format: 'atom', page: last_page, state: 'opened')
-      end
-
-      it 'does not use pagination if disabled' do
-        allow(controller).to receive(:pagination_disabled?).and_return(true)
-
-        get :index, params: params.merge(page: last_page + 1)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:issues).size).to eq(2)
-      end
-    end
-
-    context 'with relative_position sorting' do
-      let!(:issue_list) { create_list(:issue, 2, project: project) }
-
-      before do
-        sign_in(user)
-        project.add_developer(user)
-        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
-      end
-
-      it 'overrides the number allowed on the page' do
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id:   project,
-            sort:         'relative_position'
-          }
-
-        expect(assigns(:issues).count).to eq 2
-      end
-
-      it 'allows the default number on the page' do
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id:   project
-          }
-
-        expect(assigns(:issues).count).to eq 1
       end
     end
 
@@ -745,84 +676,6 @@ RSpec.describe Projects::IssuesController do
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
     let_it_be(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
-
-    describe 'GET #index' do
-      it 'does not list confidential issues for guests' do
-        sign_out(:user)
-        get_issues
-
-        expect(assigns(:issues)).to eq [issue]
-      end
-
-      it 'does not list confidential issues for non project members' do
-        sign_in(non_member)
-        get_issues
-
-        expect(assigns(:issues)).to eq [issue]
-      end
-
-      it 'does not list confidential issues for project members with guest role' do
-        sign_in(member)
-        project.add_guest(member)
-
-        get_issues
-
-        expect(assigns(:issues)).to eq [issue]
-      end
-
-      it 'lists confidential issues for author' do
-        sign_in(author)
-        get_issues
-
-        expect(assigns(:issues)).to include unescaped_parameter_value
-        expect(assigns(:issues)).not_to include request_forgery_timing_attack
-      end
-
-      it 'lists confidential issues for assignee' do
-        sign_in(assignee)
-        get_issues
-
-        expect(assigns(:issues)).not_to include unescaped_parameter_value
-        expect(assigns(:issues)).to include request_forgery_timing_attack
-      end
-
-      it 'lists confidential issues for project members' do
-        sign_in(member)
-        project.add_developer(member)
-
-        get_issues
-
-        expect(assigns(:issues)).to include unescaped_parameter_value
-        expect(assigns(:issues)).to include request_forgery_timing_attack
-      end
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it 'lists confidential issues for admin' do
-          sign_in(admin)
-          get_issues
-
-          expect(assigns(:issues)).to include unescaped_parameter_value
-          expect(assigns(:issues)).to include request_forgery_timing_attack
-        end
-      end
-
-      context 'when admin mode is disabled' do
-        it 'does not list confidential issues for admin' do
-          sign_in(admin)
-          get_issues
-
-          expect(assigns(:issues)).to eq [issue]
-        end
-      end
-
-      def get_issues
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project
-          }
-      end
-    end
 
     shared_examples_for 'restricted action' do |http_status|
       it 'returns 404 for guests' do

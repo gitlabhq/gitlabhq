@@ -71,7 +71,7 @@ module API
 
       desc 'Composer packages endpoint at group level'
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-      get ':id/-/packages/composer/packages' do
+      get ':id/-/packages/composer/packages', urgency: :low do
         presenter.root
       end
 
@@ -80,7 +80,7 @@ module API
         requires :sha, type: String, desc: 'Shasum of current json'
       end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-      get ':id/-/packages/composer/p/:sha' do
+      get ':id/-/packages/composer/p/:sha', urgency: :low do
         presenter.provider
       end
 
@@ -89,7 +89,7 @@ module API
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
       end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-      get ':id/-/packages/composer/p2/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
+      get ':id/-/packages/composer/p2/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true, urgency: :low do
         not_found! if packages.empty?
 
         presenter.package_versions
@@ -100,7 +100,7 @@ module API
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
       end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-      get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true do
+      get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true, urgency: :low do
         not_found! if packages.empty?
         not_found! if params[:sha].blank?
 
@@ -122,7 +122,7 @@ module API
           optional :tag, type: String, desc: 'The name of the tag'
           exactly_one_of :tag, :branch
         end
-        post do
+        post urgency: :low do
           authorize_create_package!(authorized_user_project)
 
           if params[:branch].present?
@@ -147,7 +147,7 @@ module API
           requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
         end
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-        get 'archives/*package_name' do
+        get 'archives/*package_name', urgency: :default do
           authorize_read_package!(authorized_user_project)
 
           metadata = authorized_user_project

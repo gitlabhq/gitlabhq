@@ -208,8 +208,22 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     shared_examples 'queueing the next import' do
       it 'starts the worker' do
         expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
+        expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_in)
 
         subject
+      end
+
+      context 'enqueue_twice feature flag disabled' do
+        before do
+          stub_feature_flags(container_registry_migration_phase2_enqueue_twice: false)
+        end
+
+        it 'starts the worker only once' do
+          expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
+          expect(::ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_in)
+
+          subject
+        end
       end
     end
 
@@ -354,6 +368,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       subject { repository.skip_import(reason: :too_many_retries) }
 
       it_behaves_like 'transitioning from allowed states', ContainerRepository::SKIPPABLE_MIGRATION_STATES
+      it_behaves_like 'queueing the next import'
 
       it 'sets migration_skipped_at and migration_skipped_reason' do
         expect { subject }.to change { repository.reload.migration_skipped_at }
@@ -630,10 +645,15 @@ RSpec.describe ContainerRepository, :aggregate_failures do
   describe '#start_expiration_policy!' do
     subject { repository.start_expiration_policy! }
 
+    before do
+      repository.update_column(:last_cleanup_deleted_tags_count, 10)
+    end
+
     it 'sets the expiration policy started at to now' do
       freeze_time do
         expect { subject }
           .to change { repository.expiration_policy_started_at }.from(nil).to(Time.zone.now)
+          .and change { repository.last_cleanup_deleted_tags_count }.from(10).to(nil)
       end
     end
   end
@@ -687,22 +707,6 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       let(:created_at) { described_class::MIGRATION_PHASE_1_STARTED_AT - 3.months }
 
       it { is_expected.to eq(nil) }
-    end
-  end
-
-  describe '#reset_expiration_policy_started_at!' do
-    subject { repository.reset_expiration_policy_started_at! }
-
-    before do
-      repository.start_expiration_policy!
-    end
-
-    it 'resets the expiration policy started at' do
-      started_at = repository.expiration_policy_started_at
-
-      expect(started_at).not_to be_nil
-      expect { subject }
-          .to change { repository.expiration_policy_started_at }.from(started_at).to(nil)
     end
   end
 
@@ -1304,6 +1308,38 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#nearing_or_exceeded_retry_limit?' do
+    subject { repository.nearing_or_exceeded_retry_limit? }
+
+    before do
+      stub_application_setting(container_registry_import_max_retries: 3)
+    end
+
+    context 'migration_retries_count is 1 less than max_retries' do
+      before do
+        repository.update_column(:migration_retries_count, 2)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'migration_retries_count is lower than max_retries' do
+      before do
+        repository.update_column(:migration_retries_count, 1)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'migration_retries_count equal to or higher than max_retries' do
+      before do
+        repository.update_column(:migration_retries_count, 3)
+      end
+
+      it { is_expected.to eq(true) }
     end
   end
 

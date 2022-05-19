@@ -108,7 +108,7 @@ You can add this URL to your feed reader.
 
 You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge requests** list. Enter filter `#30` to return only merge request 30.
 
-![filter issues by specific ID](img/issue_search_by_id.png)
+![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
 
 ### Filtering merge requests by approvers **(PREMIUM)**
 

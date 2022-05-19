@@ -74,7 +74,11 @@ module QA
           end
 
           def has_linked_pipeline?(title: nil)
-            title ? find_linked_pipeline_by_title(title) : has_element?(:linked_pipeline_container)
+            # If the pipeline page has loaded linked pipelines should appear, but it can take a little while,
+            # especially on busier environments.
+            retry_until(reload: true, message: 'Waiting for linked pipeline to appear') do
+              title ? find_linked_pipeline_by_title(title) : has_element?(:linked_pipeline_container)
+            end
           end
 
           alias_method :has_child_pipeline?, :has_linked_pipeline?

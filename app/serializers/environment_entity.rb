@@ -103,7 +103,8 @@ class EnvironmentEntity < Grape::Entity
   end
 
   def can_read_pod_logs?
-    can?(current_user, :read_pod_logs, environment.project)
+    Feature.enabled?(:monitor_logging, environment.project) &&
+      can?(current_user, :read_pod_logs, environment.project)
   end
 
   def can_read_deploy_board?

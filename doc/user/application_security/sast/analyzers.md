@@ -4,20 +4,25 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SAST Analyzers **(FREE)**
+# SAST analyzers **(FREE)**
 
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
-SAST relies on underlying third party tools that are wrapped into what we call
-"Analyzers". An analyzer is a
-[dedicated project](https://gitlab.com/gitlab-org/security-products/analyzers)
-that wraps a particular tool to:
+Static Application Security Testing (SAST) uses analyzers
+to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/#scanner), a third-party code analysis tool.
 
-- Expose its detection logic.
-- Handle its execution.
-- Convert its output to the common format.
+The analyzers are published as Docker images that SAST uses to launch dedicated containers for each
+analysis.
 
-This is achieved by implementing the [common API](https://gitlab.com/gitlab-org/security-products/analyzers/common).
+SAST default images are maintained by GitLab, but you can also integrate your own custom image.
+
+For each scanner, an analyzer:
+
+- Exposes its detection logic.
+- Handles its execution.
+- Converts its output to a [standard format](../terminology/#secure-report-format).
+
+## SAST analyzers
 
 SAST supports the following official analyzers:
 
@@ -36,12 +41,6 @@ SAST supports the following official analyzers:
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
 
-The analyzers are published as Docker images that SAST uses to launch
-dedicated containers for each analysis.
-
-SAST is pre-configured with a set of **default images** that are maintained by
-GitLab, but users can also integrate their own **custom images**.
-
 ## SAST analyzer features
 
 For an analyzer to be considered Generally Available, it is expected to minimally
@@ -55,97 +54,22 @@ support the following features:
 - [Emits JSON report format](index.md#reports-json-format)
 - [SELinux support](index.md#running-sast-in-selinux)
 
-## Official default analyzers
+## Post analyzers
 
-Any custom change to the official analyzers can be achieved by using a
-[CI/CD variable in your `.gitlab-ci.yml`](index.md#available-cicd-variables).
+Post analyzers enrich the report output by an analyzer. A post analyzer doesn't modify report
+content directly. Instead, it enhances the results with additional properties, including:
 
-### Using a custom Docker mirror
+- CWEs.
+- Location tracking fields.
+- A means of identifying false positives or insignificant findings. **(ULTIMATE)**
 
-You can switch to a custom Docker registry that provides the official analyzer
-images under a different prefix. For instance, the following instructs
-SAST to pull `my-docker-registry/gl-images/sast/bandit`
-instead of `registry.gitlab.com/security-products/sast/bandit`.
-In `.gitlab-ci.yml` define:
+## Data provided by analyzers
 
-```yaml
-include:
-  - template: Security/SAST.gitlab-ci.yml
+Each analyzer provides data about the vulnerabilities it detects. The following table details the
+data available from each analyzer. The values provided by these tools are heterogeneous so they are sometimes
+normalized into common values, for example, `severity` and `confidence`.
 
-variables:
-  SECURE_ANALYZERS_PREFIX: my-docker-registry/gl-images
-```
-
-This configuration requires that your custom registry provides images for all
-the official analyzers.
-
-### Disabling all default analyzers
-
-Setting `SAST_DISABLED` to `true` disables all the official
-default analyzers. In `.gitlab-ci.yml` define:
-
-```yaml
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
-variables:
-  SAST_DISABLED: true
-```
-
-That's needed when one totally relies on [custom analyzers](#custom-analyzers).
-
-### Disabling specific default analyzers
-
-Set `SAST_EXCLUDED_ANALYZERS` to a comma-delimited string that includes the official
-default analyzers that you want to avoid running. In `.gitlab-ci.yml` define the
-following to prevent the `eslint` analyzer from running:
-
-```yaml
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
-variables:
-  SAST_EXCLUDED_ANALYZERS: "eslint"
-```
-
-## Post Analyzers **(ULTIMATE)**
-
-While analyzers are thin wrappers for executing scanners, post analyzers work to
-enrich the data generated within our reports.
-
-GitLab SAST post analyzers never modify report contents directly but work by
-augmenting results with additional properties (such as CWEs), location tracking fields,
-and a means of identifying false positives or insignificant findings.
-
-The implementation of post analyzers is determined by feature availability tiers, where
-simple data enrichment may occur within our free tier and most advanced processing is split
-into separate binaries or pipeline jobs.
-
-## Custom Analyzers
-
-You can provide your own analyzers by
-defining CI jobs in your CI configuration. For consistency, you should suffix your custom
-SAST jobs with `-sast`. Here's how to add a scanning job that's based on the
-Docker image `my-docker-registry/analyzers/csharp` and generates a SAST report
-`gl-sast-report.json` when `/analyzer run` is executed. Define the following in
-`.gitlab-ci.yml`:
-
-```yaml
-csharp-sast:
-  image:
-    name: "my-docker-registry/analyzers/csharp"
-  script:
-    - /analyzer run
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-```
-
-The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate custom security scanners into GitLab.
-
-## Analyzers Data
-
-| Property / Tool                | Apex | Bandit | Brakeman | ESLint security | SpotBugs | Flawfinder | Gosec | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET) | Semgrep | Sobelow |
+| Property / tool                | Apex | Bandit | Brakeman | ESLint security | SpotBugs | Flawfinder | Gosec | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET) | Semgrep | Sobelow |
 |--------------------------------|------|--------|----------|-----------------|----------|------------|-------|-----------------|-------|------------|-----------------------|---------------------------|---------|---------|
 | Affected item (for example, class or package) | ✓ | ✗ | ✓ | ✗               | ✓        | ✓          | ✗     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
 | Confidence                     | ✗    | ✓      | ✓        | ✗               | ✓        | x          | ✓     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✓       |
@@ -164,9 +88,156 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 | Title                          | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
 | URLs                           | ✓    | ✗      | ✓        | ✗               | ⚠        | ✗          | ⚠     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
 
-- ✓ => we have that data
-- ⚠ => we have that data but it's partially reliable, or we need to extract it from unstructured content
-- ✗ => we don't have that data or it would need to develop specific or inefficient/unreliable logic to obtain it.
+- ✓ => Data is available.
+- ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
+- ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.
 
-The values provided by these tools are heterogeneous so they are sometimes
-normalized into common values (for example, `severity`, `confidence`, and so on).
+## Transition to Semgrep-based scanning
+
+SAST includes a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](index.md#supported-languages-and-frameworks).
+GitLab maintains the analyzer and writes detection rules for it.
+
+If you use the [GitLab-managed CI/CD template](index.md#configuration), the Semgrep-based analyzer operates alongside other language-specific analyzers.
+It runs with GitLab-managed detection rules that mimic the other analyzers' detection rules.
+Work to remove language-specific analyzers and replace them with the Semgrep-based analyzer is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5245).
+
+You can choose to disable the other analyzers early and use Semgrep-based scanning for supported languages before the default behavior changes. If you do so:
+
+- You'll enjoy significantly faster scanning, reduced CI minutes usage, and more customizable scanning rules.
+- However, vulnerabilities previously reported by language-specific analyzers will be reported again under certain conditions, including if you've dismissed the vulnerabilities before. The system behavior depends on:
+  - whether you've excluded the Semgrep-based analyzer from running in the past.
+  - which analyzer first discovered the vulnerabilities shown in the project's [Vulnerability Report](../vulnerability_report/).
+
+### Vulnerability translation
+
+When you switch analyzers for a language, vulnerabilities may not match up.
+
+The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to Semgrep for certain languages:
+
+- For C, a vulnerability is moved if it has only ever been detected by Flawfinder in pipelines where Semgrep also detected it. Semgrep coverage for C was introduced by default into the CI/CD template in GitLab 14.4 (October 2021).
+- For Go, a vulnerability is moved if it has only ever been detected by Gosec in pipelines where Semgrep also detected it. Semgrep coverage for Go was introduced by default into the CI/CD template in GitLab 14.2 (August 2021).
+- For JavaScript and TypeScript, a vulnerability is moved if it has only ever been detected by ESLint in pipelines where Semgrep also detected it. Semgrep coverage for these languages was introduced into the CI/CD template in GitLab 13.12 (May 2021).
+
+However, you'll see old vulnerabilities re-created based on Semgrep results if:
+
+- A vulnerability was created by Bandit or SpotBugs and you disable those analyzers. We only recommend disabling Bandit and SpotBugs now if the analyzers aren’t working. Work to automatically translate Bandit and SpotBugs vulnerabilities to Semgrep is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328062).
+- A vulnerability was created by ESLint, Gosec, or Flawfinder in a default-branch pipeline where Semgrep scanning did not run successfully (before Semgrep coverage was introduced for the language, because you disabled Semgrep explicitly, or because the Semgrep scan failed in that pipeline). We do not currently plan to combine these vulnerabilities if they already exist.
+
+When a vulnerability is re-created, the original vulnerability is marked as “no longer detected” in the Vulnerability Report.
+A new vulnerability is then created based on the Semgrep finding.
+
+### Activating Semgrep-based scanning early
+
+You can choose to use Semgrep-based scanning instead of language-specific analyzers before the default behavior changes.
+
+We recommend taking this approach if any of these cases applies:
+
+- You haven't used SAST before on a project, so you don't already have SAST vulnerabilities in your [Vulnerability Report](../vulnerability_report/).
+- You're having trouble configuring one of the analyzers whose coverage overlaps with Semgrep-based coverage. For example, you might have trouble setting up the SpotBugs-based analyzer to compile your code.
+- You've already seen and dismissed vulnerabilities created by ESLint, Gosec, or Flawfinder scanning, and you've kept the re-created vulnerabilities created by Semgrep.
+
+You can make a separate choice for each of the language-specific analyzers, or you can disable them all.
+
+#### Activate Semgrep-based scanning
+
+To switch to Semgrep-based scanning early, you can:
+
+1. Create a merge request (MR) to set the [`SAST_EXCLUDED_ANALYZERS` CI/CD variable](#disable-specific-default-analyzers) to `"bandit,gosec,eslint"`.
+    - If you also want to disable SpotBugs scanning, add `spotbugs` to the list. We only recommend this for Java projects. SpotBugs is the only current analyzer that can scan Groovy, Kotlin, and Scala.
+    - If you also want to disable Flawfinder scanning, add `flawfinder` to the list. We only recommend this for C projects. Flawfinder is the only current analyzer that can scan C++.
+1. Verify that scanning jobs succeed in the MR. You'll notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
+1. Merge the MR and wait for the default-branch pipeline to run.
+1. Use the Vulnerability Report to dismiss the findings that are no longer detected by the language-specific analyzers.
+
+## Customize analyzers
+
+Use [CI/CD variables](index.md#available-cicd-variables)
+in your `.gitlab-ci.yml` file to customize the behavior of your analyzers.
+
+### Use a custom Docker mirror
+
+You can use a custom Docker registry, instead of the GitLab registry, to host the analyzers' images.
+
+Prerequisites:
+
+- The custom Docker registry must provide images for all the official analyzers.
+
+NOTE:
+This variable affects all Secure analyzers, not just the analyzers for SAST.
+
+To have GitLab download the analyzers' images from a custom Docker registry, define the prefix with
+the `SECURE_ANALYZERS_PREFIX` CI/CD variable.
+
+For example, the following instructs SAST to pull `my-docker-registry/gitlab-images/bandit` instead
+of `registry.gitlab.com/security-products/bandit`:
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  SECURE_ANALYZERS_PREFIX: my-docker-registry/gitlab-images
+```
+
+### Disable all default analyzers
+
+You can disable all default SAST analyzers, leaving only [custom analyzers](#custom-analyzers)
+enabled.
+
+To disable all default analyzers, set the CI/CD variable `SAST_DISABLED` to `true` in your
+`.gitlab-ci.yml` file.
+
+Example:
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLED: true
+```
+
+### Disable specific default analyzers
+
+Analyzers are run automatically according to the
+source code languages detected. However, you can disable select analyzers.
+
+To disable select analyzers, set the CI/CD variable `SAST_EXCLUDED_ANALYZERS` to a comma-delimited
+string listing the analyzers that you want to prevent running.
+
+For example, to disable the `eslint` analyzer:
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  SAST_EXCLUDED_ANALYZERS: "eslint"
+```
+
+### Custom analyzers
+
+You can provide your own analyzers by defining jobs in your CI/CD configuration. For
+consistency with the default analyzers, you should add the suffix `-sast` to your custom
+SAST jobs.
+
+For more details on integrating a custom security scanner into GitLab, see [Security Scanner Integration](../../../development/integrations/secure.md).
+
+#### Example custom analyzer
+
+This example shows how to add a scanning job that's based on the Docker image
+`my-docker-registry/analyzers/csharp`. It runs the script `/analyzer run` and outputs a SAST report
+`gl-sast-report.json`.
+
+Define the following in your `.gitlab-ci.yml` file:
+
+```yaml
+csharp-sast:
+  image:
+    name: "my-docker-registry/analyzers/csharp"
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+```

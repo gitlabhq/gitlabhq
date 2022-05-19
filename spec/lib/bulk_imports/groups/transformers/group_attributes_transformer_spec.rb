@@ -6,7 +6,6 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
   describe '#transform' do
     let_it_be(:user) { create(:user) }
     let_it_be(:parent) { create(:group) }
-    let_it_be(:group) { create(:group, name: 'My Source Group', parent: parent) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
     let_it_be(:entity) do
@@ -14,7 +13,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
         :bulk_import_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: group.name,
+        destination_name: 'destination-name-path',
         destination_namespace: parent.full_path
       )
     end
@@ -24,7 +23,8 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
 
     let(:data) do
       {
-        'name' => 'source_name',
+        'name' => 'Source Group Name',
+        'path' => 'source-group-path',
         'full_path' => 'source/full/path',
         'visibility' => 'private',
         'project_creation_level' => 'developer',
@@ -34,23 +34,27 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
 
     subject { described_class.new }
 
-    it 'transforms name to destination name' do
+    it 'returns original data with some keys transformed' do
+      transformed_data = subject.transform(context, { 'name' => 'Name', 'description' => 'Description' })
+
+      expect(transformed_data).to eq({
+        'name' => 'Name',
+        'description' => 'Description',
+        'parent_id' => parent.id,
+        'path' => 'destination-name-path'
+      })
+    end
+
+    it 'transforms path from destination_name' do
       transformed_data = subject.transform(context, data)
 
-      expect(transformed_data['name']).not_to eq('source_name')
-      expect(transformed_data['name']).to eq(group.name)
+      expect(transformed_data['path']).to eq(entity.destination_name)
     end
 
     it 'removes full path' do
       transformed_data = subject.transform(context, data)
 
       expect(transformed_data).not_to have_key('full_path')
-    end
-
-    it 'transforms path to parameterized name' do
-      transformed_data = subject.transform(context, data)
-
-      expect(transformed_data['path']).to eq(group.name.parameterize)
     end
 
     it 'transforms visibility level' do

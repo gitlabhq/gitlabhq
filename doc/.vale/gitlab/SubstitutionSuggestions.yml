@@ -7,7 +7,7 @@
 # For a list of all options, see https://errata-ai.github.io/vale/styles/
 extends: substitution
 message: 'Consider %s instead of "%s".'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: suggestion
 ignorecase: true
 swap:
@@ -15,7 +15,7 @@ swap:
   active users: '"billable users"'
   docs: '"documentation"'
   e-mail: '"email"'
-  GFM: '"GitLab Flavored Markdown"'
+  GLFM: '"GitLab Flavored Markdown"'
   it is recommended: '"we recommend"'
   navigate: go
   OAuth2: '"OAuth 2.0"'

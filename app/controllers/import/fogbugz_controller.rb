@@ -54,10 +54,6 @@ class Import::FogbugzController < Import::BaseController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def realtime_changes
-    super
-  end
-
   def create
     repo = client.repo(params[:repo_id])
     fb_session = { uri: session[:fogbugz_uri], token: session[:fogbugz_token] }

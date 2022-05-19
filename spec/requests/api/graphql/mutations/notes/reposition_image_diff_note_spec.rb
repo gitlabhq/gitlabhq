@@ -39,7 +39,7 @@ RSpec.describe 'Repositioning an ImageDiffNote' do
       post_graphql_mutation(mutation, current_user: current_user)
     end.to change { note.reset.position.x }.to(10)
 
-    expect(mutation_response['note']).to eq('id' => global_id_of(note))
+    expect(mutation_response['note']).to match a_graphql_entity_for(note)
     expect(mutation_response['errors']).to be_empty
   end
 
@@ -59,7 +59,7 @@ RSpec.describe 'Repositioning an ImageDiffNote' do
         post_graphql_mutation(mutation, current_user: current_user)
       end.not_to change { note.reset.position.x }
 
-      expect(mutation_response['note']).to eq('id' => global_id_of(note))
+      expect(mutation_response['note']).to match a_graphql_entity_for(note)
       expect(mutation_response['errors']).to be_empty
     end
   end

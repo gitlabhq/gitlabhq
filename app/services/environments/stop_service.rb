@@ -18,7 +18,9 @@ module Environments
       environments.each { |environment| execute(environment) }
     end
 
-    def execute_for_merge_request(merge_request)
+    def execute_for_merge_request_pipeline(merge_request)
+      return unless merge_request.actual_head_pipeline&.merge_request?
+
       merge_request.environments_in_head_pipeline(deployment_status: :success).each do |environment|
         execute(environment)
       end

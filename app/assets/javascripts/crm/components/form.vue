@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlDrawer, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlAlert, GlButton, GlDrawer, GlFormGroup, GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { get as getPropValueByPath, isEmpty } from 'lodash';
 import { produce } from 'immer';
 import { MountingPortal } from 'portal-vue';
@@ -28,6 +28,7 @@ export default {
     GlDrawer,
     GlFormGroup,
     GlFormInput,
+    GlFormSelect,
     MountingPortal,
   },
   props: {
@@ -136,14 +137,24 @@ export default {
   methods: {
     setInitialModel() {
       const existingModel = this.records.find(({ id }) => id === this.existingId);
+      const noModel = !this.isEditMode || !existingModel;
 
       this.model = this.fields.reduce(
         (map, field) =>
           Object.assign(map, {
-            [field.name]: !this.isEditMode || !existingModel ? null : existingModel[field.name],
+            [field.name]: noModel ? null : this.extractValue(existingModel, field.name),
           }),
         {},
       );
+    },
+    extractValue(existingModel, fieldName) {
+      const value = existingModel[fieldName];
+      if (value != null) return value;
+
+      /* eslint-disable-next-line @gitlab/require-i18n-strings */
+      if (!fieldName.endsWith('Id')) return null;
+
+      return existingModel[fieldName.slice(0, -2)]?.id;
     },
     formatValue(model, field) {
       if (!isEmpty(model[field.name]) && field.input?.type === 'number') {
@@ -216,6 +227,15 @@ export default {
 
       return data[keys[0]];
     },
+    getDrawerHeaderHeight() {
+      const wrapperEl = document.querySelector('.content-wrapper');
+
+      if (wrapperEl) {
+        return `${wrapperEl.offsetTop}px`;
+      }
+
+      return '';
+    },
   },
   MSG_CANCEL,
   INDEX_ROUTE_NAME,
@@ -224,7 +244,12 @@ export default {
 
 <template>
   <mounting-portal v-if="!loading" mount-to="#js-crm-form-portal" append>
-    <gl-drawer class="gl-drawer-responsive gl-absolute" :open="drawerOpen" @close="close(false)">
+    <gl-drawer
+      :header-height="getDrawerHeaderHeight()"
+      class="gl-drawer-responsive"
+      :open="drawerOpen"
+      @close="close(false)"
+    >
       <template #title>
         <h3>{{ title }}</h3>
       </template>
@@ -242,7 +267,13 @@ export default {
           :label="getFieldLabel(field)"
           :label-for="field.name"
         >
-          <gl-form-input :id="field.name" v-bind="field.input" v-model="model[field.name]" />
+          <gl-form-select
+            v-if="field.values"
+            :id="field.name"
+            v-model="model[field.name]"
+            :options="field.values"
+          />
+          <gl-form-input v-else :id="field.name" v-bind="field.input" v-model="model[field.name]" />
         </gl-form-group>
         <span class="gl-float-right">
           <gl-button data-testid="cancel-button" @click="close(false)">

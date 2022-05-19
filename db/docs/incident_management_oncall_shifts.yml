@@ -4,6 +4,7 @@ classes:
 - IncidentManagement::OncallShift
 feature_categories:
 - incident_management
-description: TODO
+- on_call_schedule_management
+description: Tracks past and present on-call shifts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49423
 milestone: '13.8'

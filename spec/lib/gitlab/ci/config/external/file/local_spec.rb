@@ -199,6 +199,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local do
         context_sha: '12345',
         type: :local,
         location: location,
+        blob: "http://localhost/#{project.full_path}/-/blob/12345/lib/gitlab/ci/templates/existent-file.yml",
+        raw: "http://localhost/#{project.full_path}/-/raw/12345/lib/gitlab/ci/templates/existent-file.yml",
         extra: {}
       )
     }

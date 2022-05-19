@@ -152,7 +152,7 @@ export default {
 <template>
   <div>
     <gl-alert v-if="showIntegratedTrackingDisabledAlert" variant="danger" @dismiss="dismissAlert">
-      <gl-sprintf :message="this.$options.i18n.integratedErrorTrackingDisabledText">
+      <gl-sprintf :message="$options.i18n.integratedErrorTrackingDisabledText">
         <template #epicLink="{ content }">
           <gl-link :href="$options.epicLink" target="_blank">{{ content }}</gl-link>
         </template>

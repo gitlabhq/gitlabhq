@@ -137,7 +137,7 @@ than the [webhook integration](#configure-a-webhook).
    - Merge request
    - Tag push
 1. Enter the **Jenkins server URL**.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/overview.md#ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/index.md#manage-ssl-verification).
 1. Enter the **Project name**.
 
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
@@ -201,7 +201,7 @@ This issue can occur when the request exceeds the
 [webhook timeout](../user/project/integrations/webhooks.md#webhook-fails-or-multiple-webhook-requests-are-triggered),
 which is set to 10 seconds by default.
 
-Check the [service hook logs](../user/project/integrations/overview.md#troubleshooting-integrations)
+Check the [service hook logs](../user/project/integrations/index.md#troubleshooting-integrations)
 for request failures or check the `/var/log/gitlab/gitlab-rails/production.log`
 file for messages like:
 

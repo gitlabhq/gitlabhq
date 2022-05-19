@@ -4,6 +4,8 @@ classes:
 - Gitlab::Database::BackgroundMigrationJob
 feature_categories:
 - database
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9af97ee69a36de1dc4e73f4030d6316d3f0a82c5
+description: >-
+  The background_migration_jobs table stores information about the jobs processed during the execution of a background migration.
+  See https://docs.gitlab.com/ee/development/database/background_migrations.html for more details.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35913
 milestone: '13.2'

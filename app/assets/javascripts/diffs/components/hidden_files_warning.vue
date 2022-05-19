@@ -51,7 +51,7 @@ export default {
           __(
             'To preserve performance only %{strongStart}%{visible} of %{total}%{strongEnd} files are displayed.',
           ),
-          { visible, total },
+          { visible, total } /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */,
         )
       "
     >

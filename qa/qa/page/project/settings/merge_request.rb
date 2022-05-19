@@ -29,7 +29,7 @@ module QA
           end
 
           def enable_merge_if_all_disscussions_are_resolved
-            check_element(:allow_merge_if_all_discussions_are_resolved_checkbox)
+            check_element(:allow_merge_if_all_discussions_are_resolved_checkbox, true)
             click_save_changes
           end
         end

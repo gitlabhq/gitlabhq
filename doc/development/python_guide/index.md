@@ -25,6 +25,18 @@ To install `pyenv` on macOS, you can use [Homebrew](https://brew.sh/) with:
 brew install pyenv
 ```
 
+### Windows
+
+`pyenv` does not officially support Windows and does not work in Windows outside the Windows Subsystem for Linux. If you are a Windows user, you can use `pyenv-win`.
+
+To install `pyenv-win` on Windows, run the following PowerShell command:
+
+```shell
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+```
+
+[Learn more about `pyenv-win`](https://github.com/pyenv-win/pyenv-win).
+
 ### Linux
 
 To install `pyenv` on Linux, you can run the command below:

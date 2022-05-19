@@ -72,7 +72,7 @@ RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'updating the dependency proxy image ttl policy'
-        :developer  | 'updating the dependency proxy image ttl policy'
+        :developer  | 'denying access to dependency proxy image ttl policy'
         :reporter   | 'denying access to dependency proxy image ttl policy'
         :guest      | 'denying access to dependency proxy image ttl policy'
         :anonymous  | 'denying access to dependency proxy image ttl policy'
@@ -92,7 +92,7 @@ RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the dependency proxy image ttl policy'
-        :developer  | 'creating the dependency proxy image ttl policy'
+        :developer  | 'denying access to dependency proxy image ttl policy'
         :reporter   | 'denying access to dependency proxy image ttl policy'
         :guest      | 'denying access to dependency proxy image ttl policy'
         :anonymous  | 'denying access to dependency proxy image ttl policy'
@@ -108,7 +108,7 @@ RSpec.describe ::DependencyProxy::ImageTtlGroupPolicies::UpdateService do
 
       context 'when the policy is not found' do
         before do
-          group.add_developer(user)
+          group.add_maintainer(user)
           expect(group).to receive(:dependency_proxy_image_ttl_policy).and_return nil
         end
 

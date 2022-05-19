@@ -21,13 +21,14 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :push_jobs_table_vue_search, only: [:index]
 
   before_action do
-    push_frontend_feature_flag(:infinitely_collapsible_sections, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:trigger_job_retry_action, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:infinitely_collapsible_sections, @project)
+    push_frontend_feature_flag(:trigger_job_retry_action, @project)
   end
 
   layout 'project'
 
   feature_category :continuous_integration
+  urgency :low
 
   def index
     # We need all builds for tabs counters
@@ -140,7 +141,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    if @build.trace.archived_trace_exist?
+    if @build.trace.archived?
       workhorse_set_content_type!
       send_upload(@build.job_artifacts_trace.file,
                   send_params: raw_send_params,
@@ -261,10 +262,10 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def push_jobs_table_vue
-    push_frontend_feature_flag(:jobs_table_vue, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:jobs_table_vue, @project)
   end
 
   def push_jobs_table_vue_search
-    push_frontend_feature_flag(:jobs_table_vue_search, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:jobs_table_vue_search, @project)
   end
 end

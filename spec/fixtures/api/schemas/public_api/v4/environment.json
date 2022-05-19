@@ -4,6 +4,7 @@
     "id",
     "name",
     "slug",
+    "tier",
     "external_url",
     "state",
     "created_at",
@@ -13,6 +14,7 @@
     "id": { "type": "integer" },
     "name": { "type": "string" },
     "slug": { "type": "string" },
+    "tier": { "type": "string" },
     "external_url": { "$ref": "../../types/nullable_string.json" },
     "last_deployment": {
       "oneOf": [

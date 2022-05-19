@@ -52,7 +52,7 @@ module API
 
           merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-          if Feature.enabled?(:api_caching_branches, user_project, type: :development, default_enabled: :yaml)
+          if Feature.enabled?(:api_caching_branches, user_project, type: :development)
             present_cached(
               branches,
               with: Entities::Branch,

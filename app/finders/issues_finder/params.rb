@@ -6,10 +6,6 @@ class IssuesFinder
       params.fetch(:public_only, false)
     end
 
-    def include_hidden?
-      user_can_see_all_issues?
-    end
-
     def filter_by_any_due_date?
       due_date? && params[:due_date] == Issue::AnyDueDate.name
     end

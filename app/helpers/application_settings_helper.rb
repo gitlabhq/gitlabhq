@@ -97,24 +97,18 @@ module ApplicationSettingsHelper
     end
   end
 
-  def oauth_providers_checkboxes
+  def oauth_providers_checkboxes(form)
     button_based_providers.map do |source|
-      disabled = @application_setting.disabled_oauth_sign_in_sources.include?(source.to_s)
+      checked = !@application_setting.disabled_oauth_sign_in_sources.include?(source.to_s)
       name = Gitlab::Auth::OAuth::Provider.label_for(source)
-      checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
-      checkbox_id = "application_setting_enabled_oauth_sign_in_sources_#{name.parameterize(separator: '_')}"
 
-      content_tag :div, class: 'form-check' do
-        check_box_tag(
-          checkbox_name,
-          source,
-          !disabled,
-          autocomplete: 'off',
-          id: checkbox_id,
-          class: 'form-check-input'
-        ) +
-        label_tag(checkbox_id, name, class: 'form-check-label')
-      end
+      form.gitlab_ui_checkbox_component(
+        :enabled_oauth_sign_in_sources,
+        name,
+        checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
+        checked_value: source,
+        unchecked_value: nil
+      )
     end
   end
 
@@ -278,6 +272,7 @@ module ApplicationSettingsHelper
       :invisible_captcha_enabled,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_export_size,
       :max_import_size,
       :max_pages_size,
       :max_yaml_size_bytes,
@@ -412,6 +407,8 @@ module ApplicationSettingsHelper
       :container_registry_import_max_retries,
       :container_registry_import_start_max_retries,
       :container_registry_import_max_step_duration,
+      :container_registry_pre_import_timeout,
+      :container_registry_import_timeout,
       :container_registry_import_target_plan,
       :container_registry_import_created_before,
       :keep_latest_artifact,
@@ -431,7 +428,8 @@ module ApplicationSettingsHelper
       :users_get_by_id_limit_allowlist_raw,
       :runner_token_expiration_interval,
       :group_runner_token_expiration_interval,
-      :project_runner_token_expiration_interval
+      :project_runner_token_expiration_interval,
+      :pipeline_limit_per_project_user_sha
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end
@@ -468,7 +466,7 @@ module ApplicationSettingsHelper
   def instance_clusters_enabled?
     clusterable = Clusters::Instance.new
 
-    Feature.enabled?(:certificate_based_clusters, clusterable, default_enabled: :yaml, type: :ops) &&
+    clusterable.certificate_based_clusters_enabled? &&
       can?(current_user, :read_cluster, clusterable)
   end
 

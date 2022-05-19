@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!-- any changes made to this page should be reflected in https://about.gitlab.com/support/statement-of-support.html#alpha--beta-features and https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga -->
 
-# Support for Alpha, Beta, and Generally Available Features **(PREMIUM)**
+# Support for Alpha, Beta, Limited Availability, and Generally Available Features **(PREMIUM)**
 
 Some GitLab features are released as [Alpha or Beta versions](https://about.gitlab.com/support/statement-of-support.html#alpha--beta-features) which are not fully supported. All other features are considered to be Generally Available (GA).
 
@@ -33,6 +33,14 @@ Characteristics of beta features:
 - Data loss is not likely.
 
 Your Support Contract provides **commercially-reasonable effort** support for Beta features, with the expectation that issues will require extra time and assistance from development to troubleshoot.
+
+## Limited Availability (LA)
+
+Characteristics of limited availability features:
+
+- Ready for production use by a small set of customers.
+- Can be booked by Deal Desk as part of an order.
+- Fully documented and [supported](https://about.gitlab.com/support/statement-of-support/#starter-premium-and-ultimate-users).
 
 ## Generally Available (GA)
 

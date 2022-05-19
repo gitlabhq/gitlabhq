@@ -233,6 +233,17 @@ RSpec.describe AlertManagement::Alert do
     end
   end
 
+  describe '.find_unresolved_alert' do
+    let_it_be(:fingerprint) { SecureRandom.hex }
+    let_it_be(:resolved_alert_with_fingerprint) { create(:alert_management_alert, :resolved, project: project, fingerprint: fingerprint) }
+    let_it_be(:alert_with_fingerprint_in_other_project) { create(:alert_management_alert, project: project2, fingerprint: fingerprint) }
+    let_it_be(:alert_with_fingerprint) { create(:alert_management_alert, project: project, fingerprint: fingerprint) }
+
+    subject { described_class.find_unresolved_alert(project, fingerprint) }
+
+    it { is_expected.to eq(alert_with_fingerprint) }
+  end
+
   describe '.last_prometheus_alert_by_project_id' do
     subject { described_class.last_prometheus_alert_by_project_id }
 

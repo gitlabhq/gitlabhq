@@ -59,11 +59,7 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
     end
 
     context 'when the key has expired' do
-      let_it_be(:key) do
-        create(:personal_key,
-               user: user,
-               expires_at: 2.days.ago)
-      end
+      let_it_be(:key) { create(:personal_key, :expired, user: user) }
 
       it 'renders "Expired:" as the expiration date label' do
         render
@@ -91,8 +87,6 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
 
       where(:valid, :expiry, :result) do
         false | 2.days.from_now | 'Key type is forbidden. Must be DSA, ECDSA, ED25519, ECDSA_SK, or ED25519_SK'
-        false | 2.days.ago      | 'Key type is forbidden. Must be DSA, ECDSA, ED25519, ECDSA_SK, or ED25519_SK'
-        true  | 2.days.ago      | 'Key usable beyond expiration date.'
         true  | 2.days.from_now | ''
       end
 

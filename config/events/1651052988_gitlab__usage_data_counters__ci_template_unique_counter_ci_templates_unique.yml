@@ -1,0 +1,23 @@
+---
+description: Run Pipeline
+category: Gitlab::UsageDataCounters::CiTemplateUniqueCounter
+action: ci_templates_unique
+label_description:
+property_description:
+value_description:
+extra_properties:
+identifiers:
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category: infrastructure_as_code
+milestone: "15.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84337
+distributions:
+- ce
+- ee
+tiers: 
+- free
+- premium
+- ultimate
+

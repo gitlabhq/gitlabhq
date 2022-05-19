@@ -8,18 +8,6 @@ RSpec.describe Groups::DependencyProxyAuthController do
   describe 'GET #authenticate' do
     subject { get :authenticate }
 
-    context 'feature flag disabled' do
-      before do
-        stub_feature_flags(dependency_proxy_for_private_groups: false)
-      end
-
-      it 'returns successfully', :aggregate_failures do
-        subject
-
-        expect(response).to have_gitlab_http_status(:success)
-      end
-    end
-
     context 'without JWT' do
       it 'returns unauthorized with oauth realm', :aggregate_failures do
         subject

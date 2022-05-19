@@ -1,4 +1,5 @@
 <script>
+import { mapActions, mapMutations } from 'vuex';
 import { GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -8,8 +9,8 @@ import {
 } from '~/jira_connect/subscriptions/constants';
 import { setUrlParams } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
-
 import { createCodeVerifier, createCodeChallenge } from '../pkce';
+import { SET_ACCESS_TOKEN } from '../store/mutation_types';
 
 export default {
   components: {
@@ -31,6 +32,10 @@ export default {
     window.removeEventListener('message', this.handleWindowMessage);
   },
   methods: {
+    ...mapActions(['loadCurrentUser']),
+    ...mapMutations({
+      setAccessToken: SET_ACCESS_TOKEN,
+    }),
     async startOAuthFlow() {
       this.loading = true;
 
@@ -40,6 +45,7 @@ export default {
 
       // Build the initial OAuth authorization URL
       const { oauth_authorize_url: oauthAuthorizeURL } = this.oauthMetadata;
+
       const oauthAuthorizeURLWithChallenge = setUrlParams(
         {
           code_challenge: codeChallenge,
@@ -57,7 +63,6 @@ export default {
     async handleWindowMessage(event) {
       if (window.origin !== event.origin) {
         this.loading = false;
-        this.handleError();
         return;
       }
 
@@ -73,7 +78,10 @@ export default {
       const code = event.data?.code;
       try {
         const accessToken = await this.getOAuthToken(code);
-        await this.loadUser(accessToken);
+        await this.loadCurrentUser(accessToken);
+
+        this.setAccessToken(accessToken);
+        this.$emit('sign-in');
       } catch (e) {
         this.handleError();
       } finally {
@@ -95,13 +103,6 @@ export default {
       });
 
       return data.access_token;
-    },
-    async loadUser(accessToken) {
-      const { data } = await axios.get('/api/v4/user', {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-
-      this.$emit('sign-in', data);
     },
   },
   i18n: {

@@ -354,37 +354,6 @@ RSpec.describe Projects::Settings::OperationsController do
   end
 
   context 'prometheus integration' do
-    describe 'PATCH #update' do
-      let(:params) do
-        {
-          prometheus_integration_attributes: {
-            manual_configuration: '0',
-            api_url: 'https://gitlab.prometheus.rocks'
-          }
-        }
-      end
-
-      context 'feature flag :settings_operations_prometheus_service is enabled' do
-        before do
-          stub_feature_flags(settings_operations_prometheus_service: true)
-        end
-
-        it_behaves_like 'PATCHable'
-      end
-
-      context 'feature flag :settings_operations_prometheus_service is disabled' do
-        before do
-          stub_feature_flags(settings_operations_prometheus_service: false)
-        end
-
-        it_behaves_like 'PATCHable' do
-          let(:permitted_params) do
-            ActionController::Parameters.new(params.except(:prometheus_integration_attributes)).permit!
-          end
-        end
-      end
-    end
-
     describe 'POST #reset_alerting_token' do
       context 'with existing alerting setting' do
         let!(:alerting_setting) do

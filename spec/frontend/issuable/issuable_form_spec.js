@@ -1,5 +1,5 @@
 import $ from 'jquery';
-
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableForm from '~/issuable/issuable_form';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -11,12 +11,16 @@ describe('IssuableForm', () => {
   };
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <form>
         <input name="[title]" />
       </form>
     `);
     createIssuable($('form'));
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('initAutosave', () => {
@@ -28,7 +32,7 @@ describe('IssuableForm', () => {
     });
 
     it("creates autosave fields without the searchTerm if it's an issue new form", () => {
-      setFixtures(`
+      setHTMLFixture(`
         <form data-new-issue-path="/issues/new">
           <input name="[title]" />
         </form>

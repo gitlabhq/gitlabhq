@@ -65,6 +65,7 @@ export default class Project {
       const fieldName = $dropdown.data('fieldName');
       const shouldVisit = Boolean($dropdown.data('visit'));
       const $form = $dropdown.closest('form');
+      const path = $form.find('#path').val();
       const action = $form.attr('action');
       const linkTarget = mergeUrlParams(serializeForm($form[0]), action);
 
@@ -116,20 +117,21 @@ export default class Project {
         },
         clicked(options) {
           const { e } = options;
-          e.preventDefault();
 
-          // Since this page does not reload when changing directories in a repo
-          // the rendered links do not have the path to the current directory.
-          // This updates the path based on the current url and then opens
-          // the the url with the updated path parameter.
-          if (shouldVisit) {
+          if (!shouldVisit) {
+            e.preventDefault();
+          }
+
+          // Some pages need to dynamically get the current path
+          // so they can opt-in to JS getting the path from the
+          // current URL by not setting a path in the dropdown form
+          if (shouldVisit && path === undefined) {
+            e.preventDefault();
+
             const selectedUrl = new URL(e.target.href);
             const loc = window.location.href;
 
             if (loc.includes('/-/')) {
-              // Since the current ref in renderRow is outdated on page changes
-              // (To be addressed in: https://gitlab.com/gitlab-org/gitlab/-/issues/327085)
-              // We are deciphering the current ref from the dropdown data instead
               const currentRef = $dropdown.data('ref');
               // The split and startWith is to ensure an exact word match
               // and avoid partial match ie. currentRef is "dev" and loc is "development"

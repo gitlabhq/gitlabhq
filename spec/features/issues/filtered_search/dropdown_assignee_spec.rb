@@ -6,11 +6,12 @@ RSpec.describe 'Dropdown assignee', :js do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
 
-  let(:js_dropdown_assignee) { '#js-dropdown-assignee' }
-  let(:filter_dropdown) { find("#{js_dropdown_assignee} .filter-dropdown") }
+  before do
+    stub_feature_flags(vue_issues_list: true)
+  end
 
   describe 'behavior' do
     before do
@@ -21,15 +22,17 @@ RSpec.describe 'Dropdown assignee', :js do
     end
 
     it 'loads all the assignees when opened' do
-      input_filtered_search('assignee:=', submit: false, extra_space: false)
+      select_tokens 'Assignee', '='
 
-      expect_filtered_search_dropdown_results(filter_dropdown, 2)
+      # Expect None, Any, administrator, John Doe2
+      expect_suggestion_count 4
     end
 
     it 'shows current user at top of dropdown' do
-      input_filtered_search('assignee:=', submit: false, extra_space: false)
+      select_tokens 'Assignee', '='
 
-      expect(filter_dropdown.first('.filter-dropdown-item')).to have_content(user.name)
+      # List items 1 to 3 are None, Any, divider
+      expect(page).to have_css('.gl-filtered-search-suggestion:nth-child(4)', text: user.name)
     end
   end
 
@@ -41,7 +44,7 @@ RSpec.describe 'Dropdown assignee', :js do
       visit project_issues_path(project)
 
       Gitlab::Testing::RequestBlockerMiddleware.block_requests!
-      input_filtered_search('assignee:=', submit: false, extra_space: false)
+      select_tokens 'Assignee', '='
     end
 
     after do
@@ -49,11 +52,10 @@ RSpec.describe 'Dropdown assignee', :js do
     end
 
     it 'selects current user' do
-      find("#{js_dropdown_assignee} .filter-dropdown-item", text: user.username).click
+      click_on user.username
 
-      expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([assignee_token(user.username)])
-      expect_filtered_search_input_empty
+      expect_assignee_token(user.username)
+      expect_empty_search_term
     end
   end
 
@@ -93,7 +95,7 @@ RSpec.describe 'Dropdown assignee', :js do
     it 'shows inherited, direct, and invited group members but not descendent members', :aggregate_failures do
       visit issues_group_path(subgroup)
 
-      input_filtered_search('assignee:=', submit: false, extra_space: false)
+      select_tokens 'Assignee', '='
 
       expect(page).to have_text group_user.name
       expect(page).to have_text subgroup_user.name
@@ -103,7 +105,7 @@ RSpec.describe 'Dropdown assignee', :js do
 
       visit project_issues_path(subgroup_project)
 
-      input_filtered_search('assignee:=', submit: false, extra_space: false)
+      select_tokens 'Assignee', '='
 
       expect(page).to have_text group_user.name
       expect(page).to have_text subgroup_user.name

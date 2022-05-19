@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import { setHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Wikis from '~/pages/shared/wikis/wikis';
 import Tracking from '~/tracking';
 
@@ -19,6 +19,10 @@ describe('Wikis', () => {
       jest.spyOn(Tracking, 'event').mockImplementation();
 
       Wikis.trackPageView();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('sends the tracking event and context', () => {

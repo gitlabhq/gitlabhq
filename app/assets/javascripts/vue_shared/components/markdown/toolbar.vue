@@ -24,6 +24,11 @@ export default {
       required: false,
       default: true,
     },
+    showCommentToolBar: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     hasQuickActionsDocsPath() {
@@ -34,23 +39,32 @@ export default {
 </script>
 
 <template>
-  <div class="comment-toolbar clearfix">
+  <div v-if="showCommentToolBar" class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
-        <gl-link :href="markdownDocsPath" target="_blank">
-          {{ __('Markdown is supported') }}
-        </gl-link>
+        <gl-sprintf
+          :message="
+            s__('MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}')
+          "
+        >
+          <template #markdownDocsLink="{ content }">
+            <gl-link :href="markdownDocsPath" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </template>
       <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
         <gl-sprintf
           :message="
-            __(
-              '%{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd} and %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd} are supported',
+            s__(
+              'NoteToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}. For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}.',
             )
           "
         >
           <template #markdownDocsLink="{ content }">
             <gl-link :href="markdownDocsPath" target="_blank">{{ content }}</gl-link>
+          </template>
+          <template #keyboard="{ content }">
+            <kbd>{{ content }}</kbd>
           </template>
           <template #quickActionsDocsLink="{ content }">
             <gl-link :href="quickActionsDocsPath" target="_blank">{{ content }}</gl-link>

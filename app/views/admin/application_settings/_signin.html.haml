@@ -1,39 +1,28 @@
-= form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-signin-settings'), html: { class: 'fieldset-form', id: 'signin-settings' } do |f|
+= gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-signin-settings'), html: { class: 'fieldset-form', id: 'signin-settings' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :password_authentication_enabled_for_web, class: 'form-check-input'
-        = f.label :password_authentication_enabled_for_web, class: 'form-check-label' do
-          = _('Allow password authentication for the web interface')
-          .form-text.text-muted
-            = _('Clear this checkbox to use an external authentication provider instead.')
+      = f.gitlab_ui_checkbox_component :password_authentication_enabled_for_web,
+        _('Allow password authentication for the web interface'),
+        help_text: _('Clear this checkbox to use an external authentication provider instead.')
     .form-group
-      .form-check
-        = f.check_box :password_authentication_enabled_for_git, class: 'form-check-input'
-        = f.label :password_authentication_enabled_for_git, class: 'form-check-label' do
-          = _('Allow password authentication for Git over HTTP(S)')
-          .form-text.text-muted
-            - if Gitlab::Auth::Ldap::Config.enabled?
-              = _('Clear this checkbox to use a personal access token or LDAP password instead.')
-            - else
-              = _('Clear this checkbox to use a personal access token instead.')
+      = f.gitlab_ui_checkbox_component :password_authentication_enabled_for_git,
+        _('Allow password authentication for Git over HTTP(S)'),
+        help_text: Gitlab::Auth::Ldap::Config.enabled? ? _('Clear this checkbox to use a personal access token or LDAP password instead.') : _('Clear this checkbox to use a personal access token instead.')
     - if omniauth_enabled? && button_based_providers.any?
       %fieldset.form-group
         %legend.gl-font-base.gl-mb-3.gl-border-none.gl-font-weight-bold= _('Enabled OAuth authentication sources')
         = hidden_field_tag 'application_setting[enabled_oauth_sign_in_sources][]'
-        - oauth_providers_checkboxes.each do |source|
+        - oauth_providers_checkboxes(f).each do |source|
           = source
     .form-group
       = f.label :two_factor_authentication, _('Two-factor authentication'), class: 'label-bold'
-      .form-check
-        = f.check_box :require_two_factor_authentication, class: 'form-check-input'
-        = f.label :require_two_factor_authentication, class: 'form-check-label' do
-          = _('Enforce two-factor authentication')
-          %p.form-text.text-muted
-            = _('Enforce two-factor authentication for all user sign-ins.')
-            = link_to _('Learn more.'), help_page_path('security/two_factor_authentication.md'), target: '_blank', rel: 'noopener noreferrer'
+      - help_text = _('Enforce two-factor authentication for all user sign-ins.')
+      - help_link = link_to _('Learn more.'), help_page_path('security/two_factor_authentication.md'), target: '_blank', rel: 'noopener noreferrer'
+      = f.gitlab_ui_checkbox_component :require_two_factor_authentication,
+        _('Enforce two-factor authentication'),
+        help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
       = f.label :two_factor_authentication, _('Two-factor grace period'), class: 'label-bold'
       = f.number_field :two_factor_grace_period, min: 0, class: 'form-control gl-form-input', placeholder: '0'
@@ -42,22 +31,18 @@
     .form-group
       = f.label :admin_mode, _('Admin Mode'), class: 'label-bold'
       = sprite_icon('lock', css_class: 'gl-icon')
-      .form-check
-        = f.check_box :admin_mode, class: 'form-check-input'
-        = f.label :admin_mode, class: 'form-check-label' do
-          = _('Enable admin mode')
-          %p.form-text.text-muted
-            = _('Require additional authentication for administrative tasks.')
-            = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sign_in_restrictions', anchor: 'admin-mode'), target: '_blank', rel: 'noopener noreferrer'
+      - help_text = _('Require additional authentication for administrative tasks.')
+      - help_link = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sign_in_restrictions', anchor: 'admin-mode'), target: '_blank', rel: 'noopener noreferrer'
+      = f.gitlab_ui_checkbox_component :admin_mode,
+        _('Enable admin mode'),
+        help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
       = f.label :unknown_sign_in, _('Email notification for unknown sign-ins'), class: 'label-bold'
-      .form-check
-        = f.check_box :notify_on_unknown_sign_in, class: 'form-check-input'
-        = f.label :notify_on_unknown_sign_in, class: 'form-check-label' do
-          = _('Enable email notification')
-          %p.form-text.text-muted
-            = _('Notify users by email when sign-in location is not recognized.')
-            = link_to _('Learn more.'), help_page_path('user/profile/unknown_sign_in_notification.md'), target: '_blank', rel: 'noopener noreferrer'
+      - help_text = _('Notify users by email when sign-in location is not recognized.')
+      - help_link = link_to _('Learn more.'), help_page_path('user/profile/unknown_sign_in_notification.md'), target: '_blank', rel: 'noopener noreferrer'
+      = f.gitlab_ui_checkbox_component :notify_on_unknown_sign_in,
+        _('Enable email notification'),
+        help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
       = f.label :home_page_url, _('Home page URL'), class: 'label-bold'
       = f.text_field :home_page_url, class: 'form-control gl-form-input', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'

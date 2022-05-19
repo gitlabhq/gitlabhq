@@ -1,0 +1,9 @@
+mutation workItemDeleteTask($input: WorkItemDeleteTaskInput!) {
+  workItemDeleteTask(input: $input) {
+    workItem {
+      id
+      descriptionHtml
+    }
+    errors
+  }
+}

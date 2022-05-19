@@ -53,8 +53,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
       expect(Feature).to receive(:enabled?).with(
         'namespaced_stub',
         subject,
-        type: :experiment,
-        default_enabled: :yaml
+        type: :experiment
       ).and_return(false)
 
       expect(subject.execute_assignment).to be_nil

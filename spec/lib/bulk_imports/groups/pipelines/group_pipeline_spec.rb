@@ -23,7 +23,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
 
     let(:group_data) do
       {
-        'name' => 'source_name',
+        'name' => 'Source Group Name',
         'full_path' => 'source/full/path',
         'visibility' => 'private',
         'project_creation_level' => 'developer',

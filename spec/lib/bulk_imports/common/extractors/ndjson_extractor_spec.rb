@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'zlib'
 
 RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
   let_it_be(:tmpdir) { Dir.mktmpdir }
-  let_it_be(:filepath) { 'spec/fixtures/bulk_imports/gz/labels.ndjson.gz' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
   let_it_be(:entity) { create(:bulk_import_entity, bulk_import: import) }
@@ -25,21 +25,30 @@ RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
 
   describe '#extract' do
     before do
-      FileUtils.copy_file(filepath, File.join(tmpdir, 'labels.ndjson.gz'))
-
-      allow_next_instance_of(BulkImports::FileDownloadService) do |service|
-        allow(service).to receive(:execute)
+      Zlib::GzipWriter.open(File.join(tmpdir, 'labels.ndjson.gz')) do |gz|
+        gz.write [
+          '{"title": "Title 1","description": "Description 1","type":"GroupLabel"}',
+          '{"title": "Title 2","description": "Description 2","type":"GroupLabel"}'
+        ].join("\n")
       end
+
+      expect(BulkImports::FileDownloadService).to receive(:new)
+        .with(
+          configuration: context.configuration,
+          relative_url: entity.relation_download_url_path('labels'),
+          tmpdir: tmpdir,
+          filename: 'labels.ndjson.gz')
+        .and_return(instance_double(BulkImports::FileDownloadService, execute: nil))
     end
 
-    it 'returns ExtractedData' do
+    it 'returns ExtractedData', :aggregate_failures do
       extracted_data = subject.extract(context)
-      label = extracted_data.data.first.first
 
       expect(extracted_data).to be_instance_of(BulkImports::Pipeline::ExtractedData)
-      expect(label['title']).to include('Label')
-      expect(label['description']).to include('Label')
-      expect(label['type']).to eq('GroupLabel')
+      expect(extracted_data.data.to_a).to contain_exactly(
+        [{ "title" => "Title 1", "description" => "Description 1", "type" => "GroupLabel" }, 0],
+        [{ "title" => "Title 2", "description" => "Description 2", "type" => "GroupLabel" }, 1]
+      )
     end
   end
 

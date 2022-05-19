@@ -108,21 +108,13 @@
   .merge-icon {
     color: $orange-400;
     position: absolute;
+    bottom: -3px;
+    right: -3px;
     filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
   }
 }
 
-.assignee .merge-icon {
-  top: calc(50% + 0.25rem);
-  left: 1.275rem;
-}
-
-.reviewer .merge-icon {
-  bottom: -3px;
-  right: -3px;
-}
-
-.right-sidebar {
+@mixin right-sidebar {
   position: fixed;
   top: $header-height;
   // Default value for CSS var must contain a unit
@@ -130,9 +122,22 @@
   bottom: var(--review-bar-height, 0px);
   right: 0;
   transition: width $sidebar-transition-duration;
-  background: $gray-light;
+  background-color: $white;
   z-index: 200;
   overflow: hidden;
+
+}
+
+.right-sidebar {
+  &:not(.right-sidebar-merge-requests) {
+    @include right-sidebar;
+  }
+
+  &.right-sidebar-merge-requests {
+    @include media-breakpoint-down(sm) {
+      @include right-sidebar;
+    }
+  }
 
   @include media-breakpoint-down(sm) {
     z-index: 251;
@@ -143,10 +148,6 @@
 
     &:hover {
       color: $blue-800;
-
-      .avatar {
-        border-color: rgba($gray-normal, 0.2);
-      }
     }
   }
 
@@ -176,12 +177,26 @@
     }
   }
 
+  &.right-sidebar-merge-requests {
+    .block,
+    .sidebar-contained-width,
+    .issuable-sidebar-header {
+      width: 100%;
+      border-bottom: 0;
+    }
+
+    .block {
+      @include media-breakpoint-up(md) {
+        padding: $gl-spacing-scale-5 0;
+      }
+    }
+  }
+
   .block,
   .sidebar-contained-width,
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-padding 0;
-    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter-inner-width;
@@ -218,16 +233,6 @@
     }
   }
 
-  .cross-project-reference {
-    span {
-      width: 85%;
-    }
-
-    button {
-      padding: 1px 5px;
-    }
-  }
-
   .selectbox {
     display: none;
 
@@ -242,9 +247,20 @@
 
   .issuable-sidebar {
     height: 100%;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+
+    &:not(.is-merge-request) {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    &.is-merge-request {
+      @include media-breakpoint-down(sm) {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+    }
   }
 
   &.affix-top .issuable-sidebar {
@@ -252,7 +268,9 @@
   }
 
   &.right-sidebar-expanded {
-    width: $gutter-width;
+    &:not(.right-sidebar-merge-requests) {
+      width: $gutter-width;
+    }
 
     .value {
       line-height: 1;
@@ -260,6 +278,12 @@
 
     .issuable-sidebar {
       padding: 0 20px;
+
+      &.is-merge-request {
+        @include media-breakpoint-up(md) {
+          padding: 0;
+        }
+      }
     }
 
     &:not(.boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
@@ -302,8 +326,17 @@
     /* Extra small devices (phones, less than 768px) */
     display: none;
     /* Small devices (tablets, 768px and up) */
-    @include media-breakpoint-up(sm) {
-      display: block;
+
+    &:not(.right-sidebar-merge-requests) {
+      @include media-breakpoint-up(sm) {
+        display: block;
+      }
+    }
+
+    &.right-sidebar-merge-requests {
+      @include media-breakpoint-up(md) {
+        display: block;
+      }
     }
 
     width: $gutter-collapsed-width;
@@ -380,10 +413,6 @@
         }
       }
 
-      .sidebar-avatar-counter {
-        padding-top: 2px;
-      }
-
       .todo-undone {
         color: $blue-600;
         fill: $blue-600;
@@ -428,6 +457,10 @@
       width: 24px;
       height: 24px;
       border-radius: 12px;
+
+      ~.merge-icon {
+        bottom: 0;
+      }
     }
 
     .sidebar-collapsed-user {

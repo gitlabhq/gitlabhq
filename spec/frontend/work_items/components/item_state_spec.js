@@ -1,0 +1,54 @@
+import { mount } from '@vue/test-utils';
+import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
+import ItemState from '~/work_items/components/item_state.vue';
+
+describe('ItemState', () => {
+  let wrapper;
+
+  const findLabel = () => wrapper.find('label').text();
+  const selectedValue = () => wrapper.find('option:checked').element.value;
+
+  const clickOpen = () => wrapper.findAll('option').at(0).setSelected();
+
+  const createComponent = ({ state = STATE_OPEN, disabled = false } = {}) => {
+    wrapper = mount(ItemState, {
+      propsData: {
+        state,
+        disabled,
+      },
+    });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  it('renders label and dropdown', () => {
+    createComponent();
+
+    expect(findLabel()).toBe('Status');
+    expect(selectedValue()).toBe(STATE_OPEN);
+  });
+
+  it('renders dropdown for closed', () => {
+    createComponent({ state: STATE_CLOSED });
+
+    expect(selectedValue()).toBe(STATE_CLOSED);
+  });
+
+  it('emits changed event', async () => {
+    createComponent({ state: STATE_CLOSED });
+
+    await clickOpen();
+
+    expect(wrapper.emitted('changed')).toEqual([[STATE_OPEN]]);
+  });
+
+  it('does not emits changed event if clicking selected value', async () => {
+    createComponent({ state: STATE_OPEN });
+
+    await clickOpen();
+
+    expect(wrapper.emitted('changed')).toBeUndefined();
+  });
+});

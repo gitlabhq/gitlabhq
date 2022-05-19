@@ -3,7 +3,7 @@ table_name: boards_epic_list_user_preferences
 classes:
 - Boards::EpicListUserPreference
 feature_categories:
-- team_planning
-description: TODO
+- portfolio_management
+description: Epic board list preferences on a per-user basis, specifically whether the user has collapsed the list or not
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54541
 milestone: '13.10'

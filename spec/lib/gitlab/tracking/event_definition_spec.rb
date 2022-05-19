@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
   end
 
   it 'has all definitions valid' do
-    expect { described_class.definitions }.not_to raise_error(Gitlab::Tracking::InvalidEventError)
+    expect { described_class.definitions }.not_to raise_error
   end
 
   describe '#validate' do

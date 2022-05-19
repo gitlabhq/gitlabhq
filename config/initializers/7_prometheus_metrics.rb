@@ -58,24 +58,6 @@ end
 # context (i.e. not in the Rails console or rspec) and when users have enabled metrics.
 return if Rails.env.test? || !Gitlab::Runtime.application? || !Gitlab::Metrics.prometheus_metrics_enabled?
 
-if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
-  # The single worker outside of a sidekiq-cluster, or the first worker (sidekiq_0)
-  # in a cluster of processes, is responsible for serving health checks.
-  #
-  # Do not clean the metrics directory here - the supervisor script should
-  # have already taken care of that.
-  Sidekiq.configure_server do |config|
-    config.on(:startup) do
-      # In https://gitlab.com/gitlab-org/gitlab/-/issues/345804 we are looking to
-      # only serve health-checks from a worker process; for backwards compatibility
-      # we still go through the metrics exporter server, but start to configure it
-      # with the new settings keys.
-      exporter_settings = Settings.monitoring.sidekiq_health_checks
-      Gitlab::Metrics::Exporter::SidekiqExporter.instance(exporter_settings).start
-    end
-  end
-end
-
 Gitlab::Cluster::LifecycleEvents.on_master_start do
   Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
 

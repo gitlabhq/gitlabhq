@@ -66,7 +66,7 @@ continue to apply. However, there are a few things that deserve special emphasis
 Danger is a powerful tool and flexible tool, but not always the most appropriate
 way to solve a given problem or workflow.
 
-First, be aware of the GitLab [commitment to dogfooding](https://about.gitlab.com/handbook/engineering/principles/#dogfooding).
+First, be aware of the GitLab [commitment to dogfooding](https://about.gitlab.com/handbook/engineering/development/principles/#dogfooding).
 The code we write for Danger is GitLab-specific, and it **may not** be most
 appropriate place to implement functionality that addresses a need we encounter.
 Our users, customers, and even our own satellite projects, such as [Gitaly](https://gitlab.com/gitlab-org/gitaly),
@@ -155,7 +155,7 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
         file:
           - '/ci/danger-review.yml'
         rules:
-          - if: '$CI_SERVER_HOST == "gitlab.com"'
+          - if: $CI_SERVER_HOST == "gitlab.com"
     ```
 
 1. If your project is in the `gitlab-org` group, you don't need to set up any token as the `DANGER_GITLAB_API_TOKEN`
@@ -196,10 +196,11 @@ is not shared to forks.
 
 Contributors can configure Danger for their forks with the following steps:
 
-1. Add an [environment variable](../ci/variables/index.md) called `DANGER_GITLAB_API_TOKEN` with a
-[personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
-to your fork that has the `api` scope set.
-1. Making the variable [masked](../ci/variables/index.md#mask-a-cicd-variable) makes sure it
-doesn't show up in the job logs. The variable cannot be
-[protected](../ci/variables/index.md#protect-a-cicd-variable), as it needs
-to be present for all feature branches.
+1. Create a [personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
+  that has the `api` scope set (don't forget to copy it to the clipboard).
+1. In your fork, add a [project CI/CD variable](../ci/variables/index.md#add-a-cicd-variable-to-a-project)
+  called `DANGER_GITLAB_API_TOKEN` with the token copied in the previous step.
+1. Make the variable [masked](../ci/variables/index.md#mask-a-cicd-variable) so it
+  doesn't show up in the job logs. The variable cannot be
+  [protected](../ci/variables/index.md#protected-cicd-variables), because it needs
+  to be present for all branches.

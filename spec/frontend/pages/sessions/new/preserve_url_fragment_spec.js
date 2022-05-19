@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import preserveUrlFragment from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
@@ -7,7 +8,11 @@ describe('preserve_url_fragment', () => {
   };
 
   beforeEach(() => {
-    loadFixtures('sessions/new.html');
+    loadHTMLFixture('sessions/new.html');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('adds the url fragment to the login form actions', () => {

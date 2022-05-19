@@ -39,6 +39,7 @@ function createComponent(options = {}) {
       config,
       value,
       active,
+      cursorPosition: 'start',
     },
     provide: {
       portalName: 'fake target',

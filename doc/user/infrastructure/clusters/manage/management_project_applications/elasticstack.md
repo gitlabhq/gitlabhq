@@ -2,28 +2,11 @@
 stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+remove_date: '2022-08-22'
+redirect_to: '../../index.md'
 ---
 
-# Install Elastic Stack with a cluster management project **(FREE)**
+# Install Elastic Stack with a cluster management project (removed) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
-
-Assuming you already have a [Cluster management project](../../../../../user/clusters/management_project.md) created from a
-[management project template](../../../../../user/clusters/management_project_template.md), to install Elastic Stack you should
-uncomment this line from your `helmfile.yaml`:
-
-```yaml
-  - path: applications/elastic-stack/helmfile.yaml
-```
-
-Elastic Stack is installed by default into the `gitlab-managed-apps` namespace of your cluster.
-
-You can check the default
-[`values.yaml`](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/blob/master/applications/elastic-stack/values.yaml)
-we set for this chart.
-
-You can customize the installation of Elastic Stack by updating the
-`applications/elastic-stack/values.yaml` file in your cluster
-management project. Refer to the
-[chart](https://gitlab.com/gitlab-org/charts/elastic-stack) for all
-available configuration options.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.8
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/360182) in 15.0.

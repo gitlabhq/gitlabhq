@@ -2,8 +2,8 @@ include:
   - template: Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/License-Scanning.gitlab-ci.yml
 
 code_quality:
   extends:
@@ -82,9 +82,8 @@ secret_detection:
     expire_in: 1 week  # GitLab-specific
 
 gemnasium-dependency_scanning:
-  before_script:
-    # git-lfs is needed for auto-remediation
-    - apk add git-lfs
+  variables:
+    DS_REMEDIATE: "false"
   rules: !reference [".reports:rules:gemnasium-dependency_scanning", rules]
 
 gemnasium-python-dependency_scanning:
@@ -103,7 +102,7 @@ yarn-audit-dependency_scanning:
   extends: .default-retry
   stage: test
   image:
-    name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:1.1.0
+    name: registry.gitlab.com/gitlab-org/security-products/package-hunter-cli:v1.3.2@sha256:7529deaef9ea21aab56bfb74ae1abbc121311affdb6ece49ce7b1c360f997ca2
     entrypoint: [""]
   variables:
     HTR_user: '$PACKAGE_HUNTER_USER'

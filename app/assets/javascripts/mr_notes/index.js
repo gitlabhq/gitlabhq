@@ -31,6 +31,8 @@ export default function initMrNotes() {
     const el = document.getElementById('js-vue-discussion-counter');
 
     if (el) {
+      const { blocksMerge } = el.dataset;
+
       // eslint-disable-next-line no-new
       new Vue({
         el,
@@ -40,7 +42,11 @@ export default function initMrNotes() {
         },
         store,
         render(createElement) {
-          return createElement('discussion-counter');
+          return createElement('discussion-counter', {
+            props: {
+              blocksMerge: blocksMerge === 'true',
+            },
+          });
         },
       });
     }

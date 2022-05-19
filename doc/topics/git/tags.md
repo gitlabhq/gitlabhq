@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tags **(FREE)**
 
-Tags are useful for marking certain deployments and releases for later
+Tags help you mark certain deployments and releases for later
 reference. Git supports two types of tags:
 
 - Annotated tags: An unchangeable part of Git history.

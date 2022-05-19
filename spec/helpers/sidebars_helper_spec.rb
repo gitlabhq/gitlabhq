@@ -7,7 +7,7 @@ RSpec.describe SidebarsHelper do
     subject { helper.sidebar_tracking_attributes_by_object(object) }
 
     before do
-      allow(helper).to receive(:tracking_enabled?).and_return(true)
+      stub_application_setting(snowplow_enabled: true)
     end
 
     context 'when object is a project' do

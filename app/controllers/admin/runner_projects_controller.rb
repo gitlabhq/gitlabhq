@@ -4,6 +4,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
   feature_category :runner
+  urgency :low
 
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])

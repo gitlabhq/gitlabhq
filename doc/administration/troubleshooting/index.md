@@ -14,6 +14,7 @@ installation.
 - [SSL](ssl.md)
 - [Geo](../geo/replication/troubleshooting.md)
 - [Elasticsearch](elasticsearch.md)
+- [Sidekiq](sidekiq.md)
 - [GitLab Rails console cheat sheet](gitlab_rails_cheat_sheet.md)
 - [Group SAML and SCIM troubleshooting](group_saml_scim.md) **(PREMIUM SAAS)**
 - [Kubernetes cheat sheet](kubernetes_cheat_sheet.md)

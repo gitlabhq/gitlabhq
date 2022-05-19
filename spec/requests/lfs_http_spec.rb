@@ -2,9 +2,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Git LFS API and storage' do
+  using RSpec::Parameterized::TableSyntax
+
   include LfsHttpHelpers
   include ProjectForksHelper
   include WorkhorseHelpers
+  include WorkhorseLfsHelpers
 
   let_it_be(:project, reload: true) { create(:project, :empty_repo) }
   let_it_be(:user) { create(:user) }
@@ -814,7 +817,23 @@ RSpec.describe 'Git LFS API and storage' do
 
               context 'and request to finalize the upload is not sent by gitlab-workhorse' do
                 it 'fails with a JWT decode error' do
-                  expect { put_finalize(lfs_tmp_file, verified: false) }.to raise_error(JWT::DecodeError)
+                  expect { put_finalize(verified: false) }.to raise_error(JWT::DecodeError)
+                end
+              end
+
+              context 'and the uploaded file is invalid' do
+                where(:size, :sha256, :status) do
+                  nil | nil | :ok # Test setup sanity check
+                  0 | nil | :bad_request
+                  nil | 'a' * 64 | :bad_request
+                end
+
+                with_them do
+                  it 'validates the upload size and SHA256' do
+                    put_finalize(size: size, sha256: sha256)
+
+                    expect(response).to have_gitlab_http_status(status)
+                  end
                 end
               end
 
@@ -840,7 +859,7 @@ RSpec.describe 'Git LFS API and storage' do
                     let(:tmp_object) do
                       fog_connection.directories.new(key: 'lfs-objects').files.create( # rubocop: disable Rails/SaveBang
                         key: 'tmp/uploads/12312300',
-                        body: 'content'
+                        body: 'x' * sample_size
                       )
                     end
 
@@ -1106,13 +1125,7 @@ RSpec.describe 'Git LFS API and storage' do
 
             context 'when pushing the same LFS object to the second project' do
               before do
-                finalize_headers = headers
-                  .merge('X-Gitlab-Lfs-Tmp' => lfs_tmp_file)
-                  .merge(workhorse_internal_api_request_header)
-
-                put objects_url(second_project, sample_oid, sample_size),
-                  params: {},
-                  headers: finalize_headers
+                put_finalize(with_tempfile: true, to_project: second_project)
               end
 
               it_behaves_like 'LFS http 200 response'
@@ -1129,38 +1142,6 @@ RSpec.describe 'Git LFS API and storage' do
           authorize_headers.merge!(workhorse_internal_api_request_header) if verified
 
           put authorize_url(project, sample_oid, sample_size), params: {}, headers: authorize_headers
-        end
-
-        def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, verified: true, remote_object: nil, args: {})
-          uploaded_file = nil
-
-          if with_tempfile
-            upload_path = LfsObjectUploader.workhorse_local_upload_path
-            file_path = upload_path + '/' + lfs_tmp if lfs_tmp
-
-            FileUtils.mkdir_p(upload_path)
-            FileUtils.touch(file_path)
-
-            uploaded_file = UploadedFile.new(file_path, filename: File.basename(file_path))
-          elsif remote_object
-            uploaded_file = fog_to_uploaded_file(remote_object)
-          end
-
-          finalize_headers = headers
-          finalize_headers.merge!(workhorse_internal_api_request_header) if verified
-
-          workhorse_finalize(
-            objects_url(project, sample_oid, sample_size),
-            method: :put,
-            file_key: :file,
-            params: args.merge(file: uploaded_file),
-            headers: finalize_headers,
-            send_rewritten_field: include_workhorse_jwt_header
-          )
-        end
-
-        def lfs_tmp_file
-          "#{sample_oid}012345678"
         end
       end
     end

@@ -11,6 +11,12 @@ RSpec.describe Gitlab::UsageDataQueries do
     end
   end
 
+  describe '.with_duration' do
+    it 'yields passed block' do
+      expect { |block| described_class.with_duration(&block) }.to yield_with_no_args
+    end
+  end
+
   describe '.count' do
     it 'returns the raw SQL' do
       expect(described_class.count(User)).to start_with('SELECT COUNT("users"."id") FROM "users"')

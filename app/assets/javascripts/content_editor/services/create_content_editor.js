@@ -43,6 +43,7 @@ import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
+import Sourcemap from '../extensions/sourcemap';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
 import Superscript from '../extensions/superscript';
@@ -58,9 +59,10 @@ import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import { ContentEditor } from './content_editor';
 import createMarkdownSerializer from './markdown_serializer';
-import createMarkdownDeserializer from './markdown_deserializer';
+import createGlApiMarkdownDeserializer from './gl_api_markdown_deserializer';
+import createRemarkMarkdownDeserializer from './remark_markdown_deserializer';
+import createAssetResolver from './asset_resolver';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
-import languageLoader from './code_block_language_loader';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -94,7 +96,7 @@ export const createContentEditor = ({
     BulletList,
     Code,
     ColorChip,
-    CodeBlockHighlight.configure({ lowlight, languageLoader }),
+    CodeBlockHighlight.configure({ lowlight }),
     DescriptionItem,
     DescriptionList,
     Details,
@@ -127,6 +129,7 @@ export const createContentEditor = ({
     Paragraph,
     PasteMarkdown.configure({ renderMarkdown, eventHub }),
     Reference,
+    Sourcemap,
     Strike,
     Subscript,
     Superscript,
@@ -146,7 +149,18 @@ export const createContentEditor = ({
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
   const serializer = createMarkdownSerializer({ serializerConfig });
-  const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
+  const deserializer = window.gon?.features?.preserveUnchangedMarkdown
+    ? createRemarkMarkdownDeserializer()
+    : createGlApiMarkdownDeserializer({
+        render: renderMarkdown,
+      });
+  const assetResolver = createAssetResolver({ renderMarkdown });
 
-  return new ContentEditor({ tiptapEditor, serializer, eventHub, deserializer, languageLoader });
+  return new ContentEditor({
+    tiptapEditor,
+    serializer,
+    eventHub,
+    deserializer,
+    assetResolver,
+  });
 };

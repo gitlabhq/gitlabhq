@@ -46,7 +46,9 @@ export default {
         :value="mergedYaml"
         :file-name="ciConfigPath"
         :file-global-id="fileGlobalId"
-        :editor-options="{ readOnly: true }"
+        :editor-options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+          readOnly: true,
+        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
         v-on="$listeners"
       />
     </div>

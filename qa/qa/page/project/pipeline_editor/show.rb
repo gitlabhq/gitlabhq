@@ -5,6 +5,10 @@ module QA
     module Project
       module PipelineEditor
         class Show < QA::Page::Base
+          view 'app/assets/javascripts/pipeline_editor/pipeline_editor_app.vue' do
+            element :pipeline_editor_app, required: true
+          end
+
           view 'app/assets/javascripts/pipeline_editor/components/file_nav/branch_switcher.vue' do
             element :branch_selector_button, required: true
             element :branch_menu_item_button
@@ -12,7 +16,7 @@ module QA
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/commit/commit_form.vue' do
-            element :target_branch_field, required: true
+            element :source_branch_field, required: true
           end
 
           view 'app/assets/javascripts/pipeline_editor/components/editor/ci_editor_header.vue' do
@@ -46,7 +50,23 @@ module QA
             element :file_editor_container
           end
 
+          view 'app/assets/javascripts/pipeline_editor/components/popovers/file_tree_popover.vue' do
+            element :file_tree_popover
+          end
+
+          def initialize
+            dismiss_file_tree_popover if has_element?(:file_tree_popover)
+
+            super
+          end
+
+          def dismiss_file_tree_popover
+            # clicking outside the popover will dismiss it
+            click_element(:pipeline_editor_app)
+          end
+
           def open_branch_selector_dropdown
+            dismiss_file_tree_popover if has_element?(:file_tree_popover, wait: 1)
             click_element(:branch_selector_button)
           end
 
@@ -57,8 +77,8 @@ module QA
             wait_for_requests
           end
 
-          def target_branch_name
-            find_element(:target_branch_field).value
+          def source_branch_name
+            find_element(:source_branch_field).value
           end
 
           def editing_content
@@ -76,8 +96,8 @@ module QA
             wait_for_requests
           end
 
-          def set_target_branch(name)
-            find_element(:target_branch_field).fill_in(with: name)
+          def set_source_branch(name)
+            find_element(:source_branch_field).fill_in(with: name)
           end
 
           def current_branch

@@ -11,7 +11,7 @@ export default {
     GlLink,
   },
   props: {
-    hasNoRunnersForProject: {
+    hasOfflineRunnersForProject: {
       type: Boolean,
       required: true,
     },
@@ -37,7 +37,7 @@ export default {
           dataTestId: 'job-stuck-with-tags',
           showTags: true,
         };
-      } else if (this.hasNoRunnersForProject) {
+      } else if (this.hasOfflineRunnersForProject) {
         return {
           text: s__(`Job|This job is stuck because the project
                 doesn't have any runners online assigned to it.`),

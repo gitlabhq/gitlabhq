@@ -12,52 +12,8 @@ RSpec.describe IssuesFinder do
     context 'scope: all' do
       let(:scope) { 'all' }
 
-      context 'include_hidden and public_only params' do
-        let_it_be(:banned_user) { create(:user, :banned) }
-        let_it_be(:hidden_issue) { create(:issue, project: project1, author: banned_user) }
-        let_it_be(:confidential_issue) { create(:issue, project: project1, confidential: true) }
-
-        context 'when user is an admin', :enable_admin_mode do
-          let(:user) { create(:user, :admin) }
-
-          it 'returns all issues' do
-            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5, hidden_issue, confidential_issue)
-          end
-        end
-
-        context 'when user is not an admin' do
-          context 'when public_only is true' do
-            let(:params) { { public_only: true } }
-
-            it 'returns public issues' do
-              expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5)
-            end
-          end
-
-          context 'when public_only is false' do
-            let(:params) { { public_only: false } }
-
-            it 'returns public and confidential issues' do
-              expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5, confidential_issue)
-            end
-          end
-
-          context 'when public_only is not set' do
-            it 'returns public and confidential issue' do
-              expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5, confidential_issue)
-            end
-          end
-
-          context 'when ban_user_feature_flag is false' do
-            before do
-              stub_feature_flags(ban_user_feature_flag: false)
-            end
-
-            it 'returns all issues' do
-              expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5, hidden_issue, confidential_issue)
-            end
-          end
-        end
+      it 'returns all issues' do
+        expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, issue5)
       end
 
       context 'user does not have read permissions' do
@@ -1148,64 +1104,132 @@ RSpec.describe IssuesFinder do
   end
 
   describe '#with_confidentiality_access_check' do
-    let(:user) { create(:user) }
+    let(:guest) { create(:user) }
 
     let_it_be(:authorized_user) { create(:user) }
+    let_it_be(:banned_user) { create(:user, :banned) }
     let_it_be(:project) { create(:project, namespace: authorized_user.namespace) }
     let_it_be(:public_issue) { create(:issue, project: project) }
     let_it_be(:confidential_issue) { create(:issue, project: project, confidential: true) }
+    let_it_be(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
-    shared_examples 'returns public, does not return confidential' do
+    shared_examples 'returns public, does not return hidden or confidential' do
       it 'returns only public issues' do
         expect(subject).to include(public_issue)
+        expect(subject).not_to include(confidential_issue, hidden_issue)
+      end
+    end
+
+    shared_examples 'returns public and confidential, does not return hidden' do
+      it 'returns only public and confidential issues' do
+        expect(subject).to include(public_issue, confidential_issue)
+        expect(subject).not_to include(hidden_issue)
+      end
+    end
+
+    shared_examples 'returns public and hidden, does not return confidential' do
+      it 'returns only public and hidden issues' do
+        expect(subject).to include(public_issue, hidden_issue)
         expect(subject).not_to include(confidential_issue)
       end
     end
 
-    shared_examples 'returns public and confidential' do
-      it 'returns public and confidential issues' do
-        expect(subject).to include(public_issue, confidential_issue)
+    shared_examples 'returns public, confidential, and hidden' do
+      it 'returns all issues' do
+        expect(subject).to include(public_issue, confidential_issue, hidden_issue)
       end
     end
-
-    subject { described_class.new(user, params).with_confidentiality_access_check }
 
     context 'when no project filter is given' do
       let(:params) { {} }
 
       context 'for an anonymous user' do
-        it_behaves_like 'returns public, does not return confidential'
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
+
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
+        end
       end
 
       context 'for a user without project membership' do
-        it_behaves_like 'returns public, does not return confidential'
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
+        end
       end
 
       context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
         before do
-          project.add_guest(user)
+          project.add_guest(guest)
         end
 
-        it_behaves_like 'returns public, does not return confidential'
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
+        end
       end
 
       context 'for a project member with access to view confidential issues' do
-        before do
-          project.add_reporter(user)
-        end
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
 
-        it_behaves_like 'returns public and confidential'
+        it_behaves_like 'returns public and confidential, does not return hidden'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public, confidential, and hidden'
+        end
       end
 
       context 'for an admin' do
-        let(:user) { create(:user, :admin) }
+        let(:admin_user) { create(:user, :admin) }
+
+        subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it_behaves_like 'returns public and confidential'
+          it_behaves_like 'returns public, confidential, and hidden'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public, confidential, and hidden'
+          end
         end
 
         context 'when admin mode is disabled' do
-          it_behaves_like 'returns public, does not return confidential'
+          it_behaves_like 'returns public, does not return hidden or confidential'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public and hidden, does not return confidential'
+          end
         end
       end
     end
@@ -1214,9 +1238,17 @@ RSpec.describe IssuesFinder do
       let(:params) { { project_id: project.id } }
 
       context 'for an anonymous user' do
-        let(:user) { nil }
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
 
-        it_behaves_like 'returns public, does not return confidential'
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
+        end
 
         it 'does not filter by confidentiality' do
           expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
@@ -1225,7 +1257,17 @@ RSpec.describe IssuesFinder do
       end
 
       context 'for a user without project membership' do
-        it_behaves_like 'returns public, does not return confidential'
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
+        end
 
         it 'filters by confidentiality' do
           expect(subject.to_sql).to match("issues.confidential")
@@ -1233,11 +1275,21 @@ RSpec.describe IssuesFinder do
       end
 
       context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
         before do
-          project.add_guest(user)
+          project.add_guest(guest)
         end
 
-        it_behaves_like 'returns public, does not return confidential'
+        it_behaves_like 'returns public, does not return hidden or confidential'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public and hidden, does not return confidential'
+        end
 
         it 'filters by confidentiality' do
           expect(subject.to_sql).to match("issues.confidential")
@@ -1245,18 +1297,40 @@ RSpec.describe IssuesFinder do
       end
 
       context 'for a project member with access to view confidential issues' do
-        before do
-          project.add_reporter(user)
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+
+        it_behaves_like 'returns public and confidential, does not return hidden'
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ban_user_feature_flag: false)
+          end
+
+          it_behaves_like 'returns public, confidential, and hidden'
         end
 
-        it_behaves_like 'returns public and confidential'
+        it 'does not filter by confidentiality' do
+          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
       end
 
       context 'for an admin' do
-        let(:user) { create(:user, :admin) }
+        let(:admin_user) { create(:user, :admin) }
+
+        subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
         context 'when admin mode is enabled', :enable_admin_mode do
-          it_behaves_like 'returns public and confidential'
+          it_behaves_like 'returns public, confidential, and hidden'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public, confidential, and hidden'
+          end
 
           it 'does not filter by confidentiality' do
             expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
@@ -1266,7 +1340,19 @@ RSpec.describe IssuesFinder do
         end
 
         context 'when admin mode is disabled' do
-          it_behaves_like 'returns public, does not return confidential'
+          it_behaves_like 'returns public, does not return hidden or confidential'
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(ban_user_feature_flag: false)
+            end
+
+            it_behaves_like 'returns public and hidden, does not return confidential'
+          end
+
+          it 'filters by confidentiality' do
+            expect(subject.to_sql).to match("issues.confidential")
+          end
         end
       end
     end

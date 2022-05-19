@@ -1,14 +1,14 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '../constants';
 import { SET_ALERT } from '../store/mutation_types';
-import SignInPage from '../pages/sign_in.vue';
-import SubscriptionsPage from '../pages/subscriptions.vue';
+import SignInPage from '../pages/sign_in/sign_in_page.vue';
+import SubscriptionsPage from '../pages/subscriptions_page.vue';
 import UserLink from './user_link.vue';
 import CompatibilityAlert from './compatibility_alert.vue';
 import BrowserSupportAlert from './browser_support_alert.vue';
@@ -30,17 +30,13 @@ export default {
     usersPath: {
       default: '',
     },
-    subscriptions: {
-      default: [],
+    subscriptionsPath: {
+      default: '',
     },
   },
-  data() {
-    return {
-      user: null,
-    };
-  },
   computed: {
-    ...mapState(['alert']),
+    ...mapState(['currentUser']),
+    ...mapState(['alert', 'subscriptions']),
     shouldShowAlert() {
       return Boolean(this.alert?.message);
     },
@@ -48,7 +44,11 @@ export default {
       return !isEmpty(this.subscriptions);
     },
     userSignedIn() {
-      return Boolean(!this.usersPath || this.user);
+      if (this.isOauthEnabled) {
+        return Boolean(this.currentUser);
+      }
+
+      return Boolean(!this.usersPath);
     },
     isOauthEnabled() {
       return this.glFeatures.jiraConnectOauth;
@@ -64,16 +64,29 @@ export default {
   created() {
     this.setInitialAlert();
   },
+  mounted() {
+    this.fetchSubscriptionsOauth();
+  },
   methods: {
     ...mapMutations({
       setAlert: SET_ALERT,
     }),
+    ...mapActions(['fetchSubscriptions']),
+    /**
+     * Fetch subscriptions from the REST API,
+     * if the jiraConnectOauth flag is enabled.
+     */
+    fetchSubscriptionsOauth() {
+      if (!this.isOauthEnabled) return;
+
+      this.fetchSubscriptions(this.subscriptionsPath);
+    },
     setInitialAlert() {
       const { linkUrl, title, message, variant } = retrieveAlert() || {};
       this.setAlert({ linkUrl, title, message, variant });
     },
-    onSignInOauth(user) {
-      this.user = user;
+    onSignInOauth() {
+      this.fetchSubscriptionsOauth();
     },
     onSignInError() {
       this.setAlert({
@@ -109,9 +122,12 @@ export default {
       </template>
     </gl-alert>
 
-    <user-link :user-signed-in="userSignedIn" :has-subscriptions="hasSubscriptions" :user="user" />
+    <user-link
+      :user-signed-in="userSignedIn"
+      :has-subscriptions="hasSubscriptions"
+      :user="currentUser"
+    />
 
-    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
     <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
       <sign-in-page
         v-if="!userSignedIn"

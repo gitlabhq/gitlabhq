@@ -3,8 +3,7 @@ table_name: project_ci_feature_usages
 classes:
 - Projects::CiFeatureUsage
 feature_categories:
-- projects
-- continuous_integration
-description: TODO
+- code_testing
+description: Project CI feature usage information
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68186
 milestone: '14.2'

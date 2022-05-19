@@ -29,7 +29,7 @@ RSpec.describe 'Project.cluster_agents' do
     post_graphql(query, current_user: current_user)
 
     expect(graphql_data_at(:project, :cluster_agents, :nodes)).to match_array(
-      agents.map { |agent| a_hash_including('id' => global_id_of(agent)) }
+      agents.map { |agent| a_graphql_entity_for(agent) }
     )
   end
 
@@ -62,9 +62,9 @@ RSpec.describe 'Project.cluster_agents' do
       tokens = graphql_data_at(:project, :cluster_agents, :nodes, :tokens, :nodes)
 
       expect(tokens).to match([
-        a_hash_including('id' => global_id_of(token_3)),
-        a_hash_including('id' => global_id_of(token_2)),
-        a_hash_including('id' => global_id_of(token_1))
+        a_graphql_entity_for(token_3),
+        a_graphql_entity_for(token_2),
+        a_graphql_entity_for(token_1)
       ])
     end
 

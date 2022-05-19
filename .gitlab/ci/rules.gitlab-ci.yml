@@ -76,6 +76,9 @@
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
+.if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
+  if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -247,6 +250,9 @@
 .models-patterns: &models-patterns
   - "{,ee/,jh/}{app/models}/**/*"
 
+.lib-gitlab-patterns: &lib-gitlab-patterns
+  - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
+
 .startup-css-patterns: &startup-css-patterns
   - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
 
@@ -257,7 +263,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,cable,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
   - ".gitlab-ci.yml"
@@ -266,6 +272,14 @@
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+
+.search-backend-patterns: &search-backend-patterns
+  - "{,jh/}Gemfile.lock"
+  - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
+  # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
+  - "{,ee/,jh/}{app/channels,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}spec/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -513,6 +527,10 @@
     - <<: *if-security-merge-request
       when: never
 
+.rails:rules:run-search-tests:
+  rules:
+    - <<: *if-merge-request-labels-group-global-search
+      changes: *search-backend-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:
@@ -604,6 +622,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-build-images-patterns
@@ -618,6 +637,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *ci-build-images-patterns
@@ -692,6 +712,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *code-qa-patterns
@@ -879,9 +900,8 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *feature-flag-development-config-patterns
-      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *nodejs-patterns
       allow_failure: true
@@ -937,6 +957,11 @@
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:praefect-with-db:
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
+      allow_failure: true
 
 .rails:rules:ee-and-foss-migration:
   rules:
@@ -1470,24 +1495,32 @@
   rules:
     - if: '$SECRET_DETECTION_DISABLED'
       when: never
+    # Scan each commit on master to feed the Vulnerability Reports with detected secrets
+    - <<: *if-default-branch-refs
     - changes: *code-backstage-qa-patterns
 
 .reports:rules:gemnasium-dependency_scanning:
   rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/ || $DS_DEFAULT_ANALYZERS !~ /gemnasium([^-]|$)/'
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - changes: *dependency-patterns
 
 .reports:rules:gemnasium-python-dependency_scanning:
   rules:
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/ || $DS_DEFAULT_ANALYZERS !~ /gemnasium-python/'
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - changes: *python-patterns
 
 .reports:rules:yarn-audit-dependency_scanning:
   rules:
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
+    - <<: *if-default-branch-refs
     - changes: *nodejs-patterns
 
 .reports:rules:schedule-dast:
@@ -1534,6 +1567,8 @@
       changes: *controllers-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *models-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *lib-gitlab-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
     - <<: *if-dot-com-gitlab-org-merge-request

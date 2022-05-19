@@ -4,6 +4,7 @@ classes:
 - ProjectAuthorization
 feature_categories:
 - projects
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/fd05e26618dd0c123ca476b6f5a3d85f1cfe397a
+- authentication_and_authorization
+description: Stores maximal access to the project per user
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6839
 milestone: '8.14'

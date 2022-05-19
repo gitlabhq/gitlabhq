@@ -31,6 +31,10 @@ module Gitlab
         SQL_METRIC_DEFAULT
       end
 
+      def add(*args)
+        SQL_METRIC_DEFAULT
+      end
+
       def maximum_id(model, column = nil)
       end
 

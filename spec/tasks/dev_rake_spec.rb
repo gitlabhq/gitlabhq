@@ -116,7 +116,7 @@ RSpec.describe 'dev rake tasks' do
           allow(configurations).to receive(:configs_for).with(env_name: Rails.env, name: 'ci').and_return(ci_configuration)
         end
 
-        subject(:load_task) { run_rake_task('dev:setup_ci_db') }
+        subject(:load_task) { run_rake_task('dev:copy_db:ci') }
 
         let(:ci_configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'ci', database: '__test_db_ci') }
 
@@ -128,14 +128,14 @@ RSpec.describe 'dev rake tasks' do
 
           expect(Rake::Task['dev:terminate_all_connections']).to receive(:invoke)
 
-          run_rake_task('dev:copy_db:ci')
+          load_task
         end
 
         context 'when the database already exists' do
           it 'prints out a warning' do
             expect(ApplicationRecord.connection).to receive(:create_database).and_raise(ActiveRecord::DatabaseAlreadyExists)
 
-            expect { run_rake_task('dev:copy_db:ci') }.to output(/Database '#{ci_configuration.database}' already exists/).to_stderr
+            expect { load_task }.to output(/Database '#{ci_configuration.database}' already exists/).to_stderr
           end
         end
       end

@@ -6,7 +6,6 @@ Lint/MissingCopEnableDirective:
   Exclude:
     - 'app/controllers/admin/users_controller.rb'
     - 'app/controllers/projects/forks_controller.rb'
-    - 'app/finders/projects/serverless/functions_finder.rb'
     - 'app/graphql/resolvers/group_issues_resolver.rb'
     - 'app/graphql/resolvers/issues_resolver.rb'
     - 'app/graphql/resolvers/project_members_resolver.rb'

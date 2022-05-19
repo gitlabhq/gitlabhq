@@ -134,7 +134,7 @@ License Compliance can be configured using CI/CD variables.
 | `ASDF_PYTHON_VERSION`       | no       | Version of Python to use for the scan. [Configuration](#selecting-the-version-of-python) |
 | `ASDF_RUBY_VERSION`         | no       | Version of Ruby to use for the scan. |
 | `GRADLE_CLI_OPTS`           | no       | Additional arguments for the Gradle executable. If not supplied, defaults to `--exclude-task=test`. |
-| `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if you have multiple projects in nested directories, you can update your `.gitlab-ci-yml` template to specify a recursive scan, like `LICENSE_FINDER_CLI_OPTS: '--recursive'`. |
+| `LICENSE_FINDER_CLI_OPTS`   | no       | Additional arguments for the `license_finder` executable. For example, if you have multiple projects in nested directories, you can update your `.gitlab-ci.yml` template to specify a recursive scan, like `LICENSE_FINDER_CLI_OPTS: '--recursive'`. |
 | `LM_JAVA_VERSION`           | no       | Version of Java. If set to `11`, Maven and Gradle use Java 11 instead of Java 8. [Configuration](#selecting-the-version-of-java) |
 | `LM_PYTHON_VERSION`         | no       | Version of Python. If set to `3`, dependencies are installed using Python 3 instead of Python 2.7. [Configuration](#selecting-the-version-of-python) |
 | `MAVEN_CLI_OPTS`            | no       | Additional arguments for the `mvn` executable. If not supplied, defaults to `-DskipTests`. |
@@ -506,7 +506,7 @@ example:
 }
 ```
 
-If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protect-a-cicd-variable)
+If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protected-cicd-variables)
 following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
 
 #### Custom root certificates for Conan
@@ -853,7 +853,7 @@ A full list of variables can be found in [CI/CD variables](#available-cicd-varia
 To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
 
 ```shell
-$ docker run --entrypoint='' registry.gitlab.com/security-products/license-finder:3 /bin/bash -lc 'asdf list'
+$ docker run --entrypoint='' registry.gitlab.com/security-products/license-finder:4 /bin/bash -lc 'asdf list'
 golang
   1.14
 gradle
@@ -880,7 +880,7 @@ sbt
 To interact with the `license_scanning` runtime environment use the following command:
 
 ```shell
-$ docker run -it --entrypoint='' registry.gitlab.com/security-products/license-finder:3 /bin/bash -l
+$ docker run -it --entrypoint='' registry.gitlab.com/security-products/license-finder:4 /bin/bash -l
 root@6abb70e9f193:~#
 ```
 

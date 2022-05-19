@@ -161,8 +161,8 @@ RSpec.describe Environments::StopService do
     end
   end
 
-  describe '#execute_for_merge_request' do
-    subject { service.execute_for_merge_request(merge_request) }
+  describe '#execute_for_merge_request_pipeline' do
+    subject { service.execute_for_merge_request_pipeline(merge_request) }
 
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
     let(:project) { merge_request.project }
@@ -199,6 +199,19 @@ RSpec.describe Environments::StopService do
         expect(pipeline.environments_in_self_and_descendants.first).to be_stopped
       end
 
+      context 'when pipeline is a branch pipeline for merge request' do
+        let(:pipeline) do
+          create(:ci_pipeline, source: :push, project: project, sha: merge_request.diff_head_sha,
+                 merge_requests_as_head_pipeline: [merge_request])
+        end
+
+        it 'does not stop the active environment' do
+          subject
+
+          expect(pipeline.environments_in_self_and_descendants.first).to be_available
+        end
+      end
+
       context 'with environment related jobs ' do
         let!(:environment) { create(:environment, :available, name: 'staging', project: project) }
         let!(:prepare_staging_job) { create(:ci_build, :prepare_staging, pipeline: pipeline, project: project) }
@@ -209,18 +222,6 @@ RSpec.describe Environments::StopService do
           subject
 
           expect(prepare_staging_job.persisted_environment.state).to eq('available')
-        end
-
-        context 'when fix_related_environments_for_merge_requests feature flag is disabled' do
-          before do
-            stub_feature_flags(fix_related_environments_for_merge_requests: false)
-          end
-
-          it 'stops unrelated environments too' do
-            subject
-
-            expect(prepare_staging_job.persisted_environment.state).to eq('stopped')
-          end
         end
       end
     end

@@ -58,7 +58,7 @@ module Import
         end
 
         def validate_aws_s3?
-          ::Feature.enabled?(:import_project_from_remote_file_s3, default_enabled: :yaml)
+          ::Feature.enabled?(:import_project_from_remote_file_s3)
         end
 
         def headers

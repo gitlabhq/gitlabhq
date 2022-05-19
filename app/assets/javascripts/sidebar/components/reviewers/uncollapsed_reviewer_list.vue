@@ -98,7 +98,7 @@ export default {
         'gl-mb-3': index !== users.length - 1,
         'attention-requests': glFeatures.mrAttentionRequests,
       }"
-      class="gl-display-grid gl-align-items-center reviewer-grid"
+      class="gl-display-grid gl-align-items-center reviewer-grid gl-mr-2"
       data-testid="reviewer"
     >
       <reviewer-avatar-link
@@ -108,9 +108,8 @@ export default {
         class="gl-word-break-word gl-mr-2"
         data-css-area="user"
       >
-        <div class="gl-ml-3 gl-line-height-normal gl-display-grid">
-          <span>{{ user.name }}</span>
-          <span>@{{ user.username }}</span>
+        <div class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center">
+          {{ user.name }}
         </div>
       </reviewer-avatar-link>
       <attention-requested-toggle

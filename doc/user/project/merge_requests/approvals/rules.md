@@ -242,3 +242,14 @@ the API.
 
 For more information about this validation error, read
 [issue 285129](https://gitlab.com/gitlab-org/gitlab/-/issues/285129).
+
+## Security Approvals **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
+
+You can use [scan result policies](../../../application_security/policies/scan-result-policies.md#scan-result-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
+Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
+
+![Security Approvals](img/security_approvals_v15_0.png)
+
+These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).

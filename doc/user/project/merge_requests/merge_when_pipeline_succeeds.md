@@ -50,7 +50,7 @@ You can prevent merge requests from being merged if:
 This works for both:
 
 - GitLab CI/CD pipelines
-- Pipelines run from an [external CI integration](../integrations/overview.md#integrations-listing)
+- Pipelines run from an [external CI integration](../integrations/index.md#available-integrations)
 
 As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md)
 does not disable this feature, as it is possible to use pipelines from external
@@ -81,13 +81,13 @@ it could allow code that fails tests to be merged:
 ```yaml
 branch-pipeline-job:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "push"
   script:
     - echo "Code testing scripts here, for example."
 
 merge-request-pipeline-job:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo "No tests run, but this pipeline always succeeds and enables merge."
     - echo true

@@ -4,6 +4,7 @@ module Ci
   class PipelineTriggerService < BaseService
     include Gitlab::Utils::StrongMemoize
     include Services::ReturnServiceResponses
+    include Ci::DownstreamPipelineHelpers
 
     def execute
       if trigger_from_token
@@ -69,6 +70,7 @@ module Ci
           pipeline.source_pipeline = source
         end
 
+      log_downstream_pipeline_creation(response.payload)
       pipeline_service_response(response.payload)
     end
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import createFlash from '~/flash';
@@ -11,7 +11,7 @@ import { restoreFileLinesState, markLine, decorateFiles } from '~/merge_conflict
 
 jest.mock('~/flash.js');
 jest.mock('~/merge_conflicts/utils');
-jest.mock('js-cookie');
+jest.mock('~/lib/utils/cookies');
 
 describe('merge conflicts actions', () => {
   let mock;

@@ -24,7 +24,7 @@ requests, each waiting to be merged into the target branch.
 
 Many merge requests can be added to the train. Each merge request runs its own merged results pipeline,
 which includes the changes from all of the other merge requests in *front* of it on the train.
-All the pipelines run in parallel, to save time.
+All the pipelines run in parallel, to save time. The author of the internal merged result commit is always the user that initiated the merge.
 
 If the pipeline for a merge request fails, the breaking changes are not merged, and the target
 branch is unaffected. The merge request is removed from the train, and all pipelines behind it restart.
@@ -73,6 +73,9 @@ To enable merge trains:
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).
 
+Merge trains do not work with [Semi-linear history merge requests](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history)
+or [fast-forward merge requests](../../user/project/merge_requests/methods/index.md#fast-forward-merge).
+
 ## Enable merge trains
 
 To enable merge trains for your project:
@@ -84,7 +87,6 @@ To enable merge trains for your project:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge requests**.
 1. In the **Merge method** section, verify that **Merge commit** is selected.
-   You cannot use **Merge commit with semi-linear history** or **Fast-forward merge** with merge trains.
 1. In the **Merge options** section, select **Enable merged results pipelines** (if not already selected) and **Enable merge trains**.
 1. Select **Save changes**.
 

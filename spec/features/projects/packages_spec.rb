@@ -47,7 +47,8 @@ RSpec.describe 'Packages' do
         let_it_be(:package) { create(:package, project: project) }
 
         it 'allows you to delete a package' do
-          first('[title="Remove package"]').click
+          find('[data-testid="delete-dropdown"]').click
+          find('[data-testid="action-delete"]').click
           click_button('Delete package')
 
           expect(page).to have_content 'Package deleted successfully'

@@ -290,9 +290,6 @@ useful when debugging. The default value for `SECURE_LOG_LEVEL` should be set
 to `info`.
 
 When executing command lines, scanners should use the `debug` level to log the command line and its output.
-For instance, the [bundler-audit](https://gitlab.com/gitlab-org/security-products/analyzers/bundler-audit) scanner
-uses the `debug` level to log the command line `bundle audit check --quiet`,
-and what `bundle audit` writes to the standard output.
 If the command line fails, then it should be logged with the `error` log level;
 this makes it possible to debug the problem without having to change the log level to `debug` and rerun the scanning job.
 
@@ -679,7 +676,7 @@ The confidence ranges from `Low` to `Confirmed`, but it can also be `Unknown`,
 Valid values are: `Ignore`, `Unknown`, `Experimental`, `Low`, `Medium`, `High`, or `Confirmed`
 
 `Unknown` values means that data is unavailable to determine it's actual value. Therefore, it may be `high`, `medium`, or `low`,
-and needs to be investigated. We have [provided a chart](../../user/application_security/sast/analyzers.md#analyzers-data)
+and needs to be investigated. We have [provided a chart](../../user/application_security/sast/analyzers.md#data-provided-by-analyzers)
 of the available SAST Analyzers and what data is currently available.
 
 #### Remediations

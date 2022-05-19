@@ -1,0 +1,67 @@
+@import 'mixins_and_variables_and_functions';
+
+.description {
+  ul,
+  ol {
+    /* We're changing list-style-position to inside because the default of outside
+     * doesn't move the negative margin to the left of the bullet. */
+    list-style-position: inside;
+  }
+
+  li {
+    position: relative;
+    /* In the browser, the li element comes after (to the right of) the bullet point, so hovering
+     * over the left of the bullet point doesn't trigger a row hover. To trigger hovering on the
+     * left, we're applying negative margin here to shift the li element left. */
+    margin-inline-start: -1rem;
+    padding-inline-start: 2.5rem;
+
+    .drag-icon {
+      position: absolute;
+      inset-block-start: 0.3rem;
+      inset-inline-start: 1rem;
+    }
+  }
+
+  ul.task-list {
+    > li.task-list-item {
+      /* We're using !important to override the same selector in typography.scss */
+      margin-inline-start: -1rem !important;
+      padding-inline-start: 2.5rem;
+
+      > input.task-list-item-checkbox {
+        position: static;
+        vertical-align: middle;
+        margin-block-start: -2px;
+      }
+    }
+  }
+}
+
+.description.work-items-enabled {
+  ul.task-list {
+    > li.task-list-item {
+      .js-add-task {
+        svg {
+          visibility: hidden;
+        }
+
+        &:focus svg {
+          visibility: visible;
+        }
+      }
+
+      &:hover,
+      &:focus-within {
+        .js-add-task svg {
+          visibility: visible;
+        }
+      }
+    }
+  }
+}
+
+.is-ghost {
+  opacity: 0.3;
+  pointer-events: none;
+}

@@ -84,6 +84,9 @@ export default {
             </runner-detail>
             <runner-detail :label="s__('Runners|Version')" :value="runner.version" />
             <runner-detail :label="s__('Runners|IP Address')" :value="runner.ipAddress" />
+            <runner-detail :label="s__('Runners|Executor')" :value="runner.executorName" />
+            <runner-detail :label="s__('Runners|Architecture')" :value="runner.architectureName" />
+            <runner-detail :label="s__('Runners|Platform')" :value="runner.platformName" />
             <runner-detail :label="s__('Runners|Configuration')">
               <template #value>
                 <gl-intersperse v-if="configTextProtected || configTextUntagged">

@@ -14,9 +14,9 @@ module Sidebars
           add_item(access_tokens_menu_item)
           add_item(repository_menu_item)
           add_item(ci_cd_menu_item)
-          add_item(monitor_menu_item)
-          add_item(pages_menu_item)
           add_item(packages_and_registries_menu_item)
+          add_item(pages_menu_item)
+          add_item(monitor_menu_item)
           add_item(usage_quotas_menu_item)
 
           true
@@ -103,16 +103,17 @@ module Sidebars
           )
         end
 
-        def monitor_menu_item
-          if context.project.archived? || !can?(context.current_user, :admin_operations, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :monitor)
+        def packages_and_registries_menu_item
+          if !Gitlab.config.registry.enabled ||
+            !can?(context.current_user, :destroy_container_image, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :packages_and_registries)
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Monitor'),
-            link: project_settings_operations_path(context.project),
-            active_routes: { path: 'operations#show' },
-            item_id: :monitor
+            title: _('Packages & Registries'),
+            link: project_settings_packages_and_registries_path(context.project),
+            active_routes: { path: 'packages_and_registries#index' },
+            item_id: :packages_and_registries
           )
         end
 
@@ -129,17 +130,16 @@ module Sidebars
           )
         end
 
-        def packages_and_registries_menu_item
-          if !Gitlab.config.registry.enabled ||
-            !can?(context.current_user, :destroy_container_image, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :packages_and_registries)
+        def monitor_menu_item
+          if context.project.archived? || !can?(context.current_user, :admin_operations, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :monitor)
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Packages & Registries'),
-            link: project_settings_packages_and_registries_path(context.project),
-            active_routes: { path: 'packages_and_registries#index' },
-            item_id: :packages_and_registries
+            title: _('Monitor'),
+            link: project_settings_operations_path(context.project),
+            active_routes: { path: 'operations#show' },
+            item_id: :monitor
           )
         end
 

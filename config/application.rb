@@ -72,7 +72,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
-    config.exceptions_app = Gitlab::ExceptionsApp.new(Rails.public_path)
+    config.exceptions_app = Gitlab::ExceptionsApp.new(Gitlab.jh? ? Rails.root.join('jh/public') : Rails.public_path)
 
     # This preload is required to:
     #
@@ -140,6 +140,9 @@ module Gitlab
     config.autoload_paths.push("#{config.root}/lib/generators")
     Gitlab.ee { config.autoload_paths.push("#{config.root}/ee/lib/generators") }
     Gitlab.jh { config.autoload_paths.push("#{config.root}/jh/lib/generators") }
+
+    # Add JH initializer into rails initializers path
+    Gitlab.jh { config.paths["config/initializers"] << "#{config.root}/jh/config/initializers" }
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -272,6 +275,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/import.css"
     config.assets.precompile << "page_bundles/incident_management_list.css"
     config.assets.precompile << "page_bundles/issues_list.css"
+    config.assets.precompile << "page_bundles/issues_show.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
     config.assets.precompile << "page_bundles/jira_connect_users.css"
     config.assets.precompile << "page_bundles/learn_gitlab.css"
@@ -286,6 +290,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_schedules.css"
     config.assets.precompile << "page_bundles/pipelines.css"
+    config.assets.precompile << "page_bundles/pipeline_editor.css"
     config.assets.precompile << "page_bundles/productivity_analytics.css"
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/project.css"
@@ -486,19 +491,17 @@ module Gitlab
       end
     end
 
-    # Load JH initializers under JH. Load ordering is:
-    # 1. prepend_helpers_path
-    # 2. before_zeitwerk
-    # 3. let_zeitwerk_take_over
-    # 4. move_initializers
-    # 5. load_config_initializers
-    # 6. load_jh_config_initializers
-    Gitlab.jh do
-      initializer :load_jh_config_initializers, after: :load_config_initializers do
-        Dir[Rails.root.join('jh/config/initializers/*.rb')].sort.each do |initializer|
-          load_config_initializer(initializer)
-        end
-      end
+    # We know Rails closes database connections in the
+    # active_record.clear_active_connections initializer, so only log database
+    # connections opened after that.
+    initializer :start_logging_new_postgresql_connections, after: :finisher_hook do
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = true
+    end
+
+    # It is legitimate to open database connections after initializers so stop
+    # logging
+    initializer :stop_logging_new_postgresql_connections, after: :set_routes_reloader_hook do
+      ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.warn_on_new_connection = false
     end
 
     # Add assets for variants of GitLab. They should take precedence over CE.
@@ -509,7 +512,7 @@ module Gitlab
     # app/assets/stylesheets/example.scss
     #
     # The jh/ version will be preferred.
-    initializer :prefer_specialized_assets, after: :append_assets_path do |app|
+    initializer :prefer_specialized_assets, after: :append_assets_path, before: :build_middleware_stack do |app|
       Gitlab.extensions.each do |extension|
         %w[images javascripts stylesheets].each do |path|
           app.config.assets.paths.unshift("#{config.root}/#{extension}/app/assets/#{path}")
@@ -521,8 +524,10 @@ module Gitlab
     # because we connect to database from routes
     # https://github.com/rails/rails/blob/fdf840f69a2e33d78a9d40b91d9b7fddb76711e9/activerecord/lib/active_record/railtie.rb#L308
     initializer :clear_active_connections_again, after: :set_routes_reloader_hook do
+      # rubocop:disable Database/MultipleDatabases
       ActiveRecord::Base.clear_active_connections!
       ActiveRecord::Base.flush_idle_connections!
+      # rubocop:enable Database/MultipleDatabases
     end
 
     # DO NOT PLACE ANY INITIALIZERS AFTER THIS.

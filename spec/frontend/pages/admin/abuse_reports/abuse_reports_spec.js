@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import '~/lib/utils/text_utility';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import AbuseReports from '~/pages/admin/abuse_reports/abuse_reports';
 
 describe('Abuse Reports', () => {
@@ -15,9 +15,13 @@ describe('Abuse Reports', () => {
     $messages.filter((index, element) => element.innerText.indexOf(searchText) > -1).first();
 
   beforeEach(() => {
-    loadFixtures(FIXTURE);
+    loadHTMLFixture(FIXTURE);
     new AbuseReports(); // eslint-disable-line no-new
     $messages = $('.abuse-reports .message');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('should truncate long messages', () => {

@@ -22,6 +22,11 @@ export default {
       type: Object,
       required: true,
     },
+    expirationPolicy: {
+      type: Object,
+      default: () => ({}),
+      required: false,
+    },
   },
   computed: {
     showPagination() {
@@ -38,6 +43,7 @@ export default {
       :key="index"
       :item="listItem"
       :metadata-loading="metadataLoading"
+      :expiration-policy="expirationPolicy"
       @delete="$emit('delete', $event)"
     />
     <div class="gl-display-flex gl-justify-content-center">

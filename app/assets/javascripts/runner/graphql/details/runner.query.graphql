@@ -1,9 +1,0 @@
-#import "ee_else_ce/runner/graphql/details/runner_details.fragment.graphql"
-
-query getRunner($id: CiRunnerID!) {
-  # We have an id in deeply nested fragment
-  # eslint-disable-next-line @graphql-eslint/require-id-when-available
-  runner(id: $id) {
-    ...RunnerDetails
-  }
-}

@@ -14,7 +14,7 @@ variables:
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
 
   LICENSE_MANAGEMENT_SETUP_CMD: ''  # If needed, specify a command to setup your environment with a custom package manager.
-  LICENSE_MANAGEMENT_VERSION: 3
+  LICENSE_MANAGEMENT_VERSION: 4
 
 license_scanning:
   stage: test

@@ -17,7 +17,7 @@ import (
 // request to gitlab-rails without the original request body.
 func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 	return rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		opts, verifier, err := p.Prepare(a)
+		opts, err := p.Prepare(a)
 		if err != nil {
 			helper.Fail500(w, r, fmt.Errorf("RequestBody: preparation failed: %v", err))
 			return
@@ -27,13 +27,6 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 		if err != nil {
 			helper.Fail500(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
 			return
-		}
-
-		if verifier != nil {
-			if err := verifier.Verify(fh); err != nil {
-				helper.Fail500(w, r, fmt.Errorf("RequestBody: verification failed: %v", err))
-				return
-			}
 		}
 
 		data := url.Values{}

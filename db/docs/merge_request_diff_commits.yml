@@ -4,6 +4,6 @@ classes:
 - MergeRequestDiffCommit
 feature_categories:
 - code_review
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/aff5c9f3e5ecdd9eee2b2b60ab6367da878582fc
+description: Store commit related information within a merge request diff
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12527
 milestone: '9.4'

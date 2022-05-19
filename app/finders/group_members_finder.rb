@@ -60,6 +60,10 @@ class GroupMembersFinder < UnionFinder
       members = members.filter_by_2fa(params[:two_factor])
     end
 
+    if params[:access_levels].present?
+      members = members.by_access_level(params[:access_levels])
+    end
+
     members = apply_additional_filters(members)
 
     by_created_at(members)

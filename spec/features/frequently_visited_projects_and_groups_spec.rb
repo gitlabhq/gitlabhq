@@ -16,7 +16,6 @@ RSpec.describe 'Frequently visited items', :js do
 
     it 'increments localStorage counter when visiting the project' do
       visit project_path(project)
-      open_top_nav_projects
 
       frequent_projects = nil
 
@@ -35,7 +34,6 @@ RSpec.describe 'Frequently visited items', :js do
 
     it 'increments localStorage counter when visiting the group' do
       visit group_path(group)
-      open_top_nav_groups
 
       frequent_groups = nil
 

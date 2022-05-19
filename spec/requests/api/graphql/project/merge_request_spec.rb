@@ -66,7 +66,7 @@ RSpec.describe 'getting merge request information nested in a project' do
 
     it 'includes reviewers' do
       expected = merge_request.reviewers.map do |r|
-        a_hash_including('id' => global_id_of(r), 'username' => r.username)
+        a_graphql_entity_for(r, :username)
       end
 
       post_graphql(query, current_user: current_user)
@@ -425,7 +425,7 @@ RSpec.describe 'getting merge request information nested in a project' do
 
           other_users.each do |user|
             assign_user(user)
-            merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user)
+            merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user, state: :attention_requested)
           end
 
           expect { post_graphql(query) }.not_to exceed_query_limit(baseline)
@@ -466,7 +466,7 @@ RSpec.describe 'getting merge request information nested in a project' do
     let(:can_update) { false }
 
     def assign_user(user)
-      merge_request.merge_request_reviewers.create!(reviewer: user)
+      merge_request.merge_request_reviewers.create!(reviewer: user, state: :attention_requested)
     end
   end
 

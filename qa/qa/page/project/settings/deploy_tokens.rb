@@ -31,11 +31,25 @@ module QA
           end
 
           def fill_scopes(scopes)
-            check_element(:deploy_token_read_repository_checkbox) if scopes.include? :read_repository
-            check_element(:deploy_token_read_package_registry_checkbox) if scopes.include? :read_package_registry
-            check_element(:deploy_token_write_package_registry_checkbox) if scopes.include? :write_package_registry
-            check_element(:deploy_token_read_registry_checkbox) if scopes.include? :read_registry
-            check_element(:deploy_token_write_registry_checkbox) if scopes.include? :write_registry
+            if scopes.include? :read_repository
+              check_element(:deploy_token_read_repository_checkbox, true)
+            end
+
+            if scopes.include? :read_package_registry
+              check_element(:deploy_token_read_package_registry_checkbox, true)
+            end
+
+            if scopes.include? :write_package_registry
+              check_element(:deploy_token_write_package_registry_checkbox, true)
+            end
+
+            if scopes.include? :read_registry
+              check_element(:deploy_token_read_registry_checkbox, true)
+            end
+
+            if scopes.include? :write_registry
+              check_element(:deploy_token_write_registry_checkbox, true)
+            end
           end
 
           def add_token

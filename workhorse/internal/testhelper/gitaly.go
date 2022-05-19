@@ -11,12 +11,15 @@ import (
 
 	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
+	"gitlab.com/gitlab-org/gitaly/v14/client"
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/labkit/log"
 )
@@ -181,93 +184,34 @@ func (s *GitalyTestServer) PostReceivePack(stream gitalypb.SmartHTTPService_Post
 	return s.finalError()
 }
 
-func (s *GitalyTestServer) PostUploadPack(stream gitalypb.SmartHTTPService_PostUploadPackServer) error {
+func (s *GitalyTestServer) PostUploadPackWithSidechannel(ctx context.Context, req *gitalypb.PostUploadPackWithSidechannelRequest) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
 	s.WaitGroup.Add(1)
 	defer s.WaitGroup.Done()
 
-	req, err := stream.Recv()
-	if err != nil {
-		return err
+	if err := validateRepository(req.GetRepository()); err != nil {
+		return nil, err
 	}
 
-	if err := validateRepository(req.GetRepository()); err != nil {
-		return err
+	conn, err := client.OpenServerSidechannel(ctx)
+	if err != nil {
+		return nil, err
 	}
+	defer conn.Close()
 
 	marshaler := &jsonpb.Marshaler{}
 	jsonBytes := &bytes.Buffer{}
 	if err := marshaler.Marshal(jsonBytes, req); err != nil {
-		return err
+		return nil, err
 	}
 
-	if err := stream.Send(&gitalypb.PostUploadPackResponse{
-		Data: append(jsonBytes.Bytes(), 0),
-	}); err != nil {
-		return err
+	if _, err := io.Copy(conn, io.MultiReader(
+		bytes.NewReader(append(jsonBytes.Bytes(), 0)),
+		conn,
+	)); err != nil {
+		return nil, err
 	}
 
-	nSends := 0
-	// The body of the request starts in the second message. Gitaly streams PostUploadPack responses
-	// as soon as possible without reading the request completely first. We stream messages here
-	// directly back to the client to simulate the streaming of the actual implementation.
-	for {
-		req, err := stream.Recv()
-		if err != nil {
-			if err != io.EOF {
-				return err
-			}
-			break
-		}
-
-		if err := stream.Send(&gitalypb.PostUploadPackResponse{Data: req.GetData()}); err != nil {
-			return err
-		}
-
-		nSends++
-	}
-
-	if nSends <= 1 {
-		panic("should have sent more than one message")
-	}
-
-	return s.finalError()
-}
-
-// PostUploadPackWithSidechannel should be a part of smarthttp server in real
-// server. In workhorse, setting up a real sidechannel server is troublesome.
-// Therefore, we bring up a sidechannel server with a mock server exported via
-// gitalyclient.TestSidechannelServer. This is the handler for that mock
-// server.
-func PostUploadPackWithSidechannel(srv interface{}, stream grpc.ServerStream, conn io.ReadWriteCloser) error {
-	if method, ok := grpc.Method(stream.Context()); !ok || method != "/gitaly.SmartHTTPService/PostUploadPackWithSidechannel" {
-		return fmt.Errorf("unexpected method: %s", method)
-	}
-
-	var req gitalypb.PostUploadPackWithSidechannelRequest
-	if err := stream.RecvMsg(&req); err != nil {
-		return err
-	}
-
-	if err := validateRepository(req.GetRepository()); err != nil {
-		return err
-	}
-
-	marshaler := &jsonpb.Marshaler{}
-	jsonBytes := &bytes.Buffer{}
-	if err := marshaler.Marshal(jsonBytes, &req); err != nil {
-		return err
-	}
-
-	// Bounce back all data back to the client, plus flushing bytes
-	if _, err := conn.Write(append(jsonBytes.Bytes(), 0)); err != nil {
-		return err
-	}
-
-	if _, err := io.Copy(conn, conn); err != nil {
-		return err
-	}
-
-	return stream.SendMsg(&gitalypb.PostUploadPackWithSidechannelResponse{})
+	return &gitalypb.PostUploadPackWithSidechannelResponse{}, s.finalError()
 }
 
 func (s *GitalyTestServer) CommitIsAncestor(ctx context.Context, in *gitalypb.CommitIsAncestorRequest) (*gitalypb.CommitIsAncestorResponse, error) {
@@ -423,4 +367,8 @@ func validateRepository(repo *gitalypb.Repository) error {
 		return fmt.Errorf("missing relative_path: %v", repo)
 	}
 	return nil
+}
+
+func WithSidechannel() grpc.ServerOption {
+	return client.SidechannelServer(logrus.NewEntry(logrus.StandardLogger()), insecure.NewCredentials())
 }

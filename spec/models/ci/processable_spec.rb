@@ -14,6 +14,223 @@ RSpec.describe Ci::Processable do
     it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
   end
 
+  describe '#clone' do
+    let(:user) { create(:user) }
+
+    let(:new_processable) do
+      new_proc = processable.clone(current_user: user)
+      new_proc.save!
+
+      new_proc
+    end
+
+    let_it_be(:stage) { create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'test') }
+
+    shared_context 'processable bridge' do
+      let_it_be(:downstream_project) { create(:project, :repository) }
+
+      let_it_be_with_refind(:processable) do
+        create(
+          :ci_bridge, :success, pipeline: pipeline, downstream: downstream_project,
+          description: 'a trigger job', stage_id: stage.id
+        )
+      end
+
+      let(:clone_accessors) { ::Ci::Bridge.clone_accessors }
+      let(:reject_accessors) { [] }
+      let(:ignore_accessors) { [] }
+    end
+
+    shared_context 'processable build' do
+      let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
+
+      let_it_be_with_refind(:processable) do
+        create(:ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
+              :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
+              description: 'my-job', stage: 'test', stage_id: stage.id,
+              pipeline: pipeline, auto_canceled_by: another_pipeline,
+              scheduled_at: 10.seconds.since)
+      end
+
+      let_it_be(:internal_job_variable) { create(:ci_job_variable, job: processable) }
+
+      let(:clone_accessors) { ::Ci::Build.clone_accessors.without(::Ci::Build.extra_accessors) }
+
+      let(:reject_accessors) do
+        %i[id status user token token_encrypted coverage trace runner
+           artifacts_expire_at
+           created_at updated_at started_at finished_at queued_at erased_by
+           erased_at auto_canceled_by job_artifacts job_artifacts_archive
+           job_artifacts_metadata job_artifacts_trace job_artifacts_junit
+           job_artifacts_sast job_artifacts_secret_detection job_artifacts_dependency_scanning
+           job_artifacts_container_scanning job_artifacts_cluster_image_scanning job_artifacts_dast
+           job_artifacts_license_scanning
+           job_artifacts_performance job_artifacts_browser_performance job_artifacts_load_performance
+           job_artifacts_lsif job_artifacts_terraform job_artifacts_cluster_applications
+           job_artifacts_codequality job_artifacts_metrics scheduled_at
+           job_variables waiting_for_resource_at job_artifacts_metrics_referee
+           job_artifacts_network_referee job_artifacts_dotenv
+           job_artifacts_cobertura needs job_artifacts_accessibility
+           job_artifacts_requirements job_artifacts_coverage_fuzzing
+           job_artifacts_api_fuzzing terraform_state_versions].freeze
+      end
+
+      let(:ignore_accessors) do
+        %i[type namespace lock_version target_url base_tags trace_sections
+           commit_id deployment erased_by_id project_id
+           runner_id tag_taggings taggings tags trigger_request_id
+           user_id auto_canceled_by_id retried failure_reason
+           sourced_pipelines artifacts_file_store artifacts_metadata_store
+           metadata runner_session trace_chunks upstream_pipeline_id
+           artifacts_file artifacts_metadata artifacts_size commands
+           resource resource_group_id processed security_scans author
+           pipeline_id report_results pending_state pages_deployments
+           queuing_entry runtime_metadata trace_metadata
+           dast_site_profile dast_scanner_profile].freeze
+      end
+
+      before_all do
+        # Create artifacts to check that the associations are rejected when cloning
+        Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.each do |file_type, file_format|
+          create(:ci_job_artifact, file_format,
+                file_type: file_type, job: processable, expire_at: processable.artifacts_expire_at)
+        end
+
+        create(:ci_job_variable, :dotenv_source, job: processable)
+        create(:terraform_state_version, build: processable)
+      end
+
+      before do
+        processable.update!(retried: false, status: :success)
+      end
+    end
+
+    shared_examples_for 'clones the processable' do
+      before_all do
+        processable.update!(stage: 'test', stage_id: stage.id)
+
+        create(:ci_build_need, build: processable)
+      end
+
+      describe 'clone accessors' do
+        let(:forbidden_associations) do
+          Ci::Build.reflect_on_all_associations.each_with_object(Set.new) do |assoc, memo|
+            memo << assoc.name unless assoc.macro == :belongs_to
+          end
+        end
+
+        it 'clones the processable attributes', :aggregate_failures do
+          clone_accessors.each do |attribute|
+            expect(attribute).not_to be_in(forbidden_associations), "association #{attribute} must be `belongs_to`"
+            expect(processable.send(attribute)).not_to be_nil, "old processable attribute #{attribute} should not be nil"
+            expect(new_processable.send(attribute)).not_to be_nil, "new processable attribute #{attribute} should not be nil"
+            expect(new_processable.send(attribute)).to eq(processable.send(attribute)), "new processable attribute #{attribute} should match old processable"
+          end
+        end
+
+        it 'clones only the needs attributes' do
+          expect(new_processable.needs.size).to be(1)
+          expect(processable.needs.exists?).to be_truthy
+
+          expect(new_processable.needs_attributes).to match(processable.needs_attributes)
+          expect(new_processable.needs).not_to match(processable.needs)
+        end
+
+        context 'when the processable has protected: nil' do
+          before do
+            processable.update_attribute(:protected, nil)
+          end
+
+          it 'clones the protected job attribute' do
+            expect(new_processable.protected).to be_nil
+            expect(new_processable.protected).to eq processable.protected
+          end
+        end
+      end
+
+      describe 'reject accessors' do
+        it 'does not clone rejected attributes' do
+          reject_accessors.each do |attribute|
+            expect(new_processable.send(attribute)).not_to eq(processable.send(attribute)), "processable attribute #{attribute} should not have been cloned"
+          end
+        end
+      end
+
+      it 'creates a new processable that represents the old processable' do
+        expect(new_processable.name).to eq processable.name
+      end
+    end
+
+    context 'when the processable to be cloned is a bridge' do
+      include_context 'processable bridge'
+
+      it_behaves_like 'clones the processable'
+    end
+
+    context 'when the processable to be cloned is a build' do
+      include_context 'processable build'
+
+      it_behaves_like 'clones the processable'
+
+      it 'has the correct number of known attributes', :aggregate_failures do
+        processed_accessors = clone_accessors + reject_accessors
+        known_accessors = processed_accessors + ignore_accessors
+
+        current_accessors =
+          Ci::Build.attribute_names.map(&:to_sym) +
+          Ci::Build.attribute_aliases.keys.map(&:to_sym) +
+          Ci::Build.reflect_on_all_associations.map(&:name) +
+          [:tag_list, :needs_attributes, :job_variables_attributes] -
+          # ToDo: Move EE accessors to ee/
+          ::Ci::Build.extra_accessors -
+          [:dast_site_profiles_build, :dast_scanner_profiles_build]
+
+        current_accessors.uniq!
+
+        expect(current_accessors).to include(*processed_accessors)
+        expect(known_accessors).to include(*current_accessors)
+      end
+
+      context 'when it has a deployment' do
+        let!(:processable) do
+          create(:ci_build, :with_deployment, :deploy_to_production,
+                  pipeline: pipeline, stage_id: stage.id, project: project)
+        end
+
+        it 'persists the expanded environment name' do
+          expect(new_processable.metadata.expanded_environment_name).to eq('production')
+        end
+      end
+
+      context 'when it has a dynamic environment' do
+        let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
+
+        let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
+
+        let!(:processable) do
+          create(:ci_build, :with_deployment, environment: environment_name,
+                options: { environment: { name: environment_name } },
+                pipeline: pipeline, stage_id: stage.id, project: project,
+                user: other_developer)
+        end
+
+        it 're-uses the previous persisted environment' do
+          expect(processable.persisted_environment.name).to eq("review/#{processable.ref}-#{other_developer.id}")
+
+          expect(new_processable.persisted_environment.name).to eq("review/#{processable.ref}-#{other_developer.id}")
+        end
+      end
+
+      context 'when the processable has job variables' do
+        it 'only clones the internal job variables' do
+          expect(new_processable.job_variables.size).to eq(1)
+          expect(new_processable.job_variables.first.key).to eq(internal_job_variable.key)
+          expect(new_processable.job_variables.first.value).to eq(internal_job_variable.value)
+        end
+      end
+    end
+  end
+
   describe '#retryable' do
     shared_examples_for 'retryable processable' do
       context 'when processable is successful' do
@@ -67,6 +284,12 @@ RSpec.describe Ci::Processable do
 
         it { is_expected.not_to be_retryable }
       end
+    end
+
+    context 'when the processable is a bridge' do
+      subject(:processable) { create(:ci_bridge, pipeline: pipeline) }
+
+      it_behaves_like 'retryable processable'
     end
 
     context 'when the processable is a build' do

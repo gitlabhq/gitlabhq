@@ -171,9 +171,9 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
       expect(thing).to receive(:persisted?).and_return(true)
 
       expect(thing).to receive(:update_columns)
-                         .with("title_html" => updated_html,
+                         .with({ "title_html" => updated_html,
                                "description_html" => "",
-                               "cached_markdown_version" => cache_version)
+                               "cached_markdown_version" => cache_version })
 
       thing.refresh_markdown_cache!
     end

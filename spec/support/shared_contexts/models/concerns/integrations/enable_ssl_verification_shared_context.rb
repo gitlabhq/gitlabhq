@@ -43,5 +43,9 @@ RSpec.shared_context Integrations::EnableSslVerification do
 
       expect(names.index('enable_ssl_verification')).to eq insert_index
     end
+
+    it 'does not insert the field repeatedly' do
+      expect(integration.fields.pluck(:name)).to eq(integration.fields.pluck(:name))
+    end
   end
 end

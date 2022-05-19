@@ -36,7 +36,7 @@ module QA
         imported_project.reload! # import the project
 
         expect { imported_project.project_import_status[:import_status] }.to eventually_eq('finished')
-          .within(max_duration: 90, sleep_interval: 1)
+          .within(max_duration: 240, sleep_interval: 1)
 
         aggregate_failures do
           verify_status_data

@@ -4,6 +4,6 @@ classes:
 - Packages::Debian::GroupComponent
 feature_categories:
 - package_registry
-description: TODO
+description: Debian package group-level distribution components
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51732
 milestone: '13.9'

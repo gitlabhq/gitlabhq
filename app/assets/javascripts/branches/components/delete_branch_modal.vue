@@ -32,17 +32,10 @@ export default {
 
       return sprintf(modalTitle, { branchName: this.branchName });
     },
-    message() {
-      const modalMessage = this.isProtectedBranch
+    modalMessage() {
+      return this.isProtectedBranch
         ? this.$options.i18n.modalMessageProtectedBranch
         : this.$options.i18n.modalMessage;
-
-      return sprintf(modalMessage, { branchName: this.branchName });
-    },
-    unmergedWarning() {
-      return sprintf(this.$options.i18n.unmergedWarning, {
-        defaultBranchName: this.defaultBranchName,
-      });
     },
     undoneWarning() {
       return sprintf(this.$options.i18n.undoneWarning, {
@@ -92,17 +85,15 @@ export default {
   i18n: {
     modalTitle: s__('Branches|Delete branch. Are you ABSOLUTELY SURE?'),
     modalTitleProtectedBranch: s__('Branches|Delete protected branch. Are you ABSOLUTELY SURE?'),
-    modalMessage: s__(
-      "Branches|You're about to permanently delete the branch %{strongStart}%{branchName}.%{strongEnd}",
-    ),
+    modalMessage: s__("Branches|You're about to permanently delete the branch %{branchName}."),
     modalMessageProtectedBranch: s__(
-      "Branches|You're about to permanently delete the protected branch %{strongStart}%{branchName}.%{strongEnd}",
+      "Branches|You're about to permanently delete the protected branch %{branchName}.",
     ),
     unmergedWarning: s__(
-      'Branches|This branch hasn’t been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it.',
+      "Branches|This branch hasn't been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it.",
     ),
     undoneWarning: s__(
-      'Branches|Once you confirm and press %{strongStart}%{buttonText},%{strongEnd} it cannot be undone or recovered.',
+      'Branches|After you confirm and select %{strongStart}%{buttonText},%{strongEnd} you cannot recover this branch.',
     ),
     cancelButtonText: s__('Branches|Cancel, keep branch'),
     confirmationText: s__(
@@ -119,13 +110,19 @@ export default {
   <gl-modal ref="modal" size="sm" :modal-id="modalId" :title="title">
     <gl-alert class="gl-mb-5" variant="danger" :dismissible="false">
       <div data-testid="modal-message">
-        <gl-sprintf :message="message">
-          <template #strong="{ content }">
-            <strong> {{ content }} </strong>
+        <gl-sprintf :message="modalMessage">
+          <template #branchName>
+            <strong>
+              <code class="gl-white-space-pre-wrap">{{ branchName }}</code>
+            </strong>
           </template>
         </gl-sprintf>
         <p v-if="!merged" class="gl-mb-0 gl-mt-4">
-          {{ unmergedWarning }}
+          <gl-sprintf :message="$options.i18n.unmergedWarning">
+            <template #defaultBranchName>
+              <code class="gl-white-space-pre-wrap">{{ defaultBranchName }}</code>
+            </template>
+          </gl-sprintf>
         </p>
       </div>
     </gl-alert>
@@ -145,7 +142,7 @@ export default {
               {{ content }}
             </template>
           </gl-sprintf>
-          <code class="gl-white-space-pre-wrap"> {{ branchName }} </code>
+          <code class="gl-white-space-pre-wrap">{{ branchName }}</code>
           <gl-form-input
             v-model="enteredBranchName"
             name="delete_branch_input"

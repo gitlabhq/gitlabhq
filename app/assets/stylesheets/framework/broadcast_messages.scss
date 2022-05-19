@@ -14,10 +14,13 @@
 }
 
 .broadcast-banner-message {
-  text-align: center;
-
   p {
     margin-bottom: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
   }
 }
 

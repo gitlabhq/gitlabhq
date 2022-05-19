@@ -163,9 +163,9 @@
       .block.reference
         .sidebar-collapsed-icon.js-dont-change-state
           = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
-        .cross-project-reference.hide-collapsed
-          %span.gl-display-inline-block.gl-text-truncate
+        .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
+          %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap
             = s_('MilestoneSidebar|Reference:')
             %span{ title: milestone_ref }
               = milestone_ref
-          = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport', class: 'btn-clipboard btn-transparent gl-float-right gl-bg-gray-10')
+          = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')

@@ -8,7 +8,7 @@ RSpec.describe 'Projects > Members > Maintainer adds member with expiration date
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
 
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, :with_namespace_settings) }
   let_it_be(:three_days_from_now) { 3.days.from_now.to_date }
   let_it_be(:five_days_from_now) { 5.days.from_now.to_date }
 

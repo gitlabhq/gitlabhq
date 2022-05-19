@@ -35,9 +35,7 @@ const textStyleTags = {
   [getStartTag('small')]: '<span class="gl-font-sm gl-text-gray-700">',
 };
 
-export const generateText = (text) => {
-  if (typeof text !== 'string') return null;
-
+const createText = (text) => {
   return text
     .replace(
       new RegExp(
@@ -59,4 +57,22 @@ export const generateText = (text) => {
       },
     )
     .replace(/%{([a-z]|_)+}/g, ''); // Filter out any tags we don't know about
+};
+
+export const generateText = (text) => {
+  if (typeof text === 'string') {
+    return createText(text);
+  } else if (
+    typeof text === 'object' &&
+    typeof text.text === 'string' &&
+    typeof text.href === 'string'
+  ) {
+    return createText(
+      `${
+        text.prependText ? `${text.prependText} ` : ''
+      }<a class="gl-text-decoration-underline" href="${text.href}">${text.text}</a>`,
+    );
+  }
+
+  return null;
 };

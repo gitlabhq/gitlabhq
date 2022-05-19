@@ -120,9 +120,11 @@ export default {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     openDropdown() {
       this.showDropdown = true;
+      this.$emit('toggleDropdown', this.showDropdown);
     },
     closeDropdown() {
       this.showDropdown = false;
+      this.$emit('toggleDropdown', this.showDropdown);
     },
     submitSearch() {
       return visitUrl(this.currentFocusedOption?.url || this.searchQuery);
@@ -146,7 +148,7 @@ export default {
     v-outside="closeDropdown"
     role="search"
     :aria-label="$options.i18n.searchGitlab"
-    class="header-search gl-relative gl-rounded-base"
+    class="header-search gl-relative gl-rounded-base gl-w-full"
     :class="headerSearchActivityDescriptor"
   >
     <gl-search-box-by-type

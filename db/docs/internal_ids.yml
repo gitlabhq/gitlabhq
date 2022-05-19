@@ -3,8 +3,7 @@ table_name: internal_ids
 classes:
 - InternalId
 feature_categories:
-- projects
-- subgroups
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/754272e392c0da088200a1b56156600973f63267
+- database
+description: Keeps track of counters scoped to a certain context, e.g. a project-wide counter for issues.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17580
 milestone: '10.7'

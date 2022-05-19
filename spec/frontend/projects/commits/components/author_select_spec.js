@@ -2,6 +2,7 @@ import { GlDropdown, GlDropdownSectionHeader, GlSearchBoxByType, GlDropdownItem 
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as urlUtility from '~/lib/utils/url_utility';
 import AuthorSelect from '~/projects/commits/components/author_select.vue';
 import { createStore } from '~/projects/commits/store';
@@ -30,7 +31,7 @@ describe('Author Select', () => {
   let wrapper;
 
   const createComponent = () => {
-    setFixtures(`
+    setHTMLFixture(`
       <div class="js-project-commits-show">
         <input id="commits-search" type="text" />
         <div id="commits-list"></div>
@@ -54,6 +55,7 @@ describe('Author Select', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   const findDropdownContainer = () => wrapper.find({ ref: 'dropdownContainer' });

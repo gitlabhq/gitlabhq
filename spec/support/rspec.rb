@@ -14,6 +14,8 @@ require_relative "helpers/fast_rails_root"
 require 'rubocop'
 require 'rubocop/rspec/support'
 
+RSpec::Expectations.configuration.on_potential_false_positives = :raise
+
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_doubled_constant_names = true

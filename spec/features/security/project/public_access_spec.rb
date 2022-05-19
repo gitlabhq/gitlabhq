@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe "Public Project Access" do
   include AccessMatchers
 
-  let_it_be(:project, reload: true) { create(:project, :public, :repository) }
+  let_it_be(:project, reload: true) do
+    create(:project, :public, :repository, :with_namespace_settings)
+  end
 
   describe "Project should be public" do
     describe '#public?' do

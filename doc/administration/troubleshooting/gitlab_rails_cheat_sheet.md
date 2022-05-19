@@ -83,7 +83,7 @@ Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 Adding a semicolon(`;`) and a follow-up statement at the end of a statement prevents the default implicit return output. This is useful if you are already explicitly printing details and potentially have a lot of return output:
 
 ```ruby
-puts ActiveRecord::Base.descendants; :ok 
+puts ActiveRecord::Base.descendants; :ok
 Project.select(&:pages_deployed?).each {|p| puts p.pages_url }; true
 ```
 
@@ -753,6 +753,21 @@ group.members_with_parents.count
 parent.members_with_descendants.count
 ```
 
+### Find groups that are pending deletion
+
+```ruby
+#
+# This section lists all the groups which are pending deletion
+#
+Group.all.each do |g|
+ if g.marked_for_deletion? 
+    puts "Group ID: #{g.id}"
+    puts "Group name: #{g.name}"
+    puts "Group path: #{g.full_path}"
+ end
+end
+```
+
 ### Delete a group
 
 ```ruby
@@ -797,6 +812,39 @@ end
 To find features that can be toggled, run `pp p.project_feature`.
 Available permission levels are listed in
 [concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
+
+### Get all error messages associated with groups, subgroups, members, and requesters
+
+Collect error messages associated with groups, subgroups, members, and requesters. This
+captures error messages that may not appear in the Web interface. This can be especially helpful
+for troubleshooting issues with [LDAP group sync](../auth/ldap/ldap_synchronization.md#group-sync)
+and unexpected behavior with users and their membership in groups and subgroups.
+
+```ruby
+# Find the group and subgroup
+group = Group.find_by_full_path("parent_group")
+subgroup = Group.find_by_full_path("parent_group/child_group")
+
+# Group and subgroup errors
+group.valid?
+group.errors.map(&:full_messages)
+
+subgroup.valid?
+subgroup.errors.map(&:full_messages)
+
+# Group and subgroup errors for the members AND requesters
+group.requesters.map(&:valid?)
+group.requesters.map(&:errors).map(&:full_messages)
+group.members.map(&:valid?)
+group.members.map(&:errors).map(&:full_messages)
+group.members_and_requesters.map(&:errors).map(&:full_messages)
+
+subgroup.requesters.map(&:valid?)
+subgroup.requesters.map(&:errors).map(&:full_messages)
+subgroup.members.map(&:valid?)
+subgroup.members.map(&:errors).map(&:full_messages)
+subgroup.members_and_requesters.map(&:errors).map(&:full_messages)
+```
 
 ## Authentication
 
@@ -1189,12 +1237,6 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ```ruby
 Geo::JobArtifactRegistry.failed
-```
-
-#### Download artifact
-
-```ruby
-Gitlab::Geo::JobArtifactDownloader.new(:job_artifact, <artifact_id>).execute
 ```
 
 #### Get a count of the synced artifacts

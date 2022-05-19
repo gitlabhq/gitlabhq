@@ -56,8 +56,10 @@ export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;
+export const PARAM_ASSIGNEE_ID = 'assignee_id';
 export const PARAM_PAGE_AFTER = 'page_after';
 export const PARAM_PAGE_BEFORE = 'page_before';
+export const PARAM_SORT = 'sort';
 export const PARAM_STATE = 'state';
 export const RELATIVE_POSITION = 'relative_position';
 
@@ -112,7 +114,8 @@ export const URL_PARAM = 'urlParam';
 export const NORMAL_FILTER = 'normalFilter';
 export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
-export const SPECIAL_FILTER_VALUES = [
+
+export const specialFilterValues = [
   FILTER_NONE,
   FILTER_ANY,
   FILTER_CURRENT,
@@ -131,6 +134,8 @@ export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
 export const TOKEN_TYPE_ITERATION = 'iteration';
 export const TOKEN_TYPE_EPIC = 'epic_id';
 export const TOKEN_TYPE_WEIGHT = 'weight';
+export const TOKEN_TYPE_CONTACT = 'crm_contact';
+export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
 
 export const filters = {
   [TOKEN_TYPE_AUTHOR]: {
@@ -174,6 +179,7 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
+        [SPECIAL_FILTER]: 'not[milestone_title]',
       },
     },
   },
@@ -258,6 +264,7 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',
+        [SPECIAL_FILTER]: 'not[iteration_id]',
       },
     },
   },
@@ -288,6 +295,26 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
+      },
+    },
+  },
+  [TOKEN_TYPE_CONTACT]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'crmContactId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'crm_contact_id',
+      },
+    },
+  },
+  [TOKEN_TYPE_ORGANIZATION]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'crmOrganizationId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'crm_organization_id',
       },
     },
   },

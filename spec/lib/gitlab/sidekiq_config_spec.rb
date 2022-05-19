@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqConfig do
+  before do
+    # Remove cache
+    described_class.instance_variable_set(:@workers, nil)
+  end
+
   describe '.workers' do
     it 'includes all workers' do
       worker_classes = described_class.workers.map(&:klass)
@@ -44,9 +49,10 @@ RSpec.describe Gitlab::SidekiqConfig do
     before do
       allow(described_class).to receive(:workers).and_return(workers)
       allow(Gitlab).to receive(:ee?).and_return(false)
+      allow(Gitlab).to receive(:jh?).and_return(false)
     end
 
-    it 'returns true if the YAML file does not matcph the application code' do
+    it 'returns true if the YAML file does not match the application code' do
       allow(YAML).to receive(:load_file)
                        .with(described_class::FOSS_QUEUE_CONFIG_PATH)
                        .and_return(workers.first(2).map(&:to_yaml))
@@ -96,6 +102,7 @@ RSpec.describe Gitlab::SidekiqConfig do
       ].map { |worker| described_class::Worker.new(worker, ee: false) }
 
       allow(described_class).to receive(:workers).and_return(workers)
+      allow(Gitlab).to receive(:jh?).and_return(false)
     end
 
     let(:expected_queues) do
@@ -159,6 +166,37 @@ RSpec.describe Gitlab::SidekiqConfig do
                                   'BackgroundMigrationWorker' => 'background_migration')
 
       expect(mappings).not_to include('AdminEmailWorker' => 'cronjob:admin_email')
+    end
+  end
+
+  describe '.routing_queues' do
+    let(:test_routes) do
+      [
+        ['tags=needs_own_queue', nil],
+        ['urgency=high', 'high_urgency'],
+        ['feature_category=gitaly', 'gitaly'],
+        ['feature_category=not_exist', 'not_exist'],
+        ['*', 'default']
+      ]
+    end
+
+    before do
+      described_class.instance_variable_set(:@routing_queues, nil)
+      allow(::Gitlab::SidekiqConfig::WorkerRouter)
+        .to receive(:global).and_return(::Gitlab::SidekiqConfig::WorkerRouter.new(test_routes))
+    end
+
+    after do
+      described_class.instance_variable_set(:@routing_queues, nil)
+    end
+
+    it 'returns worker queue mappings that have queues in the current Sidekiq options' do
+      queues = described_class.routing_queues
+
+      expect(queues).to match_array(%w[
+        default mailers high_urgency gitaly email_receiver service_desk_email_receiver
+      ])
+      expect(queues).not_to include('not_exist')
     end
   end
 end

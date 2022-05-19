@@ -4,6 +4,6 @@ classes:
 - UserCustomAttribute
 feature_categories:
 - users
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e9eae3eb0dd25e4a34c9a4b6bcc7de312dde4489
+description: Storing custom attributes per user
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13038
 milestone: '10.1'

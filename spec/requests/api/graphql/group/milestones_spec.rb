@@ -170,10 +170,8 @@ RSpec.describe 'Milestones through GroupQuery' do
     end
 
     it 'returns correct values for scalar fields' do
-      expect(post_query).to eq({
-        'id' => global_id_of(milestone),
-        'title' => milestone.title,
-        'description' => milestone.description,
+      expect(post_query).to match a_graphql_entity_for(
+        milestone, :title, :description,
         'state' => 'active',
         'webPath' => milestone_path(milestone),
         'dueDate' => milestone.due_date.iso8601,
@@ -183,7 +181,7 @@ RSpec.describe 'Milestones through GroupQuery' do
         'projectMilestone' => false,
         'groupMilestone' => true,
         'subgroupMilestone' => false
-      })
+      )
     end
 
     context 'milestone statistics' do

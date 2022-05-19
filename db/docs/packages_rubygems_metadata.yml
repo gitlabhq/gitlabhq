@@ -4,6 +4,6 @@ classes:
 - Packages::Rubygems::Metadatum
 feature_categories:
 - package_registry
-description: TODO
+description: Ruby gems metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52639
 milestone: '13.9'

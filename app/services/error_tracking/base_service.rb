@@ -71,5 +71,15 @@ module ErrorTracking
     def can_update?
       can?(current_user, :update_sentry_issue, project)
     end
+
+    def error_repository
+      Gitlab::ErrorTracking::ErrorRepository.build(project)
+    end
+
+    def handle_error_repository_exceptions
+      yield
+    rescue Gitlab::ErrorTracking::ErrorRepository::DatabaseError => e
+      { error: e.message }
+    end
   end
 end

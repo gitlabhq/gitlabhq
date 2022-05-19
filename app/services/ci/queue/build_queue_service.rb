@@ -80,7 +80,7 @@ module Ci
 
       def strategy
         strong_memoize(:strategy) do
-          if ::Feature.enabled?(:ci_pending_builds_queue_source, runner, default_enabled: :yaml)
+          if ::Feature.enabled?(:ci_pending_builds_queue_source, runner)
             Queue::PendingBuildsStrategy.new(runner)
           else
             Queue::BuildsTableStrategy.new(runner)

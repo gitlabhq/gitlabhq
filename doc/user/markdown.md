@@ -8,9 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
 
-GitLab automatically renders Markdown content. For example, when you add a comment to an issue,
-you type the text in the Markdown language. When you save the issue, the text is rendered
-with a set of styles. These styles are described on this page.
+When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
+The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
 
 For example, in Markdown, an unordered list looks like this:
 

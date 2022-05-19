@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import ImageDiff from '~/image_diff/image_diff';
@@ -9,7 +10,7 @@ describe('ReplacedImageDiff', () => {
   let replacedImageDiff;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div id="element">
         <div class="two-up">
           <div class="js-image-frame">
@@ -34,6 +35,10 @@ describe('ReplacedImageDiff', () => {
       </div>
     `);
     element = document.getElementById('element');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   function setupImageFrameEls() {

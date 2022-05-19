@@ -14,7 +14,7 @@ changes.
 By default, the diff view compares the versions of files in the merge request source branch
 to the files in the target branch, and shows only the parts of a file that have changed.
 
-![Example screenshot of a source code diff](img/mr-diff-example_v14_8.png)
+![Example screenshot of a source code diff](img/mr-diff-example_v15.png)
 
 ## Show all changes in a merge request
 

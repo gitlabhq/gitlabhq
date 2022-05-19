@@ -40,6 +40,8 @@
             Soft wrap
 
   .file-editor.code
+    - if Feature.enabled?(:source_editor_toolbar, current_user)
+      #editor-toolbar
     .js-edit-mode-pane.qa-editor#editor{ data: { 'editor-loading': true } }<
       %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]

@@ -274,7 +274,7 @@ RSpec.describe API::Ci::Runners do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['description']).to eq(shared_runner.description)
           expect(json_response['maximum_timeout']).to be_nil
-          expect(json_response['status']).to eq("not_connected")
+          expect(json_response['status']).to eq('never_contacted')
           expect(json_response['active']).to eq(true)
           expect(json_response['paused']).to eq(false)
         end
@@ -1215,15 +1215,6 @@ RSpec.describe API::Ci::Runners do
               expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
-        end
-
-        it 'enables a instance type runner' do
-          expect do
-            post api("/projects/#{project.id}/runners", admin), params: { runner_id: shared_runner.id }
-          end.to change { project.runners.count }.by(1)
-
-          expect(shared_runner.reload).not_to be_instance_type
-          expect(response).to have_gitlab_http_status(:created)
         end
       end
 

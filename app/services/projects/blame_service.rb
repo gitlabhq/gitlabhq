@@ -1,0 +1,65 @@
+# frozen_string_literal: true
+
+# Service class to correctly initialize Gitlab::Blame and Kaminari pagination
+# objects
+module Projects
+  class BlameService
+    PER_PAGE = 1000
+
+    def initialize(blob, commit, params)
+      @blob = blob
+      @commit = commit
+      @page = extract_page(params)
+    end
+
+    def blame
+      Gitlab::Blame.new(blob, commit, range: blame_range)
+    end
+
+    def pagination
+      return unless pagination_enabled?
+
+      Kaminari.paginate_array([], total_count: blob_lines_count)
+        .page(page)
+        .per(per_page)
+        .limit(per_page)
+    end
+
+    private
+
+    attr_reader :blob, :commit, :page
+
+    def blame_range
+      return unless pagination_enabled?
+
+      first_line = (page - 1) * per_page + 1
+      last_line = (first_line + per_page).to_i - 1
+
+      first_line..last_line
+    end
+
+    def extract_page(params)
+      page = params.fetch(:page, 1).to_i
+
+      return 1 if page < 1 || overlimit?(page)
+
+      page
+    end
+
+    def per_page
+      PER_PAGE
+    end
+
+    def overlimit?(page)
+      page * per_page >= blob_lines_count + per_page
+    end
+
+    def blob_lines_count
+      @blob_lines_count ||= blob.data.lines.count
+    end
+
+    def pagination_enabled?
+      Feature.enabled?(:blame_page_pagination, commit.project)
+    end
+  end
+end

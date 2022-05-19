@@ -636,7 +636,8 @@ If the limit value is set to zero, the limit is disabled.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276192) in GitLab 14.1, disabled by default.
 > - Enabled by default and [feature flag `ci_jobs_trace_size_limit` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/335259) in GitLab 14.2.
 
-The job log file size limit is 100 megabytes by default. Any job that exceeds this value is dropped.
+The job log file size limit in GitLab is 100 megabytes by default. Any job that exceeds the
+limit is marked as failed, and dropped by the runner.
 
 You can change the limit in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
 Update `ci_jobs_trace_size_limit` with the new value in megabytes:
@@ -644,6 +645,11 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 ```ruby
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
+
+GitLab Runner also has an 
+[`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+that configures the maximum log size in a runner. Jobs that exceed the runner limit
+continue to run, but the log is truncated when it hits the limit.
 
 ### Maximum number of active DAST profile schedules per project
 
@@ -876,6 +882,10 @@ See the limits in the [Add a design to an issue](../user/project/issues/design_m
 
 ## Push Event Limits
 
+### Max push size
+
+The maximum allowed [push size](../user/admin_area/settings/account_and_limit_settings.md#max-push-size) is set to 5 GB.
+
 ### Webhooks and Project Services
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31009) in GitLab 12.4.
@@ -886,7 +896,7 @@ than the specified limit, hooks are not executed.
 More information can be found in these docs:
 
 - [Webhooks push events](../user/project/integrations/webhook_events.md#push-events)
-- [Project services push hooks limit](../user/project/integrations/overview.md#push-hooks-limit)
+- [Project services push hooks limit](../user/project/integrations/index.md#push-hooks-limit)
 
 ### Activities
 

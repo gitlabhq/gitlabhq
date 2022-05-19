@@ -55,7 +55,7 @@ export default {
       return contacts.slice().sort((a, b) => a.firstName.localeCompare(b.firstName));
     },
     getIssuesPath(path, value) {
-      return `${path}?scope=all&state=opened&crm_contact_id=${value}`;
+      return `${path}?crm_contact_id=${value}`;
     },
     getEditRoute(id) {
       return { name: this.$options.EDIT_ROUTE_NAME, params: { id } };

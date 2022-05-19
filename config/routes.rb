@@ -116,6 +116,8 @@ Rails.application.routes.draw do
 
     get '/whats_new' => 'whats_new#index'
 
+    get 'offline' => "pwa#offline"
+
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
@@ -234,12 +236,11 @@ Rails.application.routes.draw do
   # End of the /-/ scope.
 
   concern :clusterable do
-    resources :clusters, only: [:index, :new, :show, :update, :destroy] do
+    resources :clusters, only: [:index, :show, :update, :destroy] do
       collection do
         get  :connect
         get  :new_cluster_docs
         post :create_user
-        post :create_gcp
         post :create_aws
         post :authorize_aws_role
       end

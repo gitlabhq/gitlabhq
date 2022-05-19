@@ -391,7 +391,7 @@ The requirements are the same as the previous settings:
 
 - The IdP must pass Group information to GitLab.
 - GitLab should know where to look for the groups in the SAML response, as well as which
-  group(s) entail that a given user is an [auditor user](../user/permissions.md#auditor-users).
+  groups include users with the [Auditor role](../user/permissions.md#auditor-users).
 
 ```yaml
 { name: 'saml',
@@ -853,7 +853,7 @@ When configuring the Google Workspace SAML app, be sure to record the following 
 | SSO URL     | Depends      | Google Identity Provider details. Set to the GitLab `idp_sso_target_url` setting. |
 | Certificate | Downloadable | Run `openssl x509 -in <your_certificate.crt> -noout -fingerprint` to generate the SHA1 fingerprint that can be used in the `idp_cert_fingerprint` setting.                         |
 
-While the Google Workspace Admin provides IdP metadata, Entity ID, and SHA-256
+While the Google Workspace Administrator provides IdP metadata, Entity ID, and SHA-256
 fingerprint, they are not required. GitLab does not need that information to
 connect to the Google Workspace SAML app.
 

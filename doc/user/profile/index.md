@@ -381,6 +381,34 @@ Each of these contribution events is tracked:
   - Design
   - Wiki page
 
+### Retrieve user activity as a feed
+
+GitLab provides RSS feeds of user activity. To subscribe to the
+RSS feed of a user's activity:
+
+1. Go to the [user's profile](#access-your-user-profile).
+1. In the top right, select the feed symbol **{rss}** to display the results as an RSS feed in Atom format.
+
+The URL of the result contains both a feed token, and
+the user's activity that you're authorized to view.
+You can add this URL to your feed reader.
+
+### Reset the user activity feed token
+
+Feed tokens are sensitive and can reveal information from confidential issues. 
+If you think your feed token has been exposed, you should reset it.
+
+To reset your feed token:
+
+1. On the top bar, in the top right corner, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Access Tokens**.
+1. Scroll down. In the **Feed token** section, select the
+   **reset this token** link. 
+1. On the confirmation box, select **OK**.
+
+A new token is generated.
+
 ## Troubleshooting
 
 ### Why do I keep getting signed out?

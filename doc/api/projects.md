@@ -36,6 +36,8 @@ There are three options for `merge_method` to choose from:
 
 ## List all projects
 
+> The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with _simple_ fields
 are returned.
@@ -47,6 +49,7 @@ GET /projects
 | Attribute                                  | Type     | Required               | Description |
 |--------------------------------------------|----------|------------------------|-------------|
 | `archived`                                 | boolean  | **{dotted-circle}** No | Limit by archived status. |
+| `build_coverage_regex`                     | string   | **{dotted-circle}** No | Test coverage parsing. (`deprecated`, it is [scheduled to be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357401)) |
 | `id_after`                                 | integer  | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                | integer  | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
 | `imported`                                 | boolean  | **{dotted-circle}** No | Limit results to projects which were imported from external systems by current user. |
@@ -208,7 +211,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   },
   {
@@ -325,7 +329,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
@@ -370,6 +375,8 @@ projects beyond this limit.
 Keyset pagination supports only `order_by=id`. Other sorting options aren't available.
 
 ## List user projects
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
@@ -499,7 +506,8 @@ GET /users/:user_id/projects
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   },
   {
@@ -616,13 +624,16 @@ GET /users/:user_id/projects
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
 ```
 
 ## List projects starred by a user
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Get a list of visible projects starred by the given user. When accessed without
 authentication, only public projects are returned.
@@ -744,7 +755,8 @@ Example response:
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   },
   {
@@ -858,13 +870,16 @@ Example response:
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
 ```
 
 ## Get single project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Get a specific project. This endpoint can be accessed without authentication if
 the project is publicly accessible.
@@ -1032,7 +1047,8 @@ GET /projects/:id
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
@@ -1212,6 +1228,16 @@ where `password` is a public access key with the `api` scope enabled.
 POST /projects
 ```
 
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
+     --header "Content-Type: application/json" --data '{
+        "name": "new_project", "description": "New Project", "path": "new_project",
+        "namespace_id": "42", "initialize_with_readme": "true"}' \
+     --url 'https://gitlab.example.com/api/v4/projects/'
+```
+
 | Attribute                                                   | Type    | Required               | Description |
 |-------------------------------------------------------------|---------|------------------------|-------------|
 | `name`                                                      | string  | **{check-circle}** Yes (if path isn't provided) | The name of the new project. Equals path if not provided. |
@@ -1224,7 +1250,6 @@ POST /projects
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                                    | mixed   | **{dotted-circle}** No | Image file for avatar of the project.                |
-| `build_coverage_regex`                                      | string  | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string  | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1238,8 +1263,8 @@ POST /projects
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
-| `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. |
-| `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | `false` by default. |
+| `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. When this isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
+| `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | Whether to create a Git repository with just a `README.md` file. Default is `false`. When this is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
 | `issues_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                            | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                              | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
@@ -1303,7 +1328,6 @@ POST /projects/user/:user_id
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                                    | mixed   | **{dotted-circle}** No | Image file for avatar of the project. |
-| `build_coverage_regex`                                      | string  | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string  | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                             | integer | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1392,7 +1416,6 @@ Supported attributes:
 | `auto_devops_enabled`                                       | boolean        | **{dotted-circle}** No | Enable Auto DevOps for this project. |
 | `autoclose_referenced_issues`                               | boolean        | **{dotted-circle}** No | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                                    | mixed          | **{dotted-circle}** No | Image file for avatar of the project.                |
-| `build_coverage_regex`                                      | string         | **{dotted-circle}** No | Test coverage parsing. |
 | `build_git_strategy`                                        | string         | **{dotted-circle}** No | The Git strategy. Defaults to `fetch`. |
 | `build_timeout`                                             | integer        | **{dotted-circle}** No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1407,7 +1430,7 @@ Supported attributes:
 | `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
-| `import_url`                                                | string         | **{dotted-circle}** No | URL to import repository from. |
+| `import_url`                                                | string         | **{dotted-circle}** No | URL the repository was imported from. |
 | `issues_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                            | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `issues_template` **(PREMIUM)**                             | string         | **{dotted-circle}** No | Default description for Issues. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
@@ -1482,6 +1505,8 @@ POST /projects/:id/fork
 | `visibility`     | string         | **{dotted-circle}** No | The [visibility level](#project-visibility-level) assigned to the resultant project after forking. |
 
 ## List forks of a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 List the projects accessible to the calling user that have an established,
 forked relationship with the specified project
@@ -1585,13 +1610,16 @@ Example responses:
       "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
-      "members": "http://example.com/api/v4/projects/1/members"
+      "members": "http://example.com/api/v4/projects/1/members",
+      "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
     }
   }
 ]
 ```
 
 ## Star a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Stars a given project. Returns status code `304` if the project is already
 starred.
@@ -1688,12 +1716,15 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
 
 ## Unstar a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Unstars a given project. Returns status code `304` if the project is not starred.
 
@@ -1789,7 +1820,8 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
@@ -1868,6 +1900,8 @@ Example response:
 ```
 
 ## Archive a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Archives the project if the user is either an administrator or the owner of this
 project. This action is idempotent, thus archiving an already archived project
@@ -1984,12 +2018,15 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
 
 ## Unarchive a project
+
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
 Unarchives the project if the user is either an administrator or the owner of
 this project. This action is idempotent, thus unarchiving a non-archived project
@@ -2106,7 +2143,8 @@ Example response:
     "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
-    "members": "http://example.com/api/v4/projects/1/members"
+    "members": "http://example.com/api/v4/projects/1/members",
+    "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
 }
 ```
@@ -2507,7 +2545,7 @@ POST /projects/:id/housekeeping
 
 ### Get project push rules
 
-Get the [push rules](../user/project/repository/push_rules.md#enabling-push-rules) of a
+Get the [push rules](../user/project/repository/push_rules.md) of a
 project.
 
 ```plaintext
@@ -2614,6 +2652,8 @@ DELETE /projects/:id/push_rule
 
 ## Transfer a project to a new namespace
 
+> The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
+
 See the [Project documentation](../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
 for prerequisites to transfer a project.
 
@@ -2718,7 +2758,7 @@ Example response:
   "public_jobs": true,
   "build_timeout": 3600,
   "auto_cancel_pending_pipelines": "enabled",
-  "build_coverage_regex": null,
+  "build_coverage_regex": null, // deprecated, it is scheduled to be removed https://gitlab.com/gitlab-org/gitlab/-/issues/357401
   "ci_config_path": null,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

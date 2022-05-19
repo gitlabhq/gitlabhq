@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
   let(:analyzer) { double(:query_analyzer) }
-  let(:user_analyzer) { double(:query_analyzer) }
+  let(:user_analyzer) { double(:user_query_analyzer) }
   let(:disabled_analyzer) { double(:disabled_query_analyzer) }
 
   before do
@@ -49,14 +49,36 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
         end
       end
 
-      it 'does not evaluate enabled? again do yield block' do
-        expect(analyzer).not_to receive(:enabled?)
+      it 'does initialize analyzer only once' do
+        expect(analyzer).to receive(:enabled?).once
+        expect(analyzer).to receive(:begin!).once
+        expect(analyzer).to receive(:end!).once
 
         expect { |b| described_class.instance.within(&b) }.to yield_control
       end
 
-      it 'raises exception when trying to re-define analyzers' do
-        expect { |b| described_class.instance.within([user_analyzer], &b) }.to raise_error /Query analyzers are already defined, cannot re-define them/
+      it 'does initialize user analyzer when enabled' do
+        expect(user_analyzer).to receive(:enabled?).and_return(true)
+        expect(user_analyzer).to receive(:begin!)
+        expect(user_analyzer).to receive(:end!)
+
+        expect { |b| described_class.instance.within([user_analyzer], &b) }.to yield_control
+      end
+
+      it 'does initialize user analyzer only once' do
+        expect(user_analyzer).to receive(:enabled?).and_return(false, true)
+        expect(user_analyzer).to receive(:begin!).once
+        expect(user_analyzer).to receive(:end!).once
+
+        expect { |b| described_class.instance.within([user_analyzer, user_analyzer, user_analyzer], &b) }.to yield_control
+      end
+
+      it 'does not initializer user analyzer when disabled' do
+        expect(user_analyzer).to receive(:enabled?).and_return(false)
+        expect(user_analyzer).not_to receive(:begin!)
+        expect(user_analyzer).not_to receive(:end!)
+
+        expect { |b| described_class.instance.within([user_analyzer], &b) }.to yield_control
       end
     end
 
@@ -162,7 +184,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     def process_sql(sql)
       described_class.instance.within do
         ApplicationRecord.load_balancer.read_write do |connection|
-          described_class.instance.process_sql(sql, connection)
+          described_class.instance.send(:process_sql, sql, connection)
         end
       end
     end

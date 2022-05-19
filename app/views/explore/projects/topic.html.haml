@@ -1,7 +1,7 @@
 - @hide_top_links = false
 - @no_container = true
-- page_title    @topic.name, _("Topics")
-- max_topic_name_length = 50
+- page_title @topic.title_or_name, _("Topics")
+- max_topic_title_length = 50
 
 = render_dashboard_ultimate_trial(current_user)
 
@@ -9,12 +9,12 @@
   .gl-pb-5.gl-align-items-center.gl-justify-content-center.gl-display-flex
     .avatar-container.rect-avatar.s60.gl-flex-shrink-0
       = topic_icon(@topic, alt: _('Topic avatar'), class: 'avatar topic-avatar s60')
-    - if @topic.name.length > max_topic_name_length
-      %h1.gl-mt-3.str-truncated.has-tooltip{ title: @topic.name }
-        = truncate(@topic.name, length: max_topic_name_length)
+    - if @topic.title_or_name.length > max_topic_title_length
+      %h1.gl-mt-3.gl-str-truncated.has-tooltip{ title: @topic.title_or_name }
+        = truncate(@topic.title_or_name, length: max_topic_title_length)
     - else
       %h1.gl-mt-3
-        = @topic.name
+        = @topic.title_or_name
   - if @topic.description.present?
     .topic-description.gl-ml-4.gl-mr-4
       = markdown(@topic.description)

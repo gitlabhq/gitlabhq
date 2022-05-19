@@ -26,6 +26,7 @@ RSpec.describe API::Features, stub_feature_flags: false do
     end
 
     skip_feature_flags_yaml_validation
+    skip_default_enabled_yaml_check
   end
 
   describe 'GET /features' do
@@ -308,6 +309,55 @@ RSpec.describe API::Features, stub_feature_flags: false do
           ],
           'definition' => known_feature_flag_definition_hash
         )
+      end
+
+      describe 'mutually exclusive parameters' do
+        shared_examples 'fails to set the feature flag' do
+          it 'returns an error' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to match(/key, \w+ are mutually exclusive/)
+          end
+        end
+
+        context 'when key and feature_group are provided' do
+          before do
+            post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', feature_group: 'some-value' }
+          end
+
+          it_behaves_like 'fails to set the feature flag'
+        end
+
+        context 'when key and user are provided' do
+          before do
+            post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', user: 'some-user' }
+          end
+
+          it_behaves_like 'fails to set the feature flag'
+        end
+
+        context 'when key and group are provided' do
+          before do
+            post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', group: 'somepath' }
+          end
+
+          it_behaves_like 'fails to set the feature flag'
+        end
+
+        context 'when key and namespace are provided' do
+          before do
+            post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', namespace: 'somepath' }
+          end
+
+          it_behaves_like 'fails to set the feature flag'
+        end
+
+        context 'when key and project are provided' do
+          before do
+            post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors', project: 'somepath' }
+          end
+
+          it_behaves_like 'fails to set the feature flag'
+        end
       end
     end
 

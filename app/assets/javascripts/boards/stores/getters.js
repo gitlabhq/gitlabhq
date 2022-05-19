@@ -51,4 +51,18 @@ export default {
   isEpicBoard: () => {
     return false;
   },
+
+  hasScope: (state) => {
+    const { boardConfig } = state;
+    if (boardConfig.labels?.length > 0) {
+      return true;
+    }
+    let hasScope = false;
+    ['assigneeId', 'iterationCadenceId', 'iterationId', 'milestoneId', 'weight'].forEach((attr) => {
+      if (boardConfig[attr] !== null && boardConfig[attr] !== undefined) {
+        hasScope = true;
+      }
+    });
+    return hasScope;
+  },
 };

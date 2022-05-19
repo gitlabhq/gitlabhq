@@ -275,7 +275,7 @@ can enable or disable a project wiki by following the instructions in
 Administrators for self-managed GitLab installs can
 [configure additional wiki settings](../../../administration/wikis/index.md).
 
-You can't disable [group wikis](group.md) from the GitLab user interface.
+You can disable group wikis from the [group settings](group.md#configure-group-wiki-visibility)
 
 ## Link an external wiki
 

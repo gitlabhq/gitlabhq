@@ -79,6 +79,18 @@ RSpec.describe Projects::ServicePingController do
 
       it_behaves_like 'counter is not increased'
       it_behaves_like 'counter is increased', 'WEB_IDE_PREVIEWS_SUCCESS_COUNT'
+
+      context 'when the user has access to the project' do
+        let(:user) { project.owner }
+
+        it 'increases the live preview view counter' do
+          expect(Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_live_preview_edit_action).with(author: user)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
 
     context 'when web ide clientside preview is not enabled' do

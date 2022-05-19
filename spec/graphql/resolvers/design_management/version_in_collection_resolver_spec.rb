@@ -50,15 +50,6 @@ RSpec.describe Resolvers::DesignManagement::VersionInCollectionResolver do
 
       it { is_expected.to be_nil }
     end
-
-    context 'we pass the id of something that is not a design_version' do
-      let(:params) { { id: global_id_of(project) } }
-      let(:appropriate_error) { ::GraphQL::CoercionError }
-
-      it 'raises an appropriate error' do
-        expect { result }.to raise_error(appropriate_error)
-      end
-    end
   end
 
   def resolve_version(obj, context = { current_user: current_user })

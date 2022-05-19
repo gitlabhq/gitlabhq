@@ -15,7 +15,6 @@ RSpec.describe 'Pipeline', :js do
   before do
     sign_in(user)
     project.add_role(user, role)
-    stub_feature_flags(pipeline_tabs_vue: false)
   end
 
   shared_context 'pipeline builds' do
@@ -78,12 +77,6 @@ RSpec.describe 'Pipeline', :js do
       expect(page).to have_content('Deploy')
       expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel running')
-    end
-
-    it 'shows Pipeline tab pane as active' do
-      visit_pipeline
-
-      expect(page).to have_css('#js-tab-pipeline.active')
     end
 
     it 'shows link to the pipeline ref' do
@@ -190,11 +183,11 @@ RSpec.describe 'Pipeline', :js do
     end
 
     describe 'pipeline graph' do
-      before do
-        visit_pipeline
-      end
-
       context 'when pipeline has running builds' do
+        before do
+          visit_pipeline
+        end
+
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
             expect(page).to have_selector('.js-ci-status-icon-running')
@@ -213,6 +206,10 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when pipeline has preparing builds' do
+        before do
+          visit_pipeline
+        end
+
         it 'shows a preparing icon and a cancel action' do
           page.within('#ci-badge-prepare') do
             expect(page).to have_selector('.js-ci-status-icon-preparing')
@@ -231,6 +228,10 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when pipeline has successful builds' do
+        before do
+          visit_pipeline
+        end
+
         it 'shows the success icon and a retry action for the successful build' do
           page.within('#ci-badge-build') do
             expect(page).to have_selector('.js-ci-status-icon-success')
@@ -254,6 +255,10 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when pipeline has a delayed job' do
+        before do
+          visit_pipeline
+        end
+
         let(:project) { create(:project, :repository, group: group) }
 
         it 'shows the scheduled icon and an unschedule action for the delayed job' do
@@ -277,6 +282,10 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when pipeline has failed builds' do
+        before do
+          visit_pipeline
+        end
+
         it 'shows the failed icon and a retry action for the failed build' do
           page.within('#ci-badge-test') do
             expect(page).to have_selector('.js-ci-status-icon-failed')
@@ -307,6 +316,10 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when pipeline has manual jobs' do
+        before do
+          visit_pipeline
+        end
+
         it 'shows the skipped icon and a play action for the manual build' do
           page.within('#ci-badge-manual-build') do
             expect(page).to have_selector('.js-ci-status-icon-manual')
@@ -330,10 +343,137 @@ RSpec.describe 'Pipeline', :js do
       end
 
       context 'when pipeline has external job' do
+        before do
+          visit_pipeline
+        end
+
         it 'shows the success icon and the generic comit status build' do
           expect(page).to have_selector('.js-ci-status-icon-success')
           expect(page).to have_content('jenkins')
           expect(page).to have_link('jenkins', href: 'http://gitlab.com/status')
+        end
+      end
+
+      context 'when pipeline has a downstream pipeline' do
+        let(:downstream_project) { create(:project, :repository, group: group) }
+        let(:downstream_pipeline) do
+          create(:ci_pipeline,
+          status,
+          user: user,
+          project: downstream_project,
+          ref: 'master',
+          sha: downstream_project.commit.id,
+          child_of: pipeline )
+        end
+
+        let!(:build) { create(:ci_build, status, pipeline: downstream_pipeline, user: user) }
+
+        before do
+          downstream_pipeline.project.add_developer(user)
+        end
+
+        context 'and user has permission' do
+          before do
+            visit_pipeline
+          end
+
+          context 'with a successful downstream' do
+            let(:status) { :success }
+
+            it 'does not show the cancel or retry action' do
+              expect(page).to have_selector('.ci-status-icon-success')
+              expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
+              expect(page).not_to have_selector('button[aria-label="Cancel downstream pipeline"]')
+            end
+          end
+
+          context 'with a running downstream' do
+            let(:status) { :running }
+
+            it 'shows the cancel action' do
+              expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
+            end
+
+            context 'when canceling' do
+              before do
+                find('button[aria-label="Cancel downstream pipeline"]').click
+                wait_for_requests
+              end
+
+              it 'shows the pipeline as canceled with the retry action' do
+                expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+                expect(page).to have_selector('.ci-status-icon-canceled')
+              end
+            end
+          end
+
+          context 'with a failed downstream' do
+            let(:status) { :failed }
+
+            it 'indicates that pipeline can be retried' do
+              expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+            end
+
+            context 'and the FF downstream_retry_action is disabled' do
+              before do
+                stub_feature_flags(downstream_retry_action: false)
+              end
+
+              it 'does not show the retry action' do
+                expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
+              end
+            end
+
+            context 'when retrying' do
+              before do
+                find('button[aria-label="Retry downstream pipeline"]').click
+                wait_for_requests
+              end
+
+              it 'shows running pipeline with the cancel action' do
+                expect(page).to have_selector('.ci-status-icon-running')
+                expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
+              end
+            end
+          end
+
+          context 'with a canceled downstream' do
+            let(:status) { :canceled }
+
+            it 'indicates that pipeline can be retried' do
+              expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+            end
+
+            context 'when retrying' do
+              before do
+                find('button[aria-label="Retry downstream pipeline"]').click
+                wait_for_requests
+              end
+
+              it 'shows running pipeline with the cancel action' do
+                expect(page).to have_selector('.ci-status-icon-running')
+                expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
+              end
+            end
+          end
+        end
+
+        context 'when user does not have permissions' do
+          let(:status) { :failed }
+
+          before do
+            new_user = create(:user)
+            project.add_role(new_user, :guest)
+            downstream_project.add_role(new_user, :guest)
+            sign_in(new_user)
+
+            visit_pipeline
+          end
+
+          it 'does not show the retry button' do
+            expect(page).to have_selector('.ci-status-icon-failed')
+            expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
+          end
         end
       end
     end
@@ -357,7 +497,6 @@ RSpec.describe 'Pipeline', :js do
 
     context 'page tabs' do
       before do
-        stub_feature_flags(pipeline_tabs_vue: false)
         visit_pipeline
       end
 
@@ -369,11 +508,8 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
+        skip('Enable in jobs `pipeline_tabs_vue` MR')
         expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
-      end
-
-      it 'shows Pipeline tab as active' do
-        expect(page).to have_css('.js-pipeline-tab-link .active')
       end
 
       context 'without permission to access builds' do
@@ -753,6 +889,7 @@ RSpec.describe 'Pipeline', :js do
 
     describe 'GET /:project/-/pipelines/:id/builds' do
       before do
+        stub_feature_flags(pipeline_tabs_vue: false)
         visit builds_project_pipeline_path(project, pipeline)
       end
 
@@ -893,28 +1030,6 @@ RSpec.describe 'Pipeline', :js do
             end
           end
         end
-
-        context 'when deploy job is a bridge to trigger a downstream pipeline' do
-          let!(:deploy_job) do
-            create(:ci_bridge, :created, stage: 'deploy', name: 'deploy',
-              stage_idx: 2, pipeline: pipeline, project: project, resource_group: resource_group)
-          end
-
-          it 'shows deploy job as waiting for resource' do
-            subject
-
-            within('.js-pipeline-header-container') do
-              expect(page).to have_content('waiting')
-            end
-
-            within('.js-pipeline-graph') do
-              within(all('[data-testid="stage-column"]')[1]) do
-                expect(page).to have_content('deploy')
-                expect(page).to have_css('.ci-status-icon-waiting-for-resource')
-              end
-            end
-          end
-        end
       end
     end
   end
@@ -943,15 +1058,7 @@ RSpec.describe 'Pipeline', :js do
       expect(page).to have_button('Play')
     end
 
-    it 'shows jobs tab pane as active' do
-      expect(page).to have_css('#js-tab-builds.active')
-    end
-
     context 'page tabs' do
-      before do
-        stub_feature_flags(pipeline_tabs_vue: false)
-      end
-
       it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
@@ -959,11 +1066,8 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
+        skip('unskip when jobs tab is implemented with ff `pipeline_tabs_vue`')
         expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
-      end
-
-      it 'shows Jobs tab as active' do
-        expect(page).to have_css('li.js-builds-tab-link .active')
       end
     end
 
@@ -1022,26 +1126,19 @@ RSpec.describe 'Pipeline', :js do
   end
 
   describe 'GET /:project/-/pipelines/:id/failures' do
-    before do
-      stub_feature_flags(pipeline_tabs_vue: false)
-    end
-
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    before do
+      stub_feature_flags(pipeline_tabs_vue: false)
+    end
 
     subject { visit pipeline_failures_page }
 
     context 'with failed build' do
       before do
         failed_build.trace.set('4 examples, 1 failure')
-      end
-
-      it 'shows jobs tab pane as active' do
-        subject
-
-        expect(page).to have_content('Failed Jobs')
-        expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
@@ -1063,12 +1160,43 @@ RSpec.describe 'Pipeline', :js do
         expect(page).to have_content('There is an unknown failure, please try again')
       end
 
+      context 'when failed_jobs_tab_vue feature flag is disabled' do
+        before do
+          stub_feature_flags(failed_jobs_tab_vue: false)
+        end
+
+        context 'when user does not have permission to retry build' do
+          it 'shows retry button for failed build' do
+            subject
+
+            page.within(find('.build-failures', match: :first)) do
+              expect(page).not_to have_link('Retry')
+            end
+          end
+        end
+
+        context 'when user does have permission to retry build' do
+          before do
+            create(:protected_branch, :developers_can_merge,
+                   name: pipeline.ref, project: project)
+          end
+
+          it 'shows retry button for failed build' do
+            subject
+
+            page.within(find('.build-failures', match: :first)) do
+              expect(page).to have_link('Retry')
+            end
+          end
+        end
+      end
+
       context 'when user does not have permission to retry build' do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('.build-failures', match: :first)) do
-            expect(page).not_to have_link('Retry')
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).not_to have_button('Retry')
           end
         end
       end
@@ -1082,21 +1210,14 @@ RSpec.describe 'Pipeline', :js do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('.build-failures', match: :first)) do
-            expect(page).to have_link('Retry')
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).to have_button('Retry')
           end
         end
       end
     end
 
     context 'when missing build logs' do
-      it 'shows jobs tab pane as active' do
-        subject
-
-        expect(page).to have_content('Failed Jobs')
-        expect(page).to have_css('#js-tab-failures.active')
-      end
-
       it 'lists failed builds' do
         subject
 
@@ -1133,11 +1254,17 @@ RSpec.describe 'Pipeline', :js do
         failed_build.update!(status: :success)
       end
 
+      it 'does not show the failure tab' do
+        skip('unskip when the failure tab has been implemented in ff `pipeline_tabs_vue`')
+        subject
+
+        expect(page).not_to have_content('Failed Jobs')
+      end
+
       it 'displays the pipeline graph' do
         subject
 
         expect(page).to have_current_path(pipeline_path(pipeline), ignore_query: true)
-        expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.js-pipeline-graph')
       end
     end
@@ -1151,27 +1278,14 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      stub_feature_flags(pipeline_tabs_vue: false)
       visit dag_project_pipeline_path(project, pipeline)
-    end
-
-    it 'shows DAG tab pane as active' do
-      expect(page).to have_css('#js-tab-dag.active', visible: false)
     end
 
     context 'page tabs' do
       it 'shows Pipeline, Jobs and DAG tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
-        expect(page).to have_link('DAG')
-      end
-
-      it 'shows counter in Jobs tab' do
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
-      end
-
-      it 'shows DAG tab as active' do
-        expect(page).to have_css('li.js-dag-tab-link .active')
+        expect(page).to have_link('Needs')
       end
     end
   end

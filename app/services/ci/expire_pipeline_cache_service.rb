@@ -86,7 +86,7 @@ module Ci
         etag_paths << path
       end
 
-      pipeline.self_with_upstreams_and_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
+      pipeline.all_pipelines_in_hierarchy.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
         etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
         etag_paths << graphql_pipeline_path(relative_pipeline)
         etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha)

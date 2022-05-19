@@ -255,8 +255,6 @@ Let's look in the UI and confirm your changes. Go to your project.
 
   ![Commit message](img/commit_message_v14_10.png)
 
-- Above the file list, select **History** to view your commit details.
-
 Now you can return to the command line and change back to your personal branch
 (`git checkout example-tutorial-branch`). You can continue updating files or
 creating new ones. Type `git status` to view the status

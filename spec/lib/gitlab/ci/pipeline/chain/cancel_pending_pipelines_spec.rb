@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
             create(:ci_build, :interruptible, :running, pipeline: child_pipeline)
           end
 
-          not_started_statuses = Ci::HasStatus::AVAILABLE_STATUSES - Ci::HasStatus::BUILD_STARTED_RUNNING_STATUSES
+          not_started_statuses = Ci::HasStatus::AVAILABLE_STATUSES - Ci::HasStatus::STARTED_STATUSES
           context 'when the jobs are cancelable' do
             cancelable_not_started_statuses = Set.new(not_started_statuses).intersection(Ci::HasStatus::CANCELABLE_STATUSES)
             cancelable_not_started_statuses.each do |status|

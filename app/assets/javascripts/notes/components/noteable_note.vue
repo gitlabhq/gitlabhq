@@ -108,6 +108,9 @@ export default {
     author() {
       return this.note.author;
     },
+    commentType() {
+      return this.note.confidential ? __('internal note') : __('comment');
+    },
     classNameBindings() {
       return {
         [`note-row-${this.note.id}`]: true,
@@ -246,14 +249,19 @@ export default {
       this.$emit('handleEdit');
     },
     async deleteHandler() {
-      const typeOfComment = this.note.isDraft ? __('pending comment') : __('comment');
+      let { commentType } = this;
 
-      const msg = sprintf(__('Are you sure you want to delete this %{typeOfComment}?'), {
-        typeOfComment,
+      if (this.note.isDraft) {
+        // Draft internal notes (i.e. MR review comments) are not supported.
+        commentType = __('pending comment');
+      }
+
+      const msg = sprintf(__('Are you sure you want to delete this %{commentType}?'), {
+        commentType,
       });
       const confirmed = await confirmAction(msg, {
         primaryBtnVariant: 'danger',
-        primaryBtnText: __('Delete Comment'),
+        primaryBtnText: this.note.confidential ? __('Delete Internal Note') : __('Delete Comment'),
       });
 
       if (confirmed) {
@@ -356,7 +364,9 @@ export default {
       isDirty,
     }) {
       if (shouldConfirm && isDirty) {
-        const msg = __('Are you sure you want to cancel editing this comment?');
+        const msg = sprintf(__('Are you sure you want to cancel editing this %{commentType}?'), {
+          commentType: this.commentType,
+        });
         const confirmed = await confirmAction(msg, {
           primaryBtnText: __('Cancel editing'),
           primaryBtnVariant: 'danger',

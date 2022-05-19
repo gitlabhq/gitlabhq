@@ -15,7 +15,7 @@ RSpec.describe 'Setting issues crm contacts' do
   let(:operation_mode) { Types::MutationOperationModeEnum.default_mode }
   let(:initial_contacts) { contacts[0..1] }
   let(:mutation_contacts) { contacts[1..2] }
-  let(:contact_ids) { contact_global_ids(mutation_contacts) }
+  let(:contact_ids) { mutation_contacts.map { global_id_of(_1) } }
   let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
 
   let(:mutation) do
@@ -45,8 +45,8 @@ RSpec.describe 'Setting issues crm contacts' do
     graphql_mutation_response(:issue_set_crm_contacts)
   end
 
-  def contact_global_ids(contacts)
-    contacts.map { |contact| global_id_of(contact) }
+  def expected_contacts(contacts)
+    contacts.map { |contact| a_graphql_entity_for(contact) }
   end
 
   before do
@@ -58,8 +58,8 @@ RSpec.describe 'Setting issues crm contacts' do
       it 'updates the issue with correct contacts' do
         post_graphql_mutation(mutation, current_user: user)
 
-        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
-          .to match_array(contact_global_ids(mutation_contacts))
+        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
+          .to match_array(expected_contacts(mutation_contacts))
       end
     end
 
@@ -70,8 +70,8 @@ RSpec.describe 'Setting issues crm contacts' do
       it 'updates the issue with correct contacts' do
         post_graphql_mutation(mutation, current_user: user)
 
-        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
-          .to match_array(contact_global_ids(initial_contacts + mutation_contacts))
+        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
+          .to match_array(expected_contacts(initial_contacts + mutation_contacts))
       end
     end
 
@@ -82,8 +82,8 @@ RSpec.describe 'Setting issues crm contacts' do
       it 'updates the issue with correct contacts' do
         post_graphql_mutation(mutation, current_user: user)
 
-        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes, :id))
-          .to match_array(contact_global_ids(initial_contacts - mutation_contacts))
+        expect(graphql_data_at(:issue_set_crm_contacts, :issue, :customer_relations_contacts, :nodes))
+          .to match_array(expected_contacts(initial_contacts - mutation_contacts))
       end
     end
   end
@@ -117,7 +117,7 @@ RSpec.describe 'Setting issues crm contacts' do
     it_behaves_like 'successful mutation'
 
     context 'when the contact does not exist' do
-      let(:contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }
+      let(:contact_ids) { [global_id_of(model_name: 'CustomerRelations::Contact', id: non_existing_record_id)] }
 
       it 'returns expected error' do
         post_graphql_mutation(mutation, current_user: user)
@@ -159,7 +159,7 @@ RSpec.describe 'Setting issues crm contacts' do
 
     context 'when trying to remove non-existent contact' do
       let(:operation_mode) { Types::MutationOperationModeEnum.enum[:remove] }
-      let(:contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }
+      let(:contact_ids) { [global_id_of(model_name: 'CustomerRelations::Contact', id: non_existing_record_id)] }
 
       it 'raises expected error' do
         post_graphql_mutation(mutation, current_user: user)

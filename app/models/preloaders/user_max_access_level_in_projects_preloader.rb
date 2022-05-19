@@ -5,25 +5,50 @@ module Preloaders
   # stores the values in requests store via the ProjectTeam class.
   class UserMaxAccessLevelInProjectsPreloader
     def initialize(projects, user)
-      @projects = projects
+      @projects = if projects.is_a?(Array)
+                    Project.where(id: projects)
+                  else
+                    # Push projects base query in to a sub-select to avoid
+                    # table name clashes. Performs better than aliasing.
+                    Project.where(id: projects.reselect(:id))
+                  end
+
       @user = user
     end
 
     def execute
-      # Use reselect to override the existing select to prevent
-      # the error `subquery has too many columns`
-      # NotificationsController passes in an Array so we need to check the type
-      project_ids = @projects.is_a?(ActiveRecord::Relation) ? @projects.reselect(:id) : @projects
-      access_levels = @user
-        .project_authorizations
-        .where(project_id: project_ids)
-        .group(:project_id)
-        .maximum(:access_level)
+      project_authorizations = ProjectAuthorization.arel_table
 
-      @projects.each do |project|
-        access_level = access_levels[project.id] || Gitlab::Access::NO_ACCESS
+      auths = @projects
+                .select(
+                  Project.default_select_columns,
+                  project_authorizations[:user_id],
+                  project_authorizations[:access_level]
+                )
+                .joins(project_auth_join)
+
+      auths.each do |project|
+        access_level = project.access_level || Gitlab::Access::NO_ACCESS
         ProjectTeam.new(project).write_member_access_for_user_id(@user.id, access_level)
       end
+    end
+
+    private
+
+    def project_auth_join
+      project_authorizations = ProjectAuthorization.arel_table
+      projects = Project.arel_table
+
+      projects
+        .join(
+          project_authorizations.as(project_authorizations.name),
+          Arel::Nodes::OuterJoin
+        )
+        .on(
+          project_authorizations[:project_id].eq(projects[:id])
+          .and(project_authorizations[:user_id].eq(@user.id))
+        )
+        .join_sources
     end
   end
 end

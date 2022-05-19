@@ -308,7 +308,9 @@ describe('datefix', () => {
   });
 
   describe('parsePikadayDate', () => {
-    // removed because of https://gitlab.com/gitlab-org/gitlab-foss/issues/39834
+    it('should return a UTC date', () => {
+      expect(datetimeUtility.parsePikadayDate('2020-01-29')).toEqual(new Date(2020, 0, 29));
+    });
   });
 
   describe('pikadayToString', () => {

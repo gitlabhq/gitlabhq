@@ -6,6 +6,7 @@ module API
       class Topic < Grape::Entity
         expose :id
         expose :name
+        expose :title
         expose :description
         expose :total_projects_count
         expose :avatar_url do |topic, options|

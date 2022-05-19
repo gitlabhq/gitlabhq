@@ -3,12 +3,13 @@ import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } fro
 
 /* eslint-disable no-underscore-dangle */
 export class ContentEditor {
-  constructor({ tiptapEditor, serializer, deserializer, eventHub, languageLoader }) {
+  constructor({ tiptapEditor, serializer, deserializer, assetResolver, eventHub }) {
     this._tiptapEditor = tiptapEditor;
     this._serializer = serializer;
     this._deserializer = deserializer;
     this._eventHub = eventHub;
-    this._languageLoader = languageLoader;
+    this._assetResolver = assetResolver;
+    this._pristineDoc = null;
   }
 
   get tiptapEditor() {
@@ -17,6 +18,10 @@ export class ContentEditor {
 
   get eventHub() {
     return this._eventHub;
+  }
+
+  get changed() {
+    return this._pristineDoc?.eq(this.tiptapEditor.state.doc);
   }
 
   get empty() {
@@ -34,28 +39,30 @@ export class ContentEditor {
     this._eventHub.dispose();
   }
 
+  deserialize(serializedContent) {
+    const { _tiptapEditor: editor, _deserializer: deserializer } = this;
+
+    return deserializer.deserialize({
+      schema: editor.schema,
+      content: serializedContent,
+    });
+  }
+
+  resolveUrl(canonicalSrc) {
+    return this._assetResolver.resolveUrl(canonicalSrc);
+  }
+
   async setSerializedContent(serializedContent) {
-    const {
-      _tiptapEditor: editor,
-      _deserializer: deserializer,
-      _eventHub: eventHub,
-      _languageLoader: languageLoader,
-    } = this;
+    const { _tiptapEditor: editor, _eventHub: eventHub } = this;
     const { doc, tr } = editor.state;
     const selection = TextSelection.create(doc, 0, doc.content.size);
 
     try {
       eventHub.$emit(LOADING_CONTENT_EVENT);
-      const result = await deserializer.deserialize({
-        schema: editor.schema,
-        content: serializedContent,
-      });
+      const { document } = await this.deserialize(serializedContent);
 
-      if (Object.keys(result).length !== 0) {
-        const { document, dom } = result;
-
-        await languageLoader.loadLanguagesFromDOM(dom);
-
+      if (document) {
+        this._pristineDoc = document;
         tr.setSelection(selection)
           .replaceSelectionWith(document, false)
           .setMeta('preventUpdate', true);
@@ -70,8 +77,9 @@ export class ContentEditor {
   }
 
   getSerializedContent() {
-    const { _tiptapEditor: editor, _serializer: serializer } = this;
+    const { _tiptapEditor: editor, _serializer: serializer, _pristineDoc: pristineDoc } = this;
+    const { doc } = editor.state;
 
-    return serializer.serialize({ schema: editor.schema, content: editor.getJSON() });
+    return serializer.serialize({ doc, pristineDoc });
   }
 }

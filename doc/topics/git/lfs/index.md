@@ -45,7 +45,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
 
 ## Using Git LFS
 
-Let's take a look at the workflow when you need to check large files into your Git
+Let's take a look at the workflow for checking large files into your Git
 repository with Git LFS. For example, if you want to upload a very large file and
 check it into your Git repository:
 
@@ -130,10 +130,10 @@ Technical details about how this works can be found in the [development document
 
 ## Troubleshooting
 
-### Encountered `n` file(s) that should have been pointers, but weren't
+### Encountered `n` files that should have been pointers, but weren't
 
-This error indicates the file (or files) are expected to be tracked by LFS, but for
-some reason the repository is not tracking them as LFS. This issue can be one
+This error indicates the files are expected to be tracked by LFS, but
+the repository is not tracking them as LFS. This issue can be one
 potential reason for this error:
 [Files not tracked with LFS when uploaded through the web interface](https://gitlab.com/gitlab-org/gitlab/-/issues/326342#note_586820485)
 
@@ -160,7 +160,7 @@ To resolve the problem, migrate the affected file (or files) and push back to th
 
 ### error: Repository or object not found
 
-There are a couple of reasons why this error can occur:
+This error can occur for a few reasons, including:
 
 - You don't have permissions to access certain LFS object
 
@@ -232,7 +232,7 @@ Git LFS authenticates the user with HTTP Basic Authentication on every push for
 every object, so user HTTPS credentials are required.
 
 By default, Git has support for remembering the credentials for each repository
-you use. This is described in [Git credentials man pages](https://git-scm.com/docs/gitcredentials).
+you use. To learn more, read the [Git credentials man pages](https://git-scm.com/docs/gitcredentials).
 
 For example, you can tell Git to remember the password for a period of time in
 which you expect to push the objects:

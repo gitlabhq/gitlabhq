@@ -178,8 +178,8 @@ export default {
       serverErrorMessage: '',
       isErrorAlertDismissed: false,
       sort: 'STARTED_AT_DESC',
-      statusFilter: [],
-      filteredByStatus: '',
+      statusFilter: ALERTS_STATUS_TABS[0].filters,
+      filteredByStatus: ALERTS_STATUS_TABS[0].status,
       alerts: {},
       alertsCount: {},
       sortBy: 'startedAt',
@@ -283,13 +283,17 @@ export default {
     <paginated-table-with-search-and-tabs
       :show-error-msg="showErrorMsg"
       :i18n="$options.i18n"
-      :items="alerts.list || []"
+      :items="
+        alerts.list || [] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */
+      "
       :page-info="alerts.pageInfo"
       :items-count="alertsCount"
       :status-tabs="$options.statusTabs"
       :track-views-options="$options.trackAlertListViewsOptions"
       :server-error-message="serverErrorMessage"
-      :filter-search-tokens="['assignee_username']"
+      :filter-search-tokens="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+        'assignee_username',
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       filter-search-key="alerts"
       @page-changed="pageChanged"
       @tabs-changed="statusChanged"
@@ -305,7 +309,11 @@ export default {
       <template #table>
         <gl-table
           class="alert-management-table"
-          :items="alerts ? alerts.list : []"
+          :items="
+            alerts
+              ? alerts.list
+              : [] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */
+          "
           :fields="$options.fields"
           :show-empty="true"
           :busy="loading"

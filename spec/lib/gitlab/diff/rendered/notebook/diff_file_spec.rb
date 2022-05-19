@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
       end
 
       it 'falls back to nil on timeout' do
-        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Gitlab::ErrorTracking).to receive(:log_exception)
         expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
 
         expect(nb_file.diff).to be_nil
@@ -101,6 +101,22 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
         expect(nb_file.has_renderable?).to be_truthy
       end
     end
+
+    context 'when old blob file is truncated' do
+      it 'is false' do
+        allow(source.old_blob).to receive(:truncated?).and_return(true)
+
+        expect(nb_file.has_renderable?).to be_falsey
+      end
+    end
+
+    context 'when new blob file is truncated' do
+      it 'is false' do
+        allow(source.new_blob).to receive(:truncated?).and_return(true)
+
+        expect(nb_file.has_renderable?).to be_falsey
+      end
+    end
   end
 
   describe '#highlighted_diff_lines?' do
@@ -124,6 +140,10 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
         expect(nb_file.highlighted_diff_lines[12].new_pos).to eq(15)
         expect(nb_file.highlighted_diff_lines[12].old_pos).to eq(18)
       end
+    end
+
+    it 'computes de first line where the remove would appear' do
+      expect(nb_file.highlighted_diff_lines.map(&:text).join('')).to include('[Hidden Image Output]')
     end
   end
 end

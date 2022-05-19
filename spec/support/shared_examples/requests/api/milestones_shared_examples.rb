@@ -203,16 +203,16 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
   end
 
   describe "DELETE #{route_definition}/:milestone_id" do
-    it "rejects a member with reporter access from deleting a milestone" do
-      reporter = create(:user)
-      milestone.resource_parent.add_reporter(reporter)
+    it "rejects a member with guest access from deleting a milestone" do
+      guest = create(:user)
+      milestone.resource_parent.add_guest(guest)
 
-      delete api(resource_route, reporter)
+      delete api(resource_route, guest)
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
-    it 'deletes the milestone when the user has developer access to the project' do
+    it 'deletes the milestone when the user has reporter access to the project' do
       delete api(resource_route, user)
 
       expect(project.milestones.find_by_id(milestone.id)).to be_nil

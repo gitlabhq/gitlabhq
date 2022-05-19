@@ -298,7 +298,7 @@ export default {
       <gl-loading-icon
         v-if="isLoading"
         data-testid="loading-participants"
-        size="md"
+        size="lg"
         class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
       />
       <template v-else>

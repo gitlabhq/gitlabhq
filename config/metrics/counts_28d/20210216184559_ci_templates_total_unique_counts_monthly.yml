@@ -88,7 +88,9 @@ options:
   - p_ci_templates_jobs_load_performance_testing
   - p_ci_templates_jobs_helm_2to3
   - p_ci_templates_jobs_sast
+  - p_ci_templates_jobs_sast_latest
   - p_ci_templates_jobs_secret_detection
+  - p_ci_templates_jobs_secret_detection_latest
   - p_ci_templates_jobs_code_intelligence
   - p_ci_templates_jobs_code_quality
   - p_ci_templates_jobs_dependency_scanning

@@ -3,6 +3,7 @@ query searchProjectTopics($search: String) {
     nodes {
       id
       name
+      title
       avatarUrl
     }
   }

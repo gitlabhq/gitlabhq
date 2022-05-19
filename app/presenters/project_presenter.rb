@@ -36,7 +36,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_buttons(show_auto_devops_callout:)
     [
-      upload_anchor_data,
       readme_anchor_data,
       license_anchor_data,
       changelog_anchor_data,
@@ -458,7 +457,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def project_topic_list
     strong_memoize(:project_topic_list) do
-      project.topics.map(&:name)
+      project.topics.map { |topic| { name: topic.name, title: topic.title_or_name } }
     end
   end
 

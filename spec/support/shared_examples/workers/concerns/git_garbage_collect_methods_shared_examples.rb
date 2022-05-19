@@ -202,6 +202,8 @@ RSpec.shared_examples 'can collect git garbage' do |update_statistics: true|
 
       before do
         expect(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
+
+        statistics_keys.delete(:repository_size)
       end
 
       it_behaves_like 'it calls Gitaly'

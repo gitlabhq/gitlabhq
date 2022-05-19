@@ -6,6 +6,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   layout 'project_settings'
 
   feature_category :runner
+  urgency :low
 
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])

@@ -13,6 +13,7 @@ const defaultConfigHelpUrl =
 
 const provideData = {
   gitlabVersion: '14.8',
+  kasVersion: '14.8',
 };
 const propsData = {
   agents: clusterAgents,
@@ -26,7 +27,7 @@ const outdatedTitle = I18N_AGENT_TABLE.versionOutdatedTitle;
 const mismatchTitle = I18N_AGENT_TABLE.versionMismatchTitle;
 const mismatchOutdatedTitle = I18N_AGENT_TABLE.versionMismatchOutdatedTitle;
 const outdatedText = sprintf(I18N_AGENT_TABLE.versionOutdatedText, {
-  version: provideData.gitlabVersion,
+  version: provideData.kasVersion,
 });
 const mismatchText = I18N_AGENT_TABLE.versionMismatchText;
 

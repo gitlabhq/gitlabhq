@@ -16,6 +16,7 @@ tree:
         - :board
     - members:
       - :user
+    - :namespace_settings
 
 included_attributes:
   user:
@@ -24,6 +25,8 @@ included_attributes:
     - :username
   author:
     - :name
+  namespace_settings:
+    - :prevent_sharing_groups_outside_hierarchy
 
 excluded_attributes:
   group:
@@ -38,6 +41,7 @@ excluded_attributes:
     - :shared_runners_minute_limit
     - :extra_shared_runners_minutes_limit
     - :repository_size_limit
+    - :max_pages_size
   epics:
     - :state_id
 

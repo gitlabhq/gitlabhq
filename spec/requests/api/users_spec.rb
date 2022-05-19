@@ -1679,13 +1679,13 @@ RSpec.describe API::Users do
     end
 
     it 'creates SSH key with `expires_at` attribute' do
-      optional_attributes = { expires_at: '2016-01-21T00:00:00.000Z' }
+      optional_attributes = { expires_at: 3.weeks.from_now }
       attributes = attributes_for(:key).merge(optional_attributes)
 
       post api("/users/#{user.id}/keys", admin), params: attributes
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['expires_at']).to eq(optional_attributes[:expires_at])
+      expect(json_response['expires_at'].to_date).to eq(optional_attributes[:expires_at].to_date)
     end
 
     it "returns 400 for invalid ID" do
@@ -2373,13 +2373,13 @@ RSpec.describe API::Users do
     end
 
     it 'creates SSH key with `expires_at` attribute' do
-      optional_attributes = { expires_at: '2016-01-21T00:00:00.000Z' }
+      optional_attributes = { expires_at: 3.weeks.from_now }
       attributes = attributes_for(:key).merge(optional_attributes)
 
       post api("/user/keys", user), params: attributes
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['expires_at']).to eq(optional_attributes[:expires_at])
+      expect(json_response['expires_at'].to_date).to eq(optional_attributes[:expires_at].to_date)
     end
 
     it "returns a 401 error if unauthorized" do

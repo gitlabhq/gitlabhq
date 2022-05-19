@@ -7,25 +7,25 @@
       = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
 
       - project.topics_to_show.each do |topic|
-        - explore_project_topic_path = topic_explore_projects_path(topic_name: topic)
-        - if topic.length > max_project_topic_length
-          %a.gl-mr-3.has-tooltip{ data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
-            = gl_badge_tag truncate(topic, length: max_project_topic_length)
+        - explore_project_topic_path = topic_explore_projects_path(topic_name: topic[:name])
+        - if topic[:title].length > max_project_topic_length
+          %a.gl-mr-3.has-tooltip{ data: { container: "body" }, title: topic[:title], href: explore_project_topic_path, itemprop: 'keywords' }
+            = gl_badge_tag truncate(topic[:title], length: max_project_topic_length)
         - else
           %a.gl-mr-3{ href: explore_project_topic_path, itemprop: 'keywords' }
-            = gl_badge_tag topic
+            = gl_badge_tag topic[:title]
 
       - if project.has_extra_topics?
         - title = _('More topics')
         - content = capture do
           %span.gl-display-inline-flex.gl-flex-wrap
             - project.topics_not_shown.each do |topic|
-              - explore_project_topic_path = topic_explore_projects_path(topic_name: topic)
-              - if topic.length > max_project_topic_length
-                %a.gl-mr-3.gl-mb-3.has-tooltip{ data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
-                  = gl_badge_tag truncate(topic, length: max_project_topic_length)
+              - explore_project_topic_path = topic_explore_projects_path(topic_name: topic[:name])
+              - if topic[:title].length > max_project_topic_length
+                %a.gl-mr-3.gl-mb-3.has-tooltip{ data: { container: "body" }, title: topic[:title], href: explore_project_topic_path, itemprop: 'keywords' }
+                  = gl_badge_tag truncate(topic[:title], length: max_project_topic_length)
               - else
                 %a.gl-mr-3.gl-mb-3{ href: explore_project_topic_path, itemprop: 'keywords' }
-                  = gl_badge_tag topic
+                  = gl_badge_tag topic[:title]
         .text-nowrap{ role: 'button', tabindex: 0, data: { toggle: 'popover', html: 'true', placement: 'top', title: title, content: content } }
           = _("+ %{count} more") % { count: project.count_of_extra_topics_not_shown }

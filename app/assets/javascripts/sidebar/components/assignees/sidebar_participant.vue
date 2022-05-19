@@ -3,6 +3,11 @@ import { GlAvatarLabeled, GlAvatarLink, GlIcon } from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
 import { s__, sprintf } from '~/locale';
 
+const AVAILABILITY_STATUS = {
+  NOT_SET: 'NOT_SET',
+  BUSY: 'BUSY',
+};
+
 export default {
   components: {
     GlAvatarLabeled,
@@ -22,12 +27,17 @@ export default {
   },
   computed: {
     userLabel() {
-      if (!this.user.status) {
-        return this.user.name;
+      const { name, status } = this.user;
+      if (!status || status?.availability !== AVAILABILITY_STATUS.BUSY) {
+        return name;
       }
-      return sprintf(s__('UserAvailability|%{author} (Busy)'), {
-        author: this.user.name,
-      });
+      return sprintf(
+        s__('UserAvailability|%{author} (Busy)'),
+        {
+          author: name,
+        },
+        false,
+      );
     },
     hasCannotMergeIcon() {
       return this.issuableType === IssuableType.MergeRequest && !this.user.canMerge;

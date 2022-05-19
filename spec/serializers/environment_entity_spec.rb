@@ -166,6 +166,18 @@ RSpec.describe EnvironmentEntity do
 
         expect(subject[:logs_api_path]).to eq(elasticsearch_project_logs_path(project, environment_name: environment.name, format: :json))
       end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(monitor_logging: false)
+        end
+
+        it 'does not expose logs keys' do
+          expect(subject).not_to include(:logs_path)
+          expect(subject).not_to include(:logs_api_path)
+          expect(subject).not_to include(:enable_advanced_logs_querying)
+        end
+      end
     end
   end
 

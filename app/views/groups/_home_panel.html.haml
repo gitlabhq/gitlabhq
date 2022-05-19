@@ -17,8 +17,7 @@
           - if can?(current_user, :read_group, @group)
             %span.gl-display-inline-block.gl-vertical-align-middle
               = s_("GroupPage|Group ID: %{group_id}") % { group_id: @group.id }
-              - button_class = "btn gl-button btn-sm btn-tertiary btn-default-tertiary home-panel-metadata"
-              = clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id, class: button_class)
+              = clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id)
           - if current_user
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @group

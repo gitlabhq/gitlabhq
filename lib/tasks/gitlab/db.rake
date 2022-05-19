@@ -282,7 +282,7 @@ namespace :gitlab do
         puts "There are #{Gitlab::Database::Reindexing::QueuedAction.queued.size} queued actions in total."
       end
 
-      unless Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+      unless Feature.enabled?(:database_reindexing, type: :ops)
         puts <<~NOTE.color(:yellow)
           Note: database_reindexing feature is currently disabled.
 
@@ -327,6 +327,15 @@ namespace :gitlab do
         duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
 
         Gitlab::Database::Migrations::Runner.background_migrations.run_jobs(for_duration: duration)
+      end
+
+      desc 'Sample batched background migrations with instrumentation'
+      task :sample_batched_background_migrations, [:database, :duration_s] => [:environment] do |_t, args|
+        database_name = args[:database] || 'main'
+        duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
+
+        Gitlab::Database::Migrations::Runner.batched_background_migrations(for_database: database_name)
+                                            .run_jobs(for_duration: duration)
       end
     end
 

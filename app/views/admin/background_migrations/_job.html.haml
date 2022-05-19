@@ -1,0 +1,10 @@
+%tr{ role: 'row' }
+  %td{ role: 'cell', data: { label: _('Id') } }
+    = link_to admin_background_migration_batched_job_path(job.batched_migration, job, params: { database: params[:database] }) do
+      = job.id
+  %td{ role: 'cell', data: { label: s_('BackgroundMigrations|Started at') } }
+    = job.started_at
+  %td{ role: 'cell', data: { label: s_('BackgroundMigrations|Finished at') } }
+    = job.finished_at
+  %td{ role: 'cell', data: { label: s_('BackgroundMigrations|Batch size') } }
+    = job.batch_size

@@ -67,13 +67,12 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>Create and run [on-demand DAST scans](application_security/dast/index.md#on-demand-scans)                                  |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Manage [security policy](application_security/policies/index.md)                                                           |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>View [dependency list](application_security/dependency_list/index.md)                                                      |          |          | ✓         | ✓          | ✓        |
-| [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring)                                     |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md)                                                          |          |          |           | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md)                                         |          |          |           |            | ✓        |
 | [Clusters](infrastructure/clusters/index.md):<br>View [pod logs](project/clusters/kubernetes_pod_logs.md)                                                                            |          |          | ✓         | ✓          | ✓        |
 | [Clusters](infrastructure/clusters/index.md):<br>View clusters                                                                                                                       |          |          | ✓         | ✓          | ✓        |
 | [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                                                                                     |          |          |           | ✓          | ✓        |
-| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/index.md#delete-images-by-using-a-cleanup-policy) |          |          | ✓         | ✓          | ✓        |
+| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/index.md#delete-images-by-using-a-cleanup-policy) |          |          |          | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Push an image to the Container Registry                                                                               |          |          | ✓         | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                             | ✓ (*20*) | ✓ (*20*) | ✓         | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Remove a Container Registry image                                                                                     |          |          | ✓         | ✓          | ✓        |
@@ -144,7 +143,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Create [snippets](snippets.md)                                                                                                                      |          | ✓        | ✓         | ✓          | ✓        |
 | [Projects](project/index.md):<br>Manage labels                                                                                                                                       |          | ✓        | ✓         | ✓          | ✓        |
 | [Projects](project/index.md):<br>View [project traffic statistics](../api/project_statistics.md)                                                                                     |          | ✓        | ✓         | ✓          | ✓        |
-| [Projects](project/index.md):<br>Create, edit, delete [milestones](project/milestones/index.md).                                                                                     |          |          | ✓         | ✓          | ✓        |
+| [Projects](project/index.md):<br>Create, edit, delete [milestones](project/milestones/index.md).                                                                                     |          | ✓        | ✓         | ✓          | ✓        |
 | [Projects](project/index.md):<br>Create, edit, delete [releases](project/releases/index.md)                                                                                          |          |          | ✓ (*12*)  | ✓ (*12*)   | ✓ (*12*) |
 | [Projects](project/index.md):<br>Create, edit [wiki](project/wiki/index.md) pages                                                                                                    |          |          | ✓         | ✓          | ✓        |
 | [Projects](project/index.md):<br>Enable [Review Apps](../ci/review_apps/index.md)                                                                                                    |          |          | ✓         | ✓          | ✓        |
@@ -391,6 +390,7 @@ The following table lists group permissions available for each role:
 | Publish [packages](packages/index.md)                                                   |       |          | ✓         | ✓          | ✓     |
 | Pull [packages](packages/index.md)                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |
+| Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages)                                                    |       |          |           | ✓          | ✓     |
 | Pull a Container Registry image                                                         | ✓ (7) | ✓        | ✓         | ✓          | ✓     |
 | Remove a Container Registry image                                                       |       |          | ✓         | ✓          | ✓     |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
@@ -398,11 +398,12 @@ The following table lists group permissions available for each role:
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
 | Create and edit [group wiki](project/wiki/group.md) pages                               |       |          | ✓         | ✓          | ✓     |
 | Create project in group                                                                 |       |          | ✓ (3)(5)  | ✓ (3)      | ✓ (3) |
-| Create/edit/delete group milestones                                                     |       |          | ✓         | ✓          | ✓     |
-| Create/edit/delete iterations                                                           |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete group milestones                                                     |       | ✓        | ✓         | ✓          | ✓     |
+| Create/edit/delete iterations                                                           |       | ✓        | ✓         | ✓          | ✓     |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy                                                       |       |          | ✓         | ✓          | ✓     |
+| Enable/disable a dependency proxy                                                       |       |          |           | ✓          | ✓     |
 | Purge the dependency proxy for a group                                                  |       |          |           |            | ✓     |
+| Create/edit/delete dependency proxy [cleanup policies](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies)                                                  |       |          |           | ✓          | ✓     |
 | Use [security dashboard](application_security/security_dashboard/index.md)              |       |          | ✓         | ✓          | ✓     |
 | View group Audit Events                                                                 |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Create subgroup                                                                         |       |          |           | ✓ (1)      | ✓     |
@@ -445,7 +446,7 @@ The following table lists group permissions available for each role:
 ### Subgroup permissions
 
 When you add a member to a subgroup, they inherit the membership and
-permission level from the parent group(s). This model allows access to
+permission level from the parent groups. This model allows access to
 nested groups if you have membership in one of its parents.
 
 To learn more, read through the documentation on
@@ -549,7 +550,7 @@ Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
 
 An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#permissions-and-restrictions-of-an-auditor-user).
+with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#auditor-user-permissions-and-restrictions).
 
 [Read more about Auditor users.](../administration/auditor_users.md)
 

@@ -4,16 +4,15 @@
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
   %a.gl-sr-only.gl-accessibility{ href: "#content-body" } Skip to content
   .container-fluid
-    .header-content
-      .title-container.hide-when-top-nav-responsive-open
+    .header-content.js-header-content
+      .title-container.hide-when-top-nav-responsive-open.gl-transition-medium.gl-display-flex.gl-align-items-stretch.gl-pt-0
         %h1.title
           %span.gl-sr-only GitLab
           = link_to root_path, title: _('Dashboard'), id: 'logo', **tracking_attrs('main_navigation', 'click_gitlab_logo_link', 'navigation') do
-            = brand_header_logo
-            - logo_text = brand_header_logo_type
-            - if logo_text.present?
-              %span.logo-text.d-none.d-lg-block.gl-ml-3
-                = logo_text
+            %span{ :class => "gl-display-none gl-lg-display-flex" }
+              = brand_header_logo({add_gitlab_white_text: true})
+            %span{ :class => "gl-lg-display-none! gl-display-flex" }
+              = brand_header_logo
           - if Gitlab.com_and_canary?
             = link_to Gitlab::Saas.canary_toggle_com_url, class: 'canary-badge bg-transparent', data: { qa_selector: 'canary_badge_link' }, target: :_blank, rel: 'noopener noreferrer' do
               = gl_badge_tag({ variant: :success, size: :sm }) do
@@ -32,15 +31,15 @@
               .gl-display-none.gl-sm-display-block
                 = render "layouts/nav/top_nav"
 
-      .navbar-collapse.collapse
-        %ul.nav.navbar-nav
+      .navbar-collapse.gl-transition-medium.collapse
+        %ul.nav.navbar-nav.gl-w-full
           - if current_user
-            = render 'layouts/header/new_dropdown', class: 'gl-display-none gl-sm-display-block'
+            = render 'layouts/header/new_dropdown', class: 'gl-display-none gl-sm-display-block gl-white-space-nowrap gl-text-right'
           - if top_nav_show_search
             - search_menu_item = top_nav_search_menu_item_attrs
-            %li.nav-item.header-search-new.d-none.d-lg-block.m-auto
+            %li.nav-item.header-search-new.gl-display-none.gl-lg-display-block.m-auto.gl-w-full
               - unless current_controller?(:search)
-                - if Feature.enabled?(:new_header_search, default_enabled: :yaml)
+                - if Feature.enabled?(:new_header_search)
                   = render 'layouts/header_search'
                 - else
                   = render 'layouts/search'
@@ -61,7 +60,7 @@
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
-              - top_level_link = Feature.enabled?(:mr_attention_requests, default_enabled: :yaml) ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
+              - top_level_link = current_user.mr_attention_requests_enabled? ? attention_requested_mrs_dashboard_path : assigned_mrs_dashboard_path
               = link_to top_level_link, class: 'dashboard-shortcuts-merge_requests', title: _('Merge requests'), aria: { label: _('Merge requests') },
                 data: { qa_selector: 'merge_requests_shortcut_button',
                 toggle: "dropdown",
@@ -78,7 +77,7 @@
                 %ul
                   %li.dropdown-header
                     = _('Merge requests')
-                  - if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+                  - if current_user.mr_attention_requests_enabled?
                     %li#js-need-attention-nav
                       #js-need-attention-nav-onboarding
                       = link_to attention_requested_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
@@ -87,12 +86,18 @@
                     %li.divider
                   %li
                     = link_to assigned_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
-                      = _('Assigned to you')
+                      - if current_user.mr_attention_requests_enabled?
+                        = _('Assignee')
+                      - else
+                        = _('Assigned to you')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-assigned-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:assigned]
                   %li
                     = link_to reviewer_mrs_dashboard_path, class: 'gl-display-flex! gl-align-items-center js-prefetch-document' do
-                      = _('Review requests for you')
+                      - if current_user.mr_attention_requests_enabled?
+                        = _('Reviewer')
+                      - else
+                        = _('Review requests for you')
                       = gl_badge_tag({ variant: :neutral, size: :sm }, { class: "js-reviewer-mr-count gl-ml-auto" }) do
                         = user_merge_requests_counts[:review_requested]
           - if header_link?(:todos)

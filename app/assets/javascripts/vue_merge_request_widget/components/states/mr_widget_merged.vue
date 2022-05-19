@@ -1,6 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlLoadingIcon, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import api from '~/api';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
@@ -22,6 +23,7 @@ export default {
     GlLoadingIcon,
     GlButton,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     mr: {
       type: Object,
@@ -181,7 +183,11 @@ export default {
           {{ s__('mrWidget|Delete source branch') }}
         </gl-button>
       </div>
-      <section class="mr-info-list" data-qa-selector="merged_status_content">
+      <section
+        v-if="!glFeatures.restructuredMrWidget"
+        class="mr-info-list"
+        data-qa-selector="merged_status_content"
+      >
         <p>
           {{ s__('mrWidget|The changes were merged into') }}
           <span class="label-branch">

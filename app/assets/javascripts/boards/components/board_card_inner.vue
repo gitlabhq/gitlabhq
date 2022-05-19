@@ -11,10 +11,12 @@ import { sortBy } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ListType } from '../constants';
+import eventHub from '../eventhub';
 import BoardBlockedIcon from './board_blocked_icon.vue';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
@@ -174,10 +176,19 @@ export default {
         )
       );
     },
-    labelTarget(label) {
+    filterByLabel(label) {
+      if (!this.updateFilters) return;
+
       const filterPath = window.location.search ? `${window.location.search}&` : '?';
-      const value = encodeURIComponent(label.title);
-      return `${filterPath}label_name[]=${value}`;
+      const filter = `label_name[]=${encodeURIComponent(label.title)}`;
+
+      if (!filterPath.includes(filter)) {
+        updateHistory({
+          url: `${filterPath}${filter}`,
+        });
+        this.performSearch();
+        eventHub.$emit('updateTokens');
+      }
     },
     showScopedLabel(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
@@ -232,7 +243,7 @@ export default {
           :description="label.description"
           size="sm"
           :scoped="showScopedLabel(label)"
-          :target="labelTarget(label)"
+          @click="filterByLabel(label)"
         />
       </template>
     </div>
@@ -242,7 +253,7 @@ export default {
       <div
         class="gl-display-flex align-items-start flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
-        <gl-loading-icon v-if="item.isLoading" size="md" class="mt-3" />
+        <gl-loading-icon v-if="item.isLoading" size="lg" class="mt-3" />
         <span
           v-if="item.referencePath"
           class="board-card-number gl-overflow-hidden gl-display-flex gl-mr-3 gl-mt-3"

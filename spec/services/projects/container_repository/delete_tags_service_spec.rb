@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ContainerRepository::DeleteTagsService do
+  using RSpec::Parameterized::TableSyntax
   include_context 'container repository delete tags service shared context'
 
   let(:service) { described_class.new(project, user, params) }
@@ -17,11 +18,13 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
   shared_examples 'logging a success response' do
     it 'logs an info message' do
       expect(service).to receive(:log_info).with(
-        service_class: 'Projects::ContainerRepository::DeleteTagsService',
-        message: 'deleted tags',
-        container_repository_id: repository.id,
-        project_id: repository.project_id,
-        deleted_tags_count: tags.size
+        {
+          service_class: 'Projects::ContainerRepository::DeleteTagsService',
+          message: 'deleted tags',
+          container_repository_id: repository.id,
+          project_id: repository.project_id,
+          deleted_tags_count: tags.size
+        }
       )
 
       subject
@@ -131,10 +134,6 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
 
     subject { service.execute(repository) }
 
-    before do
-      stub_feature_flags(container_registry_expiration_policies_throttling: false)
-    end
-
     context 'without permissions' do
       it { is_expected.to include(status: :error) }
     end
@@ -157,11 +156,39 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService do
       end
 
       context 'when the repository is importing' do
-        before do
-          repository.update_columns(migration_state: 'importing', migration_import_started_at: Time.zone.now)
+        where(:migration_state, :called_by_policy, :error_expected) do
+          'default'         | false | false
+          'default'         | true  | false
+          'pre_importing'   | false | false
+          'pre_importing'   | true  | true
+          'pre_import_done' | false | false
+          'pre_import_done' | true  | true
+          'importing'       | false | true
+          'importing'       | true  | true
+          'import_done'     | false | false
+          'import_done'     | true  | false
+          'import_aborted'  | false | false
+          'import_aborted'  | true  | false
+          'import_skipped'  | false | false
+          'import_skipped'  | true  | false
         end
 
-        it { is_expected.to include(status: :error, message: 'repository importing') }
+        with_them do
+          let(:params) { { tags: tags, container_expiration_policy: called_by_policy ? true : nil } }
+
+          before do
+            repository.update_columns(migration_state: migration_state, migration_import_started_at: Time.zone.now, migration_pre_import_started_at: Time.zone.now, migration_pre_import_done_at: Time.zone.now)
+          end
+
+          it 'returns an error response if expected' do
+            if error_expected
+              expect(subject).to include(status: :error, message: 'repository importing')
+            else
+              expect(service).to receive(:delete_tags).and_return(status: :success)
+              expect(subject).not_to include(status: :error)
+            end
+          end
+        end
       end
     end
 

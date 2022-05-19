@@ -5,4 +5,16 @@
 
 = javascript_tag do
   :plain
-    window.location= "#{redirect_uri}";
+    (function() {
+      // Only permit a basic set of characters in the fragment.
+      const allowedRegex = /^#[\w-]+$/g;
+
+      const hash = window.location.hash;
+      let redirectUri = "#{redirect_uri}";
+
+      if (window.location.hash && window.location.hash.search(allowedRegex) === 0 && redirectUri.indexOf('#') === -1) {
+        redirectUri = redirectUri + hash;
+      }
+
+      window.location = redirectUri;
+    })();

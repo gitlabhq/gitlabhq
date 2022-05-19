@@ -15,13 +15,15 @@ import {
   CONFLICT_MARKER,
   CONFLICT_MARKER_OUR,
   CONFLICT_MARKER_THEIR,
+  EXPANDED_LINE_TYPE,
 } from '../constants';
 import { prepareRawDiffFile } from '../utils/diff_file';
 
 export const isAdded = (line) => ['new', 'new-nonewline'].includes(line.type);
 export const isRemoved = (line) => ['old', 'old-nonewline'].includes(line.type);
 export const isUnchanged = (line) => !line.type;
-export const isMeta = (line) => ['match', 'new-nonewline', 'old-nonewline'].includes(line.type);
+export const isMeta = (line) =>
+  ['match', EXPANDED_LINE_TYPE, 'new-nonewline', 'old-nonewline'].includes(line.type);
 export const isConflictMarker = (line) =>
   [CONFLICT_MARKER_OUR, CONFLICT_MARKER_THEIR].includes(line.type);
 export const isConflictSeperator = (line) => line.type === CONFLICT_MARKER;
@@ -60,7 +62,7 @@ export const parallelizeDiffLines = (diffLines, inline) => {
     const line = diffLines[i];
     line.chunk = chunk;
 
-    if (isMeta(line)) chunk += 1;
+    if (isMeta(line) && line.type !== EXPANDED_LINE_TYPE) chunk += 1;
 
     if (isRemoved(line) || isConflictOur(line) || inline) {
       lines.push({
@@ -205,7 +207,7 @@ export const findIndexInInlineLines = (lines, lineNumbers) => {
   );
 };
 
-export const getPreviousLineIndex = (diffViewType, file, lineNumbers) => {
+export const getPreviousLineIndex = (file, lineNumbers) => {
   return findIndexInInlineLines(file[INLINE_DIFF_LINES_KEY], lineNumbers);
 };
 
@@ -406,7 +408,7 @@ function deduplicateFilesList(files) {
 
 export function prepareDiffData({ diff, priorFiles = [], meta = false }) {
   const cleanedFiles = (diff.diff_files || [])
-    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta }))
+    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta, index }))
     .map(ensureBasicDiffFileLines)
     .map(prepareDiffFileLines)
     .map((file) => finalizeDiffFile(file));

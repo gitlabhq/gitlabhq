@@ -3,6 +3,7 @@
 module API
   class Geo < ::API::Base
     feature_category :geo_replication
+    urgency :low
 
     helpers do
       # Overridden in EE

@@ -9,7 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can use scan result policies to take action based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
 findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning
-job is fully executed.
+job is fully executed. The following video gives you an overview of GitLab scan result policies:
+
+<div class="video-fallback">
+  See the video: <a href="https://youtu.be/w5I9gcUgr9U">Overview of GitLab Scan Result Policies</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/w5I9gcUgr9U" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ## Scan result policy editor
 
@@ -25,8 +32,9 @@ If a security policy project doesn't link to your project, GitLab creates such a
 Existing policies can also be removed from the editor interface by selecting **Delete policy** at
 the bottom of the editor.
 
-All scan result policy changes are applied through a background job that runs once every 10 minutes.
-Allow up to 10 minutes for any policy changes committed to this project to take effect.
+Most policy changes take effect as soon as the merge request is merged. Any changes that
+do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
+before the policy changes take effect.
 
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
@@ -61,7 +69,7 @@ This rule enforces the defined actions based on the information provided.
 | Field      | Type | Possible values | Description |
 |------------|------|-----------------|-------------|
 | `type`     | `string` | `scan_finding` | The rule's type. |
-| `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
+| `branches` | `array` of `string` | `[]` or the branch's name | Protected branches for this rule to consider. |
 | `scanners`  | `array` of `string` | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. |
 | `vulnerabilities_allowed`  | `integer` | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`  | `array` of `string` | `info`, `unknown`, `low`, `medium`, `high`, `critical`| The severity levels for this rule to consider. |

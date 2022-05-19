@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import Landing from '~/groups/landing';
 
 describe('Landing', () => {

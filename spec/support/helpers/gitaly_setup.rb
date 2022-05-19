@@ -31,6 +31,10 @@ module GitalySetup
     expand_path('tmp/tests/gitaly')
   end
 
+  def runtime_dir
+    expand_path('tmp/run')
+  end
+
   def tmp_tests_gitaly_bin_dir
     File.join(tmp_tests_gitaly_dir, '_build', 'bin')
   end
@@ -102,12 +106,14 @@ module GitalySetup
     Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
   end
 
-  def service_binary(service)
+  def service_cmd(service, toml = nil)
+    toml ||= config_path(service)
+
     case service
     when :gitaly, :gitaly2
-      'gitaly'
+      [File.join(tmp_tests_gitaly_bin_dir, 'gitaly'), toml]
     when :praefect
-      'praefect'
+      [File.join(tmp_tests_gitaly_bin_dir, 'praefect'), '-config', toml]
     end
   end
 
@@ -132,14 +138,18 @@ module GitalySetup
   end
 
   def start_praefect
-    start(:praefect)
+    if ENV['GITALY_PRAEFECT_WITH_DB']
+      LOGGER.debug 'Starting Praefect with database election strategy'
+      start(:praefect, File.join(tmp_tests_gitaly_dir, 'praefect-db.config.toml'))
+    else
+      LOGGER.debug 'Starting Praefect with in-memory election strategy'
+      start(:praefect)
+    end
   end
 
   def start(service, toml = nil)
     toml ||= config_path(service)
-    args = ["#{tmp_tests_gitaly_bin_dir}/#{service_binary(service)}"]
-    args.push("-config") if service == :praefect
-    args.push(toml)
+    args = service_cmd(service, toml)
 
     # Ensure user configuration does not affect Git
     # Context: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58776#note_547613780
@@ -259,6 +269,7 @@ module GitalySetup
       { 'default' => repos_path },
       force: true,
       options: {
+        runtime_dir: runtime_dir,
         prometheus_listen_addr: 'localhost:9236'
       }
     )
@@ -267,12 +278,47 @@ module GitalySetup
       { 'default' => repos_path },
       force: true,
       options: {
-        runtime_dir: File.join(gitaly_dir, "run2"),
+        runtime_dir: runtime_dir,
         gitaly_socket: "gitaly2.socket",
         config_filename: "gitaly2.config.toml"
       }
     )
-    Gitlab::SetupHelper::Praefect.create_configuration(gitaly_dir, { 'praefect' => repos_path }, force: true)
+
+    # In CI we need to pre-generate both config files.
+    # For local testing we'll create the correct file on-demand.
+    if ENV['CI'] || ENV['GITALY_PRAEFECT_WITH_DB'].nil?
+      Gitlab::SetupHelper::Praefect.create_configuration(
+        gitaly_dir,
+        { 'praefect' => repos_path },
+        force: true
+      )
+    end
+
+    if ENV['CI'] || ENV['GITALY_PRAEFECT_WITH_DB']
+      Gitlab::SetupHelper::Praefect.create_configuration(
+        gitaly_dir,
+        { 'praefect' => repos_path },
+        force: true,
+        options: {
+          per_repository: true,
+          config_filename: 'praefect-db.config.toml',
+          pghost: ENV['CI'] ? 'postgres' : ENV.fetch('PGHOST'),
+          pgport: ENV['CI'] ? 5432 : ENV.fetch('PGPORT').to_i,
+          pguser: ENV['CI'] ? 'postgres' : ENV.fetch('USER')
+        }
+      )
+    end
+
+    # In CI no database is running when Gitaly is set up
+    # so scripts/gitaly-test-spawn will take care of it instead.
+    setup_praefect unless ENV['CI']
+  end
+
+  def setup_praefect
+    return unless ENV['GITALY_PRAEFECT_WITH_DB']
+
+    migrate_cmd = service_cmd(:praefect, File.join(tmp_tests_gitaly_dir, 'praefect-db.config.toml')) + ['sql-migrate']
+    system(env, *migrate_cmd, [:out, :err] => 'log/praefect-test.log')
   end
 
   def socket_path(service)
@@ -325,7 +371,7 @@ module GitalySetup
     message += "- The `praefect` binary does not exist: #{praefect_binary}\n" unless File.exist?(praefect_binary)
     message += "- The `git` binary does not exist: #{git_binary}\n" unless File.exist?(git_binary)
 
-    message += "\nCheck log/gitaly-test.log for errors.\n"
+    message += "\nCheck log/gitaly-test.log & log/praefect-test.log for errors.\n"
 
     unless ENV['CI']
       message += "\nIf binaries are missing, try running `make -C tmp/tests/gitaly all WITH_BUNDLED_GIT=YesPlease`.\n"

@@ -27,7 +27,7 @@ end
 
 RSpec.shared_examples 'sidebar includes snowplow attributes' do |track_action, track_label, track_property|
   specify do
-    allow(view).to receive(:tracking_enabled?).and_return(true)
+    stub_application_setting(snowplow_enabled: true)
 
     render
 

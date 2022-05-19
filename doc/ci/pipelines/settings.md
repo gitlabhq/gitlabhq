@@ -222,36 +222,49 @@ averaged.
 To add test coverage results to a merge request using the project's `.gitlab-ci.yml` file, provide a regular expression
 using the [`coverage`](../yaml/index.md#coverage) keyword.
 
-Setting the regular expression this way takes precedence over project settings.
+<!-- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
-### Add test coverage results using project settings (DEPRECATED)
+### Add test coverage results using project settings (removed)
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.9. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.8. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
+> [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
-in GitLab 14.9, and is planned for [removal](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
+This feature is in its end-of-life process. It was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
+in GitLab 14.8. The feature is [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
 
-You can add test coverage results to merge requests using the Project's CI/CD settings:
+To migrate from a project setting to the `coverage` keyword, add the [former project setting](#locate-former-project-setting)
+to a CI/CD job. For example:
 
-- Set using the GitLab UI:
+- A Go test coverage project setting:  `coverage: \d+.\d+% of statements`.
+- A CI/CD job with `coverage` keyword setting:
 
-  1. On the top bar, select **Menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings > CI/CD**.
-  1. Expand **General pipelines**.
-  1. In the **Test coverage parsing** field, enter a regular expression. Leave blank to disable this feature.
-
-- Set when [editing a project](../../api/projects.md#edit-project) or [creating a project](../../api/projects.md#create-project)
-  using the GitLab API with the `build_coverage_regex` attribute:
-
-  ```shell
-  curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
-     --data "build_coverage_regex=<your-regular-expression>"
+  ```yaml
+  unit-test:
+    stage: test
+    coverage: '/coverage: \d+.\d+% of statements/'
+    script:
+      - go test -cover
   ```
 
-You can use <https://rubular.com> to test your regular expression. The regular expression returns the **last**
-match found in the output.
+The `.gitlab-ci.yml` job [`coverage`](../yaml/index.md#coverage) keyword must be:
+
+- A regular expression starts and ends with the `/` character.
+- Defined as single-quoted string.
+
+You can verify correct syntax using the [pipeline editor](../pipeline_editor/index.md).
+
+#### Locate former project setting
+
+To migrate from the project coverage setting to the `coverage` keyword, use the
+regular expression displayed in the settings. Available in GitLab 14.10 and earlier:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+
+The regular expression you need is in the **Test coverage parsing** field.
+
+<!-- end_remove -->
 
 ### Test coverage examples
 
@@ -266,6 +279,7 @@ Use this regex for commonly used test tools.
 - gcovr (C/C++). Example: `^TOTAL.*\s+(\d+\%)$`.
 - `tap --coverage-report=text-summary` (NodeJS). Example: `^Statements\s*:\s*([^%]+)`.
 - `nyc npm test` (NodeJS). Example: `All files[^|]*\|[^|]*\s+([\d\.]+)`.
+- `jest --ci --coverage` (NodeJS). Example: `All files[^|]*\|[^|]*\s+([\d\.]+)`.
 - excoveralls (Elixir). Example: `\[TOTAL\]\s+(\d+\.\d+)%`.
 - `mix test --cover` (Elixir). Example: `\d+.\d+\%\s+\|\s+Total`.
 - JaCoCo (Java/Kotlin). Example: `Total.*?([0-9]{1,3})%`.

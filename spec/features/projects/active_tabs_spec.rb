@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project active tab' do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, :with_namespace_settings) }
 
   let(:user) { project.first_owner }
 

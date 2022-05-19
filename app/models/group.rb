@@ -146,7 +146,7 @@ class Group < Namespace
   validates :group_feature, presence: true
 
   add_authentication_token_field :runners_token,
-                                 encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
+                                 encrypted: -> { Feature.enabled?(:groups_tokens_optional_encryption) ? :optional : :required },
                                 prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
@@ -870,7 +870,7 @@ class Group < Namespace
     actors << self if root_ancestor != self
 
     actors.any? do |actor|
-      ::Feature.enabled?(feature_flag, actor, default_enabled: :yaml)
+      ::Feature.enabled?(feature_flag, actor)
     end
   end
 

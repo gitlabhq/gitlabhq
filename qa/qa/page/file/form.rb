@@ -4,8 +4,9 @@ module QA
   module Page
     module File
       class Form < Page::Base
-        include Shared::CommitMessage
         include Page::Component::DropdownFilter
+        include Page::Component::BlobContent
+        include Shared::CommitMessage
         include Shared::CommitButton
         include Shared::Editor
 

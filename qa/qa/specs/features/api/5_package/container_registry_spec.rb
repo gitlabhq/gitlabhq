@@ -3,7 +3,7 @@
 require 'airborne'
 
 module QA
-  RSpec.describe 'Package', only: { subdomain: %i[staging pre] } do
+  RSpec.describe 'Package', only: { subdomain: %i[staging pre] }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/360466', type: :investigating } do
     include Support::API
 
     describe 'Container Registry' do
@@ -57,7 +57,6 @@ module QA
               MEDIA_TYPE: 'application/vnd.docker.distribution.manifest.v2+json'
             before_script:
               - token=$(curl -u "$CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD" "https://$CI_SERVER_HOST/jwt/auth?service=container_registry&scope=repository:$CI_PROJECT_PATH:pull,push,delete" | jq -r '.token')
-              - echo $token
             script:
               - 'digest=$(curl -L -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/manifests/master" | jq -r ".layers[0].digest")'
               - 'curl -L -X DELETE -H "Authorization: Bearer $token" -H "Accept: $MEDIA_TYPE" "https://$CI_REGISTRY/v2/$CI_PROJECT_PATH/blobs/$digest"'

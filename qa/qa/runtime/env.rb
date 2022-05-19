@@ -25,6 +25,10 @@ module QA
         SUPPORTED_FEATURES
       end
 
+      def gitlab_url
+        @gitlab_url ||= ENV["QA_GITLAB_URL"] || "http://127.0.0.1:3000" # default to GDK
+      end
+
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
       end
@@ -38,7 +42,7 @@ module QA
       end
 
       def interception_enabled?
-        enabled?(ENV['INTERCEPT_REQUESTS'], default: true)
+        enabled?(ENV['QA_INTERCEPT_REQUESTS'], default: false)
       end
 
       def can_intercept?

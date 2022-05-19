@@ -50,7 +50,7 @@ the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 Each buildpack requires your project's repository to contain certain files for
 Auto Build to build your application successfully. The structure is
 specific to the builder and buildpacks you have selected.
-For example, when using the Heroku's builder (the default), your application's
+For example, when using the Heroku builder (the default), your application's
 root directory must contain the appropriate file for your application's
 language:
 
@@ -240,7 +240,7 @@ To learn more about
 [License Compliance](../../user/compliance/license_compliance/index.md), see the
 documentation.
 
-## Auto Container Scanning **(ULTIMATE)**
+## Auto Container Scanning
 
 Vulnerability static analysis for containers uses [Trivy](https://aquasecurity.github.io/trivy/latest/)
 to check for potential security issues in Docker images. The Auto Container Scanning stage is
@@ -550,129 +550,6 @@ workers:
       - quiet
     terminationGracePeriodSeconds: 60
 ```
-
-### Network Policy
-
-- [Introduced](https://gitlab.com/gitlab-org/charts/auto-deploy-app/-/merge_requests/30) in GitLab 12.7.
-- [Deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/184) in GitLab 13.9.
-
-By default, all Kubernetes pods are
-[non-isolated](https://kubernetes.io/docs/concepts/services-networking/network-policies/#isolated-and-non-isolated-pods),
-and accept traffic to and from any source. You can use
-[NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-to restrict connections to and from selected pods, namespaces, and the Internet.
-
-NOTE:
-You must use a Kubernetes network plugin that implements support for
-`NetworkPolicy`. The default network plugin for Kubernetes (`kubenet`)
-[does not implement](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet)
-support for it. The [Cilium](https://cilium.io/) network plugin can be
-installed as a [cluster application](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium)
-to enable support for network policies.
-
-You can enable deployment of a network policy by setting the following
-in the `.gitlab/auto-deploy-values.yaml` file:
-
-```yaml
-networkPolicy:
-  enabled: true
-```
-
-The default policy deployed by the Auto Deploy pipeline allows
-traffic within a local namespace, and from the `gitlab-managed-apps`
-namespace. All other inbound connections are blocked. Outbound
-traffic (for example, to the Internet) is not affected by the default policy.
-
-You can also provide a custom [policy specification](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-in the `.gitlab/auto-deploy-values.yaml` file, for example:
-
-```yaml
-networkPolicy:
-  enabled: true
-  spec:
-    podSelector:
-      matchLabels:
-        app.gitlab.com/env: staging
-    ingress:
-      - from:
-        - podSelector:
-            matchLabels: {}
-        - namespaceSelector:
-            matchLabels:
-              app.gitlab.com/managed_by: gitlab
-```
-
-For more information on installing Network Policies, see
-[Use the Cluster Management Template to Install Cilium](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium).
-
-### Cilium Network Policy
-
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/184) in GitLab 13.9.
-
-By default, all Kubernetes pods are
-[non-isolated](https://kubernetes.io/docs/concepts/services-networking/network-policies/#isolated-and-non-isolated-pods),
-and accept traffic to and from any source. You can use
-[CiliumNetworkPolicy](https://docs.cilium.io/en/v1.8/concepts/kubernetes/policy/#ciliumnetworkpolicy)
-to restrict connections to and from selected pods, namespaces, and the internet.
-
-#### Requirements
-
-As the default network plugin for Kubernetes (`kubenet`)
-[does not implement](https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/#kubenet)
-support for it, you must have [Cilium](https://docs.cilium.io/en/v1.8/intro/) as your Kubernetes network plugin.
-
-The [Cilium](https://cilium.io/) network plugin can be
-installed with a [cluster management project template](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium)
-to enable support for network policies.
-
-#### Configuration
-
-You can enable deployment of a network policy by setting the following
-in the `.gitlab/auto-deploy-values.yaml` file:
-
-```yaml
-ciliumNetworkPolicy:
-  enabled: true
-```
-
-The default policy deployed by the Auto Deploy pipeline allows
-traffic within a local namespace, and from the `gitlab-managed-apps`
-namespace. All other inbound connections are blocked. Outbound
-traffic (for example, to the internet) is not affected by the default policy.
-
-You can also provide a custom [policy specification](https://docs.cilium.io/en/v1.8/policy/language/#simple-ingress-allow)
-in the `.gitlab/auto-deploy-values.yaml` file, for example:
-
-```yaml
-ciliumNetworkPolicy:
-  enabled: true
-  spec:
-    endpointSelector:
-      matchLabels:
-        app.gitlab.com/env: staging
-    ingress:
-      - fromEndpoints:
-        - matchLabels:
-            app.gitlab.com/managed_by: gitlab
-```
-
-#### Enabling Alerts
-
-You can also enable alerts. Network policies with alerts are considered only if
-the [agent](../../user/clusters/agent/index.md)
-has been integrated.
-
-You can enable alerts as follows:
-
-```yaml
-ciliumNetworkPolicy:
-  enabled: true
-  alerts:
-    enabled: true
-```
-
-For more information on installing Network Policies, see
-[Use the Cluster Management Template to Install Cilium](../../user/project/clusters/protect/container_network_security/quick_start_guide.md#use-the-cluster-management-template-to-install-cilium).
 
 ### Running commands in the container
 

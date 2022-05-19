@@ -6,6 +6,7 @@ RSpec.describe Gitlab::ProcessSupervisor do
   let(:health_check_interval_seconds) { 0.1 }
   let(:check_terminate_interval_seconds) { 1 }
   let(:forwarded_signals) { [] }
+  let(:term_signals) { [] }
   let(:process_ids) { [spawn_process, spawn_process] }
 
   def spawn_process
@@ -19,7 +20,8 @@ RSpec.describe Gitlab::ProcessSupervisor do
       health_check_interval_seconds: health_check_interval_seconds,
       check_terminate_interval_seconds: check_terminate_interval_seconds,
       terminate_timeout_seconds: 1 + check_terminate_interval_seconds,
-      forwarded_signals: forwarded_signals
+      forwarded_signals: forwarded_signals,
+      term_signals: term_signals
     )
   end
 
@@ -29,6 +31,8 @@ RSpec.describe Gitlab::ProcessSupervisor do
     rescue Errno::ESRCH
       # Ignore if a process wasn't actually alive.
     end
+
+    supervisor.stop
   end
 
   describe '#supervise' do
@@ -60,7 +64,7 @@ RSpec.describe Gitlab::ProcessSupervisor do
           [42] # Fake starting a new process in place of the terminated one.
         end
 
-        # Terminate the supervised process.
+        # Terminate a supervised process.
         Process.kill('TERM', process_ids.first)
 
         await_condition(sleep_sec: health_check_interval_seconds) do
@@ -70,6 +74,72 @@ RSpec.describe Gitlab::ProcessSupervisor do
         expect(Gitlab::ProcessManagement.process_alive?(process_ids.first)).to be(false)
         expect(Gitlab::ProcessManagement.process_alive?(process_ids.last)).to be(true)
         expect(supervisor.supervised_pids).to match_array([process_ids.last, 42])
+      end
+
+      it 'deduplicates PIDs returned from callback' do
+        expect(Gitlab::ProcessManagement.all_alive?(process_ids)).to be(true)
+        pids_killed = []
+
+        supervisor.supervise(process_ids) do |dead_pids|
+          pids_killed = dead_pids
+          # Fake a new process having the same pid as one that was just terminated.
+          [process_ids.last]
+        end
+
+        # Terminate a supervised process.
+        Process.kill('TERM', process_ids.first)
+
+        await_condition(sleep_sec: health_check_interval_seconds) do
+          pids_killed == [process_ids.first]
+        end
+
+        expect(supervisor.supervised_pids).to contain_exactly(process_ids.last)
+      end
+
+      it 'accepts single PID returned from callback' do
+        expect(Gitlab::ProcessManagement.all_alive?(process_ids)).to be(true)
+        pids_killed = []
+
+        supervisor.supervise(process_ids) do |dead_pids|
+          pids_killed = dead_pids
+          42
+        end
+
+        # Terminate a supervised process.
+        Process.kill('TERM', process_ids.first)
+
+        await_condition(sleep_sec: health_check_interval_seconds) do
+          pids_killed == [process_ids.first]
+        end
+
+        expect(supervisor.supervised_pids).to contain_exactly(42, process_ids.last)
+      end
+
+      context 'but supervisor has entered shutdown' do
+        it 'does not trigger callback again' do
+          expect(Gitlab::ProcessManagement.all_alive?(process_ids)).to be(true)
+          callback_count = 0
+
+          supervisor.supervise(process_ids) do |dead_pids|
+            callback_count += 1
+
+            Thread.new { supervisor.shutdown }
+
+            [42]
+          end
+
+          # Terminate the supervised processes to trigger more than 1 callback.
+          Process.kill('TERM', process_ids.first)
+          Process.kill('TERM', process_ids.last)
+
+          await_condition(sleep_sec: health_check_interval_seconds * 3) do
+            supervisor.alive == false
+          end
+
+          # Since we shut down the supervisor during the first callback, it should not
+          # be called anymore.
+          expect(callback_count).to eq(1)
+        end
       end
     end
 
@@ -82,6 +152,8 @@ RSpec.describe Gitlab::ProcessSupervisor do
       end
 
       context 'termination signals' do
+        let(:term_signals) { %i(INT TERM) }
+
         context 'when TERM results in timely shutdown of processes' do
           it 'forwards them to observed processes without waiting for grace period to expire' do
             allow(Gitlab::ProcessManagement).to receive(:any_alive?).and_return(false)

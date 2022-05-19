@@ -216,3 +216,10 @@ multi-project pipelines:
 
 - [By using the `variable` keyword](multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword).
 - [By using variable inheritance](multi_project_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline-by-using-variable-inheritance).
+
+## Retry or cancel child pipelines
+
+You can retry or cancel child pipelines:
+
+- [In the main graph view](index.md#downstream-pipelines).
+- In the child pipeline's details page.

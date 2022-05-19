@@ -25,6 +25,10 @@
 .single-db-rspec:
   extends: .single-db
 
+.praefect-with-db:
+  variables:
+    GITALY_PRAEFECT_WITH_DB: '1'
+
 .rspec-base:
   extends:
     - .rails-job-base
@@ -38,7 +42,7 @@
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag ~level:migration"
+    - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration"
 
 .base-artifacts:
   artifacts:
@@ -61,7 +65,7 @@
     - .rails:rules:ee-and-foss-migration
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag ~geo --tag level:migration"
+    - rspec_paralellized_job "--tag ~quarantine --tag level:migration"
 
 .rspec-base-pg11:
   extends:
@@ -101,6 +105,18 @@
     - .rspec-base
     - .use-pg12-ee
 
+.rspec-ee-base-pg12-es8:
+  extends:
+    - .rspec-base
+    - .use-pg12-es8-ee
+    - .rails:rules:run-search-tests
+
+.rspec-ee-base-pg12-opensearch1:
+  extends:
+    - .rspec-base
+    - .use-pg12-opensearch1-ee
+    - .rails:rules:run-search-tests
+
 .rspec-jh-base-pg12:
   extends:
     - .rspec-base-pg12-as-if-jh
@@ -109,33 +125,6 @@
 .rspec-ee-base-pg13:
   extends:
     - .rspec-base
-    - .use-pg13-ee
-
-.rspec-ee-base-geo:
-  extends: .rspec-base
-  script:
-    - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag geo"
-
-.rspec-ee-base-geo-pg11:
-  extends:
-    - .rspec-ee-base-geo
-    - .use-pg11-ee
-
-.rspec-ee-base-geo-pg12:
-  extends:
-    - .rspec-ee-base-geo
-    - .use-pg12-ee
-
-.rspec-jh-base-geo-pg12:
-  extends:
-    - .rspec-jh-base-pg12
-  script:
-    - !reference [.rspec-ee-base-geo, script]
-
-.rspec-ee-base-geo-pg13:
-  extends:
-    - .rspec-ee-base-geo
     - .use-pg13-ee
 
 .db-job-base:
@@ -160,10 +149,7 @@
   parallel: 22
 
 .rspec-ee-unit-parallel:
-  parallel: 14
-
-.rspec-ee-unit-geo-parallel:
-  parallel: 2
+  parallel: 16
 
 .rspec-integration-parallel:
   parallel: 10
@@ -210,6 +196,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitaly/run2/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
+      - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/ruby/
       - ${TMP_TEST_FOLDER}/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
       - ${TMP_TEST_FOLDER}/gitlab-shell/
@@ -280,6 +267,12 @@ rspec migration pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec migration pg12 praefect:
+  extends:
+    - rspec migration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
+
 rspec unit pg12:
   extends:
     - .rspec-base-pg12
@@ -298,6 +291,12 @@ rspec unit pg12 single-db:
     - .single-db-rspec
     - .rails:rules:single-db
 
+rspec unit pg12 praefect:
+  extends:
+    - rspec unit pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
+
 rspec integration pg12:
   extends:
     - .rspec-base-pg12
@@ -315,6 +314,12 @@ rspec integration pg12 single-db:
     - rspec integration pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec integration pg12 praefect:
+  extends:
+    - rspec integration pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
 
 rspec system pg12:
   extends:
@@ -335,6 +340,12 @@ rspec system pg12 single-db:
     - rspec system pg12
     - .single-db-rspec
     - .rails:rules:single-db
+
+rspec system pg12 praefect:
+  extends:
+    - rspec system pg12
+    - .praefect-with-db
+    - .rails:rules:praefect-with-db
 
 # Dedicated job to test DB library code against PG11.
 # Note that these are already tested against PG12 in the `rspec unit pg12` / `rspec-ee unit pg12` jobs.
@@ -510,9 +521,6 @@ rspec:deprecations:
     - rspec-ee unit pg12
     - rspec-ee integration pg12
     - rspec-ee system pg12
-    - rspec-ee unit pg12 geo
-    - rspec-ee integration pg12 geo
-    - rspec-ee system pg12 geo
   variables:
     SETUP_DB: "false"
   script:
@@ -564,14 +572,6 @@ rspec:coverage:
     - rspec-ee unit pg12 single-db
     - rspec-ee integration pg12 single-db
     - rspec-ee system pg12 single-db
-    # Geo jobs
-    - rspec-ee unit pg12 geo
-    - rspec-ee integration pg12 geo
-    - rspec-ee system pg12 geo
-    # Geo minimal jobs
-    - rspec-ee unit pg12 geo minimal
-    - rspec-ee integration pg12 geo minimal
-    - rspec-ee system pg12 geo minimal
     # Memory jobs
     - memory-on-boot
     # As-if-FOSS jobs
@@ -788,6 +788,16 @@ rspec-ee unit pg12:
     - .rails:rules:ee-only-unit
     - .rspec-ee-unit-parallel
 
+rspec-ee unit pg12 es8:
+  extends:
+    - .rspec-ee-base-pg12-es8
+    - .rspec-ee-unit-parallel
+
+rspec-ee unit pg12 opensearch1:
+  extends:
+    - .rspec-ee-base-pg12-opensearch1
+    - .rspec-ee-unit-parallel
+
 rspec-ee unit pg12 minimal:
   extends:
     - rspec-ee unit pg12
@@ -804,6 +814,16 @@ rspec-ee integration pg12:
   extends:
     - .rspec-ee-base-pg12
     - .rails:rules:ee-only-integration
+    - .rspec-ee-integration-parallel
+
+rspec-ee integration pg12 es8:
+  extends:
+    - .rspec-ee-base-pg12-es8
+    - .rspec-ee-integration-parallel
+
+rspec-ee integration pg12 opensearch1:
+  extends:
+    - .rspec-ee-base-pg12-opensearch1
     - .rspec-ee-integration-parallel
 
 rspec-ee integration pg12 minimal:
@@ -824,6 +844,16 @@ rspec-ee system pg12:
     - .rails:rules:ee-only-system
     - .rspec-ee-system-parallel
 
+rspec-ee system pg12 es8:
+  extends:
+    - .rspec-ee-base-pg12-es8
+    - .rspec-ee-system-parallel
+
+rspec-ee system pg12 opensearch1:
+  extends:
+    - .rspec-ee-base-pg12-opensearch1
+    - .rspec-ee-system-parallel
+
 rspec-ee system pg12 minimal:
   extends:
     - rspec-ee system pg12
@@ -835,40 +865,6 @@ rspec-ee system pg12 single-db:
     - rspec-ee system pg12
     - .single-db-rspec
     - .rails:rules:single-db
-
-rspec-ee unit pg12 geo:
-  extends:
-    - .rspec-ee-base-geo-pg12
-    - .rails:rules:ee-only-unit
-    - .rspec-ee-unit-geo-parallel
-
-rspec-ee unit pg12 geo minimal:
-  extends:
-    - rspec-ee unit pg12 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-unit:minimal
-
-rspec-ee integration pg12 geo:
-  extends:
-    - .rspec-ee-base-geo-pg12
-    - .rails:rules:ee-only-integration
-
-rspec-ee integration pg12 geo minimal:
-  extends:
-    - rspec-ee integration pg12 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-integration:minimal
-
-rspec-ee system pg12 geo:
-  extends:
-    - .rspec-ee-base-geo-pg12
-    - .rails:rules:ee-only-system
-
-rspec-ee system pg12 geo minimal:
-  extends:
-    - rspec-ee system pg12 geo
-    - .minimal-rspec-tests
-    - .rails:rules:ee-only-system:minimal
 
 rspec-ee migration pg12-as-if-jh:
   extends:
@@ -895,22 +891,6 @@ rspec-ee system pg12-as-if-jh:
     - .rails:rules:as-if-jh-rspec
     - .rspec-ee-system-parallel
 
-rspec-ee unit pg12-as-if-jh geo:
-  extends:
-    - .rspec-jh-base-geo-pg12
-    - .rails:rules:as-if-jh-rspec
-    - .rspec-ee-unit-geo-parallel
-
-rspec-ee integration pg12-as-if-jh geo:
-  extends:
-    - .rspec-jh-base-geo-pg12
-    - .rails:rules:as-if-jh-rspec
-
-rspec-ee system pg12-as-if-jh geo:
-  extends:
-    - .rspec-jh-base-geo-pg12
-    - .rails:rules:as-if-jh-rspec
-
 rspec-jh migration pg12-as-if-jh:
   extends:
     - .rspec-jh-base-pg12
@@ -930,21 +910,6 @@ rspec-jh integration pg12-as-if-jh:
 rspec-jh system pg12-as-if-jh:
   extends:
     - .rspec-jh-base-pg12
-    - .rails:rules:as-if-jh-rspec
-
-rspec-jh unit pg12-as-if-jh geo:
-  extends:
-    - .rspec-jh-base-geo-pg12
-    - .rails:rules:as-if-jh-rspec
-
-rspec-jh integration pg12-as-if-jh geo:
-  extends:
-    - .rspec-jh-base-geo-pg12
-    - .rails:rules:as-if-jh-rspec
-
-rspec-jh system pg12-as-if-jh geo:
-  extends:
-    - .rspec-jh-base-geo-pg12
     - .rails:rules:as-if-jh-rspec
 
 db:rollback geo:
@@ -1044,22 +1009,6 @@ rspec-ee system pg11:
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
 
-rspec-ee unit pg11 geo:
-  extends:
-    - .rspec-ee-base-geo-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-unit-geo-parallel
-
-rspec-ee integration pg11 geo:
-  extends:
-    - .rspec-ee-base-geo-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee system pg11 geo:
-  extends:
-    - .rspec-ee-base-geo-pg11
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
 # PG13
 rspec-ee migration pg13:
   extends:
@@ -1085,22 +1034,6 @@ rspec-ee system pg13:
     - .rspec-ee-base-pg13
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
-
-rspec-ee unit pg13 geo:
-  extends:
-    - .rspec-ee-base-geo-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-    - .rspec-ee-unit-geo-parallel
-
-rspec-ee integration pg13 geo:
-  extends:
-    - .rspec-ee-base-geo-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
-
-rspec-ee system pg13 geo:
-  extends:
-    - .rspec-ee-base-geo-pg13
-    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 # EE: default branch nightly scheduled jobs #
 #####################################
 

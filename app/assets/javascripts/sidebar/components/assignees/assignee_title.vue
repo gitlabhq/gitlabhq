@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'AssigneeTitle',
@@ -8,6 +9,7 @@ export default {
     GlLoadingIcon,
     GlIcon,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     loading: {
       type: Boolean,
@@ -45,7 +47,7 @@ export default {
 };
 </script>
 <template>
-  <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900">
+  <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900 gl-font-weight-bold">
     {{ assigneeTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <a
@@ -63,6 +65,7 @@ export default {
       v-if="showToggle"
       :aria-label="__('Toggle sidebar')"
       class="gutter-toggle float-right js-sidebar-toggle"
+      :class="{ 'gl-display-block gl-md-display-none!': glFeatures.movedMrSidebar }"
       href="#"
       role="button"
     >

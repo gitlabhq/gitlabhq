@@ -20,7 +20,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       distribution: %w(ee ce),
       tier: %w(free starter premium ultimate bronze silver gold),
       name: 'uuid',
-      data_category: 'standard'
+      data_category: 'standard',
+      removed_by_url: 'http://gdk.test'
     }
   end
 
@@ -132,6 +133,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :tier               | %w(test ee)
       :name               | 'count_<adjective_describing>_boards'
       :repair_issue_url   | nil
+      :removed_by_url     | 1
 
       :instrumentation_class | 'Metric_Class'
       :instrumentation_class | 'metricClass'
@@ -173,6 +175,24 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
 
           described_class.new(path, attributes).validate!
         end
+      end
+    end
+  end
+
+  describe '#valid_service_ping_status?' do
+    context 'when metric has active status' do
+      it 'has to return true' do
+        attributes[:status] = 'active'
+
+        expect(described_class.new(path, attributes).valid_service_ping_status?).to be_truthy
+      end
+    end
+
+    context 'when metric has removed status' do
+      it 'has to return false' do
+        attributes[:status] = 'removed'
+
+        expect(described_class.new(path, attributes).valid_service_ping_status?).to be_falsey
       end
     end
   end

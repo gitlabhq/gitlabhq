@@ -1,11 +1,17 @@
 <script>
-import { GlIcon, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
-import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
+import {
+  IssuableStatus,
+  IssuableStatusText,
+  WorkspaceType,
+  IssuableType,
+} from '~/issues/constants';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, INCIDENT_TYPE, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -18,13 +24,16 @@ import PinnedLinks from './pinned_links.vue';
 import titleComponent from './title.vue';
 
 export default {
+  WorkspaceType,
   components: {
     GlIcon,
+    GlBadge,
     GlIntersectionObserver,
     titleComponent,
     editedComponent,
     formComponent,
     PinnedLinks,
+    ConfidentialityBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -156,7 +165,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: IssuableType.Issue,
     },
     canAttachFile: {
       type: Boolean,
@@ -259,13 +268,19 @@ export default {
         : '';
     },
     statusIcon() {
-      return this.isClosed ? 'issue-close' : 'issue-open-m';
+      if (this.issuableType === IssuableType.Issue) {
+        return this.isClosed ? 'issue-closed' : 'issues';
+      }
+      return this.isClosed ? 'epic-closed' : 'epic';
+    },
+    statusVariant() {
+      return this.isClosed ? 'info' : 'success';
     },
     statusText() {
       return IssuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return this.issuableType === IssuableType.Issue;
+      return [IssuableType.Issue, IssuableType.Epic].includes(this.issuableType);
     },
   },
   created() {
@@ -327,20 +342,24 @@ export default {
         });
     },
 
-    updateFormState(state) {
+    setFormState(state) {
       this.store.setFormState(state);
     },
 
-    updateAndShowForm(templates = {}) {
+    updateFormState(templates = {}) {
+      this.setFormState({
+        title: this.state.titleText,
+        description: this.state.descriptionText,
+        lock_version: this.state.lock_version,
+        lockedWarningVisible: false,
+        updateLoading: false,
+        issuableTemplates: templates,
+      });
+    },
+
+    updateAndShowForm(templates) {
       if (!this.showForm) {
-        this.store.setFormState({
-          title: this.state.titleText,
-          description: this.state.descriptionText,
-          lock_version: this.state.lock_version,
-          lockedWarningVisible: false,
-          updateLoading: false,
-          issuableTemplates: templates,
-        });
+        this.updateFormState(templates);
         this.showForm = true;
       }
     },
@@ -373,9 +392,7 @@ export default {
     },
 
     updateIssuable() {
-      this.store.setFormState({
-        updateLoading: true,
-      });
+      this.setFormState({ updateLoading: true });
 
       const {
         store: { formState },
@@ -413,10 +430,6 @@ export default {
         .catch((error = {}) => {
           const { message, response = {} } = error;
 
-          this.store.setFormState({
-            updateLoading: false,
-          });
-
           let errMsg = this.defaultErrorMessage;
 
           if (response.data && response.data.errors) {
@@ -428,6 +441,9 @@ export default {
           this.flashContainer = createFlash({
             message: errMsg,
           });
+        })
+        .finally(() => {
+          this.setFormState({ updateLoading: false });
         });
     },
 
@@ -444,6 +460,12 @@ export default {
         this.flashContainer.close();
         this.flashContainer = null;
       }
+    },
+
+    handleListItemReorder(description) {
+      this.updateFormState();
+      this.setFormState({ description });
+      this.updateIssuable();
     },
 
     taskListUpdateStarted() {
@@ -483,7 +505,7 @@ export default {
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
-        @updateForm="updateFormState"
+        @updateForm="setFormState"
       />
     </div>
     <div v-else>
@@ -509,19 +531,21 @@ export default {
             <div
               class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
             >
-              <p
-                class="issuable-status-box status-box gl-my-0"
-                :class="[isClosed ? 'status-box-issue-closed' : 'status-box-open']"
+              <gl-badge :variant="statusVariant" class="gl-mr-2">
+                <gl-icon :name="statusIcon" />
+                <span class="gl-display-none gl-sm-display-block gl-ml-2">{{
+                  statusText
+                }}</span></gl-badge
               >
-                <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />
-                <span class="gl-display-none d-sm-block">{{ statusText }}</span>
-              </p>
               <span v-if="isLocked" data-testid="locked" class="issuable-warning-icon">
                 <gl-icon name="lock" :aria-label="__('Locked')" />
               </span>
-              <span v-if="isConfidential" data-testid="confidential" class="issuable-warning-icon">
-                <gl-icon name="eye-slash" :aria-label="__('Confidential')" />
-              </span>
+              <confidentiality-badge
+                v-if="isConfidential"
+                data-testid="confidential"
+                :workspace-type="$options.WorkspaceType.project"
+                :issuable-type="issuableType"
+              />
               <span
                 v-if="isHidden"
                 v-gl-tooltip
@@ -559,6 +583,8 @@ export default {
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
+        :is-updating="formState.updateLoading"
+        @listItemReorder="handleListItemReorder"
         @taskListUpdateStarted="taskListUpdateStarted"
         @taskListUpdateSucceeded="taskListUpdateSucceeded"
         @taskListUpdateFailed="taskListUpdateFailed"

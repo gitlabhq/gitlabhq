@@ -13,6 +13,8 @@ module IssuablesHelper
   end
 
   def sidebar_gutter_collapsed_class
+    return "right-sidebar-expanded" if moved_mr_sidebar_enabled?
+
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
@@ -236,6 +238,7 @@ module IssuablesHelper
       markdownPreviewPath: preview_markdown_path(parent, target_type: issuable.model_name, target_id: issuable.iid),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,
+      state: issuable.state,
       issuableTemplateNamesPath: template_names_path(parent, issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
@@ -341,14 +344,20 @@ module IssuablesHelper
   end
 
   def state_name_with_icon(issuable)
-    if issuable.is_a?(MergeRequest) && issuable.merged?
-      [_("Merged"), "git-merge"]
-    elsif issuable.is_a?(MergeRequest) && issuable.closed?
-      [_("Closed"), "close"]
-    elsif issuable.closed?
-      [_("Closed"), "mobile-issue-close"]
+    if issuable.is_a?(MergeRequest)
+      if issuable.open?
+        [_("Open"), "merge-request-open"]
+      elsif issuable.merged?
+        [_("Merged"), "merge"]
+      else
+        [_("Closed"), "merge-request-close"]
+      end
     else
-      [_("Open"), "issue-open-m"]
+      if issuable.open?
+        [_("Open"), "issues"]
+      else
+        [_("Closed"), "issue-closed"]
+      end
     end
   end
 

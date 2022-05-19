@@ -263,6 +263,9 @@ RSpec.describe API::Ci::JobArtifacts do
           'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
       end
 
+      let(:expected_params) { { artifact_size: job.artifacts_file.size } }
+      let(:subject_proc) { proc { subject } }
+
       it 'returns specific job artifacts' do
         subject
 
@@ -270,6 +273,9 @@ RSpec.describe API::Ci::JobArtifacts do
         expect(response.headers.to_h).to include(download_headers)
         expect(response.body).to match_file(job.artifacts_file.file.file)
       end
+
+      it_behaves_like 'storing arguments in the application context'
+      it_behaves_like 'not executing any extra queries for the application context'
     end
 
     context 'normal authentication' do
@@ -558,7 +564,8 @@ RSpec.describe API::Ci::JobArtifacts do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response.headers.to_h)
               .to include('Content-Type' => 'application/json',
-                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
+                          'Gitlab-Workhorse-Detect-Content-Type' => 'true')
           end
         end
 
@@ -628,7 +635,8 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
+                        'Gitlab-Workhorse-Detect-Content-Type' => 'true')
           expect(response.parsed_body).to be_empty
         end
       end
@@ -646,7 +654,8 @@ RSpec.describe API::Ci::JobArtifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
+                        'Gitlab-Workhorse-Detect-Content-Type' => 'true')
         end
       end
 

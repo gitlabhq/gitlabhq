@@ -1537,10 +1537,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
-               order: [])
+               order: []
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1564,10 +1566,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id foobar),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
                length: [],
-               order: [])
+               order: []
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1591,11 +1595,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
                order: [],
-               where: 'foo')
+               where: 'foo'
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1619,11 +1625,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
                order: [],
-               using: 'foo')
+               using: 'foo'
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1647,11 +1655,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id',
                length: [],
                order: [],
-               opclass: { 'gl_project_id' => 'bar' })
+               opclass: { 'gl_project_id' => 'bar' }
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1660,14 +1670,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'using an index with multiple columns and custom operator classes' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id foobar),
-                       name: 'index_on_issues_project_id_foobar',
-                       using: :gin,
-                       where: nil,
-                       opclasses: { 'project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+                       {
+                         columns: %w(project_id foobar),
+                         name: 'index_on_issues_project_id_foobar',
+                         using: :gin,
+                         where: nil,
+                         opclasses: { 'project_id' => 'bar', 'foobar' => :gin_trgm_ops },
+                         unique: false,
+                         lengths: [],
+                         orders: []
+                       })
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
@@ -1675,12 +1687,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id foobar),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
                length: [],
                order: [],
                opclass: { 'gl_project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-               using: :gin)
+               using: :gin
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1689,14 +1703,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'using an index with multiple columns and a custom operator class on the non affected column' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w(project_id foobar),
-                       name: 'index_on_issues_project_id_foobar',
-                       using: :gin,
-                       where: nil,
-                       opclasses: { 'foobar' => :gin_trgm_ops },
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+                       {
+                         columns: %w(project_id foobar),
+                         name: 'index_on_issues_project_id_foobar',
+                         using: :gin,
+                         where: nil,
+                         opclasses: { 'foobar' => :gin_trgm_ops },
+                         unique: false,
+                         lengths: [],
+                         orders: []
+                       })
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
@@ -1704,12 +1720,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
                %w(gl_project_id foobar),
+              {
                unique: false,
                name: 'index_on_issues_gl_project_id_foobar',
                length: [],
                order: [],
                opclass: { 'foobar' => :gin_trgm_ops },
-               using: :gin)
+               using: :gin
+              })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -2210,12 +2228,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#ensure_batched_background_migration_is_finished' do
+    let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
+    let(:table) { :events }
+    let(:column_name) { :id }
+    let(:job_arguments) { [["id"], ["id_convert_to_bigint"], nil] }
+
     let(:configuration) do
       {
-        job_class_name: 'CopyColumnUsingBackgroundMigrationJob',
-        table_name: :events,
-        column_name: :id,
-        job_arguments: [["id"], ["id_convert_to_bigint"], nil]
+        job_class_name: job_class_name,
+        table_name: table,
+        column_name: column_name,
+        job_arguments: job_arguments
       }
     end
 
@@ -2224,11 +2247,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     it 'raises an error when migration exists and is not marked as finished' do
       create(:batched_background_migration, :active, configuration)
 
+      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+        allow(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(false)
+      end
+
       expect { ensure_batched_background_migration_is_finished }
         .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':" \
             "\t#{configuration}" \
             "\n\n" \
-            "Finalize it manualy by running" \
+            "Finalize it manually by running" \
             "\n\n" \
             "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\,[\"id_convert_to_bigint\"]\\,null]']" \
             "\n\n" \
@@ -2250,6 +2277,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       expect { ensure_batched_background_migration_is_finished }
         .not_to raise_error
+    end
+
+    it 'finalizes the migration' do
+      migration = create(:batched_background_migration, :active, configuration)
+
+      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+        expect(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(migration.finish!)
+      end
+
+      ensure_batched_background_migration_is_finished
+    end
+
+    context 'when the flag finalize is false' do
+      it 'does not finalize the migration' do
+        create(:batched_background_migration, :active, configuration)
+
+        allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+          expect(runner).not_to receive(:finalize).with(job_class_name, table, column_name, job_arguments)
+        end
+
+        expect { model.ensure_batched_background_migration_is_finished(**configuration.merge(finalize: false)) }.to raise_error(RuntimeError)
+      end
     end
   end
 
@@ -3162,15 +3211,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'without proper permissions' do
       before do
-        allow(model).to receive(:execute).with(/CREATE EXTENSION IF NOT EXISTS #{extension}/).and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
+        allow(model).to receive(:execute)
+          .with(/CREATE EXTENSION IF NOT EXISTS #{extension}/)
+          .and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
       end
 
-      it 'raises the exception' do
-        expect { subject }.to raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
-      end
-
-      it 'prints an error message' do
-        expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
+      it 'raises an exception and prints an error message' do
+        expect { subject }
+          .to output(/user is not allowed/).to_stderr
+          .and raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
       end
     end
   end
@@ -3188,15 +3237,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     context 'without proper permissions' do
       before do
-        allow(model).to receive(:execute).with(/DROP EXTENSION IF EXISTS #{extension}/).and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
+        allow(model).to receive(:execute)
+          .with(/DROP EXTENSION IF EXISTS #{extension}/)
+          .and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
       end
 
-      it 'raises the exception' do
-        expect { subject }.to raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
-      end
-
-      it 'prints an error message' do
-        expect { subject }.to output(/user is not allowed/).to_stderr.and raise_error
+      it 'raises an exception and prints an error message' do
+        expect { subject }
+          .to output(/user is not allowed/).to_stderr
+          .and raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
       end
     end
   end

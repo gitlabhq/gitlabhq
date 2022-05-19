@@ -53,7 +53,7 @@ module API
           # https://gitlab.com/gitlab-org/gitlab/-/issues/327703
           forbidden! unless job
 
-          forbidden! unless job_token_valid?(job)
+          forbidden! unless job.valid_token?(job_token)
 
           forbidden!('Project has been deleted!') if job.project.nil? || job.project.pending_delete?
           forbidden!('Job has been erased!') if job.erased?
@@ -77,6 +77,12 @@ module API
           job
         end
 
+        def authenticate_job_via_dependent_job!
+          forbidden! unless current_authenticated_job
+          forbidden! unless current_job
+          forbidden! unless can?(current_authenticated_job.user, :read_build, current_job)
+        end
+
         def current_job
           id = params[:id]
 
@@ -91,9 +97,28 @@ module API
           end
         end
 
-        def job_token_valid?(job)
-          token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
-          token && job.valid_token?(token)
+        # TODO: Replace this with `#current_authenticated_job from API::Helpers`
+        # after the feature flag `ci_authenticate_running_job_token_for_artifacts`
+        # is removed.
+        #
+        # For the time being, this needs to be overridden because the API
+        # GET api/v4/jobs/:id/artifacts
+        # needs to allow requests using token whose job is not running.
+        #
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83713#note_942368526
+        def current_authenticated_job
+          strong_memoize(:current_authenticated_job) do
+            ::Ci::AuthJobFinder.new(token: job_token).execute
+          end
+        end
+
+        # The token used by runner to authenticate a request.
+        # In most cases, the runner uses the token belonging to the requested job.
+        # However, when requesting for job artifacts, the runner would use
+        # the token that belongs to downstream jobs that depend on the job that owns
+        # the artifacts.
+        def job_token
+          @job_token ||= (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
         end
 
         def job_forbidden!(job, reason)
@@ -111,10 +136,18 @@ module API
           # noop: overridden in EE
         end
 
+        def log_artifact_size(artifact)
+          Gitlab::ApplicationContext.push(artifact: artifact)
+        end
+
         private
 
         def get_runner_config_from_request
           { config: attributes_for_keys(%w(gpus), params.dig('info', 'config')) }
+        end
+
+        def request_using_running_job_token?
+          current_job.present? && current_authenticated_job.present? && current_job != current_authenticated_job
         end
       end
     end

@@ -75,7 +75,7 @@ translate between the human-readable project name and the hashed storage path. Y
 
 Administrators can look up a project's hashed path from its name or ID using:
 
-- The [Admin area](../user/admin_area/index.md#administering-projects).
+- The [Admin Area](../user/admin_area/index.md#administering-projects).
 - A Rails console.
 
 To look up a project's hash path in the Admin Area:
@@ -153,6 +153,20 @@ project. Object pool repositories are stored similarly to regular repositories i
 WARNING:
 Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
 This can cause data loss in the regular repositories that depend on the object pool.
+
+### Group wiki storage
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
+
+Unlike project wikis that are stored in the `@hashed` directory, group wikis are stored in a directory called `@groups`.
+Like project wikis, group wikis follow the hashed storage folder convention, but use a hash of the group ID rather than the project ID.
+
+For example:
+
+```ruby
+# group wiki paths
+"@groups/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
+```
 
 ### Object storage support
 

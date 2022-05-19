@@ -10,6 +10,16 @@ RSpec.describe Deployments::HooksWorker do
       allow(ProjectServiceWorker).to receive(:perform_async)
     end
 
+    it 'logs deployment and project IDs as metadata' do
+      deployment = create(:deployment, :running)
+      project = deployment.project
+
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:deployment_project_id, project.id)
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:deployment_id, deployment.id)
+
+      worker.perform(deployment_id: deployment.id, status_changed_at: Time.current)
+    end
+
     it 'executes project services for deployment_hooks' do
       deployment = create(:deployment, :running)
       project = deployment.project

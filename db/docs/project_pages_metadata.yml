@@ -4,6 +4,6 @@ classes:
 - ProjectPagesMetadatum
 feature_categories:
 - pages
-description: TODO
+description: Store GitLab Pages metadata for projects.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17197
 milestone: '12.4'

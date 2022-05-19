@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Importing issues from CSV **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23532) in GitLab 11.7.
-
 Issues can be imported to a project by uploading a CSV file with the columns
 `title` and `description`. Other columns are **not** imported. If you want to
 retain columns such as labels and milestones, consider the [Move Issue feature](managing_issues.md#move-an-issue).
@@ -25,33 +23,29 @@ You must have at least the Developer role for a project to import issues.
 
 To import issues:
 
-1. Navigate to a project's Issues list page.
-1. If existing issues are present, click the import icon at the top right, next to the **Edit issues** button.
-1. For a project without any issues, click the button labeled **Import CSV** in the middle of the page.
-1. Select the file and click the **Import issues** button.
+1. Go to your project's Issues list page.
+1. Open the import feature, depending if the project has issues:
+   - Existing issues are present: Select the import icon at the top right, next to **Edit issues**. 
+   - Project has no issues: Select **Import CSV** in the middle of the page.
+1. Select the file you want to import, and then select **Import issues**.
 
-The file is processed in the background and a notification email is sent
-to you once the import is complete.
+The file is processed in the background, and a notification email is sent
+to you after the import is complete.
 
 ## CSV file format
 
-When importing issues from a CSV file, it must be formatted in a certain way:
+To import issues, GitLab requires CSV files have a specific format:
 
-- **header row:** CSV files must include the following headers:
-`title` and `description`. The case of the headers does not matter.
-- **columns:** Data from columns beyond `title` and `description` are not imported.
-- **separators:** The column separator is automatically detected from the header row.
-  Supported separator characters are: commas (`,`), semicolons (`;`), and tabs (`\t`).
-  The row separator can be either `CRLF` or `LF`.
-- **double-quote character:** The double-quote (`"`) character is used to quote fields,
-  enabling the use of the column separator within a field (see the third line in the
-  sample CSV data below). To insert a double-quote (`"`) within a quoted
-  field, use two double-quote characters in succession (`""`).
-- **data rows:** After the header row, succeeding rows must follow the same column
-  order. The issue title is required while the description is optional.
+| Element                | Format |
+|------------------------|--------|
+| header row             | CSV files must include the following headers: `title` and `description`. The case of the headers does not matter. |
+| columns                | Data from columns beyond `title` and `description` are not imported. |
+| separators             | The column separator is detected from the header row. Supported separator characters are commas (`,`), semicolons (`;`), and tabs (`\t`). The row separator can be either `CRLF` or `LF`. |
+| double-quote character | The double-quote (`"`) character is used to quote fields, enabling the use of the column separator in a field (see the third line in the sample CSV data below). To insert a double-quote (`"`) in a quoted field use two double-quote characters in succession (`""`). |
+| data rows              | After the header row, following rows must use the same column order. The issue title is required, but the description is optional. |
 
-If you have special characters _within_ a field, (such as `\n` or `,`),
-wrap the characters in double quotes.
+If you have special characters in a field, (such as `\n` or `,`), surround the
+characters with double quotes (`"`).
 
 Sample CSV data:
 
@@ -64,6 +58,7 @@ Another Title,"A description, with a comma"
 
 ### File size
 
-The limit depends on the configuration value of Max Attachment Size for the GitLab instance.
+The limit depends on how your GitLab instance is hosted:
 
-For GitLab.com, it is set to 10 MB.
+- Self-managed: Set by the configuration value of `Max Attachment Size` for the GitLab instance.
+- GitLab SaaS: On GitLab.com, it's set to 10 MB.

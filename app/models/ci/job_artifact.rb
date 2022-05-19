@@ -45,7 +45,7 @@ module Ci
       dotenv: '.env',
       cobertura: 'cobertura-coverage.xml',
       terraform: 'tfplan.json',
-      cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/333441
+      cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       requirements: 'requirements.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json'
@@ -64,7 +64,7 @@ module Ci
       network_referee: :gzip,
       dotenv: :gzip,
       cobertura: :gzip,
-      cluster_applications: :gzip,
+      cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
       lsif: :zip,
 
       # Security reports and license scanning reports are raw artifacts
@@ -187,7 +187,6 @@ module Ci
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
     scope :order_expired_asc, -> { order(expire_at: :asc) }
-    scope :order_expired_desc, -> { order(expire_at: :desc) }
     scope :with_destroy_preloads, -> { includes(project: [:route, :statistics]) }
 
     scope :for_project, ->(project) { where(project_id: project) }
@@ -323,12 +322,12 @@ module Ci
         end
     end
 
-    def archived_trace_exists?
+    def stored?
       file&.file&.exists?
     end
 
     def self.archived_trace_exists_for?(job_id)
-      where(job_id: job_id).trace.take&.archived_trace_exists?
+      where(job_id: job_id).trace.take&.stored?
     end
 
     def self.max_artifact_size(type:, project:)

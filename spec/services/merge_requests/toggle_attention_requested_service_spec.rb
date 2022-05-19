@@ -80,7 +80,7 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'removes attention requested state' do
         expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-          .with(project: project, current_user: current_user, merge_request: merge_request)
+          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
           .and_call_original
 
         service.execute
@@ -129,7 +129,7 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'removes attention requested state' do
         expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-          .with(project: project, current_user: current_user, merge_request: merge_request)
+          .with(project: project, current_user: current_user, merge_request: merge_request, user: current_user)
           .and_call_original
 
         service.execute

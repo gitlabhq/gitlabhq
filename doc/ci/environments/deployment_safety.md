@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deployment safety **(FREE)**
 
-Deployment jobs can be more sensitive than other jobs in a pipeline,
+[Deployment jobs](../jobs/#deployment-jobs) are a specific kind of CI/CD
+job. They can be more sensitive than other jobs in a pipeline,
 and might need to be treated with extra care. GitLab has several features
 that help maintain deployment security and stability.
 
@@ -64,14 +65,14 @@ For more information, see [Resource Group documentation](../resource_groups/inde
 
 ## Skip outdated deployment jobs
 
-The execution order of pipeline jobs can vary from run to run, which could cause
-undesired behavior. For example, a deployment job in a newer pipeline could
-finish before a deployment job in an older pipeline.
-This creates a race condition where the older deployment finished later,
+The effective execution order of pipeline jobs can vary from run to run, which
+could cause undesired behavior. For example, a [deployment job](../jobs/#deployment-jobs)
+in a newer pipeline could finish before a deployment job in an older pipeline.
+This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.
 
 You can ensure that older deployment jobs are cancelled automatically when a newer deployment
-runs by enabling the [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) feature.
+job is started by enabling the [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) feature.
 
 Example of a problematic pipeline flow **before** enabling Skip outdated deployment jobs:
 
@@ -85,7 +86,7 @@ The improved pipeline flow **after** enabling Skip outdated deployment jobs:
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer SHA).
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
-1. The `deploy` job in Pipeline-A is automatically cancelled, so that it doesn't overwrite the deployment from the newer pipeline.
+1. The `deploy` job in Pipeline-A was automatically cancelled, so that it doesn't overwrite the deployment from the newer pipeline.
 
 ## Prevent deployments during deploy freeze windows
 
@@ -111,7 +112,7 @@ for an explanation of these roles and the permissions of each.
 
 Production secrets are needed to deploy successfully. For example, when deploying to the cloud,
 cloud providers require these secrets to connect to their services. In the project settings, you can
-define and protect CI/CD variables for these secrets. [Protected variables](../variables/index.md#protect-a-cicd-variable)
+define and protect CI/CD variables for these secrets. [Protected variables](../variables/index.md#protected-cicd-variables)
 are only passed to pipelines running on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 The other pipelines don't get the protected variable. You can also
@@ -132,7 +133,7 @@ permission model that isolates the CD permissions from the original project and 
 original users with the Maintainer role for the project from accessing the production secret and CD configuration. You can
 connect the CD project to your development projects by using [multi-project pipelines](../pipelines/multi_project_pipelines.md).
 
-## Protect `gitlab-ci.yml` from change
+## Protect `.gitlab-ci.yml` from change
 
 A `.gitlab-ci.yml` may contain rules to deploy an application to the production server. This
 deployment usually runs automatically after pushing a merge request. To prevent developers from

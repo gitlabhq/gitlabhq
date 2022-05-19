@@ -2,6 +2,7 @@
 import { GlSafeHtmlDirective, GlLoadingIcon } from '@gitlab/ui';
 import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
+import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import { ROUGE_TO_HLJS_LANGUAGE_MAP, LINES_PER_CHUNK } from './constants';
 import Chunk from './components/chunk.vue';
 
@@ -129,7 +130,7 @@ export default {
       let languageDefinition;
 
       try {
-        languageDefinition = await import(`highlight.js/lib/languages/${this.language}`);
+        languageDefinition = await languageLoader[this.language]();
         this.hljs.registerLanguage(this.language, languageDefinition.default);
       } catch (message) {
         this.$emit('error', message);

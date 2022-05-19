@@ -16,7 +16,7 @@ module Gitlab
       def active?
         # TODO: just touch a feature flag
         # Temporary change, we will change `experiment_percentage` in future to `Feature.enabled?
-        Feature.enabled?(feature_flag_name, type: :experiment, default_enabled: :yaml)
+        Feature.enabled?(feature_flag_name, type: :experiment)
 
         ::Gitlab.com? && experiment_percentage > 0
       end

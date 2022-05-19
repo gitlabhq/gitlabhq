@@ -89,7 +89,7 @@ export default {
 </script>
 <template>
   <div>
-    <gl-loading-icon v-if="isLoading" size="md" />
+    <gl-loading-icon v-if="isLoading" size="lg" />
     <div v-show="!isLoading" data-testid="clusters-cards-container">
       <gl-card
         header-class="gl-bg-white gl-display-flex gl-align-items-center gl-justify-content-space-between gl-py-4"

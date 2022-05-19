@@ -107,7 +107,7 @@ describe('Accessibility extension', () => {
     it('displays report list item formatted', () => {
       const text = {
         newError: trimText(findAllExtensionListItems().at(0).text()),
-        resolvedError: findAllExtensionListItems().at(3).text(),
+        resolvedError: trimText(findAllExtensionListItems().at(3).text()),
         existingError: trimText(findAllExtensionListItems().at(6).text()),
       };
 

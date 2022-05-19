@@ -6,10 +6,11 @@ module Backup
   class Repositories < Task
     extend ::Gitlab::Utils::Override
 
-    def initialize(progress, strategy:)
+    def initialize(progress, strategy:, storages: [])
       super(progress)
 
       @strategy = strategy
+      @storages = storages
     end
 
     override :dump
@@ -35,7 +36,7 @@ module Backup
 
     private
 
-    attr_reader :strategy
+    attr_reader :strategy, :storages
 
     def enqueue_consecutive
       enqueue_consecutive_projects
@@ -49,7 +50,7 @@ module Backup
     end
 
     def enqueue_consecutive_snippets
-      Snippet.find_each(batch_size: 1000) { |snippet| enqueue_snippet(snippet) }
+      snippet_relation.find_each(batch_size: 1000) { |snippet| enqueue_snippet(snippet) }
     end
 
     def enqueue_project(project)
@@ -63,7 +64,15 @@ module Backup
     end
 
     def project_relation
-      Project.includes(:route, :group, namespace: :owner)
+      scope = Project.includes(:route, :group, namespace: :owner)
+      scope = scope.id_in(ProjectRepository.for_repository_storage(storages).select(:project_id)) if storages.any?
+      scope
+    end
+
+    def snippet_relation
+      scope = Snippet.all
+      scope = scope.id_in(SnippetRepository.for_repository_storage(storages).select(:snippet_id)) if storages.any?
+      scope
     end
 
     def restore_object_pools
@@ -88,7 +97,7 @@ module Backup
     def cleanup_snippets_without_repositories
       invalid_snippets = []
 
-      Snippet.find_each(batch_size: 1000).each do |snippet|
+      snippet_relation.find_each(batch_size: 1000).each do |snippet|
         response = Snippets::RepositoryValidationService.new(nil, snippet).execute
         next if response.success?
 

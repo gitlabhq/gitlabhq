@@ -113,8 +113,6 @@ and then `object_store:`. On Omnibus GitLab installs they are prefixed by
 |---------------------|---------|-------------|
 | `enabled`           | `false` | Enable or disable object storage. |
 | `remote_directory`  |         | The bucket name where Artifacts are stored. Use the name only, do not include the path. |
-| `direct_upload`     | `false` | Set to `true` to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. |
-| `background_upload` | `true`  | Set to `false` to disable automatic upload. Option may be removed once upload is direct to S3. |
 | `proxy_download`    | `false` | Set to `true` to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
 | `connection`        |         | Various connection options described below. |
 
@@ -176,67 +174,6 @@ _The artifacts are stored by default in
          aws_access_key_id: AWS_ACCESS_KEY_ID
          aws_secret_access_key: AWS_SECRET_ACCESS_KEY
          region: eu-central-1
-   ```
-
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
-
-### OpenStack example
-
-See [the available connection settings for OpenStack](object_storage.md#openstack-compatible-connection-settings).
-
-**In Omnibus installations:**
-
-_The uploads are stored by default in
-`/var/opt/gitlab/gitlab-rails/shared/artifacts`._
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
-   the values you want:
-
-   ```ruby
-   gitlab_rails['artifacts_enabled'] = true
-   gitlab_rails['artifacts_object_store_enabled'] = true
-   gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
-   gitlab_rails['artifacts_object_store_connection'] = {
-    'provider' => 'OpenStack',
-    'openstack_username' => 'OS_USERNAME',
-    'openstack_api_key' => 'OS_PASSWORD',
-    'openstack_temp_url_key' => 'OS_TEMP_URL_KEY',
-    'openstack_auth_url' => 'https://auth.cloud.ovh.net',
-    'openstack_region' => 'GRA',
-    'openstack_tenant_id' => 'OS_TENANT_ID',
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. [Migrate any existing local artifacts to the object storage](#migrating-to-object-storage).
-
----
-
-**In installations from source:**
-
-_The uploads are stored by default in
-`/home/git/gitlab/shared/artifacts`._
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines:
-
-   ```yaml
-   uploads:
-     object_store:
-       enabled: true
-       direct_upload: false
-       background_upload: true
-       proxy_download: false
-       remote_directory: "artifacts"
-       connection:
-         provider: OpenStack
-         openstack_username: OS_USERNAME
-         openstack_api_key: OS_PASSWORD
-         openstack_temp_url_key: OS_TEMP_URL_KEY
-         openstack_auth_url: 'https://auth.cloud.ovh.net'
-         openstack_region: GRA
-         openstack_tenant_id: OS_TENANT_ID
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
@@ -610,7 +547,7 @@ Bucket names that include folder paths are not supported with [consolidated obje
 For example, `bucket/path`. If a bucket name has a path in it, you might receive an error similar to:
 
 ```plaintext
-WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.example.com/api/v4/jobs/job_id/artifacts?artifact_format=zip&artifact_type=archive&expire_in=1+day: 500 Internal Server Error (Missing file) 
+WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.example.com/api/v4/jobs/job_id/artifacts?artifact_format=zip&artifact_type=archive&expire_in=1+day: 500 Internal Server Error (Missing file)
 FATAL: invalid argument
 ```
 

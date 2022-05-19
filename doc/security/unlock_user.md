@@ -10,7 +10,7 @@ type: howto
 Users are locked after ten failed sign-in attempts. These users remain locked:
 
 - For 10 minutes, after which time they are automatically unlocked.
-- Until an admin unlocks them from the [Admin Area](../user/admin_area/index.md) or the command line in under 10 minutes.
+- Until an administrator unlocks them from the [Admin Area](../user/admin_area/index.md) or the command line in under 10 minutes.
 
 ## Unlock a user from the Admin Area
 

@@ -4,6 +4,6 @@ classes:
 - IncidentManagement::ProjectIncidentManagementSetting
 feature_categories:
 - incident_management
-description: TODO
+description: Persists project settings for incident management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9744
 milestone: '11.9'

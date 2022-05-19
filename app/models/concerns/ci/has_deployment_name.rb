@@ -5,7 +5,7 @@ module Ci
     extend ActiveSupport::Concern
 
     def count_user_deployment?
-      Feature.enabled?(:job_deployment_count) && deployment_name?
+      deployment_name?
     end
 
     def deployment_name?

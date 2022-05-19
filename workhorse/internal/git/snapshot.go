@@ -7,6 +7,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
@@ -18,7 +19,7 @@ type snapshot struct {
 }
 
 type snapshotParams struct {
-	GitalyServer       gitaly.Server
+	GitalyServer       api.GitalyServer
 	GetSnapshotRequest string
 }
 
@@ -40,7 +41,12 @@ func (s *snapshot) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		return
 	}
 
-	ctx, c, err := gitaly.NewRepositoryClient(r.Context(), params.GitalyServer)
+	ctx, c, err := gitaly.NewRepositoryClient(
+		r.Context(),
+		params.GitalyServer,
+		gitaly.WithFeatures(params.GitalyServer.Features),
+	)
+
 	if err != nil {
 		helper.Fail500(w, r, fmt.Errorf("SendSnapshot: gitaly.NewRepositoryClient: %v", err))
 		return

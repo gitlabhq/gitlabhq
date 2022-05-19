@@ -88,6 +88,21 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory do
     end
   end
 
+  context 'when relation is namespace_settings' do
+    let(:relation_sym) { :namespace_settings }
+    let(:relation_hash) do
+      {
+        'namespace_id' => 1,
+        'prevent_forking_outside_group' => true,
+        'prevent_sharing_groups_outside_hierarchy' => true
+      }
+    end
+
+    it do
+      expect(created_object).to eq(nil)
+    end
+  end
+
   def random_id
     rand(1000..10000)
   end

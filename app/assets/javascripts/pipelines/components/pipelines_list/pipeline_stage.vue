@@ -12,7 +12,8 @@
  * 4. Commit widget
  */
 
-import { GlDropdown, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
@@ -21,7 +22,7 @@ import JobItem from './job_item.vue';
 
 export default {
   components: {
-    GlIcon,
+    CiIcon,
     GlLoadingIcon,
     GlDropdown,
     JobItem,
@@ -50,14 +51,6 @@ export default {
       isLoading: false,
       dropdownContent: [],
     };
-  },
-  computed: {
-    triggerButtonClass() {
-      return `ci-status-icon-${this.stage.status.group}`;
-    },
-    borderlessIcon() {
-      return `${this.stage.status.icon}_borderless`;
-    },
   },
   watch: {
     updateDropdown() {
@@ -114,15 +107,21 @@ export default {
     variant="link"
     :aria-label="stageAriaLabel(stage.title)"
     :lazy="true"
-    :popper-opts="{ placement: 'bottom' }"
-    :toggle-class="['mini-pipeline-graph-dropdown-toggle', triggerButtonClass]"
+    :popper-opts="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+      placement: 'bottom',
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :toggle-class="['gl-rounded-full!']"
     menu-class="mini-pipeline-graph-dropdown-menu"
     @show="onShowDropdown"
   >
     <template #button-content>
-      <span class="gl-pointer-events-none">
-        <gl-icon :name="borderlessIcon" />
-      </span>
+      <ci-icon
+        is-interactive
+        css-classes="gl-rounded-full"
+        :size="24"
+        :status="stage.status"
+        class="gl-align-items-center gl-display-inline-flex"
+      />
     </template>
     <gl-loading-icon v-if="isLoading" size="sm" />
     <ul

@@ -20,7 +20,7 @@ control. Therefore, if GitLab is compromised, the security of this Vault instanc
 avoid this security risk, GitLab recommends using your own HashiCorp Vault to leverage
 [external secrets with CI](../../../../../ci/secrets/index.md).
 
-Assuming you already have a [Cluster management project](../../../../../user/clusters/management_project.md) created from a
+Assuming you already have a project created from a
 [management project template](../../../../../user/clusters/management_project_template.md), to install Vault you should
 uncomment this line from your `helmfile.yaml`:
 

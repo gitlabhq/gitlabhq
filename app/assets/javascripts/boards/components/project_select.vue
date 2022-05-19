@@ -91,6 +91,9 @@ export default {
     loadMoreProjects() {
       this.fetchGroupProjects({ search: this.searchTerm, fetchNext: true });
     },
+    setFocus() {
+      this.$refs.search.focusInput();
+    },
   },
 };
 </script>
@@ -107,8 +110,10 @@ export default {
       block
       menu-class="gl-w-full!"
       :loading="initialLoading"
+      @shown="setFocus"
     >
       <gl-search-box-by-type
+        ref="search"
         v-model.trim="searchTerm"
         debounce="250"
         :placeholder="$options.i18n.searchPlaceholder"
@@ -135,7 +140,7 @@ export default {
         <span class="gl-text-gray-500">{{ $options.i18n.emptySearchResult }}</span>
       </gl-dropdown-text>
       <gl-intersection-observer v-if="hasNextPage" @appear="loadMoreProjects">
-        <gl-loading-icon v-if="groupProjectsFlags.isLoadingMore" size="md" />
+        <gl-loading-icon v-if="groupProjectsFlags.isLoadingMore" size="lg" />
       </gl-intersection-observer>
     </gl-dropdown>
   </div>

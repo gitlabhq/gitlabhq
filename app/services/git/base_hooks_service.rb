@@ -172,7 +172,7 @@ module Git
       else
         # This service runs in Sidekiq, so this shouldn't ever be
         # called, but this is included just in case.
-        Gitlab::ProjectServiceLogger
+        Gitlab::IntegrationsLogger
       end
     end
   end

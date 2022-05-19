@@ -1,4 +1,5 @@
 import { editor as monacoEditor } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as utils from '~/editor/utils';
 import { DEFAULT_THEME } from '~/ide/lib/themes';
 
@@ -14,8 +15,12 @@ describe('Source Editor utils', () => {
 
   describe('clearDomElement', () => {
     beforeEach(() => {
-      setFixtures('<div id="foo"><div id="bar">Foo</div></div>');
+      setHTMLFixture('<div id="foo"><div id="bar">Foo</div></div>');
       el = document.getElementById('foo');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('removes all child nodes from an element', () => {
@@ -68,8 +73,12 @@ describe('Source Editor utils', () => {
     beforeEach(() => {
       jest.spyOn(monacoEditor, 'colorizeElement').mockImplementation();
       jest.spyOn(monacoEditor, 'setTheme').mockImplementation();
-      setFixtures('<pre id="foo"></pre>');
+      setHTMLFixture('<pre id="foo"></pre>');
       el = document.getElementById('foo');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('colorizes the element and applies the preference theme', () => {

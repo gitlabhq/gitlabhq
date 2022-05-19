@@ -5,7 +5,6 @@ import {
   GlSafeHtmlDirective as SafeHtml,
   GlSprintf,
   GlAlert,
-  GlModalDirective,
 } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -42,7 +41,6 @@ export default {
   },
   directives: {
     SafeHtml,
-    GlModalDirective,
   },
   mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.file.file_hash })],
   props: {
@@ -360,10 +358,12 @@ export default {
       class="js-file-fork-suggestion-section file-fork-suggestion"
     >
       <span v-safe-html="forkMessage" class="file-fork-suggestion-note"></span>
-      <a
+      <gl-button
         :href="file.fork_path"
-        class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
-        >{{ $options.i18n.fork }}</a
+        class="js-fork-suggestion-button"
+        category="secondary"
+        variant="confirm"
+        >{{ $options.i18n.fork }}</gl-button
       >
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
@@ -379,6 +379,53 @@ export default {
         :class="hasBodyClasses.contentByHash"
         data-testid="content-area"
       >
+        <gl-alert
+          v-if="!showLoadingIcon && file.conflict_type"
+          variant="danger"
+          :dismissible="false"
+          data-testid="conflictsAlert"
+        >
+          {{ $options.CONFLICT_TEXT[file.conflict_type] }}
+          <template v-if="!canMerge">
+            {{ __('Ask someone with write access to resolve it.') }}
+          </template>
+          <gl-sprintf
+            v-else-if="conflictResolutionPath"
+            :message="
+              __(
+                'You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}.',
+              )
+            "
+          >
+            <template #gitlabLink="{ content }">
+              <gl-button
+                :href="conflictResolutionPath"
+                variant="link"
+                class="gl-vertical-align-text-bottom"
+                >{{ content }}</gl-button
+              >
+            </template>
+            <template #resolveLocally="{ content }">
+              <gl-button
+                variant="link"
+                class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
+                >{{ content }}</gl-button
+              >
+            </template>
+          </gl-sprintf>
+          <gl-sprintf
+            v-else
+            :message="__('You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}.')"
+          >
+            <template #resolveLocally="{ content }">
+              <gl-button
+                variant="link"
+                class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
+                >{{ content }}</gl-button
+              >
+            </template>
+          </gl-sprintf>
+        </gl-alert>
         <gl-loading-icon
           v-if="showLoadingIcon"
           size="sm"
@@ -402,55 +449,6 @@ export default {
           <div v-else v-safe-html="errorMessage" class="nothing-here-block"></div>
         </div>
         <template v-else>
-          <gl-alert
-            v-if="file.conflict_type"
-            variant="danger"
-            :dismissible="false"
-            data-testid="conflictsAlert"
-          >
-            {{ $options.CONFLICT_TEXT[file.conflict_type] }}
-            <template v-if="!canMerge">
-              {{ __('Ask someone with write access to resolve it.') }}
-            </template>
-            <gl-sprintf
-              v-else-if="conflictResolutionPath"
-              :message="
-                __(
-                  'You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}.',
-                )
-              "
-            >
-              <template #gitlabLink="{ content }">
-                <gl-button
-                  :href="conflictResolutionPath"
-                  variant="link"
-                  class="gl-vertical-align-text-bottom"
-                  >{{ content }}</gl-button
-                >
-              </template>
-              <template #resolveLocally="{ content }">
-                <gl-button
-                  v-gl-modal-directive="'modal-merge-info'"
-                  variant="link"
-                  class="gl-vertical-align-text-bottom"
-                  >{{ content }}</gl-button
-                >
-              </template>
-            </gl-sprintf>
-            <gl-sprintf
-              v-else
-              :message="__('You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}.')"
-            >
-              <template #resolveLocally="{ content }">
-                <gl-button
-                  v-gl-modal-directive="'modal-merge-info'"
-                  variant="link"
-                  class="gl-vertical-align-text-bottom"
-                  >{{ content }}</gl-button
-                >
-              </template>
-            </gl-sprintf>
-          </gl-alert>
           <div
             v-if="showWarning"
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"

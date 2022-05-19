@@ -4,7 +4,7 @@ import AccessDropdown from './components/access_dropdown.vue';
 
 export const initAccessDropdown = (el, options) => {
   if (!el) {
-    return false;
+    return null;
   }
 
   const { accessLevelsData, accessLevel } = options;

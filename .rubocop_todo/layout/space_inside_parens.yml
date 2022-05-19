@@ -90,7 +90,6 @@ Layout/SpaceInsideParens:
     - 'ee/spec/lib/gitlab/auth/otp/session_enforcer_spec.rb'
     - 'ee/spec/lib/gitlab/auth/smartcard/ldap_certificate_spec.rb'
     - 'ee/spec/lib/gitlab/auth_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/cluster_image_scanning_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/coverage_fuzzing_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/dast_api_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/dast_api_latest_gitlab_ci_yaml_spec.rb'

@@ -39,7 +39,7 @@ RSpec.describe 'Query.group.mergeRequests' do
   end
 
   def expected_mrs(mrs)
-    mrs.map { |mr| a_hash_including('id' => global_id_of(mr)) }
+    mrs.map { |mr| a_graphql_entity_for(mr) }
   end
 
   describe 'not passing any arguments' do

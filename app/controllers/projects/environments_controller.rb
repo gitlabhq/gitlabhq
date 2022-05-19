@@ -24,9 +24,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
+  before_action do
+    push_frontend_feature_flag(:monitor_logging, project)
+  end
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   feature_category :continuous_delivery
+  urgency :low
 
   def index
     @project = ProjectPresenter.new(project, current_user: current_user)
@@ -73,7 +77,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def show
-    @deployments = environment.deployments.ordered.page(params[:page])
+    @deployments = deployments
   end
 
   def new
@@ -201,6 +205,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   private
+
+  def deployments
+    environment.deployments.ordered.page(params[:page])
+  end
 
   def verify_api_request!
     Gitlab::Workhorse.verify_api_request!(request.headers)

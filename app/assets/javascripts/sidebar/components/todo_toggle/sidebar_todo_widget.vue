@@ -6,6 +6,9 @@ import { __, sprintf } from '~/locale';
 import { todoQueries, TodoMutationTypes, todoMutations } from '~/sidebar/constants';
 import { todoLabel } from '~/vue_shared/components/sidebar/todo_toggle//utils';
 import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
+import Tracking from '~/tracking';
+
+const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
@@ -16,6 +19,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [trackingMixin],
   inject: {
     isClassicSidebar: {
       default: false,
@@ -151,6 +155,10 @@ export default {
                 message: errors[0],
               });
             }
+            this.track('click_todo', {
+              label: 'right_sidebar',
+              property: this.hasTodo,
+            });
           },
         )
         .catch(() => {

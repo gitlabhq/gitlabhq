@@ -8,7 +8,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo, getLocationHash } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -17,15 +17,12 @@ import getRefMixin from '../mixins/get_ref';
 import blobInfoQuery from '../queries/blob_info.query.graphql';
 import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
-import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE } from '../constants';
+import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
 
 export default {
-  i18n: {
-    pipelineEditor: __('Pipeline Editor'),
-  },
   components: {
     BlobHeader,
     BlobButtonGroup,
@@ -132,7 +129,8 @@ export default {
       return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs);
     },
     shouldLoadLegacyViewer() {
-      return this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
+      const isTextFile = this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
+      return isTextFile || LEGACY_FILE_TYPES.includes(this.blobInfo.fileType);
     },
     legacyViewerLoaded() {
       return (
@@ -199,10 +197,19 @@ export default {
             this.legacyRichViewer = html;
           }
 
+          this.scrollToHash();
           this.isBinary = binary;
           this.isLoadingLegacyViewer = false;
         })
         .catch(() => this.displayError());
+    },
+    scrollToHash() {
+      const hash = getLocationHash();
+      if (hash) {
+        // Ensures the browser's native scroll to hash is triggered for async content
+        window.location.hash = '';
+        window.location.hash = hash;
+      }
     },
     displayError() {
       createFlash({ message: __('An error occurred while loading the file. Please try again.') });

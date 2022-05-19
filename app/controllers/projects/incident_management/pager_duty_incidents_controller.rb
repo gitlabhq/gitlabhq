@@ -11,6 +11,7 @@ module Projects
       prepend_before_action :project_without_auth
 
       feature_category :incident_management
+      urgency :low
 
       def create
         result = webhook_processor.execute(params[:token])

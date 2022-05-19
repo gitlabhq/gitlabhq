@@ -78,9 +78,9 @@ export default {
     },
   },
   fields: [
-    { key: 'spentAt', label: __('Spent At'), sortable: true },
+    { key: 'spentAt', label: __('Spent At'), sortable: true, tdClass: 'gl-w-quarter' },
     { key: 'user', label: __('User'), sortable: true },
-    { key: 'timeSpent', label: __('Time Spent'), sortable: true },
+    { key: 'timeSpent', label: __('Time Spent'), sortable: true, tdClass: 'gl-w-15' },
     { key: 'summary', label: __('Summary / Note'), sortable: true },
   ],
 };

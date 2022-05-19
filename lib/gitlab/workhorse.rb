@@ -33,8 +33,7 @@ module Gitlab
           GitalyServer: {
             address: Gitlab::GitalyClient.address(repository.storage),
             token: Gitlab::GitalyClient.token(repository.storage),
-            features: Feature::Gitaly.server_feature_flags(repository.project),
-            sidechannel: Feature.enabled?(:workhorse_use_sidechannel, repository.project, default_enabled: :yaml)
+            features: Feature::Gitaly.server_feature_flags(repository.project)
           }
         }
 
@@ -224,6 +223,13 @@ module Gitlab
             redis.get(key)
           end
         end
+      end
+
+      def detect_content_type
+        [
+          Gitlab::Workhorse::DETECT_HEADER,
+          'true'
+        ]
       end
 
       protected

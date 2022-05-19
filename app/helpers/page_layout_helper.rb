@@ -55,7 +55,7 @@ module PageLayoutHelper
   end
 
   def page_image
-    default = image_url('gitlab_logo.png')
+    default = image_url('twitter_card.jpg')
 
     subject = @project || @user || @group
 

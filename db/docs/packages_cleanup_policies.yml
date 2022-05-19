@@ -1,0 +1,9 @@
+---
+table_name: packages_cleanup_policies
+classes:
+- Packages::Cleanup::Policy
+feature_categories:
+- package_registry
+description: Cleanup policy parameters for packages.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85918
+milestone: '15.0'

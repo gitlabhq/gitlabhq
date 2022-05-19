@@ -167,7 +167,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions do
 
     it 'does not update Devise trackable attributes' do
       expect { gitlab_sign_in(user, password: user.password) }
-        .not_to change { User.ghost.reload.sign_in_count }
+        .not_to change { user.reload.sign_in_count }
     end
   end
 

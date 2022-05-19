@@ -49,6 +49,7 @@ describe('IssuableShowRoot', () => {
     const {
       statusBadgeClass,
       statusIcon,
+      statusIconClass,
       enableEdit,
       enableAutocomplete,
       editFormVisible,
@@ -56,7 +57,7 @@ describe('IssuableShowRoot', () => {
       descriptionHelpPath,
       taskCompletionStatus,
     } = mockIssuableShowProps;
-    const { blocked, confidential, createdAt, author } = mockIssuable;
+    const { state, blocked, confidential, createdAt, author } = mockIssuable;
 
     it('renders component container element with class `issuable-show-container`', () => {
       expect(wrapper.classes()).toContain('issuable-show-container');
@@ -67,15 +68,17 @@ describe('IssuableShowRoot', () => {
 
       expect(issuableHeader.exists()).toBe(true);
       expect(issuableHeader.props()).toMatchObject({
+        issuableState: state,
         statusBadgeClass,
         statusIcon,
+        statusIconClass,
         blocked,
         confidential,
         createdAt,
         author,
         taskCompletionStatus,
       });
-      expect(issuableHeader.find('.issuable-status-box').text()).toContain('Open');
+      expect(issuableHeader.find('.issuable-status-badge').text()).toContain('Open');
       expect(issuableHeader.find('.detail-page-header-actions button.js-close').exists()).toBe(
         true,
       );

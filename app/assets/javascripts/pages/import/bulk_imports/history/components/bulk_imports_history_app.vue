@@ -9,12 +9,15 @@ import { getBulkImportsHistory } from '~/rest_api';
 import ImportStatus from '~/import_entities/components/import_status.vue';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 import { DEFAULT_ERROR } from '../utils/error_messages';
 
 const DEFAULT_PER_PAGE = 20;
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-200! gl-border-b-1! gl-p-5!';
+
+const HISTORY_PAGINATION_SIZE_PERSIST_KEY = 'gl-bulk-imports-history-per-page';
 
 const tableCell = (config) => ({
   thClass: `${DEFAULT_TH_CLASSES}`,
@@ -37,6 +40,7 @@ export default {
     PaginationBar,
     ImportStatus,
     TimeAgo,
+    LocalStorageSync,
   },
 
   data() {
@@ -59,7 +63,7 @@ export default {
     }),
     tableCell({
       key: 'destination_name',
-      label: s__('BulkImport|New group'),
+      label: s__('BulkImport|Destination group'),
       thClass: `${DEFAULT_TH_CLASSES} gl-w-40p`,
     }),
     tableCell({
@@ -85,8 +89,11 @@ export default {
         this.loadHistoryItems();
       },
       deep: true,
-      immediate: true,
     },
+  },
+
+  mounted() {
+    this.loadHistoryItems();
   },
 
   methods: {
@@ -116,6 +123,7 @@ export default {
   },
 
   gitlabLogo: window.gon.gitlab_logo,
+  historyPaginationSizePersistKey: HISTORY_PAGINATION_SIZE_PERSIST_KEY,
 };
 </script>
 
@@ -171,5 +179,9 @@ export default {
         @set-page-size="paginationConfig.perPage = $event"
       />
     </template>
+    <local-storage-sync
+      v-model="paginationConfig.perPage"
+      :storage-key="$options.historyPaginationSizePersistKey"
+    />
   </div>
 </template>

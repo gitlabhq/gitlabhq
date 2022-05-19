@@ -7,11 +7,12 @@ class Projects::IncidentsController < Projects::ApplicationController
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
   before_action do
-    push_frontend_feature_flag(:incident_escalations, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:incident_timeline, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:incident_escalations, @project)
+    push_frontend_feature_flag(:incident_timeline, @project)
   end
 
   feature_category :incident_management
+  urgency :low
 
   def index
   end

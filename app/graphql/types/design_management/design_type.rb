@@ -23,14 +23,13 @@ module Types
       field :versions,
             Types::DesignManagement::VersionType.connection_type,
             resolver: Resolvers::DesignManagement::VersionsResolver,
-            description: "All versions related to this design ordered newest first.",
-            extras: [:parent]
+            description: "All versions related to this design ordered newest first."
 
       # Returns a `DesignManagement::Version` for this query based on the
       # `atVersion` argument passed to a parent node if present, or otherwise
       # the most recent `Version` for the issue.
       def cached_stateful_version(parent_node)
-        version_gid = Gitlab::Graphql::FindArgumentInParent.find(parent_node, :at_version)
+        version_gid = context[:at_version_argument] # See: DesignsResolver
 
         # Caching is scoped to an `issue_id` to allow us to cache the
         # most recent `Version` for an issue

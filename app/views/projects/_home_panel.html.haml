@@ -1,7 +1,7 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - emails_disabled = @project.emails_disabled?
-- cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development, default_enabled: :yaml)
+- cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development)
 
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3
@@ -19,8 +19,7 @@
           - if can?(current_user, :read_project, @project)
             %span.gl-display-inline-block.gl-vertical-align-middle
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
-              - button_class = "btn gl-button btn-sm btn-tertiary btn-default-tertiary home-panel-metadata"
-              = clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id, class: button_class)
+              = clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id)
           - if current_user
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @project

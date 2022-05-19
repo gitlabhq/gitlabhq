@@ -9,6 +9,7 @@ class Projects::Tags::ReleasesController < Projects::ApplicationController
   before_action :release
 
   feature_category :release_evidence
+  urgency :low
 
   def edit
   end

@@ -1,14 +1,23 @@
 <script>
-import { GlIcon, GlButton, GlTooltipDirective, GlAvatarLink, GlAvatarLabeled } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlBadge,
+  GlButton,
+  GlTooltipDirective,
+  GlAvatarLink,
+  GlAvatarLabeled,
+} from '@gitlab/ui';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isExternal } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export default {
   components: {
     GlIcon,
+    GlBadge,
     GlButton,
     GlAvatarLink,
     GlAvatarLabeled,
@@ -26,12 +35,22 @@ export default {
       type: Object,
       required: true,
     },
+    issuableState: {
+      type: String,
+      required: false,
+      default: '',
+    },
     statusBadgeClass: {
       type: String,
       required: false,
       default: '',
     },
     statusIcon: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    statusIconClass: {
       type: String,
       required: false,
       default: '',
@@ -53,6 +72,9 @@ export default {
     },
   },
   computed: {
+    badgeVariant() {
+      return this.issuableState === IssuableStates.Opened ? 'success' : 'info';
+    },
     authorId() {
       return getIdFromGraphQLId(`${this.author.id}`);
     },
@@ -71,6 +93,9 @@ export default {
         { completedCount, count },
       );
     },
+    hasTasks() {
+      return this.taskCompletionStatus.count > 0;
+    },
   },
   mounted() {
     this.toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
@@ -88,10 +113,15 @@ export default {
 <template>
   <div class="detail-page-header">
     <div class="detail-page-header-body">
-      <div data-testid="status" class="issuable-status-box status-box" :class="statusBadgeClass">
-        <gl-icon v-if="statusIcon" :name="statusIcon" class="d-block d-sm-none" />
-        <span class="d-none d-sm-block"><slot name="status-badge"></slot></span>
-      </div>
+      <gl-badge
+        data-testid="status"
+        class="issuable-status-badge gl-mr-3"
+        :class="statusBadgeClass"
+        :variant="badgeVariant"
+      >
+        <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
+        <span class="gl-display-none gl-sm-display-block"><slot name="status-badge"></slot></span>
+      </gl-badge>
       <div class="issuable-meta gl-display-flex gl-align-items-center d-md-inline-block">
         <div v-if="blocked || confidential" class="gl-display-inline-block">
           <div v-if="blocked" data-testid="blocked" class="issuable-warning-icon inline">
@@ -128,7 +158,7 @@ export default {
           <strong class="author d-sm-none d-inline">@{{ author.username }}</strong>
         </gl-avatar-link>
         <span
-          v-if="taskCompletionStatus"
+          v-if="taskCompletionStatus && hasTasks"
           data-testid="task-status"
           class="gl-display-none gl-md-display-block gl-lg-display-inline-block"
           >{{ taskStatusString }}</span

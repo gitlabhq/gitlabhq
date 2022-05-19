@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
+import Tracking from '~/tracking';
 
 export default {
   i18n: {
@@ -15,55 +15,36 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [Tracking.mixin({ label: 'actions_menu' })],
   props: {
     workItemId: {
       type: String,
       required: false,
       default: null,
     },
-    canUpdate: {
+    canDelete: {
       type: Boolean,
       required: false,
       default: false,
     },
   },
-  emits: ['workItemDeleted', 'error'],
+  emits: ['deleteWorkItem'],
   methods: {
-    deleteWorkItem() {
-      this.$apollo
-        .mutate({
-          mutation: deleteWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItemId,
-            },
-          },
-        })
-        .then(({ data: { workItemDelete, errors } }) => {
-          if (errors?.length) {
-            throw new Error(errors[0].message);
-          }
-
-          if (workItemDelete?.errors.length) {
-            throw new Error(workItemDelete.errors[0]);
-          }
-
-          this.$emit('workItemDeleted');
-        })
-        .catch((e) => {
-          this.$emit(
-            'error',
-            e.message ||
-              s__('WorkItem|Something went wrong when deleting the work item. Please try again.'),
-          );
-        });
+    handleDeleteWorkItem() {
+      this.track('click_delete_work_item');
+      this.$emit('deleteWorkItem');
+    },
+    handleCancelDeleteWorkItem({ trigger }) {
+      if (trigger !== 'ok') {
+        this.track('cancel_delete_work_item');
+      }
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="canUpdate">
+  <div v-if="canDelete">
     <gl-dropdown
       icon="ellipsis_v"
       text-sr-only
@@ -81,7 +62,8 @@ export default {
       :title="$options.i18n.deleteWorkItem"
       :ok-title="$options.i18n.deleteWorkItem"
       ok-variant="danger"
-      @ok="deleteWorkItem"
+      @ok="handleDeleteWorkItem"
+      @hide="handleCancelDeleteWorkItem"
     >
       {{
         s__(

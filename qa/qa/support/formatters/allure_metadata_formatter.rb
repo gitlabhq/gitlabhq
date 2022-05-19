@@ -20,11 +20,11 @@ module QA
         def start(_start_notification)
           return unless merge_request_iid # on main runs allure native history has pass rate already
 
-          save_failures
-          log(:debug, "Fetched #{failures.length} flaky testcases!")
+          save_flaky_specs
+          log(:debug, "Fetched #{flaky_specs.length} flaky testcases!")
         rescue StandardError => e
           log(:error, "Failed to fetch flaky spec data for report: #{e}")
-          @failures = {}
+          @flaky_specs = {}
         end
 
         # Finished example
@@ -53,6 +53,8 @@ module QA
           return unless issue_link
           return example.issue('Quarantine issue', issue_link) if issue_link.is_a?(String)
           return issue_link.each { |link| example.issue('Quarantine issue', link) } if issue_link.is_a?(Array)
+        rescue StandardError => e
+          log(:error, "Failed to add quarantine issue linkt for example '#{example.description}', error: #{e}")
         end
 
         # Add failure issues link
@@ -65,6 +67,8 @@ module QA
             'Failure issues',
             "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&search=#{spec_file}"
           )
+        rescue StandardError => e
+          log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
         end
 
         # Add ci job link
@@ -75,6 +79,8 @@ module QA
           return unless Runtime::Env.running_in_ci?
 
           example.add_link(name: "Job(#{Runtime::Env.ci_job_name})", url: Runtime::Env.ci_job_url)
+        rescue StandardError => e
+          log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
         end
 
         # Mark test as flaky
@@ -82,21 +88,22 @@ module QA
         # @param [RSpec::Core::Example] example
         # @return [void]
         def set_flaky_status(example)
-          return unless merge_request_iid
-          return unless example.execution_result.status == :failed && failures.key?(example.metadata[:testcase])
+          return unless merge_request_iid && flaky_specs.key?(example.metadata[:testcase])
 
           example.set_flaky
-          example.parameter("pass_rate", "#{failures[example.metadata[:testcase]].round(1)}%")
-          log(:debug, "Setting spec as flaky due to present failures in last 14 days!")
+          example.parameter("pass_rate", "#{flaky_specs[example.metadata[:testcase]].round(1)}%")
+          log(:debug, "Setting spec as flaky because it's pass rate is below 98%")
+        rescue StandardError => e
+          log(:error, "Failed to add spec pass rate data for example '#{example.description}', error: #{e}")
         end
 
-        # Failed spec testcases
+        # Flaky specs with pass rate below 98%
         #
         # @return [Array]
-        def failures
-          @failures ||= influx_data.lazy.each_with_object({}) do |data, result|
-            # TODO: replace with mr_iid once stats are populated
-            records = data.records.reject { |r| r.values["_value"] == env("CI_PIPELINE_ID") }
+        def flaky_specs
+          @flaky_specs ||= influx_data.lazy.each_with_object({}) do |data, result|
+            # Do not consider failures in same merge request
+            records = data.records.reject { |r| r.values["_value"] == merge_request_iid }
 
             runs = records.count
             failed = records.count { |r| r.values["status"] == "failed" }
@@ -107,7 +114,7 @@ module QA
           end.compact
         end
 
-        alias_method :save_failures, :failures
+        alias_method :save_flaky_specs, :flaky_specs
 
         # Records of previous failures for runs of same type
         #
@@ -122,7 +129,7 @@ module QA
               |> filter(fn: (r) => r.run_type == "#{run_type}" and
                 r.status != "pending" and
                 r.quarantined == "false" and
-                r._field == "pipeline_id"
+                r._field == "merge_request_iid"
               )
               |> group(columns: ["testcase"])
           QUERY

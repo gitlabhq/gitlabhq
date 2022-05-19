@@ -28,11 +28,11 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:reporter_permissions) do
     %i[
         admin_label
+        admin_milestone
         admin_issue_board
         read_container_image
         read_metrics_dashboard_annotation
         read_prometheus
-        read_package_settings
         read_crm_contact
         read_crm_organization
       ]
@@ -40,13 +40,11 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:developer_permissions) do
     %i[
-        admin_milestone
         create_metrics_dashboard_annotation
         delete_metrics_dashboard_annotation
         update_metrics_dashboard_annotation
         create_custom_emoji
         create_package
-        create_package_settings
         read_cluster
       ]
   end
@@ -54,6 +52,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:maintainer_permissions) do
     %i[
       destroy_package
+      admin_package
       create_projects
       create_cluster update_cluster admin_cluster add_cluster
     ]

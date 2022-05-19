@@ -10,7 +10,18 @@ module Integrations
 
     ENDPOINT = "https://buildkite.com"
 
-    prop_accessor :project_url, :token
+    field :project_url,
+      title: _('Pipeline URL'),
+      placeholder: "#{ENDPOINT}/example-org/test-pipeline",
+      required: true
+
+    field :token,
+      type: 'password',
+      title: _('Token'),
+      help: s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.'),
+      non_empty_password_title: s_('ProjectService|Enter new token'),
+      non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
+      required: true
 
     validates :project_url, presence: true, public_url: true, if: :activated?
     validates :token, presence: true, if: :activated?
@@ -72,24 +83,6 @@ module Integrations
 
     def help
       s_('ProjectService|Run CI/CD pipelines with Buildkite.')
-    end
-
-    def fields
-      [
-        { type: 'password',
-          name: 'token',
-          title: _('Token'),
-          help: s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.'),
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          required: true },
-
-        { type: 'text',
-          name: 'project_url',
-          title: _('Pipeline URL'),
-          placeholder: "#{ENDPOINT}/example-org/test-pipeline",
-          required: true }
-      ]
     end
 
     def calculate_reactive_cache(sha, ref)

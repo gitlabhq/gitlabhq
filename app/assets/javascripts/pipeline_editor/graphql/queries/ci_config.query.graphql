@@ -3,6 +3,12 @@
 query getCiConfigData($projectPath: ID!, $sha: String, $content: String!) {
   ciConfig(projectPath: $projectPath, sha: $sha, content: $content) {
     errors
+    includes {
+      location
+      type
+      blob
+      raw
+    }
     mergedYaml
     status
     stages {

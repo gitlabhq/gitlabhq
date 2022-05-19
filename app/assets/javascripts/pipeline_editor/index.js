@@ -30,6 +30,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     defaultBranch,
     emptyStateIllustrationPath,
     helpPaths,
+    includesHelpPagePath,
     lintHelpPagePath,
     lintUnavailableHelpPagePath,
     needsHelpPagePath,
@@ -41,7 +42,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     runnerHelpPagePath,
     totalBranches,
     ymlHelpPagePath,
-  } = el?.dataset;
+  } = el.dataset;
 
   const configurationPaths = Object.fromEntries(
     Object.entries(CODE_SNIPPET_SOURCE_SETTINGS).map(([source, { datasetKey }]) => [
@@ -118,6 +119,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       defaultBranch,
       emptyStateIllustrationPath,
       helpPaths,
+      includesHelpPagePath,
       lintHelpPagePath,
       lintUnavailableHelpPagePath,
       needsHelpPagePath,

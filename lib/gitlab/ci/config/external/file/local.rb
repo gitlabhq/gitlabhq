@@ -23,6 +23,8 @@ module Gitlab
               super.merge(
                 type: :local,
                 location: masked_location,
+                blob: masked_blob,
+                raw: masked_raw,
                 extra: {}
               )
             end
@@ -56,6 +58,24 @@ module Gitlab
                 parent_pipeline: context.parent_pipeline,
                 variables: context.variables
               }
+            end
+
+            def masked_blob
+              strong_memoize(:masked_blob) do
+                context.mask_variables_from(
+                  Gitlab::Routing.url_helpers.project_blob_url(context.project, ::File.join(context.sha, location))
+                )
+              end
+            end
+
+            def masked_raw
+              return unless context.project
+
+              strong_memoize(:masked_raw) do
+                context.mask_variables_from(
+                  Gitlab::Routing.url_helpers.project_raw_url(context.project, ::File.join(context.sha, location))
+                )
+              end
             end
           end
         end

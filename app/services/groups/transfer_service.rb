@@ -191,18 +191,9 @@ module Groups
     end
 
     def refresh_project_authorizations
-      projects_to_update = Set.new
+      project_ids = Groups::ProjectsRequiringAuthorizationsRefresh::OnTransferFinder.new(@group).execute
 
-      # All projects in this hierarchy need to have their project authorizations recalculated
-      @group.all_projects.each_batch { |prjs| projects_to_update.merge(prjs.ids) } # rubocop: disable CodeReuse/ActiveRecord
-
-      # When a group is transferred, it also affects who gets access to the projects shared to
-      # the subgroups within its hierarchy, so we also schedule jobs that refresh authorizations for all such shared projects.
-      ProjectGroupLink.in_group(@group.self_and_descendants.select(:id)).each_batch do |project_group_links|
-        projects_to_update.merge(project_group_links.pluck(:project_id)) # rubocop: disable CodeReuse/ActiveRecord
-      end
-
-      AuthorizedProjectUpdate::ProjectAccessChangedService.new(projects_to_update.to_a).execute unless projects_to_update.empty?
+      AuthorizedProjectUpdate::ProjectAccessChangedService.new(project_ids).execute
     end
 
     def raise_transfer_error(message)

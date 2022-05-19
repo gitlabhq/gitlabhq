@@ -8,6 +8,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
                 only: [:resend_confirmation_instructions]
 
   feature_category :users
+  urgency :low, [:index]
 
   def index
     @primary_email = current_user.email

@@ -4,6 +4,6 @@ classes:
 - Geo::PagesDeploymentState
 feature_categories:
 - pages
-description: TODO
+description: Stores verification state for Geo replicated Pages deployments.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74905
 milestone: '14.6'

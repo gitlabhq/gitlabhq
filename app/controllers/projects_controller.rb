@@ -35,11 +35,12 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
-    push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:highlight_js, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:lazy_load_commits, @project)
+    push_frontend_feature_flag(:refactor_blob_viewer, @project)
+    push_frontend_feature_flag(:highlight_js, @project)
+    push_frontend_feature_flag(:increase_page_size_exponentially, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
+    push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
   end
 
@@ -56,8 +57,13 @@ class ProjectsController < Projects::ApplicationController
   feature_category :code_review, [:unfoldered_environment_names]
   feature_category :portfolio_management, [:planning_hierarchy]
 
+  urgency :low, [:export, :remove_export, :generate_new_export, :download_export]
+  urgency :low, [:preview_markdown, :new_issuable_address]
   # TODO: Set high urgency for #show https://gitlab.com/gitlab-org/gitlab/-/issues/334444
-  urgency :low, [:refs, :show]
+
+  urgency :low, [:refs, :show, :toggle_star, :transfer, :archive, :destroy, :update, :create,
+                 :activity, :edit, :new, :export, :remove_export, :generate_new_export, :download_export]
+
   urgency :high, [:unfoldered_environment_names]
 
   def index
@@ -233,6 +239,11 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project, anchor: 'js-export-project'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
+  rescue Project::ExportLimitExceeded => ex
+    redirect_to(
+      edit_project_path(@project, anchor: 'js-export-project'),
+      alert: ex.to_s
+    )
   end
 
   def download_export
@@ -340,6 +351,8 @@ class ProjectsController < Projects::ApplicationController
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
+    Gitlab::Tracking.event('project_overview', 'render', user: current_user, project: @project.project)
+
     if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
 
@@ -412,6 +425,7 @@ class ProjectsController < Projects::ApplicationController
       squash_option
       mr_default_target_self
       warn_about_potentially_unwanted_characters
+      enforce_auth_checks_on_uploads
     ]
   end
 
@@ -420,7 +434,6 @@ class ProjectsController < Projects::ApplicationController
       :allow_merge_on_skipped_pipeline,
       :avatar,
       :build_allow_git_fetch,
-      :build_coverage_regex,
       :build_timeout_human_readable,
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
@@ -451,6 +464,7 @@ class ProjectsController < Projects::ApplicationController
       :initialize_with_sast,
       :initialize_with_readme,
       :autoclose_referenced_issues,
+      :ci_separated_caches,
       :suggestion_commit_message,
       :packages_enabled,
       :service_desk_enabled,

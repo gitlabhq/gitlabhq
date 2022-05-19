@@ -10,7 +10,18 @@ RSpec.describe API::SidekiqMetrics do
       get api('/sidekiq/queue_metrics', admin)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to be_a Hash
+      expect(json_response).to match a_hash_including(
+        'queues' => a_hash_including(
+          'default' => {
+            'backlog' => be_a(Integer),
+            'latency' => be_a(Integer)
+          },
+          'mailers' => {
+            'backlog' => be_a(Integer),
+            'latency' => be_a(Integer)
+          }
+        )
+      )
     end
 
     it 'defines the `process_metrics` endpoint' do

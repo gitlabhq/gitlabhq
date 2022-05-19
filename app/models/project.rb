@@ -49,6 +49,7 @@ class Project < ApplicationRecord
   ignore_columns :container_registry_enabled, remove_after: '2021-09-22', remove_with: '14.4'
 
   BoardLimitExceeded = Class.new(StandardError)
+  ExportLimitExceeded = Class.new(StandardError)
 
   ignore_columns :mirror_last_update_at, :mirror_last_successful_update_at, remove_after: '2021-09-22', remove_with: '14.4'
   ignore_columns :pull_mirror_branch_prefix, remove_after: '2021-09-22', remove_with: '14.4'
@@ -112,7 +113,7 @@ class Project < ApplicationRecord
   default_value_for(:ci_config_path) { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token,
-                                 encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption, default_enabled: true) ? :optional : :required },
+                                 encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
                                  prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
@@ -237,6 +238,7 @@ class Project < ApplicationRecord
   has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::ProjectDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -409,7 +411,6 @@ class Project < ApplicationRecord
   has_one :operations_feature_flags_client, class_name: 'Operations::FeatureFlagsClient'
   has_many :operations_feature_flags_user_lists, class_name: 'Operations::FeatureFlags::UserList'
 
-  has_many :error_tracking_errors, inverse_of: :project, class_name: 'ErrorTracking::Error'
   has_many :error_tracking_client_keys, inverse_of: :project, class_name: 'ErrorTracking::ClientKey'
 
   has_many :timelogs
@@ -448,6 +449,7 @@ class Project < ApplicationRecord
     to: :project_feature, allow_nil: true
   alias_method :container_registry_enabled, :container_registry_enabled?
   delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
+    :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=, :enforce_auth_checks_on_uploads?,
     :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
     to: :project_setting, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
@@ -462,7 +464,7 @@ class Project < ApplicationRecord
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
   delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
-  delegate :root_ancestor, to: :namespace, allow_nil: true
+  delegate :root_ancestor, :certificate_based_clusters_enabled?, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
@@ -471,6 +473,7 @@ class Project < ApplicationRecord
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
+  delegate :separated_caches, :separated_caches=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, :actual_plan, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
@@ -742,6 +745,16 @@ class Project < ApplicationRecord
     Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
   end
 
+  def self.inactive
+    project_statistics = ::ProjectStatistics.arel_table
+    minimum_size_mb = ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes
+    last_activity_cutoff = ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
+
+    joins(:statistics)
+      .where((project_statistics[:storage_size]).gt(minimum_size_mb))
+      .where('last_activity_at < ?', last_activity_cutoff)
+  end
+
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
@@ -962,7 +975,7 @@ class Project < ApplicationRecord
   end
 
   def ancestors(hierarchy_order: nil)
-    if Feature.enabled?(:linear_project_ancestors, self, default_enabled: :yaml)
+    if Feature.enabled?(:linear_project_ancestors, self)
       group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
     else
       ancestors_upto(hierarchy_order: hierarchy_order)
@@ -1013,6 +1026,10 @@ class Project < ApplicationRecord
     packages.where(package_type: package_type).exists?
   end
 
+  def packages_cleanup_policy
+    super || build_packages_cleanup_policy
+  end
+
   def first_auto_devops_config
     return namespace.first_auto_devops_config if auto_devops&.enabled.nil?
 
@@ -1020,7 +1037,7 @@ class Project < ApplicationRecord
   end
 
   def unlink_forks_upon_visibility_decrease_enabled?
-    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self, default_enabled: true)
+    Feature.enabled?(:unlink_fork_network_upon_visibility_decrease, self)
   end
 
   # LFS and hashed repository storage are required for using Design Management.
@@ -2047,6 +2064,8 @@ class Project < ApplicationRecord
   end
 
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
+    check_project_export_limit!
+
     job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
 
     if job_id
@@ -2866,12 +2885,12 @@ class Project < ApplicationRecord
   end
 
   def work_items_feature_flag_enabled?
-    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self, default_enabled: :yaml)
+    group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
 
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
-    return unless Feature.enabled?(:record_projects_target_platforms, self, default_enabled: :yaml)
+    return unless Feature.enabled?(:record_projects_target_platforms, self)
 
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end
@@ -2903,7 +2922,7 @@ class Project < ApplicationRecord
     if @topic_list != self.topic_list
       self.topics.delete_all
       self.topics = @topic_list.map do |topic|
-        Projects::Topic.where('lower(name) = ?', topic.downcase).order(total_projects_count: :desc).first_or_create(name: topic)
+        Projects::Topic.where('lower(name) = ?', topic.downcase).order(total_projects_count: :desc).first_or_create(name: topic, title: topic)
       end
     end
 
@@ -3103,6 +3122,14 @@ class Project < ApplicationRecord
   def schedule_sync_event_worker
     run_after_commit do
       Projects::SyncEvent.enqueue_worker
+    end
+  end
+
+  def check_project_export_limit!
+    return if Gitlab::CurrentSettings.current_application_settings.max_export_size == 0
+
+    if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
+      raise ExportLimitExceeded, _('The project size exceeds the export limit.')
     end
   end
 end

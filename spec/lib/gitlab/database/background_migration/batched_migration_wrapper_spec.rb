@@ -3,23 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '#perform' do
-  subject { described_class.new(connection: connection, metrics: metrics_tracker).perform(job_record) }
+  subject(:perform) { described_class.new(connection: connection, metrics: metrics_tracker).perform(job_record) }
 
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
   let(:metrics_tracker) { instance_double('::Gitlab::Database::BackgroundMigration::PrometheusMetrics', track: nil) }
-  let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
+  let(:job_class) { Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) }
 
   let_it_be(:pause_ms) { 250 }
   let_it_be(:active_migration) { create(:batched_background_migration, :active, job_arguments: [:id, :other_id]) }
 
   let!(:job_record) do
-    create(:batched_background_migration_job,
-           batched_migration: active_migration,
-           pause_ms: pause_ms
-          )
+    create(:batched_background_migration_job, batched_migration: active_migration, pause_ms: pause_ms)
   end
 
-  let(:job_instance) { double('job instance', batch_metrics: {}) }
+  let(:job_instance) { instance_double('Gitlab::BackgroundMigration::BatchedMigrationJob') }
 
   around do |example|
     Gitlab::Database::SharedModel.using_connection(connection) do
@@ -28,23 +25,35 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   end
 
   before do
+    allow(active_migration).to receive(:job_class).and_return(job_class)
+
     allow(job_class).to receive(:new).and_return(job_instance)
   end
 
   it 'runs the migration job' do
-    expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
+    expect(job_class).to receive(:new)
+      .with(start_id: 1,
+            end_id: 10,
+            batch_table: 'events',
+            batch_column: 'id',
+            sub_batch_size: 1,
+            pause_ms: pause_ms,
+            connection: connection)
+      .and_return(job_instance)
 
-    subject
+    expect(job_instance).to receive(:perform).with('id', 'other_id')
+
+    perform
   end
 
   it 'updates the tracking record in the database' do
-    test_metrics = { 'my_metris' => 'some value' }
+    test_metrics = { 'my_metrics' => 'some value' }
 
-    expect(job_instance).to receive(:perform)
+    expect(job_instance).to receive(:perform).with('id', 'other_id')
     expect(job_instance).to receive(:batch_metrics).and_return(test_metrics)
 
     freeze_time do
-      subject
+      perform
 
       reloaded_job_record = job_record.reload
 
@@ -69,11 +78,11 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     it 'increments attempts and updates other fields' do
       updated_metrics = { 'updated_metrics' => 'some_value' }
 
-      expect(job_instance).to receive(:perform)
+      expect(job_instance).to receive(:perform).with('id', 'other_id')
       expect(job_instance).to receive(:batch_metrics).and_return(updated_metrics)
 
       freeze_time do
-        subject
+        perform
 
         job_record.reload
 
@@ -88,10 +97,10 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
   context 'when the migration job does not raise an error' do
     it 'marks the tracking record as succeeded' do
-      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
+      expect(job_instance).to receive(:perform).with('id', 'other_id')
 
       freeze_time do
-        subject
+        perform
 
         reloaded_job_record = job_record.reload
 
@@ -101,22 +110,20 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     end
 
     it 'tracks metrics of the execution' do
-      expect(job_instance).to receive(:perform)
+      expect(job_instance).to receive(:perform).with('id', 'other_id')
       expect(metrics_tracker).to receive(:track).with(job_record)
 
-      subject
+      perform
     end
   end
 
   context 'when the migration job raises an error' do
     shared_examples 'an error is raised' do |error_class|
       it 'marks the tracking record as failed' do
-        expect(job_instance).to receive(:perform)
-          .with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
-          .and_raise(error_class)
+        expect(job_instance).to receive(:perform).with('id', 'other_id').and_raise(error_class)
 
         freeze_time do
-          expect { subject }.to raise_error(error_class)
+          expect { perform }.to raise_error(error_class)
 
           reloaded_job_record = job_record.reload
 
@@ -126,10 +133,10 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
       end
 
       it 'tracks metrics of the execution' do
-        expect(job_instance).to receive(:perform).and_raise(error_class)
+        expect(job_instance).to receive(:perform).with('id', 'other_id').and_raise(error_class)
         expect(metrics_tracker).to receive(:track).with(job_record)
 
-        expect { subject }.to raise_error(error_class)
+        expect { perform }.to raise_error(error_class)
       end
     end
 
@@ -138,41 +145,14 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     it_behaves_like 'an error is raised', ActiveRecord::StatementTimeout.new('Timeout!')
   end
 
-  context 'when the batched background migration does not inherit from BaseJob' do
-    let(:migration_class) { Class.new }
+  context 'when the batched background migration does not inherit from BatchedMigrationJob' do
+    let(:job_class) { Class.new }
 
-    before do
-      stub_const('Gitlab::BackgroundMigration::Foo', migration_class)
-    end
+    it 'runs the job with the correct arguments' do
+      expect(job_class).to receive(:new).with(no_args).and_return(job_instance)
+      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
 
-    let(:active_migration) { create(:batched_background_migration, :active, job_class_name: 'Foo') }
-    let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
-
-    it 'does not pass any argument' do
-      expect(Gitlab::BackgroundMigration::Foo).to receive(:new).with(no_args).and_return(job_instance)
-
-      expect(job_instance).to receive(:perform)
-
-      subject
-    end
-  end
-
-  context 'when the batched background migration inherits from BaseJob' do
-    let(:active_migration) { create(:batched_background_migration, :active, job_class_name: 'Foo') }
-    let!(:job_record) { create(:batched_background_migration_job, batched_migration: active_migration) }
-
-    let(:migration_class) { Class.new(::Gitlab::BackgroundMigration::BaseJob) }
-
-    before do
-      stub_const('Gitlab::BackgroundMigration::Foo', migration_class)
-    end
-
-    it 'passes the correct connection' do
-      expect(Gitlab::BackgroundMigration::Foo).to receive(:new).with(connection: connection).and_return(job_instance)
-
-      expect(job_instance).to receive(:perform)
-
-      subject
+      perform
     end
   end
 end

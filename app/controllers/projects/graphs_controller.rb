@@ -15,6 +15,7 @@ class Projects::GraphsController < Projects::ApplicationController
   urgency :low, [:show]
 
   feature_category :continuous_integration, [:ci]
+  urgency :low, [:ci]
 
   def show
     respond_to do |format|

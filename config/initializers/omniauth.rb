@@ -12,7 +12,7 @@ if Gitlab::Auth::Ldap::Config.enabled?
 end
 
 OmniAuth.config.full_host =
-  if Feature.feature_flags_available? && ::Feature.enabled?(:omniauth_initializer_fullhost_proc, default_enabled: :yaml)
+  if Feature.feature_flags_available? && ::Feature.enabled?(:omniauth_initializer_fullhost_proc)
     Gitlab::AppLogger.debug("Using OmniAuth proc initializer")
     Gitlab::OmniauthInitializer.full_host
   else

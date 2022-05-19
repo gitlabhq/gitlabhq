@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import '~/commons/bootstrap';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
 
@@ -30,7 +30,7 @@ describe('RightSidebar', () => {
     let mock;
 
     beforeEach(() => {
-      loadFixtures(fixtureName);
+      loadHTMLFixture(fixtureName);
       mock = new MockAdapter(axios);
       new Sidebar(); // eslint-disable-line no-new
       $aside = $('.right-sidebar');
@@ -44,6 +44,8 @@ describe('RightSidebar', () => {
 
     afterEach(() => {
       mock.restore();
+
+      resetHTMLFixture();
     });
 
     it('should expand/collapse the sidebar when arrow is clicked', () => {

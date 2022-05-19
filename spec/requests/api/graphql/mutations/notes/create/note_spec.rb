@@ -64,7 +64,7 @@ RSpec.describe 'Adding a Note' do
         it 'creates a Note in a discussion' do
           post_graphql_mutation(mutation, current_user: current_user)
 
-          expect(mutation_response['note']['discussion']['id']).to eq(discussion.to_global_id.to_s)
+          expect(mutation_response['note']['discussion']).to match a_graphql_entity_for(discussion)
         end
 
         context 'when the discussion_id is not for a Discussion' do
@@ -109,7 +109,7 @@ RSpec.describe 'Adding a Note' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response).to include(
-          'errors' => [/Merged this merge request/],
+          'errors' => include(/Merged this merge request/),
           'note' => nil
         )
       end

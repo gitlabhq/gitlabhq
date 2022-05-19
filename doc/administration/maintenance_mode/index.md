@@ -116,11 +116,11 @@ For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API re
 | POST | `/users/sign_in` | To allow users to log in. |
 | POST | `/users/sign_out`| To allow users to log out. |
 | POST | `/oauth/token` | To allow users to log in to a Geo secondary for the first time. |
-| POST | `/admin/session`, `/admin/session/destroy` | To allow [Administrator mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
+| POST | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
 | POST | Paths ending with `/compare`| Git revision routes. |
 | POST | `.git/git-upload-pack` | To allow Git pull/clone. |
 | POST | `/api/v4/internal` | [internal API routes](../../development/internal_api/index.md) |
-| POST | `/admin/sidekiq` | To allow management of background jobs in the Admin UI |
+| POST | `/admin/sidekiq` | To allow management of background jobs in the Admin Area |
 | POST | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
 | POST | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
 
@@ -166,7 +166,7 @@ Package Registry allows you to install but not publish packages.
 
 Background jobs (cron jobs, Sidekiq) continue running as is, because background jobs are not automatically disabled.
 
-[During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node),
+[During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-site),
 it is recommended that you disable all cron jobs except for those related to Geo.
 
 To monitor queues and disable jobs:
@@ -210,4 +210,4 @@ For the same reason we don't automatically block background jobs when Maintenanc
 
 The resulting database writes are acceptable. Here, the trade-off is between more service degradation and the completion of replication.
 
-However, during a planned failover, we [ask users to turn off cron jobs that are not related to Geo, manually](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-node). In the absence of new database writes and non-Geo cron jobs, new background jobs would either not be created at all or be minimal.
+However, during a planned failover, we [ask users to turn off cron jobs that are not related to Geo, manually](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-site). In the absence of new database writes and non-Geo cron jobs, new background jobs would either not be created at all or be minimal.

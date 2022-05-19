@@ -6,5 +6,6 @@ class Projects::Ci::SecureFilesController < Projects::ApplicationController
   feature_category :pipeline_authoring
 
   def show
+    render_404 unless Feature.enabled?(:ci_secure_files, project)
   end
 end

@@ -82,6 +82,8 @@ describe('Pipelines', () => {
         provide: {
           pipelineEditorPath: '',
           suggestedCiTemplates: [],
+          ciRunnerSettingsPath: paths.ciRunnerSettingsPath,
+          anyRunnersAvailable: true,
         },
         propsData: {
           store: new Store(),

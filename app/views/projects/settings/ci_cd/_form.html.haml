@@ -1,6 +1,7 @@
 - help_link_public_pipelines = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'change-which-users-can-view-your-pipelines'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_auto_canceling = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'auto-cancel-redundant-pipelines'), target: '_blank', rel: 'noopener noreferrer'
-- help_link_skip_outdated =link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_skip_outdated = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'skip-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_separated_caches = link_to sprite_icon('question-o'), help_page_path('ci/caching/index', anchor: 'cache-key-names'), target: '_blank', rel: 'noopener noreferrer'
 
 .row.gl-mt-3
   .col-lg-12
@@ -23,6 +24,11 @@
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
             = form.gitlab_ui_checkbox_component :forward_deployment_enabled, _("Skip outdated deployment jobs"),
               help_text: (_('When a deployment job is successful, skip older deployment jobs that are still pending.') + ' ' + help_link_skip_outdated).html_safe
+
+        .form-group
+          = f.gitlab_ui_checkbox_component :ci_separated_caches,
+            s_("CICD|Use separate caches for protected branches"),
+            help_text: (s_('CICD|Unprotected branches will not have access to the cache from protected branches.') + ' ' + help_link_separated_caches).html_safe
 
         .form-group
           = f.label :ci_config_path, _('CI/CD configuration file'), class: 'label-bold'
@@ -77,19 +83,7 @@
               = _("The maximum file size in megabytes for individual job artifacts.")
               = link_to sprite_icon('question-o'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
 
-        .form-group
-          = f.label :build_coverage_regex, _("Test coverage parsing"), class: 'label-bold'
-          .input-group
-            %span.input-group-prepend
-              .input-group-text /
-            = f.text_field :build_coverage_regex, class: 'form-control gl-form-input', placeholder: 'Regular expression', data: { qa_selector: 'build_coverage_regex_field' }
-            %span.input-group-append
-              .input-group-text /
-          %p.form-text.text-muted
-            = html_escape(_('The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable.')) % { regex: '<code>\(\d+.\d+%\)</code>'.html_safe }
-            = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'add-test-coverage-results-using-project-settings-deprecated'), target: '_blank', rel: 'noopener noreferrer'
-
-        = f.submit _('Save changes'), class: "btn gl-button btn-confirm", data: { qa_selector: 'save_general_pipelines_changes_button' }
+        = f.submit _('Save changes'), class: "btn gl-button btn-confirm"
 
 %hr
 

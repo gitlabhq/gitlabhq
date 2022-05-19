@@ -33,7 +33,7 @@ module Gitlab
 
         def self.enabled?
           ::Feature::FlipperFeature.table_exists? &&
-            Feature.enabled?(:detect_cross_database_modification, default_enabled: :yaml)
+            Feature.enabled?(:detect_cross_database_modification)
         end
 
         def self.requires_tracking?(parsed)

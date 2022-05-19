@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Mermaid rendering', :js do
   let_it_be(:project) { create(:project, :public) }
 
+  let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
+  let(:modifier_key) { is_mac ? :command : :control }
+
   before do
     stub_feature_flags(sandboxed_mermaid: false)
   end
@@ -48,8 +51,8 @@ RSpec.describe 'Mermaid rendering', :js do
     wait_for_requests
     wait_for_mermaid
 
-    # From https://github.com/mermaid-js/mermaid/blob/d3f8f03a7d03a052e1fe0251d5a6d8d1f48d67ee/src/dagre-wrapper/createLabel.js#L79-L82
-    expected = %(<div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Line 1<br>Line 2</div>)
+    # From # From https://github.com/mermaid-js/mermaid/blob/170ed89e9ef3e33dc84f8656eed1725379d505df/src/dagre-wrapper/createLabel.js#L39-L42
+    expected = %(<div style="display: inline-block; white-space: nowrap;" xmlns="http://www.w3.org/1999/xhtml">Line 1<br>Line 2</div>)
     expect(page.html.scan(expected).count).to be(4)
   end
 
@@ -70,8 +73,8 @@ RSpec.describe 'Mermaid rendering', :js do
     wait_for_requests
     wait_for_mermaid
 
-    # From https://github.com/mermaid-js/mermaid/blob/d3f8f03a7d03a052e1fe0251d5a6d8d1f48d67ee/src/dagre-wrapper/createLabel.js#L79-L82
-    expected = %(<div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">CLICK_HERE_AND_GET_BONUS</div>)
+    # From https://github.com/mermaid-js/mermaid/blob/170ed89e9ef3e33dc84f8656eed1725379d505df/src/dagre-wrapper/createLabel.js#L39-L42
+    expected = %(<div style="display: inline-block; white-space: nowrap;" xmlns="http://www.w3.org/1999/xhtml">CLICK_HERE_AND_GET_BONUS</div>)
     expect(page.html).to include(expected)
   end
 
@@ -299,6 +302,40 @@ RSpec.describe 'Mermaid rendering', :js do
     page.within('.description') do
       expect(page).not_to have_xpath("//iframe")
     end
+  end
+
+  it 'correctly copies and pastes to/from the clipboard' do
+    stub_feature_flags(sandboxed_mermaid: true)
+
+    description = <<~MERMAID
+      ```mermaid
+      graph TD;
+        A-->B;
+        A-->C;
+      ```
+    MERMAID
+
+    issue = create(:issue, project: project, description: description)
+
+    user = create(:user)
+    sign_in(user)
+    visit project_issue_path(project, issue)
+
+    wait_for_requests
+    wait_for_mermaid
+
+    find('pre.language-mermaid').hover
+    find('copy-code button').click
+
+    sleep 2
+
+    find('#note-body').send_keys [modifier_key, 'v']
+
+    wait_for_requests
+
+    # The codefences do actually get included, but we can't get spec to pass
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83202#note_880621264
+    expect(find('#note-body').value.strip).to eq("graph TD;\n  A-->B;\n  A-->C;")
   end
 end
 

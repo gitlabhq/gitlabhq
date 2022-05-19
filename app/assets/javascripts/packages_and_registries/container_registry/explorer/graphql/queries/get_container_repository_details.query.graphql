@@ -1,4 +1,4 @@
-query getContainerRepositoryDetails($id: ID!) {
+query getContainerRepositoryDetails($id: ContainerRepositoryID!) {
   containerRepository(id: $id) {
     id
     name

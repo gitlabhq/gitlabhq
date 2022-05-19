@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Mousetrap from 'mousetrap';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
@@ -12,7 +12,6 @@ jest.mock('~/lib/utils/common_utils', () => ({
 
 describe('ShortcutsIssuable', () => {
   const snippetShowFixtureName = 'snippets/show.html';
-  const mrShowFixtureName = 'merge_requests/merge_request_of_current_user.html';
 
   beforeAll(() => {
     initCopyAsGFM();
@@ -25,7 +24,7 @@ describe('ShortcutsIssuable', () => {
     const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
 
     beforeEach(() => {
-      loadFixtures(snippetShowFixtureName);
+      loadHTMLFixture(snippetShowFixtureName);
       $('body').append(
         `<div class="js-main-target-form">
           <textarea class="js-vue-comment-form"></textarea>
@@ -40,6 +39,7 @@ describe('ShortcutsIssuable', () => {
       $(FORM_SELECTOR).remove();
 
       delete window.shortcut;
+      resetHTMLFixture();
     });
 
     // Stub getSelectedFragment to return a node with the provided HTML.
@@ -277,57 +277,6 @@ describe('ShortcutsIssuable', () => {
 
         await waitForPromises();
         expect($(FORM_SELECTOR).val()).toBe('> ![logo](https://gitlab.com/logo.png)\n\n');
-      });
-    });
-  });
-
-  describe('copyBranchName', () => {
-    let sidebarCollapsedBtn;
-    let sidebarExpandedBtn;
-
-    beforeEach(() => {
-      loadFixtures(mrShowFixtureName);
-
-      window.shortcut = new ShortcutsIssuable();
-
-      [sidebarCollapsedBtn, sidebarExpandedBtn] = document.querySelectorAll(
-        '.js-sidebar-source-branch button',
-      );
-
-      [sidebarCollapsedBtn, sidebarExpandedBtn].forEach((btn) => jest.spyOn(btn, 'click'));
-    });
-
-    afterEach(() => {
-      delete window.shortcut;
-    });
-
-    describe('when the sidebar is expanded', () => {
-      beforeEach(() => {
-        // simulate the applied CSS styles when the
-        // sidebar is expanded
-        sidebarCollapsedBtn.style.display = 'none';
-
-        Mousetrap.trigger('b');
-      });
-
-      it('clicks the "expanded" version of the copy source branch button', () => {
-        expect(sidebarExpandedBtn.click).toHaveBeenCalled();
-        expect(sidebarCollapsedBtn.click).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when the sidebar is collapsed', () => {
-      beforeEach(() => {
-        // simulate the applied CSS styles when the
-        // sidebar is collapsed
-        sidebarExpandedBtn.style.display = 'none';
-
-        Mousetrap.trigger('b');
-      });
-
-      it('clicks the "collapsed" version of the copy source branch button', () => {
-        expect(sidebarCollapsedBtn.click).toHaveBeenCalled();
-        expect(sidebarExpandedBtn.click).not.toHaveBeenCalled();
       });
     });
   });

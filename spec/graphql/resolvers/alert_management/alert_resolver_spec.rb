@@ -39,8 +39,8 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
     end
 
     context 'filtering by domain' do
-      let_it_be(:alert1) { create(:alert_management_alert, project: project, monitoring_tool: 'Cilium', domain: :threat_monitoring) }
-      let_it_be(:alert2) { create(:alert_management_alert, project: project, monitoring_tool: 'Cilium', domain: :threat_monitoring) }
+      let_it_be(:alert1) { create(:alert_management_alert, project: project, monitoring_tool: 'other', domain: :threat_monitoring) }
+      let_it_be(:alert2) { create(:alert_management_alert, project: project, monitoring_tool: 'other', domain: :threat_monitoring) }
       let_it_be(:alert3) { create(:alert_management_alert, project: project, monitoring_tool: 'generic') }
 
       let(:args) { { domain: 'operations' } }

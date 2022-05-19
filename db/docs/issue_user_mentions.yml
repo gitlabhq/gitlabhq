@@ -4,6 +4,6 @@ classes:
 - IssueUserMention
 feature_categories:
 - team_planning
-description: TODO
+description: User mentions in issue descriptions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'

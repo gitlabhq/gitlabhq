@@ -58,11 +58,9 @@ Button tags requires a `type` attribute according to the [W3C HTML specification
 
 ### Blank target
 
-Avoid forcing links to open in a new window as this reduces the control the user has over the link.
-However, it might be a good idea to use a blank target when replacing the current page with
-the link makes the user lose content or progress.
+Arbitrarily opening links in a new tab is not recommended, so refer to the [Pajamas guidelines on links](https://design.gitlab.com/product-foundations/interaction/#links) when considering adding `target="_blank"` to links.
 
-Use `rel="noopener noreferrer"` whenever your links open in a new window, that is, `target="_blank"`. This prevents a security vulnerability [documented by JitBit](https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/).
+When using `target="_blank"` with `a` tags, you must also add the `rel="noopener noreferrer"` attribute. This prevents a security vulnerability [documented by JitBit](https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/).
 
 When using `gl-link`, using `target="_blank"` is sufficient as it automatically adds `rel="noopener noreferrer"` to the link.
 

@@ -13,7 +13,6 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
   subject(:cop) { described_class.new }
 
   before do
-    stub_const("#{described_class}::DYNAMIC_FEATURE_FLAGS", [])
     allow(cop).to receive(:defined_feature_flags).and_return(defined_feature_flags)
     allow(cop).to receive(:usage_data_counters_known_event_feature_flags).and_return([])
     described_class.feature_flags_already_tracked = false

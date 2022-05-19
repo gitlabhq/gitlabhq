@@ -48,6 +48,23 @@ RSpec.describe Import::BitbucketServerService do
     end
   end
 
+  context 'when import source is disabled' do
+    before do
+      stub_application_setting(import_sources: nil)
+      allow(subject).to receive(:authorized?).and_return(true)
+      allow(client).to receive(:repo).with(project_key, repo_slug).and_return(double(repo))
+    end
+
+    it 'returns forbidden' do
+      result = subject.execute(credentials)
+
+      expect(result).to include(
+        status: :error,
+        http_status: :forbidden
+      )
+    end
+  end
+
   context 'when user is unauthorized' do
     before do
       allow(subject).to receive(:authorized?).and_return(false)

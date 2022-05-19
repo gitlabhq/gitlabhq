@@ -1,5 +1,5 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
-import { statusBoxState } from '~/issuable/components/status_box.vue';
+import { badgeState } from '~/issuable/components/status_box.vue';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
 import {
@@ -221,8 +221,8 @@ export default class MergeRequestStore {
   }
 
   updateStatusState(state) {
-    if (this.mergeRequestState !== state && statusBoxState.updateStatus) {
-      statusBoxState.updateStatus();
+    if (this.mergeRequestState !== state && badgeState.updateStatus) {
+      badgeState.updateStatus();
     }
   }
 

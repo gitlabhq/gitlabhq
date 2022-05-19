@@ -66,10 +66,6 @@ RSpec.describe ClustersHelper do
       expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
     end
 
-    it 'displays create cluster using certificate path' do
-      expect(subject[:new_cluster_path]).to eq("#{project_path(project)}/-/clusters/new")
-    end
-
     it 'displays add cluster using certificate path' do
       expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/connect")
     end
@@ -92,6 +88,10 @@ RSpec.describe ClustersHelper do
 
     it 'displays GitLab version' do
       expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
+    end
+
+    it 'displays KAS version' do
+      expect(subject[:kas_version]).to eq(Gitlab::Kas.version_info)
     end
 
     context 'user has no permissions to create a cluster' do
@@ -163,14 +163,6 @@ RSpec.describe ClustersHelper do
           expect(subject[:certificate_based_clusters_enabled]).to eq('false')
         end
       end
-    end
-  end
-
-  describe '#js_cluster_new' do
-    subject { helper.js_cluster_new }
-
-    it 'displays a cluster_connect_help_path' do
-      expect(subject[:cluster_connect_help_path]).to eq(help_page_path('user/project/clusters/add_remove_clusters', anchor: 'add-existing-cluster'))
     end
   end
 

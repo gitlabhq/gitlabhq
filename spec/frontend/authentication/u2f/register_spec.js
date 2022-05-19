@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import U2FRegister from '~/authentication/u2f/register';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
@@ -9,11 +10,15 @@ describe('U2FRegister', () => {
   let component;
 
   beforeEach(() => {
-    loadFixtures('u2f/register.html');
+    loadHTMLFixture('u2f/register.html');
     u2fDevice = new MockU2FDevice();
     container = $('#js-register-token-2fa');
     component = new U2FRegister(container, {});
     return component.start();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('allows registering a U2F device', () => {

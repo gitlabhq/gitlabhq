@@ -15,6 +15,8 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
   let(:ruby_sampler_double) { double(Gitlab::Metrics::Samplers::RubySampler) }
 
   before do
+    # Make sure we never actually spawn any new processes in a unit test.
+    %i(spawn fork detach).each { |m| allow(Process).to receive(m) }
     # We do not want this to have knock-on effects on the test process.
     allow(Gitlab::ProcessManagement).to receive(:modify_signals)
 
@@ -67,35 +69,107 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
       end
 
       describe '.spawn' do
-        let(:expected_env) do
-          {
-            'METRICS_SERVER_TARGET' => target,
-            'WIPE_METRICS_DIR' => '0'
-          }
-        end
+        context 'for legacy Ruby server' do
+          let(:expected_env) do
+            {
+              'METRICS_SERVER_TARGET' => target,
+              'WIPE_METRICS_DIR' => '0',
+              'GITLAB_CONFIG' => 'path/to/config/gitlab.yml'
+            }
+          end
 
-        it 'spawns a new server process and returns its PID' do
-          expect(Process).to receive(:spawn).with(
-            expected_env,
-            end_with('bin/metrics-server'),
-            hash_including(pgroup: true)
-          ).and_return(99)
-          expect(Process).to receive(:detach).with(99)
+          before do
+            stub_env('GITLAB_CONFIG', 'path/to/config/gitlab.yml')
+          end
 
-          pid = described_class.spawn(target, metrics_dir: metrics_dir)
-
-          expect(pid).to eq(99)
-        end
-
-        context 'when path to gitlab.yml is passed' do
-          it 'sets the GITLAB_CONFIG environment variable' do
+          it 'spawns a new server process and returns its PID' do
             expect(Process).to receive(:spawn).with(
-              expected_env.merge('GITLAB_CONFIG' => 'path/to/config/gitlab.yml'),
+              expected_env,
               end_with('bin/metrics-server'),
               hash_including(pgroup: true)
             ).and_return(99)
+            expect(Process).to receive(:detach).with(99)
 
-            described_class.spawn(target, metrics_dir: metrics_dir, gitlab_config: 'path/to/config/gitlab.yml')
+            pid = described_class.spawn(target, metrics_dir: metrics_dir)
+
+            expect(pid).to eq(99)
+          end
+        end
+
+        context 'for Golang server' do
+          let(:log_enabled) { false }
+          let(:settings) do
+            {
+              'web_exporter' => {
+                'enabled' => true,
+                'address' => 'localhost',
+                'port' => '8083',
+                'log_enabled' => log_enabled
+              },
+              'sidekiq_exporter' => {
+                'enabled' => true,
+                'address' => 'localhost',
+                'port' => '8082',
+                'log_enabled' => log_enabled
+              }
+            }
+          end
+
+          let(:expected_port) { target == 'puma' ? '8083' : '8082' }
+          let(:expected_env) do
+            {
+              'GME_MMAP_METRICS_DIR' => metrics_dir,
+              'GME_PROBES' => 'self,mmap',
+              'GME_SERVER_HOST' => 'localhost',
+              'GME_SERVER_PORT' => expected_port,
+              'GME_LOG_LEVEL' => 'quiet'
+            }
+          end
+
+          before do
+            stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
+            allow(::Settings).to receive(:monitoring).and_return(settings)
+          end
+
+          it 'spawns a new server process and returns its PID' do
+            expect(Process).to receive(:spawn).with(
+              expected_env,
+              'gitlab-metrics-exporter',
+              hash_including(pgroup: true)
+            ).and_return(99)
+            expect(Process).to receive(:detach).with(99)
+
+            pid = described_class.spawn(target, metrics_dir: metrics_dir)
+
+            expect(pid).to eq(99)
+          end
+
+          it 'can launch from explicit path instead of PATH' do
+            expect(Process).to receive(:spawn).with(
+              expected_env,
+              '/path/to/gme/gitlab-metrics-exporter',
+              hash_including(pgroup: true)
+            ).and_return(99)
+
+            described_class.spawn(target, metrics_dir: metrics_dir, path: '/path/to/gme/')
+          end
+
+          context 'when logs are enabled' do
+            let(:log_enabled) { true }
+            let(:expected_log_file) { target == 'puma' ? 'web_exporter.log' : 'sidekiq_exporter.log' }
+
+            it 'sets log related environment variables' do
+              expect(Process).to receive(:spawn).with(
+                expected_env.merge(
+                  'GME_LOG_LEVEL' => 'info',
+                  'GME_LOG_FILE' => File.join(Rails.root, 'log', expected_log_file)
+                ),
+                'gitlab-metrics-exporter',
+                hash_including(pgroup: true)
+              ).and_return(99)
+
+              described_class.spawn(target, metrics_dir: metrics_dir)
+            end
           end
         end
       end
@@ -112,10 +186,21 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
 
     describe '.spawn' do
-      it 'raises an error' do
-        expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
-          raise_error('Target must be one of [puma,sidekiq]')
-        )
+      context 'for legacy Ruby server' do
+        it 'raises an error' do
+          expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
+            raise_error('Target must be one of [puma,sidekiq]')
+          )
+        end
+      end
+
+      context 'for Golang server' do
+        it 'raises an error' do
+          stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
+          expect { described_class.spawn('unsupported', metrics_dir: metrics_dir) }.to(
+            raise_error('Target must be one of [puma,sidekiq]')
+          )
+        end
       end
     end
   end
@@ -220,28 +305,32 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
     end
 
     context 'when the supervisor callback is invoked' do
-      context 'and the supervisor is alive' do
-        it 'restarts the metrics server' do
-          expect(supervisor).to receive(:alive).and_return(true)
-          expect(supervisor).to receive(:supervise).and_yield
-          expect(Process).to receive(:spawn).with(
-            include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
-          ).twice.and_return(42)
+      it 'restarts the metrics server' do
+        expect(supervisor).to receive(:supervise).and_yield
+        expect(Process).to receive(:spawn).with(
+          include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
+        ).twice.and_return(42)
 
-          described_class.start_for_puma
-        end
+        described_class.start_for_puma
       end
+    end
+  end
 
-      context 'and the supervisor is not alive' do
-        it 'does not restart the server' do
-          expect(supervisor).to receive(:alive).and_return(false)
-          expect(supervisor).to receive(:supervise).and_yield
-          expect(Process).to receive(:spawn).with(
-            include('METRICS_SERVER_TARGET' => 'puma'), end_with('bin/metrics-server'), anything
-          ).once.and_return(42)
+  describe '.start_for_sidekiq' do
+    context 'for legacy Ruby server' do
+      it 'forks the parent process' do
+        expect(Process).to receive(:fork).and_return(42)
 
-          described_class.start_for_puma
-        end
+        described_class.start_for_sidekiq(metrics_dir: '/path/to/metrics')
+      end
+    end
+
+    context 'for Golang server' do
+      it 'spawns the server process' do
+        stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
+        expect(Process).to receive(:spawn).and_return(42)
+
+        described_class.start_for_sidekiq(metrics_dir: '/path/to/metrics')
       end
     end
   end

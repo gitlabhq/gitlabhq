@@ -196,7 +196,7 @@ module API
 
         use :optional_params
       end
-      post feature_category: :subgroups do
+      post feature_category: :subgroups, urgency: :low do
         parent_group = find_group!(params[:parent_id]) if params[:parent_id].present?
         if parent_group
           authorize! :create_subgroup, parent_group
@@ -229,7 +229,7 @@ module API
         use :optional_update_params
         use :optional_update_params_ee
       end
-      put ':id', feature_category: :subgroups do
+      put ':id', feature_category: :subgroups, urgency: :low do
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
@@ -266,7 +266,7 @@ module API
       end
 
       desc 'Remove a group.'
-      delete ":id", feature_category: :subgroups do
+      delete ":id", feature_category: :subgroups, urgency: :low do
         group = find_group!(params[:id])
         authorize! :admin_group, group
         check_subscription! group
@@ -361,7 +361,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      get ":id/descendant_groups", feature_category: :subgroups do
+      get ":id/descendant_groups", feature_category: :subgroups, urgency: :low do
         finder_params = declared_params(include_missing: false).merge(include_parent_descendants: true)
         groups = find_groups(finder_params, params[:id])
         present_groups params, groups
@@ -418,7 +418,6 @@ module API
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
       post ":id/share", feature_category: :subgroups do
-        shared_group = find_group!(params[:id])
         shared_with_group = find_group!(params[:group_id])
 
         group_link_create_params = {
@@ -426,11 +425,11 @@ module API
           expires_at: params[:expires_at]
         }
 
-        result = ::Groups::GroupLinks::CreateService.new(shared_group, shared_with_group, current_user, group_link_create_params).execute
-        shared_group.preload_shared_group_links
+        result = ::Groups::GroupLinks::CreateService.new(user_group, shared_with_group, current_user, group_link_create_params).execute
+        user_group.preload_shared_group_links
 
         if result[:status] == :success
-          present shared_group, with: Entities::GroupDetail, current_user: current_user
+          present user_group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!(result[:message], result[:http_status])
         end

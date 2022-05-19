@@ -1,12 +1,13 @@
 import { GlButton, GlFriendlyWrap, GlLink, GlPagination } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
 import { TestStatus } from '~/pipelines/constants';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { formatFilePath } from '~/pipelines/stores/test_reports/utils';
+import { ARTIFACTS_EXPIRED_ERROR_MESSAGE } from '~/pipelines/stores/test_reports/constants';
 import skippedTestCases from './mock_data';
 
 Vue.use(Vuex);
@@ -23,13 +24,14 @@ describe('Test reports suite table', () => {
   const testCases = testSuite.test_cases;
   const blobPath = '/test/blob/path';
 
-  const noCasesMessage = () => wrapper.find('.js-no-test-cases');
-  const allCaseRows = () => wrapper.findAll('.js-case-row');
-  const findCaseRowAtIndex = (index) => wrapper.findAll('.js-case-row').at(index);
+  const noCasesMessage = () => wrapper.findByTestId('no-test-cases');
+  const artifactsExpiredMessage = () => wrapper.findByTestId('artifacts-expired');
+  const allCaseRows = () => wrapper.findAllByTestId('test-case-row');
+  const findCaseRowAtIndex = (index) => wrapper.findAllByTestId('test-case-row').at(index);
   const findLinkForRow = (row) => row.find(GlLink);
   const findIconForRow = (row, status) => row.find(`.ci-status-icon-${status}`);
 
-  const createComponent = (suite = testSuite, perPage = 20) => {
+  const createComponent = ({ suite = testSuite, perPage = 20, errorMessage } = {}) => {
     store = new Vuex.Store({
       state: {
         blobPath,
@@ -41,11 +43,12 @@ describe('Test reports suite table', () => {
           page: 1,
           perPage,
         },
+        errorMessage,
       },
       getters,
     });
 
-    wrapper = shallowMount(SuiteTable, {
+    wrapper = shallowMountExtended(SuiteTable, {
       store,
       stubs: { GlFriendlyWrap },
     });
@@ -55,12 +58,18 @@ describe('Test reports suite table', () => {
     wrapper.destroy();
   });
 
-  describe('should not render', () => {
-    beforeEach(() => createComponent([]));
+  it('should render a message when there are no test cases', () => {
+    createComponent({ suite: [] });
 
-    it('a table when there are no test cases', () => {
-      expect(noCasesMessage().exists()).toBe(true);
-    });
+    expect(noCasesMessage().exists()).toBe(true);
+    expect(artifactsExpiredMessage().exists()).toBe(false);
+  });
+
+  it('should render a message when artifacts have expired', () => {
+    createComponent({ suite: [], errorMessage: ARTIFACTS_EXPIRED_ERROR_MESSAGE });
+
+    expect(noCasesMessage().exists()).toBe(true);
+    expect(artifactsExpiredMessage().exists()).toBe(true);
   });
 
   describe('when a test suite is supplied', () => {
@@ -102,7 +111,7 @@ describe('Test reports suite table', () => {
     const perPage = 2;
 
     beforeEach(() => {
-      createComponent(testSuite, perPage);
+      createComponent({ testSuite, perPage });
     });
 
     it('renders one page of test cases', () => {
@@ -117,11 +126,13 @@ describe('Test reports suite table', () => {
   describe('when a test case classname property is null', () => {
     it('still renders all test cases', () => {
       createComponent({
-        ...testSuite,
-        test_cases: testSuite.test_cases.map((testCase) => ({
-          ...testCase,
-          classname: null,
-        })),
+        testSuite: {
+          ...testSuite,
+          test_cases: testSuite.test_cases.map((testCase) => ({
+            ...testCase,
+            classname: null,
+          })),
+        },
       });
 
       expect(allCaseRows()).toHaveLength(testCases.length);
@@ -131,11 +142,13 @@ describe('Test reports suite table', () => {
   describe('when a test case name property is null', () => {
     it('still renders all test cases', () => {
       createComponent({
-        ...testSuite,
-        test_cases: testSuite.test_cases.map((testCase) => ({
-          ...testCase,
-          name: null,
-        })),
+        testSuite: {
+          ...testSuite,
+          test_cases: testSuite.test_cases.map((testCase) => ({
+            ...testCase,
+            name: null,
+          })),
+        },
       });
 
       expect(allCaseRows()).toHaveLength(testCases.length);

@@ -379,24 +379,51 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 
 > - Introduced in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 14.10.
+> - `PREVIOUS_BACKUP` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4184) in GitLab 15.0.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `incremental_repository_backup`.
 On GitLab.com, this feature is not available.
 
 Incremental backups can be faster than full backups because they only pack changes since the last backup into the backup
-bundle for each repository. There must be an existing backup to create an incremental backup from and this backup will be overwritten. You can use the `BACKUP=timestamp_of_backup` option to choose which backup will be used.
+bundle for each repository. There must be an existing backup to create an incremental backup from:
+
+- In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
+- In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created
+  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the 
+  [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
 
 ```shell
-sudo gitlab-backup create INCREMENTAL=yes
+sudo gitlab-backup create INCREMENTAL=yes PREVIOUS_BACKUP=<timestamp_of_backup>
 ```
 
 Incremental backups can also be created from [an untarred backup](#skipping-tar-creation) by using `SKIP=tar`:
 
 ```shell
 sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
+```
+
+#### Back up specific repository storages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+
+When using [multiple repository storages](../administration/repository_storage_paths.md),
+repositories from specific repository storages can be backed up separately
+using the `REPOSITORIES_STORAGES` option. The option accepts a comma-separated list of
+storage names.
+
+For example, for Omnibus GitLab installations:
+
+```shell
+sudo gitlab-backup create REPOSITORIES_STORAGES=storage1,storage2
+```
+
+For example, for installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=storage1,storage2
 ```
 
 #### Uploading backups to a remote (cloud) storage
@@ -981,7 +1008,7 @@ This procedure assumes that:
 
 First ensure your backup tar file is in the backup directory described in the
 `gitlab.rb` configuration `gitlab_rails['backup_path']`. The default is
-`/var/opt/gitlab/backups`. It needs to be owned by the `git` user.
+`/var/opt/gitlab/backups`. The backup file needs to be owned by the `git` user.
 
 ```shell
 sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
@@ -1177,6 +1204,61 @@ project or group from there:
 A feature request to provide direct restore of individual projects or groups
 is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issues/17517).
 
+### Restore options
+
+The command line tool GitLab provides to restore from backup can accept more
+options.
+
+#### Excluding tasks on restore
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19347) in GitLab 14.10.
+
+You can exclude specific tasks on restore by adding the environment variable `SKIP`, whose values are a comma-separated list of the following options:
+
+- `db` (database)
+- `uploads` (attachments)
+- `builds` (CI job output logs)
+- `artifacts` (CI job artifacts)
+- `lfs` (LFS objects)
+- `terraform_state` (Terraform states)
+- `registry` (Container Registry images)
+- `pages` (Pages content)
+- `repositories` (Git repositories data)
+- `packages` (Packages)
+
+For Omnibus GitLab packages:
+
+```shell
+sudo gitlab-backup restore BACKUP=timestamp_of_backup SKIP=db,uploads
+```
+
+For installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup SKIP=db,uploads RAILS_ENV=production
+```
+
+#### Restore specific repository storages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+
+When using [multiple repository storages](../administration/repository_storage_paths.md),
+repositories from specific repository storages can be restored separately
+using the `REPOSITORIES_STORAGES` option. The option accepts a comma-separated list of
+storage names.
+
+For example, for Omnibus GitLab installations:
+
+```shell
+sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+```
+
+For example, for installations from source:
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
+```
+
 ## Alternative backup strategies
 
 If your GitLab instance contains a lot of Git repository data, you may find the
@@ -1365,6 +1447,7 @@ To prepare the new server:
 1. Copy the
    [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
    from the old server to avoid man-in-the-middle attack warnings.
+   See [Manually replicate the primary site’s SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
 1. [Install and configure GitLab](https://about.gitlab.com/install) except
    [incoming email](../administration/incoming_email.md):
    1. Install GitLab.

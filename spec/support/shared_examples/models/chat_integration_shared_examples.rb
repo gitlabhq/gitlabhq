@@ -199,7 +199,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
         {
           title: "Awesome wiki_page",
           content: "Some text describing some thing or another",
-          format: "md",
+          format: :markdown,
           message: "user created page: Awesome wiki_page"
         }
       end

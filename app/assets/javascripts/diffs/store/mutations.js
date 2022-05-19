@@ -4,6 +4,7 @@ import {
   DIFF_FILE_MANUAL_COLLAPSE,
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   INLINE_DIFF_LINES_KEY,
+  EXPANDED_LINE_TYPE,
 } from '../constants';
 import * as types from './mutation_types';
 import {
@@ -131,6 +132,7 @@ export default {
           : line.line_code || `${fileHash}_${line.old_line}_${line.new_line}`;
       return {
         ...line,
+        type: line.type || EXPANDED_LINE_TYPE,
         line_code: lineCode,
         discussions: line.discussions || [],
         hasForm: false,

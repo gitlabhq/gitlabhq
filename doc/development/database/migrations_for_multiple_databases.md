@@ -33,7 +33,7 @@ Depending on the used constructs, we can classify migrations to be either:
 Migrations cannot mix **DDL** and **DML** changes as the application requires the structure
 (as described by `db/structure.sql`) to be exactly the same across all decomposed databases.
 
-### Data Definition Language (DDL) 
+### Data Definition Language (DDL)
 
 The DDL migrations are all migrations that:
 
@@ -43,7 +43,7 @@ The DDL migrations are all migrations that:
 1. Add or remove a column with or without a default value (for example, `add_column`).
 1. Create or drop trigger functions (for example, `create_trigger_function`).
 1. Attach or detach triggers from tables (for example, `track_record_deletions`, `untrack_record_deletions`).
-1. Prepare or not async indexes (for example, `prepare_async_index`, `unprepare_async_index_by_name`).
+1. Prepare or not asynchronous indexes (for example, `prepare_async_index`, `unprepare_async_index_by_name`).
 
 As such DDL migrations **CANNOT**:
 
@@ -159,7 +159,7 @@ end
 
 ### The special purpose of `gitlab_shared`
 
-As described in [gitlab_schema](multiple_databases.md#the-special-purpose-of-gitlab_shared),
+As described in [`gitlab_schema`](multiple_databases.md#the-special-purpose-of-gitlab_shared),
 the `gitlab_shared` tables are allowed to contain data across all databases. This implies
 that such migrations should run across all databases to modify structure (DDL) or modify data (DML).
 
@@ -388,3 +388,32 @@ A Potential extension is to limit running DML migration only to specific environ
 ```ruby
 restrict_gitlab_migration gitlab_schema: :gitlab_main, gitlab_env: :gitlab_com
 ```
+
+## Background migrations
+
+When you use:
+
+- Background migrations with `track_jobs` set to `true` or
+- Batched background migrations
+
+The migration has to write to a jobs table. All of the
+jobs tables used by background migrations are marked as `gitlab_shared`.
+You can use these migrations when migrating tables in any database.
+
+However, when queuing the batches, you must set `restrict_gitlab_migration` based on the
+table you are iterating over. If you are updating all `projects`, for example, then you would set
+`restrict_gitlab_migration gitlab_schema: :gitlab_main`. If, however, you are
+updating all `ci_pipelines`, you would set
+`restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
+
+As with all DML migrations, you cannot query another database outside of
+`restrict_gitlab_migration` or `gitlab_shared`. If you need to query another database,
+you'll likely need to separate these into two migrations somehow.
+
+Because the actual migration logic (not the queueing step) for background
+migrations runs in a Sidekiq worker, the logic can perform DML queries on
+tables in any database, just like any ordinary Sidekiq worker can.
+
+## How to determine `gitlab_schema` for a given table
+
+See [GitLab Schema](multiple_databases.md#gitlab-schema).

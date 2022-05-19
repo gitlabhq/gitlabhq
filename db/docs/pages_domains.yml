@@ -4,6 +4,6 @@ classes:
 - PagesDomain
 feature_categories:
 - pages
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/807a5494fa543392ea7a996b479e577d41ff6344
+description: Store Pages domain, certificate and encryption meta data.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173
 milestone: '8.5'

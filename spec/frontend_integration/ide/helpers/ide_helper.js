@@ -24,13 +24,19 @@ export const switchLeftSidebarTab = (name) => {
 export const getStatusBar = () => document.querySelector('.ide-status-bar');
 
 export const waitForMonacoEditor = () =>
-  new Promise((resolve) => monacoEditor.onDidCreateEditor(resolve));
+  new Promise((resolve) => {
+    monacoEditor.onDidCreateEditor(resolve);
+  });
 
 export const waitForEditorDispose = (instance) =>
-  new Promise((resolve) => instance.onDidDispose(resolve));
+  new Promise((resolve) => {
+    instance.onDidDispose(resolve);
+  });
 
 export const waitForEditorModelChange = (instance) =>
-  new Promise((resolve) => instance.onDidChangeModel(resolve));
+  new Promise((resolve) => {
+    instance.onDidChangeModel(resolve);
+  });
 
 export const findMonacoEditor = () =>
   screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-editor'));

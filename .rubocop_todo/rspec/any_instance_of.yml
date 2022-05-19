@@ -85,7 +85,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/requests/groups_controller_spec.rb
   - ee/spec/requests/omniauth_kerberos_spnego_spec.rb
   - ee/spec/requests/repositories/git_http_controller_spec.rb
-  - ee/spec/services/alert_management/network_alert_service_spec.rb
   - ee/spec/services/ci/expire_pipeline_cache_service_spec.rb
   - ee/spec/services/ci/run_dast_scan_service_spec.rb
   - ee/spec/services/ee/git/branch_push_service_spec.rb
@@ -108,7 +107,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/services/groups/destroy_service_spec.rb
   - ee/spec/services/groups/update_service_spec.rb
   - ee/spec/services/merge_trains/check_status_service_spec.rb
-  - ee/spec/services/network_policies/resources_service_spec.rb
   - ee/spec/services/projects/destroy_service_spec.rb
   - ee/spec/services/projects/group_links/destroy_service_spec.rb
   - ee/spec/services/projects/update_service_spec.rb
@@ -124,7 +122,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/workers/concerns/elastic/indexing_control_spec.rb
   - ee/spec/workers/elastic_commit_indexer_worker_spec.rb
   - ee/spec/workers/geo/design_repository_shard_sync_worker_spec.rb
-  - ee/spec/workers/geo/file_download_dispatch_worker_spec.rb
   - ee/spec/workers/geo/registry_sync_worker_spec.rb
   - ee/spec/workers/geo/repository_cleanup_worker_spec.rb
   - ee/spec/workers/geo/repository_shard_sync_worker_spec.rb
@@ -164,7 +161,6 @@ RSpec/AnyInstanceOf:
   - spec/controllers/snippets/notes_controller_spec.rb
   - spec/controllers/snippets_controller_spec.rb
   - spec/features/admin/admin_mode/login_spec.rb
-  - spec/features/groups/clusters/eks_spec.rb
   - spec/features/groups/members/tabs_spec.rb
   - spec/features/ide/static_object_external_storage_csp_spec.rb
   - spec/features/issuables/issuable_list_spec.rb
@@ -231,11 +227,9 @@ RSpec/AnyInstanceOf:
   - spec/lib/gitlab/ci/templates/Jobs/code_quality_gitlab_ci_yaml_spec.rb
   - spec/lib/gitlab/ci/templates/Jobs/deploy_gitlab_ci_yaml_spec.rb
   - spec/lib/gitlab/ci/templates/Jobs/test_gitlab_ci_yaml_spec.rb
-  - spec/lib/gitlab/ci/templates/Terraform/base_gitlab_ci_yaml_spec.rb
   - spec/lib/gitlab/ci/templates/Verify/load_performance_testing_gitlab_ci_yaml_spec.rb
   - spec/lib/gitlab/ci/templates/auto_devops_gitlab_ci_yaml_spec.rb
   - spec/lib/gitlab/ci/templates/npm_spec.rb
-  - spec/lib/gitlab/ci/templates/terraform_latest_gitlab_ci_yaml_spec.rb
   - spec/lib/gitlab/ci/trace_spec.rb
   - spec/lib/gitlab/current_settings_spec.rb
   - spec/lib/gitlab/cycle_analytics/base_event_fetcher_spec.rb

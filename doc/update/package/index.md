@@ -37,6 +37,7 @@ GitLab package.
 Upgrading versions might need some manual intervention. For more information,
 check the version your are upgrading to:
 
+- [GitLab 15](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html)
 - [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
 - [GitLab 13](https://docs.gitlab.com/omnibus/update/gitlab_13_changes.html)
 - [GitLab 12](https://docs.gitlab.com/omnibus/update/gitlab_12_changes.html)
@@ -126,7 +127,9 @@ or upgrade command:
    ```
 
 1. Install the specific `gitlab-ee` package by using one of the following commands
-   and replacing `<version>` with the version you found in the previous step:
+   and replacing `<version>` with the next supported version you would like to install
+   (make sure to review the [upgrade path](../index.md#upgrade-paths) to confirm the 
+   version you're installing is part of a supported path):
 
    ```shell
    # Ubuntu/Debian
@@ -296,3 +299,12 @@ To fix this issue:
 ### Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
 
 Please see [GitLab Pages troubleshooting](../../administration/pages/index.md#failed-to-connect-to-the-internal-gitlab-api).
+
+### Error `An error occurred during the signature verification` when running `apt-get update`
+
+To update the GPG key of the GitLab packages server run:
+
+```shell
+curl --silent "https://packages.gitlab.com/gpg.key" | apt-key add -
+apt-get update
+```

@@ -8,7 +8,7 @@ type: reference
 # Useful Git commands **(FREE)**
 
 The GitLab support team has collected these commands to help you. You may not
-need to use them often.
+need them frequently.
 
 ## Remotes
 
@@ -42,7 +42,7 @@ git reset <filename>
 
 ### Revert a file to HEAD state and remove changes
 
-There are two options to revert changes to a file:
+To revert changes to a file, you can use either:
 
 - `git checkout <filename>`
 - `git reset --hard <filename>`

@@ -11,7 +11,6 @@ describe('content_editor/services/content_editor', () => {
   let contentEditor;
   let serializer;
   let deserializer;
-  let languageLoader;
   let eventHub;
   let doc;
   let p;
@@ -26,16 +25,14 @@ describe('content_editor/services/content_editor', () => {
       tiptapEditor,
     }));
 
-    serializer = { deserialize: jest.fn() };
+    serializer = { serialize: jest.fn() };
     deserializer = { deserialize: jest.fn() };
-    languageLoader = { loadLanguagesFromDOM: jest.fn() };
     eventHub = eventHubFactory();
     contentEditor = new ContentEditor({
       tiptapEditor,
       serializer,
       deserializer,
       eventHub,
-      languageLoader,
     });
   });
 
@@ -51,12 +48,12 @@ describe('content_editor/services/content_editor', () => {
 
   describe('when setSerializedContent succeeds', () => {
     let document;
-    const dom = {};
+    const languages = ['javascript'];
     const testMarkdown = '**bold text**';
 
     beforeEach(() => {
       document = doc(p('document'));
-      deserializer.deserialize.mockResolvedValueOnce({ document, dom });
+      deserializer.deserialize.mockResolvedValueOnce({ document, languages });
     });
 
     it('emits loadingContent and loadingSuccess event in the eventHub', () => {
@@ -76,12 +73,6 @@ describe('content_editor/services/content_editor', () => {
       await contentEditor.setSerializedContent(testMarkdown);
 
       expect(contentEditor.tiptapEditor.state.doc.toJSON()).toEqual(document.toJSON());
-    });
-
-    it('passes deserialized DOM document to language loader', async () => {
-      await contentEditor.setSerializedContent(testMarkdown);
-
-      expect(languageLoader.loadLanguagesFromDOM).toHaveBeenCalledWith(dom);
     });
   });
 

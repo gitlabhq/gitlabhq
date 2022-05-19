@@ -8,8 +8,8 @@ RSpec.describe 'Query.merge_request(id)' do
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:merge_request_params) { { 'id' => merge_request.to_global_id.to_s } }
 
+  let(:merge_request_params) { { 'id' => global_id_of(merge_request) } }
   let(:merge_request_data) { graphql_data['mergeRequest'] }
   let(:merge_request_fields) { all_graphql_fields_for('MergeRequest'.classify) }
 

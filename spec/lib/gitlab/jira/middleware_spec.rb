@@ -23,8 +23,8 @@ RSpec.describe Gitlab::Jira::Middleware do
 
   describe '#call' do
     it 'adjusts HTTP_AUTHORIZATION env when request from Jira DVCS user agent' do
-      expect(app).to receive(:call).with('HTTP_USER_AGENT' => jira_user_agent,
-                                         'HTTP_AUTHORIZATION' => 'Bearer hash-123')
+      expect(app).to receive(:call).with({ 'HTTP_USER_AGENT' => jira_user_agent,
+                                         'HTTP_AUTHORIZATION' => 'Bearer hash-123' })
 
       middleware.call('HTTP_USER_AGENT' => jira_user_agent, 'HTTP_AUTHORIZATION' => 'token hash-123')
     end

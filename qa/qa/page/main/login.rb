@@ -30,9 +30,8 @@ module QA
           element :register_tab
         end
 
-        view 'app/views/devise/shared/_tabs_normal.html.haml' do
+        view 'app/views/devise/shared/_tab_single.html.haml' do
           element :sign_in_tab
-          element :register_tab
         end
 
         view 'app/helpers/auth_helper.rb' do
@@ -134,6 +133,14 @@ module QA
           has_css?('[name="arkose_labs_token"][value]', visible: false)
         end
 
+        def has_accept_all_cookies_button?
+          has_button?('Accept All Cookies')
+        end
+
+        def click_accept_all_cookies
+          click_button('Accept All Cookies')
+        end
+
         def switch_to_sign_in_tab
           click_element :sign_in_tab
         end
@@ -180,6 +187,7 @@ module QA
           fill_element :password_field, user.password
 
           if Runtime::Env.running_on_dot_com?
+            click_accept_all_cookies if has_accept_all_cookies_button?
             # Arkose only appears in staging.gitlab.com, gitlab.com, etc...
 
             # Wait until the ArkoseLabs challenge has initialized

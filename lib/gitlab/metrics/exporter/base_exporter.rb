@@ -71,27 +71,16 @@ module Gitlab
         end
 
         def rack_app
-          readiness = readiness_probe
-          liveness = liveness_probe
           pid = thread_name
           gc_requests = @gc_requests
 
           Rack::Builder.app do
             use Rack::Deflater
             use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
-            use Gitlab::Metrics::Exporter::HealthChecksMiddleware, readiness, liveness
             use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
           end
-        end
-
-        def readiness_probe
-          ::Gitlab::HealthChecks::Probes::Collection.new
-        end
-
-        def liveness_probe
-          ::Gitlab::HealthChecks::Probes::Collection.new
         end
       end
     end

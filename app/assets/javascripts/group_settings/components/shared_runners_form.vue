@@ -1,73 +1,64 @@
 <script>
-import { GlToggle, GlLoadingIcon, GlTooltip, GlAlert } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { GlToggle, GlAlert } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import { DEBOUNCE_TOGGLE_DELAY, ERROR_MESSAGE } from '../constants';
+import { ERROR_MESSAGE } from '../constants';
 
 export default {
   components: {
     GlToggle,
-    GlLoadingIcon,
-    GlTooltip,
     GlAlert,
   },
   inject: [
     'updatePath',
-    'sharedRunnersAvailability',
-    'parentSharedRunnersAvailability',
-    'runnerEnabled',
-    'runnerDisabled',
-    'runnerAllowOverride',
+    'sharedRunnersSetting',
+    'parentSharedRunnersSetting',
+    'runnerEnabledValue',
+    'runnerDisabledValue',
+    'runnerAllowOverrideValue',
   ],
   data() {
     return {
       isLoading: false,
-      enabled: true,
-      allowOverride: false,
+      value: this.sharedRunnersSetting,
       error: null,
     };
   },
   computed: {
-    toggleDisabled() {
-      return this.parentSharedRunnersAvailability === this.runnerDisabled || this.isLoading;
+    isSharedRunnersToggleDisabled() {
+      return this.parentSharedRunnersSetting === this.runnerDisabledValue;
     },
-    enabledOrDisabledSetting() {
-      return this.enabled ? this.runnerEnabled : this.runnerDisabled;
+    sharedRunnersToggleValue() {
+      return this.value === this.runnerEnabledValue;
     },
-    disabledWithOverrideSetting() {
-      return this.allowOverride ? this.runnerAllowOverride : this.runnerDisabled;
+    isOverrideToggleDisabled() {
+      // cannot override when sharing is enabled
+      return this.isSharedRunnersToggleDisabled || this.value === this.runnerEnabledValue;
     },
-  },
-  created() {
-    if (this.sharedRunnersAvailability !== this.runnerEnabled) {
-      this.enabled = false;
-    }
-
-    if (this.sharedRunnersAvailability === this.runnerAllowOverride) {
-      this.allowOverride = true;
-    }
+    overrideToggleValue() {
+      return this.value === this.runnerAllowOverrideValue;
+    },
   },
   methods: {
-    generatePayload(data) {
-      return { shared_runners_setting: data };
+    onSharedRunnersToggle(value) {
+      const newSetting = value ? this.runnerEnabledValue : this.runnerDisabledValue;
+      this.updateSetting(newSetting);
     },
-    enableOrDisable() {
-      this.updateRunnerSettings(this.generatePayload(this.enabledOrDisabledSetting));
+    onOverrideToggle(value) {
+      const newSetting = value ? this.runnerAllowOverrideValue : this.runnerDisabledValue;
+      this.updateSetting(newSetting);
+    },
+    updateSetting(setting) {
+      if (this.isLoading) {
+        return;
+      }
 
-      // reset override toggle to false if shared runners are enabled
-      this.allowOverride = false;
-    },
-    override() {
-      this.updateRunnerSettings(this.generatePayload(this.disabledWithOverrideSetting));
-    },
-    updateRunnerSettings: debounce(function debouncedUpdateRunnerSettings(setting) {
       this.isLoading = true;
 
       axios
-        .put(this.updatePath, setting)
+        .put(this.updatePath, { shared_runners_setting: setting })
         .then(() => {
-          this.isLoading = false;
+          this.value = setting;
         })
         .catch((error) => {
           const message = [
@@ -76,51 +67,52 @@ export default {
           ].join(' ');
 
           this.error = message;
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
-    }, DEBOUNCE_TOGGLE_DELAY),
+    },
   },
 };
 </script>
 
 <template>
-  <div ref="sharedRunnersForm">
-    <gl-alert v-if="error" variant="danger" :dismissible="false">{{ error }}</gl-alert>
+  <div>
+    <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">
+      {{ error }}
+    </gl-alert>
 
-    <h4 class="gl-display-flex gl-align-items-center">
-      {{ __('Set up shared runner availability') }}
-      <gl-loading-icon v-if="isLoading" class="gl-ml-3" size="sm" inline />
-    </h4>
-
-    <section class="gl-mt-5">
-      <gl-toggle
-        v-model="enabled"
-        :disabled="toggleDisabled"
-        :label="__('Enable shared runners for this group')"
-        data-testid="enable-runners-toggle"
-        @change="enableOrDisable"
-      />
-
-      <span class="gl-text-gray-600">
-        {{ __('Enable shared runners for all projects and subgroups in this group.') }}
-      </span>
-    </section>
-
-    <section v-if="!enabled" class="gl-mt-5">
-      <gl-toggle
-        v-model="allowOverride"
-        :disabled="toggleDisabled"
-        :label="__('Allow projects and subgroups to override the group setting')"
-        data-testid="override-runners-toggle"
-        @change="override"
-      />
-
-      <span class="gl-text-gray-600">
-        {{ __('Allows projects or subgroups in this group to override the global setting.') }}
-      </span>
-    </section>
-
-    <gl-tooltip v-if="toggleDisabled" :target="() => $refs.sharedRunnersForm">
+    <gl-alert
+      v-if="isSharedRunnersToggleDisabled"
+      variant="warning"
+      :dismissible="false"
+      class="gl-mb-5"
+    >
       {{ __('Shared runners are disabled for the parent group') }}
-    </gl-tooltip>
+    </gl-alert>
+
+    <section class="gl-mb-5">
+      <gl-toggle
+        :value="sharedRunnersToggleValue"
+        :is-loading="isLoading"
+        :disabled="isSharedRunnersToggleDisabled"
+        :label="__('Enable shared runners for this group')"
+        :help="__('Enable shared runners for all projects and subgroups in this group.')"
+        data-testid="shared-runners-toggle"
+        @change="onSharedRunnersToggle"
+      />
+    </section>
+
+    <section class="gl-mb-5">
+      <gl-toggle
+        :value="overrideToggleValue"
+        :is-loading="isLoading"
+        :disabled="isOverrideToggleDisabled"
+        :label="__('Allow projects and subgroups to override the group setting')"
+        :help="__('Allows projects or subgroups in this group to override the global setting.')"
+        data-testid="override-runners-toggle"
+        @change="onOverrideToggle"
+      />
+    </section>
   </div>
 </template>

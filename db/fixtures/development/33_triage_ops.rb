@@ -30,6 +30,10 @@ class Gitlab::Seeder::TriageOps
       puts "Setting up webhooks"
       ensure_webhook_for('gitlab-com')
       ensure_webhook_for('gitlab-org')
+
+      puts "Ensuring work type labels"
+      ensure_work_type_labels_for('gitlab-com')
+      ensure_work_type_labels_for('gitlab-org')
     end
   end
 
@@ -81,6 +85,38 @@ class Gitlab::Seeder::TriageOps
     hook.save!
 
     puts "Hook with url '#{hook.url}' and token '#{hook.token}' for '#{group_path}' is present now."
+  end
+
+  def ensure_work_type_labels_for(group_path)
+    label_titles = [
+      'bug::availability',
+      'bug::mobile',
+      'bug::performance',
+      'bug::vulnerability',
+      'feature::addition',
+      'feature::consolidation',
+      'feature::enhancement',
+      'feature::removal',
+      'maintenance::dependency',
+      'maintenance::pipelines',
+      'maintenance::refactor',
+      'maintenance::test-gap',
+      'maintenance::usability',
+      'maintenance::workflow',
+      'type::bug',
+      'type::feature',
+      'type::maintenance',
+    ]
+
+    group = Group.find_by_full_path(group_path)
+
+    label_titles.each do |label_title|
+      color = ::Gitlab::Color.color_for(label_title[/[^:]+/])
+
+      Labels::CreateService
+        .new(title: label_title, color: "#{color}")
+        .execute(group: group)
+    end
   end
 
   def ensure_group(full_path)

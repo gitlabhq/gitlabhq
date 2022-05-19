@@ -149,7 +149,7 @@ RSpec.describe MergeRequests::MergeService do
         allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
       end
 
-      it 'closes GitLab issue tracker issues' do
+      it 'closes GitLab issue tracker issues', :sidekiq_inline do
         issue  = create :issue, project: project
         commit = double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.current, authored_date: Time.current)
         allow(merge_request).to receive(:commits).and_return([commit])

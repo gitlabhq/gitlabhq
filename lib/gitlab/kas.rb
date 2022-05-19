@@ -33,6 +33,10 @@ module Gitlab
         @_version ||= Rails.root.join(VERSION_FILE).read.chomp
       end
 
+      def version_info
+        Gitlab::VersionInfo.parse(version)
+      end
+
       # Return GitLab KAS external_url
       #
       # @return [String] external_url

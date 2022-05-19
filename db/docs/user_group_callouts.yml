@@ -3,7 +3,7 @@ table_name: user_group_callouts
 classes:
 - Users::GroupCallout
 feature_categories:
-- users
+- navigation
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68785
 milestone: '14.3'

@@ -63,10 +63,6 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ProtectedBranchesPipeline,
             stage: 4
           },
-          ci_pipelines: {
-            pipeline: BulkImports::Projects::Pipelines::CiPipelinesPipeline,
-            stage: 4
-          },
           project_feature: {
             pipeline: BulkImports::Projects::Pipelines::ProjectFeaturePipeline,
             stage: 4
@@ -78,6 +74,14 @@ module BulkImports
           service_desk_setting: {
             pipeline: BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline,
             stage: 4
+          },
+          releases: {
+            pipeline: BulkImports::Projects::Pipelines::ReleasesPipeline,
+            stage: 4
+          },
+          ci_pipelines: {
+            pipeline: BulkImports::Projects::Pipelines::CiPipelinesPipeline,
+            stage: 5
           },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,

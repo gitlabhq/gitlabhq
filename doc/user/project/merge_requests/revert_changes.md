@@ -14,7 +14,7 @@ by clicking the **Revert** button in merge requests and commit details.
 NOTE:
 The **Revert** button is shown only for projects that use the
 merge method "Merge Commit", which can be set under the project's
-**Settings > General > Merge request**. [Fast-forward commits](fast_forward_merge.md)
+**Settings > General > Merge request**. [Fast-forward commits](methods/index.md#fast-forward-merge)
 can not be reverted by using the merge request view.
 
 After the merge request has been merged, use the **Revert** button

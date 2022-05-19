@@ -36,7 +36,7 @@ as base:
 
 _\* Undergoes a pseudonymization process at the collector level._
 
-These properties [are overriden](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/tracking/get_standard_context.js)
+These properties [are overridden](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/tracking/get_standard_context.js)
 with frontend-specific values, like `source` (`gitlab-javascript`), `google_analytics_id`
 and the custom `extra` object. You can modify this object for any subsequent
 structured event that fires, although this is not recommended.
@@ -83,7 +83,7 @@ The following example shows `data-track-*` attributes assigned to a button:
 | `data-track-action`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field is `activate_form_input` and clicking a button is `click_button`. Replaces `data-track-event`, which was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290962) in GitLab 13.11. |
 | `data-track-label`    | false    | The specific element or object to act on. This can be: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. |
 | `data-track-property` | false    | Any additional property of the element, or object being acted on. |
-| `data-track-value`    | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. The value is parsed as numeric before sendind the event. |
+| `data-track-value`    | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. The value is parsed as numeric before sending the event. |
 | `data-track-extra` | false    | A key-value pair object passed as a valid JSON string. This attribute is added to the `extra` property in our [`gitlab_standard`](schemas.md#gitlab_standard) schema. |
 | `data-track-context`  | false    | To append a custom context object, passed as a valid JSON string. |
 
@@ -97,10 +97,12 @@ If click events stop propagating, you must implement listeners and [Vue componen
 
 #### Helper methods
 
-You can use the following Ruby helper:
+You can use the following Ruby helpers:
 
 ```ruby
 tracking_attrs(label, action, property) # { data: { track_label... } }
+
+tracking_attrs_data(label, action, property) # { track_label... }
 ```
 
 You can also use it on HAML templates:
@@ -108,8 +110,8 @@ You can also use it on HAML templates:
 ```haml
 %button{ **tracking_attrs('main_navigation', 'click_button', 'navigation') }
 
-// When adding additional data
-// %button{ data: { platform: "...", **tracking_attrs('main_navigation', 'click_button', 'navigation') } }
+// When merging with additional data
+// %button{ data: { platform: "...", **tracking_attrs_data('main_navigation', 'click_button', 'navigation') } }
 ```
 
 If you use the GitLab helper method [`nav_link`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/tab_helper.rb#L76), you must wrap `html_options` under the `html_options` keyword argument. If you

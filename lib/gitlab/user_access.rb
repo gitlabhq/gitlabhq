@@ -103,9 +103,7 @@ module Gitlab
     def branch_allows_collaboration_for?(ref)
       return false if skip_collaboration_check
 
-      # Checking for an internal project or group to prevent an infinite loop:
-      # https://gitlab.com/gitlab-org/gitlab/issues/36805
-      (!project.internal? && project.branch_allows_collaboration?(user, ref))
+      project.branch_allows_collaboration?(user, ref)
     end
 
     def permission_cache

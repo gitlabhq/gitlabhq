@@ -11,7 +11,7 @@ export const createPipelineNotificationApp = (elSelector, apolloProvider) => {
     return;
   }
 
-  const { deprecatedKeywordsDocPath, fullPath, pipelineIid } = el?.dataset;
+  const { deprecatedKeywordsDocPath, fullPath, pipelineIid } = el.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el,

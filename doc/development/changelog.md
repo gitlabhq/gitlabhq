@@ -100,7 +100,7 @@ EE: true
   database records created during Cycle Analytics model spec."
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
-- Any [GLEX experiment](experiment_guide/gitlab_experiment.md) changes **should not** have a changelog entry.
+- Any [experiment](experiment_guide/index.md) changes **should not** have a changelog entry.
 - An MR that includes only documentation changes **should not** have a changelog entry.
 
 For more information, see

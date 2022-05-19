@@ -66,7 +66,7 @@ This software is based in part on the work of the Independent JPEG Group.
 
 ## Trademark Usage
 
-Within the GitLab documentation, reference to third party technology(ies) and/or trademarks of third party entities, may be made. The inclusion of reference to third party technology and/or entities is solely for the purposes of example(s) of how GitLab software may interact with, or be used in conjunction with, such third party technology.
+Within the GitLab documentation, reference to third-party technologies and/or trademarks of third-party entities may be made. The inclusion of reference to third-party technology and/or entities is solely for the purposes of examples of how GitLab software may interact with, or be used in conjunction with, such third-party technology.
 All trademarks, materials, documentation, and other intellectual property remain the property of any/all such third party.
 
 ### Trademark Requirements

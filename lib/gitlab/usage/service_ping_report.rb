@@ -3,6 +3,8 @@
 module Gitlab
   module Usage
     class ServicePingReport
+      CACHE_KEY = 'usage_data'
+
       class << self
         def for(output:, cached: false)
           case output.to_sym
@@ -26,7 +28,7 @@ module Gitlab
         end
 
         def all_metrics_values(cached)
-          Rails.cache.fetch('usage_data', force: !cached, expires_in: 2.weeks) do
+          Rails.cache.fetch(CACHE_KEY, force: !cached, expires_in: 2.weeks) do
             Gitlab::UsageData.data
           end
         end

@@ -11,6 +11,10 @@ RSpec.describe 'Group issues page' do
   let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
+  before do
+    stub_feature_flags(vue_issues_list: true)
+  end
+
   context 'with shared examples', :js do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
 
@@ -58,10 +62,10 @@ RSpec.describe 'Group issues page' do
       let(:user2) { user_outside_group }
 
       it 'filters by only group users' do
-        filtered_search.set('assignee:=')
+        select_tokens 'Assignee', '='
 
-        expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
-        expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
+        expect_suggestion(user.name)
+        expect_no_suggestion(user2.name)
       end
     end
   end
@@ -76,23 +80,9 @@ RSpec.describe 'Group issues page' do
     it 'returns all group and subgroup issues' do
       visit issues_group_path(group)
 
-      page.within('.issuable-list') do
-        expect(page).to have_selector('li.issue', count: 2)
-        expect(page).to have_content('root group issue')
-        expect(page).to have_content('subgroup issue')
-      end
-    end
-
-    it 'truncates issue counts if over the threshold', :clean_gitlab_redis_cache do
-      allow(Rails.cache).to receive(:read).and_call_original
-      allow(Rails.cache).to receive(:read).with(
-        ['group', group.id, 'issues'],
-        { expires_in: Gitlab::IssuablesCountForState::CACHE_EXPIRES_IN }
-      ).and_return({ opened: 1050, closed: 500, all: 1550 })
-
-      visit issues_group_path(group)
-
-      expect(page).to have_text('Open 1.1k Closed 500 All 1.6k')
+      expect(page).to have_selector('li.issue', count: 2)
+      expect(page).to have_content('root group issue')
+      expect(page).to have_content('subgroup issue')
     end
 
     context 'when project is archived' do
@@ -115,7 +105,6 @@ RSpec.describe 'Group issues page' do
     let!(:subgroup_issue) { create(:issue, project: subgroup_project) }
 
     before do
-      stub_feature_flags(vue_issues_list: true)
       visit issues_group_path(group_with_no_issues)
     end
 
@@ -135,14 +124,10 @@ RSpec.describe 'Group issues page' do
       end
 
       it 'shows projects only with issues feature enabled', :js do
-        within '.empty-state' do
-          click_button 'Toggle project select'
-        end
+        click_button 'Toggle project select'
 
-        page.within('.select2-results') do
-          expect(page).to have_content(project.full_name)
-          expect(page).not_to have_content(project_with_issues_disabled.full_name)
-        end
+        expect(page).to have_button project.full_name
+        expect(page).not_to have_button project_with_issues_disabled.full_name
       end
     end
   end
@@ -155,15 +140,15 @@ RSpec.describe 'Group issues page' do
     let!(:issue3) { create(:issue, project: project, title: 'Issue #3', relative_position: 3) }
 
     before do
+      stub_feature_flags(vue_issues_list: false)
+
       sign_in(user_in_group)
     end
 
     it 'displays all issues' do
       visit issues_group_path(group, sort: 'relative_position')
 
-      page.within('.issues-list') do
-        expect(page).to have_selector('li.issue', count: 3)
-      end
+      expect(page).to have_selector('li.issue', count: 3)
     end
 
     it 'has manual-ordering css applied' do
@@ -218,11 +203,9 @@ RSpec.describe 'Group issues page' do
     end
 
     def check_issue_order
-      page.within('.manual-ordering') do
-        expect(find('.issue:nth-child(1) .title')).to have_content('Issue #2')
-        expect(find('.issue:nth-child(2) .title')).to have_content('Issue #3')
-        expect(find('.issue:nth-child(3) .title')).to have_content('Issue #1')
-      end
+      expect(page).to have_css('.issue:nth-child(1) .title', text: 'Issue #2')
+      expect(page).to have_css('.issue:nth-child(2) .title', text: 'Issue #3')
+      expect(page).to have_css('.issue:nth-child(3) .title', text: 'Issue #1')
     end
   end
 
@@ -239,14 +222,8 @@ RSpec.describe 'Group issues page' do
     end
 
     it 'shows the pagination' do
-      expect(page).to have_link 'Prev'
-      expect(page).to have_link 'Next'
-    end
-
-    it 'first pagination item is active' do
-      page.within('.gl-pagination') do
-        expect(find('li.active')).to have_content('1')
-      end
+      expect(page).to have_button 'Prev', disabled: true
+      expect(page).to have_button 'Next'
     end
   end
 end

@@ -42,7 +42,7 @@ module Ci
         { name: 'Django', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/django.svg') },
         { name: 'Docker', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/docker.svg') },
         { name: 'Elixir', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/elixir.svg') },
-        { name: 'iOS-Fastlane', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/fastlane.svg') },
+        { name: 'iOS-Fastlane', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/fastlane.svg'), title: 'iOS with Fastlane' },
         { name: 'Flutter', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/flutter.svg') },
         { name: 'Go', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/go_logo.svg') },
         { name: 'Gradle', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/gradle.svg') },
@@ -51,6 +51,7 @@ module Ci
         { name: 'Julia', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/julia.svg') },
         { name: 'Laravel', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/laravel.svg') },
         { name: 'LaTeX', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/latex.svg') },
+        { name: 'MATLAB', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/matlab.svg') },
         { name: 'Maven', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/maven.svg') },
         { name: 'Mono', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/mono.svg') },
         { name: 'Nodejs', logo: image_path('illustrations/third-party-logos/ci_cd-template-logos/node_js.svg') },
@@ -109,6 +110,7 @@ module Ci
       experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
         e.candidate do
           data[:registration_token] = project.runners_token if can?(current_user, :register_project_runners, project)
+          data[:ios_runners_available] = (project.shared_runners_available? && Gitlab.com?).to_s
         end
       end
 

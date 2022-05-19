@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Saas do
+  include SaasTestHelper
+
   describe '.canary_toggle_com_url' do
     subject { described_class.canary_toggle_com_url }
 
-    let(:next_url) { 'https://next.gitlab.com' }
-
-    it { is_expected.to eq(next_url) }
+    it { is_expected.to eq(get_next_url) }
   end
 end

@@ -123,6 +123,9 @@ the current stable release, and two previous monthly releases. In rare cases a r
 For instance, if we release `13.2.1` with a fix for a severe bug introduced in
 `13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
 
+Note that [severity](../development/contributing/issue_workflow.md#severity-labels) 3 and lower
+requests will be automatically turned down.
+
 To request backporting to more than one stable release for consideration, raise an issue in the
 [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
 

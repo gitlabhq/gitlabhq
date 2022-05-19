@@ -4,6 +4,6 @@ classes:
 - UsersSecurityDashboardProject
 feature_categories:
 - vulnerability_management
-description: TODO
+description: Stores projects which users select to appear in their Security Dashboard
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18708
 milestone: '12.5'

@@ -1,0 +1,9 @@
+---
+table_name: group_features
+classes:
+- Groups::FeatureSetting
+feature_categories:
+- navigation
+description: Stores access levels for group features, like the wiki
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82017
+milestone: '14.10'

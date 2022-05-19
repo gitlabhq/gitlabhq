@@ -1,0 +1,39 @@
+- add_to_breadcrumbs s_('BackgroundMigrations|Background Migrations'), admin_background_migrations_path(database: params[:database])
+- breadcrumb_title @migration.id
+- page_title @migration.job_class_name , s_('BackgroundMigrations|Background Migrations')
+- @breadcrumb_link = admin_background_migration_path(@migration, database: params[:database])
+
+%h3= @migration.job_class_name + ': ' + @migration.table_name
+
+.tab-content.gl-tab-content
+  .tab-pane.active{ role: 'tabpanel' }
+    %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
+      %thead{ role: 'rowgroup' }
+        %tr{ role: 'row' }
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Id')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Min Value')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Max Value')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Batch size')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Sub-batch size')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Interval')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Pause time (ms)')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Created on')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Last updated')
+          %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Status')
+      %tbody{ role: 'rowgroup' }
+        = render partial: 'migration_full_information', migration: @migration
+
+- if @migration.batched_jobs.with_status(:failed).any?
+  %h5= s_('BackgroundMigrations|Failed jobs:')
+
+  %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
+    %thead{ role: 'rowgroup' }
+      %tr{ role: 'row' }
+        %th{ role: 'cell' }= _('Id')
+        %th{ role: 'cell' }= s_('BackgroundMigrations|Started at')
+        %th{ role: 'cell' }= s_('BackgroundMigrations|Finished at')
+        %th{ role: 'cell' }= s_('BackgroundMigrations|Batch size')
+    %tbody{ role: 'rowgroup' }
+      = render partial: 'job', collection: @failed_jobs
+
+  = paginate_collection @failed_jobs

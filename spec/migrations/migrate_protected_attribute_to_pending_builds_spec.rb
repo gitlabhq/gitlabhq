@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20210610102413_migrate_protected_attribute_to_pending_builds.rb')
+require_migration!
 
 RSpec.describe MigrateProtectedAttributeToPendingBuilds do
   let(:namespaces) { table(:namespaces) }

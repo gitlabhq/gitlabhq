@@ -37,7 +37,7 @@ module GitGarbageCollectMethods
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(resource) if gc?(task)
 
-    update_repository_statistics(resource) if task != :pack_refs
+    update_repository_statistics(resource, task)
 
     # In case pack files are deleted, release libgit2 cache and open file
     # descriptors ASAP instead of waiting for Ruby garbage collection
@@ -83,7 +83,7 @@ module GitGarbageCollectMethods
   def gitaly_call(task, resource)
     repository = resource.repository.raw_repository
 
-    if Feature.enabled?(:optimized_housekeeping, container(resource), default_enabled: :yaml)
+    if Feature.enabled?(:optimized_housekeeping, container(resource))
       client = repository.gitaly_repository_client
 
       if task == :prune
@@ -135,15 +135,25 @@ module GitGarbageCollectMethods
     resource.repository.has_visible_content?
   end
 
-  def update_repository_statistics(resource)
+  def update_repository_statistics(resource, task)
+    return if task == :pack_refs
+
     resource.repository.expire_statistics_caches
 
     return if Gitlab::Database.read_only? # GitGarbageCollectWorker may be run on a Geo secondary
 
-    update_db_repository_statistics(resource)
+    stats_to_update = stats
+
+    stats_to_update.delete(:repository_size) if task == :incremental_repack
+
+    update_db_repository_statistics(resource, stats_to_update)
   end
 
-  def update_db_repository_statistics(resource)
+  def update_db_repository_statistics(resource, stats)
     # no-op
+  end
+
+  def stats
+    []
   end
 end

@@ -1,5 +1,10 @@
 import $ from 'jquery';
-import { insertMarkdownText, keypressNoteText } from '~/lib/utils/text_markdown';
+import {
+  insertMarkdownText,
+  keypressNoteText,
+  compositionStartNoteText,
+  compositionEndNoteText,
+} from '~/lib/utils/text_markdown';
 import '~/lib/utils/jquery_at_who';
 
 describe('init markdown', () => {
@@ -9,6 +14,9 @@ describe('init markdown', () => {
     textArea = document.createElement('textarea');
     document.querySelector('body').appendChild(textArea);
     textArea.focus();
+
+    // needed for the underlying insertText to work
+    document.execCommand = jest.fn(() => false);
   });
 
   afterAll(() => {
@@ -172,7 +180,9 @@ describe('init markdown', () => {
         const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
 
         beforeEach(() => {
-          gon.features = { markdownContinueLists: true };
+          textArea.addEventListener('keydown', keypressNoteText);
+          textArea.addEventListener('compositionstart', compositionStartNoteText);
+          textArea.addEventListener('compositionend', compositionEndNoteText);
         });
 
         it.each`
@@ -203,7 +213,6 @@ describe('init markdown', () => {
           textArea.value = text;
           textArea.setSelectionRange(text.length, text.length);
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(enterEvent);
 
           expect(textArea.value).toEqual(expected);
@@ -231,7 +240,6 @@ describe('init markdown', () => {
           textArea.value = text;
           textArea.setSelectionRange(text.length, text.length);
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(enterEvent);
 
           expect(textArea.value.substr(0, textArea.selectionStart)).toEqual(expected);
@@ -251,7 +259,6 @@ describe('init markdown', () => {
           textArea.value = text;
           textArea.setSelectionRange(text.length, text.length);
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(enterEvent);
 
           expect(textArea.value).toEqual(expected);
@@ -267,23 +274,25 @@ describe('init markdown', () => {
             textArea.value = text;
             textArea.setSelectionRange(add_at, add_at);
 
-            textArea.addEventListener('keydown', keypressNoteText);
             textArea.dispatchEvent(enterEvent);
 
             expect(textArea.value).toEqual(expected);
           },
         );
 
-        it('does nothing if feature flag disabled', () => {
-          gon.features = { markdownContinueLists: false };
+        it('does not duplicate a line item for IME characters', () => {
+          const text = '- 日本語';
+          const expected = '- 日本語\n- ';
 
-          const text = '- item';
-          const expected = '- item';
-
+          textArea.dispatchEvent(new CompositionEvent('compositionstart'));
           textArea.value = text;
+
+          // Press enter to end composition
+          textArea.dispatchEvent(enterEvent);
+          textArea.dispatchEvent(new CompositionEvent('compositionend'));
           textArea.setSelectionRange(text.length, text.length);
 
-          textArea.addEventListener('keydown', keypressNoteText);
+          // Press enter to make new line
           textArea.dispatchEvent(enterEvent);
 
           expect(textArea.value).toEqual(expected);

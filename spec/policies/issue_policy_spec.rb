@@ -397,7 +397,7 @@ RSpec.describe IssuePolicy do
     end
   end
 
-  describe 'set_issue_crm_contacts' do
+  describe 'crm permissions' do
     let(:user) { create(:user) }
     let(:subgroup) { create(:group, :crm_enabled, parent: create(:group, :crm_enabled)) }
     let(:project) { create(:project, group: subgroup) }
@@ -408,6 +408,7 @@ RSpec.describe IssuePolicy do
       it 'is disallowed' do
         project.add_reporter(user)
 
+        expect(policies).to be_disallowed(:read_crm_contacts)
         expect(policies).to be_disallowed(:set_issue_crm_contacts)
       end
     end
@@ -416,6 +417,7 @@ RSpec.describe IssuePolicy do
       it 'is allowed' do
         subgroup.add_reporter(user)
 
+        expect(policies).to be_disallowed(:read_crm_contacts)
         expect(policies).to be_disallowed(:set_issue_crm_contacts)
       end
     end
@@ -424,7 +426,30 @@ RSpec.describe IssuePolicy do
       it 'is allowed' do
         subgroup.parent.add_reporter(user)
 
+        expect(policies).to be_allowed(:read_crm_contacts)
         expect(policies).to be_allowed(:set_issue_crm_contacts)
+      end
+    end
+
+    context 'when crm disabled on subgroup' do
+      let(:subgroup) { create(:group, parent: create(:group, :crm_enabled)) }
+
+      it 'is disallowed' do
+        subgroup.parent.add_reporter(user)
+
+        expect(policies).to be_disallowed(:read_crm_contacts)
+        expect(policies).to be_disallowed(:set_issue_crm_contacts)
+      end
+    end
+
+    context 'when peronsal namespace' do
+      let(:project) { create(:project) }
+
+      it 'is disallowed' do
+        project.add_reporter(user)
+
+        expect(policies).to be_disallowed(:read_crm_contacts)
+        expect(policies).to be_disallowed(:set_issue_crm_contacts)
       end
     end
   end

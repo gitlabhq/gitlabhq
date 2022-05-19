@@ -7,6 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Notification emails **(FREE)**
 
+> Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
+> Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
+> Enhanced email styling [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
+
 Stay informed about what's happening in GitLab with email notifications.
 You can receive updates about activity in issues, merge requests, epics, and designs.
 
@@ -24,7 +28,7 @@ You might receive notifications for one of the following reasons:
   or edit, or someone mentions <sup>1</sup> you.
 - You've [enabled notifications in an issue, merge request, or epic](#notifications-on-issues-merge-requests-and-epics).
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
-- You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/overview.md).
+- You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/index.md).
 
 1. GitLab doesn't send a notification when
    [a comment is edited to include a user mention](../discussions/index.md#editing-a-comment-to-add-a-mention).

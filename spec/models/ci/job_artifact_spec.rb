@@ -206,8 +206,8 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '#archived_trace_exists?' do
-    subject { artifact.archived_trace_exists? }
+  describe '#stored?' do
+    subject { artifact.stored? }
 
     context 'when the file exists' do
       it { is_expected.to be_truthy }
@@ -267,15 +267,6 @@ RSpec.describe Ci::JobArtifact do
       it 'returns the artifact' do
         expect(described_class.unlocked).to eq([job_artifact])
       end
-    end
-  end
-
-  describe '.order_expired_desc' do
-    let_it_be(:first_artifact) { create(:ci_job_artifact, expire_at: 2.days.ago) }
-    let_it_be(:second_artifact) { create(:ci_job_artifact, expire_at: 1.day.ago) }
-
-    it 'returns ordered artifacts' do
-      expect(described_class.order_expired_desc).to eq([second_artifact, first_artifact])
     end
   end
 

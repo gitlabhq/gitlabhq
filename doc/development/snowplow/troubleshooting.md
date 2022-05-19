@@ -21,7 +21,7 @@ While on CloudWatch dashboard set time range to last 4 weeks, to get better pict
 
 1. `ELB New Flow Count` and `Collector Auto Scaling Group Network In/Out` - they show in order: number of connections to collectors via load balancers and data volume (in bytes) processed by collectors. If there is drop visible there, it means less events were fired from the GitLab application. Proceed to [application layer guide](#troubleshooting-gitlab-application-layer) for more details
 1. `Firehose Records to S3` - it shows how many event records were saved to S3 bucket, if there was drop on this chart but not on the charts from 1. it means that problem is located at AWS infrastructure layer, please refer to [AWS layer guide](#troubleshooting-aws-layer)
-1. If drop wasn't visible on any of previous charts it means that probelm is at data warehouse layer, please refer to [data warehouse layer guide](#troubleshooting-data-warehouse-layer)
+1. If drop wasn't visible on any of previous charts it means that problem is at data warehouse layer, please refer to [data warehouse layer guide](#troubleshooting-data-warehouse-layer)
 
 ### Troubleshooting GitLab application layer
 
@@ -48,3 +48,27 @@ Already conducted investigations:
 ### Troubleshooting data warehouse layer
 
 Reach out to [Data team](https://about.gitlab.com/handbook/business-technology/data-team/) to ask about current state of data warehouse. On their handbook page there is a [section with contact details](https://about.gitlab.com/handbook/business-technology/data-team/#how-to-connect-with-us)
+
+## Delay in Snowplow Enrichers
+
+If there is an alert for **Snowplow Raw Good Stream Backing Up**, we receive an email notification. This sometimes happens because Snowplow Enrichers don't scale well enough for the amount of Snowplow events.
+
+If the delay goes over 48 hours, we lose data.
+
+### Contact SRE on-call
+
+Send a message in the [#infrastructure_lounge](https://gitlab.slack.com/archives/CB3LSMEJV) Slack channel using the following template:
+
+```markdown
+Hello team!
+
+We received an alert for [Snowplow Raw Good Stream Backing Up](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#alarmsV2:alarm/SnowPlow+Raw+Good+Stream+Backing+Up?).
+
+Enrichers are not scalling well for the amount of events we receive.
+
+See the [dashboard](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=SnowPlow).
+
+Could we get assistance in order to fix the delay?
+
+Thank you!
+```

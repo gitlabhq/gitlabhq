@@ -11,9 +11,14 @@ import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import httpStatus from '~/lib/utils/http_status';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { getCurrentUser } from '~/rest_api';
+import createStore from '~/jira_connect/subscriptions/store';
+import { SET_ACCESS_TOKEN } from '~/jira_connect/subscriptions/store/mutation_types';
 
 jest.mock('~/lib/utils/accessor');
 jest.mock('~/jira_connect/subscriptions/utils');
+jest.mock('~/jira_connect/subscriptions/api');
+jest.mock('~/rest_api');
 jest.mock('~/jira_connect/subscriptions/pkce', () => ({
   createCodeVerifier: jest.fn().mockReturnValue('mock-verifier'),
   createCodeChallenge: jest.fn().mockResolvedValue('mock-challenge'),
@@ -28,9 +33,15 @@ const mockOauthMetadata = {
 describe('SignInOauthButton', () => {
   let wrapper;
   let mockAxios;
+  let store;
 
   const createComponent = ({ slots } = {}) => {
+    store = createStore();
+    jest.spyOn(store, 'dispatch').mockImplementation();
+    jest.spyOn(store, 'commit').mockImplementation();
+
     wrapper = shallowMount(SignInOauthButton, {
+      store,
       slots,
       provide: {
         oauthMetadata: mockOauthMetadata,
@@ -114,10 +125,6 @@ describe('SignInOauthButton', () => {
               await waitForPromises();
             });
 
-            it('emits `error` event', () => {
-              expect(wrapper.emitted('error')).toBeTruthy();
-            });
-
             it('does not emit `sign-in` event', () => {
               expect(wrapper.emitted('sign-in')).toBeFalsy();
             });
@@ -147,7 +154,7 @@ describe('SignInOauthButton', () => {
             mockAxios
               .onPost(mockOauthMetadata.oauth_token_url)
               .replyOnce(httpStatus.OK, { access_token: mockAccessToken });
-            mockAxios.onGet('/api/v4/user').replyOnce(httpStatus.OK, mockUser);
+            getCurrentUser.mockResolvedValue({ data: mockUser });
 
             window.dispatchEvent(new MessageEvent('message', mockEvent));
 
@@ -161,25 +168,25 @@ describe('SignInOauthButton', () => {
             });
           });
 
-          it('executes GET request to fetch user data', () => {
-            expect(axios.get).toHaveBeenCalledWith('/api/v4/user', {
-              headers: { Authorization: `Bearer ${mockAccessToken}` },
-            });
+          it('dispatches loadCurrentUser action', () => {
+            expect(store.dispatch).toHaveBeenCalledWith('loadCurrentUser', mockAccessToken);
+          });
+
+          it('commits SET_ACCESS_TOKEN mutation with correct access token', () => {
+            expect(store.commit).toHaveBeenCalledWith(SET_ACCESS_TOKEN, mockAccessToken);
           });
 
           it('emits `sign-in` event with user data', () => {
-            expect(wrapper.emitted('sign-in')[0]).toEqual([mockUser]);
+            expect(wrapper.emitted('sign-in')[0]).toBeTruthy();
           });
         });
 
         describe('when API requests fail', () => {
           beforeEach(async () => {
             jest.spyOn(axios, 'post');
-            jest.spyOn(axios, 'get');
             mockAxios
               .onPost(mockOauthMetadata.oauth_token_url)
-              .replyOnce(httpStatus.INTERNAL_SERVER_ERROR, { access_token: mockAccessToken });
-            mockAxios.onGet('/api/v4/user').replyOnce(httpStatus.INTERNAL_SERVER_ERROR, mockUser);
+              .replyOnce(httpStatus.INTERNAL_SERVER_ERROR);
 
             window.dispatchEvent(new MessageEvent('message', mockEvent));
 
@@ -187,7 +194,7 @@ describe('SignInOauthButton', () => {
           });
 
           it('emits `error` event', () => {
-            expect(wrapper.emitted('error')).toBeTruthy();
+            expect(wrapper.emitted('error')[0]).toEqual([]);
           });
 
           it('does not emit `sign-in` event', () => {

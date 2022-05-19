@@ -16,5 +16,6 @@ module Types
     field :storage_size, GraphQL::Types::Float, null: false, description: 'Total storage in bytes.'
     field :uploads_size, GraphQL::Types::Float, null: false, description: 'Uploads size in bytes.'
     field :wiki_size, GraphQL::Types::Float, null: false, description: 'Wiki size in bytes.'
+    field :container_registry_size, GraphQL::Types::Float, null: false, description: 'Container Registry size in bytes.'
   end
 end

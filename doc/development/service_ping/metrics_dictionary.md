@@ -25,7 +25,7 @@ All metrics are stored in YAML files:
 - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics)
 
 WARNING:
-Only metrics with a metric definition YAML are added to the Service Ping JSON payload.
+Only metrics with a metric definition YAML and whose status is not `removed` are added to the Service Ping JSON payload.
 
 Each metric is defined in a separate YAML file consisting of a number of fields:
 
@@ -50,6 +50,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `milestone`         | no       | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the metric to be available for self-managed instances. |
+| `removed_by_url`    | no       | The URL to the merge request that removed the metric. |
 | `repair_issue_url`  | no       | The URL of the issue that was created to repair a metric with a `broken` status. |
 | `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
@@ -131,7 +132,7 @@ which has a related schema in `/config/metrics/objects_schemas/topology_schema.j
 We use the following categories to classify a metric:
 
 - `operational`: Required data for operational purposes.
-- `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../service_ping/index.md#disable-service-ping) in the Admin Area.
+- `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics) in the Admin Area.
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
 

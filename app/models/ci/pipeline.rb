@@ -36,10 +36,10 @@ module Ci
 
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
-    # is used for storing the processed CI YAML contents for linting purposes.
+    # is used for storing the processed metadata for linting purposes.
     # There is an open issue to address this:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/259010
-    attr_accessor :merged_yaml
+    attr_accessor :config_metadata
 
     # This is used to retain access to the method defined by `Ci::HasRef`
     # before being overridden in this class.
@@ -198,7 +198,7 @@ module Ci
       # Create a separate worker for each new operation
 
       before_transition [:created, :waiting_for_resource, :preparing, :pending] => :running do |pipeline|
-        pipeline.started_at = Time.current
+        pipeline.started_at ||= Time.current
       end
 
       before_transition any => [:success, :failed, :canceled] do |pipeline|
@@ -253,8 +253,6 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
-          pipeline.persistent_ref.delete
-
           pipeline.all_merge_requests.each do |merge_request|
             next unless merge_request.auto_merge_enabled?
 
@@ -285,6 +283,12 @@ module Ci
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::TestFailureHistoryService.new(pipeline).async.perform_if_needed # rubocop: disable CodeReuse/ServiceClass
+        end
+      end
+
+      after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
+        pipeline.run_after_commit do
+          pipeline.persistent_ref.delete
         end
       end
 
@@ -336,7 +340,7 @@ module Ci
     scope :with_only_interruptible_builds, -> do
       where('NOT EXISTS (?)',
         Ci::Build.where('ci_builds.commit_id = ci_pipelines.id')
-                 .with_status(:running, :success, :failed)
+                 .with_status(STARTED_STATUSES)
                  .not_interruptible
       )
     end
@@ -978,7 +982,7 @@ module Ci
     end
 
     # With multi-project and parent-child pipelines
-    def self_with_upstreams_and_downstreams
+    def all_pipelines_in_hierarchy
       object_hierarchy.all_objects
     end
 
@@ -992,12 +996,19 @@ module Ci
       object_hierarchy(project_condition: :same).base_and_descendants
     end
 
+    # Follow the parent-child relationships and return the top-level parent
     def root_ancestor
       return self unless child?
 
       object_hierarchy(project_condition: :same)
         .base_and_ancestors(hierarchy_order: :desc)
         .first
+    end
+
+    # Follow the upstream pipeline relationships, regardless of multi-project or
+    # parent-child, and return the top-level ancestor.
+    def upstream_root
+      object_hierarchy.base_and_ancestors(hierarchy_order: :desc).first
     end
 
     def bridge_triggered?
@@ -1257,6 +1268,12 @@ module Ci
       self.ci_ref = Ci::Ref.ensure_for(self)
     end
 
+    def ensure_persistent_ref
+      return if persistent_ref.exist?
+
+      persistent_ref.create
+    end
+
     def reset_source_bridge!(current_user)
       return unless bridge_waiting?
 
@@ -1271,10 +1288,11 @@ module Ci
 
     def security_reports(report_types: [])
       reports_scope = report_types.empty? ? ::Ci::JobArtifact.security_reports : ::Ci::JobArtifact.security_reports(file_types: report_types)
+      types_to_collect = report_types.empty? ? ::Ci::JobArtifact::SECURITY_REPORT_FILE_TYPES : report_types
 
       ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
         latest_report_builds(reports_scope).each do |build|
-          build.collect_security_reports!(security_reports)
+          build.collect_security_reports!(security_reports, report_types: types_to_collect)
         end
       end
     end

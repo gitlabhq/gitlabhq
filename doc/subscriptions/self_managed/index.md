@@ -425,7 +425,7 @@ an expiration message is displayed to all administrators.
 For GitLab self-managed instances, you have a 14-day grace period
 before this occurs.
 
-- To resume functionality, acticate a new license.
+- To resume functionality, activate a new license.
 - To fall back to Free features, delete the expired license.
 
 ## Contact Support

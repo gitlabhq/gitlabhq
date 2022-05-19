@@ -56,7 +56,8 @@ module Gitlab
         end
 
         def disabled_by_feature(options)
-          options.with_feature && !::Feature.enabled?(options.with_feature, type: :ops)
+          options.with_feature && !::Feature.enabled?(options.with_feature,
+            type: :undefined, default_enabled_if_undefined: false)
         end
 
         def build_metric!(type, name, options)

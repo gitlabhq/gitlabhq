@@ -48,7 +48,6 @@ import Text from '../extensions/text';
 import Video from '../extensions/video';
 import WordBreak from '../extensions/word_break';
 import {
-  isPlainURL,
   renderCodeBlock,
   renderHardBreak,
   renderTable,
@@ -61,36 +60,30 @@ import {
   renderPlayable,
   renderHTMLNode,
   renderContent,
+  preserveUnchanged,
+  bold,
+  italic,
+  link,
+  code,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
   marks: {
-    [Bold.name]: defaultMarkdownSerializer.marks.strong,
-    [Italic.name]: { open: '_', close: '_', mixable: true, expelEnclosingWhitespace: true },
-    [Code.name]: defaultMarkdownSerializer.marks.code,
+    [Bold.name]: bold,
+    [Italic.name]: italic,
+    [Code.name]: code,
     [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
     [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
     [InlineDiff.name]: {
       mixable: true,
-      open(state, mark) {
+      open(_, mark) {
         return mark.attrs.type === 'addition' ? '{+' : '{-';
       },
-      close(state, mark) {
+      close(_, mark) {
         return mark.attrs.type === 'addition' ? '+}' : '-}';
       },
     },
-    [Link.name]: {
-      open(state, mark, parent, index) {
-        return isPlainURL(mark, parent, index, 1) ? '<' : '[';
-      },
-      close(state, mark, parent, index) {
-        const href = mark.attrs.canonicalSrc || mark.attrs.href;
-
-        return isPlainURL(mark, parent, index, -1)
-          ? '>'
-          : `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
-      },
-    },
+    [Link.name]: link,
     [MathInline.name]: {
       open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
       close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
@@ -119,7 +112,7 @@ const defaultSerializerConfig = {
 
   nodes: {
     [Audio.name]: renderPlayable,
-    [Blockquote.name]: (state, node) => {
+    [Blockquote.name]: preserveUnchanged((state, node) => {
       if (node.attrs.multiline) {
         state.write('>>>');
         state.ensureNewLine();
@@ -130,9 +123,9 @@ const defaultSerializerConfig = {
       } else {
         state.wrapBlock('> ', null, node, () => state.renderContent(node));
       }
-    },
-    [BulletList.name]: defaultMarkdownSerializer.nodes.bullet_list,
-    [CodeBlockHighlight.name]: renderCodeBlock,
+    }),
+    [BulletList.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.bullet_list),
+    [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
     [Diagram.name]: renderCodeBlock,
     [Division.name]: (state, node) => {
       if (node.attrs.className?.includes('js-markdown-code')) {
@@ -189,13 +182,13 @@ const defaultSerializerConfig = {
     },
     [Figure.name]: renderHTMLNode('figure'),
     [FigureCaption.name]: renderHTMLNode('figcaption'),
-    [HardBreak.name]: renderHardBreak,
-    [Heading.name]: defaultMarkdownSerializer.nodes.heading,
-    [HorizontalRule.name]: defaultMarkdownSerializer.nodes.horizontal_rule,
-    [Image.name]: renderImage,
-    [ListItem.name]: defaultMarkdownSerializer.nodes.list_item,
-    [OrderedList.name]: renderOrderedList,
-    [Paragraph.name]: defaultMarkdownSerializer.nodes.paragraph,
+    [HardBreak.name]: preserveUnchanged(renderHardBreak),
+    [Heading.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.heading),
+    [HorizontalRule.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.horizontal_rule),
+    [Image.name]: preserveUnchanged(renderImage),
+    [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
+    [OrderedList.name]: preserveUnchanged(renderOrderedList),
+    [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
     [Reference.name]: (state, node) => {
       state.write(node.attrs.originalText || node.attrs.text);
     },
@@ -221,29 +214,60 @@ const defaultSerializerConfig = {
   },
 };
 
+const createChangeTracker = (doc, pristineDoc) => {
+  const changeTracker = new WeakMap();
+  const pristineSourceMarkdownMap = new Map();
+
+  if (doc && pristineDoc) {
+    pristineDoc.descendants((node) => {
+      if (node.attrs.sourceMapKey) {
+        pristineSourceMarkdownMap.set(`${node.attrs.sourceMapKey}${node.type.name}`, node);
+      }
+    });
+    doc.descendants((node) => {
+      const pristineNode = pristineSourceMarkdownMap.get(
+        `${node.attrs.sourceMapKey}${node.type.name}`,
+      );
+
+      if (pristineNode) {
+        changeTracker.set(node, node.eq(pristineNode));
+      }
+    });
+  }
+
+  return changeTracker;
+};
+
 /**
- * A markdown serializer converts arbitrary Markdown content
- * into a ProseMirror document and viceversa. To convert Markdown
- * into a ProseMirror document, the Markdown should be rendered.
+ * Converts a ProseMirror document to Markdown. See the
+ * following documentation to learn how to implement
+ * custom node and mark serializer functions.
  *
- * The client should provide a render function to allow flexibility
- * on the desired rendering approach.
+ * https://github.com/prosemirror/prosemirror-markdown
  *
- * @param {Function} params.render Render function
- * that parses the Markdown and converts it into HTML.
+ * @param {Object} params.nodes ProseMirror node serializer functions
+ * @param {Object} params.marks ProseMirror marks serializer config
+ *
  * @returns a markdown serializer
  */
 export default ({ serializerConfig = {} } = {}) => ({
   /**
-   * Converts a ProseMirror JSONDocument based
-   * on a ProseMirror schema into Markdown
-   * @param {ProseMirror.Schema} params.schema A ProseMirror schema that defines
-   * the types of content supported in the document
-   * @param {String} params.content A ProseMirror JSONDocument
-   * @returns A Markdown string
+   * Serializes a ProseMirror document as Markdown. If a node contains
+   * sourcemap metadata, the serializer is capable of restoring the
+   * Markdown from which the node was generated using a Markdown
+   * deserializer.
+   *
+   * See the Sourcemap metadata extension and the remark_markdown_deserializer
+   * service for more information.
+   *
+   * @param {ProseMirror.Node} params.doc ProseMirror document to convert into Markdown
+   * @param {ProseMirror.Node} params.pristineDoc Pristine version of the document that
+   * should be converted into Markdown. This is used to detect which nodes in the document
+   * changed.
+   * @returns A String that represents the serialized document as Markdown
    */
-  serialize: ({ schema, content }) => {
-    const proseMirrorDocument = schema.nodeFromJSON(content);
+  serialize: ({ doc, pristineDoc }) => {
+    const changeTracker = createChangeTracker(doc, pristineDoc);
     const serializer = new ProseMirrorMarkdownSerializer(
       {
         ...defaultSerializerConfig.nodes,
@@ -255,8 +279,9 @@ export default ({ serializerConfig = {} } = {}) => ({
       },
     );
 
-    return serializer.serialize(proseMirrorDocument, {
+    return serializer.serialize(doc, {
       tightLists: true,
+      changeTracker,
     });
   },
 });

@@ -34,11 +34,13 @@ RSpec.describe DeleteDiffFilesWorker do
     end
 
     it 'rollsback if something goes wrong' do
+      error = RuntimeError.new('something went wrong')
+
       expect(MergeRequestDiffFile).to receive_message_chain(:where, :delete_all)
-        .and_raise
+        .and_raise(error)
 
       expect { described_class.new.perform(merge_request_diff.id) }
-        .to raise_error
+        .to raise_error(error)
 
       merge_request_diff.reload
 

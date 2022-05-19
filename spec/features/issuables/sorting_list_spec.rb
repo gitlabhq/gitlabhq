@@ -88,14 +88,14 @@ RSpec.describe 'Sort Issuable List' do
       end
     end
 
-    context 'custom sorting' do
+    context 'custom sorting', :js do
       let(:issuable_type) { :merge_request }
 
       it 'supports sorting in asc and desc order' do
         visit_merge_requests_with_state(project, 'open')
 
         click_button('Created date')
-        click_link('Updated date')
+        find('.dropdown-item', text: 'Updated date').click
 
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)

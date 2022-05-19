@@ -72,7 +72,7 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'updating the dependency proxy image ttl policy'
-        :developer  | 'updating the dependency proxy image ttl policy'
+        :developer  | 'denying access to dependency proxy image ttl policy'
         :reporter   | 'denying access to dependency proxy image ttl policy'
         :guest      | 'denying access to dependency proxy image ttl policy'
         :anonymous  | 'denying access to dependency proxy image ttl policy'
@@ -92,7 +92,7 @@ RSpec.describe Mutations::DependencyProxy::ImageTtlGroupPolicy::Update do
 
       where(:user_role, :shared_examples_name) do
         :maintainer | 'creating the dependency proxy image ttl policy'
-        :developer  | 'creating the dependency proxy image ttl policy'
+        :developer  | 'denying access to dependency proxy image ttl policy'
         :reporter   | 'denying access to dependency proxy image ttl policy'
         :guest      | 'denying access to dependency proxy image ttl policy'
         :anonymous  | 'denying access to dependency proxy image ttl policy'

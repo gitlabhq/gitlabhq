@@ -4,6 +4,8 @@ classes:
 - Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog
 feature_categories:
 - database
-description: TODO
+description: >-
+  The batched_background_migration_job_transition_logs table stores information about the batched background migrations jobs transitions.
+  Every time a batched background migrations job changes to a new state, the system records that information in this table.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75113
 milestone: '14.8'

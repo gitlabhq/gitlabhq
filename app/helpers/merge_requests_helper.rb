@@ -156,7 +156,7 @@ module MergeRequestsHelper
         total: total_count
       }
 
-      if Feature.enabled?(:mr_attention_requests, default_enabled: :yaml)
+      if current_user&.mr_attention_requests_enabled?
         attention_requested_count = attention_requested_merge_requests_count
 
         counts[:attention_requested_count] = attention_requested_count
@@ -206,6 +206,19 @@ module MergeRequestsHelper
     api_v4_projects_merge_requests_award_emoji_path(id: merge_request.project.id, merge_request_iid: merge_request.iid)
   end
 
+  def how_merge_modal_data(merge_request)
+    {
+      is_fork: merge_request.for_fork?.to_s,
+      can_merge: merge_request.can_be_merged_by?(current_user).to_s,
+      source_branch: merge_request.source_branch,
+      source_project_path: merge_request.source_project&.path,
+      source_project_full_path: merge_request.source_project&.full_path,
+      source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
+      target_branch: merge_request.target_branch,
+      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index.md', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+    }
+  end
+
   private
 
   def review_requested_merge_requests_count
@@ -218,6 +231,34 @@ module MergeRequestsHelper
 
   def default_suggestion_commit_message
     @project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
+  end
+
+  def merge_request_source_branch(merge_request)
+    branch = if merge_request.for_fork?
+               "#{merge_request.source_project_path}:#{merge_request.source_branch}"
+             else
+               merge_request.source_branch
+             end
+
+    branch_path = if merge_request.source_project
+                    project_tree_path(merge_request.source_project, merge_request.source_branch)
+                  else
+                    ''
+                  end
+
+    link_to branch, branch_path, title: branch, class: 'gl-link gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mb-n2'
+  end
+
+  def merge_request_header(project, merge_request)
+    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold', avatar: false)
+    copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'btn btn-default btn-sm gl-button btn-default-tertiary btn-icon gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
+    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'gl-link gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mb-n2'
+
+    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe }
+  end
+
+  def moved_mr_sidebar_enabled?
+    Feature.enabled?(:moved_mr_sidebar, @project) && defined?(@merge_request)
   end
 end
 

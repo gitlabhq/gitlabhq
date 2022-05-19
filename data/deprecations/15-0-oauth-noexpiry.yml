@@ -16,7 +16,8 @@
     1. Select **Expire access tokens** to enable them. Tokens must be revoked or they don’t expire.
 
 # The following items are not published on the docs page, but may be used in the future.
-  stage:  # Manage
+  reporter: hsutor
+  stage: manage
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url:  # https://gitlab.com/gitlab-org/gitlab/-/issues/21745
   documentation_url:  # (optional) This is a link to the current documentation page

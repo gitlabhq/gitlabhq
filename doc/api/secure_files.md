@@ -11,7 +11,7 @@ type: reference, api
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`. Limited to 100 secure files per project. Files must be smaller than 5 MB. The feature is not ready for production use. 
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_secure_files`. Limited to 100 secure files per project. Files must be smaller than 5 MB. The feature is not ready for production use.
 
 ## List project secure files
 
@@ -42,7 +42,6 @@ Example response:
         "name": "myfile.jks",
         "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
         "checksum_algorithm": "sha256",
-        "permissions": "read_only",
         "created_at": "2022-02-22T22:22:22.222Z"
     },
     {
@@ -50,7 +49,6 @@ Example response:
         "name": "myotherfile.jks",
         "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aa2",
         "checksum_algorithm": "sha256",
-        "permissions": "execute",
         "created_at": "2022-02-22T22:22:22.222Z"
     }
 ]
@@ -85,7 +83,6 @@ Example response:
     "name": "myfile.jks",
     "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
     "checksum_algorithm": "sha256",
-    "permissions": "read_only",
     "created_at": "2022-02-22T22:22:22.222Z"
 }
 ```
@@ -105,7 +102,6 @@ Supported attributes:
 | `project_id`    | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `name`          | string         | **{check-circle}** Yes | The `name` of the file being uploaded. The file name must be unique within the project. |
 | `file`          | file           | **{check-circle}** Yes | The `file` being uploaded (5 MB limit). |
-| `permissions`   | string         | **{dotted-circle}** No | The file is created with the specified permissions when created in the CI/CD job. Available types are: `read_only` (default), `read_write`, and `execute`. |
 
 Example request:
 
@@ -122,7 +118,6 @@ Example response:
     "name": "myfile.jks",
     "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
     "checksum_algorithm": "sha256",
-    "permissions": "read_only",
     "created_at": "2022-02-22T22:22:22.222Z"
 }
 ```

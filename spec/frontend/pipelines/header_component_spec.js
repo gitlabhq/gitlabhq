@@ -1,4 +1,4 @@
-import { GlModal, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlModal, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -21,6 +21,7 @@ describe('Pipeline details header', () => {
   let glModalDirective;
   let mutate = jest.fn();
 
+  const findAlert = () => wrapper.find(GlAlert);
   const findDeleteModal = () => wrapper.find(GlModal);
   const findRetryButton = () => wrapper.find('[data-testid="retryPipeline"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancelPipeline"]');
@@ -121,6 +122,22 @@ describe('Pipeline details header', () => {
       it('should render retry action tooltip', () => {
         expect(findRetryButton().attributes('title')).toBe(BUTTON_TOOLTIP_RETRY);
       });
+
+      it('should display error message on failure', async () => {
+        const failureMessage = 'failure message';
+        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+          data: {
+            pipelineRetry: {
+              errors: [failureMessage],
+            },
+          },
+        });
+
+        findRetryButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findAlert().text()).toBe(failureMessage);
+      });
     });
 
     describe('Retry action failed', () => {
@@ -156,6 +173,22 @@ describe('Pipeline details header', () => {
           variables: { id: mockRunningPipelineHeader.id },
         });
       });
+
+      it('should display error message on failure', async () => {
+        const failureMessage = 'failure message';
+        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+          data: {
+            pipelineCancel: {
+              errors: [failureMessage],
+            },
+          },
+        });
+
+        findCancelButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(findAlert().text()).toBe(failureMessage);
+      });
     });
 
     describe('Delete action', () => {
@@ -178,6 +211,22 @@ describe('Pipeline details header', () => {
           mutation: deletePipelineMutation,
           variables: { id: mockFailedPipelineHeader.id },
         });
+      });
+
+      it('should display error message on failure', async () => {
+        const failureMessage = 'failure message';
+        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue({
+          data: {
+            pipelineDestroy: {
+              errors: [failureMessage],
+            },
+          },
+        });
+
+        findDeleteModal().vm.$emit('ok');
+        await waitForPromises();
+
+        expect(findAlert().text()).toBe(failureMessage);
       });
     });
 

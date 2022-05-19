@@ -36,7 +36,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
           click_button "Merge when pipeline succeeds"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
-          expect(page).to have_content "Does not delete the source branch"
+          expect(page).to have_content "Source branch will not be deleted"
           expect(page).to have_selector ".js-cancel-auto-merge"
           visit project_merge_request_path(project, merge_request) # Needed to refresh the page
           expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
@@ -64,6 +64,9 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
       context 'when enabled after it was previously canceled' do
         before do
           click_button "Merge when pipeline succeeds"
+
+          wait_for_requests
+
           click_button "Cancel auto-merge"
 
           wait_for_requests
@@ -123,12 +126,6 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
       expect(page).to have_content "canceled the automatic merge"
     end
 
-    it 'allows to delete source branch' do
-      click_button "Delete source branch"
-
-      expect(page).to have_content "Deletes the source branch"
-    end
-
     context 'when pipeline succeeds' do
       before do
         build.success
@@ -136,7 +133,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js do
       end
 
       it 'merges merge request', :sidekiq_might_not_need_inline do
-        expect(page).to have_content 'The changes were merged'
+        expect(page).to have_content 'Changes merged'
         expect(merge_request.reload).to be_merged
       end
     end

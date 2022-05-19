@@ -17,9 +17,7 @@ RSpec.describe "User merges a merge request", :js do
         click_button("Merge")
       end
 
-      page.within(".status-box") do
-        expect(page).to have_content("Merged")
-      end
+      expect(page).to have_selector('.gl-badge', text: 'Merged')
     end
   end
 
@@ -27,6 +25,7 @@ RSpec.describe "User merges a merge request", :js do
     let(:project) { create(:project, :public, :repository, merge_requests_ff_only_enabled: true) }
 
     before do
+      stub_feature_flags(restructured_mr_widget: false)
       visit(merge_request_path(merge_request))
     end
 

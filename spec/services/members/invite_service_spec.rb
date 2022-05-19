@@ -52,8 +52,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with user_ids as integers' do
-      let(:params) { { user_ids: [project_user.id, user_invited_by_id.id] } }
+    context 'with user_id as integers' do
+      let(:params) { { user_id: [project_user.id, user_invited_by_id.id] } }
 
       it 'successfully creates members' do
         expect_to_create_members(count: 2)
@@ -61,8 +61,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with user_ids as strings' do
-      let(:params) { { user_ids: [project_user.id.to_s, user_invited_by_id.id.to_s] } }
+    context 'with user_id as strings' do
+      let(:params) { { user_id: [project_user.id.to_s, user_invited_by_id.id.to_s] } }
 
       it 'successfully creates members' do
         expect_to_create_members(count: 2)
@@ -70,9 +70,9 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with a mixture of emails and user_ids' do
+    context 'with a mixture of emails and user_id' do
       let(:params) do
-        { user_ids: [project_user.id, user_invited_by_id.id], email: %w[email@example.org email2@example.org] }
+        { user_id: [project_user.id, user_invited_by_id.id], email: %w[email@example.org email2@example.org] }
       end
 
       it 'successfully creates members' do
@@ -92,8 +92,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with user_ids' do
-      let(:params) { { user_ids: "#{project_user.id},#{user_invited_by_id.id}" } }
+    context 'with user_id' do
+      let(:params) { { user_id: "#{project_user.id},#{user_invited_by_id.id}" } }
 
       it 'successfully creates members' do
         expect_to_create_members(count: 2)
@@ -101,9 +101,9 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with a mixture of emails and user_ids' do
+    context 'with a mixture of emails and user_id' do
       let(:params) do
-        { user_ids: "#{project_user.id},#{user_invited_by_id.id}", email: 'email@example.org,email2@example.org' }
+        { user_id: "#{project_user.id},#{user_invited_by_id.id}", email: 'email@example.org,email2@example.org' }
       end
 
       it 'successfully creates members' do
@@ -114,9 +114,9 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   context 'when invites formats are mixed' do
-    context 'when user_ids is an array and emails is a string' do
+    context 'when user_id is an array and emails is a string' do
       let(:params) do
-        { user_ids: [project_user.id, user_invited_by_id.id], email: 'email@example.org,email2@example.org' }
+        { user_id: [project_user.id, user_invited_by_id.id], email: 'email@example.org,email2@example.org' }
       end
 
       it 'successfully creates members' do
@@ -125,9 +125,9 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'when user_ids is a string and emails is an array' do
+    context 'when user_id is a string and emails is an array' do
       let(:params) do
-        { user_ids: "#{project_user.id},#{user_invited_by_id.id}", email: %w[email@example.org email2@example.org] }
+        { user_id: "#{project_user.id},#{user_invited_by_id.id}", email: %w[email@example.org email2@example.org] }
       end
 
       it 'successfully creates members' do
@@ -147,8 +147,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'when user_ids are passed as an empty string' do
-      let(:params) { { user_ids: '' } }
+    context 'when user_id are passed as an empty string' do
+      let(:params) { { user_id: '' } }
 
       it 'returns an error' do
         expect_not_to_create_members
@@ -156,8 +156,8 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'when user_ids and emails are both passed as empty strings' do
-      let(:params) { { user_ids: '', email: '' } }
+    context 'when user_id and emails are both passed as empty strings' do
+      let(:params) { { user_id: '', email: '' } }
 
       it 'returns an error' do
         expect_not_to_create_members
@@ -166,7 +166,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'when user_id is passed as an integer' do
-      let(:params) { { user_ids: project_user.id } }
+      let(:params) { { user_id: project_user.id } }
 
       it 'successfully creates member' do
         expect_to_create_members(count: 1)
@@ -196,7 +196,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'with user_id and singular invalid email' do
-      let(:params) { { user_ids: project_user.id, email: '_bogus_' } }
+      let(:params) { { user_id: project_user.id, email: '_bogus_' } }
 
       it 'has partial success' do
         expect_to_create_members(count: 1)
@@ -219,7 +219,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'with duplicate user ids' do
-      let(:params) { { user_ids: "#{project_user.id},#{project_user.id}" } }
+      let(:params) { { user_id: "#{project_user.id},#{project_user.id}" } }
 
       it 'only creates one member per unique invite' do
         expect_to_create_members(count: 1)
@@ -228,7 +228,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'with duplicate member by adding as user id and email' do
-      let(:params) { { user_ids: project_user.id, email: project_user.email } }
+      let(:params) { { user_id: project_user.id, email: project_user.email } }
 
       it 'only creates one member per unique invite' do
         expect_to_create_members(count: 1)
@@ -269,9 +269,9 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with user_ids' do
-      let(:user_ids) { 1.upto(101).to_a.join(',') }
-      let(:params) { { user_ids: user_ids } }
+    context 'with user_id' do
+      let(:user_id) { 1.upto(101).to_a.join(',') }
+      let(:params) { { user_id: user_id } }
 
       it 'limits the number of users to 100' do
         expect_not_to_create_members
@@ -292,7 +292,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'with user_id' do
-      let(:params) { { user_ids: project_user.id } }
+      let(:params) { { user_id: project_user.id } }
 
       it_behaves_like 'records an onboarding progress action', :user_added
 
@@ -304,7 +304,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
       context 'when assigning tasks to be done' do
         let(:params) do
-          { user_ids: project_user.id, tasks_to_be_done: %w(ci code), tasks_project_id: project.id }
+          { user_id: project_user.id, tasks_to_be_done: %w(ci code), tasks_project_id: project.id }
         end
 
         it 'creates 2 task issues', :aggregate_failures do
@@ -332,7 +332,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'with user_id' do
-      let(:params) { { user_ids: user_invited_by_id.id, access_level: -1 } }
+      let(:params) { { user_id: user_invited_by_id.id, access_level: -1 } }
 
       it 'returns an error' do
         expect_not_to_create_members
@@ -341,7 +341,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'with a mix of user_id and email' do
-      let(:params) { { user_ids: user_invited_by_id.id, email: project_user.email, access_level: -1 } }
+      let(:params) { { user_id: user_invited_by_id.id, email: project_user.email, access_level: -1 } }
 
       it 'returns errors' do
         expect_not_to_create_members
@@ -387,7 +387,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     context 'with user_id that already exists' do
       let!(:existing_member) { create(:project_member, project: project, user: project_user) }
-      let(:params) { { user_ids: existing_member.user_id } }
+      let(:params) { { user_id: existing_member.user_id } }
 
       it 'does not add the member again and is successful' do
         expect_to_create_members(count: 0)
@@ -397,7 +397,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     context 'with user_id that already exists with a lower access_level' do
       let!(:existing_member) { create(:project_member, :developer, project: project, user: project_user) }
-      let(:params) { { user_ids: existing_member.user_id, access_level: ProjectMember::MAINTAINER } }
+      let(:params) { { user_id: existing_member.user_id, access_level: ProjectMember::MAINTAINER } }
 
       it 'does not add the member again and updates the access_level' do
         expect_to_create_members(count: 0)
@@ -408,7 +408,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     context 'with user_id that already exists with a higher access_level' do
       let!(:existing_member) { create(:project_member, :developer, project: project, user: project_user) }
-      let(:params) { { user_ids: existing_member.user_id, access_level: ProjectMember::GUEST } }
+      let(:params) { { user_id: existing_member.user_id, access_level: ProjectMember::GUEST } }
 
       it 'does not add the member again and updates the access_level' do
         expect_to_create_members(count: 0)
@@ -428,7 +428,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       context 'when access_level is lower than inheriting member' do
-        let(:params) { { user_ids: group_member.user_id, access_level: ProjectMember::GUEST }}
+        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::GUEST }}
 
         it 'does not add the member and returns an error' do
           msg = "Access level should be greater than or equal " \
@@ -440,7 +440,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       context 'when access_level is the same as the inheriting member' do
-        let(:params) { { user_ids: group_member.user_id, access_level: ProjectMember::DEVELOPER }}
+        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::DEVELOPER }}
 
         it 'adds the member with correct access_level' do
           expect_to_create_members(count: 1)
@@ -450,7 +450,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       context 'when access_level is greater than the inheriting member' do
-        let(:params) { { user_ids: group_member.user_id, access_level: ProjectMember::MAINTAINER }}
+        let(:params) { { user_id: group_member.user_id, access_level: ProjectMember::MAINTAINER }}
 
         it 'adds the member with correct access_level' do
           expect_to_create_members(count: 1)

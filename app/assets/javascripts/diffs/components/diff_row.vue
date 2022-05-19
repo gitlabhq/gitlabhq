@@ -160,7 +160,13 @@ export default {
 
 <!-- eslint-disable-next-line vue/no-deprecated-functional-template -->
 <template functional>
-  <div :class="$options.classNameMap(props)" class="diff-grid-row diff-tr line_holder">
+  <div
+    :class="[
+      $options.classNameMap(props),
+      { expansion: props.line.left && props.line.left.type === 'expanded' },
+    ]"
+    class="diff-grid-row diff-tr line_holder"
+  >
     <div
       :id="props.line.left && props.line.left.line_code"
       data-testid="left-side"

@@ -4,6 +4,7 @@ exports[`RunnerAwsDeploymentsModal renders the modal 1`] = `
 <gl-modal-stub
   actionprimary="[object Object]"
   actionsecondary="[object Object]"
+  arialabel=""
   dismisslabel="Close"
   modalclass=""
   modalid="runner-aws-deployments-modal"

@@ -13,42 +13,64 @@ class Wiki
     markdown: {
       name: 'Markdown',
       default_extension: :md,
+      extension_regex: Regexp.new('md|mkdn?|mdown|markdown', 'i'),
       created_by_user: true
     },
     rdoc: {
       name: 'RDoc',
       default_extension: :rdoc,
+      extension_regex: Regexp.new('rdoc', 'i'),
       created_by_user: true
     },
     asciidoc: {
       name: 'AsciiDoc',
       default_extension: :asciidoc,
+      extension_regex: Regexp.new('adoc|asciidoc', 'i'),
       created_by_user: true
     },
     org: {
       name: 'Org',
       default_extension: :org,
+      extension_regex: Regexp.new('org', 'i'),
       created_by_user: true
     },
     textile: {
       name: 'Textile',
-      default_extension: :textile
+      default_extension: :textile,
+      extension_regex: Regexp.new('textile', 'i')
     },
     creole: {
       name: 'Creole',
-      default_extension: :creole
+      default_extension: :creole,
+      extension_regex: Regexp.new('creole', 'i')
     },
     rest: {
       name: 'reStructuredText',
-      default_extension: :rst
+      default_extension: :rst,
+      extension_regex: Regexp.new('re?st(\.txt)?', 'i')
     },
     mediawiki: {
       name: 'MediaWiki',
-      default_extension: :mediawiki
+      default_extension: :mediawiki,
+      extension_regex: Regexp.new('(media)?wiki', 'i')
+    },
+    pod: {
+      name: 'Pod',
+      default_extension: :pod,
+      extension_regex: Regexp.new('pod', 'i')
+    },
+    plaintext: {
+      name: 'Plain Text',
+      default_extension: :txt,
+      extension_regex: Regexp.new('txt', 'i')
     }
   }.freeze unless defined?(MARKUPS)
 
   VALID_USER_MARKUPS = MARKUPS.select { |_, v| v[:created_by_user] }.freeze unless defined?(VALID_USER_MARKUPS)
+
+  unless defined?(ALLOWED_EXTENSIONS_REGEX)
+    ALLOWED_EXTENSIONS_REGEX = Regexp.union(MARKUPS.map { |key, value| value[:extension_regex] }).freeze
+  end
 
   CouldNotCreateWikiError = Class.new(StandardError)
 
@@ -205,49 +227,60 @@ class Wiki
   end
 
   def create_page(title, content, format = :markdown, message = nil)
-    commit = commit_details(:created, message, title)
+    if Feature.enabled?(:gitaly_replace_wiki_create_page, container, type: :undefined)
+      with_valid_format(format) do |default_extension|
+        if file_exists_by_regex?(title)
+          raise_duplicate_page_error!
+        end
 
-    wiki.write_page(title, format.to_sym, content, commit)
-    repository.expire_status_cache if repository.empty?
-    after_wiki_activity
+        capture_git_error(:created) do
+          create_wiki_repository unless repository_exists?
+          sanitized_path = sluggified_full_path(title, default_extension)
+          repository.create_file(user, sanitized_path, content, **multi_commit_options(:created, message, title))
+          repository.expire_status_cache if repository.empty?
+          after_wiki_activity
 
-    true
+          true
+        rescue Gitlab::Git::Index::IndexError
+          raise_duplicate_page_error!
+        end
+      end
+    else
+      commit = commit_details(:created, message, title)
+
+      wiki.write_page(title, format.to_sym, content, commit)
+      repository.expire_status_cache if repository.empty?
+      after_wiki_activity
+
+      true
+    end
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
-    @error_message = "Duplicate page: #{e.message}"
+    @error_message = _("Duplicate page: %{error_message}" % { error_message: e.message })
+
     false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
-    if Feature.enabled?(:gitaly_replace_wiki_update_page, container, default_enabled: :yaml)
-      with_valid_format(format) do |default_extension|
-        title = title.presence || Pathname(page.path).sub_ext('').to_s
+    with_valid_format(format) do |default_extension|
+      title = title.presence || Pathname(page.path).sub_ext('').to_s
 
-        # If the format is the same we keep the former extension. This check is for formats
-        # that can have more than one extension like Markdown (.md, .markdown)
-        # If we don't do this we will override the existing extension.
-        extension = page.format != format.to_sym ? default_extension : File.extname(page.path).downcase[1..]
+      # If the format is the same we keep the former extension. This check is for formats
+      # that can have more than one extension like Markdown (.md, .markdown)
+      # If we don't do this we will override the existing extension.
+      extension = page.format != format.to_sym ? default_extension : File.extname(page.path).downcase[1..]
 
-        capture_git_error(:updated) do
-          repository.update_file(
-            user,
-            sluggified_full_path(title, extension),
-            content,
-            previous_path: page.path,
-            **multi_commit_options(:updated, message, title))
+      capture_git_error(:updated) do
+        repository.update_file(
+          user,
+          sluggified_full_path(title, extension),
+          content,
+          previous_path: page.path,
+          **multi_commit_options(:updated, message, title))
 
-          after_wiki_activity
+        after_wiki_activity
 
-          true
-        end
+        true
       end
-    else
-      commit = commit_details(:updated, message, page.title)
-
-      wiki.update_page(page.path, title || page.name, format.to_sym, content, commit)
-
-      after_wiki_activity
-
-      true
     end
   end
 
@@ -393,12 +426,33 @@ class Wiki
     yield default_extension
   end
 
+  def file_exists_by_regex?(title)
+    return false unless repository_exists?
+
+    escaped_title = Regexp.escape(sluggified_title(title))
+    regex = Regexp.new("^#{escaped_title}\.#{ALLOWED_EXTENSIONS_REGEX}$", 'i')
+
+    repository.ls_files('HEAD').any? { |s| s =~ regex }
+  end
+
+  def raise_duplicate_page_error!
+    raise Gitlab::Git::Wiki::DuplicatePageError, _('A page with that title already exists')
+  end
+
   def sluggified_full_path(title, extension)
     sluggified_title(title) + '.' + extension
   end
 
   def sluggified_title(title)
-    Gitlab::EncodingHelper.encode_utf8_no_detect(title).tr(' ', '-')
+    utf8_encoded_title = Gitlab::EncodingHelper.encode_utf8_no_detect(title)
+
+    sanitized_title(utf8_encoded_title).tr(' ', '-')
+  end
+
+  def sanitized_title(title)
+    clean_absolute_path = File.expand_path(title, '/')
+
+    Pathname.new(clean_absolute_path).relative_path_from('/').to_s
   end
 end
 

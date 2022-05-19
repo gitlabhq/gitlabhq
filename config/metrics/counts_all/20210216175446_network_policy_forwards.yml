@@ -8,7 +8,9 @@ product_stage: protect
 product_group: group::container security
 product_category: container_network_security
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86351
+milestone_removed: 15.0
 time_frame: all
 data_source: redis
 distribution:

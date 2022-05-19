@@ -1,5 +1,13 @@
+import { within } from '@testing-library/dom';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import UsersCache from '~/lib/utils/users_cache';
 import initUserPopovers from '~/user_popovers';
+import waitForPromises from 'helpers/wait_for_promises';
+
+jest.mock('~/api/user_api', () => ({
+  followUser: jest.fn().mockResolvedValue({}),
+  unfollowUser: jest.fn().mockResolvedValue({}),
+}));
 
 describe('User Popovers', () => {
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
@@ -19,7 +27,7 @@ describe('User Popovers', () => {
     return link;
   };
 
-  const dummyUser = { name: 'root' };
+  const dummyUser = { name: 'root', username: 'root', is_followed: false };
   const dummyUserStatus = { message: 'active' };
 
   let popovers;
@@ -35,7 +43,7 @@ describe('User Popovers', () => {
   };
 
   beforeEach(() => {
-    loadFixtures(fixtureTemplate);
+    loadHTMLFixture(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
     jest.spyOn(UsersCache, 'retrieveById').mockImplementation((userId) => usersCacheSpy(userId));
@@ -44,8 +52,13 @@ describe('User Popovers', () => {
     jest
       .spyOn(UsersCache, 'retrieveStatusById')
       .mockImplementation((userId) => userStatusCacheSpy(userId));
+    jest.spyOn(UsersCache, 'updateById');
 
     popovers = initUserPopovers(document.querySelectorAll(selector));
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('initializes a popover for each user link with a user id', () => {
@@ -114,5 +127,33 @@ describe('User Popovers', () => {
     triggerEvent('mouseleave', userLink);
 
     expect(userLink.getAttribute('aria-describedby')).toBe(null);
+  });
+
+  it('updates toggle follow button and `UsersCache` when toggle follow button is clicked', async () => {
+    const [firstPopover] = popovers;
+    const withinFirstPopover = within(firstPopover.$el);
+    const findFollowButton = () => withinFirstPopover.queryByRole('button', { name: 'Follow' });
+    const findUnfollowButton = () => withinFirstPopover.queryByRole('button', { name: 'Unfollow' });
+
+    const userLink = document.querySelector(selector);
+    triggerEvent('mouseenter', userLink);
+
+    await waitForPromises();
+
+    const { userId } = document.querySelector(selector).dataset;
+
+    triggerEvent('click', findFollowButton());
+
+    await waitForPromises();
+
+    expect(findUnfollowButton()).not.toBe(null);
+    expect(UsersCache.updateById).toHaveBeenCalledWith(userId, { is_followed: true });
+
+    triggerEvent('click', findUnfollowButton());
+
+    await waitForPromises();
+
+    expect(findFollowButton()).not.toBe(null);
+    expect(UsersCache.updateById).toHaveBeenCalledWith(userId, { is_followed: false });
   });
 });

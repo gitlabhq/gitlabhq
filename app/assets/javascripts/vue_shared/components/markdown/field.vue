@@ -111,6 +111,16 @@ export default {
       required: false,
       default: false,
     },
+    showCommentToolBar: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    restrictedToolBarItems: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -331,7 +341,7 @@ export default {
       :enable-preview="enablePreview"
       :show-suggest-popover="showSuggestPopover"
       :suggestion-start-index="suggestionsStartIndex"
-      data-testid="markdownHeader"
+      :restricted-tool-bar-items="restrictedToolBarItems"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
@@ -350,6 +360,7 @@ export default {
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
           :can-attach-file="canAttachFile"
+          :show-comment-tool-bar="showCommentToolBar"
         />
       </div>
     </div>
@@ -362,8 +373,6 @@ export default {
         <suggestions
           v-if="hasSuggestion"
           :note-html="markdownPreview"
-          :from-line="lineNumber"
-          :from-content="lineContent"
           :line-type="lineType"
           :disabled="true"
           :suggestions="suggestions"

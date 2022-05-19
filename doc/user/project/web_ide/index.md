@@ -23,13 +23,8 @@ and from merge requests:
      1. Select **Open in Web IDE** from the list to display it as the editing option.
      1. Select **Open in Web IDE** to open the editor.
 - *When viewing a merge request* -
-  1. Go to your merge request, and select the **Overview** tab.
-  1. Scroll to the widgets section, after the merge request description.
-  1. Select **Open in Web IDE** if it is visible.
-  1. If **Open in Web IDE** is not visible:
-     1. Select the **(angle-down)** next to **Open in Gitpod**.
-     1. Select **Open in Web IDE** from the list to display it as the editing option.
-     1. Select **Open in Web IDE** to open the editor.
+  1. Go to your merge request.
+  1. In the upper right corner, select **Code**, then select **Open in Gitpod**.
 
 ## File finder
 
@@ -52,7 +47,8 @@ Some commands have a keyboard shortcut assigned to them. The command palette
 displays this shortcut next to each command. You can use this shortcut to invoke
 the command without having to select it in the command palette.
 
-![Command palette](img/command_palette_v13_6.png)
+For a full list of keyboard shortcuts in the Web IDE, refer to the
+[Keyboard shortcuts](../../shortcuts.md#web-ide) list.
 
 ## Syntax highlighting
 

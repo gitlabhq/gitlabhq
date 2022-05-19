@@ -60,7 +60,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'environments',
           blog: 'https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/',
-          docs: help_page_path('ci/environments')
+          docs: help_page_path('ci/environments/index')
         ),
         Card.new(
           metric: metric,

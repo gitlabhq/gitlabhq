@@ -97,6 +97,20 @@ RSpec.describe Ci::BuildsHelper do
     end
   end
 
+  describe '#prepare_failed_jobs_summary_data' do
+    let(:failed_build) { create(:ci_build, :failed, :trace_live) }
+
+    subject { helper.prepare_failed_jobs_summary_data([failed_build]) }
+
+    it 'returns array of failed jobs with id, failure and failure summary' do
+      expect(subject).to eq([{
+        id: failed_build.id,
+        failure: failed_build.present.callout_failure_message,
+        failure_summary:  helper.build_summary(failed_build)
+      }].to_json)
+    end
+  end
+
   def assign_project
     build(:project).tap do |project|
       assign(:project, project)

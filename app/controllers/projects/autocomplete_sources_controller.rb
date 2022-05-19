@@ -9,7 +9,8 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   feature_category :users, [:members]
   feature_category :snippets, [:snippets]
 
-  urgency :low, [:merge_requests]
+  urgency :low, [:merge_requests, :members]
+  urgency :low, [:issues, :labels, :milestones, :commands, :contacts]
 
   def members
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)

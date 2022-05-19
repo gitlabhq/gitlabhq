@@ -9,7 +9,8 @@ module API
 
     before { authorize_read_group_container_images! }
 
-    feature_category :package_registry
+    feature_category :container_registry
+    urgency :low
 
     REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       tag_name: API::NO_SLASH_URL_PART_REGEX)
@@ -24,8 +25,6 @@ module API
       end
       params do
         use :pagination
-        optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
-        optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
       end
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
@@ -34,7 +33,7 @@ module API
 
         track_package_event('list_repositories', :container, user: current_user, namespace: user_group)
 
-        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags], tags_count: params[:tags_count]
+        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: false, tags_count: false
       end
     end
 

@@ -174,12 +174,13 @@ export default {
           <div></div>
           <linked-pipelines-mini-list
             v-if="item.triggered_by"
-            :triggered-by="[item.triggered_by]"
+            :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+              item.triggered_by,
+            ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
             data-testid="mini-graph-upstream"
           />
           <pipeline-mini-graph
             v-if="item.details && item.details.stages && item.details.stages.length > 0"
-            class="gl-display-inline"
             :stages="item.details.stages"
             :update-dropdown="updateGraphDropdown"
             @pipelineActionRequestComplete="onPipelineActionRequestComplete"

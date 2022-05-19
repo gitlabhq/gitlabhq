@@ -1,6 +1,6 @@
 #import "./work_item.fragment.graphql"
 
-query workItem($id: ID!) {
+query workItem($id: WorkItemID!) {
   workItem(id: $id) {
     ...WorkItem
   }

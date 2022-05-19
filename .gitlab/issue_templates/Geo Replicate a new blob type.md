@@ -104,7 +104,7 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
 - [ ] Run Geo tracking database migrations:
 
   ```shell
-  bin/rake geo:db:migrate
+  bin/rake db:migrate:geo
   ```
 
 - [ ] Be sure to commit the relevant changes in `ee/db/geo/structure.sql`
@@ -289,12 +289,6 @@ That's all of the required database changes.
 
       def carrierwave_uploader
         model_record.file
-      end
-
-      # The feature flag follows the format `geo_#{replicable_name}_replication`,
-      # so here it would be `geo_cool_widget_replication`
-      def self.replication_enabled_by_default?
-        false
       end
 
       override :verification_feature_flag_enabled?
@@ -637,6 +631,42 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
 
 Individual Cool Widget replication and verification data should now be available via the GraphQL API.
 
+#### Step 4. Handle batch destroy
+
+If batch destroy logic is implemented for a replicable, then that logic must be "replicated" by Geo secondaries. The easiest way to do this is use `Geo::BatchEventCreateWorker` to bulk insert a delete event for each replicable.
+
+For example, if `FastDestroyAll` is used, then you may be able to [use `begin_fast_destroy` and `finalize_fast_destroy` hooks, like we did for uploads](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69763).
+
+Or if a special service is used to batch delete records and their associated data, then you probably need to [hook into that service, like we did for job artifacts](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79530).
+
+As illustrated by the above two examples, batch destroy logic cannot be handled automatically by Geo secondaries without restricting the way other teams perform batch destroys. It is up to you to produce `Geo::BatchEventCreateWorker` attributes before the records are deleted, and then enqueue `Geo::BatchEventCreateWorker` after the records are deleted.
+
+- [ ] Ensure that any batch destroy of this replicable is replicated to secondary sites
+- [ ] Regardless of implementation details, please verify in specs that when the parent object is removed, the new `Geo::Event` records are created:
+
+```ruby
+  describe '#destroy' do
+    subject { create(:cool_widget) }
+
+    context 'when running in a Geo primary node' do
+      let_it_be(:primary) { create(:geo_node, :primary) }
+      let_it_be(:secondary) { create(:geo_node) }
+
+      it 'logs an event to the Geo event log when bulk removal is used', :sidekiq_inline do
+        stub_current_geo_node(primary)
+
+        expect { subject.project.destroy! }.to change(Geo::Event.where(replicable_name: :cool_widget, event_name: :deleted), :count).by(1)
+
+        payload = Geo::Event.where(replicable_name: :cool_widget, event_name: :deleted).last.payload
+
+        expect(payload['model_record_id']).to eq(subject.id)
+        expect(payload['blob_path']).to eq(subject.relative_path)
+        expect(payload['uploader_class']).to eq('CoolWidgetUploader')
+      end
+    end
+  end
+```
+
 ### Release Geo support of Cool Widgets
 
 - [ ] In the rollout issue you created when creating the feature flag, modify the Roll Out Steps:
@@ -644,28 +674,6 @@ Individual Cool Widget replication and verification data should now be available
   - [ ] Add a step to `Test replication and verification of Cool Widgets on a non-GDK-deployment. For example, using GitLab Environment Toolkit`.
   - [ ] Add a step to `Ping the Geo PM and EM to coordinate testing`. For example, you might add steps to generate Cool Widgets, and then a Geo engineer may take it from there.
 - [ ] In `ee/config/feature_flags/development/geo_cool_widget_replication.yml`, set `default_enabled: true`
-
-- [ ] In `ee/app/replicators/geo/cool_widget_replicator.rb`, delete the `self.replication_enabled_by_default?` method:
-
-  ```ruby
-  module Geo
-    class CoolWidgetReplicator < Gitlab::Geo::Replicator
-      ...
-      # REMOVE THIS LINE IF IT IS NO LONGER NEEDED
-      extend ::Gitlab::Utils::Override
-
-      ...
-      # REMOVE THIS METHOD
-      def self.replication_enabled_by_default?
-        false
-      end
-      # REMOVE THIS METHOD
-
-      ...
-    end
-  end
-  ```
-
 - [ ] In `ee/app/graphql/types/geo/geo_node_type.rb`, remove the `feature_flag` option for the released type:
 
   ```ruby

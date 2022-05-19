@@ -1171,7 +1171,7 @@ export const discussion1 = {
   resolved: false,
   active: true,
   diff_file: {
-    file_path: 'about.md',
+    file_identifier_hash: 'discfile1',
   },
   position: {
     new_line: 50,
@@ -1189,7 +1189,7 @@ export const resolvedDiscussion1 = {
   resolvable: true,
   resolved: true,
   diff_file: {
-    file_path: 'about.md',
+    file_identifier_hash: 'discfile1',
   },
   position: {
     new_line: 50,
@@ -1208,7 +1208,7 @@ export const discussion2 = {
   resolved: false,
   active: true,
   diff_file: {
-    file_path: 'README.md',
+    file_identifier_hash: 'discfile2',
   },
   position: {
     new_line: null,
@@ -1227,7 +1227,7 @@ export const discussion3 = {
   active: true,
   resolved: false,
   diff_file: {
-    file_path: 'README.md',
+    file_identifier_hash: 'discfile3',
   },
   position: {
     new_line: 21,
@@ -1238,6 +1238,12 @@ export const discussion3 = {
       created_at: '2018-07-05T17:25:41.749Z',
     },
   ],
+};
+
+export const authoritativeDiscussionFile = {
+  id: 'abc',
+  file_identifier_hash: 'discfile1',
+  order: 0,
 };
 
 export const unresolvableDiscussion = {

@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
+import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
-import { getBlobLanguage } from '~/editor/utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
@@ -36,7 +36,7 @@ export default class EditBlob {
         import('~/editor/extensions/source_editor_markdown_ext'),
         import('~/editor/extensions/source_editor_markdown_livepreview_ext'),
       ]);
-      this.editor.use([
+      this.markdownExtensions = this.editor.use([
         { definition: MarkdownExtension },
         {
           definition: MarkdownLivePreview,
@@ -48,7 +48,6 @@ export default class EditBlob {
         message: `${BLOB_EDITOR_ERROR}: ${e}`,
       });
     }
-    this.hasMarkdownExtension = true;
     addEditorMarkdownListeners(this.editor);
   }
 
@@ -58,8 +57,6 @@ export default class EditBlob {
     const fileContentEl = document.getElementById('file-content');
     const form = document.querySelector('.js-edit-blob-form');
 
-    this.hasMarkdownExtension = false;
-
     const rootEditor = new SourceEditor();
 
     this.editor = rootEditor.createInstance({
@@ -67,20 +64,28 @@ export default class EditBlob {
       blobPath: fileNameEl.value,
       blobContent: editorEl.innerText,
     });
-    this.editor.use([{ definition: SourceEditorExtension }, { definition: FileTemplateExtension }]);
+    this.editor.use([
+      { definition: SourceEditorExtension },
+      { definition: FileTemplateExtension },
+      { definition: ToolbarExtension },
+    ]);
 
     fileNameEl.addEventListener('change', () => {
       this.editor.updateModelLanguage(fileNameEl.value);
-      const newLang = getBlobLanguage(fileNameEl.value);
-      if (newLang === 'markdown') {
-        if (!this.hasMarkdownExtension) {
-          this.fetchMarkdownExtension();
-        }
-      }
     });
 
     form.addEventListener('submit', () => {
       fileContentEl.value = insertFinalNewline(this.editor.getValue());
+    });
+
+    // onDidChangeModelLanguage is part of the native Monaco API
+    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html#onDidChangeModelLanguage
+    this.editor.onDidChangeModelLanguage(({ newLanguage = '', oldLanguage = '' }) => {
+      if (newLanguage === 'markdown') {
+        this.fetchMarkdownExtension();
+      } else if (oldLanguage === 'markdown') {
+        this.editor.unuse(this.markdownExtensions);
+      }
     });
   }
 

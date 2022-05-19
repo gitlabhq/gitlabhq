@@ -48,6 +48,19 @@ The following storage usage statistics are available to a maintainer:
 - Total excess storage used: Total amount of storage used that exceeds their allocated storage.
 - Purchased storage available: Total storage that has been purchased but is not yet used.
 
+## Manage your storage usage
+
+You can use several methods to manage and reduce your usage for some storage types. 
+
+For more information, see the following pages:
+
+- [Reduce package registry storage](packages/package_registry/reduce_package_registry_storage.md)
+- [Reduce dependency proxy storage](packages/dependency_proxy/reduce_dependency_proxy_storage.md)
+- [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md)
+- [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md)
+- [Reduce container registry data transfers](packages/container_registry/reduce_container_registry_data_transfer.md)
+- [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size)
+
 ## Excess storage usage
 
 Excess storage usage is the amount that a project's repository exceeds the free storage quota. If no

@@ -11,7 +11,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
     return;
   }
 
-  const { fullPath, pipelineId, pipelineIid, pipelinesPath } = el?.dataset;
+  const { fullPath, pipelineId, pipelineIid, pipelinesPath } = el.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el,

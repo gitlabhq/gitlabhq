@@ -2,6 +2,7 @@
 
 class Import::UrlController < ApplicationController
   feature_category :importers
+  urgency :low
 
   def validate
     result = Import::ValidateRemoteGitEndpointService.new(validate_params).execute

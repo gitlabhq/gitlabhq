@@ -1593,6 +1593,38 @@ describe('Api', () => {
     });
   });
 
+  describe('uploadProjectSecureFile', () => {
+    it('uploads a secure file to a project', async () => {
+      const projectId = 1;
+      const secureFile = {
+        id: projectId,
+        title: 'File Name',
+        permissions: 'read_only',
+        checksum: '12345',
+        checksum_algorithm: 'sha256',
+        created_at: '2022-02-21T15:27:18',
+      };
+
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/secure_files`;
+      mock.onPost(expectedUrl).reply(httpStatus.OK, secureFile);
+      const { data } = await Api.uploadProjectSecureFile(projectId, 'some data');
+
+      expect(data).toEqual(secureFile);
+    });
+  });
+
+  describe('deleteProjectSecureFile', () => {
+    it('removes a secure file from a project', async () => {
+      const projectId = 1;
+      const secureFileId = 2;
+
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/secure_files/${secureFileId}`;
+      mock.onDelete(expectedUrl).reply(httpStatus.NO_CONTENT, '');
+      const { data } = await Api.deleteProjectSecureFile(projectId, secureFileId);
+      expect(data).toEqual('');
+    });
+  });
+
   describe('dependency proxy cache', () => {
     it('schedules the cache list for deletion', async () => {
       const groupId = 1;

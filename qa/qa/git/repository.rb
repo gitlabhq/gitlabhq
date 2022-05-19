@@ -21,7 +21,7 @@ module QA
         # We set HOME to the current working directory (which is a
         # temporary directory created in .perform()) so the temporarily dropped
         # .netrc can be utilised
-        self.env_vars = [%Q{HOME="#{tmp_home_dir}"}]
+        self.env_vars = [%(HOME="#{tmp_home_dir}")]
         @use_lfs = false
         @gpg_key_id = nil
         @default_branch = Runtime::Env.default_branch
@@ -71,7 +71,7 @@ module QA
 
       def checkout(branch_name, new_branch: false)
         opts = new_branch ? '-b' : ''
-        run_git(%Q{git checkout #{opts} "#{branch_name}"}).to_s
+        run_git(%(git checkout #{opts} "#{branch_name}")).to_s
       end
 
       def shallow_clone
@@ -79,8 +79,8 @@ module QA
       end
 
       def configure_identity(name, email)
-        run_git(%Q{git config user.name "#{name}"})
-        run_git(%Q{git config user.email #{email}})
+        run_git(%(git config user.name "#{name}"))
+        run_git(%(git config user.email #{email}))
       end
 
       def commit_file(name, contents, message)
@@ -94,11 +94,11 @@ module QA
         ::File.write(name, contents)
 
         if use_lfs?
-          git_lfs_track_result = run_git(%Q{git lfs track #{name} --lockable})
+          git_lfs_track_result = run_git(%(git lfs track #{name} --lockable))
           return git_lfs_track_result.response unless git_lfs_track_result.success?
         end
 
-        git_add_result = run_git(%Q{git add #{name}})
+        git_add_result = run_git(%(git add #{name}))
 
         git_lfs_track_result.to_s + git_add_result.to_s
       end
@@ -108,15 +108,15 @@ module QA
       end
 
       def delete_tag(tag_name)
-        run_git(%Q{git push origin --delete #{tag_name}}, max_attempts: 3).to_s
+        run_git(%(git push origin --delete #{tag_name}), max_attempts: 3).to_s
       end
 
       def commit(message)
-        run_git(%Q{git commit -m "#{message}"}, max_attempts: 3).to_s
+        run_git(%(git commit -m "#{message}"), max_attempts: 3).to_s
       end
 
       def commit_with_gpg(message)
-        run_git(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(command -v gpg) && git commit -S -m "#{message}"}).to_s
+        run_git(%{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(command -v gpg) && git commit -S -m "#{message}"}).to_s
       end
 
       def current_branch
@@ -159,11 +159,11 @@ module QA
         @ssh = Support::SSH.perform do |ssh|
           ssh.key = key
           ssh.uri = uri
-          ssh.setup(env: self.env_vars)
+          ssh.setup(env: env_vars)
           ssh
         end
 
-        self.env_vars << %Q{GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path}"}
+        env_vars << %(GIT_SSH_COMMAND="ssh -i #{ssh.private_key_file.path} -o UserKnownHostsFile=#{ssh.known_hosts_file.path}")
       end
 
       def delete_ssh_key
@@ -182,7 +182,9 @@ module QA
       end
 
       def git_protocol=(value)
-        raise ArgumentError, "Please specify the protocol you would like to use: 0, 1, or 2" unless %w[0 1 2].include?(value.to_s)
+        unless %w[0 1 2].include?(value.to_s)
+          raise ArgumentError, "Please specify the protocol you would like to use: 0, 1, or 2"
+        end
 
         run_git("git config protocol.version #{value}")
       end
@@ -190,8 +192,8 @@ module QA
       def fetch_supported_git_protocol
         # ls-remote is one command known to respond to Git protocol v2 so we use
         # it to get output including the version reported via Git tracing
-        result = run_git("git ls-remote #{uri}", max_attempts: 3, env: [*self.env_vars, "GIT_TRACE_PACKET=1"])
-        result.response[/git< version (\d+)/, 1] || 'unknown'
+        result = run_git("git ls-remote #{uri}", max_attempts: 3, env: [*env_vars, "GIT_TRACE_PACKET=1"])
+        result.response[/ls-remote< version (\d+)/, 1] || 'unknown'
       end
 
       def try_add_credentials_to_netrc
@@ -266,7 +268,7 @@ module QA
         #
         FileUtils.mkdir_p(tmp_home_dir)
         File.open(netrc_file_path, 'a') { |file| file.puts(netrc_content) }
-        File.chmod(0600, netrc_file_path)
+        File.chmod(0o600, netrc_file_path)
       end
 
       def tmp_home_dir
@@ -302,7 +304,7 @@ module QA
         read_netrc_content.grep(/^#{Regexp.escape(netrc_content)}$/).any?
       end
 
-      def run_git(command_str, env: self.env_vars, max_attempts: 1)
+      def run_git(command_str, env: env_vars, max_attempts: 1)
         run(command_str, env: env, max_attempts: max_attempts, log_prefix: 'Git: ')
       end
     end

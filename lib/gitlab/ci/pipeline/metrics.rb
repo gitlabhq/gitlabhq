@@ -46,7 +46,7 @@ module Gitlab
           name = :gitlab_ci_active_jobs
           comment = 'Total amount of active jobs'
           labels = { plan: nil }
-          buckets = [0, 200, 500, 1_000, 2_000, 5_000, 10_000]
+          buckets = [0, 200, 500, 1_000, 2_000, 5_000, 10_000, 15_000, 20_000, 30_000, 40_000]
 
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end

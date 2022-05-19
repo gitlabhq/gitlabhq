@@ -90,6 +90,8 @@ To view CI/CD minutes being used for your group:
 
 ## View CI/CD minutes used by a personal namespace
 
+> Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+
 You can view the number of CI/CD minutes being used by a personal namespace:
 
 1. On the top bar, in the top right corner, select your avatar.
@@ -103,7 +105,7 @@ These additional CI/CD minutes:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
-- Don't expire.
+- Are valid for 12 months from date of purchase or until all minutes are consumed, whichever comes first. Expiry of minutes is not currently enforced.
 
 If you use more CI/CD minutes than your monthly quota, when you purchase more,
 those CI/CD minutes are deducted from your quota. For example, with a GitLab SaaS
@@ -191,16 +193,40 @@ The cost factor for a job running on a shared runner is:
 
 ### Additional costs on GitLab SaaS
 
-On GitLab SaaS, shared runners can have different cost factors depending on the cost involved
-in executing the runner. For example, a high spec shared runner could be set to have a cost factor of `2`.
-Conversely, a shared runner that executes jobs for public projects could have a low cost factor, like `0.008`.
+GitLab SaaS shared runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
+
+| GitLab SaaS runner type  | Virtual machine configuration   | CI/CD minutes cost factor  |
+| :--------- | :------------------- | :--------- |
+| Linux OS + Docker executor| 1 vCPU, 3.75 GB RAM   |1|
+| macOS + shell executor   | 4 vCPU, 10 GB RAM| 6 | 
 
 ### Monthly reset of CI/CD minutes
 
 On the first day of each calendar month, the accumulated usage of CI/CD minutes is reset to `0`
-for all namespaces that use shared runners.
+for all namespaces that use shared runners. This means your full quota is available, and
+calculations start again from `0`.
+
+For example, if you have a monthly quota of `10,000` CI/CD minutes:
+
+- On **1st April**, you have `10,000` minutes.
+- During April, you use only `6,000` of the `10,000` minutes.
+- On **1st May**, the accumulated usage of minutes resets to `0`, and you have `10,000` minutes to use again
+  during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
+
+### Monthly rollover of purchased CI/CD minutes
+
+If you purchase additional CI/CD minutes and don't use the full amount, the remaining amount rolls over to
+the next month.
+
+For example:
+
+- On **1st April**, you purchase `5,000` CI/CD minutes.
+- During April, you use only `3,000` of the `5,000` minutes.
+- On **1st May**, the remaining `2,000` minutes roll over and are added to your monthly quota.
+
+Additional CI/CD minutes are a one-time purchase and do not renew or refresh each month.
 
 ## What happens when you exceed the quota
 

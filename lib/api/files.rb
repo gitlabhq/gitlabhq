@@ -56,6 +56,16 @@ module API
         end
       end
 
+      def fetch_blame_range(blame_params)
+        return if blame_params[:range].blank?
+
+        range = Range.new(blame_params[:range][:start], blame_params[:range][:end])
+
+        render_api_error!('range[start] must be less than or equal to range[end]', 400) if range.begin > range.end
+
+        range
+      end
+
       def blob_data
         {
           file_name: @blob.name,
@@ -110,13 +120,19 @@ module API
       params do
         requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit', allow_blank: false
+        optional :range, type: Hash do
+          requires :start, type: Integer, desc: 'The first line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
+          requires :end, type: Integer, desc: 'The last line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
+        end
       end
       get ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
+        blame_params = declared_params(include_missing: false)
+
         assign_file_vars!
 
         set_http_headers(blob_data)
 
-        blame_ranges = Gitlab::Blame.new(@blob, @commit).groups(highlight: false)
+        blame_ranges = Gitlab::Blame.new(@blob, @commit, range: fetch_blame_range(blame_params)).groups(highlight: false)
         present blame_ranges, with: Entities::BlameRange
       end
 

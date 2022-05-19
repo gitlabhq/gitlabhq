@@ -9,6 +9,7 @@ module Projects
 
     validates :name, presence: true, length: { maximum: 255 }
     validates :name, uniqueness: { case_sensitive: false }, if: :name_changed?
+    validates :title, presence: true, length: { maximum: 255 }, on: :create
     validates :description, length: { maximum: 1024 }
 
     has_many :project_topics, class_name: 'Projects::ProjectTopic'
@@ -22,13 +23,17 @@ module Projects
       reorder(order_expression.desc, arel_table['non_private_projects_count'].desc, arel_table['id'])
     end
 
+    def title_or_name
+      title || name
+    end
+
     class << self
       def find_by_name_case_insensitive(name)
         find_by('LOWER(name) = ?', name.downcase)
       end
 
       def search(query)
-        fuzzy_search(query, [:name])
+        fuzzy_search(query, [:name, :title])
       end
 
       def update_non_private_projects_counter(ids_before, ids_after, project_visibility_level_before, project_visibility_level_after)

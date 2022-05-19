@@ -28,16 +28,18 @@ module IssuesHelper
   end
 
   def status_box_class(item)
+    updated_mr_header_enabled = Feature.enabled?(:updated_mr_header, @project)
+
     if item.try(:expired?)
       'status-box-expired'
     elsif item.try(:merged?)
-      'status-box-mr-merged'
+      updated_mr_header_enabled ? 'badge-info' : 'status-box-mr-merged'
     elsif item.closed?
-      'status-box-mr-closed'
+      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-danger' : 'status-box-mr-closed'
     elsif item.try(:upcoming?)
       'status-box-upcoming'
     else
-      'status-box-open'
+      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-success' : 'status-box-open'
     end
   end
 
@@ -63,7 +65,7 @@ module IssuesHelper
   end
 
   def issue_hidden?(issue)
-    Feature.enabled?(:ban_user_feature_flag, default_enabled: :yaml) && issue.hidden?
+    Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
   end
 
   def hidden_issue_icon(issue)
@@ -152,7 +154,7 @@ module IssuesHelper
   end
 
   def issue_closed_text(issue, current_user)
-    link = issue_closed_link(issue, current_user, css_class: 'text-white text-underline')
+    link = issue_closed_link(issue, current_user, css_class: 'text-underline gl-reset-color!')
 
     if link
       s_('IssuableStatus|Closed (%{link})').html_safe % { link: link }
@@ -202,6 +204,8 @@ module IssuesHelper
       initial_sort: current_user&.user_preference&.issues_sort,
       is_anonymous_search_disabled: Feature.enabled?(:disable_anonymous_search, type: :ops).to_s,
       is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
+      is_public_visibility_restricted:
+        Gitlab::CurrentSettings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),

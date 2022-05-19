@@ -5,6 +5,7 @@ class Projects::FeatureFlagsUserListsController < Projects::ApplicationControlle
   before_action :user_list, only: [:edit, :show]
 
   feature_category :feature_flags
+  urgency :low
 
   def index
   end

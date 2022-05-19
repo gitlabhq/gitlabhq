@@ -3,15 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::BaseChatNotification do
-  describe 'Associations' do
+  describe 'validations' do
     before do
       allow(subject).to receive(:activated?).and_return(true)
+      allow(subject).to receive(:default_channel_placeholder).and_return('placeholder')
+      allow(subject).to receive(:webhook_placeholder).and_return('placeholder')
     end
 
     it { is_expected.to validate_presence_of :webhook }
-  end
-
-  describe 'validations' do
     it { is_expected.to validate_inclusion_of(:labels_to_be_notified_behavior).in_array(%w[match_any match_all]).allow_blank }
   end
 
@@ -272,6 +271,18 @@ RSpec.describe Integrations::BaseChatNotification do
 
     context 'with multiple channel names with spaces specified' do
       it_behaves_like 'with channel specified', 'slack-integration, #slack-test, @UDLP91W0A', ['slack-integration', '#slack-test', '@UDLP91W0A']
+    end
+  end
+
+  describe '#default_channel_placeholder' do
+    it 'raises an error' do
+      expect { subject.default_channel_placeholder }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#webhook_placeholder' do
+    it 'raises an error' do
+      expect { subject.webhook_placeholder }.to raise_error(NotImplementedError)
     end
   end
 end

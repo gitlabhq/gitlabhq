@@ -37,13 +37,6 @@ Doorkeeper.configure do
   # Authorization Code expiration time (default 10 minutes).
   # authorization_code_expires_in 10.minutes
 
-  # Access token expiration time (default 2 hours).
-  # Until 15.0, applications can opt-out of expiring tokens.
-  # Removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/340848
-  custom_access_token_expires_in do |context|
-    context.client&.expire_access_tokens ? 2.hours : Float::INFINITY
-  end
-
   # Reuse access token for the same resource owner within an application (disabled by default)
   # Rationale: https://github.com/doorkeeper-gem/doorkeeper/issues/383
   reuse_access_token
@@ -97,11 +90,10 @@ Doorkeeper.configure do
   # strings and the flows they enable are:
   #
   # "authorization_code" => Authorization Code Grant Flow
-  # "implicit"           => Implicit Grant Flow
   # "password"           => Resource Owner Password Credentials Grant Flow
   # "client_credentials" => Client Credentials Grant Flow
   #
-  grant_flows %w(authorization_code implicit password client_credentials)
+  grant_flows %w(authorization_code password client_credentials)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.

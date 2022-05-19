@@ -1,5 +1,4 @@
 - is_connect_page = local_assigns.fetch(:is_connect_page, false)
-- docs_mode = local_assigns.fetch(:docs_mode, false)
 - title = is_connect_page ? s_('ClusterIntegration|Connect a Kubernetes cluster') : s_('ClusterIntegration|Create a Kubernetes cluster')
 
 %h3
@@ -7,7 +6,7 @@
 %p
   = clusterable.sidebar_text
 
-- if !docs_mode
+- if is_connect_page
   %p
     = clusterable.learn_more_link
 

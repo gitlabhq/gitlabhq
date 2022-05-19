@@ -7,6 +7,18 @@ import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
 
+const updateSidebarClasses = (layoutPage, rightSidebar) => {
+  if (window.innerWidth >= 768) {
+    layoutPage.classList.remove('right-sidebar-expanded', 'right-sidebar-collapsed');
+    rightSidebar.classList.remove('right-sidebar-collapsed');
+    rightSidebar.classList.add('right-sidebar-expanded');
+  } else {
+    layoutPage.classList.add('right-sidebar-collapsed', 'is-merge-request');
+    rightSidebar.classList.add('right-sidebar-collapsed');
+    rightSidebar.classList.remove('right-sidebar-expanded');
+  }
+};
+
 function Sidebar() {
   this.toggleTodo = this.toggleTodo.bind(this);
   this.sidebar = $('aside');
@@ -42,13 +54,22 @@ Sidebar.prototype.addEventListeners = function () {
   this.sidebar.on('hiddenGlDropdown', this, this.onSidebarDropdownHidden);
 
   $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
-  return $(document)
-    .off('click', '.js-issuable-todo')
-    .on('click', '.js-issuable-todo', this.toggleTodo);
+  $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
+
+  if (window.gon?.features?.movedMrSidebar) {
+    const layoutPage = document.querySelector('.layout-page');
+    const rightSidebar = document.querySelector('.js-right-sidebar');
+
+    updateSidebarClasses(layoutPage, rightSidebar);
+    window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
+  }
 };
 
 Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   const $this = $(this);
+
+  if ($this.hasClass('right-sidebar-merge-requests')) return;
+
   const $collapseIcon = $('.js-sidebar-collapse');
   const $expandIcon = $('.js-sidebar-expand');
   const $toggleContainer = $('.js-sidebar-toggle-container');

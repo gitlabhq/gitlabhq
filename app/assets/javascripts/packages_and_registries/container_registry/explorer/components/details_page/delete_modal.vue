@@ -83,11 +83,13 @@ export default {
     modal-id="delete-tag-modal"
     ok-variant="danger"
     size="sm"
-    :action-primary="{
+    :action-primary="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
       text: __('Delete'),
       attributes: [{ variant: 'danger' }, { disabled: disablePrimaryButton }],
-    }"
-    :action-cancel="{ text: __('Cancel') }"
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+      text: __('Cancel'),
+    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     @primary="$emit('confirmDelete')"
     @cancel="$emit('cancelDelete')"
     @change="projectPath = ''"

@@ -929,12 +929,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'when continue url is present' do
         let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
 
+        before do
+          post_cancel(continue: { to: url })
+        end
+
         context 'when continue to is a safe url' do
           let(:url) { '/test' }
-
-          before do
-            post_cancel(continue: { to: url })
-          end
 
           it 'redirects to the continue url' do
             expect(response).to have_gitlab_http_status(:found)
@@ -949,8 +949,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         context 'when continue to is not a safe url' do
           let(:url) { 'http://example.com' }
 
-          it 'raises an error' do
-            expect { cancel_with_redirect(url) }.to raise_error
+          it 'redirects to the builds page' do
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(builds_namespace_project_pipeline_path(id: pipeline.id))
           end
         end
       end

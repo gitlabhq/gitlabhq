@@ -612,30 +612,6 @@ RSpec.describe API::Internal::Base do
             expect(json_response["gitaly"]["features"]).to eq('gitaly-feature-mep-mep' => 'false')
           end
         end
-
-        context "with a sidechannels enabled for a project" do
-          before do
-            stub_feature_flags(gitlab_shell_upload_pack_sidechannel: project)
-          end
-
-          it "has the use_sidechannel field set to true for that project" do
-            pull(key, project)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-            expect(json_response["gitaly"]["use_sidechannel"]).to eq(true)
-          end
-
-          it "has the use_sidechannel field set to false for other projects" do
-            other_project = create(:project, :public, :repository)
-
-            pull(key, other_project)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response["gl_repository"]).to eq("project-#{other_project.id}")
-            expect(json_response["gitaly"]["use_sidechannel"]).to eq(false)
-          end
-        end
       end
 
       context "git push" do
@@ -826,13 +802,13 @@ RSpec.describe API::Internal::Base do
 
       context 'git pull' do
         context 'with a key that has expired' do
-          let(:key) { create(:key, user: user, expires_at: 2.days.ago) }
+          let(:key) { create(:key, :expired, user: user) }
 
-          it 'includes the `key expired` message in the response' do
+          it 'includes the `key expired` message in the response and fails' do
             pull(key, project)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['gl_console_messages']).to eq(['INFO: Your SSH key has expired. Please generate a new key.'])
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response['message']).to eq('Your SSH key has expired.')
           end
         end
 
@@ -1479,6 +1455,89 @@ RSpec.describe API::Internal::Base do
 
     subject do
       post api('/internal/two_factor_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq 'Feature is not available'
+    end
+  end
+
+  describe 'POST /internal/two_factor_manual_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_manual_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq 'Feature is not available'
+    end
+  end
+
+  describe 'POST /internal/two_factor_push_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_push_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq 'Feature is not available'
+    end
+  end
+
+  describe 'POST /internal/two_factor_manual_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_manual_otp_check'),
+           params: {
+             secret_token: secret_token,
+             key_id: key_id,
+             otp_attempt: otp
+           }
+    end
+
+    it 'is not available' do
+      subject
+
+      expect(json_response['success']).to be_falsey
+    end
+  end
+
+  describe 'POST /internal/two_factor_push_otp_check' do
+    let(:key_id) { key.id }
+    let(:otp) { '123456'}
+
+    subject do
+      post api('/internal/two_factor_push_otp_check'),
            params: {
              secret_token: secret_token,
              key_id: key_id,

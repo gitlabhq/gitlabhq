@@ -17,6 +17,7 @@ const mountCiVariableListApp = (containerEl) => {
     containsVariableReferenceLink,
     protectedEnvironmentVariablesLink,
     maskedEnvironmentVariablesLink,
+    environmentScopeLink,
   } = containerEl.dataset;
   const isGroup = parseBoolean(group);
   const isProtectedByDefault = parseBoolean(protectedByDefault);
@@ -34,6 +35,7 @@ const mountCiVariableListApp = (containerEl) => {
     containsVariableReferenceLink,
     protectedEnvironmentVariablesLink,
     maskedEnvironmentVariablesLink,
+    environmentScopeLink,
   });
 
   return new Vue({

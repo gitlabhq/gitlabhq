@@ -41,7 +41,8 @@ From there you can create a new iteration or select an iteration to get a more d
 
 ## Create an iteration
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 WARNING:
 Manual iteration management is in its end-of-life process. Creating an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
@@ -49,7 +50,7 @@ in GitLab 14.10, and is planned for removal in GitLab 16.0.
 
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To create an iteration:
 
@@ -63,6 +64,7 @@ To create an iteration:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218277) in GitLab 13.2.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 WARNING:
 Editing all attributes, with the exception of `description` is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
@@ -71,7 +73,7 @@ In the future only editing an iteration's `description` will be allowed.
 
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
@@ -79,6 +81,7 @@ To edit an iteration, select the three-dot menu (**{ellipsis_v}**) > **Edit**.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292268) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069) in GitLab 14.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 WARNING:
 Manual iteration management is in its end-of-life process. Deleting an iteration is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/356069)
@@ -86,7 +89,7 @@ in GitLab 14.10, and is planned for removal in GitLab 16.0.
 
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To delete an iteration, select the three-dot menu (**{ellipsis_v}**) > **Delete**.
 
@@ -169,37 +172,65 @@ To group issues by label:
 
 ## Iteration cadences
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1.
-> - Deployed behind a [feature flag](../../feature_flags.md), named `iteration_cadences`, disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an
-administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`iteration_cadences` for a root group.
-On GitLab.com, this feature is not available. This feature is not ready for production use.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.0.
 
 Iteration cadences automate iteration scheduling. You can use them to
-automate creating iterations every 1, 2, 3, 4, or 6 weeks. You can also
+automate creating iterations every 1, 2, 3, or 4 weeks. You can also
 configure iteration cadences to automatically roll over incomplete issues to the next iteration.
 
 ### Create an iteration cadence
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
 Prerequisites:
 
-- You must have at least the Developer role for a group.
+- You must have at least the Reporter role for a group.
 
 To create an iteration cadence:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select **New iteration cadence**.
-1. Fill out required fields, and select **Create iteration cadence**. The cadence list page opens.
+1. Complete the fields.
+   - Enter the title and description of the iteration cadence.
+   - Enter the first iteration start date of the iteration cadence. Iterations will be scheduled to
+     begin on the same day of the week as the day of the week of the start date.
+   - From the **Duration** dropdown list, select how many weeks each iteration should last.
+   - From the **Upcoming iterations** dropdown list, select how many upcoming iterations should be
+     created and maintained by GitLab.
+   - Optional. To move incomplete issues to the next iteration, select **Roll over issues**.
+1. Select **Create cadence**. The cadence list page opens.
 
-### Delete an iteration cadence
+### Edit an iteration cadence
 
 Prerequisites:
 
 - You must have at least the Developer role for a group.
+
+To edit an iteration cadence:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Issues > Iterations**.
+1. Select **Edit iteration cadence**.
+
+When you edit the **Duration**, **Upcoming iterations**, or **First iteration start date** fields,
+only upcoming iterations are affected.
+
+You can edit the first iteration start date of a cadence if the cadence has not started yet.
+
+Editing **Upcoming iterations** is a non-destructive action.
+If ten upcoming iterations already exist, changing the number under **Upcoming iterations** to `2`
+doesn't delete the eight existing upcoming iterations.
+
+### Delete an iteration cadence
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for a group.
 
 Deleting an iteration cadence also deletes all iterations within that cadence.
 
@@ -210,18 +241,67 @@ To delete an iteration cadence:
 1. Select the three-dot menu (**{ellipsis_v}**) > **Delete cadence** for the cadence you want to delete.
 1. Select **Delete cadence** in the confirmation modal.
 
-### Convert manual cadence to use automatic scheduling
+### Manual iteration cadences
+
+When you **enable** the iteration cadences feature, all previously
+created iterations are added to a default iteration cadence.
+You can continue to add, edit, and remove iterations in
+this default cadence.
+
+#### Convert a manual cadence to use automatic scheduling
 
 WARNING:
-The upgrade is irreversible. After it's done, manual iteration cadences cannot be created.
+The upgrade is irreversible. After it's done, a new manual iteration cadence cannot be created.
 
-When you **enable** the iteration cadences feature, all iterations are added
-to a default iteration cadence.
-In this default iteration cadence, you can continue to add, edit, and remove iterations.
+Prerequisites:
 
+- You must have created [iterations](#iterations) without cadences before enabling iteration cadences for your group.
 To upgrade the iteration cadence to use the automation features:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
 1. Select the three-dot menu (**{ellipsis_v}**) > **Edit cadence** for the cadence you want to upgrade.
-1. Fill out required fields, and select **Save changes**.
+1. Complete the required fields **Duration** and **Upcoming iterations**.
+1. Select **Save changes**.
+
+#### Start dates of converted cadences
+
+The first iteration start date of your converted cadence is set to the start date of its
+**first** existing iteration.
+
+If you attempt to set a new start date, the conversion fails with an error message.
+If your manual cadence is empty, converting it to use automatic scheduling is effectively
+the same as creating a new automated cadence.
+
+GitLab will start scheduling new iterations on the same day of the week as the start date,
+starting from the nearest such day from the current date.
+
+During the conversion process GitLab does not delete or modify existing **ongoing** or
+**closed** iterations. If you have iterations with start dates in the future,
+they are updated to fit your cadence settings.
+
+#### Converted cadences example
+
+For example, suppose it's Friday, April 15, and you have three iterations in a manual cadence:
+
+- Monday, April 4 - Friday, April 8 (closed)
+- Tuesday, April 12 - Friday, April 15 (ongoing)
+- Tuesday, May 3 - Friday, May 6 (upcoming)
+
+On Friday, April 15, you convert the manual cadence
+to automate scheduling iterations every week, up to two upcoming iterations.
+
+The first iteration is closed, and the second iteration is ongoing,
+so they aren't deleted or modified in the conversion process.
+
+To observe the weekly duration, the third iteration is updated so that it:
+
+- Starts on Monday, April 18 - which is the nearest date that is Monday.
+- Ends on Sunday, April 24.
+
+Finally, to always have two upcoming iterations, an additional iteration is scheduled:
+
+- Monday, April 4 - Friday, April 8 (closed)
+- Tuesday, April 12 - Friday, April 15 (ongoing)
+- Monday, April 18 - Sunday, April 24 (upcoming)
+- Monday, April 25 - Sunday, May 1 (upcoming)

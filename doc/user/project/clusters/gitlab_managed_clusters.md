@@ -9,15 +9,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
 > - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 To connect your cluster to GitLab, use the [GitLab agent](../../../user/clusters/agent/index.md).
 To manage applications, use the [Cluster Project Management Template](../../../user/clusters/management_project_template.md).
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `certificate_based_clusters`.
+
 You can choose to allow GitLab to manage your cluster for you. If your cluster
 is managed by GitLab, resources for your projects are automatically created. See
-the [Access controls](add_remove_clusters.md#access-controls) section for
+the [Access controls](cluster_access.md) section for
 details about the created resources.
 
 If you choose to manage your own cluster, project-specific resources aren't created

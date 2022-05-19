@@ -6,6 +6,7 @@ module API
     before { authenticate! }
 
     feature_category :team_planning
+    urgency :low
 
     helpers ::API::Helpers::MembersHelpers
 

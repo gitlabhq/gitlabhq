@@ -8,6 +8,34 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can read more about [controlling the job concurrency with resource groups](../ci/resource_groups/index.md).
 
+## Get all resource groups for a project
+
+```plaintext
+GET /projects/:id/resource_groups
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups"
+```
+
+Example of response
+
+```json
+[
+  {
+    "id": 3,
+    "key": "production",
+    "process_mode": "unordered",
+    "created_at": "2021-09-01T08:04:59.650Z",
+    "updated_at": "2021-09-01T08:04:59.650Z"
+  }
+]
+```
+
 ## Get a specific resource group
 
 ```plaintext

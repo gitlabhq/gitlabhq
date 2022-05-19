@@ -14,7 +14,14 @@ module Gitlab
           #     ::Issue.where(database_time_constraints)
           #   end
           # end
+
+          UnimplementedOperationError = Class.new(StandardError) # rubocop:disable UsageData/InstrumentationSuperclass
+
           class << self
+            IMPLEMENTED_OPERATIONS = %i(count distinct_count estimate_batch_distinct_count).freeze
+
+            private_constant :IMPLEMENTED_OPERATIONS
+
             def start(&block)
               return @metric_start&.call unless block_given?
 
@@ -40,6 +47,8 @@ module Gitlab
             end
 
             def operation(symbol, column: nil, &block)
+              raise UnimplementedOperationError unless symbol.in?(IMPLEMENTED_OPERATIONS)
+
               @metric_operation = symbol
               @column = column
               @metric_operation_block = block if block_given?
@@ -82,6 +91,14 @@ module Gitlab
 
           private
 
+          def start
+            self.class.metric_start&.call(time_constraints)
+          end
+
+          def finish
+            self.class.metric_finish&.call(time_constraints)
+          end
+
           def relation
             self.class.metric_relation.call.where(time_constraints)
           end
@@ -100,19 +117,19 @@ module Gitlab
           end
 
           def get_or_cache_batch_ids
-            return [self.class.start, self.class.finish] unless self.class.cache_key.present?
+            return [start, finish] unless self.class.cache_key.present?
 
             key_name = "metric_instrumentation/#{self.class.cache_key}"
 
-            start = Gitlab::Cache.fetch_once("#{key_name}_minimum_id", expires_in: 1.day) do
-              self.class.start
+            cached_start = Gitlab::Cache.fetch_once("#{key_name}_minimum_id", expires_in: 1.day) do
+              start
             end
 
-            finish = Gitlab::Cache.fetch_once("#{key_name}_maximum_id", expires_in: 1.day) do
-              self.class.finish
+            cached_finish = Gitlab::Cache.fetch_once("#{key_name}_maximum_id", expires_in: 1.day) do
+              finish
             end
 
-            [start, finish]
+            [cached_start, cached_finish]
           end
         end
       end

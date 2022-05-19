@@ -23,7 +23,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
       'merge_requests_ff_only_enabled' => true,
       'issues_template' => 'test',
       'shared_runners_enabled' => true,
-      'build_coverage_regex' => 'build_coverage_regex',
       'build_allow_git_fetch' => true,
       'build_timeout' => 3600,
       'pending_delete' => false,
@@ -176,5 +175,9 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
         pipeline.after_run(nil)
       end
     end
+  end
+
+  describe '.relation' do
+    it { expect(described_class.relation).to eq('self') }
   end
 end

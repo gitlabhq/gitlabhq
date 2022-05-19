@@ -77,8 +77,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
       end
 
       it 'logs request information' do
-        expect(Gitlab::AuthLogger).to receive(:error).with(
-          include(
+        expect(Gitlab::AuthLogger).to receive(:error) do |arguments|
+          expect(arguments).to include(
             message: 'Rack_Attack',
             env: match_type,
             remote_ip: '1.2.3.4',
@@ -86,7 +86,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
             path: '/api/v4/internal/authorized_keys',
             matched: 'throttle_unauthenticated'
           )
-        )
+
+          if expected_status
+            expect(arguments).to include(status: expected_status)
+          else
+            expect(arguments).not_to have_key(:status)
+          end
+        end
+
         subscriber.send(match_type, event)
       end
     end
@@ -111,8 +118,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
           end
 
           it 'logs request information and user id' do
-            expect(Gitlab::AuthLogger).to receive(:error).with(
-              include(
+            expect(Gitlab::AuthLogger).to receive(:error) do |arguments|
+              expect(arguments).to include(
                 message: 'Rack_Attack',
                 env: match_type,
                 remote_ip: '1.2.3.4',
@@ -121,7 +128,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
                 matched: 'throttle_authenticated_api',
                 user_id: non_existing_record_id
               )
-            )
+
+              if expected_status
+                expect(arguments).to include(status: expected_status)
+              else
+                expect(arguments).not_to have_key(:status)
+              end
+            end
+
             subscriber.send(match_type, event)
           end
         end
@@ -145,8 +159,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
           end
 
           it 'logs request information and user meta' do
-            expect(Gitlab::AuthLogger).to receive(:error).with(
-              include(
+            expect(Gitlab::AuthLogger).to receive(:error) do |arguments|
+              expect(arguments).to include(
                 message: 'Rack_Attack',
                 env: match_type,
                 remote_ip: '1.2.3.4',
@@ -156,7 +170,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
                 user_id: user.id,
                 'meta.user' => user.username
               )
-            )
+
+              if expected_status
+                expect(arguments).to include(status: expected_status)
+              else
+                expect(arguments).not_to have_key(:status)
+              end
+            end
+
             subscriber.send(match_type, event)
           end
         end
@@ -182,8 +203,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
           end
 
           it 'logs request information and user meta' do
-            expect(Gitlab::AuthLogger).to receive(:error).with(
-              include(
+            expect(Gitlab::AuthLogger).to receive(:error) do |arguments|
+              expect(arguments).to include(
                 message: 'Rack_Attack',
                 env: match_type,
                 remote_ip: '1.2.3.4',
@@ -192,7 +213,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
                 matched: 'throttle_authenticated_api',
                 deploy_token_id: deploy_token.id
               )
-            )
+
+              if expected_status
+                expect(arguments).to include(status: expected_status)
+              else
+                expect(arguments).not_to have_key(:status)
+              end
+            end
+
             subscriber.send(match_type, event)
           end
         end
@@ -202,6 +230,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
 
   describe '#throttle' do
     let(:match_type) { :throttle }
+    let(:expected_status) { 429 }
     let(:event_name) { 'throttle.rack_attack' }
 
     it_behaves_like 'log into auth logger'
@@ -209,6 +238,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
 
   describe '#blocklist' do
     let(:match_type) { :blocklist }
+    let(:expected_status) { 403 }
     let(:event_name) { 'blocklist.rack_attack' }
 
     it_behaves_like 'log into auth logger'
@@ -216,6 +246,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
 
   describe '#track' do
     let(:match_type) { :track }
+    let(:expected_status) { nil }
     let(:event_name) { 'track.rack_attack' }
 
     it_behaves_like 'log into auth logger'

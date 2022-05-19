@@ -1,8 +1,8 @@
 - if registration_features_can_be_prompted?
   = render Pajamas::AlertComponent.new(variant: :tip,
     alert_class: 'gl-my-5',
-    dismissible: false) do
-    .gl-alert-body
+    dismissible: false) do |c|
+    = c.body do
       = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
 
 .top-area

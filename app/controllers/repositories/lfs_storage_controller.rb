@@ -6,6 +6,8 @@ module Repositories
     include WorkhorseRequest
     include SendFileUpload
 
+    InvalidUploadedFile = Class.new(StandardError)
+
     skip_before_action :verify_workhorse_api!, only: :download
 
     # added here as a part of the refactor, will be removed
@@ -44,6 +46,8 @@ module Repositories
     end
 
     def upload_finalize
+      validate_uploaded_file!
+
       if store_file!(oid, size)
         head 200, content_type: LfsRequest::CONTENT_TYPE
       else
@@ -55,6 +59,8 @@ module Repositories
       render_lfs_forbidden
     rescue ObjectStorage::RemoteStoreError
       render_lfs_forbidden
+    rescue InvalidUploadedFile
+      render plain: 'SHA256 or size mismatch', status: :bad_request
     end
 
     private
@@ -116,6 +122,14 @@ module Repositories
         project: project,
         lfs_object: object
       )
+    end
+
+    def validate_uploaded_file!
+      return unless uploaded_file
+
+      if size != uploaded_file.size || oid != uploaded_file.sha256
+        raise InvalidUploadedFile
+      end
     end
   end
 end

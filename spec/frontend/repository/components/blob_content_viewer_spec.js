@@ -26,6 +26,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import httpStatusCodes from '~/lib/utils/http_status';
 import LineHighlighter from '~/blob/line_highlighter';
+import { LEGACY_FILE_TYPES } from '~/repository/constants';
 import {
   simpleViewerMock,
   richViewerMock,
@@ -194,6 +195,14 @@ describe('Blob content viewer component', () => {
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
       });
+
+      it.each(LEGACY_FILE_TYPES)(
+        'loads the legacy viewer when a file type is identified as legacy',
+        async (type) => {
+          await createComponent({ blob: { ...simpleViewerMock, fileType: type, webPath: type } });
+          expect(mockAxios.history.get[0].url).toBe(`${type}?format=json&viewer=simple`);
+        },
+      );
 
       it('loads the LineHighlighter', async () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');

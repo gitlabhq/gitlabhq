@@ -62,13 +62,11 @@ module API
           params do
             requires :name, type: String, desc: 'The name of the file'
             requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file to be uploaded'
-            optional :permissions, type: String, desc: 'The file permissions', default: 'read_only', values: %w[read_only read_write execute]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           post ':id/secure_files' do
             secure_file = user_project.secure_files.new(
-              name: params[:name],
-              permissions: params[:permissions] || :read_only
+              name: params[:name]
             )
 
             secure_file.file = params[:file]
@@ -96,11 +94,11 @@ module API
 
       helpers do
         def feature_flag_enabled?
-          service_unavailable! unless Feature.enabled?(:ci_secure_files, user_project, default_enabled: :yaml)
+          service_unavailable! unless Feature.enabled?(:ci_secure_files, user_project)
         end
 
         def read_only_feature_flag_enabled?
-          service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops, default_enabled: :yaml)
+          service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops)
         end
       end
     end

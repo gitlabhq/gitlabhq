@@ -24,6 +24,48 @@ RSpec.describe Gitlab::Color do
     end
   end
 
+  describe '.color_for' do
+    subject { described_class.color_for(value) }
+
+    shared_examples 'deterministic' do
+      it 'is deterministoc' do
+        expect(subject.to_s).to eq(described_class.color_for(value).to_s)
+      end
+    end
+
+    context 'when generating color for nil value' do
+      let(:value) { nil }
+
+      specify { is_expected.to be_valid }
+
+      it_behaves_like 'deterministic'
+    end
+
+    context 'when generating color for empty string value' do
+      let(:value) { '' }
+
+      specify { is_expected.to be_valid }
+
+      it_behaves_like 'deterministic'
+    end
+
+    context 'when generating color for number value' do
+      let(:value) { 1 }
+
+      specify { is_expected.to be_valid }
+
+      it_behaves_like 'deterministic'
+    end
+
+    context 'when generating color for string value' do
+      let(:value) { "1" }
+
+      specify { is_expected.to be_valid }
+
+      it_behaves_like 'deterministic'
+    end
+  end
+
   describe '#new' do
     it 'handles nil values' do
       expect(described_class.new(nil)).to eq(described_class.new(nil))

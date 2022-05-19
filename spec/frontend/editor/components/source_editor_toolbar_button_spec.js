@@ -1,43 +1,26 @@
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import SourceEditorToolbarButton from '~/editor/components/source_editor_toolbar_button.vue';
-import getToolbarItemQuery from '~/editor/graphql/get_item.query.graphql';
-import updateToolbarItemMutation from '~/editor/graphql/update_item.mutation.graphql';
 import { buildButton } from './helpers';
-
-Vue.use(VueApollo);
 
 describe('Source Editor Toolbar button', () => {
   let wrapper;
-  let mockApollo;
   const defaultBtn = buildButton();
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  const createComponentWithApollo = ({ propsData } = {}) => {
-    mockApollo = createMockApollo();
-    mockApollo.clients.defaultClient.cache.writeQuery({
-      query: getToolbarItemQuery,
-      variables: { id: defaultBtn.id },
-      data: {
-        item: {
-          ...defaultBtn,
-        },
-      },
-    });
-
+  const createComponent = (props = { button: defaultBtn }) => {
     wrapper = shallowMount(SourceEditorToolbarButton, {
-      propsData,
-      apolloProvider: mockApollo,
+      propsData: {
+        ...props,
+      },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    mockApollo = null;
+    wrapper = null;
   });
 
   describe('default', () => {
@@ -49,98 +32,51 @@ describe('Source Editor Toolbar button', () => {
       category: 'secondary',
       variant: 'info',
     };
+
+    it('does not render the button if the props have not been passed', () => {
+      createComponent({});
+      expect(findButton().vm).toBeUndefined();
+    });
+
     it('renders a default button without props', async () => {
-      createComponentWithApollo();
+      createComponent();
       const btn = findButton();
       expect(btn.exists()).toBe(true);
       expect(btn.props()).toMatchObject(defaultProps);
     });
 
     it('renders a button based on the props passed', async () => {
-      createComponentWithApollo({
-        propsData: {
-          button: customProps,
-        },
+      createComponent({
+        button: customProps,
       });
       const btn = findButton();
       expect(btn.props()).toMatchObject(customProps);
     });
   });
 
-  describe('button updates', () => {
-    it('it properly updates button on Apollo cache update', async () => {
-      const { id } = defaultBtn;
-
-      createComponentWithApollo({
-        propsData: {
-          button: {
-            id,
-          },
-        },
-      });
-
-      expect(findButton().props('selected')).toBe(false);
-
-      mockApollo.clients.defaultClient.cache.writeQuery({
-        query: getToolbarItemQuery,
-        variables: { id },
-        data: {
-          item: {
-            ...defaultBtn,
-            selected: true,
-          },
-        },
-      });
-
-      jest.runOnlyPendingTimers();
-      await nextTick();
-
-      expect(findButton().props('selected')).toBe(true);
-    });
-  });
-
   describe('click handler', () => {
-    it('fires the click handler on the button when available', () => {
+    it('fires the click handler on the button when available', async () => {
       const spy = jest.fn();
-      createComponentWithApollo({
-        propsData: {
-          button: {
-            onClick: spy,
-          },
+      createComponent({
+        button: {
+          onClick: spy,
         },
       });
       expect(spy).not.toHaveBeenCalled();
       findButton().vm.$emit('click');
+
+      await nextTick();
       expect(spy).toHaveBeenCalled();
     });
-    it('emits the "click" event', () => {
-      createComponentWithApollo();
+    it('emits the "click" event', async () => {
+      createComponent();
       jest.spyOn(wrapper.vm, '$emit');
       expect(wrapper.vm.$emit).not.toHaveBeenCalled();
+
       findButton().vm.$emit('click');
+      await nextTick();
+
       expect(wrapper.vm.$emit).toHaveBeenCalledWith('click');
-    });
-    it('triggers the mutation exposing the changed "selected" prop', () => {
-      const { id } = defaultBtn;
-      createComponentWithApollo({
-        propsData: {
-          button: {
-            id,
-          },
-        },
-      });
-      jest.spyOn(wrapper.vm.$apollo, 'mutate');
-      expect(wrapper.vm.$apollo.mutate).not.toHaveBeenCalled();
-      findButton().vm.$emit('click');
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: updateToolbarItemMutation,
-        variables: {
-          id,
-          propsToUpdate: {
-            selected: true,
-          },
-        },
-      });
     });
   });
 });

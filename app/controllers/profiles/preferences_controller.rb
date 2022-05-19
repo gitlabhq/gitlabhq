@@ -5,6 +5,9 @@ class Profiles::PreferencesController < Profiles::ApplicationController
 
   feature_category :users
 
+  urgency :low, [:show]
+  urgency :medium, [:update]
+
   def show
   end
 

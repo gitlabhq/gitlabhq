@@ -30,28 +30,50 @@ module Gitlab
         end
       end
 
-      def within(user_analyzers = nil)
-        # Due to singleton nature of analyzers
-        # only an outer invocation of the `.within`
-        # is allowed to initialize them
-        if already_within?
-          raise 'Query analyzers are already defined, cannot re-define them.' if user_analyzers
-
-          return yield
-        end
-
-        begin!(user_analyzers || all_analyzers)
+      def within(analyzers = all_analyzers)
+        newly_enabled_analyzers = begin!(analyzers)
 
         begin
           yield
         ensure
-          end!
+          end!(newly_enabled_analyzers)
         end
       end
 
-      def already_within?
-        # If analyzers are set they are already configured
-        !enabled_analyzers.nil?
+      # Enable query analyzers (only the ones that were not yet enabled)
+      # Returns a list of newly enabled analyzers
+      def begin!(analyzers)
+        analyzers.select do |analyzer|
+          next if enabled_analyzers.include?(analyzer)
+
+          if analyzer.enabled?
+            analyzer.begin!
+            enabled_analyzers.append(analyzer)
+
+            true
+          end
+        rescue StandardError, ::Gitlab::Database::QueryAnalyzers::Base::QueryAnalyzerError => e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+
+          false
+        end
+      end
+
+      # Disable enabled query analyzers (only the ones that were enabled previously)
+      def end!(analyzers)
+        analyzers.each do |analyzer|
+          next unless enabled_analyzers.delete(analyzer)
+
+          analyzer.end!
+        rescue StandardError, ::Gitlab::Database::QueryAnalyzers::Base::QueryAnalyzerError => e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+        end
+      end
+
+      private
+
+      def enabled_analyzers
+        Thread.current[:query_analyzer_enabled_analyzers] ||= []
       end
 
       def process_sql(sql, connection)
@@ -69,40 +91,6 @@ module Gitlab
           # We catch all standard errors to prevent validation errors to introduce fatal errors in production
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
-      end
-
-      # Enable query analyzers
-      def begin!(analyzers = all_analyzers)
-        analyzers = analyzers.select do |analyzer|
-          if analyzer.enabled?
-            analyzer.begin!
-
-            true
-          end
-        rescue StandardError, ::Gitlab::Database::QueryAnalyzers::Base::QueryAnalyzerError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-
-          false
-        end
-
-        Thread.current[:query_analyzer_enabled_analyzers] = analyzers
-      end
-
-      # Disable enabled query analyzers
-      def end!
-        enabled_analyzers.select do |analyzer|
-          analyzer.end!
-        rescue StandardError, ::Gitlab::Database::QueryAnalyzers::Base::QueryAnalyzerError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-        end
-
-        Thread.current[:query_analyzer_enabled_analyzers] = nil
-      end
-
-      private
-
-      def enabled_analyzers
-        Thread.current[:query_analyzer_enabled_analyzers]
       end
 
       def parse(sql, connection)

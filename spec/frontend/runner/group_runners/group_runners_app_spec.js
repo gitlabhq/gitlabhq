@@ -30,7 +30,10 @@ import {
   PROJECT_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
+  PARAM_KEY_TAG,
   STATUS_ONLINE,
+  STATUS_OFFLINE,
+  STATUS_STALE,
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
@@ -53,7 +56,7 @@ Vue.use(GlToast);
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
 const mockGroupRunnersEdges = groupRunnersData.data.group.runners.edges;
-const mockGroupRunnersLimitedCount = mockGroupRunnersEdges.length;
+const mockGroupRunnersCount = mockGroupRunnersEdges.length;
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -94,7 +97,7 @@ describe('GroupRunnersApp', () => {
       propsData: {
         registrationToken: mockRegistrationToken,
         groupFullPath: mockGroupFullPath,
-        groupRunnersLimitedCount: mockGroupRunnersLimitedCount,
+        groupRunnersLimitedCount: mockGroupRunnersCount,
         ...props,
       },
       provide: {
@@ -115,15 +118,24 @@ describe('GroupRunnersApp', () => {
   });
 
   it('shows total runner counts', async () => {
-    createComponent({ mountFn: mountExtended });
+    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      groupFullPath: mockGroupFullPath,
+      status: STATUS_ONLINE,
+    });
+    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      groupFullPath: mockGroupFullPath,
+      status: STATUS_OFFLINE,
+    });
+    expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+      groupFullPath: mockGroupFullPath,
+      status: STATUS_STALE,
+    });
 
-    await waitForPromises();
-
-    const stats = findRunnerStats().text();
-
-    expect(stats).toMatch('Online runners 2');
-    expect(stats).toMatch('Offline runners 2');
-    expect(stats).toMatch('Stale runners 2');
+    expect(findRunnerStats().props()).toMatchObject({
+      onlineRunnersCount: mockGroupRunnersCount,
+      offlineRunnersCount: mockGroupRunnersCount,
+      staleRunnersCount: mockGroupRunnersCount,
+    });
   });
 
   it('shows the runner tabs with a runner count for each type', async () => {
@@ -281,13 +293,28 @@ describe('GroupRunnersApp', () => {
         first: RUNNER_PAGE_SIZE,
       });
     });
+
+    it('fetches count results for requested status', () => {
+      expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+        groupFullPath: mockGroupFullPath,
+        type: INSTANCE_TYPE,
+        status: STATUS_ONLINE,
+      });
+
+      expect(findRunnerStats().props()).toMatchObject({
+        onlineRunnersCount: mockGroupRunnersCount,
+      });
+    });
   });
 
   describe('when a filter is selected by the user', () => {
     beforeEach(async () => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
-        filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
+        filters: [
+          { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
+          { type: PARAM_KEY_TAG, value: { data: 'tag1', operator: '=' } },
+        ],
         sort: CREATED_ASC,
       });
 
@@ -297,7 +324,7 @@ describe('GroupRunnersApp', () => {
     it('updates the browser url', () => {
       expect(updateHistory).toHaveBeenLastCalledWith({
         title: expect.any(String),
-        url: 'http://test.host/groups/group1/-/runners?status[]=ONLINE&sort=CREATED_ASC',
+        url: 'http://test.host/groups/group1/-/runners?status[]=ONLINE&tag[]=tag1&sort=CREATED_ASC',
       });
     });
 
@@ -305,8 +332,39 @@ describe('GroupRunnersApp', () => {
       expect(mockGroupRunnersQuery).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
+        tagList: ['tag1'],
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
+      });
+    });
+
+    it('fetches count results for requested status', () => {
+      expect(mockGroupRunnersCountQuery).toHaveBeenCalledWith({
+        groupFullPath: mockGroupFullPath,
+        tagList: ['tag1'],
+        status: STATUS_ONLINE,
+      });
+
+      expect(findRunnerStats().props()).toMatchObject({
+        onlineRunnersCount: mockGroupRunnersCount,
+      });
+    });
+
+    it('skips fetching count results for status that were not in filter', () => {
+      expect(mockGroupRunnersCountQuery).not.toHaveBeenCalledWith({
+        groupFullPath: mockGroupFullPath,
+        tagList: ['tag1'],
+        status: STATUS_OFFLINE,
+      });
+      expect(mockGroupRunnersCountQuery).not.toHaveBeenCalledWith({
+        groupFullPath: mockGroupFullPath,
+        tagList: ['tag1'],
+        status: STATUS_STALE,
+      });
+
+      expect(findRunnerStats().props()).toMatchObject({
+        offlineRunnersCount: null,
+        staleRunnersCount: null,
       });
     });
   });

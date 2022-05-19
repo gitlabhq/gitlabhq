@@ -14,7 +14,7 @@ RSpec.describe ErrorTracking::IssueDetailsService do
         let(:params) { { issue_id: detailed_error.id } }
 
         before do
-          expect(error_tracking_setting)
+          allow(error_tracking_setting)
             .to receive(:issue_details).and_return(issue: detailed_error)
         end
 
@@ -40,7 +40,7 @@ RSpec.describe ErrorTracking::IssueDetailsService do
       include_examples 'error tracking service sentry error handling', :issue_details
       include_examples 'error tracking service http status handling', :issue_details
 
-      context 'integrated error tracking' do
+      context 'with integrated error tracking' do
         let_it_be(:error) { create(:error_tracking_error, project: project) }
 
         let(:params) { { issue_id: error.id } }
@@ -52,6 +52,18 @@ RSpec.describe ErrorTracking::IssueDetailsService do
         it 'returns the error in detailed format' do
           expect(result[:status]).to eq(:success)
           expect(result[:issue].to_json).to eq(error.to_sentry_detailed_error.to_json)
+        end
+
+        context 'when error does not exist' do
+          let(:params) { { issue_id: non_existing_record_id } }
+
+          it 'returns the error in detailed format' do
+            expect(result).to match(
+              status: :error,
+              message: /Couldn't find ErrorTracking::Error/,
+              http_status: :bad_request
+            )
+          end
         end
       end
     end

@@ -53,33 +53,24 @@ RSpec.describe 'getting Alert Management Integrations' do
       end
 
       context 'when no extra params given' do
-        let(:http_integration_response) { integrations.first }
-        let(:prometheus_integration_response) { integrations.second }
-
         it_behaves_like 'a working graphql query'
 
-        it { expect(integrations.size).to eq(2) }
-
         it 'returns the correct properties of the integrations' do
-          expect(http_integration_response).to include(
-            'id' => global_id_of(active_http_integration),
-            'type' => 'HTTP',
-            'name' => active_http_integration.name,
-            'active' => active_http_integration.active,
-            'token' => active_http_integration.token,
-            'url' => active_http_integration.url,
-            'apiUrl' => nil
-          )
-
-          expect(prometheus_integration_response).to include(
-            'id' => global_id_of(prometheus_integration),
-            'type' => 'PROMETHEUS',
-            'name' => 'Prometheus',
-            'active' => prometheus_integration.manual_configuration?,
-            'token' => project_alerting_setting.token,
-            'url' => "http://localhost/#{project.full_path}/prometheus/alerts/notify.json",
-            'apiUrl' => prometheus_integration.api_url
-          )
+          expect(integrations).to match [
+            a_graphql_entity_for(
+              active_http_integration,
+              :name, :active, :token, :url, type: 'HTTP', api_url: nil
+            ),
+            a_graphql_entity_for(
+              prometheus_integration,
+              'type' => 'PROMETHEUS',
+              'name' => 'Prometheus',
+              'active' => prometheus_integration.manual_configuration?,
+              'token' => project_alerting_setting.token,
+              'url' => "http://localhost/#{project.full_path}/prometheus/alerts/notify.json",
+              'apiUrl' => prometheus_integration.api_url
+            )
+          ]
         end
       end
 
@@ -88,17 +79,9 @@ RSpec.describe 'getting Alert Management Integrations' do
 
         it_behaves_like 'a working graphql query'
 
-        it { expect(integrations).to be_one }
-
         it 'returns the correct properties of the HTTP integration' do
-          expect(integrations.first).to include(
-            'id' => global_id_of(active_http_integration),
-            'type' => 'HTTP',
-            'name' => active_http_integration.name,
-            'active' => active_http_integration.active,
-            'token' => active_http_integration.token,
-            'url' => active_http_integration.url,
-            'apiUrl' => nil
+          expect(integrations).to contain_exactly a_graphql_entity_for(
+            active_http_integration, :name, :active, :token, :url, type: 'HTTP', api_url: nil
           )
         end
       end
@@ -108,11 +91,9 @@ RSpec.describe 'getting Alert Management Integrations' do
 
         it_behaves_like 'a working graphql query'
 
-        it { expect(integrations).to be_one }
-
         it 'returns the correct properties of the Prometheus Integration' do
-          expect(integrations.first).to include(
-            'id' => global_id_of(prometheus_integration),
+          expect(integrations).to contain_exactly a_graphql_entity_for(
+            prometheus_integration,
             'type' => 'PROMETHEUS',
             'name' => 'Prometheus',
             'active' => prometheus_integration.manual_configuration?,

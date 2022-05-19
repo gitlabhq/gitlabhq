@@ -12,15 +12,31 @@ export default {
   },
   mixins: [Tracking.mixin()],
   inject: ['pipelineEditorPath', 'suggestedCiTemplates'],
+  props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    filterTemplates: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
-    const templates = this.suggestedCiTemplates.map(({ name, logo }) => {
-      return {
-        name,
-        logo,
-        link: mergeUrlParams({ template: name }, this.pipelineEditorPath),
-        description: sprintf(this.$options.i18n.description, { name }),
-      };
-    });
+    const templates = this.suggestedCiTemplates
+      .filter(
+        (template) => !this.filterTemplates.length || this.filterTemplates.includes(template.name),
+      )
+      .map(({ name, logo, title }) => {
+        return {
+          name: title || name,
+          logo,
+          link: mergeUrlParams({ template: name }, this.pipelineEditorPath),
+          description: sprintf(this.$options.i18n.description, { name: title || name }),
+        };
+      });
 
     return {
       templates,
@@ -34,7 +50,9 @@ export default {
     },
   },
   i18n: {
-    description: s__('Pipelines|CI/CD template to test and deploy your %{name} project.'),
+    description: s__(
+      'Pipelines|Continuous integration and deployment template to test and deploy your %{name} project.',
+    ),
     cta: s__('Pipelines|Use template'),
   },
   AVATAR_SHAPE_OPTION_RECT,
@@ -67,6 +85,7 @@ export default {
           </div>
         </div>
         <gl-button
+          :disabled="disabled"
           category="primary"
           variant="confirm"
           :href="template.link"

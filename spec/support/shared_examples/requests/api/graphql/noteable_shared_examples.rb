@@ -12,9 +12,9 @@ RSpec.shared_examples 'a noteable graphql type we can query' do
 
     def expected
       noteable.discussions.map do |discussion|
-        include(
-          'id' => global_id_of(discussion),
-          'replyId' => global_id_of(discussion, id: discussion.reply_id),
+        a_graphql_entity_for(
+          discussion,
+          'replyId' => global_id_of(discussion, id: discussion.reply_id).to_s,
           'createdAt' => discussion.created_at.iso8601,
           'notes' => include(
             'nodes' => have_attributes(size: discussion.notes.size)
@@ -50,8 +50,8 @@ RSpec.shared_examples 'a noteable graphql type we can query' do
 
       post_graphql(query(fields), current_user: current_user)
 
-      data = graphql_data_at(*path_to_noteable, :discussions, :nodes, :noteable, :id)
-      expect(data[0]).to eq(global_id_of(noteable))
+      entities = graphql_data_at(*path_to_noteable, :discussions, :nodes, :noteable)
+      expect(entities).to all(match(a_graphql_entity_for(noteable)))
     end
   end
 
@@ -62,10 +62,10 @@ RSpec.shared_examples 'a noteable graphql type we can query' do
 
     def expected
       noteable.notes.map do |note|
-        include(
-          'id' => global_id_of(note),
-          'project' => include('id' => global_id_of(project)),
-          'author' => include('id' => global_id_of(note.author)),
+        a_graphql_entity_for(
+          note,
+          'project' => a_graphql_entity_for(project),
+          'author' => a_graphql_entity_for(note.author),
           'createdAt' => note.created_at.iso8601,
           'body' => eq(note.note)
         )

@@ -72,12 +72,12 @@ RSpec.describe 'Users' do
           post_query
 
           expect(graphql_data.dig('users', 'nodes')).to include(
-            { "id" => user0.to_global_id.to_s },
-            { "id" => user1.to_global_id.to_s },
-            { "id" => user2.to_global_id.to_s },
-            { "id" => user3.to_global_id.to_s },
-            { "id" => admin.to_global_id.to_s },
-            { "id" => another_admin.to_global_id.to_s }
+            a_graphql_entity_for(user0),
+            a_graphql_entity_for(user1),
+            a_graphql_entity_for(user2),
+            a_graphql_entity_for(user3),
+            a_graphql_entity_for(admin),
+            a_graphql_entity_for(another_admin)
           )
         end
       end
@@ -91,15 +91,15 @@ RSpec.describe 'Users' do
           post_graphql(query, current_user: current_user)
 
           expect(graphql_data.dig('users', 'nodes')).to include(
-            { "id" => another_admin.to_global_id.to_s },
-            { "id" => admin.to_global_id.to_s }
+            a_graphql_entity_for(another_admin),
+            a_graphql_entity_for(admin)
           )
 
           expect(graphql_data.dig('users', 'nodes')).not_to include(
-            { "id" => user0.to_global_id.to_s },
-            { "id" => user1.to_global_id.to_s },
-            { "id" => user2.to_global_id.to_s },
-            { "id" => user3.to_global_id.to_s }
+            a_graphql_entity_for(user0),
+            a_graphql_entity_for(user1),
+            a_graphql_entity_for(user2),
+            a_graphql_entity_for(user3)
           )
         end
       end
@@ -114,7 +114,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when sorting by created_at' do
-      let_it_be(:ascending_users) { [user3, user2, user1, user0].map { |u| global_id_of(u) } }
+      let_it_be(:ascending_users) { [user3, user2, user1, user0].map { |u| global_id_of(u).to_s } }
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do

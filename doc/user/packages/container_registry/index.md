@@ -626,10 +626,10 @@ Use your own URLs to complete the following steps:
    docker pull gitlab.example.com/org/build/sample_project/cr:v2.9.1
    ```
 
-NOTE:
-For container registry authentication, use either a
-[personal access token](../../profile/personal_access_tokens.md) or a
-[deploy token](../../project/deploy_tokens/index.md).
+   NOTE:
+   For container registry authentication, use either a
+   [personal access token](../../profile/personal_access_tokens.md) or a
+   [deploy token](../../project/deploy_tokens/index.md).
 
 1. Rename the images to match the new project name:
 
@@ -695,7 +695,7 @@ There may be some errors not properly cached. Follow these steps to investigate 
    `200 OK`, the body might have the error `AccessDenied`. This indicates a permission problem from
    the S3 side.
 
-1. Ensure your S3 configuration has the `deleteObject` permisson scope. Here's an
+1. Ensure your S3 configuration has the `deleteObject` permission scope. Here's an
    [example role for an S3 bucket](../../../administration/object_storage.md#iam-permissions).
    Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
 

@@ -2,12 +2,11 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: index, concepts, howto
 ---
 
 # Caching in GitLab CI/CD **(FREE)**
 
-A cache is one or more files that a job downloads and saves. Subsequent jobs that use
+A cache is one or more files a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.
 
 To learn how to define the cache in your `.gitlab-ci.yml` file,
@@ -31,7 +30,7 @@ can't link to files outside it.
 - Subsequent pipelines can use the cache.
 - Subsequent jobs in the same pipeline can use the cache, if the dependencies are identical.
 - Different projects cannot share the cache.
-- Protected and non-protected branches do not share the cache.
+- By default, protected and non-protected branches [do not share the cache](#cache-key-names). However, you can [change this behavior](#use-the-same-cache-for-all-branches).
 
 ### Artifacts
 
@@ -447,13 +446,11 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
 
-### Segregation of caches between protected and non-protected branches
+#### Cache key names
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
 
 A suffix is added to the cache key, with the exception of the [fallback cache key](#use-a-fallback-cache-key).
-This is done in order to prevent cache poisoning that might occur through manipulation of the cache in a non-protected
-branch. Any subsequent protected-branch jobs would then potentially use a poisoned cache from the preceding job.
 
 As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that we have two branches `main`
 and `feature`, then the following table represents the resulting cache keys:
@@ -462,6 +459,24 @@ and `feature`, then the following table represents the resulting cache keys:
 |-------------|-----------|
 | `main`      | `main-protected` |
 | `feature`   | `feature-non_protected` |
+
+##### Use the same cache for all branches
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
+
+If you do not want to use [cache key names](#cache-key-names),
+you can have all branches (protected and unprotected) use the same cache.
+
+The cache separation with [cache key names](#cache-key-names) is a security feature
+and should only be disabled in an environment where all users with Developer role are highly trusted.
+
+To use the same cache for all branches:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Clear the **Use separate caches for protected branches** checkbox.
+1. Select **Save changes**.
 
 ### How archiving and extracting works
 
@@ -552,12 +567,10 @@ The next time the pipeline runs, the cache is stored in a different location.
 
 ### Clear the cache manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41249) in GitLab 10.4.
-
 You can clear the cache in the GitLab UI:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **CI/CD > Pipelines** page.
+1. On the left sidebar, select **CI/CD > Pipelines**.
 1. In the top right, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.
@@ -576,7 +589,7 @@ If you have a cache mismatch, follow these steps to troubleshoot.
 | You use multiple standalone runners (not in autoscale mode) attached to one project without a shared cache. | Use only one runner for your project or use multiple runners with distributed cache enabled. |
 | You use runners in autoscale mode without a distributed cache enabled. | Configure the autoscale runner to use a distributed cache. |
 | The machine the runner is installed on is low on disk space or, if you've set up distributed cache, the S3 bucket where the cache is stored doesn't have enough space. | Make sure you clear some space to allow new caches to be stored. There's no automatic way to do this. |
-| You use the same `key` for jobs where they cache different paths. | Use different cache keys to that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
+| You use the same `key` for jobs where they cache different paths. | Use different cache keys so that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
 
 #### Cache mismatch example 1
 

@@ -7,7 +7,7 @@ import { formatDate } from './date_format_utility';
  *
  * see https://github.com/hustcc/timeago.js/tree/v3.0.0/locales
  */
-const timeagoLanguageCode = languageCode().replace(/-/g, '_');
+export const timeagoLanguageCode = languageCode().replace(/-/g, '_');
 
 /**
  * Registers timeago locales

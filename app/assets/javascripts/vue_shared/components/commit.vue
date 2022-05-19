@@ -172,7 +172,9 @@ export default {
           :img-src="author.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
+          :img-size="16"
           class="avatar-image-container text-decoration-none"
+          img-css-classes="gl-mr-3"
         />
         <tooltip-on-truncate :title="title" class="flex-truncate-child">
           <gl-link :href="commitUrl" class="commit-row-message cgray">{{ title }}</gl-link>

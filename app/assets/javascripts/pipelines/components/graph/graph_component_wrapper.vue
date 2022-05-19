@@ -8,7 +8,7 @@ import { DEFAULT, DRAW_FAILURE, LOAD_FAILURE } from '../../constants';
 import DismissPipelineGraphCallout from '../../graphql/mutations/dismiss_pipeline_notification.graphql';
 import getPipelineQuery from '../../graphql/queries/get_pipeline_header_data.query.graphql';
 import { reportToSentry, reportMessageToSentry } from '../../utils';
-import { IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
+import { ACTION_FAILURE, IID_FAILURE, LAYER_VIEW, STAGE_VIEW, VIEW_TYPE_KEY } from './constants';
 import PipelineGraph from './graph_component.vue';
 import GraphViewSelector from './graph_view_selector.vue';
 import {
@@ -57,13 +57,29 @@ export default {
       showLinks: false,
     };
   },
-  errorTexts: {
-    [DRAW_FAILURE]: __('An error occurred while drawing job relationship links.'),
-    [IID_FAILURE]: __(
-      'The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data.',
-    ),
-    [LOAD_FAILURE]: __('We are currently unable to fetch data for this pipeline.'),
-    [DEFAULT]: __('An unknown error occurred while loading this graph.'),
+  errors: {
+    [ACTION_FAILURE]: {
+      text: __('An error occurred while performing this action.'),
+      variant: 'danger',
+    },
+    [DRAW_FAILURE]: {
+      text: __('An error occurred while drawing job relationship links.'),
+      variant: 'danger',
+    },
+    [IID_FAILURE]: {
+      text: __(
+        'The data in this pipeline is too old to be rendered as a graph. Please check the Jobs tab to access historical data.',
+      ),
+      variant: 'info',
+    },
+    [LOAD_FAILURE]: {
+      text: __('Currently unable to fetch data for this pipeline.'),
+      variant: 'danger',
+    },
+    [DEFAULT]: {
+      text: __('An unknown error occurred while loading this graph.'),
+      variant: 'danger',
+    },
   },
   apollo: {
     callouts: {
@@ -154,28 +170,12 @@ export default {
   },
   computed: {
     alert() {
-      switch (this.alertType) {
-        case DRAW_FAILURE:
-          return {
-            text: this.$options.errorTexts[DRAW_FAILURE],
-            variant: 'danger',
-          };
-        case IID_FAILURE:
-          return {
-            text: this.$options.errorTexts[IID_FAILURE],
-            variant: 'info',
-          };
-        case LOAD_FAILURE:
-          return {
-            text: this.$options.errorTexts[LOAD_FAILURE],
-            variant: 'danger',
-          };
-        default:
-          return {
-            text: this.$options.errorTexts[DEFAULT],
-            variant: 'danger',
-          };
-      }
+      const { errors } = this.$options;
+
+      return {
+        text: errors[this.alertType]?.text ?? errors[DEFAULT].text,
+        variant: errors[this.alertType]?.variant ?? errors[DEFAULT].variant,
+      };
     },
     configPaths() {
       return {

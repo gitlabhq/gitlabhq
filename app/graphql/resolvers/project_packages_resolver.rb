@@ -8,7 +8,10 @@ module Resolvers
     def resolve(sort:, **filters)
       return unless packages_available?
 
-      ::Packages::PackagesFinder.new(object, filters.merge(SORT_TO_PARAMS_MAP.fetch(sort))).execute
+      params = filters.merge(SORT_TO_PARAMS_MAP.fetch(sort))
+      params[:preload_pipelines] = false
+
+      ::Packages::PackagesFinder.new(object, params).execute
     end
   end
 end

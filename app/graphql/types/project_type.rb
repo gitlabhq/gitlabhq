@@ -295,6 +295,19 @@ module Types
           description: 'HTTP Integrations which can receive alerts for the project.',
           resolver: Resolvers::AlertManagement::HttpIntegrationsResolver
 
+    field :incident_management_timeline_events,
+          Types::IncidentManagement::TimelineEventType.connection_type,
+          null: true,
+          description: 'Incident Management Timeline events associated with the incident.',
+          extras: [:lookahead],
+          resolver: Resolvers::IncidentManagement::TimelineEventsResolver
+
+    field :incident_management_timeline_event,
+          Types::IncidentManagement::TimelineEventType,
+          null: true,
+          description: 'Incident Management Timeline event associated with the incident.',
+          resolver: Resolvers::IncidentManagement::TimelineEventsResolver.single
+
     field :releases,
           Types::ReleaseType.connection_type,
           null: true,

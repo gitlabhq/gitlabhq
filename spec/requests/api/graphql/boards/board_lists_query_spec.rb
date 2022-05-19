@@ -69,6 +69,10 @@ RSpec.describe 'get board lists' do
 
         let(:data_path) { [board_parent_type, :boards, :nodes, 0, :lists] }
 
+        def pagination_results_data(lists)
+          lists
+        end
+
         def pagination_query(params)
           graphql_query_for(
             board_parent_type,
@@ -94,7 +98,7 @@ RSpec.describe 'get board lists' do
             it_behaves_like 'sorted paginated query' do
               let(:sort_param) { }
               let(:first_param) { 2 }
-              let(:all_records) { lists.map { |list| global_id_of(list) } }
+              let(:all_records) { lists.map { |list| a_graphql_entity_for(list) } }
             end
           end
         end

@@ -45,8 +45,32 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     it "notifies about #{event_type} events" do
+      expect(chat_integration).not_to receive(:log_error)
+
       chat_integration.execute(data)
+
       expect(WebMock).to have_requested(:post, stubbed_resolved_hostname)
+    end
+
+    context 'when the response is not successful' do
+      let!(:stubbed_resolved_hostname) do
+        stub_full_request(webhook_url, method: :post)
+          .to_return(status: 409, body: 'error message')
+          .request_pattern.uri_pattern.to_s
+      end
+
+      it 'logs an error' do
+        expect(chat_integration).to receive(:log_error).with(
+          'SlackMattermostNotifier HTTP error response',
+          request_host: 'example.gitlab.com',
+          response_code: 409,
+          response_body: 'error message'
+        )
+
+        chat_integration.execute(data)
+
+        expect(WebMock).to have_requested(:post, stubbed_resolved_hostname)
+      end
     end
   end
 
@@ -59,8 +83,9 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       stub_full_request(webhook_url, method: :post).request_pattern.uri_pattern.to_s
     end
 
-    it "notifies about #{event_type} events" do
+    it "does not notify about #{event_type} events" do
       chat_integration.execute(data)
+
       expect(WebMock).not_to have_requested(:post, stubbed_resolved_hostname)
     end
   end

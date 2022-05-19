@@ -17,6 +17,7 @@ module Projects
       helper_method :tracing_setting
 
       feature_category :incident_management
+      urgency :low
 
       def update
         result = ::Projects::Operations::UpdateService.new(project, current_user, update_params).execute
@@ -133,7 +134,7 @@ module Projects
 
       # overridden in EE
       def permitted_project_params
-        project_params = {
+        {
           incident_management_setting_attributes: ::Gitlab::Tracking::IncidentManagement.tracking_keys.keys,
 
           metrics_setting_attributes: [:external_dashboard_url, :dashboard_timezone],
@@ -149,12 +150,6 @@ module Projects
           grafana_integration_attributes: [:token, :grafana_url, :enabled],
           tracing_setting_attributes: [:external_url]
         }
-
-        if Feature.enabled?(:settings_operations_prometheus_service, project)
-          project_params[:prometheus_integration_attributes] = [:manual_configuration, :api_url]
-        end
-
-        project_params
       end
     end
   end

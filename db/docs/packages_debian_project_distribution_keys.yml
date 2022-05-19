@@ -4,6 +4,6 @@ classes:
 - Packages::Debian::ProjectDistributionKey
 feature_categories:
 - package_registry
-description: TODO
+description: Debian project-level distribution keys
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60993
 milestone: '14.0'

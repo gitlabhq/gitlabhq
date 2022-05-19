@@ -47,12 +47,10 @@ describe('UncollapsedAssigneeList component', () => {
 
     it('calls the AssigneeAvatarLink with the proper props', () => {
       expect(wrapper.find(AssigneeAvatarLink).exists()).toBe(true);
-      expect(wrapper.find(AssigneeAvatarLink).props().tooltipPlacement).toEqual('left');
     });
 
     it('Shows one user with avatar, username and author name', () => {
       expect(wrapper.text()).toContain(user.name);
-      expect(wrapper.text()).toContain(`@${user.username}`);
     });
   });
 

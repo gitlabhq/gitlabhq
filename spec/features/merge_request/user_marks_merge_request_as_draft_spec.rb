@@ -16,9 +16,12 @@ RSpec.describe 'Merge request > User marks merge request as draft', :js do
   end
 
   it 'toggles draft status' do
+    click_button 'Toggle dropdown'
     click_link 'Mark as draft'
 
     expect(page).to have_content("Draft: #{merge_request.title}")
+
+    click_button 'Toggle dropdown'
 
     page.within('.detail-page-header-actions') do
       click_link 'Mark as ready'

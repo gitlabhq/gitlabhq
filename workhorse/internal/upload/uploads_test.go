@@ -46,7 +46,7 @@ func (a *testFormProcessor) Finalize(ctx context.Context) error {
 func TestUploadTempPathRequirement(t *testing.T) {
 	apiResponse := &api.Response{}
 	preparer := &DefaultPreparer{}
-	_, _, err := preparer.Prepare(apiResponse)
+	_, err := preparer.Prepare(apiResponse)
 	require.Error(t, err)
 }
 
@@ -75,7 +75,7 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 	handler := newProxy(ts.URL)
 	apiResponse := &api.Response{TempPath: tempPath}
 	preparer := &DefaultPreparer{}
-	opts, _, err := preparer.Prepare(apiResponse)
+	opts, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
 	interceptMultipartFiles(response, httpRequest, handler, apiResponse, nil, opts)
@@ -146,7 +146,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 
 	apiResponse := &api.Response{TempPath: tempPath}
 	preparer := &DefaultPreparer{}
-	opts, _, err := preparer.Prepare(apiResponse)
+	opts, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
 	interceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
@@ -215,7 +215,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			handler := newProxy(ts.URL)
 			apiResponse := &api.Response{TempPath: tempPath}
 			preparer := &DefaultPreparer{}
-			opts, _, err := preparer.Prepare(apiResponse)
+			opts, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
 			interceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)
@@ -245,7 +245,7 @@ func TestUploadProcessingField(t *testing.T) {
 	response := httptest.NewRecorder()
 	apiResponse := &api.Response{TempPath: tempPath}
 	preparer := &DefaultPreparer{}
-	opts, _, err := preparer.Prepare(apiResponse)
+	opts, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
 	interceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
@@ -276,7 +276,7 @@ func TestUploadingMultipleFiles(t *testing.T) {
 	response := httptest.NewRecorder()
 	apiResponse := &api.Response{TempPath: tempPath}
 	preparer := &DefaultPreparer{}
-	opts, _, err := preparer.Prepare(apiResponse)
+	opts, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
 	interceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
@@ -332,7 +332,7 @@ func TestUploadProcessingFile(t *testing.T) {
 			response := httptest.NewRecorder()
 			apiResponse := &api.Response{TempPath: tempPath}
 			preparer := &DefaultPreparer{}
-			opts, _, err := preparer.Prepare(apiResponse)
+			opts, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
 			interceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
@@ -378,7 +378,7 @@ func TestInvalidFileNames(t *testing.T) {
 		response := httptest.NewRecorder()
 		apiResponse := &api.Response{TempPath: tempPath}
 		preparer := &DefaultPreparer{}
-		opts, _, err := preparer.Prepare(apiResponse)
+		opts, err := preparer.Prepare(apiResponse)
 		require.NoError(t, err)
 
 		interceptMultipartFiles(response, httpRequest, nilHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
@@ -444,7 +444,7 @@ func TestContentDispositionRewrite(t *testing.T) {
 			response := httptest.NewRecorder()
 			apiResponse := &api.Response{TempPath: tempPath}
 			preparer := &DefaultPreparer{}
-			opts, _, err := preparer.Prepare(apiResponse)
+			opts, err := preparer.Prepare(apiResponse)
 			require.NoError(t, err)
 
 			interceptMultipartFiles(response, httpRequest, customHandler, apiResponse, &SavedFileTracker{Request: httpRequest}, opts)
@@ -567,7 +567,7 @@ func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, ts
 	handler := newProxy(ts.URL)
 	apiResponse := &api.Response{TempPath: tempPath}
 	preparer := &DefaultPreparer{}
-	opts, _, err := preparer.Prepare(apiResponse)
+	opts, err := preparer.Prepare(apiResponse)
 	require.NoError(t, err)
 
 	interceptMultipartFiles(response, httpRequest, handler, apiResponse, &testFormProcessor{}, opts)

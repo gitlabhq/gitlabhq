@@ -50,7 +50,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
     context 'when Pipelines are initially enabled' do
       it 'shows the Merge Requests settings' do
         expect(page).to have_content 'Pipelines must succeed'
-        expect(page).to have_content 'All discussions must be resolved'
+        expect(page).to have_content 'All threads must be resolved'
 
         within('.sharing-permissions-form') do
           find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
@@ -58,7 +58,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         end
 
         expect(page).not_to have_content 'Pipelines must succeed'
-        expect(page).not_to have_content 'All discussions must be resolved'
+        expect(page).not_to have_content 'All threads must be resolved'
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
       it 'shows the Merge Requests settings that do not depend on Builds feature' do
         expect(page).to have_content 'Pipelines must succeed'
-        expect(page).to have_content 'All discussions must be resolved'
+        expect(page).to have_content 'All threads must be resolved'
 
         within('.sharing-permissions-form') do
           find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .gl-toggle').click
@@ -78,7 +78,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
         end
 
         expect(page).to have_content 'Pipelines must succeed'
-        expect(page).to have_content 'All discussions must be resolved'
+        expect(page).to have_content 'All threads must be resolved'
       end
     end
   end
@@ -91,7 +91,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
 
     it 'does not show the Merge Requests settings' do
       expect(page).not_to have_content 'Pipelines must succeed'
-      expect(page).not_to have_content 'All discussions must be resolved'
+      expect(page).not_to have_content 'All threads must be resolved'
 
       within('.sharing-permissions-form') do
         find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .gl-toggle').click
@@ -99,7 +99,7 @@ RSpec.describe 'Projects > Settings > User manages merge request settings' do
       end
 
       expect(page).to have_content 'Pipelines must succeed'
-      expect(page).to have_content 'All discussions must be resolved'
+      expect(page).to have_content 'All threads must be resolved'
     end
   end
 

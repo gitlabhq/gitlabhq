@@ -74,11 +74,11 @@ module Gitlab
       end
 
       def exist?
-        archived_trace_exist? || live_trace_exist?
+        archived? || live_trace_exist?
       end
 
-      def archived_trace_exist?
-        archived?
+      def archived?
+        trace_artifact&.stored?
       end
 
       def live_trace_exist?
@@ -218,12 +218,6 @@ module Gitlab
         end
       end
 
-      def archived?
-        # TODO check checksum to ensure archive completed successfully
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
-        trace_artifact&.archived_trace_exists?
-      end
-
       def destroy_any_orphan_trace_data!
         return unless trace_artifact
 
@@ -312,7 +306,7 @@ module Gitlab
       end
 
       def consistent_archived_trace?(build)
-        ::Feature.enabled?(:gitlab_ci_archived_trace_consistent_reads, build.project, default_enabled: false)
+        ::Feature.enabled?(:gitlab_ci_archived_trace_consistent_reads, build.project)
       end
 
       def being_watched_cache_key

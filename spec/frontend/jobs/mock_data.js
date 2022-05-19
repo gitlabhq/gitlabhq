@@ -1928,3 +1928,75 @@ export const CIJobConnectionExistingCache = {
 };
 
 export const mockFailedSearchToken = { type: 'status', value: { data: 'FAILED', operator: '=' } };
+
+export const retryMutationResponse = {
+  data: {
+    jobRetry: {
+      job: {
+        __typename: 'CiJob',
+        id: '"gid://gitlab/Ci::Build/1985"',
+        detailedStatus: {
+          detailsPath: '/root/project/-/jobs/1985',
+          id: 'pending-1985-1985',
+          __typename: 'DetailedStatus',
+        },
+      },
+      errors: [],
+      __typename: 'JobRetryPayload',
+    },
+  },
+};
+
+export const playMutationResponse = {
+  data: {
+    jobPlay: {
+      job: {
+        __typename: 'CiJob',
+        id: '"gid://gitlab/Ci::Build/1986"',
+        detailedStatus: {
+          detailsPath: '/root/project/-/jobs/1986',
+          id: 'pending-1986-1986',
+          __typename: 'DetailedStatus',
+        },
+      },
+      errors: [],
+      __typename: 'JobRetryPayload',
+    },
+  },
+};
+
+export const cancelMutationResponse = {
+  data: {
+    jobCancel: {
+      job: {
+        __typename: 'CiJob',
+        id: '"gid://gitlab/Ci::Build/1987"',
+        detailedStatus: {
+          detailsPath: '/root/project/-/jobs/1987',
+          id: 'pending-1987-1987',
+          __typename: 'DetailedStatus',
+        },
+      },
+      errors: [],
+      __typename: 'JobRetryPayload',
+    },
+  },
+};
+
+export const unscheduleMutationResponse = {
+  data: {
+    jobUnschedule: {
+      job: {
+        __typename: 'CiJob',
+        id: '"gid://gitlab/Ci::Build/1988"',
+        detailedStatus: {
+          detailsPath: '/root/project/-/jobs/1988',
+          id: 'pending-1988-1988',
+          __typename: 'DetailedStatus',
+        },
+      },
+      errors: [],
+      __typename: 'JobRetryPayload',
+    },
+  },
+};

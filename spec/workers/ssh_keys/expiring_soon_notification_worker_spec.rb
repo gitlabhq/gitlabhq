@@ -38,7 +38,7 @@ RSpec.describe SshKeys::ExpiringSoonNotificationWorker, type: :worker do
     end
 
     context 'when key has expired in the past' do
-      let_it_be(:expired_past) { create(:key, expires_at: 1.day.ago, user: user) }
+      let_it_be(:expired_past) { create(:key, :expired, user: user) }
 
       it 'does not update notified column' do
         expect { worker.perform }.not_to change { expired_past.reload.before_expiry_notification_delivered_at }

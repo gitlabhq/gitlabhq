@@ -22,6 +22,7 @@ module Gitlab
             observation.query_statistics = connection.execute(<<~SQL)
               SELECT query, calls, total_time, max_time, mean_time, rows
               FROM pg_stat_statements
+              WHERE pg_get_userbyid(userid) = current_user
               ORDER BY total_time DESC
             SQL
           end

@@ -300,6 +300,24 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    need it when setting up the **secondary** node! The certificate is not sensitive
    data.
 
+   However, this certificate is created with a generic `PostgreSQL` Common Name. For this,
+   you must use the `verify-ca` mode when replicating the database, otherwise,
+   the hostname mismatch will cause errors.
+
+1. Optional. Generate your own SSL certificate and manually
+   [configure SSL for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-ssl),
+   instead of using the generated certificate.
+
+   You will need at least the SSL certificate and key, and set the `postgresql['ssl_cert_file']` and
+   `postgresql['ssl_key_file']` values to their full paths, as per the Database SSL docs.
+
+   This allows you to use the `verify-full` SSL mode when replicating the database
+   and get the extra benefit of verifying the full hostname in the CN.
+
+   You can use this certificate (that you have also set in `postgresql['ssl_cert_file']`) instead
+   of the certificate from the point above going forward. This will allow you to use `verify-full`
+   without replication errors if the CN matches.
+
 #### Step 2. Configure the **secondary** server
 
 1. SSH into your GitLab **secondary** server and login as root:
@@ -367,7 +385,13 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
       -h <primary_node_ip>
    ```
 
-   When prompted enter the password you set in the first step for the
+   NOTE:
+   If you are using manually generated certificates and plan on using
+   `sslmode=verify-full` to benefit of the full hostname verification,
+   make sure to replace `verify-ca` to `verify-full` when
+   running the command.
+
+   When prompted enter the _plaintext_ password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
    the list of **primary** node's databases.
 
@@ -455,6 +479,7 @@ data before running `pg_basebackup`.
    gitlab-ctl replicate-geo-database \
       --slot-name=<secondary_node_name> \
       --host=<primary_node_ip>
+      --sslmode=verify-ca
    ```
 
    NOTE:
@@ -462,6 +487,13 @@ data before running `pg_basebackup`.
 
    When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
    user in the first step.
+
+   NOTE:
+   If you have generated custom PostgreSQL certificates, you will want to use
+   `--sslmode=verify-full` (or omit the `sslmode` line entirely), to benefit from the extra
+   validation of the full host name in the certificate CN / SAN for additional security.
+   Otherwise, using the automatically created certificate with `verify-full` will fail,
+   as it has a generic `PostgreSQL` CN which will not match the `--host` value in this command.
 
    This command also takes a number of additional options. You can use `--help`
    to list them all, but here are a couple of tips:
@@ -1061,7 +1093,7 @@ For each node running the `gitlab-rails`, `sidekiq`, and `geo-logcursor` service
 1. Run the tracking database migrations:
 
    ```shell
-   gitlab-rake geo:db:migrate
+   gitlab-rake db:migrate:geo
    ```
 
 ### Migrating a single tracking database node to Patroni

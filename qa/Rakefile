@@ -65,6 +65,11 @@ task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |t, args|
   QA::Tools::DeleteTestUsers.new(args).run
 end
 
+desc "Deletes snippets"
+task :delete_test_snippets, [:delete_before, :dry_run] do |t, args|
+  QA::Tools::DeleteTestSnippets.new(args).run
+end
+
 namespace :test_resources do
   desc "Deletes resources created during E2E test runs"
   task :delete, [:file_pattern] do |t, args|

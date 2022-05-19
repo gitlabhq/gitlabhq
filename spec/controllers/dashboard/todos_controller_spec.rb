@@ -113,6 +113,19 @@ RSpec.describe Dashboard::TodosController do
 
           expect(response).to redirect_to(dashboard_todos_path(page: last_page, project_id: project.id))
         end
+
+        it 'returns directly addressed if filtering by mentioned action_id' do
+          allow(controller).to receive(:current_user).and_return(user)
+
+          mentioned_todos = [
+            create(:todo, :directly_addressed, project: project, user: user, target: issues.first),
+            create(:todo, :mentioned, project: project, user: user, target: issues.first)
+          ]
+
+          get :index, params: { action_id: ::Todo::MENTIONED, project_id: project.id }
+
+          expect(assigns(:todos)).to match_array(mentioned_todos)
+        end
       end
     end
 

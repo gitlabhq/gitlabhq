@@ -38,7 +38,8 @@ module API
       success Entities::Projects::Topic
     end
     params do
-      requires :name, type: String, desc: 'Name'
+      requires :name, type: String, desc: 'Slug (name)'
+      requires :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic'
     end
@@ -60,7 +61,8 @@ module API
     end
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
-      optional :name, type: String, desc: 'Name'
+      optional :name, type: String, desc: 'Slug (name)'
+      optional :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic'
     end

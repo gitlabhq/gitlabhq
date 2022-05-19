@@ -4,7 +4,7 @@ module BulkImports
   class PipelineWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
 
-    NDJSON_PIPELINE_PERFORM_DELAY = 10.seconds
+    FILE_EXTRACTION_PIPELINE_PERFORM_DELAY = 10.seconds
 
     data_consistency :always
     feature_category :importers
@@ -46,13 +46,13 @@ module BulkImports
         raise(Entity::FailedError, 'Failed entity status')
       end
 
-      if ndjson_pipeline?(pipeline_tracker)
-        status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
+      if file_extraction_pipeline?(pipeline_tracker)
+        export_status = ExportStatus.new(pipeline_tracker, pipeline_tracker.pipeline_class.relation)
 
         raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?(pipeline_tracker)
-        raise(Pipeline::FailedError, status.error) if status.failed?
+        raise(Pipeline::FailedError, export_status.error) if export_status.failed?
 
-        return reenqueue(pipeline_tracker) if status.started?
+        return reenqueue(pipeline_tracker) if export_status.started?
       end
 
       pipeline_tracker.update!(status_event: 'start', jid: jid)
@@ -104,15 +104,15 @@ module BulkImports
       @logger ||= Gitlab::Import::Logger.build
     end
 
-    def ndjson_pipeline?(pipeline_tracker)
-      pipeline_tracker.pipeline_class.ndjson_pipeline?
+    def file_extraction_pipeline?(pipeline_tracker)
+      pipeline_tracker.pipeline_class.file_extraction_pipeline?
     end
 
     def job_timeout?(pipeline_tracker)
       (Time.zone.now - pipeline_tracker.entity.created_at) > Pipeline::NDJSON_EXPORT_TIMEOUT
     end
 
-    def reenqueue(pipeline_tracker, delay: NDJSON_PIPELINE_PERFORM_DELAY)
+    def reenqueue(pipeline_tracker, delay: FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
       self.class.perform_in(
         delay,
         pipeline_tracker.id,

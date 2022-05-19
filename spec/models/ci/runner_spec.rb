@@ -412,12 +412,9 @@ RSpec.describe Ci::Runner do
     context 'with shared_runner' do
       let(:runner) { create(:ci_runner, :instance) }
 
-      it 'transitions shared runner to project runner and assigns project' do
-        expect(subject).to be_truthy
-
-        expect(runner).to be_project_type
-        expect(runner.runner_projects.pluck(:project_id)).to match_array([project.id])
-        expect(runner.only_for?(project)).to be_truthy
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(ArgumentError, 'Transitioning an instance runner to a project runner is not supported')
       end
     end
 
@@ -428,6 +425,18 @@ RSpec.describe Ci::Runner do
       it 'raises an error' do
         expect { subject }
           .to raise_error(ArgumentError, 'Transitioning a group runner to a project runner is not supported')
+      end
+    end
+
+    context 'with project runner' do
+      let(:other_project) { create(:project) }
+      let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
+
+      it 'assigns runner to project' do
+        expect(subject).to be_truthy
+
+        expect(runner).to be_project_type
+        expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
       end
     end
   end
@@ -829,7 +838,7 @@ RSpec.describe Ci::Runner do
       context 'with legacy_mode enabled' do
         let(:legacy_mode) { '14.5' }
 
-        it { is_expected.to eq(:not_connected) }
+        it { is_expected.to eq(:stale) }
       end
 
       context 'with legacy_mode disabled' do
@@ -886,7 +895,7 @@ RSpec.describe Ci::Runner do
       context 'with legacy_mode enabled' do
         let(:legacy_mode) { '14.5' }
 
-        it { is_expected.to eq(:offline) }
+        it { is_expected.to eq(:stale) }
       end
 
       context 'with legacy_mode disabled' do
@@ -896,7 +905,7 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#deprecated_rest_status' do
-    let(:runner) { build(:ci_runner, :instance, contacted_at: 1.second.ago) }
+    let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
     subject { runner.deprecated_rest_status }
 
@@ -905,7 +914,7 @@ RSpec.describe Ci::Runner do
         runner.contacted_at = nil
       end
 
-      it { is_expected.to eq(:not_connected) }
+      it { is_expected.to eq(:never_contacted) }
     end
 
     context 'contacted 1s ago' do
@@ -918,10 +927,11 @@ RSpec.describe Ci::Runner do
 
     context 'contacted long time ago' do
       before do
+        runner.created_at = 1.year.ago
         runner.contacted_at = 1.year.ago
       end
 
-      it { is_expected.to eq(:offline) }
+      it { is_expected.to eq(:stale) }
     end
 
     context 'inactive' do

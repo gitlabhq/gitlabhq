@@ -9,7 +9,15 @@ RSpec.describe API::ImportBitbucketServer do
   let(:secret) { "sekrettt" }
   let(:project_key) { 'TES' }
   let(:repo_slug) { 'vim' }
-  let(:repo) { { name: 'vim' } }
+  let(:repo) do
+    double('repo',
+      name: repo_slug,
+      browse_url: "#{base_uri}/projects/#{project_key}/repos/#{repo_slug}/browse",
+      clone_url: "#{base_uri}/scm/#{project_key}/#{repo_slug}.git",
+      description: 'provider',
+      visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    )
+  end
 
   describe "POST /import/bitbucket_server" do
     context 'with no optional parameters' do
@@ -20,7 +28,7 @@ RSpec.describe API::ImportBitbucketServer do
       before do
         Grape::Endpoint.before_each do |endpoint|
           allow(endpoint).to receive(:client).and_return(client.as_null_object)
-          allow(client).to receive(:repo).with(project_key, repo_slug).and_return(double(name: repo_slug))
+          allow(client).to receive(:repo).with(project_key, repo_slug).and_return(repo)
         end
       end
 

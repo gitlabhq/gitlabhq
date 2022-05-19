@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import CommitsList from '~/commits';
 import axios from '~/lib/utils/axios_utils';
 import Pager from '~/pager';
@@ -9,7 +10,7 @@ describe('Commits List', () => {
   let commitsList;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <form class="commits-search-form" action="/h5bp/html5-boilerplate/commits/main">
         <input id="commits-search">
       </form>
@@ -17,6 +18,10 @@ describe('Commits List', () => {
       `);
     jest.spyOn(Pager, 'init').mockImplementation(() => {});
     commitsList = new CommitsList(25);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('should be defined', () => {

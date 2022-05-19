@@ -24,9 +24,9 @@ class Explore::ProjectsController < Explore::ApplicationController
   rescue_from PageOutOfBoundsError, with: :page_out_of_bounds
 
   feature_category :projects
-
   # TODO: Set higher urgency after addressing https://gitlab.com/gitlab-org/gitlab/-/issues/357913
-  urgency :low, [:index]
+  # and https://gitlab.com/gitlab-org/gitlab/-/issues/358945
+  urgency :low, [:index, :topics, :trending, :starred, :topic]
 
   def index
     show_alert_if_search_is_disabled

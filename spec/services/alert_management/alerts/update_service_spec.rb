@@ -88,7 +88,7 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
       it_behaves_like 'title update'
     end
 
-    context 'when alert is resolved and another existing open alert' do
+    context 'when alert is resolved and another existing unresolved alert' do
       let!(:alert) { create(:alert_management_alert, :resolved, project: project) }
       let!(:existing_alert) { create(:alert_management_alert, :triggered, project: project) }
 
@@ -193,27 +193,38 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
         end
       end
 
-      context 'with an opening status and existing open alert' do
-        let_it_be(:alert) { create(:alert_management_alert, :resolved, :with_fingerprint, project: project) }
-        let_it_be(:existing_alert) { create(:alert_management_alert, :triggered, fingerprint: alert.fingerprint, project: project) }
-        let_it_be(:url) { Gitlab::Routing.url_helpers.details_project_alert_management_path(project, existing_alert) }
-        let_it_be(:link) { ActionController::Base.helpers.link_to(_('alert'), url) }
+      context 'with existing unresolved alert' do
+        context 'with fingerprints' do
+          let_it_be(:existing_alert) { create(:alert_management_alert, :triggered, fingerprint: alert.fingerprint, project: project) }
 
-        let(:message) do
-          "An #{link} with the same fingerprint is already open. " \
-          'To change the status of this alert, resolve the linked alert.'
+          it 'does not query for existing alerts' do
+            expect(::AlertManagement::Alert).not_to receive(:find_unresolved_alert)
+
+            response
+          end
+
+          context 'when status was resolved' do
+            let_it_be(:alert) { create(:alert_management_alert, :resolved, :with_fingerprint, project: project) }
+            let_it_be(:existing_alert) { create(:alert_management_alert, :triggered, fingerprint: alert.fingerprint, project: project) }
+
+            let(:url) { Gitlab::Routing.url_helpers.details_project_alert_management_path(project, existing_alert) }
+            let(:link) { ActionController::Base.helpers.link_to(_('alert'), url) }
+            let(:message) do
+              "An #{link} with the same fingerprint is already open. " \
+              'To change the status of this alert, resolve the linked alert.'
+            end
+
+            it_behaves_like 'does not add a todo'
+            it_behaves_like 'does not add a system note'
+
+            it 'has an informative message' do
+              expect(response).to be_error
+              expect(response.message).to eq(message)
+            end
+          end
         end
 
-        it_behaves_like 'does not add a todo'
-        it_behaves_like 'does not add a system note'
-
-        it 'has an informative message' do
-          expect(response).to be_error
-          expect(response.message).to eq(message)
-        end
-
-        context 'fingerprints are blank' do
-          let_it_be(:alert) { create(:alert_management_alert, :resolved, project: project, fingerprint: nil) }
+        context 'without fingerprints' do
           let_it_be(:existing_alert) { create(:alert_management_alert, :triggered, fingerprint: alert.fingerprint, project: project) }
 
           it 'successfully changes the status' do

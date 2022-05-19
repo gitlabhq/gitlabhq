@@ -127,7 +127,7 @@ RSpec.describe 'container repository details' do
 
     let(:query) do
       <<~GQL
-        query($id: ID!, $n: Int) {
+        query($id: ContainerRepositoryID!, $n: Int) {
           containerRepository(id: $id) {
             tags(first: $n) {
               edges {
@@ -157,7 +157,7 @@ RSpec.describe 'container repository details' do
 
     let(:query) do
       <<~GQL
-        query($id: ID!, $n: ContainerRepositoryTagSort) {
+        query($id: ContainerRepositoryID!, $n: ContainerRepositoryTagSort) {
           containerRepository(id: $id) {
             tags(sort: $n) {
               edges {
@@ -194,7 +194,7 @@ RSpec.describe 'container repository details' do
 
     let(:query) do
       <<~GQL
-        query($id: ID!, $n: String) {
+        query($id: ContainerRepositoryID!, $n: String) {
           containerRepository(id: $id) {
             tags(name: $n) {
               edges {
@@ -232,7 +232,7 @@ RSpec.describe 'container repository details' do
 
     let(:query) do
       <<~GQL
-        query($id: ID!) {
+        query($id: ContainerRepositoryID!) {
           containerRepository(id: $id) {
             size
           }

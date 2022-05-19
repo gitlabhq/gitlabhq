@@ -9,6 +9,7 @@ export default ({
   manageMilestonesPath,
   newMilestonePath,
   releasesPagePath,
+  editReleaseDocsPath,
 
   tagName = null,
   defaultBranch = null,
@@ -23,6 +24,7 @@ export default ({
   manageMilestonesPath,
   newMilestonePath,
   releasesPagePath,
+  editReleaseDocsPath,
 
   /**
    * The name of the tag associated with the release, provided by the backend.
@@ -48,4 +50,8 @@ export default ({
 
   isUpdatingRelease: false,
   updateError: null,
+
+  tagNotes: '',
+  includeTagNotes: false,
+  existingRelease: null,
 });

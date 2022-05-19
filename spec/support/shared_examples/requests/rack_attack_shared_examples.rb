@@ -149,6 +149,7 @@ RSpec.shared_examples 'rate-limited token requests' do
 
       arguments = a_hash_including({
         message: 'Rack_Attack',
+        status: 429,
         env: :throttle,
         remote_ip: '127.0.0.1',
         request_method: request_method,
@@ -314,6 +315,7 @@ RSpec.shared_examples 'rate-limited web authenticated requests' do
 
       arguments = a_hash_including({
         message: 'Rack_Attack',
+        status: 429,
         env: :throttle,
         remote_ip: '127.0.0.1',
         request_method: request_method,
@@ -391,14 +393,16 @@ RSpec.shared_examples 'tracking when dry-run mode is set' do
   end
 
   it 'logs RackAttack info into structured logs' do
-    arguments = a_hash_including({
-      message: 'Rack_Attack',
-      env: :track,
-      remote_ip: '127.0.0.1',
-      matched: throttle_name
-    })
+    expect(Gitlab::AuthLogger).to receive(:error) do |arguments|
+      expect(arguments).to include(
+        message: 'Rack_Attack',
+        env: :track,
+        remote_ip: '127.0.0.1',
+        matched: throttle_name
+      )
 
-    expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
+      expect(arguments).not_to have_key(:status)
+    end
 
     (1 + requests_per_period).times do
       do_request
@@ -576,6 +580,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
 
       arguments = a_hash_including({
         message: 'Rack_Attack',
+        status: 429,
         env: :throttle,
         remote_ip: '127.0.0.1',
         request_method: 'GET',

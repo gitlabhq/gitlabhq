@@ -21,7 +21,7 @@ For information on using GitLab to work on your own software projects, see the
 For information on working with the GitLab APIs, see the [API documentation](../api/index.md).
 
 For information about how to install, configure, update, and upgrade your own
-GitLab instance, see the [administration documentation](../administration/index.md).
+GitLab instance, see the [Administrator documentation](../administration/index.md).
 
 ## Get started
 
@@ -144,7 +144,7 @@ In these cases, use the following workflow:
    If the page is not assigned to a specific group, follow the
    [Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
    The Technical Writer may ask for additional approvals as previously suggested before merging the MR.
-   
+
 ### Reviewer values
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57293) in GitLab 14.1.

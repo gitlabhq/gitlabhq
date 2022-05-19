@@ -9,6 +9,7 @@ export const FILTER_TAG_IDENTIFIER = 'tag';
 export const SCHEDULE_ORIGIN = 'schedule';
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
+export const PIPELINE_GRAPHQL_TYPE = 'Ci::Pipeline';
 
 export const ICONS = {
   TAG: 'tag',
@@ -44,6 +45,28 @@ export const UNSUPPORTED_DATA = 'unsupported_data';
 
 export const CHILD_VIEW = 'child';
 
+// Pipeline tabs
+
+export const TAB_QUERY_PARAM = 'tab';
+
+export const needsTabName = 'dag';
+export const jobsTabName = 'builds';
+export const failedJobsTabName = 'failures';
+export const testReportTabName = 'test_report';
+export const securityTabName = 'security';
+export const licensesTabName = 'licenses';
+export const codeQualityTabName = 'codequality_report';
+
+export const validPipelineTabNames = [
+  needsTabName,
+  jobsTabName,
+  failedJobsTabName,
+  testReportTabName,
+  securityTabName,
+  licensesTabName,
+  codeQualityTabName,
+];
+
 // Constants for the ID and IID selection dropdown
 export const PipelineKeyOptions = [
   {
@@ -62,3 +85,27 @@ export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
 
 export const BUTTON_TOOLTIP_RETRY = __('Retry failed jobs');
 export const BUTTON_TOOLTIP_CANCEL = __('Cancel');
+
+export const DEFAULT_FIELDS = [
+  {
+    key: 'name',
+    label: __('Name'),
+    columnClass: 'gl-w-20p',
+  },
+  {
+    key: 'stage',
+    label: __('Stage'),
+    columnClass: 'gl-w-20p',
+  },
+  {
+    key: 'failure',
+    label: __('Failure'),
+    columnClass: 'gl-w-40p',
+  },
+  {
+    key: 'actions',
+    label: '',
+    tdClass: 'gl-text-right',
+    columnClass: 'gl-w-20p',
+  },
+];

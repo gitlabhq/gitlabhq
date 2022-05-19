@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
@@ -79,7 +80,7 @@ describe('MergeRequestTabs', () => {
     let tabUrl;
 
     beforeEach(() => {
-      loadFixtures('merge_requests/merge_request_with_task_list.html');
+      loadHTMLFixture('merge_requests/merge_request_with_task_list.html');
 
       tabUrl = $('.commits-tab a').attr('href');
 
@@ -95,6 +96,10 @@ describe('MergeRequestTabs', () => {
           },
         },
       };
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     describe('meta click', () => {

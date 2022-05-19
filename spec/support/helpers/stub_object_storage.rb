@@ -7,11 +7,6 @@ module StubObjectStorage
                                   **params)
   end
 
-  def stub_object_storage_pseudonymizer
-    stub_object_storage(connection_params: Pseudonymizer::Uploader.object_store_credentials,
-                        remote_directory: Pseudonymizer::Uploader.remote_directory)
-  end
-
   def stub_object_storage_uploader(
     config:,
         uploader:,

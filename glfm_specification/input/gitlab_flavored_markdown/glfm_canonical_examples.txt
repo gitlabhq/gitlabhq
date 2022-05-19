@@ -1,0 +1,23 @@
+# First GitLab-Specific Section with Examples
+
+## Strong but with two asterisks
+
+```````````````````````````````` example
+**bold**
+.
+<p><strong>bold</strong></p>
+````````````````````````````````
+
+# Second GitLab-Specific Section with Examples
+
+## Strong but with HTML
+
+```````````````````````````````` example
+<strong>
+bold
+</strong>
+.
+<p><strong>
+bold
+</strong></p>
+````````````````````````````````

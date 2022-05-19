@@ -58,7 +58,7 @@ module Gitlab
       def url(path)
         host = integration.api_url.presence || integration.url
 
-        URI.join(host, '/api.php/v1/', path)
+        URI.parse(Gitlab::Utils.append_path(host, "api.php/v1/#{path}"))
       end
 
       def headers

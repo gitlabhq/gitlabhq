@@ -1,4 +1,5 @@
 import { languages } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
 import ciSchemaPath from '~/editor/schema/ci.json';
@@ -19,7 +20,7 @@ describe('~/editor/editor_ci_config_ext', () => {
   let originalGitlabUrl;
 
   const createMockEditor = ({ blobPath = defaultBlobPath } = {}) => {
-    setFixtures('<div id="editor"></div>');
+    setHTMLFixture('<div id="editor"></div>');
     editorEl = document.getElementById('editor');
     editor = new SourceEditor();
     instance = editor.createInstance({
@@ -45,7 +46,9 @@ describe('~/editor/editor_ci_config_ext', () => {
 
   afterEach(() => {
     instance.dispose();
+
     editorEl.remove();
+    resetHTMLFixture();
   });
 
   describe('registerCiSchema', () => {

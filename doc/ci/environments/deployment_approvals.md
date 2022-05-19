@@ -34,7 +34,7 @@ To configure deployment approvals for a project:
 
 ### Create a deployment job
 
-Create a deployment job in the `.gitlab-ci.yaml` file of the desired project. The job does **not** need to be manual (`when: manual`).
+Create a deployment job in the `.gitlab-ci.yml` file of the desired project. The job does **not** need to be manual (`when: manual`).
 
 Example:
 
@@ -92,7 +92,8 @@ Maintainer role.
 
 #### Multiple approval rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
 
 1. Using the [REST API](../../api/group_protected_environments.md#protect-an-environment).
    1. `deploy_access_levels` represents which entity can execute the deployment job.
@@ -138,7 +139,9 @@ To approve or reject a deployment to a protected environment using the UI:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
+1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
+1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
 NOTE:

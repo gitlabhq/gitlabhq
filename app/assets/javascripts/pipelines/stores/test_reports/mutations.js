@@ -1,3 +1,5 @@
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import * as types from './mutation_types';
 
 export default {
@@ -11,6 +13,18 @@ export default {
 
   [types.SET_SUITE](state, { suite = {}, index = null }) {
     state.testReports.test_suites[index] = { ...suite, hasFullSuite: true };
+  },
+
+  [types.SET_SUITE_ERROR](state, error) {
+    const errorMessage = error.response?.data?.errors;
+
+    if (errorMessage) {
+      state.errorMessage = errorMessage;
+    } else {
+      createFlash({
+        message: s__('TestReports|There was an error fetching the test suite.'),
+      });
+    }
   },
 
   [types.SET_SELECTED_SUITE_INDEX](state, selectedSuiteIndex) {

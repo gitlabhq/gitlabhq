@@ -7,29 +7,24 @@ RSpec.describe TrackingHelper do
     using RSpec::Parameterized::TableSyntax
 
     let(:input) { %w(a b c) }
-    let(:results) do
-      {
-        no_data: {},
-        with_data: { data: { track_label: 'a', track_action: 'b', track_property: 'c' } }
-      }
+    let(:result) { { data: { track_label: 'a', track_action: 'b', track_property: 'c' } } }
+
+    before do
+      stub_application_setting(snowplow_enabled: true)
     end
 
-    where(:snowplow_enabled, :environment, :result) do
-      true  | 'production'  | :with_data
-      false | 'production'  | :no_data
-      true  | 'development' | :no_data
-      false | 'development' | :no_data
-      true  | 'test'        | :no_data
-      false | 'test'        | :no_data
+    it 'returns no data if snowplow is disabled' do
+      stub_application_setting(snowplow_enabled: false)
+
+      expect(helper.tracking_attrs(*input)).to eq({})
     end
 
-    with_them do
-      it 'returns a hash' do
-        stub_application_setting(snowplow_enabled: snowplow_enabled)
-        allow(Rails).to receive(:env).and_return(environment.inquiry)
+    it 'returns data hash' do
+      expect(helper.tracking_attrs(*input)).to eq(result)
+    end
 
-        expect(helper.tracking_attrs(*input)).to eq(results[result])
-      end
+    it 'can return data directly' do
+      expect(helper.tracking_attrs_data(*input)).to eq(result[:data])
     end
   end
 end

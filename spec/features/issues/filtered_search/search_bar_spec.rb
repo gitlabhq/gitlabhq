@@ -9,102 +9,74 @@ RSpec.describe 'Search bar', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
 
-  let(:filtered_search) { find('.filtered-search') }
-
   before do
+    stub_feature_flags(vue_issues_list: true)
     project.add_maintainer(user)
     sign_in(user)
 
     visit project_issues_path(project)
   end
 
-  def get_left_style(style)
-    left_style = /left:\s\d*[.]\d*px/.match(style)
-    left_style.to_s.gsub('left: ', '').to_f
-  end
-
   describe 'keyboard navigation' do
-    it 'makes item active' do
-      filtered_search.native.send_keys(:down)
-
-      page.within '#js-dropdown-hint' do
-        expect(page).to have_selector('.droplab-item-active')
-      end
-    end
-
     it 'selects item' do
-      filtered_search.native.send_keys(:down, :down, :enter)
+      click_filtered_search_bar
+      send_keys :down, :enter
 
-      expect_tokens([{ name: 'Assignee' }])
-      expect_filtered_search_input_empty
+      expect_token_segment 'Assignee'
     end
   end
 
   describe 'clear search button' do
     it 'clears text' do
       search_text = 'search_text'
-      filtered_search.set(search_text)
+      click_filtered_search_bar
+      send_keys search_text
 
-      expect(filtered_search.value).to eq(search_text)
-      find('.filtered-search-box .clear-search').click
+      expect(page).to have_field 'Search', with: search_text
 
-      expect(filtered_search.value).to eq('')
+      click_button 'Clear'
+
+      expect(page).to have_field 'Search', with: ''
     end
 
     it 'hides by default' do
-      expect(page).to have_css('.clear-search', visible: false)
+      expect(page).not_to have_button 'Clear'
     end
 
     it 'hides after clicked' do
-      filtered_search.set('a')
-      find('.filtered-search-box .clear-search').click
+      click_filtered_search_bar
+      send_keys 'a'
 
-      expect(page).to have_css('.clear-search', visible: false)
+      click_button 'Clear'
+
+      expect(page).not_to have_button 'Clear'
     end
 
     it 'hides when there is no text' do
-      filtered_search.set('a')
-      filtered_search.set('')
+      click_filtered_search_bar
+      send_keys 'a', :backspace, :backspace
 
-      expect(page).to have_css('.clear-search', visible: false)
+      expect(page).not_to have_button 'Clear'
     end
 
     it 'shows when there is text' do
-      filtered_search.set('a')
+      click_filtered_search_bar
+      send_keys 'a'
 
-      expect(page).to have_css('.clear-search', visible: true)
+      expect(page).to have_button 'Clear'
     end
 
     it 'resets the dropdown hint filter' do
-      filtered_search.click
-      original_size = page.all('#js-dropdown-hint .filter-dropdown .filter-dropdown-item').size
+      click_filtered_search_bar
+      original_size = get_suggestion_count
+      send_keys 'autho'
 
-      filtered_search.set('autho')
+      expect_suggestion_count 1
 
-      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
+      click_button 'Clear'
+      click_filtered_search_bar
 
-      find('.filtered-search-box .clear-search').click
-      filtered_search.click
-
-      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: original_size)
-    end
-
-    it 'resets the dropdown filters' do
-      filtered_search.click
-
-      hint_offset = get_left_style(find('#js-dropdown-hint')['style'])
-
-      filtered_search.set('a')
-
-      filtered_search.set('author:')
-
-      find('#js-dropdown-hint', visible: false)
-
-      find('.filtered-search-box .clear-search').click
-      filtered_search.click
-
-      expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', minimum: 6)
-      expect(get_left_style(find('#js-dropdown-hint')['style'])).to eq(hint_offset)
+      expect_suggestion_count(original_size)
     end
   end
 end

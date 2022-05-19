@@ -4,7 +4,7 @@ module BulkImports
   module Common
     module Pipelines
       class EntityFinisher
-        def self.ndjson_pipeline?
+        def self.file_extraction_pipeline?
           false
         end
 

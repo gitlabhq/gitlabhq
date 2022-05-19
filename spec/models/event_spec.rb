@@ -834,7 +834,13 @@ RSpec.describe Event do
       end
     end
 
-    context 'when a project was updated more than 1 hour ago' do
+    context 'when a project was updated more than 1 hour ago', :clean_gitlab_redis_shared_state do
+      before do
+        ::Gitlab::Redis::SharedState.with do |redis|
+          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current)
+        end
+      end
+
       it 'updates the project' do
         project.touch(:last_activity_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
 
@@ -844,6 +850,17 @@ RSpec.describe Event do
 
         expect(project.last_activity_at).to be_like_time(event.created_at)
         expect(project.updated_at).to be_like_time(event.created_at)
+      end
+
+      it "deletes the redis key for if the project was inactive" do
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis).to receive(:hdel).with('inactive_projects_deletion_warning_email_notified',
+                                               "project:#{project.id}")
+        end
+
+        project.touch(:last_activity_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
+
+        create_push_event(project, project.first_owner)
       end
     end
   end
@@ -1036,6 +1053,36 @@ RSpec.describe Event do
         action = build(:project_imported_event)
 
         expect(action.action_name).to eq('imported')
+      end
+    end
+  end
+
+  describe '#has_no_project_and_group' do
+    context 'with project event' do
+      it 'returns false when the event has project' do
+        event = build(:event, project: create(:project))
+
+        expect(event.has_no_project_and_group?).to be false
+      end
+
+      it 'returns true when the event has no project' do
+        event = build(:event, project: nil)
+
+        expect(event.has_no_project_and_group?).to be true
+      end
+    end
+
+    context 'with group event' do
+      it 'returns false when the event has group' do
+        event = build(:event, group: create(:group))
+
+        expect(event.has_no_project_and_group?).to be false
+      end
+
+      it 'returns true when the event has no group' do
+        event = build(:event, group: nil)
+
+        expect(event.has_no_project_and_group?).to be true
       end
     end
   end

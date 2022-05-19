@@ -322,10 +322,32 @@ export default {
     },
     restructuredWidgetShowMergeButtons() {
       if (this.glFeatures.restructuredMrWidget) {
-        return this.isMergeAllowed && this.state.userPermissions.canMerge;
+        return (
+          (this.isMergeAllowed || this.isAutoMergeAvailable) &&
+          this.state.userPermissions.canMerge &&
+          !this.mr.mergeOngoing &&
+          !this.mr.autoMergeEnabled
+        );
       }
 
       return true;
+    },
+    sourceBranchDeletedText() {
+      if (this.glFeatures.restructuredMrWidget) {
+        if (this.removeSourceBranch) {
+          return this.mr.state === 'merged'
+            ? __('Deleted the source branch.')
+            : __('Source branch will be deleted.');
+        }
+
+        return this.mr.state === 'merged'
+          ? __('Did not delete the source branch.')
+          : __('Source branch will not be deleted.');
+      }
+
+      return this.removeSourceBranch
+        ? __('Deletes the source branch.')
+        : __('Does not delete the source branch.');
     },
   },
   mounted() {
@@ -421,6 +443,8 @@ export default {
           if (this.glFeatures.mergeRequestWidgetGraphql) {
             this.updateGraphqlState();
           }
+
+          this.isMakingRequest = false;
         })
         .catch(() => {
           this.isMakingRequest = false;
@@ -499,6 +523,7 @@ export default {
 
 <template>
   <div
+    data-testid="ready_to_merge_state"
     :class="{
       'gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7 gl-rounded-bottom-left-base gl-rounded-bottom-right-base':
         glFeatures.restructuredMrWidget,
@@ -611,6 +636,7 @@ export default {
                   glFeatures.restructuredMrWidget && (shouldShowSquashEdit || shouldShowMergeEdit)
                 "
                 v-model="editCommitMessage"
+                data-testid="widget_edit_commit_message"
                 class="gl-display-flex gl-align-items-center"
               >
                 {{ __('Edit commit message') }}
@@ -686,25 +712,36 @@ export default {
                 v-if="!restructuredWidgetShowMergeButtons"
                 class="gl-w-full gl-order-n1 gl-text-gray-500"
               >
-                <strong>
+                <strong v-if="mr.state !== 'closed'">
                   {{ __('Merge details') }}
                 </strong>
                 <ul class="gl-pl-4 gl-m-0">
+                  <li
+                    v-if="mr.divergedCommitsCount > 0 && glFeatures.updatedMrHeader"
+                    class="gl-line-height-normal"
+                  >
+                    <gl-sprintf
+                      :message="s__('mrWidget|The source branch is %{link} the target branch')"
+                    >
+                      <template #link>
+                        <gl-link :href="mr.targetBranchPath">{{
+                          n__('%d commit behind', '%d commits behind', mr.divergedCommitsCount)
+                        }}</gl-link>
+                      </template>
+                    </gl-sprintf>
+                  </li>
                   <li class="gl-line-height-normal">
                     <added-commit-message
+                      :state="mr.state"
+                      :merge-commit-sha="mr.shortMergeCommitSha"
                       :is-squash-enabled="squashBeforeMerge"
                       :is-fast-forward-enabled="!shouldShowMergeEdit"
                       :commits-count="commitsCount"
                       :target-branch="stateData.targetBranch"
                     />
                   </li>
-                  <li class="gl-line-height-normal">
-                    <template v-if="removeSourceBranch">
-                      {{ __('Deletes the source branch.') }}
-                    </template>
-                    <template v-else>
-                      {{ __('Does not delete the source branch.') }}
-                    </template>
+                  <li v-if="mr.state !== 'closed'" class="gl-line-height-normal">
+                    {{ sourceBranchDeletedText }}
                   </li>
                   <li v-if="mr.relatedLinks" class="gl-line-height-normal">
                     <related-links
@@ -733,6 +770,8 @@ export default {
                     :state="mr.state"
                     :related-links="mr.relatedLinks"
                     :show-assign-to-me="false"
+                    :diverged-commits-count="mr.divergedCommitsCount"
+                    :target-branch-path="mr.targetBranchPath"
                     class="mr-ready-merge-related-links gl-display-inline"
                   />
                 </template>

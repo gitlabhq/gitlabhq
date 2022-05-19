@@ -45,13 +45,13 @@ module Notes
     def execute_quick_actions(note)
       return yield(false) unless quick_actions_supported?(note)
 
-      content, update_params, message = quick_actions_service.execute(note, quick_action_options)
+      content, update_params, message, command_names = quick_actions_service.execute(note, quick_action_options)
       only_commands = content.empty?
       note.note = content
 
       yield(only_commands)
 
-      do_commands(note, update_params, message, only_commands)
+      do_commands(note, update_params, message, command_names, only_commands)
     end
 
     def quick_actions_supported?(note)
@@ -84,7 +84,7 @@ module Notes
       end
     end
 
-    def do_commands(note, update_params, message, only_commands)
+    def do_commands(note, update_params, message, command_names, only_commands)
       return if quick_actions_service.commands_executed_count.to_i == 0
 
       if update_params.present?
@@ -96,6 +96,7 @@ module Notes
       # when #save is called
       if only_commands
         note.errors.add(:commands_only, message.presence || _('Failed to apply commands.'))
+        note.errors.add(:command_names, command_names.flatten)
         # Allow consumers to detect problems applying commands
         note.errors.add(:commands, _('Failed to apply commands.')) unless message.present?
       end
@@ -112,6 +113,7 @@ module Notes
       track_note_creation_usage_for_issues(note) if note.for_issue?
       track_note_creation_usage_for_merge_requests(note) if note.for_merge_request?
       track_incident_action(user, note.noteable, 'incident_comment') if note.for_issue?
+      track_note_creation_in_ipynb(note)
 
       if Feature.enabled?(:notes_create_service_tracking, project)
         Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
@@ -133,6 +135,16 @@ module Notes
 
     def track_note_creation_usage_for_merge_requests(note)
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_create_comment_action(note: note)
+    end
+
+    def should_track_ipynb_notes?(note)
+      Feature.enabled?(:ipynbdiff_notes_tracker) && note.respond_to?(:diff_file) && note.diff_file&.ipynb?
+    end
+
+    def track_note_creation_in_ipynb(note)
+      return unless should_track_ipynb_notes?(note)
+
+      Gitlab::UsageDataCounters::IpynbDiffActivityCounter.note_created(note)
     end
   end
 end

@@ -2,7 +2,6 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { s__, __ } from '~/locale';
-import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
 export default {
   name: 'JiraIssuesFields',
@@ -10,7 +9,6 @@ export default {
     GlFormGroup,
     GlFormCheckbox,
     GlFormInput,
-    JiraUpgradeCta,
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
@@ -45,11 +43,6 @@ export default {
       required: false,
       default: null,
     },
-    upgradePlanPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     isValidated: {
       type: Boolean,
       required: false,
@@ -64,6 +57,9 @@ export default {
   },
   computed: {
     ...mapGetters(['isInheriting']),
+    checkboxDisabled() {
+      return !this.showJiraIssuesIntegration || this.isInheriting;
+    },
     validProjectKey() {
       return !this.enableJiraIssues || Boolean(this.projectKey) || !this.isValidated;
     },
@@ -85,64 +81,48 @@ export default {
 
 <template>
   <div>
-    <template v-if="showJiraIssuesIntegration">
-      <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
-      <gl-form-checkbox
-        v-model="enableJiraIssues"
-        :disabled="isInheriting"
-        data-qa-selector="service_jira_issues_enabled_checkbox"
+    <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
+    <gl-form-checkbox
+      v-model="enableJiraIssues"
+      :disabled="checkboxDisabled"
+      data-qa-selector="service_jira_issues_enabled_checkbox"
+    >
+      {{ $options.i18n.enableCheckboxLabel }}
+      <template #help>
+        {{ $options.i18n.enableCheckboxHelp }}
+      </template>
+    </gl-form-checkbox>
+
+    <div v-if="enableJiraIssues" class="gl-pl-6 gl-mt-3">
+      <gl-form-group
+        :label="$options.i18n.projectKeyLabel"
+        label-for="service_project_key"
+        :invalid-feedback="$options.i18n.requiredFieldFeedback"
+        :state="validProjectKey"
+        class="gl-max-w-26"
+        data-testid="project-key-form-group"
       >
-        {{ $options.i18n.enableCheckboxLabel }}
-        <template #help>
-          {{ $options.i18n.enableCheckboxHelp }}
-        </template>
-      </gl-form-checkbox>
-
-      <div v-if="enableJiraIssues" class="gl-pl-6 gl-mt-3">
-        <gl-form-group
-          :label="$options.i18n.projectKeyLabel"
-          label-for="service_project_key"
-          :invalid-feedback="$options.i18n.requiredFieldFeedback"
+        <gl-form-input
+          id="service_project_key"
+          v-model="projectKey"
+          name="service[project_key]"
+          data-qa-selector="service_jira_project_key_field"
+          :placeholder="$options.i18n.projectKeyPlaceholder"
+          :required="enableJiraIssues"
           :state="validProjectKey"
-          class="gl-max-w-26"
-          data-testid="project-key-form-group"
-        >
-          <gl-form-input
-            id="service_project_key"
-            v-model="projectKey"
-            name="service[project_key]"
-            data-qa-selector="service_jira_project_key_field"
-            :placeholder="$options.i18n.projectKeyPlaceholder"
-            :required="enableJiraIssues"
-            :state="validProjectKey"
-            :readonly="isInheriting"
-          />
-        </gl-form-group>
-
-        <jira-issue-creation-vulnerabilities
-          :project-key="projectKey"
-          :initial-is-enabled="initialEnableJiraVulnerabilities"
-          :initial-issue-type-id="initialVulnerabilitiesIssuetype"
-          :show-full-feature="showJiraVulnerabilitiesIntegration"
-          class="gl-mt-6"
-          data-testid="jira-for-vulnerabilities"
-          @request-jira-issue-types="$emit('request-jira-issue-types')"
+          :readonly="isInheriting"
         />
-        <jira-upgrade-cta
-          v-if="!showJiraVulnerabilitiesIntegration"
-          class="gl-mt-2 gl-ml-6"
-          data-testid="ultimate-upgrade-cta"
-          show-ultimate-message
-          :upgrade-plan-path="upgradePlanPath"
-        />
-      </div>
-    </template>
+      </gl-form-group>
 
-    <jira-upgrade-cta
-      v-else
-      data-testid="premium-upgrade-cta"
-      show-premium-message
-      :upgrade-plan-path="upgradePlanPath"
-    />
+      <jira-issue-creation-vulnerabilities
+        :project-key="projectKey"
+        :initial-is-enabled="initialEnableJiraVulnerabilities"
+        :initial-issue-type-id="initialVulnerabilitiesIssuetype"
+        :show-full-feature="showJiraVulnerabilitiesIntegration"
+        class="gl-mt-6"
+        data-testid="jira-for-vulnerabilities"
+        @request-jira-issue-types="$emit('request-jira-issue-types')"
+      />
+    </div>
   </div>
 </template>

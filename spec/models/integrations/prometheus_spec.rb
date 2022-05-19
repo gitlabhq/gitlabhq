@@ -122,34 +122,6 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
     end
   end
 
-  describe 'callbacks' do
-    context 'after_create' do
-      let(:project) { create(:project) }
-      let(:integration) { build(:prometheus_integration, project: project) }
-
-      subject(:create_integration) { integration.save! }
-
-      it 'creates default alerts' do
-        expect(Prometheus::CreateDefaultAlertsWorker)
-          .to receive(:perform_async)
-          .with(project.id)
-
-        create_integration
-      end
-
-      context 'no project exists' do
-        let(:integration) { build(:prometheus_integration, :instance) }
-
-        it 'does not create default alerts' do
-          expect(Prometheus::CreateDefaultAlertsWorker)
-            .not_to receive(:perform_async)
-
-          create_integration
-        end
-      end
-    end
-  end
-
   describe '#test' do
     before do
       integration.manual_configuration = true

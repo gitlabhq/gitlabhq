@@ -97,9 +97,9 @@ def click_sort_option(option, ascending)
     wait_for_requests
   end
 
-  find('button.gl-dropdown-toggle').click
+  find('[data-testid="registry-sort-dropdown"]').click
 
-  page.within('.dropdown-menu') do
+  page.within('[data-testid="registry-sort-dropdown"] .dropdown-menu') do
     click_button option
   end
 

@@ -103,14 +103,21 @@ RSpec.describe 'User comments on a diff', :js do
           end
 
           # Check the same comments in the side-by-side view.
+          execute_script "window.scrollTo(0,0)"
           find('.js-show-diff-settings').click
           click_button 'Side-by-side'
+
+          second_line_element = find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']")
+          second_root_element = second_line_element.ancestor('[data-path]')
 
           wait_for_requests
 
           page.within(second_root_element) do
             expect(page).to have_content('Line is wrong')
           end
+
+          first_line_element = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']").find(:xpath, "..")
+          first_root_element = first_line_element.ancestor('[data-path]')
 
           page.within(first_root_element) do
             expect(page).to have_content('Line is correct')
@@ -154,7 +161,7 @@ RSpec.describe 'User comments on a diff', :js do
       it 'allows comments on previously hidden lines the middle of a file' do
         # Click 27, expand up, select 18, add and verify comment
         page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
-          all('.js-unfold-all')[1].click
+          first('.js-unfold-all').click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="21"]').find(:xpath, '../..'), 'left')
         add_comment('18', '21')
@@ -163,10 +170,10 @@ RSpec.describe 'User comments on a diff', :js do
       it 'allows comments on previously hidden lines at the bottom of a file' do
         # Click +28, expand down, select 37 add and verify comment
         page.within find_by_scrolling('[data-path="files/ruby/popen.rb"]') do
-          all('.js-unfold-down:not([disabled])')[1].click
+          first('.js-unfold-down').click
         end
         click_diff_line(find('div[data-path="files/ruby/popen.rb"] .left-side a[data-linenumber="30"]').find(:xpath, '../..'), 'left')
-        add_comment('+28', '37')
+        add_comment('+28', '30')
       end
     end
 

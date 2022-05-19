@@ -237,7 +237,7 @@ consider using subsections for each distinct task.
 ### Related topics
 
 If inline links are not sufficient, you can create a topic called **Related topics**
-and include a bulleted list of related topics. This topic should be above the Troubleshooting section.
+and include an unordered list of related topics. This topic should be above the Troubleshooting section.
 
 ```markdown
 # Related topics
@@ -336,7 +336,7 @@ Consider the following guidelines when offering examples:
   the reader to go directly to the good part. Consider offering an explanation
   (for example, a comment, or a link to a resource) on why something is bad
   practice.
-- Better and best cases can be considered part of the good case(s) code block.
+- Better and best cases can be considered part of the good cases' code block.
   In the same code block, precede each with comments: `# Better` and `# Best`.
 
 Although the bad-then-good approach is acceptable for the GitLab development

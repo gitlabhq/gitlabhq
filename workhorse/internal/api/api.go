@@ -17,7 +17,6 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
@@ -150,7 +149,7 @@ type Response struct {
 	// Used to communicate channel session details
 	Channel *ChannelSettings
 	// GitalyServer specifies an address and authentication token for a gitaly server we should connect to.
-	GitalyServer gitaly.Server
+	GitalyServer GitalyServer
 	// Repository object for making gRPC requests to Gitaly.
 	Repository gitalypb.Repository
 	// For git-http, does the requestor have the right to view all refs?
@@ -161,6 +160,12 @@ type Response struct {
 	ProcessLsifReferences bool
 	// The maximum accepted size in bytes of the upload
 	MaximumSize int64
+}
+
+type GitalyServer struct {
+	Address  string            `json:"address"`
+	Token    string            `json:"token"`
+	Features map[string]string `json:"features"`
 }
 
 // singleJoiningSlash is taken from reverseproxy.go:singleJoiningSlash

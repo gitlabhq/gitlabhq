@@ -77,6 +77,7 @@ export default {
       milestoneTitle: board.milestone?.title || null,
       iterationId: board.iteration?.id || null,
       iterationTitle: board.iteration?.title || null,
+      iterationCadenceId: board.iterationCadence?.id || null,
       assigneeId: board.assignee?.id || null,
       assigneeUsername: board.assignee?.username || null,
       labels: board.labels?.nodes || [],
@@ -134,7 +135,7 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const { lists, hideBacklogList } = data[boardType]?.board;
+        const { lists, hideBacklogList } = data[boardType].board;
         commit(types.RECEIVE_BOARD_LISTS_SUCCESS, formatBoardLists(lists));
         // Backlog list needs to be created if it doesn't exist and it's not hidden
         if (!lists.nodes.find((l) => l.listType === ListType.backlog) && !hideBacklogList) {
@@ -429,7 +430,7 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const { lists } = data[boardType]?.board;
+        const { lists } = data[boardType].board;
         const listItems = formatListIssues(lists);
         const listPageInfo = formatListsPageInfo(lists);
         commit(types.RECEIVE_ITEMS_FOR_LIST_SUCCESS, { listItems, listPageInfo, listId });

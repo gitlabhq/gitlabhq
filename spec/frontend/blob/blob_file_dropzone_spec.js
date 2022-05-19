@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import BlobFileDropzone from '~/blob/blob_file_dropzone';
 
 describe('BlobFileDropzone', () => {
@@ -6,13 +7,17 @@ describe('BlobFileDropzone', () => {
   let replaceFileButton;
 
   beforeEach(() => {
-    loadFixtures('blob/show.html');
+    loadHTMLFixture('blob/show.html');
     const form = $('.js-upload-blob-form');
     // eslint-disable-next-line no-new
     new BlobFileDropzone(form, 'POST');
     dropzone = $('.js-upload-blob-form .dropzone').get(0).dropzone;
     dropzone.processQueue = jest.fn();
     replaceFileButton = $('#submit-all');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('submit button', () => {

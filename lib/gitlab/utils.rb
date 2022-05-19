@@ -128,10 +128,6 @@ module Gitlab
       end
     end
 
-    def random_string
-      Random.rand(Float::MAX.to_i).to_s(36)
-    end
-
     # Behaves like `which` on Linux machines: given PATH, try to resolve the given
     # executable name to an absolute path, or return nil.
     #

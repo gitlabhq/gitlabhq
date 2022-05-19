@@ -57,6 +57,7 @@ export default {
         toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
         class="gl-h-7 gl-flex-grow-1"
         data-qa-selector="target_namespace_selector_dropdown"
+        data-testid="target-namespace-selector"
       >
         <gl-dropdown-item @click="$emit('update-target-namespace', { fullPath: '', id: null })">{{
           s__('BulkImport|No parent')

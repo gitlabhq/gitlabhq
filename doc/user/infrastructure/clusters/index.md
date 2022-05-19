@@ -18,7 +18,7 @@ as well as its related [features](#deprecated-features).
 The certificate-based Kubernetes integration with GitLab is deprecated.
 It had the following issues:
 
-- There were security issues as it required direct access to the Kube API by GitLab.
+- There were security issues as it required direct access to the Kubernetes API by GitLab.
 - The configuration options weren't flexible.
 - The integration was flaky.
 - Users were constantly reporting issues with features based on this model.
@@ -42,22 +42,18 @@ the GitLab agent model on the [agent's blueprint documentation](../../../archite
 
 ## Deprecated features
 
-- [Create a new cluster through cluster certificates](../../project/clusters/add_remove_clusters.md)
 - [Connect an existing cluster through cluster certificates](../../project/clusters/add_existing_cluster.md)
 - [Access controls](../../project/clusters/cluster_access.md)
 - [GitLab-managed clusters](../../project/clusters/gitlab_managed_clusters.md)
-- [GitLab Managed Apps](../../clusters/applications.md)
 - [Deploy applications through certificate-based connection](../../project/clusters/deploy_to_cluster.md)
 - [Cluster Management Project](../../clusters/management_project.md)
 - [Cluster integrations](../../clusters/integrations.md)
 - [Cluster cost management](../../clusters/cost_management.md)
 - [Cluster environments](../../clusters/environments.md)
-- [Advanced traffic control with Canary Ingress](../../project/canary_deployments.md#advanced-traffic-control-with-canary-ingress-deprecated)
-- [Serverless](../../project/clusters/serverless/index.md)
+- [Show Canary Ingress deployments on deploy boards](../../project/canary_deployments.md#show-canary-ingress-deployments-on-deploy-boards-deprecated)
 - [Deploy Boards](../../project/deploy_boards.md)
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
 - [Clusters health](manage/clusters_health.md)
-- [Crossplane integration](../../clusters/crossplane.md)
 - [Web terminals](../../../administration/integration/terminal.md)
 
 ### Cluster levels
@@ -67,5 +63,5 @@ The concept of [project-level](../../project/clusters/index.md),
 [instance-level](../../instance/clusters/index.md) clusters becomes
 extinct in the new model, although the functionality remains to some extent.
 
-The agent is always configured in a single GitLab project and you can expose the cluster connection to other projects and groups to [access it from GitLab CI/CD](../../clusters/agent/ci_cd_tunnel.md).
+The agent is always configured in a single GitLab project and you can expose the cluster connection to other projects and groups to [access it from GitLab CI/CD](../../clusters/agent/ci_cd_workflow.md).
 By doing so, you are granting these projects and groups access to the same cluster, which is similar to group-level clusters' use case.

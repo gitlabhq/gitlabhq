@@ -54,6 +54,11 @@ export default {
       required: false,
       default: true,
     },
+    restrictedToolBarItems: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -193,7 +198,10 @@ export default {
           <toolbar-button
             tag="**"
             :button-title="
-              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), { modifierKey })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             :shortcuts="$options.shortcuts.bold"
             icon="bold"
@@ -201,22 +209,28 @@ export default {
           <toolbar-button
             tag="_"
             :button-title="
-              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), { modifierKey })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             :shortcuts="$options.shortcuts.italic"
             icon="italic"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('strikethrough')"
             tag="~~"
             :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
               sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
-                modifierKey,
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
               })
             "
             :shortcuts="$options.shortcuts.strikethrough"
             icon="strikethrough"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('quote')"
             :prepend="true"
             :tag="tag"
             :button-title="__('Insert a quote')"
@@ -266,30 +280,37 @@ export default {
             tag="[{text}](url)"
             tag-select="url"
             :button-title="
-              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), { modifierKey })
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
+                modifierKey,
+              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
             "
             :shortcuts="$options.shortcuts.link"
             icon="link"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('bullet-list')"
             :prepend="true"
             tag="- "
             :button-title="__('Add a bullet list')"
             icon="list-bulleted"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('numbered-list')"
             :prepend="true"
             tag="1. "
             :button-title="__('Add a numbered list')"
             icon="list-numbered"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('task-list')"
             :prepend="true"
             tag="- [ ] "
             :button-title="__('Add a task list')"
             icon="list-task"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('collapsible-section')"
             :tag="mdCollapsibleSection"
             :prepend="true"
             tag-select="Click to expand"
@@ -297,12 +318,14 @@ export default {
             icon="details-block"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('table')"
             :tag="mdTable"
             :prepend="true"
             :button-title="__('Add a table')"
             icon="table"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('full-screen')"
             class="js-zen-enter"
             :prepend="true"
             :button-title="__('Go full screen')"

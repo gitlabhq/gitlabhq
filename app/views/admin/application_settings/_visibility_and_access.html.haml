@@ -16,29 +16,30 @@
       = f.label :default_group_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
-      = f.label :restricted_visibility_levels, class: 'label-bold'
+      = f.label :restricted_visibility_levels, class: 'label-bold gl-mb-0'
+      %span.form-text.gl-mt-0.gl-mb-3#restricted-visibility-help
+        = _('Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.')
       = hidden_field_tag 'application_setting[restricted_visibility_levels][]'
       - restricted_level_checkboxes(f).each do |level|
         = level
-      %span.form-text.text-muted#restricted-visibility-help
-        = _('Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.')
     .form-group
-      = f.label :import_sources, class: 'label-bold'
-      = hidden_field_tag 'application_setting[import_sources][]'
-      - import_sources_checkboxes(f).each do |source|
-        = source
-      %span.form-text.text-muted#import-sources-help
+      = f.label :import_sources, s_('AdminSettings|Import sources'), class: 'label-bold gl-mb-0'
+      %span.form-text.gl-mt-0.gl-mb-3#import-sources-help
         = _('Enabled sources for code import during project creation. OmniAuth must be configured for GitHub')
         = link_to sprite_icon('question-o'), help_page_path("integration/github")
         , Bitbucket
         = link_to sprite_icon('question-o'), help_page_path("integration/bitbucket")
         and GitLab.com
         = link_to sprite_icon('question-o'), help_page_path("integration/gitlab")
+      = hidden_field_tag 'application_setting[import_sources][]'
+      - import_sources_checkboxes(f).each do |source|
+        = source
 
     = render_if_exists 'admin/application_settings/ldap_access_setting', form: f
 
     .form-group
-      = f.gitlab_ui_checkbox_component :project_export_enabled, s_('AdminSettings|Project export enabled')
+      = f.label :project_export, s_('AdminSettings|Project export'), class: 'label-bold'
+      = f.gitlab_ui_checkbox_component :project_export_enabled, s_('AdminSettings|Enabled')
 
     .form-group
       %label.label-bold= _('Enabled Git access protocols')

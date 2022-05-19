@@ -1,0 +1,3 @@
+mutation removeToolbarItems($ids: [ID!]) {
+  removeToolbarItems(ids: $ids) @client
+}

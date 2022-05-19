@@ -1,6 +1,6 @@
 import { GlTabsBehavior, TAB_SHOWN_EVENT } from '~/tabs';
 import { ACTIVE_PANEL_CLASS, ACTIVE_TAB_CLASSES } from '~/tabs/constants';
-import { getFixture, setHTMLFixture } from 'helpers/fixtures';
+import { getFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 const tabsFixture = getFixture('tabs/tabs.html');
 
@@ -93,6 +93,8 @@ describe('GlTabsBehavior', () => {
   describe('when given an element', () => {
     afterEach(() => {
       glTabs.destroy();
+
+      resetHTMLFixture();
     });
 
     beforeEach(() => {
@@ -248,6 +250,10 @@ describe('GlTabsBehavior', () => {
       });
 
       glTabs = new GlTabsBehavior(tabsEl);
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('connects the panels to their tabs correctly', () => {

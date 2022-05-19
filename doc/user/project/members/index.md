@@ -189,7 +189,7 @@ You can filter and sort members in a project.
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. In the **Filter members** box, select `Membership` `=` `Inherited`.
-1. Press Enter.
+1. Press <kbd>Enter</kbd>.
 
 ![Project members filter inherited](img/project_members_filter_inherited_v14_4.png)
 
@@ -198,7 +198,7 @@ You can filter and sort members in a project.
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
-1. Press Enter.
+1. Press <kbd>Enter</kbd>.
 
 ![Project members filter direct](img/project_members_filter_direct_v14_4.png)
 

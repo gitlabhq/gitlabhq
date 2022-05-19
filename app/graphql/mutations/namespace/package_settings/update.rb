@@ -8,7 +8,7 @@ module Mutations
 
         include Mutations::ResolvesNamespace
 
-        authorize :create_package_settings
+        authorize :admin_package
 
         argument :namespace_path,
                 GraphQL::Types::ID,

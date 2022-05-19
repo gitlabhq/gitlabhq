@@ -1,4 +1,4 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlFormInput, GlFormSelect, GlFormGroup } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -100,6 +100,14 @@ describe('Reusable form component', () => {
         { name: 'email', label: 'Email', required: true },
         { name: 'phone', label: 'Phone' },
         { name: 'description', label: 'Description' },
+        {
+          name: 'organizationId',
+          label: 'Organization',
+          values: [
+            { key: 'gid://gitlab/CustomerRelations::Organization/1', value: 'GitLab' },
+            { key: 'gid://gitlab/CustomerRelations::Organization/2', value: 'ABC Corp' },
+          ],
+        },
       ],
       getQuery: {
         query: getGroupContactsQuery,
@@ -270,4 +278,51 @@ describe('Reusable form component', () => {
       });
     },
   );
+
+  describe('edit form', () => {
+    beforeEach(() => {
+      mountContactUpdate();
+    });
+
+    it.each`
+      index | id                  | componentName     | value
+      ${0}  | ${'firstName'}      | ${'GlFormInput'}  | ${'Marty'}
+      ${1}  | ${'lastName'}       | ${'GlFormInput'}  | ${'McFly'}
+      ${2}  | ${'email'}          | ${'GlFormInput'}  | ${'example@gitlab.com'}
+      ${4}  | ${'description'}    | ${'GlFormInput'}  | ${undefined}
+      ${3}  | ${'phone'}          | ${'GlFormInput'}  | ${undefined}
+      ${5}  | ${'organizationId'} | ${'GlFormSelect'} | ${'gid://gitlab/CustomerRelations::Organization/2'}
+    `(
+      'should render a $componentName for #$id with the value "$value"',
+      ({ index, id, componentName, value }) => {
+        const component = componentName === 'GlFormInput' ? GlFormInput : GlFormSelect;
+        const findFormGroup = (at) => wrapper.findAllComponents(GlFormGroup).at(at);
+        const findFormElement = () => findFormGroup(index).find(component);
+
+        expect(findFormElement().attributes('id')).toBe(id);
+        expect(findFormElement().attributes('value')).toBe(value);
+      },
+    );
+
+    it('should include updated values in update mutation', () => {
+      wrapper.find('#firstName').vm.$emit('input', 'Michael');
+      wrapper
+        .find('#organizationId')
+        .vm.$emit('input', 'gid://gitlab/CustomerRelations::Organization/1');
+
+      findForm().trigger('submit');
+
+      expect(handler).toHaveBeenCalledWith('updateContact', {
+        input: {
+          description: null,
+          email: 'example@gitlab.com',
+          firstName: 'Michael',
+          id: 'gid://gitlab/CustomerRelations::Contact/12',
+          lastName: 'McFly',
+          organizationId: 'gid://gitlab/CustomerRelations::Organization/1',
+          phone: null,
+        },
+      });
+    });
+  });
 });

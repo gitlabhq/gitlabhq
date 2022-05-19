@@ -1,0 +1,21 @@
+%tr{ role: 'row' }
+  %td{ role: 'cell', data: { label: _('Id') } }
+    = @migration.id
+  %td{ role: 'cell', data: { label: _('Min Value') } }
+    = @migration.min_value
+  %td{ role: 'cell', data: { label: _('Max Value') } }
+    = @migration.max_value
+  %td{ role: 'cell', data: { label: _('Batch size') } }
+    = @migration.batch_size
+  %td{ role: 'cell', data: { label: _('Sub-batch size') } }
+    = @migration.sub_batch_size
+  %td{ role: 'cell', data: { label: _('Interval') } }
+    = @migration.interval
+  %td{ role: 'cell', data: { label: _('Pause time (ms)') } }
+    = @migration.pause_ms
+  %td{ role: 'cell', data: { label: _('Created on') } }
+    = @migration.created_at
+  %td{ role: 'cell', data: { label: _('Last updated') } }
+    = @migration.updated_at
+  %td{ role: 'cell', data: { label: _('Status') } }
+    = gl_badge_tag @migration.status_name.to_s.humanize, { size: :sm, variant: batched_migration_status_badge_variant(@migration) }

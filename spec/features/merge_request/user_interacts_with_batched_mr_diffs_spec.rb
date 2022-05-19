@@ -59,7 +59,6 @@ RSpec.describe 'Batch diffs', :js do
 
         # Confirm scrolled to correct UI element
         expect(get_first_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_falsey
-        expect(get_second_diff.find('.discussion-notes .timeline-entry li.note[id]').obscured?).to be_truthy
       end
     end
 

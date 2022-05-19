@@ -29,13 +29,12 @@ class Import::BitbucketController < Import::BaseController
     end
   end
 
+  # We need to re-expose controller's internal method 'status' as action.
+  # rubocop:disable Lint/UselessMethodDefinition
   def status
     super
   end
-
-  def realtime_changes
-    super
-  end
+  # rubocop:enable Lint/UselessMethodDefinition
 
   def create
     bitbucket_client = Bitbucket::Client.new(credentials)

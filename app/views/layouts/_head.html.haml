@@ -3,31 +3,13 @@
 %head{ prefix: "og: http://ogp.me/ns#" }
   %meta{ charset: "utf-8" }
 
+  %title= page_title(site_name)
+
   = render 'layouts/loading_hints'
 
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   = render 'layouts/startup_js'
-
-  -# Open Graph - http://ogp.me/
-  %meta{ property: 'og:type', content: "object" }
-  %meta{ property: 'og:site_name', content: site_name }
-  %meta{ property: 'og:title', content: page_title }
-  %meta{ property: 'og:description', content: page_description }
-  %meta{ property: 'og:image', content: page_image }
-  %meta{ property: 'og:image:width', content: '64' }
-  %meta{ property: 'og:image:height', content: '64' }
-  %meta{ property: 'og:url', content: request.base_url + request.fullpath }
-
-  -# Twitter Card - https://dev.twitter.com/cards/types/summary
-  %meta{ property: 'twitter:card', content: "summary" }
-  %meta{ property: 'twitter:title', content: page_title }
-  %meta{ property: 'twitter:description', content: page_description }
-  %meta{ property: 'twitter:image', content: page_image }
-  = page_card_meta_tags
-
-  %title= page_title(site_name)
-  %meta{ name: "description", content: page_description }
 
   - if page_canonical_link
     %link{ rel: 'canonical', href: page_canonical_link }
@@ -67,26 +49,37 @@
 
   = yield :project_javascripts
 
-  = csrf_meta_tags
-  = csp_meta_tag
-  = action_cable_meta_tag
+  -# Open Graph - http://ogp.me/
+  %meta{ property: 'og:type', content: "object" }
+  %meta{ property: 'og:site_name', content: site_name }
+  %meta{ property: 'og:title', content: page_title }
+  %meta{ property: 'og:description', content: page_description }
+  %meta{ property: 'og:image', content: page_image }
+  %meta{ property: 'og:image:width', content: '64' }
+  %meta{ property: 'og:image:height', content: '64' }
+  %meta{ property: 'og:url', content: request.base_url + request.fullpath }
+
+  -# Twitter Card - https://dev.twitter.com/cards/types/summary
+  %meta{ property: 'twitter:card', content: "summary" }
+  %meta{ property: 'twitter:title', content: page_title }
+  %meta{ property: 'twitter:description', content: page_description }
+  %meta{ property: 'twitter:image', content: page_image }
+  = page_card_meta_tags
+
+  %meta{ name: "description", content: page_description }
 
   %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
   %meta{ name: 'theme-color', content: user_theme_primary_color }
 
+  = csrf_meta_tags
+  = csp_meta_tag
+  = action_cable_meta_tag
+
   -# Apple Safari/iOS home screen icons
-  = favicon_link_tag 'touch-icon-iphone.png', rel: 'apple-touch-icon'
-  = favicon_link_tag 'touch-icon-ipad.png', rel: 'apple-touch-icon', sizes: '76x76'
-  = favicon_link_tag 'touch-icon-iphone-retina.png', rel: 'apple-touch-icon', sizes: '120x120'
-  = favicon_link_tag 'touch-icon-ipad-retina.png', rel: 'apple-touch-icon', sizes: '152x152'
-  %link{ rel: 'mask-icon', href: image_path('logo.svg'), color: 'rgb(226, 67, 41)' }
+  = favicon_link_tag 'apple-touch-icon.png', rel: 'apple-touch-icon'
 
   -# OpenSearch
   %link{ href: search_opensearch_path(format: :xml), rel: 'search', title: 'Search GitLab', type: 'application/opensearchdescription+xml' }
-
-  -# Windows 8 pinned site tile
-  %meta{ name: 'msapplication-TileImage', content: image_path('msapplication-tile.png') }
-  %meta{ name: 'msapplication-TileColor', content: '#30353E' }
 
   = yield :meta_tags
 

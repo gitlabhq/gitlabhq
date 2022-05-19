@@ -621,7 +621,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
             expect(close_action.processed).to be_falsey
 
             # it encounters the StaleObjectError at first, but reloads the object and runs `build.play`
-            expect { subject }.not_to raise_error(ActiveRecord::StaleObjectError)
+            expect { subject }.not_to raise_error
 
             # Now the build should be processed.
             expect(close_action.reload.processed).to be_truthy
@@ -681,19 +681,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
           expect(actions).to match_array(close_actions)
           expect(actions.count).to eq(environment.successful_deployments.count)
-        end
-      end
-
-      context 'when the feature is disabled' do
-        before do
-          stub_feature_flags(environment_multiple_stop_actions: false)
-        end
-
-        it 'returns the last deployment job stop action' do
-          stop_actions = subject
-
-          expect(stop_actions.first).to eq(close_actions[1])
-          expect(stop_actions.count).to eq(1)
         end
       end
     end
@@ -886,22 +873,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
           is_expected.to eq(deployment)
         end
 
-        context 'env_last_deployment_by_finished_at feature flag' do
-          it 'when enabled it returns the deployment with the latest finished_at' do
-            stub_feature_flags(env_last_deployment_by_finished_at: true)
+        it 'returns the deployment with the latest finished_at' do
+          expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
 
-            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
-
-            is_expected.to eq(deployment)
-          end
-
-          it 'when disabled it returns the deployment with the highest id' do
-            stub_feature_flags(env_last_deployment_by_finished_at: false)
-
-            expect(old_deployment.finished_at < deployment.finished_at).to be_truthy
-
-            is_expected.to eq(old_deployment)
-          end
+          is_expected.to eq(deployment)
         end
       end
     end
@@ -1845,7 +1820,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       it 'fetches the rollout status from the deployment platform' do
         expect(environment.deployment_platform).to receive(:rollout_status)
-          .with(environment, pods: pods, deployments: deployments)
+          .with(environment, { pods: pods, deployments: deployments })
           .and_return(:mock_rollout_status)
 
         is_expected.to eq(:mock_rollout_status)

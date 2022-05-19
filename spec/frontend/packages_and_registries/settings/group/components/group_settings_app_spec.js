@@ -28,7 +28,6 @@ describe('Group Settings App', () => {
   const defaultProvide = {
     defaultExpanded: false,
     groupPath: 'foo_group_path',
-    dependencyProxyAvailable: true,
   };
 
   const mountComponent = ({
@@ -138,17 +137,6 @@ describe('Group Settings App', () => {
 
         expect(findAlert().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('when the dependency proxy is not available', () => {
-    beforeEach(() => {
-      mountComponent({ provide: { ...defaultProvide, dependencyProxyAvailable: false } });
-      return waitForApolloQueryAndRender();
-    });
-
-    it('the setting block is hidden', () => {
-      expect(findDependencyProxySettings().exists()).toBe(false);
     });
   });
 });

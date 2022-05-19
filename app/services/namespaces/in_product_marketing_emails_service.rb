@@ -61,7 +61,7 @@ module Namespaces
     def initialize(track, interval)
       @track = track
       @interval = interval
-      @sent_email_records = InProductMarketingEmailRecords.new
+      @sent_email_records = ::Users::InProductMarketingEmailRecords.new
     end
 
     def execute
@@ -86,7 +86,7 @@ module Namespaces
       users_for_group(group).each do |user|
         if can_perform_action?(user, group)
           send_email(user, group)
-          sent_email_records.add(user, track, series)
+          sent_email_records.add(user, track: track, series: series)
         end
       end
 

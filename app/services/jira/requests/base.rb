@@ -3,8 +3,6 @@
 module Jira
   module Requests
     class Base
-      include ProjectServicesLoggable
-
       JIRA_API_VERSION = 2
       # Limit the size of the JSON error message we will attempt to parse, as the JSON is external input.
       JIRA_ERROR_JSON_SIZE_LIMIT = 5_000
@@ -54,17 +52,13 @@ module Jira
       def request
         response = client.get(url)
         build_service_response(response)
-      rescue *ALL_ERRORS => e
-        log_error('Error sending message',
-          client_url: client.options[:site],
-          error: {
-            exception_class: e.class.name,
-            exception_message: e.message,
-            exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(e.backtrace)
-          }
+      rescue *ALL_ERRORS => error
+        jira_integration.log_exception(error,
+          message: 'Error sending message',
+          client_url: client.options[:site]
         )
 
-        ServiceResponse.error(message: error_message(e))
+        ServiceResponse.error(message: error_message(error))
       end
 
       def auth_docs_link_start

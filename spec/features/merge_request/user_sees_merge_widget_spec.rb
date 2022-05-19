@@ -20,6 +20,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
     stub_feature_flags(refactor_mr_widgets_extensions: false)
     stub_feature_flags(refactor_mr_widgets_extensions_user: false)
+    stub_feature_flags(refactor_mr_widget_test_summary: false)
   end
 
   context 'new merge request', :sidekiq_might_not_need_inline do
@@ -320,8 +321,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_selector('.accept-merge-request')
-      expect(find('.accept-merge-request')['disabled']).not_to be(true)
+      expect(page).not_to have_selector('.accept-merge-request')
     end
   end
 
@@ -384,9 +384,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Merge Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.')
-      end
+      expect(page).to have_content('Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally.')
     end
   end
 
@@ -444,7 +442,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
     it 'user cannot remove source branch', :sidekiq_might_not_need_inline do
       expect(page).not_to have_field('remove-source-branch-input')
-      expect(page).to have_content('Deletes the source branch')
     end
   end
 

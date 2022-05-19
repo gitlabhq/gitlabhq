@@ -2,7 +2,7 @@
 #import "../fragments/discussion_resolved_status.fragment.graphql"
 #import "../fragments/design_todo_item.fragment.graphql"
 
-mutation toggleResolveDiscussion($id: ID!, $resolve: Boolean!) {
+mutation toggleResolveDiscussion($id: DiscussionID!, $resolve: Boolean!) {
   discussionToggleResolve(input: { id: $id, resolve: $resolve }) {
     discussion {
       id

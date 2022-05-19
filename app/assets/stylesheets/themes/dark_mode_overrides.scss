@@ -71,9 +71,12 @@
 body.gl-dark {
   @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $gray-900, $white);
 
-  .logo-text svg {
-    fill: var(--gl-text-color);
+  .terms {
+    .logo-text {
+      fill: var(--black);
+    }
   }
+
 
   .navbar-gitlab {
     background-color: var(--gray-50);

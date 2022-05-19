@@ -1,10 +1,13 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
+import { IssuableType, WorkspaceType } from '~/issues/constants';
+import { confidentialityInfoText } from '~/vue_shared/constants';
 
 export default {
   components: {
     GlIcon,
+    GlAlert,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -20,12 +23,11 @@ export default {
     },
   },
   computed: {
-    confidentialText() {
-      return this.confidential
-        ? sprintf(__('This %{issuableType} is confidential'), {
-            issuableType: this.issuableType,
-          })
-        : __('Not confidential');
+    confidentialBodyText() {
+      return confidentialityInfoText(
+        this.issuableType === IssuableType.Epic ? WorkspaceType.group : WorkspaceType.project,
+        this.issuableType,
+      );
     },
     confidentialIcon() {
       return this.confidential ? 'eye-slash' : 'eye';
@@ -59,6 +61,17 @@ export default {
       class="sidebar-item-icon inline hide-collapsed"
       :class="{ 'is-active': confidential }"
     />
-    <span class="hide-collapsed" data-testid="confidential-text">{{ confidentialText }}</span>
+    <span class="hide-collapsed" data-testid="confidential-text">
+      {{ tooltipLabel }}
+      <gl-alert
+        v-if="confidential"
+        :show-icon="false"
+        :dismissible="false"
+        variant="warning"
+        class="gl-mt-3"
+      >
+        {{ confidentialBodyText }}
+      </gl-alert>
+    </span>
   </div>
 </template>

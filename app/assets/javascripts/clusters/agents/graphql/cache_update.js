@@ -22,3 +22,25 @@ export function addAgentTokenToStore(store, clusterAgentTokenCreate, query, vari
     });
   }
 }
+
+export function removeTokenFromStore(store, revokeToken, query, variables) {
+  if (!hasErrors(revokeToken)) {
+    const sourceData = store.readQuery({
+      query,
+      variables,
+    });
+
+    const data = produce(sourceData, (draftData) => {
+      draftData.project.clusterAgent.tokens.nodes = draftData.project.clusterAgent.tokens.nodes.filter(
+        ({ id }) => id !== revokeToken.id,
+      );
+      draftData.project.clusterAgent.tokens.count -= 1;
+    });
+
+    store.writeQuery({
+      query,
+      variables,
+      data,
+    });
+  }
+}

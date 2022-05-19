@@ -1,8 +1,0 @@
----
-name: graphql_ci_runner_executor
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76534
-rollout_issue_url:
-milestone: '14.7'
-type: development
-group: group::runner
-default_enabled: false

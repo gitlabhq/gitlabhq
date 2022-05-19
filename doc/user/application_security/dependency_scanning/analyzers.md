@@ -20,11 +20,9 @@ This is achieved by implementing the [common API](https://gitlab.com/gitlab-org/
 
 Dependency Scanning supports the following official analyzers:
 
-- [`bundler-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/bundler-audit)
 - [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
 - [`gemnasium-maven`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven)
 - [`gemnasium-python`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python)
-- [`retire.js`](https://gitlab.com/gitlab-org/security-products/analyzers/retire.js)
 
 The analyzers are published as Docker images, which Dependency Scanning uses
 to launch dedicated containers for each analysis.
@@ -34,11 +32,13 @@ The Dependency Scanning analyzers' current major version number is 2.
 Dependency Scanning is pre-configured with a set of **default images** that are
 maintained by GitLab, but users can also integrate their own **custom images**.
 
-WARNING:
-The `bundler-audit` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#bundler-audit-dependency-scanning-tool).
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
 
-WARNING:
-The `retire.js` analyzer is deprecated and will be removed in GitLab 15.0 since it duplicates the functionality of the `gemnasium` analyzer. For more information, read the [deprecation announcement](../../../update/deprecations.md#retire-js-dependency-scanning-tool).
+The [`bundler-audit`](https://gitlab.com/gitlab-org/gitlab/-/issues/289832) and [`retire.js`](https://gitlab.com/gitlab-org/gitlab/-/issues/350510) analyzers were deprecated
+in GitLab 14.8 and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86704) in 15.0.
+Use Gemnasium instead.
+
+<!--- end_remove -->
 
 ## Official default analyzers
 
@@ -67,7 +67,7 @@ the official analyzers.
 ### Disable specific analyzers
 
 You can select the official analyzers you don't want to run. Here's how to disable
-`bundler-audit` and `gemnasium` analyzers.
+the `gemnasium` analyzer.
 In `.gitlab-ci.yml` define:
 
 ```yaml
@@ -75,7 +75,7 @@ include:
   template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_EXCLUDED_ANALYZERS: "bundler-audit, gemnasium"
+  DS_EXCLUDED_ANALYZERS: "gemnasium"
 ```
 
 ### Disabling default analyzers
@@ -88,7 +88,7 @@ include:
   template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_EXCLUDED_ANALYZERS: "gemnasium, gemnasium-maven, gemnasium-python, bundler-audit, retire.js"
+  DS_EXCLUDED_ANALYZERS: "gemnasium, gemnasium-maven, gemnasium-python"
 ```
 
 This is used when one totally relies on [custom analyzers](#custom-analyzers).
@@ -117,25 +117,25 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 ## Analyzers data
 
-The following table lists the data available for each official analyzer.
+The following table lists the data available for the Gemnasium analyzer.
 
-| Property \ Tool                       |      Gemnasium     |    bundler-audit   |     Retire.js      |
-|---------------------------------------|:------------------:|:------------------:|:------------------:|
-| Severity                              | 𐄂                  | ✓                  | ✓                  |
-| Title                                 | ✓                  | ✓                  | ✓                  |
-| File                                  | ✓                  | ⚠                  | ✓                  |
-| Start line                            | 𐄂                  | 𐄂                  | 𐄂                  |
-| End line                              | 𐄂                  | 𐄂                  | 𐄂                  |
-| External ID (for example, CVE)        | ✓                  | ✓                  | ⚠                  |
-| URLs                                  | ✓                  | ✓                  | ✓                  |
-| Internal doc/explanation              | ✓                  | 𐄂                  | 𐄂                  |
-| Solution                              | ✓                  | ✓                  | 𐄂                  |
-| Confidence                            | 𐄂                  | 𐄂                  | 𐄂                  |
-| Affected item (for example, class or package) | ✓                  | ✓                  | ✓                  |
-| Source code extract                   | 𐄂                  | 𐄂                  | 𐄂                  |
-| Internal ID                           | ✓                  | 𐄂                  | 𐄂                  |
-| Date                                  | ✓                  | 𐄂                  | 𐄂                  |
-| Credits                               | ✓                  | 𐄂                  | 𐄂                  |
+| Property \ Tool                       |      Gemnasium     |
+|---------------------------------------|:------------------:|
+| Severity                              | 𐄂                  |
+| Title                                 | ✓                  |
+| File                                  | ✓                  |
+| Start line                            | 𐄂                  |
+| End line                              | 𐄂                  |
+| External ID (for example, CVE)        | ✓                  |
+| URLs                                  | ✓                  |
+| Internal doc/explanation              | ✓                  |
+| Solution                              | ✓                  |
+| Confidence                            | 𐄂                  |
+| Affected item (for example, class or package) | ✓                  |
+| Source code extract                   | 𐄂                  |
+| Internal ID                           | ✓                  |
+| Date                                  | ✓                  |
+| Credits                               | ✓                  |
 
 - ✓ => we have that data
 - ⚠ => we have that data, but it's partially reliable, or we need to extract that data from unstructured content

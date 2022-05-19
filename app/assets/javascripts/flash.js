@@ -86,48 +86,43 @@ const addDismissFlashClickListener = (flashEl, fadeTransition) => {
 
 /**
  * Render an alert at the top of the page, or, optionally an
- * arbitrary existing container.
+ * arbitrary existing container. This alert is always dismissible.
  *
- * This alert is always dismissible.
- *
- * Usage:
- *
- * 1. Render a new alert
- *
+ * @example
+ * // Render a new alert
  * import { createAlert, VARIANT_WARNING } from '~/flash';
  *
  * createAlert({ message: 'My error message' });
  * createAlert({ message: 'My warning message', variant: VARIANT_WARNING });
  *
- * 2. Dismiss this alert programmatically
- *
+ * @example
+ * // Dismiss this alert programmatically
  * const alert = createAlert({ message: 'Message' });
  *
  * // ...
  *
  * alert.dismiss();
  *
- * 3. Respond to the alert being dismissed
+ * @example
+ * // Respond to the alert being dismissed
+ * createAlert({ message: 'Message', onDismiss: () => {} });
  *
- * createAlert({ message: 'Message', onDismiss: () => { ... }});
- *
- *  @param {Object} options                    Options to control the flash message
- *  @param {String} options.message            Alert message text
- *  @param {String?} options.variant           Which GlAlert variant to use, should be VARIANT_SUCCESS, VARIANT_WARNING, VARIANT_DANGER, VARIANT_INFO or VARIANT_TIP. Defaults to VARIANT_DANGER.
- *  @param {Object?} options.parent            Reference to parent element under which alert needs to appear. Defaults to `document`.
- *  @param {Function?} options.onDismiss       Handler to call when this alert is dismissed.
- *  @param {Object?} options.containerSelector Selector for the container of the alert
- *  @param {Object?} options.primaryButton     Object describing primary button of alert
- *    @param {String?} link                    Href of primary button
- *    @param {String?} text                    Text of primary button
- *    @param {Function?} clickHandler          Handler to call when primary button is clicked on. The click event is sent as an argument.
- *  @param {Object?} options.secondaryButton   Object describing secondary button of alert
- *    @param {String?} link                    Href of secondary button
- *    @param {String?} text                    Text of secondary button
- *    @param {Function?} clickHandler          Handler to call when secondary button is clicked on. The click event is sent as an argument.
- *  @param {Boolean?} options.captureError     Whether to send error to Sentry
- *  @param {Object} options.error              Error to be captured in Sentry
- * @returns
+ * @param {object} options - Options to control the flash message
+ * @param {string} options.message - Alert message text
+ * @param {VARIANT_SUCCESS|VARIANT_WARNING|VARIANT_DANGER|VARIANT_INFO|VARIANT_TIP} [options.variant] - Which GlAlert variant to use; it defaults to VARIANT_DANGER.
+ * @param {object} [options.parent] - Reference to parent element under which alert needs to appear. Defaults to `document`.
+ * @param {Function} [options.onDismiss] - Handler to call when this alert is dismissed.
+ * @param {string} [options.containerSelector] - Selector for the container of the alert
+ * @param {object} [options.primaryButton] - Object describing primary button of alert
+ * @param {string} [options.primaryButton.link] - Href of primary button
+ * @param {string} [options.primaryButton.text] - Text of primary button
+ * @param {Function} [options.primaryButton.clickHandler] - Handler to call when primary button is clicked on. The click event is sent as an argument.
+ * @param {object} [options.secondaryButton] - Object describing secondary button of alert
+ * @param {string} [options.secondaryButton.link] - Href of secondary button
+ * @param {string} [options.secondaryButton.text] - Text of secondary button
+ * @param {Function} [options.secondaryButton.clickHandler] - Handler to call when secondary button is clicked on. The click event is sent as an argument.
+ * @param {boolean} [options.captureError] - Whether to send error to Sentry
+ * @param {object} [options.error] - Error to be captured in Sentry
  */
 const createAlert = function createAlert({
   message,
@@ -207,22 +202,25 @@ const createAlert = function createAlert({
   });
 };
 
-/*
- *  Flash banner supports different types of Flash configurations
- *  along with ability to provide actionConfig which can be used to show
- *  additional action or link on banner next to message
+/**
+ * @deprecated use `createAlert` instead
  *
- *  @param {Object} options                   Options to control the flash message
- *  @param {String} options.message           Flash message text
- *  @param {String} options.type              Type of Flash, it can be `notice`, `success`, `warning` or `alert` (default)
- *  @param {Object} options.parent            Reference to parent element under which Flash needs to appear
- *  @param {Object} options.actionConfig      Map of config to show action on banner
- *    @param {String} href                    URL to which action config should point to (default: '#')
- *    @param {String} title                   Title of action
- *    @param {Function} clickHandler          Method to call when action is clicked on
- *  @param {Boolean} options.fadeTransition   Boolean to determine whether to fade the alert out
- *  @param {Boolean} options.captureError     Boolean to determine whether to send error to Sentry
- *  @param {Object} options.error             Error to be captured in Sentry
+ * Flash banner supports different types of Flash configurations
+ * along with ability to provide actionConfig which can be used to show
+ * additional action or link on banner next to message
+ *
+ * @param {object} options - Options to control the flash message
+ * @param {string} options.message - Flash message text
+ * @param {'alert'|'notice'|'success'|'warning'} [options.type] - Type of Flash; it defaults to 'alert'
+ * @param {Element|Document} [options.parent] - Reference to parent element under which Flash needs to appear
+ * @param {object} [options.actionConfig] - Map of config to show action on banner
+ * @param {string} [options.actionConfig.href] - URL to which action config should point to (default: '#')
+ * @param {string} [options.actionConfig.title] - Title of action
+ * @param {Function} [options.actionConfig.clickHandler] - Method to call when action is clicked on
+ * @param {boolean} [options.fadeTransition] - Boolean to determine whether to fade the alert out
+ * @param {boolean} [options.addBodyClass] - Adds `flash-shown` class to the `body` element
+ * @param {boolean} [options.captureError] - Boolean to determine whether to send error to Sentry
+ * @param {object} [options.error] - Error to be captured in Sentry
  */
 const createFlash = function createFlash({
   message,

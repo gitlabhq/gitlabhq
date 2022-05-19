@@ -12,7 +12,7 @@ RSpec.describe API::ContainerRegistryEvent do
       allow(Gitlab.config.registry).to receive(:notification_secret) { secret_token }
     end
 
-    subject do
+    subject(:post_events) do
       post api('/container_registry_event/events'),
            params: { events: events }.to_json,
            headers: registry_headers.merge('Authorization' => secret_token)
@@ -23,7 +23,7 @@ RSpec.describe API::ContainerRegistryEvent do
       allow(::ContainerRegistry::Event).to receive(:new).and_return(event)
       expect(event).to receive(:supported?).and_return(true)
 
-      subject
+      post_events
 
       expect(event).to have_received(:handle!).once
       expect(event).to have_received(:track!).once
@@ -36,6 +36,38 @@ RSpec.describe API::ContainerRegistryEvent do
            headers: registry_headers.merge('Authorization' => 'invalid_token')
 
       expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'when the event should update project statistics' do
+      let_it_be(:project) { create(:project) }
+
+      let(:events) do
+        [
+          {
+            action: 'push',
+            target: {
+              tag: 'latest',
+              repository: project.full_path
+            }
+          },
+          {
+            action: 'delete',
+            target: {
+              tag: 'latest',
+              repository: project.full_path
+            }
+          }
+        ]
+      end
+
+      it 'enqueues a project statistics update twice' do
+        expect(ProjectCacheWorker)
+          .to receive(:perform_async)
+          .with(project.id, [], [:container_registry_size])
+          .twice.and_call_original
+
+        expect { post_events }.to change { ProjectCacheWorker.jobs.size }.from(0).to(1)
+      end
     end
   end
 end

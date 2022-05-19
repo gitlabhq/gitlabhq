@@ -13,12 +13,17 @@ The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
 
-If you're using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
-Testing (SAST) to check your source code for known vulnerabilities.
-If the pipeline is associated with a merge request, the SAST analysis is compared with the results of
-the target branch's analysis (if available). The results of that comparison are shown in the merge
-request. If the pipeline is running from the default branch, the results of the SAST
-analysis are available in the [security dashboards](../security_dashboard/index.md).
+If you’re using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
+Testing (SAST) to check your source code for known vulnerabilities. You can run SAST analyzers in
+any GitLab tier. The analyzers output JSON-formatted reports as job artifacts.
+
+With GitLab Ultimate, SAST results are also processed so you can:
+
+- See them in merge requests.
+- Use them in approval workflows.
+- Review them in the security dashboard.
+
+For more details, see the [Summary of features per tier](#summary-of-features-per-tier).
 
 ![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
 
@@ -543,7 +548,7 @@ Several passthrouh types generate a configuration for the target analyzer:
 
 - Two `git` passthrough sections pull the head of branch
   `refs/remotes/origin/test` from the `myrules` Git repository, and revision
-  `97f7686` from the `sast-rules` Git repostory. From the `sast-rules` Git
+  `97f7686` from the `sast-rules` Git repository. From the `sast-rules` Git
   repository, only data from the `go` subdirectory is considered.
   - The `sast-rules` entry has a higher precedence because it appears later in
     the configuration.
@@ -887,7 +892,7 @@ Some analyzers can be customized with CI/CD variables.
 | `GRADLE_PATH`               | SpotBugs   | Path to the `gradle` executable.                                                                                                                                                                                                   |
 | `JAVA_OPTS`                 | SpotBugs   | Additional arguments for the `java` executable.                                                                                                                                                                                    |
 | `JAVA_PATH`                 | SpotBugs   | Path to the `java` executable.                                                                                                                                                                                                     |
-| `SAST_JAVA_VERSION`         | SpotBugs   | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`.                                                                                                                                                   |
+| `SAST_JAVA_VERSION`         | SpotBugs   | Which Java version to use. [Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549), supported versions are `11` and `17` (default). Before GitLab 15.0, supported versions are `8` (default) and `11`.     |
 | `MAVEN_CLI_OPTS`            | SpotBugs   | Additional arguments for the `mvn` or `mvnw` executable.                                                                                                                                                                           |
 | `MAVEN_PATH`                | SpotBugs   | Path to the `mvn` executable.                                                                                                                                                                                                      |
 | `MAVEN_REPO_PATH`           | SpotBugs   | Path to the Maven local repository (shortcut for the `maven.repo.local` property).                                                                                                                                                 |
@@ -977,19 +982,19 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/sast/bandit:2
-registry.gitlab.com/security-products/sast/brakeman:2
-registry.gitlab.com/security-products/sast/eslint:2
-registry.gitlab.com/security-products/sast/flawfinder:2
-registry.gitlab.com/security-products/sast/gosec:3
-registry.gitlab.com/security-products/sast/kubesec:2
-registry.gitlab.com/security-products/sast/nodejs-scan:2
-registry.gitlab.com/security-products/sast/phpcs-security-audit:2
-registry.gitlab.com/security-products/sast/pmd-apex:2
-registry.gitlab.com/security-products/sast/security-code-scan:2
-registry.gitlab.com/security-products/sast/semgrep:2
-registry.gitlab.com/security-products/sast/sobelow:2
-registry.gitlab.com/security-products/sast/spotbugs:2
+registry.gitlab.com/security-products/bandit:2
+registry.gitlab.com/security-products/brakeman:2
+registry.gitlab.com/security-products/eslint:2
+registry.gitlab.com/security-products/flawfinder:2
+registry.gitlab.com/security-products/gosec:3
+registry.gitlab.com/security-products/kubesec:2
+registry.gitlab.com/security-products/nodejs-scan:2
+registry.gitlab.com/security-products/phpcs-security-audit:2
+registry.gitlab.com/security-products/pmd-apex:2
+registry.gitlab.com/security-products/security-code-scan:2
+registry.gitlab.com/security-products/semgrep:2
+registry.gitlab.com/security-products/sobelow:2
+registry.gitlab.com/security-products/spotbugs:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

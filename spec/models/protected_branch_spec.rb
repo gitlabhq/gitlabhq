@@ -324,4 +324,10 @@ RSpec.describe ProtectedBranch do
         .to match_array([branch_id])
     end
   end
+
+  describe '.downcase_humanized_name' do
+    it 'returns downcase humanized name' do
+      expect(described_class.downcase_humanized_name).to eq 'protected branch'
+    end
+  end
 end

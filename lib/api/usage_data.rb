@@ -8,7 +8,7 @@ module API
 
     namespace 'usage_data' do
       before do
-        not_found! unless Feature.enabled?(:usage_data_api, default_enabled: :yaml, type: :ops)
+        not_found! unless Feature.enabled?(:usage_data_api, type: :ops)
         forbidden!('Invalid CSRF token is provided') unless verified_request?
       end
 
@@ -40,7 +40,7 @@ module API
       desc 'Get a list of all metric definitions' do
         detail 'This feature was introduced in GitLab 13.11.'
       end
-      get 'metric_definitions' do
+      get 'metric_definitions', urgency: :low do
         content_type 'application/yaml'
         env['api.format'] = :binary
 

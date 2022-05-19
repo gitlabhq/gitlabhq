@@ -39,6 +39,12 @@ module API
       def find_token(id)
         PersonalAccessToken.find(id) || not_found!
       end
+
+      def revoke_token(token)
+        service = ::PersonalAccessTokens::RevokeService.new(current_user, token: token).execute
+
+        service.success? ? no_content! : bad_request!(nil)
+      end
     end
 
     resources :personal_access_tokens do
@@ -48,13 +54,14 @@ module API
         present paginate(tokens), with: Entities::PersonalAccessToken
       end
 
-      delete ':id' do
-        service = ::PersonalAccessTokens::RevokeService.new(
-          current_user,
-          token: find_token(params[:id])
-        ).execute
+      delete 'self' do
+        revoke_token(access_token)
+      end
 
-        service.success? ? no_content! : bad_request!(nil)
+      delete ':id' do
+        token = find_token(params[:id])
+
+        revoke_token(token)
       end
     end
   end

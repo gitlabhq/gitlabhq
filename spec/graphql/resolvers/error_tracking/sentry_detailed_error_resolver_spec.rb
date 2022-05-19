@@ -8,28 +8,23 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
 
-  let(:issue_details_service) { spy('ErrorTracking::IssueDetailsService') }
+  let(:issue_details_service) { instance_double('ErrorTracking::IssueDetailsService') }
+  let(:service_response) { {} }
 
-  specify do
-    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryDetailedErrorType)
+  before_all do
+    project.add_developer(current_user)
   end
 
   before do
-    project.add_developer(current_user)
-
     allow(ErrorTracking::IssueDetailsService)
       .to receive(:new)
-      .and_return issue_details_service
+      .and_return(issue_details_service)
+
+    allow(issue_details_service).to receive(:execute).and_return(service_response)
   end
 
-  shared_examples 'it resolves to nil' do
-    it 'resolves to nil' do
-      allow(issue_details_service).to receive(:execute)
-        .and_return(issue: nil)
-
-      result = resolve_error(args)
-      expect(result).to be_nil
-    end
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryDetailedErrorType)
   end
 
   describe '#resolve' do
@@ -41,13 +36,9 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
       expect(issue_details_service).to have_received(:execute)
     end
 
-    context 'error matched' do
-      let(:detailed_error) { build(:error_tracking_sentry_detailed_error) }
-
-      before do
-        allow(issue_details_service).to receive(:execute)
-          .and_return(issue: detailed_error)
-      end
+    context 'when error matches' do
+      let(:detailed_error) { build_stubbed(:error_tracking_sentry_detailed_error) }
+      let(:service_response) { { issue: detailed_error } }
 
       it 'resolves to a detailed error' do
         expect(resolve_error(args)).to eq detailed_error
@@ -58,24 +49,23 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
       end
     end
 
-    context 'if id does not match issue' do
-      it_behaves_like 'it resolves to nil'
-    end
+    context 'when id does not match issue' do
+      let(:service_response) { { issue: nil } }
 
-    context 'blank id' do
-      let(:args) { { id: '' } }
-
-      it 'responds with an error' do
-        expect { resolve_error(args) }.to raise_error(::GraphQL::CoercionError)
+      it 'resolves to nil' do
+        result = resolve_error(args)
+        expect(result).to be_nil
       end
     end
   end
+
+  private
 
   def resolve_error(args = {}, context = { current_user: current_user })
     resolve(described_class, obj: project, args: args, ctx: context)
   end
 
   def issue_global_id(issue_id)
-    Gitlab::ErrorTracking::DetailedError.new(id: issue_id).to_global_id.to_s
+    Gitlab::ErrorTracking::DetailedError.new(id: issue_id).to_global_id
   end
 end

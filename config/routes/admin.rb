@@ -88,7 +88,9 @@ namespace :admin do
 
   get :instance_review, to: 'instance_review#index'
 
-  resources :background_migrations, only: [:index] do
+  resources :background_migrations, only: [:index, :show] do
+    resources :batched_jobs, only: [:show]
+
     member do
       post :pause
       post :resume
@@ -100,7 +102,6 @@ namespace :admin do
   resource :background_jobs, controller: 'background_jobs', only: [:show]
 
   resource :system_info, controller: 'system_info', only: [:show]
-  resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.(html|txt)/ }
 
   resources :projects, only: [:index]
 

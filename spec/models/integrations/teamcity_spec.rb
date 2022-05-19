@@ -210,7 +210,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
 
         expect(Gitlab::ErrorTracking)
           .to receive(:log_exception)
-          .with(instance_of(Errno::ECONNREFUSED), project_id: project.id)
+          .with(instance_of(Errno::ECONNREFUSED), { project_id: project.id })
 
         is_expected.to eq(teamcity_url)
       end
@@ -260,7 +260,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
 
         expect(Gitlab::ErrorTracking)
           .to receive(:log_exception)
-          .with(instance_of(Errno::ECONNREFUSED), project_id: project.id)
+          .with(instance_of(Errno::ECONNREFUSED), { project_id: project.id })
 
         is_expected.to eq(:error)
       end

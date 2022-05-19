@@ -24,6 +24,7 @@ import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
+import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
 import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
@@ -32,6 +33,7 @@ import TableRow from '~/content_editor/extensions/table_row';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
+import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
 jest.mock('~/emoji');
@@ -63,6 +65,7 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
+    Sourcemap,
     Strike,
     Table,
     TableCell,
@@ -151,8 +154,7 @@ const {
 
 const serialize = (...content) =>
   markdownSerializer({}).serialize({
-    schema: tiptapEditor.schema,
-    content: doc(...content).toJSON(),
+    doc: doc(...content),
   });
 
 describe('markdownSerializer', () => {
@@ -1159,4 +1161,42 @@ Oranges are orange [^1]
       `.trim(),
     );
   });
+
+  it.each`
+    mark        | content                                    | modifiedContent
+    ${'bold'}   | ${'**bold**'}                              | ${'**bold modified**'}
+    ${'bold'}   | ${'__bold__'}                              | ${'__bold modified__'}
+    ${'bold'}   | ${'<strong>bold</strong>'}                 | ${'<strong>bold modified</strong>'}
+    ${'bold'}   | ${'<b>bold</b>'}                           | ${'<b>bold modified</b>'}
+    ${'italic'} | ${'_italic_'}                              | ${'_italic modified_'}
+    ${'italic'} | ${'*italic*'}                              | ${'*italic modified*'}
+    ${'italic'} | ${'<em>italic</em>'}                       | ${'<em>italic modified</em>'}
+    ${'italic'} | ${'<i>italic</i>'}                         | ${'<i>italic modified</i>'}
+    ${'link'}   | ${'[gitlab](https://gitlab.com)'}          | ${'[gitlab modified](https://gitlab.com)'}
+    ${'link'}   | ${'<a href="https://gitlab.com">link</a>'} | ${'<a href="https://gitlab.com">link modified</a>'}
+    ${'code'}   | ${'`code`'}                                | ${'`code modified`'}
+    ${'code'}   | ${'<code>code</code>'}                     | ${'<code>code modified</code>'}
+  `(
+    'preserves original $mark syntax when sourceMarkdown is available',
+    async ({ content, modifiedContent }) => {
+      const { document } = await remarkMarkdownDeserializer().deserialize({
+        schema: tiptapEditor.schema,
+        content,
+      });
+
+      tiptapEditor
+        .chain()
+        .setContent(document.toJSON())
+        // changing the document ensures that block preservation doesn’t yield false positives
+        .insertContent(' modified')
+        .run();
+
+      const serialized = markdownSerializer({}).serialize({
+        pristineDoc: document,
+        doc: tiptapEditor.state.doc,
+      });
+
+      expect(serialized).toEqual(modifiedContent);
+    },
+  );
 });

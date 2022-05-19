@@ -216,7 +216,9 @@ export default {
           modal-id="ide-commit-error-modal"
           :title="lastCommitError.title"
           :action-primary="commitErrorPrimaryAction.button"
-          :action-cancel="{ text: __('Cancel') }"
+          :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+            text: __('Cancel'),
+          } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
           @ok="commitErrorPrimaryAction.callback"
         >
           <div v-safe-html="lastCommitError.messageHTML"></div>

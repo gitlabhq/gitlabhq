@@ -212,7 +212,7 @@ RSpec.describe 'Admin Groups' do
       it do
         visit admin_group_path(group)
 
-        select2(user_selector, from: '#user_ids', multiple: true)
+        select2(user_selector, from: '#user_id', multiple: true)
         page.within '#new_project_member' do
           select2(Gitlab::Access::REPORTER, from: '#access_level')
         end

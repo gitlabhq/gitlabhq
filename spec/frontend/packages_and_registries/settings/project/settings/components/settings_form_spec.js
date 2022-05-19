@@ -1,6 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlCard, GlLoadingIcon } from 'jest/packages_and_registries/shared/stubs';
@@ -13,8 +13,6 @@ import updateContainerExpirationPolicyMutation from '~/packages_and_registries/s
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import Tracking from '~/tracking';
 import { expirationPolicyPayload, expirationPolicyMutationPayload } from '../mock_data';
-
-const localVue = createLocalVue();
 
 describe('Settings Form', () => {
   let wrapper;
@@ -59,7 +57,6 @@ describe('Settings Form', () => {
     data,
     config,
     provide = defaultProvidedValues,
-    mocks,
   } = {}) => {
     wrapper = shallowMount(component, {
       stubs: {
@@ -77,7 +74,6 @@ describe('Settings Form', () => {
         $toast: {
           show: jest.fn(),
         },
-        ...mocks,
       },
       ...config,
     });
@@ -88,7 +84,7 @@ describe('Settings Form', () => {
     mutationResolver,
     queryPayload = expirationPolicyPayload(),
   } = {}) => {
-    localVue.use(VueApollo);
+    Vue.use(VueApollo);
 
     const requestHandlers = [
       [updateContainerExpirationPolicyMutation, mutationResolver],
@@ -120,7 +116,6 @@ describe('Settings Form', () => {
         value,
       },
       config: {
-        localVue,
         apolloProvider: fakeApollo,
       },
     });
@@ -356,8 +351,8 @@ describe('Settings Form', () => {
           });
 
           it('parses the error messages', async () => {
-            const mutate = jest.fn().mockRejectedValue({
-              graphQLErrors: [
+            const mutate = jest.fn().mockResolvedValue({
+              errors: [
                 {
                   extensions: {
                     problems: [{ path: ['nameRegexKeep'], message: 'baz' }],
@@ -365,7 +360,9 @@ describe('Settings Form', () => {
                 },
               ],
             });
-            mountComponent({ mocks: { $apollo: { mutate } } });
+            mountComponentWithApollo({
+              mutationResolver: mutate,
+            });
 
             await submitForm();
 

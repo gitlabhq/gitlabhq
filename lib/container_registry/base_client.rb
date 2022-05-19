@@ -31,9 +31,6 @@ module ContainerRegistry
       end
     }.freeze
 
-    # Taken from: FaradayMiddleware::FollowRedirects
-    REDIRECT_CODES = Set.new [301, 302, 303, 307]
-
     class << self
       private
 
@@ -98,21 +95,8 @@ module ContainerRegistry
       conn.adapter :net_http
     end
 
-    def response_body(response, allow_redirect: false)
-      if allow_redirect && REDIRECT_CODES.include?(response.status)
-        response = redirect_response(response.headers['location'])
-      end
-
+    def response_body(response)
       response.body if response && response.success?
-    end
-
-    def redirect_response(location)
-      return unless location
-
-      uri = URI(@base_uri).merge(location)
-      raise ArgumentError, "Invalid scheme for #{location}" unless %w[http https].include?(uri.scheme)
-
-      faraday_redirect.get(uri)
     end
 
     def configure_connection(conn)
@@ -123,18 +107,6 @@ module ContainerRegistry
       conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+json'
       conn.response :json, content_type: DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE
       conn.response :json, content_type: OCI_MANIFEST_V1_TYPE
-    end
-
-    # Create a new request to make sure the Authorization header is not inserted
-    # via the Faraday middleware
-    def faraday_redirect
-      @faraday_redirect ||= faraday_base do |conn|
-        conn.request :json
-
-        conn.request(:retry, RETRY_OPTIONS)
-        conn.request(:gitlab_error_callback, ERROR_CALLBACK_OPTIONS)
-        conn.adapter :net_http
-      end
     end
 
     def delete_if_exists(path)

@@ -35,7 +35,7 @@ export default {
 <template>
   <div class="gl-display-flex gl-align-items-center hide-collapsed">
     <span
-      :class="hasDate ? 'gl-text-gray-900 gl-font-weight-bold' : 'gl-text-gray-500'"
+      :class="hasDate ? 'gl-text-gray-900' : 'gl-text-gray-500'"
       data-testid="sidebar-date-value"
     >
       {{ formattedDate }}

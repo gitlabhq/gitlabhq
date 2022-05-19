@@ -11,7 +11,6 @@ import (
 )
 
 type SmartHTTPClient struct {
-	useSidechannel      bool
 	sidechannelRegistry *gitalyclient.SidechannelRegistry
 	gitalypb.SmartHTTPServiceClient
 }
@@ -96,71 +95,17 @@ func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.R
 }
 
 func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
-	if client.useSidechannel {
-		return client.runUploadPackWithSidechannel(ctx, repo, clientRequest, clientResponse, gitConfigOptions, gitProtocol)
-	}
-
-	return client.runUploadPack(ctx, repo, clientRequest, clientResponse, gitConfigOptions, gitProtocol)
-}
-
-func (client *SmartHTTPClient) runUploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
-	stream, err := client.PostUploadPack(ctx)
-	if err != nil {
-		return err
-	}
-
-	rpcRequest := &gitalypb.PostUploadPackRequest{
-		Repository:       repo,
-		GitConfigOptions: gitConfigOptions,
-		GitProtocol:      gitProtocol,
-	}
-
-	if err := stream.Send(rpcRequest); err != nil {
-		return fmt.Errorf("initial request: %v", err)
-	}
-
-	numStreams := 2
-	errC := make(chan error, numStreams)
-
-	go func() {
-		rr := streamio.NewReader(func() ([]byte, error) {
-			response, err := stream.Recv()
-			return response.GetData(), err
-		})
-		_, err := io.Copy(clientResponse, rr)
-		errC <- err
-	}()
-
-	go func() {
-		sw := streamio.NewWriter(func(data []byte) error {
-			return stream.Send(&gitalypb.PostUploadPackRequest{Data: data})
-		})
-		_, err := io.Copy(sw, clientRequest)
-		stream.CloseSend()
-		errC <- err
-	}()
-
-	for i := 0; i < numStreams; i++ {
-		if err := <-errC; err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (client *SmartHTTPClient) runUploadPackWithSidechannel(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
 	ctx, waiter := client.sidechannelRegistry.Register(ctx, func(conn gitalyclient.SidechannelConn) error {
 		if _, err := io.Copy(conn, clientRequest); err != nil {
-			return err
+			return fmt.Errorf("copy request body: %w", err)
 		}
 
 		if err := conn.CloseWrite(); err != nil {
-			return fmt.Errorf("fail to signal sidechannel half-close: %w", err)
+			return fmt.Errorf("close request body: %w", err)
 		}
 
 		if _, err := io.Copy(clientResponse, conn); err != nil {
-			return err
+			return fmt.Errorf("copy response body: %w", err)
 		}
 
 		return nil
@@ -174,11 +119,11 @@ func (client *SmartHTTPClient) runUploadPackWithSidechannel(ctx context.Context,
 	}
 
 	if _, err := client.PostUploadPackWithSidechannel(ctx, rpcRequest); err != nil {
-		return err
+		return fmt.Errorf("PostUploadPackWithSidechannel: %w", err)
 	}
 
 	if err := waiter.Close(); err != nil {
-		return fmt.Errorf("fail to close sidechannel connection: %w", err)
+		return fmt.Errorf("close sidechannel waiter: %w", err)
 	}
 
 	return nil

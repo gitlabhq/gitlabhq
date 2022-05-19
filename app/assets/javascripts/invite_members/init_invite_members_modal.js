@@ -1,7 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 Vue.use(GlToast);
 
@@ -26,10 +26,6 @@ export default (function initInviteMembersModal() {
         provide: {
           name: el.dataset.name,
           newProjectPath: el.dataset.newProjectPath,
-          newTrialRegistrationPath: el.dataset.newTrialRegistrationPath,
-          purchasePath: el.dataset.purchasePath,
-          freeUsersLimit: el.dataset.freeUsersLimit && parseInt(el.dataset.freeUsersLimit, 10),
-          membersCount: el.dataset.membersCount && parseInt(el.dataset.membersCount, 10),
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {
@@ -42,6 +38,9 @@ export default (function initInviteMembersModal() {
               projects: JSON.parse(el.dataset.projects || '[]'),
               usersFilter: el.dataset.usersFilter,
               filterId: parseInt(el.dataset.filterId, 10),
+              usersLimitDataset: convertObjectPropsToCamelCase(
+                JSON.parse(el.dataset.usersLimitDataset || '{}'),
+              ),
             },
           }),
       });

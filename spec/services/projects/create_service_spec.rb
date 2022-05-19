@@ -141,18 +141,6 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(project.project_setting).to be_persisted
     end
 
-    context 'create_project_settings feature flag is disabled' do
-      before do
-        stub_feature_flags(create_project_settings: false)
-      end
-
-      it 'builds associated project settings' do
-        project = create_project(user, opts)
-
-        expect(project.project_setting).to be_new_record
-      end
-    end
-
     it_behaves_like 'storing arguments in the application context' do
       let(:expected_params) { { project: subject.full_path } }
 
@@ -780,6 +768,45 @@ RSpec.describe Projects::CreateService, '#execute' do
     create_project(user, opts)
   end
 
+  context 'when import source is enabled' do
+    before do
+      stub_application_setting(import_sources: ['github'])
+    end
+
+    it 'does not raise an error when import_source is string' do
+      opts[:import_type] = 'github'
+
+      project = create_project(user, opts)
+
+      expect(project).to be_persisted
+      expect(project.errors).to be_blank
+    end
+
+    it 'does not raise an error when import_source is symbol' do
+      opts[:import_type] = :github
+
+      project = create_project(user, opts)
+
+      expect(project).to be_persisted
+      expect(project.errors).to be_blank
+    end
+  end
+
+  context 'when import source is disabled' do
+    before do
+      stub_application_setting(import_sources: [])
+      opts[:import_type] = 'git'
+    end
+
+    it 'raises an error' do
+      project = create_project(user, opts)
+
+      expect(project).to respond_to(:errors)
+      expect(project.errors).to have_key(:import_source_disabled)
+      expect(project.saved?).to be_falsey
+    end
+  end
+
   context 'with external authorization enabled' do
     before do
       enable_external_authorization_service_check
@@ -797,7 +824,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
     it 'saves the project when the user has access to the label' do
       expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }
+        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }.at_least(1).time
 
       project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
 

@@ -4,6 +4,6 @@ classes:
 - IssuableSla
 feature_categories:
 - incident_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44928
+description: Persists information about incident SLAs for incidents
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44253
 milestone: '13.5'

@@ -190,8 +190,8 @@ to lock down user abilities to invite new members to a group.
 
 When enabled, the following applies:
 
-- Only administrator can manage memberships of any group including access levels.
-- Users are not allowed to share project with other groups or invite members to
+- Only an administrator can manage memberships of any group including access levels.
+- Users are not allowed to share a project with other groups or invite members to
   a project created in a group.
 
 To enable it, you must:

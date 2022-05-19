@@ -1,4 +1,5 @@
 - topic = local_assigns.fetch(:topic)
+- title = topic.title || topic.name
 
 %li.topic-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'topic_row_content' } }
   .avatar-container.rect-avatar.s40.gl-flex-shrink-0
@@ -6,7 +7,9 @@
 
   .gl-min-w-0.gl-flex-grow-1
     .title
-      = link_to topic.name, topic_explore_projects_path(topic_name: topic.name)
+      = link_to title, topic_explore_projects_path(topic_name: topic.name)
+    %div
+      = topic.name
 
   .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
     %span.gl-ml-5.has-tooltip{ title: n_('%d project', '%d projects', topic.total_projects_count) % topic.total_projects_count }

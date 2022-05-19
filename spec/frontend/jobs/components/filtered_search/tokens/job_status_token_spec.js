@@ -21,6 +21,7 @@ describe('Job Status Token', () => {
     value: {
       data: '',
     },
+    cursorPosition: 'start',
   };
 
   const createComponent = () => {

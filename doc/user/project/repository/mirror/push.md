@@ -38,8 +38,8 @@ To set up push mirroring for an existing project:
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
-1. Select an **Authentication method**.
-   You can authenticate with either a password or an [SSH key](index.md#ssh-authentication).
+1. Select an **Authentication method**. To learn more, read
+   [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
 1. Select **Only mirror protected branches**, if necessary.
 1. Select **Keep divergent refs**, if desired.
 1. To save the configuration, select **Mirror repository**.

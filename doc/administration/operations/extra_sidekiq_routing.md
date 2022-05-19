@@ -88,8 +88,8 @@ components:
 
 > [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1 (`tags`).
 
-Queue matching query works upon the worker attributes, described in [Sidekiq
-style guide](../../development/sidekiq_style_guide.md). We support querying
+Queue matching query works upon the worker attributes, described in
+[Sidekiq style guide](../../development/sidekiq/index.md). We support querying
 based on a subset of worker attributes:
 
 - `feature_category` - the [GitLab feature

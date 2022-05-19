@@ -5,7 +5,7 @@ group: Container Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Container Scanning **(ULTIMATE)**
+# Container Scanning **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in GitLab 10.4.
 
@@ -43,6 +43,26 @@ GitLab compares the found vulnerabilities between the source and target branches
 information directly in the merge request.
 
 ![Container Scanning Widget](img/container_scanning_v13_2.png)
+
+### Capabilities
+
+| Capability | In Free | In Ultimate |
+| --- | ------ | ------ |
+| [Configure Scanners](#configuration) | Yes | Yes |
+| Customize Settings ([Variables](#available-cicd-variables), [Overriding](#overriding-the-container-scanning-template), [offline environment support](#running-container-scanning-in-an-offline-environment), etc) | Yes | Yes |
+| [View JSON Report](#reports-json-format) as a CI job artifact | Yes | Yes |
+| Generation of a JSON report of [dependencies](#dependency-list) as a CI job artifact | Yes | Yes |
+| Ability to enable container scanning via an MR in the GitLab UI | Yes | Yes |
+| [UBI Image Support](#fips-enabled-images) | Yes | Yes |
+| Support for Trivy | Yes | Yes |
+| Support for Grype | Yes | Yes |
+| Inclusion of GitLab Advisory Database | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
+| Presentation of Report data in Merge Request and Security tab of the CI pipeline job | No | Yes |
+| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) such as merge request approvals | No | Yes |
+| [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | No | Yes |
+| Support for the [vulnerability allow list](#vulnerability-allowlisting) | No | Yes |
+| [Access to Security Dashboard page](#security-dashboard) | No | Yes |
+| [Access to Dependency List page](../dependency_list/) | No | Yes |
 
 ## Requirements
 
@@ -164,8 +184,8 @@ include:
 
 The `CS_DISABLE_DEPENDENCY_LIST` CI/CD variable controls whether the scan creates a
 [Dependency List](../dependency_list/)
-report. The variable's default setting of `false` causes the scan to create the report. To disable
-the report, set the variable to `true`:
+report. This variable is currently only supported when the `trivy` analyzer is used. The variable's default setting of `"false"` causes the scan to create the report. To disable
+the report, set the variable to `"true"`:
 
 For example:
 
@@ -205,8 +225,9 @@ container_scanning:
 When you enable this feature, you may see [duplicate findings](../terminology/#duplicate-finding)
 in the [Vulnerability Report](../vulnerability_report/)
 if [Dependency Scanning](../dependency_scanning/)
-is enabled for your project. This happens because GitLab can't automatically deduplicate the
-findings reported by the two different analyzers.
+is enabled for your project. This happens because GitLab can't automatically deduplicate findings
+across different types of scanning tools. Please reference [this comparison](../dependency_scanning/#dependency-scanning-compared-to-container-scanning)
+between GitLab Dependency Scanning and Container Scanning for more details on which types of dependencies are likely to be duplicated.
 
 #### Available CI/CD variables
 
@@ -217,7 +238,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. | All |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:4` | Docker image of the analyzer. | All |
+| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:5` | Docker image of the analyzer. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `DOCKER_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
@@ -234,10 +255,24 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 
 ### Supported distributions
 
-Support depends on the scanner:
+Support depends on which scanner is used:
 
-- [Grype](https://github.com/anchore/grype#grype)
-- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/os/) (Default).
+| Distribution   | Grype | Trivy |
+| -------------- | ----- | ----- |
+| Alma Linux     |       |  ✅   |
+| Alpine Linux   |  ✅   |       |
+| Amazon Linux   |  ✅   |  ✅   |
+| BusyBox        |  ✅   |       |
+| CentOS         |  ✅   |  ✅   |
+| CBL-Mariner    |       |  ✅   |
+| Debian         |  ✅   |  ✅   |
+| Distroless     |  ✅   |  ✅   |
+| Oracle Linux   |  ✅   |  ✅   |
+| Photon OS      |       |  ✅   |
+| Red Hat (RHEL) |  ✅   |  ✅   |
+| Rocky Linux    |       |  ✅   |
+| SUSE           |       |  ✅   |
+| Ubuntu         |  ✅   |  ✅   |
 
 #### FIPS-enabled images
 
@@ -250,9 +285,9 @@ standard tag plus the `-fips` extension.
 
 | Scanner name    | `CS_ANALYZER_IMAGE` |
 | --------------- | ------------------- |
-| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:4-fips` |
-| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:4-fips` |
-| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:4-fips` |
+| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:5-fips` |
+| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:5-fips` |
+| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:5-fips` |
 
 NOTE:
 Prior to GitLab 15.0, the `-ubi` image extension is also available. GitLab 15.0 and later only
@@ -305,9 +340,9 @@ The following options are available:
 
 | Scanner name | `CS_ANALYZER_IMAGE` |
 | ------------ | ------------------- |
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:4` |
-| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:4` |
-| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:4` |
+| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5` |
+| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:5` |
+| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:5` |
 
 If you're migrating from a GitLab 13.x release to a GitLab 14.x release and have customized the
 `container_scanning` job or its CI variables, you might need to perform these migration steps in
@@ -320,7 +355,7 @@ your CI file:
    - `SECURE_ANALYZERS_PREFIX`
 
 1. Review the `CS_ANALYZER_IMAGE` variable. It no longer depends on the variables above and its new
-   default value is `registry.gitlab.com/security-products/container-scanning:4`. If you have an
+   default value is `registry.gitlab.com/security-products/container-scanning:5`. If you have an
    offline environment, see
    [Running container scanning in an offline environment](#running-container-scanning-in-an-offline-environment).
 
@@ -405,7 +440,7 @@ container_scanning:
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
-### Vulnerability allowlisting
+### Vulnerability allowlisting **(ULTIMATE)**
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -532,9 +567,9 @@ For container scanning, import the following images from `registry.gitlab.com` i
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/container-scanning:4
-registry.gitlab.com/security-products/container-scanning/grype:4
-registry.gitlab.com/security-products/container-scanning/trivy:4
+registry.gitlab.com/security-products/container-scanning:5
+registry.gitlab.com/security-products/container-scanning/grype:5
+registry.gitlab.com/security-products/container-scanning/trivy:5
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -574,7 +609,7 @@ following `.gitlab-ci.yml` example as a template.
 
 ```yaml
 variables:
-  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:4
+  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:5
   TARGET_IMAGE: $CI_REGISTRY/namespace/gitlab-container-scanning
 
 image: docker:stable
@@ -753,15 +788,38 @@ Here's an example container scanning report:
 The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
 the security vulnerabilities in your groups, projects and pipelines.
 
-## Vulnerabilities database update
+## Vulnerabilities database
 
 All analyzer images are [updated daily](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/README.md#image-updates).
 
-The images include the latest advisory database available for their respective scanner. Each
-scanner includes data from multiple sources:
+The images use data from upstream advisory databases depending on which scanner is used:
 
-- [Grype](https://github.com/anchore/grype#grypes-database).
-- [Trivy](https://aquasecurity.github.io/trivy/latest/docs/vulnerability/detection/data-source/).
+| Data Source                    | Trivy | Grype |
+| ------------------------------ | ----- | ----- |
+| AlmaLinux Security Advisory    |  ✅   | ✅    |
+| Amazon Linux Security Center   |  ✅   | ✅    |
+| Arch Linux Security Tracker    |  ✅   |       |
+| SUSE CVRF                      |  ✅   | ✅    |
+| CWE Advisories                 |  ✅   |       |
+| Debian Security Bug Tracker    |  ✅   | ✅    |
+| GitHub Security Advisory       |  ✅   | ✅    |
+| Go Vulnerability Database      |  ✅   |       |
+| CBL-Mariner Vulnerability Data |  ✅   |       |
+| NVD                            |  ✅   | ✅    |
+| OSV                            |  ✅   |       |
+| Red Hat OVAL v2                |  ✅   | ✅    |
+| Red Hat Security Data API      |  ✅   | ✅    |
+| Photon Security Advisories     |  ✅   |       |
+| Rocky Linux UpdateInfo         |  ✅   |       |
+| Ubuntu CVE Tracker (only data sources from mid 2021 and later) |  ✅   | ✅    |
+
+In addition to the sources provided by these scanners, GitLab maintains the following vulnerability databases:
+
+- The proprietary
+[GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
+- The open source [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
+
+In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is merged in to augment the data from the external sources. In the GitLab Premium and Free tiers, the data from the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community) is merged in to augment the data from the external sources. This augmentation currently only applies to the analyzer images for the Trivy scanner.
 
 Database update information for other analyzers is available in the
 [maintenance table](../index.md#vulnerability-scanner-maintenance).
@@ -770,7 +828,7 @@ Database update information for other analyzers is available in the
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation)
+## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE)**
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.
@@ -827,6 +885,7 @@ For information on this, see the [general Application Security troubleshooting s
   as the default for container scanning, and also [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326279)
   an integration with [Grype](https://github.com/anchore/grype)
   as an alternative scanner.
+- GitLab 15.0 changed the major analyzer version from `4` to `5`.
 
 Other changes to the container scanning analyzer can be found in the project's
 [changelog](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/CHANGELOG.md).

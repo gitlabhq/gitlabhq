@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectSetting < ApplicationRecord
-  ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos).freeze
+  ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos android).freeze
 
   belongs_to :project, inverse_of: :project_setting
 
@@ -21,7 +21,7 @@ class ProjectSetting < ApplicationRecord
   validate :validates_mr_default_target_self
 
   default_value_for(:legacy_open_source_license_available) do
-    Feature.enabled?(:legacy_open_source_license_available, default_enabled: :yaml, type: :ops)
+    Feature.enabled?(:legacy_open_source_license_available, type: :ops)
   end
 
   def squash_enabled_by_default?
@@ -34,6 +34,15 @@ class ProjectSetting < ApplicationRecord
 
   def target_platforms=(val)
     super(val&.map(&:to_s)&.sort)
+  end
+
+  def human_squash_option
+    case squash_option
+    when 'never' then 'Do not allow'
+    when 'always' then 'Require'
+    when 'default_on' then 'Encourage'
+    when 'default_off' then 'Allow'
+    end
   end
 
   private

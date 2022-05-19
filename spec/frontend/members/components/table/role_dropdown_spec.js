@@ -4,8 +4,6 @@ import { within } from '@testing-library/dom';
 import { mount, createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import waitForPromises from 'helpers/wait_for_promises';
-import { BV_DROPDOWN_SHOW } from '~/lib/utils/constants';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { member } from '../../mock_data';
@@ -70,13 +68,10 @@ describe('RoleDropdown', () => {
   });
 
   describe('when dropdown is open', () => {
-    beforeEach((done) => {
+    beforeEach(() => {
       createComponent();
 
-      findDropdownToggle().trigger('click');
-      wrapper.vm.$root.$on(BV_DROPDOWN_SHOW, () => {
-        done();
-      });
+      return findDropdownToggle().trigger('click');
     });
 
     it('renders all valid roles', () => {
@@ -95,14 +90,14 @@ describe('RoleDropdown', () => {
     });
 
     describe('when dropdown item is selected', () => {
-      it('does nothing if the item selected was already selected', () => {
-        getDropdownItemByText('Owner').trigger('click');
+      it('does nothing if the item selected was already selected', async () => {
+        await getDropdownItemByText('Owner').trigger('click');
 
         expect(actions.updateMemberRole).not.toHaveBeenCalled();
       });
 
-      it('calls `updateMemberRole` Vuex action', () => {
-        getDropdownItemByText('Developer').trigger('click');
+      it('calls `updateMemberRole` Vuex action', async () => {
+        await getDropdownItemByText('Developer').trigger('click');
 
         expect(actions.updateMemberRole).toHaveBeenCalledWith(expect.any(Object), {
           memberId: member.id,
@@ -111,21 +106,19 @@ describe('RoleDropdown', () => {
       });
 
       it('displays toast when successful', async () => {
-        getDropdownItemByText('Developer').trigger('click');
+        await getDropdownItemByText('Developer').trigger('click');
 
-        await waitForPromises();
+        await nextTick();
 
         expect($toast.show).toHaveBeenCalledWith('Role updated successfully.');
       });
 
       it('disables dropdown while waiting for `updateMemberRole` to resolve', async () => {
-        getDropdownItemByText('Developer').trigger('click');
-
-        await nextTick();
+        await getDropdownItemByText('Developer').trigger('click');
 
         expect(findDropdown().props('disabled')).toBe(true);
 
-        await waitForPromises();
+        await nextTick();
 
         expect(findDropdown().props('disabled')).toBe(false);
       });

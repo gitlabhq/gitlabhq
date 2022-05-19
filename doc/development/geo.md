@@ -97,7 +97,7 @@ projects that need updating. Those projects can be:
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
 - Manual: The administrator can manually flag a repository to resync in the
-  [Geo admin panel](../user/admin_area/geo_nodes.md).
+  [Geo Admin Area](../user/admin_area/geo_nodes.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
 times, Geo does a so-called _re-download_. It will do a clean clone
@@ -117,17 +117,6 @@ Similar to the [Project Registry](#project-registry), there is a
 CI Job Artifacts and LFS objects are synced in a similar way as uploads,
 but they are tracked by `Geo::JobArtifactRegistry`, and `Geo::LfsObjectRegistry`
 models respectively.
-
-#### File Download Dispatch worker
-
-Also similar to the [Repository Sync worker](#repository-sync-worker),
-there is a `Geo::FileDownloadDispatchWorker` class that is run
-periodically to sync all uploads that aren't synced to the Geo
-**secondary** site yet.
-
-Files are copied via HTTP(s) and initiated via the
-`/api/v4/geo/transfers/:type/:id` endpoint,
-for example, `/api/v4/geo/transfers/lfs/123`.
 
 ## Authentication
 
@@ -212,7 +201,7 @@ rails g geo_migration [args] [options]
 To migrate the tracking database, run:
 
 ```shell
-bundle exec rake geo:db:migrate
+bundle exec rake db:migrate:geo
 ```
 
 ## Finders
@@ -259,7 +248,7 @@ basically hashes all Git refs together and stores that hash in the
 The **secondary** site does the same to calculate the hash of its
 clone, and compares the hash with the value the **primary** site
 calculated. If there is a mismatch, Geo will mark this as a mismatch
-and the administrator can see this in the [Geo admin panel](../user/admin_area/geo_nodes.md).
+and the administrator can see this in the [Geo Admin Area](../user/admin_area/geo_nodes.md).
 
 ## Glossary
 

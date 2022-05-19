@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
 
           ALLOWED_KEYS = %i[default include before_script image services
-                            after_script variables stages types cache workflow].freeze
+                            after_script variables stages cache workflow].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -57,11 +57,6 @@ module Gitlab
             description: 'Configuration of stages for this pipeline.',
             reserved: true
 
-          entry :types, Entry::Stages,
-            description: 'Deprecated: stages for this pipeline.',
-            reserved: true,
-            deprecation: { deprecated: '9.0', warning: '14.8', removed: '15.0' }
-
           entry :cache, Entry::Caches,
             description: 'Configure caching between build jobs.',
             reserved: true
@@ -100,7 +95,6 @@ module Gitlab
 
           def compose!(_deps = nil)
             super(self) do
-              compose_deprecated_entries!
               compose_jobs!
             end
           end
@@ -117,21 +111,6 @@ module Gitlab
             @entries[:jobs] = factory.create!
           end
           # rubocop: enable CodeReuse/ActiveRecord
-
-          def compose_deprecated_entries!
-            ##
-            # Deprecated `:types` key workaround - if types are defined and
-            # stages are not defined we use types definition as stages.
-            # This keyword will be removed in 15.0:
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/346823
-            #
-            if types_defined?
-              @entries[:stages] = @entries[:types] unless stages_defined?
-              log_and_warn_deprecated_entry(@entries[:types])
-            end
-
-            @entries.delete(:types)
-          end
 
           def filter_jobs!
             return unless @config.is_a?(Hash)

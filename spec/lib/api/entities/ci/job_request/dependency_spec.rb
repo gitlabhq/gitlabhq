@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ci::JobRequest::Dependency do
+  let(:running_job) { create(:ci_build, :artifacts) }
   let(:job) { create(:ci_build, :artifacts) }
-  let(:entity) { described_class.new(job) }
+  let(:entity) { described_class.new(job, { running_job: running_job }) }
 
   subject { entity.as_json }
 
@@ -16,8 +17,8 @@ RSpec.describe API::Entities::Ci::JobRequest::Dependency do
     expect(subject[:name]).to eq(job.name)
   end
 
-  it 'returns the dependency token' do
-    expect(subject[:token]).to eq(job.token)
+  it 'returns the token belonging to the running job' do
+    expect(subject[:token]).to eq(running_job.token)
   end
 
   it 'returns the dependency artifacts_file', :aggregate_failures do

@@ -1,6 +1,6 @@
 import { GlProgressBar, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import LearnGitlab from '~/pages/projects/learn_gitlab/components/learn_gitlab.vue';
 import eventHub from '~/invite_members/event_hub';
 import { INVITE_MODAL_OPEN_COOKIE } from '~/pages/projects/learn_gitlab/constants';

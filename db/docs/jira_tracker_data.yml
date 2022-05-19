@@ -4,6 +4,6 @@ classes:
 - Integrations::JiraTrackerData
 feature_categories:
 - integrations
-description: TODO
+description: Data related to the Jira integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1f332ae8da994509232c7601074b25514ad23c52
 milestone: '12.0'

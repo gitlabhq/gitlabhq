@@ -5,7 +5,7 @@ module Tooling
     module Specs
       SPEC_FILES_REGEX = 'spec/'
       EE_PREFIX = 'ee/'
-      MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[)/.freeze
+      MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[[^\]]+)/.freeze
       SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
       ```suggestion
       %<suggested_line>s

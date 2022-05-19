@@ -146,9 +146,9 @@ module Gitlab
         return experimentation_subject_id if subject.blank?
 
         if subject.respond_to?(:to_global_id)
-          Digest::MD5.hexdigest(subject.to_global_id.to_s)
+          Digest::SHA256.hexdigest(subject.to_global_id.to_s)
         else
-          Digest::MD5.hexdigest(subject.to_s)
+          Digest::SHA256.hexdigest(subject.to_s)
         end
       end
     end

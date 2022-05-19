@@ -6,6 +6,7 @@ module Projects
       include PackagesAccess
 
       feature_category :package_registry
+      urgency :low
 
       # The show action renders index to allow frontend routing to work on page refresh
       def show

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require 'haml_lint'
 require 'haml_lint/spec'
-require Rails.root.join('haml_lint/linter/documentation_links')
+
+require_relative '../../../haml_lint/linter/documentation_links'
 
 RSpec.describe HamlLint::Linter::DocumentationLinks do
   include_context 'linter'

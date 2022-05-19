@@ -23,13 +23,11 @@ module Gitlab::Ci
         MIN_MEDIUM_DEFAULT = 75
 
         def initialize(badge)
-          @entity = badge.entity
           @status = badge.status
-          @key_text = badge.customization.dig(:key_text)
-          @key_width = badge.customization.dig(:key_width)
           @min_good = badge.customization.dig(:min_good)
           @min_acceptable = badge.customization.dig(:min_acceptable)
           @min_medium = badge.customization.dig(:min_medium)
+          super
         end
 
         def value_text

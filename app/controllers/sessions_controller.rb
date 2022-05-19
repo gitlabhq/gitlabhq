@@ -33,7 +33,7 @@ class SessionsController < Devise::SessionsController
   before_action :load_recaptcha
   before_action :set_invite_params, only: [:new]
   before_action do
-    push_frontend_feature_flag(:webauthn, default_enabled: :yaml)
+    push_frontend_feature_flag(:webauthn)
   end
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
@@ -53,6 +53,7 @@ class SessionsController < Devise::SessionsController
   protect_from_forgery with: :exception, prepend: true, except: :destroy
 
   feature_category :authentication_and_authorization
+  urgency :low
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5
@@ -270,7 +271,7 @@ class SessionsController < Devise::SessionsController
 
   def valid_otp_attempt?(user)
     otp_validation_result =
-      ::Users::ValidateOtpService.new(user).execute(user_params[:otp_attempt])
+      ::Users::ValidateManualOtpService.new(user).execute(user_params[:otp_attempt])
     return true if otp_validation_result[:status] == :success
 
     user.invalidate_otp_backup_code!(user_params[:otp_attempt])
@@ -306,9 +307,9 @@ class SessionsController < Devise::SessionsController
   def authentication_method
     if user_params[:otp_attempt]
       AuthenticationEvent::TWO_FACTOR
-    elsif user_params[:device_response] && Feature.enabled?(:webauthn, default_enabled: :yaml)
+    elsif user_params[:device_response] && Feature.enabled?(:webauthn)
       AuthenticationEvent::TWO_FACTOR_WEBAUTHN
-    elsif user_params[:device_response] && !Feature.enabled?(:webauthn, default_enabled: :yaml)
+    elsif user_params[:device_response] && !Feature.enabled?(:webauthn)
       AuthenticationEvent::TWO_FACTOR_U2F
     else
       AuthenticationEvent::STANDARD

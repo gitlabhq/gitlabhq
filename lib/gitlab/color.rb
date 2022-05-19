@@ -170,6 +170,11 @@ module Gitlab
       Constants::COLOR_NAME_TO_HEX[color.downcase] || new(color)
     end
 
+    # Generate a hex color based on hex-encoded value
+    def self.color_for(value)
+      Color.new("##{Digest::SHA256.hexdigest(value.to_s)[0..5]}")
+    end
+
     def to_s
       @value.to_s
     end

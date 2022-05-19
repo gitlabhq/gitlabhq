@@ -42,7 +42,7 @@ In this case, the `deploy` jobs across different pipelines could run concurrentl
 to the `production` environment. Running multiple deployment scripts to the same
 infrastructure could harm/confuse the instance and leave it in a corrupted state in the worst case.
 
-In order to ensure that a `deploy` job runs once at a time, you can specify
+To ensure that a `deploy` job runs once at a time, you can specify
 [`resource_group` keyword](../yaml/index.md#resource_group) to the concurrency sensitive job:
 
 ```yaml
@@ -74,27 +74,27 @@ You can choose a process mode to strategically control the job concurrency for y
 The following modes are supported:
 
 - **Unordered:** This is the default process mode that limits the concurrency on running jobs.
-  It's the easiest option to use and useful when you don't care about the execution order
+  It's the easiest option to use when you don't care about the execution order
   of the jobs. It starts processing the jobs whenever a job ready to run.
 - **Oldest first:** This process mode limits the concurrency of the jobs. When a resource is free,
   it picks the first job from the list of upcoming jobs (`created`, `scheduled`, or `waiting_for_resource` state)
   that are sorted by pipeline ID in ascending order.
 
-  This mode is useful when you want to ensure that the jobs are executed from the oldest pipeline.
-  This is less efficient compared to the `unordered` mode in terms of the pipeline efficiency,
+  This mode is efficient when you want to ensure that the jobs are executed from the oldest pipeline.
+  It is less efficient compared to the `unordered` mode in terms of the pipeline efficiency,
   but safer for continuous deployments.
 
 - **Newest first:** This process mode limits the concurrency of the jobs. When a resource is free,
   it picks the first job from the list of upcoming jobs (`created`, `scheduled` or `waiting_for_resource` state)
   that are sorted by pipeline ID in descending order.
 
-  This mode is useful when you want to ensure that the jobs are executed from the newest pipeline and
+  This mode is efficient when you want to ensure that the jobs are executed from the newest pipeline and
   cancel all of the old deploy jobs with the [skip outdated deployment jobs](../environments/deployment_safety.md#skip-outdated-deployment-jobs) feature.
   This is the most efficient option in terms of the pipeline efficiency, but you must ensure that each deployment job is idempotent.
 
 ### Change the process mode
 
-To change the process mode of a resource group, you need to use the API and
+To change the process mode of a resource group, you must use the API and
 send a request to [edit an existing resource group](../../api/resource_groups.md#edit-an-existing-resource-group)
 by specifying the `process_mode`:
 
@@ -145,7 +145,7 @@ Depending on the process mode of the resource group:
 
 You can define `resource_group` for downstream pipelines that are sensitive to concurrent
 executions. The [`trigger` keyword](../yaml/index.md#trigger) can trigger downstream pipelines and the
-[`resource_group` keyword](../yaml/index.md#resource_group) can co-exist with it. `resource_group` is useful to control the
+[`resource_group` keyword](../yaml/index.md#resource_group) can co-exist with it. `resource_group` is efficient to control the
 concurrency of deployment pipelines, while other jobs can continue to run concurrently.
 
 The following example has two pipeline configurations in a project. When a pipeline starts running,
@@ -205,7 +205,7 @@ Read more how you can use GitLab for [safe deployments](../environments/deployme
 
 ### Avoid dead locks in pipeline configurations
 
-Since [`oldest_first` process mode](#process-modes) enforces the jobs to be executed in a pipeline order,
+Because [`oldest_first` process mode](#process-modes) enforces the jobs to be executed in a pipeline order,
 there is a case that it doesn't work well with the other CI features.
 
 For example, when you run [a child pipeline](../pipelines/parent_child_pipelines.md)
@@ -229,10 +229,10 @@ deploy:
 In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
 and the [`strategy: depend` option](../yaml/index.md#triggerstrategy) makes the `test` job wait until the child pipeline has finished.
 The parent pipeline runs the `deploy` job in the next stage, that requires a resource from the `production` resource group.
-If the process mode is `oldest_first`, it executes the jobs from the oldest pipelines, meaning the `deploy` job is going to be executed next.
+If the process mode is `oldest_first`, it executes the jobs from the oldest pipelines, meaning the `deploy` job is executed next.
 
 However, a child pipeline also requires a resource from the `production` resource group.
-Since the child pipeline is newer than the parent pipeline, the child pipeline
+Because the child pipeline is newer than the parent pipeline, the child pipeline
 waits until the `deploy` job is finished, something that will never happen.
 
 In this case, you should specify the `resource_group` keyword in the parent pipeline configuration instead:

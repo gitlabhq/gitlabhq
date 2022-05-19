@@ -15,7 +15,7 @@ module Gitlab
           ALLOWED_KEYS =
             %i[junit codequality sast secret_detection dependency_scanning container_scanning
                dast performance browser_performance load_performance license_scanning metrics lsif
-               dotenv cobertura terraform accessibility cluster_applications
+               dotenv terraform accessibility
                requirements coverage_fuzzing api_fuzzing cluster_image_scanning
                coverage_report].freeze
 
@@ -45,14 +45,10 @@ module Gitlab
               validates :metrics, array_of_strings_or_string: true
               validates :lsif, array_of_strings_or_string: true
               validates :dotenv, array_of_strings_or_string: true
-              validates :cobertura, array_of_strings_or_string: true
               validates :terraform, array_of_strings_or_string: true
               validates :accessibility, array_of_strings_or_string: true
-              validates :cluster_applications, array_of_strings_or_string: true # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/333441
               validates :requirements, array_of_strings_or_string: true
             end
-
-            validates :config, mutually_exclusive_keys: [:coverage_report, :cobertura]
           end
 
           def value

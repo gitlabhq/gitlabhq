@@ -33,20 +33,25 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show] do
     push_frontend_feature_flag(:file_identifier_hash)
-    push_frontend_feature_flag(:merge_request_widget_graphql, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:paginated_notes, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:confidential_notes, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:rebase_without_ci_ui, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:secure_vulnerability_training, project, default_enabled: :yaml)
-    push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:realtime_labels, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:paginated_notes, project)
+    push_frontend_feature_flag(:confidential_notes, project)
+    push_frontend_feature_flag(:restructured_mr_widget, project)
+    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)
+    push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
+    push_frontend_feature_flag(:rebase_without_ci_ui, project)
+    push_frontend_feature_flag(:issue_assignees_widget, @project)
+    push_frontend_feature_flag(:realtime_labels, project)
+    push_frontend_feature_flag(:updated_diff_expansion_buttons, project)
+    push_frontend_feature_flag(:mr_attention_requests, current_user)
+    push_frontend_feature_flag(:updated_mr_header, project)
+    push_frontend_feature_flag(:remove_diff_header_icons, project)
+    push_frontend_feature_flag(:moved_mr_sidebar, project)
   end
 
   before_action do
-    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
@@ -81,12 +86,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :rebase,
     :discussions,
     :pipelines,
-    :test_reports
-  ]
-  urgency :low, [
+    :test_reports,
     :codequality_mr_diff_reports,
-    :codequality_reports
+    :codequality_reports,
+    :terraform_reports
   ]
+  urgency :low, [:pipeline_status, :pipelines, :exposed_artifacts]
 
   def index
     @merge_requests = @issuables

@@ -66,14 +66,13 @@ export default {
     columnClass() {
       const positionValues = {
         right: 'gl-ml-6',
-        left: 'gl-mr-6',
+        left: 'gl-mx-6',
       };
+
       return `graph-position-${this.graphPosition} ${positionValues[this.graphPosition]}`;
     },
     computedTitleClasses() {
-      const positionalClasses = this.isUpstream
-        ? ['gl-w-full', 'gl-text-right', 'gl-linked-pipeline-padding']
-        : [];
+      const positionalClasses = this.isUpstream ? ['gl-w-full', 'gl-linked-pipeline-padding'] : [];
 
       return [...this.$options.titleClasses, ...positionalClasses];
     },
@@ -202,7 +201,7 @@ export default {
         <li
           v-for="pipeline in linkedPipelines"
           :key="pipeline.id"
-          class="gl-display-flex gl-mb-4"
+          class="gl-display-flex gl-mb-3"
           :class="{ 'gl-flex-direction-row-reverse': isUpstream }"
         >
           <linked-pipeline
@@ -215,6 +214,7 @@ export default {
             @downstreamHovered="onDownstreamHovered"
             @pipelineClicked="onPipelineClick(pipeline)"
             @pipelineExpandToggle="onPipelineExpandToggle"
+            @refreshPipelineGraph="$emit('refreshPipelineGraph')"
           />
           <div
             v-if="showContainer(pipeline.id)"

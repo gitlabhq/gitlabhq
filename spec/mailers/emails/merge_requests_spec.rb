@@ -65,7 +65,9 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_body_text('due to conflict.')
         is_expected.to have_link(merge_request.to_reference, href: project_merge_request_url(merge_request.target_project, merge_request))
         is_expected.to have_text_part_content(assignee.name)
+        is_expected.to have_html_part_content(assignee.name)
         is_expected.to have_text_part_content(reviewer.name)
+        is_expected.to have_html_part_content(reviewer.name)
       end
     end
   end
@@ -174,6 +176,36 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_content(title)
         is_expected.to have_content(merge_request.to_reference)
         is_expected.to have_content(current_user.name)
+        is_expected.to have_text_part_content(assignee.name)
+        is_expected.to have_html_part_content(assignee.name)
+        is_expected.to have_text_part_content(reviewer.name)
+        is_expected.to have_html_part_content(reviewer.name)
+      end
+    end
+  end
+
+  describe '#approved_merge_request_email' do
+    subject { Notify.approved_merge_request_email(recipient.id, merge_request.id, current_user.id) }
+
+    it 'has the correct body' do
+      aggregate_failures do
+        is_expected.to have_body_text('was approved by')
+        is_expected.to have_body_text(current_user.name)
+        is_expected.to have_text_part_content(assignee.name)
+        is_expected.to have_html_part_content(assignee.name)
+        is_expected.to have_text_part_content(reviewer.name)
+        is_expected.to have_html_part_content(reviewer.name)
+      end
+    end
+  end
+
+  describe '#unapproved_merge_request_email' do
+    subject { Notify.unapproved_merge_request_email(recipient.id, merge_request.id, current_user.id) }
+
+    it 'has the correct body' do
+      aggregate_failures do
+        is_expected.to have_body_text('was unapproved by')
+        is_expected.to have_body_text(current_user.name)
         is_expected.to have_text_part_content(assignee.name)
         is_expected.to have_html_part_content(assignee.name)
         is_expected.to have_text_part_content(reviewer.name)

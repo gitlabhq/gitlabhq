@@ -20,12 +20,11 @@ describe('SubscriptionsList', () => {
   let store;
 
   const createComponent = () => {
-    store = createStore();
+    store = createStore({
+      subscriptions: [mockSubscription],
+    });
 
     wrapper = mount(SubscriptionsList, {
-      provide: {
-        subscriptions: [mockSubscription],
-      },
       store,
     });
   };

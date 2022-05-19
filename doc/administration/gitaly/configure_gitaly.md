@@ -2,7 +2,6 @@
 stage: Create
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Configure Gitaly **(FREE SELF)**
@@ -217,7 +216,12 @@ disable enforcement. For more information, see the documentation on configuring
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- all reference architecture pages
+-->
 
    ```ruby
    # Avoid running unnecessary services on the Gitaly server
@@ -229,10 +233,11 @@ disable enforcement. For more information, see the documentation on configuring
    gitlab_workhorse['enable'] = false
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
 
    # If you run a separate monitoring node you can disable these services
-   alertmanager['enable'] = false
    prometheus['enable'] = false
+   alertmanager['enable'] = false
 
    # If you don't run a separate monitoring node you can
    # enable Prometheus access & disable these extra services.
@@ -252,14 +257,14 @@ disable enforcement. For more information, see the documentation on configuring
    # Don't forget to copy `/etc/gitlab/gitlab-secrets.json` from Gitaly client to Gitaly server.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
 
-   # Authentication token to ensure only authorized servers can communicate with
-   # Gitaly server
-   gitaly['auth_token'] = 'AUTH_TOKEN'
-
    # Make Gitaly accept connections on all network interfaces. You must use
    # firewalls to restrict access to this address/port.
    # Comment out following line if you only want to support TLS connections
    gitaly['listen_addr'] = "0.0.0.0:8075"
+
+   # Authentication token to ensure only authorized servers can communicate with
+   # Gitaly server
+   gitaly['auth_token'] = 'AUTH_TOKEN'
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective Gitaly server:
@@ -710,7 +715,7 @@ To configure Gitaly with TLS:
 ### Observe type of Gitaly connections
 
 For information on observing the type of Gitaly connections being served, see the
-[relevant documentation](index.md#useful-queries).
+[relevant documentation](monitoring.md#useful-queries).
 
 ## `gitaly-ruby`
 
@@ -773,8 +778,8 @@ settings:
 Clone traffic can put a large strain on your Gitaly service. The bulk of the work gets done in the
 either of the following RPCs:
 
-- `SSHUploadPack` (for Git SSH).
-- `PostUploadPack` (for Git HTTP).
+- `SSHUploadPackWithSidechannel` (for Git SSH).
+- `PostUploadPackWithSidechannel` (for Git HTTP).
 
 To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in
 Gitaly's configuration file. For example:
@@ -784,26 +789,103 @@ Gitaly's configuration file. For example:
 
 gitaly['concurrency'] = [
   {
-    'rpc' => "/gitaly.SmartHTTPService/PostUploadPack",
-    'max_per_repo' => 20
+    'rpc' => "/gitaly.SmartHTTPService/PostUploadPackWithSidechanel",
+    'max_per_repo' => 20,
+    'max_queue_time' => "1s",
+    'max_queue_size' => 10
   },
   {
-    'rpc' => "/gitaly.SSHService/SSHUploadPack",
+    'rpc' => "/gitaly.SSHService/SSHUploadPackWithSidechannel",
     'max_per_repo' => 20
+    'max_queue_time' => "1s",
+    'max_queue_size' => 10
   }
 ]
 ```
 
+- `rpc` is the name of the RPC to set a concurrency limit for per repository.
+- `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
+- `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to
+  be picked up by Gitaly.
+- `max_queue_size` is the maximum size the concurrency queue can grow to before requests are rejected by
+  Gitaly.
+
 This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per
 repository. In the example above:
 
-- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPack` RPC
-  calls in flight, and the same for `SSHUploadPack`.
+- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPackWithSidechannel` and
+  `SSHUploadPackWithSidechannel` RPC calls in flight.
 - If another request comes in for a repository that has used up its 20 slots, that request gets
   queued.
+- If a request waits in the queue for more than 1 second, it is rejected with an error.
+- If the queue grows beyond 10, subsequent requests are rejected with an error.
 
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
-information, see the [relevant documentation](index.md#monitor-gitaly).
+information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
+
+## Control groups
+
+> - Introduced in GitLab 13.10.
+
+Gitaly shells out to Git for many of its operations. Git can consume a lot of resources for certain operations,
+especially for large repositories.
+
+Control groups (cgroups) in Linux allow limits to be imposed on how much memory and CPU can be consumed.
+See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
+cgroups can be useful for protecting the system against resource exhaustion because of overconsumption of memory and CPU.
+
+Gitaly has built-in cgroups control. When configured, Gitaly assigns Git
+processes to a cgroup based on the repository the Git command is operating in.
+Each cgroup has a memory and CPU limit. When a cgroup reaches its:
+
+- Memory limit, the kernel looks through the processes for a candidate to kill.
+- CPU limit, processes are not killed, but the processes are prevented from consuming more CPU than allowed.
+
+The main reason to configure cgroups for your GitLab installation is that it
+protects against system resource starvation due to a few large repositories or
+bad actors.
+
+Some Git operations are expensive by nature. `git clone`, for instance,
+spawns a `git-upload-pack` process on the server that can consume a lot of memory
+for large repositories. For example, a client that keeps on cloning a
+large repository over and over again. This situation could potentially use up all of the
+memory on a server, causing other operations to fail for other users.
+
+There are many ways someone can create a repository that can consume large amounts of memory when cloned or downloaded.
+Using cgroups allows the kernel to kill these operations before they hog up all system resources.
+
+### Configure cgroups in Gitaly
+
+To configure cgroups in Gitaly, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`. For
+example:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['cgroups_count'] = 1000
+gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
+gitaly['cgroups_hierarchy_root'] = "gitaly"
+gitaly['cgroups_memory_limit'] = 32212254720
+gitaly['cgroups_memory_enabled'] = true
+gitaly['cgroups_cpu_shares'] = 1024
+gitaly['cgroups_cpu_enabled'] = true
+
+```
+
+- `cgroups_count` is the number of cgroups created. Each time a new
+   command is spawned, Gitaly assigns it to one of these cgroups based
+   on the command line arguments of the command. A circular hashing algorithm assigns
+   commands to these cgroups.
+- `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
+- `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
+   is expected to be owned by the user and group Gitaly runs as. Omnibus GitLab
+   creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
+   when Gitaly starts.
+- `cgroups_memory_enabled` enables or disables the memory limit on cgroups.
+- `cgroups_memory_bytes` is the total memory limit each cgroup imposes on the processes added to it.
+- `cgroups_cpu_enabled` enables or disables the CPU limit on cgroups.
+- `cgroups_cpu_shares` is the CPU limit each cgroup imposes on the processes added to it. The maximum is 1024 shares,
+   which represents 100% of CPU.
+   which represents 100% of CPU.
 
 ## Background Repository Optimization
 
@@ -858,7 +940,7 @@ server" and "Gitaly client" refers to the same machine.
 ### Verify authentication monitoring
 
 Before rotating a Gitaly authentication token, verify that you can
-[monitor the authentication behavior](index.md#useful-queries) of your GitLab installation using
+[monitor the authentication behavior](monitoring.md#useful-queries) of your GitLab installation using
 Prometheus.
 
 You can then continue the rest of the procedure.
@@ -1068,7 +1150,7 @@ closed it.
 
 ### Observe the cache
 
-The cache can be observed [using metrics](index.md#monitor-gitaly) and in the following logged
+The cache can be observed [using metrics](monitoring.md#pack-objects-cache) and in the following logged
 information:
 
 |Message|Fields|Description|

@@ -703,6 +703,26 @@ entry.
 - [Convert ci_builds-runner_id FK to LFK](gitlab-org/gitlab@5e114952616994acb802e5ded373fc07e53a3aaa) ([merge request](gitlab-org/gitlab!83129))
 - [Fix related epic links and issue links specs fixtures](gitlab-org/gitlab@ffc7df0cdbdda91fec15d2c4437e64dd7d073d50) ([merge request](gitlab-org/gitlab!82623))
 
+## 14.9.4 (2022-04-29)
+
+### Security (15 changes)
+
+- [Fixes infinite loop when rendering Ipynb Diffs](gitlab-org/security/gitlab@9836b8e3873e1390e1f6746a1039749c312739b5) ([merge request](gitlab-org/security/gitlab!2401))
+- [Update Import/Export merge/push access levels & exclude ci config path](gitlab-org/security/gitlab@8a27e1e56e965d6b69545a2efb4f55f20cc57b2e) ([merge request](gitlab-org/security/gitlab!2371))
+- [Prevent maintainers from editing PipelineSchedule](gitlab-org/security/gitlab@ee86557a26d0c3f8a983a6f20384f6b778d4ab0b) ([merge request](gitlab-org/security/gitlab!2422))
+- [Add validation to pypi file sha256 values](gitlab-org/security/gitlab@7f78a6b9060745d9fea7f7dc71d4cf090b8e9ab5) ([merge request](gitlab-org/security/gitlab!2416))
+- [Conan Token uses PAT rather than ID in payload](gitlab-org/security/gitlab@574b7397e4b32630276cf1e5896ad4a72e82f02b) ([merge request](gitlab-org/security/gitlab!2345))
+- [[security] Fix markdown API disclosing issue titles of limited projects](gitlab-org/security/gitlab@ff61b763d040ece83387eb7c0f70d0d97aafbd66) ([merge request](gitlab-org/security/gitlab!2406))
+- [Verify that mentioned user can read TODO's note](gitlab-org/security/gitlab@7771534e395f9f433cafa9984cbeeebf86a2d797) ([merge request](gitlab-org/security/gitlab!2396))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@0768d53609d530bee4ef118a929bdd7ac6cbd5de) ([merge request](gitlab-org/security/gitlab!2419))
+- [Allow rate limiting of deploy tokens](gitlab-org/security/gitlab@8738e74dbecece0e0fcdaf5df1323437db77b947) ([merge request](gitlab-org/security/gitlab!2384))
+- [Add suffix to cache name to add isolation](gitlab-org/security/gitlab@d722e72125ded23ea4fd0eeeb775576f7cdd7181) ([merge request](gitlab-org/security/gitlab!2374))
+- [Disable wiki access with CI_JOB_TOKEN when improper access level](gitlab-org/security/gitlab@13524db78a32d13e4081a30cc0db9215c404b435) ([merge request](gitlab-org/security/gitlab!2390))
+- [Sanitize error input to prevent HTML/CSS injection in messages](gitlab-org/security/gitlab@a83683c13f7a0a8af94a88562f5904bfcb1b58e0) ([merge request](gitlab-org/security/gitlab!2377))
+- [Secure debug trace artifact download](gitlab-org/security/gitlab@811ce49adeddb56de0a1ca26652017197fe1b97a) ([merge request](gitlab-org/security/gitlab!2366))
+- [Use password type for all secret integration properties](gitlab-org/security/gitlab@f38cec8b26fa0e33da9247af9e8c53c01e6ec0c6) ([merge request](gitlab-org/security/gitlab!2410))
+- [Limit CI job group_name regexp](gitlab-org/security/gitlab@5a08c0b9dff4518dff91990eecae0ab76c5cf4ed) ([merge request](gitlab-org/security/gitlab!2380))
+
 ## 14.9.3 (2022-04-12)
 
 ### Fixed (4 changes)
@@ -1338,6 +1358,25 @@ entry.
 - [Remove unneeded override in Ci::PipelinePresenter](gitlab-org/gitlab@35ae95950999d2efbbc35fc9076335ed2afffd3f) by @edith007 ([merge request](gitlab-org/gitlab!75854))
 - [Clean up issue_boards_filtered_search feature flag](gitlab-org/gitlab@a97ed09ffb0d88007b21a314ab48b2e50d7c4bfa) ([merge request](gitlab-org/gitlab!80771))
 - [Add table for storing issue tsvector](gitlab-org/gitlab@ceabf5a8ad0d67768b05a58a84b242495645a57c) ([merge request](gitlab-org/gitlab!71913))
+
+## 14.8.6 (2022-04-29)
+
+### Security (14 changes)
+
+- [Update Import/Export merge/push access levels & exclude ci config path](gitlab-org/security/gitlab@abfa8d4c128316b1ba095ff8eda7e86018e47caf) ([merge request](gitlab-org/security/gitlab!2372))
+- [Prevent maintainers from editing PipelineSchedule](gitlab-org/security/gitlab@761a7777cb480d02b9c3418aa7317eba7c0eaff1) ([merge request](gitlab-org/security/gitlab!2423))
+- [Add validation to pypi file sha256 values](gitlab-org/security/gitlab@712cc01aee2be4b6a9847746a080f190041367d5) ([merge request](gitlab-org/security/gitlab!2417))
+- [Conan Token uses PAT rather than ID in payload](gitlab-org/security/gitlab@ba3070c90dd1b575982df22c256b0e3f97a9e919) ([merge request](gitlab-org/security/gitlab!2346))
+- [[security] Fix markdown API disclosing issue titles of limited projects](gitlab-org/security/gitlab@fd3cb263e8f165a4a1a7894c08ddf254f9cf1e92) ([merge request](gitlab-org/security/gitlab!2405))
+- [Verify that mentioned user can read TODO's note](gitlab-org/security/gitlab@e54be58cc79011d7c79dae94b993774ab36ef232) ([merge request](gitlab-org/security/gitlab!2398))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@160cdda98c80e052abbb4bec226ad63fe9c9e403) ([merge request](gitlab-org/security/gitlab!2420))
+- [Allow rate limiting of deploy tokens](gitlab-org/security/gitlab@78f7ee3d7e1258375ddcea3a20e3798092e89d41) ([merge request](gitlab-org/security/gitlab!2385))
+- [Add suffix to cache name to add isolation](gitlab-org/security/gitlab@184d49640f5dcc4ac1522c874a7b5e0c16d2e05f) ([merge request](gitlab-org/security/gitlab!2373))
+- [Disable wiki access with CI_JOB_TOKEN when improper access level](gitlab-org/security/gitlab@db93d134394675a4335c92557a55ac4381ed303f) ([merge request](gitlab-org/security/gitlab!2391))
+- [Sanitize error input to prevent HTML/CSS injection in messages](gitlab-org/security/gitlab@333dd602091810639912702c80034468ff6f8aa0) ([merge request](gitlab-org/security/gitlab!2378))
+- [Secure debug trace artifact download](gitlab-org/security/gitlab@266d812ba2e8e9936269323465c867983e3a2ebf) ([merge request](gitlab-org/security/gitlab!2367))
+- [Use password type for all secret integration properties](gitlab-org/security/gitlab@eda2b8f02b34ead354ef07b9e41be006cf90f51b) ([merge request](gitlab-org/security/gitlab!2411))
+- [Limit CI job group_name regexp](gitlab-org/security/gitlab@03ab6e9f312fb6fe50a6361f7bc78d527b223b96) ([merge request](gitlab-org/security/gitlab!2381))
 
 ## 14.8.5 (2022-03-31)
 

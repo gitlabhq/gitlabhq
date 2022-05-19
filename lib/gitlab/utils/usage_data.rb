@@ -31,7 +31,7 @@
 #
 #     Examples:
 #     redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
-#     redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
+#     redis_usage_data { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'users_expanding_vulnerabilities', start_date: 28.days.ago, end_date: Date.current) }
 
 module Gitlab
   module Utils
@@ -44,57 +44,64 @@ module Gitlab
       DISTRIBUTED_HLL_FALLBACK = -2
       MAX_BUCKET_SIZE = 100
 
+      def with_duration
+        yield
+      end
+
       def add_metric(metric, time_frame: 'none', options: {})
         metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
         metric_class.new(time_frame: time_frame, options: options).value
       end
 
-      def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
-        if batch
-          Gitlab::Database::BatchCount.batch_count(relation, column, batch_size: batch_size, start: start, finish: finish)
-        else
-          relation.count
+      def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil, start_at: Time.current)
+        with_duration do
+          if batch
+            Gitlab::Database::BatchCount.batch_count(relation, column, batch_size: batch_size, start: start, finish: finish)
+          else
+            relation.count
+          end
+        rescue ActiveRecord::StatementInvalid => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          FALLBACK
         end
-      rescue ActiveRecord::StatementInvalid => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        FALLBACK
       end
 
       def distinct_count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
-        if batch
-          Gitlab::Database::BatchCount.batch_distinct_count(relation, column, batch_size: batch_size, start: start, finish: finish)
-        else
-          relation.distinct_count_by(column)
+        with_duration do
+          if batch
+            Gitlab::Database::BatchCount.batch_distinct_count(relation, column, batch_size: batch_size, start: start, finish: finish)
+          else
+            relation.distinct_count_by(column)
+          end
+        rescue ActiveRecord::StatementInvalid => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          FALLBACK
         end
-      rescue ActiveRecord::StatementInvalid => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        FALLBACK
       end
 
       def estimate_batch_distinct_count(relation, column = nil, batch_size: nil, start: nil, finish: nil)
-        buckets = Gitlab::Database::PostgresHll::BatchDistinctCounter
-          .new(relation, column)
-          .execute(batch_size: batch_size, start: start, finish: finish)
+        with_duration do
+          buckets = Gitlab::Database::PostgresHll::BatchDistinctCounter
+                      .new(relation, column)
+                      .execute(batch_size: batch_size, start: start, finish: finish)
 
-        yield buckets if block_given?
+          yield buckets if block_given?
 
-        buckets.estimated_distinct_count
-      rescue ActiveRecord::StatementInvalid => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        FALLBACK
-      # catch all rescue should be removed as a part of feature flag rollout issue
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/285485
-      rescue StandardError => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        DISTRIBUTED_HLL_FALLBACK
+          buckets.estimated_distinct_count
+        rescue ActiveRecord::StatementInvalid => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          FALLBACK
+        end
       end
 
       def sum(relation, column, batch_size: nil, start: nil, finish: nil)
-        Gitlab::Database::BatchCount.batch_sum(relation, column, batch_size: batch_size, start: start, finish: finish)
-      rescue ActiveRecord::StatementInvalid => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        FALLBACK
+        with_duration do
+          Gitlab::Database::BatchCount.batch_sum(relation, column, batch_size: batch_size, start: start, finish: finish)
+        rescue ActiveRecord::StatementInvalid => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          FALLBACK
+        end
       end
 
       # We don't support batching with histograms.
@@ -103,103 +110,113 @@ module Gitlab
       #
       # rubocop: disable CodeReuse/ActiveRecord
       def histogram(relation, column, buckets:, bucket_size: buckets.size)
-        # Using lambda to avoid exposing histogram specific methods
-        parameters_valid = lambda do
-          error_message =
-            if buckets.first == buckets.last
-              'Lower bucket bound cannot equal to upper bucket bound'
-            elsif bucket_size == 0
-              'Bucket size cannot be zero'
-            elsif bucket_size > MAX_BUCKET_SIZE
-              "Bucket size #{bucket_size} exceeds the limit of #{MAX_BUCKET_SIZE}"
-            end
+        with_duration do
+          # Using lambda to avoid exposing histogram specific methods
+          parameters_valid = lambda do
+            error_message =
+              if buckets.first == buckets.last
+                'Lower bucket bound cannot equal to upper bucket bound'
+              elsif bucket_size == 0
+                'Bucket size cannot be zero'
+              elsif bucket_size > MAX_BUCKET_SIZE
+                "Bucket size #{bucket_size} exceeds the limit of #{MAX_BUCKET_SIZE}"
+              end
 
-          return true unless error_message
+            break true unless error_message
 
-          exception = ArgumentError.new(error_message)
-          exception.set_backtrace(caller)
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
+            exception = ArgumentError.new(error_message)
+            exception.set_backtrace(caller)
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
 
-          false
+            false
+          end
+
+          break HISTOGRAM_FALLBACK unless parameters_valid.call
+
+          count_grouped = relation.group(column).select(Arel.star.count.as('count_grouped'))
+          cte = Gitlab::SQL::CTE.new(:count_cte, count_grouped)
+
+          # For example, 9 segments gives 10 buckets
+          bucket_segments = bucket_size - 1
+
+          width_bucket = Arel::Nodes::NamedFunction
+            .new('WIDTH_BUCKET', [cte.table[:count_grouped], buckets.first, buckets.last, bucket_segments])
+            .as('buckets')
+
+          query = cte
+            .table
+            .project(width_bucket, cte.table[:count])
+            .group('buckets')
+            .order('buckets')
+            .with(cte.to_arel)
+
+          # Return the histogram as a Hash because buckets are unique.
+          relation
+            .connection
+            .exec_query(query.to_sql)
+            .rows
+            .to_h
+            # Keys are converted to strings in Usage Ping JSON
+            .stringify_keys
+        rescue ActiveRecord::StatementInvalid => e
+          Gitlab::AppJsonLogger.error(
+            event: 'histogram',
+            relation: relation.table_name,
+            operation: 'histogram',
+            operation_args: [column, buckets.first, buckets.last, bucket_segments],
+            query: query.to_sql,
+            message: e.message
+          )
+          # Raises error for dev env
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+          HISTOGRAM_FALLBACK
         end
-
-        return HISTOGRAM_FALLBACK unless parameters_valid.call
-
-        count_grouped = relation.group(column).select(Arel.star.count.as('count_grouped'))
-        cte = Gitlab::SQL::CTE.new(:count_cte, count_grouped)
-
-        # For example, 9 segments gives 10 buckets
-        bucket_segments = bucket_size - 1
-
-        width_bucket = Arel::Nodes::NamedFunction
-          .new('WIDTH_BUCKET', [cte.table[:count_grouped], buckets.first, buckets.last, bucket_segments])
-          .as('buckets')
-
-        query = cte
-          .table
-          .project(width_bucket, cte.table[:count])
-          .group('buckets')
-          .order('buckets')
-          .with(cte.to_arel)
-
-        # Return the histogram as a Hash because buckets are unique.
-        relation
-          .connection
-          .exec_query(query.to_sql)
-          .rows
-          .to_h
-          # Keys are converted to strings in Usage Ping JSON
-          .stringify_keys
-      rescue ActiveRecord::StatementInvalid => e
-        Gitlab::AppJsonLogger.error(
-          event: 'histogram',
-          relation: relation.table_name,
-          operation: 'histogram',
-          operation_args: [column, buckets.first, buckets.last, bucket_segments],
-          query: query.to_sql,
-          message: e.message
-        )
-        # Raises error for dev env
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-        HISTOGRAM_FALLBACK
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       def add(*args)
-        return -1 if args.any?(&:negative?)
+        with_duration do
+          break -1 if args.any?(&:negative?)
 
-        args.sum
-      rescue StandardError => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        FALLBACK
+          args.sum
+        rescue StandardError => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          FALLBACK
+        end
       end
 
       def alt_usage_data(value = nil, fallback: FALLBACK, &block)
-        if block_given?
-          yield
-        else
-          value
+        with_duration do
+          if block_given?
+            yield
+          else
+            value
+          end
+        rescue StandardError => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          fallback
         end
-      rescue StandardError => error
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
-        fallback
       end
 
       def redis_usage_data(counter = nil, &block)
-        if block_given?
-          redis_usage_counter(&block)
-        elsif counter.present?
-          redis_usage_data_totals(counter)
+        with_duration do
+          if block_given?
+            redis_usage_counter(&block)
+          elsif counter.present?
+            redis_usage_data_totals(counter)
+          end
         end
       end
 
       def with_prometheus_client(fallback: {}, verify: true)
-        client = prometheus_client(verify: verify)
-        return fallback unless client
+        with_duration do
+          client = prometheus_client(verify: verify)
+          break fallback unless client
 
-        yield client
-      rescue StandardError
-        fallback
+          yield client
+        rescue StandardError
+          fallback
+        end
       end
 
       def measure_duration
@@ -231,25 +248,28 @@ module Gitlab
 
       # rubocop: disable UsageData/LargeTable:
       def jira_integration_data
-        data = {
-          projects_jira_server_active: 0,
-          projects_jira_cloud_active: 0
-        }
+        with_duration do
+          data = {
+            projects_jira_server_active: 0,
+            projects_jira_cloud_active: 0
+          }
 
-        # rubocop: disable CodeReuse/ActiveRecord
-        ::Integrations::Jira.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
-          counts = services.group_by do |service|
-            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-            service_url = service.data_fields&.url || (service.properties && service.properties['url'])
-            service_url&.include?('.atlassian.net') ? :cloud : :server
+          # rubocop: disable CodeReuse/ActiveRecord
+          ::Integrations::Jira.active.includes(:jira_tracker_data).find_in_batches(batch_size: 100) do |services|
+            counts = services.group_by do |service|
+              # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
+              service_url = service.data_fields&.url || (service.properties && service.properties['url'])
+              service_url&.include?('.atlassian.net') ? :cloud : :server
+            end
+
+            data[:projects_jira_server_active] += counts[:server].size if counts[:server]
+            data[:projects_jira_cloud_active] += counts[:cloud].size if counts[:cloud]
           end
 
-          data[:projects_jira_server_active] += counts[:server].size if counts[:server]
-          data[:projects_jira_cloud_active] += counts[:cloud].size if counts[:cloud]
+          data
         end
-
-        data
       end
+
       # rubocop: enable CodeReuse/ActiveRecord
       # rubocop: enable UsageData/LargeTable:
 
@@ -263,9 +283,11 @@ module Gitlab
       end
 
       def epics_deepest_relationship_level
-        # rubocop: disable UsageData/LargeTable
-        { epics_deepest_relationship_level: ::Epic.deepest_relationship_level.to_i }
-        # rubocop: enable UsageData/LargeTable
+        with_duration do
+          # rubocop: disable UsageData/LargeTable
+          { epics_deepest_relationship_level: ::Epic.deepest_relationship_level.to_i }
+          # rubocop: enable UsageData/LargeTable
+        end
       end
 
       private

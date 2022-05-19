@@ -13,10 +13,8 @@ module Gitlab::Ci
         VALUE_WIDTH_DEFAULT = 54
 
         def initialize(badge)
-          @entity = badge.entity
           @tag = badge.tag || "none"
-          @key_width = badge.customization.dig(:key_width)
-          @key_text = badge.customization.dig(:key_text)
+          super
         end
 
         def key_text

@@ -445,7 +445,7 @@ RSpec.describe 'GFM autocomplete', :js do
     click_button('Cancel')
 
     page.within('.modal') do
-      click_button('OK', match: :first)
+      click_button('Discard changes', match: :first)
     end
 
     wait_for_requests

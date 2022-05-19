@@ -4,6 +4,6 @@ classes:
 - Packages::Debian::ProjectComponent
 feature_categories:
 - package_registry
-description: TODO
+description: Debian package project-level distribution components
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51732
 milestone: '13.9'

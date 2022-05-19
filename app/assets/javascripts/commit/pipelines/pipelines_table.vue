@@ -212,7 +212,6 @@ export default {
         <template #table-header-actions>
           <div v-if="canRenderPipelineButton" class="gl-text-right">
             <gl-button
-              variant="confirm"
               data-testid="run_pipeline_button"
               :loading="state.isRunningMergeRequestPipeline"
               @click="tryRunPipeline"

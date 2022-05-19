@@ -10,13 +10,20 @@ class Projects::ReleasesController < Projects::ApplicationController
   before_action :validate_suffix_path, :fetch_latest_tag, only: :latest_permalink
 
   feature_category :release_orchestration
+  urgency :low
 
   def index
     respond_to do |format|
       format.html do
         require_non_empty_project
       end
-      format.json { render json: releases }
+      format.json do
+        if Feature.enabled?(:remove_sha_from_releases_json, project)
+          render json: ReleaseSerializer.new.represent(releases)
+        else
+          render json: releases
+        end
+      end
     end
   end
 

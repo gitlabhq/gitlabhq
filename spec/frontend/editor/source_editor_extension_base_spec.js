@@ -1,4 +1,5 @@
 import { Range } from 'monaco-editor';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import {
@@ -39,12 +40,13 @@ describe('The basis for an Source Editor extension', () => {
   };
 
   beforeEach(() => {
-    setFixtures(generateLines());
+    setHTMLFixture(generateLines());
     event = generateEventMock();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    resetHTMLFixture();
   });
 
   describe('onUse callback', () => {
@@ -253,7 +255,7 @@ describe('The basis for an Source Editor extension', () => {
     });
 
     it('does not create a link if the event is triggered on a wrong node', () => {
-      setFixtures('<div class="wrong-class">3</div>');
+      setHTMLFixture('<div class="wrong-class">3</div>');
       SourceEditorExtension.createAnchor = jest.fn();
       const wrongEvent = generateEventMock({ el: document.querySelector('.wrong-class') });
 

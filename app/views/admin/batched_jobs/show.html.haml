@@ -1,0 +1,36 @@
+- add_to_breadcrumbs s_('Batched Job|Background Migrations'), admin_background_migrations_path(database: params[:database])
+- add_to_breadcrumbs @job.batched_background_migration_id, admin_background_migration_path(@job.batched_migration, database: params[:database])
+- breadcrumb_title sprintf(s_('Batched Job|Batched Job (Id: %{id})'), { id: @job.id.to_s})
+- page_title @job.id, s_('BatchedJob|Batched Jobs')
+- @breadcrumb_link = admin_background_migration_batched_job_path(@job.batched_migration, @job, database: params[:database])
+
+%h3= sprintf(s_('Batched Job|Batched Job (Id: %{id})'), { id: @job.id.to_s})
+
+%table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
+  %thead{ role: 'rowgroup' }
+    %tr{ role: 'row' }
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= _('Id')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Min Value')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Max Value')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Batch size')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Started at')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Finished at')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Attempts')
+      %th.table-th-transparent.border-bottom{ role: 'cell' }= s_('BatchedJob|Pause time (ms)')
+  %tbody{ role: 'rowgroup' }
+    = render partial: 'job', job: @job
+
+- if @transition_logs.any?
+  %h5= s_('BatchedJob|Transition logs:')
+
+  %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
+    %thead{ role: 'rowgroup' }
+      %tr{ role: 'row' }
+        %th{ role: 'cell' }= _('Id')
+        %th{ role: 'cell' }= s_('BatchedJob|Created At')
+        %th{ role: 'cell' }= s_('BatchedJob|Previous Status')
+        %th{ role: 'cell' }= s_('BatchedJob|Next Status')
+        %th{ role: 'cell' }= s_('BatchedJob|Exception Class')
+        %th{ role: 'cell' }= s_('BatchedJob|Exception Message')
+    %tbody{ role: 'rowgroup' }
+      = render partial: 'transition_log', collection: @transition_logs

@@ -151,7 +151,7 @@ export const triggerMarkInputRule = ({ tiptapEditor, inputRuleText }) => {
  * @param {*} params.action A function that triggers a transaction in the tiptap Editor
  * @returns A promise that resolves when the transaction completes
  */
-export const waitUntilNextDocTransaction = ({ tiptapEditor, action }) => {
+export const waitUntilNextDocTransaction = ({ tiptapEditor, action = () => {} }) => {
   return new Promise((resolve) => {
     const handleTransaction = () => {
       tiptapEditor.off('update', handleTransaction);

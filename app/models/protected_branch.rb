@@ -68,6 +68,10 @@ class ProtectedBranch < ApplicationRecord
   def allow_multiple?(type)
     type == :push
   end
+
+  def self.downcase_humanized_name
+    name.underscore.humanize.downcase
+  end
 end
 
 ProtectedBranch.prepend_mod_with('ProtectedBranch')

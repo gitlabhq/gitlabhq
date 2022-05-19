@@ -21,7 +21,7 @@ module Types
         raise ::Gitlab::Graphql::Errors::ArgumentError, 'start must be before end'
       end
 
-      to_h
+      super
     end
   end
 end

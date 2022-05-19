@@ -99,17 +99,6 @@ module Types
             argument :id, ::Types::GlobalIDType[::MergeRequest], required: true, description: 'Global ID of the merge request.'
           end
 
-    field :instance_statistics_measurements,
-          type: Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
-          null: true,
-          description: 'Get statistics on the instance.',
-          resolver: Resolvers::Admin::Analytics::UsageTrends::MeasurementsResolver,
-          deprecated: {
-            reason: :renamed,
-            replacement: 'Query.usageTrendsMeasurements',
-            milestone: '13.10'
-          }
-
     field :usage_trends_measurements, Types::Admin::Analytics::UsageTrends::MeasurementType.connection_type,
           null: true,
           description: 'Get statistics on the instance.',
@@ -160,30 +149,18 @@ module Types
     end
 
     def issue(id:)
-      # TODO: remove this line when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      id = ::Types::GlobalIDType[::Issue].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
     end
 
     def merge_request(id:)
-      # TODO: remove this line when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      id = ::Types::GlobalIDType[::MergeRequest].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
     end
 
     def milestone(id:)
-      # TODO: remove this line when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      id = ::Types::GlobalIDType[Milestone].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
     end
 
     def container_repository(id:)
-      # TODO: remove this line when the compatibility layer is removed
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-      id = ::Types::GlobalIDType[::ContainerRepository].coerce_isolated_input(id)
       GitlabSchema.find_by_gid(id)
     end
 

@@ -87,19 +87,23 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          message: 'starting importer',
-          parallel: false,
-          project_id: project.id,
-          importer: 'Class'
+          {
+            message: 'starting importer',
+            parallel: false,
+            project_id: project.id,
+            importer: 'Class'
+          }
         )
 
       expect(Gitlab::GithubImport::Logger)
         .to receive(:info)
         .with(
-          message: 'importer finished',
-          parallel: false,
-          project_id: project.id,
-          importer: 'Class'
+          {
+            message: 'importer finished',
+            parallel: false,
+            project_id: project.id,
+            importer: 'Class'
+          }
         )
 
       importer.execute
@@ -118,20 +122,24 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            message: 'starting importer',
-            parallel: false,
-            project_id: project.id,
-            importer: 'Class'
+            {
+              message: 'starting importer',
+              parallel: false,
+              project_id: project.id,
+              importer: 'Class'
+            }
           )
 
         expect(Gitlab::Import::ImportFailureService)
           .to receive(:track)
           .with(
-            project_id: project.id,
-            exception: exception,
-            error_source: 'MyImporter',
-            fail_import: false,
-            metrics: true
+            {
+              project_id: project.id,
+              exception: exception,
+              error_source: 'MyImporter',
+              fail_import: false,
+              metrics: true
+            }
           ).and_call_original
 
         expect { importer.execute }
@@ -184,10 +192,12 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(
-            message: 'starting importer',
-            parallel: false,
-            project_id: project.id,
-            importer: 'Class'
+            {
+              message: 'starting importer',
+              parallel: false,
+              project_id: project.id,
+              importer: 'Class'
+            }
           )
 
         expect(Gitlab::Import::ImportFailureService)
@@ -288,25 +298,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         ], batch_size: batch_size, batch_delay: batch_delay)
 
         importer.parallel_import
-      end
-    end
-
-    context 'when distribute_github_parallel_import feature flag is disabled' do
-      before do
-        stub_feature_flags(distribute_github_parallel_import: false)
-      end
-
-      it 'imports data in parallel' do
-        expect(importer)
-          .to receive(:each_object_to_import)
-          .and_yield(object)
-
-        expect(worker_class)
-          .to receive(:perform_async)
-          .with(project.id, { title: 'Foo' }, an_instance_of(String))
-
-        expect(importer.parallel_import)
-          .to be_an_instance_of(Gitlab::JobWaiter)
       end
     end
   end

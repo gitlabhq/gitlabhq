@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 import SidebarService, { gqClient } from '~/sidebar/services/sidebar_service';
@@ -8,6 +9,7 @@ import toast from '~/vue_shared/plugins/global_toast';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import Mock from './mock_data';
 
+jest.mock('~/flash');
 jest.mock('~/vue_shared/plugins/global_toast');
 jest.mock('~/commons/nav/user_merge_requests');
 
@@ -122,25 +124,39 @@ describe('Sidebar mediator', () => {
   });
 
   describe('toggleAttentionRequested', () => {
-    let attentionRequiredService;
+    let requestAttentionMock;
+    let removeAttentionRequestMock;
 
     beforeEach(() => {
-      attentionRequiredService = jest
-        .spyOn(mediator.service, 'toggleAttentionRequested')
+      requestAttentionMock = jest.spyOn(mediator.service, 'requestAttention').mockResolvedValue();
+      removeAttentionRequestMock = jest
+        .spyOn(mediator.service, 'removeAttentionRequest')
         .mockResolvedValue();
     });
 
-    it('calls attentionRequired service method', async () => {
-      mediator.store.reviewers = [{ id: 1, attention_requested: false, username: 'root' }];
+    it.each`
+      attentionIsCurrentlyRequested | serviceMethod
+      ${true}                       | ${'remove'}
+      ${false}                      | ${'add'}
+    `(
+      "calls the $serviceMethod service method when the user's attention request is set to $attentionIsCurrentlyRequested",
+      async ({ serviceMethod }) => {
+        const methods = {
+          add: requestAttentionMock,
+          remove: removeAttentionRequestMock,
+        };
+        mediator.store.reviewers = [{ id: 1, attention_requested: false, username: 'root' }];
 
-      await mediator.toggleAttentionRequested('reviewer', {
-        user: { id: 1, username: 'root' },
-        callback: jest.fn(),
-      });
+        await mediator.toggleAttentionRequested('reviewer', {
+          user: { id: 1, username: 'root' },
+          callback: jest.fn(),
+          direction: serviceMethod,
+        });
 
-      expect(attentionRequiredService).toHaveBeenCalledWith(1);
-      expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
-    });
+        expect(methods[serviceMethod]).toHaveBeenCalledWith(1);
+        expect(refreshUserMergeRequestCounts).toHaveBeenCalled();
+      },
+    );
 
     it.each`
       type          | method
@@ -172,5 +188,27 @@ describe('Sidebar mediator', () => {
         expect(toast).toHaveBeenCalledWith(toastMessage);
       },
     );
+
+    describe('errors', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(mediator.service, 'removeAttentionRequest')
+          .mockRejectedValueOnce(new Error('Something went wrong'));
+      });
+
+      it('shows an error message', async () => {
+        await mediator.toggleAttentionRequested('reviewer', {
+          user: { id: 1, username: 'root' },
+          callback: jest.fn(),
+          direction: 'remove',
+        });
+
+        expect(createFlash).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: 'Updating the attention request for root failed.',
+          }),
+        );
+      });
+    });
   });
 });

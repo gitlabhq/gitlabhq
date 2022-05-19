@@ -3,19 +3,16 @@
 module API
   class ImportGithub < ::API::Base
     feature_category :importers
+    urgency :low
 
     rescue_from Octokit::Unauthorized, with: :provider_unauthorized
-
-    before do
-      forbidden! unless Gitlab::CurrentSettings.import_sources&.include?('github')
-    end
 
     helpers do
       def client
         @client ||= if Feature.enabled?(:remove_legacy_github_client)
                       Gitlab::GithubImport::Client.new(params[:personal_access_token], host: params[:github_hostname])
                     else
-                      Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], client_options)
+                      Gitlab::LegacyGithubImport::Client.new(params[:personal_access_token], **client_options)
                     end
       end
 

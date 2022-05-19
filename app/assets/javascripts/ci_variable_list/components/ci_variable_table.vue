@@ -179,10 +179,7 @@ export default {
         </p>
       </template>
     </gl-table>
-    <div
-      class="ci-variable-actions gl-display-flex"
-      :class="{ 'gl-justify-content-center': isTableEmpty }"
-    >
+    <div class="ci-variable-actions gl-display-flex gl-mt-5">
       <gl-button
         v-gl-modal-directive="$options.modalId"
         class="gl-mr-3"

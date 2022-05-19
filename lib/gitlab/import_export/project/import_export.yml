@@ -48,6 +48,8 @@ tree:
         - :award_emoji
     - releases:
       - :links
+      - milestone_releases:
+        - :milestone
     - project_members:
       - :user
     - merge_requests:
@@ -752,6 +754,7 @@ excluded_attributes:
     - :compliance_framework_setting
     - :show_default_award_emojis
     - :warn_about_potentially_unwanted_characters
+    - :enforce_auth_checks_on_uploads
     - :services
     - :exported_protected_branches
     - :repository_size_limit
@@ -957,6 +960,9 @@ excluded_attributes:
   system_note_metadata:
     - :description_version_id
     - :note_id
+  milestone_releases:
+    - :milestone_id
+    - :release_id
 methods:
   notes:
     - :type

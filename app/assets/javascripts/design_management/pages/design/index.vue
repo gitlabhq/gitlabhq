@@ -349,7 +349,9 @@ export default {
         class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
       >
         <design-destroyer
-          :filenames="[design.filename]"
+          :filenames="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+            design.filename,
+          ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
           :project-path="projectPath"
           :iid="issueIid"
           @done="$router.push({ name: $options.DESIGNS_ROUTE_NAME })"

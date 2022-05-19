@@ -492,7 +492,9 @@ export default {
             v-if="!groupSingleEmptyState(groupData.key)"
             :value="groupData.panels"
             group="metrics-dashboard"
-            :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
+            :component-data="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+              attrs: { class: 'row mx-0 w-100' },
+            } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
             :disabled="!isRearrangingPanels"
             @input="updatePanels(groupData.key, $event)"
           >

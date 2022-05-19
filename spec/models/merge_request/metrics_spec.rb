@@ -54,4 +54,43 @@ RSpec.describe MergeRequest::Metrics do
     let!(:parent) { create(:ci_pipeline, project: merge_request.target_project) }
     let!(:model) { merge_request.metrics.tap { |metrics| metrics.update!(pipeline: parent) } }
   end
+
+  describe 'update' do
+    let(:merge_request) { create(:merge_request) }
+    let(:metrics) { merge_request.metrics }
+
+    before do
+      metrics.update!(
+        pipeline_id: 1,
+        latest_build_started_at: Time.current,
+        latest_build_finished_at: Time.current
+      )
+    end
+
+    context 'when pipeline_id is nullified' do
+      before do
+        metrics.update!(pipeline_id: nil)
+      end
+
+      it 'nullifies build related columns via DB trigger' do
+        metrics.reload
+
+        expect(metrics.latest_build_started_at).to be_nil
+        expect(metrics.latest_build_finished_at).to be_nil
+      end
+    end
+
+    context 'when updated but pipeline_id is not nullified' do
+      before do
+        metrics.update!(latest_closed_at: Time.current)
+      end
+
+      it 'does not nullify build related columns' do
+        metrics.reload
+
+        expect(metrics.latest_build_started_at).not_to be_nil
+        expect(metrics.latest_build_finished_at).not_to be_nil
+      end
+    end
+  end
 end

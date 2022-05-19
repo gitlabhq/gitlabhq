@@ -73,36 +73,12 @@
 // Mini Pipelines
 
 .stage-cell {
-  .mini-pipeline-graph-dropdown-toggle {
-    svg {
-      height: $ci-action-icon-size;
-      width: $ci-action-icon-size;
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      z-index: 2;
-      overflow: visible;
-    }
-
-    &:hover,
-    &:active,
-    &:focus {
-      svg {
-        top: -2px;
-        left: -2px;
-      }
-    }
-  }
-
   .stage-container {
-    display: inline-block;
-    position: relative;
-    vertical-align: middle;
-    height: $ci-action-icon-size;
-    margin: 3px 0;
+    align-items: center;
+    display: inline-flex;
 
     + .stage-container {
-      margin-left: 6px;
+      margin-left: 4px;
     }
 
     // Hack to show a button tooltip inline
@@ -118,42 +94,13 @@
     &:not(:last-child) {
       &::after {
         content: '';
-        width: 7px;
+        width: 4px;
         position: absolute;
-        right: -7px;
-        top: 11px;
-        border-bottom: 2px solid var(--border-color, $border-color);
-      }
-    }
-
-    //delete when all pipelines are updated to new size
-    &.mr-widget-pipeline-stages {
-      + .stage-container {
-        margin-left: 4px;
-      }
-
-      &:not(:last-child) {
-        &::after {
-          width: 4px;
-          right: -4px;
-          top: 11px;
-        }
+        right: -4px;
+        border-bottom: 2px solid $gray-200;
       }
     }
   }
-}
-
-// Commit mini pipeline (HAML)
-button.mini-pipeline-graph-dropdown-toggle,
-// GlDropdown mini pipeline (Vue)
-//   As the `mini-pipeline-item` mixin specificity is lower
-//   than the toggle of dropdown with 'variant="link"' we add
-//   classes ".gl-button.btn-link" to make it more specific
-//   and avoid having the size overriden
-//
-//   See https://gitlab.com/gitlab-org/gitlab/-/issues/320737
-button.gl-button.btn-link.mini-pipeline-graph-dropdown-toggle {
-  @include mini-pipeline-item();
 }
 
 // Action icons inside dropdowns:

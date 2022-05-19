@@ -36,18 +36,8 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
         }
       end
 
-      expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:rails_request_apdex) { false }
-      expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:graphql_query_apdex) { false }
-      expect(Gitlab::Metrics::Sli).to receive(:initialize_sli).with(:rails_request_apdex, array_including(*possible_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli).to receive(:initialize_sli).with(:graphql_query_apdex, array_including(*possible_graphql_labels)).and_call_original
-
-      described_class.initialize_request_slis!
-    end
-
-    it 'does not initialize the SLI if they were initialized already', :aggregate_failures do
-      expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:rails_request_apdex) { true }
-      expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:graphql_query_apdex) { true }
-      expect(Gitlab::Metrics::Sli).not_to receive(:initialize_sli)
+      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:rails_request, array_including(*possible_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
 
       described_class.initialize_request_slis!
     end

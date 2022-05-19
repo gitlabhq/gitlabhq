@@ -44,13 +44,13 @@ GET /runners?paused=true
 GET /runners?tag_list=tag1,tag2
 ```
 
-| Attribute  | Type         | Required | Description                                                                                                                                                                           |
-|------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`    | string       | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided           |
-| `type`     | string       | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type`                                                                                                    |
-| `status`   | string       | no       | The status of runners to show, one of: `online`, `offline` and `not_connected`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 16.0 |
-| `paused`   | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                               |
-| `tag_list` | string array | no       | List of the runner's tags                                                                                                                                                             |
+| Attribute  | Type         | Required | Description                                                                                                                                                                                              |
+|------------|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scope`    | string       | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                              |
+| `type`     | string       | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type`                                                                                                                       |
+| `status`   | string       | no       | The status of runners to show, one of: `online`, `offline` and `never_contacted`. `active` and `paused` are also possible values which were deprecated in GitLab 14.8 and will be removed in GitLab 16.0 |
+| `paused`   | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                  |
+| `tag_list` | string array | no       | List of the runner's tags                                                                                                                                                                                |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
@@ -610,7 +610,7 @@ Example response:
     "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": null,
-    "status": "not_connected"
+    "status": "never_contacted"
   },
   {
     "id": 6,
@@ -634,7 +634,7 @@ Example response:
     "runner_type": "group_type",
     "name": "gitlab-runner",
     "online": null,
-    "status": "not_connected"
+    "status": "never_contacted"
   }
 ]
 ```
@@ -651,7 +651,7 @@ POST /runners
 |--------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                 |
 | `description`      | string       | no       | Runner's description                                                                                                                                          |
-| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin area of the UI |
+| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin Area of the UI |
 | `active`           | boolean      | no       | Deprecated: Use `:paused` instead. Whether the runner is allowed to receive jobs                                                                              |
 | `paused`           | boolean      | no       | Whether the runner should ignore new jobs                                                                                                                     |
 | `locked`           | boolean      | no       | Whether the runner should be locked for current project                                                                                                       |

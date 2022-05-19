@@ -24,9 +24,9 @@ file system performance, see
 
 Starting with GitLab version 14.0, support for NFS to store Git repository data is deprecated. Technical customer support and engineering support is available for the 14.x releases. Engineering is fixing bugs and security vulnerabilities consistent with our [release and maintenance policy](../policy/maintenance.md#security-releases).
 
-Upon the release of GitLab 15.0 (tentatively May 22nd, 2022) technical and engineering support for using NFS to store Git repository data will be officially at end-of-life. There will be no product changes or troubleshooting provided via Engineering, Security or Paid Support channels after the release date of 15.0, regardless of your GitLab version.
+Upon the release of GitLab 15.6 technical and engineering support for using NFS to store Git repository data will be officially at end-of-life. There will be no product changes or troubleshooting provided via Engineering, Security or Paid Support channels after the release date of 15.6, regardless of your GitLab version.
 
-Until the release of 15.0, for customers running 14.x releases, we continue to help with Git related tickets from customers running one or more Gitaly servers with its data stored on NFS. Examples may include:
+Until the release of 15.6, for customers running 14.x releases, we continue to help with Git related tickets from customers running one or more Gitaly servers with its data stored on NFS. Examples may include:
 
 - Performance issues or timeouts accessing Git data
 - Commits or branches vanish
@@ -39,10 +39,10 @@ Assistance is limited to activities like:
 - Verifying that NFS client mount options match our [documented recommendations](#mount-options)
 - Analyzing the GitLab Workhorse and Rails logs, and determining that `500` errors being seen in the environment are caused by slow responses from Gitaly
 
-GitLab support is unable to continue with the investigation if:
+GitLab support is unable to continue with the investigation if both:
 
-- The date of the request is on or after the release of GitLab version 15.0, and
-- Support Engineers and Management determine that all reasonable non-NFS root causes have been exhausted
+- The date of the request is on or after the release of GitLab version 15.6.
+- Support Engineers and Management determine that all reasonable non-NFS root causes have been exhausted.
 
 If the issue is reproducible, or if it happens intermittently but regularly, GitLab Support can investigate providing the issue reproduces without the use of NFS. In order to reproduce without NFS, the affected repositories should be migrated to a different Gitaly shard, such as Gitaly cluster or a standalone Gitaly VM, backed with block storage.
 
@@ -377,7 +377,7 @@ Any `Operation not permitted` errors means you should investigate your NFS serve
 
 ## NFS in a Firewalled Environment
 
-If the traffic between your NFS server and NFS client(s) is subject to port filtering
+If the traffic between your NFS server and NFS clients is subject to port filtering
 by a firewall, then you need to reconfigure that firewall to allow NFS communication.
 
 [This guide from The Linux Documentation Project (TDLP)](https://tldp.org/HOWTO/NFS-HOWTO/security.html#FIREWALLS)
@@ -482,3 +482,10 @@ On Ubuntu 16.04, use:
 ```shell
 sudo perf trace --no-syscalls --event 'nfs4:*' -p $(pgrep -fd ',' puma)
 ```
+
+### Warnings `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in Gitaly logs
+
+If you find any warnings like `garbage found: .../repositories/@hashed/...git/objects/pack/.nfs...` in [Gitaly logs](logs.md#gitaly-logs),
+this problem occurs if `lookupcache=positive` is not set, which we recommend as an
+[NFS mount option](#mount-options).
+See [Gitaly issue #3175](https://gitlab.com/gitlab-org/gitaly/-/issues/3175) for more details.

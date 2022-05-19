@@ -29,6 +29,11 @@ export default {
       required: false,
       default: '',
     },
+    editorCommandParams: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     variant: {
       type: String,
       required: false,
@@ -42,7 +47,7 @@ export default {
     size: {
       type: String,
       required: false,
-      default: 'small',
+      default: 'medium',
     },
   },
   data() {
@@ -58,7 +63,7 @@ export default {
       const { contentType } = this;
 
       if (this.editorCommand) {
-        this.tiptapEditor.chain()[this.editorCommand]().focus().run();
+        this.tiptapEditor.chain()[this.editorCommand](this.editorCommandParams).focus().run();
       }
 
       this.$emit('execute', { contentType });

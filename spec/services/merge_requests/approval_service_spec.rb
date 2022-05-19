@@ -41,6 +41,12 @@ RSpec.describe MergeRequests::ApprovalService do
     end
 
     context 'with valid approval' do
+      let(:notification_service) { NotificationService.new }
+
+      before do
+        allow(service).to receive(:notification_service).and_return(notification_service)
+      end
+
       it 'creates an approval note and marks pending todos as done' do
         expect(SystemNoteService).to receive(:approve_mr).with(merge_request, user)
         expect(merge_request.approvals).to receive(:reset)
@@ -59,9 +65,16 @@ RSpec.describe MergeRequests::ApprovalService do
         service.execute(merge_request)
       end
 
+      it 'sends a notification when approving' do
+        expect(notification_service).to receive_message_chain(:async, :approve_mr)
+          .with(merge_request, user)
+
+        service.execute(merge_request)
+      end
+
       it 'removes attention requested state' do
         expect(MergeRequests::RemoveAttentionRequestedService).to receive(:new)
-          .with(project: project, current_user: user, merge_request: merge_request)
+          .with(project: project, current_user: user, merge_request: merge_request, user: user)
           .and_call_original
 
         service.execute(merge_request)

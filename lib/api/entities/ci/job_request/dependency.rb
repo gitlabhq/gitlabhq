@@ -5,7 +5,12 @@ module API
     module Ci
       module JobRequest
         class Dependency < Grape::Entity
-          expose :id, :name, :token
+          expose :id, :name
+
+          expose :token do |job, options|
+            options[:running_job]&.token
+          end
+
           expose :artifacts_file, using: Entities::Ci::JobArtifactFile, if: ->(job, _) { job.available_artifacts? }
         end
       end

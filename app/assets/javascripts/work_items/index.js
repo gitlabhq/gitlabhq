@@ -5,7 +5,7 @@ import { createApolloProvider } from './graphql/provider';
 
 export const initWorkItemsRoot = () => {
   const el = document.querySelector('#js-work-items');
-  const { fullPath } = el.dataset;
+  const { fullPath, issuesListPath } = el.dataset;
 
   return new Vue({
     el,
@@ -13,6 +13,7 @@ export const initWorkItemsRoot = () => {
     apolloProvider: createApolloProvider(),
     provide: {
       fullPath,
+      issuesListPath,
     },
     render(createElement) {
       return createElement(App);

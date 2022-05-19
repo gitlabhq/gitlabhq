@@ -42,9 +42,8 @@ describe('UncollapsedReviewerList component', () => {
       expect(wrapper.findAll(ReviewerAvatarLink).length).toBe(1);
     });
 
-    it('shows one user with avatar, username and author name', () => {
+    it('shows one user with avatar, and author name', () => {
       expect(wrapper.text()).toContain(user.name);
-      expect(wrapper.text()).toContain(`@root`);
     });
 
     it('renders re-request loading icon', async () => {
@@ -84,11 +83,9 @@ describe('UncollapsedReviewerList component', () => {
       expect(wrapper.findAll(ReviewerAvatarLink).length).toBe(2);
     });
 
-    it('shows both users with avatar, username and author name', () => {
+    it('shows both users with avatar, and author name', () => {
       expect(wrapper.text()).toContain(user.name);
-      expect(wrapper.text()).toContain(`@root`);
       expect(wrapper.text()).toContain(user2.name);
-      expect(wrapper.text()).toContain(`@hello-world`);
     });
 
     it('renders approval icon', () => {

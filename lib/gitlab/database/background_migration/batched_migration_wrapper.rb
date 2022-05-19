@@ -39,7 +39,40 @@ module Gitlab
         end
 
         def execute_batch(tracking_record)
-          job_instance = migration_instance_for(tracking_record.migration_job_class)
+          job_instance = execute_job(tracking_record)
+
+          if job_instance.respond_to?(:batch_metrics)
+            tracking_record.metrics = job_instance.batch_metrics
+          end
+        end
+
+        def execute_job(tracking_record)
+          job_class = tracking_record.migration_job_class
+
+          if job_class < Gitlab::BackgroundMigration::BatchedMigrationJob
+            execute_batched_migration_job(job_class, tracking_record)
+          else
+            execute_legacy_job(job_class, tracking_record)
+          end
+        end
+
+        def execute_batched_migration_job(job_class, tracking_record)
+          job_instance = job_class.new(
+            start_id: tracking_record.min_value,
+            end_id: tracking_record.max_value,
+            batch_table: tracking_record.migration_table_name,
+            batch_column: tracking_record.migration_column_name,
+            sub_batch_size: tracking_record.sub_batch_size,
+            pause_ms: tracking_record.pause_ms,
+            connection: connection)
+
+          job_instance.perform(*tracking_record.migration_job_arguments)
+
+          job_instance
+        end
+
+        def execute_legacy_job(job_class, tracking_record)
+          job_instance = job_class.new
 
           job_instance.perform(
             tracking_record.min_value,
@@ -50,17 +83,7 @@ module Gitlab
             tracking_record.pause_ms,
             *tracking_record.migration_job_arguments)
 
-          if job_instance.respond_to?(:batch_metrics)
-            tracking_record.metrics = job_instance.batch_metrics
-          end
-        end
-
-        def migration_instance_for(job_class)
-          if job_class < Gitlab::BackgroundMigration::BaseJob
-            job_class.new(connection: connection)
-          else
-            job_class.new
-          end
+          job_instance
         end
       end
     end

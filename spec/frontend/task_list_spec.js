@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import TaskList from '~/task_list';
 
@@ -14,7 +15,7 @@ describe('TaskList', () => {
   const createTaskList = () => new TaskList(taskListOptions);
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div class="task-list">
         <div class="js-task-list-container">
           <ul data-sourcepos="5:1-5:11" class="task-list" dir="auto">
@@ -35,6 +36,10 @@ describe('TaskList', () => {
 
     currentTarget = $('<div></div>');
     taskList = createTaskList();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('should call init when the class constructed', () => {

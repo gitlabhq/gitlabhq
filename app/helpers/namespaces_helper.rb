@@ -88,11 +88,12 @@ module NamespacesHelper
     }.to_json
   end
 
-  def pipeline_usage_quota_app_data(namespace)
+  def pipeline_usage_app_data(namespace)
     {
       namespace_actual_plan_name: namespace.actual_plan_name,
       namespace_path: namespace.full_path,
       namespace_id: namespace.id,
+      user_namespace: namespace.user_namespace?.to_s,
       page_size: page_size
     }
   end

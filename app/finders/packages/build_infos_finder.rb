@@ -2,33 +2,55 @@
 
 module Packages
   class BuildInfosFinder
+    include ActiveRecord::ConnectionAdapters::Quoting
+
     MAX_PAGE_SIZE = 100
 
-    def initialize(package, params)
-      @package = package
+    def initialize(package_ids, params)
+      @package_ids = package_ids
       @params = params
     end
 
     def execute
-      build_infos = @package.build_infos.without_empty_pipelines
-      build_infos = apply_order(build_infos)
-      build_infos = apply_limit(build_infos)
-      apply_cursor(build_infos)
+      return Packages::BuildInfo.none if @package_ids.blank?
+
+      # This is a highly custom query that
+      # will not be re-used elsewhere
+      # rubocop: disable CodeReuse/ActiveRecord
+      query = Packages::Package.id_in(@package_ids)
+                .select('build_infos.*')
+                .from([Packages::Package.arel_table, lateral_query.arel.lateral.as('build_infos')])
+                .order('build_infos.id DESC')
+
+      # We manually select build_infos fields from the lateral query.
+      # Thus, we need to instruct ActiveRecord that returned rows are
+      # actually Packages::BuildInfo objects
+      Packages::BuildInfo.find_by_sql(query.to_sql)
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     private
 
-    def apply_order(build_infos)
-      order_direction = :desc
-      order_direction = :asc if last
+    def lateral_query
+      order_direction = last ? :asc : :desc
 
-      build_infos.order_by_pipeline_id(order_direction)
+      # This is a highly custom query that
+      # will not be re-used elsewhere
+      # rubocop: disable CodeReuse/ActiveRecord
+      where_condition = Packages::BuildInfo.arel_table[:package_id]
+                          .eq(Arel.sql("#{Packages::Package.table_name}.id"))
+      build_infos = ::Packages::BuildInfo.without_empty_pipelines
+                      .where(where_condition)
+                      .order(id: order_direction)
+                      .limit(max_rows_per_package_id)
+      # rubocop: enable CodeReuse/ActiveRecord
+      apply_cursor(build_infos)
     end
 
-    def apply_limit(build_infos)
+    def max_rows_per_package_id
       limit = [first, last, max_page_size, MAX_PAGE_SIZE].compact.min
       limit += 1 if support_next_page
-      build_infos.limit(limit)
+      limit
     end
 
     def apply_cursor(build_infos)

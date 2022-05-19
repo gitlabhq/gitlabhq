@@ -19,6 +19,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   respond_to :html
 
   feature_category :team_planning
+  urgency :low
 
   def index
     @sort = params[:sort] || 'due_date_asc'

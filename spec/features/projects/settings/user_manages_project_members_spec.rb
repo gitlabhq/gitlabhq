@@ -7,7 +7,7 @@ RSpec.describe 'Projects > Settings > User manages project members' do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:group) { create(:group, name: 'OpenSource') }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :with_namespace_settings) }
   let(:project2) { create(:project) }
   let(:user) { create(:user) }
   let(:user_dmitriy) { create(:user, name: 'Dmitriy') }

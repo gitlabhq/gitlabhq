@@ -70,14 +70,8 @@ module Gitlab
           end
 
           def unsubscribe
-            parts = Gitlab.com? ? unsubscribe_com : unsubscribe_self_managed(track, series)
-
-            case format
-            when :html
-              parts.join(' ')
-            else
-              parts.join("\n" + ' ' * 16)
-            end
+            self_managed_preferences_link = marketing_preference_link(track, series)
+            unsubscribe_message(self_managed_preferences_link)
           end
 
           def progress(current: series + 1, total: total_series, track_name: track.to_s.humanize)
@@ -108,26 +102,6 @@ module Gitlab
 
           def total_series
             Namespaces::InProductMarketingEmailsService::TRACKS[track][:interval_days].size
-          end
-
-          def unsubscribe_com
-            [
-              s_('InProductMarketing|If you no longer wish to receive marketing emails from us,'),
-              s_('InProductMarketing|you may %{unsubscribe_link} at any time.') % { unsubscribe_link: unsubscribe_link }
-            ]
-          end
-
-          def unsubscribe_self_managed(track, series)
-            [
-              s_('InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}.') % { unsubscribe_link: unsubscribe_link },
-              s_("InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}.") % { marketing_preference_link: marketing_preference_link(track, series) }
-            ]
-          end
-
-          def unsubscribe_link
-            unsubscribe_url = Gitlab.com? ? '%tag_unsubscribe_url%' : profile_notifications_url
-
-            link(s_('InProductMarketing|unsubscribe'), unsubscribe_url)
           end
 
           def marketing_preference_link(track, series)

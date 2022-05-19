@@ -7,9 +7,24 @@ RSpec.describe Gitlab::Doctor::Secrets do
   let!(:group) { create(:group, runners_token: "test") }
   let!(:project) { create(:project) }
   let!(:grafana_integration) { create(:grafana_integration, project: project, token: "test") }
+  let!(:integration) { create(:integration, project: project, properties: { test_key: "test_value" }) }
   let(:logger) { double(:logger).as_null_object }
 
   subject { described_class.new(logger).run! }
+
+  before do
+    allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+  end
+
+  context 'when not ran in a Rake runtime' do
+    before do
+      allow(Gitlab::Runtime).to receive(:rake?).and_return(false)
+    end
+
+    it 'raises an error' do
+      expect { subject }.to raise_error(StandardError, 'can only be used in a Rake environment')
+    end
+  end
 
   context 'when encrypted attributes are properly set' do
     it 'detects decryptable secrets' do
@@ -39,6 +54,25 @@ RSpec.describe Gitlab::Doctor::Secrets do
       expect(logger).to receive(:info).with(/Group failures: 1/)
 
       subject
+    end
+  end
+
+  context 'when initializers attempt to use encrypted data' do
+    it 'skips the initializers and detects bad data' do
+      integration.encrypted_properties = "invalid"
+      integration.save!
+
+      expect(logger).to receive(:info).with(/Integration failures: 1/)
+
+      subject
+    end
+
+    it 'resets the initializers after the task runs' do
+      subject
+
+      expect(integration).to receive(:initialize_properties)
+
+      integration.run_callbacks(:initialize)
     end
   end
 

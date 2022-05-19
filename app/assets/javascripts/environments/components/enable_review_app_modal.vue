@@ -45,6 +45,8 @@ export default {
     copyToClipboardText: s__('EnableReviewApp|Copy snippet text'),
     title: s__('ReviewApp|Enable Review App'),
   },
+  visualReviewsDocs: helpPagePath('ci/review_apps/index.md', { anchor: 'visual-reviews' }),
+  connectClusterDocs: helpPagePath('user/clusters/agent/index'),
   data() {
     const modalInfoCopyId = uniqueId('enable-review-app-copy-string-');
 
@@ -63,9 +65,6 @@ export default {
     - branches
   except:
     - ${this.defaultBranchName}`;
-    },
-    visualReviewsDocs() {
-      return helpPagePath('ci/review_apps/index.md', { anchor: 'visual-reviews' });
     },
   },
 };
@@ -88,11 +87,7 @@ export default {
           <strong>{{ content }}</strong>
         </template>
         <template #link="{ content }">
-          <gl-link
-            href="https://docs.gitlab.com/ee/user/project/clusters/add_remove_clusters.html"
-            target="_blank"
-            >{{ content }}</gl-link
-          >
+          <gl-link :href="$options.connectClusterDocs" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>
@@ -134,7 +129,7 @@ export default {
           <strong>{{ content }}</strong>
         </template>
         <template #link="{ content }">
-          <gl-link :href="visualReviewsDocs" target="_blank">{{ content }}</gl-link>
+          <gl-link :href="$options.visualReviewsDocs" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>

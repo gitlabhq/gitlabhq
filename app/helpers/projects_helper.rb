@@ -212,7 +212,7 @@ module ProjectsHelper
   end
 
   def no_password_message
-    push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'pull-and-push') }
+    push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('topics/git/terminology', anchor: 'pull-and-push') }
     clone_with_https_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'clone-with-https') }
     set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_profile_password_path }
     set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: profile_personal_access_tokens_path }
@@ -379,7 +379,7 @@ module ProjectsHelper
   end
 
   def show_terraform_banner?(project)
-    Feature.enabled?(:show_terraform_banner, type: :ops, default_enabled: true) && project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+    Feature.enabled?(:show_terraform_banner, type: :ops) && project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
   end
 
   def project_permissions_panel_data(project)
@@ -614,6 +614,7 @@ module ProjectsHelper
       operationsAccessLevel: feature.operations_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
+      enforceAuthChecksOnUploads: project.enforce_auth_checks_on_uploads?,
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
       containerRegistryAccessLevel: feature.container_registry_access_level
     }

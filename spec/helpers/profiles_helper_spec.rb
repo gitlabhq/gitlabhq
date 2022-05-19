@@ -111,7 +111,6 @@ RSpec.describe ProfilesHelper do
     where(:error, :expired, :result) do
       false | false | nil
       true  | false | error_message
-      false | true  | 'Key usable beyond expiration date.'
       true  | true  | error_message
     end
 
@@ -130,13 +129,9 @@ RSpec.describe ProfilesHelper do
   end
 
   describe "#ssh_key_expires_field_description" do
-    before do
-      allow(Key).to receive(:enforce_ssh_key_expiration_feature_available?).and_return(false)
-    end
+    subject { helper.ssh_key_expires_field_description }
 
-    it 'returns the description' do
-      expect(helper.ssh_key_expires_field_description).to eq('Key can still be used after expiration.')
-    end
+    it { is_expected.to eq('Key becomes invalid on this date.') }
   end
 
   describe '#middle_dot_divider_classes' do

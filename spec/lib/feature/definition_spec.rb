@@ -54,20 +54,8 @@ RSpec.describe Feature::Definition do
   describe '#valid_usage!' do
     context 'validates type' do
       it 'raises exception for invalid type' do
-        expect { definition.valid_usage!(type_in_code: :invalid, default_enabled_in_code: false) }
+        expect { definition.valid_usage!(type_in_code: :invalid) }
           .to raise_error(/The `type:` of `feature_flag` is not equal to config/)
-      end
-    end
-
-    context 'validates default enabled' do
-      it 'raises exception for different value' do
-        expect { definition.valid_usage!(type_in_code: :development, default_enabled_in_code: false) }
-          .to raise_error(/The `default_enabled:` of `feature_flag` is not equal to config/)
-      end
-
-      it 'allows passing `default_enabled: :yaml`' do
-        expect { definition.valid_usage!(type_in_code: :development, default_enabled_in_code: :yaml) }
-          .not_to raise_error
       end
     end
   end
@@ -165,18 +153,14 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     let(:definition) do
-      Feature::Definition.new("development/enabled_feature_flag.yml",
-                              name: :enabled_feature_flag,
-                              type: 'development',
-                              milestone: milestone,
-                              default_enabled: false)
+      described_class.new("development/enabled_feature_flag.yml",
+                          name: :enabled_feature_flag,
+                          type: 'development',
+                          milestone: milestone,
+                          default_enabled: false)
     end
 
     before do
-      allow(Feature::Definition).to receive(:definitions) do
-        { definition.key => definition }
-      end
-
       allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(current_milestone))
     end
 
@@ -192,7 +176,7 @@ RSpec.describe Feature::Definition do
     end
 
     with_them do
-      it {is_expected.to be(expected)}
+      it { is_expected.to be(expected) }
     end
   end
 
@@ -207,7 +191,7 @@ RSpec.describe Feature::Definition do
       it 'validates it usage' do
         expect(definition).to receive(:valid_usage!)
 
-        described_class.valid_usage!(:feature_flag, type: :development, default_enabled: false)
+        described_class.valid_usage!(:feature_flag, type: :development)
       end
     end
 
@@ -221,7 +205,7 @@ RSpec.describe Feature::Definition do
 
         it 'raises exception' do
           expect do
-            described_class.valid_usage!(:unknown_feature_flag, type: :development, default_enabled: false)
+            described_class.valid_usage!(:unknown_feature_flag, type: :development)
           end.to raise_error(/Missing feature definition for `unknown_feature_flag`/)
         end
       end
@@ -235,7 +219,7 @@ RSpec.describe Feature::Definition do
 
         it 'does not raise exception' do
           expect do
-            described_class.valid_usage!(:unknown_feature_flag, type: :development, default_enabled: false)
+            described_class.valid_usage!(:unknown_feature_flag, type: :development)
           end.not_to raise_error
         end
       end
@@ -243,7 +227,7 @@ RSpec.describe Feature::Definition do
       context 'for an unknown type' do
         it 'raises exception' do
           expect do
-            described_class.valid_usage!(:unknown_feature_flag, type: :unknown_type, default_enabled: false)
+            described_class.valid_usage!(:unknown_feature_flag, type: :unknown_type)
           end.to raise_error(/Unknown feature flag type used: `unknown_type`/)
         end
       end
@@ -254,23 +238,23 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     let(:definition) do
-      Feature::Definition.new("development/enabled_feature_flag.yml",
-                              name: :enabled_feature_flag,
-                              type: 'development',
-                              milestone: milestone,
-                              log_state_changes: log_state_change,
-                              default_enabled: false)
+      described_class.new("development/enabled_feature_flag.yml",
+                          name: :enabled_feature_flag,
+                          type: 'development',
+                          milestone: milestone,
+                          log_state_changes: log_state_change,
+                          default_enabled: false)
     end
 
     before do
-      allow(Feature::Definition).to receive(:definitions) do
-        { definition.key => definition }
-      end
+      stub_feature_flag_definition(:enabled_feature_flag,
+        milestone: milestone,
+        log_state_changes: log_state_change)
 
       allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.new(10, 0, 0))
     end
 
-    subject { Feature::Definition.log_states?(key) }
+    subject { described_class.log_states?(key) }
 
     where(:ctx, :key, :milestone, :log_state_change, :expected) do
       'When flag does not exist'                    | :no_flag              | "0.0"  | true  | false
@@ -286,10 +270,11 @@ RSpec.describe Feature::Definition do
   end
 
   describe '.default_enabled?' do
-    subject { described_class.default_enabled?(key) }
+    subject { described_class.default_enabled?(key, default_enabled_if_undefined: default_value) }
 
     context 'when feature flag exist' do
       let(:key) { definition.key }
+      let(:default_value) { nil }
 
       before do
         allow(described_class).to receive(:definitions) do
@@ -319,21 +304,33 @@ RSpec.describe Feature::Definition do
     context 'when feature flag does not exist' do
       let(:key) { :unknown_feature_flag }
 
-      context 'when on dev or test environment' do
-        it 'raises an error' do
-          expect { subject }.to raise_error(
-            Feature::InvalidFeatureFlagError,
-            "The feature flag YAML definition for 'unknown_feature_flag' does not exist")
+      context 'when passing default value' do
+        let(:default_value) { false }
+
+        it 'returns default value' do
+          expect(subject).to eq(default_value)
         end
       end
 
-      context 'when on production environment' do
-        before do
-          allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false)
+      context 'when default value is undefined' do
+        let(:default_value) { nil }
+
+        context 'when on dev or test environment' do
+          it 'raises an error' do
+            expect { subject }.to raise_error(
+              Feature::InvalidFeatureFlagError,
+              "The feature flag YAML definition for 'unknown_feature_flag' does not exist")
+          end
         end
 
-        it 'returns false' do
-          expect(subject).to eq(false)
+        context 'when on production environment' do
+          before do
+            allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false)
+          end
+
+          it 'returns false' do
+            expect(subject).to eq(false)
+          end
         end
       end
     end

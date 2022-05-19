@@ -359,11 +359,11 @@ EOF
 function verify_deploy() {
   echoinfo "Verifying deployment at ${CI_ENVIRONMENT_URL}"
 
-  if retry "test_url \"${CI_ENVIRONMENT_URL}\" curl_output.txt"; then
+  if retry "test_url \"${CI_ENVIRONMENT_URL}\""; then
     echoinfo "Review app is deployed to ${CI_ENVIRONMENT_URL}"
     return 0
   else
-    echoerr "Review app is not available at ${CI_ENVIRONMENT_URL}. See curl_output.txt artifact for detail."
+    echoerr "Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
     return 1
   fi
 }

@@ -53,6 +53,11 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
   describe 'feature flag mr_attention_requests is enabled' do
     before do
       merge_request.update!(assignees: [user])
+
+      merge_request.find_assignee(user).update!(state: :attention_requested)
+
+      user.invalidate_attention_requested_count
+
       sign_in(user)
     end
 

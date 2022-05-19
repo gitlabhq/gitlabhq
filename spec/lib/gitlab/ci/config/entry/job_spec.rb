@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       subject { described_class.nodes.keys }
 
       let(:result) do
-        %i[before_script script stage type after_script cache
+        %i[before_script script stage after_script cache
            image services only except rules needs variables artifacts
            environment coverage retry interruptible timeout release tags
            inherit parallel]

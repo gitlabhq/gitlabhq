@@ -1,8 +1,10 @@
 import { cloneDeep } from 'lodash';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
+import { getTag } from '~/api/tags_api';
 import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
+import { s__ } from '~/locale';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
 import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
@@ -11,6 +13,8 @@ import * as actions from '~/releases/stores/modules/edit_new/actions';
 import * as types from '~/releases/stores/modules/edit_new/mutation_types';
 import createState from '~/releases/stores/modules/edit_new/state';
 import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+
+jest.mock('~/api/tags_api');
 
 jest.mock('~/flash');
 
@@ -565,6 +569,48 @@ describe('Release edit/new actions', () => {
           expectCorrectErrorHandling();
         });
       });
+    });
+  });
+
+  describe('fetchTagNotes', () => {
+    const tagName = 'v8.0.0';
+
+    it('saves the tag notes on succes', async () => {
+      const tag = { message: 'this is a tag' };
+      getTag.mockResolvedValue({ data: tag });
+
+      await testAction(
+        actions.fetchTagNotes,
+        tagName,
+        state,
+        [
+          { type: types.REQUEST_TAG_NOTES },
+          { type: types.RECEIVE_TAG_NOTES_SUCCESS, payload: tag },
+        ],
+        [],
+      );
+
+      expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
+    });
+    it('creates a flash on error', async () => {
+      error = new Error();
+      getTag.mockRejectedValue(error);
+
+      await testAction(
+        actions.fetchTagNotes,
+        tagName,
+        state,
+        [
+          { type: types.REQUEST_TAG_NOTES },
+          { type: types.RECEIVE_TAG_NOTES_ERROR, payload: error },
+        ],
+        [],
+      );
+
+      expect(createFlash).toHaveBeenCalledWith({
+        message: s__('Release|Unable to fetch the tag notes.'),
+      });
+      expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
     });
   });
 });

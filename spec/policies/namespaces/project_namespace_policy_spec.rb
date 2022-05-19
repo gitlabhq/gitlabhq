@@ -9,8 +9,8 @@ RSpec.describe Namespaces::ProjectNamespacePolicy do
 
   let(:permissions) do
     [:owner_access, :create_projects, :admin_namespace, :read_namespace,
-     :read_statistics, :transfer_projects, :create_package_settings,
-     :read_package_settings, :create_jira_connect_subscription]
+     :read_statistics, :transfer_projects, :admin_package,
+     :create_jira_connect_subscription]
   end
 
   subject { described_class.new(current_user, namespace) }

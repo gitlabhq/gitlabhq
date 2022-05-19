@@ -37,7 +37,7 @@ describe('PackageTitle', () => {
 
       expect(findTitleArea().props()).toMatchObject({
         title: PackageTitle.i18n.LIST_TITLE_TEXT,
-        infoMessages: [{ text: PackageTitle.i18n.LIST_INTRO_TEXT, link: 'foo' }],
+        infoMessages: [],
       });
     });
   });

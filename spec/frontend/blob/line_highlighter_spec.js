@@ -1,6 +1,7 @@
 /* eslint-disable no-return-assign, no-new, no-underscore-dangle */
 
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LineHighlighter from '~/blob/line_highlighter';
 import * as utils from '~/lib/utils/common_utils';
 
@@ -14,8 +15,9 @@ describe('LineHighlighter', () => {
     const e = $.Event('click', eventData);
     return $(`#L${number}`).trigger(e);
   };
+
   beforeEach(() => {
-    loadFixtures('static/line_highlighter.html');
+    loadHTMLFixture('static/line_highlighter.html');
     testContext.class = new LineHighlighter();
     testContext.css = testContext.class.highlightLineClass;
     return (testContext.spies = {
@@ -23,6 +25,10 @@ describe('LineHighlighter', () => {
         .spyOn(testContext.class, '__setLocationHash__')
         .mockImplementation(() => {}),
     });
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('behavior', () => {

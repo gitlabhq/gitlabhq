@@ -5,31 +5,6 @@ require 'spec_helper'
 RSpec.describe MergeRequestsHelper do
   include ProjectForksHelper
 
-  describe '#state_name_with_icon' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:merge_request) { MergeRequest.new }
-
-    where(:state, :expected_name, :expected_icon) do
-      :merged? | 'Merged' | 'git-merge'
-      :closed? | 'Closed' | 'close'
-      :opened? | 'Open' | 'issue-open-m'
-    end
-
-    with_them do
-      before do
-        allow(merge_request).to receive(state).and_return(true)
-      end
-
-      it 'returns name and icon' do
-        name, icon = helper.state_name_with_icon(merge_request)
-
-        expect(name).to eq(expected_name)
-        expect(icon).to eq(expected_icon)
-      end
-    end
-  end
-
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
       let(:merge_request) { create(:merge_request) }
@@ -84,7 +59,7 @@ RSpec.describe MergeRequestsHelper do
 
     describe 'mr_attention_requests disabled' do
       before do
-        stub_feature_flags(mr_attention_requests: false)
+        allow(user).to receive(:mr_attention_requests_enabled?).and_return(false)
       end
 
       it "returns assigned, review requested and total merge request counts" do
@@ -97,6 +72,10 @@ RSpec.describe MergeRequestsHelper do
     end
 
     describe 'mr_attention_requests enabled' do
+      before do
+        allow(user).to receive(:mr_attention_requests_enabled?).and_return(true)
+      end
+
       it "returns assigned, review requested, attention requests and total merge request counts" do
         expect(subject).to eq(
           assigned: user.assigned_open_merge_requests_count,

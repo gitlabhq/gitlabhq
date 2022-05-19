@@ -9,7 +9,6 @@ module Sidebars
           return false unless context.project.feature_available?(:operations, context.current_user)
 
           add_item(kubernetes_menu_item)
-          add_item(serverless_menu_item)
           add_item(terraform_menu_item)
           add_item(google_cloud_menu_item)
 
@@ -61,19 +60,6 @@ module Sidebars
               highlight_priority: Users::Callout.feature_names[:GKE_CLUSTER_INTEGRATION],
               dismiss_endpoint: callouts_path,
               auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
-        end
-
-        def serverless_menu_item
-          unless Feature.enabled?(:deprecated_serverless, context.project, default_enabled: :yaml, type: :ops) && can?(context.current_user, :read_cluster, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :serverless)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Serverless platform'),
-            link: project_serverless_functions_path(context.project),
-            active_routes: { controller: :functions },
-            item_id: :serverless
-          )
         end
 
         def terraform_menu_item

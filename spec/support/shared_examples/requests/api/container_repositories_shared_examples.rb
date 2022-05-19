@@ -21,6 +21,7 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
       expect(json_response.map { |repository| repository['id'] }).to contain_exactly(
         root_repository.id, test_repository.id)
       expect(response.body).not_to include('tags')
+      expect(response.body).not_to include('tags_count')
     end
 
     it 'returns a matching schema' do
@@ -29,7 +30,11 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('registry/repositories')
     end
+  end
+end
 
+RSpec.shared_examples 'returns tags for allowed users' do |user_type, scope|
+  context "for #{user_type}" do
     context 'with tags param' do
       let(:url) { "/#{scope}s/#{object.id}/registry/repositories?tags=true" }
 
@@ -169,10 +174,12 @@ RSpec.shared_examples 'reconciling migration_state' do
     end
   end
 
-  context 'import_failed response' do
-    let(:status) { 'import_failed' }
+  %w[import_canceled import_failed].each do |status|
+    context "#{status} response" do
+      let(:status) { status }
 
-    it_behaves_like 'retrying the import'
+      it_behaves_like 'retrying the import'
+    end
   end
 
   context 'pre_import_in_progress response' do
@@ -192,17 +199,11 @@ RSpec.shared_examples 'reconciling migration_state' do
     end
   end
 
-  context 'pre_import_failed response' do
-    let(:status) { 'pre_import_failed' }
+  %w[pre_import_canceled pre_import_failed].each do |status|
+    context "#{status} response" do
+      let(:status) { status }
 
-    it_behaves_like 'retrying the pre_import'
-  end
-
-  %w[pre_import_canceled import_canceled].each do |canceled_status|
-    context "#{canceled_status} response" do
-      let(:status) { canceled_status }
-
-      it_behaves_like 'enforcing states coherence to', 'import_skipped'
+      it_behaves_like 'retrying the pre_import'
     end
   end
 end

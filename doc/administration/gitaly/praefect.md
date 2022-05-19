@@ -2,7 +2,6 @@
 stage: Create
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Configure Gitaly Cluster **(FREE SELF)**
@@ -326,7 +325,7 @@ pgbouncer['databases'] = {
     user: 'pgbouncer',
     password: PGBOUNCER_SQL_PASSWORD_HASH,
     pool_mode: 'transaction'
-  }
+  },
   praefect_production_direct: {
     host: POSTGRESQL_HOST,
     # Use `pgbouncer` user to connect to database backend.
@@ -337,6 +336,13 @@ pgbouncer['databases'] = {
   },
 
   ...
+}
+
+# Allow the praefect user to connect to PgBouncer
+pgbouncer['users'] = {
+  'praefect': {
+    'password': PRAEFECT_SQL_PASSWORD_HASH,
+  }
 }
 ```
 
@@ -422,25 +428,33 @@ On the **Praefect** node:
 
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
+- all reference architecture pages
+-->
+
    ```ruby
-   # Disable all other services on the Praefect node
+   # Avoid running unnecessary services on the Praefect server
+   gitaly['enable'] = false
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   alertmanager['enable'] = false
-   prometheus['enable'] = false
-   grafana['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
-   gitaly['enable'] = false
+   prometheus['enable'] = false
+   alertmanager['enable'] = false
+   grafana['enable'] = false
+   gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
 
    # Enable only the Praefect service
    praefect['enable'] = true
 
-   # Disable database migrations to prevent database connections during 'gitlab-ctl reconfigure'
-   gitlab_rails['auto_migrate'] = false
+   # Prevent database migrations from running on upgrade automatically
    praefect['auto_migrate'] = false
+   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Configure **Praefect** to listen on network interfaces by editing
@@ -953,7 +967,7 @@ application. This is done by updating the `git_data_dirs`.
 Particular attention should be shown to:
 
 - the storage name added to `git_data_dirs` in this section must match the
-  storage name under `praefect['virtual_storages']` on the Praefect node(s). This
+  storage name under `praefect['virtual_storages']` on the Praefect nodes. This
   was set in the [Praefect](#praefect) section of this guide. This document uses
   `default` as the Praefect storage name.
 
@@ -1208,6 +1222,110 @@ You can configure:
 
 If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
 node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically.
+
+## Repository verification
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
+
+Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
+without going through Praefect, the metadata can become inaccurate. Because the metadata is used for replication
+and routing decisions, any inaccuracies may cause problems. Praefect contains a background worker that
+periodically verifies the metadata against the actual state on the disks. The worker:
+
+1. Picks up a batch of replicas to verify on healthy storages. The replicas are either unverified or have exceeded
+   the configured verification interval. Replicas that have never been verified are prioritized, followed by
+   the other replicas ordered by longest time since the last successful verification.
+1. Checks whether the replicas exist on their respective storages. If the:
+   - Replica exists, update its last successful verification time.
+   - Replica doesn't exist, remove its metadata record.
+   - Check failed, the replica is picked up for verification again when the next worker dequeues more work.
+
+The worker acquires an exclusive verification lease on each of the replicas it is about to verify. This avoids multiple
+workers from verifying the same replica concurrently. The worker releases the leases when it has completed its check.
+Praefect contains a background goroutine that releases stale leases every 10 seconds when workers are terminated for
+some reason without releasing the lease.
+
+The worker logs each of the metadata removals prior to executing them. The `perform_deletions` key
+indicates whether the invalid metadata records are actually deleted or not. For example:
+
+```json
+{
+  "level": "info",
+  "msg": "removing metadata records of non-existent replicas",
+  "perform_deletions": false,
+  "replicas": {
+    "default": {
+      "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b.git": [
+        "praefect-internal-0"
+      ]
+    }
+  }
+}
+```
+
+### Configure the verification worker
+
+The worker is enabled by default and verifies the metadata records every seven days. The verification
+interval is configurable with any valid [Go duration string](https://pkg.go.dev/time#ParseDuration).
+
+To verify the metadata every three days:
+
+```ruby
+praefect['background_verification_verification_interval'] = '72h'
+```
+
+Values of 0 and below disable the background verifier.
+
+```ruby
+praefect['background_verification_verification_interval'] = '0'
+```
+
+#### Enable deletions
+
+WARNING:
+Deletions are disabled by default due to a race condition with repository renames that can cause incorrect
+deletions. This is especially prominent in Geo instances as Geo performs more renames than instances without Geo.
+See [Handle repository creations, deletions and renames atomically](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4101)
+for progress on a fix. We do not recommend enabling the deletions until this is fixed.
+
+By default, the worker does not delete invalid metadata records but simply logs them and outputs Prometheus
+metrics for them.
+
+You can enable deleting invalid metadata records with:
+
+```ruby
+praefect['background_verification_delete_invalid_records'] = true
+```
+
+### Prioritize verification manually
+
+You can prioritize verification of some replicas ahead of their next scheduled verification time.
+This might be needed after a disk failure, for example, when the administrator knows that the disk contents may have
+changed. Praefect would eventually verify the replicas again, but users may encounter errors in the meantime.
+
+To manually prioritize reverification of some replicas, use the `praefect verify` subcommand. The subcommand marks
+replicas as unverified. Unverified replicas are prioritized by the background verification worker. The verification
+worker must be enabled for the replicas to be verified.
+
+Prioritize verifying the replicas of a specific repository:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml verify -repository-id=<repository-id>
+```
+
+Prioritize verifying all replicas stored on a virtual storage:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml verify -virtual-storage=<virtual-storage>
+```
+
+Prioritize verifying all replicas stored on a storage:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml verify -virtual-storage=<virtual-storage> -storage=<storage>
+```
+
+The output includes the number of replicas that were marked unverified.
 
 ## Automatic failover and primary election strategies
 

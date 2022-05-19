@@ -6,6 +6,7 @@ module Projects
       include PackagesAccess
 
       feature_category :infrastructure_as_code
+      urgency :low
 
       def show
         @package = project.packages.find(params[:id])

@@ -4,6 +4,6 @@ classes:
 - Packages::Helm::FileMetadatum
 feature_categories:
 - package_registry
-description: TODO
+description: Helm package file metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57017
 milestone: '13.12'

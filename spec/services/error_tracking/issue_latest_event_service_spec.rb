@@ -15,7 +15,7 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
         let(:error_event) { build(:error_tracking_sentry_error_event) }
 
         before do
-          expect(error_tracking_setting)
+          allow(error_tracking_setting)
             .to receive(:issue_latest_event).and_return(latest_event: error_event)
         end
 
@@ -28,7 +28,7 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
       include_examples 'error tracking service sentry error handling', :issue_latest_event
       include_examples 'error tracking service http status handling', :issue_latest_event
 
-      context 'integrated error tracking' do
+      context 'with integrated error tracking' do
         let_it_be(:error) { create(:error_tracking_error, project: project) }
         let_it_be(:event) { create(:error_tracking_error_event, error: error) }
 
@@ -41,6 +41,18 @@ RSpec.describe ErrorTracking::IssueLatestEventService do
         it 'returns the latest event in expected format' do
           expect(result[:status]).to eq(:success)
           expect(result[:latest_event].to_json).to eq(event.to_sentry_error_event.to_json)
+        end
+
+        context 'when error does not exist' do
+          let(:params) { { issue_id: non_existing_record_id } }
+
+          it 'returns the error in detailed format' do
+            expect(result).to match(
+              status: :error,
+              message: /Couldn't find ErrorTracking::Error/,
+              http_status: :bad_request
+            )
+          end
         end
       end
     end

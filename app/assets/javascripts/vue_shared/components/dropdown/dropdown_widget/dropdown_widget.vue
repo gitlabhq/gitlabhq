@@ -1,28 +1,22 @@
 <script>
 import {
-  GlIcon,
   GlLoadingIcon,
   GlDropdown,
   GlDropdownForm,
   GlDropdownDivider,
   GlDropdownItem,
-  GlDropdownSectionHeader,
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
 export default {
   components: {
-    GlIcon,
     GlLoadingIcon,
     GlDropdown,
     GlDropdownForm,
     GlDropdownDivider,
     GlDropdownItem,
-    GlDropdownSectionHeader,
     GlSearchBoxByType,
-    TooltipOnTruncate,
   },
   props: {
     selectText: {
@@ -41,11 +35,6 @@ export default {
       default: () => [],
     },
     options: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    groupedOptions: {
       type: Array,
       required: false,
       default: () => [],
@@ -70,6 +59,11 @@ export default {
       required: false,
       default: false,
     },
+    customIsSelectedOption: {
+      type: Function,
+      required: false,
+      default: undefined,
+    },
   },
   computed: {
     isSearchEmpty() {
@@ -87,6 +81,9 @@ export default {
       }
     },
     isSelected(option) {
+      if (this.customIsSelectedOption !== undefined) {
+        return this.customIsSelectedOption(option);
+      }
       if (Array.isArray(this.selected)) {
         return this.selected.some((label) => label.title === option.title);
       }
@@ -143,7 +140,7 @@ export default {
       <gl-dropdown-form class="gl-relative gl-min-h-7" data-qa-selector="labels_dropdown_content">
         <gl-loading-icon
           v-if="isLoading"
-          size="md"
+          size="lg"
           class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
         />
         <template v-else>
@@ -177,36 +174,7 @@ export default {
               {{ option.title }}
             </slot>
           </gl-dropdown-item>
-          <template v-for="(optionGroup, index) in groupedOptions">
-            <gl-dropdown-divider v-if="index !== 0" :key="index" />
-            <gl-dropdown-section-header :key="optionGroup.id">
-              <div class="gl-display-flex gl-max-w-full">
-                <tooltip-on-truncate
-                  :title="optionGroup.title"
-                  class="gl-text-truncate gl-flex-grow-1"
-                >
-                  {{ optionGroup.title }}
-                </tooltip-on-truncate>
-                <span v-if="optionGroup.secondaryText" class="gl-float-right gl-font-weight-normal">
-                  <gl-icon name="clock" class="gl-mr-2" />
-                  {{ optionGroup.secondaryText }}
-                </span>
-              </div>
-            </gl-dropdown-section-header>
-            <gl-dropdown-item
-              v-for="option in optionGroup.options"
-              :key="optionKey(option)"
-              :is-checked="isSelected(option)"
-              is-check-centered
-              is-check-item
-              data-testid="unselected-option"
-              @click="selectOption(option)"
-            >
-              <slot name="item" :item="option">
-                {{ option.title }}
-              </slot>
-            </gl-dropdown-item>
-          </template>
+          <slot v-bind="{ isSelected }" name="grouped-options"></slot>
           <gl-dropdown-item v-if="noOptionsFound" class="gl-pl-6!">
             {{ $options.i18n.noMatchingResults }}
           </gl-dropdown-item>

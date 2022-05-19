@@ -144,7 +144,7 @@ A [build matrix definition](../ci/yaml/index.md#parallelmatrix) can do this effi
 When upgrading Ruby, consider updating the following repositories:
 
 - [Gitaly](https://gitlab.com/gitlab-org/gitaly) ([example](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3771))
-- [GitLab Labkit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
+- [GitLab LabKit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
 - [GitLab Exporter](https://gitlab.com/gitlab-org/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/gitlab-exporter/-/merge_requests/150))
 - [GitLab Experiment](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/128))
 - [Gollum Lib](https://gitlab.com/gitlab-org/gollum-lib) ([example](https://gitlab.com/gitlab-org/gollum-lib/-/merge_requests/21))
@@ -272,4 +272,4 @@ and merged back independently.
 - **Give yourself enough time to fix problems ahead of a milestone release.** GitLab moves fast.
 As a Ruby upgrade requires many MRs to be sent and reviewed, make sure all changes are merged at least a week
 before the 22nd. This gives us extra time to act if something breaks. If in doubt, it is better to
-postpone the upgrade to the following month, as we [prioritize availability over velocity](https://about.gitlab.com/handbook/engineering/principles/#prioritizing-technical-decisions).
+postpone the upgrade to the following month, as we [prioritize availability over velocity](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).

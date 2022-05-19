@@ -7,8 +7,8 @@
     %h4
       = _('Import group from file')
     = render Pajamas::AlertComponent.new(variant: :warning,
-      dismissible: false) do
-      .gl-alert-body
+      dismissible: false) do |c|
+      = c.body do
         - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md') }
         - link_end = '</a>'.html_safe
         = s_('GroupsNew|This feature is deprecated and replaced by %{docs_link_start}group migration%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: link_end }

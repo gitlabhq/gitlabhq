@@ -9,6 +9,7 @@ module Projects
       before_action :packages_and_registries_settings_enabled!
 
       feature_category :package_registry
+      urgency :low
 
       def show
       end

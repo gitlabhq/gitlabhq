@@ -33,9 +33,6 @@ module Mutations
 
       def model_ids_of(ids)
         ids.map do |gid|
-          # TODO: remove this line when the compatibility layer is removed
-          # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-          gid = ::Types::GlobalIDType[::Todo].coerce_isolated_input(gid)
           gid.model_id.to_i
         end.compact
       end

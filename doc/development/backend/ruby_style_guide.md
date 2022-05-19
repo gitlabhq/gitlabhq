@@ -13,7 +13,7 @@ Generally, if a style is not covered by [existing Rubocop rules or style guides]
 Before adding a new cop to enforce a given style, make sure to discuss it with your team.
 When the style is approved by a backend EM or by a BE staff eng, add a new section to this page to
 document the new rule. For every new guideline, add it in a new section and link the discussion from the section's
-[version history note](../documentation/styleguide/index.md#version-text-in-the-version-history)
+[version history note](../documentation/versions.md#add-a-version-history-item)
 to provide context and serve as a reference.
 
 Just because something is listed here does not mean it cannot be reopened for discussion.

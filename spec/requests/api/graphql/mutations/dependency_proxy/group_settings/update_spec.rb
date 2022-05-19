@@ -50,7 +50,7 @@ RSpec.describe 'Updating the dependency proxy group settings' do
 
     context 'with permission' do
       before do
-        group.add_developer(user)
+        group.add_maintainer(user)
       end
 
       it 'returns the updated dependency proxy settings', :aggregate_failures do

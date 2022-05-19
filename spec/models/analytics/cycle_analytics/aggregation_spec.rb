@@ -43,6 +43,37 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model do
       end
     end
 
+    describe '#consistency_check_cursor_for' do
+      it 'returns empty cursor' do
+        expect(aggregation.consistency_check_cursor_for(Analytics::CycleAnalytics::IssueStageEvent)).to eq({})
+        expect(aggregation.consistency_check_cursor_for(Analytics::CycleAnalytics::MergeRequestStageEvent)).to eq({})
+      end
+
+      it 'returns the cursor value for IssueStageEvent' do
+        aggregation.last_consistency_check_issues_start_event_timestamp = 2.weeks.ago
+        aggregation.last_consistency_check_issues_end_event_timestamp = 1.week.ago
+        aggregation.last_consistency_check_issues_issuable_id = 42
+
+        expect(aggregation.consistency_check_cursor_for(Analytics::CycleAnalytics::IssueStageEvent)).to eq({
+          start_event_timestamp: aggregation.last_consistency_check_issues_start_event_timestamp,
+          end_event_timestamp: aggregation.last_consistency_check_issues_end_event_timestamp,
+          issue_id: aggregation.last_consistency_check_issues_issuable_id
+        })
+      end
+
+      it 'returns the cursor value for MergeRequestStageEvent' do
+        aggregation.last_consistency_check_merge_requests_start_event_timestamp = 2.weeks.ago
+        aggregation.last_consistency_check_merge_requests_end_event_timestamp = 1.week.ago
+        aggregation.last_consistency_check_merge_requests_issuable_id = 42
+
+        expect(aggregation.consistency_check_cursor_for(Analytics::CycleAnalytics::MergeRequestStageEvent)).to eq({
+          start_event_timestamp: aggregation.last_consistency_check_merge_requests_start_event_timestamp,
+          end_event_timestamp: aggregation.last_consistency_check_merge_requests_end_event_timestamp,
+          merge_request_id: aggregation.last_consistency_check_merge_requests_issuable_id
+        })
+      end
+    end
+
     describe '#refresh_last_run' do
       it 'updates the run_at column' do
         freeze_time do

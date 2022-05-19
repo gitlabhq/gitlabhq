@@ -42,7 +42,7 @@ module Projects
       end
 
       def unify_configuration_enabled?
-        Feature.enabled?(:unify_security_configuration, project, default_enabled: :yaml)
+        Feature.enabled?(:unify_security_configuration, project)
       end
     end
   end

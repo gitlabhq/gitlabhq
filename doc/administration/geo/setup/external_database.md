@@ -245,11 +245,11 @@ the tracking database on port 5432.
 1. The reconfigure should automatically create the database. If needed, you can perform this task manually. This task (whether run by itself or during reconfigure) requires the database user to be a superuser.
 
    ```shell
-   gitlab-rake geo:db:create
+   gitlab-rake db:create:geo
    ```
 
 1. The reconfigure should automatically migrate the database. You can migrate the database manually if needed, for example if `geo_secondary['auto_migrate'] = false`:
 
    ```shell
-   gitlab-rake geo:db:migrate
+   gitlab-rake db:migrate:geo
    ```

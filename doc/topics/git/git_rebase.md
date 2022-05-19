@@ -17,7 +17,7 @@ Before diving into this document, make sure you are familiar with using
 ## Git rebase
 
 [Rebasing](https://git-scm.com/docs/git-rebase) is a very common operation in
-Git. There are the following rebase options:
+Git, and has these options:
 
 - [Regular rebase](#regular-rebase).
 - [Interactive rebase](#interactive-rebase).
@@ -69,15 +69,15 @@ changes by resetting `my-feature-branch` against `my-feature-branch-backup`:
    git reset --hard my-feature-branch-backup
    ```
 
-Note that if you added changes to `my-feature-branch` after creating the backup branch,
+If you added changes to `my-feature-branch` after creating the backup branch,
 you lose them when resetting.
 
 ### Regular rebase
 
 With a regular rebase you can update your feature branch with the default
 branch (or any other branch).
-This is an important step for Git-based development strategies. You can
-ensure that the changes you're adding to the codebase do not break any
+This step is important for Git-based development strategies. You can
+ensure your new changes don't break any
 existing changes added to the target branch _after_ you created your feature
 branch.
 
@@ -148,7 +148,7 @@ executes it as soon as possible.
 The user performing the rebase action is considered
 a user that added commits to the merge request. When the merge request approvals setting
 [**Prevent approvals by users who add commits**](../../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits)
-is enabled, this setting prevents the user from also approving the merge request.
+is enabled, the user can't also approve the merge request.
 
 ### Interactive rebase
 
@@ -158,7 +158,7 @@ commits. Use a rebase for changing past commit messages,
 and organizing the commit history of your branch to keep it clean.
 
 NOTE:
-If you want to keep the default branch commit history clean, you don't need to
+Keeping the default branch commit history clean doesn't require you to
 manually squash all your commits before merging every merge request.
 With [Squash and Merge](../../user/project/merge_requests/squash_and_merge.md),
 GitLab does it automatically.
@@ -176,18 +176,17 @@ git rebase -i HEAD~3
 Git opens the last three commits in your terminal text editor and describes
 all the interactive rebase options you can use. The default option is `pick`,
 which maintains the commit unchanged. Replace the keyword `pick` according to
-the operation you want to perform in each commit. To do so, you need to edit
+the operation you want to perform in each commit. To do so, edit
 the commits in your terminal's text editor.
 
-For example, if you're using [Vim](https://www.vim.org/) as the text editor in
-a macOS's `ZSH` shell, and you want to `squash` or `fixup` all the three commits
-(join them into one):
+For example, with [Vim](https://www.vim.org/) as the text editor in
+a macOS's `ZSH` shell, you can `squash` or `fixup` (combine) all three commits:
 
 <!-- vale gitlab.FirstPerson = NO -->
 
 1. Press <kbd>i</kbd>
    on your keyboard to switch to Vim's editing mode.
-1. Navigate with your keyboard arrows to edit the **second** commit keyword
+1. Use your keyboard arrows to edit the **second** commit keyword
    from `pick` to `squash` or `fixup` (or `s` or `f`). Do the same to the **third** commit.
    The first commit should be left **unchanged** (`pick`) as we want to squash
    the second and third into the first.
@@ -204,7 +203,7 @@ a macOS's `ZSH` shell, and you want to `squash` or `fixup` all the three commits
 
 <!-- vale gitlab.FirstPerson = YES -->
 
-Note that the steps for editing through the command line can be slightly
+The steps for editing through the command line can be slightly
 different depending on your operating system and the shell you're using.
 
 See [Numerous undo possibilities in Git](numerous_undo_possibilities_in_git/index.md#undo-staged-local-changes-without-modifying-history)
@@ -226,8 +225,8 @@ Forcing an update is **not** recommended when you're working on shared
 branches.
 
 Alternatively, you can pass the flag [`--force-with-lease`](https://git-scm.com/docs/git-push#Documentation/git-push.txt---force-with-leaseltrefnamegt)
-instead. It is safer, as it does not overwrite any work on the remote
-branch if more commits were added to the remote branch by someone else:
+instead, as it is safer. This flag preserves any new commits added to the remote
+branch by other people:
 
 ```shell
 git push --force-with-lease origin my-feature-branch

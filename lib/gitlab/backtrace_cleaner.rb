@@ -17,7 +17,6 @@ module Gitlab
       lib/gitlab/profiler.rb
       lib/gitlab/query_limiting/
       lib/gitlab/request_context.rb
-      lib/gitlab/request_profiler/
       lib/gitlab/sidekiq_logging/
       lib/gitlab/sidekiq_middleware/
       lib/gitlab/sidekiq_status/

@@ -31,10 +31,6 @@ module Gitlab
     module DatabaseConfig
       extend ActiveSupport::Concern
 
-      prepended do
-        attr_reader :uses_legacy_database_config
-      end
-
       def load_database_yaml
         return super unless Gitlab.ee?
 
@@ -70,24 +66,7 @@ module Gitlab
       end
 
       def database_configuration
-        @uses_legacy_database_config = false # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
         super.to_h do |env, configs|
-          # TODO: To be removed in 15.0. See https://gitlab.com/gitlab-org/gitlab/-/issues/338182
-          # This preload is needed to convert legacy `database.yml`
-          # from `production: adapter: postgresql`
-          # into a `production: main: adapter: postgresql`
-          unless Gitlab::Utils.to_boolean(ENV['SKIP_DATABASE_CONFIG_VALIDATION'], default: false)
-            # This check is taken from Rails where the transformation
-            # of a flat database.yml is done into `primary:`
-            # https://github.com/rails/rails/blob/v6.1.4/activerecord/lib/active_record/database_configurations.rb#L169
-            if configs.is_a?(Hash) && !configs.all? { |_, v| v.is_a?(Hash) }
-              configs = { "main" => configs }
-
-              @uses_legacy_database_config = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
-            end
-          end
-
           if Gitlab.ee?
             if !configs.key?("geo") && File.exist?(Rails.root.join("config/database_geo.yml"))
               configs["geo"] = Rails.application.config_for(:database_geo).stringify_keys

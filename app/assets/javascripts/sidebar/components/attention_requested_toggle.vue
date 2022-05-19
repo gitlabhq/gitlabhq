@@ -5,9 +5,8 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 export default {
   i18n: {
-    attentionRequestedReviewer: __('Request attention to review'),
-    attentionRequestedAssignee: __('Request attention'),
-    removeAttentionRequested: __('Remove attention request'),
+    addAttentionRequest: __('Add attention request'),
+    removeAttentionRequest: __('Remove attention request'),
     attentionRequestedNoPermission: __('Attention requested'),
     noAttentionRequestedNoPermission: __('No attention request'),
   },
@@ -36,19 +35,34 @@ export default {
     tooltipTitle() {
       if (this.user.attention_requested) {
         if (this.user.can_update_merge_request) {
-          return this.$options.i18n.removeAttentionRequested;
+          return this.$options.i18n.removeAttentionRequest;
         }
 
         return this.$options.i18n.attentionRequestedNoPermission;
       }
 
       if (this.user.can_update_merge_request) {
-        return this.type === 'reviewer'
-          ? this.$options.i18n.attentionRequestedReviewer
-          : this.$options.i18n.attentionRequestedAssignee;
+        return this.$options.i18n.addAttentionRequest;
       }
 
       return this.$options.i18n.noAttentionRequestedNoPermission;
+    },
+    request() {
+      const state = {
+        variant: 'default',
+        icon: 'attention',
+        direction: 'add',
+      };
+
+      if (this.user.attention_requested) {
+        Object.assign(state, {
+          variant: 'warning',
+          icon: 'attention-solid',
+          direction: 'remove',
+        });
+      }
+
+      return state;
     },
   },
   methods: {
@@ -60,6 +74,7 @@ export default {
       this.$emit('toggle-attention-requested', {
         user: this.user,
         callback: this.toggleAttentionRequiredComplete,
+        direction: this.request.direction,
       });
     },
     toggleAttentionRequiredComplete() {
@@ -77,8 +92,8 @@ export default {
     >
       <gl-button
         :loading="loading"
-        :variant="user.attention_requested ? 'warning' : 'default'"
-        :icon="user.attention_requested ? 'attention-solid' : 'attention'"
+        :variant="request.variant"
+        :icon="request.icon"
         :aria-label="tooltipTitle"
         :class="{ 'gl-pointer-events-none': !user.can_update_merge_request }"
         size="small"

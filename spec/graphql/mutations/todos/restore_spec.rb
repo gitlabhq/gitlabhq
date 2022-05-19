@@ -56,15 +56,6 @@ RSpec.describe Mutations::Todos::Restore do
       expect(todo2.reload.state).to eq('pending')
       expect(other_user_todo.reload.state).to eq('done')
     end
-
-    it 'raises error for invalid GID' do
-      expect { mutation.resolve(id: author.to_global_id.to_s) }
-        .to raise_error(::GraphQL::CoercionError)
-
-      expect(todo1.reload.state).to eq('done')
-      expect(todo2.reload.state).to eq('pending')
-      expect(other_user_todo.reload.state).to eq('done')
-    end
   end
 
   def restore_mutation(todo)

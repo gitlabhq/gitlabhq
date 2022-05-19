@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { mapState } from 'vuex';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
 export default {
@@ -10,12 +10,10 @@ export default {
       'ClusterIntegration|Enter details about your cluster. %{linkStart}How do I use a certificate to connect to my cluster?%{linkEnd}',
     ),
   },
+  clusterConnectHelpPath: helpPagePath('user/project/clusters/add_existing_cluster'),
   components: {
     GlLink,
     GlSprintf,
-  },
-  computed: {
-    ...mapState(['clusterConnectHelpPath']),
   },
 };
 </script>
@@ -26,7 +24,7 @@ export default {
     <p>
       <gl-sprintf :message="$options.i18n.information">
         <template #link="{ content }">
-          <gl-link :href="clusterConnectHelpPath" target="_blank">{{ content }}</gl-link>
+          <gl-link :href="$options.clusterConnectHelpPath">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
     </p>

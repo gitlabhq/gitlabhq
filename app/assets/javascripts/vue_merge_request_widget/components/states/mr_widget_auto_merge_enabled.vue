@@ -175,7 +175,7 @@ export default {
             {{ cancelButtonText }}
           </gl-button>
         </h4>
-        <section class="mr-info-list">
+        <section v-if="!glFeatures.restructuredMrWidget" class="mr-info-list">
           <p v-if="shouldRemoveSourceBranch">
             {{ s__('mrWidget|Deletes the source branch') }}
           </p>

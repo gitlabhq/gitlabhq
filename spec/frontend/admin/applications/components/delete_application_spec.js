@@ -1,5 +1,6 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import DeleteApplication from '~/admin/applications/components/delete_application.vue';
 
 const path = 'application/path/1';
@@ -22,7 +23,7 @@ describe('DeleteApplication', () => {
   const findForm = () => wrapper.find('form');
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <button class="js-application-delete-button" data-path="${path}" data-name="${name}">Destroy</button>
     `);
 
@@ -31,6 +32,7 @@ describe('DeleteApplication', () => {
 
   afterEach(() => {
     wrapper.destroy();
+    resetHTMLFixture();
   });
 
   describe('the modal component', () => {

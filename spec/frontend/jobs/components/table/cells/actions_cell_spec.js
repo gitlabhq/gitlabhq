@@ -1,8 +1,12 @@
 import { GlModal } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { redirectTo } from '~/lib/utils/url_utility';
 import ActionsCell from '~/jobs/components/table/cells/actions_cell.vue';
+import eventHub from '~/jobs/components/table/event_hub';
 import JobPlayMutation from '~/jobs/components/table/graphql/mutations/job_play.mutation.graphql';
 import JobRetryMutation from '~/jobs/components/table/graphql/mutations/job_retry.mutation.graphql';
 import JobUnscheduleMutation from '~/jobs/components/table/graphql/mutations/job_unschedule.mutation.graphql';
@@ -15,11 +19,18 @@ import {
   cannotRetryJob,
   cannotPlayJob,
   cannotPlayScheduledJob,
+  retryMutationResponse,
+  playMutationResponse,
+  cancelMutationResponse,
+  unscheduleMutationResponse,
 } from '../../../mock_data';
+
+jest.mock('~/lib/utils/url_utility');
+
+Vue.use(VueApollo);
 
 describe('Job actions cell', () => {
   let wrapper;
-  let mutate;
 
   const findRetryButton = () => wrapper.findByTestId('retry');
   const findPlayButton = () => wrapper.findByTestId('play');
@@ -31,29 +42,27 @@ describe('Job actions cell', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
 
-  const MUTATION_SUCCESS = { data: { JobRetryMutation: { jobId: retryableJob.id } } };
-  const MUTATION_SUCCESS_UNSCHEDULE = {
-    data: { JobUnscheduleMutation: { jobId: scheduledJob.id } },
-  };
-  const MUTATION_SUCCESS_PLAY = { data: { JobPlayMutation: { jobId: playableJob.id } } };
-  const MUTATION_SUCCESS_CANCEL = { data: { JobCancelMutation: { jobId: cancelableJob.id } } };
+  const playMutationHandler = jest.fn().mockResolvedValue(playMutationResponse);
+  const retryMutationHandler = jest.fn().mockResolvedValue(retryMutationResponse);
+  const unscheduleMutationHandler = jest.fn().mockResolvedValue(unscheduleMutationResponse);
+  const cancelMutationHandler = jest.fn().mockResolvedValue(cancelMutationResponse);
 
   const $toast = {
     show: jest.fn(),
   };
 
-  const createComponent = (jobType, mutationType = MUTATION_SUCCESS, props = {}) => {
-    mutate = jest.fn().mockResolvedValue(mutationType);
+  const createMockApolloProvider = (requestHandlers) => {
+    return createMockApollo(requestHandlers);
+  };
 
+  const createComponent = (jobType, requestHandlers, props = {}) => {
     wrapper = shallowMountExtended(ActionsCell, {
       propsData: {
         job: jobType,
         ...props,
       },
+      apolloProvider: createMockApolloProvider(requestHandlers),
       mocks: {
-        $apollo: {
-          mutate,
-        },
         $toast,
       },
     });
@@ -101,22 +110,57 @@ describe('Job actions cell', () => {
   });
 
   it.each`
-    button              | mutationResult             | action      | jobType          | mutationFile
-    ${findPlayButton}   | ${MUTATION_SUCCESS_PLAY}   | ${'play'}   | ${playableJob}   | ${JobPlayMutation}
-    ${findRetryButton}  | ${MUTATION_SUCCESS}        | ${'retry'}  | ${retryableJob}  | ${JobRetryMutation}
-    ${findCancelButton} | ${MUTATION_SUCCESS_CANCEL} | ${'cancel'} | ${cancelableJob} | ${JobCancelMutation}
-  `('performs the $action mutation', ({ button, mutationResult, jobType, mutationFile }) => {
-    createComponent(jobType, mutationResult);
+    button              | action      | jobType          | mutationFile         | handler                  | jobId
+    ${findPlayButton}   | ${'play'}   | ${playableJob}   | ${JobPlayMutation}   | ${playMutationHandler}   | ${playableJob.id}
+    ${findRetryButton}  | ${'retry'}  | ${retryableJob}  | ${JobRetryMutation}  | ${retryMutationHandler}  | ${retryableJob.id}
+    ${findCancelButton} | ${'cancel'} | ${cancelableJob} | ${JobCancelMutation} | ${cancelMutationHandler} | ${cancelableJob.id}
+  `('performs the $action mutation', async ({ button, jobType, mutationFile, handler, jobId }) => {
+    createComponent(jobType, [[mutationFile, handler]]);
 
     button().vm.$emit('click');
 
-    expect(mutate).toHaveBeenCalledWith({
-      mutation: mutationFile,
-      variables: {
-        id: jobType.id,
-      },
-    });
+    expect(handler).toHaveBeenCalledWith({ id: jobId });
   });
+
+  it.each`
+    button                  | action          | jobType          | mutationFile             | handler
+    ${findUnscheduleButton} | ${'unschedule'} | ${scheduledJob}  | ${JobUnscheduleMutation} | ${unscheduleMutationHandler}
+    ${findCancelButton}     | ${'cancel'}     | ${cancelableJob} | ${JobCancelMutation}     | ${cancelMutationHandler}
+  `(
+    'the mutation action $action emits the jobActionPerformed event',
+    async ({ button, jobType, mutationFile, handler }) => {
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+
+      createComponent(jobType, [[mutationFile, handler]]);
+
+      button().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('jobActionPerformed');
+      expect(redirectTo).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each`
+    button             | action     | jobType         | mutationFile        | handler                 | redirectLink
+    ${findPlayButton}  | ${'play'}  | ${playableJob}  | ${JobPlayMutation}  | ${playMutationHandler}  | ${'/root/project/-/jobs/1986'}
+    ${findRetryButton} | ${'retry'} | ${retryableJob} | ${JobRetryMutation} | ${retryMutationHandler} | ${'/root/project/-/jobs/1985'}
+  `(
+    'the mutation action $action redirects to the job',
+    async ({ button, jobType, mutationFile, handler, redirectLink }) => {
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+
+      createComponent(jobType, [[mutationFile, handler]]);
+
+      button().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(redirectTo).toHaveBeenCalledWith(redirectLink);
+      expect(eventHub.$emit).not.toHaveBeenCalled();
+    },
+  );
 
   it.each`
     button                  | action          | jobType
@@ -152,20 +196,17 @@ describe('Job actions cell', () => {
     });
 
     it('unschedules a job', () => {
-      createComponent(scheduledJob, MUTATION_SUCCESS_UNSCHEDULE);
+      createComponent(scheduledJob, [[JobUnscheduleMutation, unscheduleMutationHandler]]);
 
       findUnscheduleButton().vm.$emit('click');
 
-      expect(mutate).toHaveBeenCalledWith({
-        mutation: JobUnscheduleMutation,
-        variables: {
-          id: scheduledJob.id,
-        },
+      expect(unscheduleMutationHandler).toHaveBeenCalledWith({
+        id: scheduledJob.id,
       });
     });
 
     it('shows the play job confirmation modal', async () => {
-      createComponent(scheduledJob, MUTATION_SUCCESS);
+      createComponent(scheduledJob);
 
       findPlayScheduledJobButton().vm.$emit('click');
 

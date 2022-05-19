@@ -129,7 +129,7 @@ keys must be manually replicated to the **secondary** site.
 
    ```shell
    chown root:root /etc/ssh/ssh_host_*_key*
-   chmod 0600 /etc/ssh/ssh_host_*_key*
+   chmod 0600 /etc/ssh/ssh_host_*_key
    ```
 
 1. To verify key fingerprint matches, execute the following command on both primary and secondary nodes on each site:
@@ -241,15 +241,60 @@ that the **secondary** site can act on those notifications immediately.
 Be sure the _secondary_ site is running and accessible. You can sign in to the
 _secondary_ site with the same credentials as were used with the _primary_ site.
 
-### Step 4. (Optional) Configuring the **secondary** site to trust the **primary** site
+### Step 4. (Optional) Using custom certificates
 
-You can safely skip this step if your **primary** site uses a CA-issued HTTPS certificate.
+You can safely skip this step if:
 
-If your **primary** site is using a self-signed certificate for *HTTPS* support, you
-need to add that certificate to the **secondary** site's trust store. Retrieve the
-certificate from the **primary** site and follow
-[these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
-on the **secondary** site.
+- Your **primary** site uses a public CA-issued HTTPS certificate.
+- Your **primary** site only connects to external services with CA-issued (not self-signed) HTTPS certificates.
+
+#### Custom or self-signed certificate for inbound connections
+
+If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates), this certificate can either be single-domain certificate or multi-domain.
+
+Install the correct certificate based on your certificate type:
+
+- **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
+- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` per [these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
+
+#### Connecting to external services that use customer certificates
+
+A copy of the self-signed certificate for the external service needs to be added to the trust store on all the **primary** site's nodes that require access to the service.
+
+For the **secondary** site to be able to access the same external services, these certificates *must* be added to the **secondary** site's trust store.
+
+If your **primary** site is using a [custom or self-signed certificate for inbound HTTPS connections](#custom-or-self-signed-certificate-for-inbound-connections), the **primary** site's certificate needs to be added to the **secondary** site's trust store:
+
+1. SSH into each **Rails, Sidekiq, and Gitaly node on your secondary** site and login as root:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Copy the trusted certs from the **primary** site:
+
+   If you can access one of the nodes on your **primary** site serving SSH traffic using the root user:
+
+   ```shell
+   scp root@<primary_site_node_fqdn>:/etc/gitlab/trusted-certs/* /etc/gitlab/trusted-certs
+   ```
+
+   If you only have access through a user with sudo privileges:
+
+   ```shell
+   # Run this from the node on your primary site:
+   sudo tar --transform 's/.*\///g' -zcvf ~/geo-trusted-certs.tar.gz /etc/gitlab/trusted-certs/*
+
+   # Run this on each node on your secondary site:
+   scp <user_with_sudo>@<primary_site_node_fqdn>:geo-trusted-certs.tar.gz .
+   tar zxvf ~/geo-trusted-certs.tar.gz -C /etc/gitlab/trusted-certs
+   ```
+
+1. Reconfigure each updated **Rails, Sidekiq, and Gitaly node in your secondary** site:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
 
 ### Step 5. Enable Git access over HTTP/HTTPS
 

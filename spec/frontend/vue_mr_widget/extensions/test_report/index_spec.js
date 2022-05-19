@@ -16,6 +16,7 @@ import newErrorsTestReports from 'jest/reports/mock_data/new_errors_report.json'
 import newFailedTestReports from 'jest/reports/mock_data/new_failures_report.json';
 import successTestReports from 'jest/reports/mock_data/no_failures_report.json';
 import resolvedFailures from 'jest/reports/mock_data/resolved_failures.json';
+import recentFailures from 'jest/reports/mock_data/recent_failures_report.json';
 
 const reportWithParsingErrors = failedReport;
 reportWithParsingErrors.suites[0].suite_errors = {
@@ -101,6 +102,17 @@ describe('Test report extension', () => {
       expect(wrapper.text()).toContain(expectedResult);
     });
 
+    it('displays report level recently failed count', async () => {
+      mockApi(httpStatusCodes.OK, recentFailures);
+      createComponent();
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain(
+        '2 out of 3 failed tests have failed more than once in the last 14 days',
+      );
+    });
+
     it('displays a link to the full report', async () => {
       mockApi(httpStatusCodes.OK);
       createComponent();
@@ -125,10 +137,10 @@ describe('Test report extension', () => {
     it('displays summary for each suite', async () => {
       await createExpandedWidgetWithData();
 
-      expect(trimText(findAllExtensionListItems().at(0).text())).toBe(
+      expect(trimText(findAllExtensionListItems().at(0).text())).toContain(
         'rspec:pg: 1 failed and 2 fixed test results, 8 total tests',
       );
-      expect(trimText(findAllExtensionListItems().at(1).text())).toBe(
+      expect(trimText(findAllExtensionListItems().at(1).text())).toContain(
         'java ant: 1 failed, 3 total tests',
       );
     });
@@ -143,6 +155,38 @@ describe('Test report extension', () => {
       );
       expect(suiteText).toContain(
         'Base report parsing error: JUnit data parsing failed: string not matched',
+      );
+    });
+
+    it('displays suite level recently failed count', async () => {
+      await createExpandedWidgetWithData(recentFailures);
+
+      expect(trimText(findAllExtensionListItems().at(0).text())).toContain(
+        '1 out of 2 failed tests has failed more than once in the last 14 days',
+      );
+      expect(trimText(findAllExtensionListItems().at(1).text())).toContain(
+        '1 out of 1 failed test has failed more than once in the last 14 days',
+      );
+    });
+
+    it('displays the list of failed and fixed tests', async () => {
+      await createExpandedWidgetWithData();
+
+      const firstSuite = trimText(findAllExtensionListItems().at(0).text());
+      const secondSuite = trimText(findAllExtensionListItems().at(1).text());
+
+      expect(firstSuite).toContain('Test#subtract when a is 2 and b is 1 returns correct result');
+      expect(firstSuite).toContain('Test#sum when a is 1 and b is 2 returns summary');
+      expect(firstSuite).toContain('Test#sum when a is 100 and b is 200 returns summary');
+
+      expect(secondSuite).toContain('sumTest');
+    });
+
+    it('displays the test level recently failed count', async () => {
+      await createExpandedWidgetWithData(recentFailures);
+
+      expect(trimText(findAllExtensionListItems().at(0).text())).toContain(
+        'Failed 8 times in main in the last 14 days',
       );
     });
   });

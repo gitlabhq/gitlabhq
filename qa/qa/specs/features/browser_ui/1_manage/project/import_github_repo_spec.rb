@@ -46,7 +46,7 @@ module QA
           import_page.import!(github_repo, group.full_path, imported_project.name)
 
           aggregate_failures do
-            expect(import_page).to have_imported_project(github_repo)
+            expect(import_page).to have_imported_project(github_repo, wait: 240)
             # validate button is present instead of navigating to avoid dealing with multiple tabs
             # which makes the test more complicated
             expect(import_page).to have_go_to_project_button(github_repo)

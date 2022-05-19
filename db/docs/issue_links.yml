@@ -4,6 +4,6 @@ classes:
 - IssueLink
 feature_categories:
 - team_planning
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7afdb31770f927cf4fcca98ab675e015f39f8479
+description: Links two issues by relationship type, which can be related or blocking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1719
 milestone: '9.4'

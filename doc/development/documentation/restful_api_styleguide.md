@@ -26,11 +26,12 @@ In the Markdown doc for a resource (AKA endpoint):
   GET /projects/:id/repository/branches
   ```
 
-- Every method must have a detailed [description of the parameters](#method-description).
+- Every method must have a detailed [description of the attributes](#method-description).
 - Every method must have a cURL example.
-- Every method must have a response body (in JSON format).
+- Every method must have a detailed [description of the response body](#response-body-description).
+- Every method must have a response body example (in JSON format).
 - If an attribute is available only to higher level tiers than the other
-  parameters, add the appropriate inline [tier badge](styleguide/index.md#product-tier-badges).
+  attributes, add the appropriate inline [tier badge](styleguide/index.md#product-tier-badges).
   Put the badge in the **Attribute** column, like the
   `**(<tier>)**` code in the following template.
 
@@ -59,6 +60,13 @@ Supported attributes:
 | `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 | `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 
+Response body attributes:
+
+| Attribute                | Type     | Description           |
+|:-------------------------|:---------|:----------------------|
+| `attribute`              | datatype | Detailed description. |
+| `attribute` **(<tier>)** | datatype | Detailed description. |
+
 Example request:
 
 ```shell
@@ -75,7 +83,7 @@ Example response:
 ```
 ````
 
-Adjust the [version history note accordingly](styleguide/index.md#version-text-in-the-version-history)
+Adjust the [version history note accordingly](versions.md#add-a-version-history-item)
 to describe the GitLab release that introduced the API call.
 
 ## Method description
@@ -86,20 +94,48 @@ always be in code blocks using backticks (`` ` ``).
 Sort the table by required attributes first, then alphabetically.
 
 ```markdown
-| Attribute                    | Type          | Required               | Description                                          |
-|:-----------------------------|:--------------|:-----------------------|:-----------------------------------------------------|
+| Attribute                    | Type          | Required               | Description                                         |
+|:-----------------------------|:--------------|:-----------------------|:----------------------------------------------------|
 | `title`                      | string        | **{check-circle}** Yes | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.         |
+| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.            |
 | `confidential`               | boolean       | **{dotted-circle}** No | Sets the issue to confidential. Default is `false`. |
 ```
 
 Rendered example:
 
-| Attribute                    | Type          | Required               | Description                                          |
-|:-----------------------------|:--------------|:-----------------------|:-----------------------------------------------------|
+| Attribute                    | Type          | Required               | Description                                         |
+|:-----------------------------|:--------------|:-----------------------|:----------------------------------------------------|
 | `title`                      | string        | **{check-circle}** Yes | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.         |
+| `assignee_ids` **(PREMIUM)** | integer array | **{dotted-circle}** No | IDs of the users to assign the issue to.            |
 | `confidential`               | boolean       | **{dotted-circle}** No | Sets the issue to confidential. Default is `false`. |
+
+For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
+
+## Response body description
+
+Use the following table headers to describe the response bodies. Attributes should
+always be in code blocks using backticks (`` ` ``).
+
+If the attribute is a complex type, like another object, represent sub-attributes
+with dots (`.`), like `project.name` or `projects[].name` in case of an array.
+
+Sort the table alphabetically.
+
+```markdown
+| Attribute                    | Type          | Description                               |
+|:-----------------------------|:--------------|:------------------------------------------|
+| `assignee_ids` **(PREMIUM)** | integer array | IDs of the users to assign the issue to.  |
+| `confidential`               | boolean       | Whether the issue is confidential or not. |
+| `title`                      | string        | Title of the issue.                       |
+```
+
+Rendered example:
+
+| Attribute                    | Type          | Description                               |
+|:-----------------------------|:--------------|:------------------------------------------|
+| `assignee_ids` **(PREMIUM)** | integer array | IDs of the users to assign the issue to.  |
+| `confidential`               | boolean       | Whether the issue is confidential or not. |
+| `title`                      | string        | Title of the issue.                       |
 
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
 
@@ -116,9 +152,9 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 | Methods                                         | Description                                            |
 |:------------------------------------------------|:-------------------------------------------------------|
 | `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
-| `--request POST`                                | Use this method when creating new objects              |
-| `--request PUT`                                 | Use this method when updating existing objects         |
-| `--request DELETE`                              | Use this method when removing existing objects         |
+| `--request POST`                                | Use this method when creating new objects.             |
+| `--request PUT`                                 | Use this method when updating existing objects.        |
+| `--request DELETE`                              | Use this method when removing existing objects.        |
 
 ## cURL Examples
 

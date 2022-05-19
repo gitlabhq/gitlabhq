@@ -6,6 +6,10 @@ import {
 } from '~/lib/utils/constants';
 import { allSingleQuotes } from '~/lib/utils/regexp';
 
+export const COLON = ':';
+export const HYPHEN = '-';
+export const NEWLINE = '\n';
+
 /**
  * Adds a , to a string composed by numbers, at every 3 chars.
  *

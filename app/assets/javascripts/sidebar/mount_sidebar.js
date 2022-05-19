@@ -218,7 +218,7 @@ function mountCrmContactsComponent() {
 
   if (!el) return;
 
-  const { issueId } = el.dataset;
+  const { issueId, groupIssuesPath } = el.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -231,6 +231,7 @@ function mountCrmContactsComponent() {
       createElement('crm-contacts', {
         props: {
           issueId,
+          groupIssuesPath,
         },
       }),
   });
@@ -430,10 +431,7 @@ function mountLockComponent(store) {
     return;
   }
 
-  const { fullPath } = getSidebarOptions();
-
-  const dataNode = document.getElementById('js-lock-issue-data');
-  const initialData = JSON.parse(dataNode.innerHTML);
+  const { fullPath, editable } = getSidebarOptions();
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -446,7 +444,7 @@ function mountLockComponent(store) {
     render: (createElement) =>
       createElement(IssuableLockForm, {
         props: {
-          isEditable: initialData.is_editable,
+          isEditable: editable,
         },
       }),
   });

@@ -354,7 +354,7 @@ file is written, but this can be changed by passing the `--pidfile` option to
 ```
 
 Keep in mind that the PID file contains the PID of the `sidekiq-cluster`
-command and not the PID(s) of the started Sidekiq processes.
+command and not the PIDs of the started Sidekiq processes.
 
 ### Environment
 

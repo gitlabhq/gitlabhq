@@ -239,7 +239,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    accept_gl_confirm(s_('Notes|Are you sure you want to cancel creating this comment?')) do
+    accept_gl_confirm(s_('Notes|Are you sure you want to cancel creating this comment?'), button_text: _('Discard changes')) do
       find('.js-close-discussion-note-form').click
     end
 

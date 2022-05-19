@@ -107,14 +107,14 @@ Since personal access tokens are the only token needed for programmatic access t
 ### Set a limit
 
 Only a GitLab administrator or an owner of a group-managed account can set a limit. When this field
-is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens)
+is left empty, the [instance-level restriction](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
 on the lifetime of personal access tokens apply.
 
 To set a limit on how long personal access tokens are valid for users in a group managed account:
 
 1. Navigate to the **Settings > General** page in your group's sidebar.
 1. Expand the **Permissions and group features** section.
-1. Fill in the **Maximum allowable lifetime for personal access tokens (days)** field.
+1. Fill in the **Maximum allowable lifetime for access tokens (days)** field.
 1. Click **Save changes**.
 
 Once a lifetime for personal access tokens is set:

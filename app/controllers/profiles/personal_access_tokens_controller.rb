@@ -63,5 +63,3 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
     finder(state: 'active', sort: 'expires_at_asc').execute
   end
 end
-
-Profiles::PersonalAccessTokensController.prepend_mod_with('Profiles::PersonalAccessTokensController')

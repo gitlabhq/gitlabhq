@@ -19,7 +19,7 @@ If you are migrating from another CI/CD tool, view this documentation:
 - [Migrate from CircleCI](../migration/circleci.md).
 - [Migrate from Jenkins](../migration/jenkins.md).
 
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s). This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project, running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities and offers more exercises for async practice.
+> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s). This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project, running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities and offers more exercises for asynchronous practice.
 > - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s). This workshop uses the Web IDE to quickly get going with building source code using CI/CD, and run unit tests.
 
 ## CI/CD process overview
@@ -27,6 +27,8 @@ If you are migrating from another CI/CD tool, view this documentation:
 To use GitLab CI/CD:
 
 1. [Ensure you have runners available](#ensure-you-have-runners-available) to run your jobs.
+   GitLab SaaS provides runners, so if you're using GitLab.com, you can skip this step.
+
    If you don't have a runner, [install GitLab Runner](https://docs.gitlab.com/runner/install/)
    and [register a runner](https://docs.gitlab.com/runner/register/) for your instance, project, or group.
 1. [Create a `.gitlab-ci.yml` file](#create-a-gitlab-ciyml-file)
@@ -130,7 +132,7 @@ The pipeline starts when the commit is committed.
 
   ```yaml
   default:
-    image: ruby:2.7.4
+    image: ruby:2.7.5
   ```
 
   This command tells the runner to use a Ruby image from Docker Hub

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { assignIn } from 'lodash';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import SmartInterval from '~/smart_interval';
 
@@ -116,9 +117,13 @@ describe('SmartInterval', () => {
   describe('DOM Events', () => {
     beforeEach(() => {
       // This ensures DOM and DOM events are initialized for these specs.
-      setFixtures('<div></div>');
+      setHTMLFixture('<div></div>');
 
       interval = createDefaultSmartInterval();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should pause when page is not visible', () => {

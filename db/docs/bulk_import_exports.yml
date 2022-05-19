@@ -4,6 +4,6 @@ classes:
 - BulkImports::Export
 feature_categories:
 - importers
-description: TODO
+description: Used to track the generation status of export files for groups or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59976
 milestone: '13.12'

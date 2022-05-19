@@ -11,6 +11,10 @@ RSpec.describe 'Project > Merge request > View user status' do
   subject { visit merge_request_path(merge_request) }
 
   describe 'the status of the merge request author' do
+    before do
+      stub_feature_flags(updated_mr_header: false)
+    end
+
     it_behaves_like 'showing user status' do
       let(:user_with_status) { merge_request.author }
     end

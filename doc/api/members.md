@@ -367,6 +367,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-27",
     "membership_type": "group_member",
+    "membership_state": "active",
     "removable": true,
     "created_at": "2021-01-03T12:16:02.000Z"
   },
@@ -380,6 +381,7 @@ Example response:
     "email": "john@example.com",
     "last_activity_on": "2021-01-25",
     "membership_type": "group_member",
+    "membership_state": "active",
     "removable": true,
     "created_at": "2021-01-04T18:46:42.000Z"
   },
@@ -392,6 +394,7 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "last_activity_on": "2021-01-20",
     "membership_type": "group_invite",
+    "membership_state": "awaiting",
     "removable": false,
     "created_at": "2021-01-09T07:12:31.000Z"
   }
@@ -478,6 +481,35 @@ DELETE /groups/:id/billable_members/:user_id
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id"
+```
+
+## Change membership state of a user in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
+
+Changes the membership state of a user in a group. The state is applied to
+all subgroups and projects.
+
+```plaintext
+PUT /groups/:id/members/:user_id/state
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `user_id` | integer | yes   | The user ID of the member. |
+| `state`   | string | yes   | The new state for the user. State is either `awaiting` or `active`. |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/state?state=active"
+```
+
+Example response:
+
+```json
+{
+  "success":true
+}
 ```
 
 ## Add a member to a group or project

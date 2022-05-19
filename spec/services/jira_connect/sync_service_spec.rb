@@ -24,13 +24,15 @@ RSpec.describe JiraConnect::SyncService do
     end
 
     def expect_log(type, message)
-      expect(Gitlab::ProjectServiceLogger)
+      expect(Gitlab::IntegrationsLogger)
         .to receive(type).with(
-          message: 'response from jira dev_info api',
-          integration: 'JiraConnect',
-          project_id: project.id,
-          project_path: project.full_path,
-          jira_response: message&.to_json
+          {
+            message: 'response from jira dev_info api',
+            integration: 'JiraConnect',
+            project_id: project.id,
+            project_path: project.full_path,
+            jira_response: message&.to_json
+          }
         )
     end
 

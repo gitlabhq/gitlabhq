@@ -179,6 +179,46 @@ optimal configuration:
 - To force Rugged to be used with multi-threaded Puma, you can use a
   [feature flag](../../development/gitaly.md#legacy-rugged-code).
 
+## Configuring Puma to listen over SSL
+
+Puma, when deployed with Omnibus GitLab, listens over a Unix socket by
+default. To configure Puma to listen over an HTTPS port instead, follow the
+steps below:
+
+1. Generate an SSL certificate key-pair for the address where Puma will
+   listen. For the example below, this is `127.0.0.1`.
+
+   NOTE:
+   If using a self-signed certificate from a custom Certificate Authority (CA),
+   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+   to make them trusted by other GitLab components.
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   puma['ssl_listen'] = '127.0.0.1'
+   puma['ssl_port'] = 9111
+   puma['ssl_certificate'] = '<path_to_certificate>'
+   puma['ssl_certificate_key'] = '<path_to_key>'
+
+   # Disable UNIX socket
+   puma['socket'] = ""
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+NOTE:
+In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
+providing metrics to be scraped by Prometheus. It is not currently possible to
+make Prometheus scrape them over HTTPS, and support for it is being discussed
+[in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
+Hence, it is not technically possible to turn off this HTTP listener without
+losing Prometheus metrics.
+
 ## Switch from Unicorn to Puma
 
 NOTE:

@@ -84,6 +84,19 @@ type ImageResizerConfig struct {
 	MaxFilesize    uint64 `toml:"max_filesize"`
 }
 
+type TlsConfig struct {
+	Certificate string `toml:"certificate"`
+	Key         string `toml:"key"`
+	MinVersion  string `toml:"min_version"`
+	MaxVersion  string `toml:"max_version"`
+}
+
+type ListenerConfig struct {
+	Network string     `toml:"network"`
+	Addr    string     `toml:"addr"`
+	Tls     *TlsConfig `toml:"tls"`
+}
+
 type Config struct {
 	Redis                        *RedisConfig             `toml:"redis"`
 	Backend                      *url.URL                 `toml:"-"`
@@ -106,6 +119,7 @@ type Config struct {
 	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout"`
 	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for"`
 	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation"`
+	Listeners                    []ListenerConfig         `toml:"listeners"`
 }
 
 var DefaultImageResizerConfig = ImageResizerConfig{

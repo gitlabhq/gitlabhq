@@ -299,9 +299,11 @@ Kerberos ticket-based authentication.
 ## Upgrading from password-based to ticket-based Kerberos sign-ins
 
 In previous versions of GitLab users had to submit their
-Kerberos username and password to GitLab when signing in. We plan to
-remove support for password-based Kerberos sign-ins in a future
-release, so we recommend that you upgrade to ticket-based sign-ins.
+Kerberos username and password to GitLab when signing in.
+
+We [deprecated](../update/deprecations.md#omniauth-kerberos-gem) password-based
+Kerberos sign-ins in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/2908)
+it in GitLab 15.0. You must switch to ticket-based sign in.
 
 Depending on your existing GitLab configuration, the 'Sign in with:
 Kerberos SPNEGO' button may already be visible on your GitLab sign-in

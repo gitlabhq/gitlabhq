@@ -1,4 +1,5 @@
 import { Document } from 'yaml';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import SourceEditor from '~/editor/source_editor';
 import { YamlEditorExtension } from '~/editor/extensions/source_editor_yaml_ext';
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
@@ -8,7 +9,7 @@ let baseExtension;
 let yamlExtension;
 
 const getEditorInstance = (editorInstanceOptions = {}) => {
-  setFixtures('<div id="editor"></div>');
+  setHTMLFixture('<div id="editor"></div>');
   return new SourceEditor().createInstance({
     el: document.getElementById('editor'),
     blobPath: '.gitlab-ci.yml',
@@ -18,7 +19,7 @@ const getEditorInstance = (editorInstanceOptions = {}) => {
 };
 
 const getEditorInstanceWithExtension = (extensionOptions = {}, editorInstanceOptions = {}) => {
-  setFixtures('<div id="editor"></div>');
+  setHTMLFixture('<div id="editor"></div>');
   const instance = getEditorInstance(editorInstanceOptions);
   [baseExtension, yamlExtension] = instance.use([
     { definition: SourceEditorExtension },
@@ -35,6 +36,10 @@ const getEditorInstanceWithExtension = (extensionOptions = {}, editorInstanceOpt
 };
 
 describe('YamlCreatorExtension', () => {
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
   describe('constructor', () => {
     it('saves setupOptions options on the extension, but does not expose those to instance', () => {
       const highlightPath = 'foo';

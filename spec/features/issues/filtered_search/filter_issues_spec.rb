@@ -6,13 +6,8 @@ RSpec.describe 'Filter issues', :js do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }
-
-  # NOTE: The short name here is actually important
-  #
-  # When the name is longer, the filtered search input can end up scrolling
-  # horizontally, and PhantomJS can't handle it.
-  let(:user) { create(:user, name: 'Ann') }
-  let(:user2) { create(:user, name: 'jane') }
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
@@ -24,6 +19,7 @@ RSpec.describe 'Filter issues', :js do
   end
 
   before do
+    stub_feature_flags(vue_issues_list: true)
     project.add_maintainer(user)
 
     create(:issue, project: project, author: user2, title: "Bug report 1")
@@ -64,31 +60,25 @@ RSpec.describe 'Filter issues', :js do
 
   it 'filters by all available tokens' do
     search_term = 'issue'
+    select_tokens 'Assignee', '=', user.username, 'Author', '=', user.username, 'Label', '=', caps_sensitive_label.title, 'Milestone', '=', milestone.title
+    send_keys search_term, :enter
 
-    input_filtered_search("assignee:=@#{user.username} author:=@#{user.username} label:=~#{caps_sensitive_label.title} milestone:=%#{milestone.title} #{search_term}")
-
-    wait_for_requests
-
-    expect_tokens([
-      assignee_token(user.name),
-      author_token(user.name),
-      label_token(caps_sensitive_label.title),
-      milestone_token(milestone.title)
-    ])
+    expect_assignee_token(user.name)
+    expect_author_token(user.name)
+    expect_label_token(caps_sensitive_label.title)
+    expect_milestone_token(milestone.title)
     expect_issues_list_count(1)
-    expect_filtered_search_input(search_term)
+    expect_search_term(search_term)
   end
 
   describe 'filter issues by author' do
     context 'only author' do
       it 'filters issues by searched author' do
-        input_filtered_search("author:=@#{user.username}")
+        select_tokens 'Author', '=', user.username, submit: true
 
-        wait_for_requests
-
-        expect_tokens([author_token(user.name)])
+        expect_author_token(user.name)
         expect_issues_list_count(5)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
     end
   end
@@ -96,46 +86,30 @@ RSpec.describe 'Filter issues', :js do
   describe 'filter issues by assignee' do
     context 'only assignee' do
       it 'filters issues by searched assignee' do
-        input_filtered_search("assignee:=@#{user.username}")
+        select_tokens 'Assignee', '=', user.username, submit: true
 
-        wait_for_requests
-
-        expect_tokens([assignee_token(user.name)])
+        expect_assignee_token(user.name)
         expect_issues_list_count(5)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by no assignee' do
-        input_filtered_search('assignee:=none')
+        select_tokens 'Assignee', '=', 'None', submit: true
 
-        expect_tokens([assignee_token('None')])
+        expect_assignee_token 'None'
         expect_issues_list_count(3)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by invalid assignee' do
         skip('to be tested, issue #26546')
-      end
-
-      it 'filters issues by multiple assignees' do
-        create(:issue, project: project, author: user, assignees: [user2, user])
-
-        input_filtered_search("assignee:=@#{user.username} assignee:=@#{user2.username}")
-
-        expect_tokens([
-          assignee_token(user.name),
-          assignee_token(user2.name)
-        ])
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input_empty
       end
     end
   end
 
   describe 'filter by reviewer' do
     it 'does not allow filtering by reviewer' do
-      find('.filtered-search').click
+      click_filtered_search_bar
 
       expect(page).not_to have_button('Reviewer')
     end
@@ -144,57 +118,53 @@ RSpec.describe 'Filter issues', :js do
   describe 'filter issues by label' do
     context 'only label' do
       it 'filters issues by searched label' do
-        input_filtered_search("label:=~#{bug_label.title}")
+        select_tokens 'Label', '=', bug_label.title, submit: true
 
-        expect_tokens([label_token(bug_label.title)])
+        expect_label_token(bug_label.title)
         expect_issues_list_count(2)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues not containing searched label' do
-        input_filtered_search("label:!=~#{bug_label.title}")
+        select_tokens 'Label', '!=', bug_label.title, submit: true
 
-        expect_tokens([label_token(bug_label.title)])
+        expect_negated_label_token(bug_label.title)
         expect_issues_list_count(6)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by any label' do
-        input_filtered_search('label:=any')
+        select_tokens 'Label', '=', 'Any', submit: true
 
-        expect_tokens([label_token('Any', false)])
+        expect_label_token 'Any'
         expect_issues_list_count(4)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by no label' do
-        input_filtered_search('label:=none')
+        select_tokens 'Label', '=', 'None', submit: true
 
-        expect_tokens([label_token('None', false)])
+        expect_label_token 'None'
         expect_issues_list_count(4)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by multiple labels' do
-        input_filtered_search("label:=~#{bug_label.title} label:=~#{caps_sensitive_label.title}")
+        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, submit: true
 
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title)
-        ])
+        expect_label_token(bug_label.title)
+        expect_label_token(caps_sensitive_label.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by multiple labels with not operator' do
-        input_filtered_search("label:!=~#{bug_label.title} label:=~#{caps_sensitive_label.title}")
+        select_tokens 'Label', '!=', bug_label.title, 'Label', '=', caps_sensitive_label.title, submit: true
 
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title)
-        ])
+        expect_negated_label_token(bug_label.title)
+        expect_label_token(caps_sensitive_label.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by label containing special characters' do
@@ -202,11 +172,11 @@ RSpec.describe 'Filter issues', :js do
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
 
-        input_filtered_search("label:=~#{special_label.title}")
+        select_tokens 'Label', '=', special_label.title, submit: true
 
-        expect_tokens([label_token(special_label.title)])
+        expect_label_token(special_label.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by label not containing special characters' do
@@ -214,21 +184,21 @@ RSpec.describe 'Filter issues', :js do
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
 
-        input_filtered_search("label:!=~#{special_label.title}")
+        select_tokens 'Label', '!=', special_label.title, submit: true
 
-        expect_tokens([label_token(special_label.title)])
+        expect_negated_label_token(special_label.title)
         expect_issues_list_count(8)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'does not show issues for unused labels' do
         new_label = create(:label, project: project, title: 'new_label')
 
-        input_filtered_search("label:=~#{new_label.title}")
+        select_tokens 'Label', '=', new_label.title, submit: true
 
-        expect_tokens([label_token(new_label.title)])
+        expect_label_token(new_label.title)
         expect_no_issues_list
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
     end
 
@@ -238,31 +208,28 @@ RSpec.describe 'Filter issues', :js do
         special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
         special_multiple_issue.labels << special_multiple_label
 
-        input_filtered_search("label:=~'#{special_multiple_label.title}'")
+        select_tokens 'Label', '=', special_multiple_label.title, submit: true
 
         # Check for search results (which makes sure that the page has changed)
         expect_issues_list_count(1)
-
-        # filtered search defaults quotations to double quotes
-        expect_tokens([label_token("\"#{special_multiple_label.title}\"")])
-
-        expect_filtered_search_input_empty
+        expect_label_token(special_multiple_label.title)
+        expect_empty_search_term
       end
 
       it 'single quotes' do
-        input_filtered_search("label:=~'#{multiple_words_label.title}'")
+        select_tokens 'Label', '=', multiple_words_label.title, submit: true
 
         expect_issues_list_count(1)
-        expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
-        expect_filtered_search_input_empty
+        expect_label_token(multiple_words_label.title)
+        expect_empty_search_term
       end
 
       it 'double quotes' do
-        input_filtered_search("label:=~\"#{multiple_words_label.title}\"")
+        select_tokens 'Label', '=', multiple_words_label.title, submit: true
 
-        expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
+        expect_label_token(multiple_words_label.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'single quotes containing double quotes' do
@@ -270,11 +237,11 @@ RSpec.describe 'Filter issues', :js do
         double_quotes_label_issue = create(:issue, title: "Issue with double quotes label", project: project)
         double_quotes_label_issue.labels << double_quotes_label
 
-        input_filtered_search("label:=~'#{double_quotes_label.title}'")
+        select_tokens 'Label', '=', double_quotes_label.title, submit: true
 
-        expect_tokens([label_token("'#{double_quotes_label.title}'")])
+        expect_label_token(double_quotes_label.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'double quotes containing single quotes' do
@@ -282,49 +249,41 @@ RSpec.describe 'Filter issues', :js do
         single_quotes_label_issue = create(:issue, title: "Issue with single quotes label", project: project)
         single_quotes_label_issue.labels << single_quotes_label
 
-        input_filtered_search("label:=~\"#{single_quotes_label.title}\"")
+        select_tokens 'Label', '=', single_quotes_label.title, submit: true
 
-        expect_tokens([label_token("\"#{single_quotes_label.title}\"")])
+        expect_label_token(single_quotes_label.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
     end
 
     context 'multiple labels with other filters' do
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
         search_term = 'bug'
+        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '=', milestone.title
+        send_keys search_term, :enter
 
-        input_filtered_search("label:=~#{bug_label.title} label:=~#{caps_sensitive_label.title} author:=@#{user.username} assignee:=@#{user.username} milestone:=%#{milestone.title} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title),
-          author_token(user.name),
-          assignee_token(user.name),
-          milestone_token(milestone.title)
-        ])
+        expect_label_token(bug_label.title)
+        expect_label_token(caps_sensitive_label.title)
+        expect_author_token(user.name)
+        expect_assignee_token(user.name)
+        expect_milestone_token(milestone.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
+        expect_search_term(search_term)
       end
 
       it 'filters issues by searched label, label2, author, assignee, not included in a milestone' do
         search_term = 'bug'
+        select_tokens 'Label', '=', bug_label.title, 'Label', '=', caps_sensitive_label.title, 'Author', '=', user.username, 'Assignee', '=', user.username, 'Milestone', '!=', milestone.title
+        send_keys search_term, :enter
 
-        input_filtered_search("label:=~#{bug_label.title} label:=~#{caps_sensitive_label.title} author:=@#{user.username} assignee:=@#{user.username} milestone:!=%#{milestone.title} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title),
-          author_token(user.name),
-          assignee_token(user.name),
-          milestone_token(milestone.title, false, '!=')
-        ])
+        expect_label_token(bug_label.title)
+        expect_label_token(caps_sensitive_label.title)
+        expect_author_token(user.name)
+        expect_assignee_token(user.name)
+        expect_negated_milestone_token(milestone.title)
         expect_issues_list_count(0)
-        expect_filtered_search_input(search_term)
+        expect_search_term(search_term)
       end
     end
 
@@ -333,8 +292,8 @@ RSpec.describe 'Filter issues', :js do
         click_link multiple_words_label.title
 
         expect_issues_list_count(1)
-        expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
-        expect_filtered_search_input_empty
+        expect_label_token(multiple_words_label.title)
+        expect_empty_search_term
       end
     end
   end
@@ -342,19 +301,19 @@ RSpec.describe 'Filter issues', :js do
   describe 'filter issues by milestone' do
     context 'only milestone' do
       it 'filters issues by searched milestone' do
-        input_filtered_search("milestone:=%#{milestone.title}")
+        select_tokens 'Milestone', '=', milestone.title, submit: true
 
-        expect_tokens([milestone_token(milestone.title)])
+        expect_milestone_token(milestone.title)
         expect_issues_list_count(5)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by no milestone' do
-        input_filtered_search("milestone:=none")
+        select_tokens 'Milestone', '=', 'None', submit: true
 
-        expect_tokens([milestone_token('None', false)])
+        expect_milestone_token 'None'
         expect_issues_list_count(3)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by upcoming milestones' do
@@ -362,11 +321,11 @@ RSpec.describe 'Filter issues', :js do
           create(:issue, project: project, milestone: future_milestone, author: user)
         end
 
-        input_filtered_search("milestone:=upcoming")
+        select_tokens 'Milestone', '=', 'Upcoming', submit: true
 
-        expect_tokens([milestone_token('Upcoming', false)])
+        expect_milestone_token 'Upcoming'
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by negation of upcoming milestones' do
@@ -378,72 +337,72 @@ RSpec.describe 'Filter issues', :js do
           create(:issue, project: project, milestone: past_milestone, author: user)
         end
 
-        input_filtered_search("milestone:!=upcoming")
+        select_tokens 'Milestone', '!=', 'Upcoming', submit: true
 
-        expect_tokens([milestone_token('Upcoming', false, '!=')])
+        expect_negated_milestone_token 'Upcoming'
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by started milestones' do
-        input_filtered_search("milestone:=started")
+        select_tokens 'Milestone', '=', 'Started', submit: true
 
-        expect_tokens([milestone_token('Started', false)])
+        expect_milestone_token 'Started'
         expect_issues_list_count(5)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by negation of started milestones' do
         milestone2 = create(:milestone, title: "9", project: project, start_date: 2.weeks.from_now)
         create(:issue, project: project, author: user, title: "something else", milestone: milestone2)
 
-        input_filtered_search("milestone:!=started")
+        select_tokens 'Milestone', '!=', 'Started', submit: true
 
-        expect_tokens([milestone_token('Started', false, '!=')])
+        expect_negated_milestone_token 'Started'
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by milestone containing special characters' do
         special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
         create(:issue, project: project, milestone: special_milestone)
 
-        input_filtered_search("milestone:=%#{special_milestone.title}")
+        select_tokens 'Milestone', '=', special_milestone.title, submit: true
 
-        expect_tokens([milestone_token(special_milestone.title)])
+        expect_milestone_token(special_milestone.title)
         expect_issues_list_count(1)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'filters issues by milestone not containing special characters' do
         special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
         create(:issue, project: project, milestone: special_milestone)
 
-        input_filtered_search("milestone:!=%#{special_milestone.title}")
+        select_tokens 'Milestone', '!=', special_milestone.title, submit: true
 
-        expect_tokens([milestone_token(special_milestone.title, false, '!=')])
+        expect_negated_milestone_token(special_milestone.title)
         expect_issues_list_count(8)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'does not show issues for unused milestones' do
         new_milestone = create(:milestone, title: 'new', project: project)
 
-        input_filtered_search("milestone:=%#{new_milestone.title}")
+        select_tokens 'Milestone', '=', new_milestone.title, submit: true
 
-        expect_tokens([milestone_token(new_milestone.title)])
+        expect_milestone_token(new_milestone.title)
         expect_no_issues_list
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
 
       it 'show issues for unused milestones' do
         new_milestone = create(:milestone, title: 'new', project: project)
 
-        input_filtered_search("milestone:!=%#{new_milestone.title}")
+        select_tokens 'Milestone', '!=', new_milestone.title, submit: true
 
-        expect_tokens([milestone_token(new_milestone.title, false, '!=')])
+        expect_negated_milestone_token(new_milestone.title)
         expect_issues_list_count(8)
-        expect_filtered_search_input_empty
+        expect_empty_search_term
       end
     end
   end
@@ -452,47 +411,47 @@ RSpec.describe 'Filter issues', :js do
     context 'only text' do
       it 'filters issues by searched text' do
         search = 'Bug'
-        input_filtered_search(search)
+        submit_search_term(search)
 
         expect_issues_list_count(4)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
       end
 
       it 'filters issues by multiple searched text' do
         search = 'Bug report'
-        input_filtered_search(search)
+        submit_search_term(search)
 
         expect_issues_list_count(3)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
       end
 
       it 'filters issues by case insensitive searched text' do
         search = 'bug report'
-        input_filtered_search(search)
+        submit_search_term(search)
 
         expect_issues_list_count(3)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
       end
 
       it 'filters issues by searched text containing single quotes' do
         issue = create(:issue, project: project, author: user, title: "issue with 'single quotes'")
 
-        search = "'single quotes'"
-        input_filtered_search(search)
+        search = 'single quotes'
+        submit_search_term "'#{search}'"
 
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
         expect(page).to have_content(issue.title)
       end
 
       it 'filters issues by searched text containing double quotes' do
         issue = create(:issue, project: project, author: user, title: "issue with \"double quotes\"")
 
-        search = '"double quotes"'
-        input_filtered_search(search)
+        search = 'double quotes'
+        submit_search_term "\"#{search}\""
 
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
         expect(page).to have_content(issue.title)
       end
 
@@ -502,36 +461,43 @@ RSpec.describe 'Filter issues', :js do
         issue = create(:issue, project: project, author: user, title: "issue with !@\#{$%^&*()-+")
 
         search = '!@#{$%^&*()-+'
-        input_filtered_search(search)
+        submit_search_term(search)
 
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
         expect(page).to have_content(issue.title)
       end
 
       it 'does not show any issues' do
         search = 'testing'
-        input_filtered_search(search)
+        submit_search_term(search)
 
         expect_no_issues_list
-        expect_filtered_search_input(search)
+        expect_search_term(search)
       end
 
       it 'filters issues by issue reference' do
         search = '#1'
-        input_filtered_search(search)
+        submit_search_term(search)
 
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_search_term(search)
       end
     end
 
     context 'searched text with other filters' do
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:=@#{user.username} report label:=~#{bug_label.title} label:=~#{caps_sensitive_label.title} milestone:=%#{milestone.title} foo")
+        click_filtered_search_bar
+        send_keys 'bug '
+        select_tokens 'Author', '=', user.username
+        send_keys 'report '
+        select_tokens 'Label', '=', bug_label.title
+        select_tokens 'Label', '=', caps_sensitive_label.title
+        select_tokens 'Milestone', '=', milestone.title
+        send_keys 'foo', :enter
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report foo')
+        expect_search_term('bug report foo')
       end
     end
 
@@ -549,17 +515,11 @@ RSpec.describe 'Filter issues', :js do
           author: user,
           created_at: 5.days.ago)
 
-        input_filtered_search('days ago')
+        submit_search_term 'days ago'
 
         expect_issues_list_count(2)
-
-        sort_toggle = find('.filter-dropdown-container .dropdown')
-        sort_toggle.click
-
-        find('.filter-dropdown-container .dropdown-menu li a', text: 'Created date').click
-        wait_for_requests
-
-        expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(new_issue.title)
+        expect(page).to have_button 'Created date'
+        expect(page).to have_css('.issue:first-of-type .issue-title', text: new_issue.title)
       end
     end
   end
@@ -568,7 +528,7 @@ RSpec.describe 'Filter issues', :js do
     let!(:closed_issue) { create(:issue, :closed, project: project, title: 'closed bug') }
 
     before do
-      input_filtered_search('bug')
+      submit_search_term 'bug'
 
       # This ensures that the search is performed
       expect_issues_list_count(4, 1)
@@ -599,19 +559,17 @@ RSpec.describe 'Filter issues', :js do
     end
 
     it 'milestone dropdown loads milestones' do
-      input_filtered_search("milestone:=", submit: false)
+      select_tokens 'Milestone', '='
 
-      within('#js-dropdown-milestone') do
-        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
-      end
+      # Expect None, Any, Upcoming, Started, 8
+      expect_suggestion_count 5
     end
 
     it 'label dropdown load labels' do
-      input_filtered_search("label:=", submit: false)
+      select_tokens 'Label', '='
 
-      within('#js-dropdown-label') do
-        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 3)
-      end
+      # Dropdown shows None, Any, and 3 labels
+      expect_suggestion_count 5
     end
   end
 end

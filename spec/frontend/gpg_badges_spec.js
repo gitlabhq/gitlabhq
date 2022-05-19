@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'spec/test_constants';
 import GpgBadges from '~/gpg_badges';
 import axios from '~/lib/utils/axios_utils';
@@ -18,7 +19,7 @@ describe('GpgBadges', () => {
   const dummyUrl = `${TEST_HOST}/dummy/signatures`;
 
   const setForm = ({ utf8 = '✓', search = '' } = {}) => {
-    setFixtures(`
+    setHTMLFixture(`
       <form
         class="commits-search-form js-signature-container" data-signatures-path="${dummyUrl}" action="${dummyUrl}"
         method="get">
@@ -38,24 +39,27 @@ describe('GpgBadges', () => {
 
   afterEach(() => {
     mock.restore();
+    resetHTMLFixture();
   });
 
   it('does not make a request if there is no container element', async () => {
-    setFixtures('');
+    setHTMLFixture('');
     jest.spyOn(axios, 'get').mockImplementation(() => {});
 
     await GpgBadges.fetch();
     expect(axios.get).not.toHaveBeenCalled();
+    resetHTMLFixture();
   });
 
   it('throws an error if the endpoint is missing', async () => {
-    setFixtures('<div class="js-signature-container"></div>');
+    setHTMLFixture('<div class="js-signature-container"></div>');
     jest.spyOn(axios, 'get').mockImplementation(() => {});
 
     await expect(GpgBadges.fetch()).rejects.toEqual(
       new Error('Missing commit signatures endpoint!'),
     );
     expect(axios.get).not.toHaveBeenCalled();
+    resetHTMLFixture();
   });
 
   it('fetches commit signatures', async () => {

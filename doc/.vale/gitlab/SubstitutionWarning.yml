@@ -12,6 +12,7 @@ level: warning
 ignorecase: true
 swap:
   air(?:-| )?gapped: offline environment
+  bullet: list item
   click: select
   code base: codebase
   config: configuration
@@ -20,7 +21,9 @@ swap:
   distro: distribution
   file name: filename
   filesystem: file system
+  GFM: GLFM
   info: information
+  n/a: not applicable
   repo: repository
   timezone: time zone
   utilize: use

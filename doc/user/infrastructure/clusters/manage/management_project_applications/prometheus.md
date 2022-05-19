@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 open-source monitoring and alerting system for supervising your
 deployed applications.
 
-Assuming you already have a [Cluster management project](../../../../../user/clusters/management_project.md) created from a
+Assuming you already have a project created from a
 [management project template](../../../../../user/clusters/management_project_template.md), to install Prometheus you should
 uncomment this line from your `helmfile.yaml`:
 

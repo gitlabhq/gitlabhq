@@ -17,6 +17,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       primarybuttontext=""
       secondarybuttonlink=""
       secondarybuttontext=""
+      showicon="true"
       title="Feature deprecation"
       variant="warning"
     >

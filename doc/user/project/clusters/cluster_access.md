@@ -28,7 +28,7 @@ Helm also creates additional service accounts and other resources for each
 installed application. Consult the documentation of the Helm charts for each application
 for details.
 
-If you are [adding an existing Kubernetes cluster](add_remove_clusters.md#add-existing-cluster),
+If you are [adding an existing Kubernetes cluster](add_existing_cluster.md),
 ensure the token of the account has administrator privileges for the cluster.
 
 The resources created by GitLab differ depending on the type of cluster.

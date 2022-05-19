@@ -1,0 +1,5 @@
+#import "./runner_fields_shared.fragment.graphql"
+
+fragment RunnerFields on CiRunner {
+  ...RunnerFieldsShared
+}

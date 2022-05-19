@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initUserInternalRegexPlaceholder, {
   PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE,
   PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE,
@@ -10,10 +11,14 @@ describe('AccountAndLimits', () => {
   let $userInternalRegex;
 
   beforeEach(() => {
-    loadFixtures(FIXTURE);
+    loadHTMLFixture(FIXTURE);
     initUserInternalRegexPlaceholder();
     $userDefaultExternal = $('#application_setting_user_default_external');
     $userInternalRegex = document.querySelector('#application_setting_user_default_internal_regex');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('Changing of userInternalRegex when userDefaultExternal', () => {

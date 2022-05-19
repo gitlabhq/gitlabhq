@@ -55,4 +55,40 @@ export const METRICS_POPOVER_CONTENT = {
   commits: {
     description: s__('ValueStreamAnalytics|Number of commits pushed to the default branch'),
   },
+  'time-to-restore-service': {
+    description: s__(
+      'ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period.',
+    ),
+  },
+  time_to_restore_service: {
+    description: s__(
+      'ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period.',
+    ),
+  },
+  'change-failure-rate': {
+    description: s__(
+      'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
+    ),
+  },
+  change_failure_rate: {
+    description: s__(
+      'ValueStreamAnalytics|Percentage of deployments that cause an incident in production.',
+    ),
+  },
 };
+
+const KEY_METRICS_TITLE = s__('ValueStreamAnalytics|Key metrics');
+const KEY_METRICS_KEYS = ['lead_time', 'cycle_time', 'issues', 'commits', 'deploys'];
+
+const DORA_METRICS_TITLE = s__('ValueStreamAnalytics|DORA metrics');
+const DORA_METRICS_KEYS = [
+  'deployment_frequency',
+  'lead_time_for_changes',
+  'time_to_restore_service',
+  'change_failure_rate',
+];
+
+export const VSA_METRICS_GROUPS = [
+  { key: 'key_metrics', title: KEY_METRICS_TITLE, keys: KEY_METRICS_KEYS },
+  { key: 'dora_metrics', title: DORA_METRICS_TITLE, keys: DORA_METRICS_KEYS },
+];

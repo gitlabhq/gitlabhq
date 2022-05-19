@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GraphQL API **(FREE)**
 
-> [Generally available](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) in GitLab 12.1. [Feature flag `graphql`](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) removed.
+> Enabled and [made generally available](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) in GitLab 12.1. [Feature flag `graphql`](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) removed.
 
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.

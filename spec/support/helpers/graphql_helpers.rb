@@ -244,15 +244,16 @@ module GraphqlHelpers
   def graphql_mutation(name, input, fields = nil, &block)
     raise ArgumentError, 'Please pass either `fields` parameter or a block to `#graphql_mutation`, but not both.' if fields.present? && block_given?
 
+    name = name.graphql_name if name.respond_to?(:graphql_name)
     mutation_name = GraphqlHelpers.fieldnamerize(name)
     input_variable_name = "$#{input_variable_name_for_mutation(name)}"
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
 
     fields = yield if block_given?
-    fields ||= all_graphql_fields_for(mutation_field.type.to_graphql)
+    fields ||= all_graphql_fields_for(mutation_field.type.to_type_signature)
 
     query = <<~MUTATION
-      mutation(#{input_variable_name}: #{mutation_field.arguments['input'].type.to_graphql}) {
+      mutation(#{input_variable_name}: #{mutation_field.arguments['input'].type.to_type_signature}) {
         #{mutation_name}(input: #{input_variable_name}) {
           #{fields}
         }
@@ -264,7 +265,7 @@ module GraphqlHelpers
   end
 
   def variables_for_mutation(name, input)
-    graphql_input = prepare_input_for_mutation(input)
+    graphql_input = prepare_variables(input)
 
     { input_variable_name_for_mutation(name) => graphql_input }
   end
@@ -273,25 +274,35 @@ module GraphqlHelpers
     return unless variables
     return variables if variables.is_a?(String)
 
-    ::Gitlab::Utils::MergeHash.merge(Array.wrap(variables).map(&:to_h)).to_json
+    # Combine variables into a single hash.
+    hash = ::Gitlab::Utils::MergeHash.merge(Array.wrap(variables).map(&:to_h))
+
+    prepare_variables(hash).to_json
   end
 
-  # Recursively convert a Hash with Ruby-style keys to GraphQL fieldname-style keys
+  # Recursively convert any ruby object we can pass as a variable value
+  # to an object we can serialize with JSON, using fieldname-style keys
   #
-  # prepare_input_for_mutation({ 'my_key' => 1 })
-  #   => { 'myKey' => 1}
-  def prepare_input_for_mutation(input)
-    input.to_h do |name, value|
-      value = prepare_input_for_mutation(value) if value.is_a?(Hash)
+  # prepare_variables({ 'my_key' => 1 })
+  #   => { 'myKey' => 1 }
+  # prepare_variables({ enums: [:FOO, :BAR], user_id: global_id_of(user) })
+  #   => { 'enums' => ['FOO', 'BAR'], 'userId' => "gid://User/123" }
+  # prepare_variables({ nested: { hash_values: { are_supported: true } } })
+  #   => { 'nested' => { 'hashValues' => { 'areSupported' => true } } }
+  def prepare_variables(input)
+    return input.map { prepare_variables(_1) } if input.is_a?(Array)
+    return input.to_s if input.is_a?(GlobalID) || input.is_a?(Symbol)
+    return input unless input.is_a?(Hash)
 
-      [GraphqlHelpers.fieldnamerize(name), value]
+    input.to_h do |name, value|
+      [GraphqlHelpers.fieldnamerize(name), prepare_variables(value)]
     end
   end
 
   def input_variable_name_for_mutation(mutation_name)
     mutation_name = GraphqlHelpers.fieldnamerize(mutation_name)
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
-    input_type = field_type(mutation_field.arguments['input'])
+    input_type = mutation_field.arguments['input'].type.unwrap.to_type_signature
 
     GraphqlHelpers.fieldnamerize(input_type)
   end
@@ -344,6 +355,10 @@ module GraphqlHelpers
       name, args = Array.wrap(segment)
       query_graphql_field(name, args, tail)
     end
+  end
+
+  def query_double(schema:)
+    double('query', schema: schema)
   end
 
   def wrap_fields(fields)
@@ -646,11 +661,11 @@ module GraphqlHelpers
     end
   end
 
-  def global_id_of(model, id: nil, model_name: nil)
+  def global_id_of(model = nil, id: nil, model_name: nil)
     if id || model_name
-      ::Gitlab::GlobalId.build(model, id: id, model_name: model_name).to_s
+      ::Gitlab::GlobalId.as_global_id(id || model.id, model_name: model_name || model.class.name)
     else
-      model.to_global_id.to_s
+      model.to_global_id
     end
   end
 
@@ -683,24 +698,92 @@ module GraphqlHelpers
     end
   end
 
-  # assumes query_string to be let-bound in the current context
-  def execute_query(query_type, schema: empty_schema, graphql: query_string)
+  # assumes query_string and user to be let-bound in the current context
+  def execute_query(query_type, schema: empty_schema, graphql: query_string, raise_on_error: false)
     schema.query(query_type)
 
-    schema.execute(
+    r = schema.execute(
       graphql,
       context: { current_user: user },
       variables: {}
     )
+
+    if raise_on_error && r.to_h['errors'].present?
+      raise NoData, r.to_h['errors']
+    end
+
+    r
   end
 
   def empty_schema
     Class.new(GraphQL::Schema) do
       use GraphQL::Pagination::Connections
       use Gitlab::Graphql::Pagination::Connections
+      use BatchLoader::GraphQL
 
       lazy_resolve ::Gitlab::Graphql::Lazy, :force
     end
+  end
+
+  # Wrapper around a_hash_including that supports unpacking with **
+  class UnpackableMatcher < SimpleDelegator
+    include RSpec::Matchers
+
+    attr_reader :to_hash
+
+    def initialize(hash)
+      @to_hash = hash
+      super(a_hash_including(hash))
+    end
+
+    def to_json(_opts = {})
+      to_hash.to_json
+    end
+
+    def as_json(opts = {})
+      to_hash.as_json(opts)
+    end
+  end
+
+  # Construct a matcher for GraphQL entity response objects, of the form
+  # `{ "id" => "some-gid" }`.
+  #
+  # Usage:
+  #
+  # ```ruby
+  # expect(graphql_data_at(:path, :to, :entity)).to match a_graphql_entity_for(user)
+  # ```
+  #
+  # This can be called as:
+  #
+  # ```ruby
+  # a_graphql_entity_for(project, :full_path) # also checks that `entity['fullPath'] == project.full_path
+  # a_graphql_entity_for(project, full_path: 'some/path') # same as above, with explicit values
+  # a_graphql_entity_for(user, :username, foo: 'bar') # combinations of the above
+  # a_graphql_entity_for(foo: 'bar') # if properties are defined, the model is not necessary
+  # ```
+  #
+  # Note that the model instance must not be nil, unless some properties are
+  # explicitly passed in. The following are rejected with `ArgumentError`:
+  #
+  # ```
+  # a_graphql_entity_for(nil, :username)
+  # a_graphql_entity_for(:username)
+  # a_graphql_entity_for
+  # ```
+  #
+  def a_graphql_entity_for(model = nil, *fields, **attrs)
+    raise ArgumentError, 'model is nil' if model.nil? && fields.any?
+
+    attrs.transform_keys! { GraphqlHelpers.fieldnamerize(_1) }
+    attrs['id'] = global_id_of(model).to_s if model
+    fields.each do |name|
+      attrs[GraphqlHelpers.fieldnamerize(name)] = model.public_send(name)
+    end
+
+    raise ArgumentError, 'no attributes' if attrs.empty?
+
+    UnpackableMatcher.new(attrs)
   end
 
   # A lookahead that selects everything

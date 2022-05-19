@@ -86,7 +86,7 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
      # The IDLE command timeout.
      idle_timeout: 60
 
-     # Whether to expunge (permanently remove) messages from the mailbox when they are deleted after delivery
+     # Whether to expunge (permanently remove) messages from the mailbox when they are marked as deleted after delivery
      expunge_deleted: false
    ```
 

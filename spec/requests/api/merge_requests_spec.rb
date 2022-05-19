@@ -27,10 +27,10 @@ RSpec.describe API::MergeRequests do
 
   shared_context 'with merge requests' do
     let_it_be(:milestone1) { create(:milestone, title: '0.9', project: project) }
-    let_it_be(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
-    let_it_be(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
-    let_it_be(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
-    let_it_be(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
+    let_it_be(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time, updated_at: base_time + 3.hours) }
+    let_it_be(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second, updated_at: base_time) }
+    let_it_be(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second, updated_at: base_time + 2.hours) }
+    let_it_be(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, updated_at: base_time + 1.hour, merge_commit_sha: '9999999999999999999999999999999999999999') }
     let_it_be(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
     let_it_be(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
   end
@@ -348,19 +348,14 @@ RSpec.describe API::MergeRequests do
       end
 
       context 'with ordering' do
-        before do
-          @mr_later = mr_with_later_created_and_updated_at_time
-          @mr_earlier = mr_with_earlier_created_and_updated_at_time
-        end
-
         it 'returns an array of merge_requests in ascending order' do
           path = endpoint_path + '?sort=asc'
 
           get api(path, user)
 
           expect_paginated_array_response([
-            merge_request_closed.id, merge_request_locked.id,
-            merge_request_merged.id, merge_request.id
+            merge_request.id, merge_request_closed.id,
+            merge_request_locked.id, merge_request_merged.id
           ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
@@ -372,42 +367,28 @@ RSpec.describe API::MergeRequests do
           get api(path, user)
 
           expect_paginated_array_response([
-            merge_request.id, merge_request_merged.id,
-            merge_request_locked.id, merge_request_closed.id
+            merge_request_merged.id, merge_request_locked.id,
+            merge_request_closed.id, merge_request.id
           ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
         context '2 merge requests with equal created_at' do
-          let!(:closed_mr2) do
-            create :merge_request,
-                   state: 'closed',
-                   milestone: milestone1,
-                   author: user,
-                   assignees: [user],
-                   source_project: project,
-                   target_project: project,
-                   title: "Test",
-                   created_at: @mr_earlier.created_at
-          end
-
           it 'page breaks first page correctly' do
-            get api("#{endpoint_path}?sort=desc&per_page=4", user)
+            get api("#{endpoint_path}?sort=desc&per_page=2", user)
 
             response_ids = json_response.map { |merge_request| merge_request['id'] }
 
-            expect(response_ids).to include(closed_mr2.id)
-            expect(response_ids).not_to include(@mr_earlier.id)
+            expect(response_ids).to contain_exactly(merge_request_merged.id, merge_request_locked.id)
           end
 
           it 'page breaks second page correctly' do
-            get api("#{endpoint_path}?sort=desc&per_page=4&page=2", user)
+            get api("#{endpoint_path}?sort=desc&per_page=2&page=2", user)
 
             response_ids = json_response.map { |merge_request| merge_request['id'] }
 
-            expect(response_ids).not_to include(closed_mr2.id)
-            expect(response_ids).to include(@mr_earlier.id)
+            expect(response_ids).to contain_exactly(merge_request_closed.id, merge_request.id)
           end
         end
 
@@ -430,8 +411,8 @@ RSpec.describe API::MergeRequests do
           get api(path, user)
 
           expect_paginated_array_response([
-            merge_request_closed.id, merge_request_locked.id,
-            merge_request_merged.id, merge_request.id
+            merge_request.id, merge_request_closed.id,
+            merge_request_locked.id, merge_request_merged.id
           ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
@@ -3378,21 +3359,5 @@ RSpec.describe API::MergeRequests do
     let!(:issuable) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 
     include_examples 'time tracking endpoints', 'merge_request'
-  end
-
-  def mr_with_later_created_and_updated_at_time
-    merge_request
-    merge_request.created_at += 1.hour
-    merge_request.updated_at += 30.minutes
-    merge_request.save!
-    merge_request
-  end
-
-  def mr_with_earlier_created_and_updated_at_time
-    merge_request_closed
-    merge_request_closed.created_at -= 1.hour
-    merge_request_closed.updated_at -= 30.minutes
-    merge_request_closed.save!
-    merge_request_closed
   end
 end

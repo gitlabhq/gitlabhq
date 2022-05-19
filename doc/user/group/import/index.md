@@ -132,6 +132,8 @@ migrated:
   - image URL
 - Boards
 - Board Lists
+- Releases
+  - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
 
 ## Troubleshooting Group Migration
 

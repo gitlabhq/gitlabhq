@@ -55,7 +55,7 @@ brakeman-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -92,7 +92,7 @@ flawfinder-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -113,7 +113,7 @@ kubesec-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -144,7 +144,7 @@ gosec-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
 
 mobsf-android-sast:
@@ -178,7 +178,7 @@ nodejs-scan-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -194,7 +194,7 @@ phpcs-security-audit-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -210,7 +210,7 @@ pmd-apex-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -226,22 +226,14 @@ security-code-scan-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: '2'
+    SAST_ANALYZER_IMAGE_TAG: '3'
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
       when: never
-    # This rule shim will be removed in %15.0,
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/350935
-    - if: $CI_COMMIT_BRANCH && $CI_SERVER_VERSION_MAJOR == '14'
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
     - if: $CI_COMMIT_BRANCH
-      variables:
-        SAST_ANALYZER_IMAGE_TAG: '3'
       exists:
         - '**/*.csproj'
         - '**/*.vbproj'
@@ -252,7 +244,7 @@ semgrep-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED
@@ -275,7 +267,7 @@ sobelow-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED
@@ -291,7 +283,7 @@ spotbugs-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
+    SAST_ANALYZER_IMAGE_TAG: 3
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/

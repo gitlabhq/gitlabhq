@@ -307,32 +307,3 @@ ul.related-merge-requests > li gl-emoji {
 .issuable-header-slide-leave-to {
   transform: translateY(-100%);
 }
-
-.description.work-items-enabled {
-  ul.task-list {
-    > li.task-list-item {
-      padding-inline-start: 2.5rem;
-
-      .js-add-task {
-        svg {
-          visibility: hidden;
-        }
-
-        &:focus svg {
-          visibility: visible;
-        }
-      }
-
-      > input.task-list-item-checkbox {
-        left: 1.25rem;
-      }
-
-      &:hover,
-      &:focus-within {
-        .js-add-task svg {
-          visibility: visible;
-        }
-      }
-    }
-  }
-}

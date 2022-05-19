@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlLoadingIcon, GlIntersectionObserver, GlModal, GlFormInput } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLoadingIcon,
+  GlIntersectionObserver,
+  GlModal,
+  GlSearchBoxByClick,
+} from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { n__, __, sprintf } from '~/locale';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
@@ -12,7 +18,7 @@ export default {
     GlButton,
     GlModal,
     GlIntersectionObserver,
-    GlFormInput,
+    GlSearchBoxByClick,
   },
   props: {
     providerTitle: {
@@ -134,13 +140,13 @@ export default {
 
       <slot name="actions"></slot>
       <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
-        <gl-form-input
+        <gl-search-box-by-click
           data-qa-selector="githubish_import_filter_field"
           name="filter"
           :placeholder="__('Filter by name')"
           autofocus
-          size="lg"
-          @keyup.enter="setFilter($event.target.value)"
+          @submit="setFilter"
+          @clear="setFilter('')"
         />
       </form>
     </div>

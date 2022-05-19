@@ -4,6 +4,6 @@ classes:
 - Packages::Debian::FileMetadatum
 feature_categories:
 - package_registry
-description: TODO
+description: Debian package file metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49692
 milestone: '13.8'

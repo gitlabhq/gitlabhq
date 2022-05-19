@@ -55,8 +55,8 @@ export default {
     id="se-toolbar"
     class="gl-py-3 gl-px-5 gl-bg-white gl-border-t gl-border-b gl-display-flex gl-justify-content-space-between gl-align-items-center"
   >
-    <template v-for="group in $options.groups">
-      <gl-button-group v-if="hasGroupItems(group)" :key="group">
+    <div v-for="group in $options.groups" :key="group">
+      <gl-button-group v-if="hasGroupItems(group)">
         <template v-for="item in getGroupItems(group)">
           <source-editor-toolbar-button
             :key="item.id"
@@ -65,6 +65,6 @@ export default {
           />
         </template>
       </gl-button-group>
-    </template>
+    </div>
   </section>
 </template>

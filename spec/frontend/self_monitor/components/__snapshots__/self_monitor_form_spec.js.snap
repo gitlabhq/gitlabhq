@@ -63,6 +63,7 @@ exports[`self monitor component When the self monitor project has not been creat
   </div>
    
   <gl-modal-stub
+    arialabel=""
     cancel-title="Cancel"
     category="primary"
     dismisslabel="Close"

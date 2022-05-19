@@ -96,16 +96,7 @@ module Mutations
           end
 
           def annotation_source(args)
-            # TODO: remove these lines when the compatibility layer is removed
-            # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-            annotation_source_id = if args[:cluster_id]
-                                     ::Types::GlobalIDType[::Clusters::Cluster].coerce_isolated_input(args[:cluster_id])
-                                   else
-                                     ::Types::GlobalIDType[::Environment].coerce_isolated_input(args[:environment_id])
-                                   end
-
-            # TODO: uncomment following line once lines above are removed
-            # annotation_source_id = args[:cluster_id] || args[:environment_id]
+            annotation_source_id = args[:cluster_id] || args[:environment_id]
             authorized_find!(id: annotation_source_id)
           end
         end

@@ -95,4 +95,22 @@ export default {
   [types.REMOVE_ASSET_LINK](state, linkIdToRemove) {
     state.release.assets.links = state.release.assets.links.filter((l) => l.id !== linkIdToRemove);
   },
+
+  [types.REQUEST_TAG_NOTES](state) {
+    state.isFetchingTagNotes = true;
+  },
+  [types.RECEIVE_TAG_NOTES_SUCCESS](state, data) {
+    state.fetchError = undefined;
+    state.isFetchingTagNotes = false;
+    state.tagNotes = data.message;
+    state.existingRelease = data.release;
+  },
+  [types.RECEIVE_TAG_NOTES_ERROR](state, error) {
+    state.fetchError = error;
+    state.isFetchingTagNotes = false;
+    state.tagNotes = '';
+  },
+  [types.UPDATE_INCLUDE_TAG_NOTES](state, includeTagNotes) {
+    state.includeTagNotes = includeTagNotes;
+  },
 };

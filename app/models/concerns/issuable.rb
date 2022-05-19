@@ -195,7 +195,7 @@ module Issuable
     end
 
     def supports_escalation?
-      return false unless ::Feature.enabled?(:incident_escalations, project, default_enabled: :yaml)
+      return false unless ::Feature.enabled?(:incident_escalations, project)
 
       incident?
     end
@@ -520,7 +520,7 @@ module Issuable
       changes.merge!(hook_association_changes(old_associations))
     end
 
-    Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)
+    Gitlab::DataBuilder::Issuable.new(self).build(user: user, changes: changes)
   end
 
   def labels_array

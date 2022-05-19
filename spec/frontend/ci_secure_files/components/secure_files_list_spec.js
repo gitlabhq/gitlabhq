@@ -10,6 +10,7 @@ import { secureFiles } from '../mock_data';
 
 const dummyApiVersion = 'v3000';
 const dummyProjectId = 1;
+const fileSizeLimit = 5;
 const dummyUrlRoot = '/gitlab';
 const dummyGon = {
   api_version: dummyApiVersion,
@@ -33,9 +34,13 @@ describe('SecureFilesList', () => {
     window.gon = originalGon;
   });
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (admin = true, props = {}) => {
     wrapper = mount(SecureFilesList, {
-      provide: { projectId: dummyProjectId },
+      provide: {
+        projectId: dummyProjectId,
+        admin,
+        fileSizeLimit,
+      },
       ...props,
     });
   };
@@ -46,6 +51,8 @@ describe('SecureFilesList', () => {
   const findHeaderAt = (i) => wrapper.findAll('thead th').at(i);
   const findPagination = () => wrapper.findAll('ul.pagination');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findUploadButton = () => wrapper.findAll('span.gl-button-text');
+  const findDeleteButton = () => wrapper.findAll('tbody tr td button.btn-danger');
 
   describe('when secure files exist in a project', () => {
     beforeEach(async () => {
@@ -57,7 +64,7 @@ describe('SecureFilesList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Filename', 'Permissions', 'Uploaded'];
+      const headers = ['Filename', 'Uploaded'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
@@ -69,8 +76,7 @@ describe('SecureFilesList', () => {
       const [secureFile] = secureFiles;
 
       expect(findCell(0, 0).text()).toBe(secureFile.name);
-      expect(findCell(0, 1).text()).toBe(secureFile.permissions);
-      expect(findCell(0, 2).find(TimeAgoTooltip).props('time')).toBe(secureFile.created_at);
+      expect(findCell(0, 1).find(TimeAgoTooltip).props('time')).toBe(secureFile.created_at);
     });
   });
 
@@ -84,7 +90,7 @@ describe('SecureFilesList', () => {
     });
 
     it('displays a table with expected headers', () => {
-      const headers = ['Filename', 'Permissions', 'Uploaded'];
+      const headers = ['Filename', 'Uploaded'];
       headers.forEach((header, i) => {
         expect(findHeaderAt(i).text()).toBe(header);
       });
@@ -134,6 +140,44 @@ describe('SecureFilesList', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
+    });
+  });
+
+  describe('admin permissions', () => {
+    describe('with admin permissions', () => {
+      beforeEach(async () => {
+        mock = new MockAdapter(axios);
+        mock.onGet(expectedUrl).reply(200, secureFiles);
+
+        createWrapper();
+        await waitForPromises();
+      });
+
+      it('displays the upload button', () => {
+        expect(findUploadButton().exists()).toBe(true);
+      });
+
+      it('displays a delete button', () => {
+        expect(findDeleteButton().exists()).toBe(true);
+      });
+    });
+
+    describe('without admin permissions', () => {
+      beforeEach(async () => {
+        mock = new MockAdapter(axios);
+        mock.onGet(expectedUrl).reply(200, secureFiles);
+
+        createWrapper(false);
+        await waitForPromises();
+      });
+
+      it('does not display the upload button', () => {
+        expect(findUploadButton().exists()).toBe(false);
+      });
+
+      it('does not display a delete button', () => {
+        expect(findDeleteButton().exists()).toBe(false);
+      });
     });
   });
 });

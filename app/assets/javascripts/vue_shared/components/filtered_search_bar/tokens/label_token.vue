@@ -104,6 +104,7 @@ export default {
     :suggestions="labels"
     :get-active-token-value="getActiveLabel"
     :default-suggestions="defaultLabels"
+    v-bind="$attrs"
     @fetch-suggestions="fetchLabels"
     v-on="$listeners"
   >

@@ -36,8 +36,9 @@ export const mockIssuableShowProps = {
   enableTaskList: true,
   enableEdit: true,
   showFieldTitle: false,
-  statusBadgeClass: 'status-box-open',
-  statusIcon: 'issue-open-m',
+  statusBadgeClass: 'issuable-status-badge-open',
+  statusIcon: 'issues',
+  statusIconClass: 'gl-sm-display-none',
   taskCompletionStatus: {
     completedCount: 0,
     count: 5,

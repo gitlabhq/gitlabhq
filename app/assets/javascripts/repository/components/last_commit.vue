@@ -14,6 +14,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 
@@ -27,6 +28,7 @@ export default {
     GlButtonGroup,
     GlLink,
     GlLoadingIcon,
+    UserAvatarImage,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -111,24 +113,24 @@ export default {
 </script>
 
 <template>
-  <div class="well-segment commit gl-p-5 gl-w-full">
+  <div class="well-segment commit gl-p-5 gl-w-full gl-display-flex">
     <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto" />
     <template v-else-if="commit">
       <user-avatar-link
         v-if="commit.author"
         :link-href="commit.author.webPath"
         :img-src="commit.author.avatarUrl"
-        :img-size="40"
-        class="avatar-cell"
+        :img-size="32"
+        :img-css-classes="'gl-mr-0!' /* NOTE: this is needed only while we migrate user-avatar-image to GlAvatar (7731 epics) */"
+        class="gl-my-2 gl-mr-4"
       />
-      <span v-else class="avatar-cell user-avatar-link">
-        <img
-          :src="commit.authorGravatar || $options.defaultAvatarUrl"
-          width="40"
-          height="40"
-          class="avatar s40"
-        />
-      </span>
+      <user-avatar-image
+        v-else
+        class="gl-my-2 gl-mr-4"
+        :img-src="commit.authorGravatar || $options.defaultAvatarUrl"
+        :css-classes="'gl-mr-0!' /* NOTE: this is needed only while we migrate user-avatar-image to GlAvatar (7731 epics) */"
+        :size="32"
+      />
       <div class="commit-detail flex-list">
         <div class="commit-content qa-commit-content">
           <gl-link
@@ -168,7 +170,10 @@ export default {
             class="commit-row-description gl-mb-3"
           ></pre>
         </div>
-        <div class="commit-actions flex-row">
+        <div class="gl-flex-grow-1"></div>
+        <div
+          class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"
+        >
           <div
             v-if="commit.signatureHtml"
             v-html="commit.signatureHtml /* eslint-disable-line vue/no-v-html */"

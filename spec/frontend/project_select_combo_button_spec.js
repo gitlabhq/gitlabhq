@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import ProjectSelectComboButton from '~/project_select_combo_button';
 
 const fixturePath = 'static/project_select_combo_button.html';
@@ -22,14 +23,23 @@ describe('Project Select Combo Button', () => {
         name: 'My Other Cool Project',
         url: 'http://myothercoolproject.com',
       },
+      vulnerableProject: {
+        name: 'Self XSS',
+        // eslint-disable-next-line no-script-url
+        url: 'javascript:alert(1)',
+      },
       localStorageKey: 'group-12345-new-issue-recent-project',
       relativePath: 'issues/new',
     };
 
-    loadFixtures(fixturePath);
+    loadHTMLFixture(fixturePath);
 
     testContext.newItemBtn = document.querySelector('.js-new-project-item-link');
     testContext.projectSelectInput = document.querySelector('.project-item-select');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('on page load when localStorage is empty', () => {
@@ -92,6 +102,25 @@ describe('Project Select Combo Button', () => {
       expect(testContext.newItemBtn.textContent).toBe(
         `New issue in ${testContext.defaults.newProjectMeta.name}`,
       );
+    });
+
+    afterEach(() => {
+      window.localStorage.clear();
+    });
+  });
+
+  describe('after selecting a vulnerable project', () => {
+    beforeEach(() => {
+      testContext.comboButton = new ProjectSelectComboButton(testContext.projectSelectInput);
+
+      // mock the effect of selecting an item from the projects dropdown (select2)
+      $('.project-item-select')
+        .val(JSON.stringify(testContext.defaults.vulnerableProject))
+        .trigger('change');
+    });
+
+    it('newItemBtn href is correctly sanitized', () => {
+      expect(testContext.newItemBtn.getAttribute('href')).toBe('about:blank');
     });
 
     afterEach(() => {

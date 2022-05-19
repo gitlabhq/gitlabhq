@@ -1,10 +1,11 @@
 import Vue, { nextTick } from 'vue';
-import { GlForm } from '@gitlab/ui';
+import { GlForm, GlSkeletonLoader } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
+import { redirectTo } from '~/lib/utils/url_utility';
 import RunnerUpdateForm from '~/runner/components/runner_update_form.vue';
 import {
   INSTANCE_TYPE,
@@ -13,14 +14,18 @@ import {
   ACCESS_LEVEL_REF_PROTECTED,
   ACCESS_LEVEL_NOT_PROTECTED,
 } from '~/runner/constants';
-import runnerUpdateMutation from '~/runner/graphql/details/runner_update.mutation.graphql';
+import runnerUpdateMutation from '~/runner/graphql/edit/runner_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
-import { runnerData } from '../mock_data';
+import { saveAlertToLocalStorage } from '~/runner/local_storage_alert/save_alert_to_local_storage';
+import { runnerFormData } from '../mock_data';
 
+jest.mock('~/runner/local_storage_alert/save_alert_to_local_storage');
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
+jest.mock('~/lib/utils/url_utility');
 
-const mockRunner = runnerData.data.runner;
+const mockRunner = runnerFormData.data.runner;
+const mockRunnerPath = '/admin/runners/1';
 
 Vue.use(VueApollo);
 
@@ -33,8 +38,7 @@ describe('RunnerUpdateForm', () => {
   const findProtectedCheckbox = () => wrapper.findByTestId('runner-field-protected');
   const findRunUntaggedCheckbox = () => wrapper.findByTestId('runner-field-run-untagged');
   const findLockedCheckbox = () => wrapper.findByTestId('runner-field-locked');
-
-  const findIpInput = () => wrapper.findByTestId('runner-field-ip-address').find('input');
+  const findFields = () => wrapper.findAll('[data-testid^="runner-field"');
 
   const findDescriptionInput = () => wrapper.findByTestId('runner-field-description').find('input');
   const findMaxJobTimeoutInput = () =>
@@ -53,7 +57,6 @@ describe('RunnerUpdateForm', () => {
       : ACCESS_LEVEL_NOT_PROTECTED,
     runUntagged: findRunUntaggedCheckbox().element.checked,
     locked: findLockedCheckbox().element?.checked || false,
-    ipAddress: findIpInput().element.value,
     maximumTimeout: findMaxJobTimeoutInput().element.value || null,
     tagList: findTagsInput().element.value.split(',').filter(Boolean),
   });
@@ -62,6 +65,7 @@ describe('RunnerUpdateForm', () => {
     wrapper = mountExtended(RunnerUpdateForm, {
       propsData: {
         runner: mockRunner,
+        runnerPath: mockRunnerPath,
         ...props,
       },
       apolloProvider: createMockApollo([[runnerUpdateMutation, runnerUpdateHandler]]),
@@ -74,12 +78,13 @@ describe('RunnerUpdateForm', () => {
       input: expect.objectContaining(submittedRunner),
     });
 
-    expect(createAlert).toHaveBeenLastCalledWith({
-      message: expect.stringContaining('saved'),
-      variant: VARIANT_SUCCESS,
-    });
-
-    expect(findSubmitDisabledAttr()).toBeUndefined();
+    expect(saveAlertToLocalStorage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.any(String),
+        variant: VARIANT_SUCCESS,
+      }),
+    );
+    expect(redirectTo).toHaveBeenCalledWith(mockRunnerPath);
   };
 
   beforeEach(() => {
@@ -122,27 +127,19 @@ describe('RunnerUpdateForm', () => {
     await submitFormAndWait();
 
     // Some read-only fields are not submitted
-    const {
-      __typename,
-      ipAddress,
-      runnerType,
-      createdAt,
-      status,
-      editAdminUrl,
-      contactedAt,
-      userPermissions,
-      version,
-      groups,
-      jobCount,
-      ...submitted
-    } = mockRunner;
+    const { __typename, shortSha, runnerType, createdAt, status, ...submitted } = mockRunner;
 
     expectToHaveSubmittedRunnerContaining(submitted);
   });
 
   describe('When data is being loaded', () => {
     beforeEach(() => {
-      createComponent({ props: { runner: null } });
+      createComponent({ props: { loading: true } });
+    });
+
+    it('Form skeleton is shown', () => {
+      expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+      expect(findFields()).toHaveLength(0);
     });
 
     it('Form cannot be submitted', () => {
@@ -151,11 +148,12 @@ describe('RunnerUpdateForm', () => {
 
     it('Form is updated when data loads', async () => {
       wrapper.setProps({
-        runner: mockRunner,
+        loading: false,
       });
 
       await nextTick();
 
+      expect(findFields()).not.toHaveLength(0);
       expect(mockRunner).toMatchObject(getFieldsModel());
     });
   });
@@ -273,8 +271,11 @@ describe('RunnerUpdateForm', () => {
       expect(createAlert).toHaveBeenLastCalledWith({
         message: mockErrorMsg,
       });
-      expect(captureException).not.toHaveBeenCalled();
       expect(findSubmitDisabledAttr()).toBeUndefined();
+
+      expect(captureException).not.toHaveBeenCalled();
+      expect(saveAlertToLocalStorage).not.toHaveBeenCalled();
+      expect(redirectTo).not.toHaveBeenCalled();
     });
   });
 });

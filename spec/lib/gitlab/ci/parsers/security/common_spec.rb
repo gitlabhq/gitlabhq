@@ -292,7 +292,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             expect(scans.map(&:status).all?('success')).to be(true)
             expect(scans.map(&:start_time).all?('placeholder-value')).to be(true)
             expect(scans.map(&:end_time).all?('placeholder-value')).to be(true)
-            expect(scans.size).to eq(3)
+            expect(scans.size).to eq(7)
             expect(scans.first).to be_a(::Gitlab::Ci::Reports::Security::Scan)
           end
 
@@ -348,22 +348,29 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
           it 'returns links object for each finding', :aggregate_failures do
             links = report.findings.flat_map(&:links)
 
-            expect(links.map(&:url)).to match_array(['https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1020', 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1030'])
-            expect(links.map(&:name)).to match_array([nil, 'CVE-1030'])
-            expect(links.size).to eq(2)
+            expect(links.map(&:url)).to match_array(['https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1020', 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1030',
+                                                     "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2137", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2138",
+                                                     "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2139", "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2140"])
+            expect(links.map(&:name)).to match_array([nil, nil, nil, nil, nil, 'CVE-1030'])
+            expect(links.size).to eq(6)
             expect(links.first).to be_a(::Gitlab::Ci::Reports::Security::Link)
           end
         end
 
         describe 'parsing evidence' do
-          it 'returns evidence object for each finding', :aggregate_failures do
-            evidences = report.findings.map(&:evidence)
+          RSpec::Matchers.define_negated_matcher :have_values, :be_empty
 
-            expect(evidences.first.data).not_to be_empty
-            expect(evidences.first.data["summary"]).to match(/The Origin header was changed/)
-            expect(evidences.size).to eq(3)
-            expect(evidences.compact.size).to eq(2)
-            expect(evidences.first).to be_a(::Gitlab::Ci::Reports::Security::Evidence)
+          it 'returns evidence object for each finding', :aggregate_failures do
+            all_evidences = report.findings.map(&:evidence)
+            evidences = all_evidences.compact
+            data = evidences.map(&:data)
+            summaries = evidences.map { |e| e.data["summary"] }
+
+            expect(all_evidences.size).to eq(7)
+            expect(evidences.size).to eq(2)
+            expect(evidences).to all( be_a(::Gitlab::Ci::Reports::Security::Evidence) )
+            expect(data).to all( have_values )
+            expect(summaries).to all( match(/The Origin header was changed/) )
           end
         end
 

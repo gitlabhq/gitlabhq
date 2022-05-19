@@ -30,7 +30,7 @@ module API
         use :pagination
         use :optional_list_params_ee
       end
-      get feature_category: :subgroups do
+      get feature_category: :subgroups, urgency: :low do
         owned_only = params[:owned_only] == true
 
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)
@@ -52,7 +52,7 @@ module API
       params do
         requires :id, type: String, desc: "Namespace's ID or path"
       end
-      get ':id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups do
+      get ':id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         user_namespace = find_namespace!(params[:id])
 
         present user_namespace, with: Entities::Namespace, current_user: current_user
@@ -65,7 +65,7 @@ module API
         requires :namespace, type: String, desc: "Namespace's path"
         optional :parent_id, type: Integer, desc: "The ID of the parent namespace. If no ID is specified, only top-level namespaces are considered."
       end
-      get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups do
+      get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         namespace_path = params[:namespace]
 
         exists = Namespace.without_project_namespaces.by_parent(params[:parent_id]).filter_by_path(namespace_path).exists?

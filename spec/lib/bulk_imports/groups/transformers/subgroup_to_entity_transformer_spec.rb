@@ -9,14 +9,14 @@ RSpec.describe BulkImports::Groups::Transformers::SubgroupToEntityTransformer do
       parent_entity = instance_double(BulkImports::Entity, group: parent, id: 1)
       context = instance_double(BulkImports::Pipeline::Context, entity: parent_entity)
       subgroup_data = {
-        "name" => "subgroup",
-        "full_path" => "parent/subgroup"
+        "path" => "sub-group",
+        "full_path" => "parent/sub-group"
       }
 
       expect(subject.transform(context, subgroup_data)).to eq(
         source_type: :group_entity,
-        source_full_path: "parent/subgroup",
-        destination_name: "subgroup",
+        source_full_path: "parent/sub-group",
+        destination_name: "sub-group",
         destination_namespace: parent.full_path,
         parent_id: 1
       )

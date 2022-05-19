@@ -10,6 +10,7 @@ module API
     end
 
     feature_category :kubernetes_management
+    urgency :low
 
     params do
       requires :id, type: String, desc: 'The ID of the project'
@@ -143,7 +144,9 @@ module API
       end
 
       def ensure_feature_enabled!
-        not_found! unless Feature.enabled?(:certificate_based_clusters, user_project, default_enabled: :yaml, type: :ops)
+        namespace = user_project.namespace
+
+        not_found! unless namespace.certificate_based_clusters_enabled?
       end
     end
   end

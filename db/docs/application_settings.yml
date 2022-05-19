@@ -6,7 +6,6 @@ feature_categories:
 - continuous_integration
 - integrations
 - metrics
-- pages
 - service_ping
 - source_code_management
 description: GitLab application settings

@@ -357,6 +357,8 @@ class Event < ApplicationRecord
     Project.unscoped.where(id: project_id)
       .where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago)
       .touch_all(:last_activity_at, time: created_at) # rubocop: disable Rails/SkipsModelValidations
+
+    Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
   end
 
   def authored_by?(user)
@@ -367,6 +369,10 @@ class Event < ApplicationRecord
     # We are intentionally using `Event` rather than `self.class` so that
     # subclasses also use the `Event` implementation.
     Event._to_partial_path
+  end
+
+  def has_no_project_and_group?
+    project_id.nil? && group_id.nil?
   end
 
   protected

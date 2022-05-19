@@ -123,6 +123,10 @@ To do so, follow these steps:
       If the merge request was deployed before [the monthly release was tagged](https://about.gitlab.com/handbook/engineering/releases/#self-managed-releases-1),
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run release check <merge-request-url> <milestone>`
+- [ ] Consider cleaning up the feature flag from all environments by running these chatops command in `#production` channel. Otherwise these settings may override the default enabled.
+    - [ ] `/chatops run feature delete <feature-flag-name> --dev`
+    - [ ] `/chatops run feature delete <feature-flag-name> --staging`
+    - [ ] `/chatops run feature delete <feature-flag-name>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
 - [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
@@ -157,7 +161,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
-- [ ] Clean up the feature flag from all environments by running these chatops command in `#production` channel:
+- [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel:
     - [ ] `/chatops run feature delete <feature-flag-name> --dev`
     - [ ] `/chatops run feature delete <feature-flag-name> --staging`
     - [ ] `/chatops run feature delete <feature-flag-name>`
@@ -172,4 +176,3 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 ```
 
 /label ~"feature flag" ~"type::feature" ~"feature::addition"
-/assign DRI

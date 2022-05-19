@@ -4,8 +4,8 @@ import axios from '~/lib/utils/axios_utils';
 import testActionFn from './vuex_action_helper';
 
 const testActionFnWithOptionsArg = (...args) => {
-  const [action, payload, state, expectedMutations, expectedActions, done] = args;
-  return testActionFn({ action, payload, state, expectedMutations, expectedActions, done });
+  const [action, payload, state, expectedMutations, expectedActions] = args;
+  return testActionFn({ action, payload, state, expectedMutations, expectedActions });
 };
 
 describe.each([testActionFn, testActionFnWithOptionsArg])(
@@ -14,7 +14,6 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
     let originalExpect;
     let assertion;
     let mock;
-    const noop = () => {};
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
@@ -48,7 +47,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
 
       assertion = { mutations: [], actions: [] };
 
-      testAction(action, examplePayload, exampleState);
+      return testAction(action, examplePayload, exampleState);
     });
 
     describe('given a sync action', () => {
@@ -59,7 +58,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
 
         assertion = { mutations: [{ type: 'MUTATION' }], actions: [] };
 
-        testAction(action, null, {}, assertion.mutations, assertion.actions, noop);
+        return testAction(action, null, {}, assertion.mutations, assertion.actions);
       });
 
       it('mocks dispatching actions', () => {
@@ -69,26 +68,21 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
 
         assertion = { actions: [{ type: 'ACTION' }], mutations: [] };
 
-        testAction(action, null, {}, assertion.mutations, assertion.actions, noop);
+        return testAction(action, null, {}, assertion.mutations, assertion.actions);
       });
 
-      it('works with done callback once finished', (done) => {
+      it('returns a promise', () => {
         assertion = { mutations: [], actions: [] };
 
-        testAction(noop, null, {}, assertion.mutations, assertion.actions, done);
-      });
+        const promise = testAction(() => {}, null, {}, assertion.mutations, assertion.actions);
 
-      it('returns a promise', (done) => {
-        assertion = { mutations: [], actions: [] };
+        originalExpect(promise instanceof Promise).toBeTruthy();
 
-        testAction(noop, null, {}, assertion.mutations, assertion.actions)
-          .then(done)
-          .catch(done.fail);
+        return promise;
       });
     });
 
     describe('given an async action (returning a promise)', () => {
-      let lastError;
       const data = { FOO: 'BAR' };
 
       const asyncAction = ({ commit, dispatch }) => {
@@ -98,7 +92,6 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
           .get(TEST_HOST)
           .catch((error) => {
             commit('ERROR');
-            lastError = error;
             throw error;
           })
           .then(() => {
@@ -107,46 +100,26 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
           });
       };
 
-      beforeEach(() => {
-        lastError = null;
-      });
-
-      it('works with done callback once finished', (done) => {
+      it('returns original data of successful promise while checking actions/mutations', async () => {
         mock.onGet(TEST_HOST).replyOnce(200, 42);
 
         assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
 
-        testAction(asyncAction, null, {}, assertion.mutations, assertion.actions, done);
+        const res = await testAction(asyncAction, null, {}, assertion.mutations, assertion.actions);
+        originalExpect(res).toEqual(data);
       });
 
-      it('returns original data of successful promise while checking actions/mutations', (done) => {
-        mock.onGet(TEST_HOST).replyOnce(200, 42);
-
-        assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
-
-        testAction(asyncAction, null, {}, assertion.mutations, assertion.actions)
-          .then((res) => {
-            originalExpect(res).toEqual(data);
-            done();
-          })
-          .catch(done.fail);
-      });
-
-      it('returns original error of rejected promise while checking actions/mutations', (done) => {
+      it('returns original error of rejected promise while checking actions/mutations', async () => {
         mock.onGet(TEST_HOST).replyOnce(500, '');
 
         assertion = { mutations: [{ type: 'ERROR' }], actions: [{ type: 'ACTION' }] };
 
-        testAction(asyncAction, null, {}, assertion.mutations, assertion.actions)
-          .then(done.fail)
-          .catch((error) => {
-            originalExpect(error).toBe(lastError);
-            done();
-          });
+        const err = testAction(asyncAction, null, {}, assertion.mutations, assertion.actions);
+        await originalExpect(err).rejects.toEqual(new Error('Request failed with status code 500'));
       });
     });
 
-    it('works with async actions not returning promises', (done) => {
+    it('works with actions not returning promises', () => {
       const data = { FOO: 'BAR' };
 
       const asyncAction = ({ commit, dispatch }) => {
@@ -168,7 +141,7 @@ describe.each([testActionFn, testActionFnWithOptionsArg])(
 
       assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
 
-      testAction(asyncAction, null, {}, assertion.mutations, assertion.actions, done);
+      return testAction(asyncAction, null, {}, assertion.mutations, assertion.actions);
     });
   },
 );

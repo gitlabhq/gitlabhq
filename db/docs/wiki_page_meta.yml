@@ -4,6 +4,6 @@ classes:
 - WikiPage::Meta
 feature_categories:
 - wiki
-description: TODO
+description: Used to record the metadata for wiki pages when we create events.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26529
 milestone: '13.0'

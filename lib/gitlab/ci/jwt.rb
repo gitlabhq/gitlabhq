@@ -73,7 +73,7 @@ module Gitlab
 
       def key
         @key ||= begin
-          key_data = if Feature.enabled?(:ci_jwt_signing_key, build.project, default_enabled: true)
+          key_data = if Feature.enabled?(:ci_jwt_signing_key, build.project)
                        Gitlab::CurrentSettings.ci_jwt_signing_key
                      else
                        Rails.application.secrets.openid_connect_signing_key

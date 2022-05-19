@@ -9,5 +9,11 @@ module Clusters
     def flipper_id
       self.class.to_s
     end
+
+    def certificate_based_clusters_enabled?
+      ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:") do
+        Feature.enabled?(:certificate_based_clusters, type: :ops)
+      end
+    end
   end
 end

@@ -76,6 +76,18 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
     end
 
+    def remove_timelog(timelog)
+      time_spent = timelog.time_spent
+      spent_at = timelog.spent_at&.to_date
+
+      parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent)
+
+      body = "deleted #{parsed_time} of spent time"
+      body += " from #{spent_at}" if spent_at
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
+    end
+
     private
 
     def issue_activity_counter

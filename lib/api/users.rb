@@ -10,6 +10,8 @@ module API
 
     feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
+    urgency :high, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
 
@@ -99,7 +101,7 @@ module API
         use :optional_index_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get feature_category: :users, urgency: :default do
+      get feature_category: :users, urgency: :low do
         authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
         unless current_user&.admin?
@@ -781,7 +783,7 @@ module API
         optional :type, type: String, values: %w[Project Namespace]
         use :pagination
       end
-      get ":user_id/memberships", feature_category: :users do
+      get ":user_id/memberships", feature_category: :users, urgency: :high do
         authenticated_as_admin!
         user = find_user_by_id(params)
 
@@ -1078,7 +1080,7 @@ module API
       params do
         use :pagination
       end
-      get "emails", feature_category: :users do
+      get "emails", feature_category: :users, urgency: :high do
         present paginate(current_user.emails), with: Entities::Email
       end
 
@@ -1120,7 +1122,7 @@ module API
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
         at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs
       end
-      put "preferences", feature_category: :users do
+      put "preferences", feature_category: :users, urgency: :high do
         authenticate!
 
         preferences = current_user.user_preference

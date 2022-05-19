@@ -30,6 +30,7 @@ GitLab SaaS or GitLab self-managed:
 - [GitLab SaaS](gitlab_com/index.md): The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab SaaS, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
+- [GitLab Dedicated](gitlab_dedicated/index.md): a single-tenant SaaS service for highly regulated and large enterprises.
 - [GitLab self-managed](self_managed/index.md): Install, administer, and maintain
   your own GitLab instance.
 

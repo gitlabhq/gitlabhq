@@ -4,17 +4,22 @@ module Gitlab
   module Ci
     class Lint
       class Result
-        attr_reader :jobs, :merged_yaml, :errors, :warnings
+        attr_reader :jobs, :merged_yaml, :errors, :warnings, :includes
 
-        def initialize(jobs:, merged_yaml:, errors:, warnings:)
+        def initialize(jobs:, merged_yaml:, errors:, warnings:, includes:)
           @jobs = jobs
           @merged_yaml = merged_yaml
           @errors = errors
           @warnings = warnings
+          @includes = includes
         end
 
         def valid?
           @errors.empty?
+        end
+
+        def status
+          valid? ? :valid : :invalid
         end
       end
 
@@ -44,9 +49,10 @@ module Gitlab
 
         Result.new(
           jobs: dry_run_convert_to_jobs(pipeline.stages),
-          merged_yaml: pipeline.merged_yaml,
+          merged_yaml: pipeline.config_metadata.try(:[], :merged_yaml),
           errors: pipeline.error_messages.map(&:content),
-          warnings: pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content)
+          warnings: pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
+          includes: pipeline.config_metadata.try(:[], :includes)
         )
       end
 
@@ -57,9 +63,10 @@ module Gitlab
 
         Result.new(
           jobs: static_validation_convert_to_jobs(result),
-          merged_yaml: result.merged_yaml,
+          merged_yaml: result.config_metadata[:merged_yaml],
           errors: result.errors,
-          warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT) # rubocop: disable CodeReuse/ActiveRecord
+          warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT), # rubocop: disable CodeReuse/ActiveRecord
+          includes: result.config_metadata[:includes]
         )
       ensure
         logger.commit(pipeline: ::Ci::Pipeline.new, caller: self.class.name)

@@ -796,8 +796,8 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
     end
   end
 
-  describe '#archived_trace_exist?' do
-    subject { trace.archived_trace_exist? }
+  describe '#archived?' do
+    subject { trace.archived? }
 
     context 'when trace does not exist' do
       it { is_expected.to be_falsy }

@@ -537,24 +537,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
   end
 
   describe 'Infrastructure' do
-    describe 'Serverless platform' do
-      it 'has a link to the serverless page' do
-        render
-
-        expect(rendered).to have_link('Serverless platform', href: project_serverless_functions_path(project))
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the serverless page' do
-          render
-
-          expect(rendered).not_to have_link('Serverless platform')
-        end
-      end
-    end
-
     describe 'Terraform' do
       it 'has a link to the terraform page' do
         render

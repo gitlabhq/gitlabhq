@@ -1,7 +1,12 @@
+import { debounce } from 'lodash';
+
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { getGroupPathAvailability } from '~/rest_api';
+import axios from '~/lib/utils/axios_utils';
 import { slugify } from './lib/utils/text_utility';
+
+const DEBOUNCE_TIMEOUT_DURATION = 1000;
 
 export default class Group {
   constructor() {
@@ -10,7 +15,11 @@ export default class Group {
     this.parentId = document.getElementById('group_parent_id');
     this.updateHandler = this.update.bind(this);
     this.resetHandler = this.reset.bind(this);
-    this.updateGroupPathSlugHandler = this.updateGroupPathSlug.bind(this);
+    this.updateGroupPathSlugHandler = debounce(
+      this.updateGroupPathSlug.bind(this),
+      DEBOUNCE_TIMEOUT_DURATION,
+    );
+    this.currentApiRequestController = null;
 
     this.groupNames.forEach((groupName) => {
       groupName.addEventListener('keyup', this.updateHandler);
@@ -44,13 +53,23 @@ export default class Group {
     });
   }
 
-  updateGroupPathSlug({ currentTarget: { value } = '' } = {}) {
-    const slug = this.groupPaths[0]?.value || slugify(value);
+  updateGroupPathSlug({ target: { value } = '' } = {}) {
+    if (this.currentApiRequestController !== null) {
+      this.currentApiRequestController.abort();
+    }
+
+    this.currentApiRequestController = new AbortController();
+
+    const slug = slugify(value);
     if (!slug) return;
 
-    getGroupPathAvailability(slug, this.parentId?.value)
+    getGroupPathAvailability(slug, this.parentId?.value, {
+      signal: this.currentApiRequestController.signal,
+    })
       .then(({ data }) => data)
       .then(({ exists, suggests }) => {
+        this.currentApiRequestController = null;
+
         if (exists && suggests.length) {
           const [suggestedSlug] = suggests;
 
@@ -63,10 +82,14 @@ export default class Group {
           });
         }
       })
-      .catch(() =>
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          return;
+        }
+
         createFlash({
           message: __('An error occurred while checking group path. Please refresh and try again.'),
-        }),
-      );
+        });
+      });
   }
 }

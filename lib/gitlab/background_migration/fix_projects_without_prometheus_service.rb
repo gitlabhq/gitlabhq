@@ -120,14 +120,14 @@ module Gitlab
       end
 
       def create_missing(from_id, to_id)
-        result = ActiveRecord::Base.connection.select_one(create_sql(from_id, to_id))
+        result = ApplicationRecord.connection.select_one(create_sql(from_id, to_id))
         return unless result
 
         logger.info(message: "#{self.class}: created missing services for #{result['number_of_created_records']} projects in id=#{from_id}...#{to_id}")
       end
 
       def update_inconsistent(from_id, to_id)
-        result = ActiveRecord::Base.connection.select_one(update_sql(from_id, to_id))
+        result = ApplicationRecord.connection.select_one(update_sql(from_id, to_id))
         return unless result
 
         logger.info(message: "#{self.class}: updated inconsistent services for #{result['number_of_updated_records']} projects in id=#{from_id}...#{to_id}")

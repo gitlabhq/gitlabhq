@@ -2,15 +2,12 @@
 - supports_file_upload = local_assigns.fetch(:supports_file_upload, true)
 .comment-toolbar.clearfix
   .toolbar-text
-    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank', rel: 'noopener noreferrer'
+    - markdownLinkStart = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/markdown') }
+    - quickActionsLinkStart = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/quick_actions') }
     - if supports_quick_actions
-      and
-      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank', rel: 'noopener noreferrer'
-      are
+      = html_escape(s_('NoteToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}. For %{quickActionsDocsLinkStart}quick actions%{quickActionsDocsLinkEnd}, type %{keyboardStart}/%{keyboardEnd}.')) % { markdownDocsLinkStart: markdownLinkStart, markdownDocsLinkEnd: '</a>'.html_safe, quickActionsDocsLinkStart: quickActionsLinkStart, quickActionsDocsLinkEnd: '</a>'.html_safe, keyboardStart: '<kbd>'.html_safe, keyboardEnd: '</kbd>'.html_safe }
     - else
-      is
-    supported
-
+      = html_escape(s_('MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}')) % { markdownDocsLinkStart: markdownLinkStart, markdownDocsLinkEnd: '</a>'.html_safe }
   - if supports_file_upload
     %span.uploading-container
       %span.uploading-progress-container.hide

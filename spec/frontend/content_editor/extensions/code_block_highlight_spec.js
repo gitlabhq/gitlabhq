@@ -1,4 +1,5 @@
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import languageLoader from '~/content_editor/services/code_block_language_loader';
 import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
 
 const CODE_BLOCK_HTML = `<pre class="code highlight js-syntax-highlight language-javascript" lang="javascript" v-pre="true">
@@ -9,20 +10,20 @@ const CODE_BLOCK_HTML = `<pre class="code highlight js-syntax-highlight language
   </code>
 </pre>`;
 
+jest.mock('~/content_editor/services/code_block_language_loader');
+
 describe('content_editor/extensions/code_block_highlight', () => {
   let parsedCodeBlockHtmlFixture;
   let tiptapEditor;
   let doc;
   let codeBlock;
-  let languageLoader;
 
   const parseHTML = (html) => new DOMParser().parseFromString(html, 'text/html');
   const preElement = () => parsedCodeBlockHtmlFixture.querySelector('pre');
 
   beforeEach(() => {
-    languageLoader = { loadLanguages: jest.fn() };
     tiptapEditor = createTestEditor({
-      extensions: [CodeBlockHighlight.configure({ languageLoader })],
+      extensions: [CodeBlockHighlight],
     });
 
     ({
@@ -70,6 +71,8 @@ describe('content_editor/extensions/code_block_highlight', () => {
     const language = 'javascript';
 
     beforeEach(() => {
+      languageLoader.loadLanguageFromInputRule.mockReturnValueOnce({ language });
+
       triggerNodeInputRule({
         tiptapEditor,
         inputRuleText: `${inputRule}${language} `,
@@ -83,7 +86,9 @@ describe('content_editor/extensions/code_block_highlight', () => {
     });
 
     it('loads language when language loader is available', () => {
-      expect(languageLoader.loadLanguages).toHaveBeenCalledWith([language]);
+      expect(languageLoader.loadLanguageFromInputRule).toHaveBeenCalledWith(
+        expect.arrayContaining([`${inputRule}${language} `, language]),
+      );
     });
   });
 });

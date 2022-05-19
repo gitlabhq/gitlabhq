@@ -1,0 +1,28 @@
+- project_link = link_to(_("%{project_name}") % { project_name: @project.name }, @project.http_url_to_repo)
+- projects_api_link = link_to(_("Projects API"), help_page_url('api/projects'))
+- events_api_link = link_to(_("Events API"), help_page_url('api/events', anchor: 'list-a-projects-visible-events'))
+
+%p
+  = _('Hi %{username},') % { username: sanitize_name(@user.name) }
+
+%p
+  = html_escape(_("Due to inactivity, the %{project_link} project is scheduled to be deleted on %{b_open}%{deletion_date}%{b_close}. To unschedule the deletion of %{project_link}, perform some activity on it. For example:")) % { project_link: project_link.html_safe, deletion_date: @deletion_date, b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
+
+%p
+  %ul
+    %li= _("Create or close an issue.")
+    %li= _("Create, update, or delete a merge request.")
+    %li= _("Push code to the repository.")
+    %li= _("Add or remove a user.")
+
+%p
+  = html_escape(_("To ensure %{project_link} is unscheduled for deletion, check that activity has been logged by GitLab. For example:")) %{project_link: project_link.html_safe}
+
+%p
+  %ul
+    %li= html_escape(_("Go to the %{b_open}Activity%{b_close} page for %{project_link}.")) % { project_link: project_link, b_open: '<b>'.html_safe, b_close: '</b>'.html_safe }
+    %li= html_escape(_("View the %{code_open}last_activity_at%{code_close} attribute for %{project_link} using the %{projects_api_link}.")) % { project_link: project_link.html_safe, projects_api_link: projects_api_link.html_safe, code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+    %li= html_escape(_("List the visible events for %{project_link} using the %{events_api_link}.")) % { project_link: project_link.html_safe, events_api_link: events_api_link.html_safe }
+
+%p
+  = html_escape(_("This email supersedes any previous emails about scheduled deletion you may have received for %{project_link}.")) % { project_link: project_link.html_safe }

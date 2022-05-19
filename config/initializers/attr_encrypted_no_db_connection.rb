@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+raise 'This patch is only tested with attr_encrypted v3.1.0' unless AttrEncrypted::Version.string == '3.1.0'
+
 module AttrEncrypted
   module Adapters
     module ActiveRecord
@@ -9,23 +11,6 @@ module AttrEncrypted
         # details: https://github.com/attr-encrypted/attr_encrypted/issues/332
         def attribute_instance_methods_as_symbols_available?
           false
-        end
-
-        # Prevent attr_encrypted from checking out a database connection
-        # indefinitely. The result of this method is only used when the former
-        # is true, but it is called unconditionally, so there is still value to
-        # ensuring the connection is released
-        def attribute_instance_methods_as_symbols
-          # Use with_connection so the connection doesn't stay pinned to the thread.
-          connected = ::ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue false
-
-          if connected
-            # Call version from AttrEncrypted::Adapters::ActiveRecord
-            super
-          else
-            # Call version from AttrEncrypted, i.e., `super` with regards to AttrEncrypted::Adapters::ActiveRecord
-            AttrEncrypted.instance_method(:attribute_instance_methods_as_symbols).bind(self).call
-          end
         end
 
         protected

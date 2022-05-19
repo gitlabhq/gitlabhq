@@ -268,10 +268,9 @@ Arguments:
 
 #### Ordinary Redis counters
 
-Examples of implementation:
+Example of implementation:
 
-- Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
-- Using Redis methods [`HINCRBY`](https://redis.io/commands/hincrby), [`HGETALL`](https://redis.io/commands/hgetall), and [`Gitlab::UsageCounters::PodLogs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_counters/pod_logs.rb)
+Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
 
 ##### `UsageData` API
 
@@ -287,9 +286,7 @@ Enabled by default in GitLab 13.7 and later.
    Increment event count using an ordinary Redis counter, for a given event name.
 
    API requests are protected by checking for a valid CSRF token.
-
-   To increment the values, the related feature `usage_data_<event_name>` must be enabled.
-
+   
    ```plaintext
    POST /usage_data/increment_counter
    ```
@@ -366,7 +363,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      aggregation.
    - `aggregation`: may be set to a `:daily` or `:weekly` key. Defines how counting data is stored in Redis.
      Aggregation on a `daily` basis does not pull more fine grained data.
-   - `feature_flag`: optional `default_enabled: :yaml`. If no feature flag is set then the tracking is enabled. One feature flag can be used for multiple events. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
+   - `feature_flag`: if no feature flag is set then the tracking is enabled. One feature flag can be used for multiple events. For details, see our [GitLab internal Feature flags](../feature_flags/index.md) documentation. The feature flags are owned by the group adding the event tracking.
 
 1. Use one of the following methods to track the event:
 
@@ -580,7 +577,6 @@ Example:
 ```ruby
 # Redis Counters
 redis_usage_data(Gitlab::UsageDataCounters::WikiPageCounter)
-redis_usage_data { ::Gitlab::UsageCounters::PodLogs.usage_totals[:total] }
 
 # Define events in common.yml https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml
 

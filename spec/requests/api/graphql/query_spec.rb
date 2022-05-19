@@ -76,10 +76,8 @@ RSpec.describe 'Query' do
       it_behaves_like 'a working graphql query'
       it_behaves_like 'a query that needs authorization'
 
-      context 'the current user is able to read designs' do
-        it 'fetches the expected data' do
-          expect(query_result).to eq('id' => global_id_of(version), 'sha' => version.sha)
-        end
+      it 'fetches the expected data' do
+        expect(query_result).to match a_graphql_entity_for(version, :sha)
       end
     end
 
@@ -106,13 +104,13 @@ RSpec.describe 'Query' do
 
       context 'the current user is able to read designs' do
         it 'fetches the expected data, including the correct associations' do
-          expect(query_result).to eq(
-            'id' => global_id_of(design_at_version),
+          expect(query_result).to match a_graphql_entity_for(
+            design_at_version,
             'filename' => design_at_version.design.filename,
-            'version' => { 'id' => global_id_of(version), 'sha' => version.sha },
-            'design'  => { 'id' => global_id_of(design) },
+            'version' => a_graphql_entity_for(version, :sha),
+            'design'  => a_graphql_entity_for(design),
             'issue'   => { 'title' => issue.title, 'iid' => issue.iid.to_s },
-            'project' => { 'id' => global_id_of(project), 'fullPath' => project.full_path }
+            'project' => a_graphql_entity_for(project, :full_path)
           )
         end
       end

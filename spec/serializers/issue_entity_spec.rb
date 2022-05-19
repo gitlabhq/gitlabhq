@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IssueEntity do
+  include Gitlab::Routing.url_helpers
+
   let(:project)  { create(:project) }
   let(:resource) { create(:issue, project: project) }
   let(:user)     { create(:user) }
@@ -10,6 +12,17 @@ RSpec.describe IssueEntity do
   let(:request) { double('request', current_user: user) }
 
   subject { described_class.new(resource, request: request).as_json }
+
+  describe 'web_url' do
+    context 'when issue is of type task' do
+      let(:resource) { create(:issue, :task, project: project) }
+
+      # This was already a path and not a url when the work items change was introduced
+      it 'has a work item path' do
+        expect(subject[:web_url]).to eq(project_work_items_path(project, resource.id))
+      end
+    end
+  end
 
   it 'has Issuable attributes' do
     expect(subject).to include(:id, :iid, :author_id, :description, :lock_version, :milestone_id,

@@ -11,8 +11,16 @@ module BulkImports
             pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
             stage: 0
           },
+          group_attributes: {
+            pipeline: BulkImports::Groups::Pipelines::GroupAttributesPipeline,
+            stage: 1
+          },
           subgroups: {
             pipeline: BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline,
+            stage: 1
+          },
+          namespace_settings: {
+            pipeline: BulkImports::Groups::Pipelines::NamespaceSettingsPipeline,
             stage: 1
           },
           members: {
@@ -69,9 +77,9 @@ module BulkImports
         if destination_namespace.present?
           root_ancestor = Namespace.find_by_full_path(destination_namespace)&.root_ancestor
 
-          ::Feature.enabled?(:bulk_import_projects, root_ancestor, default_enabled: :yaml)
+          ::Feature.enabled?(:bulk_import_projects, root_ancestor)
         else
-          ::Feature.enabled?(:bulk_import_projects, default_enabled: :yaml)
+          ::Feature.enabled?(:bulk_import_projects)
         end
       end
     end

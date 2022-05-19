@@ -76,8 +76,7 @@ module QA
         end
 
         def click_create_snippet_button
-          wait_until(reload: false) { !find_element(:submit_button).disabled? }
-          click_element(:submit_button)
+          click_element_coordinates(:submit_button)
           wait_until(reload: false) do
             has_no_element?(:snippet_title_field)
           end

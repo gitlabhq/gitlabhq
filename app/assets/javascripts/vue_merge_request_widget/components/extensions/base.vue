@@ -47,6 +47,8 @@ export default {
       fullData: [],
       isCollapsed: true,
       showFade: false,
+      modalData: undefined,
+      modalName: undefined,
     };
   },
   computed: {
@@ -115,6 +117,9 @@ export default {
       }
 
       return summary;
+    },
+    modalId() {
+      return this.modalName || `modal${this.$options.name}`;
     },
   },
   watch: {
@@ -249,7 +254,7 @@ export default {
         class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
-        <div class="gl-flex-grow-1">
+        <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
           <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <template v-else-if="hasFetchError">{{ widgetErrorText }}</template>
           <div v-else>
@@ -306,12 +311,20 @@ export default {
               data-testid="extension-list-item"
             >
               <gl-intersection-observer
-                :options="{ rootMargin: '100px', thresholds: 0.1 }"
+                :options="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+                  rootMargin: '100px',
+                  thresholds: 0.1,
+                } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
                 class="gl-w-full"
                 @appear="appear(index)"
                 @disappear="disappear(index)"
               >
-                <child-content :data="item" :widget-label="widgetLabel" :level="2" />
+                <child-content
+                  :data="item"
+                  :widget-label="widgetLabel"
+                  :modal-id="modalId"
+                  :level="2"
+                />
               </gl-intersection-observer>
             </div>
           </dynamic-scroller-item>
@@ -321,6 +334,9 @@ export default {
         :class="{ show: showFade }"
         class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7 gl-pointer-events-none"
       ></div>
+    </div>
+    <div v-if="$options.modalComponent && modalData">
+      <component :is="$options.modalComponent" :modal-id="modalId" v-bind="modalData" />
     </div>
   </section>
 </template>

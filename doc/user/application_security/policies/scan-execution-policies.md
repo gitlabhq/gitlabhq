@@ -35,8 +35,9 @@ policy project is automatically created. Existing policies can also be
 removed from the editor interface by selecting **Delete policy**
 at the bottom of the editor.
 
-All scan execution policy changes are applied through a background job that runs once every 10
-minutes. Allow up to 10 minutes for any policy changes committed to this project to take effect.
+Most policy changes take effect as soon as the merge request is merged. Any changes that
+do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
+before the policy changes take effect.
 
 ![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_7.png)
 
@@ -84,9 +85,31 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
-| `clusters` | `object` | | The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. |
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. | <!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+| `clusters` (removed) | `object` | | This field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0. Use the `agents` field instead. The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. |
+<!--- end_remove -->
 
-### `cluster` schema
+GitLab supports the following types of CRON syntax for the `cadence` field:
+
+- A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
+- A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
+
+It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
+
+### `agent` schema
+
+Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).
+
+| Field        | Type                | Possible values          | Description |
+|--------------|---------------------|--------------------------|-------------|
+| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces will be scanned. |
+
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
+
+### `cluster` schema (removed)
+
+This schema was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0.
+Use the [`agent` schema](#agent-schema) instead.
 
 Use this schema to define `clusters` objects in the [`schedule` rule type](#schedule-rule-type).
 
@@ -96,6 +119,8 @@ Use this schema to define `clusters` objects in the [`schedule` rule type](#sche
 | `resources`  | `array` of `string` | | The resource name that is scanned (only the first value is currently supported). |
 | `namespaces` | `array` of `string` | | The namespace that is scanned (only the first value is currently supported). |
 | `kinds`      | `array` of `string` | `deployment`/`daemonset` | The resource kind that should be scanned (only the first value is currently supported). |
+
+<!--- end_remove -->
 
 ## `scan` action type
 

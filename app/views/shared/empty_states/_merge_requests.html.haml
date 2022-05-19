@@ -10,7 +10,7 @@
 .row.empty-state.merge-requests
   .col-12
     .svg-content
-      = image_tag 'illustrations/merge_requests.svg'
+      = image_tag 'illustrations/merge_requests.svg', { auto_dark: true }
   .col-12
     .text-content
       - if has_filter_bar_param?
@@ -42,4 +42,4 @@
             - if project_select_button
               = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('merge request'), type: :merge_requests, with_feature_enabled: 'merge_requests'
             - else
-              = link_to _('New merge request'), button_path, class: 'gl-button btn btn-confirm', title: _('New merge request'), id: 'new_merge_request_link'
+              = link_to _('New merge request'), button_path, class: 'gl-button btn btn-confirm', title: _('New merge request'), id: 'new_merge_request_link', data: { qa_selector: "new_merge_request_button" }

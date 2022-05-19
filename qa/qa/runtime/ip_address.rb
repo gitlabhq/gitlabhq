@@ -13,7 +13,7 @@ module QA
       def fetch_current_ip_address
         # When running on CI against a live environment such as staging.gitlab.com,
         # we use the public facing IP address
-        ip_address = if Env.running_in_ci? && !URI.parse(Scenario.gitlab_address).host.include?('test')
+        ip_address = if Env.running_in_ci? && !URI.parse(Scenario.gitlab_address).host.include?('.test')
                        response = get(PUBLIC_IP_ADDRESS_API)
                        raise HostUnreachableError, "#{PUBLIC_IP_ADDRESS_API} is unreachable" unless response.code == Support::API::HTTP_STATUS_OK
 

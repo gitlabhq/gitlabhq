@@ -17,62 +17,29 @@ RSpec.describe 'Group CI/CD settings' do
   end
 
   describe 'Runners section' do
-    let(:shared_runners_toggle) { page.find('[data-testid="enable-runners-toggle"]') }
+    let(:shared_runners_toggle) { page.find('[data-testid="shared-runners-toggle"]') }
 
-    context 'with runner_list_group_view_vue_ui enabled' do
-      before do
-        visit group_settings_ci_cd_path(group)
-      end
-
-      it 'displays the new group runners view banner' do
-        expect(page).to have_content(s_('Runners|New group runners view'))
-        expect(page).to have_link(href: group_runners_path(group))
-      end
-
-      it 'has "Enable shared runners for this group" toggle', :js do
-        expect(shared_runners_toggle).to have_content(_('Enable shared runners for this group'))
-      end
+    before do
+      visit group_settings_ci_cd_path(group)
     end
 
-    context 'with runner_list_group_view_vue_ui disabled' do
-      before do
-        stub_feature_flags(runner_list_group_view_vue_ui: false)
+    it 'displays the new group runners view banner' do
+      expect(page).to have_content(s_('Runners|New group runners view'))
+      expect(page).to have_link(href: group_runners_path(group))
+    end
 
-        visit group_settings_ci_cd_path(group)
-      end
+    it 'has "Enable shared runners for this group" toggle', :js do
+      expect(shared_runners_toggle).to have_content(_('Enable shared runners for this group'))
+    end
 
-      it 'does not display the new group runners view banner' do
-        expect(page).not_to have_content(s_('Runners|New group runners view'))
-        expect(page).not_to have_link(href: group_runners_path(group))
-      end
+    it 'clicks on toggle to enable setting', :js do
+      expect(group.shared_runners_setting).to be(Namespace::SR_ENABLED)
 
-      it 'has "Enable shared runners for this group" toggle', :js do
-        expect(shared_runners_toggle).to have_content(_('Enable shared runners for this group'))
-      end
+      shared_runners_toggle.find('button').click
+      wait_for_requests
 
-      context 'with runners registration token' do
-        let!(:token) { group.runners_token }
-
-        before do
-          visit group_settings_ci_cd_path(group)
-        end
-
-        it 'displays the registration token' do
-          expect(page.find('#registration_token')).to have_content(token)
-        end
-
-        describe 'reload registration token' do
-          let(:page_token) { find('#registration_token').text }
-
-          before do
-            click_button 'Reset registration token'
-          end
-
-          it 'changes the registration token' do
-            expect(page_token).not_to eq token
-          end
-        end
-      end
+      group.reload
+      expect(group.shared_runners_setting).to be(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
     end
   end
 

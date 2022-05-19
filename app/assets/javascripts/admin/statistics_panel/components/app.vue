@@ -29,7 +29,7 @@ export default {
   <div class="gl-card">
     <div class="gl-card-body">
       <h4>{{ __('Statistics') }}</h4>
-      <gl-loading-icon v-if="isLoading" size="md" class="my-3" />
+      <gl-loading-icon v-if="isLoading" size="lg" class="my-3" />
       <template v-else>
         <p
           v-for="statistic in getStatistics(statisticsLabels)"

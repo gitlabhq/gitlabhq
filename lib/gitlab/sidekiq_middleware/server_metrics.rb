@@ -43,7 +43,7 @@ module Gitlab
 
           metrics[:sidekiq_concurrency].set({}, Sidekiq.options[:concurrency].to_i)
 
-          return unless ::Feature.enabled?(:sidekiq_job_completion_metric_initialize, default_enabled: :yaml)
+          return unless ::Feature.enabled?(:sidekiq_job_completion_metric_initialize)
 
           ::Gitlab::SidekiqConfig.current_worker_queue_mappings.each do |worker, queue|
             worker_class = worker.safe_constantize

@@ -55,7 +55,13 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 }
 
 func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HttpResponseWriter, a *api.Response, rpc, gitProtocol, encoding string) error {
-	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(ctx, a.GitalyServer)
+	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(
+		ctx,
+		a.GitalyServer,
+		gitaly.WithFeatures(a.GitalyServer.Features),
+		gitaly.WithUserID(a.GL_ID),
+		gitaly.WithUsername(a.GL_USERNAME),
+	)
 	if err != nil {
 		return err
 	}

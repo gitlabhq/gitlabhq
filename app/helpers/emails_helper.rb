@@ -69,8 +69,8 @@ module EmailsHelper
       )
     else
       image_tag(
-        image_url('mailers/gitlab_header_logo.gif'),
-        size: '55x50',
+        image_url('mailers/gitlab_logo.png'),
+        size: '55x55',
         alt: 'GitLab'
       )
     end

@@ -274,8 +274,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       it 'instantiates a Client' do
         allow(project).to receive(:import_data).and_return(double(credentials: credentials))
         expect(Gitlab::LegacyGithubImport::Client).to receive(:new).with(
-          credentials[:user],
-          **{}
+          credentials[:user]
         )
 
         subject.client

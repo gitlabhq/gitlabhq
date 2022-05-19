@@ -4,6 +4,6 @@ classes:
 - ContainerExpirationPolicy
 feature_categories:
 - container_registry
-description: TODO
+description: Project level settings for container registry cleanup policies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20412
 milestone: '12.6'

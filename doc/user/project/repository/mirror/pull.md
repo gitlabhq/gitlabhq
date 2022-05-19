@@ -62,7 +62,8 @@ Prerequisite:
 1. Enter the **Git repository URL**. Include the username
    in the URL, if required: `https://MYUSERNAME@github.com/GROUPNAME/PROJECTNAME.git`
 1. In **Mirror direction**, select **Pull**.
-1. In **Authentication method**, select your authentication method.
+1. In **Authentication method**, select your authentication method. To learn more, read
+   [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
 1. Select any of the options you need:
    - [**Overwrite diverged branches**](#overwrite-diverged-branches)
    - [**Trigger pipelines for mirror updates**](#trigger-pipelines-for-mirror-updates)
@@ -113,6 +114,21 @@ and mirroring attempts stop. This failure is visible in either the:
 - Pull mirror settings page.
 
 To resume project mirroring, [force an update](index.md#force-an-update).
+
+If many projects are affected by this problem, such as after a long network or
+server outage, you can use the [Rails console](../../../../administration/operations/rails_console.md)
+to identify and update all affected projects with this command:
+
+```ruby
+Project.find_each do |p|
+  if p.import_state && p.import_state.retry_count >= 14
+    puts "Resetting mirroring operation for #{p.full_path}"
+    p.import_state.reset_retry_count
+    p.import_state.set_next_execution_to_now(prioritized: true)
+    p.import_state.save!
+  end
+end
+```
 
 ## Related topics
 

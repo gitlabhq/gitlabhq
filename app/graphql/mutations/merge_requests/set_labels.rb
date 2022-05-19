@@ -23,9 +23,6 @@ module Mutations
         merge_request = authorized_find!(project_path: project_path, iid: iid)
         project = merge_request.project
 
-        # TODO: remove this line when the compatibility layer is removed:
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/257883
-        label_ids = label_ids.map { |id| ::Types::GlobalIDType[::Label].coerce_isolated_input(id) }
         # MergeRequests::UpdateService expects integers
         label_ids = label_ids.compact.map(&:model_id)
 

@@ -7,11 +7,11 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   let_it_be(:user) { create(:user) }
   let_it_be(:member) { create(:user) }
   let_it_be(:user_invited_by_id) { create(:user) }
-  let_it_be(:user_ids) { member.id.to_s }
+  let_it_be(:user_id) { member.id.to_s }
   let_it_be(:access_level) { Gitlab::Access::GUEST }
 
   let(:additional_params) { { invite_source: '_invite_source_' } }
-  let(:params) { { user_ids: user_ids, access_level: access_level }.merge(additional_params) }
+  let(:params) { { user_id: user_id, access_level: access_level }.merge(additional_params) }
   let(:current_user) { user }
 
   subject(:execute_service) { described_class.new(current_user, params.merge({ source: source })).execute }
@@ -51,7 +51,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'when user_id is passed as an integer' do
-      let(:user_ids) { member.id }
+      let(:user_id) { member.id }
 
       it 'successfully creates member' do
         expect(execute_service[:status]).to eq(:success)
@@ -60,8 +60,8 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with user_ids as an array of integers' do
-      let(:user_ids) { [member.id, user_invited_by_id.id] }
+    context 'with user_id as an array of integers' do
+      let(:user_id) { [member.id, user_invited_by_id.id] }
 
       it 'successfully creates members' do
         expect(execute_service[:status]).to eq(:success)
@@ -70,8 +70,8 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
-    context 'with user_ids as an array of strings' do
-      let(:user_ids) { [member.id.to_s, user_invited_by_id.id.to_s] }
+    context 'with user_id as an array of strings' do
+      let(:user_id) { [member.id.to_s, user_invited_by_id.id.to_s] }
 
       it 'successfully creates members' do
         expect(execute_service[:status]).to eq(:success)
@@ -101,7 +101,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   context 'when passing no user ids' do
-    let(:user_ids) { '' }
+    let(:user_id) { '' }
 
     it 'does not add a member' do
       expect(execute_service[:status]).to eq(:error)
@@ -112,7 +112,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   context 'when passing many user ids' do
-    let(:user_ids) { 1.upto(101).to_a.join(',') }
+    let(:user_id) { 1.upto(101).to_a.join(',') }
 
     it 'limits the number of users to 100' do
       expect(execute_service[:status]).to eq(:error)
@@ -134,7 +134,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   end
 
   context 'when passing an existing invite user id' do
-    let(:user_ids) { create(:project_member, :invited, project: source).invite_email }
+    let(:user_id) { create(:project_member, :invited, project: source).invite_email }
 
     it 'does not add a member' do
       expect(execute_service[:status]).to eq(:error)
@@ -146,7 +146,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   context 'when adding a project_bot' do
     let_it_be(:project_bot) { create(:user, :project_bot) }
 
-    let(:user_ids) { project_bot.id }
+    let(:user_id) { project_bot.id }
 
     context 'when project_bot is already a member' do
       before do
@@ -213,7 +213,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'when it is a net_new_user' do
-      let(:additional_params) { { invite_source: '_invite_source_', user_ids: 'email@example.org' } }
+      let(:additional_params) { { invite_source: '_invite_source_', user_id: 'email@example.org' } }
 
       it 'tracks the invite source from params' do
         execute_service
@@ -248,8 +248,8 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       )
     end
 
-    context 'when it is an invite by email passed to user_ids' do
-      let(:user_ids) { 'email@example.org' }
+    context 'when it is an invite by email passed to user_id' do
+      let(:user_id) { 'email@example.org' }
 
       it 'does not create task issues' do
         expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
@@ -263,7 +263,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       let(:another_user) { create(:user) }
-      let(:user_ids) { [member.id, another_user.id].join(',') }
+      let(:user_id) { [member.id, another_user.id].join(',') }
 
       it 'still creates 2 task issues', :aggregate_failures do
         expect(TasksToBeDone::CreateWorker)
@@ -326,7 +326,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     context 'when a member was already invited' do
-      let(:user_ids) { create(:project_member, :invited, project: source).invite_email }
+      let(:user_id) { create(:project_member, :invited, project: source).invite_email }
       let(:additional_params) do
         { invite_source: '_invite_source_', tasks_project_id: source.id, tasks_to_be_done: %w(ci code) }
       end

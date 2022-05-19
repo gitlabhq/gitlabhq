@@ -189,7 +189,7 @@ services:
         external_url 'http://gitlab.example.com:8929'
         gitlab_rails['gitlab_shell_ssh_port'] = 2224
     ports:
-      - '8929:80'
+      - '8929:8929'
       - '2224:22'
     volumes:
       - '$GITLAB_HOME/config:/etc/gitlab'
@@ -198,7 +198,7 @@ services:
     shm_size: '256m'
 ```
 
-This is the same as using `--publish 8929:80 --publish 2224:22`.
+This is the same as using `--publish 8929:8929 --publish 2224:22`.
 
 ### Install GitLab using Docker swarm mode
 
@@ -257,7 +257,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
 
    ```ruby
    external_url 'https://my.domain.com/'
-   gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password')
+   gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password').gsub("\n", "")
    ```
 
 1. Create a `root_password.txt` file:
@@ -664,7 +664,7 @@ writing value to /dev/shm/gitlab/sidekiq/histogram_sidekiq_0-0.db failed with un
 writing value to /dev/shm/gitlab/sidekiq/histogram_sidekiq_0-0.db failed with unmapped file
 ```
 
-Other than disabling the Prometheus Metrics from the Admin page, the recommended
+Other than disabling the Prometheus Metrics from the Admin Area, the recommended
 solution to fix this problem is to increase the size of shared memory to at least 256MB.
 If using `docker run`, this can be done by passing the flag `--shm-size 256m`.
 If using a `docker-compose.yml` file, the `shm_size` key can be used for this

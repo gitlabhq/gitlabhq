@@ -61,7 +61,7 @@ Your users can then [enable it for themselves](#enable-gitpod-in-your-user-setti
 You can launch Gitpod directly from GitLab in one of these ways:
 
 - *From your project's page:*
-  1. Go to your project, and navigate to the page you want to edit.
+  1. Go to your project, then go to the page you want to edit.
   1. Select the caret **(angle-down)** next to **Web IDE**, and select **Gitpod**
      from the list:
 
@@ -69,13 +69,7 @@ You can launch Gitpod directly from GitLab in one of these ways:
 
   1. Select **Open in Gitpod**.
 - *From a merge request:*
-  1. Go to your merge request, and select **Overview** in the tab menu.
-  1. Scroll to the end of the merge request description.
-  1. Select the caret **(angle-down)** next to **Web IDE**, then select **Gitpod**
-     from the list:
-
-     ![Gitpod button on the merge request page](img/gitpod-button_v14_2.png)
-
-  1. Select **Open in Gitpod**.
+  1. Go to your merge request.
+  1. In the upper right corner, select **Code**, then select **Open in Gitpod**.
 
 Gitpod builds your development environment for your branch.

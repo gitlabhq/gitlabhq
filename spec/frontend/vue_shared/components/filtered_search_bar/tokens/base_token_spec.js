@@ -78,6 +78,7 @@ const mockProps = {
   suggestionsLoading: false,
   defaultSuggestions: DEFAULT_NONE_ANY,
   getActiveTokenValue: (labels, data) => labels.find((label) => label.title === data),
+  cursorPosition: 'start',
 };
 
 function createComponent({

@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, how-to
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Group wikis **(PREMIUM)**
@@ -60,6 +59,24 @@ available, you have to:
    your bundle's name: `git clone FILENAME.wiki.bundle`
 
 All files in the wiki are available in this Git repository.
+
+## Configure group wiki visibility
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
+
+Wikis are enabled by default in GitLab. Group [administrators](../../permissions.md)
+can enable or disable a group wiki through the group settings.
+
+To open group settings:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Scroll to **Wiki** and select one of these options:
+   - **Enabled**: Everyone who can access the group can access the wiki.
+   - **Private**: Only group members can access the wiki.
+   - **Disabled**: The wiki isn't accessible, and cannot be downloaded.
+1. Select **Save changes**.
 
 ## Related topics
 

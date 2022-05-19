@@ -5,24 +5,20 @@ class Admin::RunnersController < Admin::ApplicationController
 
   before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
   before_action only: [:index] do
-    push_frontend_feature_flag(:admin_runners_bulk_delete, default_enabled: :yaml)
+    push_frontend_feature_flag(:admin_runners_bulk_delete)
   end
 
   feature_category :runner
+  urgency :low
 
   def index
   end
 
   def show
-    # We will show runner details in a read-only view in
-    # future iterations. For now, this route will have a
-    # redirect until this new view is developed. See more:
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/347856
-    redirect_to edit_admin_runner_path(runner) unless Feature.enabled?(:runner_read_only_admin_view, default_enabled: :yaml)
   end
 
   def edit
-    assign_builds_and_projects
+    assign_projects
   end
 
   def update
@@ -31,7 +27,7 @@ class Admin::RunnersController < Admin::ApplicationController
         format.html { redirect_to edit_admin_runner_path(@runner) }
       end
     else
-      assign_builds_and_projects
+      assign_projects
       render 'show'
     end
   end
@@ -87,12 +83,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def assign_builds_and_projects
-    @builds = runner
-      .builds
-      .order_id_desc
-      .preload_project_and_pipeline_project.first(30)
-
+  def assign_projects
     @projects =
       if params[:search].present?
         ::Project.search(params[:search])

@@ -392,41 +392,161 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#create_page' do
-    it 'creates a new wiki page' do
-      expect(subject.create_page('test page', 'this is content')).not_to eq(false)
-      expect(subject.list_pages.count).to eq(1)
+    shared_examples 'create_page tests' do
+      it 'creates a new wiki page' do
+        expect(subject.create_page('test page', 'this is content')).not_to eq(false)
+        expect(subject.list_pages.count).to eq(1)
+      end
+
+      it 'returns false when a duplicate page exists' do
+        subject.create_page('test page', 'content')
+
+        expect(subject.create_page('test page', 'content')).to eq(false)
+      end
+
+      it 'stores an error message when a duplicate page exists' do
+        2.times { subject.create_page('test page', 'content') }
+
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
+      it 'sets the correct commit message' do
+        subject.create_page('test page', 'some content', :markdown, 'commit message')
+
+        expect(subject.list_pages.first.page.version.message).to eq('commit message')
+      end
+
+      it 'sets the correct commit email' do
+        subject.create_page('test page', 'content')
+
+        expect(user.commit_email).not_to eq(user.email)
+        expect(commit.author_email).to eq(user.commit_email)
+        expect(commit.committer_email).to eq(user.commit_email)
+      end
+
+      it 'runs after_wiki_activity callbacks' do
+        expect(subject).to receive(:after_wiki_activity)
+
+        subject.create_page('Test Page', 'This is content')
+      end
+
+      it 'cannot create two pages with the same title but different format' do
+        subject.create_page('test page', 'content', :markdown)
+        subject.create_page('test page', 'content', :rdoc)
+
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
+      it 'cannot create two pages with the same title but different capitalization' do
+        subject.create_page('test page', 'content')
+        subject.create_page('Test page', 'content')
+
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
+      it 'cannot create two pages with the same title, different capitalization, and different format' do
+        subject.create_page('test page', 'content')
+        subject.create_page('Test page', 'content', :rdoc)
+
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
     end
 
-    it 'returns false when a duplicate page exists' do
-      subject.create_page('test page', 'content')
+    it_behaves_like 'create_page tests' do
+      it 'returns false if a page exists already in the repository', :aggregate_failures do
+        subject.create_page('test page', 'content')
 
-      expect(subject.create_page('test page', 'content')).to eq(false)
+        allow(subject).to receive(:file_exists_by_regex?).and_return(false)
+
+        expect(subject.create_page('test page', 'content')).to eq false
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
+      it 'returns false if it has an invalid format', :aggregate_failures do
+        expect(subject.create_page('test page', 'content', :foobar)).to eq false
+        expect(subject.error_message).to match(/Invalid format selected/)
+      end
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:new_file, :format, :existing_repo_files, :success) do
+        'foo'                       | :markdown   | []                  | true
+        'foo'                       | :rdoc       | []                  | true
+        'foo'                       | :asciidoc   | []                  | true
+        'foo'                       | :org        | []                  | true
+        'foo'                       | :textile    | []                  | false
+        'foo'                       | :creole     | []                  | false
+        'foo'                       | :rest       | []                  | false
+        'foo'                       | :mediawiki  | []                  | false
+        'foo'                       | :pod        | []                  | false
+        'foo'                       | :plaintext  | []                  | false
+        'foo'                       | :markdown   | ['foo.md']          | false
+        'foo'                       | :markdown   | ['foO.md']          | false
+        'foO'                       | :markdown   | ['foo.md']          | false
+        'foo'                       | :markdown   | ['foo.mdfoo']       | true
+        'foo'                       | :markdown   | ['foo.markdown']    | false
+        'foo'                       | :markdown   | ['foo.mkd']         | false
+        'foo'                       | :markdown   | ['foo.mkdn']        | false
+        'foo'                       | :markdown   | ['foo.mdown']       | false
+        'foo'                       | :markdown   | ['foo.adoc']        | false
+        'foo'                       | :markdown   | ['foo.asciidoc']    | false
+        'foo'                       | :markdown   | ['foo.org']         | false
+        'foo'                       | :markdown   | ['foo.rdoc']        | false
+        'foo'                       | :markdown   | ['foo.textile']     | false
+        'foo'                       | :markdown   | ['foo.creole']      | false
+        'foo'                       | :markdown   | ['foo.rest']        | false
+        'foo'                       | :markdown   | ['foo.rest.txt']    | false
+        'foo'                       | :markdown   | ['foo.rst']         | false
+        'foo'                       | :markdown   | ['foo.rst.txt']     | false
+        'foo'                       | :markdown   | ['foo.rst.txtfoo']  | true
+        'foo'                       | :markdown   | ['foo.mediawiki']   | false
+        'foo'                       | :markdown   | ['foo.wiki']        | false
+        'foo'                       | :markdown   | ['foo.pod']         | false
+        'foo'                       | :markdown   | ['foo.txt']         | false
+        'foo'                       | :markdown   | ['foo.Md']          | false
+        'foo'                       | :markdown   | ['foo.jpg']         | true
+        'foo'                       | :rdoc       | ['foo.md']          | false
+        'foo'                       | :rdoc       | ['foO.md']          | false
+        'foO'                       | :rdoc       | ['foo.md']          | false
+        'foo'                       | :asciidoc   | ['foo.md']          | false
+        'foo'                       | :org        | ['foo.md']          | false
+        'foo'                       | :markdown   | ['dir/foo.md']      | true
+        '/foo'                      | :markdown   | ['foo.md']          | false
+        './foo'                     | :markdown   | ['foo.md']          | false
+        '../foo'                    | :markdown   | ['foo.md']          | false
+        '../../foo'                 | :markdown   | ['foo.md']          | false
+        '../../foo'                 | :markdown   | ['dir/foo.md']      | true
+        'dir/foo'                   | :markdown   | ['foo.md']          | true
+        'dir/foo'                   | :markdown   | ['dir/foo.md']      | false
+        'dir/foo'                   | :markdown   | ['dir/foo.rdoc']    | false
+        '/dir/foo'                  | :markdown   | ['dir/foo.rdoc']    | false
+        './dir/foo'                 | :markdown   | ['dir/foo.rdoc']    | false
+        '../dir/foo'                | :markdown   | ['dir/foo.rdoc']    | false
+        '../dir/../foo'             | :markdown   | ['dir/foo.rdoc']    | true
+        '../dir/../foo'             | :markdown   | ['foo.rdoc']        | false
+        '../dir/../dir/foo'         | :markdown   | ['dir/foo.rdoc']    | false
+        '../dir/../another/foo'     | :markdown   | ['dir/foo.rdoc']    | true
+        'another/dir/foo'           | :markdown   | ['dir/foo.md']      | true
+        'foo bar'                   | :markdown   | ['foo-bar.md']      | false
+        'foo  bar'                  | :markdown   | ['foo-bar.md']      | true
+        'föö'.encode('ISO-8859-1')  | :markdown   | ['f��.md']          | false
+      end
+
+      with_them do
+        specify do
+          allow(subject.repository).to receive(:ls_files).and_return(existing_repo_files)
+
+          expect(subject.create_page(new_file, 'content', format)).to eq success
+        end
+      end
     end
 
-    it 'stores an error message when a duplicate page exists' do
-      2.times { subject.create_page('test page', 'content') }
+    context 'when feature flag :gitaly_replace_wiki_create_page is disabled' do
+      before do
+        stub_feature_flags(gitaly_replace_wiki_create_page: false)
+      end
 
-      expect(subject.error_message).to match(/Duplicate page:/)
-    end
-
-    it 'sets the correct commit message' do
-      subject.create_page('test page', 'some content', :markdown, 'commit message')
-
-      expect(subject.list_pages.first.page.version.message).to eq('commit message')
-    end
-
-    it 'sets the correct commit email' do
-      subject.create_page('test page', 'content')
-
-      expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(user.commit_email)
-      expect(commit.committer_email).to eq(user.commit_email)
-    end
-
-    it 'runs after_wiki_activity callbacks' do
-      expect(subject).to receive(:after_wiki_activity)
-
-      subject.create_page('Test Page', 'This is content')
+      it_behaves_like 'create_page tests'
     end
   end
 
@@ -452,7 +572,7 @@ RSpec.shared_examples 'wiki model' do
           expect(subject).to receive(:after_wiki_activity)
           expect(update_page).to eq true
 
-          page = subject.find_page(updated_title.presence || original_title)
+          page = subject.find_page(expected_title)
 
           expect(page.raw_content).to eq(updated_content)
           expect(page.path).to eq(expected_path)
@@ -467,23 +587,25 @@ RSpec.shared_examples 'wiki model' do
     shared_context 'common examples' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:original_title, :original_format, :updated_title, :updated_format, :expected_path) do
-        'test page' | :markdown | 'new test page' | :markdown | 'new-test-page.md'
-        'test page' | :markdown | 'test page'     | :markdown | 'test-page.md'
-        'test page' | :markdown | 'test page'     | :asciidoc | 'test-page.asciidoc'
+      where(:original_title, :original_format, :updated_title, :updated_format, :expected_title, :expected_path) do
+        'test page'           | :markdown | 'new test page'         | :markdown | 'new test page'         | 'new-test-page.md'
+        'test page'           | :markdown | 'test page'             | :markdown | 'test page'             | 'test-page.md'
+        'test page'           | :markdown | 'test page'             | :asciidoc | 'test page'             | 'test-page.asciidoc'
 
-        'test page' | :markdown | 'new dir/new test page' | :markdown | 'new-dir/new-test-page.md'
-        'test page' | :markdown | 'new dir/test page'     | :markdown | 'new-dir/test-page.md'
+        'test page'           | :markdown | 'new dir/new test page' | :markdown | 'new dir/new test page' | 'new-dir/new-test-page.md'
+        'test page'           | :markdown | 'new dir/test page'     | :markdown | 'new dir/test page'     | 'new-dir/test-page.md'
 
-        'test dir/test page' | :markdown | 'new dir/new test page'  | :markdown | 'new-dir/new-test-page.md'
-        'test dir/test page' | :markdown | 'test dir/test page'     | :markdown | 'test-dir/test-page.md'
-        'test dir/test page' | :markdown | 'test dir/test page'     | :asciidoc | 'test-dir/test-page.asciidoc'
+        'test dir/test page'  | :markdown | 'new dir/new test page' | :markdown | 'new dir/new test page' | 'new-dir/new-test-page.md'
+        'test dir/test page'  | :markdown | 'test dir/test page'    | :markdown | 'test dir/test page'    | 'test-dir/test-page.md'
+        'test dir/test page'  | :markdown | 'test dir/test page'    | :asciidoc | 'test dir/test page'    | 'test-dir/test-page.asciidoc'
 
-        'test dir/test page' | :markdown | 'new test page'  | :markdown | 'new-test-page.md'
-        'test dir/test page' | :markdown | 'test page'      | :markdown | 'test-page.md'
+        'test dir/test page'  | :markdown | 'new test page'         | :markdown | 'new test page'         | 'new-test-page.md'
+        'test dir/test page'  | :markdown | 'test page'             | :markdown | 'test page'             | 'test-page.md'
 
-        'test page' | :markdown | nil | :markdown | 'test-page.md'
-        'test.page' | :markdown | nil | :markdown | 'test.page.md'
+        'test page'           | :markdown | nil                     | :markdown | 'test page'             | 'test-page.md'
+        'test.page'           | :markdown | nil                     | :markdown | 'test.page'             | 'test.page.md'
+
+        'testpage'            | :markdown | './testpage'            | :markdown | 'testpage'              | 'testpage.md'
       end
     end
 
@@ -497,16 +619,23 @@ RSpec.shared_examples 'wiki model' do
     shared_context 'extended examples' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:original_title, :original_format, :updated_title, :updated_format, :expected_path) do
-        'test page'          | :markdown | 'new test page'          | :asciidoc | 'new-test-page.asciidoc'
-        'test page'          | :markdown | 'new dir/new test page'  | :asciidoc | 'new-dir/new-test-page.asciidoc'
-        'test dir/test page' | :markdown | 'new dir/new test page'  | :asciidoc | 'new-dir/new-test-page.asciidoc'
-        'test dir/test page' | :markdown | 'new test page'          | :asciidoc | 'new-test-page.asciidoc'
-        'test page'          | :markdown | nil                      | :asciidoc | 'test-page.asciidoc'
-        'test dir/test page' | :markdown | nil                      | :asciidoc | 'test-dir/test-page.asciidoc'
-        'test dir/test page' | :markdown | nil                      | :markdown | 'test-dir/test-page.md'
-        'test page'          | :markdown | ''                       | :markdown | 'test-page.md'
-        'test.page'          | :markdown | ''                       | :markdown | 'test.page.md'
+      where(:original_title, :original_format, :updated_title, :updated_format, :expected_title, :expected_path) do
+        'test page'          | :markdown | 'new test page'              | :asciidoc | 'new test page'         | 'new-test-page.asciidoc'
+        'test page'          | :markdown | 'new dir/new test page'      | :asciidoc | 'new dir/new test page' | 'new-dir/new-test-page.asciidoc'
+        'test dir/test page' | :markdown | 'new dir/new test page'      | :asciidoc | 'new dir/new test page' | 'new-dir/new-test-page.asciidoc'
+        'test dir/test page' | :markdown | 'new test page'              | :asciidoc | 'new test page'         | 'new-test-page.asciidoc'
+        'test page'          | :markdown | nil                          | :asciidoc | 'test page'             | 'test-page.asciidoc'
+        'test dir/test page' | :markdown | nil                          | :asciidoc | 'test dir/test page'    | 'test-dir/test-page.asciidoc'
+        'test dir/test page' | :markdown | nil                          | :markdown | 'test dir/test page'    | 'test-dir/test-page.md'
+        'test page'          | :markdown | ''                           | :markdown | 'test page'             | 'test-page.md'
+        'test.page'          | :markdown | ''                           | :markdown | 'test.page'             | 'test.page.md'
+        'testpage'           | :markdown | '../testpage'                 | :markdown | 'testpage'              | 'testpage.md'
+        'dir/testpage'       | :markdown | 'dir/../testpage'             | :markdown | 'testpage'              | 'testpage.md'
+        'dir/testpage'       | :markdown | './dir/testpage'              | :markdown | 'dir/testpage'          | 'dir/testpage.md'
+        'dir/testpage'       | :markdown | '../dir/testpage'             | :markdown | 'dir/testpage'          | 'dir/testpage.md'
+        'dir/testpage'       | :markdown | '../dir/../testpage'          | :markdown | 'testpage'              | 'testpage.md'
+        'dir/testpage'       | :markdown | '../dir/../dir/testpage'      | :markdown | 'dir/testpage'          | 'dir/testpage.md'
+        'dir/testpage'       | :markdown | '../dir/../another/testpage'  | :markdown | 'another/testpage'      | 'another/testpage.md'
       end
     end
 
@@ -545,16 +674,6 @@ RSpec.shared_examples 'wiki model' do
 
           subject.update_page(page.page, content: 'new content', format: :markdown)
         end
-      end
-    end
-
-    context 'when feature flag :gitaly_replace_wiki_update_page is disabled' do
-      before do
-        stub_feature_flags(gitaly_replace_wiki_update_page: false)
-      end
-
-      it_behaves_like 'update_page tests' do
-        include_context 'common examples'
       end
     end
   end

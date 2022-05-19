@@ -25,6 +25,7 @@ arity
 Artifactory
 Asana
 Asciidoctor
+asdf
 Assembla
 Atlassian
 auditability
@@ -64,6 +65,7 @@ Bamboo
 Bazel
 Bhyve
 Bitbucket
+Bitnami
 blockquote
 blockquoted
 blockquotes
@@ -93,8 +95,13 @@ Camo
 canonicalization
 canonicalized
 captcha
+Casdoor
 CentOS
+Ceph
 Certbot
+cgo
+cgroup
+cgroups
 chai
 changeset
 changesets
@@ -104,11 +111,13 @@ chatbots
 ChatOps
 checksummed
 checksumming
+Chemlab
 Citrix
 Citus
 clonable
 Cloudwatch
 Cobertura
+Codeception
 Codepen
 Cognito
 colocated
@@ -174,6 +183,7 @@ disambiguates
 discoverability
 dismissable
 Disqus
+Distroless
 Divio
 Dockerfile
 Dockerfiles
@@ -199,6 +209,7 @@ enums
 ETag
 Excon
 exfiltration
+ExifTool
 expirable
 Facebook
 failover
@@ -206,6 +217,7 @@ failovers
 failsafe
 Falco
 falsy
+Fargate
 fastlane
 Fastzip
 favicon
@@ -254,7 +266,9 @@ Gradle
 Grafana
 Grafonnet
 gravatar
+Grype
 Gzip
+Hackathon
 Haml
 hardcode
 hardcoded
@@ -333,6 +347,7 @@ Leiningen
 libFuzzer
 Libravatar
 liveness
+lockfiles
 Lodash
 Lograge
 logrotate
@@ -352,6 +367,7 @@ Makefile
 Makefiles
 Markdown
 markdownlint
+Marketo
 matcher
 matchers
 Matomo
@@ -364,6 +380,7 @@ memoizing
 Memorystore
 mergeability
 mergeable
+metaprogramming
 Microsoft
 middleware
 middlewares
@@ -386,6 +403,7 @@ ModSecurity
 Monokai
 monorepo
 monorepos
+monospace
 multiline
 mutex
 nameserver
@@ -399,6 +417,7 @@ Nanoc
 negatable
 Netlify
 Nokogiri
+nosniff
 noteable
 noteables
 npm
@@ -472,6 +491,7 @@ proxies
 proxyable
 proxying
 pseudocode
+pseudonymization
 pseudonymized
 pseudonymizer
 Puma
@@ -484,6 +504,7 @@ Rackspace
 Raspbian
 rbenv
 rbtrace
+Rclone
 Rdoc
 reachability
 Realplayer
@@ -575,6 +596,7 @@ serializer
 serializers
 serializing
 serverless
+setuptools
 severities
 sharded
 sharding
@@ -592,10 +614,12 @@ Slony
 smartcard
 smartcards
 snapshotting
+Snyk
 Sobelow
 Solargraph
 Solarized
 Sourcegraph
+Spamcheck
 spammable
 sparkline
 sparklines
@@ -660,6 +684,7 @@ Sysbench
 syscall
 syscalls
 syslog
+systemd
 tanuki
 tcpdump
 templated
@@ -700,6 +725,7 @@ Twilio
 Twitter
 TypeScript
 Ubuntu
+Udemy
 unapplied
 unapprove
 unapproved
@@ -804,6 +830,7 @@ Vagrantfile
 validator
 validators
 vendored
+vendoring
 versionless
 viewport
 viewports
@@ -828,6 +855,7 @@ wireframes
 wireframing
 Wireshark
 Wordpress
+Workato
 worktree
 worktrees
 Worldline
@@ -836,6 +864,7 @@ Xeon
 YouTrack
 ytt
 Yubico
+Zabbix
 Zeitwerk
 Zendesk
 ZenTao

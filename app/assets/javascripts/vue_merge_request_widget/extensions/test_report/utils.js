@@ -43,13 +43,42 @@ export const reportTextBuilder = ({ name = '', summary = {}, status }) => {
   return i18n.summaryText(name, resultsString);
 };
 
-export const reportSubTextBuilder = ({ suite_errors }) => {
-  const errors = [];
-  if (suite_errors?.head) {
-    errors.push(`${i18n.headReportParsingError} ${suite_errors.head}`);
+export const recentFailuresTextBuilder = (summary = {}) => {
+  const { failed, recentlyFailed } = summary;
+  if (!failed || !recentlyFailed) return '';
+
+  return i18n.recentFailureSummary(recentlyFailed, failed);
+};
+
+export const reportSubTextBuilder = ({ suite_errors, summary }) => {
+  if (suite_errors?.head || suite_errors?.base) {
+    const errors = [];
+    if (suite_errors?.head) {
+      errors.push(`${i18n.headReportParsingError} ${suite_errors.head}`);
+    }
+    if (suite_errors?.base) {
+      errors.push(`${i18n.baseReportParsingError} ${suite_errors.base}`);
+    }
+    return errors.join('<br />');
   }
-  if (suite_errors?.base) {
-    errors.push(`${i18n.baseReportParsingError} ${suite_errors.base}`);
-  }
-  return errors.join('<br />');
+  return recentFailuresTextBuilder(summary);
+};
+
+export const countRecentlyFailedTests = (subject) => {
+  // handle either a single report or an array of reports
+  const reports = !subject.length ? [subject] : subject;
+
+  return reports
+    .map((report) => {
+      return (
+        [report.new_failures, report.existing_failures, report.resolved_failures]
+          // only count tests which have failed more than once
+          .map(
+            (failureArray) =>
+              failureArray.filter((failure) => failure.recent_failures?.count > 1).length,
+          )
+          .reduce((total, count) => total + count, 0)
+      );
+    })
+    .reduce((total, count) => total + count, 0);
 };

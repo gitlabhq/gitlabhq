@@ -13,6 +13,8 @@ module Mutations
                DESC
 
       def resolve(project_path:, iid:, user:)
+        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless current_user&.mr_attention_requests_enabled?
+
         merge_request = authorized_find!(project_path: project_path, iid: iid)
 
         result = ::MergeRequests::ToggleAttentionRequestedService.new(project: merge_request.project, current_user: current_user, merge_request: merge_request, user: user).execute

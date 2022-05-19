@@ -326,56 +326,6 @@ RSpec.describe Projects::ServicesController do
         end
       end
     end
-
-    context 'with Prometheus integration' do
-      let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
-
-      let(:integration) { prometheus_integration }
-      let(:integration_params) { { manual_configuration: '1', api_url: 'http://example.com' } }
-
-      context 'when feature flag :settings_operations_prometheus_service is enabled' do
-        before do
-          stub_feature_flags(settings_operations_prometheus_service: true)
-        end
-
-        it 'redirects user back to edit page with alert' do
-          put :update, params: project_params.merge(service: integration_params)
-
-          expect(response).to redirect_to(edit_project_integration_path(project, integration))
-          expected_alert = [
-            "You can now manage your Prometheus settings on the",
-            %(<a href="#{project_settings_operations_path(project)}">Operations</a> page.),
-            "Fields on this page have been deprecated."
-          ].join(' ')
-
-          expect(controller).to set_flash.now[:alert].to(expected_alert)
-        end
-
-        it 'does not modify integration' do
-          expect { put :update, params: project_params.merge(service: integration_params) }
-            .not_to change { prometheus_integration_as_data }
-        end
-
-        def prometheus_integration_as_data
-          pi = project.prometheus_integration.reload
-          attrs = pi.attributes.except('encrypted_properties',
-                                       'encrypted_properties_iv')
-
-          [attrs, pi.properties]
-        end
-      end
-
-      context 'when feature flag :settings_operations_prometheus_service is disabled' do
-        before do
-          stub_feature_flags(settings_operations_prometheus_service: false)
-        end
-
-        it 'modifies integration' do
-          expect { put :update, params: project_params.merge(service: integration_params) }
-            .to change { project.prometheus_integration.reload.attributes }
-        end
-      end
-    end
   end
 
   describe 'GET #edit' do
@@ -389,38 +339,6 @@ RSpec.describe Projects::ServicesController do
       context 'with approved services' do
         it 'renders edit page' do
           expect(response).to be_successful
-        end
-      end
-    end
-
-    context 'with Prometheus service' do
-      let(:integration_param) { 'prometheus' }
-
-      context 'when feature flag :settings_operations_prometheus_service is enabled' do
-        before do
-          stub_feature_flags(settings_operations_prometheus_service: true)
-          get :edit, params: project_params(id: integration_param)
-        end
-
-        it 'renders deprecation warning notice' do
-          expected_alert = [
-            "You can now manage your Prometheus settings on the",
-            %(<a href="#{project_settings_operations_path(project)}">Operations</a> page.),
-            "Fields on this page have been deprecated."
-          ].join(' ')
-
-          expect(controller).to set_flash.now[:alert].to(expected_alert)
-        end
-      end
-
-      context 'when feature flag :settings_operations_prometheus_service is disabled' do
-        before do
-          stub_feature_flags(settings_operations_prometheus_service: false)
-          get :edit, params: project_params(id: integration_param)
-        end
-
-        it 'does not render deprecation warning notice' do
-          expect(controller).not_to set_flash.now[:alert]
         end
       end
     end

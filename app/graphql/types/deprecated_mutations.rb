@@ -5,8 +5,7 @@ module Types
     extend ActiveSupport::Concern
 
     prepended do
-      mount_mutation Mutations::Clusters::AgentTokens::Delete,
-                     deprecated: { reason: 'Tokens must be revoked with ClusterAgentTokenRevoke', milestone: '14.7' }
+      # placeholder for any FOSS mutations to be deprecated
     end
   end
 end

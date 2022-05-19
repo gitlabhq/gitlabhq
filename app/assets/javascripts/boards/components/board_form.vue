@@ -17,6 +17,7 @@ const boardDefaults = {
   labels: [],
   milestone: {},
   iterationCadence: {},
+  iterationCadenceId: null,
   iteration: {},
   assignee: {},
   weight: null,

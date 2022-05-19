@@ -60,7 +60,10 @@ RSpec.describe 'getting project members information' do
         fetch_members(project: parent_project, args: { relations: [:DIRECT] })
 
         expect(graphql_errors).to be_nil
-        expect(graphql_data_at(:project, :project_members, :edges, :node)).to contain_exactly({ 'user' => { 'id' => global_id_of(user) } }, 'user' => nil)
+        expect(graphql_data_at(:project, :project_members, :edges, :node)).to contain_exactly(
+          a_graphql_entity_for(user: a_graphql_entity_for(user)),
+          { 'user' => nil }
+        )
       end
     end
 
@@ -238,7 +241,7 @@ RSpec.describe 'getting project members information' do
 
   def expect_array_response(*items)
     expect(response).to have_gitlab_http_status(:success)
-    member_gids = graphql_data_at(:project, :project_members, :edges, :node, :user, :id)
-    expect(member_gids).to match_array(items.map { |u| global_id_of(u) })
+    members = graphql_data_at(:project, :project_members, :edges, :node, :user)
+    expect(members).to match_array(items.map { |u| a_graphql_entity_for(u) })
   end
 end

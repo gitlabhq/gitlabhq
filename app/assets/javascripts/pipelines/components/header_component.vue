@@ -93,6 +93,7 @@ export default {
   data() {
     return {
       pipeline: null,
+      failureMessages: [],
       failureType: null,
       isCanceling: false,
       isRetrying: false,
@@ -159,8 +160,9 @@ export default {
     },
   },
   methods: {
-    reportFailure(errorType) {
+    reportFailure(errorType, errorMessages = []) {
       this.failureType = errorType;
+      this.failureMessages = errorMessages;
     },
     async postPipelineAction(name, mutation) {
       try {
@@ -176,7 +178,7 @@ export default {
         if (errors.length > 0) {
           this.isRetrying = false;
 
-          this.reportFailure(POST_FAILURE);
+          this.reportFailure(POST_FAILURE, errors);
         } else {
           await this.$apollo.queries.pipeline.refetch();
           if (!this.isFinished) {
@@ -214,7 +216,7 @@ export default {
         });
 
         if (errors.length > 0) {
-          this.reportFailure(DELETE_FAILURE);
+          this.reportFailure(DELETE_FAILURE, errors);
           this.isDeleting = false;
         } else {
           redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
@@ -231,9 +233,11 @@ export default {
 </script>
 <template>
   <div class="js-pipeline-header-container">
-    <gl-alert v-if="hasError" :variant="failure.variant" :dismissible="false">{{
-      failure.text
-    }}</gl-alert>
+    <gl-alert v-if="hasError" :title="failure.text" :variant="failure.variant" :dismissible="false">
+      <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
+        {{ failureMessage }}
+      </div>
+    </gl-alert>
     <ci-header
       v-if="shouldRenderContent"
       :status="pipeline.detailedStatus"
@@ -261,6 +265,7 @@ export default {
         v-if="canCancelPipeline"
         :loading="isCanceling"
         :disabled="isCanceling"
+        class="gl-ml-3"
         variant="danger"
         data-testid="cancelPipeline"
         @click="cancelPipeline()"

@@ -8,6 +8,7 @@ module API
     prepend_mod_with('API::BoardsResponses') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
     feature_category :team_planning
+    urgency :low
 
     before { authenticate! }
 

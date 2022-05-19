@@ -1,9 +1,14 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initSettingsPanels, { isExpanded } from '~/settings_panels';
 
 describe('Settings Panels', () => {
   beforeEach(() => {
-    loadFixtures('groups/edit.html');
+    loadHTMLFixture('groups/edit.html');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('initSettingsPane', () => {

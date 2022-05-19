@@ -4,6 +4,6 @@ classes:
 - GroupCustomAttribute
 feature_categories:
 - subgroups
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1f773a8ef5a1f76166d0455c6a5e473278885c17
+description: Stores custom attributes per group
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14593
 milestone: '10.2'

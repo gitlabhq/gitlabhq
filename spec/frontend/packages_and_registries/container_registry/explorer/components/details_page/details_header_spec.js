@@ -1,7 +1,7 @@
 import { GlDropdownItem, GlIcon, GlDropdown } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -28,7 +28,6 @@ import { imageTagsCountMock } from '../../mock_data';
 describe('Details Header', () => {
   let wrapper;
   let apolloProvider;
-  let localVue;
 
   const defaultImage = {
     name: 'foo',
@@ -64,28 +63,18 @@ describe('Details Header', () => {
   const mountComponent = ({
     propsData = { image: defaultImage },
     resolver = jest.fn().mockResolvedValue(imageTagsCountMock()),
-    $apollo = undefined,
   } = {}) => {
-    const mocks = {};
+    Vue.use(VueApollo);
 
-    if ($apollo) {
-      mocks.$apollo = $apollo;
-    } else {
-      localVue = createLocalVue();
-      localVue.use(VueApollo);
-
-      const requestHandlers = [[getContainerRepositoryMetadata, resolver]];
-      apolloProvider = createMockApollo(requestHandlers);
-    }
+    const requestHandlers = [[getContainerRepositoryMetadata, resolver]];
+    apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMount(component, {
-      localVue,
       apolloProvider,
       propsData,
       directives: {
         GlTooltip: createMockDirective(),
       },
-      mocks,
       stubs: {
         TitleArea,
         GlDropdown,
@@ -98,7 +87,6 @@ describe('Details Header', () => {
     // if we want to mix createMockApollo and manual mocks we need to reset everything
     wrapper.destroy();
     apolloProvider = undefined;
-    localVue = undefined;
     wrapper = null;
   });
 
@@ -194,10 +182,7 @@ describe('Details Header', () => {
   describe('metadata items', () => {
     describe('tags count', () => {
       it('displays "-- tags" while loading', async () => {
-        // here we are forced to mock apollo because `waitForMetadataItems` waits
-        // for two ticks, de facto allowing the promise to resolve, so there is
-        // no way to catch the component as both rendered and in loading state
-        mountComponent({ $apollo: { queries: { containerRepository: { loading: true } } } });
+        mountComponent();
 
         await waitForMetadataItems();
 

@@ -8,6 +8,7 @@ module API
         .merge(name: API::NO_SLASH_URL_PART_REGEX)
 
     feature_category :feature_flags
+    urgency :low
 
     before do
       authorize_read_feature_flags!

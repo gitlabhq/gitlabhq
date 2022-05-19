@@ -22,6 +22,8 @@ module Gitlab
               super.merge(
                 type: :remote,
                 location: masked_location,
+                blob: nil,
+                raw: masked_location,
                 extra: {}
               )
             end

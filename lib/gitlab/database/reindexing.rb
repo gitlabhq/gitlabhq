@@ -16,7 +16,7 @@ module Gitlab
       REMOVE_INDEX_RETRY_CONFIG = [[1.minute, 9.minutes]] * 30
 
       def self.enabled?
-        Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+        Feature.enabled?(:database_reindexing, type: :ops)
       end
 
       def self.invoke(database = nil)

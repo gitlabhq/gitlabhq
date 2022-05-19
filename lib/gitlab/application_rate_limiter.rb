@@ -59,6 +59,8 @@ module Gitlab
       def throttled?(key, scope:, threshold: nil, users_allowlist: nil, peek: false)
         raise InvalidKeyError unless rate_limits[key]
 
+        ::Gitlab::Instrumentation::RateLimitingGates.track(key)
+
         return false if scoped_user_in_allowlist?(scope, users_allowlist)
 
         threshold_value = threshold || threshold(key)

@@ -8,7 +8,7 @@ module QA
           class Prometheus < Page::Base
             include Page::Component::CustomMetric
 
-            view 'app/views/projects/services/prometheus/_custom_metrics.html.haml' do
+            view 'app/views/shared/integrations/prometheus/_custom_metrics.html.haml' do
               element :custom_metrics_container
               element :new_metric_button
             end

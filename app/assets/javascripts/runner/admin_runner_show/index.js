@@ -1,18 +1,21 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { showAlertFromLocalStorage } from '../local_storage_alert/show_alert_from_local_storage';
 import AdminRunnerShowApp from './admin_runner_show_app.vue';
 
 Vue.use(VueApollo);
 
 export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
+  showAlertFromLocalStorage();
+
   const el = document.querySelector(selector);
 
   if (!el) {
     return null;
   }
 
-  const { runnerId } = el.dataset;
+  const { runnerId, runnersPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -25,6 +28,7 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
       return h(AdminRunnerShowApp, {
         props: {
           runnerId,
+          runnersPath,
         },
       });
     },

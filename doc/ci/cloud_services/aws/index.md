@@ -90,3 +90,4 @@ This error can occur for multiple reasons:
 
 - The cloud administrator has not configured the project to use OIDC with GitLab.
 - The role is restricted from being run on the branch or tag. See [configure a conditional role](../index.md).
+- `StringEquals` is used instead of `StringLike` when using a wildcard condition. See [related issue](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws/-/issues/2#note_852901934).

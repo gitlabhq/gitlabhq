@@ -185,7 +185,7 @@ class EventCreateService
     track_event(event_action: :pushed, event_target: Project, author_id: current_user.id)
 
     namespace = project.namespace
-    if Feature.enabled?(:route_hll_to_snowplow, namespace, default_enabled: :yaml)
+    if Feature.enabled?(:route_hll_to_snowplow, namespace)
       Gitlab::Tracking.event(self.class.to_s, 'action_active_users_project_repo', namespace: namespace, user: current_user, project: project)
     end
 

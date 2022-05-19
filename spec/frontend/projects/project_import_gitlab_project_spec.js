@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import projectImportGitlab from '~/projects/project_import_gitlab_project';
 
 describe('Import Gitlab project', () => {
@@ -7,7 +8,7 @@ describe('Import Gitlab project', () => {
   const setTestFixtures = (url) => {
     window.history.pushState({}, null, url);
 
-    setFixtures(`
+    setHTMLFixture(`
       <input class="js-path-name" />
       <input class="js-project-name" />
     `);
@@ -21,6 +22,7 @@ describe('Import Gitlab project', () => {
 
   afterEach(() => {
     window.history.pushState({}, null, '');
+    resetHTMLFixture();
   });
 
   describe('project name', () => {

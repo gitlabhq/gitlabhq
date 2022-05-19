@@ -46,7 +46,7 @@ sequenceDiagram
     Cloud Vendor-->>+RevocationAPI: ACCEPTED
 ```
 
-## Integrate your cloud provider service with GitLab Saas
+## Integrate your cloud provider service with GitLab SaaS
 
 Third party cloud and SaaS providers can [express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9).
 

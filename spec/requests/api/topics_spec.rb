@@ -117,7 +117,7 @@ RSpec.describe API::Topics do
   describe 'POST /topics', :aggregate_failures do
     context 'as administrator' do
       it 'creates a topic' do
-        post api('/topics/', admin), params: { name: 'my-topic' }
+        post api('/topics/', admin), params: { name: 'my-topic', title: 'My Topic' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('my-topic')
@@ -128,7 +128,7 @@ RSpec.describe API::Topics do
         workhorse_form_with_file(
           api('/topics/', admin),
           file_key: :avatar,
-          params: { name: 'my-topic', description: 'my description...', avatar: file }
+          params: { name: 'my-topic', title: 'My Topic', description: 'my description...', avatar: file }
         )
 
         expect(response).to have_gitlab_http_status(:created)
@@ -137,23 +137,30 @@ RSpec.describe API::Topics do
       end
 
       it 'returns 400 if name is missing' do
-        post api('/topics/', admin)
+        post api('/topics/', admin), params: { title: 'My Topic' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eql('name is missing')
       end
 
       it 'returns 400 if name is not unique (case insensitive)' do
-        post api('/topics/', admin), params: { name: topic_1.name.downcase }
+        post api('/topics/', admin), params: { name: topic_1.name.downcase, title: 'My Topic' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['name']).to eq(['has already been taken'])
+      end
+
+      it 'returns 400 if title is missing' do
+        post api('/topics/', admin), params: { name: 'my-topic' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eql('title is missing')
       end
     end
 
     context 'as normal user' do
       it 'returns 403 Forbidden' do
-        post api('/topics/', user), params: { name: 'my-topic' }
+        post api('/topics/', user), params: { name: 'my-topic', title: 'My Topic' }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -161,7 +168,7 @@ RSpec.describe API::Topics do
 
     context 'as anonymous' do
       it 'returns 401 Unauthorized' do
-        post api('/topics/'), params: { name: 'my-topic' }
+        post api('/topics/'), params: { name: 'my-topic', title: 'My Topic' }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end

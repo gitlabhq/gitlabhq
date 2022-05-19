@@ -10,6 +10,8 @@ module Projects
     feature_category :logging
 
     def index
+      return render_404 unless Feature.enabled?(:monitor_logging, project)
+
       if environment || cluster
         render :index
       else
@@ -28,7 +30,6 @@ module Projects
     private
 
     def render_logs(service, permitted_params)
-      ::Gitlab::UsageCounters::PodLogs.increment(project.id)
       ::Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
       result = service.new(cluster, namespace, params: permitted_params).execute

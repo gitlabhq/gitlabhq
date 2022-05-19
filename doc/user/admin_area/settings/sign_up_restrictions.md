@@ -60,7 +60,7 @@ To enforce confirmation of the email address used for new sign ups:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
-1. Select the **Enable email restrictions for sign ups** checkbox, then select **Save changes**.
+1. Select the **Send confirmation email on sign-up** checkbox, then select **Save changes**.
 
 ## User cap
 

@@ -92,49 +92,6 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
   end
 
   context 'cross test values against queries' do
-    # TODO: fix failing metrics https://gitlab.com/gitlab-org/gitlab/-/issues/353559
-    let(:failing_todo_metrics) do
-      ["counts.labels",
-       "counts.jira_imports_total_imported_issues_count",
-       "counts.in_product_marketing_email_create_0_sent",
-       "counts.in_product_marketing_email_create_0_cta_clicked",
-       "counts.in_product_marketing_email_create_1_sent",
-       "counts.in_product_marketing_email_create_1_cta_clicked",
-       "counts.in_product_marketing_email_create_2_sent",
-       "counts.in_product_marketing_email_create_2_cta_clicked",
-       "counts.in_product_marketing_email_verify_0_sent",
-       "counts.in_product_marketing_email_verify_0_cta_clicked",
-       "counts.in_product_marketing_email_verify_1_sent",
-       "counts.in_product_marketing_email_verify_1_cta_clicked",
-       "counts.in_product_marketing_email_verify_2_sent",
-       "counts.in_product_marketing_email_verify_2_cta_clicked",
-       "counts.in_product_marketing_email_trial_0_sent",
-       "counts.in_product_marketing_email_trial_0_cta_clicked",
-       "counts.in_product_marketing_email_trial_1_sent",
-       "counts.in_product_marketing_email_trial_1_cta_clicked",
-       "counts.in_product_marketing_email_trial_2_sent",
-       "counts.in_product_marketing_email_trial_2_cta_clicked",
-       "counts.in_product_marketing_email_team_0_sent",
-       "counts.in_product_marketing_email_team_0_cta_clicked",
-       "counts.in_product_marketing_email_team_1_sent",
-       "counts.in_product_marketing_email_team_1_cta_clicked",
-       "counts.in_product_marketing_email_team_2_sent",
-       "counts.in_product_marketing_email_team_2_cta_clicked",
-       "counts.in_product_marketing_email_experience_0_sent",
-       "counts.in_product_marketing_email_team_short_0_sent",
-       "counts.in_product_marketing_email_team_short_0_cta_clicked",
-       "counts.in_product_marketing_email_trial_short_0_sent",
-       "counts.in_product_marketing_email_trial_short_0_cta_clicked",
-       "counts.in_product_marketing_email_admin_verify_0_sent",
-       "counts.in_product_marketing_email_admin_verify_0_cta_clicked",
-       "counts.ldap_users",
-       "usage_activity_by_stage.create.projects_with_sectional_code_owner_rules",
-       "usage_activity_by_stage.monitor.clusters_integrations_prometheus",
-       "usage_activity_by_stage.monitor.projects_with_enabled_alert_integrations_histogram",
-       "usage_activity_by_stage_monthly.create.projects_with_sectional_code_owner_rules",
-       "usage_activity_by_stage_monthly.monitor.clusters_integrations_prometheus"]
-    end
-
     def fetch_value_by_query(query)
       # Because test cases are run inside a transaction, if any query raise and error all queries that follows
       # it are automatically canceled by PostgreSQL, to avoid that problem, and to provide exhaustive information
@@ -157,6 +114,24 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
       accumulator
     end
 
+    def type_cast_to_defined_type(value, metric_definition)
+      case metric_definition&.attributes&.fetch(:value_type)
+      when "string"
+        value.to_s
+      when "number"
+        value.to_i
+      when "object"
+        case metric_definition&.json_schema&.fetch("type")
+        when "array"
+          value.to_a
+        else
+          value.to_h
+        end
+      else
+        value
+      end
+    end
+
     before do
       stub_usage_data_connections
       stub_object_store_settings
@@ -169,12 +144,13 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
 
     let(:service_ping_payload) { described_class.for(output: :all_metrics_values) }
     let(:metrics_queries_with_values) { build_payload_from_queries(described_class.for(output: :metrics_queries)) }
+    let(:metric_definitions) { ::Gitlab::Usage::MetricDefinition.definitions }
 
     it 'generates queries that match collected data', :aggregate_failures do
       message = "Expected %{query} result to match %{value} for %{key_path} metric"
 
       metrics_queries_with_values.each do |key_path, query, value|
-        next if failing_todo_metrics.include?(key_path.join('.'))
+        value = type_cast_to_defined_type(value, metric_definitions[key_path.join('.')])
 
         expect(value).to(
           eq(service_ping_payload.dig(*key_path)),

@@ -72,7 +72,7 @@ This example shows how to run Code Quality on your code by using GitLab CI/CD an
 
 In either configuration, the runner must have enough disk space to handle generated Code Quality files. For example on the [GitLab project](https://gitlab.com/gitlab-org/gitlab) the files are approximately 7 GB.
 
-Once you set up GitLab Runner, include the Code Quality template in your CI configuration:
+Once you set up GitLab Runner, include the [Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) in your CI configuration:
 
 ```yaml
 include:
@@ -257,9 +257,9 @@ The template has these [`rules`](../../../ci/yaml/index.md#rules) for the `code 
 ```yaml
 code_quality:
   rules:
-    - if: '$CODE_QUALITY_DISABLED'
+    - if: $CODE_QUALITY_DISABLED
       when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+    - if: $CI_COMMIT_TAG || $CI_COMMIT_BRANCH
 ```
 
 If you are using merge request pipelines, your `rules` (or [`workflow: rules`](../../../ci/yaml/index.md#workflow))
@@ -268,9 +268,9 @@ might look like this example:
 ```yaml
 job1:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run job1 in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == "main"'                  # Run job1 in pipelines on the main branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_TAG'                               # Run job1 in pipelines for tags
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Run job1 in merge request pipelines
+    - if: $CI_COMMIT_BRANCH == "main"                  # Run job1 in pipelines on the main branch (but not in other branch pipelines)
+    - if: $CI_COMMIT_TAG                               # Run job1 in pipelines for tags
 ```
 
 To make these work together, you need to overwrite the code quality `rules`
@@ -282,11 +282,11 @@ include:
 
 code_quality:
   rules:
-    - if: '$CODE_QUALITY_DISABLED'
+    - if: $CODE_QUALITY_DISABLED
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the default branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_TAG'                               # Run code quality job in pipelines for tags
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Run code quality job in merge request pipelines
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH      # Run code quality job in pipelines on the default branch (but not in other branch pipelines)
+    - if: $CI_COMMIT_TAG                               # Run code quality job in pipelines for tags
 ```
 
 ### Configure Code Quality to use a private container image registry
@@ -541,7 +541,7 @@ This can be due to multiple reasons:
 - If no [degradation or error is detected](https://docs.codeclimate.com/docs/maintainability#section-checks),
   nothing is displayed.
 - The [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in) CI/CD
-  setting can cause the Code Quality artifact(s) to expire faster than desired.
+  setting can cause the Code Quality artifacts to expire faster than desired.
 - The widgets use the pipeline of the latest commit to the target branch. If commits are made to the default branch that do not run the code quality job, this may cause the merge request widget to have no base report for comparison.
 - If you use the [`REPORT_STDOUT` environment variable](https://gitlab.com/gitlab-org/ci-cd/codequality#environment-variables), no report file is generated and nothing displays in the merge request.
 - Large `gl-code-quality-report.json` files (esp. >10 MB) are [known to prevent the report from being displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/2737).

@@ -76,6 +76,18 @@ describe('Tracking', () => {
       );
     });
 
+    it('returns `true` if the Snowplow library was called without issues', () => {
+      expect(Tracking.event(TEST_CATEGORY, TEST_ACTION)).toBe(true);
+    });
+
+    it('returns `false` if the Snowplow library throws an error', () => {
+      snowplowSpy.mockImplementation(() => {
+        throw new Error();
+      });
+
+      expect(Tracking.event(TEST_CATEGORY, TEST_ACTION)).toBe(false);
+    });
+
     it('allows adding extra data to the default context', () => {
       const extra = { foo: 'bar' };
 

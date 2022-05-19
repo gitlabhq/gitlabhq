@@ -121,20 +121,18 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-pt-2">
     <gl-loading-icon v-if="$apollo.queries.pipeline.loading" />
-    <div v-else>
+    <div v-else class="gl-align-items-center gl-display-flex">
       <linked-pipelines-mini-list
         v-if="upstreamPipeline"
-        :triggered-by="[upstreamPipeline]"
+        :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+          upstreamPipeline,
+        ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
         data-testid="commit-box-mini-graph-upstream"
       />
 
-      <pipeline-mini-graph
-        :stages="formattedStages"
-        class="gl-display-inline"
-        data-testid="commit-box-mini-graph"
-      />
+      <pipeline-mini-graph :stages="formattedStages" data-testid="commit-box-mini-graph" />
 
       <linked-pipelines-mini-list
         v-if="hasDownstream"

@@ -19,13 +19,23 @@
 .right-sidebar-collapsed {
   padding-right: 0;
 
-  @include media-breakpoint-up(sm) {
-    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
-      padding-right: $gutter-collapsed-width;
-    }
+  &:not(.is-merge-request) {
+    @include media-breakpoint-up(sm) {
+      &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
+        padding-right: $gutter-collapsed-width;
+      }
 
-    .merge-request-tabs-holder.affix {
-      right: $gutter-collapsed-width;
+      .merge-request-tabs-holder.affix {
+        right: $gutter-collapsed-width;
+      }
+    }
+  }
+
+  &.is-merge-request {
+    @include media-breakpoint-up(md) {
+      .content-wrapper {
+        padding-right: $gutter-collapsed-width;
+      }
     }
   }
 
@@ -49,6 +59,18 @@
   padding-right: 0;
   z-index: $zindex-dropdown-menu;
 
+  &.right-sidebar-merge-requests {
+    width: 270px;
+
+    @include media-breakpoint-up(md) {
+      z-index: auto;
+    }
+
+    .shortcut-sidebar-dropdown-toggle {
+      margin-right: 0 !important;
+    }
+  }
+
   @include media-breakpoint-only(sm) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter-collapsed-width;
@@ -71,12 +93,20 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $border-color;
+  border-left: 1px solid $gray-100;
 
-  .sidebar-container,
-  .issuable-sidebar {
-    // Add 100px so that potentially visible vertical scroll bar is hidden
-    width: calc(100% + 100px);
+  &.right-sidebar-merge-requests {
+    @include media-breakpoint-up(md) {
+      border-left: 0;
+    }
+  }
+
+  &:not(.right-sidebar-merge-requests) {
+    .sidebar-container,
+    .issuable-sidebar {
+      // Add 100px so that potentially visible vertical scroll bar is hidden
+      width: calc(100% + 100px);
+    }
   }
 }
 
@@ -135,7 +165,11 @@
   // rest of the sidebar, and could be removed once the sidebar has been fully converted to use
   // gitlab-ui components.
   .title .gl-button {
-    color: $gl-text-color;
+    font-weight: $gl-font-weight-bold;
+
+    .gl-button {
+      color: $gl-text-color;
+    }
   }
 }
 
@@ -225,6 +259,10 @@
 
 .edit-link {
   margin-right: -$gl-spacing-scale-2;
+}
+
+.issuable-sidebar.is-merge-request .edit-link {
+  margin-right: 0;
 }
 
 .assignee-grid {

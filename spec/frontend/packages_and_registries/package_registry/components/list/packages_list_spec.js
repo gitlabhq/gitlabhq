@@ -1,4 +1,4 @@
-import { GlKeysetPagination, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlModal, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
@@ -21,6 +21,12 @@ describe('packages_list', () => {
     id: 'gid://gitlab/Packages::Package/112',
     name: 'second-package',
   };
+  const errorPackage = {
+    ...packageData(),
+    id: 'gid://gitlab/Packages::Package/121',
+    status: 'ERROR',
+    name: 'error package',
+  };
 
   const defaultProps = {
     list: [firstPackage, secondPackage],
@@ -40,6 +46,7 @@ describe('packages_list', () => {
   const findPackageListDeleteModal = () => wrapper.findComponent(GlModalStub);
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
+  const findErrorPackageAlert = () => wrapper.findComponent(GlAlert);
 
   const mountComponent = (props) => {
     wrapper = shallowMountExtended(PackagesList, {
@@ -109,6 +116,12 @@ describe('packages_list', () => {
 
       expect(findPackageListDeleteModal().exists()).toBe(true);
     });
+
+    it('does not have an error alert displayed', () => {
+      mountComponent();
+
+      expect(findErrorPackageAlert().exists()).toBe(false);
+    });
   });
 
   describe('when the user can destroy the package', () => {
@@ -137,6 +150,32 @@ describe('packages_list', () => {
       await nextTick();
 
       expect(findPackageListDeleteModal().text()).not.toContain(firstPackage.name);
+    });
+  });
+
+  describe('when an error package is present', () => {
+    beforeEach(() => {
+      mountComponent({ list: [firstPackage, errorPackage] });
+
+      return nextTick();
+    });
+
+    it('should display an alert message', () => {
+      expect(findErrorPackageAlert().exists()).toBe(true);
+      expect(findErrorPackageAlert().props('title')).toBe(
+        'There was an error publishing a error package package',
+      );
+      expect(findErrorPackageAlert().text()).toBe(
+        'There was a timeout and the package was not published. Delete this package and try again.',
+      );
+    });
+
+    it('should display the deletion modal when clicked on the confirm button', async () => {
+      findErrorPackageAlert().vm.$emit('primaryAction');
+
+      await nextTick();
+
+      expect(findPackageListDeleteModal().text()).toContain(errorPackage.name);
     });
   });
 

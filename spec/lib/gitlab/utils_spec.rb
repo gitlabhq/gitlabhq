@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Utils do
   using RSpec::Parameterized::TableSyntax
 
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which,
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :which,
            :ensure_array_from_string, :to_exclusive_sentence, :bytes_to_megabytes,
            :append_path, :check_path_traversal!, :allowlisted?, :check_allowed_absolute_path!, :decode_path, :ms_to_round_sec, :check_allowed_absolute_path_and_path_traversal!, to: :described_class
 
@@ -308,12 +308,6 @@ RSpec.describe Gitlab::Utils do
     it 'converts booleans to Yes or No' do
       expect(boolean_to_yes_no(true)).to eq('Yes')
       expect(boolean_to_yes_no(false)).to eq('No')
-    end
-  end
-
-  describe '.random_string' do
-    it 'generates a string' do
-      expect(random_string).to be_kind_of(String)
     end
   end
 

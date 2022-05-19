@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import mock from 'xhr-mock';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
@@ -45,7 +46,7 @@ describe('dropzone_input', () => {
     };
 
     beforeEach(() => {
-      loadFixtures('issues/new-issue.html');
+      loadHTMLFixture('issues/new-issue.html');
 
       form = $('#new_issue');
       form.data('uploads-path', TEST_UPLOAD_PATH);
@@ -54,6 +55,8 @@ describe('dropzone_input', () => {
 
     afterEach(() => {
       form = null;
+
+      resetHTMLFixture();
     });
 
     it('pastes Markdown tables', () => {

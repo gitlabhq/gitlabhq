@@ -77,10 +77,10 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
         post_query
 
         expected = release.milestones.order_by_dates_and_title.map do |milestone|
-          { 'id' => global_id_of(milestone), 'title' => milestone.title }
+          a_graphql_entity_for(milestone, :title)
         end
 
-        expect(data).to eq(expected)
+        expect(data).to match(expected)
       end
     end
 
@@ -94,10 +94,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       it 'finds the author of the release' do
         post_query
 
-        expect(data).to eq(
-          'id' => global_id_of(release.author),
-          'username' => release.author.username
-        )
+        expect(data).to match a_graphql_entity_for(release.author, :username)
       end
     end
 
@@ -142,13 +139,11 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
           post_query
 
           expected = release.links.map do |link|
-            {
-              'id' => global_id_of(link),
-              'name' => link.name,
-              'url' => link.url,
+            a_graphql_entity_for(
+              link, :name, :url,
               'external' => link.external?,
               'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << "/downloads#{link.filepath}" : link.url
-            }
+            )
           end
 
           expect(data).to match_array(expected)
@@ -218,10 +213,8 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
 
         evidence = release.evidences.first.present
 
-        expect(data["nodes"].first).to eq(
-          'id' => global_id_of(evidence),
-          'sha' => evidence.sha,
-          'filepath' => evidence.filepath,
+        expect(data["nodes"].first).to match a_graphql_entity_for(
+          evidence, :sha, :filepath,
           'collectedAt' => evidence.collected_at.utc.iso8601
         )
       end
@@ -274,10 +267,10 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
         post_query
 
         expected = release.milestones.order_by_dates_and_title.map do |milestone|
-          { 'id' => global_id_of(milestone), 'title' => milestone.title }
+          a_graphql_entity_for(milestone, :title)
         end
 
-        expect(data).to eq(expected)
+        expect(data).to match(expected)
       end
     end
 
@@ -291,10 +284,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       it 'finds the author of the release' do
         post_query
 
-        expect(data).to eq(
-          'id' => global_id_of(release.author),
-          'username' => release.author.username
-        )
+        expect(data).to match a_graphql_entity_for(release.author, :username)
       end
     end
 
@@ -339,13 +329,11 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
           post_query
 
           expected = release.links.map do |link|
-            {
-              'id' => global_id_of(link),
-              'name' => link.name,
-              'url' => link.url,
+            a_graphql_entity_for(
+              link, :name, :url,
               'external' => true,
               'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << "/downloads#{link.filepath}" : link.url
-            }
+            )
           end
 
           expect(data).to match_array(expected)

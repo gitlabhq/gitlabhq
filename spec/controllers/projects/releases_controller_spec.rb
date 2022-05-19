@@ -78,14 +78,12 @@ RSpec.describe Projects::ReleasesController do
   end
 
   describe 'GET #index' do
-    before do
-      get_index
-    end
-
     context 'as html' do
       let(:format) { :html }
 
       it 'returns a text/html content_type' do
+        get_index
+
         expect(response.media_type).to eq 'text/html'
       end
 
@@ -95,6 +93,8 @@ RSpec.describe Projects::ReleasesController do
         let(:project) { private_project }
 
         it 'returns a redirect' do
+          get_index
+
           expect(response).to have_gitlab_http_status(:redirect)
         end
       end
@@ -104,11 +104,24 @@ RSpec.describe Projects::ReleasesController do
       let(:format) { :json }
 
       it 'returns an application/json content_type' do
+        get_index
+
         expect(response.media_type).to eq 'application/json'
       end
 
       it "returns the project's releases as JSON, ordered by released_at" do
-        expect(response.body).to eq([release_2, release_1].to_json)
+        get_index
+
+        expect(json_response.map { |release| release["id"] } ).to eq([release_2.id, release_1.id])
+      end
+
+      # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/360903
+      it "returns release sha when remove_sha_from_releases_json is disabled" do
+        stub_feature_flags(remove_sha_from_releases_json: false)
+
+        get_index
+
+        expect(json_response).to eq([release_2, release_1].as_json)
       end
 
       it_behaves_like 'common access controls'
@@ -117,6 +130,8 @@ RSpec.describe Projects::ReleasesController do
         let(:project) { private_project }
 
         it 'returns a redirect' do
+          get_index
+
           expect(response).to have_gitlab_http_status(:redirect)
         end
       end

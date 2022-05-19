@@ -66,6 +66,26 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       sign_in(admin)
     end
 
+    context 'when there are recent ServicePing reports' do
+      it 'attempts to use prerecorded data' do
+        create(:raw_usage_data)
+
+        expect(Gitlab::Usage::ServicePingReport).not_to receive(:for)
+
+        get :usage_data, format: :json
+      end
+    end
+
+    context 'when there are NO recent ServicePing reports' do
+      it 'calculates data on the fly' do
+        allow(Gitlab::Usage::ServicePingReport).to receive(:for).and_call_original
+
+        get :usage_data, format: :json
+
+        expect(Gitlab::Usage::ServicePingReport).to have_received(:for)
+      end
+    end
+
     it 'returns HTML data' do
       get :usage_data, format: :html
 
@@ -331,6 +351,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         end
       end
     end
+
+    context 'pipeline creation rate limiting' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates pipeline_limit_per_project_user_sha setting' do
+        put :update, params: { application_setting: { pipeline_limit_per_project_user_sha: 25 } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.pipeline_limit_per_project_user_sha).to eq(25)
+      end
+    end
   end
 
   describe 'PUT #reset_registration_token' do
@@ -366,6 +397,39 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       subject
 
       expect(response).to redirect_to("https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf")
+    end
+  end
+
+  describe 'GET #service_usage_data' do
+    before do
+      stub_usage_data_connections
+      stub_database_flavor_check
+      sign_in(admin)
+    end
+
+    it 'assigns truthy value if there are recent ServicePing reports in database' do
+      create(:raw_usage_data)
+
+      get :service_usage_data, format: :html
+
+      expect(assigns(:service_ping_data_present)).to be_truthy
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'assigns truthy value if there are recent ServicePing reports in cache', :use_clean_rails_memory_store_caching do
+      Rails.cache.write('usage_data', true)
+
+      get :service_usage_data, format: :html
+
+      expect(assigns(:service_ping_data_present)).to be_truthy
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'assigns falsey value if there are NO recent ServicePing reports' do
+      get :service_usage_data, format: :html
+
+      expect(assigns(:service_ping_data_present)).to be_falsey
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 end

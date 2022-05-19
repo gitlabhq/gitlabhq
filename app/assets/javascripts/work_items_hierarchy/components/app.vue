@@ -1,6 +1,6 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
-import Cookies from 'js-cookie';
+import Cookies from '~/lib/utils/cookies';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RESPONSE from '../static_response';
 import { WORK_ITEMS_SURVEY_COOKIE_NAME, workItemTypes } from '../constants';

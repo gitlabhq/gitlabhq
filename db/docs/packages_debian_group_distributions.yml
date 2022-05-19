@@ -4,6 +4,6 @@ classes:
 - Packages::Debian::GroupDistribution
 feature_categories:
 - package_registry
-description: TODO
+description: Debian registry group level distributions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49405
 milestone: '13.8'

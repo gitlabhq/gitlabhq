@@ -401,8 +401,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
               ci: :dml_not_allowed
             },
             gitlab_schema_gitlab_shared: {
-              main: :dml_access_denied,
-              ci: :dml_access_denied
+              main: :runtime_error,
+              ci: :runtime_error
             },
             gitlab_schema_gitlab_main: {
               main: :success,
@@ -465,7 +465,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
         "does raise exception when accessing feature flags" => {
           migration: ->(klass) do
             def up
-              Feature.enabled?(:redis_hll_tracking, type: :ops, default_enabled: :yaml)
+              Feature.enabled?(:redis_hll_tracking, type: :ops)
             end
 
             def down
@@ -483,6 +483,37 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             },
             gitlab_schema_gitlab_main: {
               main: :success,
+              ci: :skipped
+            }
+          }
+        },
+        "does raise exception about cross schema access when suppressing restriction to ensure" => {
+          migration: ->(klass) do
+            # The purpose of this test is to ensure that we use ApplicationRecord
+            # a correct connection will be used:
+            # - this is a case for finalizing background migrations
+            def up
+              Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+                ::ApplicationRecord.connection.execute("SELECT 1 FROM ci_builds")
+              end
+            end
+
+            def down
+            end
+          end,
+          query_matcher: /FROM ci_builds/,
+          setup: -> (_) { skip_if_multiple_databases_not_setup },
+          expected: {
+            no_gitlab_schema: {
+              main: :cross_schema_error,
+              ci: :success
+            },
+            gitlab_schema_gitlab_shared: {
+              main: :cross_schema_error,
+              ci: :success
+            },
+            gitlab_schema_gitlab_main: {
+              main: :cross_schema_error,
               ci: :skipped
             }
           }
@@ -517,6 +548,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
           %i[no_gitlab_schema gitlab_schema_gitlab_main gitlab_schema_gitlab_shared].each do |restrict_gitlab_migration|
             context "while restrict_gitlab_migration=#{restrict_gitlab_migration}" do
               it "does run migrate :up and :down" do
+                instance_eval(&setup) if setup
+
                 expected_result = expected.fetch(restrict_gitlab_migration)[db_config_name.to_sym]
                 skip "not configured" unless expected_result
 
@@ -543,9 +576,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
                   expect { migration_class.migrate(:up) }.to raise_error(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DMLAccessDeniedError)
                   expect { ignore_error(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DMLAccessDeniedError) { migration_class.migrate(:down) } }.not_to raise_error
 
+                when :runtime_error
+                  expect { migration_class.migrate(:up) }.to raise_error(RuntimeError)
+                  expect { ignore_error(RuntimeError) { migration_class.migrate(:down) } }.not_to raise_error
+
                 when :ddl_not_allowed
                   expect { migration_class.migrate(:up) }.to raise_error(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DDLNotAllowedError)
                   expect { ignore_error(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DDLNotAllowedError) { migration_class.migrate(:down) } }.not_to raise_error
+
+                when :cross_schema_error
+                  expect { migration_class.migrate(:up) }.to raise_error(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection::CrossSchemaAccessError)
+                  expect { ignore_error(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection::CrossSchemaAccessError) { migration_class.migrate(:down) } }.not_to raise_error
 
                 when :skipped
                   expect_next_instance_of(migration_class) do |migration_object|

@@ -13,7 +13,6 @@ module API
         optional :build_git_strategy, type: String, values: %w(fetch clone), desc: 'The Git strategy. Defaults to `fetch`'
         optional :build_timeout, type: Integer, desc: 'Build timeout'
         optional :auto_cancel_pending_pipelines, type: String, values: %w(disabled enabled), desc: 'Auto-cancel pending pipelines'
-        optional :build_coverage_regex, type: String, desc: 'Test coverage parsing'
         optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :service_desk_enabled, type: Boolean, desc: 'Disable or enable the service desk'
         optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
@@ -41,8 +40,9 @@ module API
         optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about Potentially Unwanted Characters'
+        optional :enforce_auth_checks_on_uploads, type: Boolean, desc: 'Enforce auth check on uploads'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
-        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
+        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diff threads on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
         optional :container_registry_enabled, type: Boolean, desc: 'Deprecated: Use :container_registry_access_level instead. Flag indication if the container registry is enabled for that project'
         optional :container_expiration_policy_attributes, type: Hash do
@@ -54,7 +54,7 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :allow_merge_on_skipped_pipeline, type: Boolean, desc: 'Allow to merge if pipeline is skipped'
-        optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+        optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all threads are resolved'
         optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Deprecated: Use :topics instead'
         optional :topics, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of topics for a project'
         # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
@@ -124,7 +124,6 @@ module API
           :auto_devops_enabled,
           :auto_devops_deploy_strategy,
           :auto_cancel_pending_pipelines,
-          :build_coverage_regex,
           :build_git_strategy,
           :build_timeout,
           :builds_access_level,
@@ -175,6 +174,7 @@ module API
           :service_desk_enabled,
           :keep_latest_artifact,
           :mr_default_target_self,
+          :enforce_auth_checks_on_uploads,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,
@@ -191,8 +191,6 @@ module API
 
       def validate_git_import_url!(import_url)
         return if import_url.blank?
-
-        yield if block_given?
 
         result = Import::ValidateRemoteGitEndpointService.new(url: import_url).execute # network call
 

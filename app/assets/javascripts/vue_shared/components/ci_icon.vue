@@ -11,17 +11,22 @@ import { GlIcon } from '@gitlab/ui';
  * }
  *
  * Used in:
- * - Pipelines table Badge
- * - Pipelines table mini graph
- * - Pipeline graph
- * - Pipeline show view badge
- * - Jobs table
+ * - Extended MR Popover
  * - Jobs show view header
  * - Jobs show view sidebar
+ * - Jobs table
  * - Linked pipelines
- * - Extended MR Popover
+ * - Pipeline graph
+ * - Pipeline mini graph
+ * - Pipeline show view badge
+ * - Pipelines table Badge
  */
-const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
+
+/*
+ * These sizes are defined in gitlab-ui/src/scss/variables.scss
+ * under '$gl-icon-sizes'
+ */
+const validSizes = [8, 12, 14, 16, 24, 32, 48, 72];
 
 export default {
   components: {
@@ -45,6 +50,11 @@ export default {
       required: false,
       default: false,
     },
+    isInteractive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     cssClasses: {
       type: String,
       required: false,
@@ -52,9 +62,9 @@ export default {
     },
   },
   computed: {
-    cssClass() {
+    wrapperStyleClasses() {
       const status = this.status.group;
-      return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status}`;
+      return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status} gl-rounded-full gl-justify-content-center`;
     },
     icon() {
       return this.borderless ? `${this.status.icon}_borderless` : this.status.icon;
@@ -63,7 +73,10 @@ export default {
 };
 </script>
 <template>
-  <span :class="cssClass">
+  <span
+    :class="[wrapperStyleClasses, { interactive: isInteractive }]"
+    :style="{ height: `${size}px`, width: `${size}px` }"
+  >
     <gl-icon :name="icon" :size="size" :class="cssClasses" :aria-label="status.icon" />
   </span>
 </template>

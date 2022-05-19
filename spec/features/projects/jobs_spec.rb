@@ -484,7 +484,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'when job has an initial trace' do
-        it 'loads job trace' do
+        it 'loads job logs' do
           expect(page).to have_content 'BUILD TRACE'
 
           job.trace.write(+'a+b') do |stream|

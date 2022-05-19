@@ -53,13 +53,11 @@ module ProfilesHelper
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_tooltip
   def ssh_key_expiration_tooltip(key)
     return key.errors.full_messages.join(', ') if key.errors.full_messages.any?
-
-    s_('Profiles|Key usable beyond expiration date.') if key.expired?
   end
 
   # Overridden in EE::ProfilesHelper#ssh_key_expires_field_description
   def ssh_key_expires_field_description
-    s_('Profiles|Key can still be used after expiration.')
+    s_('Profiles|Key becomes invalid on this date.')
   end
 
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_policy_enabled?

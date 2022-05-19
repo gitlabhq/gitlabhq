@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeForm from '~/badges/components/badge_form.vue';
@@ -16,7 +17,7 @@ describe('BadgeForm component', () => {
   let vm;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div id="dummy-element"></div>
     `);
 
@@ -26,6 +27,7 @@ describe('BadgeForm component', () => {
   afterEach(() => {
     vm.$destroy();
     axiosMock.restore();
+    resetHTMLFixture();
   });
 
   describe('methods', () => {

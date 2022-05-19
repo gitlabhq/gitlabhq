@@ -31,7 +31,38 @@ module Gitlab
             s_('InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA').html_safe % strong_options
           end
 
+          def unsubscribe_message(self_managed_preferences_link = nil)
+            parts = Gitlab.com? ? unsubscribe_com : unsubscribe_self_managed(self_managed_preferences_link)
+
+            case format
+            when :html
+              parts.join(' ')
+            else
+              parts.join("\n" + ' ' * 16)
+            end
+          end
+
           private
+
+          def unsubscribe_link
+            unsubscribe_url = Gitlab.com? ? '%tag_unsubscribe_url%' : profile_notifications_url
+
+            link(s_('InProductMarketing|unsubscribe'), unsubscribe_url)
+          end
+
+          def unsubscribe_com
+            [
+              s_('InProductMarketing|If you no longer wish to receive marketing emails from us,'),
+              s_('InProductMarketing|you may %{unsubscribe_link} at any time.') % { unsubscribe_link: unsubscribe_link }
+            ]
+          end
+
+          def unsubscribe_self_managed(preferences_link)
+            [
+              s_('InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}.') % { unsubscribe_link: unsubscribe_link },
+              s_("InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}.") % { marketing_preference_link: preferences_link }
+            ]
+          end
 
           def list(array)
             case format

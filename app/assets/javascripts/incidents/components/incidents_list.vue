@@ -338,7 +338,9 @@ export default {
       :show-items="showList"
       :show-error-msg="showErrorMsg"
       :i18n="$options.i18n"
-      :items="incidents.list || []"
+      :items="
+        incidents.list || [] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */
+      "
       :page-info="incidents.pageInfo"
       :items-count="incidentsCount"
       :status-tabs="$options.statusTabs"
@@ -372,7 +374,10 @@ export default {
 
       <template #table>
         <gl-table
-          :items="incidents.list || []"
+          :items="
+            incidents.list ||
+            [] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */
+          "
           :fields="availableFields"
           :busy="loading"
           stacked="md"

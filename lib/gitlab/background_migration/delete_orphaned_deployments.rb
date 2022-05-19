@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def orphaned_deployments
-        define_batchable_model('deployments', connection: ActiveRecord::Base.connection)
+        define_batchable_model('deployments', connection: ApplicationRecord.connection)
           .where('NOT EXISTS (SELECT 1 FROM environments WHERE deployments.environment_id = environments.id)')
       end
 

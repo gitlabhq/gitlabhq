@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe "Internal Project Access" do
   include AccessMatchers
 
-  let_it_be(:project, reload: true) { create(:project, :internal, :repository) }
+  let_it_be(:project, reload: true) { create(:project, :internal, :repository, :with_namespace_settings) }
 
   describe "Project should be internal" do
     describe '#internal?' do

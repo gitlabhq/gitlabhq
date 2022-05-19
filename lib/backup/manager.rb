@@ -9,6 +9,11 @@ module Backup
     # if some of these files are still there, we don't need them in the backup
     LEGACY_PAGES_TMP_PATH = '@pages.tmp'
 
+    LIST_ENVS = {
+      skipped: 'SKIP',
+      repositories_storages: 'REPOSITORIES_STORAGES'
+    }.freeze
+
     TaskDefinition = Struct.new(
       :enabled, # `true` if the task can be used. Treated as `true` when not specified.
       :human_name, # Name of the task used for logging.
@@ -29,20 +34,23 @@ module Backup
       @progress = progress
 
       @incremental = Feature.feature_flags_available? &&
-        Feature.enabled?(:incremental_repository_backup, default_enabled: :yaml) &&
+        Feature.enabled?(:incremental_repository_backup) &&
         Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
 
-      @definitions = definitions || build_definitions
+      @definitions = definitions
     end
 
     def create
       if incremental?
-        unpack
+        unpack(ENV.fetch('PREVIOUS_BACKUP', ENV['BACKUP']))
         read_backup_information
         verify_backup_version
+        update_backup_information
       end
 
-      @definitions.keys.each do |task_name|
+      build_backup_information
+
+      definitions.keys.each do |task_name|
         run_create_task(task_name)
       end
 
@@ -64,9 +72,9 @@ module Backup
     end
 
     def run_create_task(task_name)
-      definition = @definitions[task_name]
-
       build_backup_information
+
+      definition = definitions[task_name]
 
       unless definition.enabled?
         puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -79,7 +87,7 @@ module Backup
       end
 
       puts_time "Dumping #{definition.human_name} ... ".color(:blue)
-      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
+      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), full_backup_id)
       puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
@@ -87,11 +95,11 @@ module Backup
     end
 
     def restore
-      cleanup_required = unpack
+      cleanup_required = unpack(ENV['BACKUP'])
       read_backup_information
       verify_backup_version
 
-      @definitions.keys.each do |task_name|
+      definitions.keys.each do |task_name|
         run_restore_task(task_name) if !skipped?(task_name) && enabled_task?(task_name)
       end
 
@@ -110,7 +118,9 @@ module Backup
     end
 
     def run_restore_task(task_name)
-      definition = @definitions[task_name]
+      read_backup_information
+
+      definition = definitions[task_name]
 
       unless definition.enabled?
         puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -141,6 +151,10 @@ module Backup
     end
 
     private
+
+    def definitions
+      @definitions ||= build_definitions
+    end
 
     def build_definitions
       {
@@ -211,7 +225,7 @@ module Backup
       max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
       strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
 
-      Repositories.new(progress, strategy: strategy)
+      Repositories.new(progress, strategy: strategy, storages: repositories_storages)
     end
 
     def build_files_task(app_files_dir, excludes: [])
@@ -244,8 +258,22 @@ module Backup
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
-        skipped: ENV["SKIP"]
+        skipped: ENV['SKIP'],
+        repositories_storages: ENV['REPOSITORIES_STORAGES']
       }
+    end
+
+    def update_backup_information
+      @backup_information.merge!(
+        full_backup_id: full_backup_id,
+        db_version: ActiveRecord::Migrator.current_version.to_s,
+        backup_created_at: Time.zone.now,
+        gitlab_version: Gitlab::VERSION,
+        tar_version: tar_version,
+        installation_type: Gitlab::INSTALLATION_TYPE,
+        skipped: list_env(:skipped).join(','),
+        repositories_storages: list_env(:repositories_storages).join(',')
+      )
     end
 
     def backup_information
@@ -297,7 +325,7 @@ module Backup
       puts_time "Deleting tar staging files ... ".color(:blue)
 
       remove_backup_path(MANIFEST_NAME)
-      @definitions.each do |_, definition|
+      definitions.each do |_, definition|
         remove_backup_path(definition.cleanup_path || definition.destination_path)
       end
 
@@ -374,8 +402,8 @@ module Backup
       end
     end
 
-    def unpack
-      if ENV['BACKUP'].blank? && non_tarred_backup?
+    def unpack(source_backup_id)
+      if source_backup_id.blank? && non_tarred_backup?
         puts_time "Non tarred backup found in #{backup_path}, using that"
 
         return false
@@ -387,14 +415,14 @@ module Backup
           puts_time "No backups found in #{backup_path}"
           puts_time "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
           exit 1
-        elsif backup_file_list.many? && ENV["BACKUP"].nil?
+        elsif backup_file_list.many? && source_backup_id.nil?
           puts_time 'Found more than one backup:'
           # print list of available backups
           puts_time " " + available_timestamps.join("\n ")
 
           if incremental?
             puts_time 'Please specify which one you want to create an incremental backup for:'
-            puts_time 'rake gitlab:backup:create INCREMENTAL=true BACKUP=timestamp_of_backup'
+            puts_time 'rake gitlab:backup:create INCREMENTAL=true PREVIOUS_BACKUP=timestamp_of_backup'
           else
             puts_time 'Please specify which one you want to restore:'
             puts_time 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
@@ -403,8 +431,8 @@ module Backup
           exit 1
         end
 
-        tar_file = if ENV['BACKUP'].present?
-                     File.basename(ENV['BACKUP']) + FILE_NAME_SUFFIX
+        tar_file = if source_backup_id.present?
+                     File.basename(source_backup_id) + FILE_NAME_SUFFIX
                    else
                      backup_file_list.first
                    end
@@ -431,12 +459,26 @@ module Backup
     end
 
     def skipped?(item)
-      ENV.fetch('SKIP', '').include?(item) ||
-        backup_information[:skipped] && backup_information[:skipped].include?(item)
+      skipped.include?(item)
+    end
+
+    def skipped
+      @skipped ||= list_env(:skipped)
+    end
+
+    def repositories_storages
+      @repositories_storages ||= list_env(:repositories_storages)
+    end
+
+    def list_env(name)
+      list = ENV.fetch(LIST_ENVS[name], '').split(',')
+      list += backup_information[name].split(',') if backup_information[name]
+      list.uniq!
+      list
     end
 
     def enabled_task?(task_name)
-      @definitions[task_name].enabled?
+      definitions[task_name].enabled?
     end
 
     def backup_file?(file)
@@ -491,7 +533,7 @@ module Backup
     end
 
     def backup_contents
-      [MANIFEST_NAME] + @definitions.reject do |name, definition|
+      [MANIFEST_NAME] + definitions.reject do |name, definition|
         skipped?(name) || !enabled_task?(name) ||
           (definition.destination_optional && !File.exist?(File.join(backup_path, definition.destination_path)))
       end.values.map(&:destination_path)
@@ -501,12 +543,19 @@ module Backup
       @tar_file ||= "#{backup_id}#{FILE_NAME_SUFFIX}"
     end
 
+    def full_backup_id
+      full_backup_id = backup_information[:full_backup_id]
+      full_backup_id ||= File.basename(ENV['PREVIOUS_BACKUP']) if ENV['PREVIOUS_BACKUP'].present?
+      full_backup_id ||= backup_id
+      full_backup_id
+    end
+
     def backup_id
-      @backup_id ||= if ENV['BACKUP'].present?
-                       File.basename(ENV['BACKUP'])
-                     else
-                       "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
-                     end
+      if ENV['BACKUP'].present?
+        File.basename(ENV['BACKUP'])
+      else
+        "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
+      end
     end
 
     def create_attributes

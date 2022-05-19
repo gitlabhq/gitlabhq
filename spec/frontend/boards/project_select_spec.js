@@ -1,7 +1,14 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlSearchBoxByType,
+  GlLoadingIcon,
+  GlFormInput,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
 import ProjectSelect from '~/boards/components/project_select.vue';
 import defaultState from '~/boards/stores/state';
 
@@ -61,6 +68,7 @@ describe('ProjectSelect component', () => {
       provide: {
         groupId: 1,
       },
+      attachTo: document.body,
     });
   };
 
@@ -119,6 +127,17 @@ describe('ProjectSelect component', () => {
 
       it('does not render empty search result message', () => {
         expect(findEmptySearchMessage().exists()).toBe(false);
+      });
+
+      it('focuses on the search input', async () => {
+        const dropdownToggle = findGlDropdown().find('.dropdown-toggle');
+
+        await dropdownToggle.trigger('click');
+        await waitForPromises();
+        await nextTick();
+
+        const searchInput = findGlDropdown().findComponent(GlFormInput).element;
+        expect(document.activeElement).toEqual(searchInput);
       });
     });
 

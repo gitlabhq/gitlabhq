@@ -24,8 +24,8 @@ RSpec.describe 'getting group members information' do
 
       expect(graphql_errors).to be_nil
       expect(graphql_data_at(:group, :group_members, :edges, :node)).to contain_exactly(
-        { 'user' => { 'id' => global_id_of(user_1) } },
-        { 'user' => { 'id' => global_id_of(user_2) } },
+        { 'user' => a_graphql_entity_for(user_1) },
+        { 'user' => a_graphql_entity_for(user_2) },
         'user' => nil
       )
     end
@@ -73,6 +73,48 @@ RSpec.describe 'getting group members information' do
         expect(graphql_errors.first)
           .to include('path' => ['group', 'groupMembers', 'edges', 0, 'node', 'notificationEmail'],
                       'message' => a_string_including("you don't have permission to perform this action"))
+      end
+    end
+  end
+
+  context 'by access levels' do
+    before do
+      parent_group.add_owner(user_1)
+      parent_group.add_maintainer(user_2)
+    end
+
+    subject(:by_access_levels) { fetch_members(group: parent_group, args: { access_levels: access_levels }) }
+
+    context 'by owner' do
+      let(:access_levels) { :OWNER }
+
+      it 'returns owner' do
+        by_access_levels
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_1)
+      end
+    end
+
+    context 'by maintainer' do
+      let(:access_levels) { :MAINTAINER }
+
+      it 'returns maintainer' do
+        by_access_levels
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_2)
+      end
+    end
+
+    context 'by owner and maintainer' do
+      let(:access_levels) { [:OWNER, :MAINTAINER] }
+
+      it 'returns owner and maintainer' do
+        by_access_levels
+
+        expect(graphql_errors).to be_nil
+        expect_array_response(user_1, user_2)
       end
     end
   end
@@ -182,8 +224,8 @@ RSpec.describe 'getting group members information' do
 
   def expect_array_response(*items)
     expect(response).to have_gitlab_http_status(:success)
-    member_gids = graphql_data_at(:group, :group_members, :edges, :node, :user, :id)
+    members = graphql_data_at(:group, :group_members, :edges, :node, :user)
 
-    expect(member_gids).to match_array(items.map { |u| global_id_of(u) })
+    expect(members).to match_array(items.map { |u| a_graphql_entity_for(u) })
   end
 end

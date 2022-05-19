@@ -47,6 +47,12 @@ export default {
     downstreamPipelines() {
       return this.linkedPipelines?.downstream?.nodes || [];
     },
+    hasDownstreamPipelines() {
+      return this.downstreamPipelines.length > 0;
+    },
+    hasPipelineStages() {
+      return this.pipelineStages.length > 0;
+    },
     pipelinePath() {
       return this.pipeline.detailedStatus?.detailsPath || '';
     },
@@ -73,9 +79,6 @@ export default {
         };
       });
     },
-    showDownstreamPipelines() {
-      return this.downstreamPipelines.length > 0;
-    },
     upstreamPipeline() {
       return this.linkedPipelines?.upstream;
     },
@@ -84,15 +87,20 @@ export default {
 </script>
 
 <template>
-  <div v-if="pipelineStages.length > 0" class="stage-cell gl-mr-5">
+  <div
+    v-if="hasPipelineStages"
+    class="gl-align-items-center gl-display-inline-flex gl-flex-wrap stage-cell gl-mr-5"
+  >
     <linked-pipelines-mini-list
       v-if="upstreamPipeline"
-      :triggered-by="[upstreamPipeline]"
+      :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+        upstreamPipeline,
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       data-testid="pipeline-editor-mini-graph-upstream"
     />
-    <pipeline-mini-graph class="gl-display-inline" :stages="pipelineStages" />
+    <pipeline-mini-graph :stages="pipelineStages" />
     <linked-pipelines-mini-list
-      v-if="showDownstreamPipelines"
+      v-if="hasDownstreamPipelines"
       :triggered="downstreamPipelines"
       :pipeline-path="pipelinePath"
       data-testid="pipeline-editor-mini-graph-downstream"

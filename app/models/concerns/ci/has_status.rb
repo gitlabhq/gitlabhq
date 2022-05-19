@@ -7,16 +7,15 @@ module Ci
     DEFAULT_STATUS = 'created'
     BLOCKED_STATUS = %w[manual scheduled].freeze
     AVAILABLE_STATUSES = %w[created waiting_for_resource preparing pending running success failed canceled skipped manual scheduled].freeze
-    # TODO: replace STARTED_STATUSES with data from BUILD_STARTED_RUNNING_STATUSES in https://gitlab.com/gitlab-org/gitlab/-/issues/273378
-    # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82149#note_865508501
-    BUILD_STARTED_RUNNING_STATUSES = %w[running success failed].freeze
-    STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
+    STARTED_STATUSES = %w[running success failed].freeze
     ACTIVE_STATUSES = %w[waiting_for_resource preparing pending running].freeze
     COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
+    STOPPED_STATUSES = COMPLETED_STATUSES + BLOCKED_STATUS
     ORDERED_STATUSES = %w[failed preparing pending running waiting_for_resource manual scheduled canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
     EXCLUDE_IGNORED_STATUSES = %w[manual failed canceled].to_set.freeze
-    CANCELABLE_STATUSES = %w[running waiting_for_resource preparing pending created scheduled].freeze
+    ALIVE_STATUSES = (ACTIVE_STATUSES + ['created']).freeze
+    CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
       failed: 4, canceled: 5, skipped: 6, manual: 7,
       scheduled: 8, preparing: 9, waiting_for_resource: 10 }.freeze
@@ -46,6 +45,10 @@ module Ci
 
       def completed_statuses
         COMPLETED_STATUSES.map(&:to_sym)
+      end
+
+      def stopped_statuses
+        STOPPED_STATUSES.map(&:to_sym)
       end
     end
 
@@ -78,8 +81,8 @@ module Ci
       scope :skipped, -> { with_status(:skipped) }
       scope :manual, -> { with_status(:manual) }
       scope :scheduled, -> { with_status(:scheduled) }
-      scope :alive, -> { with_status(:created, :waiting_for_resource, :preparing, :pending, :running) }
-      scope :alive_or_scheduled, -> { with_status(:created, :waiting_for_resource, :preparing, :pending, :running, :scheduled) }
+      scope :alive, -> { with_status(*ALIVE_STATUSES) }
+      scope :alive_or_scheduled, -> { with_status(*klass::CANCELABLE_STATUSES) }
       scope :created_or_pending, -> { with_status(:created, :pending) }
       scope :running_or_pending, -> { with_status(:running, :pending) }
       scope :finished, -> { with_status(:success, :failed, :canceled) }
@@ -98,7 +101,7 @@ module Ci
     end
 
     def started?
-      STARTED_STATUSES.include?(status) && started_at
+      STARTED_STATUSES.include?(status) && !!started_at
     end
 
     def active?

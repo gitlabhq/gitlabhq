@@ -10,6 +10,11 @@ module Ci
       end
 
       def execute
+        ##
+        # Create a persistent ref for the pipeline.
+        # The pipeline ref is fetched in the jobs and deleted when the pipeline transitions to a finished state.
+        pipeline.ensure_persistent_ref
+
         Ci::ProcessPipelineService.new(pipeline).execute
       end
     end

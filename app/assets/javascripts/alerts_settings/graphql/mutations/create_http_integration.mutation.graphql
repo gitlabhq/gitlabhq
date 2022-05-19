@@ -3,8 +3,6 @@
 mutation createHttpIntegration($projectPath: ID!, $name: String!, $active: Boolean!) {
   httpIntegrationCreate(input: { projectPath: $projectPath, name: $name, active: $active }) {
     errors
-    # We have ID in a deeply nested fragment
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     integration {
       ...HttpIntegrationItem
     }

@@ -2,7 +2,7 @@
 - page_title _('Two-Factor Authentication'), _('Account')
 - add_to_breadcrumbs _('Account'), profile_account_path
 - @content_class = "limit-container-width" unless fluid_layout
-- webauthn_enabled = Feature.enabled?(:webauthn, default_enabled: :yaml)
+- webauthn_enabled = Feature.enabled?(:webauthn)
 
 .js-two-factor-auth{ 'data-two-factor-skippable' => "#{two_factor_skippable?}", 'data-two_factor_skip_url' => skip_profile_two_factor_auth_path }
   .row.gl-mt-3
@@ -42,8 +42,8 @@
           - if @error
             = render Pajamas::AlertComponent.new(title: @error[:message],
               variant: :danger,
-              dismissible: false) do
-              .gl-alert-body
+              dismissible: false) do |c|
+              = c.body do
                 = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
 
           .form-group

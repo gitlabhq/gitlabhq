@@ -11,8 +11,8 @@ RSpec.describe 'Restoring many Todos' do
   let_it_be(:author) { create(:user) }
   let_it_be(:other_user) { create(:user) }
 
-  let_it_be(:todo1) { create(:todo, user: current_user, author: author, state: :done, target: issue) }
-  let_it_be(:todo2) { create(:todo, user: current_user, author: author, state: :done, target: issue) }
+  let_it_be_with_reload(:todo1) { create(:todo, user: current_user, author: author, state: :done, target: issue) }
+  let_it_be_with_reload(:todo2) { create(:todo, user: current_user, author: author, state: :done, target: issue) }
 
   let_it_be(:other_user_todo) { create(:todo, user: other_user, author: author, state: :done) }
 
@@ -50,8 +50,8 @@ RSpec.describe 'Restoring many Todos' do
     expect(mutation_response).to include(
       'errors' => be_empty,
       'todos' => contain_exactly(
-        { 'id' => global_id_of(todo1), 'state' => 'pending' },
-        { 'id' => global_id_of(todo2), 'state' => 'pending' }
+        a_graphql_entity_for(todo1, 'state' => 'pending'),
+        a_graphql_entity_for(todo2, 'state' => 'pending')
       )
     )
   end

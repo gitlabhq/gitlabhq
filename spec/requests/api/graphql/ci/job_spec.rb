@@ -47,10 +47,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
       )
       post_graphql(query, current_user: user)
 
-      expect(graphql_data_at(*path)).to match a_hash_including(
-        'id' => global_id_of(job_2),
-        'name' => job_2.name,
-        'allowFailure' => job_2.allow_failure,
+      expect(graphql_data_at(*path)).to match a_graphql_entity_for(
+        job_2, :name, :allow_failure,
         'duration' => 25,
         'kind' => 'BUILD',
         'queuedDuration' => 2.0,
@@ -66,10 +64,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
       it 'retrieves scalar fields' do
         post_graphql(query, current_user: user)
 
-        expect(graphql_data_at(*path)).to match a_hash_including(
-          'id' => global_id_of(job_2),
-          'name' => job_2.name
-        )
+        expect(graphql_data_at(*path)).to match a_graphql_entity_for(job_2, :name)
       end
     end
   end
@@ -102,8 +97,8 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
         'name' => test_stage.name,
         'jobs' => a_hash_including(
           'nodes' => contain_exactly(
-            a_hash_including('id' => global_id_of(job_2)),
-            a_hash_including('id' => global_id_of(job_3))
+            a_graphql_entity_for(job_2),
+            a_graphql_entity_for(job_3)
           )
         )
       )

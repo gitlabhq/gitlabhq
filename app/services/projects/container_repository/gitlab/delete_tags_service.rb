@@ -46,16 +46,9 @@ module Projects
         end
 
         def timeout?(start_time)
-          return false unless throttling_enabled?
           return false if service_timeout.in?(DISABLED_TIMEOUTS)
 
           (Time.zone.now - start_time) > service_timeout
-        end
-
-        def throttling_enabled?
-          strong_memoize(:feature_flag) do
-            Feature.enabled?(:container_registry_expiration_policies_throttling, default_enabled: :yaml)
-          end
         end
 
         def service_timeout

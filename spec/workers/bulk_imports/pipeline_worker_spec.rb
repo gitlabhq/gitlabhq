@@ -9,7 +9,7 @@ RSpec.describe BulkImports::PipelineWorker do
 
       def run; end
 
-      def self.ndjson_pipeline?
+      def self.file_extraction_pipeline?
         false
       end
     end
@@ -222,14 +222,14 @@ RSpec.describe BulkImports::PipelineWorker do
     end
   end
 
-  context 'when ndjson pipeline' do
-    let(:ndjson_pipeline) do
+  context 'when file extraction pipeline' do
+    let(:file_extraction_pipeline) do
       Class.new do
         def initialize(_); end
 
         def run; end
 
-        def self.ndjson_pipeline?
+        def self.file_extraction_pipeline?
           true
         end
 
@@ -249,11 +249,11 @@ RSpec.describe BulkImports::PipelineWorker do
     end
 
     before do
-      stub_const('NdjsonPipeline', ndjson_pipeline)
+      stub_const('NdjsonPipeline', file_extraction_pipeline)
 
       allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
         allow(instance).to receive(:pipelines)
-                             .and_return([[0, ndjson_pipeline]])
+                             .and_return([[0, file_extraction_pipeline]])
       end
     end
 
@@ -278,7 +278,7 @@ RSpec.describe BulkImports::PipelineWorker do
         expect(described_class)
           .to receive(:perform_in)
           .with(
-            described_class::NDJSON_PIPELINE_PERFORM_DELAY,
+            described_class::FILE_EXTRACTION_PIPELINE_PERFORM_DELAY,
             pipeline_tracker.id,
             pipeline_tracker.stage,
             entity.id

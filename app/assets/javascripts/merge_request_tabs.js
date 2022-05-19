@@ -1,5 +1,4 @@
 /* eslint-disable no-new, class-methods-use-this */
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Vue from 'vue';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
@@ -176,6 +175,8 @@ export default class MergeRequestTabs {
         : null;
     this.navbar = document.querySelector('.navbar-gitlab');
     this.peek = document.getElementById('js-peek');
+    this.sidebar = document.querySelector('.js-right-sidebar');
+    this.pageLayout = document.querySelector('.layout-page');
     this.paddingTop = 16;
 
     this.scrollPositions = {};
@@ -282,7 +283,7 @@ export default class MergeRequestTabs {
 
       if (action === 'commits') {
         this.loadCommits(href);
-        this.expandView();
+        // this.hideSidebar();
         this.resetViewContainer();
         this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       } else if (action === 'new') {
@@ -301,13 +302,12 @@ export default class MergeRequestTabs {
           */
           this.loadDiff(href);
         }
-        if (bp.getBreakpointSize() !== 'xl') {
-          this.shrinkView();
-        }
+        // this.hideSidebar();
         this.expandViewContainer();
         this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
         this.commitsTab.classList.remove('active');
       } else if (action === 'pipelines') {
+        // this.hideSidebar();
         this.resetViewContainer();
         this.mountPipelinesView();
       } else {
@@ -320,9 +320,7 @@ export default class MergeRequestTabs {
           notesTab.classList.add('active');
         }
 
-        if (bp.getBreakpointSize() !== 'xs') {
-          this.expandView();
-        }
+        // this.showSidebar();
         this.resetViewContainer();
         this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       }
@@ -509,19 +507,6 @@ export default class MergeRequestTabs {
     }
   }
 
-  shrinkView() {
-    const $gutterBtn = $('.js-sidebar-toggle:visible');
-    const $expandSvg = $gutterBtn.find('.js-sidebar-expand');
-
-    // Wait until listeners are set
-    setTimeout(() => {
-      // Only when sidebar is expanded
-      if ($expandSvg.length && $expandSvg.hasClass('hidden')) {
-        $gutterBtn.trigger('click', [true]);
-      }
-    }, 0);
-  }
-
   // Expand the issuable sidebar unless the user explicitly collapsed it
   expandView() {
     if (parseBoolean(getCookie('collapsed_gutter'))) {
@@ -537,5 +522,25 @@ export default class MergeRequestTabs {
         $gutterBtn.trigger('click', [true]);
       }
     }, 0);
+  }
+
+  hideSidebar() {
+    if (!isInVueNoteablePage() || this.cachedPageLayoutClasses) return;
+
+    this.cachedPageLayoutClasses = this.pageLayout.className;
+    this.pageLayout.classList.remove(
+      'right-sidebar-collapsed',
+      'right-sidebar-expanded',
+      'page-with-icon-sidebar',
+    );
+    this.sidebar.style.width = '0px';
+  }
+
+  showSidebar() {
+    if (!isInVueNoteablePage() || !this.cachedPageLayoutClasses) return;
+
+    this.pageLayout.className = this.cachedPageLayoutClasses;
+    this.sidebar.style.width = '';
+    delete this.cachedPageLayoutClasses;
   }
 }

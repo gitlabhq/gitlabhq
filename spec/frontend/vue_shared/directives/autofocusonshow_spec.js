@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 
 /**
@@ -10,8 +11,12 @@ describe('AutofocusOnShow directive', () => {
     let el;
 
     beforeEach(() => {
-      setFixtures('<div id="container" style="display: none;"><input id="inputel"/></div>');
+      setHTMLFixture('<div id="container" style="display: none;"><input id="inputel"/></div>');
       el = document.querySelector('#inputel');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it('should bind IntersectionObserver on input element', () => {

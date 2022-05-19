@@ -1,4 +1,4 @@
-mutation DestroyBoardList($listId: ID!) {
+mutation DestroyBoardList($listId: ListID!) {
   destroyBoardList(input: { listId: $listId }) {
     errors
   }

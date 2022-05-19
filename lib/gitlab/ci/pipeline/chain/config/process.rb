@@ -35,7 +35,7 @@ module Gitlab
                 error(result.errors.first, config_error: true)
               end
 
-              @pipeline.merged_yaml = result.merged_yaml
+              @pipeline.config_metadata = result.config_metadata
 
             rescue StandardError => ex
               Gitlab::ErrorTracking.track_exception(ex,

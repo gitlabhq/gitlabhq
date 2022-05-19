@@ -7,7 +7,7 @@ import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -95,6 +95,9 @@ export default {
     isLoggedIn() {
       return isLoggedIn();
     },
+    commentType() {
+      return this.discussion.confidential ? __('internal note') : __('comment');
+    },
     autosaveKey() {
       return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);
     },
@@ -103,6 +106,9 @@ export default {
     },
     firstNote() {
       return this.discussion.notes.slice(0, 1)[0];
+    },
+    saveButtonTitle() {
+      return this.discussion.confidential ? __('Reply internally') : __('Comment');
     },
     shouldShowJumpToNextDiscussion() {
       return this.showJumpToNextDiscussion(this.discussionsByDiffOrder ? 'diff' : 'discussion');
@@ -174,9 +180,15 @@ export default {
     },
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
-        const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
+        const msg = sprintf(
+          s__('Notes|Are you sure you want to cancel creating this %{commentType}?'),
+          { commentType: this.commentType },
+        );
 
-        const confirmed = await confirmAction(msg);
+        const confirmed = await confirmAction(msg, {
+          primaryBtnText: __('Discard changes'),
+          cancelBtnText: __('Continue editing'),
+        });
 
         if (!confirmed) {
           return;
@@ -308,7 +320,7 @@ export default {
                     ref="noteForm"
                     :discussion="discussion"
                     :line="diffLine"
-                    save-button-title="Comment"
+                    :save-button-title="saveButtonTitle"
                     :autosave-key="autosaveKey"
                     @handleFormUpdateAddToReview="addReplyToReview"
                     @handleFormUpdate="saveReply"

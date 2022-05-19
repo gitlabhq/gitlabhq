@@ -1,4 +1,5 @@
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as commonUtils from '~/lib/utils/common_utils';
 
 describe('common_utils browser specific specs', () => {
@@ -14,7 +15,7 @@ describe('common_utils browser specific specs', () => {
     it('does not add height for fileTitle or compareVersionsHeader if screen is too small', () => {
       jest.spyOn(breakpointInstance, 'isDesktop').mockReturnValue(false);
 
-      setFixtures(`
+      setHTMLFixture(`
           <div class="diff-file file-title-flex-parent">
             blah blah blah
           </div>
@@ -24,12 +25,14 @@ describe('common_utils browser specific specs', () => {
         `);
 
       expect(commonUtils.contentTop()).toBe(0);
+
+      resetHTMLFixture();
     });
 
     it('adds height for fileTitle and compareVersionsHeader screen is large enough', () => {
       jest.spyOn(breakpointInstance, 'isDesktop').mockReturnValue(true);
 
-      setFixtures(`
+      setHTMLFixture(`
           <div class="diff-file file-title-flex-parent">
             blah blah blah
           </div>
@@ -41,6 +44,8 @@ describe('common_utils browser specific specs', () => {
       mockOffsetHeight(document.querySelector('.diff-file'), 100);
       mockOffsetHeight(document.querySelector('.mr-version-controls'), 18);
       expect(commonUtils.contentTop()).toBe(18);
+
+      resetHTMLFixture();
     });
   });
 

@@ -72,7 +72,7 @@
   release: 14.3
 - title: Grant group access to the GitLab Kubernetes Agent
   body: |
-       The GitLab Kubernetes Agent provides a secure connection between a Kubernetes cluster and GitLab. Until GitLab 14.2, the CI/CD Tunnel enabled pushing to a cluster only from the same project where the Kubernetes Agent was registered. In GitLab 14.3, the Agent can be authorized to access entire groups. As a result, every project under the authorized group has access to the cluster without the need to register an agent for every project.
+       The GitLab Kubernetes Agent provides a secure connection between a Kubernetes cluster and GitLab. Until GitLab 14.2, the GitLab CI/CD enabled pushing to a cluster only from the same project where the Kubernetes Agent was registered. In GitLab 14.3, the Agent can be authorized to access entire groups. As a result, every project under the authorized group has access to the cluster without the need to register an agent for every project.
   stage: Configure
   self-managed: true
   gitlab-com: true

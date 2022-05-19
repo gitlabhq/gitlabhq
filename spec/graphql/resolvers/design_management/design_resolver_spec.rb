@@ -24,7 +24,7 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
       create(:design, issue: create(:issue, project: project), versions: [create(:design_version)])
     end
 
-    let(:args) { { id: GitlabSchema.id_from_object(first_design).to_s } }
+    let(:args) { { id: GitlabSchema.id_from_object(first_design) } }
     let(:gql_context) { { current_user: current_user } }
 
     before do
@@ -50,7 +50,7 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
     end
 
     context 'when both arguments have been passed' do
-      let(:args) { { filename: first_design.filename, id: GitlabSchema.id_from_object(first_design).to_s } }
+      let(:args) { { filename: first_design.filename, id: GitlabSchema.id_from_object(first_design) } }
 
       it 'generates an error' do
         expect_graphql_error_to_be_created(::Gitlab::Graphql::Errors::ArgumentError, /may/) do
@@ -69,15 +69,6 @@ RSpec.describe Resolvers::DesignManagement::DesignResolver do
 
         it 'returns nothing' do
           expect(resolve_design).to be_nil
-        end
-      end
-
-      context 'the ID does not belong to a design at all' do
-        let(:args) { { id: global_id_of(issue) } }
-        let(:msg) { /does not represent an instance of DesignManagement::Design/ }
-
-        it 'complains meaningfully' do
-          expect { resolve_design }.to raise_error(msg)
         end
       end
     end

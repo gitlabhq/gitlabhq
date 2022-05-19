@@ -211,18 +211,13 @@ end
 
 RSpec::Matchers.define :have_graphql_resolver do |expected|
   match do |field|
-    case expected
-    when Method
-      expect(field.type_class.resolve_proc).to eq(expected)
-    else
-      expect(field.type_class.resolver).to eq(expected)
-    end
+    expect(field.resolver).to eq(expected)
   end
 end
 
 RSpec::Matchers.define :have_graphql_extension do |expected|
   match do |field|
-    expect(field.type_class.extensions).to include(expected)
+    expect(field.extensions).to include(expected)
   end
 end
 

@@ -233,6 +233,7 @@ export default {
             :view-type="viewType"
             @downstreamHovered="setSourceJob"
             @pipelineExpandToggle="togglePipelineExpanded"
+            @refreshPipelineGraph="$emit('refreshPipelineGraph')"
             @scrollContainer="slidePipelineContainer"
             @error="onError"
           />

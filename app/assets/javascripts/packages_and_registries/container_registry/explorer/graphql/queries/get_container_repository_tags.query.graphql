@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getContainerRepositoryTags(
-  $id: ID!
+  $id: ContainerRepositoryID!
   $first: Int
   $last: Int
   $after: String

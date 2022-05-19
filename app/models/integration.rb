@@ -5,14 +5,14 @@
 class Integration < ApplicationRecord
   include Sortable
   include Importable
-  include ProjectServicesLoggable
+  include Integrations::Loggable
   include Integrations::HasDataFields
+  include Integrations::ResetSecretFields
   include FromUnion
   include EachBatch
   include IgnorableColumns
   extend ::Gitlab::Utils::Override
 
-  ignore_column :template, remove_with: '15.0', remove_after: '2022-04-22'
   ignore_column :type, remove_with: '15.0', remove_after: '2022-04-22'
   ignore_column :properties, remove_with: '15.1', remove_after: '2022-05-22'
 
@@ -161,7 +161,7 @@ class Integration < ApplicationRecord
   end
 
   def fields
-    self.class.fields
+    self.class.fields.dup
   end
 
   # Provide convenient accessor methods for each serialized property.
@@ -279,7 +279,7 @@ class Integration < ApplicationRecord
   end
 
   def self.dev_integration_names
-    return [] unless Rails.env.development?
+    return [] unless Gitlab.dev_or_test_env?
 
     DEV_INTEGRATION_NAMES
   end
@@ -447,6 +447,7 @@ class Integration < ApplicationRecord
 
   # TODO: Once all integrations use `Integrations::Field` we can
   # use `#secret?` here.
+  # See: https://gitlab.com/groups/gitlab-org/-/epics/7652
   def secret_fields
     fields.select { |f| f[:type] == 'password' }.pluck(:name)
   end

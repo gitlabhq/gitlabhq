@@ -146,6 +146,7 @@ RSpec.describe 'Merge request > Batch comments', :js do
       before do
         find('.js-show-diff-settings').click
         click_button 'Side-by-side'
+        find('.js-show-diff-settings').click
       end
 
       it 'adds draft comments to both sides' do
@@ -171,9 +172,8 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
         write_reply_to_discussion(button_text: 'Add comment now', resolve: true)
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -188,9 +188,8 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
         wait_for_requests
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('All threads resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
         end
       end
     end
@@ -211,9 +210,8 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
         write_reply_to_discussion(button_text: 'Add comment now', unresolve: true)
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
-          expect(page).not_to have_selector('.line-resolve-btn.is-active')
         end
       end
 
@@ -230,9 +228,8 @@ RSpec.describe 'Merge request > Batch comments', :js do
 
         wait_for_requests
 
-        page.within '.line-resolve-all-container' do
+        page.within '.discussions-counter' do
           expect(page).to have_content('1 unresolved thread')
-          expect(page).not_to have_selector('.line-resolve-btn.is-active')
         end
       end
     end

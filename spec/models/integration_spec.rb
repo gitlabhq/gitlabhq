@@ -249,18 +249,24 @@ RSpec.describe Integration do
     it_behaves_like 'integration instances'
 
     context 'with all existing instances' do
+      def integration_hash(type)
+        Integration.new(instance: true, type: type).to_integration_hash
+      end
+
       before do
-        Integration.insert_all(
-          Integration.available_integration_types(include_project_specific: false).map { |type| { instance: true, type: type } }
-        )
+        attrs = Integration.available_integration_types(include_project_specific: false).map do
+          integration_hash(_1)
+        end
+
+        Integration.insert_all(attrs)
       end
 
       it_behaves_like 'integration instances'
 
-      context 'with a previous existing integration (MockCiService) and a new integration (Asana)' do
+      context 'with a previous existing integration (:mock_ci) and a new integration (:asana)' do
         before do
-          Integration.insert({ type: 'MockCiService', instance: true })
-          Integration.delete_by(type: 'AsanaService', instance: true)
+          Integration.insert(integration_hash(:mock_ci))
+          Integration.delete_by(**integration_hash(:asana))
         end
 
         it_behaves_like 'integration instances'
@@ -681,7 +687,7 @@ RSpec.describe Integration do
 
       integration.properties = { foo: 1, bar: 2 }
 
-      expect { integration.properties[:foo] = 3 }.to raise_error
+      expect { integration.properties[:foo] = 3 }.to raise_error(FrozenError)
     end
   end
 
@@ -782,8 +788,16 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#api_field_names' do
-    shared_examples 'api field names' do
+  describe 'field definitions' do
+    shared_examples '#fields' do
+      it 'does not return the same array' do
+        integration = fake_integration.new
+
+        expect(integration.fields).not_to be(integration.fields)
+      end
+    end
+
+    shared_examples '#api_field_names' do
       it 'filters out secret fields' do
         safe_fields = %w[some_safe_field safe_field url trojan_gift]
 
@@ -816,7 +830,8 @@ RSpec.describe Integration do
         end
       end
 
-      it_behaves_like 'api field names'
+      it_behaves_like '#fields'
+      it_behaves_like '#api_field_names'
     end
 
     context 'when the class uses the field DSL' do
@@ -839,7 +854,8 @@ RSpec.describe Integration do
         end
       end
 
-      it_behaves_like 'api field names'
+      it_behaves_like '#fields'
+      it_behaves_like '#api_field_names'
     end
   end
 
@@ -848,7 +864,8 @@ RSpec.describe Integration do
     let(:test_message) { "test message" }
     let(:arguments) do
       {
-        service_class: integration.class.name,
+        integration_class: integration.class.name,
+        integration_id: integration.id,
         project_path: project.full_path,
         project_id: project.id,
         message: test_message,
@@ -857,13 +874,13 @@ RSpec.describe Integration do
     end
 
     it 'logs info messages using json logger' do
-      expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+      expect(Gitlab::IntegrationsLogger).to receive(:info).with(arguments)
 
       integration.log_info(test_message, additional_argument: 'some argument')
     end
 
     it 'logs error messages using json logger' do
-      expect(Gitlab::JsonLogger).to receive(:error).with(arguments)
+      expect(Gitlab::IntegrationsLogger).to receive(:error).with(arguments)
 
       integration.log_error(test_message, additional_argument: 'some argument')
     end
@@ -872,7 +889,8 @@ RSpec.describe Integration do
       let(:project) { nil }
       let(:arguments) do
         {
-          service_class: integration.class.name,
+          integration_class: integration.class.name,
+          integration_id: integration.id,
           project_path: nil,
           project_id: nil,
           message: test_message,
@@ -881,9 +899,31 @@ RSpec.describe Integration do
       end
 
       it 'logs info messages using json logger' do
-        expect(Gitlab::JsonLogger).to receive(:info).with(arguments)
+        expect(Gitlab::IntegrationsLogger).to receive(:info).with(arguments)
 
         integration.log_info(test_message, additional_argument: 'some argument')
+      end
+    end
+
+    context 'logging exceptions' do
+      let(:error) { RuntimeError.new('exception message') }
+      let(:arguments) do
+        super().merge(
+          'exception.class' => 'RuntimeError',
+          'exception.message' => 'exception message'
+        )
+      end
+
+      it 'logs exceptions using json logger' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error).with(arguments.merge(message: 'exception message'))
+
+        integration.log_exception(error, additional_argument: 'some argument')
+      end
+
+      it 'logs exceptions using json logger with a custom message' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error).with(arguments.merge(message: 'custom message'))
+
+        integration.log_exception(error, message: 'custom message', additional_argument: 'some argument')
       end
     end
   end

@@ -6,7 +6,6 @@ import 'jquery';
 import Translate from '~/vue_shared/translate';
 import setWindowLocation from './set_window_location_helper';
 import { setGlobalDateToFakeDate } from './fake_date';
-import { loadHTMLFixture, setHTMLFixture } from './fixtures';
 import { TEST_HOST } from './test_constants';
 import * as customMatchers from './matchers';
 
@@ -27,12 +26,6 @@ Vue.config.devtools = false;
 Vue.config.productionTip = false;
 
 Vue.use(Translate);
-
-// convenience wrapper for migration from Karma
-Object.assign(global, {
-  loadFixtures: loadHTMLFixture,
-  setFixtures: setHTMLFixture,
-});
 
 const JQUERY_MATCHERS_TO_EXCLUDE = ['toHaveLength', 'toExist'];
 

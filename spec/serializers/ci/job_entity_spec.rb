@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobEntity do
   let(:user) { create(:user) }
-  let(:job) { create(:ci_build) }
+  let(:job) { create(:ci_build, :running) }
   let(:project) { job.project }
   let(:request) { double('request') }
 
@@ -20,6 +20,11 @@ RSpec.describe Ci::JobEntity do
   end
 
   subject { entity.as_json }
+
+  it 'contains started' do
+    expect(subject).to include(:started)
+    expect(subject[:started]).to eq(true)
+  end
 
   it 'contains complete to indicate if a pipeline is completed' do
     expect(subject).to include(:complete)
@@ -125,6 +130,15 @@ RSpec.describe Ci::JobEntity do
     it 'contains scheduled_at' do
       expect(subject[:scheduled]).to be_truthy
       expect(subject[:scheduled_at]).to eq(job.scheduled_at)
+    end
+  end
+
+  context 'when job is running' do
+    let_it_be(:job) { create(:ci_build, :running) }
+
+    it 'contains started_at' do
+      expect(subject[:started]).to be_truthy
+      expect(subject[:started_at]).to eq(job.started_at)
     end
   end
 

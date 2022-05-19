@@ -3,6 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
+import { VSA_METRICS_GROUPS } from '~/analytics/shared/constants';
 import { toYmd } from '~/analytics/shared/utils';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
@@ -150,22 +151,12 @@ export default {
     pageTitle: __('Value Stream Analytics'),
     recentActivity: __('Recent Project Activity'),
   },
+  VSA_METRICS_GROUPS,
 };
 </script>
 <template>
   <div>
     <h3>{{ $options.i18n.pageTitle }}</h3>
-    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
-      <path-navigation
-        v-if="displayPathNavigation"
-        data-testid="vsa-path-navigation"
-        class="gl-w-full gl-pb-2"
-        :loading="isLoading || isLoadingStage"
-        :stages="pathNavigationData"
-        :selected-stage="selectedStage"
-        @selected="onSelectStage"
-      />
-    </div>
     <value-stream-filters
       :group-id="endpoints.groupId"
       :group-path="endpoints.groupPath"
@@ -174,10 +165,22 @@ export default {
       :end-date="createdBefore"
       @setDateRange="onSetDateRange"
     />
+    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
+      <path-navigation
+        v-if="displayPathNavigation"
+        data-testid="vsa-path-navigation"
+        class="gl-w-full gl-mt-4"
+        :loading="isLoading || isLoadingStage"
+        :stages="pathNavigationData"
+        :selected-stage="selectedStage"
+        @selected="onSelectStage"
+      />
+    </div>
     <value-stream-metrics
       :request-path="endpoints.fullPath"
       :request-params="filterParams"
       :requests="metricsRequests"
+      :group-by="$options.VSA_METRICS_GROUPS"
     />
     <gl-loading-icon v-if="isLoading" size="lg" />
     <stage-table

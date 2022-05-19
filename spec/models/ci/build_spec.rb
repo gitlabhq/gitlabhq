@@ -743,7 +743,7 @@ RSpec.describe Ci::Build do
       it { is_expected.to be_falsey }
     end
 
-    context 'when there are runners' do
+    context 'when there is a runner' do
       let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
 
       before do
@@ -752,19 +752,28 @@ RSpec.describe Ci::Build do
 
       it { is_expected.to be_truthy }
 
-      it 'that is inactive' do
-        runner.update!(active: false)
-        is_expected.to be_falsey
+      context 'that is inactive' do
+        before do
+          runner.update!(active: false)
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it 'that is not online' do
-        runner.update!(contacted_at: nil)
-        is_expected.to be_falsey
+      context 'that is not online' do
+        before do
+          runner.update!(contacted_at: nil)
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it 'that cannot handle build' do
-        expect_any_instance_of(Ci::Runner).to receive(:matches_build?).with(build).and_return(false)
-        is_expected.to be_falsey
+      context 'that cannot handle build' do
+        before do
+          expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher).and_return(false)
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -1069,6 +1078,32 @@ RSpec.describe Ci::Build do
             is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
           end
         end
+
+        context 'when separated caches are disabled' do
+          before do
+            allow_any_instance_of(Project).to receive(:ci_separated_caches).and_return(false)
+          end
+
+          context 'running on protected ref' do
+            before do
+              allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            end
+
+            it 'is expected to have no type suffix' do
+              is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+            end
+          end
+
+          context 'running on not protected ref' do
+            before do
+              allow(build.pipeline).to receive(:protected_ref?).and_return(false)
+            end
+
+            it 'is expected to have no type suffix' do
+              is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+            end
+          end
+        end
       end
 
       context 'when project has jobs_cache_index' do
@@ -1120,36 +1155,6 @@ RSpec.describe Ci::Build do
     it 'returns a detailed status' do
       expect(build.detailed_status(user))
         .to be_a Gitlab::Ci::Status::Build::Cancelable
-    end
-  end
-
-  describe '#coverage_regex' do
-    subject { build.coverage_regex }
-
-    context 'when project has build_coverage_regex set' do
-      let(:project_regex) { '\(\d+\.\d+\) covered' }
-
-      before do
-        project.update_column(:build_coverage_regex, project_regex)
-      end
-
-      context 'and coverage_regex attribute is not set' do
-        it { is_expected.to eq(project_regex) }
-      end
-
-      context 'but coverage_regex attribute is also set' do
-        let(:build_regex) { 'Code coverage: \d+\.\d+' }
-
-        before do
-          build.coverage_regex = build_regex
-        end
-
-        it { is_expected.to eq(build_regex) }
-      end
-    end
-
-    context 'when neither project nor build has coverage regex set' do
-      it { is_expected.to be_nil }
     end
   end
 
@@ -1474,6 +1479,44 @@ RSpec.describe Ci::Build do
         end
 
         expect(deployment).to be_canceled
+      end
+    end
+
+    # Mimic playing a manual job that needs another job.
+    # `needs + when:manual` scenario, see: https://gitlab.com/gitlab-org/gitlab/-/issues/347502
+    context 'when transits from skipped to created to running' do
+      before do
+        build.skip!
+      end
+
+      context 'during skipped to created' do
+        let(:event) { :process! }
+
+        it 'transitions to created' do
+          subject
+
+          expect(deployment).to be_created
+        end
+      end
+
+      context 'during created to running' do
+        let(:event) { :run! }
+
+        before do
+          build.process!
+          build.enqueue!
+        end
+
+        it 'transitions to running and calls webhook' do
+          freeze_time do
+            expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+            subject
+          end
+
+          expect(deployment).to be_running
+        end
       end
     end
   end
@@ -3755,6 +3798,7 @@ RSpec.describe Ci::Build do
 
     context 'for pipeline ref existence' do
       it 'ensures pipeline ref creation' do
+        expect(job.pipeline).to receive(:ensure_persistent_ref).once.and_call_original
         expect(job.pipeline.persistent_ref).to receive(:create).once
 
         run_job_without_exception

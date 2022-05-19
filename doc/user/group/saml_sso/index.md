@@ -129,7 +129,7 @@ SSO has the following effects when enabled:
 - For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
   pull from a GitLab repository.
 - Git activity originating from CI/CD jobs do not have the SSO check enforced.
-- Credentials that are not tied to regular users (for example, access tokens and deploy keys) do not have the SSO check enforced.
+- Credentials that are not tied to regular users (for example, project and group access tokens, and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 
 When SSO is enforced, users are not immediately revoked. If the user:
@@ -589,7 +589,7 @@ Here are possible causes and solutions:
 | Cause                                                                                          | Solution                                                                                                                                                                   |
 | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](#unlinking-accounts) from this GitLab account before attempting to sign in again. |
-| The NameID changes everytime the user requests SSO identification | Check the NameID is not set with `Transient` format, or the NameID is not changing on subsequent requests.|
+| The NameID changes every time the user requests SSO identification | Check the NameID is not set with `Transient` format, or the NameID is not changing on subsequent requests.|
 
 ### Message: "SAML authentication failed: Email has already been taken"
 

@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import titleComponent from '~/issues/show/components/title.vue';
 import eventHub from '~/issues/show/event_hub';
 import Store from '~/issues/show/stores';
@@ -6,7 +7,7 @@ import Store from '~/issues/show/stores';
 describe('Title component', () => {
   let vm;
   beforeEach(() => {
-    setFixtures(`<title />`);
+    setHTMLFixture(`<title />`);
 
     const Component = Vue.extend(titleComponent);
     const store = new Store({
@@ -23,6 +24,10 @@ describe('Title component', () => {
         formState: store.formState,
       },
     }).$mount();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('renders title HTML', () => {

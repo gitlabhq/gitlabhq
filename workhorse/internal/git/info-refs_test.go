@@ -11,7 +11,6 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 )
 
 type smartHTTPServiceServerWithInfoRefs struct {
@@ -32,7 +31,7 @@ func TestGetInfoRefsHandler(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "/?service=git-upload-pack", nil)
-	a := &api.Response{GitalyServer: gitaly.Server{Address: addr}}
+	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
 
 	handleGetInfoRefs(NewHttpResponseWriter(w), r, a)
 	require.Equal(t, 503, w.Code)

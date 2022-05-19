@@ -309,6 +309,35 @@ RSpec.describe ProjectsController do
         expect(response.body).to have_content('LICENSE') # would be 'MIT license' if stub not works
       end
 
+      describe 'tracking events', :snowplow do
+        before do
+          allow(controller).to receive(:current_user).and_return(user)
+          get_show
+        end
+
+        it 'tracks page views' do
+          expect_snowplow_event(
+            category: 'project_overview',
+            action: 'render',
+            user: user,
+            project: public_project
+          )
+        end
+
+        context 'when the project is importing' do
+          let_it_be(:public_project) { create(:project, :public, :import_scheduled) }
+
+          it 'does not track page views' do
+            expect_no_snowplow_event(
+              category: 'project_overview',
+              action: 'render',
+              user: user,
+              project: public_project
+            )
+          end
+        end
+      end
+
       describe "PUC highlighting" do
         render_views
 
@@ -834,7 +863,8 @@ RSpec.describe ProjectsController do
             id: project.path,
             project: {
               project_setting_attributes: {
-                show_default_award_emojis: boolean_value
+                show_default_award_emojis: boolean_value,
+                enforce_auth_checks_on_uploads: boolean_value
               }
             }
           }
@@ -842,6 +872,7 @@ RSpec.describe ProjectsController do
           project.reload
 
           expect(project.show_default_award_emojis?).to eq(result)
+          expect(project.enforce_auth_checks_on_uploads?).to eq(result)
         end
       end
     end
@@ -1422,6 +1453,41 @@ RSpec.describe ProjectsController do
           post action, params: { namespace_id: project.namespace, id: project }
 
           expect(response).to have_gitlab_http_status(:found)
+        end
+
+        context 'when the project storage_size exceeds the application setting max_export_size' do
+          it 'returns 302 with alert' do
+            stub_application_setting(max_export_size: 1)
+            project.statistics.update!(lfs_objects_size: 2.megabytes, repository_size: 2.megabytes)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to include('The project size exceeds the export limit.')
+          end
+        end
+
+        context 'when the project storage_size does not exceed the application setting max_export_size' do
+          it 'returns 302 without alert' do
+            stub_application_setting(max_export_size: 1)
+            project.statistics.update!(lfs_objects_size: 0.megabytes, repository_size: 0.megabytes)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to be_nil
+          end
+        end
+
+        context 'when application setting max_export_size is not set' do
+          it 'returns 302 without alert' do
+            project.statistics.update!(lfs_objects_size: 2.megabytes, repository_size: 2.megabytes)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(flash[:alert]).to be_nil
+          end
         end
       end
 

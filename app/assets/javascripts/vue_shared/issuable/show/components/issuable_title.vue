@@ -86,7 +86,7 @@ export default {
           >
             <p
               data-testid="status"
-              class="issuable-status-box status-box gl-my-0"
+              class="issuable-status-box status-box gl-white-space-nowrap gl-my-0"
               :class="statusBadgeClass"
             >
               <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />

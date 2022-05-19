@@ -148,7 +148,7 @@ RSpec.shared_examples :note_handler_shared_examples do |forwardable|
     end
 
     it 'allows email to only have quoted text', if: forwardable do
-      expect { receiver.execute }.not_to raise_error(Gitlab::Email::EmptyEmailError)
+      expect { receiver.execute }.not_to raise_error
     end
   end
 

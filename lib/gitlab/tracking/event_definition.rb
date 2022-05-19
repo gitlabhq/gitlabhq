@@ -6,7 +6,6 @@ module Gitlab
 
     class EventDefinition
       EVENT_SCHEMA_PATH = Rails.root.join('config', 'events', 'schema.json')
-      BASE_REPO_PATH = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master'
       SCHEMA = ::JSONSchemer.schema(Pathname.new(EVENT_SCHEMA_PATH))
 
       attr_reader :path

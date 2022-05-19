@@ -16,6 +16,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 - for merge requests with frontend changes
 - for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
 - for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
+- for merge requests with changes to `{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*`
 - for merge requests with QA changes
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set
@@ -198,7 +199,7 @@ subgraph "CNG-mirror pipeline"
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing (note that we already retry them once),
+- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing,
   please check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the

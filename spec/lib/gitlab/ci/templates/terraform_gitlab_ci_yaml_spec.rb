@@ -20,13 +20,16 @@ RSpec.describe 'Terraform.gitlab-ci.yml' do
 
     before do
       stub_ci_pipeline_yaml_file(template.content)
+      allow_next_instance_of(Ci::BuildScheduleWorker) do |instance|
+        allow(instance).to receive(:perform).and_return(true)
+      end
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 
     context 'on master branch' do
       it 'creates init, validate and build jobs', :aggregate_failures do
         expect(pipeline.errors).to be_empty
-        expect(build_names).to include('init', 'validate', 'build', 'deploy')
+        expect(build_names).to include('validate', 'build', 'deploy')
       end
     end
 

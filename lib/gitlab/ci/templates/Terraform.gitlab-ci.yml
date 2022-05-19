@@ -1,27 +1,32 @@
 # To contribute improvements to CI/CD templates, please follow the Development guide at:
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
 
 include:
-  - template: Terraform/Base.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
+  - template: Terraform/Base.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml   # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml
 
 stages:
-  - init
   - validate
+  - test
   - build
   - deploy
 
-init:
-  extends: .init
+fmt:
+  extends: .terraform:fmt
+  needs: []
 
 validate:
-  extends: .validate
+  extends: .terraform:validate
+  needs: []
 
 build:
-  extends: .build
+  extends: .terraform:build
 
 deploy:
-  extends: .deploy
+  extends: .terraform:deploy
   dependencies:
     - build
+  environment:
+    name: $TF_STATE_NAME

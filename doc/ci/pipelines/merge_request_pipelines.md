@@ -20,7 +20,7 @@ Branch pipelines:
 - Run when you push a new commit to a branch.
 - Are the default type of pipeline.
 - Have access to [some predefined variables](../variables/predefined_variables.md).
-- Have access to [protected variables](../variables/index.md#protect-a-cicd-variable) and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
+- Have access to [protected variables](../variables/index.md#protected-cicd-variables) and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 
 Merge request pipelines:
 
@@ -33,7 +33,7 @@ Merge request pipelines:
 - Do not run by default. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
   to run in merge request pipelines.
 - Have access to [more predefined variables](#available-predefined-variables).
-- Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable) or [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
+- Do not have access to [protected variables](../variables/index.md#protected-cicd-variables) or [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 
 Both of these types of pipelines can appear on the **Pipelines** tab of a merge request.
 
@@ -127,12 +127,12 @@ Pipelines for forks display with the **fork** badge in the parent project:
 
 ### Run pipelines in the parent project **(PREMIUM)**
 
-Project members in the parent project can choose to run a merge request pipeline
+Project members in the parent project can trigger a merge request pipeline
 for a merge request submitted from a fork project. This pipeline:
 
 - Is created and runs in the parent (target) project, not the fork (source) project.
-- Uses the CI/CD configuration present in the fork project's branch
-- Uses the parent project's CI/CD configuration, resources, and project CI/CD variables.
+- Uses the CI/CD configuration present in the fork project's branch.
+- Uses the parent project's CI/CD settings, resources, and project CI/CD variables.
 - Uses the permissions of the parent project member that triggers the pipeline.
 
 Run pipelines in fork project MRs to ensure that the post-merge pipeline passes in
@@ -142,8 +142,12 @@ running the pipeline in the parent project uses the parent project's trusted run
 WARNING:
 Fork merge requests can contain malicious code that tries to steal secrets in the
 parent project when the pipeline runs, even before merge. As a reviewer, carefully
-check the changes in the merge request before triggering the pipeline. GitLab shows
-a warning that you must accept before you can trigger the pipeline.
+check the changes in the merge request before triggering the pipeline. If you trigger
+the pipeline by selecting **Run pipeline** or applying a suggestion, GitLab shows
+a warning that you must accept before the pipeline runs. If you trigger the pipeline
+by using any other method, including the API, [`/rebase` quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
+or [**Rebase** option](../../user/project/merge_requests/methods/index.md#rebasing-in-semi-linear-merge-methods),
+**no warning displays**.
 
 Prerequisites:
 
@@ -152,10 +156,10 @@ Prerequisites:
   user running the pipeline. Otherwise, the **Pipelines** tab does not display
   in the merge request.
 
-To run a pipeline in the parent project for a merge request from a fork project:
+To use the UI to run a pipeline in the parent project for a merge request from a fork project:
 
 1. In the merge request, go to the **Pipelines** tab.
-1. Select **Run pipeline**. You must accept the warning, or the pipeline does not run.
+1. Select **Run pipeline**. You must read and accept the warning, or the pipeline does not run.
 
 ## Available predefined variables
 

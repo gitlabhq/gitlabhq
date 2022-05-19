@@ -159,7 +159,7 @@ repository project, GitLab performs these actions:
 - Creates a default branch.
 - Commits a blank `README.md` file to it.
 - Creates and redirects you to a new branch based on the issue title.
-- _If your project is [configured with a deployment service](../integrations/overview.md) like Kubernetes,_
+- _If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,_
   GitLab prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
   by helping you create a `.gitlab-ci.yml` file.
 

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import NewBranchForm from '~/new_branch_form';
 
 describe('Branch', () => {
@@ -18,9 +19,13 @@ describe('Branch', () => {
     }
 
     beforeEach(() => {
-      loadFixtures('branches/new_branch.html');
+      loadHTMLFixture('branches/new_branch.html');
       $('form').on('submit', (e) => e.preventDefault());
       testContext.form = new NewBranchForm($('.js-create-branch-form'), []);
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     it("can't start with a dot", () => {

@@ -1,6 +1,7 @@
 <script>
 import {
   GlIcon,
+  GlBadge,
   GlLoadingIcon,
   GlTooltipDirective,
   GlSafeHtmlDirective as SafeHtml,
@@ -10,8 +11,6 @@ import { __, s__ } from '~/locale';
 import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
-import { NOTEABLE_TYPE_MAPPING } from '../constants';
-
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
@@ -19,6 +18,7 @@ export default {
     GitlabTeamMemberBadge: () =>
       import('ee_component/vue_shared/components/user_avatar/badges/gitlab_team_member_badge.vue'),
     GlIcon,
+    GlBadge,
     GlLoadingIcon,
     UserNameWithStatus,
   },
@@ -111,13 +111,7 @@ export default {
       return this.author.name;
     },
     noteConfidentialityTooltip() {
-      if (
-        this.noteableType === NOTEABLE_TYPE_MAPPING.Issue ||
-        this.noteableType === NOTEABLE_TYPE_MAPPING.MergeRequest
-      ) {
-        return s__('Notes|This comment is confidential and only visible to project members');
-      }
-      return s__('Notes|This comment is confidential and only visible to group members');
+      return s__('Notes|This internal note will always remain confidential');
     },
   },
   mounted() {
@@ -236,15 +230,16 @@ export default {
         </a>
         <time-ago-tooltip v-else ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>
-      <gl-icon
+      <gl-badge
         v-if="isConfidential"
         v-gl-tooltip:tooltipcontainer.bottom
-        data-testid="confidentialIndicator"
-        name="eye-slash"
-        :size="16"
+        data-testid="internalNoteIndicator"
+        variant="warning"
+        size="sm"
         :title="noteConfidentialityTooltip"
-        class="gl-ml-1 gl-text-orange-700 align-middle"
-      />
+      >
+        {{ __('Internal note') }}
+      </gl-badge>
       <slot name="extra-controls"></slot>
       <gl-loading-icon
         v-if="showSpinner"

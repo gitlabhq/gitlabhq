@@ -4,6 +4,6 @@ classes:
 - Packages::BuildInfo
 feature_categories:
 - package_registry
-description: TODO
+description: Join table relating packages_packages with ci_pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19796
 milestone: '12.6'

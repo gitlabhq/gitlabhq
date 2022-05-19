@@ -62,7 +62,11 @@ RSpec.describe Profiles::EmailsController do
   end
 
   describe '#resend_confirmation_instructions' do
-    let_it_be(:email) { create(:email, user: user) }
+    let_it_be(:email) do
+      travel_to(5.minutes.ago) do
+        create(:email, user: user)
+      end
+    end
 
     let(:params) { { id: email.id } }
 

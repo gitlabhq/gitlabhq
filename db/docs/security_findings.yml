@@ -4,6 +4,6 @@ classes:
 - Security::Finding
 feature_categories:
 - vulnerability_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9af97ee69a36de1dc4e73f4030d6316d3f0a82c5
+description: Stores a subset of the Finding data which is used to optimize the pipeline security tab
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40368
 milestone: '13.4'

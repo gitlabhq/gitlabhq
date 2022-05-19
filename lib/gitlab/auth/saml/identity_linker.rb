@@ -32,3 +32,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Auth::Saml::IdentityLinker.prepend_mod

@@ -6,7 +6,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import createFlash from '~/flash';
-import { statusBoxState } from '~/issuable/components/status_box.vue';
+import { badgeState } from '~/issuable/components/status_box.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
   capitalizeFirstCharacter,
@@ -90,9 +90,16 @@ export default {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? this.$options.i18n.comment
-        : this.$options.i18n.startThread;
+      const { comment, internalComment, startThread, startInternalThread } = this.$options.i18n;
+      if (this.noteIsConfidential) {
+        return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
+      }
+      return this.noteType === constants.COMMENT ? comment : startThread;
+    },
+    textareaPlaceholder() {
+      return this.noteIsConfidential
+        ? this.$options.i18n.bodyPlaceholderInternal
+        : this.$options.i18n.bodyPlaceholder;
     },
     discussionsRequireResolution() {
       return this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE;
@@ -266,7 +273,7 @@ export default {
       const toggleState = this.isOpen ? this.closeIssuable : this.reopenIssuable;
 
       toggleState()
-        .then(() => statusBoxState.updateStatus && statusBoxState.updateStatus())
+        .then(() => badgeState.updateStatus && badgeState.updateStatus())
         .then(refreshUserMergeRequestCounts)
         .catch(() =>
           createFlash({
@@ -371,7 +378,7 @@ export default {
                     data-testid="comment-field"
                     data-supports-quick-actions="true"
                     :aria-label="$options.i18n.comment"
-                    :placeholder="$options.i18n.bodyPlaceholder"
+                    :placeholder="textareaPlaceholder"
                     @keydown.up="editCurrentUserLastNote()"
                     @keydown.meta.enter="handleEnter()"
                     @keydown.ctrl.enter="handleEnter()"
@@ -386,7 +393,7 @@ export default {
                   data-testid="add-to-review-button"
                   type="submit"
                   category="primary"
-                  variant="success"
+                  variant="confirm"
                   @click.prevent="handleSaveDraft()"
                   >{{ __('Add to review') }}</gl-button
                 >
@@ -419,6 +426,7 @@ export default {
                   class="gl-mr-3"
                   :disabled="disableSubmitButton"
                   :tracking-label="trackingLabel"
+                  :is-internal-note="noteIsConfidential"
                   :noteable-display-name="noteableDisplayName"
                   :discussions-require-resolution="discussionsRequireResolution"
                   @click="handleSave"

@@ -1,71 +1,53 @@
-import { GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlBadge, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import StatusBox from '~/issuable/components/status_box.vue';
 
 let wrapper;
 
 function factory(propsData) {
-  wrapper = shallowMount(StatusBox, { propsData, stubs: { GlSprintf } });
+  wrapper = shallowMount(StatusBox, { propsData, stubs: { GlBadge } });
 }
 
-const testCases = [
-  {
-    name: 'Open',
-    state: 'opened',
-    class: 'status-box-open',
-    icon: 'issue-open-m',
-  },
-  {
-    name: 'Open',
-    state: 'locked',
-    class: 'status-box-open',
-    icon: 'issue-open-m',
-  },
-  {
-    name: 'Closed',
-    state: 'closed',
-    class: 'status-box-mr-closed',
-    icon: 'issue-close',
-  },
-  {
-    name: 'Merged',
-    state: 'merged',
-    class: 'status-box-mr-merged',
-    icon: 'git-merge',
-  },
-];
-
 describe('Merge request status box component', () => {
+  const findBadge = () => wrapper.findComponent(GlBadge);
+
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
   });
 
-  testCases.forEach((testCase) => {
-    describe(`when merge request is ${testCase.name}`, () => {
-      it('renders human readable test', () => {
+  describe.each`
+    issuableType       | badgeText   | initialState | badgeClass                        | badgeVariant | badgeIcon
+    ${'merge_request'} | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'merge-request-open'}
+    ${'merge_request'} | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'danger'}  | ${'merge-request-close'}
+    ${'merge_request'} | ${'Merged'} | ${'merged'}  | ${'issuable-status-badge-merged'} | ${'info'}    | ${'merge'}
+    ${'issue'}         | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'issues'}
+    ${'issue'}         | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'info'}    | ${'issue-closed'}
+  `(
+    'with issuableType set to "$issuableType" and state set to "$initialState"',
+    ({ issuableType, badgeText, initialState, badgeClass, badgeVariant, badgeIcon }) => {
+      beforeEach(() => {
         factory({
-          initialState: testCase.state,
+          initialState,
+          issuableType,
         });
-
-        expect(wrapper.text()).toContain(testCase.name);
       });
 
-      it('sets css class', () => {
-        factory({
-          initialState: testCase.state,
-        });
-
-        expect(wrapper.classes()).toContain(testCase.class);
+      it(`renders badge with text '${badgeText}'`, () => {
+        expect(findBadge().text()).toBe(badgeText);
       });
 
-      it('renders icon', () => {
-        factory({
-          initialState: testCase.state,
-        });
-
-        expect(wrapper.findComponent(GlIcon).props('name')).toBe(testCase.icon);
+      it(`sets badge css class as '${badgeClass}'`, () => {
+        expect(findBadge().classes()).toContain(badgeClass);
       });
-    });
-  });
+
+      it(`sets badge variant as '${badgeVariant}`, () => {
+        expect(findBadge().props('variant')).toBe(badgeVariant);
+      });
+
+      it(`sets badge icon as '${badgeIcon}'`, () => {
+        expect(findBadge().findComponent(GlIcon).props('name')).toBe(badgeIcon);
+      });
+    },
+  );
 });

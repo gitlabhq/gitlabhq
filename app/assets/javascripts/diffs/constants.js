@@ -1,6 +1,7 @@
 export const INLINE_DIFF_VIEW_TYPE = 'inline';
 export const PARALLEL_DIFF_VIEW_TYPE = 'parallel';
 export const MATCH_LINE_TYPE = 'match';
+export const EXPANDED_LINE_TYPE = 'expanded';
 export const OLD_NO_NEW_LINE_TYPE = 'old-nonewline';
 export const NEW_NO_NEW_LINE_TYPE = 'new-nonewline';
 export const CONTEXT_LINE_TYPE = 'context';
@@ -101,6 +102,8 @@ export const CONFLICT_MARKER_THEIR = 'conflict_marker_their';
 
 // Tracking events
 export const DEFER_DURATION = 750;
+export const TRACKING_CAP_KEY = 'code_review_events_dispatched';
+export const TRACKING_CAP_LENGTH = 86400000; // 24 hours
 
 export const TRACKING_CLICK_DIFF_VIEW_SETTING = 'i_code_review_click_diff_view_setting';
 export const TRACKING_DIFF_VIEW_INLINE = 'i_code_review_diff_view_inline';

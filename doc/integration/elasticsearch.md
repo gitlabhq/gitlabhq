@@ -217,7 +217,7 @@ The following Elasticsearch settings are available:
 | `Password`                                                 | The password of your Elasticsearch instance. |
 | `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indexes with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
 | `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value increases total disk space required by the index. |
-| `Limit namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-namespaces-and-projects).
+| `Limit the number of namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
 | `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Please refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
 | `AWS Region`                                          | The AWS region in which your OpenSearch Service is located. |
 | `AWS Access Key`                                      | The AWS access key. |
@@ -234,9 +234,10 @@ Sidekiq performance. Return them to their default values if you see increased `s
 in your Sidekiq logs. For more information, see
 [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
 
-### Limit namespaces and projects
+### Limit the number of namespaces and projects that can be indexed
 
-If you select `Limit namespaces and projects that can be indexed`, more options become available.
+If you check checkbox `Limit the number of namespaces and projects that can be indexed`
+under **Elasticsearch indexing restrictions** more options become available.
 
 ![limit namespaces and projects options](img/limit_namespaces_projects_options.png)
 
@@ -871,7 +872,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the admin area under **Settings > Advanced Search** check that the
+- From the Admin Area under **Settings > Advanced Search** check that the
   Advanced Search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
@@ -920,7 +921,7 @@ More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticse
 It is important to understand at which level the problem is manifesting (UI, Rails code, Elasticsearch side) to be able to [troubleshoot further](../administration/troubleshooting/elasticsearch.md#search-results-workflow).
 
 NOTE:
-The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limit-namespaces-and-projects).
+The above instructions are not to be used for scenarios that only index a [subset of namespaces](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
 
 See [Elasticsearch Index Scopes](#advanced-search-index-scopes) for more information on searching for specific types of data.
 
@@ -1082,7 +1083,7 @@ If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error duri
 
 ### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
 
-Bulk requests are getting rejected by the Elasticsearch node(s) likely due to load and lack of available memory.
+Bulk requests getting rejected by the Elasticsearch nodes are likely due to load and lack of available memory.
 Ensure that your Elasticsearch cluster meets the [system requirements](#system-requirements) and has enough resources
 to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
 

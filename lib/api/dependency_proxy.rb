@@ -5,6 +5,7 @@ module API
     helpers ::API::Helpers::PackagesHelpers
 
     feature_category :dependency_proxy
+    urgency :low
 
     after_validation do
       authorize! :admin_group, user_group

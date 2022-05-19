@@ -431,6 +431,19 @@ RSpec.describe SystemNoteService do
     end
   end
 
+  describe '.remove_timelog' do
+    let(:issue) { create(:issue, project: project) }
+    let(:timelog) { create(:timelog, user: author, issue: issue, time_spent: 1800)}
+
+    it 'calls TimeTrackingService' do
+      expect_next_instance_of(::SystemNotes::TimeTrackingService) do |service|
+        expect(service).to receive(:remove_timelog)
+      end
+
+      described_class.remove_timelog(noteable, project, author, timelog)
+    end
+  end
+
   describe '.handle_merge_request_draft' do
     it 'calls MergeRequestsService' do
       expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
@@ -693,6 +706,40 @@ RSpec.describe SystemNoteService do
       end
 
       described_class.change_issue_type(incident, author)
+    end
+  end
+
+  describe '.add_timeline_event' do
+    let(:timeline_event) { instance_double('IncidentManagement::TimelineEvent', incident: noteable, project: project) }
+
+    it 'calls IncidentsService' do
+      expect_next_instance_of(::SystemNotes::IncidentsService) do |service|
+        expect(service).to receive(:add_timeline_event).with(timeline_event)
+      end
+
+      described_class.add_timeline_event(timeline_event)
+    end
+  end
+
+  describe '.edit_timeline_event' do
+    let(:timeline_event) { instance_double('IncidentManagement::TimelineEvent', incident: noteable, project: project) }
+
+    it 'calls IncidentsService' do
+      expect_next_instance_of(::SystemNotes::IncidentsService) do |service|
+        expect(service).to receive(:edit_timeline_event).with(timeline_event, author, was_changed: :occurred_at)
+      end
+
+      described_class.edit_timeline_event(timeline_event, author, was_changed: :occurred_at)
+    end
+  end
+
+  describe '.delete_timeline_event' do
+    it 'calls IncidentsService' do
+      expect_next_instance_of(::SystemNotes::IncidentsService) do |service|
+        expect(service).to receive(:delete_timeline_event).with(author)
+      end
+
+      described_class.delete_timeline_event(noteable, author)
     end
   end
 end

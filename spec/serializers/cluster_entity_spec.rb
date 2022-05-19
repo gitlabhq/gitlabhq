@@ -77,6 +77,14 @@ RSpec.describe ClusterEntity do
 
         expect(subject[:gitlab_managed_apps_logs_path]).to eq(log_explorer_path)
       end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(monitor_logging: false)
+        end
+
+        specify { is_expected.not_to include(:gitlab_managed_apps_logs_path) }
+      end
     end
 
     context 'enable_advanced_logs_querying' do
@@ -97,6 +105,14 @@ RSpec.describe ClusterEntity do
 
           expect(subject[:enable_advanced_logs_querying]).to be true
         end
+      end
+
+      context 'when feature is disabled' do
+        before do
+          stub_feature_flags(monitor_logging: false)
+        end
+
+        specify { is_expected.not_to include(:enable_advanced_logs_querying) }
       end
     end
   end

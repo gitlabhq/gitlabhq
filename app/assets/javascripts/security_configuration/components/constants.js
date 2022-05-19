@@ -55,7 +55,7 @@ export const DAST_DESCRIPTION = s__(
 );
 export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/index');
 export const DAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/dast/index', {
-  anchor: 'enable-dast',
+  anchor: 'enable-automatic-dast-run',
 });
 export const DAST_BADGE_TEXT = __('Available on-demand');
 export const DAST_BADGE_TOOLTIP = __(
@@ -126,7 +126,7 @@ export const COVERAGE_FUZZING_HELP_PATH = helpPagePath(
 );
 export const COVERAGE_FUZZING_CONFIG_HELP_PATH = helpPagePath(
   'user/application_security/coverage_fuzzing/index',
-  { anchor: 'configuration' },
+  { anchor: 'enable-coverage-guided-fuzz-testing' },
 );
 
 export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
@@ -310,3 +310,7 @@ export const TEMP_PROVIDER_URLS = {
   Kontra: 'https://application.security/',
   [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
 };
+
+export const LICENSE_ULTIMATE = 'ultimate';
+export const LICENSE_FREE = 'free';
+export const LICENSE_PREMIUM = 'premium';

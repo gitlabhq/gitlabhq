@@ -1,3 +1,4 @@
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as UserApi from '~/api/user_api';
 import {
   openUserCountsBroadcast,
@@ -24,9 +25,13 @@ describe('User Merge Requests', () => {
     newBroadcastChannelMock = jest.fn().mockImplementation(() => channelMock);
 
     global.BroadcastChannel = newBroadcastChannelMock;
-    setFixtures(
+    setHTMLFixture(
       `<div><div class="${MR_COUNT_CLASS}">0</div><div class="js-assigned-mr-count"></div><div class="js-reviewer-mr-count"></div></div>`,
     );
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   const findMRCountText = () => document.body.querySelector(`.${MR_COUNT_CLASS}`).textContent;

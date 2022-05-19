@@ -17,10 +17,6 @@ module QA
         end
       end
 
-      def fabricate_via_api!
-        super
-      end
-
       def api_get_path
         "/projects/#{project.id}/deploy_tokens"
       end

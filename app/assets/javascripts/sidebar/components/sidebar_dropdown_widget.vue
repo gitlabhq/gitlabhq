@@ -331,20 +331,19 @@ export default {
         :data-testid="`select-${formatIssuableAttribute.kebab}`"
         :class="isClassicSidebar ? 'hide-collapsed' : 'gl-mt-3'"
       >
-        <span v-if="updating" class="gl-font-weight-bold">{{ selectedTitle }}</span>
+        <span v-if="updating">{{ selectedTitle }}</span>
         <span v-else-if="!currentAttribute" class="gl-text-gray-500">
           {{ $options.i18n.none }}
         </span>
         <slot
           v-else
           name="value"
-          :attributeTitle="attributeTitle"
-          :attributeUrl="attributeUrl"
-          :currentAttribute="currentAttribute"
+          :attribute-title="attributeTitle"
+          :attribute-url="attributeUrl"
+          :current-attribute="currentAttribute"
         >
           <gl-link
             v-gl-tooltip="tooltipText"
-            class="gl-text-gray-900! gl-font-weight-bold"
             :href="attributeUrl"
             :data-qa-selector="`${formatIssuableAttribute.snake}_link`"
           >
@@ -389,9 +388,9 @@ export default {
           <slot
             v-else
             name="list"
-            :attributesList="attributesList"
-            :isAttributeChecked="isAttributeChecked"
-            :updateAttribute="updateAttribute"
+            :attributes-list="attributesList"
+            :is-attribute-checked="isAttributeChecked"
+            :update-attribute="updateAttribute"
           >
             <gl-dropdown-item
               v-for="attrItem in attributesList"

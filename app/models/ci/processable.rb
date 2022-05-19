@@ -101,6 +101,21 @@ module Ci
       :merge_train_pipeline?,
       to: :pipeline
 
+    def clone(current_user:)
+      new_attributes = self.class.clone_accessors.to_h do |attribute|
+        [attribute, public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
+      end
+
+      if persisted_environment.present?
+        new_attributes[:metadata_attributes] ||= {}
+        new_attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
+      end
+
+      new_attributes[:user] = current_user
+
+      self.class.new(new_attributes)
+    end
+
     def retryable?
       return false if retried? || archived? || deployment_rejected?
 

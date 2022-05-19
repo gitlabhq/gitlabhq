@@ -18,8 +18,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep,
-    bundler-audit, retire.js, gemnasium, gemnasium-maven, gemnasium-python,
+    bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python,
     license-finder,
     dast, dast-runner-validation, api-fuzzing
 
@@ -68,6 +67,8 @@ variables:
 
 bandit:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "2"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -75,6 +76,8 @@ bandit:
 
 brakeman:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -91,6 +94,8 @@ gosec:
 
 spotbugs:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -98,6 +103,8 @@ spotbugs:
 
 flawfinder:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -105,6 +112,8 @@ flawfinder:
 
 phpcs-security-audit:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -121,6 +130,8 @@ security-code-scan:
 
 nodejs-scan:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -128,6 +139,8 @@ nodejs-scan:
 
 eslint:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "2"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -140,10 +153,12 @@ secrets:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "3"
+    SECURE_BINARIES_ANALYZER_VERSION: "4"
 
 semgrep:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -151,6 +166,8 @@ semgrep:
 
 sobelow:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -158,6 +175,8 @@ sobelow:
 
 pmd-apex:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -165,6 +184,8 @@ pmd-apex:
 
 kubesec:
   extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "3"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
@@ -173,20 +194,6 @@ kubesec:
 #
 # Dependency Scanning jobs
 #
-
-bundler-audit:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bbundler-audit\b/
-
-retire.js:
-  extends: .download_images
-  only:
-    variables:
-      - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bretire\.js\b/
 
 gemnasium:
   extends: .download_images

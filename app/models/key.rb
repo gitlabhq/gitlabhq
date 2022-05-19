@@ -5,7 +5,7 @@ require 'digest/md5'
 class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
-  include Sha256Attribute
+  include ShaAttribute
   include Expirable
   include FromUnion
 
@@ -24,17 +24,12 @@ class Key < ApplicationRecord
     length: { maximum: 5000 },
     format: { with: /\A(#{Gitlab::SSHPublicKey.supported_algorithms.join('|')})/ }
 
-  validates :fingerprint,
-    uniqueness: true,
-    presence: { message: 'cannot be generated' },
-    unless: -> { Gitlab::FIPS.enabled? }
-
   validates :fingerprint_sha256,
     uniqueness: true,
-    presence: { message: 'cannot be generated' },
-    if: -> { Gitlab::FIPS.enabled? }
+    presence: { message: 'cannot be generated' }
 
   validate :key_meets_restrictions
+  validate :expiration, on: :create
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -153,6 +148,10 @@ class Key < ApplicationRecord
     allowed_types = Gitlab::CurrentSettings.allowed_key_types.map(&:upcase)
 
     "type is forbidden. Must be #{Gitlab::Utils.to_exclusive_sentence(allowed_types)}"
+  end
+
+  def expiration
+    errors.add(:key, message: 'has expired') if expired?
   end
 end
 

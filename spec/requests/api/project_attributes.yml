@@ -99,6 +99,7 @@ ci_cd_settings:
     default_git_depth: ci_default_git_depth
     forward_deployment_enabled: ci_forward_deployment_enabled
     job_token_scope_enabled: ci_job_token_scope_enabled
+    separated_caches: ci_separated_caches
 
 build_import_state: # import_state
   unexposed_attributes:

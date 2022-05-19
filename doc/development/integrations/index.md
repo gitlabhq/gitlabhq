@@ -134,7 +134,7 @@ By default, the integration form provides:
 - Checkboxes for each of the trigger events returned from `Integration#configurable_events`.
 
 You can also add help text at the top of the form by either overriding `Integration#help`,
-or providing a template in `app/views/projects/services/$INTEGRATION_NAME/_help.html.haml`.
+or providing a template in `app/views/shared/integrations/$INTEGRATION_NAME/_help.html.haml`.
 
 To add your custom properties to the form, you can define the metadata for them in `Integration#fields`.
 
@@ -275,7 +275,7 @@ as described above in [Customize the frontend form](#customize-the-frontend-form
 our [usability guidelines](https://design.gitlab.com/usability/helping-users) for help text.
 
 For more detailed documentation, provide a page in `doc/user/project/integrations`,
-and link it from the [Integrations overview](../../user/project/integrations/overview.md).
+and link it from the [Integrations overview](../../user/project/integrations/index.md).
 
 You can also refer to our general [documentation guidelines](../documentation/index.md).
 

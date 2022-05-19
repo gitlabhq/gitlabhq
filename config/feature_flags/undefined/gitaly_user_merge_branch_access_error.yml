@@ -1,0 +1,8 @@
+---
+name: gitaly_user_merge_branch_access_error
+introduced_by_url: https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3705
+rollout_issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/3757
+milestone: '14.3'
+type: undefined
+group: group::gitaly
+default_enabled: false

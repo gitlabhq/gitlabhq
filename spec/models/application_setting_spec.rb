@@ -83,10 +83,14 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:container_registry_import_max_retries).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_start_max_retries).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_max_step_duration).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_pre_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_tags_count) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_retries) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_start_max_retries) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_step_duration) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_timeout) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_import_timeout) }
 
     it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
     it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
@@ -131,6 +135,12 @@ RSpec.describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:raw_blob_request_limit) }
     it { is_expected.not_to allow_value(10.5).for(:raw_blob_request_limit) }
     it { is_expected.not_to allow_value(-1).for(:raw_blob_request_limit) }
+
+    it { is_expected.to allow_value(0).for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value('abc').for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value(nil).for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value(10.5).for(:pipeline_limit_per_project_user_sha) }
+    it { is_expected.not_to allow_value(-1).for(:pipeline_limit_per_project_user_sha) }
 
     it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
 
@@ -415,6 +425,14 @@ RSpec.describe ApplicationSetting do
       is_expected.to validate_numericality_of(:max_attachment_size)
         .only_integer
         .is_greater_than(0)
+    end
+
+    it { is_expected.to validate_presence_of(:max_export_size) }
+
+    specify do
+      is_expected.to validate_numericality_of(:max_export_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
     end
 
     it { is_expected.to validate_presence_of(:max_import_size) }
@@ -1336,5 +1354,17 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:inactive_projects_delete_after_months).is_greater_than(0) }
 
     it { is_expected.to validate_numericality_of(:inactive_projects_min_size_mb).is_greater_than_or_equal_to(0) }
+
+    it "deletes the redis key used for tracking inactive projects deletion warning emails when setting is updated",
+       :clean_gitlab_redis_shared_state do
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.hset("inactive_projects_deletion_warning_email_notified", "project:1", "2020-01-01")
+      end
+
+      Gitlab::Redis::SharedState.with do |redis|
+        expect { setting.update!(inactive_projects_delete_after_months: 6) }
+          .to change { redis.hgetall('inactive_projects_deletion_warning_email_notified') }.to({})
+      end
+    end
   end
 end

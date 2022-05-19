@@ -15,7 +15,7 @@ module Gitlab
 
       def feature_enabled?(actor = nil)
         # Some CI jobs grep for Feature.enabled? in our codebase, so it is important this reference stays around.
-        Feature.enabled?(:sourcegraph, actor, default_enabled: :yaml)
+        Feature.enabled?(:sourcegraph, actor)
       end
 
       private

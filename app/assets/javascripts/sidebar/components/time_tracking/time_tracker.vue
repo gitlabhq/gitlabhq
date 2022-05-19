@@ -204,7 +204,7 @@ export default {
       :time-estimate-human-readable="humanTimeEstimate"
     />
     <div
-      class="hide-collapsed gl-line-height-20 gl-text-gray-900 gl-display-flex gl-align-items-center"
+      class="hide-collapsed gl-line-height-20 gl-text-gray-900 gl-display-flex gl-align-items-center gl-font-weight-bold gl-mr-3"
     >
       {{ __('Time tracking') }}
       <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" class="gl-ml-2" inline />
@@ -221,8 +221,7 @@ export default {
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">
       <div v-if="showEstimateOnlyState" data-testid="estimateOnlyPane">
-        <span class="gl-font-weight-bold">{{ $options.i18n.estimatedOnlyText }} </span
-        >{{ humanTimeEstimate }}
+        <span>{{ $options.i18n.estimatedOnlyText }} </span>{{ humanTimeEstimate }}
       </div>
       <time-tracking-spent-only-pane
         v-if="showSpentOnlyState"
@@ -250,6 +249,7 @@ export default {
         </gl-link>
         <gl-modal
           modal-id="time-tracking-report"
+          size="lg"
           :title="__('Time tracking report')"
           :hide-footer="true"
         >

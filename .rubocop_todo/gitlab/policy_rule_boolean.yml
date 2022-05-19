@@ -1,0 +1,4 @@
+---
+Gitlab/PolicyRuleBoolean:
+  Exclude:
+    - 'ee/app/policies/ee/identity_provider_policy.rb'

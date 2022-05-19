@@ -133,8 +133,8 @@ You can find more information on table partitioning for PostgreSQL in the
 [documentation page for table partitioning](https://www.postgresql.org/docs/12/ddl-partitioning.html).
 
 Partitioning by date intervals (for example, month, year) allows us to create much smaller tables
-(partitions) for each date interval and only access the most recent partition(s) for any
-application related operation.
+(partitions) for each date interval and only access the most recent partitions for any
+application-related operation.
 
 We have to set the partitioning key based on the date interval of interest, which may depend on two
 factors:
@@ -214,7 +214,7 @@ offloading metadata but only for the case of old data.
 In the simplest use case we can provide fast and direct access to recent data, while allowing users
 to download an archive with older data. This is an option evaluated in the `audit_events` use case.
 Depending on the country and industry, audit events may have a very long retention period, while
-only the past month(s) of data are actively accessed through GitLab interface.
+only the past months of data are actively accessed through GitLab interface.
 
 Additional use cases may include exporting data to a data warehouse or other types of data stores as
 they may be better suited for processing that type of data. An example can be JSON logs that we

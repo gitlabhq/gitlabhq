@@ -34,6 +34,10 @@ module Mutations
                 required: false,
                 description: 'Description of or notes for the organization.'
 
+        argument :active, GraphQL::Types::Boolean,
+                required: false,
+                description: 'State of the organization.'
+
         def resolve(args)
           organization = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(args.delete(:id), expected_type: ::CustomerRelations::Organization))
           raise_resource_not_available_error! unless organization

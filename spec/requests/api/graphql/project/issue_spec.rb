@@ -144,10 +144,7 @@ RSpec.describe 'Query.project(fullPath).issue(iid)' do
 
           data = graphql_data.dig(*path)
 
-          expect(data).to match(
-            a_hash_including('id' => global_id_of(version),
-                             'sha' => version.sha)
-          )
+          expect(data).to match a_graphql_entity_for(version, :sha)
         end
       end
 
@@ -184,6 +181,6 @@ RSpec.describe 'Query.project(fullPath).issue(iid)' do
   end
 
   def id_hash(object)
-    a_hash_including('id' => global_id_of(object))
+    a_graphql_entity_for(object)
   end
 end

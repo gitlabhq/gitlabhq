@@ -5,6 +5,7 @@ class Import::BaseController < ApplicationController
 
   before_action -> { check_rate_limit!(:project_import, scope: [current_user, :project_import], redirect_back: true) }, only: [:create]
   feature_category :importers
+  urgency :low
 
   def status
     respond_to do |format|

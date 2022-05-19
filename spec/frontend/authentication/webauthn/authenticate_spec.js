@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebAuthnAuthenticate from '~/authentication/webauthn/authenticate';
 import MockWebAuthnDevice from './mock_webauthn_device';
@@ -34,7 +35,7 @@ describe('WebAuthnAuthenticate', () => {
   };
 
   beforeEach(() => {
-    loadFixtures('webauthn/authenticate.html');
+    loadHTMLFixture('webauthn/authenticate.html');
     fallbackElement = document.createElement('div');
     fallbackElement.classList.add('js-2fa-form');
     webAuthnDevice = new MockWebAuthnDevice();
@@ -60,6 +61,10 @@ describe('WebAuthnAuthenticate', () => {
       fallbackElement,
     );
     submitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('with webauthn unavailable', () => {

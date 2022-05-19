@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
@@ -11,7 +12,7 @@ describe('BadgeListRow component', () => {
   let vm;
 
   beforeEach(() => {
-    setFixtures(`
+    setHTMLFixture(`
       <div id="delete-badge-modal" class="modal"></div>
       <div id="dummy-element"></div>
     `);
@@ -29,6 +30,7 @@ describe('BadgeListRow component', () => {
 
   afterEach(() => {
     vm.$destroy();
+    resetHTMLFixture();
   });
 
   it('renders the badge', () => {

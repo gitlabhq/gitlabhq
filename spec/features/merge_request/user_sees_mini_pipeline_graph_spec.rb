@@ -61,38 +61,6 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js do
       wait_for_requests
     end
 
-    # Status icon button styles should update as described in
-    # https://gitlab.com/gitlab-org/gitlab-foss/issues/42769
-    it 'has unique styles for default, :hover, :active, and :focus states' do
-      default_background_color, default_foreground_color, default_box_shadow = get_toggle_colors(dropdown_selector)
-
-      toggle.hover
-      hover_background_color, hover_foreground_color, hover_box_shadow = get_toggle_colors(dropdown_selector)
-
-      page.driver.browser.action.click_and_hold(toggle.native).perform
-      active_background_color, active_foreground_color, active_box_shadow = get_toggle_colors(dropdown_selector)
-      page.driver.browser.action.release(toggle.native).perform
-
-      page.driver.browser.action.click(toggle.native).move_by(100, 100).perform
-      focus_background_color, focus_foreground_color, focus_box_shadow = get_toggle_colors(dropdown_selector)
-
-      expect(default_background_color).not_to eq(hover_background_color)
-      expect(hover_background_color).not_to eq(active_background_color)
-      expect(default_background_color).not_to eq(active_background_color)
-
-      expect(default_foreground_color).not_to eq(hover_foreground_color)
-      expect(hover_foreground_color).not_to eq(active_foreground_color)
-      expect(default_foreground_color).not_to eq(active_foreground_color)
-
-      expect(focus_background_color).to eq(hover_background_color)
-      expect(focus_foreground_color).to eq(hover_foreground_color)
-
-      expect(default_box_shadow).to eq('none')
-      expect(hover_box_shadow).to eq('none')
-      expect(active_box_shadow).not_to eq('none')
-      expect(focus_box_shadow).not_to eq('none')
-    end
-
     it 'shows tooltip when hovered' do
       toggle.hover
 
@@ -146,16 +114,5 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js do
         expect(page).to have_selector('.tooltip')
       end
     end
-  end
-
-  private
-
-  def get_toggle_colors(selector)
-    find(selector)
-    [
-      evaluate_script("$('#{selector} button:visible').css('background-color');"),
-      evaluate_script("$('#{selector} button:visible svg').css('fill');"),
-      evaluate_script("$('#{selector} button:visible').css('box-shadow');")
-    ]
   end
 end

@@ -7,6 +7,7 @@
   variables:
     SETUP_DB: "false"
     ENABLE_SPRING: "1"
+    SKIP_LOG_INITIALIZER_CONNECTIONS: "1"
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
@@ -75,7 +76,7 @@ eslint:
     USE_BUNDLE_INSTALL: "false"
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
-    - run_timed_command "yarn run lint:eslint:all --parser-options=schema:${GRAPHQL_SCHEMA_APOLLO_FILE}"
+    - run_timed_command "yarn run lint:eslint:all"
 
 eslint as-if-foss:
   extends:
@@ -111,7 +112,7 @@ rubocop:
   script:
     - run_timed_command "bundle exec rubocop --parallel"
 
-qa:testcases:
+qa:metadata-lint:
   extends:
     - .static-analysis-base
     - .static-analysis:rules:ee-and-foss-qa
@@ -123,6 +124,7 @@ qa:testcases:
     - run_timed_command "bundle exec bin/qa Test::Instance::All http://localhost:3000 --test-metadata-only"
     - cd ..
     - run_timed_command "./scripts/qa/testcases-check qa/tmp/test-metadata.json"
+    - run_timed_command "./scripts/qa/quarantine-types-check qa/tmp/test-metadata.json"
   variables:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"

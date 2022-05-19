@@ -1869,6 +1869,61 @@ RSpec.describe NotificationService, :mailer do
         let(:notification_trigger) { notification.new_merge_request(merge_request, @u_disabled) }
       end
 
+      describe 'Approvals' do
+        let(:notification_target)  { merge_request }
+        let(:maintainer) { create(:user) }
+
+        describe '#approve_mr' do
+          it 'will notify the author, subscribers, and assigned users' do
+            notification.approve_mr(merge_request, maintainer)
+
+            merge_request.assignees.each { |assignee| should_email(assignee) }
+            should_email(merge_request.author)
+            should_email(@u_watcher)
+            should_email(@u_participant_mentioned)
+            should_email(@subscribed_participant)
+            should_email(@subscriber)
+            should_email(@watcher_and_subscriber)
+            should_email(@u_guest_watcher)
+
+            should_not_email(@unsubscriber)
+            should_not_email(@u_participating)
+            should_not_email(@u_disabled)
+            should_not_email(@u_lazy_participant)
+
+            expect(email_recipients.size).to eq(8)
+            # assignee, author, @u_watcher,
+            # @u_participant_mentioned, @subscribed_participant,
+            # @subscriber, @watcher_and_subscriber, @u_guest_watcher
+          end
+        end
+
+        describe '#unapprove_mr' do
+          it 'will notify the author, subscribers, and assigned users' do
+            notification.unapprove_mr(merge_request, maintainer)
+
+            merge_request.assignees.each { |assignee| should_email(assignee) }
+            should_email(merge_request.author)
+            should_email(@u_watcher)
+            should_email(@u_participant_mentioned)
+            should_email(@subscribed_participant)
+            should_email(@subscriber)
+            should_email(@watcher_and_subscriber)
+            should_email(@u_guest_watcher)
+
+            should_not_email(@unsubscriber)
+            should_not_email(@u_participating)
+            should_not_email(@u_disabled)
+            should_not_email(@u_lazy_participant)
+
+            expect(email_recipients.size).to eq(8)
+            # assignee, author, @u_watcher,
+            # @u_participant_mentioned, @subscribed_participant,
+            # @subscriber, @watcher_and_subscriber, @u_guest_watcher
+          end
+        end
+      end
+
       context 'participating' do
         it_behaves_like 'participating by assignee notification' do
           let(:participant) { create(:user, username: 'user-participant')}
@@ -3650,6 +3705,26 @@ RSpec.describe NotificationService, :mailer do
       around do |example|
         perform_enqueued_jobs { example.run }
       end
+    end
+  end
+
+  describe '#inactive_project_deletion_warning' do
+    let_it_be(:deletion_date) { Date.current }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+
+    before do
+      project.add_maintainer(maintainer)
+    end
+
+    subject { notification.inactive_project_deletion_warning(project, deletion_date) }
+
+    it "sends email to project owners and maintainers" do
+      expect { subject }.to have_enqueued_email(project, maintainer, deletion_date,
+                                                mail: "inactive_project_deletion_warning_email")
+      expect { subject }.not_to have_enqueued_email(project, developer, deletion_date,
+                                                    mail: "inactive_project_deletion_warning_email")
     end
   end
 

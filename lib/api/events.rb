@@ -9,6 +9,7 @@ module API
     allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
 
     feature_category :users
+    urgency :low
 
     resource :events do
       desc "List currently authenticated user's events" do

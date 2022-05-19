@@ -11,7 +11,10 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
-import { SortDirection } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  FILTERED_SEARCH_TERM,
+  SortDirection,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 
@@ -68,6 +71,10 @@ const createComponent = ({
 describe('FilteredSearchBarRoot', () => {
   let wrapper;
 
+  const findGlButton = () => wrapper.findComponent(GlButton);
+  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
+  const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
+
   beforeEach(() => {
     wrapper = createComponent({ sortOptions: mockSortOptions });
   });
@@ -79,7 +86,7 @@ describe('FilteredSearchBarRoot', () => {
   describe('data', () => {
     it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props and displays the sort dropdown', () => {
       expect(wrapper.vm.filterValue).toEqual([]);
-      expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[0].sortDirection.descending);
+      expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[0]);
       expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.descending);
       expect(wrapper.find(GlButtonGroup).exists()).toBe(true);
       expect(wrapper.find(GlButton).exists()).toBe(true);
@@ -225,9 +232,7 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('initializes `recentSearchesPromise` prop with a promise by using `recentSearchesService.fetch()`', () => {
-        jest
-          .spyOn(wrapper.vm.recentSearchesService, 'fetch')
-          .mockReturnValue(new Promise(() => []));
+        jest.spyOn(wrapper.vm.recentSearchesService, 'fetch').mockResolvedValue([]);
 
         wrapper.vm.setupRecentSearch();
 
@@ -487,6 +492,42 @@ describe('FilteredSearchBarRoot', () => {
 
       expect(sortButtonEl.attributes('title')).toBe('Sort direction: Descending');
       expect(sortButtonEl.props('icon')).toBe('sort-highest');
+    });
+  });
+
+  describe('watchers', () => {
+    const tokenValue = {
+      id: 'id-1',
+      type: FILTERED_SEARCH_TERM,
+      value: { data: '' },
+    };
+
+    it('syncs filter value', async () => {
+      await wrapper.setProps({ initialFilterValue: [tokenValue], syncFilterAndSort: true });
+
+      expect(findGlFilteredSearch().props('value')).toEqual([tokenValue]);
+    });
+
+    it('does not sync filter value when syncFilterAndSort=false', async () => {
+      await wrapper.setProps({ initialFilterValue: [tokenValue], syncFilterAndSort: false });
+
+      expect(findGlFilteredSearch().props('value')).toEqual([]);
+    });
+
+    it('syncs sort values', async () => {
+      await wrapper.setProps({ initialSortBy: 'updated_asc', syncFilterAndSort: true });
+
+      expect(findGlDropdown().props('text')).toBe('Last updated');
+      expect(findGlButton().props('icon')).toBe('sort-lowest');
+      expect(findGlButton().attributes('aria-label')).toBe('Sort direction: Ascending');
+    });
+
+    it('does not sync sort values when syncFilterAndSort=false', async () => {
+      await wrapper.setProps({ initialSortBy: 'updated_asc', syncFilterAndSort: false });
+
+      expect(findGlDropdown().props('text')).toBe('Created date');
+      expect(findGlButton().props('icon')).toBe('sort-highest');
+      expect(findGlButton().attributes('aria-label')).toBe('Sort direction: Descending');
     });
   });
 });

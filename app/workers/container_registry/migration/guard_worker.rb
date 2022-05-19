@@ -13,7 +13,7 @@ module ContainerRegistry
       feature_category :container_registry
       urgency :low
       worker_resource_boundary :unknown
-      deduplicate :until_executed
+      deduplicate :until_executed, ttl: 5.minutes
       idempotent!
 
       def perform
@@ -64,7 +64,17 @@ module ContainerRegistry
       end
 
       def long_running_migration?(repository)
-        migration_start_timestamp(repository).before?(long_running_migration_threshold)
+        timeout = long_running_migration_threshold
+
+        if Feature.enabled?(:registry_migration_guard_thresholds)
+          timeout = if repository.migration_state == 'pre_importing'
+                      migration.pre_import_timeout.seconds
+                    else
+                      migration.import_timeout.seconds
+                    end
+        end
+
+        migration_start_timestamp(repository).before?(timeout.ago)
       end
 
       def external_state_matches_migration_state?(repository)
@@ -83,17 +93,21 @@ module ContainerRegistry
       end
 
       def step_before_timestamp
-        ::ContainerRegistry::Migration.max_step_duration.seconds.ago
+        migration.max_step_duration.seconds.ago
       end
 
       def max_capacity
         # doubling the actual capacity to prevent issues in case the capacity
         # is not properly applied
-        ::ContainerRegistry::Migration.capacity * 2
+        migration.capacity * 2
+      end
+
+      def migration
+        ::ContainerRegistry::Migration
       end
 
       def long_running_migration_threshold
-        @threshold ||= 30.minutes.ago
+        @threshold ||= 10.minutes
       end
 
       def cancel_long_running_migration(repository)
@@ -101,7 +115,11 @@ module ContainerRegistry
 
         case result[:status]
         when :ok
-          repository.skip_import(reason: :migration_canceled)
+          if repository.nearing_or_exceeded_retry_limit?
+            repository.skip_import(reason: :migration_canceled)
+          else
+            repository.abort_import
+          end
         when :bad_request
           repository.reconcile_import_status(result[:state]) do
             repository.abort_import

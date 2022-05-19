@@ -7,7 +7,25 @@ module Integrations
     prepend EnableSslVerification
     extend Gitlab::Utils::Override
 
-    prop_accessor :jenkins_url, :project_name, :username, :password
+    field :jenkins_url,
+      title: s_('ProjectService|Jenkins server URL'),
+      required: true,
+      placeholder: 'http://jenkins.example.com',
+      help: s_('The URL of the Jenkins server.')
+
+    field :project_name,
+      required: true,
+      placeholder: 'my_project_name',
+      help: s_('The name of the Jenkins project. Copy the name from the end of the URL to the project.')
+
+    field :username,
+      help: s_('The username for the Jenkins server.')
+
+    field :password,
+      type: 'password',
+      help: s_('The password for the Jenkins server.'),
+      non_empty_password_title: s_('ProjectService|Enter new password.'),
+      non_empty_password_help: s_('ProjectService|Leave blank to use your current password.')
 
     before_validation :reset_password
 
@@ -15,7 +33,6 @@ module Integrations
     validates :project_name, presence: true, if: :activated?
     validates :username, presence: true, if: ->(service) { service.activated? && service.password_touched? && service.password.present? }
 
-    default_value_for :push_events, true
     default_value_for :merge_requests_events, false
     default_value_for :tag_push_events, false
 
@@ -71,38 +88,6 @@ module Integrations
 
     def self.to_param
       'jenkins'
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'jenkins_url',
-          title: s_('ProjectService|Jenkins server URL'),
-          required: true,
-          placeholder: 'http://jenkins.example.com',
-          help: s_('The URL of the Jenkins server.')
-        },
-        {
-          type: 'text',
-          name: 'project_name',
-          required: true,
-          placeholder: 'my_project_name',
-          help: s_('The name of the Jenkins project. Copy the name from the end of the URL to the project.')
-        },
-        {
-          type: 'text',
-          name: 'username',
-          help: s_('The username for the Jenkins server.')
-        },
-        {
-          type: 'password',
-          name: 'password',
-          help: s_('The password for the Jenkins server.'),
-          non_empty_password_title: s_('ProjectService|Enter new password.'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current password.')
-        }
-      ]
     end
   end
 end

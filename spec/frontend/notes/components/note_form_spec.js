@@ -6,7 +6,7 @@ import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
+import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
@@ -45,8 +45,6 @@ describe('issue_note_form component', () => {
       noteBody: 'Magni suscipit eius consectetur enim et ex et commodi.',
       noteId: '545',
     };
-
-    gon.features = { markdownContinueLists: true };
   });
 
   afterEach(() => {
@@ -115,6 +113,23 @@ describe('issue_note_form component', () => {
 
       expect(textarea.attributes('data-supports-quick-actions')).toBe('true');
     });
+
+    it.each`
+      confidential | placeholder
+      ${false}     | ${'Write a comment or drag your files here…'}
+      ${true}      | ${'Write an internal note or drag your files here…'}
+    `(
+      'should set correct textarea placeholder text when discussion confidentiality is $confidential',
+      ({ confidential, placeholder }) => {
+        props.note = {
+          ...note,
+          confidential,
+        };
+        wrapper = createComponentWrapper();
+
+        expect(wrapper.find('textarea').attributes('placeholder')).toBe(placeholder);
+      },
+    );
 
     it('should link to markdown docs', () => {
       const { markdownDocsPath } = notesDataMock;

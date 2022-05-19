@@ -6,16 +6,11 @@ module Members
       private
 
       def can_create_new_member?
-        # order is important here!
-        # The `admin_project_member` check has side-effects that causes projects not be created if this area is hit
-        # during project creation.
-        # Call that triggers is current_user.can?(:admin_project_member, member.project)
-        # I tracked back to base_policy.rb admin check and specifically in
-        # Gitlab::Auth::CurrentUserMode.new(@user).admin_mode? call.
-        # This calls user.admin? and that specific call causes issues with project creation in
-        # spec/requests/api/projects_spec.rb specs and others, mostly around project creation.
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/358931 for investigation
-        adding_the_creator_as_owner_in_a_personal_project? || current_user.can?(:admin_project_member, member.project)
+        # This access check(`admin_project_member`) will write to safe request store cache for the user being added.
+        # This means any operations inside the same request will need to purge that safe request
+        # store cache if operations are needed to be done inside the same request that checks max member access again on
+        # that user.
+        current_user.can?(:admin_project_member, member.project) || adding_the_creator_as_owner_in_a_personal_project?
       end
 
       def can_update_existing_member?

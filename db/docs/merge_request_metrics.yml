@@ -5,6 +5,6 @@ classes:
 feature_categories:
 - value_stream_management
 - code_review
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/487906b3861068a8f81125814f919a07bfab8469
+description: Store various metrics for merge requests
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'

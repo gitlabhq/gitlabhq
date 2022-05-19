@@ -50,7 +50,7 @@ function identifier(file) {
 
 export const isNotDiffable = (file) => file?.viewer?.name === viewerModes.not_diffable;
 
-export function prepareRawDiffFile({ file, allFiles, meta = false }) {
+export function prepareRawDiffFile({ file, allFiles, meta = false, index = -1 }) {
   const additionalProperties = {
     brokenSymlink: fileSymlinkInformation(file, allFiles),
     viewer: {
@@ -64,6 +64,10 @@ export function prepareRawDiffFile({ file, allFiles, meta = false }) {
   // We don't want duplicate IDs if that's the case, so we just don't assign an ID
   if (!meta && file.blob?.id && file.load_collapsed_diff_url) {
     additionalProperties.id = identifier(file);
+  }
+
+  if (index >= 0 && Number(index) === index) {
+    additionalProperties.order = index;
   }
 
   return Object.assign(file, additionalProperties);
@@ -87,6 +91,27 @@ export function isCollapsed(file) {
 
 export function getShortShaFromFile(file) {
   return file.content_sha ? truncateSha(String(file.content_sha)) : null;
+}
+
+export function match({ fileA, fileB, mode = 'universal' } = {}) {
+  const matching = {
+    universal: (a, b) => (a?.id && b?.id ? a.id === b.id : false),
+    /*
+     * MR mode can be wildly incorrect if there is ever the possibility of files from multiple MRs
+     *  (e.g. a browser-local merge request/file cache).
+     * That's why the default here is "universal" mode: UUIDs can't conflict, but you can opt into
+     *  the dangerous one.
+     *
+     * For reference:
+     *    file_identifier_hash === sha1( `${filePath}-${Boolean(isNew)}-${Boolean(isDeleted)}-${Boolean(isRenamed)}` )
+     */
+    mr: (a, b) =>
+      a?.file_identifier_hash && b?.file_identifier_hash
+        ? a.file_identifier_hash === b.file_identifier_hash
+        : false,
+  };
+
+  return (matching[mode] || (() => false))(fileA, fileB);
 }
 
 export function stats(file) {

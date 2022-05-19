@@ -41,7 +41,7 @@ Prerequisites:
 To export a project and its data, follow these steps:
 
 1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings**.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Export project**.
 1. After the export is generated, you should receive an email with a link to download the file.
@@ -82,6 +82,7 @@ The following items are **not** exported:
 - Merge Request Approvers and [the number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
+- Secure Files
 
 These content rules also apply to creating projects from templates on the
 [group](../../group/custom_project_templates.md)

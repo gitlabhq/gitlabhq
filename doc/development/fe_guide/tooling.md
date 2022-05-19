@@ -155,6 +155,13 @@ $ grep "eslint-disable.*import/no-deprecated" -r .
 ./app/assets/javascripts/issuable_form.js:  // eslint-disable-next-line import/no-deprecated
 ```
 
+### GraphQL schema and operations validation
+
+We use [`@graphql-eslint/eslint-plugin`](https://www.npmjs.com/package/@graphql-eslint/eslint-plugin)
+to lint GraphQL schema and operations. This plugin requires the entire schema to function properly.
+It is thus recommended to generate an up-to-date dump of the schema when running ESLint locally.
+You can do this by running the `./scripts/dump_graphql_schema` script.
+
 ## Formatting with Prettier
 
 > Support for `.graphql` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227280) in GitLab 13.2.

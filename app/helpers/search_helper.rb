@@ -374,8 +374,6 @@ module SearchHelper
         autocomplete: 'off'
       }
 
-    opts[:data]['runner-tags-endpoint'] = tag_list_admin_runners_path
-
     if @project.present?
       opts[:data]['project-id'] = @project.id
       opts[:data]['labels-endpoint'] = project_labels_path(@project)
@@ -445,7 +443,7 @@ module SearchHelper
     return false unless can?(current_user, :read_users_list)
     return true if @group
 
-    Feature.enabled?(:global_search_users_tab, current_user, type: :ops, default_enabled: :yaml)
+    Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
   end
 
   def issuable_state_to_badge_class(issuable)
@@ -479,7 +477,7 @@ module SearchHelper
   end
 
   def feature_flag_tab_enabled?(flag)
-    @group || Feature.enabled?(flag, current_user, type: :ops, default_enabled: true)
+    @group || Feature.enabled?(flag, current_user, type: :ops)
   end
 end
 

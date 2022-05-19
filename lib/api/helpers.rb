@@ -144,7 +144,7 @@ module API
       return true unless job_token_authentication?
       return true unless route_authentication_setting[:job_token_scope] == :project
 
-      ::Feature.enabled?(:ci_job_token_scope, project, default_enabled: :yaml) &&
+      ::Feature.enabled?(:ci_job_token_scope, project) &&
         current_authenticated_job.project == project
     end
 
@@ -160,7 +160,17 @@ module API
 
     def find_group!(id)
       group = find_group(id)
+      check_group_access(group)
+    end
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    def find_group_by_full_path!(full_path)
+      group = Group.find_by_full_path(full_path)
+      check_group_access(group)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def check_group_access(group)
       return group if can?(current_user, :read_group, group)
       return unauthorized! if authenticate_non_public?
 
@@ -384,7 +394,14 @@ module API
     end
 
     def order_options_with_tie_breaker
-      order_options = { params[:order_by] => params[:sort] }
+      order_by = if Feature.enabled?(:replace_order_by_created_at_with_id) &&
+                    params[:order_by] == 'created_at'
+                   'id'
+                 else
+                   params[:order_by]
+                 end
+
+      order_options = { order_by => params[:sort] }
       order_options['id'] ||= params[:sort] || 'asc'
       order_options
     end
@@ -555,6 +572,8 @@ module API
     def present_carrierwave_file!(file, supports_direct_download: true)
       return not_found! unless file&.exists?
 
+      log_artifact_size(file) if file.is_a?(JobArtifactUploader)
+
       if file.file_storage?
         present_disk_file!(file.path, file.filename)
       elsif supports_direct_download && file.class.direct_download_enabled?
@@ -567,9 +586,6 @@ module API
     end
 
     def increment_counter(event_name)
-      feature_name = "usage_data_#{event_name}"
-      return unless Feature.enabled?(feature_name, default_enabled: :yaml)
-
       Gitlab::UsageDataCounters.count(event_name)
     rescue StandardError => error
       Gitlab::AppLogger.warn("Redis tracking event failed for event: #{event_name}, message: #{error.message}")
@@ -708,14 +724,21 @@ module API
     # Deprecated. Use `send_artifacts_entry` instead.
     def legacy_send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
+      log_artifact_size(file)
 
       body ''
     end
 
     def send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
+      header(*Gitlab::Workhorse.detect_content_type)
+      log_artifact_size(file)
 
       body ''
+    end
+
+    def log_artifact_size(file)
+      Gitlab::ApplicationContext.push(artifact: file.model)
     end
 
     # The Grape Error Middleware only has access to `env` but not `params` nor

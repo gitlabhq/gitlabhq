@@ -175,7 +175,7 @@ export default {
           :debounce="300"
         />
         <div data-testid="content" class="dropdown-content">
-          <gl-loading-icon v-if="projectsListLoading" size="md" class="gl-p-5" />
+          <gl-loading-icon v-if="projectsListLoading" size="lg" class="gl-p-5" />
           <ul v-else>
             <gl-dropdown-item
               v-for="project in projects"
@@ -199,7 +199,7 @@ export default {
         >
           <gl-button
             category="primary"
-            variant="success"
+            variant="confirm"
             :disabled="!Boolean(selectedProject)"
             class="gl-text-center! issuable-move-button"
             @click="handleMoveClick"

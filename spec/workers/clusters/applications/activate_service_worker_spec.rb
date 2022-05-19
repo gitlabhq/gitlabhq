@@ -46,7 +46,7 @@ RSpec.describe Clusters::Applications::ActivateServiceWorker, '#perform' do
 
   context 'cluster does not exist' do
     it 'does not raise Record Not Found error' do
-      expect { described_class.new.perform(0, 'ignored in this context') }.not_to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.new.perform(0, 'ignored in this context') }.not_to raise_error
     end
   end
 end

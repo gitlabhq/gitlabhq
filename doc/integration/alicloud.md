@@ -1,6 +1,6 @@
 ---
-stage: Ecosystem
-group: Integrations
+stage: Manage
+group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -28,7 +28,7 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
    Select **Save**.
 
 1. Add OAuth scopes in the application details page:
- 
+
    1. Under the **Application Name** column, select the name of the application you created. The application's details page opens.
    1. Under the **Application OAuth Scopes** tab, select **Add OAuth Scopes**.
    1. Select the **aliuid** and **profile** checkboxes.

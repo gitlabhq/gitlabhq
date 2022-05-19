@@ -23,7 +23,7 @@ Personal access tokens are:
 
 - Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
 - Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
-  [GitLab managed Terraform state backend](../infrastructure/iac/terraform_state.md#using-a-gitlab-managed-terraform-state-backend-as-a-remote-data-source)
+  [GitLab-managed Terraform state backend](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)
   and [Docker container registry](../packages/container_registry/index.md#authenticate-with-the-container-registry),
 - Similar to [project access tokens](../project/settings/project_access_tokens.md) and [group access tokens](../group/settings/group_access_tokens.md), but are attached
   to a user rather than a project or group.
@@ -109,9 +109,7 @@ Personal access tokens expire on the date you define, at midnight UTC.
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.
 - In GitLab Ultimate, administrators can
-  [limit the lifetime of personal access tokens](../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-personal-access-tokens).
-- In GitLab Ultimate, administrators can choose whether or not to
-  [enforce personal access token expiration](../admin_area/settings/account_and_limit_settings.md#allow-expired-personal-access-tokens-to-be-used-deprecated).
+  [limit the lifetime of access tokens](../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
 
 ## Create a personal access token programmatically **(FREE SELF)**
 

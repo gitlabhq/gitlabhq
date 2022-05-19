@@ -57,6 +57,14 @@ module Ci
       end
     end
 
+    def retryable?
+      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project)
+
+      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
+
+      super
+    end
+
     def self.with_preloads
       preload(
         :metadata,
@@ -65,8 +73,11 @@ module Ci
       )
     end
 
-    def retryable?
-      false
+    def self.clone_accessors
+      %i[pipeline project ref tag options name
+         allow_failure stage stage_id stage_idx
+         yaml_variables when description needs_attributes
+         scheduling_type].freeze
     end
 
     def inherit_status_from_downstream!(pipeline)
@@ -204,7 +215,7 @@ module Ci
     end
 
     def downstream_variables
-      if ::Feature.enabled?(:ci_trigger_forward_variables, project, default_enabled: :yaml)
+      if ::Feature.enabled?(:ci_trigger_forward_variables, project)
         calculate_downstream_variables
           .reverse # variables priority
           .uniq { |var| var[:key] } # only one variable key to pass

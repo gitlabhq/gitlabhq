@@ -1,8 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: howto, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Use SSH keys to communicate with GitLab **(FREE)**
@@ -41,7 +40,7 @@ Administrators can [restrict which keys are permitted and their minimum lengths]
 The book [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-chapter-5-digital-signatures)
 suggests that [ED25519](https://ed25519.cr.yp.to/) keys are more secure and performant than RSA keys.
 
-OpenSSH 6.5 introduced ED25519 SSH keys in 2014 and they should be available on most
+OpenSSH 6.5 introduced ED25519 SSH keys in 2014, and they should be available on most
 operating systems.
 
 ### ED25519_SK SSH keys
@@ -60,7 +59,7 @@ must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later 
 
 ### RSA SSH keys
 
-Available documentation suggests that ED25519 is more secure than RSA.
+Available documentation suggests ED25519 is more secure than RSA.
 
 If you use an RSA key, the US National Institute of Science and Technology in
 [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf)
@@ -71,27 +70,27 @@ Review the `man` page for your installed `ssh-keygen` command for details.
 
 Before you create a key pair, see if a key pair already exists.
 
-1. On Windows, Linux, or macOS, go to your home directory.
+1. Go to your home directory.
 1. Go to the `.ssh/` subdirectory. If the `.ssh/` subdirectory doesn't exist,
    you are either not in the home directory, or you haven't used `ssh` before.
    In the latter case, you need to [generate an SSH key pair](#generate-an-ssh-key-pair).
 1. See if a file with one of the following formats exists:
 
-   | Algorithm | Public key | Private key |
-   | --------- | ---------- | ----------- |
+   | Algorithm             | Public key | Private key |
+   |-----------------------|------------|-------------|
    |  ED25519 (preferred)  | `id_ed25519.pub` | `id_ed25519` |
-   |  ED25519_SK | `id_ed25519_sk.pub` | `id_ed25519_sk` |
-   |  ECDSA_SK | `id_ecdsa_sk.pub` | `id_ecdsa_sk` |
-   |  RSA (at least 2048-bit key size)     | `id_rsa.pub` | `id_rsa` |
-   |  DSA (deprecated)      | `id_dsa.pub` | `id_dsa` |
-   |  ECDSA    | `id_ecdsa.pub` | `id_ecdsa` |
+   |  ED25519_SK           | `id_ed25519_sk.pub` | `id_ed25519_sk` |
+   |  ECDSA_SK             | `id_ecdsa_sk.pub` | `id_ecdsa_sk` |
+   |  RSA (at least 2048-bit key size) | `id_rsa.pub` | `id_rsa` |
+   |  DSA (deprecated)     | `id_dsa.pub` | `id_dsa` |
+   |  ECDSA                | `id_ecdsa.pub` | `id_ecdsa` |
 
 ## Generate an SSH key pair
 
-If you do not have an existing SSH key pair, generate a new one.
+If you do not have an existing SSH key pair, generate a new one:
 
 1. Open a terminal.
-1. Type `ssh-keygen -t` followed by the key type and an optional comment.
+1. Run `ssh-keygen -t` followed by the key type and an optional comment.
    This comment is included in the `.pub` file that's created.
    You may want to use an email address for the comment.
 
@@ -107,7 +106,7 @@ If you do not have an existing SSH key pair, generate a new one.
    ssh-keygen -t rsa -b 2048 -C "<comment>"
    ```
 
-1. Press Enter. Output similar to the following is displayed:
+1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:
 
    ```plaintext
    Generating public/private ed25519 key pair.
@@ -126,11 +125,10 @@ If you do not have an existing SSH key pair, generate a new one.
    Enter same passphrase again:
    ```
 
-1. A confirmation is displayed, including information about where your files are stored.
+   A confirmation is displayed, including information about where your files are stored.
 
-A public and private key are generated.
-[Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account) and keep
-the private key secure.
+A public and private key are generated. [Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account)
+and keep the private key secure.
 
 ### Configure SSH to point to a different directory
 
@@ -158,7 +156,7 @@ configure your SSH client to point to the directory where the private key is sto
      IdentityFile ~/.ssh/example_com_rsa
    ```
 
-   For more information on these settings, see the [`man ssh_config`](https://man.openbsd.org/ssh_config) page in the SSH configuration manual.
+For more information on these settings, see the [`man ssh_config`](https://man.openbsd.org/ssh_config) page in the SSH configuration manual.
 
 Public SSH keys must be unique to GitLab because they bind to your account.
 Your SSH key is the only identifier you have when you push code with SSH.
@@ -166,7 +164,7 @@ It must uniquely map to a single user.
 
 ### Update your SSH key passphrase
 
-You can update the passphrase for your SSH key.
+You can update the passphrase for your SSH key:
 
 1. Open a terminal and run this command:
 
@@ -174,34 +172,32 @@ You can update the passphrase for your SSH key.
    ssh-keygen -p -f /path/to/ssh_key
    ```
 
-1. At the prompts, type the passphrase and press Enter.
+1. At the prompts, enter the passphrase and then press <kbd>Enter</kbd>.
 
 ### Upgrade your RSA key pair to a more secure format
 
-If your version of OpenSSH is between 6.5 and 7.8,
-you can save your private RSA SSH keys in a more secure
-OpenSSH format.
+If your version of OpenSSH is between 6.5 and 7.8, you can save your private
+RSA SSH keys in a more secure OpenSSH format by opening a terminal and running
+this command:
 
-1. Open a terminal and run this command:
+```shell
+ssh-keygen -o -f ~/.ssh/id_rsa
+```
 
-   ```shell
-   ssh-keygen -o -f ~/.ssh/id_rsa
-   ```
+Alternatively, you can generate a new RSA key with the more secure encryption format with
+the following command:
 
-   Alternatively, you can generate a new RSA key with the more secure encryption format with
-   the following command:
-
-   ```shell
-   ssh-keygen -o -t rsa -b 4096 -C "<comment>"
-   ```
+```shell
+ssh-keygen -o -t rsa -b 4096 -C "<comment>"
+```
 
 ## Generate an SSH key pair for a FIDO/U2F hardware security key
 
-To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later.
+To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 
 1. Insert a hardware security key into your computer.
 1. Open a terminal.
-1. Type `ssh-keygen -t` followed by the key type and an optional comment.
+1. Run `ssh-keygen -t` followed by the key type and an optional comment.
    This comment is included in the `.pub` file that's created.
    You may want to use an email address for the comment.
 
@@ -229,7 +225,7 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later.
    from the security key by [`ssh-add -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-add.1#K)
    or  [`ssh-keygen -K`](https://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen#K).
 
-1. Select Enter. Output similar to the following is displayed:
+1. Press <kbd>Enter</kbd>. Output similar to the following is displayed:
 
    ```plaintext
    Generating public/private ed25519-sk key pair.
@@ -251,31 +247,31 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later.
    Enter same passphrase again:
    ```
 
-1. A confirmation is displayed, including information about where your files are stored.
+   A confirmation is displayed, including information about where your files are stored.
 
 A public and private key are generated.
 [Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account).
 
 ## Add an SSH key to your GitLab account
 
-To use SSH with GitLab, copy your public key to your GitLab account.
+To use SSH with GitLab, copy your public key to your GitLab account:
 
 1. Copy the contents of your public key file. You can do this manually or use a script.
    For example, to copy an ED25519 key to the clipboard:
 
-   **macOS:**
+   **macOS**
 
    ```shell
    tr -d '\n' < ~/.ssh/id_ed25519.pub | pbcopy
    ```
 
-   **Linux** (requires the `xclip` package):
+   **Linux** (requires the `xclip` package)
 
    ```shell
    xclip -sel clip < ~/.ssh/id_ed25519.pub
    ```
 
-   **Git Bash on Windows:**
+   **Git Bash on Windows**
 
    ```shell
    cat ~/.ssh/id_ed25519.pub | clip
@@ -298,8 +294,6 @@ To use SSH with GitLab, copy your public key to your GitLab account.
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
      you from using the key. Administrators can view expiration dates and use them for
      guidance when [deleting keys](admin_area/credentials_inventory.md#delete-a-users-ssh-key).
-   - GitLab 14.0 and later, the expiration date is enforced. Administrators can
-     [allow expired keys to be used](admin_area/settings/account_and_limit_settings.md#allow-expired-ssh-keys-to-be-used-deprecated).
    - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
    - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
 1. Select **Add key**.
@@ -308,9 +302,12 @@ To use SSH with GitLab, copy your public key to your GitLab account.
 
 Verify that your SSH key was added correctly.
 
+The following commands use the example hostname `gitlab.example.com`. Replace this example hostname with your GitLab instance's hostname, for example, `git@gitlab.com`.
+
 1. For GitLab.com, to ensure you're connecting to the correct server, confirm the
    [SSH host keys fingerprints](gitlab_com/index.md#ssh-host-keys-fingerprints).
-1. Open a terminal and run this command, replacing `gitlab.example.com` with your GitLab instance URL:
+1. Open a terminal and run this command, replacing `gitlab.example.com` with your
+   GitLab instance URL:
 
    ```shell
    ssh -T git@gitlab.example.com
@@ -326,7 +323,7 @@ Verify that your SSH key was added correctly.
    Warning: Permanently added 'gitlab.example.com' (ECDSA) to the list of known hosts.
    ```
 
-   Type `yes` and press Enter.
+   Type `yes` and press <kbd>Enter</kbd>.
 
 1. Run the `ssh -T git@gitlab.example.com` command again. You should receive a _Welcome to GitLab, `@username`!_ message.
 
@@ -352,10 +349,10 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 ## Use different accounts on a single GitLab instance
 
-You can use multiple accounts to connect to a single instance of GitLab.
-You can do this by using the command in the [previous topic](#use-different-keys-for-different-repositories).
-However, even if you set `IdentitiesOnly` to `yes`, you cannot sign in if an `IdentityFile` exists
-outside of a `Host` block.
+You can use multiple accounts to connect to a single instance of GitLab. You
+can do this by using the command in the [previous topic](#use-different-keys-for-different-repositories).
+However, even if you set `IdentitiesOnly` to `yes`, you cannot sign in if an
+`IdentityFile` exists outside of a `Host` block.
 
 Instead, you can assign aliases to hosts in the `~.ssh/config` file.
 

@@ -4,7 +4,7 @@
 
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
-    .col-sm-6
+    .col-md-6
       .gl-mb-2
         %strong{ data: { qa_selector: "milestone_link", qa_milestone_title: milestone.title } }
           = link_to truncate(milestone.title, length: 100), milestone_path(milestone)
@@ -33,18 +33,18 @@
       %div
         = render('shared/milestone_expired', milestone: milestone)
         - if milestone.group_milestone?
-          = gl_badge_tag milestone.group.full_name, variant: :info
+          = gl_badge_tag milestone.group.full_name, { variant: :info }, { class: 'gl-white-space-normal gl-text-left' }
         - if milestone.project_milestone?
-          = gl_badge_tag milestone.project.full_name, variant: :muted
+          = gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-white-space-normal gl-text-left' }
 
-    .col-sm-4.milestone-progress
+    .col-md-4.milestone-progress
       = milestone_progress_bar(milestone)
       = link_to pluralize(milestone.total_issues_count, _('Issue')), issues_path
       - if milestone.merge_requests_enabled?
         &middot;
         = link_to pluralize(milestone.total_merge_requests_count, _('Merge request')), merge_requests_path
       .float-lg-right.light #{milestone.percent_complete}% complete
-    .col-sm-2
+    .col-md-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
         - if @project # if in milestones list on project level
           - if can_admin_group_milestones?

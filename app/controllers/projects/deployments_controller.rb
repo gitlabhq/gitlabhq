@@ -4,6 +4,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   before_action :authorize_read_deployment!
 
   feature_category :continuous_delivery
+  urgency :low
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

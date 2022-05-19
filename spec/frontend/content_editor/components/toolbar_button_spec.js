@@ -46,7 +46,7 @@ describe('content_editor/components/toolbar_button', () => {
     wrapper.destroy();
   });
 
-  it('displays tertiary, small button with a provided label and icon', () => {
+  it('displays tertiary, medium button with a provided label and icon', () => {
     buildWrapper();
 
     expect(findButton().html()).toMatchSnapshot();

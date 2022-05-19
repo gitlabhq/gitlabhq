@@ -152,18 +152,18 @@ RSpec.describe Ci::PipelinesHelper do
       end
     end
 
-    describe 'the `registration_token` attribute' do
-      subject { data[:registration_token] }
+    describe 'when the project is eligible for the `ios_specific_templates` experiment' do
+      let_it_be(:project) { create(:project, :auto_devops_disabled, shared_runners_enabled: false) }
+      let_it_be(:user) { create(:user) }
 
-      describe 'when the project is eligible for the `ios_specific_templates` experiment' do
-        let_it_be(:project) { create(:project, :auto_devops_disabled) }
-        let_it_be(:user) { create(:user) }
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        project.add_developer(user)
+        create(:project_setting, project: project, target_platforms: %w(ios))
+      end
 
-        before do
-          allow(helper).to receive(:current_user).and_return(user)
-          project.add_developer(user)
-          create(:project_setting, project: project, target_platforms: %w(ios))
-        end
+      describe 'the `registration_token` attribute' do
+        subject { data[:registration_token] }
 
         context 'when the `ios_specific_templates` experiment variant is control' do
           before do
@@ -188,6 +188,38 @@ RSpec.describe Ci::PipelinesHelper do
 
           context 'when the user can register project runners' do
             it { is_expected.to eq(project.runners_token) }
+          end
+        end
+      end
+
+      describe 'the `ios_runners_available` attribute' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
+
+        subject { data[:ios_runners_available] }
+
+        context 'when the `ios_specific_templates` experiment variant is control' do
+          before do
+            stub_experiments(ios_specific_templates: :control)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the `ios_specific_templates` experiment variant is candidate' do
+          before do
+            stub_experiments(ios_specific_templates: :candidate)
+          end
+
+          context 'when shared runners are not enabled' do
+            it { is_expected.to eq('false') }
+          end
+
+          context 'when shared runners are enabled' do
+            let_it_be(:project) { create(:project, :auto_devops_disabled, shared_runners_enabled: true) }
+
+            it { is_expected.to eq('true') }
           end
         end
       end

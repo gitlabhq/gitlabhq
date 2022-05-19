@@ -29,7 +29,7 @@ module API
           mutually_exclusive :maintainer_note, :maintainer_note
           mutually_exclusive :active, :paused
         end
-        post '/', feature_category: :runner do
+        post '/', urgency: :low, feature_category: :runner do
           attributes = attributes_for_keys(%i[description maintainer_note maintenance_note active paused locked run_untagged tag_list access_level maximum_timeout])
             .merge(get_runner_details_from_request)
 
@@ -54,7 +54,7 @@ module API
         params do
           requires :token, type: String, desc: %q(Runner's authentication token)
         end
-        delete '/', feature_category: :runner do
+        delete '/', urgency: :low, feature_category: :runner do
           authenticate_runner!
 
           destroy_conditionally!(current_runner) { ::Ci::Runners::UnregisterRunnerService.new(current_runner, params[:token]).execute }
@@ -66,7 +66,7 @@ module API
         params do
           requires :token, type: String, desc: %q(Runner's authentication token)
         end
-        post '/verify', feature_category: :runner do
+        post '/verify', urgency: :low, feature_category: :runner do
           authenticate_runner!
           status 200
           body "200"
@@ -78,7 +78,7 @@ module API
         params do
           requires :token, type: String, desc: 'The current authentication token of the runner'
         end
-        post '/reset_authentication_token', feature_category: :runner do
+        post '/reset_authentication_token', urgency: :low, feature_category: :runner do
           authenticate_runner!
 
           current_runner.reset_token!
@@ -212,7 +212,7 @@ module API
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :token, type: String, desc: %q(Job's authentication token)
         end
-        patch '/:id/trace', urgency: :default, feature_category: :continuous_integration do
+        patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
           job = authenticate_job!(heartbeat_runner: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
@@ -305,6 +305,7 @@ module API
           result = ::Ci::JobArtifacts::CreateService.new(job).execute(artifacts, params, metadata_file: metadata)
 
           if result[:status] == :success
+            log_artifact_size(result[:artifact])
             status :created
             body "201"
           else
@@ -323,9 +324,13 @@ module API
           optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
         end
         get '/:id/artifacts', feature_category: :build_artifacts do
-          job = authenticate_job!(require_running: false)
+          if request_using_running_job_token?
+            authenticate_job_via_dependent_job!
+          else
+            authenticate_job!(require_running: false)
+          end
 
-          present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
+          present_carrierwave_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
         end
       end
     end

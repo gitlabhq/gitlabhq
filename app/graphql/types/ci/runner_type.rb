@@ -34,8 +34,15 @@ module Types
             description: 'Admin form URL of the runner. Only available for administrators.'
       field :executor_name, GraphQL::Types::String, null: true,
             description: 'Executor last advertised by the runner.',
-            method: :executor_name,
-            feature_flag: :graphql_ci_runner_executor
+            method: :executor_name
+      field :platform_name, GraphQL::Types::String, null: true,
+            description: 'Platform provided by the runner.',
+            method: :platform
+      field :architecture_name, GraphQL::Types::String, null: true,
+            description: 'Architecture provided by the the runner.',
+            method: :architecture
+      field :maintenance_note, GraphQL::Types::String, null: true,
+            description: 'Runner\'s maintenance notes.'
       field :groups, ::Types::GroupType.connection_type, null: true,
             description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
@@ -70,7 +77,7 @@ module Types
             Types::Ci::RunnerStatusEnum,
             null: false,
             description: 'Status of the runner.',
-            resolver: ::Resolvers::Ci::RunnerStatusResolver
+            resolver: ::Resolvers::Ci::RunnerStatusResolver # TODO: Remove :resolver in %17.0
       field :tag_list, [GraphQL::Types::String], null: true,
             description: 'Tags associated with the runner.'
       field :token_expires_at, Types::TimeType, null: true,

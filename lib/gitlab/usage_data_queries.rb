@@ -5,6 +5,10 @@ module Gitlab
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41091
   class UsageDataQueries < UsageData
     class << self
+      def with_duration
+        yield
+      end
+
       def add_metric(metric, time_frame: 'none', options: {})
         metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 

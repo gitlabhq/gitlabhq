@@ -24,6 +24,7 @@ describe('Pipeline Trigger Author Token', () => {
     value: {
       data: '',
     },
+    cursorPosition: 'start',
   };
 
   const createComponent = (data) => {

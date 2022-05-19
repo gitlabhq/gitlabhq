@@ -2,6 +2,7 @@
 - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
 - breadcrumb_title @issue.to_reference
 - page_title "#{@issue.title} (#{@issue.to_reference})", _("Issues")
+- add_page_specific_style 'page_bundles/issues_show'
 
 = render 'projects/issuable/show', issuable: @issue, api_awards_path: award_emoji_issue_api_path(@issue)
 = render 'projects/invite_members_modal', project: @project

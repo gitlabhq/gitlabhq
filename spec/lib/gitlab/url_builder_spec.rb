@@ -22,6 +22,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :group_board       | ->(board)         { "/groups/#{board.group.full_path}/-/boards/#{board.id}" }
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
+      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.id}" }
+      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.id}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
@@ -57,7 +59,7 @@ RSpec.describe Gitlab::UrlBuilder do
     end
 
     with_them do
-      let(:object) { build_stubbed(factory) }
+      let(:object) { build_stubbed(*Array(factory)) }
       let(:path) { path_generator.call(object) }
 
       it 'returns the full URL' do
@@ -66,6 +68,18 @@ RSpec.describe Gitlab::UrlBuilder do
 
       it 'returns only the path if only_path is given' do
         expect(subject.build(object, only_path: true)).to eq(path)
+      end
+    end
+
+    context 'when work_items feature flag is disabled' do
+      before do
+        stub_feature_flags(work_items: false)
+      end
+
+      it 'returns an issue path for an issue of type task' do
+        task = create(:issue, :task)
+
+        expect(subject.build(task, only_path: true)).to eq("/#{task.project.full_path}/-/issues/#{task.iid}")
       end
     end
 

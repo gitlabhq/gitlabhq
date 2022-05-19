@@ -39,6 +39,14 @@ password = "redis password"
 provider = "test provider"
 [image_resizer]
 max_scaler_procs = 123
+[[listeners]]
+network = "tcp"
+addr = "localhost:3443"
+[listeners.tls]
+certificate = "/path/to/certificate"
+key = "/path/to/private/key"
+min_version = "tls1.1"
+max_version = "tls1.2"
 `
 	_, err = io.WriteString(f, data)
 	require.NoError(t, err)
@@ -57,6 +65,15 @@ max_scaler_procs = 123
 	require.Equal(t, []string{"127.0.0.1/8", "192.168.0.1/8"}, cfg.TrustedCIDRsForXForwardedFor)
 	require.Equal(t, []string{"10.0.0.1/8"}, cfg.TrustedCIDRsForPropagation)
 	require.Equal(t, 60*time.Second, cfg.ShutdownTimeout.Duration)
+
+	require.Len(t, cfg.Listeners, 1)
+	listener := cfg.Listeners[0]
+	require.Equal(t, "/path/to/certificate", listener.Tls.Certificate)
+	require.Equal(t, "/path/to/private/key", listener.Tls.Key)
+	require.Equal(t, "tls1.1", listener.Tls.MinVersion)
+	require.Equal(t, "tls1.2", listener.Tls.MaxVersion)
+	require.Equal(t, "tcp", listener.Network)
+	require.Equal(t, "localhost:3443", listener.Addr)
 }
 
 func TestConfigErrorHelp(t *testing.T) {

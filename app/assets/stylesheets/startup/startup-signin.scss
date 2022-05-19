@@ -138,9 +138,8 @@ hr {
   margin-right: -15px;
   margin-left: -15px;
 }
+.col-md-6,
 .col-sm-12,
-.col-sm-7,
-.col-sm-5,
 .col {
   position: relative;
   width: 100%;
@@ -159,14 +158,6 @@ hr {
   order: 12;
 }
 @media (min-width: 576px) {
-  .col-sm-5 {
-    flex: 0 0 41.6666666667%;
-    max-width: 41.6666666667%;
-  }
-  .col-sm-7 {
-    flex: 0 0 58.3333333333%;
-    max-width: 58.3333333333%;
-  }
   .col-sm-12 {
     flex: 0 0 100%;
     max-width: 100%;
@@ -176,6 +167,12 @@ hr {
   }
   .order-sm-12 {
     order: 12;
+  }
+}
+@media (min-width: 768px) {
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 }
 .form-control {
@@ -354,8 +351,7 @@ fieldset:disabled a.btn {
   background-color: #fff;
 }
 .gl-button.gl-button.btn-default:active {
-  box-shadow: inset 0 0 0 2px #5e5e5e, 0 0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 0 4px rgba(31, 117, 203, 0.48);
+  box-shadow: inset 0 0 0 1px #5e5e5e, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
   background-color: #dbdbdb;
 }
@@ -367,8 +363,7 @@ fieldset:disabled a.btn {
   box-shadow: inset 0 0 0 1px #1068bf;
 }
 .gl-button.gl-button.btn-confirm:active {
-  box-shadow: inset 0 0 0 2px #033464, 0 0 0 1px rgba(255, 255, 255, 0.4),
-    0 0 0 4px rgba(31, 117, 203, 0.48);
+  box-shadow: inset 0 0 0 1px #033464, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
   background-color: #0b5cad;
 }
@@ -519,6 +514,16 @@ label.label-bold {
 .navbar-empty .brand-header-logo {
   max-height: 100%;
 }
+.tanuki-logo .tanuki {
+  fill: #e24329;
+}
+.tanuki-logo .left-cheek,
+.tanuki-logo .right-cheek {
+  fill: #fc6d26;
+}
+.tanuki-logo .chin {
+  fill: #fca326;
+}
 input::-moz-placeholder {
   color: #868686;
   opacity: 1;
@@ -568,7 +573,6 @@ svg {
 .login-page .omniauth-container {
   box-shadow: 0 0 0 1px #dbdbdb;
   border-radius: 0.25rem;
-  padding: 15px;
 }
 .login-page .login-box .login-heading h3,
 .login-page .omniauth-container .login-heading h3 {

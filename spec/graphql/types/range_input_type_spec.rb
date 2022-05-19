@@ -12,7 +12,7 @@ RSpec.describe ::Types::RangeInputType do
       input = { start: 1, end: 10 }
       output = { start: 1, end: 10 }
 
-      expect(type.coerce_isolated_input(input)).to eq(output)
+      expect(type.coerce_isolated_input(input).to_h).to eq(output)
     end
 
     it 'rejects inverted ranges' do
@@ -28,7 +28,7 @@ RSpec.describe ::Types::RangeInputType do
       values: {},
       object: nil
     )
-    instance = described_class[of_integer].new(context: context, defaults_used: [], ruby_kwargs: {})
+    instance = described_class[of_integer].new({}, context: context, defaults_used: [], ruby_kwargs: {})
 
     expect(instance).to be_a_kind_of(described_class)
     expect(instance).to be_a_kind_of(described_class[of_integer])

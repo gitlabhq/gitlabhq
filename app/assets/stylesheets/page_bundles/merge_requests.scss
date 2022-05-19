@@ -41,7 +41,7 @@ $tabs-holder-z-index: 250;
   // If they don't match, the file tree and the diff files stick
   // to the top at different heights, which is a bad-looking defect
   $diff-file-header-top: 11px;
-  $top-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$mr-version-controls-height} + #{$diff-file-header-top});
+  $top-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
 
   position: -webkit-sticky;
   position: sticky;
@@ -120,10 +120,6 @@ $tabs-holder-z-index: 250;
 
   @include media-breakpoint-down(sm) {
     flex-direction: column;
-
-    .stage-cell .stage-container {
-      margin-top: 16px;
-    }
 
     .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
       transform: initial;
@@ -666,22 +662,19 @@ $tabs-holder-z-index: 250;
   margin-top: $gl-padding;
   position: relative;
 
-  &::before {
+  &:not(:last-child)::before {
     content: '';
     border-left: 1px solid var(--gray-100, $gray-100);
     position: absolute;
     left: 28px;
-    top: -17px;
+    bottom: -17px;
     height: 16px;
   }
 }
 
 .mr-version-controls {
-  position: relative;
-  z-index: $tabs-holder-z-index + 10;
   background: var(--white, $white);
   color: var(--gl-text-color, $gl-text-color);
-  margin-top: -1px;
 
   .mr-version-menus-container {
     display: flex;
@@ -703,45 +696,26 @@ $tabs-holder-z-index: 250;
   }
 
   .content-block {
-    padding: $gl-padding;
+    padding: $gl-padding-8 $gl-padding;
     border-bottom: 0;
   }
 
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
-    margin: 0 0.5rem;
+    margin: 0 $gl-spacing-scale-1;
+
+    .dropdown-toggle.gl-button {
+      padding: $gl-spacing-scale-2 2px $gl-spacing-scale-2 $gl-spacing-scale-2;
+      font-weight: $gl-font-weight-bold;
+
+      .gl-button-icon {
+        margin-left: $gl-spacing-scale-1;
+      }
+    }
   }
 
   .dropdown-title {
     color: var(--gl-text-color, $gl-text-color);
-  }
-
-  // Shortening button height by 1px to make compare-versions
-  // header 56px and fit into our 8px design grid
-  .btn {
-    height: 34px;
-  }
-
-  @include media-breakpoint-up(md) {
-    position: -webkit-sticky;
-    position: sticky;
-    top: calc(#{$header-height} + #{$mr-tabs-height});
-
-    .with-system-header & {
-      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$system-header-height});
-    }
-
-    .with-system-header.with-performance-bar & {
-      top: calc(#{$header-height} + #{$mr-tabs-height} + #{$system-header-height} + #{$performance-bar-height});
-    }
-
-    .mr-version-menus-container {
-      flex-wrap: nowrap;
-    }
-
-    .with-performance-bar & {
-      top: calc(#{$header-height} + #{$performance-bar-height} + #{$mr-tabs-height});
-    }
   }
 }
 
@@ -760,4 +734,12 @@ $tabs-holder-z-index: 250;
 
 .attention-request-sidebar-popover {
   z-index: 999;
+}
+
+.merge-request-overview {
+  @include media-breakpoint-up(md) {
+    display: grid;
+    grid-template-columns: 1fr 270px;
+    grid-gap: 5%;
+  }
 }

@@ -6,16 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Cluster integrations (DEPRECATED) **(FREE)**
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
 
 GitLab provides several ways to integrate applications to your
 Kubernetes cluster.
 
 To enable cluster integrations, first add a Kubernetes cluster to a GitLab
-[project](../project/clusters/add_remove_clusters.md) or
+[project](../project/clusters/index.md) or
 [group](../group/clusters/index.md) or
 [instance](../instance/clusters/index.md).
 
@@ -97,9 +101,21 @@ To enable the Prometheus integration for your cluster:
 1. Click **Save changes**.
 1. Go to the **Health** tab to see your cluster's metrics.
 
-## Elastic Stack cluster integration
+## Elastic Stack cluster integration **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61077) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61077) in GitLab 13.12.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/360182) behind a [feature flag](../../administration/feature_flags.md) named `monitor_logging` in GitLab 15.0. Disabled by default.
+
+WARNING:
+This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485)
+in GitLab 14.7.
+It will be removed completely in GitLab 15.2.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `monitor_logging`.
+On GitLab.com, this feature is not available.
+This feature is not recommended for production use.
 
 You can integrate your cluster with [Elastic
 Stack](https://www.elastic.co/elastic-stack/) to index and [query your pod

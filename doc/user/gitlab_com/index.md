@@ -9,6 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
 
+See some of these settings on the [instance configuration page](https://gitlab.com/help/instance_configuration) of GitLab.com.
+
 ## Password requirements
 
 GitLab.com has the following requirements for passwords on new accounts and password changes:
@@ -97,6 +99,10 @@ If you are on:
 - Premium tier and above, you can disable this by changing the [group setting](../group/index.md#enable-delayed-project-deletion).
 - Free tier, you cannot disable this setting or restore projects.
 
+## Inactive project deletion
+
+[Inactive project deletion](../../administration/inactive_project_deletion.md) is disabled on GitLab.com.
+
 ## Alternative SSH port
 
 GitLab.com can be reached by using a [different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
@@ -127,9 +133,9 @@ Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops
 | IP address                | `35.185.44.232`        | -                      |
 | Custom domains support    | **{check-circle}** Yes | **{dotted-circle}** No |
 | TLS certificates support  | **{check-circle}** Yes | **{dotted-circle}** No |
-| Maximum size (compressed) | 1 GB                   | 100 MB                 |
+| [Maximum size](../../administration/pages/index.md#set-global-maximum-pages-size-per-project) (compressed) | 1 GB                   | 100 MB                 |
 
-The maximum size of your Pages site is regulated by the artifacts maximum size,
+The maximum size of your Pages site is also regulated by the artifacts maximum size,
 which is part of [GitLab CI/CD](#gitlab-cicd).
 
 There are also [rate limits set for GitLab Pages](#gitlabcom-specific-rate-limits).
@@ -330,7 +336,7 @@ after the limits change in January, 2021:
 | **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute           |
 | **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute           |
 | **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute           |
-| **Issue creation**                                                        | **300** requests per minute   | **300** requests per minute             |
+| **Issue creation**                                                        | **300** requests per minute   | **200** requests per minute             |
 | **Note creation** (on issues and merge requests)                          | **60** requests per minute    | **60** requests per minute              |
 | **Advanced, project, and group search** API (for a given **IP address**)  | **10** requests per minute    | **10** requests per minute              |
 | **GitLab Pages** requests (for a given **IP address**)                    |                               | **1000** requests per **50 seconds**    |

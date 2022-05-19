@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import PANEL_STATE from '~/prometheus_metrics/constants';
 import CustomMetrics from '~/prometheus_metrics/custom_metrics';
@@ -15,11 +16,12 @@ describe('PrometheusMetrics', () => {
     mock.onGet(customMetricsEndpoint).reply(200, {
       metrics,
     });
-    loadFixtures(FIXTURE);
+    loadHTMLFixture(FIXTURE);
   });
 
   afterEach(() => {
     mock.restore();
+    resetHTMLFixture();
   });
 
   describe('Custom Metrics', () => {

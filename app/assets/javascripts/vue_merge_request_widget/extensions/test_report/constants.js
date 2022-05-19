@@ -10,6 +10,8 @@ export const i18n = {
   label: s__('Reports|Test summary'),
   loading: s__('Reports|Test summary results are loading'),
   error: s__('Reports|Test summary failed to load results'),
+  newHeader: s__('Reports|New'),
+  fixedHeader: s__('Reports|Fixed'),
   fullReport: s__('Reports|Full report'),
 
   noChanges: (bold) => s__(`Reports|${noText(bold)} changed test results`),
@@ -36,4 +38,32 @@ export const i18n = {
     sprintf(s__('Reports|An error occurred while loading %{name} results'), { name }),
   headReportParsingError: s__('Reports|Head report parsing error:'),
   baseReportParsingError: s__('Reports|Base report parsing error:'),
+
+  recentFailureSummary: (recentlyFailed, failed) => {
+    if (failed < 2) {
+      return sprintf(
+        s__(
+          'Reports|%{recentlyFailed} out of %{failed} failed test has failed more than once in the last 14 days',
+        ),
+        { recentlyFailed, failed },
+      );
+    }
+    return sprintf(
+      n__(
+        'Reports|%{recentlyFailed} out of %{failed} failed tests has failed more than once in the last 14 days',
+        'Reports|%{recentlyFailed} out of %{failed} failed tests have failed more than once in the last 14 days',
+        recentlyFailed,
+      ),
+      { recentlyFailed, failed },
+    );
+  },
+  recentFailureCount: (recentFailures) =>
+    sprintf(
+      n__(
+        'Reports|Failed %{count} time in %{base_branch} in the last 14 days',
+        'Reports|Failed %{count} times in %{base_branch} in the last 14 days',
+        recentFailures.count,
+      ),
+      recentFailures,
+    ),
 };

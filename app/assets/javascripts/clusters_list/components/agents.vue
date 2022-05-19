@@ -175,7 +175,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" size="md" />
+  <gl-loading-icon v-if="isLoading" size="lg" />
 
   <section v-else-if="agentList">
     <div v-if="agentList.length">

@@ -2,7 +2,6 @@
 stage: Create
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Gitaly and Gitaly Cluster **(FREE SELF)**
@@ -57,7 +56,7 @@ If you have:
 
 - Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. NFS is
   supported in 14.x releases but is [deprecated](../../update/deprecations.md#nfs-for-git-repository-storage).
-Support for storing Git repository data on NFS will end for all versions of GitLab with the release of 15.0.
+  Support for storing Git repository data on NFS is scheduled to end for all versions of GitLab on November 22, 2022.
 - Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
   - A sharded Gitaly instance.
   - Gitaly Cluster.
@@ -72,7 +71,7 @@ the current status of these issues, please refer to the referenced issues and ep
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
 | Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. Work is in-progress to update Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485), which is expected to resolve the issue.                                                                                                                                                                                                                                          | No known solution at this time. |
-| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-live-upgrade-assistance.html) so your upgrade plan can be reviewed by support. |
+| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance.html) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
 
 ### Snapshot backup and recovery limitations
@@ -233,9 +232,142 @@ variable replication factor is tracked in [this issue](https://gitlab.com/groups
 
 As with normal Gitaly storages, virtual storages can be sharded.
 
+### Storage layout
+
+WARNING:
+The storage layout is an internal detail of Gitaly Cluster and is not guaranteed to remain stable between releases.
+The information here is only for informational purposes and to help with debugging. Performing changes in the
+repositories directly on the disk is not supported and may lead to breakage or the changes being overwritten.
+
+Gitaly Cluster's virtual storages provide an abstraction that looks like a single storage but actually consists of
+multiple physical storages. Gitaly Cluster has to replicate each operation to each physical storage. Operations
+may succeed on some of the physical storages but fail on others.
+
+Partially applied operations can cause problems with other operations and leave the system in a state it can't recover from.
+To avoid these types of problems, each operation should either fully apply or not apply at all. This property of operations is called
+[atomicity](https://en.wikipedia.org/wiki/Atomicity_(database_systems)).
+
+GitLab controls the storage layout on the repository storages. GitLab instructs the repository storage where to create,
+delete, and move repositories. These operations create atomicity issues when they are being applied to multiple physical storages.
+For example:
+
+- GitLab deletes a repository while one of its replicas is unavailable.
+- GitLab later recreates the repository.
+
+As a result, the stale replica that was unavailable at the time of deletion may cause conflicts and prevent
+recreation of the repository.
+
+These atomicity issues have caused multiple problems in the past with:
+
+- Geo syncing to a secondary site with Gitaly Cluster.
+- Backup restoration.
+- Repository moves between repository storages.
+
+Gitaly Cluster provides atomicity for these operations by storing repositories on the disk in a special layout that prevents
+conflicts that could occur due to partially applied operations.
+
+#### Client-generated replica paths
+
+Repositories are stored in the storages at the relative path determined by the [Gitaly client](#gitaly-architecture). These paths can be
+identified by them not beginning with the `@cluster` prefix. The relative paths
+follow the [hashed storage](../repository_storage_types.md#hashed-storage) schema.
+
+#### Praefect-generated replica paths (GitLab 15.0 and later)
+
+> Introduced in GitLab 15.0 behind [a feature flag](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../feature_flags.md)
+named `gitaly_praefect_generated_replica_paths`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is not ready for production use.
+
+When Gitaly Cluster creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
+internal to Gitaly Cluster and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster and later moved
+back, the repository is assigned a new repository ID and is a different repository from Gitaly Cluster's perspective. The sequence of repository IDs
+always increases, but there may be gaps in the sequence.
+
+The repository ID is used to derive a unique storage path called _replica path_ for each repository on the cluster. The replicas of
+a repository are all stored at the same replica path on the storages. The replica path is distinct from the _relative path_:
+
+- The relative path is a name the Gitaly client uses to identify a repository, together with its virtual storage, that is unique to them.
+- The replica path is the actual physical path in the physical storages.
+
+Praefect translates the repositories in the RPCs from the virtual `(virtual storage, relative path)` identifier into physical repository
+`(storage, replica_path)` identifier when handling the client requests.
+
+The format of the replica path for:
+
+- Object pools is `@cluster/pools/<xx>/<xx>/<repository ID>`. Object pools are stored in a different directory than other repositories.
+  They must be identifiable by Gitaly to avoid pruning them as part of housekeeping. Pruning object pools can cause data loss in the linked
+  repositories.
+- Other repositories is `@cluster/repositories/<xx>/<xx>/<repository ID>`
+
+For example, `@cluster/repositories/6f/96/54771`.
+
+The last component of the replica path, `54771`, is the repository ID. This can be used to identify the repository on the disk.
+
+`<xx>/<xx>` are the first four hex digits of the SHA256 hash of the string representation of the repository ID. This is used to balance
+the repositories evenly into subdirectories to avoid overly large directories that might cause problems on some file
+systems. In this case, `54771` hashes to `6f960ab01689464e768366d3315b3d3b2c28f38761a58a70110554eb04d582f7` so the
+first four digits are `6f` and `96`.
+
+#### Identify repositories on disk
+
+Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subcommand to:
+
+- Retrieve a repository's virtual storage and relative path from the metadata store. After you have the hashed storage path, you can use the Rails
+  console to retrieve the project path.
+- Find where a repository is stored in the cluster with either:
+  - The virtual storage and relative path.
+  - The repository ID.
+
+The repository on disk also contains the project path in the Git configuration file. The configuration file can be used to determine
+the project's location even if the repository's metadata has been deleted. Follow the
+[instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
+
+#### Atomicity of operations
+
+Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ensure atomicity of repository creation,
+deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
+the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
+the metadata consistent. The disks may contain stale state even after successful operations. This is expected and the leftover state
+won't intefere with future operations but may use up disk space unnecessarily until a clean up is performed.
+
+There is on-going work on a [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover
+repositories from the storages.
+
+##### Repository creations
+
+When creating repositories, Praefect:
+
+1. Reserves a repository ID from PostgreSQL. This is atomic and no two creations receive the same ID.
+1. Creates replicas on the Gitaly storages in the replica path derived from the repository ID.
+1. Creates metadata records after the repository is successfully created on disk.
+
+Even if two concurrent operations create the same repository, they'd be stored in different directories on the storages and not
+conflict. The first to complete creates the metadata record and the other operation fails with an "already exists" error.
+The failing creation leaves leftover repositories on the storages. There is on-going work on a
+[background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that clean up the leftover repositories from the storages.
+
+The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the above example, the failing operation took
+one repository ID without successfully creating a repository with it. Failed repository creations are expected lead to gaps in the repository IDs.
+
+##### Repository deletions
+
+A repository is deleted by removing its metadata record. The repository ceases to logically exist as soon as the metadata record is deleted.
+PostgreSQL guarantees the atomicity of the removal and a concurrent delete fails with a "not found" error. After successfully deleting
+the metadata record, Praefect attempts to remove the replicas from the storages. This may fail and leave leftover state in the storages.
+The leftover state is eventually cleaned up.
+
+##### Repository moves
+
+Unlike Gitaly, Gitaly Cluster doesn't move the repositories in the storages but only virtually moves the repository by updating the
+relative path of the repository in the metadata store.
+
 ### Moving beyond NFS
 
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting GitLab 15.0. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for more details.
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
+November 22, 2022. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs)
+for more details.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
 is not well suited to Git workloads which are CPU and IOPS sensitive.
@@ -316,7 +448,7 @@ The primary node is chosen to serve the request if:
 - There are no up to date nodes.
 - Any other error occurs during node selection.
 
-You can [monitor distribution of reads](#monitor-gitaly-cluster) using Prometheus.
+You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) using Prometheus.
 
 #### Strong consistency
 
@@ -344,7 +476,7 @@ Strong consistency:
   - The [13.12 documentation](https://docs.gitlab.com/13.12/ee/administration/gitaly/praefect.html#strong-consistency).
 - Is unavailable in GitLab 13.0 and earlier.
 
-For more information on monitoring strong consistency, see the Gitaly Cluster [Prometheus metrics documentation](#monitor-gitaly-cluster).
+For more information on monitoring strong consistency, see the Gitaly Cluster [Prometheus metrics documentation](monitoring.md#monitor-gitaly-cluster).
 
 #### Replication factor
 
@@ -391,167 +523,6 @@ off Gitaly Cluster to a sharded Gitaly instance:
 1. Create and configure a new [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
-
-## Monitor Gitaly and Gitaly Cluster
-
-You can use the available logs and [Prometheus metrics](../monitoring/prometheus/index.md) to
-monitor Gitaly and Gitaly Cluster (Praefect).
-
-Metric definitions are available:
-
-- Directly from Prometheus `/metrics` endpoint configured for Gitaly.
-- Using [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/) on a
-  Grafana instance configured against Prometheus.
-
-### Monitor Gitaly
-
-You can observe the behavior of [queued requests](configure_gitaly.md#limit-rpc-concurrency) using
-the Gitaly logs and Prometheus:
-
-- In the [Gitaly logs](../logs.md#gitaly-logs), look for the string (or structured log field)
-  `acquire_ms`. Messages that have this field are reporting about the concurrency limiter.
-- In Prometheus, look for the following metrics:
-  - `gitaly_rate_limiting_in_progress`.
-  - `gitaly_rate_limiting_queued`.
-  - `gitaly_rate_limiting_seconds`.
-
-  Although the name of the Prometheus metric contains `rate_limiting`, it's a concurrency limiter,
-  not a rate limiter. If a Gitaly client makes 1,000 requests in a row very quickly, concurrency
-  doesn't exceed 1, and the concurrency limiter has no effect.
-
-The following [pack-objects cache](configure_gitaly.md#pack-objects-cache) metrics are available:
-
-- `gitaly_pack_objects_cache_enabled`, a gauge set to `1` when the cache is enabled. Available
-  labels: `dir` and `max_age`.
-- `gitaly_pack_objects_cache_lookups_total`, a counter for cache lookups. Available label: `result`.
-- `gitaly_pack_objects_generated_bytes_total`, a counter for the number of bytes written into the
-  cache.
-- `gitaly_pack_objects_served_bytes_total`, a counter for the number of bytes read from the cache.
-- `gitaly_streamcache_filestore_disk_usage_bytes`, a gauge for the total size of cache files.
-  Available label: `dir`.
-- `gitaly_streamcache_index_entries`, a gauge for the number of entries in the cache. Available
-  label: `dir`.
-
-Some of these metrics start with `gitaly_streamcache` because they are generated by the
-`streamcache` internal library package in Gitaly.
-
-Example:
-
-```plaintext
-gitaly_pack_objects_cache_enabled{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache",max_age="300"} 1
-gitaly_pack_objects_cache_lookups_total{result="hit"} 2
-gitaly_pack_objects_cache_lookups_total{result="miss"} 1
-gitaly_pack_objects_generated_bytes_total 2.618649e+07
-gitaly_pack_objects_served_bytes_total 7.855947e+07
-gitaly_streamcache_filestore_disk_usage_bytes{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 2.6200152e+07
-gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
-gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
-```
-
-#### Useful queries
-
-The following are useful queries for monitoring Gitaly:
-
-- Use the following Prometheus query to observe the
-  [type of connections](configure_gitaly.md#enable-tls-support) Gitaly is serving a production
-  environment:
-
-  ```prometheus
-  sum(rate(gitaly_connections_total[5m])) by (type)
-  ```
-
-- Use the following Prometheus query to monitor the
-  [authentication behavior](configure_gitaly.md#observe-type-of-gitaly-connections) of your GitLab
-  installation:
-
-  ```prometheus
-  sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
-  ```
-
-  In a system where authentication is configured correctly and where you have live traffic, you
-  see something like this:
-
-  ```prometheus
-  {enforced="true",status="ok"}  4424.985419441742
-  ```
-
-  There may also be other numbers with rate 0, but you only have to take note of the non-zero numbers.
-
-  The only non-zero number should have `enforced="true",status="ok"`. If you have other non-zero
-  numbers, something is wrong in your configuration.
-
-  The `status="ok"` number reflects your current request rate. In the example above, Gitaly is
-  handling about 4000 requests per second.
-
-- Use the following Prometheus query to observe the [Git protocol versions](../git_protocol.md)
-  being used in a production environment:
-
-  ```prometheus
-  sum(rate(gitaly_git_protocol_requests_total[1m])) by (grpc_method,git_protocol,grpc_service)
-  ```
-
-### Monitor Gitaly Cluster
-
-To monitor Gitaly Cluster (Praefect), you can use these Prometheus metrics. There are two separate metrics
-endpoints from which metrics can be scraped:
-
-- The default `/metrics` endpoint.
-- `/db_metrics`, which contains metrics that require database queries.
-
-#### Default Prometheus `/metrics` endpoint
-
-The following metrics are available from the `/metrics` endpoint:
-
-- `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](#distributed-reads).
-  It has two labels:
-
-  - `virtual_storage`.
-  - `storage`.
-
-  They reflect configuration defined for this instance of Praefect.
-
-- `gitaly_praefect_replication_latency_bucket`, a histogram measuring the amount of time it takes
-  for replication to complete after the replication job starts. Available in GitLab 12.10 and later.
-- `gitaly_praefect_replication_delay_bucket`, a histogram measuring how much time passes between
-  when the replication job is created and when it starts. Available in GitLab 12.10 and later.
-- `gitaly_praefect_node_latency_bucket`, a histogram measuring the latency in Gitaly returning
-  health check information to Praefect. This indicates Praefect connection saturation. Available in
-  GitLab 12.10 and later.
-
-To monitor [strong consistency](#strong-consistency), you can use the following Prometheus metrics:
-
-- `gitaly_praefect_transactions_total`, the number of transactions created and voted on.
-- `gitaly_praefect_subtransactions_per_transaction_total`, the number of times nodes cast a vote for
-  a single transaction. This can happen multiple times if multiple references are getting updated in
-  a single transaction.
-- `gitaly_praefect_voters_per_transaction_total`: the number of Gitaly nodes taking part in a
-  transaction.
-- `gitaly_praefect_transactions_delay_seconds`, the server-side delay introduced by waiting for the
-  transaction to be committed.
-- `gitaly_hook_transaction_voting_delay_seconds`, the client-side delay introduced by waiting for
-  the transaction to be committed.
-
-To monitor the number of repositories that have no healthy, up-to-date replicas:
-
-- `gitaly_praefect_unavailable_repositories`
-
-You can also monitor the [Praefect logs](../logs.md#praefect-logs).
-
-#### Database metrics `/db_metrics` endpoint
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3286) in GitLab 14.5.
-
-The following metrics are available from the `/db_metrics` endpoint:
-
-- `gitaly_praefect_unavailable_repositories`, the number of repositories that have no healthy, up to date replicas.
-- `gitaly_praefect_read_only_repositories`, the number of repositories in read-only mode in a virtual storage.
-  This metric is available for backwards compatibility reasons. `gitaly_praefect_unavailable_repositories` is more
-  accurate.
-- `gitaly_praefect_replication_queue_depth`, the number of jobs in the replication queue.
-
-## Recover from failure
-
-Gitaly Cluster can [recover from certain types of failure](recovery.md).
 
 ## Do not bypass Gitaly
 
@@ -660,4 +631,4 @@ The second facet presents the only real solution. For this, we developed
 ## NFS deprecation notice
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable from GitLab 15.0. For further information, please see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.
+unavailable beginning November 22, 2022. For further information, please see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.

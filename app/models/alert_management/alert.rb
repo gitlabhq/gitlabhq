@@ -81,7 +81,6 @@ module AlertManagement
     scope :search, -> (query) { fuzzy_search(query, [:title, :description, :monitoring_tool, :service]) }
     scope :not_resolved, -> { without_status(:resolved) }
     scope :with_prometheus_alert, -> { includes(:prometheus_alert) }
-    scope :with_threat_monitoring_alerts, -> { where(domain: :threat_monitoring ) }
     scope :with_operations_alerts, -> { where(domain: :operations) }
 
     scope :order_start_time,    -> (sort_order) { order(started_at: sort_order) }
@@ -119,6 +118,10 @@ module AlertManagement
       end
     end
 
+    def self.find_unresolved_alert(project, fingerprint)
+      for_fingerprint(project, fingerprint).not_resolved.take
+    end
+
     def self.last_prometheus_alert_by_project_id
       ids = select(arel_table[:id].maximum).group(:project_id)
       with_prometheus_alert.where(id: ids)
@@ -141,10 +144,6 @@ module AlertManagement
 
     def self.reference_valid?(reference)
       reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
-    end
-
-    def metric_images_available?
-      ::AlertManagement::MetricImage.available_for?(project)
     end
 
     def prometheus?

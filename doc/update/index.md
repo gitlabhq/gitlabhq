@@ -193,7 +193,11 @@ pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_cla
 
 GitLab 13.6 introduced an issue where a background migration named `BackfillJiraTrackerDeploymentType2` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [13.6.0 version-specific instructions](#1360).
 
+GitLab 14.2 introduced an issue where a background migration named `BackfillDraftStatusOnMergeRequests` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.2.0 version-specific instructions](#1420).
+
 GitLab 14.4 introduced an issue where a background migration named `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.4.0 version-specific instructions](#1440).
+
+GitLab 14.5 introduced an issue where a background migration named `UpdateVulnerabilityOccurrencesLocation` can be permanently stuck in a **pending** state across upgrades when the instance lacks records that match the migration's target. To clean up this stuck migration, see the [14.5.0 version-specific instructions](#1450).
 
 GitLab 14.8 introduced an issue where a background migration named `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a **pending** state across upgrades. To clean up this stuck migration, see the [14.8.0 version-specific instructions](#1480).
 
@@ -325,7 +329,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.9.0`](#1490) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -402,6 +406,17 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.0.0
+
+- Elasticsearch 6.8 [is no longer supported](../integration/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../integration/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
+
+### 14.10.0
+
+- Before upgrading to GitLab 14.10, you need to already have the latest 14.9.Z installed on your instance.
+  The upgrade to GitLab 14.10 executes a [concurrent index drop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84308) of unneeded
+  entries from the `ci_job_artifacts` database table. This could potentially run for multiple minutes, especially if the table has a lot of
+  traffic and the migration is unable to acquire a lock. It is advised to let this process finish as restarting may result in data loss.
+
 ### 14.9.0
 
 - Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances. 
@@ -417,6 +432,17 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
   ```plaintext
   Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  ```
+  
+  Or
+
+  ```plaintext
+  Error executing action `run` on resource 'bash[migrate gitlab-rails database]'
+  ================================================================================
+  
+  Mixlib::ShellOut::ShellCommandFailed
+  ------------------------------------
+  Command execution failed. STDOUT/STDERR suppressed for sensitive resource 
   ```
 
 - GitLab 14.9.0 includes a
@@ -462,7 +488,7 @@ that may remain stuck permanently in a **pending** state.
 
     ```ruby
         Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCountq", job.arguments)
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCount", job.arguments)
         end
     ```
 
@@ -525,10 +551,22 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
   For more information, refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331823).
 
+- GitLab 14.5.0 includes a
+  [background migration `UpdateVulnerabilityOccurrencesLocation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72788)
+  that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
+
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+    ```ruby
+        Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "UpdateVulnerabilityOccurrencesLocation").find_each do |job|
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("UpdateVulnerabilityOccurrencesLocation", job.arguments)
+        end
+    ```
+
 ### 14.4.4
 
 - For [zero-downtime upgrades](zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you need to enable the `paginated_tree_graphql_query` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) _before_ upgrading GitLab Web nodes to 14.4.
-  This is because we [enabled `paginated_tree_graphql_query by default in 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70913/diffs), so if GitLab UI is on 14.4 and its API is on 14.3, the frontend will have this feature enabled but the backend will have it disabled. This will result in the following error:
+  This is because we [enabled `paginated_tree_graphql_query` by default in 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70913/diffs), so if GitLab UI is on 14.4 and its API is on 14.3, the frontend will have this feature enabled but the backend will have it disabled. This will result in the following error:
 
   ```shell
   bundle.esm.js:63 Uncaught (in promise) Error: GraphQL error: Field 'paginatedTree' doesn't exist on type 'Repository'
@@ -610,6 +648,17 @@ for how to proceed.
   ```
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- GitLab 14.2.0 includes a
+  [background migration `BackfillDraftStatusOnMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67687)
+  that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
+
+  To clean up this stuck job, run the following in the [GitLab Rails Console](../administration/operations/rails_console.md):
+
+  ```ruby
+  Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "BackfillDraftStatusOnMergeRequests").find_each do |job|
+    puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("BackfillDraftStatusOnMergeRequests", job.arguments)
+  end
+  ```
 
 ### 14.1.0
 
@@ -629,6 +678,16 @@ for how to proceed.
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.0.0
+
+Prerequisites:
+
+- The [GitLab 14.0 release post contains several important notes](https://about.gitlab.com/releases/2021/06/22/gitlab-14-0-released/#upgrade)
+  about pre-requisites including [using Patroni instead of repmgr](../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni),
+  migrating [to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage),
+  and [to Puma](../administration/operations/puma.md).
+- The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
+
+Long running batched background database migrations:
 
 - Database changes made by the upgrade to GitLab 14.0 can take hours or days to complete on larger GitLab instances.
   These [batched background migrations](#batched-background-migrations) update whole database tables to mitigate primary key overflow and must be finished before upgrading to GitLab 14.2 or higher.
@@ -650,13 +709,12 @@ for how to proceed.
 
   See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
 
+Other issues:
+
 - In GitLab 13.3 some [pipeline processing methods were deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/218536)
   and this code was completely removed in GitLab 14.0. If you plan to upgrade from
-  **GitLab 13.2 or older** directly to 14.0 ([unsupported](#upgrading-to-a-new-major-version)), you should not have any pipelines running
-  when you upgrade or the pipelines might report the wrong status when the upgrade completes.
+  **GitLab 13.2 or older** directly to 14.0, this is [unsupported](#upgrading-to-a-new-major-version).
   You should instead follow a [supported upgrade path](#upgrade-paths).
-- The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
-
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 - See [Custom Rack Attack initializers](#custom-rack-attack-initializers) if you persist your own custom Rack Attack
   initializers during upgrades.
@@ -673,7 +731,16 @@ for how to proceed.
 
 ### 13.12.0
 
-See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
+- Check the GitLab database [has no references to legacy storage](../administration/raketasks/storage.md#on-legacy-storage).
+  The GitLab 14.0 pre-install check will cause the package update to fail if there is unmigrated data:
+
+  ```plaintext
+  Checking for unmigrated data on legacy storage
+
+  Legacy storage is no longer supported. Please migrate your data to hashed storage.
+  ```
 
 ### 13.11.0
 
@@ -846,6 +913,20 @@ supplied with GitLab during upgrades. We recommend you use these GitLab-supplied
 If you persist your own Rack Attack initializers between upgrades, you might
 [get `500` errors](https://gitlab.com/gitlab-org/gitlab/-/issues/334681) when [upgrading to GitLab 14.0 and later](#1400).
 
+### 12.10.0
+
+- The final patch release (12.10.14)
+  [has a regression affecting maven package uploads](https://about.gitlab.com/releases/2020/07/06/critical-security-release-gitlab-13-1-3-released/#maven-package-upload-broken-in-121014).
+  If you use this feature and need to stay on 12.10 while preparing to upgrade to 13.0:
+
+  - Upgrade to 12.10.13 instead.
+  - Upgrade to 13.0.14 as soon as possible.
+
+- [GitLab 13.0 requires PostgreSQL 11](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab).
+
+  - 12.10 is the final release that shipped with PostgreSQL 9.6, 10, and 11.
+  - You should make sure that your database is PostgreSQL 11 on GitLab 12.10 before upgrading to 13.0. This will require downtime.
+
 ### 12.2.0
 
 In 12.2.0, we enabled Rails' authenticated cookie encryption. Old sessions are
@@ -884,7 +965,7 @@ for more information.
 
 When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
 
-Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the admin who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
+Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
 
 [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 

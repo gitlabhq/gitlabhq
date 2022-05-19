@@ -66,7 +66,7 @@ Git clients, and access RESTful API endpoints as administrators, without additio
 authentication steps.
 
 We may address these limitations in the future. For more information see the following epic:
-[Admin mode for GitLab Administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158).
+[Admin Mode for GitLab Administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158).
 
 ### Troubleshooting Admin Mode
 

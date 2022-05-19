@@ -26,6 +26,7 @@ module Mutations
       def resolve(note:, position:)
         authorize!(note)
 
+        position = position.to_h.compact
         pre_update_checks!(note, position)
 
         updated_note = ::Notes::UpdateService.new(
@@ -46,7 +47,7 @@ module Mutations
       # just a `DiffNote` with a particular kind of `Gitlab::Diff::Position`.
       # In addition to accepting a `DiffNote` Global ID we also need to
       # perform this check.
-      def pre_update_checks!(note, position)
+      def pre_update_checks!(note, _position)
         unless note.position&.on_image?
           raise Gitlab::Graphql::Errors::ResourceNotAvailable,
                 'Resource is not an ImageDiffNote'

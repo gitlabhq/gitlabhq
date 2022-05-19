@@ -2,7 +2,7 @@
 import { GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import createFlash from '~/flash';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/graphql_shared/constants';
 import getIssueCrmContactsQuery from './queries/get_issue_crm_contacts.query.graphql';
 import issueCrmContactsSubscription from './queries/issue_crm_contacts.subscription.graphql';
@@ -18,6 +18,10 @@ export default {
   },
   props: {
     issueId: {
+      type: String,
+      required: true,
+    },
+    groupIssuesPath: {
       type: String,
       required: true,
     },
@@ -85,6 +89,10 @@ export default {
         Boolean,
       );
     },
+    getIssuesPath(contactId) {
+      const id = getIdFromGraphQLId(contactId);
+      return `${this.groupIssuesPath}?crm_contact_id=${id}`;
+    },
   },
 };
 </script>
@@ -100,7 +108,7 @@ export default {
         ><gl-icon name="question-o"
       /></gl-link>
     </div>
-    <div class="title hide-collapsed gl-mb-2 gl-line-height-20">
+    <div class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}
     </div>
     <div class="hide-collapsed gl-display-flex gl-flex-wrap">
@@ -110,8 +118,8 @@ export default {
         :key="index"
         class="gl-pr-2"
       >
-        <span :id="`contact_${index}`" class="gl-font-weight-bold"
-          >{{ contact.firstName }} {{ contact.lastName }}{{ divider(index) }}</span
+        <gl-link :id="`contact_${index}`" :href="getIssuesPath(contact.id)"
+          >{{ contact.firstName }} {{ contact.lastName }}{{ divider(index) }}</gl-link
         >
         <gl-popover
           v-if="shouldShowPopover(contact)"

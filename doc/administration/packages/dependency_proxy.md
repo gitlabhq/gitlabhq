@@ -140,8 +140,6 @@ This section describes the earlier configuration format.
    gitlab_rails['dependency_proxy_storage_path'] = "/var/opt/gitlab/gitlab-rails/shared/dependency_proxy"
    gitlab_rails['dependency_proxy_object_store_enabled'] = true
    gitlab_rails['dependency_proxy_object_store_remote_directory'] = "dependency_proxy" # The bucket name.
-   gitlab_rails['dependency_proxy_object_store_direct_upload'] = false         # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
-   gitlab_rails['dependency_proxy_object_store_background_upload'] = true      # Temporary option to limit automatic upload (Default: true).
    gitlab_rails['dependency_proxy_object_store_proxy_download'] = false        # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
    gitlab_rails['dependency_proxy_object_store_connection'] = {
      ##
@@ -177,8 +175,6 @@ This section describes the earlier configuration format.
      object_store:
        enabled: false
        remote_directory: dependency_proxy  # The bucket name.
-       #  direct_upload: false      # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false).
-       #  background_upload: true   # Temporary option to limit automatic upload (Default: true).
        #  proxy_download: false     # Passthrough all downloads via GitLab instead of using Redirects to Object Storage.
        connection:
        ##
@@ -248,23 +244,6 @@ Verify that there are no files on disk in the `dependency_proxy` folder:
 sudo find /var/opt/gitlab/gitlab-rails/shared/dependency_proxy -type f | grep -v tmp | wc -l
 ```
 
-## Disabling Authentication
-
-Authentication was introduced in 13.7 as part of [enabling private groups to use the
-Dependency Proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/11582). If you
-previously used the Dependency Proxy without authentication and need to disable
-this feature while you update your workflow to [authenticate with the Dependency
-Proxy](../../user/packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy),
-the following commands can be issued in a Rails console:
-
-```ruby
-# Disable the authentication
-Feature.disable(:dependency_proxy_for_private_groups)
-
-# Re-enable the authentication
-Feature.enable(:dependency_proxy_for_private_groups)
-```
-
 ## Changing the JWT expiration
 
 The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),
@@ -280,7 +259,7 @@ ApplicationSetting.update(container_registry_token_expire_delay: 30)
 The default expiration and the expiration on GitLab.com is 15 minutes.
 
 ## Using the dependency proxy behind a proxy
- 
+
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines:
 
    ```ruby

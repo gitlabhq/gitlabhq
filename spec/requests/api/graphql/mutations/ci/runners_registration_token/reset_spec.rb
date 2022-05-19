@@ -64,11 +64,10 @@ RSpec.describe 'RunnersRegistrationTokenReset' do
   context 'applied to project' do
     let_it_be(:project) { create_default(:project) }
 
+    let(:target) { project }
     let(:input) { { type: 'PROJECT_TYPE', id: project.to_global_id.to_s } }
 
-    include_context 'when unauthorized', 'project' do
-      let(:target) { project }
-    end
+    include_context('when unauthorized', 'project')
 
     include_context 'when authorized', 'project' do
       let_it_be(:user) { project.first_owner }
@@ -82,11 +81,10 @@ RSpec.describe 'RunnersRegistrationTokenReset' do
   context 'applied to group' do
     let_it_be(:group) { create_default(:group) }
 
+    let(:target) { group }
     let(:input) { { type: 'GROUP_TYPE', id: group.to_global_id.to_s } }
 
-    include_context 'when unauthorized', 'group' do
-      let(:target) { group }
-    end
+    include_context('when unauthorized', 'group')
 
     include_context 'when authorized', 'group' do
       let_it_be(:user) { create_default(:group_member, :owner, user: create(:user), group: group ).user }
@@ -99,9 +97,11 @@ RSpec.describe 'RunnersRegistrationTokenReset' do
 
   context 'applied to instance' do
     before do
-      ApplicationSetting.create_from_defaults
+      target
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     end
+
+    let_it_be(:target) { ApplicationSetting.create_from_defaults }
 
     let(:input) { { type: 'INSTANCE_TYPE' } }
 

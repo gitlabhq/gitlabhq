@@ -56,8 +56,6 @@ the following tables:
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`bundler-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/bundler-audit) | **{check-circle}** Yes       | String                     | `low`, `medium`, `high`, `critical` |
-| [`retire.js`](https://gitlab.com/gitlab-org/security-products/analyzers/retire.js)         | **{check-circle}** Yes       | String                     | `low`, `medium`, `high`, `critical` |
 | [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | **{check-circle}** Yes       | CVSS v2.0 Rating and CVSS v3.1 Qualitative Severity Rating | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
 
 ## Container Scanning

@@ -75,6 +75,12 @@
     - 'i_code_review_post_merge_submit_cherry_pick_modal'
     - 'i_code_review_user_jetbrains_api_request'
     - 'i_code_review_user_gitlab_cli_api_request'
+    - 'i_code_review_user_create_note_in_ipynb_diff'
+    - 'i_code_review_user_create_note_in_ipynb_diff_mr'
+    - 'i_code_review_user_create_note_in_ipynb_diff_commit'
+    - 'i_code_review_create_note_in_ipynb_diff'
+    - 'i_code_review_create_note_in_ipynb_diff_mr'
+    - 'i_code_review_create_note_in_ipynb_diff_commit'
 - name: code_review_category_monthly_active_users
   operator: OR
   source: redis
@@ -140,6 +146,12 @@
     - 'i_code_review_post_merge_click_cherry_pick'
     - 'i_code_review_post_merge_submit_revert_modal'
     - 'i_code_review_post_merge_submit_cherry_pick_modal'
+    - 'i_code_review_user_create_note_in_ipynb_diff'
+    - 'i_code_review_user_create_note_in_ipynb_diff_mr'
+    - 'i_code_review_user_create_note_in_ipynb_diff_commit'
+    - 'i_code_review_create_note_in_ipynb_diff'
+    - 'i_code_review_create_note_in_ipynb_diff_mr'
+    - 'i_code_review_create_note_in_ipynb_diff_commit'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
   source: redis

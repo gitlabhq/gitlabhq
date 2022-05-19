@@ -104,7 +104,7 @@ export default {
       <gl-button
         :disabled="disableCreate"
         category="primary"
-        variant="success"
+        variant="confirm"
         class="float-left d-flex align-items-center"
         @click="handleCreateClick"
       >

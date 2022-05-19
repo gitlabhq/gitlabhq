@@ -52,7 +52,7 @@ RSpec.describe PageLayoutHelper do
 
   describe 'page_image' do
     it 'defaults to the GitLab logo' do
-      expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+      expect(helper.page_image).to match_asset_path 'assets/twitter_card.jpg'
     end
 
     %w(project user group).each do |type|
@@ -72,14 +72,14 @@ RSpec.describe PageLayoutHelper do
           let(:trait) { nil }
 
           it 'falls back to the default when avatar_url is nil' do
-            expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+            expect(helper.page_image).to match_asset_path 'assets/twitter_card.jpg'
           end
         end
       end
 
       context "with no assignments" do
         it 'falls back to the default' do
-          expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'
+          expect(helper.page_image).to match_asset_path 'assets/twitter_card.jpg'
         end
       end
     end

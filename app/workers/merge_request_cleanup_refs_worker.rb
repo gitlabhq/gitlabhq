@@ -18,7 +18,7 @@ class MergeRequestCleanupRefsWorker
   FAILURE_THRESHOLD = 3
 
   def perform_work
-    return unless Feature.enabled?(:merge_request_refs_cleanup, default_enabled: false)
+    return unless Feature.enabled?(:merge_request_refs_cleanup)
 
     unless merge_request
       logger.error('No existing merge request to be cleaned up.')

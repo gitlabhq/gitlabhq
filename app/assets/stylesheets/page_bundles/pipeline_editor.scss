@@ -1,0 +1,22 @@
+@import 'mixins_and_variables_and_functions';
+
+.file-tree-container {
+  @include gl-w-full;
+
+  @media (min-width: $breakpoint-md) {
+    width: 300px;
+  }
+}
+
+.file-tree-container > div.gl-overflow-y-auto {
+  max-height: 220px;
+
+  @media (min-width: $breakpoint-md) {
+    max-height: 700px;
+  }
+}
+
+.file-tree-includes-link:hover > svg {
+  @include gl-display-block;
+  top: 2px;
+}

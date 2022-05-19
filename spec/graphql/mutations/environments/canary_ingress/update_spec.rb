@@ -20,7 +20,7 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
   describe '#resolve' do
     subject { mutation.resolve(id: environment_id, weight: weight) }
 
-    let(:environment_id) { environment.to_global_id.to_s }
+    let(:environment_id) { environment.to_global_id }
     let(:weight) { 50 }
     let(:update_service) { double('update_service') }
 
@@ -59,14 +59,6 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
 
       it 'returns an error' do
         expect(subject[:errors]).to eq(['something went wrong'])
-      end
-    end
-
-    context 'when environment is not found' do
-      let(:environment_id) { non_existing_record_id.to_s }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(GraphQL::CoercionError)
       end
     end
 

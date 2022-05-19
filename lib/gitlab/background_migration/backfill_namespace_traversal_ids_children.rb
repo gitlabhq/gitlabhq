@@ -29,7 +29,7 @@ module Gitlab
             WHERE namespaces.id = calculated_ids.id
               AND namespaces.traversal_ids = '{}'
           SQL
-          ActiveRecord::Base.connection.execute(update_sql)
+          ApplicationRecord.connection.execute(update_sql)
 
           sleep PAUSE_SECONDS
         end

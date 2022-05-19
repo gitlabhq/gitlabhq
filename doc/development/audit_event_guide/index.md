@@ -25,7 +25,7 @@ To instrument an audit event, the following attributes should be provided:
 | `scope`      | User, Project, Group | true      | Scope which the audit event belongs to                           |
 | `target`     | Object               | true      | Target object being audited                                      |
 | `message`    | String               | true      | Message describing the action                                    |
-| `created_at` | DateTime             | false     | The time when the action occured. Defaults to `DateTime.current` |
+| `created_at` | DateTime             | false     | The time when the action occurred. Defaults to `DateTime.current` |
 
 ## How to instrument new Audit Events
 

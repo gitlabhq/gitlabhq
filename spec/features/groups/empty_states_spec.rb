@@ -7,6 +7,8 @@ RSpec.describe 'Group empty states' do
   let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
 
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     sign_in(user)
   end
 
@@ -100,21 +102,23 @@ RSpec.describe 'Group empty states' do
           end
 
           it "the new #{issuable_name} button opens a project dropdown" do
-            within '.empty-state' do
-              click_button 'Toggle project select'
-            end
+            click_button 'Toggle project select'
 
-            expect(page).to have_selector('.ajax-project-dropdown')
+            if issuable == :issue
+              expect(page).to have_button project.name
+            else
+              expect(page).to have_selector('.ajax-project-dropdown')
+            end
           end
         end
       end
 
       shared_examples "no projects" do
-        it 'displays an empty state' do
+        it 'displays an empty state', :js do
           expect(page).to have_selector('.empty-state')
         end
 
-        it "does not show a new #{issuable_name} button" do
+        it "does not show a new #{issuable_name} button", :js do
           within '.empty-state' do
             expect(page).not_to have_link("create #{issuable_name}")
           end
@@ -143,7 +147,7 @@ RSpec.describe 'Group empty states' do
               visit path
             end
 
-            it 'displays an empty state' do
+            it 'displays an empty state', :js do
               expect(page).to have_selector('.empty-state')
             end
           end

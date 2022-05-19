@@ -3,26 +3,31 @@
 module Projects
   module GroupLinks
     class CreateService < BaseService
-      def execute(group)
-        return error('Not Found', 404) unless group && can?(current_user, :read_namespace, group)
+      include GroupLinkable
 
-        link = project.project_group_links.new(
-          group: group,
-          group_access: params[:link_group_access],
-          expires_at: params[:expires_at]
-        )
+      def initialize(project, shared_with_group, user, params)
+        @shared_with_group = shared_with_group
 
-        if link.save
-          setup_authorizations(group)
-          success(link: link)
-        else
-          error(link.errors.full_messages.to_sentence, 409)
-        end
+        super(project, user, params)
       end
 
       private
 
-      def setup_authorizations(group)
+      delegate :root_ancestor, to: :project
+
+      def valid_to_create?
+        can?(current_user, :read_namespace, shared_with_group) && sharing_allowed?
+      end
+
+      def build_link
+        @link = project.project_group_links.new(
+          group: shared_with_group,
+          group_access: params[:link_group_access],
+          expires_at: params[:expires_at]
+        )
+      end
+
+      def setup_authorizations
         AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
 
         # AuthorizedProjectsWorker uses an exclusive lease per user but
@@ -30,7 +35,7 @@ module Projects
         # compare the inconsistency rates of both approaches, we still run
         # AuthorizedProjectsWorker but with some delay and lower urgency as a
         # safety net.
-        group.refresh_members_authorized_projects(
+        shared_with_group.refresh_members_authorized_projects(
           blocking: false,
           priority: UserProjectAccessChangedService::LOW_PRIORITY
         )

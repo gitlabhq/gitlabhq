@@ -696,6 +696,21 @@ RSpec.describe QuickActions::InterpretService do
         expect(message).to eq("Assigned #{developer.to_reference}.")
       end
 
+      context 'when the reference does not match the exact case' do
+        let(:user) { create(:user) }
+        let(:content) { "/assign #{user.to_reference.upcase}" }
+
+        it 'assigns to the user' do
+          issuable.project.add_developer(user)
+
+          _, updates, message = service.execute(content, issuable)
+
+          expect(content).not_to include(user.to_reference)
+          expect(updates).to eq(assignee_ids: [user.id])
+          expect(message).to eq("Assigned #{user.to_reference}.")
+        end
+      end
+
       context 'when the user has a private profile' do
         let(:user) { create(:user, :private_profile) }
         let(:content) { "/assign #{user.to_reference}" }

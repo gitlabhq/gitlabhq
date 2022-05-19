@@ -16,6 +16,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Linear
   include EachBatch
   include BlocksUnsafeSerialization
+  include Ci::NamespaceSettings
 
   # Temporary column used for back-filling project namespaces.
   # Remove it once the back-filling of all project namespaces is done.
@@ -44,6 +45,7 @@ class Namespace < ApplicationRecord
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
+  has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
@@ -110,6 +112,8 @@ class Namespace < ApplicationRecord
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
+  delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,
+           to: :namespace_settings, allow_nil: true
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_parent_id? }
 
@@ -126,7 +130,7 @@ class Namespace < ApplicationRecord
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
   after_commit :expire_child_caches, on: :update, if: -> {
-    Feature.enabled?(:cached_route_lookups, self, type: :ops, default_enabled: :yaml) &&
+    Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
   }
 
@@ -238,11 +242,11 @@ class Namespace < ApplicationRecord
       return unless host.ends_with?(gitlab_host)
 
       name = host.delete_suffix(gitlab_host)
-      Namespace.where(parent_id: nil).by_path(name)
+      Namespace.top_most.by_path(name)
     end
 
     def top_most
-      where(parent_id: nil)
+      by_parent(nil)
     end
   end
 
@@ -351,7 +355,7 @@ class Namespace < ApplicationRecord
   # Includes projects from this namespace and projects from all subgroups
   # that belongs to this namespace
   def all_projects
-    if Feature.enabled?(:recursive_approach_for_all_projects, default_enabled: :yaml)
+    if Feature.enabled?(:recursive_approach_for_all_projects)
       namespace = user_namespace? ? self : self_and_descendant_ids
       Project.where(namespace: namespace)
     else
@@ -370,6 +374,10 @@ class Namespace < ApplicationRecord
   # Overridden on EE module
   def multiple_issue_boards_available?
     false
+  end
+
+  def all_project_ids_except(ids)
+    all_projects.where.not(id: ids).pluck(:id)
   end
 
   # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.
@@ -512,13 +520,19 @@ class Namespace < ApplicationRecord
   end
 
   def issue_repositioning_disabled?
-    Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
+    Feature.enabled?(:block_issue_repositioning, self, type: :ops)
   end
 
   def storage_enforcement_date
     # should return something like Date.new(2022, 02, 03)
     # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
     nil
+  end
+
+  def certificate_based_clusters_enabled?
+    ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:ns:#{self.id}") do
+      Feature.enabled?(:certificate_based_clusters, self, type: :ops)
+    end
   end
 
   private
@@ -634,7 +648,7 @@ class Namespace < ApplicationRecord
   end
 
   def cache_first_auto_devops_config?
-    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config, default_enabled: :yaml)
+    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config)
   end
 
   def write_projects_repository_config

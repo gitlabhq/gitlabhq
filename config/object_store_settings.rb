@@ -16,21 +16,36 @@ class ObjectStoreSettings
   # we don't need to raise an error in that case
   ALLOWED_INCOMPLETE_TYPES = %w(pages).freeze
 
+  # A fallback switch in case anyone gets a trouble with background upload removal
+  # Epic: https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/734
+  LEGACY_BACKGROUND_UPLOADS_ENV = "GITLAB_LEGACY_BACKGROUND_UPLOADS"
+
   attr_accessor :settings
 
   # Legacy parser
-  def self.legacy_parse(object_store)
+  def self.legacy_parse(object_store, object_store_type)
     object_store ||= Settingslogic.new({})
     object_store['enabled'] = false if object_store['enabled'].nil?
     object_store['remote_directory'] ||= nil
-    object_store['direct_upload'] = false if object_store['direct_upload'].nil?
-    object_store['background_upload'] = true if object_store['background_upload'].nil?
+
+    if support_legacy_background_upload?(object_store_type)
+      object_store['direct_upload'] = false
+      object_store['background_upload'] = true
+    else
+      object_store['direct_upload'] = true
+      object_store['background_upload'] = false
+    end
+
     object_store['proxy_download'] = false if object_store['proxy_download'].nil?
     object_store['storage_options'] ||= {}
 
     # Convert upload connection settings to use string keys, to make Fog happy
     object_store['connection']&.deep_stringify_keys!
     object_store
+  end
+
+  def self.support_legacy_background_upload?(object_store_type)
+    ENV[LEGACY_BACKGROUND_UPLOADS_ENV].to_s.split(',').map(&:strip).include?(object_store_type)
   end
 
   def initialize(settings)

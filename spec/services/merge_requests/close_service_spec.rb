@@ -97,7 +97,7 @@ RSpec.describe MergeRequests::CloseService do
 
     it 'clean up environments for the merge request' do
       expect_next_instance_of(::Environments::StopService) do |service|
-        expect(service).to receive(:execute_for_merge_request).with(merge_request)
+        expect(service).to receive(:execute_for_merge_request_pipeline).with(merge_request)
       end
 
       described_class.new(project: project, current_user: user).execute(merge_request)

@@ -4,6 +4,6 @@ classes:
 - Geo::LfsObjectState
 feature_categories:
 - git_lfs
-description: TODO
+description: Geo verification states for LFS objects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63981
 milestone: '14.6'

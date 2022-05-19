@@ -180,4 +180,32 @@ RSpec.describe Emails::Projects do
       end
     end
   end
+
+  describe '.inactive_project_deletion_warning_email' do
+    let(:recipient) { user }
+    let(:deletion_date) { "2022-01-10" }
+
+    subject { Notify.inactive_project_deletion_warning_email(project, user, deletion_date) }
+
+    it_behaves_like 'an email sent to a user'
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'has the correct subject and body' do
+      project_link = "<a href=\"#{project.http_url_to_repo}\">#{project.name}</a>"
+
+      is_expected.to have_subject("#{project.name} | Action required: Project #{project.name} is scheduled to be " \
+        "deleted on 2022-01-10 due to inactivity")
+      is_expected.to have_body_text(project.http_url_to_repo)
+      is_expected.to have_body_text("Due to inactivity, the #{project_link} project is scheduled to be deleted " \
+        "on <b>2022-01-10</b>")
+      is_expected.to have_body_text("To ensure #{project_link} is unscheduled for deletion, check that activity has " \
+        "been logged by GitLab")
+      is_expected.to have_body_text("This email supersedes any previous emails about scheduled deletion you may " \
+        "have received for #{project_link}.")
+    end
+  end
 end

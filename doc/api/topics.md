@@ -38,21 +38,24 @@ Example response:
 [
   {
     "id": 1,
-    "name": "GitLab",
+    "name": "gitlab",
+    "title": "GitLab",
     "description": "GitLab is an open source end-to-end software development platform with built-in version control, issue tracking, code review, CI/CD, and more.",
     "total_projects_count": 1000,
     "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon"
   },
   {
     "id": 3,
-    "name": "Git",
+    "name": "git",
+    "title": "Git",
     "description": "Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.",
     "total_projects_count": 900,
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
   },
   {
     "id": 2,
-    "name": "Git LFS",
+    "name": "git-lfs",
+    "title": "Git LFS",
     "description": null,
     "total_projects_count": 300,
     "avatar_url": null
@@ -85,7 +88,8 @@ Example response:
 ```json
 {
   "id": 1,
-  "name": "GitLab",
+  "name": "gitlab",
+  "title": "GitLab",
   "description": "GitLab is an open source end-to-end software development platform with built-in version control, issue tracking, code review, CI/CD, and more.",
   "total_projects_count": 1000,
   "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon"
@@ -112,7 +116,8 @@ Supported attributes:
 
 | Attribute     | Type    | Required               | Description |
 | ------------- | ------- | ---------------------- | ----------- |
-| `name`        | string  | **{check-circle}** Yes | Name        |
+| `name`        | string  | **{check-circle}** Yes | Slug (name) |
+| `title`       | string  | **{check-circle}** Yes | Title       |
 | `avatar`      | file    | **{dotted-circle}** No | Avatar      |
 | `description` | string  | **{dotted-circle}** No | Description |
 
@@ -120,7 +125,7 @@ Example request:
 
 ```shell
 curl --request POST \
-     --data "name=topic1" \
+     --data "name=topic1&title=Topic 1" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/topics"
 ```
@@ -131,6 +136,7 @@ Example response:
 {
   "id": 1,
   "name": "topic1",
+  "title": "Topic 1",
   "description": null,
   "total_projects_count": 0,
   "avatar_url": null
@@ -152,7 +158,8 @@ Supported attributes:
 | `id`          | integer | **{check-circle}** Yes | ID of project topic |
 | `avatar`      | file    | **{dotted-circle}** No | Avatar              |
 | `description` | string  | **{dotted-circle}** No | Description         |
-| `name`        | string  | **{dotted-circle}** No | Name                |
+| `name`        | string  | **{dotted-circle}** No | Slug (name)         |
+| `title`       | string  | **{dotted-circle}** No | Title               |
 
 Example request:
 
@@ -169,6 +176,7 @@ Example response:
 {
   "id": 1,
   "name": "topic1",
+  "title": "Topic 1",
   "description": null,
   "total_projects_count": 0,
   "avatar_url": null

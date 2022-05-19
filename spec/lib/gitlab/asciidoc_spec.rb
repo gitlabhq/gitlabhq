@@ -79,7 +79,7 @@ module Gitlab
           },
           'image with onerror' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt='Alt text\" onerror=\"alert(7)' class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
+            output: "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt='Alt text\" onerror=\"alert(7)' decoding=\"async\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
           }
         }
 
@@ -112,13 +112,13 @@ module Gitlab
       context "images" do
         it "does lazy load and link image" do
           input = 'image:https://localhost.com/image.png[]'
-          output = "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"image\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
+          output = "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"image\" decoding=\"async\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
           expect(render(input, context)).to include(output)
         end
 
         it "does not automatically link image if link is explicitly defined" do
           input = 'image:https://localhost.com/image.png[link=https://gitlab.com]'
-          output = "<div>\n<p><span><a href=\"https://gitlab.com\" rel=\"nofollow noreferrer noopener\" target=\"_blank\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"image\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
+          output = "<div>\n<p><span><a href=\"https://gitlab.com\" rel=\"nofollow noreferrer noopener\" target=\"_blank\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"image\" decoding=\"async\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
           expect(render(input, context)).to include(output)
         end
       end
@@ -524,7 +524,7 @@ module Gitlab
           output = <<~HTML
             <div>
             <div>
-            <a class="no-attachment-icon" href="https://kroki.io/graphviz/svg/eNpLyUwvSizIUHBXqOZSUPBIzcnJ17ULzy_KSeGqBQCEzQka" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Diagram" class="lazy" data-src="https://kroki.io/graphviz/svg/eNpLyUwvSizIUHBXqOZSUPBIzcnJ17ULzy_KSeGqBQCEzQka"></a>
+            <a class="no-attachment-icon" href="https://kroki.io/graphviz/svg/eNpLyUwvSizIUHBXqOZSUPBIzcnJ17ULzy_KSeGqBQCEzQka" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Diagram" decoding="async" class="lazy" data-src="https://kroki.io/graphviz/svg/eNpLyUwvSizIUHBXqOZSUPBIzcnJ17ULzy_KSeGqBQCEzQka"></a>
             </div>
             </div>
           HTML
@@ -578,7 +578,7 @@ module Gitlab
           output = <<~HTML
             <div>
             <div>
-            <a class=\"no-attachment-icon\" href=\"https://kroki.io/plantuml/png/eNpLzkksLlZwyslPzg4oyk9OLS7OL-LiQuUr2NTo6ipUJ-eX5pWkFlllF-VnZ-oW5CTmlZTm5uhm5iXnlKak1gIABQEb8A==\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"Diagram\" class=\"lazy\" data-src=\"https://kroki.io/plantuml/png/eNpLzkksLlZwyslPzg4oyk9OLS7OL-LiQuUr2NTo6ipUJ-eX5pWkFlllF-VnZ-oW5CTmlZTm5uhm5iXnlKak1gIABQEb8A==\"></a>
+            <a class=\"no-attachment-icon\" href=\"https://kroki.io/plantuml/png/eNpLzkksLlZwyslPzg4oyk9OLS7OL-LiQuUr2NTo6ipUJ-eX5pWkFlllF-VnZ-oW5CTmlZTm5uhm5iXnlKak1gIABQEb8A==\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"Diagram\" decoding=\"async\" class=\"lazy\" data-src=\"https://kroki.io/plantuml/png/eNpLzkksLlZwyslPzg4oyk9OLS7OL-LiQuUr2NTo6ipUJ-eX5pWkFlllF-VnZ-oW5CTmlZTm5uhm5iXnlKak1gIABQEb8A==\"></a>
             </div>
             </div>
           HTML
@@ -625,7 +625,7 @@ module Gitlab
           output = <<~HTML
             <div>
             <div>
-            <a class="no-attachment-icon" href="https://kroki.io/blockdiag/svg/eNpdzDEKQjEQhOHeU4zpPYFoYesRxGJ9bwghMSsbUYJ4d10UCZbDfPynolOek0Q8FsDeNCestoisNLmy-Qg7R3Blcm5hPcr0ITdaB6X15fv-_YdJixo2CNHI2lmK3sPRA__RwV5SzV80ZAegJjXSyfMFptc71w==" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Diagram" class="lazy" data-src="https://kroki.io/blockdiag/svg/eNpdzDEKQjEQhOHeU4zpPYFoYesRxGJ9bwghMSsbUYJ4d10UCZbDfPynolOek0Q8FsDeNCestoisNLmy-Qg7R3Blcm5hPcr0ITdaB6X15fv-_YdJixo2CNHI2lmK3sPRA__RwV5SzV80ZAegJjXSyfMFptc71w=="></a>
+            <a class="no-attachment-icon" href="https://kroki.io/blockdiag/svg/eNpdzDEKQjEQhOHeU4zpPYFoYesRxGJ9bwghMSsbUYJ4d10UCZbDfPynolOek0Q8FsDeNCestoisNLmy-Qg7R3Blcm5hPcr0ITdaB6X15fv-_YdJixo2CNHI2lmK3sPRA__RwV5SzV80ZAegJjXSyfMFptc71w==" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Diagram" decoding="async" class="lazy" data-src="https://kroki.io/blockdiag/svg/eNpdzDEKQjEQhOHeU4zpPYFoYesRxGJ9bwghMSsbUYJ4d10UCZbDfPynolOek0Q8FsDeNCestoisNLmy-Qg7R3Blcm5hPcr0ITdaB6X15fv-_YdJixo2CNHI2lmK3sPRA__RwV5SzV80ZAegJjXSyfMFptc71w=="></a>
             </div>
             </div>
           HTML

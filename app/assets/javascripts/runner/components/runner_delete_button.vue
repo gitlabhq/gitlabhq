@@ -165,6 +165,8 @@ export default {
       :loading="deleting"
       :disabled="disabled"
       variant="danger"
+      category="secondary"
+      v-bind="$attrs"
     >
       {{ buttonContent }}
     </gl-button>

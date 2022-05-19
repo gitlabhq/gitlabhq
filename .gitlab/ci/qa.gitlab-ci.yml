@@ -1,4 +1,5 @@
 .qa-job-base:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-99
   extends:
     - .default-retry
     - .qa-cache
@@ -114,13 +115,13 @@ update-qa-cache:
 .package-and-qa-ff-base:
   script:
     - |
-      feature_flags=$(scripts/changed-feature-flags --files $(cat $CHANGES_FILE | tr ' ' ',') --state $QA_FF_STATE)
+      feature_flags=$(scripts/changed-feature-flags --files $CHANGES_DIFFS_DIR --state $QA_FF_STATE)
       if [[ $feature_flags ]]; then
         export GITLAB_QA_OPTIONS="--set-feature-flags $feature_flags"
         echo $GITLAB_QA_OPTIONS
         ./scripts/trigger-build.rb omnibus
       else
-        echo "No changed feature flag found to test. The tests are skipped if the flag was removed."
+        echo "No changed feature flag found to test as $QA_FF_STATE."
       fi
 
 package-and-qa:
@@ -134,7 +135,7 @@ package-and-qa-ff-enabled:
     - .package-and-qa-ff-base
     - .qa:rules:package-and-qa:feature-flags
   variables:
-    QA_FF_STATE: "enable"
+    QA_FF_STATE: "enabled"
 
 package-and-qa-ff-disabled:
   extends:
@@ -142,4 +143,12 @@ package-and-qa-ff-disabled:
     - .package-and-qa-ff-base
     - .qa:rules:package-and-qa:feature-flags
   variables:
-    QA_FF_STATE: "disable"
+    QA_FF_STATE: "disabled"
+
+package-and-qa-ff-deleted:
+  extends:
+    - .package-and-qa-base
+    - .package-and-qa-ff-base
+    - .qa:rules:package-and-qa:feature-flags
+  variables:
+    QA_FF_STATE: "deleted"

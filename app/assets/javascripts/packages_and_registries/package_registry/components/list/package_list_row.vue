@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlIcon,
+  GlSprintf,
+  GlTooltipDirective,
+  GlTruncate,
+} from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
@@ -17,7 +24,9 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 export default {
   name: 'PackageListRow',
   components: {
-    GlButton,
+    GlDropdown,
+    GlDropdownItem,
+    GlIcon,
     GlSprintf,
     GlTruncate,
     PackageTags,
@@ -50,31 +59,42 @@ export default {
     pipelineUser() {
       return this.pipeline?.user?.name;
     },
-    showWarningIcon() {
+    errorStatusRow() {
       return this.packageEntity.status === PACKAGE_ERROR_STATUS;
     },
     showTags() {
       return Boolean(this.packageEntity.tags?.nodes?.length);
     },
-    disabledRow() {
+    nonDefaultRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
     },
     routerLinkEvent() {
-      return this.disabledRow ? '' : 'click';
+      return this.nonDefaultRow ? '' : 'click';
+    },
+    errorPackageStyle() {
+      return {
+        'gl-text-red-500': this.errorStatusRow,
+        'gl-font-weight-normal': this.errorStatusRow,
+      };
     },
   },
   i18n: {
     erroredPackageText: s__('PackageRegistry|Invalid Package: failed metadata extraction'),
     createdAt: __('Created %{timestamp}'),
+    deletePackage: s__('PackageRegistry|Delete package'),
+    errorPublishing: s__('PackageRegistry|Error publishing'),
+    warning: __('Warning'),
+    moreActions: __('More actions'),
   },
 };
 </script>
 
 <template>
-  <list-item data-qa-selector="package_row" :disabled="disabledRow">
+  <list-item data-qa-selector="package_row">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
         <router-link
+          :class="errorPackageStyle"
           class="gl-text-body gl-min-w-0"
           data-testid="details-link"
           data-qa-selector="package_link"
@@ -83,16 +103,6 @@ export default {
         >
           <gl-truncate :text="packageEntity.name" />
         </router-link>
-
-        <gl-button
-          v-if="showWarningIcon"
-          v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
-          class="gl-hover-bg-transparent!"
-          icon="warning"
-          category="tertiary"
-          data-testid="warning-icon"
-          :aria-label="__('Warning')"
-        />
 
         <package-tags
           v-if="showTags"
@@ -104,7 +114,7 @@ export default {
       </div>
     </template>
     <template #left-secondary>
-      <div class="gl-display-flex" data-testid="left-secondary-infos">
+      <div v-if="!errorStatusRow" class="gl-display-flex" data-testid="left-secondary-infos">
         <span>{{ packageEntity.version }}</span>
 
         <div v-if="pipelineUser" class="gl-display-none gl-sm-display-flex gl-ml-2">
@@ -120,8 +130,18 @@ export default {
         <package-path
           v-if="isGroupPage"
           :path="packageEntity.project.fullPath"
-          :disabled="disabledRow"
+          :disabled="nonDefaultRow"
         />
+      </div>
+      <div v-else>
+        <gl-icon
+          v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
+          name="warning"
+          class="gl-text-red-500"
+          :aria-label="$options.i18n.warning"
+          data-testid="warning-icon"
+        />
+        <span class="gl-text-red-500">{{ $options.i18n.errorPublishing }}</span>
       </div>
     </template>
 
@@ -139,16 +159,22 @@ export default {
       </span>
     </template>
 
-    <template v-if="!disabledRow" #right-action>
-      <gl-button
-        data-testid="action-delete"
-        icon="remove"
-        category="secondary"
-        variant="danger"
-        :title="s__('PackageRegistry|Remove package')"
-        :aria-label="s__('PackageRegistry|Remove package')"
-        @click="$emit('packageToDelete', packageEntity)"
-      />
+    <template v-if="packageEntity.canDestroy" #right-action>
+      <gl-dropdown
+        data-testid="delete-dropdown"
+        icon="ellipsis_v"
+        :text="$options.i18n.moreActions"
+        :text-sr-only="true"
+        category="tertiary"
+        no-caret
+      >
+        <gl-dropdown-item
+          data-testid="action-delete"
+          variant="danger"
+          @click="$emit('packageToDelete', packageEntity)"
+          >{{ $options.i18n.deletePackage }}</gl-dropdown-item
+        >
+      </gl-dropdown>
     </template>
   </list-item>
 </template>

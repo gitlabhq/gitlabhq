@@ -19,6 +19,27 @@ RSpec.describe Projects::PipelinesController do
     sign_in(user)
   end
 
+  shared_examples 'the show page' do |param|
+    it 'redirects to pipeline path with param' do
+      get param, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+
+      expect(response).to redirect_to(pipeline_path(pipeline, tab: param))
+    end
+
+    context 'when the FF pipeline_tabs_vue is disabled' do
+      before do
+        stub_feature_flags(pipeline_tabs_vue: false)
+      end
+
+      it 'renders the show template' do
+        get param, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template :show
+      end
+    end
+  end
+
   describe 'GET index.json' do
     before do
       create_all_pipeline_types
@@ -625,6 +646,12 @@ RSpec.describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET dag' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    it_behaves_like 'the show page', 'dag'
+  end
+
   describe 'GET dag.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -655,6 +682,49 @@ RSpec.describe Projects::PipelinesController do
 
     def create_build(stage, stage_idx, name, params = {})
       create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, **params)
+    end
+  end
+
+  describe 'GET builds' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    it_behaves_like 'the show page', 'builds'
+  end
+
+  describe 'GET failures' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    context 'with ff `pipeline_tabs_vue` disabled' do
+      before do
+        stub_feature_flags(pipeline_tabs_vue: false)
+      end
+
+      context 'with failed jobs' do
+        before do
+          create(:ci_build, :failed, pipeline: pipeline, name: 'hello')
+        end
+
+        it 'shows the page' do
+          get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'without failed jobs' do
+        it 'redirects to the main pipeline page' do
+          get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+
+          expect(response).to redirect_to(pipeline_path(pipeline))
+        end
+      end
+    end
+
+    it 'redirects to the pipeline page with `failures` query param' do
+      get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+
+      expect(response).to redirect_to(pipeline_path(pipeline, tab: 'failures'))
     end
   end
 
@@ -986,6 +1056,12 @@ RSpec.describe Projects::PipelinesController do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+  end
+
+  describe 'GET test_report' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    it_behaves_like 'the show page', 'test_report'
   end
 
   describe 'GET test_report.json' do

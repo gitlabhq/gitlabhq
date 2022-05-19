@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require_migration!
-# require Rails.root.join('db', 'post_migrate', '20210825193652_backfill_candence_id_for_boards_scoped_to_iteration.rb')
 
 RSpec.describe BackfillCadenceIdForBoardsScopedToIteration, :migration do
   let(:projects) { table(:projects) }

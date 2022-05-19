@@ -39,7 +39,7 @@ export default {
   configHelpLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'create-an-agent-configuration-file',
   }),
-  inject: ['gitlabVersion'],
+  inject: ['gitlabVersion', 'kasVersion'],
   props: {
     agents: {
       required: true,
@@ -102,6 +102,9 @@ export default {
         return { ...agent, versions };
       });
     },
+    serverVersion() {
+      return this.kasVersion || this.gitlabVersion;
+    },
   },
   methods: {
     getStatusCellId(item) {
@@ -135,12 +138,12 @@ export default {
       if (!agent.versions.length) return false;
 
       const [agentMajorVersion, agentMinorVersion] = this.getAgentVersionString(agent).split('.');
-      const [gitlabMajorVersion, gitlabMinorVersion] = this.gitlabVersion.split('.');
+      const [serverMajorVersion, serverMinorVersion] = this.serverVersion.split('.');
 
-      const majorVersionMismatch = agentMajorVersion !== gitlabMajorVersion;
+      const majorVersionMismatch = agentMajorVersion !== serverMajorVersion;
 
       // We should warn user if their current GitLab and agent versions are more than 1 minor version apart:
-      const minorVersionMismatch = Math.abs(agentMinorVersion - gitlabMinorVersion) > 1;
+      const minorVersionMismatch = Math.abs(agentMinorVersion - serverMinorVersion) > 1;
 
       return majorVersionMismatch || minorVersionMismatch;
     },
@@ -165,8 +168,6 @@ export default {
     :items="agentsList"
     :fields="fields"
     stacked="md"
-    head-variant="white"
-    thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
     class="gl-mb-4!"
     data-testid="cluster-agent-list-table"
   >
@@ -242,7 +243,7 @@ export default {
 
           <p class="gl-mb-0">
             <gl-sprintf :message="$options.i18n.versionOutdatedText">
-              <template #version>{{ gitlabVersion }}</template>
+              <template #version>{{ serverVersion }}</template>
             </gl-sprintf>
             <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
               {{ $options.i18n.viewDocsText }}</gl-link
@@ -255,7 +256,7 @@ export default {
 
         <p v-else-if="isVersionOutdated(item)" class="gl-mb-0">
           <gl-sprintf :message="$options.i18n.versionOutdatedText">
-            <template #version>{{ gitlabVersion }}</template>
+            <template #version>{{ serverVersion }}</template>
           </gl-sprintf>
           <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
             {{ $options.i18n.viewDocsText }}</gl-link

@@ -739,6 +739,32 @@ RSpec.describe API::Projects do
       end
     end
 
+    context 'with default created_at desc order' do
+      let_it_be(:group_with_projects) { create(:group) }
+      let_it_be(:project_1) { create(:project, name: 'Project 1', created_at: 3.days.ago, path: 'project1', group: group_with_projects) }
+      let_it_be(:project_2) { create(:project, name: 'Project 2', created_at: 2.days.ago, path: 'project2', group: group_with_projects) }
+      let_it_be(:project_3) { create(:project, name: 'Project 3', created_at: 1.day.ago, path: 'project3', group: group_with_projects) }
+
+      let(:current_user) { user }
+      let(:params) { {} }
+
+      subject { get api('/projects', current_user), params: params }
+
+      before do
+        group_with_projects.add_owner(current_user) if current_user
+      end
+
+      it 'orders by id desc instead' do
+        projects_ordered_by_id_desc = /SELECT "projects".+ORDER BY "projects"."id" DESC/i
+        expect { subject }.to make_queries_matching projects_ordered_by_id_desc
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['id']).to eq(project_3.id)
+      end
+    end
+
     context 'sorting' do
       context 'by project statistics' do
         %w(repository_size storage_size wiki_size packages_size).each do |order_by|
@@ -1180,9 +1206,15 @@ RSpec.describe API::Projects do
     end
 
     it 'disallows creating a project with an import_url when git import source is disabled' do
+      url = 'http://example.com'
       stub_application_setting(import_sources: nil)
 
-      project_params = { import_url: 'http://example.com', path: 'path-project-Foo', name: 'Foo Project' }
+      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
+      stub_full_request(endpoint_url, method: :get).to_return({ status: 200,
+        body: '001e# service=git-upload-pack',
+        headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+
+      project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
       expect { post api('/projects', user), params: project_params }
         .not_to change {  Project.count }
 
@@ -2522,6 +2554,7 @@ RSpec.describe API::Projects do
           expect(links['labels']).to end_with("/api/v4/projects/#{project.id}/labels")
           expect(links['events']).to end_with("/api/v4/projects/#{project.id}/events")
           expect(links['members']).to end_with("/api/v4/projects/#{project.id}/members")
+          expect(links['cluster_agents']).to end_with("/api/v4/projects/#{project.id}/cluster_agents")
         end
 
         it 'filters related URIs when their feature is not enabled' do
@@ -3556,6 +3589,20 @@ RSpec.describe API::Projects do
         expect(json_response['topics']).to eq(%w[topic2])
       end
 
+      it 'updates enforce_auth_checks_on_uploads' do
+        project3.update!(enforce_auth_checks_on_uploads: false)
+
+        project_param = { enforce_auth_checks_on_uploads: true }
+
+        expect { put api("/projects/#{project3.id}", user), params: project_param }
+          .to change { project3.reload.enforce_auth_checks_on_uploads }
+          .from(false)
+          .to(true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['enforce_auth_checks_on_uploads']).to eq(true)
+      end
+
       it 'updates squash_option' do
         project3.update!(squash_option: 'always')
 
@@ -4463,6 +4510,43 @@ RSpec.describe API::Projects do
     end
   end
 
+  describe 'POST /projects/:id/repository_size' do
+    let(:update_statistics_service) { Projects::UpdateStatisticsService.new(project, nil, statistics: [:repository_size, :lfs_objects_size]) }
+
+    before do
+      allow(Projects::UpdateStatisticsService).to receive(:new).with(project, nil, statistics: [:repository_size, :lfs_objects_size]).and_return(update_statistics_service)
+    end
+
+    context 'when authenticated as owner' do
+      it 'starts the housekeeping process' do
+        expect(update_statistics_service).to receive(:execute).once
+
+        post api("/projects/#{project.id}/repository_size", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'when authenticated as developer' do
+      before do
+        project_member
+      end
+
+      it 'returns forbidden error' do
+        post api("/projects/#{project.id}/repository_size", user3)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        post api("/projects/#{project.id}/repository_size")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
   describe 'PUT /projects/:id/transfer' do
     context 'when authenticated as owner' do
       let(:group) { create :group }

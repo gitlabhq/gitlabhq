@@ -26,7 +26,7 @@ This is only a recommendation and the reviewer may be from a different team.
 However, it is recommended to pick someone who is a [domain expert](#domain-experts).
 If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
 
-You can read more about the importance of involving reviewer(s) in the section on the responsibility of the author below.
+You can read more about the importance of involving reviewers in the section on the responsibility of the author below.
 
 If you need some guidance (for example, it's your first merge request), feel free to ask
 one of the [Merge request coaches](https://about.gitlab.com/company/team/).
@@ -107,7 +107,7 @@ For more information, review [the roulette README](https://gitlab.com/gitlab-org
 ### Approval guidelines
 
 As described in the section on the responsibility of the maintainer below, you
-are recommended to get your merge request approved and merged by maintainer(s)
+are recommended to get your merge request approved and merged by maintainers
 with [domain expertise](#domain-experts).
 
 1. If your merge request includes backend changes (*1*), it must be
@@ -118,8 +118,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes frontend changes (*1*), it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
 1. If your merge request includes user-facing changes (*3*), it must be
-   **approved by a [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX)**,
-   based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+   **approved by a [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX)**.
    See the [design and user interface guidelines](contributing/design.md) for details.
 1. If your merge request includes adding a new JavaScript library (*1*)...
    - If the library significantly increases the
@@ -155,7 +154,7 @@ with [domain expertise](#domain-experts).
 
 #### Acceptance checklist
 
-This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, and maintainability.
+This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, observability, and maintainability.
 
 Using checklists improves quality in software engineering. This checklist is a straightforward tool to support and bolster the skills of contributors to the GitLab codebase.
 
@@ -182,6 +181,10 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. I have considered the availability and reliability risks of this change.
 1. I have considered the scalability risk based on future predicted growth.
 1. I have considered the performance, reliability, and availability impacts of this change on large customers who may have significantly more data than the average customer.
+
+##### Observability instrumentation
+
+1. I have included enough instrumentation to facilitate debugging and proactive performance improvements through observability.
 
 ##### Documentation
 
@@ -220,7 +223,9 @@ should be confident that:
 
 The best way to do this, and to avoid unnecessary back-and-forth with reviewers,
 is to perform a self-review of your own merge request, following the
-[Code Review](#reviewing-a-merge-request) guidelines.
+[Code Review](#reviewing-a-merge-request) guidelines. During this self-review,
+try to include comments in the MR on lines
+where decisions or trade-offs were made, or where a contextual explanation might aid the reviewer in more easily understanding the code.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as
@@ -258,7 +263,7 @@ Avoid:
   [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
 - Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-through Slack). If you can't add a reviewer for a merge request, it's acceptable to `@` mention a maintainer in a comment. In all other cases, it's sufficient to add a reviewer or [request their attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) if they're already a reviewer.
+through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 
@@ -268,8 +273,10 @@ This saves reviewers time and helps authors catch mistakes earlier.
 that it meets all requirements, you should:
 
 - Click the Approve button.
-- Request a review from a maintainer or [request their attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) if they're already a reviewer. Default to requests for a maintainer with [domain expertise](#domain-experts),
+- `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
+- Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
 however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
+- Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
 
@@ -297,7 +304,7 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a reviewer, it is recommended that they are not also picked as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
-required approvers. If still awaiting further approvals from others, explain that in a comment and [request attention](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) from other reviewers as appropriate. Do not remove yourself as a reviewer.
+required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
 
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the merge request
@@ -319,20 +326,14 @@ After merging, a maintainer should stay as the reviewer listed on the merge requ
 
 ### Dogfooding the Reviewers feature
 
-Replaced with [dogfooding the attention request feature](#dogfooding-the-attention-request-feature).
-
-### Dogfooding the attention request feature
-
-In March of 2022, an updated process was put in place aimed at efficiently and consistently dogfooding the
-[attention requests feature](../user/project/merge_requests/index.md#request-attention-to-a-merge-request) under `Merge requests` -> `Need your attention`. This replaces previous guidance on [dogfooding the reviewers feature](#dogfooding-the-reviewers-feature).
+On March 18th 2021, an updated process was put in place aimed at efficiently and consistently dogfooding the Reviewers feature.
 
 Here is a summary of the changes, also reflected in this section above.
 
-- Merge request authors and DRIs stay as assignees
-- Assignees request a review from reviewer(s) when they are expected to review
-- Reviewers stay assigned for the entire duration of the merge request
-- Reviewers request attention from the assignee or other reviewer(s) after they've done reviewing, depending on who needs to take action
-- Assignees request attention from the reviewer(s) when changes are made
+- Merge request authors and DRIs stay as Assignees
+- Authors request a review from Reviewers when they are expected to review
+- Reviewers remove themselves after they're done reviewing/approving
+- The last approver stays as Reviewer upon merging
 
 ## Best practices
 
@@ -443,7 +444,7 @@ experience, refactors the existing code). Then:
   - For non-mandatory suggestions, decorate with (non-blocking) so the author knows they can
     optionally resolve within the merge request or follow-up at a later stage.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
-- Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the author(s)
+- Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the authors
 if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/merge_request_dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
@@ -696,10 +697,10 @@ Properties of customer critical merge requests:
 
 - The [VP of Development](https://about.gitlab.com/job-families/engineering/development/management/vp/) ([@clefelhocz1](https://gitlab.com/clefelhocz1)) is the DRI for deciding if a merge request qualifies as customer critical.
 - The DRI applies the `customer-critical-merge-request` label to the merge request.
-- It is required that the reviewer(s) and maintainer(s) involved with a customer critical merge request are engaged as soon as this decision is made.
+- It is required that the reviewers and maintainers involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
 - It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
-- Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/principles/#prioritizing-technical-decisions).
+- Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).
 - On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
 - After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.
 

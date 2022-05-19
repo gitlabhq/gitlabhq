@@ -15,7 +15,7 @@ module Gitlab::UsageDataCounters
         )
 
         namespace = project.namespace
-        if Feature.enabled?(:route_hll_to_snowplow, namespace, default_enabled: :yaml)
+        if Feature.enabled?(:route_hll_to_snowplow, namespace)
           Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace, user: user, project: project)
         end
       end

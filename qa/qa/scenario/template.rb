@@ -21,33 +21,30 @@ module QA
       end
 
       def perform(options, *args)
-        extract_address(:gitlab_address, options, args)
-
-        gitlab_address = URI(Runtime::Scenario.gitlab_address)
-
-        # Define the "About" page as an `about` subdomain.
-        # @example
-        #   Given *gitlab_address* = 'https://gitlab.com/' #=> https://about.gitlab.com/
-        #   Given *gitlab_address* = 'https://staging.gitlab.com/' #=> https://about.staging.gitlab.com/
-        #   Given *gitlab_address* = 'http://gitlab-abc123.test/' #=> http://about.gitlab-abc123.test/
-        Runtime::Scenario.define(:about_address, URI(-> { gitlab_address.host = "about.#{gitlab_address.host}"; gitlab_address }.call).to_s) # rubocop:disable Style/Semicolon
+        define_gitlab_address(options, args)
 
         # Save the scenario class name
         Runtime::Scenario.define(:klass, self.class.name)
 
+        # Set large setup attribute
+        Runtime::Scenario.define(:large_setup?, args.include?('can_use_large_setup'))
+
         ##
-        # Setup knapsack and download latest report
+        # Configure browser
         #
-        Tools::KnapsackReport.configure! if Runtime::Env.knapsack?
+        Runtime::Browser.configure!
 
         ##
         # Perform before hooks, which are different for CE and EE
         #
-
-        Runtime::Release.perform_before_hooks unless Runtime::Env.dry_run
+        QA::Runtime::Release.perform_before_hooks unless QA::Runtime::Env.dry_run
 
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
-        Runtime::Feature.disable(options[:disable_feature]) if options.key?(:disable_feature) && (@feature_enabled = Runtime::Feature.enabled?(options[:disable_feature]))
+
+        if options.key?(:disable_feature) && (@feature_enabled = Runtime::Feature.enabled?(options[:disable_feature]))
+          Runtime::Feature.disable(options[:disable_feature])
+        end
+
         Runtime::Feature.set(options[:set_feature_flags]) if options.key?(:set_feature_flags)
 
         Specs::Runner.perform do |specs|
@@ -60,25 +57,31 @@ module QA
         Runtime::Feature.enable(options[:disable_feature]) if options.key?(:disable_feature) && @feature_enabled
       end
 
-      def extract_option(name, options, args)
-        option = if options.key?(name)
-                   options[name]
-                 else
-                   args.shift
-                 end
+      def extract_address(name, options)
+        address = options[name]
+        validate_address(name, address)
 
-        Runtime::Scenario.define(name, option)
-
-        option
+        Runtime::Scenario.define(name, address)
       end
 
-      # For backwards-compatibility, if the gitlab instance address is not
-      # specified as an option parsed by OptionParser, it can be specified as
-      # the first argument
-      def extract_address(name, options, args)
-        address = extract_option(name, options, args)
+      private
 
-        raise ::ArgumentError, "The address provided for `#{name}` is not valid: #{address}" unless Runtime::Address.valid?(address)
+      delegate :define_gitlab_address_attribute!, to: 'QA::Support::GitlabAddress'
+
+      # Define gitlab address attribute
+      #
+      # Use first argument if a valid address, else use named argument or default to environment variable
+      #
+      # @param [Hash] options
+      # @param [Array] args
+      # @return [void]
+      def define_gitlab_address(options, args)
+        address_from_opt = Runtime::Scenario.attributes[:gitlab_address]
+
+        return define_gitlab_address_attribute!(args.shift) if args.first && Runtime::Address.valid?(args.first)
+        return define_gitlab_address_attribute!(address_from_opt) if address_from_opt
+
+        define_gitlab_address_attribute!
       end
     end
   end

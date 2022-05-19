@@ -1,5 +1,6 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
@@ -24,7 +25,7 @@ describe('Filtered Search Visual Tokens', () => {
     mock = new MockAdapter(axios);
     mock.onGet().reply(200);
 
-    setFixtures(`
+    setHTMLFixture(`
       <ul class="tokens-container">
         ${FilteredSearchSpecHelper.createInputHTML()}
       </ul>
@@ -33,6 +34,10 @@ describe('Filtered Search Visual Tokens', () => {
 
     authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '=', '@user');
     bugLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '=', '~bug');
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   describe('getLastVisualTokenBeforeInput', () => {
@@ -241,7 +246,7 @@ describe('Filtered Search Visual Tokens', () => {
     let tokenElement;
 
     beforeEach(() => {
-      setFixtures(`
+      setHTMLFixture(`
         <div class="test-area">
         ${subject.createVisualTokenElementHTML('custom-token')}
         </div>

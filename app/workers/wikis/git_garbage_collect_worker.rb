@@ -19,8 +19,12 @@ module Wikis
     end
 
     override :update_db_repository_statistics
-    def update_db_repository_statistics(resource)
-      Projects::UpdateStatisticsService.new(resource.container, nil, statistics: [:wiki_size]).execute
+    def update_db_repository_statistics(resource, stats)
+      Projects::UpdateStatisticsService.new(resource.container, nil, statistics: stats).execute
+    end
+
+    def stats
+      [:wiki_size]
     end
   end
 end

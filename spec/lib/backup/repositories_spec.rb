@@ -5,13 +5,15 @@ require 'spec_helper'
 RSpec.describe Backup::Repositories do
   let(:progress) { spy(:stdout) }
   let(:strategy) { spy(:strategy) }
+  let(:storages) { [] }
   let(:destination) { 'repositories' }
   let(:backup_id) { 'backup_id' }
 
   subject do
     described_class.new(
       progress,
-      strategy: strategy
+      strategy: strategy,
+      storages: storages
     )
   end
 
@@ -67,17 +69,50 @@ RSpec.describe Backup::Repositories do
       end.count
 
       create_list(:project, 2, :repository)
+      create_list(:snippet, 2, :repository)
 
       expect do
         subject.dump(destination, backup_id)
       end.not_to exceed_query_limit(control_count)
     end
+
+    describe 'storages' do
+      let(:storages) { %w{default} }
+
+      let_it_be(:project) { create(:project, :repository) }
+
+      before do
+        stub_storage_settings('test_second_storage' => {
+          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
+          'path' => TestEnv::SECOND_STORAGE_PATH
+        })
+      end
+
+      it 'calls enqueue for all repositories on the specified storage', :aggregate_failures do
+        excluded_project = create(:project, :repository, repository_storage: 'test_second_storage')
+        excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
+        excluded_project_snippet.track_snippet_repository('test_second_storage')
+        excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
+        excluded_personal_snippet.track_snippet_repository('test_second_storage')
+
+        subject.dump(destination, backup_id)
+
+        expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
+        expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
+        expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
+        expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
+        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+        expect(strategy).to have_received(:finish!)
+      end
+    end
   end
 
   describe '#restore' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
-    let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: project.first_owner) }
+    let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project, author: project.first_owner) }
 
     it 'calls enqueue for each repository type', :aggregate_failures do
       subject.restore(destination)
@@ -116,9 +151,6 @@ RSpec.describe Backup::Repositories do
 
     context 'cleanup snippets' do
       before do
-        create(:snippet_repository, snippet: personal_snippet)
-        create(:snippet_repository, snippet: project_snippet)
-
         error_response = ServiceResponse.error(message: "Repository has more than one branch")
         allow(Snippets::RepositoryValidationService).to receive_message_chain(:new, :execute).and_return(error_response)
       end
@@ -144,6 +176,36 @@ RSpec.describe Backup::Repositories do
         subject.restore(destination)
 
         expect(gitlab_shell.repository_exists?(shard_name, path)).to eq false
+      end
+    end
+
+    context 'storages' do
+      let(:storages) { %w{default} }
+
+      before do
+        stub_storage_settings('test_second_storage' => {
+          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
+          'path' => TestEnv::SECOND_STORAGE_PATH
+        })
+      end
+
+      it 'calls enqueue for all repositories on the specified storage', :aggregate_failures do
+        excluded_project = create(:project, :repository, repository_storage: 'test_second_storage')
+        excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
+        excluded_project_snippet.track_snippet_repository('test_second_storage')
+        excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
+        excluded_personal_snippet.track_snippet_repository('test_second_storage')
+
+        subject.restore(destination)
+
+        expect(strategy).to have_received(:start).with(:restore, destination)
+        expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
+        expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
+        expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
+        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+        expect(strategy).to have_received(:finish!)
       end
     end
   end

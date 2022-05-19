@@ -54,30 +54,7 @@ RSpec.describe 'OAuth Tokens requests' do
       end.to change { Doorkeeper::AccessToken.count }.by(1)
 
       expect(json_response['access_token']).not_to be_nil
-    end
-
-    context 'when the application is configured to use expiring tokens' do
-      before do
-        application.update!(expire_access_tokens: true)
-      end
-
-      it 'generates an access token with an expiration' do
-        request_access_token(user)
-
-        expect(json_response['expires_in']).not_to be_nil
-      end
-    end
-
-    context 'when the application is configured not to use expiring tokens' do
-      before do
-        application.update!(expire_access_tokens: false)
-      end
-
-      it 'generates an access token without an expiration' do
-        request_access_token(user)
-
-        expect(json_response.key?('expires_in')).to eq(false)
-      end
+      expect(json_response['expires_in']).not_to be_nil
     end
   end
 end

@@ -158,6 +158,11 @@ describe('Create work item component', () => {
     it('adds padding for content', () => {
       expect(findContent().classes('gl-px-5')).toBe(true);
     });
+
+    it('defaults type to `Task`', async () => {
+      await waitForPromises();
+      expect(findSelect().attributes('value')).toBe('gid://gitlab/WorkItems::Type/3');
+    });
   });
 
   it('displays a loading icon inside dropdown when work items query is loading', () => {
@@ -181,7 +186,7 @@ describe('Create work item component', () => {
     });
 
     it('displays a list of work item types', () => {
-      expect(findSelect().attributes('options').split(',')).toHaveLength(3);
+      expect(findSelect().attributes('options').split(',')).toHaveLength(4);
     });
 
     it('selects a work item type on click', async () => {

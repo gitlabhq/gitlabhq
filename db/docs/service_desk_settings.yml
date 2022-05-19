@@ -4,6 +4,6 @@ classes:
 - ServiceDeskSetting
 feature_categories:
 - service_desk
-description: TODO
+description: Settings related to Service Desk such as templates to use for email notifications
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19515
 milestone: '12.6'

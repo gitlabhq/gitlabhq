@@ -6,18 +6,21 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
+  before_all do
+    project.add_maintainer(user)
+  end
+
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   describe 'GET #index' do
     context 'with insufficient permissions' do
-      before do
-        project.add_guest(user)
-      end
+      let(:user) { create(:user) }
 
       it 'returns 404' do
+        project.add_guest(user)
+
         get :index, params: list_projects_params
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -37,8 +40,8 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
     end
 
     context 'with authorized user' do
-      let(:list_projects_service) { spy(:list_projects_service) }
-      let(:sentry_project) { build(:error_tracking_project) }
+      let(:list_projects_service) { instance_double('ErrorTracking::ListProjectsService') }
+      let(:sentry_project) { build_stubbed(:error_tracking_project) }
 
       let(:query_params) do
         list_projects_params.slice(:api_host, :token)
@@ -50,9 +53,9 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
           .and_return(list_projects_service)
       end
 
-      context 'service result is successful' do
+      context 'when service result is successful' do
         before do
-          expect(list_projects_service).to receive(:execute)
+          allow(list_projects_service).to receive(:execute)
             .and_return(status: :success, projects: [sentry_project])
         end
 
@@ -65,12 +68,12 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
         end
       end
 
-      context 'service result is erroneous' do
+      context 'with service result is erroneous' do
         let(:error_message) { 'error message' }
 
         context 'without http_status' do
           before do
-            expect(list_projects_service).to receive(:execute)
+            allow(list_projects_service).to receive(:execute)
               .and_return(status: :error, message: error_message)
           end
 
@@ -86,7 +89,7 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
           let(:http_status) { :no_content }
 
           before do
-            expect(list_projects_service).to receive(:execute).and_return(
+            allow(list_projects_service).to receive(:execute).and_return(
               status: :error,
               message: error_message,
               http_status: http_status
@@ -106,11 +109,7 @@ RSpec.describe Projects::ErrorTracking::ProjectsController do
     private
 
     def list_projects_params(opts = {})
-      project_params(
-        format: :json,
-        api_host: 'gitlab.com',
-        token: 'token'
-      )
+      project_params(format: :json, api_host: 'gitlab.com', token: 'token')
     end
   end
 

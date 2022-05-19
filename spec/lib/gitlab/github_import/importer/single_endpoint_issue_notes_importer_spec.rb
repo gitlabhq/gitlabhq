@@ -32,7 +32,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
       expect(client)
         .to receive(:each_page)
         .exactly(:once) # ensure to be cached on the second call
-        .with(:issue_comments, 'github/repo', issue.iid, page: 1)
+        .with(:issue_comments, 'github/repo', issue.iid, { page: 1 })
         .and_yield(page)
 
       expect { |b| subject.each_object_to_import(&b) }.to yield_with_args(note)
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
       expect(client)
         .to receive(:each_page)
         .exactly(:once) # ensure to be cached on the second call
-        .with(:issue_comments, 'github/repo', issue.iid, page: 2)
+        .with(:issue_comments, 'github/repo', issue.iid, { page: 2 })
 
       subject.each_object_to_import {}
     end

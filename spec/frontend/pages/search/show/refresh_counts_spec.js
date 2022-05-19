@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import refreshCounts from '~/pages/search/show/refresh_counts';
@@ -18,7 +19,11 @@ describe('pages/search/show/refresh_counts', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    setFixtures(fixture);
+    setHTMLFixture(fixture);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   afterEach(() => {

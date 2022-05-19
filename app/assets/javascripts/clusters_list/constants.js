@@ -234,11 +234,9 @@ export const CLUSTERS_ACTIONS = {
   connectCluster: s__('ClusterAgents|Connect a cluster'),
   connectWithAgent: s__('ClusterAgents|Connect a cluster (agent)'),
   connectClusterDeprecated: s__('ClusterAgents|Connect a cluster (deprecated)'),
-  createClusterDeprecated: s__('ClusterAgents|Create a cluster (deprecated)'),
   createCluster: s__('ClusterAgents|Create a cluster'),
-  createClusterCertificate: s__('ClusterAgents|Create a cluster (certificate - deprecated)'),
   connectClusterCertificate: s__('ClusterAgents|Connect a cluster (certificate - deprecated)'),
-  dropdownDisabledHint: s__(
+  actionsDisabledHint: s__(
     'ClusterAgents|Requires a Maintainer or greater role to perform these actions',
   ),
 };

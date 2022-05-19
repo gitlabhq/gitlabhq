@@ -31,7 +31,6 @@ module Integrations
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
     # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
-    before_validation :reset_password
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
     enum comment_detail: {
@@ -46,12 +45,14 @@ module Integrations
           required: true,
           title: -> { s_('JiraService|Web URL') },
           help: -> { s_('JiraService|Base URL of the Jira instance.') },
-          placeholder: 'https://jira.example.com'
+          placeholder: 'https://jira.example.com',
+          exposes_secrets: true
 
     field :api_url,
           section: SECTION_TYPE_CONNECTION,
           title: -> { s_('JiraService|Jira API URL') },
-          help: -> { s_('JiraService|If different from Web URL.') }
+          help: -> { s_('JiraService|If different from Web URL.') },
+          exposes_secrets: true
 
     field :username,
           section: SECTION_TYPE_CONNECTION,
@@ -96,13 +97,6 @@ module Integrations
 
     def data_fields
       jira_tracker_data || self.build_jira_tracker_data
-    end
-
-    def reset_password
-      return unless reset_password?
-
-      data_fields.password = nil
-      self.properties = properties.except('password')
     end
 
     def set_default_data
@@ -174,7 +168,8 @@ module Integrations
         sections.push({
           type: SECTION_TYPE_JIRA_ISSUES,
           title: _('Issues'),
-          description: jira_issues_section_description
+          description: jira_issues_section_description,
+          plan: 'premium'
         })
       end
 
@@ -358,16 +353,7 @@ module Integrations
 
       true
     rescue StandardError => error
-      log_error(
-        "Issue transition failed",
-          error: {
-            exception_class: error.class.name,
-            exception_message: error.message,
-            exception_backtrace: Gitlab::BacktraceCleaner.clean_backtrace(error.backtrace)
-          },
-          client_url: client_url
-      )
-
+      log_exception(error, message: 'Issue transition failed', client_url: client_url)
       false
     end
 
@@ -544,23 +530,12 @@ module Integrations
       yield
     rescue StandardError => error
       @error = error
-      payload = { client_url: client_url }
-      Gitlab::ExceptionLogFormatter.format!(error, payload)
-      log_error("Error sending message", payload)
+      log_exception(error, message: 'Error sending message', client_url: client_url)
       nil
     end
 
     def client_url
       api_url.presence || url
-    end
-
-    def reset_password?
-      # don't reset the password if a new one is provided
-      return false if password_touched?
-      return true if api_url_changed?
-      return false if api_url.present?
-
-      url_changed?
     end
 
     def update_deployment_type?

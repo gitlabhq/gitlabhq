@@ -1,6 +1,6 @@
 %div
   = render 'devise/shared/tab_single', tab_title: _('Two-Factor Authentication')
-  .login-box
+  .login-box.gl-p-5
     .login-body
       - if @user.two_factor_otp_enabled?
         = form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: "edit_user gl-show-field-errors js-2fa-form #{'hidden' if @user.two_factor_webauthn_u2f_enabled?}" }) do |f|

@@ -149,6 +149,10 @@ module Integrations
       raise NotImplementedError
     end
 
+    def webhook_placeholder
+      raise NotImplementedError
+    end
+
     private
 
     def log_usage(_, _)

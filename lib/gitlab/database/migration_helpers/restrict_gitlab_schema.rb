@@ -27,7 +27,7 @@ module Gitlab
             return
           end
 
-          Gitlab::Database::QueryAnalyzer.instance.within([validator_class]) do
+          Gitlab::Database::QueryAnalyzer.instance.within([validator_class, connection_validator_class]) do
             validator_class.allowed_gitlab_schemas = self.allowed_gitlab_schemas
 
             super
@@ -43,6 +43,10 @@ module Gitlab
 
         def validator_class
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas
+        end
+
+        def connection_validator_class
+          Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
         end
 
         def unmatched_schemas

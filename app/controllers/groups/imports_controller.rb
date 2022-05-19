@@ -4,6 +4,7 @@ class Groups::ImportsController < Groups::ApplicationController
   include ContinueParams
 
   feature_category :importers
+  urgency :low
 
   def show
     if @group.import_state.nil? || @group.import_state.finished?

@@ -38,7 +38,7 @@ RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker do
       before do
         redis_shared_state_cleanup!
         stub_feature_flags(ci_project_mirrors_consistency_check: true)
-        create_list(:project, 10) # This will also create Ci::NameSpaceMirror objects
+        create_list(:project, 10) # This will also create Ci::ProjectMirror objects
         missing_project.delete
 
         allow_next_instance_of(Database::ConsistencyCheckService) do |instance|
@@ -60,6 +60,15 @@ RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker do
           next_start_id: first_project.id # The batch size > number of projects
         }
         expect(worker).to receive(:log_extra_metadata_on_done).with(:results, expected_result)
+        worker.perform
+      end
+
+      it 'calls the consistency_fix_service to fix the inconsistencies' do
+        expect_next_instance_of(Database::ConsistencyFixService) do |instance|
+          expect(instance).to receive(:execute).with(
+            ids: [missing_project.id]
+          ).and_call_original
+        end
         worker.perform
       end
     end

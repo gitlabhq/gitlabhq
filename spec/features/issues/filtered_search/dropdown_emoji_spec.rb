@@ -6,15 +6,13 @@ RSpec.describe 'Dropdown emoji', :js do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
+  let_it_be(:user) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:award_emoji_star) { create(:award_emoji, name: 'star', user: user, awardable: issue) }
 
-  let(:filtered_search) { find('.filtered-search') }
-  let(:js_dropdown_emoji) { '#js-dropdown-my-reaction' }
-  let(:filter_dropdown) { find("#{js_dropdown_emoji} .filter-dropdown") }
-
   before do
+    stub_feature_flags(vue_issues_list: true)
+
     project.add_maintainer(user)
     create_list(:award_emoji, 2, user: user, name: 'thumbsup')
     create_list(:award_emoji, 1, user: user, name: 'thumbsdown')
@@ -27,15 +25,15 @@ RSpec.describe 'Dropdown emoji', :js do
     end
 
     describe 'behavior' do
-      it 'does not open when the search bar has my-reaction=' do
-        filtered_search.set('my-reaction=')
+      it 'does not contain My-Reaction in the list of suggestions' do
+        click_filtered_search_bar
 
-        expect(page).not_to have_css(js_dropdown_emoji)
+        expect(page).not_to have_link 'My-Reaction'
       end
     end
   end
 
-  context 'when user loggged in' do
+  context 'when user logged in' do
     before do
       sign_in(user)
 
@@ -43,22 +41,18 @@ RSpec.describe 'Dropdown emoji', :js do
     end
 
     describe 'behavior' do
-      it 'opens when the search bar has my-reaction=' do
-        filtered_search.set('my-reaction:=')
-
-        expect(page).to have_css(js_dropdown_emoji, visible: true)
-      end
-
       it 'loads all the emojis when opened' do
-        input_filtered_search('my-reaction:=', submit: false, extra_space: false)
+        select_tokens 'My-Reaction', '='
 
-        expect_filtered_search_dropdown_results(filter_dropdown, 3)
+        # Expect None, Any, star, thumbsup, thumbsdown
+        expect_suggestion_count 5
       end
 
       it 'shows the most populated emoji at top of dropdown' do
-        input_filtered_search('my-reaction:=', submit: false, extra_space: false)
+        select_tokens 'My-Reaction', '='
 
-        expect(first("#{js_dropdown_emoji} .filter-dropdown li")).to have_content(award_emoji_star.name)
+        # List items 1-3 are None, Any, divider
+        expect(page).to have_css('.gl-filtered-search-suggestion-list li:nth-child(4)', text: award_emoji_star.name)
       end
     end
   end

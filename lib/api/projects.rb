@@ -76,7 +76,7 @@ module API
       # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
       def project_attachment_size(user_project)
         return PROJECT_ATTACHMENT_SIZE_EXEMPT if exempt_from_global_attachment_size?(user_project)
-        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project, default_enabled: :yaml)
+        return user_project.max_attachment_size if Feature.enabled?(:enforce_max_attachment_size_upload_api, user_project)
 
         PROJECT_ATTACHMENT_SIZE_EXEMPT
       end
@@ -89,10 +89,6 @@ module API
           allowed = exempt_from_global_attachment_size?(user_project)
           Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
         end
-      end
-
-      def check_import_by_url_is_enabled
-        Gitlab::CurrentSettings.import_sources&.include?('git') || forbidden!
       end
     end
 
@@ -202,6 +198,11 @@ module API
         params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
         params
       end
+
+      def add_import_params(params)
+        params[:import_type] = 'git' if params[:import_url]&.present?
+        params
+      end
     end
 
     resource :users, requirements: API::USER_REQUIREMENTS do
@@ -214,7 +215,7 @@ module API
         use :statistics_params
         use :with_custom_attributes
       end
-      get ":user_id/projects", feature_category: :projects, urgency: :default do
+      get ":user_id/projects", feature_category: :projects, urgency: :low do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -231,7 +232,7 @@ module API
         use :collection_params
         use :statistics_params
       end
-      get ":user_id/starred_projects", feature_category: :projects do
+      get ":user_id/starred_projects", feature_category: :projects, urgency: :low do
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -267,13 +268,14 @@ module API
         use :optional_create_project_params
         use :create_params
       end
-      post do
+      post urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/issues/21139')
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
 
-        validate_git_import_url!(params[:import_url]) { check_import_by_url_is_enabled }
+        validate_git_import_url!(params[:import_url])
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
@@ -285,6 +287,8 @@ module API
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
           end
+
+          forbidden! if project.errors[:import_source_disabled].present?
 
           render_validation_error!(project)
         end
@@ -311,6 +315,7 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
         validate_git_import_url!(params[:import_url])
 
@@ -321,6 +326,8 @@ module API
                                    user_can_admin_project: can?(current_user, :admin_project, project),
                                    current_user: current_user
         else
+          forbidden! if project.errors[:import_source_disabled].present?
+
           render_validation_error!(project)
         end
       end
@@ -342,7 +349,7 @@ module API
                            desc: 'Include project license data'
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
-      get ":id", feature_category: :projects, urgency: :default do
+      get ":id", feature_category: :projects, urgency: :low do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
@@ -441,6 +448,7 @@ module API
         authorize! :change_visibility_level, user_project if user_project.visibility_attribute_present?(attrs)
 
         attrs = translate_params_for_compatibility(attrs)
+        attrs = add_import_params(attrs)
         filter_attributes_using_license!(attrs)
         verify_update_project_attrs!(user_project, attrs)
 
@@ -469,7 +477,7 @@ module API
       desc 'Unarchive a project' do
         success Entities::Project
       end
-      post ':id/unarchive', feature_category: :projects do
+      post ':id/unarchive', feature_category: :projects, urgency: :default do
         authorize!(:archive_project, user_project)
 
         ::Projects::UpdateService.new(user_project, current_user, archived: false).execute
@@ -575,14 +583,14 @@ module API
       end
       post ":id/share", feature_category: :authentication_and_authorization do
         authorize! :admin_project, user_project
-        group = Group.find_by_id(params[:group_id])
+        shared_with_group = Group.find_by_id(params[:group_id])
 
         unless user_project.allowed_to_share_with_group?
           break render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        result = ::Projects::GroupLinks::CreateService.new(user_project, current_user, declared_params(include_missing: false))
-          .execute(group)
+        result = ::Projects::GroupLinks::CreateService
+                   .new(user_project, shared_with_group, current_user, declared_params(include_missing: false)).execute
 
         if result[:status] == :success
           present result[:link], with: Entities::ProjectGroupLink
@@ -663,7 +671,7 @@ module API
         optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
         use :pagination
       end
-      get ':id/users', feature_category: :authentication_and_authorization do
+      get ':id/users', urgency: :low, feature_category: :authentication_and_authorization do
         users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
         users = users.where_not_in(params[:skip_users]) if params[:skip_users].present?
@@ -706,6 +714,17 @@ module API
         end
       end
 
+      desc 'Start a task to recalculate repository size for a project' do
+        detail 'This feature was introduced in GitLab 15.0.'
+      end
+      post ':id/repository_size', feature_category: :source_code_management do
+        authorize_admin_project
+
+        user_project.repository.expire_statistics_caches
+
+        ::Projects::UpdateStatisticsService.new(user_project, nil, statistics: [:repository_size, :lfs_objects_size]).execute
+      end
+
       desc 'Transfer a project to a new namespace'
       params do
         requires :namespace, type: String, desc: 'The ID or path of the new namespace'
@@ -729,7 +748,7 @@ module API
       params do
         requires :id, type: String, desc: 'ID of a project'
       end
-      get ':id/storage', feature_category: :projects do
+      get ':id/storage', feature_category: :source_code_management do
         authenticated_as_admin!
 
         present user_project, with: Entities::ProjectRepositoryStorage, current_user: current_user

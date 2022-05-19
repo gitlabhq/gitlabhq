@@ -98,13 +98,14 @@ export default {
 
 <template>
   <div class="discussion-header note-wrapper">
-    <div v-once class="timeline-icon align-self-start flex-shrink-0">
+    <div v-once class="timeline-icon gl-align-self-start gl-flex-shrink-0 gl-flex-shrink gl-mr-4">
       <user-avatar-link
         v-if="author"
         :link-href="author.path"
         :img-src="author.avatar_url"
         :img-alt="author.name"
-        :img-size="40"
+        :img-size="32"
+        :img-css-classes="'gl-mr-0!' /* NOTE: this is needed only while we migrate user-avatar-image to GlAvatar (https://gitlab.com/groups/gitlab-org/-/epics/7731) */"
       />
     </div>
     <div class="timeline-content w-100">

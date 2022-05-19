@@ -35,6 +35,16 @@ describe('RegistrationDropdown', () => {
   const findRegistrationTokenInput = () => wrapper.findByTestId('token-value').find('input');
   const findTokenResetDropdownItem = () =>
     wrapper.findComponent(RegistrationTokenResetDropdownItem);
+  const findModalContent = () =>
+    createWrapper(document.body)
+      .find('[data-testid="runner-instructions-modal"]')
+      .text()
+      .replace(/[\n\t\s]+/g, ' ');
+
+  const openModal = async () => {
+    await findRegistrationInstructionsDropdownItem().trigger('click');
+    await waitForPromises();
+  };
 
   const createComponent = ({ props = {}, ...options } = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(
@@ -46,6 +56,25 @@ describe('RegistrationDropdown', () => {
         },
         ...options,
       }),
+    );
+  };
+
+  const createComponentWithModal = () => {
+    Vue.use(VueApollo);
+
+    const requestHandlers = [
+      [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
+      [getRunnerSetupInstructionsQuery, jest.fn().mockResolvedValue(mockGraphqlInstructions)],
+    ];
+
+    createComponent(
+      {
+        // Mock load modal contents from API
+        apolloProvider: createMockApollo(requestHandlers),
+        // Use `attachTo` to find the modal
+        attachTo: document.body,
+      },
+      mount,
     );
   };
 
@@ -76,29 +105,10 @@ describe('RegistrationDropdown', () => {
     });
 
     describe('When the dropdown item is clicked', () => {
-      Vue.use(VueApollo);
-
-      const requestHandlers = [
-        [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
-        [getRunnerSetupInstructionsQuery, jest.fn().mockResolvedValue(mockGraphqlInstructions)],
-      ];
-
-      const findModalInBody = () =>
-        createWrapper(document.body).find('[data-testid="runner-instructions-modal"]');
-
       beforeEach(async () => {
-        createComponent(
-          {
-            // Mock load modal contents from API
-            apolloProvider: createMockApollo(requestHandlers),
-            // Use `attachTo` to find the modal
-            attachTo: document.body,
-          },
-          mount,
-        );
+        createComponentWithModal({}, mount);
 
-        await findRegistrationInstructionsDropdownItem().trigger('click');
-        await waitForPromises();
+        await openModal();
       });
 
       afterEach(() => {
@@ -106,9 +116,7 @@ describe('RegistrationDropdown', () => {
       });
 
       it('opens the modal with contents', () => {
-        const modalText = findModalInBody()
-          .text()
-          .replace(/[\n\t\s]+/g, ' ');
+        const modalText = findModalContent();
 
         expect(modalText).toContain('Install a runner');
 
@@ -153,15 +161,34 @@ describe('RegistrationDropdown', () => {
     });
   });
 
-  it('Updates the token when it gets reset', async () => {
+  describe('When token is reset', () => {
     const newToken = 'mock1';
-    createComponent({}, mount);
 
-    expect(findRegistrationTokenInput().props('value')).not.toBe(newToken);
+    const resetToken = async () => {
+      findTokenResetDropdownItem().vm.$emit('tokenReset', newToken);
+      await nextTick();
+    };
 
-    findTokenResetDropdownItem().vm.$emit('tokenReset', newToken);
-    await nextTick();
+    it('Updates token in input', async () => {
+      createComponent({}, mount);
 
-    expect(findRegistrationToken().props('value')).toBe(newToken);
+      expect(findRegistrationTokenInput().props('value')).not.toBe(newToken);
+
+      await resetToken();
+
+      expect(findRegistrationToken().props('value')).toBe(newToken);
+    });
+
+    it('Updates token in modal', async () => {
+      createComponentWithModal({}, mount);
+
+      await openModal();
+
+      expect(findModalContent()).toContain(mockToken);
+
+      await resetToken();
+
+      expect(findModalContent()).toContain(newToken);
+    });
   });
 });

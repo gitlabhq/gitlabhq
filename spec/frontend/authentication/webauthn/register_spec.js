@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebAuthnRegister from '~/authentication/webauthn/register';
@@ -23,7 +24,7 @@ describe('WebAuthnRegister', () => {
   let component;
 
   beforeEach(() => {
-    loadFixtures('webauthn/register.html');
+    loadHTMLFixture('webauthn/register.html');
     webAuthnDevice = new MockWebAuthnDevice();
     container = $('#js-register-token-2fa');
     component = new WebAuthnRegister(container, {
@@ -39,6 +40,10 @@ describe('WebAuthnRegister', () => {
       },
     });
     component.start();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   const findSetupButton = () => container.find('#js-setup-token-2fa-device');

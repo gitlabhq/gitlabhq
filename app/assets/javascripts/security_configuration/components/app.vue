@@ -1,15 +1,15 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
+import currentLicenseQuery from '~/security_configuration/graphql/current_license.query.graphql';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
-import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
+import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY, LICENSE_ULTIMATE } from './constants';
 import FeatureCard from './feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
-import SectionLayout from './section_layout.vue';
 import UpgradeBanner from './upgrade_banner.vue';
 
 export const i18n = {
@@ -50,8 +50,18 @@ export default {
     UserCalloutDismisser,
     TrainingProviderList,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
+  apollo: {
+    currentLicensePlan: {
+      query: currentLicenseQuery,
+      update({ currentLicense }) {
+        return currentLicense?.plan;
+      },
+      error() {
+        this.hasCurrentLicenseFetchError = true;
+      },
+    },
+  },
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -91,6 +101,8 @@ export default {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
+      currentLicensePlan: '',
+      hasCurrentLicenseFetchError: false,
     };
   },
   computed: {
@@ -110,6 +122,12 @@ export default {
         this.autoDevopsEnabled &&
         !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectFullPath)
       );
+    },
+    shouldShowVulnerabilityManagementTab() {
+      // if the query fails (if the plan is `null` also means an error has occurred) we still want to show the feature
+      const hasQueryError = this.hasCurrentLicenseFetchError || this.currentLicensePlan === null;
+
+      return hasQueryError || this.currentLicensePlan === LICENSE_ULTIMATE;
     },
   },
   methods: {
@@ -175,7 +193,7 @@ export default {
           @dismiss="dismissAutoDevopsEnabledAlert"
         />
 
-        <section-layout :heading="$options.i18n.securityTesting">
+        <section-layout class="gl-border-b-0" :heading="$options.i18n.securityTesting">
           <template #description>
             <p>
               <span data-testid="latest-pipeline-info-security">
@@ -252,7 +270,7 @@ export default {
         </section-layout>
       </gl-tab>
       <gl-tab
-        v-if="glFeatures.secureVulnerabilityTraining"
+        v-if="shouldShowVulnerabilityManagementTab"
         data-testid="vulnerability-management-tab"
         :title="$options.i18n.vulnerabilityManagement"
         query-param-value="vulnerability-management"

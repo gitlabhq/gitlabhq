@@ -27,7 +27,6 @@ module ContainerExpirationPolicies
     ].freeze
 
     def perform_work
-      return unless throttling_enabled?
       return unless container_repository
 
       log_extra_metadata_on_done(:container_repository_id, container_repository.id)
@@ -45,8 +44,6 @@ module ContainerExpirationPolicies
     end
 
     def max_running_jobs
-      return 0 unless throttling_enabled?
-
       ::Gitlab::CurrentSettings.container_registry_expiration_policies_worker_capacity
     end
 
@@ -120,10 +117,6 @@ module ContainerExpirationPolicies
       now = Time.zone.now
 
       policy.next_run_at < now || (now + max_cleanup_execution_time.seconds < policy.next_run_at)
-    end
-
-    def throttling_enabled?
-      Feature.enabled?(:container_registry_expiration_policies_throttling, default_enabled: :yaml)
     end
 
     def max_cleanup_execution_time

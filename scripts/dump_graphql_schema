@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+GITLAB_DIR="$(cd "$(dirname "$0")/.." || exit ; pwd -P)"
+DOCKER_IMAGE="registry.gitlab.com/gitlab-org/gitlab-build-images:apollo"
+CONFIG_FILE="config/apollo.config.js"
+SCHEMA_DUMP_PATH="tmp/tests/graphql/gitlab_schema_apollo.graphql"
+
+if [ "$CI" = true ]; then
+  echo "Not dumping the GraphQL schema in CI"
+else
+  echo "Dumping GraphQL schema"
+  cd "$GITLAB_DIR" || exit 1
+  if command -v docker >/dev/null; then
+    bundle exec rake gitlab:graphql:schema:dump &&
+      docker run --rm -it \
+        -v "$GITLAB_DIR/config":/config \
+        -v "$GITLAB_DIR/tmp":/tmp \
+        -v "$GITLAB_DIR/app":/app \
+        -v "$GITLAB_DIR/ee":/ee \
+        "$DOCKER_IMAGE" client:download-schema --config="$CONFIG_FILE" "$SCHEMA_DUMP_PATH"
+  else
+    echo "Docker must be installed to run this script."
+    exit 1
+  fi
+fi

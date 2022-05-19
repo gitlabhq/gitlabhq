@@ -140,7 +140,7 @@ export default {
             </span>
           </template>
 
-          <gl-loading-icon v-if="isLoading" size="md" class="gl-m-3" />
+          <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
 
           <div v-else>
             <token-table :tokens="tokens" :cluster-agent-id="clusterAgent.id" :cursor="cursor" />

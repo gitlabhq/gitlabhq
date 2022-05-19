@@ -1,4 +1,5 @@
 import { addIconStatus, formatFilePath, formattedTime } from './utils';
+import { ARTIFACTS_EXPIRED_ERROR_MESSAGE } from './constants';
 
 export const getTestSuites = (state) => {
   const { test_suites: testSuites = [] } = state.testReports;
@@ -29,3 +30,6 @@ export const getSuiteTests = (state) => {
 };
 
 export const getSuiteTestCount = (state) => getSelectedSuite(state)?.test_cases?.length || 0;
+
+export const getSuiteArtifactsExpired = (state) =>
+  state.errorMessage === ARTIFACTS_EXPIRED_ERROR_MESSAGE;

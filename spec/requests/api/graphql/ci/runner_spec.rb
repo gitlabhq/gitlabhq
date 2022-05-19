@@ -11,7 +11,8 @@ RSpec.describe 'Query.runner(id)' do
   let_it_be(:active_instance_runner) do
     create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
            active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
-           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom)
+           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom,
+           maintenance_note: 'Test maintenance note')
   end
 
   let_it_be(:inactive_instance_runner) do
@@ -26,10 +27,6 @@ RSpec.describe 'Query.runner(id)' do
   end
 
   let_it_be(:active_project_runner) { create(:ci_runner, :project) }
-
-  before do
-    allow(Gitlab::Ci::RunnerUpgradeCheck.instance).to receive(:check_runner_upgrade_status)
-  end
 
   shared_examples 'runner details fetch' do
     let(:query) do
@@ -66,6 +63,9 @@ RSpec.describe 'Query.runner(id)' do
         'ipAddress' => runner.ip_address,
         'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         'executorName' => runner.executor_type&.dasherize,
+        'architectureName' => runner.architecture,
+        'platformName' => runner.platform,
+        'maintenanceNote' => runner.maintenance_note,
         'jobCount' => 0,
         'jobs' => a_hash_including("count" => 0, "nodes" => [], "pageInfo" => anything),
         'projectCount' => nil,
@@ -239,8 +239,8 @@ RSpec.describe 'Query.runner(id)' do
 
       stale_runner_data = graphql_data_at(:stale_runner)
       expect(stale_runner_data).to match a_hash_including(
-        'status' => 'NOT_CONNECTED',
-        'legacyStatusWithExplicitVersion' => 'NOT_CONNECTED',
+        'status' => 'STALE',
+        'legacyStatusWithExplicitVersion' => 'STALE',
         'newStatus' => 'STALE'
       )
 
@@ -253,8 +253,8 @@ RSpec.describe 'Query.runner(id)' do
 
       never_contacted_instance_runner_data = graphql_data_at(:never_contacted_instance_runner)
       expect(never_contacted_instance_runner_data).to match a_hash_including(
-        'status' => 'NOT_CONNECTED',
-        'legacyStatusWithExplicitVersion' => 'NOT_CONNECTED',
+        'status' => 'NEVER_CONTACTED',
+        'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
         'newStatus' => 'NEVER_CONTACTED'
       )
     end

@@ -58,3 +58,6 @@
                     #{line}
 
           - current_line += line_count
+
+  - if blame_pagination
+    = paginate(blame_pagination, theme: "gitlab")

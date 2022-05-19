@@ -177,8 +177,10 @@ module Gitlab
     def check_valid_actor!
       return unless key?
 
-      unless actor.valid?
+      if !actor.valid?
         raise ForbiddenError, "Your SSH key #{actor.errors[:key].first}."
+      elsif actor.expired?
+        raise ForbiddenError, "Your SSH key has expired."
       end
     end
 

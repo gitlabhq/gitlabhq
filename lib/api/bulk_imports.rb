@@ -5,6 +5,7 @@ module API
     include PaginationParams
 
     feature_category :importers
+    urgency :low
 
     helpers do
       def bulk_imports

@@ -7,6 +7,7 @@ module GoogleApi
     before_action :validate_session_key!
 
     feature_category :kubernetes_management
+    urgency :low
 
     ##
     # handle the response from google after the user

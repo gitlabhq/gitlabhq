@@ -147,7 +147,7 @@ describe('Repository breadcrumbs component', () => {
 
   describe('renders the new directory modal', () => {
     beforeEach(() => {
-      factory('/', { canEditTree: true });
+      factory('some_dir', { canEditTree: true, newDirPath: 'root/master' });
     });
     it('does not render the modal while loading', () => {
       expect(findNewDirectoryModal().exists()).toBe(false);
@@ -161,6 +161,7 @@ describe('Repository breadcrumbs component', () => {
       await nextTick();
 
       expect(findNewDirectoryModal().exists()).toBe(true);
+      expect(findNewDirectoryModal().props('path')).toBe('root/master/some_dir');
     });
   });
 });

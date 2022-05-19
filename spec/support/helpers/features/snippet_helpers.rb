@@ -67,13 +67,18 @@ module Spec
           end
 
           def snippet_fill_in_form(title: nil, content: nil, file_name: nil, description: nil, visibility: nil)
+            if content
+              snippet_fill_in_content(content)
+              # It takes some time after sending keys for the vue component to
+              # update so let Capybara wait for the content before proceeding
+              expect(page).to have_content(content)
+            end
+
             snippet_fill_in_title(title) if title
 
             snippet_fill_in_description(description) if description
 
             snippet_fill_in_file_name(file_name) if file_name
-
-            snippet_fill_in_content(content) if content
 
             snippet_fill_in_visibility(visibility) if visibility
           end

@@ -56,7 +56,7 @@ in the container components when needed. This makes it easier to:
   [`delete_package.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/packages_and_registries/package_registry/components/functional/delete_package.vue)).
 - Leverage [startup for GraphQL calls](graphql.md#making-initial-queries-early-with-graphql-startup-calls).
 
-## Shared compoenents library
+## Shared components library
 
 Inside `vue_shared/components/registry` and `packages_and_registries/shared`, there's a set of
 shared components that you can use to implement registry functionality. These components build the

@@ -21,7 +21,7 @@ module API
       params do
         use :pagination
       end
-      get ':id/variables' do
+      get ':id/variables', urgency: :low do
         variables = user_group.variables
         present paginate(variables), with: Entities::Ci::Variable
       end

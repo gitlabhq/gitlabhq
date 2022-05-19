@@ -184,7 +184,7 @@ module IssuableActions
 
   def paginated_discussions
     return if params[:per_page].blank?
-    return unless issuable.instance_of?(Issue) && Feature.enabled?(:paginated_issue_discussions, project, default_enabled: :yaml)
+    return unless issuable.instance_of?(Issue) && Feature.enabled?(:paginated_issue_discussions, project)
 
     strong_memoize(:paginated_discussions) do
       issuable

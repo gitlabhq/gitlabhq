@@ -313,7 +313,7 @@ export default {
             errors = [],
             warnings = [],
             total_warnings: totalWarnings = 0,
-          } = err?.response?.data;
+          } = err.response.data;
           const [error] = errors;
 
           this.reportError({

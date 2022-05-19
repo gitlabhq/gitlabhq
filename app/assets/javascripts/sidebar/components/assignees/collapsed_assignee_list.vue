@@ -124,7 +124,11 @@ export default {
       :issuable-type="issuableType"
     />
     <button v-if="hasMoreThanTwoAssignees" class="btn-link" type="button">
-      <span class="avatar-counter sidebar-avatar-counter"> {{ sidebarAvatarCounter }} </span>
+      <span
+        class="avatar-counter sidebar-avatar-counter gl-display-flex gl-align-items-center gl-pl-3"
+      >
+        {{ sidebarAvatarCounter }}
+      </span>
       <gl-icon
         v-if="isMergeRequest && !allAssigneesCanMerge"
         name="warning-solid"

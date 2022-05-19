@@ -258,7 +258,7 @@ RSpec.describe 'Merge request > User creates image diff notes', :js do
       end
 
       it 'resizes image' do
-        expect(find('.onion-skin-frame')['style']).to match('width: 228px; height: 240px;')
+        expect(find('.onion-skin-frame')['style']).to match('width: 198px; height: 210px;')
       end
 
       it_behaves_like 'onion skin'

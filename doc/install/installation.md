@@ -197,13 +197,9 @@ can install it with:
 sudo apt-get install -y postfix
 ```
 
-Then select 'Internet Site' and press enter to confirm the hostname.
+Then select 'Internet Site' and press <kbd>Enter</kbd> to confirm the hostname.
 
-<!-- vale gitlab.Spelling = NO -->
-
-### Exiftool
-
-<!-- vale gitlab.Spelling = YES -->
+### ExifTool
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse#dependencies)
 requires `exiftool` to remove EXIF data from uploaded images.
@@ -230,9 +226,9 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.4.tar.gz"
-echo '3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b ruby-2.7.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.4.tar.gz
-cd ruby-2.7.4
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.gz"
+echo '2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1 ruby-2.7.5.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.5.tar.gz
+cd ruby-2.7.5
 
 ./configure --disable-install-rdoc --enable-shared
 make
@@ -1048,13 +1044,6 @@ follow the normal directions and generate a self-signed SSL certificate:
    sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
    sudo chmod o-r gitlab.key
    ```
-
-WARNING:
-The `self_signed_cert` variable is
-[deprecated and redundant](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/120).
-It is set to `false` by default, but still accepts self-signed certificates. Setting
-this value to `true` allows any certificate to be accepted, and can make
-machine-in-the-middle attacks possible.
 
 ### Enable Reply by email
 

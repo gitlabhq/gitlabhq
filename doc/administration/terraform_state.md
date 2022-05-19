@@ -18,7 +18,7 @@ The storage location of these files defaults to:
 
 These locations can be configured using the options described below.
 
-Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-pseudonymizer-terraform-state-dependency-proxy) configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
+Use [external object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/#lfs-artifacts-uploads-packages-external-diffs-terraform-state-dependency-proxy) configuration for [GitLab Helm chart](https://docs.gitlab.com/charts/) installations.
 
 ## Disabling Terraform state
 
@@ -144,7 +144,7 @@ You can optionally track progress and verify that all packages migrated successf
 Verify `objectstg` below (where `file_store=2`) has count of all states:
 
 ```shell
-gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM terraform_states;
+gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM terraform_state_versions;
 
 total | filesystem | objectstg
 ------+------------+-----------
@@ -154,7 +154,7 @@ total | filesystem | objectstg
 Verify that there are no files on disk in the `terraform_state` folder:
 
 ```shell
-sudo find /var/opt/gitlab/gitlab-rails/shared/terraform_state -type f | wc -l
+sudo find /var/opt/gitlab/gitlab-rails/shared/terraform_state -type f | grep -v tmp | wc -l
 ```
 
 ### S3-compatible connection settings

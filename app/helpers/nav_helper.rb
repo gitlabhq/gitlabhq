@@ -19,11 +19,13 @@ module NavHelper
   end
 
   def page_gutter_class
+    moved_sidebar_enabled = current_controller?('merge_requests') && moved_mr_sidebar_enabled?
+
     if page_has_markdown?
       if cookies[:collapsed_gutter] == 'true'
-        %w[page-gutter right-sidebar-collapsed]
+        ["page-gutter", "#{'right-sidebar-collapsed' unless moved_sidebar_enabled}"]
       else
-        %w[page-gutter right-sidebar-expanded]
+        ["page-gutter", "#{'right-sidebar-expanded' unless moved_sidebar_enabled}"]
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]
@@ -56,7 +58,7 @@ module NavHelper
   end
 
   def admin_monitoring_nav_links
-    %w(system_info background_migrations background_jobs health_check requests_profiles)
+    %w(system_info background_migrations background_jobs health_check)
   end
 
   def admin_analytics_nav_links

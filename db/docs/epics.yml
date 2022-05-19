@@ -4,6 +4,6 @@ classes:
 - Epic
 feature_categories:
 - portfolio_management
-description: TODO
+description: Information directly related to Epics, used by epic management features and the roadmap
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3126
 milestone: '10.2'

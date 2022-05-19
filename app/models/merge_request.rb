@@ -1152,7 +1152,7 @@ class MergeRequest < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
-    if Feature.enabled?(:improved_mergeability_checks, self.project, default_enabled: :yaml)
+    if Feature.enabled?(:improved_mergeability_checks, self.project)
       additional_checks = MergeRequests::Mergeability::RunChecksService.new(
         merge_request: self,
         params: {
@@ -1438,30 +1438,8 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline.success?
   end
 
-  ##
-  # This method is for looking for active environments which created via pipelines for merge requests.
-  # Since deployments run on a merge request ref (e.g. `refs/merge-requests/:iid/head`),
-  # we cannot look up environments with source branch name.
-  def legacy_environments
-    return Environment.none unless actual_head_pipeline&.merge_request?
-
-    build_for_actual_head_pipeline = Ci::Build.latest.where(pipeline: actual_head_pipeline)
-
-    environments = build_for_actual_head_pipeline.joins(:metadata)
-                                                .where.not('ci_builds_metadata.expanded_environment_name' => nil)
-                                                .distinct('ci_builds_metadata.expanded_environment_name')
-                                                .limit(100)
-                                                .pluck(:expanded_environment_name)
-
-    Environment.where(project: project, name: environments)
-  end
-
   def environments_in_head_pipeline(deployment_status: nil)
-    if ::Feature.enabled?(:fix_related_environments_for_merge_requests, target_project, default_enabled: :yaml)
-      actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
-    else
-      legacy_environments
-    end
+    actual_head_pipeline&.environments_in_self_and_descendants(deployment_status: deployment_status) || Environment.none
   end
 
   def fetch_ref!
@@ -1975,10 +1953,6 @@ class MergeRequest < ApplicationRecord
     strong_memoize(:context_commits_diff) do
       ContextCommitsDiff.new(self)
     end
-  end
-
-  def attention_requested_enabled?
-    Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml)
   end
 
   private

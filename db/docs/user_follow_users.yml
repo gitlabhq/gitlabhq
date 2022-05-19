@@ -4,6 +4,6 @@ classes:
 - Users::UserFollowUser
 feature_categories:
 - users
-description: TODO
+description: Stores which users follow each other
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45451
 milestone: '13.9'

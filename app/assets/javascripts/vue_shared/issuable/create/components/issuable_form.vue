@@ -1,5 +1,5 @@
 <script>
-import { GlForm, GlFormInput } from '@gitlab/ui';
+import { GlForm, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
@@ -9,6 +9,7 @@ export default {
   components: {
     GlForm,
     GlFormInput,
+    GlFormGroup,
     MarkdownField,
     LabelsSelect,
   },
@@ -37,6 +38,7 @@ export default {
       selectedLabels: [],
     };
   },
+  computed: {},
   methods: {
     handleUpdateSelectedLabels(labels) {
       if (labels.length) {
@@ -52,12 +54,15 @@ export default {
     <div data-testid="issuable-title" class="form-group row">
       <label for="issuable-title" class="col-form-label col-sm-2">{{ __('Title') }}</label>
       <div class="col-sm-10">
-        <gl-form-input
-          id="issuable-title"
-          v-model="issuableTitle"
-          :autofocus="true"
-          :placeholder="__('Title')"
-        />
+        <gl-form-group :description="__('Maximum of 255 characters')">
+          <gl-form-input
+            id="issuable-title"
+            v-model="issuableTitle"
+            maxlength="255"
+            :autofocus="true"
+            :placeholder="__('Title')"
+          />
+        </gl-form-group>
       </div>
     </div>
     <div data-testid="issuable-description" class="form-group row">

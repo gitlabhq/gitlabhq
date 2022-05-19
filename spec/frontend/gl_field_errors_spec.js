@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GlFieldErrors from '~/gl_field_errors';
 
 describe('GL Style Field Errors', () => {
@@ -9,11 +10,15 @@ describe('GL Style Field Errors', () => {
   });
 
   beforeEach(() => {
-    loadFixtures('static/gl_field_errors.html');
+    loadHTMLFixture('static/gl_field_errors.html');
     const $form = $('form.gl-show-field-errors');
 
     testContext.$form = $form;
     testContext.fieldErrors = new GlFieldErrors($form);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('should select the correct input elements', () => {

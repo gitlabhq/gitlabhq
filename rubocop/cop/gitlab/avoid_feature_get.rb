@@ -5,8 +5,8 @@ module RuboCop
     module Gitlab
       # Cop that blacklists the use of `Feature.get`.
       class AvoidFeatureGet < RuboCop::Cop::Cop
-        MSG = 'Use `Feature.enable/disable` methods instead of `Feature.get`. ' \
-          'See doc/development/testing_guide/best_practices.md#feature-flags-in-tests for more information.'
+        MSG = 'Use `stub_feature_flags` method instead of `Feature.get`. ' \
+          'See doc/development/feature_flags/index.md#feature-flags-in-tests for more information.'
 
         def_node_matcher :feature_get?, <<~PATTERN
           (send (const nil? :Feature) :get ...)

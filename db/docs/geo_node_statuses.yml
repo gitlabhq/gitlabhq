@@ -4,6 +4,6 @@ classes:
 - GeoNodeStatus
 feature_categories:
 - geo_replication
-description: TODO
+description: Contains sites status and metadata for each Geo site, updated async through a scheduled worker.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3230
 milestone: '10.2'

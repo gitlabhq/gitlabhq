@@ -14,6 +14,9 @@ export default CodeBlockHighlight.extend({
           return element.dataset.diagram;
         },
       },
+      isDiagram: {
+        default: true,
+      },
     };
   },
 

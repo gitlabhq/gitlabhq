@@ -3,7 +3,7 @@
 mutation issueMoveList(
   $projectPath: ID!
   $iid: String!
-  $boardId: ID!
+  $boardId: BoardID!
   $fromListId: ID
   $toListId: ID
   $moveBeforeId: ID

@@ -36,6 +36,7 @@ Example response:
     "slug": "review-fix-foo-dfjre3",
     "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
     "state": "available",
+    "tier": "development",
     "created_at": "2019-05-25T18:55:13.252Z",
     "updated_at": "2019-05-27T18:55:13.252Z",
     "enable_advanced_logs_querying": false,
@@ -147,6 +148,7 @@ Example of response
   "slug": "review-fix-foo-dfjre3",
   "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
   "state": "available",
+  "tier": "development",
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "enable_advanced_logs_querying": false,
@@ -249,6 +251,7 @@ POST /projects/:id/environments
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user        |
 | `name`        | string  | yes      | The name of the environment  |
 | `external_url` | string  | no     | Place to link to for this environment |
+| `tier`         | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other` |
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
@@ -264,6 +267,7 @@ Example response:
   "slug": "deploy",
   "external_url": "https://deploy.gitlab.example.com",
   "state": "available",
+  "tier": "production",
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z"
 }
@@ -285,6 +289,7 @@ PUT /projects/:id/environments/:environments_id
 | `environment_id` | integer | yes | The ID of the environment  |
 | `name`          | string  | no                                | [Deprecated and will be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) |
 | `external_url`  | string  | no                                | The new `external_url`           |
+| `tier`         | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other` |
 
 ```shell
 curl --request PUT --data "name=staging&external_url=https://staging.gitlab.example.com" \
@@ -300,6 +305,7 @@ Example response:
   "slug": "staging",
   "external_url": "https://staging.gitlab.example.com",
   "state": "available",
+  "tier": "staging",
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z"
 }

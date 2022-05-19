@@ -12,8 +12,9 @@ class AutocompleteController < ApplicationController
   feature_category :code_review, [:merge_request_target_branches]
   feature_category :continuous_delivery, [:deploy_keys_with_owners]
 
-  urgency :low, [:merge_request_target_branches]
-  urgency :default, [:users]
+  urgency :low, [:merge_request_target_branches, :deploy_keys_with_owners, :users]
+  urgency :low, [:award_emojis]
+  urgency :medium, [:projects]
 
   def users
     group = Autocomplete::GroupFinder

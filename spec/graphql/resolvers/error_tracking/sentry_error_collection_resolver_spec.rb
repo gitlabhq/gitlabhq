@@ -8,18 +8,22 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorCollectionResolver do
   let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
 
-  let(:list_issues_service) { spy('ErrorTracking::ListIssuesService') }
+  let(:list_issues_service) { instance_double('ErrorTracking::ListIssuesService') }
 
-  specify do
-    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryErrorCollectionType)
+  before_all do
+    project.add_developer(current_user)
   end
 
   before do
-    project.add_developer(current_user)
-
     allow(ErrorTracking::ListIssuesService)
       .to receive(:new)
       .and_return list_issues_service
+
+    allow(list_issues_service).to receive(:external_url)
+  end
+
+  specify do
+    expect(described_class).to have_nullable_graphql_type(Types::ErrorTracking::SentryErrorCollectionType)
   end
 
   describe '#resolve' do
@@ -34,8 +38,7 @@ RSpec.describe Resolvers::ErrorTracking::SentryErrorCollectionResolver do
         .to receive(:external_url)
         .and_return(fake_url)
 
-      result = resolve_error_collection
-      expect(result.external_url).to eq fake_url
+      expect(resolve_error_collection.external_url).to eq fake_url
     end
 
     it 'provides the project' do

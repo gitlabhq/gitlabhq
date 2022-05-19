@@ -11,9 +11,6 @@ settings:
   import/resolver:
     jest:
       jestConfigFile: 'jest.config.js'
-globals:
-  loadFixtures: false
-  setFixtures: false
 rules:
   jest/expect-expect:
     - off
@@ -21,8 +18,6 @@ rules:
         - 'expect*'
         - 'assert*'
         - 'testAction'
-  jest/no-test-callback:
-    - off
   "@gitlab/no-global-event-off":
     - off
   import/no-unresolved:

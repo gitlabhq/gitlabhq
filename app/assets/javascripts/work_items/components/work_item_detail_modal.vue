@@ -1,42 +1,87 @@
 <script>
-import { GlAlert, GlButton, GlModal } from '@gitlab/ui';
-import WorkItemActions from './work_item_actions.vue';
+import { GlAlert, GlModal } from '@gitlab/ui';
+import { s__ } from '~/locale';
+import deleteWorkItemFromTaskMutation from '../graphql/delete_task_from_work_item.mutation.graphql';
 import WorkItemDetail from './work_item_detail.vue';
 
 export default {
   components: {
     GlAlert,
-    GlButton,
     GlModal,
     WorkItemDetail,
-    WorkItemActions,
   },
   props: {
-    canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    visible: {
-      type: Boolean,
-      required: true,
-    },
     workItemId: {
       type: String,
       required: false,
       default: null,
     },
+    issueGid: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lockVersion: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    lineNumberStart: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    lineNumberEnd: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
-  emits: ['workItemDeleted', 'close'],
+  emits: ['workItemDeleted', 'workItemUpdated', 'close'],
   data() {
     return {
       error: undefined,
     };
   },
   methods: {
-    handleWorkItemDeleted() {
-      this.$emit('workItemDeleted');
-      this.closeModal();
+    deleteWorkItem() {
+      this.$apollo
+        .mutate({
+          mutation: deleteWorkItemFromTaskMutation,
+          variables: {
+            input: {
+              id: this.issueGid,
+              lockVersion: this.lockVersion,
+              taskData: {
+                id: this.workItemId,
+                lineNumberStart: Number(this.lineNumberStart),
+                lineNumberEnd: Number(this.lineNumberEnd),
+              },
+            },
+          },
+        })
+        .then(
+          ({
+            data: {
+              workItemDeleteTask: {
+                workItem: { descriptionHtml },
+                errors,
+              },
+            },
+          }) => {
+            if (errors?.length) {
+              throw new Error(errors[0].message);
+            }
+
+            this.$emit('workItemDeleted', descriptionHtml);
+            this.$refs.modal.hide();
+          },
+        )
+        .catch((e) => {
+          this.error =
+            e.message ||
+            s__('WorkItem|Something went wrong when deleting the work item. Please try again.');
+        });
     },
     closeModal() {
       this.error = '';
@@ -45,37 +90,31 @@ export default {
     setErrorMessage(message) {
       this.error = message;
     },
+    show() {
+      this.$refs.modal.show();
+    },
   },
 };
 </script>
 
 <template>
-  <gl-modal hide-footer modal-id="work-item-detail-modal" :visible="visible" @hide="closeModal">
-    <template #modal-header>
-      <div class="gl-w-full gl-display-flex gl-align-items-center gl-justify-content-end">
-        <h2 class="modal-title gl-mr-auto">{{ s__('WorkItem|Work Item') }}</h2>
-        <work-item-actions
-          :work-item-id="workItemId"
-          :can-update="canUpdate"
-          @workItemDeleted="handleWorkItemDeleted"
-          @error="setErrorMessage"
-        />
-        <gl-button category="tertiary" icon="close" :aria-label="__('Close')" @click="closeModal" />
-      </div>
-    </template>
+  <gl-modal ref="modal" hide-footer size="lg" modal-id="work-item-detail-modal" @hide="closeModal">
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">
       {{ error }}
     </gl-alert>
 
-    <work-item-detail :work-item-id="workItemId" />
+    <work-item-detail
+      :work-item-id="workItemId"
+      @deleteWorkItem="deleteWorkItem"
+      @workItemUpdated="$emit('workItemUpdated')"
+    />
   </gl-modal>
 </template>
 
 <style>
-/* hide the existing close button until we can do it
- * with https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2710
+/* hide the existing modal header
  */
-#work-item-detail-modal .modal-header > .gl-button {
+#work-item-detail-modal .modal-header {
   display: none;
 }
 </style>

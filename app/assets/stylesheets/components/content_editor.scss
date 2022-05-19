@@ -13,6 +13,11 @@
     }
   }
 
+  img.ProseMirror-selectednode {
+    outline: 3px solid rgba($blue-400, 0.48);
+    outline-offset: -3px;
+  }
+
   ul[data-type='taskList'] {
     list-style: none;
     padding: 0;
@@ -120,4 +125,8 @@
   margin-top: -2px;
   border: 1px solid $black-transparent;
   background-color: var(--gl-color-chip-color);
+}
+
+.bubble-menu-form {
+  width: 320px;
 }

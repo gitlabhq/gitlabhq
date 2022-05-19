@@ -4,6 +4,6 @@ classes:
 - IncidentManagement::EscalationPolicy
 feature_categories:
 - incident_management
-description: TODO
+description: Persists information about escalation policies in a project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60685
 milestone: '13.12'

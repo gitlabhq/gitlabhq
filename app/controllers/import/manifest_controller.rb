@@ -10,9 +10,12 @@ class Import::ManifestController < Import::BaseController
   def new
   end
 
+  # We need to re-expose controller's internal method 'status' as action.
+  # rubocop:disable Lint/UselessMethodDefinition
   def status
     super
   end
+  # rubocop:enable Lint/UselessMethodDefinition
 
   def upload
     group = Group.find(params[:group_id])
@@ -34,10 +37,6 @@ class Import::ManifestController < Import::BaseController
 
       render :new
     end
-  end
-
-  def realtime_changes
-    super
   end
 
   def create

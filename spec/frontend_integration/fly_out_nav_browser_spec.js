@@ -184,19 +184,21 @@ describe('Fly out sidebar navigation', () => {
       mockBoundingRects();
     });
 
-    it('shows sub-items after 0ms if no menu is open', (done) => {
+    it('shows sub-items after 0ms if no menu is open', () => {
       const subItems = findSubItems();
       mouseEnterTopItems(el);
 
       expect(getHideSubItemsInterval()).toBe(0);
 
-      setTimeout(() => {
-        expect(subItems.style.display).toBe('block');
-        done();
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          expect(subItems.style.display).toBe('block');
+          resolve();
+        });
       });
     });
 
-    it('shows sub-items after 300ms if a menu is currently open', (done) => {
+    it('shows sub-items after 300ms if a menu is currently open', () => {
       const subItems = findSubItems();
 
       documentMouseMove({
@@ -213,10 +215,11 @@ describe('Fly out sidebar navigation', () => {
 
       mouseEnterTopItems(el, 0);
 
-      setTimeout(() => {
-        expect(subItems.style.display).toBe('block');
-
-        done();
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          expect(subItems.style.display).toBe('block');
+          resolve();
+        });
       });
     });
   });

@@ -5,7 +5,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '../components/runner_header.vue';
 import RunnerUpdateForm from '../components/runner_update_form.vue';
 import { I18N_FETCH_ERROR } from '../constants';
-import runnerQuery from '../graphql/details/runner.query.graphql';
+import runnerFormQuery from '../graphql/edit/runner_form.query.graphql';
 import { captureException } from '../sentry_utils';
 
 export default {
@@ -19,6 +19,11 @@ export default {
       type: String,
       required: true,
     },
+    runnerPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -27,7 +32,7 @@ export default {
   },
   apollo: {
     runner: {
-      query: runnerQuery,
+      query: runnerFormQuery,
       variables() {
         return {
           id: convertToGraphQLId(TYPE_CI_RUNNER, this.runnerId),
@@ -38,6 +43,11 @@ export default {
 
         this.reportToSentry(error);
       },
+    },
+  },
+  computed: {
+    loading() {
+      return this.$apollo.queries.runner.loading;
     },
   },
   errorCaptured(error) {
@@ -53,6 +63,11 @@ export default {
 <template>
   <div>
     <runner-header v-if="runner" :runner="runner" />
-    <runner-update-form :runner="runner" class="gl-my-5" />
+    <runner-update-form
+      :loading="loading"
+      :runner="runner"
+      :runner-path="runnerPath"
+      class="gl-my-5"
+    />
   </div>
 </template>

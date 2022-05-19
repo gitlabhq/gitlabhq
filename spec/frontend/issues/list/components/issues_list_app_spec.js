@@ -5,8 +5,11 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import getIssuesWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_without_crm.query.graphql';
+import getIssuesCountsWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_counts_without_crm.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -58,6 +61,7 @@ describe('CE IssuesListApp component', () => {
   let wrapper;
 
   Vue.use(VueApollo);
+  Vue.use(VueRouter);
 
   const defaultProvide = {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
@@ -78,6 +82,7 @@ describe('CE IssuesListApp component', () => {
     isAnonymousSearchDisabled: false,
     isIssueRepositioningDisabled: false,
     isProject: true,
+    isPublicVisibilityRestricted: false,
     isSignedIn: true,
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
@@ -107,6 +112,7 @@ describe('CE IssuesListApp component', () => {
 
   const mountComponent = ({
     provide = {},
+    data = {},
     issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
     issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
@@ -115,15 +121,20 @@ describe('CE IssuesListApp component', () => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
+      [getIssuesWithoutCrmQuery, issuesQueryResponse],
+      [getIssuesCountsWithoutCrmQuery, issuesCountsQueryResponse],
       [setSortPreferenceMutation, sortPreferenceMutationResponse],
     ];
-    const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(IssuesListApp, {
-      apolloProvider,
+      apolloProvider: createMockApollo(requestHandlers),
+      router: new VueRouter({ mode: 'history' }),
       provide: {
         ...defaultProvide,
         ...provide,
+      },
+      data() {
+        return data;
       },
     });
   };
@@ -139,10 +150,10 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('IssuableList', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = mountComponent();
       jest.runOnlyPendingTimers();
-      await waitForPromises();
+      return waitForPromises();
     });
 
     it('renders', () => {
@@ -167,10 +178,6 @@ describe('CE IssuesListApp component', () => {
         useKeysetPagination: true,
         hasPreviousPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasPreviousPage,
         hasNextPage: getIssuesQueryResponse.data.project.issues.pageInfo.hasNextPage,
-        urlParams: {
-          sort: urlSortParams[CREATED_DESC],
-          state: IssuableStates.Opened,
-        },
       });
     });
   });
@@ -200,7 +207,7 @@ describe('CE IssuesListApp component', () => {
 
     describe('csv import/export component', () => {
       describe('when user is signed in', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           setWindowLocation('?search=refactor&state=opened');
 
           wrapper = mountComponent({
@@ -209,12 +216,12 @@ describe('CE IssuesListApp component', () => {
           });
 
           jest.runOnlyPendingTimers();
-          await waitForPromises();
+          return waitForPromises();
         });
 
         it('renders', () => {
           expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&sort=created_date&state=opened`,
+            exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&state=opened`,
             issuableCount: 1,
           });
         });
@@ -252,11 +259,9 @@ describe('CE IssuesListApp component', () => {
 
       it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
-
         jest.spyOn(eventHub, '$emit');
 
         findGlButtonAt(2).vm.$emit('click');
-
         await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
@@ -297,32 +302,25 @@ describe('CE IssuesListApp component', () => {
     describe('page', () => {
       it('page_after is set from the url params', () => {
         setWindowLocation('?page_after=randomCursorString');
-
         wrapper = mountComponent();
 
-        expect(findIssuableList().props('urlParams')).toMatchObject({
-          page_after: 'randomCursorString',
-        });
+        expect(wrapper.vm.$route.query).toMatchObject({ page_after: 'randomCursorString' });
       });
 
       it('page_before is set from the url params', () => {
         setWindowLocation('?page_before=anotherRandomCursorString');
-
         wrapper = mountComponent();
 
-        expect(findIssuableList().props('urlParams')).toMatchObject({
-          page_before: 'anotherRandomCursorString',
-        });
+        expect(wrapper.vm.$route.query).toMatchObject({ page_before: 'anotherRandomCursorString' });
       });
     });
 
     describe('search', () => {
       it('is set from the url params', () => {
         setWindowLocation(locationSearch);
-
         wrapper = mountComponent();
 
-        expect(findIssuableList().props('urlParams')).toMatchObject({ search: 'find issues' });
+        expect(wrapper.vm.$route.query).toMatchObject({ search: 'find issues' });
       });
     });
 
@@ -333,10 +331,7 @@ describe('CE IssuesListApp component', () => {
         it.each(oldEnumSortValues)('initial sort is set with value %s', (sort) => {
           wrapper = mountComponent({ provide: { initialSort: sort } });
 
-          expect(findIssuableList().props()).toMatchObject({
-            initialSortBy: getSortKey(sort),
-            urlParams: { sort },
-          });
+          expect(findIssuableList().props('initialSortBy')).toBe(getSortKey(sort));
         });
       });
 
@@ -346,10 +341,7 @@ describe('CE IssuesListApp component', () => {
         it.each(graphQLEnumSortValues)('initial sort is set with value %s', (sort) => {
           wrapper = mountComponent({ provide: { initialSort: sort.toLowerCase() } });
 
-          expect(findIssuableList().props()).toMatchObject({
-            initialSortBy: sort,
-            urlParams: { sort: urlSortParams[sort] },
-          });
+          expect(findIssuableList().props('initialSortBy')).toBe(sort);
         });
       });
 
@@ -359,10 +351,7 @@ describe('CE IssuesListApp component', () => {
           (sort) => {
             wrapper = mountComponent({ provide: { initialSort: sort } });
 
-            expect(findIssuableList().props()).toMatchObject({
-              initialSortBy: CREATED_DESC,
-              urlParams: { sort: urlSortParams[CREATED_DESC] },
-            });
+            expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
           },
         );
       });
@@ -375,10 +364,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('changes the sort to the default of created descending', () => {
-          expect(findIssuableList().props()).toMatchObject({
-            initialSortBy: CREATED_DESC,
-            urlParams: { sort: urlSortParams[CREATED_DESC] },
-          });
+          expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
@@ -393,9 +379,7 @@ describe('CE IssuesListApp component', () => {
     describe('state', () => {
       it('is set from the url params', () => {
         const initialState = IssuableStates.All;
-
         setWindowLocation(`?state=${initialState}`);
-
         wrapper = mountComponent();
 
         expect(findIssuableList().props('currentTab')).toBe(initialState);
@@ -405,7 +389,6 @@ describe('CE IssuesListApp component', () => {
     describe('filter tokens', () => {
       it('is set from the url params', () => {
         setWindowLocation(locationSearch);
-
         wrapper = mountComponent();
 
         expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
@@ -414,7 +397,6 @@ describe('CE IssuesListApp component', () => {
       describe('when anonymous searching is performed', () => {
         beforeEach(() => {
           setWindowLocation(locationSearch);
-
           wrapper = mountComponent({
             provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
           });
@@ -649,12 +631,12 @@ describe('CE IssuesListApp component', () => {
       ${'fetching issues'}       | ${'issuesQueryResponse'}       | ${IssuesListApp.i18n.errorFetchingIssues}
       ${'fetching issue counts'} | ${'issuesCountsQueryResponse'} | ${IssuesListApp.i18n.errorFetchingCounts}
     `('when there is an error $error', ({ mountOption, message }) => {
-      beforeEach(async () => {
+      beforeEach(() => {
         wrapper = mountComponent({
           [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')),
         });
         jest.runOnlyPendingTimers();
-        await waitForPromises();
+        return waitForPromises();
       });
 
       it('shows an error message', () => {
@@ -676,29 +658,51 @@ describe('CE IssuesListApp component', () => {
     describe('when "click-tab" event is emitted by IssuableList', () => {
       beforeEach(() => {
         wrapper = mountComponent();
+        jest.spyOn(wrapper.vm.$router, 'push');
 
         findIssuableList().vm.$emit('click-tab', IssuableStates.Closed);
       });
 
-      it('updates to the new tab', () => {
+      it('updates ui to the new tab', () => {
         expect(findIssuableList().props('currentTab')).toBe(IssuableStates.Closed);
+      });
+
+      it('updates url to the new tab', () => {
+        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({ state: IssuableStates.Closed }),
+        });
       });
     });
 
-    describe.each(['next-page', 'previous-page'])(
-      'when "%s" event is emitted by IssuableList',
-      (event) => {
-        beforeEach(() => {
-          wrapper = mountComponent();
-
-          findIssuableList().vm.$emit(event);
+    describe.each`
+      event              | paramName        | paramValue
+      ${'next-page'}     | ${'page_after'}  | ${'endCursor'}
+      ${'previous-page'} | ${'page_before'} | ${'startCursor'}
+    `('when "$event" event is emitted by IssuableList', ({ event, paramName, paramValue }) => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          data: {
+            pageInfo: {
+              endCursor: 'endCursor',
+              startCursor: 'startCursor',
+            },
+          },
         });
+        jest.spyOn(wrapper.vm.$router, 'push');
 
-        it('scrolls to the top', () => {
-          expect(scrollUp).toHaveBeenCalled();
+        findIssuableList().vm.$emit(event);
+      });
+
+      it('scrolls to the top', () => {
+        expect(scrollUp).toHaveBeenCalled();
+      });
+
+      it(`updates url with "${paramName}" param`, () => {
+        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining({ [paramName]: paramValue }),
         });
-      },
-    );
+      });
+    });
 
     describe('when "reorder" event is emitted by IssuableList', () => {
       const issueOne = {
@@ -752,18 +756,17 @@ describe('CE IssuesListApp component', () => {
           `(
             'when moving issue $description',
             ({ issueToMove, oldIndex, newIndex, moveBeforeId, moveAfterId }) => {
-              beforeEach(async () => {
+              beforeEach(() => {
                 wrapper = mountComponent({
                   provide: { isProject },
                   issuesQueryResponse: jest.fn().mockResolvedValue(response(isProject)),
                 });
                 jest.runOnlyPendingTimers();
-                await waitForPromises();
+                return waitForPromises();
               });
 
               it('makes API call to reorder the issue', async () => {
                 findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
-
                 await waitForPromises();
 
                 expect(axiosMock.history.put[0]).toMatchObject({
@@ -780,19 +783,18 @@ describe('CE IssuesListApp component', () => {
       });
 
       describe('when unsuccessful', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           wrapper = mountComponent({
             issuesQueryResponse: jest.fn().mockResolvedValue(response()),
           });
           jest.runOnlyPendingTimers();
-          await waitForPromises();
+          return waitForPromises();
         });
 
         it('displays an error message', async () => {
           axiosMock.onPut(joinPaths(issueOne.webPath, 'reorder')).reply(500);
 
           findIssuableList().vm.$emit('reorder', { oldIndex: 0, newIndex: 1 });
-
           await waitForPromises();
 
           expect(findIssuableList().props('error')).toBe(IssuesListApp.i18n.reorderError);
@@ -808,14 +810,14 @@ describe('CE IssuesListApp component', () => {
         'updates to the new sort when payload is `%s`',
         async (sortKey) => {
           wrapper = mountComponent();
+          jest.spyOn(wrapper.vm.$router, 'push');
 
           findIssuableList().vm.$emit('sort', sortKey);
-
           jest.runOnlyPendingTimers();
           await nextTick();
 
-          expect(findIssuableList().props('urlParams')).toMatchObject({
-            sort: urlSortParams[sortKey],
+          expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+            query: expect.objectContaining({ sort: urlSortParams[sortKey] }),
           });
         },
       );
@@ -827,14 +829,13 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             provide: { initialSort, isIssueRepositioningDisabled: true },
           });
+          jest.spyOn(wrapper.vm.$router, 'push');
 
           findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
         });
 
         it('does not update the sort to manual', () => {
-          expect(findIssuableList().props('urlParams')).toMatchObject({
-            sort: urlSortParams[initialSort],
-          });
+          expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
@@ -899,11 +900,14 @@ describe('CE IssuesListApp component', () => {
     describe('when "filter" event is emitted by IssuableList', () => {
       it('updates IssuableList with url params', async () => {
         wrapper = mountComponent();
+        jest.spyOn(wrapper.vm.$router, 'push');
 
         findIssuableList().vm.$emit('filter', filteredTokens);
         await nextTick();
 
-        expect(findIssuableList().props('urlParams')).toMatchObject(urlParams);
+        expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+          query: expect.objectContaining(urlParams),
+        });
       });
 
       describe('when anonymous searching is performed', () => {
@@ -911,19 +915,13 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             provide: { isAnonymousSearchDisabled: true, isSignedIn: false },
           });
+          jest.spyOn(wrapper.vm.$router, 'push');
 
           findIssuableList().vm.$emit('filter', filteredTokens);
         });
 
-        it('does not update IssuableList with url params ', async () => {
-          const defaultParams = {
-            page_after: null,
-            page_before: null,
-            sort: 'created_date',
-            state: 'opened',
-          };
-
-          expect(findIssuableList().props('urlParams')).toEqual(defaultParams);
+        it('does not update url params', () => {
+          expect(wrapper.vm.$router.push).not.toHaveBeenCalled();
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
@@ -933,6 +931,25 @@ describe('CE IssuesListApp component', () => {
           });
         });
       });
+    });
+  });
+
+  describe('public visibility', () => {
+    it.each`
+      description                                                                    | isPublicVisibilityRestricted | isSignedIn | hideUsers
+      ${'shows users when public visibility is not restricted and is not signed in'} | ${false}                     | ${false}   | ${false}
+      ${'shows users when public visibility is not restricted and is signed in'}     | ${false}                     | ${true}    | ${false}
+      ${'hides users when public visibility is restricted and is not signed in'}     | ${true}                      | ${false}   | ${true}
+      ${'shows users when public visibility is restricted and is signed in'}         | ${true}                      | ${true}    | ${false}
+    `('$description', ({ isPublicVisibilityRestricted, isSignedIn, hideUsers }) => {
+      const mockQuery = jest.fn().mockResolvedValue(defaultQueryResponse);
+      wrapper = mountComponent({
+        provide: { isPublicVisibilityRestricted, isSignedIn },
+        issuesQueryResponse: mockQuery,
+      });
+      jest.runOnlyPendingTimers();
+
+      expect(mockQuery).toHaveBeenCalledWith(expect.objectContaining({ hideUsers }));
     });
   });
 });

@@ -1,0 +1,9 @@
+---
+table_name: protected_environment_approval_rules
+classes:
+- ProtectedEnvironments::ApprovalRule
+feature_categories:
+- continuous_delivery
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82800
+milestone: '14.10'

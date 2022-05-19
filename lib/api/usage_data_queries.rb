@@ -5,10 +5,11 @@ module API
     before { authenticated_as_admin! }
 
     feature_category :service_ping
+    urgency :low
 
     namespace 'usage_data' do
       before do
-        not_found! unless Feature.enabled?(:usage_data_queries_api, default_enabled: :yaml, type: :ops)
+        not_found! unless Feature.enabled?(:usage_data_queries_api, type: :ops)
       end
 
       desc 'Get raw SQL queries for usage data SQL metrics' do

@@ -49,7 +49,7 @@ This behavior can be overridden:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand the **Outbound requests** section:
-   ![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
+   ![Outbound requests Admin Area settings](img/outbound_requests_section_v12_2.png)
 1. Select **Allow requests to the local network from web hooks and services**.
 
 NOTE:

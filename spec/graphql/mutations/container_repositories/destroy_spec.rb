@@ -9,7 +9,7 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
   let_it_be(:user) { create(:user) }
 
   let(:project) { container_repository.project }
-  let(:id) { container_repository.to_global_id.to_s }
+  let(:id) { container_repository.to_global_id }
 
   specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
 
@@ -56,12 +56,6 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
 
         it_behaves_like params[:shared_examples_name]
       end
-    end
-
-    context 'with invalid id' do
-      let(:id) { 'gid://gitlab/ContainerRepository/5555' }
-
-      it_behaves_like 'denying access to container respository'
     end
   end
 end

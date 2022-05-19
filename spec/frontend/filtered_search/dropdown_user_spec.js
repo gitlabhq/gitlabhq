@@ -1,3 +1,4 @@
+import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import DropdownUser from '~/filtered_search/dropdown_user';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
@@ -80,13 +81,17 @@ describe('Dropdown User', () => {
     let authorFilterDropdownElement;
 
     beforeEach(() => {
-      loadFixtures(fixtureTemplate);
+      loadHTMLFixture(fixtureTemplate);
       authorFilterDropdownElement = document.querySelector('#js-dropdown-author');
       const dummyInput = document.createElement('div');
       dropdown = new DropdownUser({
         dropdown: authorFilterDropdownElement,
         input: dummyInput,
       });
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
     });
 
     const findCurrentUserElement = () =>

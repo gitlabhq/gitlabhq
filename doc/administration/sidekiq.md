@@ -20,21 +20,13 @@ To configure Sidekiq:
 1. Edit `/etc/gitlab/gitlab.rb` with the following information and make sure
    to replace with your values:
 
+<!--
+Updates to example must be made at:
+- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
+- all reference architecture pages
+-->
+
    ```ruby
-   ##
-   ## To maintain uniformity of links across nodes, the
-   ##`external_url` on the Sidekiq server should point to the external URL that users
-   ## use to access GitLab. This can be either:
-   ##
-   ## - The `external_url` set on your application server.
-   ## - The URL of a external load balancer, which routes traffic to the GitLab application server.
-   ##
-
-   external_url 'https://gitlab.example.com'
-
-   ## Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
-
    ########################################
    #####        Services Disabled       ###
    ########################################
@@ -45,32 +37,27 @@ To configure Sidekiq:
    # Enable only the services you want to run on each
    # specific server, while disabling all others.
    #
-   nginx['enable'] = false
-   grafana['enable'] = false
-   prometheus['enable'] = false
-   gitlab_rails['auto_migrate'] = false
-   alertmanager['enable'] = false
    gitaly['enable'] = false
-   gitlab_workhorse['enable'] = false
-   nginx['enable'] = false
-   postgres_exporter['enable'] = false
    postgresql['enable'] = false
    redis['enable'] = false
-   redis_exporter['enable'] = false
+   nginx['enable'] = false
    puma['enable'] = false
+   gitlab_workhorse['enable'] = false
+   prometheus['enable'] = false
+   alertmanager['enable'] = false
+   grafana['enable'] = false
    gitlab_exporter['enable'] = false
+   gitlab_kas['enable'] = false
 
-   #######################################
-   ###      Sidekiq configuration      ###
-   #######################################
-   sidekiq['enable'] = true
-   sidekiq['listen_address'] = "0.0.0.0"
-
-   ## Set number of Sidekiq queue processes to the same number as available CPUs
-   sidekiq['queue_groups'] = ['*'] * 4
-
-   ## Set number of Sidekiq threads per queue process to the recommend number of 10
-   sidekiq['max_concurrency'] = 10
+   ##
+   ## To maintain uniformity of links across nodes, the
+   ## `external_url` on the Sidekiq server should point to the external URL that users
+   ## use to access GitLab. This can be either:
+   ##
+   ## - The `external_url` set on your application server.
+   ## - The URL of a external load balancer, which routes traffic to the GitLab application server.
+   ##
+   external_url 'https://gitlab.example.com'
 
    ########################################
    ####              Redis              ###
@@ -89,9 +76,11 @@ To configure Sidekiq:
    ## Replace <gitaly_token> with the one you set up, see
    ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
    git_data_dirs({
-     'default' => { 'gitaly_address' => 'tcp://gitaly:8075' },
+     "default" => {
+        "gitaly_address" => "tcp://gitaly:8075",
+        "gitaly_token" => "<gitaly_token>"
+     }
    })
-   gitlab_rails['gitaly_token'] = '<gitaly_token>'
 
    #######################################
    ###            Postgres             ###
@@ -99,16 +88,28 @@ To configure Sidekiq:
 
    # Replace <database_host> and <database_password>
    gitlab_rails['db_host'] = '<database_host>'
-   gitlab_rails['db_password'] = '<database_password>'
    gitlab_rails['db_port'] = '5432'
-   gitlab_rails['db_adapter'] = 'postgresql'
-   gitlab_rails['db_encoding'] = 'unicode'
-   gitlab_rails['auto_migrate'] = false
+   gitlab_rails['db_password'] = '<database_password>'
 
    # Add the Sidekiq nodes to PostgreSQL's trusted addresses.
    # In the following example, 10.10.1.30/32 is the private IP
    # of the Sidekiq server.
    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32)
+
+   ## Prevent database migrations from running on upgrade automatically
+   gitlab_rails['auto_migrate'] = false
+
+   #######################################
+   ###      Sidekiq configuration      ###
+   #######################################
+   sidekiq['enable'] = true
+   sidekiq['listen_address'] = "0.0.0.0"
+
+   ## Set number of Sidekiq queue processes to the same number as available CPUs
+   sidekiq['queue_groups'] = ['*'] * 4
+
+   ## Set number of Sidekiq threads per queue process to the recommend number of 10
+   sidekiq['max_concurrency'] = 10
    ```
 
 1. Reconfigure GitLab:
@@ -192,12 +193,8 @@ To configure the metrics server:
 
 ## Configure health checks
 
-If you use health check probes to observe Sidekiq,
-you can set a separate port for health checks.
-Configuring health checks is only necessary if there is something that actually probes them.
-For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
-
-To enable health checks for Sidekiq:
+If you use health check probes to observe Sidekiq, enable the Sidekiq health check server.
+To make health checks available from `localhost:8092`:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -207,15 +204,13 @@ To enable health checks for Sidekiq:
    sidekiq['health_checks_listen_port'] = "8092"
    ```
 
-   NOTE:
-   If health check settings are not set, they default to the metrics exporter settings.
-   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
-
 1. Reconfigure GitLab:
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+For more information about health checks, see the [Sidekiq health check page](sidekiq_health_check.md).
 
 ## Configure LDAP and user or group synchronization
 

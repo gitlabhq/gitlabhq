@@ -116,13 +116,13 @@ module Gitlab
       private
 
       def before_send_raven(event, hint)
-        return unless Feature.enabled?(:enable_old_sentry_integration, default_enabled: :yaml)
+        return unless Feature.enabled?(:enable_old_sentry_integration)
 
         before_send(event, hint)
       end
 
       def before_send_sentry(event, hint)
-        return unless Feature.enabled?(:enable_new_sentry_integration, default_enabled: :yaml)
+        return unless Feature.enabled?(:enable_new_sentry_integration)
 
         before_send(event, hint)
       end

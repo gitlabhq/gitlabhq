@@ -703,13 +703,16 @@ RSpec.describe UploadsController do
     end
 
     context 'when viewing alert metric images' do
-      let!(:user) { create(:user) }
-      let!(:project) { create(:project) }
-      let(:alert) { create(:alert_management_alert, project: project) }
-      let(:metric_image) { create(:alert_metric_image, alert: alert) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:alert) { create(:alert_management_alert, project: project) }
+      let_it_be(:metric_image) { create(:alert_metric_image, alert: alert) }
+
+      before_all do
+        project.add_developer(user)
+      end
 
       before do
-        project.add_developer(user)
         sign_in(user)
       end
 

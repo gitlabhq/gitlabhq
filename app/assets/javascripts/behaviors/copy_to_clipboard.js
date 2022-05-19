@@ -43,7 +43,7 @@ function genericSuccess(e) {
 }
 
 /**
- * Safari > 10 doesn't support `execCommand`, so instead we inform the user to copy manually.
+ * Safari < 10 doesn't support `execCommand`, so instead we inform the user to copy manually.
  * See http://clipboardjs.com/#browser-support
  */
 function genericError(e) {

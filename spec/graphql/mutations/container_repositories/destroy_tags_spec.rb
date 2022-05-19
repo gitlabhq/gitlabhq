@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::ContainerRepositories::DestroyTags do
+  include GraphqlHelpers
+
   include_context 'container repository delete tags service shared context'
   using RSpec::Parameterized::TableSyntax
 
-  let(:id) { repository.to_global_id.to_s }
+  let(:id) { repository.to_global_id }
 
   specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
 
@@ -67,8 +69,8 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags do
       end
     end
 
-    context 'with invalid id' do
-      let(:id) { 'gid://gitlab/ContainerRepository/5555' }
+    context 'with non-existing id' do
+      let(:id) { global_id_of(id: non_existing_record_id, model_name: 'ContainerRepository') }
 
       it_behaves_like 'denying access to container respository'
     end

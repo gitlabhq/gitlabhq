@@ -53,7 +53,7 @@ For example, consider a user named Alex:
 | GitLab URL | Namespace |
 | ---------- | --------- |
 | Alex creates an account with the username `alex`: `https://gitlab.example.com/alex`. | The namespace in this case is `alex`. |
-| Alex creates a group for their team with the group name `alex-team`. The group and its projects are available at: `https://gitlab.example.com/alex-team`. | The namespace in this cases is `alex-team`. |
+| Alex creates a group for their team with the group name `alex-team`. The group and its projects are available at: `https://gitlab.example.com/alex-team`. | The namespace in this case is `alex-team`. |
 | Alex creates a subgroup of `alex-team` with the subgroup name `marketing`. The subgroup and its projects are available at: `https://gitlab.example.com/alex-team/marketing`. | The namespace in this case is `alex-team/marketing`. |
 
 ## Create a group
@@ -279,7 +279,7 @@ To view the activity feed in Atom format, select the
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
 you can share a group with another group. To invite a group, you must be a member of it. Members get direct access
-to the shared group. This includes members who inherited group membership from a parent group. 
+to the shared group. This includes members who inherited group membership from a parent group.
 
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
@@ -456,25 +456,28 @@ To restore a group that is marked for deletion:
 
 ## Prevent group sharing outside the group hierarchy
 
-This setting is only available on top-level groups. It affects all subgroups.
+You can configure a top-level group so its subgroups and projects
+cannot invite other groups outside of the top-level group's hierarchy.
+This option is only available for top-level groups.
 
-When checked, any group in the top-level group hierarchy can be shared only with other groups in the hierarchy.
+For example, in the following group and project hierarchy:
 
-For example, with these groups:
-
-- **Animals > Dogs**
+- **Animals > Dogs > Dog Project**
 - **Animals > Cats**
 - **Plants > Trees**
 
-If you select this setting in the **Animals** group:
+If you prevent group sharing outside the hierarchy for the **Animals** group:
 
-- **Dogs** can be shared with **Cats**.
-- **Dogs** cannot be shared with **Trees**.
+- **Dogs** can invite the group **Cats**.
+- **Dogs** cannot invite the group **Trees**.
+- **Dog Project** can invite the group **Cats**.
+- **Dog Project** cannot invite the group **Trees**.
 
 To prevent sharing outside of the group's hierarchy:
 
-1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions and group features** section.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
 1. Select **Prevent members from sending invitations to groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.
 
@@ -610,15 +613,16 @@ applies to:
 
 You should consider these security implications before configuring IP address restrictions:
 
-- **SSH requests**: While you can restrict HTTP traffic on GitLab.com with IP address restrictions,
+- **SSH requests, including `git` operations will fail from all IP addresses**: While you can restrict HTTP traffic on GitLab.com with IP address restrictions,
   they cause SSH requests, including Git operations over SSH, to fail. For more information,
   read [issue 271673](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
-- **Administrators and group owners**: Users with these permission levels can always
+- **Administrators and group owners can access group settings from any IP address**: Users with these permission levels can always
   access the group settings, regardless of IP restriction, but they cannot access projects
   belonging to the group when accessing from a disallowed IP address.
-- **GitLab API and runner activities**: Only the [group](../../api/groups.md) (including all
+- **Some GitLab API endpoints will remain accessible from any IP**: Only the [group](../../api/groups.md) (including all
   [group resources](../../api/api_resources.md#group-resources)) APIs and [project](../../api/api_resources.md#project-resources)
   (including all [project resources](../../api/api_resources.md#project-resources)) APIs are protected by IP address restrictions.
+- **Activities performed by GitLab Runners are not bound by IP restrictions**: 
   When you register a runner, it is not bound by the IP restrictions. When the runner
   requests a new job or an update to a job's state, it is also not bound by
   the IP restrictions. But when the running CI/CD job sends Git requests from a

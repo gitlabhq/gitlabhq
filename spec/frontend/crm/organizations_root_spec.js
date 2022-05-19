@@ -102,9 +102,7 @@ describe('Customer relations organizations root app', () => {
 
       const issueLink = findIssuesLinks().at(0);
       expect(issueLink.exists()).toBe(true);
-      expect(issueLink.attributes('href')).toBe(
-        '/issues?scope=all&state=opened&crm_organization_id=2',
-      );
+      expect(issueLink.attributes('href')).toBe('/issues?crm_organization_id=2');
     });
   });
 });

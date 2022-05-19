@@ -37,6 +37,7 @@ RSpec.describe Issue do
     it { is_expected.to have_one(:incident_management_issuable_escalation_status) }
     it { is_expected.to have_many(:issue_customer_relations_contacts) }
     it { is_expected.to have_many(:customer_relations_contacts) }
+    it { is_expected.to have_many(:incident_management_timeline_events) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
@@ -1257,23 +1258,11 @@ RSpec.describe Issue do
   end
 
   describe '.public_only' do
-    let_it_be(:banned_user) { create(:user, :banned) }
-    let_it_be(:public_issue) { create(:issue, project: reusable_project) }
-    let_it_be(:confidential_issue) { create(:issue, project: reusable_project, confidential: true) }
-    let_it_be(:hidden_issue) { create(:issue, project: reusable_project, author: banned_user) }
-
     it 'only returns public issues' do
+      public_issue = create(:issue, project: reusable_project)
+      create(:issue, project: reusable_project, confidential: true)
+
       expect(described_class.public_only).to eq([public_issue])
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(ban_user_feature_flag: false)
-      end
-
-      it 'returns public and hidden issues' do
-        expect(described_class.public_only).to contain_exactly(public_issue, hidden_issue)
-      end
     end
   end
 

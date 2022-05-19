@@ -10,6 +10,7 @@ module Integrations
       non_empty_password_help
       non_empty_password_title
       api_only
+      exposes_secrets
     ].freeze
 
     attr_reader :name

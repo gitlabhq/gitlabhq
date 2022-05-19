@@ -35,7 +35,8 @@ module ContainerExpirationPolicies
       if service_result[:status] == :success
         repository.update!(
           expiration_policy_cleanup_status: :cleanup_unscheduled,
-          expiration_policy_completed_at: Time.zone.now
+          expiration_policy_completed_at: Time.zone.now,
+          last_cleanup_deleted_tags_count: service_result[:deleted_size]
         )
 
         success(:finished, service_result)

@@ -4,6 +4,6 @@ classes:
 - Timelog
 feature_categories:
 - team_planning
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/bf13fa054a67d5245ee83555e730d7ee6ab7264c
+description: Time spend data recorded by users on issues
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/870
 milestone: '8.14'

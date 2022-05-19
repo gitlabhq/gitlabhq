@@ -37,3 +37,13 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.JIRA_TRIGGER]: 'IntegrationSectionJiraTrigger',
   [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',
 };
+
+export const billingPlans = {
+  PREMIUM: 'premium',
+  ULTIMATE: 'ultimate',
+};
+
+export const billingPlanNames = {
+  [billingPlans.PREMIUM]: s__('BillingPlans|Premium'),
+  [billingPlans.ULTIMATE]: s__('BillingPlans|Ultimate'),
+};
