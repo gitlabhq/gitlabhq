@@ -134,7 +134,7 @@ describe('Package Search', () => {
 
     await nextTick();
 
-    expect(findRegistrySearch().props('filter')).toEqual(['foo']);
+    expect(findRegistrySearch().props('filters')).toEqual(['foo']);
   });
 
   it('on filter:submit emits update event', async () => {
@@ -175,7 +175,7 @@ describe('Package Search', () => {
     expect(getQueryParams).toHaveBeenCalled();
 
     expect(findRegistrySearch().props()).toMatchObject({
-      filter: defaultQueryParamsMock.filters,
+      filters: defaultQueryParamsMock.filters,
       sorting: defaultQueryParamsMock.sorting,
     });
   });

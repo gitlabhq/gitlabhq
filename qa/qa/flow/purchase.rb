@@ -48,6 +48,9 @@ module QA
           usage_quota.buy_storage
         end
 
+        # Purchase checkout opens a new tab
+        Chemlab.configuration.browser.session.engine.switch_window
+
         Gitlab::Page::Subscriptions::New.perform do |storage|
           storage.quantity = quantity
           storage.continue_to_billing

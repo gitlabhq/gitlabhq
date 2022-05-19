@@ -26337,6 +26337,9 @@ msgstr ""
 msgid "OnDemandScans|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
+msgid "OnDemandScans|Edit %{scannerType} profile"
+msgstr ""
+
 msgid "OnDemandScans|Edit on-demand DAST scan"
 msgstr ""
 

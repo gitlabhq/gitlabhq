@@ -19,6 +19,10 @@ module Releases
       params[:tag]
     end
 
+    def tag_message
+      params[:tag_message]
+    end
+
     def ref
       params[:ref]
     end

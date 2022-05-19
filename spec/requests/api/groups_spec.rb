@@ -1177,7 +1177,6 @@ RSpec.describe API::Groups do
 
         it "only looks up root ancestor once and returns projects including those in subgroups" do
           expect(Namespace).to receive(:find_by).with(id: group1.id.to_s).once.and_call_original # For the group sent in the API call
-          expect(Namespace).to receive(:find_by).with(id: group1.traversal_ids.first).once.and_call_original # root_ancestor direct lookup
           expect(Namespace).to receive(:joins).with(start_with('INNER JOIN (SELECT id, traversal_ids[1]')).once.and_call_original # All-in-one root_ancestor query
 
           get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }

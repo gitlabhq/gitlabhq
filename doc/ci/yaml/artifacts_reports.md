@@ -85,10 +85,10 @@ GitLab can display the results of one or more reports in:
 ## `artifacts:reports:cobertura` (removed)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.9.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0.
 
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.9 and
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7 and
 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0. Use `artifacts:reports:coverage_report`
 instead.
 

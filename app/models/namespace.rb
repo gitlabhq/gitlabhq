@@ -670,8 +670,6 @@ class Namespace < ApplicationRecord
   end
 
   def first_auto_devops_config_cache_key_for(group_id)
-    return "namespaces:{first_auto_devops_config}:#{group_id}" unless sync_traversal_ids?
-
     # Use SHA2 of `traversal_ids` to account for moving a namespace within the same root ancestor hierarchy.
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end

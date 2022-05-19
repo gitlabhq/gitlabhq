@@ -12,7 +12,7 @@ export default {
     GlFilteredSearch,
   },
   props: {
-    filter: {
+    filters: {
       type: Array,
       required: true,
     },
@@ -33,7 +33,7 @@ export default {
   computed: {
     internalFilter: {
       get() {
-        return this.filter;
+        return this.filters;
       },
       set(value) {
         this.$emit('filter:changed', value);
@@ -71,7 +71,7 @@ export default {
       const sort = this.isSortAscending ? DESCENDING_ORDER : ASCENDING_ORDER;
       const newQueryString = this.generateQueryData({
         sorting: { ...this.sorting, sort },
-        filter: this.filter,
+        filter: this.filters,
       });
       this.$emit('sorting:changed', { sort });
       this.$emit('query:changed', newQueryString);
@@ -79,7 +79,7 @@ export default {
     onSortItemClick(item) {
       const newQueryString = this.generateQueryData({
         sorting: { ...this.sorting, orderBy: item },
-        filter: this.filter,
+        filter: this.filters,
       });
       this.$emit('sorting:changed', { orderBy: item });
       this.$emit('query:changed', newQueryString);
@@ -87,7 +87,7 @@ export default {
     submitSearch() {
       const newQueryString = this.generateQueryData({
         sorting: this.sorting,
-        filter: this.filter,
+        filter: this.filters,
       });
       this.$emit('filter:submit');
       this.$emit('query:changed', newQueryString);

@@ -2393,19 +2393,6 @@ RSpec.describe Group do
 
           fetch_config
         end
-
-        context 'when traversal ID feature flags are disabled' do
-          before do
-            stub_feature_flags(sync_traversal_ids: false)
-          end
-
-          it 'caches the parent config when group auto_devops_enabled is nil' do
-            cache_key = "namespaces:{first_auto_devops_config}:#{group.id}"
-            define_cache_expectations(cache_key)
-
-            fetch_config
-          end
-        end
       end
 
       context 'cache expiration' do

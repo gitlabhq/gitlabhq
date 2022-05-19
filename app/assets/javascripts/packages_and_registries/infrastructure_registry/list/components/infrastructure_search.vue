@@ -31,7 +31,7 @@ export default {
   <url-sync>
     <template #default="{ updateQuery }">
       <registry-search
-        :filter="filter"
+        :filters="filter"
         :sorting="sorting"
         :tokens="[] /* eslint-disable-line @gitlab/vue-no-new-non-primitive-in-template */"
         :sortable-fields="sortableFields"

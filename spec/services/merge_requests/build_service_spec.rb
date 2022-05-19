@@ -79,6 +79,31 @@ RSpec.describe MergeRequests::BuildService do
     end
   end
 
+  shared_examples 'with a Default.md template' do
+    let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
+    let(:project) { create(:project, :custom_repo, files: files ) }
+
+    context 'when mr_default_description_from_repo feature flag is enabled' do
+      before do
+        stub_feature_flags(mr_default_description_from_repo: project)
+      end
+
+      it 'the template description is preferred' do
+        expect(merge_request.description).to eq('Default template contents')
+      end
+    end
+
+    context 'when mr_default_description_from_repo feature flag is disabled' do
+      before do
+        stub_feature_flags(mr_default_description_from_repo: false)
+      end
+
+      it 'the template description is not preferred' do
+        expect(merge_request.description).not_to eq('Default template contents')
+      end
+    end
+  end
+
   describe '#execute' do
     it 'calls the compare service with the correct arguments' do
       allow_any_instance_of(described_class).to receive(:projects_and_branches_valid?).and_return(true)
@@ -221,6 +246,7 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       it_behaves_like 'allows the merge request to be created'
+      it_behaves_like 'with a Default.md template'
 
       it 'uses the title of the commit as the title of the merge request' do
         expect(merge_request.title).to eq(commit_2.safe_message.split("\n").first)
@@ -240,6 +266,8 @@ RSpec.describe MergeRequests::BuildService do
 
       context 'commit has no description' do
         let(:commits) { Commit.decorate([commit_3], project) }
+
+        it_behaves_like 'with a Default.md template'
 
         it 'uses the title of the commit as the title of the merge request' do
           expect(merge_request.title).to eq(commit_3.safe_message)
@@ -278,6 +306,35 @@ RSpec.describe MergeRequests::BuildService do
             expected_description = [commit_description, closing_message].compact.join("\n\n")
 
             expect(merge_request.description).to eq(expected_description)
+          end
+
+          context 'a Default.md template is defined' do
+            let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
+            let(:project) { create(:project, :custom_repo, files: files ) }
+
+            context 'when mr_default_description_from_repo feature flag is enabled' do
+              before do
+                stub_feature_flags(mr_default_description_from_repo: project)
+              end
+
+              it 'appends the closing description to a Default.md template' do
+                expected_description = ['Default template contents', closing_message].compact.join("\n\n")
+
+                expect(merge_request.description).to eq(expected_description)
+              end
+            end
+
+            context 'when mr_default_description_from_repo feature flag is disabled' do
+              before do
+                stub_feature_flags(mr_default_description_from_repo: false)
+              end
+
+              it 'appends the closing description to the commit description' do
+                expected_description = ['Create the app', closing_message].compact.join("\n\n")
+
+                expect(merge_request.description).to eq(expected_description)
+              end
+            end
           end
         end
 
@@ -332,6 +389,7 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       it_behaves_like 'allows the merge request to be created'
+      it_behaves_like 'with a Default.md template'
 
       it 'uses the title of the branch as the merge request title' do
         expect(merge_request.title).to eq('Feature branch')
@@ -346,6 +404,31 @@ RSpec.describe MergeRequests::BuildService do
 
         it 'keeps the description from the initial params' do
           expect(merge_request.description).to eq(description)
+        end
+
+        context 'a Default.md template is defined' do
+          let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
+          let(:project) { create(:project, :custom_repo, files: files ) }
+
+          context 'when mr_default_description_from_repo feature flag is enabled' do
+            before do
+              stub_feature_flags(mr_default_description_from_repo: project)
+            end
+
+            it 'keeps the description from the initial params' do
+              expect(merge_request.description).to eq(description)
+            end
+          end
+
+          context 'when mr_default_description_from_repo feature flag is disabled' do
+            before do
+              stub_feature_flags(mr_default_description_from_repo: false)
+            end
+
+            it 'keeps the description from the initial params' do
+              expect(merge_request.description).to eq(description)
+            end
+          end
         end
       end
 
@@ -377,6 +460,33 @@ RSpec.describe MergeRequests::BuildService do
           it 'sets the closing description' do
             expect(merge_request.description).to eq(closing_message)
           end
+
+          context 'a Default.md template is defined' do
+            let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
+            let(:project) { create(:project, :custom_repo, files: files ) }
+
+            context 'when mr_default_description_from_repo feature flag is enabled' do
+              before do
+                stub_feature_flags(mr_default_description_from_repo: project)
+              end
+
+              it 'appends the closing description to a Default.md template' do
+                expected_description = ['Default template contents', closing_message].compact.join("\n\n")
+
+                expect(merge_request.description).to eq(expected_description)
+              end
+            end
+
+            context 'when mr_default_description_from_repo feature flag is disabled' do
+              before do
+                stub_feature_flags(mr_default_description_from_repo: false)
+              end
+
+              it 'sets the closing description' do
+                expect(merge_request.description).to eq(closing_message)
+              end
+            end
+          end
         end
       end
     end
@@ -389,6 +499,7 @@ RSpec.describe MergeRequests::BuildService do
       end
 
       it_behaves_like 'allows the merge request to be created'
+      it_behaves_like 'with a Default.md template'
 
       it 'uses the first line of the first multi-line commit message as the title' do
         expect(merge_request.title).to eq('Closes #1234 Second commit')
@@ -425,6 +536,35 @@ RSpec.describe MergeRequests::BuildService do
 
           it 'sets the closing description' do
             expect(merge_request.description).to eq("Create the app#{closing_message ? "\n\n" + closing_message : ''}")
+          end
+
+          context 'a Default.md template is defined' do
+            let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
+            let(:project) { create(:project, :custom_repo, files: files ) }
+
+            context 'when mr_default_description_from_repo feature flag is enabled' do
+              before do
+                stub_feature_flags(mr_default_description_from_repo: project)
+              end
+
+              it 'appends the closing description to a Default.md template' do
+                expected_description = ['Default template contents', closing_message].compact.join("\n\n")
+
+                expect(merge_request.description).to eq(expected_description)
+              end
+            end
+
+            context 'when mr_default_description_from_repo feature flag is disabled' do
+              before do
+                stub_feature_flags(mr_default_description_from_repo: false)
+              end
+
+              it 'appends the closing description to the commit description' do
+                expected_description = ['Create the app', closing_message].compact.join("\n\n")
+
+                expect(merge_request.description).to eq(expected_description)
+              end
+            end
           end
         end
       end
@@ -622,6 +762,54 @@ RSpec.describe MergeRequests::BuildService do
 
         it 'only assigns related labels' do
           expect(merge_request.label_ids).to contain_exactly(project_label.id)
+        end
+      end
+    end
+  end
+
+  describe '#assign_description_from_repository_template' do
+    subject { service.send(:assign_description_from_repository_template) }
+
+    it 'performs no action if the merge request description is not blank' do
+      merge_request.description = 'foo'
+      subject
+      expect(merge_request.description).to eq 'foo'
+    end
+
+    context 'when a Default template is not found' do
+      it 'does not modify the merge request description' do
+        merge_request.description = nil
+        subject
+        expect(merge_request.description).to be_nil
+      end
+    end
+
+    context 'when a Default template is found' do
+      context 'when its contents cannot be retrieved' do
+        let(:files) { { '.gitlab/merge_request_templates/OtherTemplate.md' => 'Other template contents' } }
+        let(:project) { create(:project, :custom_repo, files: files ) }
+
+        it 'does not modify the merge request description' do
+          allow(TemplateFinder).to receive(:all_template_names).and_return({
+            merge_requests: [
+              { name: 'Default', id: 'default', key: 'default', project_id: project.id }
+            ]
+          })
+
+          merge_request.description = nil
+          subject
+          expect(merge_request.description).to be_nil
+        end
+      end
+
+      context 'when its contents can be retrieved' do
+        let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
+        let(:project) { create(:project, :custom_repo, files: files ) }
+
+        it 'modifies the merge request description' do
+          merge_request.description = nil
+          subject
+          expect(merge_request.description).to eq 'Default template contents'
         end
       end
     end

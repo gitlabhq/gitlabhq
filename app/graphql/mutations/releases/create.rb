@@ -14,6 +14,10 @@ module Mutations
                required: true, as: :tag,
                description: 'Name of the tag to associate with the release.'
 
+      argument :tag_message, GraphQL::Types::String,
+               required: false,
+               description: 'Message to use if creating a new annotated tag.'
+
       argument :ref, GraphQL::Types::String,
                required: false,
                description: 'Commit SHA or branch name to use if creating a new tag.'

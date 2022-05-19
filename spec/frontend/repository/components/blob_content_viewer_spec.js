@@ -22,7 +22,7 @@ import userInfoQuery from '~/repository/queries/user_info.query.graphql';
 import applicationInfoQuery from '~/repository/queries/application_info.query.graphql';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { isLoggedIn } from '~/lib/utils/common_utils';
+import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import httpStatusCodes from '~/lib/utils/http_status';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -208,6 +208,12 @@ describe('Blob content viewer component', () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
         await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
         expect(LineHighlighter).toHaveBeenCalled();
+      });
+
+      it('scrolls to the hash', async () => {
+        mockAxios.onGet(legacyViewerUrl).replyOnce(httpStatusCodes.OK, 'test');
+        await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
+        expect(handleLocationHash).toHaveBeenCalled();
       });
     });
   });

@@ -154,57 +154,58 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
   describe 'writing examples_index.yml' do
     let(:es_examples_index_yml_contents) { reread_io(es_examples_index_yml_io) }
+    let(:expected_examples_index_yml_contents) do
+      <<~ES_EXAMPLES_INDEX_YML_CONTENTS
+        ---
+        02_01__inlines__strong__01:
+          spec_txt_example_position: 1
+          source_specification: commonmark
+        02_01__inlines__strong__02:
+          spec_txt_example_position: 2
+          source_specification: github
+        02_02__inlines__strikethrough_extension__01:
+          spec_txt_example_position: 3
+          source_specification: github
+        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01:
+          spec_txt_example_position: 4
+          source_specification: gitlab
+        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__01:
+          spec_txt_example_position: 5
+          source_specification: gitlab
+      ES_EXAMPLES_INDEX_YML_CONTENTS
+    end
 
     it 'writes the correct content' do
       subject.process(skip_static_and_wysiwyg: true)
 
-      expected =
-        <<~ES_EXAMPLES_INDEX_YML_CONTENTS
-          ---
-          02_01__inlines__strong__01:
-            spec_txt_example_position: 1
-            source_specification: commonmark
-          02_01__inlines__strong__02:
-            spec_txt_example_position: 2
-            source_specification: github
-          02_02__inlines__strikethrough_extension__01:
-            spec_txt_example_position: 3
-            source_specification: github
-          03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01:
-            spec_txt_example_position: 4
-            source_specification: gitlab
-          04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__01:
-            spec_txt_example_position: 5
-            source_specification: gitlab
-        ES_EXAMPLES_INDEX_YML_CONTENTS
-      expect(es_examples_index_yml_contents).to eq(expected)
+      expect(es_examples_index_yml_contents).to eq(expected_examples_index_yml_contents)
     end
   end
 
   describe 'writing markdown.yml' do
     let(:es_markdown_yml_contents) { reread_io(es_markdown_yml_io) }
+    let(:expected_markdown_yml_contents) do
+      <<~ES_MARKDOWN_YML_CONTENTS
+        ---
+        02_01__inlines__strong__01: |
+          __bold__
+        02_01__inlines__strong__02: |
+          __bold with more text__
+        02_02__inlines__strikethrough_extension__01: |
+          ~~Hi~~ Hello, world!
+        03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01: |
+          **bold**
+        04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__01: |
+          <strong>
+          bold
+          </strong>
+      ES_MARKDOWN_YML_CONTENTS
+    end
 
     it 'writes the correct content' do
       subject.process(skip_static_and_wysiwyg: true)
 
-      expected =
-        <<~ES_MARKDOWN_YML_CONTENTS
-          ---
-          02_01__inlines__strong__01: |
-            __bold__
-          02_01__inlines__strong__02: |
-            __bold with more text__
-          02_02__inlines__strikethrough_extension__01: |
-            ~~Hi~~ Hello, world!
-          03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01: |
-            **bold**
-          04_01__second_gitlab_specific_section_with_examples__strong_but_with_html__01: |
-            <strong>
-            bold
-            </strong>
-        ES_MARKDOWN_YML_CONTENTS
-
-      expect(es_markdown_yml_contents).to eq(expected)
+      expect(es_markdown_yml_contents).to eq(expected_markdown_yml_contents)
     end
   end
 
@@ -250,6 +251,45 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       GLFM_SPEC_TXT_CONTENTS
     end
 
+    let(:expected_html_yml_contents) do
+      <<~ES_HTML_YML_CONTENTS
+        ---
+        02_01__gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01:
+          canonical: |
+            <p><strong>bold</strong></p>
+          static: |-
+            <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
+          wysiwyg: |-
+            <p><strong>bold</strong></p>
+      ES_HTML_YML_CONTENTS
+    end
+
+    let(:expected_prosemirror_json_contents) do
+      <<~ES_PROSEMIRROR_JSON_YML_CONTENTS
+        ---
+        02_01__gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01: |-
+          {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "marks": [
+                      {
+                        "type": "bold"
+                      }
+                    ],
+                    "text": "bold"
+                  }
+                ]
+              }
+            ]
+          }
+      ES_PROSEMIRROR_JSON_YML_CONTENTS
+    end
+
     before do
       # NOTE: This is a necessary to avoid an `error Couldn't find an integrity file` error
       #   when invoking `yarn jest ...` on CI from within an RSpec job. It could be solved by
@@ -266,45 +306,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     it 'writes the correct content' do
       subject.process
 
-      expected_html =
-        <<~ES_HTML_YML_CONTENTS
-          ---
-          02_01__gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01:
-            canonical: |
-              <p><strong>bold</strong></p>
-            static: |-
-              <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
-            wysiwyg: |-
-              <p><strong>bold</strong></p>
-        ES_HTML_YML_CONTENTS
-
-      expected_prosemirror_json =
-        <<~ES_PROSEMIRROR_JSON_YML_CONTENTS
-          ---
-          02_01__gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01: |-
-            {
-              "type": "doc",
-              "content": [
-                {
-                  "type": "paragraph",
-                  "content": [
-                    {
-                      "type": "text",
-                      "marks": [
-                        {
-                          "type": "bold"
-                        }
-                      ],
-                      "text": "bold"
-                    }
-                  ]
-                }
-              ]
-            }
-        ES_PROSEMIRROR_JSON_YML_CONTENTS
-
-      expect(es_html_yml_contents).to eq(expected_html)
-      expect(es_prosemirror_json_yml_contents).to eq(expected_prosemirror_json)
+      expect(es_html_yml_contents).to eq(expected_html_yml_contents)
+      expect(es_prosemirror_json_yml_contents).to eq(expected_prosemirror_json_contents)
     end
   end
 

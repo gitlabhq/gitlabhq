@@ -137,10 +137,9 @@ RSpec.describe Ci::ProcessSyncEventsService do
         end
       end
 
-      context 'when the FFs sync_traversal_ids, use_traversal_ids and use_traversal_ids_for_ancestors are disabled' do
+      context 'when the FFs use_traversal_ids and use_traversal_ids_for_ancestors are disabled' do
         before do
-          stub_feature_flags(sync_traversal_ids: false,
-                             use_traversal_ids: false,
+          stub_feature_flags(use_traversal_ids: false,
                              use_traversal_ids_for_ancestors: false)
         end
 
