@@ -8,8 +8,14 @@ Vue.use(Translate);
 
 export const createTestDetails = (selector) => {
   const el = document.querySelector(selector);
-  const { blobPath, emptyStateImagePath, hasTestReport, summaryEndpoint, suiteEndpoint } =
-    el?.dataset || {};
+  const {
+    blobPath,
+    emptyStateImagePath,
+    hasTestReport,
+    summaryEndpoint,
+    suiteEndpoint,
+    artifactsExpiredImagePath,
+  } = el?.dataset || {};
   const testReportsStore = createTestReportsStore({
     blobPath,
     summaryEndpoint,
@@ -24,6 +30,7 @@ export const createTestDetails = (selector) => {
     },
     provide: {
       emptyStateImagePath,
+      artifactsExpiredImagePath,
       hasTestReport: parseBoolean(hasTestReport),
     },
     store: testReportsStore,

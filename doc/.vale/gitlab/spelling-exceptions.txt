@@ -571,7 +571,7 @@ rsyncing
 rsyncs
 Rubinius
 Rubix
-Rubocop
+RuboCop
 Rubular
 ruleset
 rulesets

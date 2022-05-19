@@ -322,7 +322,7 @@ issue) that are incremental improvements, such as:
 1. Unprioritized bug fixes (for example, [Banner alerting of project move is
 showing up everywhere](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18985))
 1. Documentation improvements
-1. Rubocop or Code Quality improvements
+1. RuboCop or Code Quality improvements
 
 Tag a merge request with ~"Stuff that should Just Work" to track work in
 this area.

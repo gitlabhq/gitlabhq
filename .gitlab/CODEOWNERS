@@ -559,7 +559,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/new_fe_guide/tips.md @sselhorn
 /doc/development/omnibus.md @axil
 /doc/development/ordering_table_columns.md @aqualls
-/doc/development/packages.md @claytoncornell
+/doc/development/packages/ @claytoncornell
 /doc/development/permissions.md @eread
 /doc/development/policies.md @eread
 /doc/development/product_qualified_lead_guide/index.md @kpaizee

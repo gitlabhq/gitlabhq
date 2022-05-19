@@ -557,9 +557,9 @@ GitLab only uses the Code Quality artifact from the latest created job (with the
 If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
 To avoid confusion, configure only one job to generate a `gl-code-quality-report.json`.
 
-### Rubocop errors
+### RuboCop errors
 
-When using Code Quality jobs on a Ruby project, you can encounter problems running Rubocop.
+When using Code Quality jobs on a Ruby project, you can encounter problems running RuboCop.
 For example, the following error can appear when using either a very recent or very old version
 of Ruby:
 
@@ -569,15 +569,15 @@ Unknown Ruby version 2.7 found in `.ruby-version`. (RuboCop::ValidationError)
 Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5
 ```
 
-This is caused by the default version of Rubocop used by the check engine not covering
+This is caused by the default version of RuboCop used by the check engine not covering
 support for the Ruby version in use.
 
-To use a custom version of Rubocop that
+To use a custom version of RuboCop that
 [supports the version of Ruby used by the project](https://docs.rubocop.org/rubocop/compatibility.html#support-matrix),
 you can [override the configuration through a `.codeclimate.yml` file](https://docs.codeclimate.com/docs/rubocop#using-rubocops-newer-versions)
 created in the project repository.
 
-For example, to specify using Rubocop release **0.67**:
+For example, to specify using RuboCop release **0.67**:
 
 ```yaml
 version: "2"

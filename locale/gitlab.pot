@@ -33752,6 +33752,9 @@ msgstr ""
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
 msgstr ""
 
+msgid "SecurityOrchestration|Inherited from %{namespace}"
+msgstr ""
+
 msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
@@ -33893,6 +33896,9 @@ msgstr ""
 msgid "SecurityOrchestration|Sorry, your filter produced no results."
 msgstr ""
 
+msgid "SecurityOrchestration|Source"
+msgstr ""
+
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
@@ -33909,6 +33915,15 @@ msgid "SecurityOrchestration|The following branches do not exist on this develop
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
+msgstr ""
+
+msgid "SecurityOrchestration|This group"
+msgstr ""
+
+msgid "SecurityOrchestration|This policy is inherited from the %{linkStart}namespace%{linkEnd} and must be edited there"
+msgstr ""
+
+msgid "SecurityOrchestration|This project"
 msgstr ""
 
 msgid "SecurityOrchestration|This project does not contain any security policies."
@@ -33987,9 +34002,6 @@ msgid "SecurityOrchestration|vulnerability"
 msgstr ""
 
 msgid "SecurityPolicies|+%{count} more"
-msgstr ""
-
-msgid "SecurityPolicies|Policy type"
 msgstr ""
 
 msgid "SecurityReports|%{count} Selected"
@@ -37550,6 +37562,9 @@ msgstr ""
 msgid "TestReports|Attachment"
 msgstr ""
 
+msgid "TestReports|Job artifacts are expired"
+msgstr ""
+
 msgid "TestReports|Jobs"
 msgstr ""
 
@@ -37562,7 +37577,7 @@ msgstr ""
 msgid "TestReports|No test cases were found in the test report."
 msgstr ""
 
-msgid "TestReports|Test details are populated by job artifacts. The job artifacts from this pipeline are expired."
+msgid "TestReports|Test reports require job artifacts but all artifacts are expired. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "TestReports|Tests"

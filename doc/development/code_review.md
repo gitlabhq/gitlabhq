@@ -246,7 +246,7 @@ request diff alerting the reviewer to anything important as well as for anything
 that demands further explanation or attention. Examples of content that may
 warrant a comment could be:
 
-- The addition of a linting rule (Rubocop, JS etc).
+- The addition of a linting rule (RuboCop, JS etc).
 - The addition of a library (Ruby gem, JS lib etc).
 - Where not obvious, a link to the parent class or method.
 - Any benchmarking performed to complement the change.

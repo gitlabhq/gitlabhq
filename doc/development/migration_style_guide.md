@@ -495,7 +495,7 @@ def up
 end
 ```
 
-The RuboCop rule generally allows standard Rails migration methods, listed below. This example causes a Rubocop offense:
+The RuboCop rule generally allows standard Rails migration methods, listed below. This example causes a RuboCop offense:
 
 ```ruby
 disable_ddl_transaction!
