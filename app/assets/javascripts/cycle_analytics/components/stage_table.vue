@@ -182,7 +182,7 @@ export default {
 </script>
 <template>
   <div data-testid="vsa-stage-table">
-    <gl-loading-icon v-if="isLoading" class="gl-mt-4" size="md" />
+    <gl-loading-icon v-if="isLoading" class="gl-mt-4" size="lg" />
     <gl-empty-state
       v-else-if="isEmptyStage"
       :title="emptyStateTitleText"

@@ -49,6 +49,7 @@
         data: { qa_selector: 'new_user_email_field' },
         required: true,
         title: _('Please provide a valid email address.')
+      %p.gl-field-hint.text-secondary= _('We recommend a work email address.')
     .form-group.gl-mb-5#password-strength
       = f.label :password, class: 'label-bold'
       = f.password_field :password,

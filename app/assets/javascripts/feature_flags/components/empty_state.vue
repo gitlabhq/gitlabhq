@@ -67,7 +67,7 @@ export default {
       {{ message }}
     </gl-alert>
 
-    <gl-loading-icon v-if="isLoading" :label="loadingLabel" size="md" class="gl-mt-4" />
+    <gl-loading-icon v-if="isLoading" :label="loadingLabel" size="lg" class="gl-mt-4" />
 
     <gl-empty-state
       v-else-if="errorState"

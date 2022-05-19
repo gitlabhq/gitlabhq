@@ -407,7 +407,7 @@ export default {
       </div>
     </header>
     <div class="gl-mt-6">
-      <gl-loading-icon v-if="isLoading" size="md" />
+      <gl-loading-icon v-if="isLoading" size="lg" />
       <gl-alert v-else-if="error" variant="danger" :dismissible="false">
         {{ __('An error occurred while loading designs. Please try again.') }}
       </gl-alert>

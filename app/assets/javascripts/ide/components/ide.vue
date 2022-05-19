@@ -176,7 +176,7 @@ export default {
                       {{ __('New file') }}
                     </gl-button>
                   </template>
-                  <gl-loading-icon v-else-if="!currentTree || currentTree.loading" size="md" />
+                  <gl-loading-icon v-else-if="!currentTree || currentTree.loading" size="lg" />
                   <p v-else>
                     {{
                       __(

@@ -711,6 +711,7 @@ export default {
               <div
                 v-if="!restructuredWidgetShowMergeButtons"
                 class="gl-w-full gl-order-n1 gl-text-gray-500"
+                data-qa-selector="merged_status_content"
               >
                 <strong v-if="mr.state !== 'closed'">
                   {{ __('Merge details') }}
@@ -788,11 +789,7 @@ export default {
         </div>
       </div>
       <template v-if="shouldShowMergeControls && !glFeatures.restructuredMrWidget">
-        <div
-          v-if="!shouldShowMergeEdit"
-          class="mr-fast-forward-message"
-          data-qa-selector="fast_forward_message_content"
-        >
+        <div v-if="!shouldShowMergeEdit" class="mr-fast-forward-message">
           {{ __('Fast-forward merge without a merge commit') }}
         </div>
         <commits-header

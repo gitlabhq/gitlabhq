@@ -145,7 +145,7 @@ export default {
         </span>
       </div>
       <gl-intersection-observer @appear="onAppear">
-        <gl-loading-icon v-if="showLoadingSpinner" size="md" />
+        <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
         <gl-icon
           v-else-if="showImageErrorIcon"
           name="media-broken"

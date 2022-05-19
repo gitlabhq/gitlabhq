@@ -251,7 +251,7 @@ export default {
     <gl-loading-icon
       v-if="isLoading"
       :label="s__('GroupsTree|Loading groups')"
-      size="md"
+      size="lg"
       class="loading-animation prepend-top-20"
     />
     <groups-component

@@ -106,7 +106,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           before do
             # set capacity to 10
             stub_feature_flags(
-              container_registry_migration_phase2_capacity_25: false
+              container_registry_migration_phase2_capacity_25: false,
+              container_registry_migration_phase2_capacity_40: false
             )
 
             # Plus 2 created above gives 9 importing repositories
@@ -475,7 +476,8 @@ RSpec.describe ContainerRegistry::Migration::EnqueuerWorker, :aggregate_failures
           before do
             # set capacity to 10
             stub_feature_flags(
-              container_registry_migration_phase2_capacity_25: false
+              container_registry_migration_phase2_capacity_25: false,
+              container_registry_migration_phase2_capacity_40: false
             )
 
             # Plus 2 created above gives 9 importing repositories

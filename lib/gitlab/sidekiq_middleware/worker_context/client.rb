@@ -19,14 +19,21 @@ module Gitlab
             # This should be inside the context for the arguments so
             # that we don't override the feature category on the worker
             # with the one from the caller.
-            #
+
+            root_caller_id = Gitlab::ApplicationContext.current_context_attribute(:root_caller_id) ||
+              Gitlab::ApplicationContext.current_context_attribute(:caller_id)
+
+            context = {
+              root_caller_id: root_caller_id
+            }
+
             # We do not want to set anything explicitly in the context
             # when the feature category is 'not_owned'.
-            if worker_class.feature_category_not_owned?
-              yield
-            else
-              Gitlab::ApplicationContext.with_context(feature_category: worker_class.get_feature_category.to_s, &block)
+            unless worker_class.feature_category_not_owned?
+              context[:feature_category] = worker_class.get_feature_category.to_s
             end
+
+            Gitlab::ApplicationContext.with_context(**context, &block)
           end
         end
       end

@@ -20,7 +20,8 @@ module Gitlab
       :pipeline_id,
       :related_class,
       :feature_category,
-      :artifact_size
+      :artifact_size,
+      :root_caller_id
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -34,7 +35,8 @@ module Gitlab
       Attribute.new(:job, ::Ci::Build),
       Attribute.new(:related_class, String),
       Attribute.new(:feature_category, String),
-      Attribute.new(:artifact, ::Ci::JobArtifact)
+      Attribute.new(:artifact, ::Ci::JobArtifact),
+      Attribute.new(:root_caller_id, String)
     ].freeze
 
     def self.known_keys
@@ -84,10 +86,11 @@ module Gitlab
         hash[:project] = -> { project_path } if include_project?
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
         hash[:client_id] = -> { client } if include_client?
-        hash[:caller_id] = caller_id if set_values.include?(:caller_id)
-        hash[:remote_ip] = remote_ip if set_values.include?(:remote_ip)
-        hash[:related_class] = related_class if set_values.include?(:related_class)
-        hash[:feature_category] = feature_category if set_values.include?(:feature_category)
+        assign_hash_if_value(hash, :caller_id)
+        assign_hash_if_value(hash, :root_caller_id)
+        assign_hash_if_value(hash, :remote_ip)
+        assign_hash_if_value(hash, :related_class)
+        assign_hash_if_value(hash, :feature_category)
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
         hash[:artifact_size] = -> { artifact&.size } if set_values.include?(:artifact)
@@ -106,6 +109,14 @@ module Gitlab
 
     APPLICATION_ATTRIBUTES.each do |attr|
       lazy_attr_reader attr.name, type: attr.type
+    end
+
+    def assign_hash_if_value(hash, attribute_name)
+      raise ArgumentError unless KNOWN_KEYS.include?(attribute_name)
+
+      # rubocop:disable GitlabSecurity/PublicSend
+      hash[attribute_name] = public_send(attribute_name) if set_values.include?(attribute_name)
+      # rubocop:enable GitlabSecurity/PublicSend
     end
 
     def assign_attributes(values)

@@ -331,7 +331,7 @@ export default {
         </template>
       </gl-table-lite>
 
-      <gl-loading-icon v-if="isInitialLoadingState" size="md" />
+      <gl-loading-icon v-if="isInitialLoadingState" size="lg" />
 
       <gl-button
         v-if="hasMoreUsers"

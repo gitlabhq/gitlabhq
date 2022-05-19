@@ -45,7 +45,7 @@ exports[`Design management index page designs renders loading icon 1`] = `
     <gl-loading-icon-stub
       color="dark"
       label="Loading"
-      size="md"
+      size="lg"
     />
   </div>
    

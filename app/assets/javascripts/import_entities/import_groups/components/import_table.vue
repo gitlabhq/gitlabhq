@@ -581,7 +581,7 @@ export default {
         @clear="filter = ''"
       />
     </div>
-    <gl-loading-icon v-if="$apollo.loading" size="md" class="gl-mt-5" />
+    <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
       <gl-empty-state
         v-if="hasEmptyFilter"

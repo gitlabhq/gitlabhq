@@ -78,9 +78,9 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
-          element :fast_forward_message_content
           element :merge_moment_dropdown
           element :merge_immediately_menu_item
+          element :merged_status_content
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/sha_mismatch.vue' do
@@ -192,10 +192,6 @@ module QA
           click_element(:edit_button)
         end
 
-        def fast_forward_possible?
-          has_element?(:fast_forward_message_content)
-        end
-
         def fast_forward_not_possible?
           has_element?(:no_fast_forward_message_content)
         end
@@ -265,7 +261,7 @@ module QA
           # To remove page refresh logic if possible
           # We don't raise on failure because this method is used as a predicate matcher
           retry_until(max_attempts: 3, reload: true, raise_on_failure: false) do
-            has_element?(:merged_status_content, text: 'The changes were merged into', wait: 20)
+            has_element?(:merged_status_content, text: /The changes were merged into|Changes merged into/, wait: 20)
           end
         end
 
@@ -316,12 +312,6 @@ module QA
           end
 
           click_element(:mr_rebase_button)
-
-          success = wait_until do
-            fast_forward_possible?
-          end
-
-          raise "Rebase did not appear to be successful" unless success
         end
 
         def merge_immediately!

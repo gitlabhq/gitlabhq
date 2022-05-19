@@ -136,7 +136,7 @@ export default {
       </template>
 
       <template #table-busy>
-        <gl-loading-icon size="md" class="gl-my-2" />
+        <gl-loading-icon size="lg" class="gl-my-2" />
       </template>
     </gl-table>
     <div class="gl-display-flex gl-justify-content-center gl-mt-5">

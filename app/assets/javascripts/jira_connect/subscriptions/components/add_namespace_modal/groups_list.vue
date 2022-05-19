@@ -104,7 +104,7 @@ export default {
       @input="onGroupSearch"
     />
 
-    <gl-loading-icon v-if="isLoadingInitial" size="md" />
+    <gl-loading-icon v-if="isLoadingInitial" size="lg" />
     <div v-else-if="groups.length === 0" class="gl-text-center">
       <h5>{{ s__('Integrations|No available namespaces.') }}</h5>
       <p class="gl-mt-5">

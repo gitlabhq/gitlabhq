@@ -78,9 +78,6 @@
     - 'i_code_review_user_create_note_in_ipynb_diff'
     - 'i_code_review_user_create_note_in_ipynb_diff_mr'
     - 'i_code_review_user_create_note_in_ipynb_diff_commit'
-    - 'i_code_review_create_note_in_ipynb_diff'
-    - 'i_code_review_create_note_in_ipynb_diff_mr'
-    - 'i_code_review_create_note_in_ipynb_diff_commit'
 - name: code_review_category_monthly_active_users
   operator: OR
   source: redis
@@ -149,9 +146,6 @@
     - 'i_code_review_user_create_note_in_ipynb_diff'
     - 'i_code_review_user_create_note_in_ipynb_diff_mr'
     - 'i_code_review_user_create_note_in_ipynb_diff_commit'
-    - 'i_code_review_create_note_in_ipynb_diff'
-    - 'i_code_review_create_note_in_ipynb_diff_mr'
-    - 'i_code_review_create_note_in_ipynb_diff_commit'
 - name: code_review_extension_category_monthly_active_users
   operator: OR
   source: redis

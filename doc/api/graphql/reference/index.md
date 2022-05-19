@@ -623,6 +623,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | Name of the queue to delete jobs from. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrelatedclass"></a>`relatedClass` | [`String`](#string) | Delete jobs matching related_class in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsremoteip"></a>`remoteIp` | [`String`](#string) | Delete jobs matching remote_ip in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobsrootcallerid"></a>`rootCallerId` | [`String`](#string) | Delete jobs matching root_caller_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrootnamespace"></a>`rootNamespace` | [`String`](#string) | Delete jobs matching root_namespace in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobssubscriptionplan"></a>`subscriptionPlan` | [`String`](#string) | Delete jobs matching subscription_plan in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsuser"></a>`user` | [`String`](#string) | Delete jobs matching user in the context metadata. |
