@@ -3,6 +3,8 @@
 class BackfillCiSourcesPipelinesSourceJobIdForBigintConversion < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   def up
     return unless should_run?
 

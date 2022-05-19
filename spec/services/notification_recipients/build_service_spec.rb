@@ -14,6 +14,9 @@ RSpec.describe NotificationRecipients::BuildService do
 
     shared_examples 'no N+1 queries' do
       it 'avoids N+1 queries', :request_store do
+        # existing N+1 due to multiple users having to be looked up in the project_authorizations table
+        threshold = Feature.enabled?(:faster_owner_access) && project.private? ? 1 : 0
+
         create_user
 
         service.build_new_note_recipients(note)
@@ -24,37 +27,46 @@ RSpec.describe NotificationRecipients::BuildService do
 
         create_user
 
-        expect { service.build_new_note_recipients(note) }.not_to exceed_query_limit(control_count)
+        expect { service.build_new_note_recipients(note) }.not_to exceed_query_limit(control_count).with_threshold(threshold)
       end
     end
 
-    context 'when there are multiple watchers' do
-      def create_user
-        watcher = create(:user)
-        create(:notification_setting, source: project, user: watcher, level: :watch)
-
-        other_projects.each do |other_project|
-          create(:notification_setting, source: other_project, user: watcher, level: :watch)
-        end
-      end
-
-      include_examples 'no N+1 queries'
-    end
-
-    context 'when there are multiple subscribers' do
-      def create_user
-        subscriber = create(:user)
-        issue.subscriptions.create!(user: subscriber, project: project, subscribed: true)
-      end
-
-      include_examples 'no N+1 queries'
-
-      context 'when the project is private' do
+    [true, false].each do |value|
+      context "when faster_owner_access feature is #{value ? 'enabled' : 'not enabled'}" do
         before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          # test both feature flag values
+          stub_feature_flags(faster_owner_access: value)
         end
 
-        include_examples 'no N+1 queries'
+        context 'when there are multiple watchers' do
+          def create_user
+            watcher = create(:user)
+            create(:notification_setting, source: project, user: watcher, level: :watch)
+
+            other_projects.each do |other_project|
+              create(:notification_setting, source: other_project, user: watcher, level: :watch)
+            end
+          end
+
+          include_examples 'no N+1 queries'
+        end
+
+        context 'when there are multiple subscribers' do
+          def create_user
+            subscriber = create(:user)
+            issue.subscriptions.create!(user: subscriber, project: project, subscribed: true)
+          end
+
+          include_examples 'no N+1 queries'
+
+          context 'when the project is private' do
+            before do
+              project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+            end
+
+            include_examples 'no N+1 queries'
+          end
+        end
       end
     end
   end
@@ -66,6 +78,9 @@ RSpec.describe NotificationRecipients::BuildService do
 
     shared_examples 'no N+1 queries' do
       it 'avoids N+1 queries', :request_store do
+        # existing N+1 due to multiple users having to be looked up in the project_authorizations table
+        threshold = Feature.enabled?(:faster_owner_access) && project.private? ? 1 : 0
+
         create_user
 
         service.build_new_review_recipients(review)
@@ -76,37 +91,46 @@ RSpec.describe NotificationRecipients::BuildService do
 
         create_user
 
-        expect { service.build_new_review_recipients(review) }.not_to exceed_query_limit(control_count)
+        expect { service.build_new_review_recipients(review) }.not_to exceed_query_limit(control_count).with_threshold(threshold)
       end
     end
 
-    context 'when there are multiple watchers' do
-      def create_user
-        watcher = create(:user)
-        create(:notification_setting, source: project, user: watcher, level: :watch)
-
-        other_projects.each do |other_project|
-          create(:notification_setting, source: other_project, user: watcher, level: :watch)
-        end
-      end
-
-      include_examples 'no N+1 queries'
-    end
-
-    context 'when there are multiple subscribers' do
-      def create_user
-        subscriber = create(:user)
-        merge_request.subscriptions.create!(user: subscriber, project: project, subscribed: true)
-      end
-
-      include_examples 'no N+1 queries'
-
-      context 'when the project is private' do
+    [true, false].each do |value|
+      context "when faster_owner_access feature is #{value ? 'enabled' : 'not enabled'}" do
         before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          # test both feature flag values
+          stub_feature_flags(faster_owner_access: value)
         end
 
-        include_examples 'no N+1 queries'
+        context 'when there are multiple watchers' do
+          def create_user
+            watcher = create(:user)
+            create(:notification_setting, source: project, user: watcher, level: :watch)
+
+            other_projects.each do |other_project|
+              create(:notification_setting, source: other_project, user: watcher, level: :watch)
+            end
+          end
+
+          include_examples 'no N+1 queries'
+        end
+
+        context 'when there are multiple subscribers' do
+          def create_user
+            subscriber = create(:user)
+            merge_request.subscriptions.create!(user: subscriber, project: project, subscribed: true)
+          end
+
+          include_examples 'no N+1 queries'
+
+          context 'when the project is private' do
+            before do
+              project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+            end
+
+            include_examples 'no N+1 queries'
+          end
+        end
       end
     end
   end

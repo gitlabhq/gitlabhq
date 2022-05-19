@@ -6694,10 +6694,16 @@ msgstr ""
 msgid "BulkImport|No additional information provided."
 msgstr ""
 
+msgid "BulkImport|No groups found"
+msgstr ""
+
 msgid "BulkImport|No history is available"
 msgstr ""
 
 msgid "BulkImport|No parent"
+msgstr ""
+
+msgid "BulkImport|Only groups that you have the %{role} role for are listed as groups you can import."
 msgstr ""
 
 msgid "BulkImport|Project import history"
@@ -6709,10 +6715,10 @@ msgstr ""
 msgid "BulkImport|Showing %{start}-%{end} of %{total}"
 msgstr ""
 
-msgid "BulkImport|Showing %{start}-%{end} of %{total} from %{link}"
+msgid "BulkImport|Showing %{start}-%{end} of %{total} that you own from %{link}"
 msgstr ""
 
-msgid "BulkImport|Showing %{start}-%{end} of %{total} matching filter \"%{filter}\" from %{link}"
+msgid "BulkImport|Showing %{start}-%{end} of %{total} that you own matching filter \"%{filter}\" from %{link}"
 msgstr ""
 
 msgid "BulkImport|Source"
@@ -6728,9 +6734,6 @@ msgid "BulkImport|To new group"
 msgstr ""
 
 msgid "BulkImport|Update of import statuses with realtime changes failed"
-msgstr ""
-
-msgid "BulkImport|You have no groups to import"
 msgstr ""
 
 msgid "BulkImport|Your imported groups will appear here."
@@ -7468,9 +7471,6 @@ msgid "Check your Docker images for known vulnerabilities."
 msgstr ""
 
 msgid "Check your Kubernetes cluster images for known vulnerabilities."
-msgstr ""
-
-msgid "Check your source instance permissions."
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -42613,6 +42613,9 @@ msgstr ""
 msgid "What is Markdown?"
 msgstr ""
 
+msgid "What is listed here?"
+msgstr ""
+
 msgid "What is repository mirroring?"
 msgstr ""
 
@@ -43431,6 +43434,9 @@ msgid "You don't have permissions to create this project"
 msgstr ""
 
 msgid "You don't have sufficient permission to perform this action."
+msgstr ""
+
+msgid "You don't have the %{role} role for any groups in this instance."
 msgstr ""
 
 msgid "You don't have write access to the source branch."

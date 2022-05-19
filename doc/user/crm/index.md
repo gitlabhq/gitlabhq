@@ -33,9 +33,13 @@ To read more about what is planned for the future, see [issue 2256](https://gitl
 
 ## Enable customer relations management (CRM)
 
-To enable customer relations management in a group:
+Customer relations management features must be enabled at the group level. If your
+group also contains subgroups, and you want to use CRM features in the subgroup,
+you must enable CRM features for the subgroup. 
 
-1. On the top bar, select **Menu > Groups** and find your group.
+To enable customer relations management in a group or subgroup:
+
+1. On the top bar, select **Menu > Groups** and find your group or subgroup.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Enable customer relations**.

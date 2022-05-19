@@ -2079,6 +2079,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         t.integer :other_id
         t.timestamps
       end
+
+      allow(model).to receive(:transaction_open?).and_return(false)
     end
 
     context 'when the target table does not exist' do
@@ -2191,6 +2193,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         t.timestamps
       end
 
+      allow(model).to receive(:transaction_open?).and_return(false)
+
       model.initialize_conversion_of_integer_to_bigint(table, columns, primary_key: primary_key)
       model.backfill_conversion_of_integer_to_bigint(table, columns, primary_key: primary_key)
     end
@@ -2244,6 +2248,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     let(:migration_attributes) do
       configuration.merge(gitlab_schema: Gitlab::Database.gitlab_schemas_for_connection(model.connection).first)
+    end
+
+    before do
+      allow(model).to receive(:transaction_open?).and_return(false)
     end
 
     subject(:ensure_batched_background_migration_is_finished) { model.ensure_batched_background_migration_is_finished(**configuration) }

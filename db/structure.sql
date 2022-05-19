@@ -11305,6 +11305,13 @@ CREATE TABLE application_settings (
     container_registry_pre_import_timeout integer DEFAULT 1800 NOT NULL,
     container_registry_import_timeout integer DEFAULT 600 NOT NULL,
     pipeline_limit_per_project_user_sha integer DEFAULT 0 NOT NULL,
+    dingtalk_integration_enabled boolean DEFAULT false NOT NULL,
+    encrypted_dingtalk_corpid bytea,
+    encrypted_dingtalk_corpid_iv bytea,
+    encrypted_dingtalk_app_key bytea,
+    encrypted_dingtalk_app_key_iv bytea,
+    encrypted_dingtalk_app_secret bytea,
+    encrypted_dingtalk_app_secret_iv bytea,
     globally_allowed_ips text DEFAULT ''::text NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -11349,6 +11356,20 @@ COMMENT ON COLUMN application_settings.encrypted_content_validation_api_key IS '
 COMMENT ON COLUMN application_settings.encrypted_content_validation_api_key_iv IS 'JiHu-specific column';
 
 COMMENT ON COLUMN application_settings.content_validation_endpoint_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.dingtalk_integration_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_corpid IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_corpid_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_key IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_key_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_secret IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_secret_iv IS 'JiHu-specific column';
 
 CREATE SEQUENCE application_settings_id_seq
     START WITH 1
@@ -14529,6 +14550,30 @@ CREATE SEQUENCE diff_note_positions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE diff_note_positions_id_seq OWNED BY diff_note_positions.id;
+
+CREATE TABLE dingtalk_tracker_data (
+    id bigint NOT NULL,
+    integration_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    corpid text,
+    CONSTRAINT check_d3fe332e6a CHECK ((char_length(corpid) <= 255))
+);
+
+COMMENT ON TABLE dingtalk_tracker_data IS 'JiHu-specific table';
+
+COMMENT ON COLUMN dingtalk_tracker_data.integration_id IS 'JiHu-specific column';
+
+COMMENT ON COLUMN dingtalk_tracker_data.corpid IS 'JiHu-specific column';
+
+CREATE SEQUENCE dingtalk_tracker_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dingtalk_tracker_data_id_seq OWNED BY dingtalk_tracker_data.id;
 
 CREATE TABLE dora_daily_metrics (
     id bigint NOT NULL,
@@ -22660,6 +22705,8 @@ ALTER TABLE ONLY detached_partitions ALTER COLUMN id SET DEFAULT nextval('detach
 
 ALTER TABLE ONLY diff_note_positions ALTER COLUMN id SET DEFAULT nextval('diff_note_positions_id_seq'::regclass);
 
+ALTER TABLE ONLY dingtalk_tracker_data ALTER COLUMN id SET DEFAULT nextval('dingtalk_tracker_data_id_seq'::regclass);
+
 ALTER TABLE ONLY dora_daily_metrics ALTER COLUMN id SET DEFAULT nextval('dora_daily_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id_seq'::regclass);
@@ -24460,6 +24507,9 @@ ALTER TABLE ONLY detached_partitions
 
 ALTER TABLE ONLY diff_note_positions
     ADD CONSTRAINT diff_note_positions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dingtalk_tracker_data
+    ADD CONSTRAINT dingtalk_tracker_data_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT dora_daily_metrics_pkey PRIMARY KEY (id);
@@ -27602,6 +27652,8 @@ CREATE UNIQUE INDEX index_design_user_mentions_on_note_id ON design_user_mention
 
 CREATE UNIQUE INDEX index_diff_note_positions_on_note_id_and_diff_type ON diff_note_positions USING btree (note_id, diff_type);
 
+CREATE INDEX index_dingtalk_tracker_data_on_integration_id ON dingtalk_tracker_data USING btree (integration_id);
+
 CREATE UNIQUE INDEX index_dora_daily_metrics_on_environment_id_and_date ON dora_daily_metrics USING btree (environment_id, date);
 
 CREATE INDEX index_draft_notes_on_author_id ON draft_notes USING btree (author_id);
@@ -28473,6 +28525,10 @@ CREATE UNIQUE INDEX index_oauth_applications_on_uid ON oauth_applications USING 
 CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requests USING btree (access_grant_id);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
+
+CREATE INDEX index_on_dingtalk_tracker_data_corpid ON dingtalk_tracker_data USING btree (corpid) WHERE (corpid IS NOT NULL);
+
+COMMENT ON INDEX index_on_dingtalk_tracker_data_corpid IS 'JiHu-specific index';
 
 CREATE INDEX index_on_group_id_on_webhooks ON web_hooks USING btree (group_id);
 
@@ -32972,6 +33028,9 @@ ALTER TABLE ONLY resource_milestone_events
 
 ALTER TABLE ONLY namespace_root_storage_statistics
     ADD CONSTRAINT fk_rails_a0702c430b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dingtalk_tracker_data
+    ADD CONSTRAINT fk_rails_a138e0d542 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY elastic_reindexing_slices
     ADD CONSTRAINT fk_rails_a17d86aeb9 FOREIGN KEY (elastic_reindexing_subtask_id) REFERENCES elastic_reindexing_subtasks(id) ON DELETE CASCADE;

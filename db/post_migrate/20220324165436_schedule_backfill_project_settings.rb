@@ -6,6 +6,8 @@ class ScheduleBackfillProjectSettings < Gitlab::Database::Migration[1.0]
   BATCH_SIZE = 5_000
   SUB_BATCH_SIZE = 200
 
+  disable_ddl_transaction!
+
   def up
     queue_batched_background_migration(
       MIGRATION,

@@ -3,6 +3,8 @@
 class BackfillIntegrationsTypeNew < ActiveRecord::Migration[6.1]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   MIGRATION = 'BackfillIntegrationsTypeNew'
   INTERVAL = 2.minutes
 

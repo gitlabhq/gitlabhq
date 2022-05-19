@@ -5,6 +5,8 @@ class BackfillConversionOfCiJobArtifacts < ActiveRecord::Migration[6.0]
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
     return unless should_run?
 

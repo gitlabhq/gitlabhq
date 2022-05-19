@@ -3,6 +3,8 @@
 class BackfillPkConversionForSelfManaged < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   CONVERSIONS = [
     { table: :events, columns: %i(id), sub_batch_size: 500 },
     { table: :push_event_payloads, columns: %i(event_id), sub_batch_size: 2500, primary_key: :event_id },

@@ -646,7 +646,7 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
-GitLab Runner also has an 
+GitLab Runner also has an
 [`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 that configures the maximum log size in a runner. Jobs that exceed the runner limit
 continue to run, but the log is truncated when it hits the limit.
@@ -981,7 +981,7 @@ varies by file type:
 
 If a branch is merged while open merge requests still point to it, GitLab can
 retarget merge requests pointing to the now-merged branch. To learn more, read
-[Branch retargeting on merge](../user/project/merge_requests/getting_started.md#branch-retargeting-on-merge).
+[Update merge requests when target branch merges](../user/project/merge_requests/index.md#update-merge-requests-when-target-branch-merges).
 
 ## CDN-based limits on GitLab.com
 

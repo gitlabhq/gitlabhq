@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import { escape } from 'lodash';
 import HarborListHeader from '~/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import HarborList from '~/packages_and_registries/harbor_registry/components/list/harbor_list.vue';
@@ -80,7 +81,7 @@ export default {
       this.sorting = sort;
 
       const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);
-      this.name = search?.value?.data;
+      this.name = escape(search?.value?.data);
 
       this.fetchHarborImages();
     },

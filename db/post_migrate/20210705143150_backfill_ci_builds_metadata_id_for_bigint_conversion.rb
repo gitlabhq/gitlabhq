@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BackfillCiBuildsMetadataIdForBigintConversion < ActiveRecord::Migration[6.1]
+  disable_ddl_transaction!
+
   include Gitlab::Database::MigrationHelpers
 
   TABLE = :ci_builds_metadata

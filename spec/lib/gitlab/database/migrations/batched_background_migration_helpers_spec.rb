@@ -13,6 +13,8 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
     before do
       allow(Gitlab::Database::PgClass).to receive(:for_table).and_call_original
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+      allow(migration).to receive(:transaction_open?).and_return(false)
     end
 
     context 'when such migration already exists' do
@@ -165,6 +167,17 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
           expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to be_finished
         end
+
+        context 'when within transaction' do
+          before do
+            allow(migration).to receive(:transaction_open?).and_return(true)
+          end
+
+          it 'does raise an exception' do
+            expect { migration.queue_batched_background_migration('MyJobClass', :events, :id, job_interval: 5.minutes)}
+              .to raise_error /`queue_batched_background_migration` cannot be run inside a transaction./
+          end
+        end
       end
     end
 
@@ -188,6 +201,8 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
 
     before do
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+      allow(migration).to receive(:transaction_open?).and_return(false)
     end
 
     it 'finalizes the migration' do
@@ -224,6 +239,17 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
             job_arguments: ci_migration.job_arguments
           )
         end.to raise_error /is currently not supported when running in decomposed/
+      end
+    end
+
+    context 'when within transaction' do
+      before do
+        allow(migration).to receive(:transaction_open?).and_return(true)
+      end
+
+      it 'does raise an exception' do
+        expect { migration.finalize_batched_background_migration(job_class_name: 'MyJobClass', table_name: :projects, column_name: :id, job_arguments: []) }
+          .to raise_error /`finalize_batched_background_migration` cannot be run inside a transaction./
       end
     end
   end

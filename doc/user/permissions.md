@@ -428,6 +428,7 @@ The following table lists group permissions available for each role:
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (4) |
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (4) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
+| GitLab migration                                                                        |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 

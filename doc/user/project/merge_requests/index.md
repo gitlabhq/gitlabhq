@@ -136,6 +136,35 @@ To delete a merge request:
 1. Go to the merge request you want to delete, and select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
 
+### Update merge requests when target branch merges **(FREE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
+> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
+
+Merge requests are often chained together, with one merge request depending on
+the code added or changed in another merge request. To support keeping individual
+merge requests small, GitLab can update up to four open merge requests when their
+target branch merges into `main`. For example:
+
+- **Merge request 1**: merge `feature-alpha` into `main`.
+- **Merge request 2**: merge `feature-beta` into `feature-alpha`.
+
+If these merge requests are open at the same time, and merge request 1 (`feature-alpha`)
+merges into `main`, GitLab updates the destination of merge request 2 from `feature-alpha`
+to `main`.
+
+Merge requests with interconnected content updates are usually handled in one of these ways:
+
+- Merge request 1 is merged into `main` first. Merge request 2 is then
+  retargeted to `main`.
+- Merge request 2 is merged into `feature-alpha`. The updated merge request 1, which
+  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `main`.
+
+This feature works only when a merge request is merged. Selecting **Remove source branch**
+after merging does not retarget open merge requests. This improvement is
+[proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
+
 ## Request attention to a merge request
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343528) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `mr_attention_requests`. Disabled by default.

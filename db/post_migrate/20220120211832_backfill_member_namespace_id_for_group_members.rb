@@ -7,6 +7,8 @@ class BackfillMemberNamespaceIdForGroupMembers < Gitlab::Database::Migration[1.0
   MAX_BATCH_SIZE = 2_000
   SUB_BATCH_SIZE = 100
 
+  disable_ddl_transaction!
+
   def up
     queue_batched_background_migration(
       MIGRATION,

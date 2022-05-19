@@ -15,9 +15,11 @@ import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { s__, __, n__, sprintf } from '~/locale';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 import { STATUSES } from '../../constants';
 import ImportStatusCell from '../../components/import_status.vue';
@@ -56,6 +58,7 @@ export default {
     ImportStatusCell,
     ImportActionsCell,
     PaginationBar,
+    HelpPopover,
   },
 
   props: {
@@ -190,9 +193,9 @@ export default {
 
     statusMessage() {
       return this.filter.length === 0
-        ? s__('BulkImport|Showing %{start}-%{end} of %{total} from %{link}')
+        ? s__('BulkImport|Showing %{start}-%{end} of %{total} that you own from %{link}')
         : s__(
-            'BulkImport|Showing %{start}-%{end} of %{total} matching filter "%{filter}" from %{link}',
+            'BulkImport|Showing %{start}-%{end} of %{total} that you own matching filter "%{filter}" from %{link}',
           );
     },
 
@@ -484,6 +487,9 @@ export default {
 
   gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
+  permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
+  popoverOptions: { title: __('What is listed here?') },
+  i18n,
 };
 </script>
 
@@ -533,8 +539,8 @@ export default {
     <div
       class="gl-py-5 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex"
     >
-      <span>
-        <gl-sprintf v-if="!$apollo.loading && hasGroups" :message="statusMessage">
+      <span v-if="!$apollo.loading && hasGroups">
+        <gl-sprintf :message="statusMessage">
           <template #start>
             <strong>{{ paginationInfo.start }}</strong>
           </template>
@@ -548,12 +554,26 @@ export default {
             <strong>{{ filter }}</strong>
           </template>
           <template #link>
-            <gl-link :href="sourceUrl" target="_blank">
-              {{ sourceUrl }}<gl-icon name="external-link" class="vertical-align-middle" />
-            </gl-link>
+            {{ sourceUrl }}
           </template>
         </gl-sprintf>
+        <help-popover :options="$options.popoverOptions">
+          <gl-sprintf
+            :message="
+              s__(
+                'BulkImport|Only groups that you have the %{role} role for are listed as groups you can import.',
+              )
+            "
+          >
+            <template #role>
+              <gl-link class="gl-font-sm" :href="$options.permissionsHelpPath" target="_blank">{{
+                $options.i18n.OWNER
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </help-popover>
       </span>
+
       <gl-search-box-by-click
         class="gl-ml-auto"
         :placeholder="s__('BulkImport|Filter by source group')"
@@ -568,11 +588,19 @@ export default {
         :title="__('Sorry, your filter produced no results')"
         :description="__('To widen your search, change or remove filters above.')"
       />
-      <gl-empty-state
-        v-else-if="!hasGroups"
-        :title="s__('BulkImport|You have no groups to import')"
-        :description="__('Check your source instance permissions.')"
-      />
+      <gl-empty-state v-else-if="!hasGroups" :title="$options.i18n.NO_GROUPS_FOUND">
+        <template #description>
+          <gl-sprintf
+            :message="__('You don\'t have the %{role} role for any groups in this instance.')"
+          >
+            <template #role>
+              <gl-link :href="$options.permissionsHelpPath" target="_blank">{{
+                $options.i18n.OWNER
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+      </gl-empty-state>
       <template v-else>
         <div
           class="gl-bg-gray-10 gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-px-4 gl-display-flex gl-align-items-center import-table-bar"

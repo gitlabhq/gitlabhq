@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BackfillIssueSearchData < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
   MIGRATION = 'BackfillIssueSearchData'
 
   def up

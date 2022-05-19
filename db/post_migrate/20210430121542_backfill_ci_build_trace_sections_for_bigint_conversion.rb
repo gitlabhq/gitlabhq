@@ -3,6 +3,8 @@
 class BackfillCiBuildTraceSectionsForBigintConversion < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   TABLE = :ci_build_trace_sections
   COLUMN = :build_id
 

@@ -4,6 +4,8 @@
 # so that other migrations that depend on project namespace back-filling cannot be run unless project namespace
 # back-filling has finalized successfully.
 class FinalizeProjectNamespacesBackfill < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
   MIGRATION = 'ProjectNamespaces::BackfillProjectNamespaces'
 
   def up

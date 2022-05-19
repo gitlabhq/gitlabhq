@@ -140,35 +140,6 @@ is set for deletion, the merge request widget displays the
 
 ![Delete source branch status](img/remove_source_branch_status.png)
 
-### Branch retargeting on merge **(FREE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
-> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
-
-In specific circumstances, GitLab can retarget the destination branch of
-open merge request, if the destination branch merges while the merge request is
-open. Merge requests are often chained in this manner, with one merge request
-depending on another:
-
-- **Merge request 1**: merge `feature-alpha` into `main`.
-- **Merge request 2**: merge `feature-beta` into `feature-alpha`.
-
-These merge requests are usually handled in one of these ways:
-
-- Merge request 1 is merged into `main` first. Merge request 2 is then
-  retargeted to `main`.
-- Merge request 2 is merged into `feature-alpha`. The updated merge request 1, which
-  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `main`.
-
-GitLab retargets up to four merge requests when their target branch is merged into
-`main`, so you don't need to perform this operation manually. Merge requests from
-forks are not retargeted.
-
-The feature today works only on merge. Clicking the **Remove source branch** button
-after the merge request was merged will not automatically retarget a merge request.
-This improvement is [tracked as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
-
 ## Recommendations and best practices for merge requests
 
 - When working locally in your branch, add multiple commits and only push when

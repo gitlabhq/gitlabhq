@@ -7,6 +7,8 @@ class BackfillUserNamespace < Gitlab::Database::Migration[1.0]
   SUB_BATCH_SIZE = 200
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
     queue_batched_background_migration(
       MIGRATION,

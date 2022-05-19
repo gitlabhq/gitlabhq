@@ -4,12 +4,6 @@ class ProjectPolicy < BasePolicy
   include CrudPolicyHelpers
   include ReadonlyAbilities
 
-  desc "User is a project owner"
-  condition :owner do
-    (project.owner.present? && project.owner == @user) ||
-      project.group&.has_owner?(@user)
-  end
-
   desc "Project has public builds enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
@@ -29,6 +23,21 @@ class ProjectPolicy < BasePolicy
 
   desc "User has maintainer access"
   condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
+
+  desc "User has owner access"
+  condition :owner do
+    owner_of_personal_namespace = project.owner.present? && project.owner == @user
+
+    unless owner_of_personal_namespace
+      group_or_project_owner = if Feature.enabled?(:faster_owner_access)
+                                 team_access_level >= Gitlab::Access::OWNER
+                               else
+                                 project.group&.has_owner?(@user)
+                               end
+    end
+
+    owner_of_personal_namespace || group_or_project_owner
+  end
 
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && team_member? }

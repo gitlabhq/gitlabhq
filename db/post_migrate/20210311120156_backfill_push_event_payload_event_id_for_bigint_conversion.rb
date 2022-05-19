@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BackfillPushEventPayloadEventIdForBigintConversion < ActiveRecord::Migration[6.0]
+  disable_ddl_transaction!
+
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
