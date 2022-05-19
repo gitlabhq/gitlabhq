@@ -127,10 +127,10 @@ POST /features/:name
 | `value` | integer/string | yes | `true` or `false` to enable/disable, or an integer for percentage of time |
 | `key` | string | no | `percentage_of_actors` or `percentage_of_time` (default) |
 | `feature_group` | string | no | A Feature group name |
-| `user` | string | no | A GitLab username |
-| `group` | string | no | A GitLab group's path, for example `gitlab-org` |
-| `namespace` | string | no | A GitLab group or user namespace's path, for example `gitlab-org` or username path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
-| `project` | string | no | A projects path, for example `gitlab-org/gitlab-foss` |
+| `user` | string | no | A GitLab username or comma-separated multiple usernames |
+| `group` | string | no | A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths |
+| `namespace` | string | no | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
+| `project` | string | no | A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths |
 | `force` | boolean | no | Skip feature flag validation checks, such as a YAML definition |
 
 You can enable or disable a feature for a `feature_group`, a `user`,

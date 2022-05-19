@@ -28,7 +28,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      files_anchor_data,
       storage_anchor_data,
       releases_anchor_data
     ].compact.select(&:is_link)
@@ -161,26 +160,16 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     can_current_user_push_to_branch?(default_branch)
   end
 
-  def files_anchor_data
-    AnchorData.new(true,
-                   statistic_icon('doc-code') +
-                   _('%{strong_start}%{human_size}%{strong_end} Files').html_safe % {
-                     human_size: storage_counter(statistics.total_repository_size),
-                     strong_start: '<strong class="project-stat-value">'.html_safe,
-                     strong_end: '</strong>'.html_safe
-                   },
-                   empty_repo? ? nil : project_tree_path(project))
-  end
-
   def storage_anchor_data
+    can_show_quota = can?(current_user, :admin_project, project) && !empty_repo?
     AnchorData.new(true,
                    statistic_icon('disk') +
-                   _('%{strong_start}%{human_size}%{strong_end} Storage').html_safe % {
+                   _('%{strong_start}%{human_size}%{strong_end} Project Storage').html_safe % {
                      human_size: storage_counter(statistics.storage_size),
                      strong_start: '<strong class="project-stat-value">'.html_safe,
                      strong_end: '</strong>'.html_safe
                    },
-                   empty_repo? ? nil : project_tree_path(project))
+                   can_show_quota ? project_usage_quotas_path(project) : nil)
   end
 
   def releases_anchor_data

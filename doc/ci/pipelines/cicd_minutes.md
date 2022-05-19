@@ -74,6 +74,8 @@ If you set a quota for a subgroup, it is not used.
 
 ## View CI/CD minutes used by a group
 
+> Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+
 You can view the number of CI/CD minutes being used by a group.
 
 Prerequisite:

@@ -629,6 +629,9 @@ Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_wo
 Settings.cron_jobs['inactive_projects_deletion_cron_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '0 1 * * *'
 Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Projects::InactiveProjectsDeletionCronWorker'
+Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -760,9 +763,6 @@ Gitlab.ee do
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['cron'] ||= '7-59/15 * * * *'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['job_class'] = 'AppSec::Dast::ProfileScheduleWorker'
-  Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
-  Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
   Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker']['cron'] ||= '*/4 * * * *'
   Settings.cron_jobs['ci_namespace_mirrors_consistency_check_worker']['job_class'] = 'Database::CiNamespaceMirrorsConsistencyCheckWorker'

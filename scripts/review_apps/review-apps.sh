@@ -297,12 +297,21 @@ function deploy() {
 
   create_application_secret
 
+cat > review_apps.values.yml <<EOF
+  gitlab:
+    webservice:
+      extraEnv:
+        REVIEW_APPS_ENABLED: "true"
+        REVIEW_APPS_MERGE_REQUEST_IID: "${CI_MERGE_REQUEST_IID}"
+EOF
+
 HELM_CMD=$(cat << EOF
   helm upgrade \
     --namespace="${namespace}" \
     --create-namespace \
     --install \
     --wait \
+    -f review_apps.values.yml \
     --timeout "${HELM_INSTALL_TIMEOUT:-20m}" \
     --set ci.branch="${CI_COMMIT_REF_NAME}" \
     --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \

@@ -226,32 +226,46 @@ A fork *does* copy the CI/CD settings of the cloned repository.
 ### Create a specific runner
 
 You can create a specific runner for your self-managed GitLab instance or for GitLab.com.
-You must have the Owner role for the project.
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
 
 To create a specific runner:
 
-1. [Install runner](https://docs.gitlab.com/runner/install/).
-1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. Note the URL and token.
+1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
+1. On the top bar, select **Menu > Projects** and find the project where you want to use the runner.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Specific runners** section, note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/).
 
-### Enable a specific runner for a specific project
+The runner is now enabled for the project.
 
-A specific runner is available in the project it was created for. An administrator can
-enable a specific runner to apply to additional projects.
+### Enable a specific runner for a different project
 
-- You must have the Owner role for the
-  project.
+After a specific runner is created, you can enable it for other projects.
+
+Prerequisites:
+You must have at least the Maintainer role for:
+
+- The project where the runner is already enabled.
+- The project where you want to enable the runner.
 - The specific runner must not be [locked](#prevent-a-specific-runner-from-being-enabled-for-other-projects).
 
-To enable or disable a specific runner for a project:
+To enable a specific runner for a project:
 
-1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. Click **Enable for this project** or **Disable for this project**.
+1. On the top bar, select **Menu > Projects** and find the project where you want to enable the runner.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Expand **Runners**.
+1. By the runner you want, select **Enable for this project**.
 
 You can edit a specific runner from any of the projects it's enabled for.
-The modifications, which include unlocking, editing tags and the description,
+The modifications, which include unlocking and editing tags and the description,
 affect all projects that use the runner.
+
+An administrator can [enable the runner for multiple projects](../../user/admin_area/settings/continuous_integration.md#enable-a-specific-runner-for-multiple-projects).
 
 ### Prevent a specific runner from being enabled for other projects
 
@@ -261,8 +275,9 @@ but can also be changed later.
 
 To lock or unlock a specific runner:
 
-1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings > CI/CD**.
+1. Expand the **Runners** section.
 1. Find the specific runner you want to lock or unlock. Make sure it's enabled. You cannot lock shared or group runners.
-1. Click the pencil button.
+1. Select **Edit** (**{pencil}**).
 1. Check the **Lock to current projects** option.
-1. Click **Save changes**.
+1. Select **Save changes**.

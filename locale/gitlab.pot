@@ -1008,10 +1008,7 @@ msgid_plural "%{strong_start}%{count} members%{strong_end} must approve to merge
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{strong_start}%{human_size}%{strong_end} Files"
-msgstr ""
-
-msgid "%{strong_start}%{human_size}%{strong_end} Storage"
+msgid "%{strong_start}%{human_size}%{strong_end} Project Storage"
 msgstr ""
 
 msgid "%{strong_start}%{release_count}%{strong_end} Release"
@@ -37700,6 +37697,9 @@ msgid "The commit does not exist"
 msgstr ""
 
 msgid "The comparison view may be inaccurate due to merge conflicts."
+msgstr ""
+
+msgid "The complete DevOps platform. One application with endless possibilities. Organizations rely on GitLab’s source code management, CI/CD, security, and more to deliver software rapidly."
 msgstr ""
 
 msgid "The compliance report shows the merge request violations merged in protected environments."

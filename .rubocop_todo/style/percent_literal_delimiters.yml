@@ -229,7 +229,6 @@ Style/PercentLiteralDelimiters:
     - 'db/migrate/20210621044000_rename_services_indexes_to_integrations.rb'
     - 'db/migrate/20210709085759_index_batched_migration_jobs_by_max_value.rb'
     - 'db/migrate/20210928155022_improve_index_for_error_tracking.rb'
-    - 'db/optional_migrations/composite_primary_keys.rb'
     - 'db/post_migrate/20210329102724_add_new_trail_plans.rb'
     - 'db/post_migrate/20210420121149_backfill_conversion_of_ci_job_artifacts.rb'
     - 'db/post_migrate/20210426094549_backfill_ci_builds_for_bigint_conversion.rb'

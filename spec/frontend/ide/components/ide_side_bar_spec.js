@@ -1,4 +1,4 @@
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
@@ -47,7 +47,7 @@ describe('IdeSidebar', () => {
 
     await nextTick();
 
-    expect(wrapper.findAll(GlSkeletonLoading)).toHaveLength(3);
+    expect(wrapper.findAll(GlSkeletonLoader)).toHaveLength(3);
   });
 
   describe('deferred rendering components', () => {

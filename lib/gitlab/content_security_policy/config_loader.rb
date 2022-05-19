@@ -44,6 +44,7 @@ module Gitlab
         allow_sentry(directives) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
         allow_framed_gitlab_paths(directives)
         allow_customersdot(directives) if ENV['CUSTOMER_PORTAL_URL'].present?
+        allow_review_apps(directives) if ENV['REVIEW_APPS_ENABLED']
 
         # The follow section contains workarounds to patch Safari's lack of support for CSP Level 3
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/343579
@@ -153,6 +154,11 @@ module Gitlab
         ['/admin/', '/assets/', '/-/speedscope/index.html', '/-/sandbox/mermaid'].map do |path|
           append_to_directive(directives, 'frame_src', Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path))
         end
+      end
+
+      def self.allow_review_apps(directives)
+        # Allow-listed to allow POSTs to https://gitlab.com/api/v4/projects/278964/merge_requests/:merge_request_iid/visual_review_discussions
+        append_to_directive(directives, 'connect_src', 'https://gitlab.com/api/v4/projects/278964/merge_requests/')
       end
     end
   end

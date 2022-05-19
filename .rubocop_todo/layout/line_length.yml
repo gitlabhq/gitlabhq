@@ -1001,7 +1001,6 @@ Layout/LineLength:
     - 'db/migrate/20220310101118_update_holder_name_limit.rb'
     - 'db/migrate/20220314184209_add_group_fk_to_protected_environment_approval_rules.rb'
     - 'db/migrate/20220314204009_add_approval_rule_fk_to_deployment_approvals.rb'
-    - 'db/optional_migrations/composite_primary_keys.rb'
     - 'db/post_migrate/20210328214434_remove_temporary_index_from_vulnerabilities_table.rb'
     - 'db/post_migrate/20210401131948_move_container_registry_enabled_to_project_features2.rb'
     - 'db/post_migrate/20210402005225_add_source_and_level_index_on_notification_settings.rb'

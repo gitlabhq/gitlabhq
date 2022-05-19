@@ -22,16 +22,15 @@ module API
         use :pagination
         optional :name, type: String, desc: 'Returns the environment with this name'
         optional :search, type: String, desc: 'Returns list of environments matching the search criteria'
+        optional :states, type: String, values: Environment.valid_states.map(&:to_s), desc: 'List all environments that match a specific state'
         mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       get ':id/environments' do
         authorize! :read_environment, user_project
 
-        environments = ::Environments::EnvironmentsFinder.new(user_project, current_user, params).execute
+        environments = ::Environments::EnvironmentsFinder.new(user_project, current_user, declared_params(include_missing: false)).execute
 
         present paginate(environments), with: Entities::Environment, current_user: current_user
-      rescue ::Environments::EnvironmentsFinder::InvalidStatesError => exception
-        bad_request!(exception.message)
       end
 
       desc 'Creates a new environment' do

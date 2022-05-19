@@ -281,6 +281,8 @@ class Feature
   end
 
   class Target
+    UnknowTargetError = Class.new(StandardError)
+
     attr_reader :params
 
     def initialize(params)
@@ -292,7 +294,7 @@ class Feature
     end
 
     def targets
-      [feature_group, user, project, group, namespace].compact
+      [feature_group, users, projects, groups, namespaces].flatten.compact
     end
 
     private
@@ -305,29 +307,37 @@ class Feature
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def user
+    def users
       return unless params.key?(:user)
 
-      UserFinder.new(params[:user]).find_by_username!
+      params[:user].split(',').map do |arg|
+        UserFinder.new(arg).find_by_username || (raise UnknowTargetError, "#{arg} is not found!")
+      end
     end
 
-    def project
+    def projects
       return unless params.key?(:project)
 
-      Project.find_by_full_path(params[:project])
+      params[:project].split(',').map do |arg|
+        Project.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+      end
     end
 
-    def group
+    def groups
       return unless params.key?(:group)
 
-      Group.find_by_full_path(params[:group])
+      params[:group].split(',').map do |arg|
+        Group.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+      end
     end
 
-    def namespace
+    def namespaces
       return unless params.key?(:namespace)
 
-      # We are interested in Group or UserNamespace
-      Namespace.without_project_namespaces.find_by_full_path(params[:namespace])
+      params[:namespace].split(',').map do |arg|
+        # We are interested in Group or UserNamespace
+        Namespace.without_project_namespaces.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+      end
     end
   end
 end

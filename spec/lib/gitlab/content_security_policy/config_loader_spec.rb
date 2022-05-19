@@ -178,6 +178,16 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
             expect(directives['connect_src']).not_to include(snowplow_micro_url)
           end
         end
+
+        context 'when REVIEW_APPS_ENABLED is set' do
+          before do
+            stub_env('REVIEW_APPS_ENABLED', 'true')
+          end
+
+          it 'adds gitlab-org/gitlab merge requests API endpoint to CSP' do
+            expect(directives['connect_src']).to include('https://gitlab.com/api/v4/projects/278964/merge_requests/')
+          end
+        end
       end
     end
   end

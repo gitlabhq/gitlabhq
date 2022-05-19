@@ -87,7 +87,12 @@ module Gitlab
         length = [sha1.length, sha2.length].min
         return false if length < Gitlab::Git::Commit::MIN_SHA_LENGTH
 
-        sha1[0, length] == sha2[0, length]
+        # Optimization: prevent unnecessary substring creation
+        if sha1.length == sha2.length
+          sha1 == sha2
+        else
+          sha1[0, length] == sha2[0, length]
+        end
       end
     end
   end

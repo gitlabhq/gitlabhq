@@ -68,10 +68,13 @@ module API
         requires :value, type: String, desc: '`true` or `false` to enable/disable, a float for percentage of time'
         optional :key, type: String, desc: '`percentage_of_actors` or the default `percentage_of_time`'
         optional :feature_group, type: String, desc: 'A Feature group name'
-        optional :user, type: String, desc: 'A GitLab username'
-        optional :group, type: String, desc: "A GitLab group's path, such as 'gitlab-org'"
-        optional :namespace, type: String, desc: "A GitLab group or user namespace path, such as 'gitlab-org'"
-        optional :project, type: String, desc: 'A projects path, like gitlab-org/gitlab-ce'
+        optional :user, type: String, desc: 'A GitLab username or comma-separated multiple usernames'
+        optional :group, type: String,
+          desc: "A GitLab group's path, such as 'gitlab-org', or comma-separated multiple group paths"
+        optional :namespace, type: String,
+          desc: "A GitLab group or user namespace path, such as 'john-doe', or comma-separated multiple namespace paths"
+        optional :project, type: String,
+          desc: "A projects path, such as `gitlab-org/gitlab-ce`, or comma-separated multiple project paths"
         optional :force, type: Boolean, desc: 'Skip feature flag validation checks, ie. YAML definition'
 
         mutually_exclusive :key, :feature_group
@@ -110,6 +113,8 @@ module API
 
         present Feature.get(params[:name]), # rubocop:disable Gitlab/AvoidFeatureGet
           with: Entities::Feature, current_user: current_user
+      rescue Feature::Target::UnknowTargetError => e
+        bad_request!(e.message)
       end
 
       desc 'Remove the gate value for the given feature'

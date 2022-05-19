@@ -117,6 +117,7 @@ Rails.application.routes.draw do
     get '/whats_new' => 'whats_new#index'
 
     get 'offline' => "pwa#offline"
+    get 'manifest' => "pwa#manifest", constraints: lambda { |req| req.format == :json }
 
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'

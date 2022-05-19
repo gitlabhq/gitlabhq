@@ -14,6 +14,35 @@ RSpec.describe 'layouts/application' do
     allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
   end
 
+  describe "visual review toolbar" do
+    context "ENV['REVIEW_APPS_ENABLED'] is set to true" do
+      before do
+        stub_env(
+          'REVIEW_APPS_ENABLED' => true,
+          'REVIEW_APPS_MERGE_REQUEST_IID' => '123'
+        )
+      end
+
+      it 'renders the visual review toolbar' do
+        render
+
+        expect(rendered).to include('review-app-toolbar-script')
+      end
+    end
+
+    context "ENV['REVIEW_APPS_ENABLED'] is set to false" do
+      before do
+        stub_env('REVIEW_APPS_ENABLED', false)
+      end
+
+      it 'does not render the visual review toolbar' do
+        render
+
+        expect(rendered).not_to include('review-app-toolbar-script')
+      end
+    end
+  end
+
   context 'body data elements for pageview context' do
     let(:body_data) do
       {

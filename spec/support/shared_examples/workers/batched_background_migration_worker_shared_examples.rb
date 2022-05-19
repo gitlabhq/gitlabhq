@@ -239,6 +239,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       end
     end
 
+    let(:gitlab_schema) { "gitlab_#{tracking_database}" }
     let!(:migration) do
       create(
         :batched_background_migration,
@@ -249,10 +250,12 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         batch_size: batch_size,
         sub_batch_size: sub_batch_size,
         job_class_name: 'ExampleDataMigration',
-        job_arguments: [1]
+        job_arguments: [1],
+        gitlab_schema: gitlab_schema
       )
     end
 
+    let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
     let(:table_name) { 'example_data' }
     let(:batch_size) { 5 }
     let(:sub_batch_size) { 2 }
@@ -289,7 +292,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         WHERE some_column = #{migration_records - 5};
       SQL
 
-      stub_feature_flags(execute_batched_migrations_on_schedule: true)
+      stub_feature_flags(feature_flag => true)
 
       stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
     end

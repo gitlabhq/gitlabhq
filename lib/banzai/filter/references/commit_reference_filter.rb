@@ -19,7 +19,12 @@ module Banzai
         def find_object(project, id)
           return unless project.is_a?(Project) && project.valid_repo?
 
-          _, record = reference_cache.records_per_parent[project].detect { |k, _v| Gitlab::Git.shas_eql?(k, id) }
+          # Optimization: try exact commit hash match first
+          record = reference_cache.records_per_parent[project].fetch(id, nil)
+
+          unless record
+            _, record = reference_cache.records_per_parent[project].detect { |k, _v| Gitlab::Git.shas_eql?(k, id) }
+          end
 
           record
         end

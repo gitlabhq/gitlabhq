@@ -211,16 +211,6 @@ RSpec.describe ProjectPresenter do
   context 'statistics anchors (empty repo)' do
     let_it_be(:project) { create(:project, :empty_repo) }
 
-    describe '#files_anchor_data' do
-      it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(
-          is_link: true,
-          label:  a_string_including('0 Bytes'),
-          link: nil
-        )
-      end
-    end
-
     describe '#storage_anchor_data' do
       it 'returns storage data' do
         expect(presenter.storage_anchor_data).to have_attributes(
@@ -275,22 +265,22 @@ RSpec.describe ProjectPresenter do
 
     let(:presenter) { described_class.new(project, current_user: user) }
 
-    describe '#files_anchor_data' do
-      it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(
-          is_link: true,
-          label:  a_string_including('0 Bytes'),
-          link: presenter.project_tree_path(project)
-        )
-      end
-    end
-
     describe '#storage_anchor_data' do
-      it 'returns storage data' do
+      it 'returns storage data without usage quotas link for non-admin users' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
           label:  a_string_including('0 Bytes'),
-          link: presenter.project_tree_path(project)
+          link: nil
+        )
+      end
+
+      it 'returns storage data with usage quotas link for admin users' do
+        project.add_owner(user)
+
+        expect(presenter.storage_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including('0 Bytes'),
+          link: presenter.project_usage_quotas_path(project)
         )
       end
     end

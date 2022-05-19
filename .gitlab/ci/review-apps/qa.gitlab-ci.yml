@@ -50,6 +50,8 @@ include:
         --tag ~orchestrated \
         --tag ~transient \
         --tag ~skip_signup_disabled \
+        --tag ~requires_git_protocol_v2 \
+        --tag ~requires_praefect \
         --force-color \
         --order random \
         --format documentation \

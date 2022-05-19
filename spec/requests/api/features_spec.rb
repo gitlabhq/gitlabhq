@@ -168,19 +168,15 @@ RSpec.describe API::Features, stub_feature_flags: false do
         end
       end
 
-      shared_examples 'does not enable the flag' do |actor_type, actor_path|
+      shared_examples 'does not enable the flag' do |actor_type|
+        let(:actor_path) { raise NotImplementedError }
+        let(:expected_inexistent_path) { actor_path }
+
         it 'returns the current state of the flag without changes' do
           post api("/features/#{feature_name}", admin), params: { value: 'true', actor_type => actor_path }
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to match(
-            "name" => feature_name,
-            "state" => "off",
-            "gates" => [
-              { "key" => "boolean", "value" => false }
-            ],
-            'definition' => known_feature_flag_definition_hash
-          )
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("400 Bad request - #{expected_inexistent_path} is not found!")
         end
       end
 
@@ -201,6 +197,19 @@ RSpec.describe API::Features, stub_feature_flags: false do
         end
       end
 
+      shared_examples 'creates an enabled feature for the specified entries' do
+        it do
+          post api("/features/#{feature_name}", admin), params: { value: 'true', **gate_params }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['name']).to eq(feature_name)
+          expect(json_response['gates']).to contain_exactly(
+            { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'actors', 'value' => array_including(expected_gate_params) }
+          )
+        end
+      end
+
       context 'when enabling for a project by path' do
         context 'when the project exists' do
           it_behaves_like 'enables the flag for the actor', :project do
@@ -209,7 +218,9 @@ RSpec.describe API::Features, stub_feature_flags: false do
         end
 
         context 'when the project does not exist' do
-          it_behaves_like 'does not enable the flag', :project, 'mep/to/the/mep/mep'
+          it_behaves_like 'does not enable the flag', :project do
+            let(:actor_path) { 'mep/to/the/mep/mep' }
+          end
         end
       end
 
@@ -221,7 +232,9 @@ RSpec.describe API::Features, stub_feature_flags: false do
         end
 
         context 'when the group does not exist' do
-          it_behaves_like 'does not enable the flag', :group, 'not/a/group'
+          it_behaves_like 'does not enable the flag', :group do
+            let(:actor_path) { 'not/a/group' }
+          end
         end
       end
 
@@ -239,7 +252,9 @@ RSpec.describe API::Features, stub_feature_flags: false do
         end
 
         context 'when the user namespace does not exist' do
-          it_behaves_like 'does not enable the flag', :namespace, 'not/a/group'
+          it_behaves_like 'does not enable the flag', :namespace do
+            let(:actor_path) { 'not/a/group' }
+          end
         end
 
         context 'when a project namespace exists' do
@@ -247,6 +262,98 @@ RSpec.describe API::Features, stub_feature_flags: false do
 
           it_behaves_like 'does not enable the flag', :namespace do
             let(:actor_path) { project_namespace.full_path }
+          end
+        end
+      end
+
+      context 'with multiple users' do
+        let_it_be(:users) { create_list(:user, 3) }
+
+        it_behaves_like 'creates an enabled feature for the specified entries' do
+          let(:gate_params) { { user: users.map(&:username).join(',') } }
+          let(:expected_gate_params) { users.map(&:flipper_id) }
+        end
+
+        context 'when empty value exists between comma' do
+          it_behaves_like 'creates an enabled feature for the specified entries' do
+            let(:gate_params) { { user: "#{users.first.username},,,," } }
+            let(:expected_gate_params) { users.first.flipper_id }
+          end
+        end
+
+        context 'when one of the users does not exist' do
+          it_behaves_like 'does not enable the flag', :user do
+            let(:actor_path) { "#{users.first.username},inexistent-entry" }
+            let(:expected_inexistent_path) { "inexistent-entry" }
+          end
+        end
+      end
+
+      context 'with multiple projects' do
+        let_it_be(:projects) { create_list(:project, 3) }
+
+        it_behaves_like 'creates an enabled feature for the specified entries' do
+          let(:gate_params) { { project: projects.map(&:full_path).join(',') } }
+          let(:expected_gate_params) { projects.map(&:flipper_id) }
+        end
+
+        context 'when empty value exists between comma' do
+          it_behaves_like 'creates an enabled feature for the specified entries' do
+            let(:gate_params) { { project: "#{projects.first.full_path},,,," } }
+            let(:expected_gate_params) { projects.first.flipper_id }
+          end
+        end
+
+        context 'when one of the projects does not exist' do
+          it_behaves_like 'does not enable the flag', :project do
+            let(:actor_path) { "#{projects.first.full_path},inexistent-entry" }
+            let(:expected_inexistent_path) { "inexistent-entry" }
+          end
+        end
+      end
+
+      context 'with multiple groups' do
+        let_it_be(:groups) { create_list(:group, 3) }
+
+        it_behaves_like 'creates an enabled feature for the specified entries' do
+          let(:gate_params) { { group: groups.map(&:full_path).join(',') } }
+          let(:expected_gate_params) { groups.map(&:flipper_id) }
+        end
+
+        context 'when empty value exists between comma' do
+          it_behaves_like 'creates an enabled feature for the specified entries' do
+            let(:gate_params) { { group: "#{groups.first.full_path},,,," } }
+            let(:expected_gate_params) { groups.first.flipper_id }
+          end
+        end
+
+        context 'when one of the groups does not exist' do
+          it_behaves_like 'does not enable the flag', :group do
+            let(:actor_path) { "#{groups.first.full_path},inexistent-entry" }
+            let(:expected_inexistent_path) { "inexistent-entry" }
+          end
+        end
+      end
+
+      context 'with multiple namespaces' do
+        let_it_be(:namespaces) { create_list(:namespace, 3) }
+
+        it_behaves_like 'creates an enabled feature for the specified entries' do
+          let(:gate_params) { { namespace: namespaces.map(&:full_path).join(',') } }
+          let(:expected_gate_params) { namespaces.map(&:flipper_id) }
+        end
+
+        context 'when empty value exists between comma' do
+          it_behaves_like 'creates an enabled feature for the specified entries' do
+            let(:gate_params) { { namespace: "#{namespaces.first.full_path},,,," } }
+            let(:expected_gate_params) { namespaces.first.flipper_id }
+          end
+        end
+
+        context 'when one of the namespaces does not exist' do
+          it_behaves_like 'does not enable the flag', :namespace do
+            let(:actor_path) { "#{namespaces.first.full_path},inexistent-entry" }
+            let(:expected_inexistent_path) { "inexistent-entry" }
           end
         end
       end
