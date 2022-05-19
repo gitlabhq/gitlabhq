@@ -98,13 +98,15 @@ export default {
     <span v-else-if="isConfidential" ref="confidential">
       {{ confidentialContextText }}
       {{ __('People without permission will never get a notification.') }}
-      <gl-link :href="confidentialNoteableDocsPath" target="_blank">{{ __('Learn more') }}</gl-link>
+      <gl-link :href="confidentialNoteableDocsPath" target="_blank">{{
+        __('Learn more.')
+      }}</gl-link>
     </span>
 
     <span v-else-if="isLocked" ref="locked">
       {{ lockedContextText }}
       {{ __('Only project members can comment.') }}
-      <gl-link :href="lockedNoteableDocsPath" target="_blank">{{ __('Learn more') }}</gl-link>
+      <gl-link :href="lockedNoteableDocsPath" target="_blank">{{ __('Learn more.') }}</gl-link>
     </span>
   </div>
 </template>

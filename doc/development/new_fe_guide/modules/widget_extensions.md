@@ -46,6 +46,7 @@ export default {
   methods: {
     fetchCollapsedData(props) {}, // Required: Fetches data required for collapsed state
     fetchFullData(props) {},      // Required: Fetches data for the full expanded content
+    fetchMultiData() {},          // Optional: Works in conjunction with `enablePolling` and allows polling multiple endpoints
   },
 };
 ```
@@ -231,6 +232,30 @@ export default {
   },
 };
 ```
+
+If the extension needs to poll multiple endpoints at the same time, then `fetchMultiData`
+can be used to return an array of functions. A new `poll` object will be created for each
+endpoint and they will be polled separately. Once all endpoints are resolved, polling will
+be stopped and `setCollapsedData` will be called with an array of `response.data`. 
+
+```javascript
+export default {
+  //...
+  enablePolling: true
+  methods: {
+    fetchMultiData() {
+      return [
+        () => axios.get(this.reportPath1),
+        () => axios.get(this.reportPath2),
+        () => axios.get(this.reportPath3)
+    },
+  },
+};
+```
+
+**Important** The function needs to return a `Promise` that resolves the `response` object. 
+The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
+important not to alter the status code and headers.
 
 ### Errors
 

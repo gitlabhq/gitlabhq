@@ -106,6 +106,25 @@ export const pollingExtension = {
   enablePolling: true,
 };
 
+export const multiPollingExtension = (endpointsToBePolled) => ({
+  name: 'WidgetTestMultiPollingExtension',
+  props: ['targetProjectFullPath'],
+  computed: {
+    summary(data) {
+      return `Multi polling test extension reports: ${data?.[0]?.reports}, count: ${data.length}`;
+    },
+    statusIcon(data) {
+      return data?.[0]?.reports === 'parsed' ? EXTENSION_ICONS.success : EXTENSION_ICONS.warning;
+    },
+  },
+  enablePolling: true,
+  methods: {
+    fetchMultiData() {
+      return endpointsToBePolled;
+    },
+  },
+});
+
 export const pollingErrorExtension = {
   ...collapsedDataErrorExtension,
   enablePolling: true,

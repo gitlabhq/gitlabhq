@@ -33677,6 +33677,9 @@ msgstr ""
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
 msgstr ""
 
+msgid "SecurityOrchestration|After enabling a group-level policy, this policy automatically applies to all projects in this group."
+msgstr ""
+
 msgid "SecurityOrchestration|All policies"
 msgstr ""
 
@@ -33741,6 +33744,9 @@ msgid "SecurityOrchestration|Enabled"
 msgstr ""
 
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|Group level policy"
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."

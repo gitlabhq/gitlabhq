@@ -422,6 +422,15 @@ Response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22988) in GitLab 11.6.
 
+Deleting a pipeline expires all pipeline caches, and deletes all immediately
+related objects, such as builds, logs, artifacts, and triggers.
+**This action cannot be undone.**
+
+Deleting a pipeline does not automatically delete its
+[child pipelines](../ci/pipelines/parent_child_pipelines.md).
+See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
+for details.
+
 ```plaintext
 DELETE /projects/:id/pipelines/:pipeline_id
 ```

@@ -145,6 +145,17 @@ Returns [`String!`](#string).
 | ---- | ---- | ----------- |
 | <a id="queryechotext"></a>`text` | [`String!`](#string) | Text to echo back. |
 
+### `Query.epicBoardList`
+
+Returns [`EpicList`](#epiclist).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryepicboardlistepicfilters"></a>`epicFilters` | [`EpicFilters`](#epicfilters) | Filters applied when getting epic metadata in the epic board list. |
+| <a id="queryepicboardlistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the list. |
+
 ### `Query.geoNode`
 
 Find a Geo node.

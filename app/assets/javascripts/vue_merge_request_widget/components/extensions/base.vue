@@ -12,6 +12,7 @@ import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scrolle
 import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
+import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
@@ -147,6 +148,35 @@ export default {
         this.triggerRedisTracking();
       }
     },
+    initExtensionMultiPolling() {
+      const allData = [];
+      const requests = this.fetchMultiData();
+
+      requests.forEach((request) => {
+        const poll = new Poll({
+          resource: {
+            fetchData: () => request(this.$props),
+          },
+          method: 'fetchData',
+          successCallback: (response) => {
+            const headers = normalizeHeaders(response.headers);
+
+            if (!headers['POLL-INTERVAL']) {
+              allData.push(response.data);
+            }
+
+            if (allData.length === requests.length) {
+              this.setCollapsedData(allData);
+            }
+          },
+          errorCallback: (e) => {
+            this.setCollapsedError(e);
+          },
+        });
+
+        poll.makeRequest();
+      });
+    },
     initExtensionPolling() {
       const poll = new Poll({
         resource: {
@@ -172,7 +202,11 @@ export default {
       this.loadingState = LOADING_STATES.collapsedLoading;
 
       if (this.$options.enablePolling) {
-        this.initExtensionPolling();
+        if (this.fetchMultiData) {
+          this.initExtensionMultiPolling();
+        } else {
+          this.initExtensionPolling();
+        }
       } else {
         this.fetchCollapsedData(this.$props)
           .then((data) => {

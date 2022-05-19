@@ -50,10 +50,10 @@ Example response:
 
 ## Export Service Ping SQL queries
 
-This action is available only for the GitLab instance [Administrator](../user/permissions.md) users.
+This action is behind the `usage_data_queries_api` feature flag and is available only for the GitLab instance [Administrator](../user/permissions.md) users.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - [Deployed behind a feature flag](../user/feature_flags.md) named `usage_data_queries_api`, disabled by default.
 
 Return all of the raw SQL queries used to compute Service Ping.
 
@@ -113,8 +113,10 @@ Example response:
 
 ## UsageDataNonSqlMetrics API
 
+This action is behind the `usage_data_non_sql_metrics` feature flag and is available only for the GitLab instance [Administrator](../user/permissions.md) users.
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) in GitLab 13.11.
-> - [Deployed behind a feature flag](../user/feature_flags.md), disabled by default.
+> - [Deployed behind a feature flag](../user/feature_flags.md), named `usage_data_non_sql_metrics`, disabled by default.
 
 Return all non-SQL metrics data used in the Service ping.
 

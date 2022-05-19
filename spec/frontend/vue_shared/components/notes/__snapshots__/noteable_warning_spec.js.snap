@@ -10,7 +10,7 @@ exports[`Issue Warning Component when issue is locked but not confidential rende
     href="locked-path"
     target="_blank"
   >
-    Learn more
+    Learn more.
   </gl-link-stub>
 </span>
 `;
@@ -25,7 +25,7 @@ exports[`Issue Warning Component when noteable is confidential but not locked re
     href="confidential-path"
     target="_blank"
   >
-    Learn more
+    Learn more.
   </gl-link-stub>
 </span>
 `;

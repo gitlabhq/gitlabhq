@@ -31,6 +31,7 @@ import {
   fullDataErrorExtension,
   pollingExtension,
   pollingErrorExtension,
+  multiPollingExtension,
 } from './test_extensions';
 
 jest.mock('~/api.js');
@@ -987,6 +988,8 @@ describe('MrWidgetOptions', () => {
     beforeEach(() => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
       pollStop = jest.spyOn(Poll.prototype, 'stop');
+
+      registeredExtensions.extensions = [];
     });
 
     afterEach(() => {
@@ -994,6 +997,63 @@ describe('MrWidgetOptions', () => {
       pollStop.mockRestore();
 
       registeredExtensions.extensions = [];
+    });
+
+    describe('success - multi polling', () => {
+      const findWidgetTestExtension = () => wrapper.find('[data-testid="widget-extension"]');
+
+      // Clear all left-over timeouts that may be registered in the poll class
+      afterEach(() => {
+        let id = window.setTimeout(() => {}, 0);
+
+        while (id > 0) {
+          window.clearTimeout(id);
+          id -= 1;
+        }
+      });
+
+      it('sets data when polling is complete', async () => {
+        registerExtension(
+          multiPollingExtension([
+            () =>
+              Promise.resolve({
+                headers: { 'poll-interval': 0 },
+                status: 200,
+                data: { reports: 'parsed' },
+              }),
+            () =>
+              Promise.resolve({
+                status: 200,
+                data: { reports: 'parsed' },
+              }),
+          ]),
+        );
+
+        await createComponent();
+        expect(findWidgetTestExtension().html()).toContain(
+          'Multi polling test extension reports: parsed, count: 2',
+        );
+      });
+
+      it('shows loading state until polling is complete', async () => {
+        registerExtension(
+          multiPollingExtension([
+            () =>
+              Promise.resolve({
+                headers: { 'poll-interval': 1 },
+                status: 204,
+              }),
+            () =>
+              Promise.resolve({
+                status: 200,
+                data: { reports: 'parsed' },
+              }),
+          ]),
+        );
+
+        await createComponent();
+        expect(findWidgetTestExtension().html()).toContain('Loading...');
+      });
     });
 
     describe('success', () => {

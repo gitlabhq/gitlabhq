@@ -675,6 +675,16 @@ keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533
 [`artifacts:reports:coverage_report`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscoverage_report).
 Cobertura is the only supported report file, but this is the first step towards GitLab supporting other report types.
 
+### `defaultMergeCommitMessageWithDescription` GraphQL API field
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The GraphQL API field `defaultMergeCommitMessageWithDescription` has been removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
+
 ### `omniauth-kerberos` gem
 
 WARNING:

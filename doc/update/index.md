@@ -517,6 +517,8 @@ that may remain stuck permanently in a **pending** state.
   sudo printf "x /tmp/gitaly-%s-*\n" hooks git-exec-path >/etc/tmpfiles.d/gitaly-workaround.conf
   ```
 
+  This issue is fixed in GitLab 14.10 and later.
+
 ### 14.6.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
