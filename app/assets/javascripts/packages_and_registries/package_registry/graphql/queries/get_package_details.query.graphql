@@ -27,25 +27,6 @@ query getPackageDetails($id: PackagesPackageID!) {
         name
       }
     }
-    pipelines(first: 10) {
-      nodes {
-        ref
-        id
-        sha
-        createdAt
-        commitPath
-        path
-        user {
-          id
-          name
-        }
-        project {
-          id
-          name
-          webUrl
-        }
-      }
-    }
     packageFiles(first: 100) {
       nodes {
         id

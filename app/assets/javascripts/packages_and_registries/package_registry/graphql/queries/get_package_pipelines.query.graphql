@@ -1,0 +1,24 @@
+query getPackagePipelines($id: PackagesPackageID!, $first: Int) {
+  package(id: $id) {
+    id
+    pipelines(first: $first) {
+      nodes {
+        ref
+        id
+        sha
+        createdAt
+        commitPath
+        path
+        user {
+          id
+          name
+        }
+        project {
+          id
+          name
+          webUrl
+        }
+      }
+    }
+  }
+}

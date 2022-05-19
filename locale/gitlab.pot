@@ -17516,6 +17516,9 @@ msgstr ""
 msgid "Go to next page"
 msgstr ""
 
+msgid "Go to next unresolved thread"
+msgstr ""
+
 msgid "Go to page %{page}"
 msgstr ""
 
@@ -17526,6 +17529,9 @@ msgid "Go to parent directory"
 msgstr ""
 
 msgid "Go to previous page"
+msgstr ""
+
+msgid "Go to previous unresolved thread"
 msgstr ""
 
 msgid "Go to primary site"
@@ -22063,12 +22069,6 @@ msgid "Jul"
 msgstr ""
 
 msgid "July"
-msgstr ""
-
-msgid "Jump to next unresolved thread"
-msgstr ""
-
-msgid "Jump to previous unresolved thread"
 msgstr ""
 
 msgid "Jun"
@@ -27152,6 +27152,9 @@ msgid "PackageRegistry|Something went wrong while deleting the package file."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while deleting the package."
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while fetching the package history."
 msgstr ""
 
 msgid "PackageRegistry|Sorry, your filter produced no results"

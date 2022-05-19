@@ -144,30 +144,6 @@ export const mockProjectRecentBoardsResponse = {
   },
 };
 
-export const mockGroupBoardResponse = {
-  data: {
-    workspace: {
-      board: {
-        id: 'gid://gitlab/Board/1',
-        name: 'Development',
-      },
-      __typename: 'Group',
-    },
-  },
-};
-
-export const mockProjectBoardResponse = {
-  data: {
-    workspace: {
-      board: {
-        id: 'gid://gitlab/Board/2',
-        name: 'Development',
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
 export const mockAssigneesList = [
   {
     id: 2,

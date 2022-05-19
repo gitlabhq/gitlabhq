@@ -1,8 +1,9 @@
+#import "ee_else_ce/boards/graphql/board_scope.fragment.graphql"
+
 mutation UpdateBoard($input: UpdateBoardInput!) {
   updateBoard(input: $input) {
     board {
-      id
-      webPath
+      ...BoardScopeFragment
     }
     errors
   }

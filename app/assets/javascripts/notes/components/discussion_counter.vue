@@ -75,25 +75,25 @@ export default {
         <gl-button-group class="gl-ml-3">
           <gl-button
             v-gl-tooltip.hover
-            :title="__('Jump to previous unresolved thread')"
-            :aria-label="__('Jump to previous unresolved thread')"
+            :title="__('Go to previous unresolved thread')"
+            :aria-label="__('Go to previous unresolved thread')"
             class="discussion-previous-btn gl-rounded-base! gl-px-2!"
             data-track-action="click_button"
             data-track-label="mr_previous_unresolved_thread"
             data-track-property="click_previous_unresolved_thread_top"
-            icon="angle-up"
+            icon="chevron-lg-up"
             category="tertiary"
             @click="jumpToPreviousDiscussion"
           />
           <gl-button
             v-gl-tooltip.hover
-            :title="__('Jump to next unresolved thread')"
-            :aria-label="__('Jump to next unresolved thread')"
+            :title="__('Go to next unresolved thread')"
+            :aria-label="__('Go to next unresolved thread')"
             class="discussion-next-btn gl-rounded-base! gl-px-2!"
             data-track-action="click_button"
             data-track-label="mr_next_unresolved_thread"
             data-track-property="click_next_unresolved_thread_top"
-            icon="angle-down"
+            icon="chevron-lg-down"
             category="tertiary"
             @click="jumpToNextDiscussion"
           />

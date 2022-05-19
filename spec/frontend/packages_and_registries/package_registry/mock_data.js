@@ -202,10 +202,6 @@ export const packageDetailsQuery = (extendPackage) => ({
         nodes: packageTags(),
         __typename: 'PackageTagConnection',
       },
-      pipelines: {
-        nodes: packagePipelines(),
-        __typename: 'PipelineConnection',
-      },
       packageFiles: {
         nodes: packageFiles(),
         __typename: 'PackageFileConnection',
@@ -219,6 +215,19 @@ export const packageDetailsQuery = (extendPackage) => ({
       },
       __typename: 'PackageDetailsType',
       ...extendPackage,
+    },
+  },
+});
+
+export const packagePipelinesQuery = (pipelines = packagePipelines()) => ({
+  data: {
+    package: {
+      id: 'gid://gitlab/Packages::Package/111',
+      pipelines: {
+        nodes: pipelines,
+        __typename: 'PipelineConnection',
+      },
+      __typename: 'PackageDetailsType',
     },
   },
 });

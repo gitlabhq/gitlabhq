@@ -34,6 +34,14 @@ describe('Board Store Mutations', () => {
     state = defaultState();
   });
 
+  describe('REQUEST_CURRENT_BOARD', () => {
+    it('Should set isBoardLoading state to true', () => {
+      mutations[types.REQUEST_CURRENT_BOARD](state);
+
+      expect(state.isBoardLoading).toBe(true);
+    });
+  });
+
   describe('RECEIVE_BOARD_SUCCESS', () => {
     it('Should set board to state', () => {
       mutations[types.RECEIVE_BOARD_SUCCESS](state, mockBoard);

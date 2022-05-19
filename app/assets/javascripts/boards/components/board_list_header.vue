@@ -45,9 +45,6 @@ export default {
   },
   mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   inject: {
-    boardId: {
-      default: '',
-    },
     weightFeatureAvailable: {
       default: false,
     },
@@ -78,7 +75,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeId', 'filterParams']),
+    ...mapState(['activeId', 'filterParams', 'boardId']),
     ...mapGetters(['isEpicBoard', 'isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);

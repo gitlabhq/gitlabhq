@@ -1,12 +1,19 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { first } from 'lodash';
+import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, n__ } from '~/locale';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import {
+  GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE,
+  FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE,
+} from '../../constants';
+import getPackagePipelinesQuery from '../../graphql/queries/get_package_pipelines.query.graphql';
+import PackageHistoryLoader from './package_history_loader.vue';
 
 export default {
   name: 'PackageHistory',
@@ -25,6 +32,7 @@ export default {
     GlLink,
     GlSprintf,
     HistoryItem,
+    PackageHistoryLoader,
     TimeAgoTooltip,
   },
   props: {
@@ -37,15 +45,27 @@ export default {
       required: true,
     },
   },
+  apollo: {
+    pipelines: {
+      query: getPackagePipelinesQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data.package?.pipelines?.nodes || [];
+      },
+      error() {
+        createFlash({ message: FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE });
+      },
+    },
+  },
   data() {
     return {
+      pipelines: [],
       showDescription: false,
     };
   },
   computed: {
-    pipelines() {
-      return this.packageEntity?.pipelines?.nodes || [];
-    },
     firstPipeline() {
       return first(this.pipelines);
     },
@@ -65,6 +85,15 @@ export default {
         this.archivedLines,
       );
     },
+    isLoading() {
+      return this.$apollo.queries.pipelines.loading;
+    },
+    queryVariables() {
+      return {
+        id: this.packageEntity.id,
+        first: GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE,
+      };
+    },
   },
   methods: {
     truncate(value) {
@@ -80,7 +109,8 @@ export default {
 <template>
   <div class="issuable-discussion">
     <h3 class="gl-font-lg" data-testid="title">{{ __('History') }}</h3>
-    <ul class="timeline main-notes-list notes gl-mb-4" data-testid="timeline">
+    <package-history-loader v-if="isLoading" />
+    <ul v-else class="timeline main-notes-list notes gl-mb-4" data-testid="timeline">
       <history-item icon="clock" data-testid="created-on">
         <gl-sprintf :message="$options.i18n.createdOn">
           <template #name>

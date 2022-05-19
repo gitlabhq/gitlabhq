@@ -19,8 +19,6 @@ import { s__ } from '~/locale';
 import eventHub from '../eventhub';
 import groupBoardsQuery from '../graphql/group_boards.query.graphql';
 import projectBoardsQuery from '../graphql/project_boards.query.graphql';
-import groupBoardQuery from '../graphql/group_board.query.graphql';
-import projectBoardQuery from '../graphql/project_board.query.graphql';
 import groupRecentBoardsQuery from '../graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '../graphql/project_recent_boards.query.graphql';
 
@@ -69,47 +67,14 @@ export default {
       maxPosition: 0,
       filterTerm: '',
       currentPage: '',
-      board: {},
     };
   },
-  apollo: {
-    board: {
-      query() {
-        return this.currentBoardQuery;
-      },
-      variables() {
-        return {
-          fullPath: this.fullPath,
-          boardId: this.fullBoardId,
-        };
-      },
-      update(data) {
-        const board = data.workspace?.board;
-        this.setBoardConfig(board);
-        return {
-          ...board,
-          labels: board?.labels?.nodes,
-        };
-      },
-      error() {
-        this.setError({ message: this.$options.i18n.errorFetchingBoard });
-      },
-    },
-  },
+
   computed: {
-    ...mapState(['boardType', 'fullBoardId']),
+    ...mapState(['boardType', 'board', 'isBoardLoading']),
     ...mapGetters(['isGroupBoard', 'isProjectBoard']),
     parentType() {
       return this.boardType;
-    },
-    currentBoardQueryCE() {
-      return this.isGroupBoard ? groupBoardQuery : projectBoardQuery;
-    },
-    currentBoardQuery() {
-      return this.currentBoardQueryCE;
-    },
-    isBoardLoading() {
-      return this.$apollo.queries.board.loading;
     },
     loading() {
       return this.loadingRecentBoards || Boolean(this.loadingBoards);

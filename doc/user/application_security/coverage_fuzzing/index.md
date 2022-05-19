@@ -313,6 +313,10 @@ This creates two jobs:
 
 The `covfuzz-ci.yml` is the same as that in the [original synchronous example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example#running-go-fuzz-from-ci).
 
+## FIPS-enabled binary
+
+[Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549) the coverage fuzzing binary is compiled with `golang-fips` on Linux x86 and uses OpenSSL as the cryptographic backend. For more details, see [FIPS compliance at GitLab with Go](../../../development/fips_compliance.md#go). 
+
 ## Offline environment
 
 To use coverage fuzzing in an offline environment:
