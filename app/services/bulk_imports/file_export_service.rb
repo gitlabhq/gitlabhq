@@ -30,6 +30,8 @@ module BulkImports
         UploadsExportService.new(portable, export_path)
       when FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION
         LfsObjectsExportService.new(portable, export_path)
+      when FileTransfer::ProjectConfig::REPOSITORY_BUNDLE_RELATION
+        RepositoryBundleExportService.new(portable, export_path)
       else
         raise BulkImports::Error, 'Unsupported relation export type'
       end

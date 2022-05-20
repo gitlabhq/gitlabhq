@@ -163,6 +163,15 @@ module Gitlab
           access_check_error = detailed_error.access_check
           # These messages were returned from internal/allowed API calls
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :custom_hook
+          # Custom hooks may return messages via either stdout or stderr which have a specific prefix. If
+          # that prefix is present we'll want to print the hook's output, otherwise we'll want to print the
+          # Gitaly error as a fallback.
+          custom_hook_error = detailed_error.custom_hook
+          custom_hook_output = custom_hook_error.stderr.presence || custom_hook_error.stdout
+          error_message = EncodingHelper.encode!(custom_hook_output)
+
+          raise Gitlab::Git::PreReceiveError.new(error_message, fallback_message: e.details)
         when :reference_update
           # We simply ignore any reference update errors which are typically an
           # indicator of multiple RPC calls trying to update the same reference

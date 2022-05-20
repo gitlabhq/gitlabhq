@@ -151,7 +151,7 @@ changes to your code, settings, or workflow.
 
 For Dependency Scanning, the default version of Java that the scanner expects will be updated from 11 to 17. Java 17 is [the most up-to-date Long Term Support (LTS) version](https://en.wikipedia.org/wiki/Java_version_history). Dependency Scanning continues to support the same [range of versions (8, 11, 13, 14, 15, 16, 17)](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#supported-languages-and-package-managers), only the default version is changing. If your project uses the previous default of Java 11, be sure to [set the `DS_JAVA_VERSION` variable to match](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning). Please note that consequently the default version of Gradle is now 7.3.3.
 
-### ELK stack logging removed in GitLab 15.0
+### ELK stack logging
 
 WARNING:
 This feature was changed or removed in 15.0
@@ -253,7 +253,7 @@ The permissions model for GraphQL is being updated. After 15.0, users with the G
 
 The issue for this removal is [GitLab-#350682](https://gitlab.com/gitlab-org/gitlab/-/issues/350682)
 
-### Jaeger integration removed in GitLab 15.0
+### Jaeger integration
 
 WARNING:
 This feature was changed or removed in 15.0
@@ -364,62 +364,7 @@ As of GitLab 15.0, we've:
 
 If you rely on Java 8 being present in the analyzer environment, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352549#breaking-change).
 
-### Pseudonymizer
-
-WARNING:
-This feature was changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-The Pseudonymizer feature is generally unused, can cause production issues with large databases, and can interfere with object storage development.
-It was removed in GitLab 15.0.
-
-### Remove Versions from PackageType
-
-WARNING:
-This feature was changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
-
-In GitLab 15.0, we will completely remove `Version` from `PackageType`.
-
-### Remove `promote-to-primary-node` command from `gitlab-ctl`
-
-WARNING:
-This feature was changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-to-primary-node` which was only usable for single-node Geo sites. `gitlab-ctl promote-to-primary-node` has been removed in GitLab 15.0.
-
-### Remove `type` and `types` keyword from CI/CD configuration
-
-WARNING:
-This feature was changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-The `type` and `types` CI/CD keywords is removed in GitLab 15.0, so pipelines that use these keywords fail with a syntax error. Switch to `stage` and `stages`, which have the same behavior.
-
-### Remove dependency_proxy_for_private_groups feature flag
-
-WARNING:
-This feature was changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-A feature flag was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7 as part of the change to require authentication to use the Dependency Proxy. Before GitLab 13.7, you could use the Dependency Proxy without authentication.
-
-In GitLab 15.0, we will remove the feature flag, and you must always authenticate when you use the Dependency Proxy.
-
-### Remove pipelines field from the version field
+### Pipelines field from the version field
 
 WARNING:
 This feature was changed or removed in 15.0
@@ -434,7 +379,7 @@ In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDeta
 
 To mitigate possible performance problems, we will remove the `versions` field's `pipelines` field in GitLab 15.0. Although you will no longer be able to get all pipelines for all versions of a package, you can still get the pipelines of a single version through the remaining `pipelines` field for that version.
 
-### Removed feature flag PUSH_RULES_SUPERSEDE_CODE_OWNERS
+### Pseudonymizer
 
 WARNING:
 This feature was changed or removed in 15.0
@@ -442,7 +387,8 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` has been removed in GitLab 15.0. From now on, push rules will supersede CODEOWNERS. The CODEOWNERS feature is no longer available for access control.
+The Pseudonymizer feature is generally unused, can cause production issues with large databases, and can interfere with object storage development.
+It was removed in GitLab 15.0.
 
 ### Request profiling
 
@@ -588,7 +534,7 @@ changes to your code, settings, or workflow.
 
 Gitaly introduced a new directory that holds all runtime data Gitaly requires to operate correctly. This new directory replaces the old internal socket directory, and consequentially the usage of `gitaly['internal_socket_dir']` was deprecated in favor of `gitaly['runtime_dir']`.
 
-### Support for legacy format of `config/database.yml` removed
+### Support for legacy format of `config/database.yml`
 
 WARNING:
 This feature was changed or removed in 15.0
@@ -641,6 +587,18 @@ In GitLab 15.0, support for the `tags` and `tags_count` parameters will be remov
 
 The `GET /groups/:id/registry/repositories` endpoint will remain, but won't return any info about tags. To get the info about tags, you can use the existing `GET /registry/repositories/:id` endpoint, which will continue to support the `tags` and `tag_count` options as it does today. The latter must be called once per image repository.
 
+### Versions from `PackageType`
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
+
+In GitLab 15.0, we will completely remove `Version` from `PackageType`.
+
 ### Vulnerability Check
 
 WARNING:
@@ -685,6 +643,18 @@ changes to your code, settings, or workflow.
 
 The GraphQL API field `defaultMergeCommitMessageWithDescription` has been removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
 
+### `dependency_proxy_for_private_groups` feature flag
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+A feature flag was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7 as part of the change to require authentication to use the Dependency Proxy. Before GitLab 13.7, you could use the Dependency Proxy without authentication.
+
+In GitLab 15.0, we will remove the feature flag, and you must always authenticate when you use the Dependency Proxy.
+
 ### `omniauth-kerberos` gem
 
 WARNING:
@@ -699,6 +669,36 @@ follow the [upgrade instructions](https://docs.gitlab.com/ee/integration/kerbero
 to upgrade from the removed integration to the new supported one.
 
 We are not removing Kerberos SPNEGO integration. We are removing the old password-based Kerberos.
+
+### `promote-to-primary-node` command from `gitlab-ctl`
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-to-primary-node` which was only usable for single-node Geo sites. `gitlab-ctl promote-to-primary-node` has been removed in GitLab 15.0.
+
+### `push_rules_supersede_code_owners` feature flag
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `push_rules_supersede_code_owners` feature flag has been removed in GitLab 15.0. From now on, push rules will supersede the `CODEOWNERS` file. The code owners feature is no longer available for access control.
+
+### `type` and `types` keyword from CI/CD configuration
+
+WARNING:
+This feature was changed or removed in 15.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `type` and `types` CI/CD keywords is removed in GitLab 15.0, so pipelines that use these keywords fail with a syntax error. Switch to `stage` and `stages`, which have the same behavior.
 
 ### bundler-audit Dependency Scanning tool
 

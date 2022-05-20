@@ -35328,6 +35328,12 @@ msgstr ""
 msgid "SlackIntegration|Are you sure you want to remove this project from the Slack application?"
 msgstr ""
 
+msgid "SlackIntegration|Client ID"
+msgstr ""
+
+msgid "SlackIntegration|Client secret"
+msgstr ""
+
 msgid "SlackIntegration|GitLab for Slack"
 msgstr ""
 
@@ -35355,13 +35361,16 @@ msgstr ""
 msgid "SlackIntegration|Sends notifications about project events to Slack channels."
 msgstr ""
 
-msgid "SlackIntegration|Signing Secret"
+msgid "SlackIntegration|Signing secret"
 msgstr ""
 
 msgid "SlackIntegration|Team name"
 msgstr ""
 
 msgid "SlackIntegration|This integration allows users to perform common operations on this project by entering slash commands in Slack."
+msgstr ""
+
+msgid "SlackIntegration|Verification token"
 msgstr ""
 
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."

@@ -74,7 +74,7 @@ The following items are **not** exported:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Build traces and artifacts
-- Container registry images
+- Package and container registry images
 - CI/CD variables
 - Pipeline triggers
 - Webhooks

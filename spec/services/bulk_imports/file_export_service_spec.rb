@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe BulkImports::FileExportService do
   let_it_be(:project) { create(:project) }
   let_it_be(:export_path) { Dir.mktmpdir }
-  let_it_be(:relation) { BulkImports::FileTransfer::BaseConfig::UPLOADS_RELATION }
+
+  let(:relation) { BulkImports::FileTransfer::BaseConfig::UPLOADS_RELATION }
 
   subject(:service) { described_class.new(project, export_path, relation) }
 
@@ -21,7 +22,7 @@ RSpec.describe BulkImports::FileExportService do
     end
 
     context 'when relation is lfs objects' do
-      let_it_be(:relation) { BulkImports::FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION }
+      let(:relation) { BulkImports::FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION }
 
       it 'executes lfs objects export service' do
         expect_next_instance_of(BulkImports::LfsObjectsExportService) do |service|
@@ -29,6 +30,22 @@ RSpec.describe BulkImports::FileExportService do
         end
 
         expect(subject).to receive(:tar_cf).with(archive: File.join(export_path, 'lfs_objects.tar'), dir: export_path)
+
+        subject.execute
+      end
+    end
+
+    context 'when relation is repository bundle' do
+      let(:relation) { BulkImports::FileTransfer::ProjectConfig::REPOSITORY_BUNDLE_RELATION }
+
+      it 'executes repository bundle export service' do
+        expect_next_instance_of(BulkImports::RepositoryBundleExportService) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        expect(subject)
+          .to receive(:tar_cf)
+          .with(archive: File.join(export_path, 'repository_bundle.tar'), dir: export_path)
 
         subject.execute
       end

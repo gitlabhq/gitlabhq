@@ -483,7 +483,7 @@ gem 'ssh_data', '~> 1.2'
 gem 'spamcheck', '~> 0.1.0'
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 14.10.0-rc1'
+gem 'gitaly', '~> 15.0.0-rc3'
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.0.2'

@@ -324,8 +324,12 @@ git config --global user.email <your email address>
 
 ## User activity
 
-GitLab tracks user contribution activity.
-You can follow or unfollow other users from their [user profiles](#access-your-user-profile).
+GitLab tracks user contribution activity. You can follow or unfollow other users from either:
+
+- Their [user profiles](#access-your-user-profile).
+- The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
+  in GitLab 15.0).
+
 To view a user's activity in a top-level Activity view:
 
 1. From a user's profile, select **Follow**.
