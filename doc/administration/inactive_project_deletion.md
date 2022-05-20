@@ -9,13 +9,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](../administration/feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to 
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
 [enable the feature flag](../administration/feature_flags.md) named `inactive_projects_deletion`.
 On GitLab.com, this feature is not available. This feature is not ready for production use.
 
 Administrators of large GitLab instances can find that over time, projects become inactive and are no longer used.
-These projects take up unnecessary disk space. With inactive project deletion, you can identify these projects, warn 
-the maintainers ahead of time, and then delete the projects if they remain inactive. When an inactive project is 
+These projects take up unnecessary disk space. With inactive project deletion, you can identify these projects, warn
+the maintainers ahead of time, and then delete the projects if they remain inactive. When an inactive project is
 deleted, the action generates an audit event that it was performed by the first active administrator.
 
 ## Configure inactive project deletion

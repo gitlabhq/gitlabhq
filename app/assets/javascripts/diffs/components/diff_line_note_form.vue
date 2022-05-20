@@ -3,6 +3,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__, __ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { commentLineOptions, formatLineRange } from '~/notes/components/multiline_comment_utils';
@@ -175,7 +176,10 @@ export default {
       'saveDiffDiscussion',
       'setSuggestPopoverDismissed',
     ]),
-    async handleCancelCommentForm(shouldConfirm, isDirty) {
+    handleCancelCommentForm: ignoreWhilePending(async function handleCancelCommentForm(
+      shouldConfirm,
+      isDirty,
+    ) {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
 
@@ -195,7 +199,7 @@ export default {
       this.$nextTick(() => {
         this.resetAutoSave();
       });
-    },
+    }),
     handleSaveNote(note) {
       return this.saveDiffDiscussion({ note, formData: this.formData }).then(() =>
         this.handleCancelCommentForm(),

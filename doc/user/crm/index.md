@@ -35,7 +35,7 @@ To read more about what is planned for the future, see [issue 2256](https://gitl
 
 Customer relations management features must be enabled at the group level. If your
 group also contains subgroups, and you want to use CRM features in the subgroup,
-you must enable CRM features for the subgroup. 
+you must enable CRM features for the subgroup.
 
 To enable customer relations management in a group or subgroup:
 

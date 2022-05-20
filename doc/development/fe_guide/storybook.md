@@ -53,6 +53,6 @@ To add a story:
 
 ## Mock backend APIs
 
-GitLab’s Storybook uses [MirajeJS](https://miragejs.com/) to mock REST and GraphQL APIs. Storybook shares the MirajeJS server
+The GitLab Storybook uses [MirajeJS](https://miragejs.com/) to mock REST and GraphQL APIs. Storybook shares the MirajeJS server
 with the [frontend integration tests](../testing_guide/testing_levels.md#frontend-integration-tests). You can find the MirajeJS
 configuration files in `spec/frontend_integration/mock_server`.

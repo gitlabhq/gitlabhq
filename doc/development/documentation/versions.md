@@ -141,8 +141,8 @@ To remove a page:
 
    # Title (removed) **(ULTIMATE SELF)**
 
-   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8
-   and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in 15.0.
+   This feature was [deprecated](<link-to-issue>) in GitLab X.Y
+   and [removed](<link-to-issue>) in X.Y.
    Use [feature X](<link-to-issue>) instead.
    ```
 
@@ -162,12 +162,12 @@ To remove a topic:
    For the `remove_date`, set a date three months after the release where it was removed.
 
    ```markdown
-   <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+   <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
    ## Title (removed) **(ULTIMATE SELF)**
 
-   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8
-   and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in 15.0.
+   This feature was [deprecated](<link-to-issue>) in GitLab X.Y
+   and [removed](<link-to-issue>) in X.Y.
    Use [feature X](<link-to-issue>) instead.
 
    <!--- end_remove -->

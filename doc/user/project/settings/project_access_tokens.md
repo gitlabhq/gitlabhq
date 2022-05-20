@@ -36,7 +36,7 @@ You can use project access tokens:
   - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to
     lower potential abuse.
 
-You cannot use project access tokens to create other access tokens.
+You cannot use project access tokens to create other group, project, or personal access tokens.
 
 Project access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.

@@ -14,6 +14,7 @@ first: '\b([A-Z]{3,5})\b'
 second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 # ... with the exception of these:
 exceptions:
+  - AAAA
   - AJAX
   - ANSI
   - API
@@ -30,14 +31,19 @@ exceptions:
   - CLI
   - CNA
   - CNAME
+  - CNCF
   - CORE
+  - CORS
   - CPU
   - CRIME
+  - CRM
   - CSRF
   - CSS
   - CSV
+  - CWE
   - CVE
   - CVS
+  - CVSS
   - DAG
   - DAST
   - DHCP
@@ -81,6 +87,7 @@ exceptions:
   - HEAD
   - HIPAA
   - HLL
+  - HSTS
   - HTML
   - HTTP
   - HTTPS
@@ -90,6 +97,7 @@ exceptions:
   - ICO
   - IDE
   - IID
+  - IIS
   - IMAP
   - IOPS
   - IRC
@@ -105,6 +113,7 @@ exceptions:
   - LESS
   - LFS
   - LRU
+  - LSIF
   - LTM
   - LTS
   - MIME
@@ -117,6 +126,7 @@ exceptions:
   - NOTE
   - NPM
   - NTP
+  - OKD
   - ONLY
   - OSS
   - OTP
@@ -165,20 +175,25 @@ exceptions:
   - SHA
   - SLA
   - SLI
+  - SLO
   - SMS
   - SMTP
+  - SOAP
   - SOC
   - SOX
   - SPDX
+  - SPDY
   - SPF
   - SQL
   - SRE
+  - SRV
   - SSD
   - SSG
   - SSH
   - SSL
   - SSO
   - STI
+  - SUSE
   - SVG
   - SVN
   - TCP

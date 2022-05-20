@@ -73,8 +73,8 @@ There are three different causes for the error:
 
 - In GitLab 15.0, templates use [`rules`](../../../ci/yaml/index.md#rules) syntax
   instead of [`only/except`](../../../ci/yaml/index.md#only--except).
-  Ensure the syntax in your `.gitlab-ci.yml` file does not include both. 
-  
+  Ensure the syntax in your `.gitlab-ci.yml` file does not include both.
+
 #### Use an older version of the template
 
 Breaking changes can occur during major releases. If you encounter a breaking change or want to use an older version of a template, you can update your `.gitlab-ci.yml` to refer to an older one. For example:

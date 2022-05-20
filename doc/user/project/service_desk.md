@@ -146,7 +146,7 @@ You can set description templates at various levels:
 - A specific [group or subgroup](description_templates.md#set-group-level-description-templates).
 - A specific [project](description_templates.md#set-a-default-template-for-merge-requests-and-issues).
 
-The templates are inherited. For example, in a project, you can also access templates set for the instance or the project’s parent groups.
+The templates are inherited. For example, in a project, you can also access templates set for the instance or the project's parent groups.
 
 To use a custom description template with Service Desk:
 

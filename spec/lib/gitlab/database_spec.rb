@@ -222,10 +222,6 @@ RSpec.describe Gitlab::Database do
   end
 
   describe '.gitlab_schemas_for_connection' do
-    it 'does raise exception for invalid connection' do
-      expect { described_class.gitlab_schemas_for_connection(:invalid) }.to raise_error /key not found: "unknown"/
-    end
-
     it 'does return a valid schema depending on a base model used', :request_store do
       # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
       stub_feature_flags(force_no_sharing_primary_model: true)
@@ -281,6 +277,15 @@ RSpec.describe Gitlab::Database do
           expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).not_to include(:gitlab_main)
         end
       end
+    end
+
+    it 'does return empty for non-adopted connections' do
+      new_connection = ActiveRecord::Base.postgresql_connection(
+        ActiveRecord::Base.connection_db_config.configuration_hash)
+
+      expect(described_class.gitlab_schemas_for_connection(new_connection)).to be_nil
+    ensure
+      new_connection&.disconnect!
     end
   end
 

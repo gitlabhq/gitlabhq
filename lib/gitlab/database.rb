@@ -203,8 +203,13 @@ module Gitlab
     # This does not look at literal connection names, but rather compares
     # models that are holders for a given db_config_name
     def self.gitlab_schemas_for_connection(connection)
-      db_name = self.db_config_name(connection)
-      primary_model = self.database_base_models.fetch(db_name.to_sym)
+      db_config = self.db_config_for_connection(connection)
+
+      # connection might not be yet adopted (returning NullPool, and no connection_klass)
+      # in such cases it is fine to ignore such connections
+      return unless db_config
+
+      primary_model = self.database_base_models.fetch(db_config.name.to_sym)
 
       self.schemas_to_base_models.select do |_, child_models|
         child_models.any? do |child_model|

@@ -147,6 +147,19 @@ addr = "localhost:3443"
 The `certificate` file should contain the concatenation
 of the server's certificate, any intermediates, and the CA's certificate.
 
+Metrics endpoints can be configured similarly:
+
+```toml
+[metrics_listener]
+network = "tcp"
+addr = "localhost:9229"
+[metrics_listener.tls]
+  certificate = "/path/to/certificate"
+  key = "/path/to/private/key"
+  min_version = "tls1.2"
+  max_version = "tls1.3"
+```
+
 ## Interaction of authBackend and authSocket
 
 The interaction between `authBackend` and `authSocket` can be confusing.

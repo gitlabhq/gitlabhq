@@ -1447,7 +1447,7 @@ To prepare the new server:
 1. Copy the
    [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
    from the old server to avoid man-in-the-middle attack warnings.
-   See [Manually replicate the primary site’s SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
+   See [Manually replicate the primary site's SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
 1. [Install and configure GitLab](https://about.gitlab.com/install) except
    [incoming email](../administration/incoming_email.md):
    1. Install GitLab.

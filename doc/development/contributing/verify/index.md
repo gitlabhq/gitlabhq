@@ -134,7 +134,7 @@ applied to many other technical implementations.
 GitLab is a DevOps platform. We popularize DevOps because it helps companies
 be more efficient and achieve better results. One important component of
 DevOps culture is to take ownership over features and code that you are
-building. It is very difficult to do that when you don’t know how your features
+building. It is very difficult to do that when you don't know how your features
 perform and behave in the production environment.
 
 This is why we want to make our features and code observable. It
@@ -181,7 +181,7 @@ updating, because their feedback might be limited to code style and syntax.
 Depending on the complexity and impact of a change, assigning the right people
 to review your changes might be very important.
 
-If you don’t know who to assign, consult `git blame` or ask in the `#verify`
+If you don't know who to assign, consult `git blame` or ask in the `#verify`
 Slack channel (GitLab team members only).
 
 ### Incremental rollouts
@@ -220,7 +220,7 @@ scenario relating to a software being built by one of our [early customers](http
 
 That would be quite an undesirable outcome of a small bug in GitLab CI/CD status
 processing. Please take extra care when you are working on CI/CD statuses,
-we don’t want to implode our Universe!
+we don't want to implode our Universe!
 
 This is an extreme and unlikely scenario, but presenting data that is not accurate
 can potentially cause a myriad of problems through the

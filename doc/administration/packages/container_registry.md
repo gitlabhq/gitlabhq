@@ -1180,7 +1180,7 @@ Reference: <https://docs.docker.com/registry/spec/auth/token/>
 
 ### Communication between GitLab and Registry
 
-Registry doesn’t have a way to authenticate users internally so it relies on
+Registry doesn't have a way to authenticate users internally so it relies on
 GitLab to validate credentials. The connection between Registry and GitLab is
 TLS encrypted. The key is used by GitLab to sign the tokens while the certificate
 is used by Registry to validate the signature. By default, a self-signed certificate key pair is generated

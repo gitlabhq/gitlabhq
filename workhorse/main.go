@@ -149,6 +149,14 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 		return nil, nil, fmt.Errorf("configFile: %v", err)
 	}
 
+	cfg.MetricsListener = cfgFromFile.MetricsListener
+	if boot.prometheusListenAddr != "" {
+		if cfg.MetricsListener != nil {
+			return nil, nil, fmt.Errorf("configFile: both prometheusListenAddr and metrics_listener can't be specified")
+		}
+		cfg.MetricsListener = &config.ListenerConfig{Network: "tcp", Addr: boot.prometheusListenAddr}
+	}
+
 	cfg.Redis = cfgFromFile.Redis
 	cfg.ObjectStorageCredentials = cfgFromFile.ObjectStorageCredentials
 	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
@@ -196,11 +204,10 @@ func run(boot bootConfig, cfg config.Config) error {
 	}
 
 	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
-
-	if boot.prometheusListenAddr != "" {
-		l, err := net.Listen("tcp", boot.prometheusListenAddr)
+	if cfg.MetricsListener != nil {
+		l, err := newListener("metrics", *cfg.MetricsListener)
 		if err != nil {
-			return fmt.Errorf("prometheusListenAddr: %v", err)
+			return err
 		}
 		monitoringOpts = append(monitoringOpts, monitoring.WithListener(l))
 	}

@@ -200,7 +200,7 @@ GitLab SaaS shared runners have different cost factors, depending on the runner 
 | GitLab SaaS runner type  | Virtual machine configuration   | CI/CD minutes cost factor  |
 | :--------- | :------------------- | :--------- |
 | Linux OS + Docker executor| 1 vCPU, 3.75 GB RAM   |1|
-| macOS + shell executor   | 4 vCPU, 10 GB RAM| 6 | 
+| macOS + shell executor   | 4 vCPU, 10 GB RAM| 6 |
 
 ### Monthly reset of CI/CD minutes
 

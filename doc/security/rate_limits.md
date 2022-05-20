@@ -87,7 +87,7 @@ Each command has a rate limit of 600 per minute. For example:
 Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
 
 The requests/minute threshold for this rate limit is not configurable. Self-managed customers can disable this
-rate limit by [disabling the feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) 
+rate limit by [disabling the feature flag](../administration/feature_flags.md#enable-or-disable-the-feature)
 with `Feature.disable(:rate_limit_gitlab_shell)`.
 
 ### Repository archives

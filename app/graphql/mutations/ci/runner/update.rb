@@ -18,6 +18,10 @@ module Mutations
                  required: false,
                  description: 'Description of the runner.'
 
+        argument :maintenance_note, GraphQL::Types::String,
+                 required: false,
+                 description: 'Runner\'s maintenance notes.'
+
         argument :maximum_timeout, GraphQL::Types::Int,
                  required: false,
                  description: 'Maximum timeout (in seconds) for jobs processed by the runner.'

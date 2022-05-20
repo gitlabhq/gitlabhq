@@ -333,7 +333,7 @@ Vulnerability rules in an API scan are different than those in a normal website 
 
 A new DAST API scanning engine is available in GitLab 13.12 and later. For more details, see [DAST API scanning engine](../dast_api). The new scanning engine supports REST, SOAP, GraphQL, and generic APIs using forms, XML, and JSON. Testing can be performed using OpenAPI, Postman Collections, and HTTP Archive (HAR) documents.
 
-The target API instance’s base URL is provided by using the `DAST_API_TARGET_URL` variable or an `environment_url.txt` file.
+The target API instance's base URL is provided by using the `DAST_API_TARGET_URL` variable or an `environment_url.txt` file.
 
 #### Specification format
 

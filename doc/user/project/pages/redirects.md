@@ -164,7 +164,7 @@ Splats also match empty strings, so the previous rule redirects
 ### Rewrite all requests to a root `index.html`
 
 NOTE:
-If you are using [GitLab Pages integration with Let’s Encrypt](custom_domains_ssl_tls_certification/lets_encrypt_integration.md),
+If you are using [GitLab Pages integration with Let's Encrypt](custom_domains_ssl_tls_certification/lets_encrypt_integration.md),
 you must enable it before adding this rule. Otherwise, the redirection breaks the Let's Encrypt
 integration. For more details, see
 [GitLab Pages issue 649](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/649).

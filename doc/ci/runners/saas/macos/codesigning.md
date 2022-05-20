@@ -61,7 +61,7 @@ To use fastlane to code sign your application:
        get_provisioning_profile
        # match(type: "appstore",read_only: true)
        gym
-       upload_to_testflight    
+       upload_to_testflight
      end
    end
    ```
