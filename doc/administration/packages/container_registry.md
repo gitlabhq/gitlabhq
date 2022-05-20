@@ -317,6 +317,17 @@ the Container Registry by themselves, follow the steps below.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+### Increase token duration
+
+In GitLab, tokens for the Container Registry expire every five minutes.
+To increase the token duration:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Container Registry**.
+1. For the **Authorization token duration (minutes)**, update the value.
+1. Select **Save changes**.
+
 ## Configure storage for the Container Registry
 
 NOTE:
@@ -1225,29 +1236,6 @@ mounting the Docker daemon and setting `privileged = false` in the GitLab Runner
 ```
 
 Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18239).
-
-### `unauthorized: authentication required` when pushing large images
-
-Example error:
-
-```shell
-docker push gitlab.example.com/myproject/docs:latest
-The push refers to a repository [gitlab.example.com/myproject/docs]
-630816f32edb: Preparing
-530d5553aec8: Preparing
-...
-4b0bab9ff599: Waiting
-d1c800db26c7: Waiting
-42755cf4ee95: Waiting
-unauthorized: authentication required
-```
-
-GitLab has a default token expiration of 5 minutes for the registry. When pushing
-larger images, or images that take longer than 5 minutes to push, users may
-encounter this error. On GitLab.com, the expiration time is 15 minutes.
-
-Administrators can increase the token duration in **Admin Area > Settings >
-CI/CD > Container Registry > Authorization token duration (minutes)**.
 
 ### Docker login attempt fails with: 'token signed by untrusted key'
 

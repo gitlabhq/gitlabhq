@@ -707,3 +707,27 @@ GitLab is [migrating to the next generation of the Container Registry](https://g
 During the migration, you may encounter difficulty deleting tags.
 If you encounter an error, it's likely that your image repository is in the process of being migrated.
 Please wait a few minutes and try again.
+
+### `unauthorized: authentication required` when pushing large images
+
+When pushing large images, you might get an error like the following:
+
+```shell
+docker push gitlab.example.com/myproject/docs:latest
+The push refers to a repository [gitlab.example.com/myproject/docs]
+630816f32edb: Preparing
+530d5553aec8: Preparing
+...
+4b0bab9ff599: Waiting
+d1c800db26c7: Waiting
+42755cf4ee95: Waiting
+unauthorized: authentication required
+```
+
+On self-managed GitLab instances, by default, tokens for the Container Registry expire every five minutes.
+When pushing larger images, or images that take longer than five minutes to push,
+you might encounter this error. On GitLab.com, the expiration time is 15 minutes.
+
+If you are using self-managed GitLab, you can ask an administrator to
+[increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration)
+if necessary.

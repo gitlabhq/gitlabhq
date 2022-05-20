@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke, feature_flag: { name: 'vue_issues_list', scope: :group } do
+  RSpec.describe(
+    'Plan',
+    :smoke,
+    feature_flag: { name: 'vue_issues_list', scope: :group },
+    quarantine: { issue: 'https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7099', type: :investigating, only: { subdomain: 'pre' } }
+  ) do
     describe 'Issue creation' do
       let(:project) { Resource::Project.fabricate_via_api! }
       let(:closed_issue) { Resource::Issue.fabricate_via_api! { |issue| issue.project = project } }
@@ -15,8 +20,7 @@ module QA
       it(
         'creates an issue',
         :mobile,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347989',
-        except: { subdomain: 'pre' }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347989'
       ) do
         issue = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
 
@@ -33,8 +37,7 @@ module QA
       it(
         'closes an issue',
         :mobile,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347967',
-        except: { subdomain: 'pre' }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347967'
       ) do
         closed_issue.visit!
 
@@ -71,7 +74,11 @@ module QA
         # The following example is excluded from running in `review-qa-smoke` job
         # as it proved to be flaky when running against Review App
         # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/11568#note_621999351
-        it 'comments on an issue with an attachment', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946', except: { subdomain: 'pre', job: 'review-qa-smoke' } do
+        it(
+          'comments on an issue with an attachment',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946',
+          except: { job: 'review-qa-smoke' }
+        ) do
           Page::Project::Issue::Show.perform do |show|
             show.comment('See attached image for scale', attachment: file_to_attach)
 

@@ -7,36 +7,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Elasticsearch integration **(PREMIUM SELF)**
 
-> Moved to GitLab Premium in 13.9.
-
 This page describes how to enable Advanced Search. When enabled,
 Advanced Search provides faster search response times and [improved search features](../user/search/advanced_search.md).
 
 ## Version requirements
 
-> Support for Elasticsearch 6.8 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 14.8 and is scheduled for removal in GitLab 15.0.
+### Elasticsearch version requirements
 
-| GitLab version       | Elasticsearch version    |
-|----------------------|--------------------------|
-| GitLab 14.8 or later | Elasticsearch 7.x - 7.17 |
-| GitLab 13.9 - 14.7   | Elasticsearch 6.8 - 7.x  |
-| GitLab 13.3 - 13.8   | Elasticsearch 6.4 - 7.x  |
-| GitLab 12.7 - 13.2   | Elasticsearch 6.x - 7.x  |
-| GitLab 11.5 - 12.6   | Elasticsearch 5.6 - 6.x  |
+> Support for Elasticsearch 6.8 was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0. 
 
-The Elasticsearch Integration works with supported versions of
-Elasticsearch and follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).
+Advanced Search works with the following versions of Elasticsearch.
+
+| GitLab version        | Elasticsearch version    |
+|-----------------------|--------------------------|
+| GitLab 15.0 or later  | Elasticsearch 7.x - 8.x  |
+| GitLab 13.9 - 14.10   | Elasticsearch 6.8 - 7.x  |
+| GitLab 13.3 - 13.8    | Elasticsearch 6.4 - 7.x  |
+| GitLab 12.7 - 13.2    | Elasticsearch 6.x - 7.x  |
+
+Advanced Search follows Elasticsearch's [End of Life Policy](https://www.elastic.co/support/eol).
 When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
 before we remove them.
 
-### Versions not supported
+### OpenSearch version requirements
 
-GitLab does not support:
-
-- [Amazon's OpenSearch](https://aws.amazon.com/blogs/opensource/opensearch-1-0-launches/)
-(a [fork of Elasticsearch](https://www.elastic.co/what-is/opensearch)). Use AWS Elasticsearch Service 7.10 instead.
-For updates, see [issue #327560](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
-- Elasticsearch 8.0. For updates, see [issue #350600](https://gitlab.com/gitlab-org/gitlab/-/issues/350600). Use Elasticsearch 7.17 instead.
+| GitLab version        | Elasticsearch version    |
+|-----------------------|--------------------------|
+| GitLab 15.0 or later  | OpenSearch 1.x or later  |
 
 ## System requirements
 
@@ -59,8 +56,6 @@ source. You must [install it separately](https://www.elastic.co/guide/en/elastic
 You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
 service.
 
-If using the Amazon OpenSearch service, ensure that you select `Elasticsearch 7.10` when configuring Deployment type. As noted in [Versions not supported](#versions-not-supported), Amazon's non-Elasticsearch versions are not yet supported.
-
 You should install Elasticsearch on a separate server. Running Elasticsearch on the same server as GitLab is not recommended and can cause a degradation in GitLab instance performance.
 
 For a single node Elasticsearch cluster, the functional cluster health status is always yellow due to the allocation of the primary shard. Elasticsearch cannot assign replica shards to the same node as primary shards.
@@ -72,14 +67,10 @@ The search index updates after you:
 
 ## Upgrade to a new Elasticsearch major version
 
-Elasticsearch reads and uses indices created in the previous major version. You are not required to change the GitLab configuration when you upgrade Elasticsearch.
+> - Elasticsearch 6.8 support is removed with GitLab 15.0.
+> - Upgrading from GitLab 14.10 to 15.0 requires that you are using any version of Elasticsearch 7.x.
 
-If your current index was created before GitLab 13.0, you must reindex from scratch to create an alias to use features such as [zero downtime reindexing](#zero-downtime-reindexing). After you reindex, you can perform zero downtime reindexing and also benefit from future features that use the alias.
-
-To check if your current index was created before GitLab 13.0, use the [Elasticsearch cat aliases API](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/cat-alias.html).
-If the returned list of aliases does not contain a `gitlab-production` alias, you must reindex to use features such as zero downtime reindexing.
-If the returned list of aliases contains an entry for `gitlab-production` that points to an index
-named `gitlab-production-<numerical timestamp>`, your index was created after GitLab 13.0.
+You are not required to change the GitLab configuration when you upgrade Elasticsearch.
 
 ## Elasticsearch repository indexer
 
@@ -1101,3 +1092,13 @@ es:ESHttpPost
 es:ESHttpPut
 es:ESHttpPatch
 ```
+
+### Role-mapping when using AWS Elasticsearch or AWS OpenSearch fine-grained access control
+
+When using fine-grained access control with an IAM role, you might encounter the following error:
+
+```plaintext
+{"error":{"root_cause":[{"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"}],"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"},"status":403}
+```
+
+To fix this, you need to [map the roles to users](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-mapping) in Kibana.

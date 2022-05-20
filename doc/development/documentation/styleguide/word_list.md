@@ -139,6 +139,16 @@ Do not use **and so on**. Instead, be more specific. For details, see
 
 Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
 
+## associate
+
+Do not use **associate** when describing adding issues to epics, or users to issues, merge requests,
+or epics.
+
+Instead, use **assign**. For example:
+
+- Assign the issue to an epic.
+- Assign a user to the issue.
+
 ## below
 
 Try to avoid **below** when referring to an example or table in a documentation page. If required, use **following** instead. For example:
@@ -346,6 +356,8 @@ See also [**type**](#type).
 ## epic
 
 Use lowercase for **epic**.
+
+See also [associate](#associate).
 
 ## epic board
 
