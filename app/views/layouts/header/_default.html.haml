@@ -16,7 +16,7 @@
                 = _('Next')
 
         - if current_user
-          .gl-display-none.gl-sm-display-block
+          .gl-display-none.gl-sm-display-block{ **tracking_attrs('Menu', 'click_dropdown', 'navigation') }
             = render "layouts/nav/top_nav"
         - else
           - experiment(:logged_out_marketing_header, actor: nil) do |e|

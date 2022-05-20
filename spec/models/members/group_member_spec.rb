@@ -148,4 +148,135 @@ RSpec.describe GroupMember do
       end
     end
   end
+
+  context 'authorization refresh on addition/updation/deletion' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_a) { create(:project, group: group) }
+    let_it_be(:project_b) { create(:project, group: group) }
+    let_it_be(:project_c) { create(:project, group: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:affected_project_ids) { Project.id_in([project_a, project_b, project_c]).ids }
+
+    before do
+      stub_const(
+        "#{described_class.name}::THRESHOLD_FOR_REFRESHING_AUTHORIZATIONS_VIA_PROJECTS",
+        affected_project_ids.size - 1)
+    end
+
+    shared_examples_for 'calls UserProjectAccessChangedService to recalculate authorizations' do
+      it 'calls UserProjectAccessChangedService to recalculate authorizations' do
+        expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
+          expect(service).to receive(:execute).with(blocking: blocking)
+        end
+
+        action
+      end
+    end
+
+    shared_examples_for 'tries to update permissions via refreshing authorizations for the affected projects' do
+      context 'when the number of affected projects exceeds the set threshold' do
+        it 'updates permissions via refreshing authorizations for the affected projects asynchronously' do
+          expect_next_instance_of(
+            AuthorizedProjectUpdate::ProjectAccessChangedService, affected_project_ids
+          ) do |service|
+            expect(service).to receive(:execute).with(blocking: false)
+          end
+
+          action
+        end
+
+        it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay as a safety net' do
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+            receive(:bulk_perform_in)
+              .with(1.hour,
+                    [[user.id]],
+                    batch_delay: 30.seconds, batch_size: 100)
+          )
+
+          action
+        end
+      end
+
+      context 'when the number of affected projects does not exceed the set threshold' do
+        before do
+          stub_const(
+            "#{described_class.name}::THRESHOLD_FOR_REFRESHING_AUTHORIZATIONS_VIA_PROJECTS",
+            affected_project_ids.size + 1)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+    end
+
+    context 'on create' do
+      let(:action) { group.add_user(user, Gitlab::Access::GUEST) }
+      let(:blocking) { true }
+
+      it 'changes access level', :sidekiq_inline do
+        expect { action }.to change { user.can?(:guest_access, project_a) }.from(false).to(true)
+          .and change { user.can?(:guest_access, project_b) }.from(false).to(true)
+          .and change { user.can?(:guest_access, project_c) }.from(false).to(true)
+      end
+
+      it_behaves_like 'tries to update permissions via refreshing authorizations for the affected projects'
+
+      context 'when the feature flag `refresh_authorizations_via_affected_projects_on_group_membership` is disabled' do
+        before do
+          stub_feature_flags(refresh_authorizations_via_affected_projects_on_group_membership: false)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+    end
+
+    context 'on update' do
+      before do
+        group.add_user(user, Gitlab::Access::GUEST)
+      end
+
+      let(:action) { group.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
+      let(:blocking) { true }
+
+      it 'changes access level', :sidekiq_inline do
+        expect { action }.to change { user.can?(:developer_access, project_a) }.from(false).to(true)
+          .and change { user.can?(:developer_access, project_b) }.from(false).to(true)
+          .and change { user.can?(:developer_access, project_c) }.from(false).to(true)
+      end
+
+      it_behaves_like 'tries to update permissions via refreshing authorizations for the affected projects'
+
+      context 'when the feature flag `refresh_authorizations_via_affected_projects_on_group_membership` is disabled' do
+        before do
+          stub_feature_flags(refresh_authorizations_via_affected_projects_on_group_membership: false)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+    end
+
+    context 'on destroy' do
+      before do
+        group.add_user(user, Gitlab::Access::GUEST)
+      end
+
+      let(:action) { group.members.find_by(user: user).destroy! }
+      let(:blocking) { false }
+
+      it 'changes access level', :sidekiq_inline do
+        expect { action }.to change { user.can?(:guest_access, project_a) }.from(true).to(false)
+          .and change { user.can?(:guest_access, project_b) }.from(true).to(false)
+          .and change { user.can?(:guest_access, project_c) }.from(true).to(false)
+      end
+
+      it_behaves_like 'tries to update permissions via refreshing authorizations for the affected projects'
+
+      context 'when the feature flag `refresh_authorizations_via_affected_projects_on_group_membership` is disabled' do
+        before do
+          stub_feature_flags(refresh_authorizations_via_affected_projects_on_group_membership: false)
+        end
+
+        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
+      end
+    end
+  end
 end

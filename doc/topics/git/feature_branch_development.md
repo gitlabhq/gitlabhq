@@ -83,7 +83,7 @@ we have selected `test-branch` as the source, and `release-13-0` as the target.
 
    ![Modify branches](img/modify_branches_v13_1.png)
 
-1. Once you've selected the Source and Target branches, click **Compare branches and continue**.
+1. Once you've selected the Source and Target branches, select **Compare branches and continue**.
    You should see an entry similar to:
 
    ```plaintext
@@ -94,7 +94,7 @@ we have selected `test-branch` as the source, and `release-13-0` as the target.
 
    An entry like this confirms your merge request's destination.
 
-1. Make any additional changes in the **New Merge Request** screen, and click **Submit merge request**.
+1. Make any additional changes in the **New Merge Request** screen, and select **Submit merge request**.
 1. In the new merge request, look for **Request to merge**. An entry similar to this displays:
 
    ```plaintext

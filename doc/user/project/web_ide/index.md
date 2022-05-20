@@ -198,13 +198,13 @@ left.
 
 ## Switching merge requests
 
-To switch between your authored and assigned merge requests, click the
+To switch between your authored and assigned merge requests, select the
 dropdown in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
 request.
 
 ## Switching branches
 
-To switch between branches of the current project repository, click the dropdown
+To switch between branches of the current project repository, select the dropdown
 in the top of the sidebar to open a list of branches.
 You must commit or discard all your changes before switching to a
 different branch.
@@ -361,7 +361,7 @@ If there is no configuration file in a branch, an error message is shown.
 
 ### Running interactive terminals in the Web IDE
 
-If Interactive Terminals are available for the current user, the **Terminal** button is visible in the right sidebar of the Web IDE. Click this button to open
+If Interactive Terminals are available for the current user, the **Terminal** button is visible in the right sidebar of the Web IDE. Select this button to open
 or close the terminal tab.
 
 After opening, the tab shows the **Start Web Terminal** button. This button may
@@ -383,7 +383,7 @@ to running commands in a local terminal or through SSH.
 
 While the terminal is running, it can be stopped by clicking **Stop Terminal**.
 This disconnects the terminal and stops the runner's terminal job. From here,
-click **Restart Terminal** to start a new terminal session.
+select **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 

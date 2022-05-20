@@ -71,7 +71,7 @@ GITLAB_TRACING=opentracing://<driver>?<param_name>=<param_value>&<param_name_2>=
 
 In this example, we have the following hypothetical values:
 
-- `driver`: the driver such a jaegar.
+- `driver`: the driver such a Jaeger.
 - `param_name`, `param_value`: these are driver specific configuration values. Configuration
   parameters for Jaeger are documented [further on in this
   document](#2-configure-the-gitlab_tracing-environment-variable) they should be URL encoded.

@@ -670,7 +670,7 @@ The percentage is based on the `REPLICAS` CI/CD variable, and defines the number
 pods you want to have for your deployment. If the value is `10`, and you run the
 `10%` rollout job, there is `1` new pod and `9` old ones.
 
-To start a job, click the play icon (**{play}**) next to the job's name. You're not
+To start a job, select the play icon (**{play}**) next to the job's name. You're not
 required to go from `10%` to `100%`, you can jump to whatever job you want.
 You can also scale down by running a lower percentage job, just before hitting
 `100%`. Once you get to `100%`, you can't scale down, and you'd have to roll

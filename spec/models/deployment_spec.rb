@@ -17,7 +17,6 @@ RSpec.describe Deployment do
   it { is_expected.to delegate_method(:name).to(:environment).with_prefix }
   it { is_expected.to delegate_method(:commit).to(:project) }
   it { is_expected.to delegate_method(:commit_title).to(:commit).as(:try) }
-  it { is_expected.to delegate_method(:manual_actions).to(:deployable).as(:try) }
   it { is_expected.to delegate_method(:kubernetes_namespace).to(:deployment_cluster).as(:kubernetes_namespace) }
 
   it { is_expected.to validate_presence_of(:ref) }
@@ -25,20 +24,43 @@ RSpec.describe Deployment do
 
   it_behaves_like 'having unique enum values'
 
+  describe '#manual_actions' do
+    let(:deployment) { create(:deployment) }
+
+    it 'delegates to environment_manual_actions when deployment_environment_manual_actions ff is enabled' do
+      stub_feature_flags(deployment_environment_manual_actions: true)
+
+      expect(deployment.deployable).to receive(:environment_manual_actions).and_call_original
+
+      deployment.manual_actions
+    end
+
+    it 'delegates to other_manual_actions when deployment_environment_manual_actions ff is disabled' do
+      stub_feature_flags(deployment_environment_manual_actions: false)
+
+      expect(deployment.deployable).to receive(:other_manual_actions).and_call_original
+
+      deployment.manual_actions
+    end
+  end
+
   describe '#scheduled_actions' do
-    subject { deployment.scheduled_actions }
+    let(:deployment) { create(:deployment) }
 
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-    let(:deployment) { create(:deployment, deployable: build) }
+    it 'delegates to environment_scheduled_actions when deployment_environment_manual_actions ff is enabled' do
+      stub_feature_flags(deployment_environment_manual_actions: true)
 
-    it 'delegates to other_scheduled_actions' do
-      expect_next_instance_of(Ci::Build) do |instance|
-        expect(instance).to receive(:other_scheduled_actions)
-      end
+      expect(deployment.deployable).to receive(:environment_scheduled_actions).and_call_original
 
-      subject
+      deployment.scheduled_actions
+    end
+
+    it 'delegates to other_scheduled_actions when deployment_environment_manual_actions ff is disabled' do
+      stub_feature_flags(deployment_environment_manual_actions: false)
+
+      expect(deployment.deployable).to receive(:other_scheduled_actions).and_call_original
+
+      deployment.scheduled_actions
     end
   end
 

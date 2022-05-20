@@ -302,7 +302,7 @@ LIMIT 20
 
 ##### Tooling
 
-A generic keyset pagination library is available within the GitLab project which can most of the cases easily replace the existing, kaminari based pagination with significant performance improvements when dealing with large datasets.
+A generic keyset pagination library is available within the GitLab project which can most of the cases easily replace the existing, Kaminari based pagination with significant performance improvements when dealing with large datasets.
 
 Example:
 

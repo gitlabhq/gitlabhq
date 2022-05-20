@@ -24,6 +24,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
                      :delete_self_monitoring_project,
                      :status_delete_self_monitoring_project
                    ]
+  urgency :low, [
+            :create_self_monitoring_project,
+            :status_create_self_monitoring_project,
+            :delete_self_monitoring_project,
+            :status_delete_self_monitoring_project
+          ]
 
   feature_category :source_code_management, [:repository, :clear_repository_check_states]
   feature_category :continuous_integration, [:ci_cd, :reset_registration_token]

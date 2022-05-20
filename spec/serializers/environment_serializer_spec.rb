@@ -227,8 +227,11 @@ RSpec.describe EnvironmentSerializer do
 
   def create_environment_with_associations(project)
     create(:environment, project: project).tap do |environment|
-      create(:deployment, :success, environment: environment, project: project)
-      create(:deployment, :running, environment: environment, project: project)
+      pipeline = create(:ci_pipeline, project: project)
+      manual_build = create(:ci_build, :manual, project: project, pipeline: pipeline, environment: environment.name)
+      scheduled_build = create(:ci_build, :scheduled, project: project, pipeline: pipeline, environment: environment.name)
+      create(:deployment, :success, environment: environment, project: project, deployable: manual_build)
+      create(:deployment, :running, environment: environment, project: project, deployable: scheduled_build)
     end
   end
 end

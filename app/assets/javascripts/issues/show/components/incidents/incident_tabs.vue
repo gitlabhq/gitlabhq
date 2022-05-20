@@ -65,17 +65,26 @@ export default {
       Tracking.event(category, action);
     },
     handleTabChange(tabIndex) {
+      /**
+       * TODO: Implement a solution that does not violate Vue principles in using
+       * DOM manipulation directly (#361618)
+       */
       const parent = document.querySelector('.js-issue-details');
 
       if (parent !== null) {
         const itemsToHide = parent.querySelectorAll('.js-issue-widgets');
         const lineSeparator = parent.querySelector('.js-detail-page-description');
+        const editButton = document.querySelector('.js-issuable-edit');
+        const isSummaryTab = tabIndex === 0;
 
-        lineSeparator.classList.toggle('gl-border-b-0', tabIndex > 0);
+        lineSeparator.classList.toggle('gl-border-b-0', !isSummaryTab);
 
         itemsToHide.forEach(function hide(item) {
-          item.classList.toggle('gl-display-none', tabIndex > 0);
+          item.classList.toggle('gl-display-none', !isSummaryTab);
         });
+
+        editButton.classList.toggle('gl-display-none', !isSummaryTab);
+        editButton.classList.toggle('gl-sm-display-inline-flex!', isSummaryTab);
       }
     },
   },

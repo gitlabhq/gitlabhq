@@ -18,13 +18,13 @@ The following steps enable AWS Cognito as an authentication provider:
 
 1. Sign in to the [AWS console](https://console.aws.amazon.com/console/home).
 1. Select **Cognito** from the **Services** menu.
-1. Select **Manage User Pools**, and click the **Create a user pool** button in the top right corner.
-1. Enter the pool name and then click the **Step through settings** button.
+1. Select **Manage User Pools**, and select the **Create a user pool** button in the top right corner.
+1. Enter the pool name and then select the **Step through settings** button.
 1. Under **How do you want your end users to sign in?**, select **Email address or phone number** and **Allow email addresses**.
 1. Under **Which standard attributes do you want to require?**, select **email**.
 1. Go to the next steps of configuration and set the rest of the settings to suit your needs - in the basic setup they are not related to GitLab configuration.
-1. In the **App clients** settings, click **Add an app client**, add **App client name** and select the **Enable username password based authentication** checkbox.
-1. Click **Create app client**.
+1. In the **App clients** settings, select **Add an app client**, add **App client name** and select the **Enable username password based authentication** checkbox.
+1. Select **Create app client**.
 1. In the next step, you can set up AWS Lambda functions for sending emails. You can then finish creating the pool.
 1. After creating the user pool, go to **App client settings** and provide the required information:
 
@@ -85,7 +85,7 @@ Include the code block in the `/etc/gitlab/gitlab.rb` file:
 1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab for the changes to take effect.
 
 Your sign-in page should now display a Cognito button below the regular sign-in form.
-To begin the authentication process, click the icon, and AWS Cognito asks the user to sign in and authorize the GitLab application.
+To begin the authentication process, select the icon, and AWS Cognito asks the user to sign in and authorize the GitLab application.
 If successful, the user is redirected and signed in to your GitLab instance.
 
 For more information, see [Configure initial settings](../../integration/omniauth.md#configure-initial-settings).

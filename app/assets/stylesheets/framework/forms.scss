@@ -8,6 +8,13 @@ input {
   background-color: $input-bg;
 }
 
+input,
+textarea {
+  &:focus {
+    @include gl-focus;
+  }
+}
+
 input[type='text'].danger {
   background: $input-danger-bg !important;
   border-color: $red-400;
@@ -107,6 +114,10 @@ label {
     @include media-breakpoint-up(md) {
       width: $input-short-md-width;
     }
+  }
+
+  &:focus {
+    @include gl-focus;
   }
 }
 

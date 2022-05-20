@@ -206,7 +206,7 @@ To set up 2FA with a U2F device:
 1. Select **Account**.
 1. Select **Enable Two-Factor Authentication**.
 1. Connect your U2F device.
-1. Select on **Set up New U2F Device**.
+1. Select **Set up New U2F Device**.
 1. A light begins blinking on your device. Activate it by pressing its button.
 
 A message displays indicating that your device was successfully set up. Select **Register U2F Device** to complete the

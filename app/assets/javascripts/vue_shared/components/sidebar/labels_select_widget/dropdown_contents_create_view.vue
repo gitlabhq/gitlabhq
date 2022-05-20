@@ -140,18 +140,19 @@ export default {
 <template>
   <div class="labels-select-contents-create js-labels-create">
     <div class="dropdown-input">
-      <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-3">
+      <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mt-3">
         {{ error }}
       </gl-alert>
       <gl-form-input
         v-model.trim="labelTitle"
+        class="gl-mt-3"
         :placeholder="__('Name new label')"
         :autofocus="true"
         data-testid="label-title-input"
       />
     </div>
     <div class="dropdown-content gl-px-3">
-      <div class="suggest-colors suggest-colors-dropdown gl-mt-0! gl-mb-3!">
+      <div class="suggest-colors suggest-colors-dropdown gl-mt-0! gl-mb-3! gl-mb-0">
         <gl-link
           v-for="(color, index) in suggestedColors"
           :key="index"
@@ -169,7 +170,7 @@ export default {
         ></span>
         <gl-form-input
           v-model.trim="selectedColor"
-          class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+          class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
           :placeholder="__('Use custom color #FF0000')"
           data-testid="selected-color-text"
         />

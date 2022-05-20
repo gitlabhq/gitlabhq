@@ -43726,7 +43726,7 @@ msgstr ""
 msgid "You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication."
 msgstr ""
 
-msgid "You've reached your %{free_limit} member limit across all your personal projects"
+msgid "You've reached your %{free_limit} member limit across all of your personal projects"
 msgstr ""
 
 msgid "You've rejected %{user}"

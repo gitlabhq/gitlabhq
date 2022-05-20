@@ -56,8 +56,7 @@
     background-color: $white;
 
     &.is-focused {
-      border-color: $input-focus-border-color;
-      box-shadow: $input-focus-box-shadow;
+      @include gl-focus;
 
       .comment-toolbar,
       .nav-links {
@@ -74,6 +73,11 @@
       .nav-links {
         border-color: $green-500;
       }
+    }
+
+    // Disable inner focus
+    textarea:focus {
+      box-shadow: none;
     }
   }
 }

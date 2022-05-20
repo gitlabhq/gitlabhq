@@ -1591,7 +1591,7 @@ To prepare the new server:
 1. Test that the GitLab instance is working as expected.
 1. If applicable, re-enable [incoming email](../administration/incoming_email.md) and test it is working as expected.
 1. Update your DNS or load balancer to point at the new server.
-1. Unblock new CI/CD jobs from starting by removing the custom NGINX config
+1. Unblock new CI/CD jobs from starting by removing the custom NGINX configuration
    you added previously:
 
    ```ruby

@@ -157,7 +157,7 @@ RSpec.describe 'Environment' do
 
       context 'with related deployable present' do
         let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
 
         let(:deployment) do
           create(:deployment, :success, environment: environment, deployable: build)
@@ -263,7 +263,8 @@ RSpec.describe 'Environment' do
             context 'with stop action' do
               let(:action) do
                 create(:ci_build, :manual, pipeline: pipeline,
-                                           name: 'close_app')
+                       name: 'close_app',
+                       environment: environment.name)
               end
 
               let(:deployment) do

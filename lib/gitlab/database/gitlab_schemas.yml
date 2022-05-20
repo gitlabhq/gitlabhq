@@ -121,6 +121,7 @@ ci_unit_tests: :gitlab_ci
 ci_variables: :gitlab_ci
 cluster_agents: :gitlab_main
 cluster_agent_tokens: :gitlab_main
+cluster_enabled_grants: :gitlab_main
 cluster_groups: :gitlab_main
 cluster_platforms_kubernetes: :gitlab_main
 cluster_projects: :gitlab_main

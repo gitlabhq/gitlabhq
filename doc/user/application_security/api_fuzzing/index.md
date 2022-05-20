@@ -883,7 +883,7 @@ Adding some basic logging to your overrides script is useful in case the script 
 Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Please notice two things in the script:
 
 - Log file is saved in the location indicated by the environment variable `CI_PROJECT_DIR`.
-- Log file name should match `gl-*.log`.
+- Log filename should match `gl-*.log`.
 
 ```python
 #!/usr/bin/env python
@@ -1476,9 +1476,9 @@ Follow these steps to view details of a fuzzing fault:
 
    - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
-   - In a merge request, go the merge request's **Security** section and click the **Expand**
+   - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API Fuzzing faults are available in a section labeled
-     **API Fuzzing detected N potential vulnerabilities**. Click the title to display the fault
+     **API Fuzzing detected N potential vulnerabilities**. Select the title to display the fault
      details.
 
 1. Select the fault's title to display the fault's details. The table below describes these details.

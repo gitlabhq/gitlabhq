@@ -71,7 +71,7 @@ To restrict access to your website, enable [GitLab Pages Access Control](pages_a
 
 If you ever feel the need to purge your Pages content, you can do so by going
 to your project's settings through the gear icon in the top right, and then
-navigating to **Pages**. Click the **Remove pages** button to delete your Pages
+navigating to **Pages**. Select the **Remove pages** button to delete your Pages
 website.
 
 ![Remove pages](img/remove_pages.png)

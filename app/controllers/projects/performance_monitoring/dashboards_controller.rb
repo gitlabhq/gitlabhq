@@ -13,6 +13,7 @@ module Projects
       end
 
       feature_category :metrics
+      urgency :low
 
       def create
         result = ::Metrics::Dashboard::CloneDashboardService.new(project, current_user, dashboard_params).execute

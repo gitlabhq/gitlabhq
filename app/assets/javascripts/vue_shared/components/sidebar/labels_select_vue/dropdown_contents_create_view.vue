@@ -51,7 +51,7 @@ export default {
 
 <template>
   <div class="labels-select-contents-create js-labels-create">
-    <div class="dropdown-title d-flex align-items-center pt-0 pb-2">
+    <div class="dropdown-title d-flex align-items-center pt-0 pb-2 gl-mb-0">
       <gl-button
         :aria-label="__('Go back')"
         variant="link"
@@ -95,7 +95,7 @@ export default {
         ></span>
         <gl-form-input
           v-model.trim="selectedColor"
-          class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+          class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
           :placeholder="__('Use custom color #FF0000')"
         />
       </div>

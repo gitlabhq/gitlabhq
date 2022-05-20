@@ -343,14 +343,16 @@ Before running the spec, make sure that:
 
 To run the spec, run the following command:
 
-```ruby
-GITLAB_PASSWORD=<GDK root password> bundle exec bin/qa Test::Instance::All http://localhost:3000 -- <test_file>
+```shell
+GITLAB_PASSWORD=<GDK root password> bundle exec rspec <test_file>
 ```
 
 Where `<test_file>` is:
 
 - `qa/specs/features/browser_ui/1_manage/login/log_in_spec.rb` when running the Login example.
 - `qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb` when running the Issue example.
+
+Additional information on test execution and possible options are described in ["QA framework README"](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/README.md#run-the-end-to-end-tests-in-a-local-development-environment)
 
 ## End-to-end test merge request template
 

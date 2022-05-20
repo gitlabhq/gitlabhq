@@ -256,7 +256,7 @@ This can be done:
 - For a single pipeline run:
 
   1. Go to **CI/CD > Pipelines**
-  1. Click **Run pipeline**
+  1. Select **Run pipeline**
   1. Add `CODE_QUALITY_DISABLED` as the variable key, with any value.
 
 ### Using with merge request pipelines

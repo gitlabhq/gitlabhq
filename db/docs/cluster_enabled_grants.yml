@@ -1,0 +1,9 @@
+---
+table_name: cluster_enabled_grants
+classes:
+- Clusters::ClusterEnabledGrant
+feature_categories:
+- kubernetes_management
+description: Persists information about namespaces which got an extended life for certificate based clusters
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87149
+milestone: '15.1'

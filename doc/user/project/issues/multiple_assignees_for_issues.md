@@ -34,7 +34,7 @@ it clear that their role is complete.
 ## How it works
 
 From an opened issue, expand the right sidebar, locate the assignees entry,
-and click on **Edit**. From the dropdown menu, select as many users as you want
+and select **Edit**. From the dropdown menu, select as many users as you want
 to assign the issue to.
 
 ![adding multiple assignees](img/multiple_assignees.gif)

@@ -1030,7 +1030,7 @@ ensure that it can reach your private repository. Here is an example configurati
    setuptools.ssl_support.cert_paths = ['internal.crt']
    ```
 
-## Hosting a copy of the gemnasium_db advisory database
+## Hosting a copy of the `gemnasium_db` advisory database
 
 The [`gemnasium_db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) Git repository is
 used by `gemnasium`, `gemnasium-maven`, and `gemnasium-python` as the source of vulnerability data.

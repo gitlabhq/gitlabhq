@@ -11,6 +11,8 @@ class UserProjectAccessChangedService
   end
 
   def execute(blocking: true, priority: HIGH_PRIORITY)
+    return if @user_ids.empty?
+
     bulk_args = @user_ids.map { |id| [id] }
 
     result =

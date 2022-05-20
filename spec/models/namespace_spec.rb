@@ -31,6 +31,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_many :pending_builds }
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
+    it { is_expected.to have_one :cluster_enabled_grant }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
@@ -2329,27 +2330,23 @@ RSpec.describe Namespace do
   end
 
   describe '#certificate_based_clusters_enabled?' do
-    it 'does not call Feature.enabled? twice with request_store', :request_store do
-      expect(Feature).to receive(:enabled?).once
-
-      namespace.certificate_based_clusters_enabled?
-      namespace.certificate_based_clusters_enabled?
-    end
-
-    it 'call Feature.enabled? twice without request_store' do
-      expect(Feature).to receive(:enabled?).twice
-
-      namespace.certificate_based_clusters_enabled?
-      namespace.certificate_based_clusters_enabled?
-    end
-
     context 'with ff disabled' do
       before do
         stub_feature_flags(certificate_based_clusters: false)
       end
 
-      it 'is truthy' do
-        expect(namespace.certificate_based_clusters_enabled?).to be_falsy
+      context 'with a cluster_enabled_grant' do
+        it 'is truthy' do
+          create(:cluster_enabled_grant, namespace: namespace)
+
+          expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a cluster_enabled_grant' do
+        it 'is falsy' do
+          expect(namespace.certificate_based_clusters_enabled?).to be_falsy
+        end
       end
     end
 
@@ -2358,8 +2355,18 @@ RSpec.describe Namespace do
         stub_feature_flags(certificate_based_clusters: true)
       end
 
-      it 'is truthy' do
-        expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+      context 'with a cluster_enabled_grant' do
+        it 'is truthy' do
+          create(:cluster_enabled_grant, namespace: namespace)
+
+          expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a cluster_enabled_grant' do
+        it 'is truthy' do
+          expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+        end
       end
     end
   end

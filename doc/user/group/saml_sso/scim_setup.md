@@ -112,7 +112,7 @@ After the above steps are complete:
 1. Sign in to Okta.
 1. Ensure you are in the Admin Area by selecting the **Admin** button located in the top right. The button is not visible from the Admin Area.
 1. In the **Application** tab, select **Browse App Catalog**.
-1. Search for **GitLab**, find and select on the 'GitLab' application.
+1. Search for **GitLab**, find and select the 'GitLab' application.
 1. On the GitLab application overview page, select **Add**.
 1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML authentication so the icon should not be shown to users.
 1. Select **Done** to finish adding the application.

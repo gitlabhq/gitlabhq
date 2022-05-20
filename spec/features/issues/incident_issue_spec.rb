@@ -72,6 +72,12 @@ RSpec.describe 'Incident Detail', :js do
           expect(hidden_items).to all(be_visible)
         end
       end
+
+      it 'shows the edit title and description button' do
+        edit_button = find_all('[aria-label="Edit title and description"]')
+
+        expect(edit_button).to all(be_visible)
+      end
     end
 
     context 'when on alert details tab' do
@@ -86,6 +92,12 @@ RSpec.describe 'Incident Detail', :js do
           # Linked Issues/MRs and comment box are hidden on page
           expect(hidden_items.count).to eq(0)
         end
+      end
+
+      it 'does not show the edit title and description button' do
+        edit_button = find_all('[aria-label="Edit title and description"]')
+
+        expect(edit_button.count).to eq(0)
       end
     end
   end

@@ -7,6 +7,7 @@ module Projects
       before_action :require_prometheus_metrics!
 
       feature_category :metrics
+      urgency :low
 
       def active_common
         respond_to do |format|

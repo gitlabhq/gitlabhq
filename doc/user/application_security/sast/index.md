@@ -539,7 +539,7 @@ file `gosec-config.json`:
     value = "gosec-config.json"
 ```
 
-##### Passthrough chain for semgrep
+##### Passthrough chain for Semgrep
 
 In the below example, we generate a custom configuration under the `/sgrules`
 target directory with a total `timeout` of 60 seconds.
@@ -560,7 +560,7 @@ Several passthrouh types generate a configuration for the target analyzer:
 - The `url` entry fetches a configuration made available through a URL and
   stores it in the `/sgrules/gosec.yml` file.
 
-Afterwards, semgrep is invoked with the final configuration located under
+Afterwards, Semgrep is invoked with the final configuration located under
 `/sgrules`.
 
 ```toml
@@ -632,12 +632,12 @@ created when preceding passthroughs in the chain find a naming
 collision. If `mode` is set to `append`, a passthrough appends data to the
 files created by its predecessors instead of overwriting.
 
-In the below semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
+In the below Semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
 
 - `insecure`
 - `secret`
 
-These rules add a search pattern to the analyzer and extends semgrep capabilities.
+These rules add a search pattern to the analyzer and extends Semgrep capabilities.
 
 For passthrough chains we recommend that you enable validation. To enable validation,
 you can either:

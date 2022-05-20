@@ -619,6 +619,10 @@ body {
 .dropdown {
   position: relative;
 }
+.dropdown-menu-toggle:active {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 3px #428fdc;
+  outline: none;
+}
 .search-input-container .dropdown-menu {
   margin-top: 11px;
 }

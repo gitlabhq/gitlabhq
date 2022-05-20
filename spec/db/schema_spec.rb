@@ -259,14 +259,6 @@ RSpec.describe 'Database schema' do
   end
 
   context 'primary keys' do
-    let(:exceptions) do
-      %i(
-        elasticsearch_indexed_namespaces
-        elasticsearch_indexed_projects
-        merge_request_context_commit_diff_files
-      )
-    end
-
     it 'expects every table to have a primary key defined' do
       connection = ActiveRecord::Base.connection
 
@@ -274,7 +266,7 @@ RSpec.describe 'Database schema' do
         !connection.primary_key(table).present?
       end.map(&:to_sym)
 
-      expect(problematic_tables - exceptions).to be_empty
+      expect(problematic_tables).to be_empty
     end
   end
 

@@ -59,7 +59,7 @@ class Environment < ApplicationRecord
             allow_nil: true,
             addressable_url: true
 
-  delegate :manual_actions, to: :last_deployment, allow_nil: true
+  delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
@@ -325,9 +325,9 @@ class Environment < ApplicationRecord
   end
 
   def actions_for(environment)
-    return [] unless manual_actions
+    return [] unless other_manual_actions
 
-    manual_actions.select do |action|
+    other_manual_actions.select do |action|
       action.expanded_environment_name == environment
     end
   end

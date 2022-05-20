@@ -330,7 +330,7 @@ Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ens
 deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
 the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
 the metadata consistent. The disks may contain stale state even after successful operations. This is expected and the leftover state
-won't intefere with future operations but may use up disk space unnecessarily until a clean up is performed.
+won't interfere with future operations but may use up disk space unnecessarily until a clean up is performed.
 
 There is on-going work on a [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover
 repositories from the storages.

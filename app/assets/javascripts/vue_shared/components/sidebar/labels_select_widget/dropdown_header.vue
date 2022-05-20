@@ -51,7 +51,7 @@ export default {
   <div data-testid="dropdown-header">
     <div
       v-if="!isStandalone"
-      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3! gl-mb-0"
       data-testid="dropdown-header-title"
     >
       <gl-button

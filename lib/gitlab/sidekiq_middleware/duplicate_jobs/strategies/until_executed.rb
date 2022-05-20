@@ -10,6 +10,8 @@ module Gitlab
         class UntilExecuted < DeduplicatesWhenScheduling
           override :perform
           def perform(job)
+            job_deleted = false
+
             super
 
             yield
@@ -17,7 +19,10 @@ module Gitlab
             should_reschedule = duplicate_job.should_reschedule?
             # Deleting before rescheduling to make sure we don't deduplicate again.
             duplicate_job.delete!
+            job_deleted = true
             duplicate_job.reschedule if should_reschedule
+          ensure
+            duplicate_job.delete! unless job_deleted
           end
         end
       end

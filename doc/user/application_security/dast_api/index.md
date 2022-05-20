@@ -837,7 +837,7 @@ Adding some basic logging to your overrides script is useful in case the script 
 Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Please notice two things in the script:
 
 - Log file is saved in the location indicated by the environmental variable `CI_PROJECT_DIR`.
-- Log file name should match `gl-*.log`.
+- Log filename should match `gl-*.log`.
 
 ```python
 #!/usr/bin/env python
@@ -1332,12 +1332,12 @@ Follow these steps to view details of a vulnerability:
 
    - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
-   - In a merge request, go the merge request's **Security** section and click the **Expand**
+   - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. DAST API vulnerabilities are available in a section labeled
-     **DAST detected N potential vulnerabilities**. Click the title to display the vulnerability
+     **DAST detected N potential vulnerabilities**. Select the title to display the vulnerability
      details.
 
-1. Click the vulnerabilities title to display the details. The table below describes these details.
+1. Select the vulnerabilities title to display the details. The table below describes these details.
 
    | Field               | Description                                                                             |
    |:--------------------|:----------------------------------------------------------------------------------------|

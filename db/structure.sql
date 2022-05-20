@@ -13341,6 +13341,21 @@ CREATE SEQUENCE cluster_agents_id_seq
 
 ALTER SEQUENCE cluster_agents_id_seq OWNED BY cluster_agents.id;
 
+CREATE TABLE cluster_enabled_grants (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE cluster_enabled_grants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cluster_enabled_grants_id_seq OWNED BY cluster_enabled_grants.id;
+
 CREATE TABLE cluster_groups (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -22607,6 +22622,8 @@ ALTER TABLE ONLY cluster_agent_tokens ALTER COLUMN id SET DEFAULT nextval('clust
 
 ALTER TABLE ONLY cluster_agents ALTER COLUMN id SET DEFAULT nextval('cluster_agents_id_seq'::regclass);
 
+ALTER TABLE ONLY cluster_enabled_grants ALTER COLUMN id SET DEFAULT nextval('cluster_enabled_grants_id_seq'::regclass);
+
 ALTER TABLE ONLY cluster_groups ALTER COLUMN id SET DEFAULT nextval('cluster_groups_id_seq'::regclass);
 
 ALTER TABLE ONLY cluster_platforms_kubernetes ALTER COLUMN id SET DEFAULT nextval('cluster_platforms_kubernetes_id_seq'::regclass);
@@ -24330,6 +24347,9 @@ ALTER TABLE ONLY cluster_agent_tokens
 
 ALTER TABLE ONLY cluster_agents
     ADD CONSTRAINT cluster_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cluster_enabled_grants
+    ADD CONSTRAINT cluster_enabled_grants_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT cluster_groups_pkey PRIMARY KEY (id);
@@ -27391,6 +27411,8 @@ CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_age
 CREATE INDEX index_cluster_agents_on_created_by_user_id ON cluster_agents USING btree (created_by_user_id);
 
 CREATE UNIQUE INDEX index_cluster_agents_on_project_id_and_name ON cluster_agents USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_cluster_enabled_grants_on_namespace_id ON cluster_enabled_grants USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_cluster_groups_on_cluster_id_and_group_id ON cluster_groups USING btree (cluster_id, group_id);
 
@@ -32844,6 +32866,9 @@ ALTER TABLE ONLY approval_merge_request_rules_users
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_enabled_grants
+    ADD CONSTRAINT fk_rails_8336ce35af FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_site_profiles
     ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

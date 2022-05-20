@@ -120,7 +120,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
 
 On the sign in page, there should now be an OpenID Connect icon below the regular sign in form.
-Click the icon to begin the authentication process. The OpenID Connect provider asks the user to
+Select the icon to begin the authentication process. The OpenID Connect provider asks the user to
 sign in and authorize the GitLab application (if confirmation required by the client). If everything goes well, the user
 is redirected to GitLab and signed in.
 

@@ -36,7 +36,7 @@ Large tables on GitLab.com are a major problem - for both operations and develop
 1. **Table maintenance** becomes much more costly. Vacuum activity has become a significant concern on GitLab.com - with large tables only seeing infrequent (once per day) processing and vacuum runs taking many hours to complete. This has various negative consequences and a very large table has potential to impact seemingly unrelated parts of the database and hence overall application performance suffers.
 1. **Data migrations** on large tables are significantly more complex to implement and incur development overhead. They have potential to cause stability problems on GitLab.com and take a long time to execute on large datasets.
 1. **Indexes size** is significant. This directly impacts performance as smaller parts of the index are kept in memory and also makes the indexes harder to maintain (think repacking).
-1. **Index creation times** go up significantly - in 2021, we see btree creation take up to 6 hours for a single btree index. This impacts our ability to deploy frequently and leads to vacuum-related problems (delayed cleanup).
+1. **Index creation times** go up significantly - in 2021, we see B-Tree creation take up to 6 hours for a single B-Tree index. This impacts our ability to deploy frequently and leads to vacuum-related problems (delayed cleanup).
 1. We tend to add **many indexes** to mitigate, but this eventually causes significant overhead, can confuse the query planner and a large number of indexes is a smell of a design problem.
 
 ## Examples

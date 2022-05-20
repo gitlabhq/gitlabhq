@@ -57,34 +57,34 @@ routing configurations.
 
    ![Traffic policies](img/single_git_traffic_policies.png)
 
-1. Click the **Create traffic policy** button.
+1. Select the **Create traffic policy** button.
 
    ![Name policy](img/single_git_name_policy.png)
 
-1. Fill in the **Policy Name** field with `Single Git Host` and click **Next**.
+1. Fill in the **Policy Name** field with `Single Git Host` and select **Next**.
 
    ![Policy diagram](img/single_git_policy_diagram.png)
 
 1. Leave **DNS type** as `A: IP Address in IPv4 format`.
-1. Click **Connect to...** and select **Geolocation rule**.
+1. Select **Connect to...** and select **Geolocation rule**.
 
    ![Add geolocation rule](img/single_git_add_geolocation_rule.png)
 
 1. For the first **Location**, leave it as `Default`.
-1. Click **Connect to...** and select **New endpoint**.
+1. Select **Connect to...** and select **New endpoint**.
 1. Choose **Type** `value` and fill it in with `<your **primary** IP address>`.
 1. For the second **Location**, choose `Europe`.
-1. Click **Connect to...** and select **New endpoint**.
+1. Select **Connect to...** and select **New endpoint**.
 1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
 
    ![Add traffic policy endpoints](img/single_git_add_traffic_policy_endpoints.png)
 
-1. Click **Create traffic policy**.
+1. Select **Create traffic policy**.
 
    ![Create policy records with traffic policy](img/single_git_create_policy_records_with_traffic_policy.png)
 
 1. Fill in **Policy record DNS name** with `git`.
-1. Click **Create policy records**.
+1. Select **Create policy records**.
 
    ![Created policy record](img/single_git_created_policy_record.png)
 

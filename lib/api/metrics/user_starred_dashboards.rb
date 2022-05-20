@@ -4,6 +4,7 @@ module API
   module Metrics
     class UserStarredDashboards < ::API::Base
       feature_category :metrics
+      urgency :low
 
       resource :projects do
         desc 'Marks selected metrics dashboard as starred' do

@@ -6,6 +6,7 @@ module API
   # sentry backend. For more details see https://gitlab.com/gitlab-org/gitlab/-/issues/329596.
   class ErrorTracking::Collector < ::API::Base
     feature_category :error_tracking
+    urgency :low
 
     content_type :envelope, 'application/x-sentry-envelope'
     content_type :json, 'application/json'

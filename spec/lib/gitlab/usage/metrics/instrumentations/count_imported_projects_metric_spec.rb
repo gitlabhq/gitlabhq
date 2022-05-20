@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsMe
         options: { import_type: 'bitbucket' }
     end
 
-    context 'for 28d time frame' do
+    context 'for 28d time frame', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/362591' do
       let(:expected_value) { 2 }
       let(:start) { 30.days.ago.to_s(:db) }
       let(:finish) { 2.days.ago.to_s(:db) }

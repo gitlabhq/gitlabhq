@@ -39,10 +39,7 @@ have an instance available you can follow the instructions below to use
 the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
 This is the recommended option if you would like to contribute to the tests.
 
-Note: GitLab QA uses [Selenium WebDriver](https://www.seleniumhq.org/) via
-[Cabybara](http://teamcapybara.github.io/capybara/), and by default it targets Chrome as
-the browser to use. You will need to have Chrome (or Chromium) and
-[chromedriver](https://chromedriver.chromium.org/) installed / in your `$PATH`.
+Note that tests are using `Chrome` web browser by default so it should be installed and present in `PATH`.
 
 ### Writing tests
 
@@ -60,15 +57,15 @@ Once you have GDK running, switch to the `qa` directory. E.g., if you setup
 GDK to develop in the main `gitlab-ce` repo, the GitLab source code will be
 in a `gitlab` directory and so the end-to-end test code will be in `gitlab/qa`.
 
-From there you can run the tests. For example, the
-following call would login to the GDK instance and run all specs in
-`qa/specs/features`:
+Make sure to install the dependencies first with `bundle install`.
 
-```
-# Make sure to install the dependencies first with `bundle install`
+Most tests that do not require special setup could simply be run with:
 
-bundle exec bin/qa Test::Instance::All http://localhost:3000
+```shell
+bundle exec rspec <path/to/spec.rb>
 ```
+
+However, tests that are tagged with `:orchestrated` tag require special setup. These tests can only be run with [bin/qa](#running-tests-with-a-custom-binqa-test-runner) script.
 
 Note: If you want to run tests requiring SSH against GDK, you
 will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
@@ -79,7 +76,7 @@ GitLab QA expects the default initial password to be used in tests; see all defa
 If you have changed your root password, you must set the `GITLAB_INITIAL_ROOT_PASSWORD` environment
 variable.
 
-```
+```shell
 export GITLAB_INITIAL_ROOT_PASSWORD="<GDK root password>"
 ```
 
@@ -89,7 +86,7 @@ When running EE tests you'll need to have a license available. GitLab engineers 
 
 Once you have the license file you can export it as an environment variable and then the framework can use it. If you do so it will be installed automatically.
 
-```
+```shell
 export EE_LICENSE=$(cat /path/to/gitlab_license)
 ```
 
@@ -98,19 +95,9 @@ export EE_LICENSE=$(cat /path/to/gitlab_license)
 You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
+```console
+bundle exec rspec qa/specs/features/browser_ui/3_create/repository
 ```
-bundle exec bin/qa Test::Instance::All http://localhost:3000 -- qa/specs/features/browser_ui/3_create/repository
-```
-
-Since the arguments would be passed to `rspec`, you could use all `rspec`
-options there. For example, passing `--backtrace` and also line number:
-
-```
-bundle exec bin/qa Test::Instance::All http://localhost:3000 -- qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb:6 --backtrace
-```
-
-Note that the separator `--` is required; all subsequent options will be
-ignored by the QA framework and passed to `rspec`.
 
 #### Running tests for transient bugs
 
@@ -118,7 +105,15 @@ A suite of tests have been written to test for [transient bugs](https://about.gi
 Those tests are tagged `:transient` and therefore can be run via:
 
 ```shell
-bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag transient
+bundle exec rspec --tag transient
+```
+
+#### Overriding gitlab address
+
+When running tests against GDK, the default address is `http://127.0.0.1:3000`. This value can be overridden by providing environment variable `QA_GITLAB_URL`:
+
+```shell
+QA_GITLAB_URL=https://gdk.test:3000 bundle exec rspec
 ```
 
 ### Overriding the authenticated user
@@ -129,8 +124,8 @@ by the GDK.
 If you need to authenticate as a different user, you can provide the
 `GITLAB_USERNAME` and `GITLAB_PASSWORD` environment variables:
 
-```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec bin/qa Test::Instance::All https://gitlab.example.com
+```shell
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec rspec
 ```
 
 Some QA tests require logging in as an admin user. By default, the QA
@@ -140,16 +135,16 @@ If you need to authenticate with different admin credentials, you can
 provide the `GITLAB_ADMIN_USERNAME` and `GITLAB_ADMIN_PASSWORD`
 environment variables:
 
-```
-GITLAB_ADMIN_USERNAME=admin GITLAB_ADMIN_PASSWORD=myadminpassword GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec bin/qa Test::Instance::All https://gitlab.example.com
+```shell
+GITLAB_ADMIN_USERNAME=admin GITLAB_ADMIN_PASSWORD=myadminpassword GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec rspec
 ```
 
 If your user doesn't have permission to default sandbox group
 `gitlab-qa-sandbox`, you could also use another sandbox group by giving
 `GITLAB_SANDBOX_NAME`:
 
-```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bundle exec bin/qa Test::Instance::All https://gitlab.example.com
+```shell
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bundle exec rspec
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).
@@ -161,7 +156,6 @@ on every request. This is necessary on gitlab.com to direct traffic to the
 canary fleet. To do this set `QA_COOKIES="gitlab_canary=true"`.
 
 To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"`
-
 
 ### Building a Docker image to test
 
@@ -182,20 +176,20 @@ tests that are expected to fail while a fix is in progress (similar to how
 [`skip` or `pending`](https://relishapp.com/rspec/rspec-core/v/3-8/docs/pending-and-skipped-examples)
  can be used).
 
+```shell
+bundle exec rspec --tag quarantine
 ```
-bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag quarantine
+
+### Running tests with a custom bin/qa test runner
+
+`bin/qa` is an additional custom wrapper script that abstracts away some of the more complicated setups that some tests require. This option requires test scenario and test instance's Gitlab address to be specified in the command. For example, to run any `Instance` scenario test, the following command can be used:
+
+
+```shell
+bundle exec bin/qa Test::Instance::All http://localhost:3000
 ```
 
-If `quarantine` is used with other tags, tests will only be run if they have at
-least one of the tags other than `quarantine`. This is different from how RSpec
-tags usually work, where all tags are inclusive.
-
-For example, suppose one test has `:smoke` and `:quarantine` metadata, and
-another test has `:ldap` and `:quarantine` metadata. If the tests are run with
-`--tag smoke --tag quarantine`, only the first test will run. The test with
-`:ldap` will not run even though it also has `:quarantine`.
-
-### Running tests with a feature flag enabled or disabled
+#### Running tests with a feature flag enabled or disabled
 
 Tests can be run with a feature flag enabled or disabled by using the command-line
 option `--enable-feature FEATURE_FLAG` or `--disable-feature FEATURE_FLAG`.
@@ -203,7 +197,7 @@ option `--enable-feature FEATURE_FLAG` or `--disable-feature FEATURE_FLAG`.
 For example, to enable the feature flag that enforces Gitaly request limits,
 you would use the command:
 
-```
+```shell
 bundle exec bin/qa Test::Instance::All http://localhost:3000 --enable-feature gitaly_enforce_requests_limits
 ```
 
@@ -215,9 +209,10 @@ feature flag again.
 Similarly, to disable the feature flag that enforces Gitaly request limits,
 you would use the command:
 
-```
+```shell
 bundle exec bin/qa Test::Instance::All http://localhost:3000 --disable-feature gitaly_enforce_requests_limits
 ```
+
 This will instruct the QA framework to disable the `gitaly_enforce_requests_limits`
 feature flag ([via the API](https://docs.gitlab.com/ee/api/features.html)) if not already disabled,
 run all the tests in the `Test::Instance::All` scenario, and then enable the

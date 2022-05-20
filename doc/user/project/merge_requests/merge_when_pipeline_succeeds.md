@@ -16,7 +16,7 @@ finish and remember to merge the request manually.
 
 ## How it works
 
-When you click "Merge When Pipeline Succeeds", the status of the merge
+When you select "Merge When Pipeline Succeeds", the status of the merge
 request is updated to show the impending merge. If you can't wait
 for the pipeline to succeed, you can choose **Merge immediately**
 in the dropdown menu on the right of the main button.

@@ -73,6 +73,8 @@ class Namespace < ApplicationRecord
   has_one :ci_namespace_mirror, class_name: 'Ci::NamespaceMirror'
   has_many :sync_events, class_name: 'Namespaces::SyncEvent'
 
+  has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
@@ -545,12 +547,18 @@ class Namespace < ApplicationRecord
   end
 
   def certificate_based_clusters_enabled?
-    ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:ns:#{self.id}") do
-      Feature.enabled?(:certificate_based_clusters, self, type: :ops)
-    end
+    cluster_enabled_granted? || certificate_based_clusters_enabled_ff?
   end
 
   private
+
+  def cluster_enabled_granted?
+    root_ancestor.cluster_enabled_grant.present? && (Gitlab.com? || Gitlab.dev_or_test_env?)
+  end
+
+  def certificate_based_clusters_enabled_ff?
+    Feature.enabled?(:certificate_based_clusters, type: :ops)
+  end
 
   def expire_child_caches
     Namespace.where(id: descendants).each_batch do |namespaces|

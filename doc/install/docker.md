@@ -643,7 +643,7 @@ sudo setfacl -mR default:group:docker:rwx $GITLAB_HOME
 The default group is `docker`. If you changed the group, be sure to update your
 commands.
 
-### /dev/shm mount not having enough space in Docker container
+### `/dev/shm` mount not having enough space in Docker container
 
 GitLab comes with a Prometheus metrics endpoint at `/-/metrics` to expose a
 variety of statistics on the health and performance of GitLab. The files

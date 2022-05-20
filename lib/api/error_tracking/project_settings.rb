@@ -5,6 +5,7 @@ module API
     before { authenticate! }
 
     feature_category :error_tracking
+    urgency :low
 
     helpers do
       def project_setting

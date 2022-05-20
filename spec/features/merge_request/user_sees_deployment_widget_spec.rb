@@ -109,7 +109,10 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
     end
 
     context 'with stop action' do
-      let(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
+      let(:manual) do
+        create(:ci_build, :manual, pipeline: pipeline,
+               name: 'close_app', environment: environment.name)
+      end
 
       before do
         stub_feature_flags(bootstrap_confirmation_modals: false)

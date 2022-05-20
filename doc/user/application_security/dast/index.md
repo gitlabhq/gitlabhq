@@ -493,7 +493,7 @@ To perform a [full scan](#full-scan) on the listed paths, use the `DAST_FULL_SCA
 ### List URLs scanned
 
 When DAST completes scanning, the merge request page states the number of URLs scanned.
-Click **View details** to view the web console output which includes the list of scanned URLs.
+Select **View details** to view the web console output which includes the list of scanned URLs.
 
 ![DAST Widget](img/dast_urls_scanned_v12_10.png)
 
@@ -846,7 +846,7 @@ Many web applications show the user the login form in a pop-up (modal) window.
 For these applications, navigating to the form requires both:
 
 - A starting URL.
-- A list of elements to click to display the modal window.
+- A list of elements to select to display the modal window.
 
 When `DAST_BROWSER_PATH_TO_LOGIN_FORM` is present, like in this example:
 

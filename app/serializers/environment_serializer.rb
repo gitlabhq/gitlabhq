@@ -89,8 +89,8 @@ class EnvironmentSerializer < BaseSerializer
         user: [],
         metadata: [],
         pipeline: {
-          manual_actions: [],
-          scheduled_actions: []
+          manual_actions: [:metadata],
+          scheduled_actions: [:metadata]
         },
         project: project_associations
       }

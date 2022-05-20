@@ -22,7 +22,7 @@ to revert the changes introduced by that merge request.
 
 ![Revert merge request](img/cherry_pick_changes_mr.png)
 
-After you click that button, a modal appears where you can choose to
+After you select that button, a modal appears where you can choose to
 revert the changes directly into the selected branch or you can opt to
 create a new merge request with the revert changes.
 

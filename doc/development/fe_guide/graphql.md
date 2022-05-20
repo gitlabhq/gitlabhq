@@ -462,7 +462,7 @@ export const createLocalState = () => {
 };
 ```
 
-Pass the cache config to your Apollo Client:
+Pass the cache configuration to your Apollo Client:
 
 ```javascript
 // index.js

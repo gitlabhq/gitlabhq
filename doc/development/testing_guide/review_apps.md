@@ -12,7 +12,7 @@ Review Apps are deployed using the `start-review-app-pipeline` job. This job tri
 
 For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started:
 
-- for merge requests with CI config changes
+- for merge requests with CI configuration changes
 - for merge requests with frontend changes
 - for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
 - for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
