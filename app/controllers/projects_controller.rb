@@ -451,6 +451,7 @@ class ProjectsController < Projects::ApplicationController
       :initialize_with_sast,
       :initialize_with_readme,
       :autoclose_referenced_issues,
+      :ci_separated_caches,
       :suggestion_commit_message,
       :packages_enabled,
       :service_desk_enabled,

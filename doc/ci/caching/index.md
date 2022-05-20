@@ -31,7 +31,7 @@ can't link to files outside it.
 - Subsequent pipelines can use the cache.
 - Subsequent jobs in the same pipeline can use the cache, if the dependencies are identical.
 - Different projects cannot share the cache.
-- Protected and non-protected branches do not share the cache.
+- By default, protected and non-protected branches [do not share the cache](#cache-key-names). However, you can [change this behavior](#use-the-same-cache-for-all-branches).
 
 ### Artifacts
 
@@ -447,7 +447,7 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 If you use cache and artifacts to store the same path in your jobs, the cache might
 be overwritten because caches are restored before artifacts.
 
-### Segregation of caches between protected and non-protected branches
+#### Cache key names
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
 
@@ -462,6 +462,24 @@ and `feature`, then the following table represents the resulting cache keys:
 |-------------|-----------|
 | `main`      | `main-protected` |
 | `feature`   | `feature-non_protected` |
+
+##### Use the same cache for all branches
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
+
+If you do not want to use [cache key names](#cache-key-names),
+you can have all branches (protected and unprotected) use the same cache.
+
+The cache separation with [cache key names](#cache-key-names) is a security feature
+and should only be disabled in an environment where all users with Developer role are highly trusted.
+
+To use the same cache for all branches:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Clear the **Use separate caches for protected branches** checkbox.
+1. Select **Save changes**.
 
 ### How archiving and extracting works
 

@@ -1069,6 +1069,32 @@ RSpec.describe Ci::Build do
             is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
           end
         end
+
+        context 'when separated caches are disabled' do
+          before do
+            allow_any_instance_of(Project).to receive(:ci_separated_caches).and_return(false)
+          end
+
+          context 'running on protected ref' do
+            before do
+              allow(build.pipeline).to receive(:protected_ref?).and_return(true)
+            end
+
+            it 'is expected to have no type suffix' do
+              is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+            end
+          end
+
+          context 'running on not protected ref' do
+            before do
+              allow(build.pipeline).to receive(:protected_ref?).and_return(false)
+            end
+
+            it 'is expected to have no type suffix' do
+              is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+            end
+          end
+        end
       end
 
       context 'when project has jobs_cache_index' do

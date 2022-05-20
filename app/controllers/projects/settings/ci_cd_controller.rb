@@ -87,7 +87,7 @@ module Projects
       def permitted_project_params
         [
           :runners_token, :builds_enabled, :build_allow_git_fetch,
-          :build_timeout_human_readable, :build_coverage_regex, :public_builds,
+          :build_timeout_human_readable, :build_coverage_regex, :public_builds, :ci_separated_caches,
           :auto_cancel_pending_pipelines, :ci_config_path, :auto_rollback_enabled,
           auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy],
           ci_cd_settings_attributes: [:default_git_depth, :forward_deployment_enabled]

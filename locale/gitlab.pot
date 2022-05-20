@@ -6660,6 +6660,12 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
+msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
+msgstr ""
+
+msgid "CICD|Use separate caches for protected branches"
+msgstr ""
+
 msgid "CICD|group enabled"
 msgstr ""
 
