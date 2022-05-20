@@ -75,7 +75,7 @@ In this case, the feature branch would be `release-X-Y`. Assuming the `release-X
 
    ![Create merge request](img/create_merge_request_v13_1.png)
 
-1. After you click **Create merge request**, an option to **Change branches** displays. Select that option.
+1. After you select **Create merge request**, an option to **Change branches** displays. Select that option.
 
 1. In the **New Merge Request** screen, you can now select the **Source** and **Target** branches.
 In the screenshot shown,

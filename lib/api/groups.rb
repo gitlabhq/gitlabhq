@@ -417,7 +417,7 @@ module API
         requires :group_access, type: Integer, values: Gitlab::Access.all_values, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
-      post ":id/share", feature_category: :subgroups do
+      post ":id/share", feature_category: :subgroups, urgency: :low do
         shared_with_group = find_group!(params[:group_id])
 
         group_link_create_params = {

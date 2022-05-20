@@ -10,7 +10,7 @@ module API
 
     feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
-    urgency :high, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+    urgency :medium, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
@@ -145,7 +145,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ":id", feature_category: :users, urgency: :medium do
+      get ":id", feature_category: :users, urgency: :default do
         forbidden!('Not authorized!') unless current_user
 
         unless current_user.admin?
@@ -170,7 +170,7 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :high do
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :default do
         user = find_user(params[:user_id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -921,7 +921,7 @@ module API
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end
-        get feature_category: :users, urgency: :medium do
+        get feature_category: :users, urgency: :default do
           entity =
             if current_user.admin?
               Entities::UserWithAdmin

@@ -4,6 +4,7 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
   before_action :set_appearance, except: :create
 
   feature_category :navigation
+  urgency :low
 
   def show
   end

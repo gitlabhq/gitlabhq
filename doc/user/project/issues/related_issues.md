@@ -61,7 +61,7 @@ You can also add a linked issue from a commit message or the description in anot
 
 ## Remove a linked issue
 
-In the **Linked issues** section of an issue, click the remove button (**{close}**) on the
+In the **Linked issues** section of an issue, select the remove button (**{close}**) on the
 right-side of each issue token to remove.
 
 Due to the bi-directional relationship, the relationship no longer appears in either issue.

@@ -47,7 +47,7 @@ To clear the cache:
 
 1. Navigate to your project's **Infrastructure > Kubernetes clusters** page, and select your cluster.
 1. Expand the **Advanced settings** section.
-1. Click **Clear cluster cache**.
+1. Select **Clear cluster cache**.
 
 ## Base domain
 
@@ -66,10 +66,10 @@ You can either:
 To determine the external Ingress IP address, or external Ingress hostname:
 
 - *If the cluster is on GKE*:
-  1. Click the **Google Kubernetes Engine** link in the **Advanced settings**,
+  1. Select the **Google Kubernetes Engine** link in the **Advanced settings**,
      or go directly to the [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/).
   1. Select the proper project and cluster.
-  1. Click **Connect**
+  1. Select **Connect**.
   1. Execute the `gcloud` command in a local terminal or using the **Cloud Shell**.
 
 - *If the cluster is not on GKE*: Follow the specific instructions for your

@@ -64,8 +64,8 @@ cluster certificates:
      cluster.
    - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
    - **Menu > Admin > Kubernetes** page, for an instance-level cluster.
-1. Click **Integrate with a cluster certificate**.
-1. Under the **Create new cluster** tab, click **Google GKE**.
+1. Select **Integrate with a cluster certificate**.
+1. Under the **Create new cluster** tab, select **Google GKE**.
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
 1. Choose your cluster's settings:
@@ -83,7 +83,7 @@ cluster certificates:
      See the [Cloud Run for Anthos section](#cloud-run-for-anthos) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
      See the [Managed clusters section](gitlab_managed_clusters.md) for more information.
-1. Finally, click the **Create Kubernetes cluster** button.
+1. Finally, select the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster is ready.
 

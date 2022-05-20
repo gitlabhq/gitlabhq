@@ -9,6 +9,7 @@ class WhatsNewController < ApplicationController
   before_action :check_valid_page_param, :set_pagination_headers
 
   feature_category :navigation
+  urgency :low
 
   def index
     respond_to do |format|

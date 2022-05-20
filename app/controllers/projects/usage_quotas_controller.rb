@@ -6,6 +6,7 @@ class Projects::UsageQuotasController < Projects::ApplicationController
   layout "project_settings"
 
   feature_category :utilization
+  urgency :low
 
   def index
     @hide_search_settings = true

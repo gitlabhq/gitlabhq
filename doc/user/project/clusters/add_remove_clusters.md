@@ -22,7 +22,7 @@ When you successfully connect an existing cluster using cluster certificates, th
    - **Menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Select the name of the cluster you want to disable.
 1. Toggle **GitLab Integration** off (in gray).
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Remove a cluster
 

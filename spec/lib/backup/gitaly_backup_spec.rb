@@ -59,6 +59,16 @@ RSpec.describe Backup::GitalyBackup do
         expect(File).to exist(File.join(destination, project_snippet.disk_path, backup_id, '001.bundle'))
       end
 
+      it 'erases any existing repository backups' do
+        existing_file = File.join(destination, 'some_existing_file')
+        IO.write(existing_file, "Some existing file.\n")
+
+        subject.start(:create, destination, backup_id: backup_id)
+        subject.finish!
+
+        expect(File).not_to exist(existing_file)
+      end
+
       context 'parallel option set' do
         let(:max_parallelism) { 3 }
 

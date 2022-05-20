@@ -50,7 +50,7 @@ To compare branches in a repository:
 1. Select **Repository > Compare** in the sidebar.
 1. Select the target repository to compare with the [repository filter search box](#repository-filter-search-box).
 1. Select branches to compare using the [branch filter search box](#branch-filter-search-box).
-1. Click **Compare** to view the changes inline:
+1. Select **Compare** to view the changes inline:
 
    ![compare branches](img/compare_branches_v13_12.png)
 

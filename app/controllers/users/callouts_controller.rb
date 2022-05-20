@@ -3,6 +3,7 @@
 module Users
   class CalloutsController < ApplicationController
     feature_category :navigation
+    urgency :low
 
     def create
       if callout.persisted?

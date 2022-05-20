@@ -153,15 +153,15 @@ the components outlined above and the pre-loaded demo runbook.
    ```
 
 1. After JupyterHub has been installed successfully, open the **Jupyter Hostname**
-   in your browser. Click the **Sign in with GitLab** button to log in to
+   in your browser. Select **Sign in with GitLab** button to log in to
    JupyterHub and start the server. Authentication is enabled for any user of the
    GitLab instance with OAuth2. This button redirects you to a page at GitLab
    requesting authorization for JupyterHub to use your GitLab account.
 
    ![authorize Jupyter](img/authorize-jupyter.png)
 
-1. Click **Authorize**, and GitLab redirects you to the JupyterHub application.
-1. Click **Start My Server** to start the server in a few seconds.
+1. Select **Authorize**, and GitLab redirects you to the JupyterHub application.
+1. Select **Start My Server** to start the server in a few seconds.
 1. To configure the runbook's access to your GitLab project, you must enter your
    [GitLab Access Token](../../../profile/personal_access_tokens.md)
    and your Project ID in the **Setup** section of the demo runbook:
@@ -208,9 +208,9 @@ the components outlined above and the pre-loaded demo runbook.
 
       ![GitLab variables](img/gitlab-variables.png)
 
-   1. Click **Save variables**.
+   1. Select **Save variables**.
 
-   1. In Jupyter, click the **Run SQL queries in Notebook** heading, and then click
+   1. In Jupyter, select the **Run SQL queries in Notebook** heading, and then click
       **Run**. The results are displayed inline as follows:
 
       ![PostgreSQL query](img/postgres-query.png)

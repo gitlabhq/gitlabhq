@@ -353,8 +353,8 @@ in project listings.
 To archive a project:
 
 1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, click **Expand**.
-1. In the **Archive project** section, click the **Archive project** button.
+1. Under **Advanced**, select **Expand**.
+1. In the **Archive project** section, select **Archive project**.
 1. Confirm the action when asked to.
 
 #### Unarchiving a project
@@ -373,13 +373,13 @@ To find an archived project:
      1. Select **Explore projects**.
      1. In the **Sort projects** dropdown box, select **Show archived projects**.
      1. In the **Filter by name** field, provide the project's name.
-     1. Click the link to the project to open its **Details** page.
+     1. Select the link to the project to open its **Details** page.
 
 Next, to unarchive the project:
 
 1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, click **Expand**.
-1. In the **Unarchive project** section, click the **Unarchive project** button.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive project** section, select **Unarchive project**.
 1. Confirm the action when asked to.
 
 #### Renaming a repository
@@ -395,9 +395,9 @@ project via a browser) and its place on the file disk where GitLab is installed.
 To rename a repository:
 
 1. Navigate to your project's **Settings > General**.
-1. Under **Advanced**, click **Expand**.
+1. Under **Advanced**, select **Expand**.
 1. Under **Change path**, update the repository's path.
-1. Click **Change path**.
+1. Select **Change path**.
 
 Remember that this can have unintended side effects since everyone with the
 old URL can't push or pull. Read more about what happens with the
@@ -512,7 +512,7 @@ The following are deleted:
 To restore a project marked for deletion:
 
 1. Navigate to your project, and select **Settings > General > Advanced**.
-1. In the Restore project section, click the **Restore project** button.
+1. In the Restore project section, select **Restore project**.
 
 #### Removing a fork relationship
 
@@ -529,7 +529,7 @@ To restore the fork relationship, [use the API](../../../api/projects.md#create-
 To do so:
 
 1. Navigate to your project's **Settings > General > Advanced**.
-1. Under **Remove fork relationship**, click the likewise-labeled button.
+1. Under **Remove fork relationship**, select the likewise-labeled button.
 1. Confirm the action by typing the project's path as instructed.
 
 NOTE:

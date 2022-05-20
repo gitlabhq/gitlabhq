@@ -132,7 +132,7 @@ For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` s
 Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md)
 that rely on this scan data only show results from pipelines on the default branch, only if all jobs are finished, including manual ones. One tool might use many analyzers.
 
-Our language and package manager specific jobs attempt to assess which analyzer(s) they should run for your project so that you can do less configuration.
+Our language and package manager specific jobs attempt to assess which analyzers they should run for your project so that you can do less configuration.
 
 If you want to override this to increase the pipeline speed you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
 
@@ -560,18 +560,18 @@ When overriding the template to control job execution, previous instances of
 [`only` or `except`](../../ci/yaml/index.md#only--except) are no longer compatible
 and must be transitioned to [the `rules` syntax](../../ci/yaml/index.md#rules).
 
-If your override is aimed at limiting jobs to only run on `master`, the previous syntax
+If your override is aimed at limiting jobs to only run on `main`, the previous syntax
 would look similar to:
 
 ```yaml
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-# Ensure that the scanning is only executed on master or merge requests
+# Ensure that the scanning is only executed on main or merge requests
 spotbugs-sast:
   only:
     refs:
-      - master
+      - main
       - merge_requests
 ```
 
@@ -582,10 +582,10 @@ would be written as follows:
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-# Ensure that the scanning is only executed on master or merge requests
+# Ensure that the scanning is only executed on main or merge requests
 spotbugs-sast:
   rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_MERGE_REQUEST_ID
 ```
 

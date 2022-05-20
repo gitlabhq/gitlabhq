@@ -3,6 +3,7 @@
 module API
   class UserCounts < ::API::Base
     feature_category :navigation
+    urgency :low
 
     resource :user_counts do
       desc 'Return the user specific counts' do

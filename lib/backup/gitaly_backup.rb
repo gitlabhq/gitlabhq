@@ -19,6 +19,10 @@ module Backup
     def start(type, backup_repos_path, backup_id: nil)
       raise Error, 'already started' if started?
 
+      if type == :create && !incremental?
+        FileUtils.rm_rf(backup_repos_path)
+      end
+
       command = case type
                 when :create
                   'create'
@@ -34,7 +38,7 @@ module Backup
       if Feature.enabled?(:incremental_repository_backup)
         args += ['-layout', 'pointer']
         if type == :create
-          args += ['-incremental'] if @incremental
+          args += ['-incremental'] if incremental?
           args += ['-id', backup_id] if backup_id
         end
       end
@@ -67,6 +71,10 @@ module Backup
     end
 
     private
+
+    def incremental?
+      @incremental
+    end
 
     # Schedule a new backup job through a non-blocking JSON based pipe protocol
     #

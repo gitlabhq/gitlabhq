@@ -259,20 +259,20 @@ for both the `/data` and `/data/` URL paths.
 
 ## Frequently Asked Questions
 
-### Can I download my generated pages?
+### Can you download your generated pages?
 
 Sure. All you need to do is download the artifacts archive from the job page.
 
-### Can I use GitLab Pages if my project is private?
+### Can you use GitLab Pages if your project is private?
 
 Yes. GitLab Pages doesn't care whether you set your project's visibility level
 to private, internal or public.
 
-### Can I create a personal or a group website
+### Can you create a personal or a group website?
 
 Yes. See the documentation about [GitLab Pages domain names, URLs, and base URLs](getting_started_part_one.md).
 
-### Do I need to create a user/group website before creating a project website?
+### Do you need to create a user/group website before creating a project website?
 
 No, you don't. You can create your project first and access it under
 `http(s)://namespace.example.io/projectname`.

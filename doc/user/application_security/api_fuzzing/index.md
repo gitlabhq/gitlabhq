@@ -1296,7 +1296,7 @@ variables:
 
 The `api-fuzzing-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document).
 
-### Exclude URLS
+### Exclude URLs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
 

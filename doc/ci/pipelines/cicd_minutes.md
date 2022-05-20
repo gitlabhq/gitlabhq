@@ -131,6 +131,7 @@ so be sure to select the correct group.
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Pipelines**.
 1. Select **Buy additional minutes**.
 1. Complete the details of the transaction.
 

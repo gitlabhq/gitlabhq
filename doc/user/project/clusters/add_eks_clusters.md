@@ -140,7 +140,7 @@ In the [IAM Management Console](https://console.aws.amazon.com/iam/home),
 create another IAM role (**role B**) for GitLab authentication with AWS:
 
 1. On the AWS IAM console, select **Roles** from the left panel.
-1. Click **Create role**.
+1. Select **Create role**.
 1. Under **Select type of trusted entity**, select **Another AWS account**.
 1. Enter the Account ID from GitLab into the **Account ID** field.
 1. Check **Require external ID**.

@@ -3,7 +3,7 @@
 module API
   class Avatar < ::API::Base
     feature_category :users
-    urgency :high
+    urgency :medium
 
     resource :avatar do
       desc 'Return avatar url for a user' do

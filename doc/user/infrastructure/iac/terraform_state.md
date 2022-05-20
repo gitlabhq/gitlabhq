@@ -22,8 +22,13 @@ In GitLab, you can:
 - Lock and unlock states.
 - Remotely execute `terraform plan` and `terraform apply` commands.
 
-For self-managed instances, before you can use GitLab for your Terraform state files,
-an administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
+## Prerequisites
+
+For self-managed GitLab, before you can use GitLab for your Terraform state files:
+
+- An administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
+- You must enable [Operations](../../../operations/index.md) for your project. Go to **Settings > General**,
+  expand **Visibility, project features, permissions**, and under **Operations**, turn on the toggle.
 
 ## Initialize a Terraform state as a backend by using GitLab CI/CD
 

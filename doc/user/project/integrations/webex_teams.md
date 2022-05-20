@@ -33,6 +33,6 @@ notifications:
 1. Ensure that the **Active** toggle is enabled.
 1. Select the checkboxes corresponding to the GitLab events you want to receive in Webex Teams.
 1. Paste the **Webhook** URL for the Webex Teams space.
-1. Configure the remaining options and then click **Test settings and save changes**.
+1. Configure the remaining options and then select **Test settings and save changes**.
 
 The Webex Teams space begins to receive all applicable GitLab events.

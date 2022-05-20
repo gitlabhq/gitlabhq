@@ -31,7 +31,7 @@ To protect a tag, you must have at least the Maintainer role.
 
 1. Go to the project's **Settings > Repository**.
 
-1. From the **Tag** dropdown list, select the tag you want to protect or type and click **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
+1. From the **Tag** dropdown list, select the tag you want to protect or type and select **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
 
    ![Protected tags page](img/protected_tags_page_v12_3.png)
 

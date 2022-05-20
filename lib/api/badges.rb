@@ -32,7 +32,7 @@ module API
         params do
           use :pagination
         end
-        get ":id/badges", urgency: :default do
+        get ":id/badges", urgency: :low do
           source = find_source(source_type, params[:id])
 
           badges = source.badges
@@ -91,7 +91,7 @@ module API
           requires :image_url, type: String, desc: 'URL of the badge image'
           optional :name, type: String, desc: 'Name for the badge'
         end
-        post ":id/badges", urgency: :default do
+        post ":id/badges" do
           source = find_source_if_admin(source_type)
 
           badge = ::Badges::CreateService.new(declared_params(include_missing: false)).execute(source)
