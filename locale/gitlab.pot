@@ -30076,6 +30076,9 @@ msgstr ""
 msgid "ProjectTemplates|HIPAA Audit Protocol"
 msgstr ""
 
+msgid "ProjectTemplates|Jsonnet for Dynamic Child Pipelines"
+msgstr ""
+
 msgid "ProjectTemplates|Kotlin Native for Linux"
 msgstr ""
 

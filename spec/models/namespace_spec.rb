@@ -574,6 +574,84 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#container_repositories_size' do
+    let(:project_namespace) { create(:namespace) }
+
+    subject { project_namespace.container_repositories_size }
+
+    context 'on gitlab.com' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:gitlab_api_supported, :no_container_repositories, :all_migrated, :returned_size, :expected_result) do
+        nil   | nil   | nil   | nil | nil
+        false | nil   | nil   | nil | nil
+        true  | true  | nil   | nil | 0
+        true  | false | false | nil | nil
+        true  | false | true  | 555 | 555
+        true  | false | true  | nil | nil
+      end
+
+      with_them do
+        before do
+          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
+          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
+          allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(no_container_repositories)
+          allow(project_namespace).to receive_message_chain(:all_container_repositories, :all_migrated?).and_return(all_migrated)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(returned_size)
+        end
+
+        it { is_expected.to eq(expected_result) }
+      end
+    end
+
+    context 'not on gitlab.com' do
+      it { is_expected.to eq(nil) }
+    end
+  end
+
+  describe '#all_container_repositories' do
+    context 'with personal namespace' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project_namespace) { user.namespace }
+
+      context 'with no project' do
+        it { expect(project_namespace.all_container_repositories).to match_array([]) }
+      end
+
+      context 'with projects' do
+        it "returns container repositories" do
+          project = create(:project, namespace: project_namespace)
+          rep = create(:container_repository, project: project)
+
+          expect(project_namespace.all_container_repositories).to match_array([rep])
+        end
+      end
+    end
+
+    context 'with subgroups' do
+      let_it_be(:project_namespace) { create(:group) }
+      let_it_be(:subgroup1) { create(:group, parent: project_namespace) }
+      let_it_be(:subgroup2) { create(:group, parent: subgroup1) }
+
+      context 'with no project' do
+        it { expect(project_namespace.all_container_repositories).to match_array([]) }
+      end
+
+      context 'with projects' do
+        it "returns container repositories" do
+          subgrp1_project = create(:project, namespace: subgroup1)
+          rep1 = create(:container_repository, project: subgrp1_project)
+
+          subgrp2_project = create(:project, namespace: subgroup2)
+          rep2 = create(:container_repository, project: subgrp2_project)
+
+          expect(project_namespace.all_container_repositories).to match_array([rep1, rep2])
+        end
+      end
+    end
+  end
+
   describe '.search' do
     let_it_be(:first_group) { create(:group, name: 'my first namespace', path: 'old-path') }
     let_it_be(:parent_group) { create(:group, name: 'my parent namespace', path: 'parent-path') }

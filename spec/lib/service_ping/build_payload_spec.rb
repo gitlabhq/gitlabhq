@@ -14,35 +14,6 @@ RSpec.describe ServicePing::BuildPayload do
       end
     end
 
-    context 'when usage_ping_enabled setting is false' do
-      before do
-        # Gitlab::CurrentSettings.usage_ping_enabled? == false
-        stub_config_setting(usage_ping_enabled: false)
-      end
-
-      it 'returns empty service ping payload' do
-        expect(service_ping_payload).to eq({})
-      end
-    end
-
-    context 'when usage_ping_enabled setting is true' do
-      before do
-        # Gitlab::CurrentSettings.usage_ping_enabled? == true
-        stub_config_setting(usage_ping_enabled: true)
-      end
-
-      it_behaves_like 'complete service ping payload'
-
-      context 'with require stats consent enabled' do
-        before do
-          allow(User).to receive(:single_user)
-            .and_return(instance_double(User, :user, requires_usage_stats_consent?: true))
-        end
-
-        it 'returns empty service ping payload' do
-          expect(service_ping_payload).to eq({})
-        end
-      end
-    end
+    it_behaves_like 'complete service ping payload'
   end
 end

@@ -1016,6 +1016,7 @@ job:
 
 - Scripts you specify in `before_script` are concatenated with any scripts you specify
   in the main [`script`](#script). The combined scripts execute together in a single shell.
+- Using `before_script` at the top level, but not in the `default` section, [is deprecated](#globally-defined-image-services-cache-before_script-after_script).
 
 **Related topics**:
 

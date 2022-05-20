@@ -7,7 +7,7 @@ type: howto
 
 # Tuning Geo **(PREMIUM SELF)**
 
-You can limit the number of concurrent operations the nodes can run
+You can limit the number of concurrent operations the sites can run
 in the background.
 
 ## Changing the sync/verification concurrency values
@@ -15,8 +15,8 @@ in the background.
 On the **primary** site:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Geo > Nodes**.
-1. Select **Edit** of the secondary node you want to tune.
+1. On the left sidebar, select **Geo > Sites**.
+1. Select **Edit** of the secondary site you want to tune.
 1. Under **Tuning settings**, there are several variables that can be tuned to
    improve the performance of Geo:
 

@@ -143,6 +143,71 @@ Nanoc layout), which is displayed at the top of the page if defined.
 The `type` metadata parameter is deprecated but still exists in documentation
 pages. You can safely remove the `type` metadata parameter and its values.
 
+### Batch updates for TW metadata
+
+NOTE:
+This task is an MVC, and requires significant manual preparation of the output.
+While the task can be time consuming, it is still faster than doing the work
+entirely manually.
+
+It's important to keep the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
+file in the `gitlab` project up to date with the current Technical Writing team assignments.
+This information is used in merge requests that contain documentation:
+
+- To populate the eligible approvers section.
+- By GitLab Bot to ping reviewers for community contributions.
+
+GitLab cannot automatically associate the stage and group metadata in our documentation
+pages with the technical writer assigned to that group, so we use a Rake task to
+generate entries for the `CODEOWNERS` file. Declaring code owners for pages reduces
+the number of times GitLab Bot pings the entire Technical Writing team.
+
+The `tw:codeowners` Rake task, located in [`lib/tasks/gitlab/tw/codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake),
+contains an array of groups and their assigned technical writer. This task:
+
+- Outputs a line for each doc with metadata that matches a group in `lib/tasks/gitlab/tw/codeowners.rake`.
+  Files not matching a group are skipped.
+- Adds the full path to the page, and the assigned technical writer.
+
+To prepare an update to the `CODEOWNERS` file:
+
+1. Update `lib/tasks/gitlab/tw/codeowners.rake` with the latest [TW team assignments](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+   Make this update in a standalone merge request, as it runs a long pipeline and
+   requires backend maintainer review. Make sure this is merged before you update
+   `CODEOWNERS` in another merge request.
+1. Run the task from the root directory of the `gitlab` repository, and save the output in a file:
+
+   ```ruby
+   bundle exec rake tw:codeowners > ~/Desktop/updates.md
+   ```
+
+1. Open the file you just created (`~/Desktop/updates.md` in this example), and prepare the output:
+   - Find and replace `./` with `/`.
+   - Sort the lines in alphabetical (ascending) order. If you use VS Code, you can
+     select everything, press <kbd>F1</kbd>, type `sort`, and select **Sort lines (ascending, case insensitive**.
+1. Create a new branch for your `CODEOWNERS` updates.
+1. Replace the documentation-related lines in the `^[Documentation Pages]` section
+   with the output you prepared.
+
+   WARNING:
+   The documentation section is not the last section of the `CODEOWNERS` file. Don't
+   delete data that isn't ours!
+
+1. Create a commit with the raw changes.
+1. From the command line, run `git diff master`.
+1. In the diff, look for directory-level assignments to manually restore to the
+   `CODEOWNERS` file. If all files in a single directory are assigned to the same
+   technical writer, we simplify these entries. Remove all the lines for the individual
+   files, and leave a single entry for the directory, for example: `/doc/directory/ @tech.writer`.
+1. In the diff, look for changes that don't match your expectations:
+   - New pages, or newly moved pages, show up as added lines.
+   - Deleted pages, and pages that are now redirects, show up as deleted lines.
+   - If you see an unusual number of changes to pages that all seem related,
+     check the metadata for the pages. A group might have been renamed and the Rake task
+     must be updated to match.
+1. Create another commit with your manual changes, and create a second merge request
+   with your changes to the `CODEOWNERS` file. Assign it to a technical writing manager for review.
+
 ## Move, rename, or delete a page
 
 See [redirects](redirects.md).
