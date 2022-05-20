@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Experiment Guide
 
-Experiments can be conducted by any GitLab team, most often the teams from the 
-[Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/). 
+Experiments can be conducted by any GitLab team, most often the teams from the
+[Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/).
 Experiments are not tied to releases because they primarily target GitLab.com.
 
 Experiments are run as an A/B/n test, and are behind an [experiment feature flag](../feature_flags/#experiment-type)

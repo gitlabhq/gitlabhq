@@ -145,7 +145,7 @@ You can download the JSON report file from the CI/CD pipelines page. For more in
 ## Corpus registry
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347187) in GitLab 14.9. [Feature flags `corpus_management` and `corpus_management_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/328418) removed.  
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347187) in GitLab 14.9. [Feature flags `corpus_management` and `corpus_management_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/328418) removed.
 
 The corpus registry is a library of corpuses. Corpuses in a project's registry are available to
 all jobs in that project. A project-wide registry is a more efficient way to manage corpuses than

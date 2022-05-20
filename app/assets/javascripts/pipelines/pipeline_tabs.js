@@ -20,9 +20,11 @@ const createPipelineTabs = (selector, apolloProvider) => {
     downloadablePathForReportType,
     exposeSecurityDashboard,
     exposeLicenseScanningData,
+    fullPath,
     graphqlResourceEtag,
     pipelineIid,
     pipelineProjectPath,
+    totalJobCount,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
@@ -47,9 +49,11 @@ const createPipelineTabs = (selector, apolloProvider) => {
       downloadablePathForReportType,
       exposeSecurityDashboard: parseBoolean(exposeSecurityDashboard),
       exposeLicenseScanningData: parseBoolean(exposeLicenseScanningData),
+      fullPath,
       graphqlResourceEtag,
       pipelineIid,
       pipelineProjectPath,
+      totalJobCount,
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);

@@ -46,10 +46,10 @@ To define the `a11y` job for GitLab 12.9 and later:
    ```yaml
    stages:
      - accessibility
-   
+
    variables:
      a11y_urls: "https://about.gitlab.com https://gitlab.com/users/sign_in"
-   
+
    include:
      - template: "Verify/Accessibility.gitlab-ci.yml"
    ```

@@ -153,7 +153,7 @@ Examples of tests which require a runner:
 Example:
 
 ```shell
-docker run \ 
+docker run \
   --detach \
   --hostname interface_ip_address \
   --publish 80:80 \

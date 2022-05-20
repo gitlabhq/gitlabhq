@@ -18,7 +18,7 @@ Advanced Search searches default project branches only.
 
 ## General search
 
-<!-- markdownlint-disable --> 
+<!-- markdownlint-disable -->
 
 | Use | Description  | Example                                                                                                                                        |
 |-----|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------|

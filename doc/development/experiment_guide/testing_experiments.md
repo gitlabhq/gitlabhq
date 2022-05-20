@@ -48,7 +48,7 @@ segmentations using the matchers.
 class ExampleExperiment < ApplicationExperiment
   control { }
   candidate { '_candidate_' }
-    
+
   exclude { context.actor.first_name == 'Richard' }
   segment(variant: :candidate) { context.actor.username == 'jejacks0n' }
 end

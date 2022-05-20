@@ -140,13 +140,9 @@ RSpec.describe 'Issue Detail', :js do
       end
 
       context 'by non-member author' do
-        it 'routes the user to the issue details page when the `issue_type` is set to issue' do
-          open_issue_edit_form
-
-          page.within('[data-testid="issuable-form"]') do
-            update_type_select('Incident', 'Issue')
-
-            expect(page).to have_current_path(project_issue_path(project, incident))
+        it 'cannot edit issuable' do
+          page.within('.content') do
+            expect(page).to have_no_button('Edit title and description')
           end
         end
       end

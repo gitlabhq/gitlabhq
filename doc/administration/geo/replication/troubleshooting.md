@@ -1129,7 +1129,7 @@ Geo::TrackingBase::SecondaryNotConfigured: Geo secondary database is not configu
 
 On a Geo primary site this error can be ignored.
 
-This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists). 
+This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
 
 ## Fixing client errors
 
@@ -1148,7 +1148,7 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
 1. SSH into every Sidekiq, PostgresSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary node to primary:
-     
+
      ```shell
      sudo gitlab-ctl geo promote
      ```
@@ -1158,8 +1158,8 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
      ```shell
      sudo gitlab-ctl geo promote --force
      ```
-     
-1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.  
+
+1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
 1. If **successful**, the **secondary** site is now promoted to the **primary** site.
 
 If the above steps are **not successful**, proceed through the next steps:

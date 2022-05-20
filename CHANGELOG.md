@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.10.3 (2022-05-20)
+
+### Added (1 change)
+
+- [Add option to disable seperated caches](gitlab-org/gitlab@c39af3e813d5d242068a8ae7e8e011284fd385c9) by @Taucher2003 ([merge request](gitlab-org/gitlab!88013))
+
+### Fixed (1 change)
+
+- [Fix assignee filtering on group/project issues list](gitlab-org/gitlab@317c3a6e1e799f53d7e0812921bbffc4f4733d58) ([merge request](gitlab-org/gitlab!87729))
+
 ## 14.10.2 (2022-05-04)
 
 ### Fixed (2 changes)

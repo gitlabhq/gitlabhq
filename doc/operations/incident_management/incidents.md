@@ -180,7 +180,7 @@ charts in the **Metrics** tab:
 
 ![Incident Metrics tab](img/incident_metrics_tab_v13_8.png)
 
-When you upload an image, you can associate the image with text or a link to the original graph.  
+When you upload an image, you can associate the image with text or a link to the original graph.
 
 ![Text link modal](img/incident_metrics_tab_text_link_modal_v14_9.png)
 

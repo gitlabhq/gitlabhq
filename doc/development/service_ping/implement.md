@@ -286,7 +286,7 @@ Enabled by default in GitLab 13.7 and later.
    Increment event count using an ordinary Redis counter, for a given event name.
 
    API requests are protected by checking for a valid CSRF token.
-   
+
    ```plaintext
    POST /usage_data/increment_counter
    ```

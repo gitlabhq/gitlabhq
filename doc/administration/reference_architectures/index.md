@@ -215,7 +215,7 @@ table.test-coverage th {
 
 ## Cost to run
 
-The following table details the cost to run the different reference architectures across GCP, AWS, and Azure. Bare-metal costs are not included here as it varies widely depending on each customer configuration. 
+The following table details the cost to run the different reference architectures across GCP, AWS, and Azure. Bare-metal costs are not included here as it varies widely depending on each customer configuration.
 
 <table class="test-coverage">
   <col>

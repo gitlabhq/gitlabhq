@@ -13,7 +13,9 @@ class IssuablePolicy < BasePolicy
 
   condition(:is_author) { @subject&.author == @user }
 
-  rule { can?(:guest_access) & assignee_or_author }.policy do
+  condition(:is_incident) { @subject.incident? }
+
+  rule { can?(:guest_access) & assignee_or_author & ~is_incident }.policy do
     enable :read_issue
     enable :update_issue
     enable :reopen_issue

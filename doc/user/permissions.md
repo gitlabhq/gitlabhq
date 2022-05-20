@@ -232,7 +232,7 @@ The following table lists project permissions available for each role:
 15. Guest users can only set metadata (for example, labels, assignees, or milestones)
     when creating an issue. They cannot change the metadata on existing issues.
 16. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
-    A guest who created an incident when they had the Reporter role or who is assigned to the incident can modify the title, description and metrics. They can also close and reopen the incident.
+    In GitLab 15.1 and later, a Guest who created an issue that was promoted to an incident cannot edit, close, or reopen their incident.
 17. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
 18. Authors and assignees of issues can modify the title and description even if they don't have the Reporter role.
 19. Authors and assignees can close and reopen issues even if they don't have the Reporter role.

@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlTab } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineTabs from '~/pipelines/components/pipeline_tabs.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
@@ -21,8 +22,11 @@ describe('The Pipeline Tabs', () => {
   const findPipelineApp = () => wrapper.findComponent(PipelineGraphWrapper);
   const findTestsApp = () => wrapper.findComponent(TestReports);
 
+  const findJobsBadge = () => wrapper.findByTestId('builds-counter');
+
   const defaultProvide = {
     defaultTabValue: '',
+    totalJobCount: 10,
   };
 
   const createComponent = (propsData = {}) => {
@@ -33,7 +37,7 @@ describe('The Pipeline Tabs', () => {
           ...defaultProvide,
         },
         stubs: {
-          JobsApp: { template: '<div class="jobs" />' },
+          GlTab,
           TestReports: { template: '<div id="tests" />' },
         },
       }),
@@ -58,9 +62,23 @@ describe('The Pipeline Tabs', () => {
       ${'Jobs'}        | ${findJobsTab}       | ${findJobsApp}
       ${'Failed Jobs'} | ${findFailedJobsTab} | ${findFailedJobsApp}
       ${'Tests'}       | ${findTestsTab}      | ${findTestsApp}
-    `('shows $tabName tab and its associated component', ({ appComponent, tabComponent }) => {
-      expect(tabComponent().exists()).toBe(true);
-      expect(appComponent().exists()).toBe(true);
+    `(
+      'shows $tabName tab with its badge and its associated component',
+      ({ appComponent, tabComponent }) => {
+        expect(tabComponent().exists()).toBe(true);
+        expect(appComponent().exists()).toBe(true);
+      },
+    );
+  });
+
+  // We are going to add more tabs tests here as we do each tab MR
+  describe('Tabs badges', () => {
+    it.each`
+      tabName   | badgeComponent   | badgeText
+      ${'Jobs'} | ${findJobsBadge} | ${String(defaultProvide.totalJobCount)}
+    `('shows badge for $tabName with the correct text', ({ badgeComponent, badgeText }) => {
+      expect(badgeComponent().exists()).toBe(true);
+      expect(badgeComponent().text()).toBe(badgeText);
     });
   });
 });

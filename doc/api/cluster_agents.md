@@ -380,7 +380,7 @@ Supported attributes:
 | `id`          | integer or string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) maintained by the authenticated user. |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                 |
 | `name`        | string            | yes      | Name for the token.                                                                                              |
-| `description` | string            | no       | Description for the token.                                                                                       |       
+| `description` | string            | no       | Description for the token.                                                                                       |
 
 Response:
 

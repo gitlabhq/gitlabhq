@@ -73,7 +73,7 @@ To create a project in GitLab:
    - Create a [blank project](#create-a-blank-project).
    - Create a project from a:
       - [built-in template](#create-a-project-from-a-built-in-template).
-      - [custom template](#create-a-project-from-a-custom-template).  
+      - [custom template](#create-a-project-from-a-custom-template).
       - [HIPAA audit protocol template](#create-a-project-from-the-hipaa-audit-protocol-template).
    - [Import a project](../../user/project/import/index.md)
      from a different repository. Contact your GitLab administrator if this option is not available.

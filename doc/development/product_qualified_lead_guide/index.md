@@ -21,7 +21,7 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 1. Enter the credentials on CustomersDot development to Platypus in your `/config/secrets.yml` and restart. Credentials for the Platypus Staging are in the 1Password Growth vault. The URL for staging is `https://staging.ci.nexus.gitlabenvironment.cloud`.
 
 ```yaml
-  platypus_url: "<%= ENV['PLATYPUS_URL'] %>" 
+  platypus_url: "<%= ENV['PLATYPUS_URL'] %>"
   platypus_client_id: "<%= ENV['PLATYPUS_CLIENT_ID'] %>"
   platypus_client_secret: "<%= ENV['PLATYPUS_CLIENT_SECRET'] %>"
 ```

@@ -114,10 +114,10 @@ For each application and Sidekiq node on the **secondary** site:
 
    ```ruby
    gitlab_rails['geo_registry_replication_enabled'] = true
-   
+
    # Primary registry's hostname and port, it will be used by
    # the secondary node to directly communicate to primary registry
-   gitlab_rails['geo_registry_replication_primary_api_url'] = 'https://primary.example.com:5050/' 
+   gitlab_rails['geo_registry_replication_primary_api_url'] = 'https://primary.example.com:5050/'
    ```
 
 1. Reconfigure the node for the change to take effect:

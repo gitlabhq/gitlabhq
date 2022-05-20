@@ -42,7 +42,7 @@ collections "**Consul** x3" as consul #e76a9b
 
 card "Database" as database {
   collections "**PGBouncer x3**\n//Consul//" as pgbouncer #4EA7FF
- 
+
   card "**PostgreSQL** //Primary//\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_primary #4EA7FF
   collections "**PostgreSQL** //Secondary// **x2**\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_secondary #4EA7FF
 

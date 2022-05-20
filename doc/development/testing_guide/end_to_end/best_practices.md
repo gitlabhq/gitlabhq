@@ -189,9 +189,9 @@ Attach the `:aggregate_failures` metadata to the example if multiple expectation
 it 'searches', :aggregate_failures do
   Page::Search::Results.perform do |search|
     expect(search).to have_file_in_project(template[:file_name], project.name)
-    
+
     search.switch_to_code
-    
+
     expect(search).to have_file_with_content(template[:file_name], content[0..33])
   end
 end

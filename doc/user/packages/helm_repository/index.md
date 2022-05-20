@@ -78,10 +78,10 @@ For example:
 
 ```yaml
 image: curlimages/curl:latest
- 
+
 stages:
   - upload
- 
+
 upload:
   stage: upload
   script:

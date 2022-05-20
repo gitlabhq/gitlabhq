@@ -508,8 +508,7 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        skip('Enable in jobs `pipeline_tabs_vue` MR')
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+        expect(page.find('[data-testid="builds-counter"]').text).to eq(pipeline.total_size.to_s)
       end
 
       context 'without permission to access builds' do
@@ -889,7 +888,6 @@ RSpec.describe 'Pipeline', :js do
 
     describe 'GET /:project/-/pipelines/:id/builds' do
       before do
-        stub_feature_flags(pipeline_tabs_vue: false)
         visit builds_project_pipeline_path(project, pipeline)
       end
 
@@ -1042,7 +1040,6 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      stub_feature_flags(pipeline_tabs_vue: false)
       visit builds_project_pipeline_path(project, pipeline)
     end
 
@@ -1066,8 +1063,7 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        skip('unskip when jobs tab is implemented with ff `pipeline_tabs_vue`')
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+        expect(page.find('[data-testid="builds-counter"]').text).to eq(pipeline.total_size.to_s)
       end
     end
 

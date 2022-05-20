@@ -475,7 +475,7 @@ Updates to example must be made at:
 
    # Some metrics run queries against the database. Enabling separate database metrics allows
    # these metrics to be collected when the metrics are
-   # scraped on a separate /db_metrics endpoint. 
+   # scraped on a separate /db_metrics endpoint.
    praefect['separate_database_metrics'] = true
    ```
 

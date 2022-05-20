@@ -355,10 +355,9 @@ To add seats to a subscription:
 1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the system and a credit for what you've already paid. You are only be charged for the net change.
 1. Select **Confirm Upgrade**.
 
-The following items are emailed to you:
+A payment receipt is emailed to you, which you can also access in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
 
-- A payment receipt. You can also access this information in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
-- An activation code. [Add this code](../../user/admin_area/license.md) to your instance to use it.
+For subscriptions that use cloud licensing, the additional seats are reflected on your instance immediately and no further action is needed. If you're using a legacy license, you receive an updated license file. [Add this license](../../user/admin_area/license.md) to your instance to use it.
 
 ### Renew a subscription
 

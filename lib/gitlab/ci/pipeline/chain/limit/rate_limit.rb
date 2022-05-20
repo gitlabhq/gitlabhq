@@ -9,8 +9,6 @@ module Gitlab
             include Chain::Helpers
 
             def perform!
-              return unless throttle_enabled?
-
               # We exclude child-pipelines from the rate limit because they represent
               # sub-pipelines that would otherwise hit the rate limit due to having the
               # same scope (project, user, sha).
@@ -19,7 +17,7 @@ module Gitlab
 
               if rate_limit_throttled?
                 create_log_entry
-                error(throttle_message) unless dry_run?
+                error(throttle_message) if enforce_throttle?
               end
             end
 
@@ -51,15 +49,9 @@ module Gitlab
               'Too many pipelines created in the last minute. Try again later.'
             end
 
-            def throttle_enabled?
+            def enforce_throttle?
               ::Feature.enabled?(
-                :ci_throttle_pipelines_creation,
-                project)
-            end
-
-            def dry_run?
-              ::Feature.enabled?(
-                :ci_throttle_pipelines_creation_dry_run,
+                :ci_enforce_throttle_pipelines_creation,
                 project)
             end
           end

@@ -56,7 +56,7 @@ To configure GitLab CI/CD as a backend:
 1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use
    [this file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
    to populate it.
-   
+
 1. Push your project to GitLab. This action triggers a pipeline, which
    runs the `gitlab-terraform init`, `gitlab-terraform validate`, and
    `gitlab-terraform plan` commands.

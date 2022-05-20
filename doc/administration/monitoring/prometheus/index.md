@@ -137,8 +137,8 @@ The steps below are the minimum necessary to configure a Monitoring node running
 
    # Enable service discovery for Prometheus
    consul['enable'] = true
-   consul['monitoring_service_discovery'] =  true
-   consul['configuration'] = { 
+   consul['monitoring_service_discovery'] = true
+   consul['configuration'] = {
       retry_join: %w(10.0.0.1 10.0.0.2 10.0.0.3), # The addresses can be IPs or FQDNs
    }
 

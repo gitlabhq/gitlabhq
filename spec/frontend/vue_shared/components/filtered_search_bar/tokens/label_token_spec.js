@@ -77,7 +77,7 @@ describe('LabelToken', () => {
 
     describe('getActiveLabel', () => {
       it('returns label object from labels array based on provided `currentValue` param', () => {
-        expect(wrapper.vm.getActiveLabel(mockLabels, 'foo label')).toEqual(mockRegularLabel);
+        expect(wrapper.vm.getActiveLabel(mockLabels, 'Foo Label')).toEqual(mockRegularLabel);
       });
     });
 

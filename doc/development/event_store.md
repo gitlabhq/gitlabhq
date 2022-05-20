@@ -320,7 +320,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
   it_behaves_like 'subscribes to event' do
     let(:event) { pipeline_created_event }
   end
-  
+
   it 'does something' do
     # This helper directly executes `perform` ensuring that `handle_event` is called correctly.
     consume_event(subscriber: described_class, event: pipeline_created_event)

@@ -114,7 +114,6 @@ export default {
   <div class="detail-page-header">
     <div class="detail-page-header-body">
       <gl-badge
-        data-testid="status"
         class="issuable-status-badge gl-mr-3"
         :class="statusBadgeClass"
         :variant="badgeVariant"

@@ -359,7 +359,7 @@ Add the `-older-than` option to avoid showing repositories that are the process 
 Praefect database. Replace `<duration>` with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration> 
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration>
 ```
 
 Only repositories with a creation time before the specified duration are considered.

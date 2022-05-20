@@ -33,7 +33,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
 
   before do
     allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-    allow(Deployments::HooksWorker).to receive(:perform_async)
+    allow(deployment).to receive(:execute_hooks)
     job.success! # Create/Succeed deployment
   end
 

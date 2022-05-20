@@ -88,7 +88,7 @@ options = {
 
     # :filter is optional
     # This filter includes OID 1.2.840.113556.1.4.1941
-    # It will search for all direct and nested members of the group gitlab_grp in the LDAP directory  
+    # It will search for all direct and nested members of the group gitlab_grp in the LDAP directory
     filter: Net::LDAP::Filter.construct("(memberOf:1.2.840.113556.1.4.1941:=CN=gitlab_grp,DC=example,DC=com)"),
 
     # :attributes is optional

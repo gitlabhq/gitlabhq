@@ -213,9 +213,9 @@ security issues:
 
 ### Migration of existing Vulnerability-Check rules
 
-If your projects have rules that have a security orchestration project, a new MR with 
+If your projects have rules that have a security orchestration project, a new MR with
 the existing rule's content is created automatically against the default branch belonging
-to the security orchestration project. To maintain the same security approval rules you 
+to the security orchestration project. To maintain the same security approval rules you
 had before GitLab 15.0, we recommend merging this new MR.
 
 If your projects have rules without a security orchestration project, a new security orchestration project is created automatically with the content of the existing rule. No additional action is required.
@@ -666,6 +666,3 @@ These security pages can be populated by running the jobs from the manual step o
 There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
 Please upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).
-  doc/user/project/merge_requests/approvals/settings.md 
-+
-0

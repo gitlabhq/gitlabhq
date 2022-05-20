@@ -109,44 +109,44 @@
           = f.text_field :id, class: 'gl-form-input form-control', readonly: true
       .form-group.gl-form-group
         = f.label :pronouns, s_('Profiles|Pronouns')
-        = f.text_field :pronouns, class: 'gl-form-input form-control gl-form-input-lg'
+        = f.text_field :pronouns, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
           = s_("Profiles|Enter your pronouns to let people know how to refer to you")
       .form-group.gl-form-group
         = f.label :pronunciation, s_('Profiles|Pronunciation')
-        = f.text_field :pronunciation, class: 'gl-form-input form-control gl-form-input-lg'
+        = f.text_field :pronunciation, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
           = s_("Profiles|Enter how your name is pronounced to help people address you correctly")
       = render_if_exists 'profiles/extra_settings', form: f
       = render_if_exists 'profiles/email_settings', form: f
       .form-group.gl-form-group
         = f.label :skype
-        = f.text_field :skype, class: 'gl-form-input form-control gl-form-input-lg', placeholder: s_("Profiles|username")
+        = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
       .form-group.gl-form-group
         = f.label :linkedin
-        = f.text_field :linkedin, class: 'gl-form-input form-control gl-form-input-lg'
+        = f.text_field :linkedin, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
           = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
       .form-group.gl-form-group
         = f.label :twitter
-        = f.text_field :twitter, class: 'gl-form-input form-control gl-form-input-lg', placeholder: s_("Profiles|@username")
+        = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
       .form-group.gl-form-group
         = f.label :website_url, s_('Profiles|Website url')
-        = f.text_field :website_url, class: 'gl-form-input form-control gl-form-input-lg', placeholder: s_("Profiles|https://website.com")
+        = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
       .form-group.gl-form-group
         = f.label :location, s_('Profiles|Location')
         - if @user.read_only_attribute?(:location)
-          = f.text_field :location, class: 'gl-form-input form-control gl-form-input-lg', readonly: true
+          = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: true
           %small.form-text.text-gl-muted
             = s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
         - else
-          = f.text_field :location, class: 'gl-form-input form-control gl-form-input-lg', placeholder: s_("Profiles|City, country")
+          = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|City, country")
       .form-group.gl-form-group
         = f.label :job_title, s_('Profiles|Job title')
-        = f.text_field :job_title, class: 'gl-form-input form-control gl-form-input-lg'
+        = f.text_field :job_title, class: 'gl-form-input form-control gl-md-form-input-lg'
       .form-group.gl-form-group
         = f.label :organization, s_('Profiles|Organization')
-        = f.text_field :organization, class: 'gl-form-input form-control gl-form-input-lg'
+        = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg'
         %small.form-text.text-gl-muted
           = s_("Profiles|Who you represent or work for")
       .form-group.gl-form-group

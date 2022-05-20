@@ -90,7 +90,7 @@ end of the API URL.
 
 NOTE:
 In the example above, replace `gitlab.example.com` with `gitlab.com` to query GitLab.com (GitLab SaaS).
-Access can be denied due to authentication. For more information, see [Authentication](#authentication).  
+Access can be denied due to authentication. For more information, see [Authentication](#authentication).
 
 ### API request to expose HTTP response headers
 

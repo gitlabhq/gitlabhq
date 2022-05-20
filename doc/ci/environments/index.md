@@ -646,7 +646,7 @@ To delete a stopped environment in the GitLab UI:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
-You can define a job that accesses an environment for various purposes, such as verification or preparation. This 
+You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
 
 To do so, add either `action: prepare`, `action: verify`, or `action: access` to the `environment` section of your job:

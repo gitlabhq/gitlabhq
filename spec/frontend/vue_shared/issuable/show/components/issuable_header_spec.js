@@ -1,4 +1,4 @@
-import { GlIcon, GlAvatarLabeled } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
@@ -69,7 +69,7 @@ describe('IssuableHeader', () => {
   describe('template', () => {
     it('renders issuable status icon and text', () => {
       createComponent();
-      const statusBoxEl = wrapper.findByTestId('status');
+      const statusBoxEl = wrapper.findComponent(GlBadge);
       const statusIconEl = statusBoxEl.findComponent(GlIcon);
 
       expect(statusBoxEl.exists()).toBe(true);

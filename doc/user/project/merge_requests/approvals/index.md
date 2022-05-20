@@ -103,7 +103,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
   to determine who should review the work.
 - Require an [approval before merging code that causes test coverage to decline](../../../../ci/pipelines/settings.md#coverage-check-approval-rule)
 - Users on GitLab Ultimate can also [require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
-  before merging code that could introduce a vulnerability. 
+  before merging code that could introduce a vulnerability.
 
 ## Related topics
 

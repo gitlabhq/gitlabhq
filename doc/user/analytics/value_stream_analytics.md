@@ -119,7 +119,7 @@ The **Lead Time for Changes** metrics display below the **Filter results** text 
 To view deployment metrics, you must have a
 [production environment configured](../../ci/environments/index.md#deployment-tier-of-environments).
 
-Value stream analytics shows the following deployment metrics for your project:  
+Value stream analytics shows the following deployment metrics for your project:
 
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.

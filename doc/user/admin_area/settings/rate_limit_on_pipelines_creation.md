@@ -31,3 +31,4 @@ To limit the number of pipeline requests:
 1. Expand **Pipelines Rate Limits**.
 1. Under **Max requests per minute**, enter a value greater than `0`.
 1. Select **Save changes**.
+1. Enable `ci_enforce_throttle_pipelines_creation` feature flag to enable the rate limit.

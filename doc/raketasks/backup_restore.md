@@ -390,7 +390,7 @@ bundle for each repository. There must be an existing backup to create an increm
 
 - In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
 - In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the 
+  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the
   [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:

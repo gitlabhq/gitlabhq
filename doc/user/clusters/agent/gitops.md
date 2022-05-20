@@ -65,7 +65,7 @@ gitops:
   - id: gitlab-org/cluster-integration/gitlab-agent
     default_namespace: my-ns
     paths:
-      # Read all YAML files from this directory. 
+      # Read all YAML files from this directory.
     - glob: '/team1/app1/*.yaml'
       # Read all .yaml files from team2/apps and all subdirectories.
     - glob: '/team2/apps/**/*.yaml'

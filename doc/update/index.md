@@ -419,7 +419,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 14.9.0
 
-- Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances. 
+- Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances.
   These [batched background migrations](#batched-background-migrations) update whole database tables to ensure corresponding
   records in `namespaces` table for each record in `projects` table.
 
@@ -433,16 +433,16 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   ```plaintext
   Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
   ```
-  
+
   Or
 
   ```plaintext
   Error executing action `run` on resource 'bash[migrate gitlab-rails database]'
   ================================================================================
-  
+
   Mixlib::ShellOut::ShellCommandFailed
   ------------------------------------
-  Command execution failed. STDOUT/STDERR suppressed for sensitive resource 
+  Command execution failed. STDOUT/STDERR suppressed for sensitive resource
   ```
 
 - GitLab 14.9.0 includes a
@@ -524,7 +524,7 @@ that may remain stuck permanently in a **pending** state.
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
   Updating to 14.6.5 or later will reset runner registration tokens for your groups and projects.
-  
+
 ### 14.5.0
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you

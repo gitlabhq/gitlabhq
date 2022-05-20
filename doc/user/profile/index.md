@@ -399,7 +399,7 @@ You can add this URL to your feed reader.
 
 ### Reset the user activity feed token
 
-Feed tokens are sensitive and can reveal information from confidential issues. 
+Feed tokens are sensitive and can reveal information from confidential issues.
 If you think your feed token has been exposed, you should reset it.
 
 To reset your feed token:
@@ -408,7 +408,7 @@ To reset your feed token:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. Scroll down. In the **Feed token** section, select the
-   **reset this token** link. 
+   **reset this token** link.
 1. On the confirmation box, select **OK**.
 
 A new token is generated.

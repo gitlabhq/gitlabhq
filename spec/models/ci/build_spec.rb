@@ -1367,7 +1367,7 @@ RSpec.describe Ci::Build do
 
     before do
       allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      allow(Deployments::HooksWorker).to receive(:perform_async)
+      allow(deployment).to receive(:execute_hooks)
     end
 
     it 'has deployments record with created status' do
@@ -1423,7 +1423,7 @@ RSpec.describe Ci::Build do
 
       before do
         allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
-        allow(Deployments::HooksWorker).to receive(:perform_async)
+        allow(deployment).to receive(:execute_hooks)
       end
 
       it_behaves_like 'avoid deadlock'
@@ -1509,13 +1509,27 @@ RSpec.describe Ci::Build do
 
         it 'transitions to running and calls webhook' do
           freeze_time do
-            expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+            expect(deployment).to receive(:execute_hooks).with(Time.current)
 
             subject
           end
 
           expect(deployment).to be_running
+        end
+
+        context 'when `deployment_hooks_skip_worker` flag is disabled' do
+          before do
+            stub_feature_flags(deployment_hooks_skip_worker: false)
+          end
+
+          it 'executes Deployments::HooksWorker asynchronously' do
+            freeze_time do
+              expect(Deployments::HooksWorker)
+                .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+              subject
+            end
+          end
         end
       end
     end

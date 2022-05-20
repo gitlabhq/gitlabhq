@@ -1729,7 +1729,7 @@ In this case, follow these steps:
    ```ruby
    gitlab_rails['registry_enabled'] = true
    ```
-  
+
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 1. Try the removal again.

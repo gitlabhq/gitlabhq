@@ -30,10 +30,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
 
   context 'when the limit is exceeded' do
     before do
-      allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
-        .and_return(pipelines_create: { threshold: 1, interval: 1.minute })
-
-      stub_feature_flags(ci_throttle_pipelines_creation_dry_run: false)
+      stub_application_setting(pipeline_limit_per_project_user_sha: 1)
     end
 
     it 'does not persist the pipeline' do
@@ -101,33 +98,9 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       end
     end
 
-    context 'when ci_throttle_pipelines_creation is disabled' do
+    context 'when ci_enforce_throttle_pipelines_creation is disabled' do
       before do
-        stub_feature_flags(ci_throttle_pipelines_creation: false)
-      end
-
-      it 'does not break the chain' do
-        perform
-
-        expect(step.break?).to be_falsey
-      end
-
-      it 'does not invalidate the pipeline' do
-        perform
-
-        expect(pipeline.errors).to be_empty
-      end
-
-      it 'does not log anything' do
-        expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-        perform
-      end
-    end
-
-    context 'when ci_throttle_pipelines_creation_dry_run is enabled' do
-      before do
-        stub_feature_flags(ci_throttle_pipelines_creation_dry_run: true)
+        stub_feature_flags(ci_enforce_throttle_pipelines_creation: false)
       end
 
       it 'does not break the chain' do

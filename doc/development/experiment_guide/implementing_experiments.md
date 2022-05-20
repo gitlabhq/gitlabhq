@@ -329,7 +329,7 @@ before_action -> { experiment(:pill_color).publish }, only: [:show]
 You can then see this surface in the JavaScript console:
 
 ```javascript
-window.gl.experiments // => { pill_color: { excluded: false, experiment: "pill_color", key: "ca63ac02", variant: "candidate" } } 
+window.gl.experiments // => { pill_color: { excluded: false, experiment: "pill_color", key: "ca63ac02", variant: "candidate" } }
 ```
 
 ### Using experiments in Vue

@@ -397,7 +397,7 @@ If multiple packages have the same name and version, when you install a package,
 
    - Replace `@foo` with your scope.
    - Replace `gitlab.example.com` with your domain name.
-  
+
    For [project-level endpoints](#use-the-gitlab-endpoint-for-npm-packages) run:
 
    ```shell

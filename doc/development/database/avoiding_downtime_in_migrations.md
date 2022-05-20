@@ -77,7 +77,7 @@ bundle exec rails g post_deployment_migration remove_users_updated_at_column
 There are two scenarios that you need to consider
 to write a migration that removes a column:
 
-#### A. The removed column has no indexes or constraints that belong to it 
+#### A. The removed column has no indexes or constraints that belong to it
 
 In this case, a **transactional migration** can be used. Something as simple as:
 

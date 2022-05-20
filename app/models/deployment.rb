@@ -110,7 +110,11 @@ class Deployment < ApplicationRecord
 
     after_transition any => :running do |deployment|
       deployment.run_after_commit do
-        Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        if Feature.enabled?(:deployment_hooks_skip_worker, deployment.project)
+          deployment.execute_hooks(Time.current)
+        else
+          Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        end
       end
     end
 
@@ -124,7 +128,11 @@ class Deployment < ApplicationRecord
 
     after_transition any => FINISHED_STATUSES do |deployment|
       deployment.run_after_commit do
-        Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        if Feature.enabled?(:deployment_hooks_skip_worker, deployment.project)
+          deployment.execute_hooks(Time.current)
+        else
+          Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        end
       end
     end
 

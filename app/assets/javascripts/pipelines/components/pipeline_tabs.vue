@@ -1,5 +1,5 @@
 <script>
-import { GlTabs, GlTab } from '@gitlab/ui';
+import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { failedJobsTabName, jobsTabName, needsTabName, testReportTabName } from '../constants';
 import PipelineGraphWrapper from './graph/graph_component_wrapper.vue';
@@ -25,6 +25,7 @@ export default {
   },
   components: {
     Dag,
+    GlBadge,
     GlTab,
     GlTabs,
     JobsApp,
@@ -32,7 +33,7 @@ export default {
     PipelineGraphWrapper,
     TestReports,
   },
-  inject: ['defaultTabValue'],
+  inject: ['defaultTabValue', 'totalJobCount'],
   methods: {
     isActive(tabName) {
       return tabName === this.defaultTabValue;
@@ -54,17 +55,18 @@ export default {
     >
       <dag />
     </gl-tab>
-    <gl-tab
-      :title="$options.i18n.tabs.jobsTitle"
-      :active="isActive($options.tabNames.jobs)"
-      data-testid="jobs-tab"
-    >
+    <gl-tab :active="isActive($options.tabNames.jobs)" data-testid="jobs-tab" lazy>
+      <template #title>
+        <span class="gl-mr-2">{{ $options.i18n.tabs.jobsTitle }}</span>
+        <gl-badge size="sm" data-testid="builds-counter">{{ totalJobCount }}</gl-badge>
+      </template>
       <jobs-app />
     </gl-tab>
     <gl-tab
       :title="$options.i18n.tabs.failedJobsTitle"
       :active="isActive($options.tabNames.failures)"
       data-testid="failed-jobs-tab"
+      lazy
     >
       <failed-jobs-app />
     </gl-tab>

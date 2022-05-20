@@ -43,9 +43,7 @@ export default {
   },
   methods: {
     getActiveLabel(labels, data) {
-      return labels.find(
-        (label) => this.getLabelName(label).toLowerCase() === stripQuotes(data).toLowerCase(),
-      );
+      return labels.find((label) => this.getLabelName(label) === stripQuotes(data));
     },
     /**
      * There's an inconsistency between private and public API

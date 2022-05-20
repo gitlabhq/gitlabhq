@@ -623,7 +623,7 @@ You should consider these security implications before configuring IP address re
     names and hierarchies. Only the [group](../../api/groups.md) (including all [group resources](../../api/api_resources.md#group-resources))
     APIs and [project](../../api/api_resources.md#project-resources) (including all [project resources](../../api/api_resources.md#project-resources))
     APIs are protected by IP address restrictions.
-- **Activities performed by GitLab Runners are not bound by IP restrictions**: 
+- **Activities performed by GitLab Runners are not bound by IP restrictions**:
   When you register a runner, it is not bound by the IP restrictions. When the runner
   requests a new job or an update to a job's state, it is also not bound by
   the IP restrictions. But when the running CI/CD job sends Git requests from a

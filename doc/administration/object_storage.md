@@ -765,7 +765,7 @@ Prerequisites:
 
 1. [Install](https://rclone.org/downloads/) Rclone.
 1. Configure Rclone by running the following:
-   
+
    ```shell
    rclone config
    ```
@@ -778,7 +778,7 @@ Prerequisites:
    rclone ls old:uploads | head
    ```
 
-   This should print a partial list of the objects currently stored in your `uploads` bucket. If you get an error, or if 
+   This should print a partial list of the objects currently stored in your `uploads` bucket. If you get an error, or if
    the list is empty, go back and update your Rclone configuration using `rclone config`.
 
 1. Perform an initial copy. You do not need to take your GitLab server offline for this step.
@@ -788,7 +788,7 @@ Prerequisites:
    ```
 
 1. After the first sync completes, use the web UI or command-line interface of your new object storage provider to
-   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone 
+   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone
    sync`, check your Rclone configuration and try again.
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:

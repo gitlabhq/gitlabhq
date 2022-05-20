@@ -33,12 +33,6 @@ $header-height: 40px;
   right: 0;
 }
 
-.jira-connect-user {
-  position: fixed;
-  top: 10px;
-  right: 20px;
-}
-
 .jira-connect-app {
   margin-top: $header-height;
   height: calc(100% - #{$header-height});

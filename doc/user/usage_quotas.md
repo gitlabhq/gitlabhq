@@ -50,7 +50,7 @@ The following storage usage statistics are available to a maintainer:
 
 ## Manage your storage usage
 
-You can use several methods to manage and reduce your usage for some storage types. 
+You can use several methods to manage and reduce your usage for some storage types.
 
 For more information, see the following pages:
 

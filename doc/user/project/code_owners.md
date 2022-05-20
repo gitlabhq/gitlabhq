@@ -255,7 +255,7 @@ README @group @group/with-nested/subgroup
 /docs/* @root-docs
 
 # Include `/**` to specify Code Owners for all subdirectories
-# in a directory. This rule matches `docs/projects/index.md` or 
+# in a directory. This rule matches `docs/projects/index.md` or
 # `docs/development/index.md`
 /docs/**/*.md @root-docs
 

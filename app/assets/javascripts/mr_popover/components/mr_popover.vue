@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlBadge, GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { mrStates, humanMRStates } from '../constants';
@@ -10,6 +10,7 @@ export default {
   // name: 'MRPopover' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
   name: 'MRPopover', // eslint-disable-line @gitlab/require-i18n-strings
   components: {
+    GlBadge,
     GlPopover,
     GlSkeletonLoading,
     CiIcon,
@@ -45,14 +46,14 @@ export default {
     formattedTime() {
       return this.timeFormatted(this.mergeRequest.createdAt);
     },
-    statusBoxClass() {
+    badgeVariant() {
       switch (this.mergeRequest.state) {
         case mrStates.merged:
-          return 'status-box-mr-merged';
+          return 'info';
         case mrStates.closed:
-          return 'status-box-closed';
+          return 'danger';
         default:
-          return 'status-box-open';
+          return 'success';
       }
     },
     stateHumanName() {
@@ -97,9 +98,9 @@ export default {
       </div>
       <div v-else-if="showDetails" class="d-flex align-items-center justify-content-between">
         <div class="d-inline-flex align-items-center">
-          <div :class="`issuable-status-box status-box ${statusBoxClass}`">
+          <gl-badge class="gl-mr-3" :variant="badgeVariant">
             {{ stateHumanName }}
-          </div>
+          </gl-badge>
           <span class="gl-text-secondary">Opened <time v-text="formattedTime"></time></span>
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" />

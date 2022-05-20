@@ -117,6 +117,8 @@ module SearchHelper
   end
 
   def repository_ref(project)
+    return project.default_branch unless params[:project_id]
+
     # Always #to_s the repository_ref param in case the value is also a number
     params[:repository_ref].to_s.presence || project.default_branch
   end

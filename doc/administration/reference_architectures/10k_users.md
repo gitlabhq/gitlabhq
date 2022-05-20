@@ -86,7 +86,7 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  
+
   redis_cache -[hidden]-> redis_persistent
 }
 
@@ -2381,7 +2381,7 @@ card "Database" as database {
 card "redis" as redis {
   collections "**Redis Persistent** x3" as redis_persistent #FF6347
   collections "**Redis Cache** x3" as redis_cache #FF6347
-  
+
   redis_cache -[hidden]-> redis_persistent
 }
 

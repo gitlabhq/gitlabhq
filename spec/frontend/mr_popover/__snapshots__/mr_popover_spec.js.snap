@@ -17,13 +17,15 @@ exports[`MR Popover loaded state matches the snapshot 1`] = `
       <div
         class="d-inline-flex align-items-center"
       >
-        <div
-          class="issuable-status-box status-box status-box-open"
+        <gl-badge-stub
+          class="gl-mr-3"
+          size="md"
+          variant="success"
         >
           
           Open
         
-        </div>
+        </gl-badge-stub>
          
         <span
           class="gl-text-secondary"

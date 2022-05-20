@@ -63,7 +63,7 @@ export default {
 };
 </script>
 <template>
-  <div class="jira-connect-user gl-font-base">
+  <div class="gl-font-base">
     <gl-sprintf v-if="userSignedIn" :message="signedInText">
       <template #user_link>
         <gl-link data-testid="gitlab-user-link" :href="gitlabUserLink" target="_blank">
