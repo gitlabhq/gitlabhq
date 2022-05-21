@@ -71,7 +71,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
       end
 
       it 'returns an array of errors' do
-        expect(result).to match(
+        expect(result).to include(
           branch: be_nil,
           success_path: be_nil,
           errors: match_array([error_message])
@@ -92,7 +92,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
         end
 
         it 'returns a success path' do
-          expect(result).to match(
+          expect(result).to include(
             branch: branch,
             success_path: success_path,
             errors: []
@@ -108,7 +108,7 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
         end
 
         it 'returns an array of errors' do
-          expect(result).to match(
+          expect(result).to include(
             branch: be_nil,
             success_path: be_nil,
             errors: match_array([error])

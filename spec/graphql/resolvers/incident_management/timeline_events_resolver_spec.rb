@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::IncidentManagement::TimelineEventsResolver do
+RSpec.describe 'Resolvers::IncidentManagement::TimelineEventsResolver' do
   include GraphqlHelpers
 
+  let_it_be(:described_class) { Resolvers::IncidentManagement::TimelineEventsResolver }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }

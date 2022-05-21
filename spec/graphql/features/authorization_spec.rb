@@ -10,7 +10,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
 
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
-  let(:test_object) { double(name: 'My name') }
+  let(:test_object) { double(name: 'My name', address: 'Worldwide') }
   let(:authorizing_object) { test_object }
   # to override when combining permissions
   let(:permission_object_one) { authorizing_object }
@@ -103,47 +103,47 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
     end
 
     describe 'with a single permission' do
+      let(:query_string) { '{ item { name address } }' }
       let(:type) do
         type_factory do |type|
-          type.field :name, GraphQL::Types::String, null: true, authorize: permission_single
+          type.field :address, GraphQL::Types::String, null: true, authorize: permission_single
         end
       end
 
       it 'returns the protected field when user has permission' do
         permit(permission_single)
 
-        expect(subject).to eq('name' => test_object.name)
+        expect(subject).to include('address' => test_object.address)
       end
 
       it 'returns nil when user is not authorized' do
-        expect(subject).to eq('name' => nil)
+        expect(subject).to include('address' => nil)
       end
     end
 
     describe 'with a collection of permissions' do
+      let(:query_string) { '{ item { name address } }' }
       let(:type) do
         permissions = permission_collection
         type_factory do |type|
-          type.field :name, GraphQL::Types::String,
-                     null: true,
-                     authorize: permissions
+          type.field :address, GraphQL::Types::String, null: true, authorize: permissions
         end
       end
 
       it 'returns the protected field when user has all permissions' do
         permit(*permission_collection)
 
-        expect(subject).to eq('name' => test_object.name)
+        expect(subject).to include('address' => test_object.address)
       end
 
       it 'returns nil when user only has one of the permissions' do
         permit(permission_collection.first)
 
-        expect(subject).to eq('name' => nil)
+        expect(subject).to include('address' => nil)
       end
 
       it 'returns nil when user only has none of the permissions' do
-        expect(subject).to eq('name' => nil)
+        expect(subject).to include('address' => nil)
       end
     end
   end

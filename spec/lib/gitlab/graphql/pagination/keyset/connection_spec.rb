@@ -7,8 +7,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
   let(:nodes) { Project.all.order(id: :asc) }
   let(:arguments) { {} }
-  let(:query_type) { GraphQL::ObjectType.new }
-  let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
+  let(:schema) { empty_schema }
   let(:context) { GraphQL::Query::Context.new(query: query_double(schema: schema), values: nil, object: nil) }
 
   subject(:connection) do

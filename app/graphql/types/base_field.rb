@@ -150,10 +150,9 @@ module Types
 
     def connection_complexity_multiplier(ctx, args)
       # Resolvers may add extra complexity depending on number of items being loaded.
-      field_defn = to_graphql
-      return 0 unless field_defn.connection?
+      return 0 unless connection?
 
-      page_size   = field_defn.connection_max_page_size || ctx.schema.default_max_page_size
+      page_size   = max_page_size || ctx.schema.default_max_page_size
       limit_value = [args[:first], args[:last], page_size].compact.min
       multiplier  = resolver&.try(:complexity_multiplier, args).to_f
       limit_value * multiplier

@@ -17,7 +17,6 @@ module Resolvers
               description: 'Used to get a recursive tree. Default is false.'
     argument :ref, GraphQL::Types::String,
               required: false,
-              default_value: :head,
               description: 'Commit ref to get the tree for. Default value is HEAD.'
 
     alias_method :repository, :object
@@ -26,6 +25,7 @@ module Resolvers
       return unless repository.exists?
 
       cursor = args.delete(:after)
+      args[:ref] ||= :head
 
       pagination_params = {
         limit: @field.max_page_size || 100,
