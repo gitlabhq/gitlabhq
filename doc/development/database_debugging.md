@@ -106,8 +106,8 @@ Use these instructions for exploring the GitLab database while developing with t
 
 1. Install or open [Visual Studio Code](https://code.visualstudio.com/download).
 1. Install the [PostgreSQL VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres).
-1. In Visual Studio Code click on the PostgreSQL Explorer button in the left toolbar.
-1. In the top bar of the new window, click on the `+` to **Add Database Connection**, and follow the prompts to fill in the details:
+1. In Visual Studio Code select the PostgreSQL Explorer button in the left toolbar.
+1. In the top bar of the new window, select `+` to **Add Database Connection**, and follow the prompts to fill in the details:
    1. **Hostname**: the path to the PostgreSQL folder in your GDK directory (for example `/dev/gitlab-development-kit/postgresql`).
    1. **PostgreSQL user to authenticate as**: usually your local username, unless otherwise specified during PostgreSQL installation.
    1. **Password of the PostgreSQL user**: the password you set when installing PostgreSQL.

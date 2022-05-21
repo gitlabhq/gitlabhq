@@ -23,7 +23,7 @@ To enforce acceptance of a Terms of Service and Privacy Policy:
 1. Check the **All users must accept the Terms of Service and Privacy Policy to access GitLab** checkbox.
 1. Input the text of the **Terms of Service and Privacy Policy**. You can use [Markdown](../../markdown.md)
    in this text box.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 For each update to the terms, a new version is stored. When a user accepts or declines the terms,
 GitLab records which version they accepted or declined.

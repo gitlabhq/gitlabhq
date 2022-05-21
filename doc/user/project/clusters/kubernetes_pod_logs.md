@@ -68,7 +68,7 @@ a [metrics dashboard](../../../operations/metrics/index.md) and select **View lo
    1. When mousing over the list of pods, GitLab displays a tooltip with the exact pod name
       and status.
       ![deploy boards pod list](img/pod_logs_deploy_board.png)
-   1. Select on the desired pod to display the **Log Explorer**.
+   1. Select the desired pod to display the **Log Explorer**.
 
 ### Logs view
 

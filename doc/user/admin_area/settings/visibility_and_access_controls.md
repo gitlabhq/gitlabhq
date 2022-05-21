@@ -75,7 +75,7 @@ of projects or groups.
 To change this period:
 
 1. Select the desired option.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Override defaults and delete immediately
 
@@ -226,7 +226,7 @@ For example, if:
 To specify a custom Git clone URL for HTTP(S):
 
 1. Enter a root URL for **Custom Git clone URL for HTTP(S)**.
-1. Click on **Save changes**.
+1. Select **Save changes**.
 
 NOTE:
 SSH clone URLs can be customized in `gitlab.rb` by setting `gitlab_rails['gitlab_ssh_host']` and
@@ -239,7 +239,7 @@ These options specify the permitted types and lengths for SSH keys.
 To specify a restriction for each key type:
 
 1. Select the desired option from the dropdown.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 For more details, see [SSH key restrictions](../../../security/ssh_keys_restrictions.md).
 

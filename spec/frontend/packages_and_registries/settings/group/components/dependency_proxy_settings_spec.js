@@ -134,12 +134,6 @@ describe('DependencyProxySettings', () => {
         mountComponent();
       });
 
-      it('has the help prop correctly set', () => {
-        expect(findEnableProxyToggle().props()).toMatchObject({
-          help: component.i18n.enabledProxyHelpText,
-        });
-      });
-
       it('has help text with a link', () => {
         expect(findEnableProxyToggle().text()).toContain(
           'To see the image prefix and what is in the cache, visit the Dependency Proxy',
@@ -154,12 +148,6 @@ describe('DependencyProxySettings', () => {
       beforeEach(() => {
         mountComponent({
           dependencyProxySettings: dependencyProxySettingsMock({ enabled: false }),
-        });
-      });
-
-      it('has the help prop set to empty', () => {
-        expect(findEnableProxyToggle().props()).toMatchObject({
-          help: '',
         });
       });
 

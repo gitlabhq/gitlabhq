@@ -243,7 +243,7 @@ You can also reorder list items, which include bullet, numerical, and task list 
 To reorder list items:
 
 1. Hover over the list item row to make the drag icon visible.
-1. Click and hold the drag icon.
+1. Select and hold the drag icon.
 1. Drag the row to the new position in the list.
 1. Release the drag icon.
 

@@ -25,7 +25,7 @@ Only the complete settings for an integration can be inherited. Per-field inheri
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select an integration.
-1. Enter configuration details and click **Save changes**.
+1. Enter configuration details and select **Save changes**.
 
 WARNING:
 This may affect all or most of the groups and projects on your GitLab instance. Please review the details
@@ -57,7 +57,7 @@ integration on all non-configured groups and projects by default.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select an integration.
-1. Click **Reset** and confirm.
+1. Select **Reset** and confirm.
 
 Resetting an instance-level default setting removes the integration from all projects that have the integration set to use default settings.
 
@@ -79,7 +79,7 @@ for an integration.
 
 1. Navigate to the group's **Settings > Integrations**.
 1. Select an integration.
-1. Enter configuration details and click **Save changes**.
+1. Enter configuration details and select **Save changes**.
 
 WARNING:
 This may affect all or most of the subgroups and projects belonging to the group. Please review the details below.
@@ -112,7 +112,7 @@ integration on all non-configured groups and projects by default.
 
 1. Navigate to the group's **Settings > Integrations**.
 1. Select an integration.
-1. Click **Reset** and confirm.
+1. Select **Reset** and confirm.
 
 Resetting a group-level default setting removes integrations that use default settings and belong to a project or subgroup of the group.
 
@@ -124,7 +124,7 @@ Resetting a group-level default setting removes integrations that use default se
 1. Choose the integration you want to enable or update.
 1. From the drop-down, select **Use default settings**.
 1. Ensure the toggle is set to **Enable integration**.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Use custom settings for a group or project integration
 
@@ -132,4 +132,4 @@ Resetting a group-level default setting removes integrations that use default se
 1. Choose the integration you want to enable or update.
 1. From the drop-down, select **Use custom settings**.
 1. Ensure the toggle is set to **Enable integration** and enter all required settings.
-1. Click **Save changes**.
+1. Select **Save changes**.

@@ -23,7 +23,7 @@ and used across much of GitLab. You can recognize it by
 a list of page numbers near the bottom of a page, which, when clicked,
 take you to that page of results.
 
-For example, when you click **Page 100**, we send `100` to the
+For example, when you select **Page 100**, we send `100` to the
 backend. For example, if each page has say 20 items, the
 backend calculates `20 * 100 = 2000`,
 and it queries the database by offsetting (skipping) the first 2000

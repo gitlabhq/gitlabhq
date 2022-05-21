@@ -105,7 +105,7 @@ To filter only projects in that namespace, select from the **Namespace** dropdow
 
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 
-1. Click the **Public** tab.
+1. Select the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
 
 ### Administering Users
@@ -115,7 +115,7 @@ You can administer all users in the GitLab instance from the Admin Area's Users 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 
-To list users matching a specific criteria, click on one of the following tabs on the **Users** page:
+To list users matching a specific criteria, select one of the following tabs on the **Users** page:
 
 - **Active**
 - **Admins**
@@ -135,13 +135,13 @@ For each user, the following are listed:
 1. Date of account creation
 1. Date of last activity
 
-To edit a user, click the **Edit** button in that user's
-row. To delete the user, or delete the user and their contributions, click the cog dropdown in
+To edit a user, select the **Edit** button in that user's
+row. To delete the user, or delete the user and their contributions, select the cog dropdown in
 that user's row, and select the desired option.
 
 To change the sort order:
 
-1. Click the sort dropdown.
+1. Select the sort dropdown.
 1. Select the desired order.
 
 By default the sort dropdown shows **Name**.
@@ -240,17 +240,17 @@ To access the Groups page:
 1. On the left sidebar, select **Overview > Groups**.
 
 For each group, the page displays their name, description, size, number of projects in the group,
-number of members, and whether the group is private, internal, or public. To edit a group, click
-the **Edit** button in that group's row. To delete the group, click the **Delete** button in
+number of members, and whether the group is private, internal, or public. To edit a group, select
+the **Edit** button in that group's row. To delete the group, select the **Delete** button in
 that group's row.
 
-To change the sort order, click the sort dropdown and select the desired order. The default
+To change the sort order, select the sort dropdown and select the desired order. The default
 sort order is by **Last created**.
 
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../group/index.md#create-a-group) click **New group**.
+To [Create a new group](../group/index.md#create-a-group) select **New group**.
 
 ### Administering Topics
 
@@ -286,7 +286,7 @@ To access the Jobs page:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Jobs**. All jobs are listed, in descending order of job ID.
-1. Click the **All** tab to list all jobs. Click the **Pending**, **Running**, or **Finished**
+1. Select the **All** tab to list all jobs. Select the **Pending**, **Running**, or **Finished**
    tab to list only jobs of that status.
 
 For each job, the following details are listed:

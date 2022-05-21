@@ -31,7 +31,7 @@ There are two ways to change an issue's confidentiality.
 The first way is to edit the issue and toggle the confidentiality checkbox.
 After you save the issue, the confidentiality of the issue is updated.
 
-The second way is to locate the Confidentiality section in the sidebar and click
+The second way is to locate the **Confidentiality** section in the sidebar and select
 **Edit**. A popup should appear and give you the option to turn on or turn off confidentiality.
 
 | Turn off confidentiality | Turn on confidentiality |

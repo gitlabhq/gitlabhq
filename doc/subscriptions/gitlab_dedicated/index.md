@@ -72,8 +72,38 @@ Fill in the following form to contact us and learn more about this offering.
      See https://gitlab.com/gitlab-com/marketing/marketing-operations/-/issues/6238#note_923358643
 -->
 
-<script src="//page.gitlab.com/js/forms2/js/forms2.min.js"></script>
+<script src="https://page.gitlab.com/js/forms2/js/forms2.min.js"></script>
 <form id="mktoForm_3226"></form>
-<script>MktoForms2.loadForm("//page.gitlab.com", "194-VVC-221", 3226);</script>
+<script>MktoForms2.loadForm("https://page.gitlab.com", "194-VVC-221", 3226);</script>
+<style>
+  #mktoForm_3226 {
+    font-size: .875rem !important;
+  }
+  .mktoLabel {
+    margin-top: 1rem !important;
+    padding-bottom: .5rem !important;
+    font-weight: 600;
+  }
+  .mktoHtmlText,
+  #LblPhone,
+  .mktoTextField,
+  #commentCapture,
+  .mktoField,
+  .mktoButtonRow button {
+    width: 20rem !important;
+  }
+  .mktoHtmlText {
+    font-size: .875rem;
+  }
+  .mktoButtonRow {
+    margin: 1em 0;
+  }
+  .mktoButtonRow span {
+    margin-left: 0 !important;
+  }
+  .mktoButtonRow button {
+    margin: 1em 0 1.5em !important;
+  }
+</style>
 
 <!-- markdownlint-enable -->

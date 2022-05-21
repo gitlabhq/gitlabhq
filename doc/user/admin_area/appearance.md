@@ -19,7 +19,7 @@ By default, the navigation bar has the GitLab logo, but this can be customized w
 any image desired. It is optimized for images 28px high (any width), but any image can be
 used (less than 1 MB) and it is automatically resized.
 
-After you select and upload an image, click **Update appearance settings** at the bottom
+After you select and upload an image, select **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
 
 NOTE:
@@ -31,7 +31,7 @@ By default, the favicon (used by the browser as the tab icon, as well as the CI 
 uses the GitLab logo, but this can be customized with any icon desired. It must be a
 32x32 `.png` or `.ico` image.
 
-After you select and upload an icon, click **Update appearance settings** at the bottom
+After you select and upload an icon, select **Update appearance settings** at the bottom
 of the page to activate it in the GitLab instance.
 
 ## System header and footer messages
@@ -48,7 +48,7 @@ as the header and footer messages can only be a single line.
 If desired, you can select **Enable header and footer in emails** to have the text of
 the header and footer added to all emails sent by the GitLab instance.
 
-After you add a message, click **Update appearance settings** at the bottom of the page
+After you add a message, select **Update appearance settings** at the bottom of the page
 to activate it in the GitLab instance.
 
 ## Sign in / Sign up pages
@@ -60,8 +60,8 @@ The optimal size for the logo is 640x360px, but any image can be used (below 1MB
 and it is resized automatically. The logo image appears between the title and
 the description, on the left of the sign-up page.
 
-After you add a message, click **Update appearance settings** at the bottom of the page
-to activate it in the GitLab instance. You can also click on the **Sign-in page** button,
+After you add a message, select **Update appearance settings** at the bottom of the page
+to activate it in the GitLab instance. You can also select **Sign-in page**,
 to review the saved appearance settings:
 
 NOTE:
@@ -75,9 +75,9 @@ You can make full use of [Markdown](../markdown.md) in the description:
 The message is displayed below the **New Project** message, on the left side
 of the **New project page**.
 
-After you add a message, click **Update appearance settings** at the bottom of the page
-to activate it in the GitLab instance. You can also click on the **New project page**
-button, which brings you to the new project page so you can review the change.
+After you add a message, select **Update appearance settings** at the bottom of the page
+to activate it in the GitLab instance. You can also select **New project page**,
+which brings you to the new project page so you can review the change.
 
 ## Libravatar
 

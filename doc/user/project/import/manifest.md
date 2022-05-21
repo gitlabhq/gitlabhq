@@ -55,7 +55,7 @@ To start the import:
 
 1. From your GitLab dashboard select **New project**.
 1. Switch to the **Import project** tab.
-1. Select on the **Manifest file** button.
+1. Select **Manifest file**.
 1. Provide GitLab with a manifest XML file.
 1. Select a group you want to import to (you need to create a group first if you don't have one).
 1. Select **List available repositories**. At this point, you are redirected

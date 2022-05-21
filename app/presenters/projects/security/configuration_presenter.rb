@@ -24,7 +24,8 @@ module Projects
           gitlab_ci_history_path: gitlab_ci_history_path,
           auto_fix_enabled: autofix_enabled,
           can_toggle_auto_fix_settings: can_toggle_autofix,
-          auto_fix_user_path: auto_fix_user_path
+          auto_fix_user_path: auto_fix_user_path,
+          security_training_enabled: project.security_training_available?
         }
       end
 

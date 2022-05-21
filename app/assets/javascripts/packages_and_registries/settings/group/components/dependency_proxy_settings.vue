@@ -77,9 +77,6 @@ export default {
         this.updateDependencyProxyImageTtlGroupPolicy(payload);
       },
     },
-    helpText() {
-      return this.enabled ? this.$options.i18n.enabledProxyHelpText : '';
-    },
   },
   methods: {
     mutationVariables(payload) {
@@ -144,11 +141,10 @@ export default {
           v-model="enabled"
           :disabled="isLoading"
           :label="$options.i18n.enabledProxyLabel"
-          :help="helpText"
           data-qa-selector="dependency_proxy_setting_toggle"
           data-testid="dependency-proxy-setting-toggle"
         >
-          <template #help>
+          <template v-if="enabled" #help>
             <span class="gl-overflow-break-word gl-max-w-100vw gl-display-inline-block">
               <gl-sprintf :message="$options.i18n.enabledProxyHelpText">
                 <template #link="{ content }">
