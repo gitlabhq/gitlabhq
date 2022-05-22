@@ -29050,7 +29050,7 @@ msgstr ""
 msgid "Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account."
 msgstr ""
 
-msgid "Profiles|If after setting a password, the option to delete your account is still not available, please email %{data_request} to begin the account deletion process."
+msgid "Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process."
 msgstr ""
 
 msgid "Profiles|Include private contributions on my profile"
