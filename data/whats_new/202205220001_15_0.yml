@@ -1,0 +1,114 @@
+- title: Edit code blocks, links, and media inline in the WYSIWYG editor  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    GitLab 15.0 includes a few exciting improvements to speed up your workflow in the WYSIWYG Markdown editor for your wikis.
+
+    First, you'll find no more un-styled, monochrome code blocks: choose from over 100 languages in the dropdown list above the code block so your `CSS`, `YAML`, and `Python` code are distinct from each other with accurate syntax highlighting. The code blocks will even inherit your preferred syntax highlighting theme. You can also quickly copy the code block to your clipboard for use in your code editor of choice.
+
+    You'll also find working with links and media in the WYSIWYG editor easier than ever. Previously, you had to select from the editing toolbar to change a selected link or image on your wiki page, with some edits requiring you to delete the link or image and re-create it. Editing links and images is now easier, with a new popover menu that appears when you select a link or attached image. From the menu you can quickly edit a link's destination URL or description, copy the link or image to your clipboard, or even remove the link or image from the page.
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/project/wiki/#content-editor  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_0/inline-editing-in-wysiwyg.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Advanced Search is compatible with OpenSearch  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    [OpenSearch](https://opensearch.org) is an open source Elasticsearch fork. Prior to GitLab 15.0, Advanced Search was not compatible with OpenSearch. If you used AWS-managed services, you had to use older versions of Elasticsearch.
+
+    You can now take full advantage of OpenSearch for Advanced Search.
+  stage: enablement  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/integration/elasticsearch.html  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_0/gitlab_advanced_search_is_now_compatible_with_opensearch.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Plan and schedule issues with automated iteration cadences  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    In GitLab 14.10 and earlier, groups supported only one set of iterations. It made it difficult for different teams that worked in a single group to have autonomy with scheduling and tracking their issues from iteration to iteration. To improve this, we're adding the ability for a group to manage multiple sets of concurrent iterations with iteration cadences. This allows each team to have control over the start day and duration of each iteration in their iteration cadence.
+
+    The day-to-day management of iterations is now much more efficient too. When you create a new iteration cadence, select the first day of your first iteration, how many weeks each iteration should be, and how many upcoming iterations GitLab should maintain for you. You can also optionally enable unfinished issues to automatically roll over from one completed iteration to the next. After a cadence is created, GitLab automatically creates the specified number of upcoming iterations.
+
+    You can now also scope an issue board or issue list to an iteration.
+  stage: plan  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/group/iterations/#iteration-cadences  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_0/iteration-cadences.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Internal notes  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    In many cases, organizations want to keep issues and epics public, but apply stricter governance to conversations within them. For example, when using GitLab issues as part of Service Desk workflows, organizations may want to make core details about an issue public, but not to expose customer-specific confidential data broadly.
+
+    With internal notes, you can redact discussions with internal or customer data that should only be visible to certain users, while keeping the core details about an issue public. Internal notes in issues or epics can only be seen by the issue author, assignee, and group or project members with at least the Reporter role.
+
+    Thanks [@leetickett](https://gitlab.com/leetickett) for collaborating with our team on this feature!
+  stage: plan  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/discussions/index.html#add-an-internal-note  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_0/add_internal_note_v15_0.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Link external organizations and contacts to issues  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    GitLab 15.0 introduces the first [MVC](https://about.gitlab.com/handbook/product/product-principles/#the-minimal-viable-change-mvc) toward [managing and billing external customers from GitLab](https://gitlab.com/groups/gitlab-org/-/epics/5323). With the customer relations management (CRM) feature, you can:
+
+    - Create organizations and contacts.
+    - Set a default bill rate for an organization.
+    - Add contacts to organizations.
+    - Link contacts to issues with the `/add_contacts` quick action.
+    - View issues associated with a given contact or all contacts belonging to an organization.
+
+    The customer relations feature is not enabled by default, and can only be managed from a top-level group. If you want to help shape the future direction for customer relations management within GitLab, please [contribute to this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/361946).
+
+    Thanks [@leeticket](https://gitlab.com/leetickett) for the dozens of contributions and countless hours spent leading this effort!
+  stage: plan  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/crm/  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://img.youtube.com/vi/8ubOS80yNvc/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Container Scanning available in all tiers  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    [Container Scanning](https://docs.gitlab.com/ee/user/application_security/container_scanning/) helps developers to easily find known security vulnerabilities in dependencies that are installed in their container images. With GitLab 15.0, we are making the basic Container Scanning features available in every [GitLab tier](/pricing/).
+  stage: protect  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/user/application_security/container_scanning/#capabilities  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://img.youtube.com/vi/vge_DQ6af9Y/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Limited Availability GitLab SaaS runners on macOS (x86-64)  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    GitLab SaaS runners on macOS are now in [Limited Availability](https://about.gitlab.com/handbook/product/gitlab-the-product/#limited-availability-la). If you use GitLab SaaS and have a Premium or Ultimate subscription, you can build applications that require macOS in a secure, on-demand GitLab Runner build environment that's fully integrated with GitLab CI/CD. As part of the Limited Availability release, CI jobs that run on the macOS runners will count toward your CI/CD minutes quota at a [cost factor](https://docs.gitlab.com/ee/ci/pipelines/cicd_minutes.html#cost-factor) of 6.
+  stage: verify  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: false  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/runners/saas/macos_saas_runner.html  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://img.youtube.com/vi/G7ektKx8slg/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y
+- title: Use nested CI/CD variables with environments in pipeline configuration  # Match the release post entry
+  body: |   # Do not modify this line, instead modify the lines below.
+    Using CI/CD variables with the `environments` keyword in your CI/CD configuration is great, because it lets you [create environments dynamically](https://docs.gitlab.com/ee/ci/environments/#create-a-dynamic-environment). While this is already a powerful feature, there were still some limitations, because you could not use nested variables to define environments.
+
+    Starting in GitLab 15.0, you can nest variables inside other variables, and have them all expand the way you expect. This makes dynamic environments even more powerful due to the increased flexibility!
+  stage: verify  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  packages: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Starter, Premium, Ultimate]
+  url: https://docs.gitlab.com/ee/ci/yaml/#environment  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_0/environment.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-05-22  # YYYY-MM-DD
+  release: 15.0  # XX.Y

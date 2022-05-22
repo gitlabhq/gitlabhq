@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Code signing for SaaS runners on macOS
 
-> Introduced in GitLab 15.0.
-
 Before you can integrate GitLab with Apple services, install to a device, or deploy to the Apple App Store, you must [code sign](https://developer.apple.com/support/code-signing/) your application.
 
 To code sign an iOS project, you need the following files:
