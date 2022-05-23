@@ -228,6 +228,21 @@ RSpec.describe MergeRequests::RefreshService do
           expect(@another_merge_request.has_commits?).to be_falsy
         end
 
+        context 'when "push_options: nil" is passed' do
+          let(:service_instance) { service.new(project: project, current_user: @user, params: { push_options: nil }) }
+
+          subject { service_instance.execute(@oldrev, @newrev, ref) }
+
+          it 'creates a detached merge request pipeline with commits' do
+            expect { subject }
+              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
+              .and change { @another_merge_request.pipelines_for_merge_request.count }.by(0)
+
+            expect(@merge_request.has_commits?).to be_truthy
+            expect(@another_merge_request.has_commits?).to be_falsy
+          end
+        end
+
         it 'does not create detached merge request pipeline for forked project' do
           expect { subject }
             .not_to change { @fork_merge_request.pipelines_for_merge_request.count }

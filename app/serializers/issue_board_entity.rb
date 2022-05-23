@@ -3,6 +3,10 @@
 class IssueBoardEntity < Grape::Entity
   include RequestAwareEntity
 
+  format_with(:upcase) do |item|
+    item.try(:upcase)
+  end
+
   expose :id
   expose :iid
   expose :title
@@ -51,6 +55,11 @@ class IssueBoardEntity < Grape::Entity
   expose :assignable_labels_endpoint, if: -> (issue) { issue.project } do |issue|
     project_labels_path(issue.project, format: :json, include_ancestor_groups: true)
   end
+
+  expose :issue_type,
+         as: :type,
+         format_with: :upcase,
+         documentation: { type: "String", desc: "One of #{::WorkItems::Type.base_types.keys.map(&:upcase)}" }
 end
 
 IssueBoardEntity.prepend_mod_with('IssueBoardEntity')

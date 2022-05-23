@@ -9,9 +9,11 @@ module MergeRequests
     end
 
     def create_detached_merge_request_pipeline(merge_request)
-      Ci::CreatePipelineService.new(pipeline_project(merge_request),
-                                    current_user,
-                                    ref: pipeline_ref_for_detached_merge_request_pipeline(merge_request))
+      Ci::CreatePipelineService
+        .new(pipeline_project(merge_request),
+          current_user,
+          ref: pipeline_ref_for_detached_merge_request_pipeline(merge_request),
+          push_options: params[:push_options])
         .execute(:merge_request_event, merge_request: merge_request)
     end
 

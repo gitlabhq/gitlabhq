@@ -55,15 +55,6 @@
       box-shadow ease-in-out 0.15s;
     background-color: $white;
 
-    &.is-focused {
-      @include gl-focus;
-
-      .comment-toolbar,
-      .nav-links {
-        border-color: $blue-300;
-      }
-    }
-
     &.is-dropzone-hover {
       border-color: $green-500;
       box-shadow: 0 0 2px $black-transparent,
@@ -79,6 +70,10 @@
     textarea:focus {
       @include gl-shadow-none;
     }
+  }
+
+  .comment-warning-wrapper:focus-within {
+    @include gl-focus;
   }
 }
 

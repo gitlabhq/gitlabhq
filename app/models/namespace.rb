@@ -553,7 +553,7 @@ class Namespace < ApplicationRecord
   private
 
   def cluster_enabled_granted?
-    root_ancestor.cluster_enabled_grant.present? && (Gitlab.com? || Gitlab.dev_or_test_env?)
+    (Gitlab.com? || Gitlab.dev_or_test_env?) && root_ancestor.cluster_enabled_grant.present?
   end
 
   def certificate_based_clusters_enabled_ff?

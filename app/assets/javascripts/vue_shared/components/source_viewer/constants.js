@@ -134,3 +134,7 @@ export const BIDI_CHARS_CLASS_LIST = 'unicode-bidi has-tooltip';
 export const BIDI_CHAR_TOOLTIP = __(
   'Potentially unwanted character detected: Unicode BiDi Control',
 );
+
+export const HLJS_COMMENT_SELECTOR = 'hljs-comment';
+
+export const HLJS_ON_AFTER_HIGHLIGHT = 'after:highlight';

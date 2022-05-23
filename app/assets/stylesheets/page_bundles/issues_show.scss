@@ -3,8 +3,8 @@
 .description {
   ul,
   ol {
-    /* We're changing list-style-position to inside because the default of outside
-     * doesn't move the negative margin to the left of the bullet. */
+    /* We're changing list-style-position to inside because the default of
+     * outside doesn't move negative margin to the left of the bullet. */
     list-style-position: inside;
   }
 
@@ -20,6 +20,26 @@
       position: absolute;
       inset-block-start: 0.3rem;
       inset-inline-start: 1rem;
+    }
+
+    /* The inside bullet aligns itself to the bottom, which we see when text to its right wraps.
+     * We fix this by aligning it to the top. Targeting ::marker doesn't seem to work. */
+    > * {
+      vertical-align: top;
+    }
+
+    /* The inside bullet is treated like an element inside the li element, so when we have a
+     * multi-paragraph list item, the text doesn't start on the right of the bullet because
+     * it is a block level p element. We make it inline to fix this. */
+    > p:first-of-type {
+      display: inline-block;
+      max-width: calc(100% - 1.5rem);
+    }
+
+    /* We fix the other paragraphs not indenting to the
+     * right of the bullet due to the inside bullet. */
+    > :not(p:first-of-type):not(.drag-icon):not(.task-list-item-checkbox):not(.gfm-issue):not(.js-add-task) {
+      margin-inline-start: 1rem;
     }
   }
 

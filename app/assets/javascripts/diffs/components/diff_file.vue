@@ -456,12 +456,7 @@ export default {
             <p class="gl-mb-5">
               {{ $options.i18n.autoCollapsed }}
             </p>
-            <gl-button
-              data-testid="expand-button"
-              category="secondary"
-              variant="warning"
-              @click.prevent="handleToggle"
-            >
+            <gl-button data-testid="expand-button" @click.prevent="handleToggle">
               {{ $options.i18n.expand }}
             </gl-button>
           </div>

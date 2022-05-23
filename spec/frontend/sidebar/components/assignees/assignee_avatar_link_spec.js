@@ -1,5 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
+import { TYPE_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import userDataMock from '../../user_data_mock';
@@ -32,6 +35,7 @@ describe('AssigneeAvatarLink component', () => {
   });
 
   const findTooltipText = () => wrapper.attributes('title');
+  const findUserLink = () => wrapper.findComponent(GlLink);
 
   it('has the root url present in the assigneeUrl method', () => {
     createComponent();
@@ -112,4 +116,24 @@ describe('AssigneeAvatarLink component', () => {
       });
     },
   );
+
+  it('passes the correct user id for REST API', () => {
+    createComponent({
+      tooltipHasName: true,
+      user: userDataMock(),
+    });
+
+    expect(findUserLink().attributes('data-user-id')).toBe(String(userDataMock().id));
+  });
+
+  it('passes the correct user id for GraphQL API', () => {
+    const userId = userDataMock().id;
+
+    createComponent({
+      tooltipHasName: true,
+      user: { ...userDataMock(), id: convertToGraphQLId(TYPE_USER, userId) },
+    });
+
+    expect(findUserLink().attributes('data-user-id')).toBe(String(userId));
+  });
 });

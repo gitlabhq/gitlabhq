@@ -50,6 +50,19 @@ RSpec.describe MergeRequests::CreatePipelineService do
       expect(response.payload.source).to eq('merge_request_event')
     end
 
+    context 'when push options contain ci.skip' do
+      let(:params) { { push_options: { ci: { skip: true } } } }
+
+      it 'creates a skipped pipeline' do
+        expect { response }.to change { Ci::Pipeline.count }.by(1)
+
+        expect(response).to be_success
+        expect(response.payload).to be_persisted
+        expect(response.payload.builds).to be_empty
+        expect(response.payload).to be_skipped
+      end
+    end
+
     context 'with fork merge request' do
       let_it_be(:forked_project) { fork_project(project, nil, repository: true, target_project: create(:project, :private, :repository)) }
 

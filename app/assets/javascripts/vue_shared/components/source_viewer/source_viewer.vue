@@ -5,6 +5,7 @@ import eventHub from '~/notes/event_hub';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import { ROUGE_TO_HLJS_LANGUAGE_MAP, LINES_PER_CHUNK } from './constants';
 import Chunk from './components/chunk.vue';
+import { registerPlugins } from './plugins/index';
 
 /*
  * This component is optimized to handle source code with many lines of code by splitting source code into chunks of 70 lines of code,
@@ -111,6 +112,7 @@ export default {
       let detectedLanguage = language;
       let highlightedContent;
       if (this.hljs) {
+        registerPlugins(this.hljs);
         if (!detectedLanguage) {
           const hljsHighlightAuto = this.hljs.highlightAuto(content);
           highlightedContent = hljsHighlightAuto.value;

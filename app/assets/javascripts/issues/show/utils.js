@@ -1,39 +1,35 @@
 import { COLON, HYPHEN, NEWLINE } from '~/lib/utils/text_utility';
 
 /**
- * Get the index from sourcepos that represents the line of
- * the description when the description is split by newline.
+ * Returns the start and end `sourcepos` rows, converted to zero-based numbering.
  *
  * @param {String} sourcepos Source position in format `23:3-23:14`
- * @returns {Number} Index of description split by newline
+ * @returns {Array<Number>} Start and end `sourcepos` rows, zero-based numbered
  */
-const getDescriptionIndex = (sourcepos) => {
-  const [startRange] = sourcepos.split(HYPHEN);
+const getSourceposRows = (sourcepos) => {
+  const [startRange, endRange] = sourcepos.split(HYPHEN);
   const [startRow] = startRange.split(COLON);
-  return startRow - 1;
+  const [endRow] = endRange.split(COLON);
+  return [startRow - 1, endRow - 1];
 };
 
 /**
- * Given a `ul` or `ol` element containing a new sort order, this function performs
- * a depth-first search to get the new sort order in the form of sourcepos indices.
+ * Given a `ul` or `ol` element containing a new sort order, this function returns
+ * an array of this new order which is derived from its list items' sourcepos values.
  *
  * @param {HTMLElement} list A `ul` or `ol` element containing a new sort order
- * @returns {Array<Number>} An array representing the new order of the list
+ * @returns {Array<Number>} A numerical array representing the new order of the list.
+ * The numbers represent the rows of the original markdown source.
  */
 const getNewSourcePositions = (list) => {
   const newSourcePositions = [];
 
-  function pushPositionOfChildListItems(el) {
-    if (!el) {
-      return;
+  Array.from(list.children).forEach((listItem) => {
+    const [start, end] = getSourceposRows(listItem.dataset.sourcepos);
+    for (let i = start; i <= end; i += 1) {
+      newSourcePositions.push(i);
     }
-    if (el.tagName === 'LI') {
-      newSourcePositions.push(getDescriptionIndex(el.dataset.sourcepos));
-    }
-    Array.from(el.children).forEach(pushPositionOfChildListItems);
-  }
-
-  pushPositionOfChildListItems(list);
+  });
 
   return newSourcePositions;
 };
@@ -56,17 +52,17 @@ const getNewSourcePositions = (list) => {
  * And a reordered list (due to dragging Item 2 into Item 1's position) like:
  *
  * <pre>
- * <ul data-sourcepos="3:1-8:0">
- *   <li data-sourcepos="4:1-4:8">
+ * <ul data-sourcepos="3:1-7:8">
+ *   <li data-sourcepos="4:1-6:10">
  *     Item 2
- *     <ul data-sourcepos="5:1-6:10">
- *       <li data-sourcepos="5:1-5:10">Item 3</li>
- *       <li data-sourcepos="6:1-6:10">Item 4</li>
+ *     <ul data-sourcepos="5:3-6:10">
+ *       <li data-sourcepos="5:3-5:10">Item 3</li>
+ *       <li data-sourcepos="6:3-6:10">Item 4</li>
  *     </ul>
  *   </li>
  *   <li data-sourcepos="3:1-3:8">Item 1</li>
- *   <li data-sourcepos="7:1-8:0">Item 5</li>
- * <ul>
+ *   <li data-sourcepos="7:1-7:8">Item 5</li>
+ * </ul>
  * </pre>
  *
  * This function returns:
@@ -87,7 +83,7 @@ const getNewSourcePositions = (list) => {
  */
 export const convertDescriptionWithNewSort = (description, list) => {
   const descriptionLines = description.split(NEWLINE);
-  const startIndexOfList = getDescriptionIndex(list.dataset.sourcepos);
+  const [startIndexOfList] = getSourceposRows(list.dataset.sourcepos);
 
   getNewSourcePositions(list)
     .map((lineIndex) => descriptionLines[lineIndex])

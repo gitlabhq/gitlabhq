@@ -15,7 +15,7 @@ module MergeRequests
     worker_resource_boundary :cpu
     idempotent!
 
-    def perform(project_id, user_id, merge_request_id)
+    def perform(project_id, user_id, merge_request_id, params = {})
       project = Project.find_by_id(project_id)
       return unless project
 
@@ -25,7 +25,12 @@ module MergeRequests
       merge_request = MergeRequest.find_by_id(merge_request_id)
       return unless merge_request
 
-      MergeRequests::CreatePipelineService.new(project: project, current_user: user).execute(merge_request)
+      push_options = params.with_indifferent_access[:push_options]
+
+      MergeRequests::CreatePipelineService
+        .new(project: project, current_user: user, params: { push_options: push_options })
+        .execute(merge_request)
+
       merge_request.update_head_pipeline
     end
   end

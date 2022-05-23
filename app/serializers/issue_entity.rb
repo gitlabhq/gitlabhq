@@ -3,6 +3,10 @@
 class IssueEntity < IssuableEntity
   include TimeTrackableEntity
 
+  format_with(:upcase) do |item|
+    item.try(:upcase)
+  end
+
   expose :state
   expose :milestone_id
   expose :updated_by_id
@@ -75,6 +79,11 @@ class IssueEntity < IssuableEntity
   expose :issue_email_participants do |issue|
     issue.issue_email_participants.map { |x| { email: x.email } }
   end
+
+  expose :issue_type,
+         as: :type,
+         format_with: :upcase,
+         documentation: { type: "String", desc: "One of #{::WorkItems::Type.base_types.keys.map(&:upcase)}" }
 end
 
 IssueEntity.prepend_mod_with('IssueEntity')

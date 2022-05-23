@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers do
+  let(:migration_class) do
+    Class.new(ActiveRecord::Migration[6.1])
+      .include(described_class)
+      .include(Gitlab::Database::Migrations::ReestablishedConnectionStack)
+  end
+
   let(:migration) do
-    ActiveRecord::Migration.new.extend(described_class)
+    migration_class.new
   end
 
   describe '#queue_batched_background_migration' do
@@ -221,24 +227,64 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
       end
     end
 
-    context 'when uses a CI connection', :reestablished_active_record_base do
+    context 'when within transaction' do
       before do
-        skip_if_multiple_databases_not_setup
-
-        ActiveRecord::Base.establish_connection(:ci) # rubocop:disable Database/EstablishConnection
+        allow(migration).to receive(:transaction_open?).and_return(true)
       end
 
-      it 'raises an exception' do
-        ci_migration = create(:batched_background_migration, :active)
+      it 'does raise an exception' do
+        expect { migration.finalize_batched_background_migration(job_class_name: 'MyJobClass', table_name: :projects, column_name: :id, job_arguments: []) }
+          .to raise_error /`finalize_batched_background_migration` cannot be run inside a transaction./
+      end
+    end
 
-        expect do
-          migration.finalize_batched_background_migration(
-            job_class_name: ci_migration.job_class_name,
-            table_name: ci_migration.table_name,
-            column_name: ci_migration.column_name,
-            job_arguments: ci_migration.job_arguments
-          )
-        end.to raise_error /is currently not supported when running in decomposed/
+    context 'when running migration in reconfigured ActiveRecord::Base context' do
+      it_behaves_like 'reconfigures connection stack', 'ci' do
+        before do
+          create(:batched_background_migration,
+            job_class_name: 'Ci::MyClass',
+            table_name: :ci_builds,
+            column_name: :id,
+            job_arguments: [],
+            gitlab_schema: :gitlab_ci)
+        end
+
+        context 'when restrict_gitlab_migration is set to gitlab_ci' do
+          it 'finalizes the migration' do
+            migration_class.include(Gitlab::Database::MigrationHelpers::RestrictGitlabSchema)
+            migration_class.restrict_gitlab_migration gitlab_schema: :gitlab_ci
+
+            allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
+              expect(runner).to receive(:finalize).with('Ci::MyClass', :ci_builds, :id, []) do
+                validate_connections_stack!
+              end
+            end
+
+            migration.finalize_batched_background_migration(
+              job_class_name: 'Ci::MyClass', table_name: :ci_builds, column_name: :id, job_arguments: [])
+          end
+        end
+
+        context 'when restrict_gitlab_migration is set to gitlab_main' do
+          it 'does not find any migrations' do
+            migration_class.include(Gitlab::Database::MigrationHelpers::RestrictGitlabSchema)
+            migration_class.restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+            expect do
+              migration.finalize_batched_background_migration(
+                job_class_name: 'Ci::MyClass', table_name: :ci_builds, column_name: :id, job_arguments: [])
+            end.to raise_error /Could not find batched background migration/
+          end
+        end
+
+        context 'when no restrict is set' do
+          it 'does not find any migrations' do
+            expect do
+              migration.finalize_batched_background_migration(
+                job_class_name: 'Ci::MyClass', table_name: :ci_builds, column_name: :id, job_arguments: [])
+            end.to raise_error /Could not find batched background migration/
+          end
+        end
       end
     end
 

@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,6 +12,7 @@ import eventHub from '~/notes/event_hub';
 
 jest.mock('~/blob/line_highlighter');
 jest.mock('highlight.js/lib/core');
+jest.mock('~/vue_shared/components/source_viewer/plugins/index');
 Vue.use(VueRouter);
 const router = new VueRouter();
 
@@ -58,6 +60,10 @@ describe('Source Viewer component', () => {
 
   describe('highlight.js', () => {
     beforeEach(() => createComponent({ language: mappedLanguage }));
+
+    it('registers our plugins for Highlight.js', () => {
+      expect(registerPlugins).toHaveBeenCalledWith(hljs);
+    });
 
     it('registers the language definition', async () => {
       const languageDefinition = await import(`highlight.js/lib/languages/${mappedLanguage}`);

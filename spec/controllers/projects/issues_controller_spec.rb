@@ -145,13 +145,18 @@ RSpec.describe Projects::IssuesController do
       project.add_developer(user)
     end
 
-    it "returns issue_email_participants" do
+    it "returns issue attributes" do
       participants = create_list(:issue_email_participant, 2, issue: issue)
 
       get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['issue_email_participants']).to contain_exactly({ "email" => participants[0].email }, { "email" => participants[1].email })
+      expect(json_response).to include(
+        'issue_email_participants' => contain_exactly(
+          { "email" => participants[0].email }, { "email" => participants[1].email }
+        ),
+        'type' => 'ISSUE'
+      )
     end
   end
 

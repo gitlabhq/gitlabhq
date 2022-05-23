@@ -185,9 +185,12 @@ module MergeRequests
 
     def create_pipeline_for(merge_request, user, async: false)
       if async
+        # TODO: pass push_options to worker
         MergeRequests::CreatePipelineWorker.perform_async(project.id, user.id, merge_request.id)
       else
-        MergeRequests::CreatePipelineService.new(project: project, current_user: user).execute(merge_request)
+        MergeRequests::CreatePipelineService
+          .new(project: project, current_user: user, params: params.slice(:push_options))
+          .execute(merge_request)
       end
     end
 

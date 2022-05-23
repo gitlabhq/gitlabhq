@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
+import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import AssigneeAvatar from './assignee_avatar.vue';
@@ -94,6 +95,9 @@ export default {
     assigneeUrl() {
       return this.user.web_url || this.user.webUrl;
     },
+    assigneeId() {
+      return isGid(this.user.id) ? getIdFromGraphQLId(this.user.id) : this.user.id;
+    },
   },
 };
 </script>
@@ -103,7 +107,7 @@ export default {
   <gl-link
     :href="assigneeUrl"
     :title="tooltipTitle"
-    :data-user-id="user.id"
+    :data-user-id="assigneeId"
     data-placement="left"
     class="gl-display-inline-block js-user-link"
   >

@@ -39,6 +39,7 @@ module Git
     def enqueue_update_mrs
       return if params[:merge_request_branches]&.exclude?(branch_name)
 
+      # TODO: pass params[:push_options] to worker
       UpdateMergeRequestsWorker.perform_async(
         project.id,
         current_user.id,

@@ -47,6 +47,8 @@
   - 1
 - - audit_events_user_impersonation_event_create
   - 1
+- - auth_saml_group_sync
+  - 1
 - - authorized_keys
   - 2
 - - authorized_project_update

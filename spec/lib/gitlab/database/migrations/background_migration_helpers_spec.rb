@@ -444,7 +444,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
           it 'does restore connection hierarchy' do
             expect_next_instances_of(job_class, 1..) do |job|
               expect(job).to receive(:perform) do
-                validate_connections!
+                validate_connections_stack!
               end
             end
 
