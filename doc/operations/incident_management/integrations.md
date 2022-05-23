@@ -10,9 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) from GitLab Ultimate to GitLab Free in 12.8.
 
 GitLab can accept alerts from any source via a webhook receiver. This can be configured
-generically or, in GitLab versions 13.1 and greater, you can configure
-[External Prometheus instances](../metrics/alerts.md#external-prometheus-instances)
-to use this endpoint.
+generically.
 
 ## Integrations list
 
@@ -27,8 +25,7 @@ the integration name, type, and status (enabled or disabled):
 
 ## Configuration
 
-GitLab can receive alerts via a HTTP endpoint that you configure,
-or the [Prometheus integration](#external-prometheus-integration).
+GitLab can receive alerts via a HTTP endpoint that you configure.
 
 ### Single HTTP Endpoint
 
@@ -88,12 +85,6 @@ correct information in the [Alert list](alerts.md) and the
 GitLab fields when you [create an HTTP endpoint](#http-endpoints):
 
 ![Alert Management List](img/custom_alert_mapping_v13_11.png)
-
-### External Prometheus integration
-
-For GitLab versions 13.1 and greater, read
-[External Prometheus Instances](../metrics/alerts.md#external-prometheus-instances)
-to configure alerts for this integration.
 
 ## Customize the alert payload outside of GitLab
 

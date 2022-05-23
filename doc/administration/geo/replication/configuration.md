@@ -384,7 +384,7 @@ when:
 
 ## Upgrading Geo
 
-See the [updating the Geo sites document](updating_the_geo_sites.md).
+See the [upgrading the Geo sites document](upgrading_the_geo_sites.md).
 
 ## Troubleshooting
 

@@ -54,6 +54,18 @@ RSpec.describe ProjectStatistics do
     end
   end
 
+  describe 'namespace relatable columns' do
+    it 'treats the correct columns as namespace relatable' do
+      expect(described_class::NAMESPACE_RELATABLE_COLUMNS).to match_array %i[
+        repository_size
+        wiki_size
+        lfs_objects_size
+        uploads_size
+        container_registry_size
+      ]
+    end
+  end
+
   describe '#total_repository_size' do
     it "sums repository and LFS object size" do
       statistics.repository_size = 2

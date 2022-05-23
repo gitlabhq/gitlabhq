@@ -3,19 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ProjectTemplate do
+  include ProjectTemplateTestHelper
+
   describe '.all' do
     it 'returns all templates' do
-      expected = %w[
-        rails spring express iosswift dotnetcore android
-        gomicro gatsby hugo jekyll plainhtml gitbook
-        hexo middleman gitpod_spring_petclinic nfhugo
-        nfjekyll nfplainhtml nfgitbook nfhexo salesforcedx
-        serverless_framework tencent_serverless_framework
-        jsonnet cluster_management kotlin_native_linux
-      ]
-
       expect(described_class.all).to be_an(Array)
-      expect(described_class.all.map(&:name)).to match_array(expected)
+      expect(described_class.all.map(&:name)).to match_array(all_templates)
     end
   end
 

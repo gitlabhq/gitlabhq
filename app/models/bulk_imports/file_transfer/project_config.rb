@@ -9,7 +9,8 @@ module BulkImports
       ).freeze
 
       LFS_OBJECTS_RELATION = 'lfs_objects'
-      REPOSITORY_BUNDLE_RELATION = 'repository_bundle'
+      REPOSITORY_BUNDLE_RELATION = 'repository'
+      DESIGN_BUNDLE_RELATION = 'design'
 
       def import_export_yaml
         ::Gitlab::ImportExport.config_file
@@ -20,7 +21,12 @@ module BulkImports
       end
 
       def file_relations
-        [UPLOADS_RELATION, LFS_OBJECTS_RELATION, REPOSITORY_BUNDLE_RELATION]
+        [
+          UPLOADS_RELATION,
+          LFS_OBJECTS_RELATION,
+          REPOSITORY_BUNDLE_RELATION,
+          DESIGN_BUNDLE_RELATION
+        ]
       end
     end
   end

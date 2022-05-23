@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'projects/tags/index.html.haml' do
   let_it_be(:project)  { create(:project, :repository) }
-  let_it_be(:tags)     { project.repository.tags }
   let_it_be(:git_tag)  { project.repository.tags.last }
   let_it_be(:release)  do
     create(:release, project: project,
@@ -25,9 +24,41 @@ RSpec.describe 'projects/tags/index.html.haml' do
     allow(view).to receive(:current_user).and_return(project.namespace.owner)
   end
 
-  it 'renders links to the Releases page for tags associated with a release' do
-    render
-    expect(rendered).to have_link(release.name, href: project_releases_path(project, anchor: release.tag))
+  context 'when tag is associated with a release' do
+    context 'with feature flag disabled' do
+      before do
+        stub_feature_flags(fix_release_path_in_tag_index_page: false)
+      end
+
+      it 'renders a link to the release page with anchor' do
+        render
+        expect(rendered).to have_link(release.name, href: project_releases_path(project, anchor: release))
+      end
+    end
+
+    context 'with feature flag enabled' do
+      before do
+        stub_feature_flags(fix_release_path_in_tag_index_page: true)
+      end
+
+      context 'when name contains backslash' do
+        let_it_be(:release) { create(:release, project: project, tag: 'test/v1') }
+
+        before_all do
+          project.repository.add_tag(project.owner, 'test/v1', project.default_branch_or_main)
+          project.repository.expire_tags_cache
+
+          project.releases.reload
+
+          assign(:tags, Kaminari.paginate_array(tags).page(0))
+        end
+
+        it 'renders a link to the release page with backslash escaped' do
+          render
+          expect(rendered).to have_link(release.name, href: project_release_path(project, release))
+        end
+      end
+    end
   end
 
   context 'when the most recent build for a tag has artifacts' do
@@ -103,5 +134,9 @@ RSpec.describe 'projects/tags/index.html.haml' do
         "The git server, Gitaly, is not available at this time. Please contact your administrator."
       )
     end
+  end
+
+  def tags
+    project.repository.tags
   end
 end

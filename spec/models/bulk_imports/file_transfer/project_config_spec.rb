@@ -94,7 +94,7 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
 
   describe '#file_relations' do
     it 'returns project file relations' do
-      expect(subject.file_relations).to contain_exactly('uploads', 'lfs_objects', 'repository_bundle')
+      expect(subject.file_relations).to contain_exactly('uploads', 'lfs_objects', 'repository', 'design')
     end
   end
 end

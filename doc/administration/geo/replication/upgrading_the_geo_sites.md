@@ -5,27 +5,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Updating the Geo sites **(PREMIUM SELF)**
+# Upgrading the Geo sites **(PREMIUM SELF)**
 
 WARNING:
 Read these sections carefully before updating your Geo sites. Not following
-version-specific update steps may result in unexpected downtime. If you have
+version-specific upgrade steps may result in unexpected downtime. If you have
 any specific questions, [contact Support](https://about.gitlab.com/support/#contact-support).
 
-Updating Geo sites involves performing:
+Upgrading Geo sites involves performing:
 
-1. [Version-specific update steps](version_specific_updates.md), depending on the
-   version being updated to or from.
-1. [General update steps](#general-update-steps), for all updates.
+1. [Version-specific upgrade steps](version_specific_upgrades.md), depending on the
+   version being upgraded to or from.
+1. [General upgrade steps](#general-upgrade-steps), for all upgrades.
 
-## General update steps
+## General upgrade steps
 
 NOTE:
-These general update steps are not intended for multi-site deployments,
+These general upgrade steps are not intended for multi-site deployments,
 and will cause downtime. If you want to avoid downtime, consider using
 [zero downtime upgrades](../../../update/zero_downtime.md#multi-node--ha-deployment-with-geo).
 
-To update the Geo sites when a new GitLab version is released, update **primary**
+To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**
 and all **secondary** sites:
 
 1. **Optional:** [Pause replication on each **secondary** sites.](../index.md#pausing-and-resuming-replication)
@@ -34,11 +34,11 @@ and all **secondary** sites:
 1. SSH into each node of **secondary** sites.
 1. [Upgrade GitLab on each **secondary** site](../../../update/package/index.md#upgrade-using-the-official-repositories).
 1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication)
-1. [Test](#check-status-after-updating) **primary** and **secondary** sites, and check version in each.
+1. [Test](#check-status-after-upgrading) **primary** and **secondary** sites, and check version in each.
 
-### Check status after updating
+### Check status after upgrading
 
-Now that the update process is complete, you may want to check whether
+Now that the upgrade process is complete, you may want to check whether
 everything is working correctly:
 
 1. Run the Geo Rake task on an application node for the primary and secondary sites. Everything should be green:

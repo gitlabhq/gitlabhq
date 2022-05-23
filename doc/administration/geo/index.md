@@ -13,7 +13,7 @@ a warm-standby as part of a disaster recovery strategy.
 
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
-supported and [documented](#updating-geo), but you should ensure that you're
+supported and [documented](#upgrading-geo), but you should ensure that you're
 using the right version of the documentation for your installation.
 
 Fetching large repositories can take a long time for teams located far from a single GitLab instance.
@@ -234,9 +234,9 @@ After installing GitLab on the **secondary** sites and performing the initial co
 
 For information on configuring Geo, see [Geo configuration](replication/configuration.md).
 
-### Updating Geo
+### Upgrading Geo
 
-For information on how to update your Geo sites to the latest GitLab version, see [Updating the Geo sites](replication/updating_the_geo_sites.md).
+For information on how to update your Geo sites to the latest GitLab version, see [Upgrading the Geo sites](replication/upgrading_the_geo_sites.md).
 
 ### Pausing and resuming replication
 
@@ -252,7 +252,7 @@ WARNING:
 Pausing and resuming of replication is only supported for Geo installations using an
 Omnibus GitLab-managed database. External databases are not supported.
 
-In some circumstances, like during [upgrades](replication/updating_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
+In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 Pausing and resuming replication is done via a command line tool from the node in the secondary site where the `postgresql` service is enabled.
 

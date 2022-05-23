@@ -1,5 +1,11 @@
 - page_title s_("UsageQuota|Usage")
 
+= render Pajamas::AlertComponent.new(title: _('Repository size recalculation started'),
+  variant: :info,
+  alert_class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 gl-display-none') do |c|
+  = c.body do
+    = _('Refresh the page in a few minutes to view usage.')
+
 %h3.page-title
   = s_('UsageQuota|Usage Quotas')
 

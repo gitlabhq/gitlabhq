@@ -17,46 +17,15 @@ your team when environment performance falls outside of the boundaries you set.
 
 Alerts are not currently supported for [Prometheus cluster integrations](../../user/clusters/integrations.md).
 
-## External Prometheus instances
+<!--- start_remove The following content will be removed on remove_date: '2022-09-22' -->
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
+## External Prometheus instances (removed)
 
-For manually configured Prometheus servers, GitLab provides a notify endpoint for
-use with Prometheus webhooks. If you have manual configuration enabled, an
-**Alerts** section is added to **Settings > Integrations > Prometheus**.
-This section contains the needed **URL** and **Authorization Key**. The
-**Reset Key** button invalidates the key and generates a new one.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/219142) in GitLab 13.2 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338834) in 15.0.
+To manually configure a Prometheus server, we recommend
+you use the [generic alerts integration](../incident_management/integrations.md).
 
-![Prometheus integration configuration of Alerts](img/prometheus_integration_alerts.png)
-
-To send GitLab alert notifications, copy the **URL** and **Authorization Key** into the
-[`webhook_configs`](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config)
-section of your Prometheus Alertmanager configuration:
-
-```yaml
-receivers:
-  - name: gitlab
-    webhook_configs:
-      - http_config:
-          authorization:
-            type: Bearer
-            credentials: 9e1cbfcd546896a9ea8be557caf13a76
-        send_resolved: true
-        url: http://192.168.178.31:3001/root/manual_prometheus/prometheus/alerts/notify.json
-        # Rest of configuration omitted
-        # ...
-```
-
-For GitLab to associate your alerts with an [environment](../../ci/environments/index.md),
-you must configure a `gitlab_environment_name` label on the alerts you set up in
-Prometheus. The value of this should match the name of your environment in GitLab.
-
-You can display alerts with a `gitlab_environment_name` of `production`
-[on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard).
-
-In GitLab versions 13.1 and greater, you can configure your manually configured
-Prometheus server to use the
-[Generic alerts integration](../incident_management/integrations.md).
+<!--- end_remove -->
 
 ## Trigger actions from alerts **(ULTIMATE)**
 

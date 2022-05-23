@@ -3,38 +3,24 @@ import { render } from '~/lib/gfm';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
 const factorySpecs = {
-  blockquote: { block: 'blockquote' },
-  p: { block: 'paragraph' },
-  li: { block: 'listItem', wrapTextInParagraph: true },
-  ul: { block: 'bulletList' },
-  ol: { block: 'orderedList' },
-  h1: {
-    block: 'heading',
-    getAttrs: () => ({ level: 1 }),
+  blockquote: { type: 'block', selector: 'blockquote' },
+  paragraph: { type: 'block', selector: 'p' },
+  listItem: { type: 'block', selector: 'li', wrapTextInParagraph: true },
+  orderedList: { type: 'block', selector: 'ol' },
+  bulletList: { type: 'block', selector: 'ul' },
+  heading: {
+    type: 'block',
+    selector: (hastNode) => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(hastNode.tagName),
+    getAttrs: (hastNode) => {
+      const level = parseInt(/(\d)$/.exec(hastNode.tagName)?.[1], 10) || 1;
+
+      return { level };
+    },
   },
-  h2: {
-    block: 'heading',
-    getAttrs: () => ({ level: 2 }),
-  },
-  h3: {
-    block: 'heading',
-    getAttrs: () => ({ level: 3 }),
-  },
-  h4: {
-    block: 'heading',
-    getAttrs: () => ({ level: 4 }),
-  },
-  h5: {
-    block: 'heading',
-    getAttrs: () => ({ level: 5 }),
-  },
-  h6: {
-    block: 'heading',
-    getAttrs: () => ({ level: 6 }),
-  },
-  pre: {
-    block: 'codeBlock',
+  codeBlock: {
+    type: 'block',
     skipChildren: true,
+    selector: 'pre',
     getContent: ({ hastNodeText }) => hastNodeText.replace(/\n$/, ''),
     getAttrs: (hastNode) => {
       const languageClass = hastNode.children[0]?.properties.className?.[0];
@@ -43,23 +29,38 @@ const factorySpecs = {
       return { language };
     },
   },
-  hr: { inline: 'horizontalRule' },
-  img: {
-    inline: 'image',
+  horizontalRule: {
+    type: 'block',
+    selector: 'hr',
+  },
+  image: {
+    type: 'inline',
+    selector: 'img',
     getAttrs: (hastNode) => ({
       src: hastNode.properties.src,
       title: hastNode.properties.title,
       alt: hastNode.properties.alt,
     }),
   },
-  br: { inline: 'hardBreak' },
-  code: { mark: 'code' },
-  em: { mark: 'italic' },
-  i: { mark: 'italic' },
-  strong: { mark: 'bold' },
-  b: { mark: 'bold' },
-  a: {
-    mark: 'link',
+  hardBreak: {
+    type: 'inline',
+    selector: 'br',
+  },
+  code: {
+    type: 'mark',
+    selector: 'code',
+  },
+  italic: {
+    type: 'mark',
+    selector: (hastNode) => ['em', 'i'].includes(hastNode.tagName),
+  },
+  bold: {
+    type: 'mark',
+    selector: (hastNode) => ['strong', 'b'].includes(hastNode.tagName),
+  },
+  link: {
+    type: 'mark',
+    selector: 'a',
     getAttrs: (hastNode) => ({
       href: hastNode.properties.href,
       title: hastNode.properties.title,

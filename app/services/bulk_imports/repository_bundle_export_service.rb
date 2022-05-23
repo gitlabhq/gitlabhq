@@ -2,12 +2,10 @@
 
 module BulkImports
   class RepositoryBundleExportService
-    FILENAME = 'project.bundle'
-
-    def initialize(portable, export_path)
-      @portable = portable
+    def initialize(repository, export_path, export_filename)
+      @repository = repository
       @export_path = export_path
-      @repository = portable.repository
+      @export_filename = export_filename
     end
 
     def execute
@@ -16,10 +14,10 @@ module BulkImports
 
     private
 
-    attr_reader :portable, :export_path, :repository
+    attr_reader :repository, :export_path, :export_filename
 
     def bundle_filepath
-      File.join(export_path, FILENAME)
+      File.join(export_path, "#{export_filename}.bundle")
     end
   end
 end

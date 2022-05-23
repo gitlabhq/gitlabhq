@@ -77,7 +77,7 @@
 
     // Disable inner focus
     textarea:focus {
-      box-shadow: none;
+      @include gl-shadow-none;
     }
   }
 }

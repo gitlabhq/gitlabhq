@@ -21,10 +21,12 @@ When a branch is protected, the default behavior enforces these restrictions on 
 | Protect a branch         | At least the Maintainer role.                                     |
 | Push to the branch       | GitLab administrators and anyone with **Allowed** permission. (1) |
 | Force push to the branch | No one.                                                           |
-| Delete the branch        | No one.                                                           |
+| Delete the branch        | No one. (2)                                                       |
 
 1. Users with the Developer role can create a project in a group, but might not be allowed to
    initially push to the [default branch](repository/branches/default.md).
+1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
+   role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
 
 ### Set the default branch protection level
 

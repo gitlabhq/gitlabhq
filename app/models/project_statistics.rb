@@ -26,7 +26,7 @@ class ProjectStatistics < ApplicationRecord
     pipeline_artifacts_size: %i[storage_size],
     snippets_size: %i[storage_size]
   }.freeze
-  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size].freeze
+  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size, :container_registry_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 

@@ -4,21 +4,21 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Version-specific update instructions **(PREMIUM SELF)**
+# Version-specific upgrade instructions **(PREMIUM SELF)**
 
-Review this page for update instructions for your version. These steps
-accompany the [general steps](updating_the_geo_sites.md#general-update-steps)
-for updating Geo sites.
+Review this page for upgrade instructions for your version. These steps
+accompany the [general steps](upgrading_the_geo_sites.md#general-upgrade-steps)
+for upgrading Geo sites.
 
-## Updating to 14.9
+## Upgrading to 14.9
 
-**DO NOT** update to GitLab 14.9.0. Instead, use 14.9.1 or later.
+**DO NOT** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
 
 We've discovered an issue with Geo's CI verification feature that may [cause job traces to be lost](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6664). This issue was fixed in [the GitLab 14.9.1 patch release](https://about.gitlab.com/releases/2022/03/23/gitlab-14-9-1-released/).
 
-If you have already updated to GitLab 14.9.0, you can disable the feature causing the issue by [disabling the `geo_job_artifact_replication` feature flag](../../feature_flags.md#how-to-enable-and-disable-features-behind-flags).
+If you have already upgraded to GitLab 14.9.0, you can disable the feature causing the issue by [disabling the `geo_job_artifact_replication` feature flag](../../feature_flags.md#how-to-enable-and-disable-features-behind-flags).
 
-## Updating to 14.2 through 14.7
+## Upgrading to 14.2 through 14.7
 
 There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
 that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -33,11 +33,11 @@ results in a loop that consistently fails for all objects stored in object stora
 For information on how to fix this, see
 [Troubleshooting - Failed syncs with GitLab-managed object storage replication](troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
-## Updating to 14.4
+## Upgrading to 14.4
 
 There is [an issue in GitLab 14.4.0 through 14.4.2](../../../update/index.md#1440) that can affect Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
 
-## Updating to 14.1, 14.2, 14.3
+## Upgrading to 14.1, 14.2, 14.3
 
 ### Multi-arch images
 
@@ -72,13 +72,13 @@ Otherwise, for each **secondary** site, on a Rails application node, open a [Rai
  end
  ```
 
-If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry, we recommend [upgrading](updating_the_geo_sites.md) to at least GitLab 14.1.
+If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry, we recommend [upgrading](upgrading_the_geo_sites.md) to at least GitLab 14.1.
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-## Updating to GitLab 14.0/14.1
+## Upgrading to GitLab 14.0/14.1
 
 ### Primary sites can not be removed from the UI
 
@@ -90,13 +90,13 @@ If you are running an affected version and need to remove your Primary site, you
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-## Updating to GitLab 13.12
+## Upgrading to GitLab 13.12
 
-### Secondary sites re-download all LFS files upon update
+### Secondary sites re-download all LFS files upon upgrade
 
-We found an issue where [secondary sites re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon update. This bug:
+We found an issue where [secondary sites re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon upgrade. This bug:
 
 - Only applies to Geo secondary sites that have replicated LFS objects.
 - Is _not_ a data loss risk.
@@ -104,9 +104,9 @@ We found an issue where [secondary sites re-download all LFS files](https://gitl
 - May impact performance for GitLab installations with a large number of LFS files.
 
 If you don't have many LFS objects or can stand a bit of churn, then it is safe to let the secondary sites re-download LFS objects.
-If you do have many LFS objects, or many Geo secondary sites, or limited bandwidth, or a combination of them all, then we recommend you skip GitLab 13.12.0 through 13.12.6 and update to GitLab 13.12.7 or newer.
+If you do have many LFS objects, or many Geo secondary sites, or limited bandwidth, or a combination of them all, then we recommend you skip GitLab 13.12.0 through 13.12.6 and upgrade to GitLab 13.12.7 or newer.
 
-#### If you have already updated to an affected version, and the re-sync is ongoing
+#### If you have already upgraded to an affected version, and the re-sync is ongoing
 
 You can manually migrate the legacy sync state to the new state column by running the following command in a [Rails console](../../operations/rails_console.md). It should take under a minute:
 
@@ -116,29 +116,29 @@ Geo::LfsObjectRegistry.where(state: 0, success: true).update_all(state: 2)
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-## Updating to GitLab 13.11
+## Upgrading to GitLab 13.11
 
 We found an [issue with Git clone/pull through HTTP(s)](https://gitlab.com/gitlab-org/gitlab/-/issues/330787) on Geo secondaries and on any GitLab instance if maintenance mode is enabled. This was caused by a regression in GitLab Workhorse. This is fixed in the [GitLab 13.11.4 patch release](https://about.gitlab.com/releases/2021/05/14/gitlab-13-11-4-released/). To avoid this issue, upgrade to GitLab 13.11.4 or later.
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-## Updating to GitLab 13.10
+## Upgrading to GitLab 13.10
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-## Updating to GitLab 13.9
+## Upgrading to GitLab 13.9
 
-### Error during zero-downtime update: "cannot drop column asset_proxy_whitelist"
+### Error during zero-downtime upgrade: "cannot drop column asset_proxy_whitelist"
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
 that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary
-to perform the following additional steps for the zero-downtime update:
+to perform the following additional steps for the zero-downtime upgrade:
 
 1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
    execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
@@ -169,27 +169,27 @@ PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist 
 DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
 ```
 
-To work around this bug, follow the previous steps to complete the update.
+To work around this bug, follow the previous steps to complete the upgrade.
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-## Updating to GitLab 13.7
+## Upgrading to GitLab 13.7
 
 We've detected an issue with the `FetchRemove` call used by Geo secondaries.
 This causes performance issues as we execute reference transaction hooks for
-each updated reference. Delay any upgrade attempts until this is in the
+each upgraded reference. Delay any upgrade attempts until this is in the
 [13.7.5 patch release.](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3002).
 More details are available [in this issue](https://gitlab.com/gitlab-org/git/-/issues/79).
 
-## Updating to GitLab 13.5
+## Upgrading to GitLab 13.5
 
 GitLab 13.5 has a [regression that prevents viewing a list of container repositories and registries](https://gitlab.com/gitlab-org/gitlab/-/issues/285475)
 on Geo secondaries. This issue is fixed in GitLab 13.6.1 and later.
 
-## Updating to GitLab 13.3
+## Upgrading to GitLab 13.3
 
 In GitLab 13.3, Geo removed the PostgreSQL [Foreign Data Wrapper](https://www.postgresql.org/docs/11/postgres-fdw.html)
 dependency for the tracking database.
@@ -219,61 +219,61 @@ when using `--force` or `--skip-preflight-checks`, due to [an issue](https://git
 The [troubleshooting steps](troubleshooting.md#errors-when-using---skip-preflight-checks-or---force)
 contain a workaround if you run into errors during the failover.
 
-## Updating to GitLab 13.2
+## Upgrading to GitLab 13.2
 
 In GitLab 13.2, promoting a secondary site to a primary while the secondary is
 paused fails. Do not pause replication before promoting a secondary. If the
 site is paused, be sure to resume before promoting. To avoid this issue,
 upgrade to GitLab 13.4 or later.
 
-## Updating to GitLab 13.0
+## Upgrading to GitLab 13.0
 
 Upgrading to GitLab 13.0 requires GitLab 12.10 to already be using PostgreSQL
 version 11. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-## Updating to GitLab 12.10
+## Upgrading to GitLab 12.10
 
-GitLab 12.10 doesn't attempt to update the embedded PostgreSQL server when
+GitLab 12.10 doesn't attempt to upgrade the embedded PostgreSQL server when
 using Geo, because the PostgreSQL upgrade requires downtime for secondaries
 while reinitializing streaming replication. It must be upgraded manually. For
 the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-## Updating to GitLab 12.9
+## Upgrading to GitLab 12.9
 
 WARNING:
 GitLab 12.9.0 through GitLab 12.9.3 are affected by [a bug that stops
 repository verification](https://gitlab.com/gitlab-org/gitlab/-/issues/213523).
 The issue is fixed in GitLab 12.9.4. Upgrade to GitLab 12.9.4 or later.
 
-By default, GitLab 12.9 attempts to update the embedded PostgreSQL server
+By default, GitLab 12.9 attempts to upgrade the embedded PostgreSQL server
 version from 9.6 to 10.12, which requires downtime on secondaries while
 reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 You can temporarily disable this behavior by running the following before
-updating:
+upgrading:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
-## Updating to GitLab 12.8
+## Upgrading to GitLab 12.8
 
-By default, GitLab 12.8 attempts to update the embedded PostgreSQL server
+By default, GitLab 12.8 attempts to upgrade the embedded PostgreSQL server
 version from 9.6 to 10.12, which requires downtime on secondaries while
 reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 You can temporarily disable this behavior by running the following before
-updating:
+upgrading:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
-## Updating to GitLab 12.7
+## Upgrading to GitLab 12.7
 
 WARNING:
 Only upgrade to GitLab 12.7.5 or later. Do not upgrade to versions 12.7.0
@@ -281,65 +281,65 @@ through 12.7.4 because there is [an initialization order bug](https://gitlab.com
 [The fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24021) was
 shipped in 12.7.5.
 
-By default, GitLab 12.7 attempts to update the embedded PostgreSQL server
+By default, GitLab 12.7 attempts to upgrade the embedded PostgreSQL server
 version from 9.6 to 10.9, which requires downtime on secondaries while
 reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 You can temporarily disable this behavior by running the following before
-updating:
+upgrading:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
-## Updating to GitLab 12.6
+## Upgrading to GitLab 12.6
 
-By default, GitLab 12.6 attempts to update the embedded PostgreSQL server
+By default, GitLab 12.6 attempts to upgrade the embedded PostgreSQL server
 version from 9.6 to 10.9, which requires downtime on secondaries while
 reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 You can temporarily disable this behavior by running the following before
-updating:
+upgrading:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
-## Updating to GitLab 12.5
+## Upgrading to GitLab 12.5
 
-By default, GitLab 12.5 attempts to update the embedded PostgreSQL server
+By default, GitLab 12.5 attempts to upgrade the embedded PostgreSQL server
 version from 9.6 to 10.9, which requires downtime on secondaries while
 reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 You can temporarily disable this behavior by running the following before
-updating:
+upgrading:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
-## Updating to GitLab 12.4
+## Upgrading to GitLab 12.4
 
-By default, GitLab 12.4 attempts to update the embedded PostgreSQL server
+By default, GitLab 12.4 attempts to upgrade the embedded PostgreSQL server
 version from 9.6 to 10.9, which requires downtime on secondaries while
 reinitializing streaming replication. For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
 You can temporarily disable this behavior by running the following before
-updating:
+upgrading:
 
 ```shell
 sudo touch /etc/gitlab/disable-postgresql-upgrade
 ```
 
-## Updating to GitLab 12.3
+## Upgrading to GitLab 12.3
 
 WARNING:
 If the existing PostgreSQL server version is 9.6.x, we recommend upgrading to
-GitLab 12.4 or later. By default, GitLab 12.3 attempts to update the embedded
+GitLab 12.4 or later. By default, GitLab 12.3 attempts to upgrade the embedded
 PostgreSQL server version from 9.6 to 10.9. In certain circumstances, it can
 fail. For more information, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
@@ -349,11 +349,11 @@ requires downtime for secondaries while reinitializing streaming replication.
 For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-## Updating to GitLab 12.2
+## Upgrading to GitLab 12.2
 
 WARNING:
 If the existing PostgreSQL server version is 9.6.x, we recommend upgrading to
-GitLab 12.4 or later. By default, GitLab 12.2 attempts to update the embedded
+GitLab 12.4 or later. By default, GitLab 12.2 attempts to upgrade the embedded
 PostgreSQL server version from 9.6 to 10.9. In certain circumstances, it can
 fail. For more information, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
@@ -363,12 +363,12 @@ requires downtime for secondaries while reinitializing streaming replication.
 For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-GitLab 12.2 includes the following minor PostgreSQL updates:
+GitLab 12.2 includes the following minor PostgreSQL upgrades:
 
 - To version `9.6.14`, if you run PostgreSQL 9.6.
 - To version `10.9`, if you run PostgreSQL 10.
 
-This update occurs even if major PostgreSQL updates are disabled.
+This upgrade occurs even if major PostgreSQL upgrades are disabled.
 
 Before [refreshing Foreign Data Wrapper during a Geo upgrade](../../../update/zero_downtime.md#step-4-run-post-deployment-migrations-and-checks),
 restart the Geo tracking database:
@@ -380,11 +380,11 @@ sudo gitlab-ctl restart geo-postgresql
 The restart avoids a version mismatch when PostgreSQL tries to load the FDW
 extension.
 
-## Updating to GitLab 12.1
+## Upgrading to GitLab 12.1
 
 WARNING:
 If the existing PostgreSQL server version is 9.6.x, we recommend upgrading to
-GitLab 12.4 or later. By default, GitLab 12.1 attempts to update the embedded
+GitLab 12.4 or later. By default, GitLab 12.1 attempts to upgrade the embedded
 PostgreSQL server version from 9.6 to 10.9. In certain circumstances, it can
 fail. For more information, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
@@ -394,7 +394,7 @@ requires downtime for secondaries while reinitializing streaming replication.
 For the recommended procedure, see the
 [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 
-## Updating to GitLab 12.0
+## Upgrading to GitLab 12.0
 
 WARNING:
 This version is affected by a [bug that results in new LFS objects not being
