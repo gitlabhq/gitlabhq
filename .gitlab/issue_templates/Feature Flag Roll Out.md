@@ -74,12 +74,9 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 - Ensure that the feature MRs have been deployed to both production and canary.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
 - If you're using [project-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
-    - [ ] `/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`
-    - [ ] `/chatops run feature set --project=gitlab-org/gitlab-foss <feature-flag-name> true`
-    - [ ] `/chatops run feature set --project=gitlab-com/www-gitlab-com <feature-flag-name> true`
+    - [ ] `/chatops run feature set --project=gitlab-org/gitlab,gitlab-org/gitlab-foss,gitlab-com/www-gitlab-com <feature-flag-name> true`
 - If you're using [group-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
-    - [ ] `/chatops run feature set --group=gitlab-org <feature-flag-name> true`
-    - [ ] `/chatops run feature set --group=gitlab-com <feature-flag-name> true`
+    - [ ] `/chatops run feature set --group=gitlab-org,gitlab-com <feature-flag-name> true`
 - If you're using [user-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
     - [ ] `/chatops run feature set --user=<your-username> <feature-flag-name> true`
 - [ ] Verify that the feature works on the specific entries. Posting the QA result in this issue is preferable.

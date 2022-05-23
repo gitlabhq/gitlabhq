@@ -182,6 +182,7 @@ as shown in the following table:
 | [Configure SAST in the UI](#configure-sast-in-the-ui)           | **{dotted-circle}** | **{check-circle}** |
 | [Customize SAST rulesets](#customize-rulesets)                  | **{dotted-circle}** | **{check-circle}** |
 | [Detect False Positives](#false-positive-detection)             | **{dotted-circle}** | **{check-circle}** |
+| [Track moved vulnerabilities](#advanced-vulnerability-tracking) | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -695,6 +696,28 @@ rules:
 > Introduced in GitLab 14.2.
 
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
+
+### Advanced vulnerability tracking **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
+
+Source code is volatile; as developers make changes, source code may move within files or between files.
+Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/).
+These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
+If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
+
+GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the same vulnerability has moved within a file due to refactoring or unrelated changes.
+
+Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- C, in the Semgrep-based analyzer only
+- Go, in the Gosec- and Semgrep-based analyzers
+- Java, in the Semgrep-based analyzer only
+- JavaScript, in the Semgrep-based analyzer only
+- Python, in the Semgrep-based analyzer only
+- Ruby, in the Brakeman-based analyzers
+
+Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
 ### Using CI/CD variables to pass credentials for private repositories
 
