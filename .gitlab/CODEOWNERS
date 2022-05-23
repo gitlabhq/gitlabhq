@@ -175,8 +175,19 @@ Dangerfile @gl-quality/eng-prod
 ^[Workhorse]
 /workhorse/ @jacobvosmaer-gitlab @nick.thomas @nolith @patrickbajao
 
-^[Application Security]
+[Application Security]
+/app/assets/javascripts/lib/dompurify.js @gitlab-com/gl-security/appsec
+/app/validators/addressable_url_validator.rb  @gitlab-com/gl-security/appsec
+/app/validators/public_url_validator.rb  @gitlab-com/gl-security/appsec
+/config/initializers/content_security_policy.rb @gitlab-com/gl-security/appsec
 /lib/gitlab/content_security_policy/ @gitlab-com/gl-security/appsec
+/lib/gitlab/http.rb @gitlab-com/gl-security/appsec
+/lib/gitlab/http_connection_adapter.rb @gitlab-com/gl-security/appsec
+/lib/gitlab/sanitizers @gitlab-com/gl-security/appsec
+/lib/gitlab/untrusted_regexp.rb @gitlab-com/gl-security/appsec
+/lib/gitlab/url_blocker.rb @gitlab-com/gl-security/appsec
+/lib/gitlab/url_blockers/ @gitlab-com/gl-security/appsec
+/lib/gitlab/utils.rb @gitlab-com/gl-security/appsec
 
 ^[Gitaly]
 lib/gitlab/git_access.rb @proglottis @toon @zj-gitlab

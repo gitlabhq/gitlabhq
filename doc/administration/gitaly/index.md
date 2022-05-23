@@ -320,9 +320,9 @@ Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subco
   - The virtual storage and relative path.
   - The repository ID.
 
-The repository on disk also contains the project path in the Git configuration file. The configuration file can be used to determine
-the project's location even if the repository's metadata has been deleted. Follow the
-[instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
+The repository on disk also contains the project path in the Git configuration file. The configuration
+file can be used to determine the project path even if the repository's metadata has been deleted.
+Follow the [instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
 
 #### Atomicity of operations
 

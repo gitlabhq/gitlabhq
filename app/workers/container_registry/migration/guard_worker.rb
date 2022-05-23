@@ -22,7 +22,7 @@ module ContainerRegistry
         repositories = ::ContainerRepository.with_stale_migration(step_before_timestamp)
                                             .limit(max_capacity)
         aborts_count = 0
-        long_running_migration_ids = []
+        long_running_migrations = []
 
         # the #to_a is safe as the amount of entries is limited.
         # In addition, we're calling #each in the next line and we don't want two different SQL queries for these two lines
@@ -32,7 +32,7 @@ module ContainerRegistry
           if actively_importing?(repository)
             # if a repository is actively importing but not yet long_running, do nothing
             if long_running_migration?(repository)
-              long_running_migration_ids << repository.id
+              long_running_migrations << repository
               cancel_long_running_migration(repository)
               aborts_count += 1
             end
@@ -44,8 +44,9 @@ module ContainerRegistry
 
         log_extra_metadata_on_done(:aborted_stale_migrations_count, aborts_count)
 
-        if long_running_migration_ids.any?
-          log_extra_metadata_on_done(:aborted_long_running_migration_ids, long_running_migration_ids)
+        if long_running_migrations.any?
+          log_extra_metadata_on_done(:aborted_long_running_migration_ids, long_running_migrations.map(&:id))
+          log_extra_metadata_on_done(:aborted_long_running_migration_paths, long_running_migrations.map(&:path))
         end
       end
 

@@ -176,6 +176,35 @@ If using [Group Sync](#group-sync), customize the name of the group claim to mat
 
 See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory) for an example configuration.
 
+### Google Workspace setup notes
+
+Follow the Google Workspace documentation on
+[setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en)
+with the notes below for consideration.
+
+| GitLab setting                 | Google Workspace field |
+|:-------------------------------|:-----------------------|
+| Identifier                     | Entity ID              |
+| Assertion consumer service URL | ACS URL                |
+
+You must download the certificate to get the SHA1 certificate fingerprint.
+
+The recommended attributes and claims settings are:
+
+- **Primary email** set to `email`.
+- **First name** set to `first_name`.
+- **Last name** set to `last_name`.
+
+For NameID, the following settings are recommended:
+
+- **Name ID format** is set to `EMAIL`.
+- **NameID** set to `Basic Information > Primary email`.
+
+When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning about the NameID format
+"persistent" recommended.
+
+See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#google-workspace) for an example configuration.
+
 ### Okta setup notes
 
 Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) with the notes below for consideration.

@@ -37,6 +37,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
             expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
             expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
             expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_paths, [stale_migration.path])
             expect(ContainerRegistry::Migration).to receive(timeout).and_call_original
 
             expect { subject }
@@ -75,6 +76,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
               expect(worker).to receive(:log_extra_metadata_on_done).with(:stale_migrations_count, 1)
               expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
               expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_ids, [stale_migration.id])
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_long_running_migration_paths, [stale_migration.path])
               expect(ContainerRegistry::Migration).to receive(timeout).and_call_original
 
               expect { subject }

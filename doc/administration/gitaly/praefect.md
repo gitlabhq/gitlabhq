@@ -632,12 +632,8 @@ and on all Praefect clients that communicate with it following the procedure des
 
 Note the following:
 
-- The certificate must specify the address you use to access the Praefect server. If
-  addressing the Praefect server by:
-
-  - Hostname, you can either use the Common Name field for this, or add it as a Subject
-    Alternative Name.
-  - IP address, you must add it as a Subject Alternative Name to the certificate.
+- The certificate must specify the address you use to access the Praefect server. You must add the hostname or IP
+  address as a Subject Alternative Name to the certificate.
 - When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
   [Gitaly TLS enabled](configure_gitaly.md#enable-tls-support), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
   environment variable so that the Gitaly certificate is trusted. For example:
@@ -650,6 +646,8 @@ Note the following:
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
   necessary.
+
+  To disable the unencrypted listener, set `praefect['listen_addr'] = nil`.
 
 To configure Praefect with TLS:
 

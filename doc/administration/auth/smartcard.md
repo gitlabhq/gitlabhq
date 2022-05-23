@@ -120,8 +120,14 @@ more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
+   # Allow smartcard authentication
    gitlab_rails['smartcard_enabled'] = true
+
+   # Path to a file containing a CA certificate
    gitlab_rails['smartcard_ca_file'] = "/etc/ssl/certs/CA.pem"
+
+   # Host and port where the client side certificate is requested by the
+   # webserver (NGINX/Apache)
    gitlab_rails['smartcard_client_certificate_required_host'] = "smartcard.example.com"
    gitlab_rails['smartcard_client_certificate_required_port'] = 3444
    ```
