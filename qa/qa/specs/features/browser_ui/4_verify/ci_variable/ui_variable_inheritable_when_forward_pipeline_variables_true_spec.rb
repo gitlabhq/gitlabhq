@@ -16,16 +16,13 @@ module QA
         add_ci_file(upstream_project, [upstream_ci_file, upstream_child1_ci_file])
 
         start_pipeline_with_variable
-        Page::Project::Pipeline::Show.perform do |show|
-          Support::Waiter.wait_until { show.passed? }
-        end
+        wait_for_pipelines
       end
 
       it(
         'is inheritable when forward:pipeline_variables is true',
         :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/361338', type: :investigating }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197'
       ) do
         visit_job_page('child1', 'child1_job')
         verify_job_log_shows_variable_value
@@ -40,19 +37,13 @@ module QA
         {
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
-            stages:
-              - test
-              - deploy
-
             child1_trigger:
-              stage: test
               trigger:
                 include: .child1-ci.yml
                 forward:
                   pipeline_variables: true
 
             downstream1_trigger:
-              stage: deploy
               trigger:
                 project: #{downstream1_project.full_path}
                 forward:

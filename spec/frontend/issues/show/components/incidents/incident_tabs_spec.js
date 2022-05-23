@@ -5,6 +5,7 @@ import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import DescriptionComponent from '~/issues/show/components/description.vue';
 import HighlightBar from '~/issues/show/components/incidents/highlight_bar.vue';
 import IncidentTabs from '~/issues/show/components/incidents/incident_tabs.vue';
+import TimelineTab from '~/issues/show/components/incidents/timeline_events_tab.vue';
 import INVALID_URL from '~/lib/utils/invalid_url';
 import Tracking from '~/tracking';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
@@ -36,7 +37,7 @@ describe('Incident Tabs component', () => {
             iid: '',
             projectId: '',
             uploadMetricsFeatureAvailable: true,
-            glFeatures: { incidentTimeline: true, incidentTimelineEvents: true },
+            glFeatures: { incidentTimeline: true },
           },
           data() {
             return { alert: mockAlert, ...data };
@@ -62,6 +63,7 @@ describe('Incident Tabs component', () => {
   const findAlertDetailsComponent = () => wrapper.find(AlertDetailsTable);
   const findDescriptionComponent = () => wrapper.find(DescriptionComponent);
   const findHighlightBarComponent = () => wrapper.find(HighlightBar);
+  const findTimelineTab = () => wrapper.findComponent(TimelineTab);
 
   describe('empty state', () => {
     beforeEach(() => {
@@ -120,6 +122,22 @@ describe('Incident Tabs component', () => {
     it('should track incident details views', () => {
       const { category, action } = trackIncidentDetailsViewsOptions;
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+  });
+
+  describe('incident timeline tab', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('renders the timeline tab when feature flag is enabled', () => {
+      expect(findTimelineTab().exists()).toBe(true);
+    });
+
+    it('does not render timeline tab when feature flag is disabled', () => {
+      mountComponent({}, { provide: { glFeatures: { incidentTimeline: false } } });
+
+      expect(findTimelineTab().exists()).toBe(false);
     });
   });
 });

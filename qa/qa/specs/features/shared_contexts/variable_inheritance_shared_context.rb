@@ -64,6 +64,12 @@ module QA
       end
     end
 
+    def wait_for_pipelines
+      Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
+        upstream_pipeline.status == 'success' && downstream1_pipeline.status == 'success'
+      end
+    end
+
     def add_ci_file(project, files)
       Resource::Repository::Commit.fabricate_via_api! do |commit|
         commit.project = project
@@ -90,6 +96,41 @@ module QA
       Page::Project::Job::Show.perform do |show|
         show.wait_until { show.successful? }
         expect(show.output).to have_no_content(value)
+      end
+    end
+
+    def upstream_pipeline
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = upstream_project
+        pipeline.id = upstream_project.pipelines.first[:id]
+      end
+    end
+
+    def child1_pipeline
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = upstream_project
+        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: 'child1_trigger')
+      end
+    end
+
+    def child2_pipeline
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = upstream_project
+        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: 'child2_trigger')
+      end
+    end
+
+    def downstream1_pipeline
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = downstream1_project
+        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: 'downstream1_trigger')
+      end
+    end
+
+    def downstream2_pipeline
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = downstream2_project
+        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: 'downstream2_trigger')
       end
     end
 

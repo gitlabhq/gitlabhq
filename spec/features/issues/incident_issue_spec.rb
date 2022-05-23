@@ -26,6 +26,7 @@ RSpec.describe 'Incident Detail', :js do
 
   context 'when user displays the incident' do
     before do
+      stub_feature_flags(incident_timeline: project)
       project.add_developer(user)
       sign_in(user)
 
@@ -98,6 +99,55 @@ RSpec.describe 'Incident Detail', :js do
         edit_button = find_all('[aria-label="Edit title and description"]')
 
         expect(edit_button.count).to eq(0)
+      end
+    end
+
+    context 'when on timeline events tab from incident route' do
+      before do
+        visit project_issues_incident_path(project, incident)
+        wait_for_requests
+        click_link 'Timeline'
+      end
+
+      it 'does not show the linked issues and notes/comment components' do
+        page.within('.issuable-details') do
+          hidden_items = find_all('.js-issue-widgets')
+
+          # Linked Issues/MRs and comment box are hidden on page
+          expect(hidden_items.count).to eq(0)
+        end
+      end
+    end
+
+    context 'when on timeline events tab from issue route' do
+      before do
+        visit project_issue_path(project, incident)
+        wait_for_requests
+        click_link 'Timeline'
+      end
+
+      it 'does not show the linked issues and notes/comment commponents' do
+        page.within('.issuable-details') do
+          hidden_items = find_all('.js-issue-widgets')
+
+          # Linked Issues/MRs and comment box are hidden on page
+          expect(hidden_items.count).to eq(0)
+        end
+      end
+    end
+
+    context 'when incident_timeline feature flag is disabled' do
+      before do
+        stub_feature_flags(incident_timeline: false)
+
+        visit project_issue_path(project, incident)
+        wait_for_requests
+      end
+
+      it 'does not show Timeline tab' do
+        tabs = find('[data-testid="incident-tabs"]')
+
+        expect(tabs).not_to have_content('Timeline')
       end
     end
   end

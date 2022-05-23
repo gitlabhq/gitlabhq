@@ -47,6 +47,27 @@ Most of the deprecations are **planned for removal in 15.0**, and many of them a
 
 <div class="announcement-milestone">
 
+## 15.1
+
+<div class="deprecation removal-160 breaking-change">
+
+### REST API Runner maintainer_note
+
+WARNING:
+This feature will be changed or removed in 16.0
+as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Before updating GitLab, review the details carefully to determine if you need to make any
+changes to your code, settings, or workflow.
+
+The `maintainer_note` argument in the `POST /runners` REST endpoint was deprecated in  GitLab 14.8 and replaced with the `maintenance_note` argument.
+The `maintainer_note` argument will be removed in GitLab 16.0.
+
+**Planned removal milestone: <span class="removal-milestone">16.0</span> (2023-05-22)**
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## 15.0
 
 <div class="deprecation removal-160 breaking-change">

@@ -40,7 +40,6 @@ module QA
         let!(:another_project) do
           Resource::Project.fabricate_via_api! do |another_project|
             another_project.name = 'npm-instance-level-install'
-            another_project.template_name = 'express'
             another_project.group = project.group
           end
         end

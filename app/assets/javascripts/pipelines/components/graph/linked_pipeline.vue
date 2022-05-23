@@ -237,7 +237,11 @@ export default {
         <div
           class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"
         >
-          <span class="gl-text-truncate" data-testid="downstream-title">
+          <span
+            class="gl-text-truncate"
+            data-testid="downstream-title"
+            data-qa-selector="downstream_title_content"
+          >
             {{ downstreamTitle }}
           </span>
           <div class="gl-text-truncate">
