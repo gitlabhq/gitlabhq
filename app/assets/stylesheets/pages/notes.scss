@@ -20,7 +20,7 @@ $system-note-svg-size: 16px;
 }
 
 .note-wrapper {
-  padding: $gl-padding;
+  padding: $gl-padding $gl-padding-8 $gl-padding $gl-padding;
 
   &.outlined {
     @include outline-comment();

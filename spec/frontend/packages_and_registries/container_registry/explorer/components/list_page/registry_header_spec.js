@@ -93,7 +93,7 @@ describe('registry_header', () => {
           expect(text.exists()).toBe(true);
           expect(text.props()).toMatchObject({
             text: EXPIRATION_POLICY_DISABLED_TEXT,
-            icon: 'expire',
+            icon: 'clock',
             size: 'xl',
           });
         });

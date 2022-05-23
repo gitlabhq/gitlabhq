@@ -229,7 +229,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/index.md @axil
 /doc/administration/instance_limits.md @axil
 /doc/administration/instance_review.md @kpaizee
-/doc/administration/integration/kroki.md @kpaizee
+/doc/administration/integration/kroki.md @msedlakjakubowski
 /doc/administration/integration/mailgun.md @kpaizee
 /doc/administration/integration/plantuml.md @aqualls
 /doc/administration/integration/terminal.md @kpaizee

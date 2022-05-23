@@ -20,21 +20,24 @@ deleted, the action generates an audit event that it was performed by the first 
 
 ## Configure inactive project deletion
 
-You can configure inactive projects deletion or turn it off using the
-[Application settings API](../api/settings.md#change-application-settings).
+You can configure inactive projects deletion or turn it off using either:
+
+- [The GitLab API](#using-the-api) (GitLab 15.0 and later).
+- [The GitLab UI](#using-the-gitlab-ui) (GitLab 15.1 and later).
 
 The following options are available:
 
-- `delete_inactive_projects`: Enable or disable inactive project deletion.
-- `inactive_projects_min_size_mb`: Minimum size (MB) of inactive projects to be considered for deletion.
-  Projects smaller in size than this threshold aren't considered inactive.
-- `inactive_projects_delete_after_months`: Minimum duration (months) after which a project is scheduled for deletion if
-  it continues be inactive.
-- `inactive_projects_send_warning_email_after_months`: Minimum duration (months) after which a deletion warning email is
-  sent if a project continues to be inactive. The warning email is sent to users with the Owner and Maintainer roles of
-  the inactive project. This duration should be less than the `inactive_projects_delete_after_months` duration.
+- **Delete inactive projects** (`delete_inactive_projects`): Enable or disable inactive project deletion.
+- **Delete inactive projects that exceed** (`inactive_projects_min_size_mb`): Minimum size (MB) of inactive projects to
+  be considered for deletion. Projects smaller in size than this threshold aren't considered inactive.
+- **Delete project after** (`inactive_projects_delete_after_months`): Minimum duration (months) after which a project is
+  scheduled for deletion if it continues be inactive.
+- **Send warning email** (`inactive_projects_send_warning_email_after_months`): Minimum duration (months) after which a
+  deletion warning email is sent if a project continues to be inactive. The warning email is sent to users with the
+  Owner and Maintainer roles of the inactive project. This duration must be less than the
+  **Delete project after** (`inactive_projects_delete_after_months`) duration.
 
-For example:
+For example (using the API):
 
 - `delete_inactive_projects` enabled.
 - `inactive_projects_min_size_mb` set to `50`.
@@ -48,6 +51,22 @@ In this scenario, when a project's size is:
   - More than 6 months, a deletion warning is email is sent to users with the Owner and Maintainer role on the project
     with the scheduled date of deletion.
   - More than 12 months, the project is scheduled for deletion.
+
+### Using the API
+
+You can use the [Application settings API](../api/settings.md#change-application-settings) to configure inactive projects.
+
+### Using the GitLab UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85575) in GitLab 15.1.
+
+To configure inactive projects with the GitLab UI:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Repository maintenance**.
+1. In the **Inactive project deletion** section, configure the necessary options.
+1. Select **Save changes**.
 
 ## Determine when a project was last active
 

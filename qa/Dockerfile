@@ -1,8 +1,9 @@
 FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
-ENV DEBIAN_FRONTEND="noninteractive" \
-    BUNDLE_WITHOUT=development
+ENV DEBIAN_FRONTEND="noninteractive"
+# Override config path to make sure local config doesn't override it when building image locally
+ENV BUNDLE_APP_CONFIG=/home/gitlab/.bundle
 
 ##
 # Install system libs
@@ -27,7 +28,8 @@ WORKDIR /home/gitlab/qa
 # Install qa dependencies or fetch from cache if unchanged
 #
 COPY ./qa/Gemfile* /home/gitlab/qa/
-RUN bundle install --jobs=$(nproc) --retry=3
+RUN bundle config set --local without development \
+    && bundle install --retry=3
 
 ##
 # Fetch chromedriver based on version of chrome

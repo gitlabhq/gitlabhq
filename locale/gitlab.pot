@@ -2640,6 +2640,18 @@ msgstr ""
 msgid "AdminSettings|Configure Let's Encrypt"
 msgstr ""
 
+msgid "AdminSettings|Configure when inactive projects should be automatically deleted. %{linkStart}What are inactive projects?%{linkEnd}"
+msgstr ""
+
+msgid "AdminSettings|Delete inactive projects"
+msgstr ""
+
+msgid "AdminSettings|Delete inactive projects that exceed"
+msgstr ""
+
+msgid "AdminSettings|Delete project after"
+msgstr ""
+
 msgid "AdminSettings|Disable Elasticsearch until indexing completes."
 msgstr ""
 
@@ -2706,6 +2718,9 @@ msgstr ""
 msgid "AdminSettings|Import sources"
 msgstr ""
 
+msgid "AdminSettings|Inactive project deletion"
+msgstr ""
+
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -2742,6 +2757,9 @@ msgstr ""
 msgid "AdminSettings|Maximum number of runners registered per project"
 msgstr ""
 
+msgid "AdminSettings|Minimum size must be at least 0."
+msgstr ""
+
 msgid "AdminSettings|New CI/CD variables in projects and groups default to protected."
 msgstr ""
 
@@ -2772,6 +2790,9 @@ msgstr ""
 msgid "AdminSettings|Required pipeline configuration"
 msgstr ""
 
+msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
+msgstr ""
+
 msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -2790,6 +2811,12 @@ msgstr ""
 msgid "AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|Send email to maintainers after project is inactive for"
+msgstr ""
+
+msgid "AdminSettings|Send warning email"
+msgstr ""
+
 msgid "AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}."
 msgstr ""
 
@@ -2806,6 +2833,9 @@ msgid "AdminSettings|Set the initial name and protections for the default branch
 msgstr ""
 
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Setting must be greater than 0."
 msgstr ""
 
 msgid "AdminSettings|Size and domain settings for Pages static sites."
@@ -2841,7 +2871,13 @@ msgstr ""
 msgid "AdminSettings|When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
 msgstr ""
 
+msgid "AdminSettings|When to delete inactive projects"
+msgstr ""
+
 msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
+msgstr ""
+
+msgid "AdminSettings|You can't delete projects before the warning email is sent."
 msgstr ""
 
 msgid "AdminStatistics|Active Users"
@@ -6028,6 +6064,9 @@ msgstr ""
 msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
 msgstr ""
 
+msgid "Billings|The last owner cannot be removed from a seat."
+msgstr ""
+
 msgid "Billings|To make this member active, you must first remove an existing active member, or toggle them to over limit."
 msgstr ""
 
@@ -6047,6 +6086,9 @@ msgid "Billings|Validate user account"
 msgstr ""
 
 msgid "Billings|You can't change the seat status of a user who was invited via a group or project."
+msgstr ""
+
+msgid "Billings|You can't remove yourself from a seat, but you can leave the group."
 msgstr ""
 
 msgid "Billings|You'll now be able to take advantage of free CI/CD minutes on shared runners."
@@ -40764,6 +40806,9 @@ msgstr ""
 msgid "UsageQuota|Code packages and container images."
 msgstr ""
 
+msgid "UsageQuota|Container Registry"
+msgstr ""
+
 msgid "UsageQuota|Current period usage"
 msgstr ""
 
@@ -40777,6 +40822,9 @@ msgid "UsageQuota|From %{storage_enforcement_date} storage limits will apply to 
 msgstr ""
 
 msgid "UsageQuota|Git repository."
+msgstr ""
+
+msgid "UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images."
 msgstr ""
 
 msgid "UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items."
@@ -45152,6 +45200,9 @@ msgid "metric_id must be unique across a project"
 msgstr ""
 
 msgid "missing"
+msgstr ""
+
+msgid "months"
 msgstr ""
 
 msgid "most recent deployment"

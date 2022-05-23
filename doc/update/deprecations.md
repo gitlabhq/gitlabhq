@@ -1094,21 +1094,6 @@ The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in G
 **Planned removal milestone: <span class="removal-milestone">16.0</span> (2023-04-22)**
 </div>
 
-<div class="deprecation removal-150">
-
-### `fixup!` commit messages setting draft status of associated Merge Request
-
-The use of `fixup!` as a commit message to trigger draft status
-of the associated Merge Request is generally unused, and can cause
-confusion with other uses of the term. "Draft" is the preferred
-and supported trigger for triggering draft status from commit
-messages, as part of our streamlining of the feature.
-Support for `fixup!` is now considered deprecated, and will be
-removed in GitLab 15.0.
-
-**Planned removal milestone: <span class="removal-milestone">15.0</span> (2022-06-22)**
-</div>
-
 <div class="deprecation removal-150 breaking-change">
 
 ### `projectFingerprint` in `PipelineSecurityReportFinding` GraphQL

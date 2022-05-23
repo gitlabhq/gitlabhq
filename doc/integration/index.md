@@ -104,3 +104,13 @@ After that restart GitLab with:
 ```shell
 sudo gitlab-ctl restart
 ```
+
+### Search Sidekiq logs in Kibana
+
+To locate a specific integration in Kibana, use the following KQL search string:
+
+```plaintext
+`json.integration_class.keyword : "Integrations::Jira" and json.project_path : "path/to/project"`
+```
+
+You can find information in `json.exception.backtrace`, `json.exception.class`, `json.exception.message`, and `json.message`.

@@ -127,7 +127,7 @@ RSpec.describe 'Group' do
 
     describe 'Mattermost team creation' do
       before do
-        stub_mattermost_setting(enabled: mattermost_enabled)
+        stub_mattermost_setting(enabled: mattermost_enabled, host: 'https://mattermost.test')
 
         visit new_group_path
         click_link 'Create group'
@@ -145,13 +145,14 @@ RSpec.describe 'Group' do
         end
 
         it 'updates the team URL on graph path update', :js do
-          out_span = find('span[data-bind-out="create_chat_team"]', visible: false)
+          label = find('#group_create_chat_team ~ label[for=group_create_chat_team]')
+          url = 'https://mattermost.test/test-group'
 
-          expect(out_span.text).to be_empty
+          expect(label.text).not_to match(url)
 
           fill_in('group_path', with: 'test-group')
 
-          expect(out_span.text).to eq('test-group')
+          expect(label.text).to match(url)
         end
       end
 

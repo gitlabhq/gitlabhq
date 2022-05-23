@@ -513,6 +513,10 @@ class Commit
     # We don't want to do anything for `Commit` model, so this is empty.
   end
 
+  # We are continuing to support `(fixup!|squash!)` here as it is the prefix
+  #   added by `git commit --fixup` which is used by some community members.
+  #   https://gitlab.com/gitlab-org/gitlab/-/issues/342937#note_892065311
+  #
   DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/.freeze
 
   def work_in_progress?
