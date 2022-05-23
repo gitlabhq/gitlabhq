@@ -12,7 +12,7 @@ module QA
     class DeleteTestSnippets
       include Support::API
 
-      ITEMS_PER_PAGE = '100'
+      ITEMS_PER_PAGE = '1'
 
       def initialize(delete_before: (Date.today - 1).to_s, dry_run: false)
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
@@ -69,6 +69,11 @@ module QA
             to_delete
           end
           snippet_ids.concat(snippets.map { |snippet| snippet['id'] })
+
+          if (page_no + 1) == 1000
+            puts "Stopping at page 1000 to avoid timeout, total number of pages: #{pages}"
+            break
+          end
         end
 
         snippet_ids.uniq

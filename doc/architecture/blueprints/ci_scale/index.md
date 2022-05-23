@@ -37,7 +37,7 @@ to sustain future growth.
 ### We are running out of the capacity to store primary keys
 
 The primary key in `ci_builds` table is an integer generated in a sequence.
-Historically, Rails used to use [integer](https://www.postgresql.org/docs/9.1/datatype-numeric.html)
+Historically, Rails used to use [integer](https://www.postgresql.org/docs/14/datatype-numeric.html)
 type when creating primary keys for a table. We did use the default when we
 [created the `ci_builds` table in 2012](https://gitlab.com/gitlab-org/gitlab/-/blob/046b28312704f3131e72dcd2dbdacc5264d4aa62/db/ci/migrate/20121004165038_create_builds.rb).
 [The behavior of Rails has changed](https://github.com/rails/rails/pull/26266)
@@ -55,8 +55,8 @@ that have the same problem.
 
 Primary keys problem will be tackled by our Database Team.
 
-**Status**: As of October 2021 the primary keys in CI tables have been migrated
-to big integers.
+**Status**: In October 2021, the primary keys in CI tables were migrated
+to big integers. See the [related Epic](https://gitlab.com/groups/gitlab-org/-/epics/5657) for more details.
 
 ### The table is too large
 

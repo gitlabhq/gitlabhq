@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Graphql::MarkdownField do
   include Gitlab::Routing
+  include GraphqlHelpers
 
   describe '.markdown_field' do
     it 'creates the field with some default attributes' do
@@ -33,8 +34,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
     context 'resolving markdown' do
       let_it_be(:note) { build(:note, note: '# Markdown!') }
       let_it_be(:expected_markdown) { '<h1 data-sourcepos="1:1-1:11" dir="auto">Markdown!</h1>' }
-      let_it_be(:query_type) { GraphQL::ObjectType.new }
-      let_it_be(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
+      let_it_be(:schema) { empty_schema }
       let_it_be(:query) { GraphQL::Query.new(schema, document: nil, context: {}, variables: {}) }
       let_it_be(:context) { GraphQL::Query::Context.new(query: query, values: {}, object: nil) }
 

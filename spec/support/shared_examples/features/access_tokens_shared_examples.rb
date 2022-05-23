@@ -51,7 +51,7 @@ RSpec.shared_examples 'resource access tokens creation disallowed' do |error_mes
   it 'does not show access token creation form' do
     visit resource_settings_access_tokens_path
 
-    expect(page).not_to have_selector('#new_resource_access_token')
+    expect(page).not_to have_selector('#js-new-access-token-form')
   end
 
   it 'shows access token creation disabled text' do

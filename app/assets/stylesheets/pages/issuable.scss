@@ -263,10 +263,6 @@
     }
   }
 
-  &.affix-top .issuable-sidebar {
-    height: 100%;
-  }
-
   &.right-sidebar-expanded {
     &:not(.right-sidebar-merge-requests) {
       width: $gutter-width;

@@ -52,6 +52,20 @@ export default {
         return {};
       },
     },
+    /*
+    `inputClass` prop should be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/357848
+    is implemented.
+    */
+    inputClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    qaSelector: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -72,6 +86,9 @@ export default {
     },
     displayedValue() {
       return this.computedValueIsVisible ? this.value : '*'.repeat(this.value.length || 20);
+    },
+    classInput() {
+      return `gl-font-monospace! gl-cursor-default! ${this.inputClass}`.trimEnd();
     },
   },
   methods: {
@@ -98,7 +115,8 @@ export default {
   <gl-form-group v-bind="$attrs">
     <gl-form-input-group
       :value="displayedValue"
-      input-class="gl-font-monospace! gl-cursor-default!"
+      :input-class="classInput"
+      :data-qa-selector="qaSelector"
       select-on-click
       readonly
       v-bind="formInputGroupProps"

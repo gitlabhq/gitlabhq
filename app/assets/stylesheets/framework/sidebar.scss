@@ -24,10 +24,6 @@
       &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
         padding-right: $gutter-collapsed-width;
       }
-
-      .merge-request-tabs-holder.affix {
-        right: $gutter-collapsed-width;
-      }
     }
   }
 
@@ -81,14 +77,6 @@
     .content-wrapper {
       padding-right: $gutter-width;
     }
-
-    &:not(.with-overlay) .merge-request-tabs-holder.affix {
-      right: $gutter-width;
-    }
-
-    &.with-overlay .merge-request-tabs-holder.affix {
-      right: $gutter-collapsed-width;
-    }
   }
 }
 
@@ -108,10 +96,6 @@
       width: calc(100% + 100px);
     }
   }
-}
-
-.with-performance-bar .right-sidebar.affix {
-  top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 @mixin maintain-sidebar-dimensions {

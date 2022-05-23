@@ -1929,6 +1929,9 @@ msgstr ""
 msgid "AccessTokens|Static object token"
 msgstr ""
 
+msgid "AccessTokens|The last time a token was used"
+msgstr ""
+
 msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
 msgstr ""
 
@@ -2014,6 +2017,9 @@ msgid "Activated on"
 msgstr ""
 
 msgid "Active"
+msgstr ""
+
+msgid "Active %{accessTokenTypePlural} (%{totalAccessTokens})"
 msgstr ""
 
 msgid "Active %{type} (%{token_length})"
@@ -4924,6 +4930,9 @@ msgid "Are you sure you want to reset the registration token?"
 msgstr ""
 
 msgid "Are you sure you want to retry this migration?"
+msgstr ""
+
+msgid "Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this %{type}? This action cannot be undone."
@@ -10037,6 +10046,9 @@ msgid "Copied labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
 msgid "Copy"
+msgstr ""
+
+msgid "Copy %{accessTokenType}"
 msgstr ""
 
 msgid "Copy %{http_label} clone URL"
@@ -37848,6 +37860,11 @@ msgstr[1] ""
 msgid "The fork relationship has been removed."
 msgstr ""
 
+msgid "The form contains the following error:"
+msgid_plural "The form contains the following errors:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "The form contains the following warning:"
 msgstr ""
 
@@ -39084,6 +39101,9 @@ msgstr ""
 msgid "This user has an unconfirmed email address. You may force a confirmation."
 msgstr ""
 
+msgid "This user has no active %{accessTokenTypePlural}."
+msgstr ""
+
 msgid "This user has no active %{type}."
 msgstr ""
 
@@ -39764,6 +39784,9 @@ msgid "Token Access"
 msgstr ""
 
 msgid "Token name"
+msgstr ""
+
+msgid "Token valid until revoked"
 msgstr ""
 
 msgid "Tokens|Scopes set the permission levels granted to the token."
@@ -43967,6 +43990,12 @@ msgid "Your message here"
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your new %{accessTokenType}"
+msgstr ""
+
+msgid "Your new %{accessTokenType} has been created."
 msgstr ""
 
 msgid "Your new %{type}"

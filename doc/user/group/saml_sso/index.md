@@ -201,7 +201,7 @@ For NameID, the following settings are recommended:
 - **NameID** set to `Basic Information > Primary email`.
 
 When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning about the NameID format
-"persistent" recommended.
+"persistent" being recommended.
 
 See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#google-workspace) for an example configuration.
 

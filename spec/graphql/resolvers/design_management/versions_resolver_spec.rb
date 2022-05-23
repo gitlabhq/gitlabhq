@@ -90,6 +90,8 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
           end
 
           context 'and they do not match' do
+            subject(:result) { resolve_versions(object) }
+
             let(:params) do
               {
                 earlier_or_equal_to_sha: first_version.sha,

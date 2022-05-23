@@ -66,7 +66,6 @@ module IssueResolverArguments
              description: 'Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues.'
     argument :not, Types::Issues::NegatedIssueFilterInputType,
              description: 'Negated arguments.',
-             prepare: ->(negated_args, ctx) { negated_args.to_h },
              required: false
     argument :crm_contact_id, GraphQL::Types::String,
              required: false,
@@ -85,6 +84,7 @@ module IssueResolverArguments
 
     # Will need to be made group & namespace aware with
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/54520
+    args[:not] = args[:not].to_h if args[:not].present?
     args[:iids] ||= [args.delete(:iid)].compact if args[:iid]
     args[:attempt_project_search_optimizations] = true if args[:search].present?
 
@@ -98,6 +98,8 @@ module IssueResolverArguments
   end
 
   def ready?(**args)
+    args[:not] = args[:not].to_h if args[:not].present?
+
     params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
     params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
     params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)

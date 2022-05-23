@@ -236,4 +236,32 @@ describe('InputCopyToggleVisibility', () => {
 
     expect(wrapper.findByText(description).exists()).toBe(true);
   });
+
+  it('passes `inputClass` prop to `GlFormInputGroup`', () => {
+    createComponent();
+    expect(findFormInputGroup().props('inputClass')).toBe('gl-font-monospace! gl-cursor-default!');
+    wrapper.destroy();
+
+    createComponent({
+      propsData: {
+        inputClass: 'Foo bar',
+      },
+    });
+    expect(findFormInputGroup().props('inputClass')).toBe(
+      'gl-font-monospace! gl-cursor-default! Foo bar',
+    );
+  });
+
+  it('passes `qaSelector` prop as an `data-qa-selector` attribute to `GlFormInputGroup`', () => {
+    createComponent();
+    expect(findFormInputGroup().attributes('data-qa-selector')).toBeUndefined();
+    wrapper.destroy();
+
+    createComponent({
+      propsData: {
+        qaSelector: 'Foo bar',
+      },
+    });
+    expect(findFormInputGroup().attributes('data-qa-selector')).toBe('Foo bar');
+  });
 });

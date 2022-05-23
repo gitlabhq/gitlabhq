@@ -48,7 +48,7 @@ RSpec.describe 'Project > Settings > Access Tokens', :js do
         it 'shows access token creation form and text' do
           visit project_settings_access_tokens_path(personal_project)
 
-          expect(page).to have_selector('#new_resource_access_token')
+          expect(page).to have_selector('#js-new-access-token-form')
           expect(page).to have_text('Generate project access tokens scoped to this project for your applications that need access to the GitLab API.')
         end
       end
