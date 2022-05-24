@@ -10,4 +10,4 @@ redirect_to: '../../update/removals.md#managed-cluster-applicationsgitlab-ciyml'
 
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 in GitLab 14.5. and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/333610)
-in GitLab 15.0. Use [crossplane](http://crossplane.io/) directly instead.
+in GitLab 15.0. Use [crossplane](https://crossplane.io/) directly instead.

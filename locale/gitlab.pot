@@ -32016,13 +32016,16 @@ msgstr ""
 msgid "Repositories Analytics"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Analyze repositories for projects in %{groupName}. Data doesn't include projects in subgroups. %{learnMoreLink}."
+msgstr ""
+
 msgid "RepositoriesAnalytics|Average Coverage by Job"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Average coverage"
 msgstr ""
 
-msgid "RepositoriesAnalytics|Average test coverage last 30 days"
+msgid "RepositoriesAnalytics|Average test coverage"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Code Coverage: %{averageCoverage}"
@@ -32046,16 +32049,38 @@ msgstr ""
 msgid "RepositoriesAnalytics|Historic Test Coverage Data is available in raw format (.csv) for further analysis."
 msgstr ""
 
+msgid "RepositoriesAnalytics|In the last day, %{metricValue} job has code coverage."
+msgid_plural "RepositoriesAnalytics|In the last day, %{metricValue} jobs have code coverage."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "RepositoriesAnalytics|In the last day, %{metricValue} project in %{groupName} has code coverage enabled."
+msgid_plural "RepositoriesAnalytics|In the last day, %{metricValue} projects in %{groupName} have code coverage enabled."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "RepositoriesAnalytics|In the last day, on average, %{metricValue} of all jobs are covered."
+msgstr ""
+
 msgid "RepositoriesAnalytics|Jobs with Coverage"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Jobs with Coverage: %{coverageCount}"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Last 30 days"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Last Update"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Last updated %{timeAgo}"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Latest test coverage results"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Latest test coverage results for all projects in %{groupName} (excluding projects in subgroups)."
 msgstr ""
 
 msgid "RepositoriesAnalytics|No test coverage to display"
@@ -32071,6 +32096,9 @@ msgid "RepositoriesAnalytics|Projects with Coverage"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Projects with Coverage: %{projectCount}"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Repositories Analytics"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Test Code Coverage"
@@ -45988,6 +46016,9 @@ msgid "this document"
 msgstr ""
 
 msgid "time summary"
+msgstr ""
+
+msgid "today"
 msgstr ""
 
 msgid "toggle collapse"

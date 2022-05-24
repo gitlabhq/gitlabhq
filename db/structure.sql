@@ -20872,6 +20872,25 @@ CREATE SEQUENCE sprints_id_seq
 
 ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
 
+CREATE TABLE ssh_signatures (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    key_id bigint NOT NULL,
+    verification_status smallint DEFAULT 0 NOT NULL,
+    commit_sha bytea NOT NULL
+);
+
+CREATE SEQUENCE ssh_signatures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ssh_signatures_id_seq OWNED BY ssh_signatures.id;
+
 CREATE TABLE status_check_responses (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
@@ -21096,6 +21115,30 @@ CREATE SEQUENCE terraform_states_id_seq
     CACHE 1;
 
 ALTER SEQUENCE terraform_states_id_seq OWNED BY terraform_states.id;
+
+CREATE TABLE timelog_categories (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    billing_rate numeric(18,4) DEFAULT 0.0,
+    billable boolean DEFAULT false NOT NULL,
+    name text NOT NULL,
+    description text,
+    color text DEFAULT '#6699cc'::text NOT NULL,
+    CONSTRAINT check_37ad5f23d7 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_4ba862ba3e CHECK ((char_length(color) <= 7)),
+    CONSTRAINT check_c4b8aec13a CHECK ((char_length(description) <= 1024))
+);
+
+CREATE SEQUENCE timelog_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE timelog_categories_id_seq OWNED BY timelog_categories.id;
 
 CREATE TABLE timelogs (
     id integer NOT NULL,
@@ -23245,6 +23288,8 @@ ALTER TABLE ONLY spam_logs ALTER COLUMN id SET DEFAULT nextval('spam_logs_id_seq
 
 ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::regclass);
 
+ALTER TABLE ONLY ssh_signatures ALTER COLUMN id SET DEFAULT nextval('ssh_signatures_id_seq'::regclass);
+
 ALTER TABLE ONLY status_check_responses ALTER COLUMN id SET DEFAULT nextval('status_check_responses_id_seq'::regclass);
 
 ALTER TABLE ONLY status_page_published_incidents ALTER COLUMN id SET DEFAULT nextval('status_page_published_incidents_id_seq'::regclass);
@@ -23266,6 +23311,8 @@ ALTER TABLE ONLY term_agreements ALTER COLUMN id SET DEFAULT nextval('term_agree
 ALTER TABLE ONLY terraform_state_versions ALTER COLUMN id SET DEFAULT nextval('terraform_state_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY terraform_states ALTER COLUMN id SET DEFAULT nextval('terraform_states_id_seq'::regclass);
+
+ALTER TABLE ONLY timelog_categories ALTER COLUMN id SET DEFAULT nextval('timelog_categories_id_seq'::regclass);
 
 ALTER TABLE ONLY timelogs ALTER COLUMN id SET DEFAULT nextval('timelogs_id_seq'::regclass);
 
@@ -25454,6 +25501,9 @@ ALTER TABLE ONLY spam_logs
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT ssh_signatures_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT status_check_responses_pkey PRIMARY KEY (id);
 
@@ -25486,6 +25536,9 @@ ALTER TABLE ONLY terraform_state_versions
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT terraform_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY timelog_categories
+    ADD CONSTRAINT timelog_categories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT timelogs_pkey PRIMARY KEY (id);
@@ -29319,6 +29372,12 @@ CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm_ops);
 
+CREATE UNIQUE INDEX index_ssh_signatures_on_commit_sha ON ssh_signatures USING btree (commit_sha);
+
+CREATE INDEX index_ssh_signatures_on_key_id ON ssh_signatures USING btree (key_id);
+
+CREATE INDEX index_ssh_signatures_on_project_id ON ssh_signatures USING btree (project_id);
+
 CREATE INDEX index_status_check_responses_on_external_approval_rule_id ON status_check_responses USING btree (external_approval_rule_id);
 
 CREATE INDEX index_status_check_responses_on_external_status_check_id ON status_check_responses USING btree (external_status_check_id);
@@ -29374,6 +29433,8 @@ CREATE INDEX index_terraform_states_on_locked_by_user_id ON terraform_states USI
 CREATE UNIQUE INDEX index_terraform_states_on_project_id_and_name ON terraform_states USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_terraform_states_on_uuid ON terraform_states USING btree (uuid);
+
+CREATE UNIQUE INDEX index_timelog_categories_on_unique_name_per_namespace ON timelog_categories USING btree (namespace_id, lower(name));
 
 CREATE INDEX index_timelogs_on_issue_id ON timelogs USING btree (issue_id);
 
@@ -31588,6 +31649,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_7c5bb22a22 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT fk_7d2f93996c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -32019,6 +32083,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_f15266b5f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT fk_f177ea6aa5 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
@@ -33048,6 +33115,9 @@ ALTER TABLE ONLY vulnerability_finding_signatures
 
 ALTER TABLE ONLY clusters_applications_cert_managers
     ADD CONSTRAINT fk_rails_9e4f2cb4b2 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY timelog_categories
+    ADD CONSTRAINT fk_rails_9f27b821a8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_rails_a006df5590 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

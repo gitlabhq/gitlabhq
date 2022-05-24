@@ -492,6 +492,7 @@ software_license_policies: :gitlab_main
 software_licenses: :gitlab_main
 spam_logs: :gitlab_main
 sprints: :gitlab_main
+ssh_signatures: :gitlab_main
 status_check_responses: :gitlab_main
 status_page_published_incidents: :gitlab_main
 status_page_settings: :gitlab_main
@@ -504,6 +505,7 @@ term_agreements: :gitlab_main
 terraform_states: :gitlab_main
 terraform_state_versions: :gitlab_main
 timelogs: :gitlab_main
+timelog_categories: :gitlab_main
 todos: :gitlab_main
 token_with_ivs: :gitlab_main
 topics: :gitlab_main

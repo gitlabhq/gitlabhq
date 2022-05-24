@@ -354,7 +354,7 @@ When using Kerberos ticket-based authentication in an Active Directory domain,
 it may be necessary to increase the maximum header size allowed by NGINX,
 as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8kB. Configure `large_client_header_buffers`
-to a larger value in [the NGINX configuration](http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
+to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
 ## Troubleshooting
 
@@ -412,5 +412,5 @@ See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Docum
 ## Helpful links
 
 - <https://help.ubuntu.com/community/Kerberos>
-- <http://blog.manula.org/2012/04/setting-up-kerberos-server-with-debian.html>
+- <https://blog.manula.org/2012/04/setting-up-kerberos-server-with-debian.html>
 - <https://www.roguelynn.com/words/explain-like-im-5-kerberos/>

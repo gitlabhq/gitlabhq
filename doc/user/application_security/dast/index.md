@@ -1327,7 +1327,7 @@ class DastWebsiteTargetView(View):
 ##### Node (with Express) example for on-demand scan
 
 Here's how you can add a
-[custom header in Node (with Express)](http://expressjs.com/en/5x/api.html#res.append):
+[custom header in Node (with Express)](https://expressjs.com/en/5x/api.html#res.append):
 
 ```javascript
 app.get('/dast-website-target', function(req, res) {

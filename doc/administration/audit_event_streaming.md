@@ -10,8 +10,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338939) in GitLab 14.7.
 > - [Feature flag `ff_external_audit_events_namespace`](https://gitlab.com/gitlab-org/gitlab/-/issues/349588) removed in GitLab 14.8.
 
-Event streaming allows owners of top-level groups to set an HTTP endpoint to receive **all** audit events about the group, and its
-subgroups and projects as structured JSON.
+Users can set an HTTP endpoint for a top-level group to receive all audit events about the group, its subgroups, and
+projects as structured JSON. Event streaming is only available for top-level groups.
 
 Top-level group owners can manage their audit logs in third-party systems such as Splunk, using the Splunk
 [HTTP Event Collector](https://docs.splunk.com/Documentation/Splunk/8.2.2/Data/UsetheHTTPEventCollector). Any service that can receive

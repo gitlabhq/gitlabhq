@@ -79,42 +79,55 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     end
   end
 
-  describe '.insert_all!' do
+  describe 'methods using exec_insert_all on the connection', :request_store do
+    let(:model_class) do
+      Class.new(ApplicationRecord) do
+        self.table_name = "_test_connection_proxy_insert_all"
+      end
+    end
+
+    let(:session) { Gitlab::Database::LoadBalancing::Session.new }
+
     before do
       ActiveRecord::Schema.define do
-        create_table :_test_connection_proxy_bulk_insert, force: true do |t|
-          t.string :name, null: true
+        create_table :_test_connection_proxy_insert_all, force: true do |t|
+          t.string :name, null: false
+          t.index :name, unique: true
         end
       end
+
+      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+        .and_return(session)
     end
 
     after do
       ActiveRecord::Schema.define do
-        drop_table :_test_connection_proxy_bulk_insert, force: true
+        drop_table :_test_connection_proxy_insert_all, force: true
       end
     end
 
-    let(:model_class) do
-      Class.new(ApplicationRecord) do
-        self.table_name = "_test_connection_proxy_bulk_insert"
+    describe '#upsert' do
+      it 'upserts a record and marks the session to stick to the primary' do
+        expect { 2.times { model_class.upsert({ name: 'test' }, unique_by: :name) } }
+          .to change { model_class.count }.from(0).to(1)
+          .and change { session.use_primary? }.from(false).to(true)
       end
     end
 
-    it 'inserts data in bulk' do
-      expect(model_class).to receive(:connection)
-        .at_least(:once)
-        .and_return(proxy)
+    describe '#insert_all!' do
+      it 'inserts multiple records and marks the session to stick to the primary' do
+        expect { model_class.insert_all([{ name: 'one' }, { name: 'two' }]) }
+          .to change { model_class.count }.from(0).to(2)
+          .and change { session.use_primary? }.from(false).to(true)
+      end
+    end
 
-      expect(proxy).to receive(:write_using_load_balancer)
-        .at_least(:once)
-        .and_call_original
-
-      expect do
-        model_class.insert_all! [
-          { name: "item1" },
-          { name: "item2" }
-        ]
-      end.to change { model_class.count }.by(2)
+    describe '#insert' do
+      it 'inserts a single record and marks the session to stick to the primary' do
+        expect { model_class.insert({ name: 'single' }) }
+          .to change { model_class.count }.from(0).to(1)
+          .and change { session.use_primary? }.from(false).to(true)
+      end
     end
   end
 

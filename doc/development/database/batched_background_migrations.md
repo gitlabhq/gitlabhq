@@ -243,11 +243,13 @@ background migration.
 1. Create a post-deployment migration that queues the migration for existing data:
 
    ```ruby
-   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[1.0]
+   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.0]
      disable_ddl_transaction!
 
      MIGRATION = 'BackfillRouteNamespaceId'
      DELAY_INTERVAL = 2.minutes
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
 
      def up
        queue_batched_background_migration(
@@ -264,6 +266,14 @@ background migration.
    end
    ```
 
+   NOTE:
+   When queuing a batched background migration, you need to restrict
+   the schema to the database where you make the actual changes.
+   In this case, we are updating `routes` records, so we set
+   `restrict_gitlab_migration gitlab_schema: :gitlab_main`. If, however,
+   you need to perform a CI data migration, you would set
+   `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
+
    After deployment, our application:
    - Continues using the data as before.
    - Ensures that both existing and new data are migrated.
@@ -272,9 +282,11 @@ background migration.
    that checks that the batched background migration is completed. For example:
 
    ```ruby
-   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[1.0]
+   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.0]
      MIGRATION = 'BackfillRouteNamespaceId'
      disable_ddl_transaction!
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
 
      def up
        ensure_batched_background_migration_is_finished(

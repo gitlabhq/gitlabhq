@@ -187,7 +187,7 @@ implementations:
    It leverages the [`commonmarker`](https://github.com/gjtorikian/commonmarker) gem,
    which is a Ruby wrapper for [`libcmark-gfm`](https://github.com/github/cmark),
    GitHub's fork of the reference parser for CommonMark. `libcmark-gfm` is an extended
-   version of the C reference implementation of [CommonMark](http://commonmark.org/)
+   version of the C reference implementation of [CommonMark](https://commonmark.org/)
 1. The frontend parser / renderer supports parsing and _WYSIWYG_ rendering for
    the Content Editor. It is implemented in JavaScript. Parsing is based on the
    [Remark](https://github.com/remarkjs/remark) Markdown parser, which produces a

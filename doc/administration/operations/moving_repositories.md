@@ -276,7 +276,7 @@ If the source or target directory has many contents, this startup phase of `rsyn
 server. You can reduce the workload of `rsync` by dividing its work into smaller pieces, and sync one repository at a
 time.
 
-In addition to `rsync` we use [GNU Parallel](http://www.gnu.org/software/parallel/).
+In addition to `rsync` we use [GNU Parallel](https://www.gnu.org/software/parallel/).
 This utility is not included in GitLab, so you must install it yourself with `apt`
 or `yum`.
 

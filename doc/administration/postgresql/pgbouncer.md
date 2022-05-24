@@ -7,7 +7,7 @@ type: reference
 
 # Working with the bundled PgBouncer service **(PREMIUM SELF)**
 
-[PgBouncer](http://www.pgbouncer.org/) is used to seamlessly migrate database
+[PgBouncer](https://www.pgbouncer.org/) is used to seamlessly migrate database
 connections between servers in a failover scenario. Additionally, it can be used
 in a non-fault-tolerant setup to pool connections, speeding up response time
 while reducing resource usage.

@@ -34,7 +34,7 @@ After getting used to these three steps, the next challenge is the branching mod
 Because many organizations new to Git have no conventions for how to work with it, their repositories can quickly become messy.
 The biggest problem is that many long-running branches emerge that all contain part of the changes.
 People have a hard time figuring out which branch has the latest code, or which branch to deploy to production.
-Frequently, the reaction to this problem is to adopt a standardized pattern such as [Git flow](https://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html).
+Frequently, the reaction to this problem is to adopt a standardized pattern such as [Git flow](https://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](https://scottchacon.com/2011/08/31/github-flow.html).
 We think there is still room for improvement. In this document, we describe a set of practices we call GitLab flow.
 
 For a video introduction of how this works in GitLab, see [GitLab Flow](https://youtu.be/InKNIvky2KE).

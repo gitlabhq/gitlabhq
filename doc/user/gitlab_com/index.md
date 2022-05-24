@@ -424,7 +424,7 @@ setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/1
 ### SSH maximum number of connections
 
 GitLab.com defines the maximum number of concurrent, unauthenticated SSH
-connections by using the [MaxStartups setting](http://man.openbsd.org/sshd_config.5#MaxStartups).
+connections by using the [MaxStartups setting](https://man.openbsd.org/sshd_config.5#MaxStartups).
 If more than the maximum number of allowed connections occur concurrently, they
 are dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).

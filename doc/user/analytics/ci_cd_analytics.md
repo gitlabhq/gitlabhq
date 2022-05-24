@@ -8,10 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Pipeline success and duration charts
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
-
 CI/CD analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
 ran.
+
+Pipeline statistics are gathered by collecting all available pipelines for the
+project, regardless of status. The data available for each individual day is based
+on when the pipeline was created.
+
+The total pipeline calculation includes child
+pipelines and pipelines that failed with an invalid YAML. To filter pipelines based on other attributes, use the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
 
 View successful pipelines:
 
@@ -20,12 +25,6 @@ View successful pipelines:
 View pipeline duration history:
 
 ![Pipeline duration](img/pipelines_duration_chart.png)
-
-Pipeline statistics are gathered by collecting all available pipelines for the
-project regardless of status. The data available for each individual day is based
-on when the pipeline was created. The total pipeline calculation includes child
-pipelines and pipelines that failed with invalid YAML. If you are interested in
-filtering pipelines based on other attributes, consider using the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
 
 ## View CI/CD analytics
 

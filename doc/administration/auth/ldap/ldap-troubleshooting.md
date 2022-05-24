@@ -707,7 +707,7 @@ For more information, see the [official `ldapsearch` documentation](https://linu
 
 ### Using **AdFind** (Windows)
 
-You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](http://www.joeware.net/freetools/tools/adfind/index.htm).
+You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](https://www.joeware.net/freetools/tools/adfind/index.htm).
 
 **Return all objects**
 

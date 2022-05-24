@@ -54,7 +54,7 @@ Check visual design properties using your browser's _elements inspector_ ([Chrom
 - Use recommended [colors](https://design.gitlab.com/product-foundations/colors/)
   and [typography](https://design.gitlab.com/product-foundations/type-fundamentals/).
 - Follow [layout guidelines](https://design.gitlab.com/layout/grid/).
-- Use existing [icons](http://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](http://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
+- Use existing [icons](https://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration/)
   guidelines.

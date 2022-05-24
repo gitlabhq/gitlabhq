@@ -127,24 +127,41 @@ module Namespaces
 
         def self_and_descendants_with_comparison_operators(include_self: true)
           base = all.select(:traversal_ids)
+          base = base.select(:id) if Feature.enabled?(:linear_scopes_superset)
           base_cte = Gitlab::SQL::CTE.new(:descendants_base_cte, base)
 
           namespaces = Arel::Table.new(:namespaces)
+
+          withs = [base_cte.to_arel]
+          froms = []
+
+          if Feature.enabled?(:linear_scopes_superset)
+            superset_cte = self.superset_cte(base_cte.table.name)
+            withs += [superset_cte.to_arel]
+            froms = [superset_cte.table]
+          else
+            froms = [base_cte.table]
+          end
+
+          # Order is important. namespace should be last to handle future joins.
+          froms += [namespaces]
+
+          base_ref = froms.first
 
           # Bound the search space to ourselves (optional) and descendants.
           #
           # WHERE next_traversal_ids_sibling(base_cte.traversal_ids) > namespaces.traversal_ids
           records = unscoped
             .distinct
-            .with(base_cte.to_arel)
-            .from([base_cte.table, namespaces])
-            .where(next_sibling_func(base_cte.table[:traversal_ids]).gt(namespaces[:traversal_ids]))
+            .with(*withs)
+            .from(froms)
+            .where(next_sibling_func(base_ref[:traversal_ids]).gt(namespaces[:traversal_ids]))
 
           #   AND base_cte.traversal_ids <= namespaces.traversal_ids
           if include_self
-            records.where(base_cte.table[:traversal_ids].lteq(namespaces[:traversal_ids]))
+            records.where(base_ref[:traversal_ids].lteq(namespaces[:traversal_ids]))
           else
-            records.where(base_cte.table[:traversal_ids].lt(namespaces[:traversal_ids]))
+            records.where(base_ref[:traversal_ids].lt(namespaces[:traversal_ids]))
           end
         end
 
@@ -164,6 +181,23 @@ module Namespaces
           else
             records.where('namespaces.id <> base.id')
           end
+        end
+
+        def superset_cte(base_name)
+          superset_sql = <<~SQL
+            SELECT d1.traversal_ids
+            FROM #{base_name} d1
+            LEFT JOIN LATERAL (
+              SELECT d2.id as ancestor_id
+              FROM #{base_name} d2
+              WHERE d2.id = ANY(d1.traversal_ids)
+                AND d2.id <> d1.id
+              LIMIT 1
+            ) covered ON TRUE
+            WHERE covered.ancestor_id IS NULL
+          SQL
+
+          Gitlab::SQL::CTE.new(:superset, superset_sql, materialized: false)
         end
 
         def ancestor_ctes

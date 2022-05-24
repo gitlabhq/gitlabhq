@@ -72,7 +72,7 @@ HTTP.
 
 GitLab Workhorse can listen on either a TCP or a Unix domain socket. It
 can also open a second listening TCP listening socket with the Go
-[`net/http/pprof` profiler server](http://golang.org/pkg/net/http/pprof/).
+[`net/http/pprof` profiler server](https://pkg.go.dev/net/http/pprof).
 
 GitLab Workhorse can listen on Redis build and runner registration events if you
 pass a valid TOML configuration file through the `-config` flag.
