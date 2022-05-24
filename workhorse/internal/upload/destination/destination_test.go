@@ -47,8 +47,8 @@ func TestUploadWrongSize(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpFolder)
 
-	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file"}
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, opts)
+	opts := &destination.UploadOpts{LocalTempPath: tmpFolder}
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, "upload", opts)
 	require.Error(t, err)
 	_, isSizeError := err.(destination.SizeError)
 	require.True(t, isSizeError, "Should fail with SizeError")
@@ -63,8 +63,8 @@ func TestUploadWithKnownSizeExceedLimit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpFolder)
 
-	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file", MaximumSize: test.ObjectSize - 1}
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, opts)
+	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
 	require.Error(t, err)
 	_, isSizeError := err.(destination.SizeError)
 	require.True(t, isSizeError, "Should fail with SizeError")
@@ -79,8 +79,8 @@ func TestUploadWithUnknownSizeExceedLimit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpFolder)
 
-	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, TempFilePrefix: "test-file", MaximumSize: test.ObjectSize - 1}
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), -1, opts)
+	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), -1, "upload", opts)
 	require.Equal(t, err, destination.ErrEntityTooLarge)
 	require.Nil(t, fh)
 }
@@ -117,7 +117,7 @@ func TestUploadWrongETag(t *testing.T) {
 				osStub.InitiateMultipartUpload(test.ObjectPath)
 			}
 			ctx, cancel := context.WithCancel(context.Background())
-			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, opts)
+			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
 			require.Nil(t, fh)
 			require.Error(t, err)
 			require.Equal(t, 1, osStub.PutsCnt(), "File not uploaded")
@@ -191,13 +191,12 @@ func TestUpload(t *testing.T) {
 
 			if spec.local {
 				opts.LocalTempPath = tmpFolder
-				opts.TempFilePrefix = "test-file"
 			}
 
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 			require.NoError(t, err)
 			require.NotNil(t, fh)
 
@@ -211,9 +210,6 @@ func TestUpload(t *testing.T) {
 
 				dir := path.Dir(fh.LocalPath)
 				require.Equal(t, opts.LocalTempPath, dir)
-				filename := path.Base(fh.LocalPath)
-				beginsWithPrefix := strings.HasPrefix(filename, opts.TempFilePrefix)
-				require.True(t, beginsWithPrefix, fmt.Sprintf("LocalPath filename %q do not begin with TempFilePrefix %q", filename, opts.TempFilePrefix))
 			} else {
 				require.Empty(t, fh.LocalPath, "LocalPath must be empty for non local uploads")
 			}
@@ -291,7 +287,7 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 				MaximumSize: tc.maxSize,
 			}
 
-			_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), tc.objectSize, &opts)
+			_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), tc.objectSize, "upload", &opts)
 
 			if tc.expectedErr == nil {
 				require.NoError(t, err)
@@ -324,7 +320,7 @@ func TestUploadWithAzureWorkhorseClient(t *testing.T) {
 		},
 	}
 
-	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 	require.NoError(t, err)
 
 	test.GoCloudObjectExists(t, bucketDir, remoteObject)
@@ -349,7 +345,7 @@ func TestUploadWithUnknownGoCloudScheme(t *testing.T) {
 		},
 	}
 
-	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 	require.Error(t, err)
 }
 
@@ -375,7 +371,7 @@ func TestUploadMultipartInBodyFailure(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, &opts)
+	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 	require.Nil(t, fh)
 	require.Error(t, err)
 	require.EqualError(t, err, test.MultipartUploadInternalError().Error())
@@ -468,7 +464,7 @@ func TestUploadRemoteFileWithLimit(t *testing.T) {
 				ctx, cancel := context.WithCancel(context.Background())
 				defer cancel()
 
-				fh, err := destination.Upload(ctx, strings.NewReader(tc.testData), tc.objectSize, &opts)
+				fh, err := destination.Upload(ctx, strings.NewReader(tc.testData), tc.objectSize, "upload", &opts)
 
 				if tc.expectedErr == nil {
 					require.NoError(t, err)

@@ -40,13 +40,13 @@ type MultipartFormProcessor interface {
 
 // interceptMultipartFiles is the core of the implementation of
 // Multipart.
-func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *destination.UploadOpts) {
+func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, filter MultipartFormProcessor, fa fileAuthorizer, p Preparer) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()
 
 	// Rewrite multipart form data
-	err := rewriteFormFilesFromMultipart(r, writer, preauth, filter, opts)
+	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p)
 	if err != nil {
 		switch err {
 		case ErrInjectedClientParam:

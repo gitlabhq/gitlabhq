@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, quarantine: {
-    only: { subdomain: %i[staging staging-canary] },
-    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/363188",
-    type: :investigating
-  } do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable do
     describe 'Maven project level endpoint' do
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }

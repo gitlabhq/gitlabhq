@@ -62,13 +62,14 @@ var (
 )
 
 type rewriter struct {
-	writer          *multipart.Writer
-	preauth         *api.Response
+	writer *multipart.Writer
+	fileAuthorizer
+	Preparer
 	filter          MultipartFormProcessor
 	finalizedFields map[string]bool
 }
 
-func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, preauth *api.Response, filter MultipartFormProcessor, opts *destination.UploadOpts) error {
+func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, filter MultipartFormProcessor, fa fileAuthorizer, preparer Preparer) error {
 	// Create multipart reader
 	reader, err := r.MultipartReader()
 	if err != nil {
@@ -83,7 +84,8 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 
 	rew := &rewriter{
 		writer:          writer,
-		preauth:         preauth,
+		fileAuthorizer:  fa,
+		Preparer:        preparer,
 		filter:          filter,
 		finalizedFields: make(map[string]bool),
 	}
@@ -108,7 +110,7 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 		}
 
 		if filename != "" {
-			err = rew.handleFilePart(r.Context(), name, p, opts)
+			err = rew.handleFilePart(r, name, p)
 		} else {
 			err = rew.copyPart(r.Context(), name, p)
 		}
@@ -128,7 +130,7 @@ func parseAndNormalizeContentDisposition(header textproto.MIMEHeader) (string, s
 	return params["name"], params["filename"]
 }
 
-func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *destination.UploadOpts) error {
+func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.Part) error {
 	if rew.filter.Count() >= maxFilesAllowed {
 		return ErrTooManyFilesUploaded
 	}
@@ -141,30 +143,34 @@ func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipa
 		return fmt.Errorf("illegal filename: %q", filename)
 	}
 
-	opts.TempFilePrefix = filename
+	apiResponse, err := rew.AuthorizeFile(r)
+	if err != nil {
+		return err
+	}
+	opts, err := rew.Prepare(apiResponse)
+	if err != nil {
+		return err
+	}
 
 	var inputReader io.ReadCloser
-	var err error
-
-	imageType := exif.FileTypeFromSuffix(filename)
-	switch {
-	case imageType != exif.TypeUnknown:
+	ctx := r.Context()
+	if imageType := exif.FileTypeFromSuffix(filename); imageType != exif.TypeUnknown {
 		inputReader, err = handleExifUpload(ctx, p, filename, imageType)
 		if err != nil {
 			return err
 		}
-	case rew.preauth.ProcessLsif:
-		inputReader, err = handleLsifUpload(ctx, p, opts.LocalTempPath, filename, rew.preauth)
+	} else if apiResponse.ProcessLsif {
+		inputReader, err = handleLsifUpload(ctx, p, opts.LocalTempPath, filename)
 		if err != nil {
 			return err
 		}
-	default:
+	} else {
 		inputReader = ioutil.NopCloser(p)
 	}
 
 	defer inputReader.Close()
 
-	fh, err := destination.Upload(ctx, inputReader, -1, opts)
+	fh, err := destination.Upload(ctx, inputReader, -1, filename, opts)
 	if err != nil {
 		switch err {
 		case destination.ErrEntityTooLarge, exif.ErrRemovingExif:
@@ -267,7 +273,7 @@ func isJPEG(r io.Reader) bool {
 	return http.DetectContentType(buf) == "image/jpeg"
 }
 
-func handleLsifUpload(ctx context.Context, reader io.Reader, tempPath, filename string, preauth *api.Response) (io.ReadCloser, error) {
+func handleLsifUpload(ctx context.Context, reader io.Reader, tempPath, filename string) (io.ReadCloser, error) {
 	parserConfig := parser.Config{
 		TempPath: tempPath,
 	}
@@ -291,3 +297,15 @@ func (rew *rewriter) copyPart(ctx context.Context, name string, p *multipart.Par
 
 	return nil
 }
+
+type fileAuthorizer interface {
+	AuthorizeFile(*http.Request) (*api.Response, error)
+}
+
+type eagerAuthorizer struct{ response *api.Response }
+
+func (ea *eagerAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error) {
+	return ea.response, nil
+}
+
+var _ fileAuthorizer = &eagerAuthorizer{}

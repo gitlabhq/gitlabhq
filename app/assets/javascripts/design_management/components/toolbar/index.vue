@@ -130,7 +130,7 @@ export default {
       v-gl-tooltip.bottom
       class="gl-ml-3"
       :is-deleting="isDeleting"
-      button-variant="warning"
+      button-variant="default"
       button-icon="archive"
       button-category="secondary"
       :title="s__('DesignManagement|Archive design')"

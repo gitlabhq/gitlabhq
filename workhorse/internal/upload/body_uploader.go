@@ -23,7 +23,7 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 			return
 		}
 
-		fh, err := destination.Upload(r.Context(), r.Body, r.ContentLength, opts)
+		fh, err := destination.Upload(r.Context(), r.Body, r.ContentLength, "upload", opts)
 		if err != nil {
 			helper.Fail500(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
 			return

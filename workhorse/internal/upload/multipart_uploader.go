@@ -1,11 +1,9 @@
 package upload
 
 import (
-	"fmt"
 	"net/http"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 // Multipart is a request middleware. If the request has a MIME multipart
@@ -17,12 +15,19 @@ func Multipart(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 	return rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		s := &SavedFileTracker{Request: r}
 
-		opts, err := p.Prepare(a)
-		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("Multipart: error preparing file storage options"))
-			return
-		}
-
-		interceptMultipartFiles(w, r, h, a, s, opts)
+		interceptMultipartFiles(w, r, h, s, &eagerAuthorizer{a}, p)
 	}, "/authorize")
+}
+
+// SkipRailsPreAuthMultipart behaves like Multipart except it does not
+// pre-authorize with Rails. It is intended for use on catch-all routes
+// where we cannot pre-authorize both because we don't know which Rails
+// endpoint to call, and because eagerly pre-authorizing would add too
+// much overhead.
+func SkipRailsPreAuthMultipart(tempPath string, h http.Handler, p Preparer) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s := &SavedFileTracker{Request: r}
+		fa := &eagerAuthorizer{&api.Response{TempPath: tempPath}}
+		interceptMultipartFiles(w, r, h, s, fa, p)
+	})
 }

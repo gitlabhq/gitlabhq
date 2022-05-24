@@ -104,13 +104,12 @@ The job token scope is only for controlling access to private projects.
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
 the feature with more strategic control of the access permissions.
 
-## Trigger a multi-project pipeline by using a CI job token
+## Trigger a multi-project pipeline by using a CI/CD job token
 
 > `CI_JOB_TOKEN` for multi-project pipelines was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) from GitLab Premium to GitLab Free in 12.4.
 
-You can use the `CI_JOB_TOKEN` to trigger [multi-project pipelines](../pipelines/multi_project_pipelines.md)
-from a CI/CD job. A pipeline triggered this way creates a dependent pipeline relation
-that is visible on the [pipeline graph](../pipelines/multi_project_pipelines.md#multi-project-pipeline-visualization).
+You can use the `CI_JOB_TOKEN` to [trigger multi-project pipelines](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
+from a CI/CD job.
 
 For example:
 

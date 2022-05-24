@@ -13,7 +13,7 @@ module Emails
       @user = user
       @recipient = recipient
 
-      profile_email_with_layout(
+      email_with_layout(
         to: recipient.notification_email_or_default,
         subject: subject(_("GitLab Account Request")))
     end
@@ -21,7 +21,7 @@ module Emails
     def user_admin_rejection_email(name, email)
       @name = name
 
-      profile_email_with_layout(
+      email_with_layout(
         to: email,
         subject: subject(_("GitLab account request rejected")))
     end
@@ -29,7 +29,7 @@ module Emails
     def user_deactivated_email(name, email)
       @name = name
 
-      profile_email_with_layout(
+      email_with_layout(
         to: email,
         subject: subject(_('Your account has been deactivated')))
     end
@@ -125,7 +125,7 @@ module Emails
       @target_url = edit_profile_password_url
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
-        profile_email_with_layout(
+        email_with_layout(
           to: @user.notification_email_or_default,
           subject: subject(_("%{host} sign-in from new location") % { host: Gitlab.config.gitlab.host }))
       end
@@ -149,15 +149,6 @@ module Emails
 
       Gitlab::I18n.with_locale(@user.preferred_language) do
         mail(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
-      end
-    end
-
-    private
-
-    def profile_email_with_layout(to:, subject:, layout: 'mailer')
-      mail(to: to, subject: subject) do |format|
-        format.html { render layout: layout }
-        format.text { render layout: layout }
       end
     end
   end

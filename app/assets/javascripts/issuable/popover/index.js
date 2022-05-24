@@ -6,8 +6,8 @@ import MRPopover from './components/mr_popover.vue';
 let renderedPopover;
 let renderFn;
 
-const handleUserPopoverMouseOut = ({ target }) => {
-  target.removeEventListener('mouseleave', handleUserPopoverMouseOut);
+const handleIssuablePopoverMouseOut = ({ target }) => {
+  target.removeEventListener('mouseleave', handleIssuablePopoverMouseOut);
 
   if (renderFn) {
     clearTimeout(renderFn);
@@ -22,9 +22,11 @@ const handleUserPopoverMouseOut = ({ target }) => {
  * Adds a MergeRequestPopover component to the body, hands over as much data as the target element has in data attributes.
  * loads based on data-project-path and data-iid more data about an MR from the API and sets it on the popover
  */
-const handleMRPopoverMount = ({ apolloProvider, projectPath, mrTitle, iid }) => ({ target }) => {
+const handleIssuablePopoverMount = ({ apolloProvider, projectPath, title, iid }) => ({
+  target,
+}) => {
   // Add listener to actually remove it again
-  target.addEventListener('mouseleave', handleUserPopoverMouseOut);
+  target.addEventListener('mouseleave', handleIssuablePopoverMouseOut);
 
   renderFn = setTimeout(() => {
     const MRPopoverComponent = Vue.extend(MRPopover);
@@ -33,7 +35,7 @@ const handleMRPopoverMount = ({ apolloProvider, projectPath, mrTitle, iid }) => 
         target,
         projectPath,
         mergeRequestIID: iid,
-        mergeRequestTitle: mrTitle,
+        mergeRequestTitle: title,
       },
       apolloProvider,
     });
@@ -43,22 +45,22 @@ const handleMRPopoverMount = ({ apolloProvider, projectPath, mrTitle, iid }) => 
 };
 
 export default (elements) => {
-  const mrLinks = elements || [...document.querySelectorAll('.gfm-merge_request')];
-  if (mrLinks.length > 0) {
+  if (elements.length > 0) {
     Vue.use(VueApollo);
 
     const apolloProvider = new VueApollo({
       defaultClient: createDefaultClient(),
     });
-    const listenerAddedAttr = 'data-mr-listener-added';
+    const listenerAddedAttr = 'data-popover-listener-added';
 
-    mrLinks.forEach((el) => {
-      const { projectPath, mrTitle, iid } = el.dataset;
+    elements.forEach((el) => {
+      const { projectPath, iid } = el.dataset;
+      const title = el.dataset.mrTitle || el.title;
 
-      if (!el.getAttribute(listenerAddedAttr) && projectPath && mrTitle && iid) {
+      if (!el.getAttribute(listenerAddedAttr) && projectPath && title && iid) {
         el.addEventListener(
           'mouseenter',
-          handleMRPopoverMount({ apolloProvider, projectPath, mrTitle, iid }),
+          handleIssuablePopoverMount({ apolloProvider, projectPath, title, iid }),
         );
         el.setAttribute(listenerAddedAttr, true);
       }

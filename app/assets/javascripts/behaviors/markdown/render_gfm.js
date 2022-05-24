@@ -24,11 +24,11 @@ $.fn.renderGFM = function renderGFM() {
   highlightCurrentUser(this.find('.gfm-project_member').get());
   initUserPopovers(this.find('.js-user-link').get());
 
-  const mrPopoverElements = this.find('.gfm-merge_request').get();
-  if (mrPopoverElements.length) {
-    import(/* webpackChunkName: 'MrPopoverBundle' */ '~/mr_popover')
-      .then(({ default: initMRPopovers }) => {
-        initMRPopovers(mrPopoverElements);
+  const issuablePopoverElements = this.find('.gfm-merge_request').get();
+  if (issuablePopoverElements.length) {
+    import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
+      .then(({ default: initIssuablePopovers }) => {
+        initIssuablePopovers(issuablePopoverElements);
       })
       .catch(() => {});
   }

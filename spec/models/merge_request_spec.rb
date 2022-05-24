@@ -1472,20 +1472,20 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe "#wipless_title" do
+  describe "#draftless_title" do
     subject { build_stubbed(:merge_request) }
 
     ['draft:', 'Draft: ', '[Draft]', '[DRAFT] '].each do |draft_prefix|
       it "removes a '#{draft_prefix}' prefix" do
-        wipless_title = subject.title
+        draftless_title = subject.title
         subject.title = "#{draft_prefix}#{subject.title}"
 
-        expect(subject.wipless_title).to eq wipless_title
+        expect(subject.draftless_title).to eq draftless_title
       end
 
       it "is satisfies the #work_in_progress? method" do
         subject.title = "#{draft_prefix}#{subject.title}"
-        subject.title = subject.wipless_title
+        subject.title = subject.draftless_title
 
         expect(subject.work_in_progress?).to eq false
       end
@@ -1497,58 +1497,58 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it "doesn't remove a '#{wip_prefix}' prefix" do
         subject.title = "#{wip_prefix}#{subject.title}"
 
-        expect(subject.wipless_title).to eq subject.title
+        expect(subject.draftless_title).to eq subject.title
       end
     end
 
     it 'removes only draft prefix from the MR title' do
       subject.title = 'Draft: Implement feature called draft'
 
-      expect(subject.wipless_title).to eq 'Implement feature called draft'
+      expect(subject.draftless_title).to eq 'Implement feature called draft'
     end
 
     it 'does not remove WIP in the middle of the title' do
       subject.title = 'Something with WIP in the middle'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
 
     it 'does not remove Draft in the middle of the title' do
       subject.title = 'Something with Draft in the middle'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
 
     it 'does not remove WIP at the end of the title' do
       subject.title = 'Something ends with WIP'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
 
     it 'does not remove Draft at the end of the title' do
       subject.title = 'Something ends with Draft'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
   end
 
-  describe "#wip_title" do
+  describe "#draft_title" do
     it "adds the Draft: prefix to the title" do
-      wip_title = "Draft: #{subject.title}"
+      draft_title = "Draft: #{subject.title}"
 
-      expect(subject.wip_title).to eq wip_title
+      expect(subject.draft_title).to eq draft_title
     end
 
     it "does not add the Draft: prefix multiple times" do
-      wip_title = "Draft: #{subject.title}"
-      subject.title = subject.wip_title
-      subject.title = subject.wip_title
+      draft_title = "Draft: #{subject.title}"
+      subject.title = subject.draft_title
+      subject.title = subject.draft_title
 
-      expect(subject.wip_title).to eq wip_title
+      expect(subject.draft_title).to eq draft_title
     end
 
     it "is satisfies the #work_in_progress? method" do
-      subject.title = subject.wip_title
+      subject.title = subject.draft_title
 
       expect(subject.work_in_progress?).to eq true
     end

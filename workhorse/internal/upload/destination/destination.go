@@ -113,9 +113,9 @@ type consumer interface {
 
 // Upload persists the provided reader content to all the location specified in opts. A cleanup will be performed once ctx is Done
 // Make sure the provided context will not expire before finalizing upload with GitLab Rails.
-func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts) (*FileHandler, error) {
+func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts *UploadOpts) (*FileHandler, error) {
 	fh := &FileHandler{
-		Name:      opts.TempFilePrefix,
+		Name:      name,
 		RemoteID:  opts.RemoteID,
 		RemoteURL: opts.RemoteURL,
 	}
@@ -199,13 +199,13 @@ func Upload(ctx context.Context, reader io.Reader, size int64, opts *UploadOpts)
 	}
 
 	logger := log.WithContextFields(ctx, log.Fields{
-		"copied_bytes":     fh.Size,
-		"is_local":         opts.IsLocalTempFile(),
-		"is_multipart":     opts.IsMultipart(),
-		"is_remote":        !opts.IsLocalTempFile(),
-		"remote_id":        opts.RemoteID,
-		"temp_file_prefix": opts.TempFilePrefix,
-		"client_mode":      clientMode,
+		"copied_bytes": fh.Size,
+		"is_local":     opts.IsLocalTempFile(),
+		"is_multipart": opts.IsMultipart(),
+		"is_remote":    !opts.IsLocalTempFile(),
+		"remote_id":    opts.RemoteID,
+		"client_mode":  clientMode,
+		"filename":     fh.Name,
 	})
 
 	if opts.IsLocalTempFile() {
@@ -226,7 +226,7 @@ func (fh *FileHandler) newLocalFile(ctx context.Context, opts *UploadOpts) (cons
 		return nil, fmt.Errorf("newLocalFile: mkdir %q: %v", opts.LocalTempPath, err)
 	}
 
-	file, err := ioutil.TempFile(opts.LocalTempPath, opts.TempFilePrefix)
+	file, err := ioutil.TempFile(opts.LocalTempPath, "gitlab-workhorse-upload")
 	if err != nil {
 		return nil, fmt.Errorf("newLocalFile: create file: %v", err)
 	}

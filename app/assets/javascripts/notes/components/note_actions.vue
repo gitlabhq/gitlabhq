@@ -294,14 +294,20 @@ export default {
     />
     <emoji-picker
       v-if="canAwardEmoji"
-      toggle-class="note-action-button note-emoji-button gl-text-gray-600 gl-m-3 gl-p-0! gl-shadow-none! gl-bg-transparent!"
+      toggle-class="note-action-button note-emoji-button btn-icon gl-shadow-none!"
       data-testid="note-emoji-button"
       @click="setAwardEmoji"
     >
       <template #button-content>
-        <gl-icon class="link-highlight award-control-icon-neutral gl-m-0!" name="slight-smile" />
-        <gl-icon class="link-highlight award-control-icon-positive gl-m-0!" name="smiley" />
-        <gl-icon class="link-highlight award-control-icon-super-positive gl-m-0!" name="smile" />
+        <gl-icon class="award-control-icon-neutral gl-button-icon gl-icon" name="slight-smile" />
+        <gl-icon
+          class="award-control-icon-positive gl-button-icon gl-icon gl-left-3!"
+          name="smiley"
+        />
+        <gl-icon
+          class="award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!"
+          name="smile"
+        />
       </template>
     </emoji-picker>
     <reply-button

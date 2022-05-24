@@ -94,10 +94,9 @@ module Emails
       @project = Project.find(project_id)
       @results = results
 
-      mail(to: @user.notification_email_for(@project.group), subject: subject('Imported issues')) do |format|
-        format.html { render layout: 'mailer' }
-        format.text { render layout: 'mailer' }
-      end
+      email_with_layout(
+        to: @user.notification_email_for(@project.group),
+        subject: subject('Imported issues'))
     end
 
     def issues_csv_email(user, project, csv_data, export_status)
@@ -110,10 +109,9 @@ module Emails
 
       filename = "#{project.full_path.parameterize}_issues_#{Date.today.iso8601}.csv"
       attachments[filename] = { content: csv_data, mime_type: 'text/csv' }
-      mail(to: user.notification_email_for(@project.group), subject: subject("Exported issues")) do |format|
-        format.html { render layout: 'mailer' }
-        format.text { render layout: 'mailer' }
-      end
+      email_with_layout(
+        to: user.notification_email_for(@project.group),
+        subject: subject("Exported issues"))
     end
 
     private

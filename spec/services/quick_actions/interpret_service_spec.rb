@@ -333,14 +333,14 @@ RSpec.describe QuickActions::InterpretService do
 
     shared_examples 'undraft command' do
       it 'returns wip_event: "unwip" if content contains /draft' do
-        issuable.update!(title: issuable.wip_title)
+        issuable.update!(title: issuable.draft_title)
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(wip_event: 'unwip')
       end
 
       it 'returns the unwip message' do
-        issuable.update!(title: issuable.wip_title)
+        issuable.update!(title: issuable.draft_title)
         _, _, message = service.execute(content, issuable)
 
         expect(message).to eq("Unmarked this #{issuable.to_ability_name.humanize(capitalize: false)} as a draft.")

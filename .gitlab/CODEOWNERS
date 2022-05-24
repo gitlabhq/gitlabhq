@@ -137,7 +137,7 @@ Dangerfile @gl-quality/eng-prod
 /app/assets/javascripts/notes @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/merge_conflicts @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/mr_notes @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/mr_popover @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/issuable/popover @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/vue_merge_request_widget @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/merge_request.js @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/merge_request_tabs.js @viktomas @jboyson @iamphill @thomasrandolph

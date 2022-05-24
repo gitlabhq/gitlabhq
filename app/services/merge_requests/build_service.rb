@@ -46,7 +46,7 @@ module MergeRequests
              :source_branch_ref,
              :source_project,
              :compare_commits,
-             :wip_title,
+             :draft_title,
              :description,
              :first_multiline_commit,
              :errors,
@@ -206,7 +206,7 @@ module MergeRequests
     def set_draft_title_if_needed
       return unless compare_commits.empty? || Gitlab::Utils.to_boolean(params[:draft])
 
-      merge_request.title = wip_title
+      merge_request.title = draft_title
     end
 
     # When your branch name starts with an iid followed by a dash this pattern will be

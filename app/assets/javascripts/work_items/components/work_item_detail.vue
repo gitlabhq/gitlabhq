@@ -6,6 +6,7 @@ import workItemTitleSubscription from '../graphql/work_item_title.subscription.g
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
+import WorkItemLinks from './work_item_links/work_item_links.vue';
 
 export default {
   i18n,
@@ -15,6 +16,7 @@ export default {
     WorkItemActions,
     WorkItemTitle,
     WorkItemState,
+    WorkItemLinks,
   },
   props: {
     workItemId: {
@@ -105,6 +107,7 @@ export default {
         @error="error = $event"
         @updated="$emit('workItemUpdated')"
       />
+      <work-item-links :work-item-id="workItem.id" />
     </template>
   </section>
 </template>

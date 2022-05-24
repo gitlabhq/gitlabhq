@@ -19162,6 +19162,12 @@ msgstr ""
 msgid "If this email was added in error, you can remove it here: %{profile_emails_url}"
 msgstr ""
 
+msgid "If this is a mistake, you can %{link_start}unban them%{link_end}."
+msgstr ""
+
+msgid "If this is a mistake, you can unban them: %{url}."
+msgstr ""
+
 msgid "If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}."
 msgstr ""
 
@@ -42469,6 +42475,9 @@ msgstr ""
 msgid "We want to be sure it is you, please confirm you are not a robot."
 msgstr ""
 
+msgid "We want to let you know %{username} has been banned from your GitLab instance due to them downloading more than %{max_project_downloads} project repositories within %{within_minutes} minutes."
+msgstr ""
+
 msgid "We will notify %{inviter} that you declined their invitation to join GitLab. You will stop receiving reminders."
 msgstr ""
 
@@ -42482,6 +42491,12 @@ msgid "We'll use this to help surface the right features and information to you.
 msgstr ""
 
 msgid "We're experiencing difficulties and this tab content is currently unavailable."
+msgstr ""
+
+msgid "We've detected some unusual activity"
+msgstr ""
+
+msgid "We've detected unusual activity"
 msgstr ""
 
 msgid "We've found no vulnerabilities"
@@ -43077,7 +43092,19 @@ msgstr ""
 msgid "Work in progress Limit"
 msgstr ""
 
+msgid "WorkItem|Add"
+msgstr ""
+
+msgid "WorkItem|Add a child"
+msgstr ""
+
 msgid "WorkItem|Are you sure you want to delete the work item? This action cannot be reversed."
+msgstr ""
+
+msgid "WorkItem|Cancel"
+msgstr ""
+
+msgid "WorkItem|Child items"
 msgstr ""
 
 msgid "WorkItem|Convert to work item"
@@ -43090,6 +43117,9 @@ msgid "WorkItem|Delete work item"
 msgstr ""
 
 msgid "WorkItem|New Task"
+msgstr ""
+
+msgid "WorkItem|No child items are currently assigned. Use child items to prioritize tasks that your team should complete in order to accomplish your goals!"
 msgstr ""
 
 msgid "WorkItem|Select type"
@@ -43302,6 +43332,12 @@ msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or 
 msgstr ""
 
 msgid "You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgstr ""
+
+msgid "You can adjust rules on auto-banning %{link_start}here%{link_end}."
+msgstr ""
+
+msgid "You can adjust rules on auto-banning here: %{url}."
 msgstr ""
 
 msgid "You can also create a project from the command line."

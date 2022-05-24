@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'settingslogic'
-require 'digest/md5'
 
 class Settings < Settingslogic
   source ENV.fetch('GITLAB_CONFIG') { Pathname.new(File.expand_path('..', __dir__)).join('config/gitlab.yml') }

@@ -43,3 +43,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::ReloadMergeHeadDiffService.prepend_mod

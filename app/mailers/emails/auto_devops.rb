@@ -8,11 +8,9 @@ module Emails
 
       add_project_headers
 
-      mail(to: recipient,
-           subject: auto_devops_disabled_subject(@project.name)) do |format|
-        format.html { render layout: 'mailer' }
-        format.text { render layout: 'mailer' }
-      end
+      email_with_layout(
+        to: recipient,
+        subject: auto_devops_disabled_subject(@project.name))
     end
 
     private

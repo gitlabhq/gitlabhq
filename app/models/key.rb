@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'digest/md5'
-
 class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable

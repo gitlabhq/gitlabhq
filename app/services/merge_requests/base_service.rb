@@ -121,16 +121,16 @@ module MergeRequests
     override :handle_quick_actions
     def handle_quick_actions(merge_request)
       super
-      handle_wip_event(merge_request)
+      handle_draft_event(merge_request)
     end
 
-    def handle_wip_event(merge_request)
-      if wip_event = params.delete(:wip_event)
+    def handle_draft_event(merge_request)
+      if draft_event = params.delete(:wip_event)
         # We update the title that is provided in the params or we use the mr title
         title = params[:title] || merge_request.title
-        params[:title] = case wip_event
-                         when 'wip' then MergeRequest.wip_title(title)
-                         when 'unwip' then MergeRequest.wipless_title(title)
+        params[:title] = case draft_event
+                         when 'wip' then MergeRequest.draft_title(title)
+                         when 'unwip' then MergeRequest.draftless_title(title)
                          end
       end
     end

@@ -44,7 +44,7 @@ module Gitlab
                           else
                             # Only show what is new in the source branch
                             # compared to the target branch, not the other way
-                            # around. The linex below with merge_base is
+                            # around. The line below with merge_base is
                             # equivalent to diff with three dots (git diff
                             # branch1...branch2) From the git documentation:
                             # "git diff A...B" is equivalent to "git diff

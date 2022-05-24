@@ -72,11 +72,16 @@ For configuration information, see
 
 ### Git operations using SSH
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `rate_limit_gitlab_shell`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79419) in GitLab 14.8.
 
-GitLab rate limits Git operations using SSH by user account and project. If a request from a user for a Git operation
-on a project exceeds the rate limit, GitLab drops further connection requests from that user for the project.
+FLAG:
+On self-managed GitLab, by default this feature is available. To disable the feature, ask an administrator to
+[disable the feature flag](../administration/feature_flags.md) named `rate_limit_gitlab_shell`. On GitLab.com, this feature
+is available.
+
+GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
+further connection requests from that user for the project.
 
 The rate limit applies at the Git command ([plumbing](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)) level.
 Each command has a rate limit of 600 per minute. For example:
@@ -86,9 +91,8 @@ Each command has a rate limit of 600 per minute. For example:
 
 Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
 
-The requests/minute threshold for this rate limit is not configurable. Self-managed customers can disable this
-rate limit by [disabling the feature flag](../administration/feature_flags.md#enable-or-disable-the-feature)
-with `Feature.disable(:rate_limit_gitlab_shell)`.
+The requests per minute threshold for this rate limit is not configurable. Self-managed customers can disable this
+rate limit.
 
 ### Repository archives
 

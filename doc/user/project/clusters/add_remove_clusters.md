@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
-To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
+To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md).
 
 ## Disable a cluster
 

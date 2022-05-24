@@ -1,10 +1,10 @@
 import { setHTMLFixture } from 'helpers/fixtures';
 import * as createDefaultClient from '~/lib/graphql';
-import initMRPopovers from '~/mr_popover/index';
+import initIssuablePopovers from '~/issuable/popover/index';
 
 createDefaultClient.default = jest.fn();
 
-describe('initMRPopovers', () => {
+describe('initIssuablePopovers', () => {
   let mr1;
   let mr2;
   let mr3;
@@ -14,7 +14,7 @@ describe('initMRPopovers', () => {
       <div id="one" class="gfm-merge_request" data-mr-title="title" data-iid="1" data-project-path="group/project">
         MR1
       </div>
-      <div id="two" class="gfm-merge_request" data-mr-title="title" data-iid="1" data-project-path="group/project">
+      <div id="two" class="gfm-merge_request" title="title" data-iid="1" data-project-path="group/project">
         MR2
       </div>
       <div id="three" class="gfm-merge_request">
@@ -32,14 +32,14 @@ describe('initMRPopovers', () => {
   });
 
   it('does not add the same event listener twice', () => {
-    initMRPopovers([mr1, mr1, mr2]);
+    initIssuablePopovers([mr1, mr1, mr2]);
 
     expect(mr1.addEventListener).toHaveBeenCalledTimes(1);
     expect(mr2.addEventListener).toHaveBeenCalledTimes(1);
   });
 
   it('does not add listener if it does not have the necessary data attributes', () => {
-    initMRPopovers([mr1, mr2, mr3]);
+    initIssuablePopovers([mr1, mr2, mr3]);
 
     expect(mr3.addEventListener).not.toHaveBeenCalled();
   });
