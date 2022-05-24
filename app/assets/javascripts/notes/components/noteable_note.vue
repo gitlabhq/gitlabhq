@@ -493,9 +493,10 @@ export default {
         <note-body
           ref="noteBody"
           :note="note"
+          :can-edit="note.current_user.can_edit"
+          :is-confidential="note.confidential"
           :line="line"
           :file="diffFile"
-          :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
           :help-page-path="helpPagePath"
           @handleFormUpdate="formUpdateHandler"

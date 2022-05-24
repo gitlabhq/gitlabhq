@@ -2983,15 +2983,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: repository_remove_remote
-  :worker_name: RepositoryRemoveRemoteWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: repository_update_remote_mirror
   :worker_name: RepositoryUpdateRemoteMirrorWorker
   :feature_category: :source_code_management

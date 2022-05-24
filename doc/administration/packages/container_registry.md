@@ -1170,7 +1170,7 @@ The flow described by the diagram above:
 
 1. A user runs `docker login registry.gitlab.example` on their client. This reaches the web server (or LB) on port 443.
 1. Web server connects to the Registry backend pool (by default, using port 5000). Since the user
-   didn’t provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
+   didn't provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
    Registry configuration) where to get one. This points to the GitLab API.
 1. The Docker client then connects to the GitLab API and obtains a token.
 1. The API signs the token with the registry key and hands it to the Docker client

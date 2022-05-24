@@ -132,10 +132,16 @@ class Environment < ApplicationRecord
     end
 
     event :stop do
-      transition available: :stopped
+      transition available: :stopping, if: :wait_for_stop?
+      transition available: :stopped, unless: :wait_for_stop?
+    end
+
+    event :stop_complete do
+      transition %i(available stopping) => :stopped
     end
 
     state :available
+    state :stopping
     state :stopped
 
     before_transition any => :stopped do |environment|
@@ -291,6 +297,10 @@ class Environment < ApplicationRecord
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, environment_id: id, deployment_id: deployment.id)
     end
+  end
+
+  def wait_for_stop?
+    stop_actions.present? && Feature.enabled?(:env_stopped_on_stop_success, project)
   end
 
   def stop_with_actions!(current_user)

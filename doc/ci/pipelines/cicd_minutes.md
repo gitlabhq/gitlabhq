@@ -90,6 +90,10 @@ To view CI/CD minutes being used for your group:
 
 ![Group CI/CD minutes quota](img/group_cicd_minutes_quota.png)
 
+The projects list shows projects with CI/CD minute usage or shared runners usage
+in the current month only. The list includes all projects in the namespace and its
+subgroups, sorted in descending order of CI/CD minute usage.
+
 ## View CI/CD minutes used by a personal namespace
 
 > Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
@@ -99,6 +103,10 @@ You can view the number of CI/CD minutes being used by a personal namespace:
 1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
+
+The projects list shows [personal projects](../../user/project/working_with_projects.md#view-personal-projects)
+with CI/CD minutes usage or shared runners usage in the current month only. The list
+is sorted in descending order of CI/CD minute usage.
 
 ## Purchase additional CI/CD minutes **(FREE SAAS)**
 

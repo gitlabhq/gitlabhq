@@ -136,13 +136,13 @@ GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org
 
 To install a second agent in your cluster, you can follow the [previous steps](#register-the-agent-with-gitlab) a second time. To avoid resource name collisions within the cluster, you must either:
 
-- Use a different release name for the agent, e.g. `second-gitlab-agent`:
+- Use a different release name for the agent, for example, `second-gitlab-agent`:
 
   ```shell
   helm upgrade --install second-gitlab-agent gitlab/gitlab-agent ...
   ```
 
-- Or, install the agent in a different namespace, e.g. `different-namespace`:
+- Or, install the agent in a different namespace, for example, `different-namespace`:
 
   ```shell
   helm upgrade --install gitlab-agent gitlab/gitlab-agent \
@@ -163,7 +163,7 @@ The following example projects can help you get started with the agent.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the agent's list page to update the agent version installed on your cluster.
 
-For the best experience, the version of the agent installed in your cluster should match the GitLab major and minor version. The previous minor version is also supported. For example, if your GitLab version is v14.9.4 (major version 14, minor version 9), then versions v14.9.0 and v14.9.1 of the agent are ideal, but any v14.8.x version of the agent is also supported. See [this page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/releases) of releases of the GitLab agent.
+For the best experience, the version of the agent installed in your cluster should match the GitLab major and minor version. The previous minor version is also supported. For example, if your GitLab version is v14.9.4 (major version 14, minor version 9), then versions v14.9.0 and v14.9.1 of the agent are ideal, but any v14.8.x version of the agent is also supported. See [the release page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/releases) of the GitLab agent.
 
 ### Update the agent version
 

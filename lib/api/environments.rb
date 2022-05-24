@@ -128,14 +128,14 @@ module API
       end
       params do
         requires :environment_id, type: Integer, desc: 'The environment ID'
+        optional :force, type: Boolean, default: false
       end
       post ':id/environments/:environment_id/stop' do
         authorize! :read_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
-        authorize! :stop_environment, environment
-
-        environment.stop_with_actions!(current_user)
+        ::Environments::StopService.new(user_project, current_user, declared_params(include_missing: false))
+                                 .execute(environment)
 
         status 200
         present environment, with: Entities::Environment, current_user: current_user

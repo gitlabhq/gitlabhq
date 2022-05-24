@@ -24,7 +24,7 @@ module QA
           end
 
           def enable_ff_only
-            choose_element(:merge_ff_radio)
+            choose_element(:merge_ff_radio, true)
             click_save_changes
           end
 

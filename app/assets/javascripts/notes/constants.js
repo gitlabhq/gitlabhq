@@ -51,3 +51,5 @@ export const toggleStateErrorMessage = {
     [REOPENED]: __('Something went wrong while closing the merge request. Please try again later.'),
   },
 };
+
+export const CONFIDENTIAL_CLASSES = ['gl-bg-orange-50', 'gl-px-4', 'gl-py-2'];

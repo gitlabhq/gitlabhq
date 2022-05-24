@@ -1,6 +1,7 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
+import { unrestrictedPages } from './constants';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
@@ -48,6 +49,7 @@ class SafeMathRenderer {
     this.renderElement = this.renderElement.bind(this);
     this.render = this.render.bind(this);
     this.attachEvents = this.attachEvents.bind(this);
+    this.pageName = document.querySelector('body').dataset.page;
   }
 
   renderElement(chosenEl) {
@@ -56,7 +58,7 @@ class SafeMathRenderer {
     }
 
     const el = chosenEl || this.queue.shift();
-    const forceRender = Boolean(chosenEl);
+    const forceRender = Boolean(chosenEl) || unrestrictedPages.includes(this.pageName);
     const text = el.textContent;
 
     el.removeAttribute('style');

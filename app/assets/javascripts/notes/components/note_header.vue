@@ -236,6 +236,7 @@ export default {
         data-testid="internalNoteIndicator"
         variant="warning"
         size="sm"
+        class="gl-mb-3 gl-ml-2"
         :title="noteConfidentialityTooltip"
       >
         {{ __('Internal note') }}

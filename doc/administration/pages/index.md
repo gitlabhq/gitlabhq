@@ -1187,7 +1187,8 @@ Rate limits are enforced using the following:
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
 one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
+important to describe those, too. Think of things that may go wrong and include them in
+the section below.
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
@@ -1541,7 +1542,7 @@ In GitLab 14.0-14.2 you can temporarily enable legacy storage and configuration 
 
 To do that:
 
-1. Please describe the issue you're seeing in [here](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
+1. Please describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

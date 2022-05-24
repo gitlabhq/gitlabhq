@@ -234,8 +234,8 @@ Parameters:
 |:-------------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------|
 | `id`         | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `snippet_id` | integer        | yes      | The ID of a project's snippet                                                                                   |
-| `ref`        | string         | yes      | The name of a branch, tag or commit e.g. master                                                                 |
-| `file_path`  | string         | yes      | The URL-encoded path to the file, e.g. snippet%2Erb                                                             |
+| `ref`        | string         | yes      | The name of a branch, tag or commit, for example, main                                                          |
+| `file_path`  | string         | yes      | The URL-encoded path to the file, for example, snippet%2Erb                                                     |
 
 Example request:
 

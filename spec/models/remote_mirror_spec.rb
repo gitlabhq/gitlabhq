@@ -254,8 +254,6 @@ RSpec.describe RemoteMirror, :mailer do
     it 'does not remove the remote' do
       mirror = create_mirror(url: 'http://foo:bar@test.com')
 
-      expect(RepositoryRemoveRemoteWorker).not_to receive(:perform_async)
-
       mirror.destroy!
     end
   end

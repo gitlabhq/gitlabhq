@@ -67,7 +67,7 @@ RSpec.describe "User comments on issue", :js do
     it "edits comment" do
       add_note("# Comment with a header")
 
-      page.within(".note-body > .note-text") do
+      page.within(".note-body .note-text") do
         expect(page).to have_content("Comment with a header").and have_no_css("#comment-with-a-header")
       end
 

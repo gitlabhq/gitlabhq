@@ -53,7 +53,7 @@ and they serve us and our users well. Some examples of these principles are that
 - The feedback delivered by GitLab CI/CD and data produced by the platform should be accurate.
   If a job fails and we notify a user that it was successful, it can have severe negative consequences.
 - Feedback needs to be available when a user needs it and data can not disappear unexpectedly when engineers need it.
-- It all doesn’t matter if the platform is not secure and we
+- It all doesn't matter if the platform is not secure and we
 are leaking credentials or secrets.
 - When a user provides a set of preconditions in a form of CI/CD configuration, the result should be deterministic each time a pipeline runs, because otherwise the platform might not be trustworthy.
 - If it is fast, simple to use and has a great UX it will serve our users well.

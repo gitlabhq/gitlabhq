@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import { suggestionCommitMessage } from '~/diffs/store/getters';
 import NoteBody from '~/notes/components/note_body.vue';
@@ -7,6 +7,7 @@ import NoteAwardsList from '~/notes/components/note_awards_list.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import notes from '~/notes/stores/modules/index';
+import { CONFIDENTIAL_CLASSES } from '~/notes/constants';
 
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
@@ -27,7 +28,7 @@ const createComponent = ({
     mockStore.dispatch('setNotesData', notesData);
   }
 
-  return shallowMount(NoteBody, {
+  return shallowMountExtended(NoteBody, {
     store: mockStore || store,
     propsData: {
       note,
@@ -58,6 +59,24 @@ describe('issue_note_body component', () => {
     expect(wrapper.findComponent(NoteAwardsList).exists()).toBe(true);
   });
 
+  it('should not have confidential classes', () => {
+    expect(wrapper.findByTestId('note-confidential-container').classes()).not.toEqual(
+      CONFIDENTIAL_CLASSES,
+    );
+  });
+
+  describe('isConfidential', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ props: { isConfidential: true } });
+    });
+
+    it('should have confidential classes', () => {
+      expect(wrapper.findByTestId('note-confidential-container').classes()).toEqual(
+        CONFIDENTIAL_CLASSES,
+      );
+    });
+  });
+
   describe('isEditing', () => {
     beforeEach(() => {
       wrapper = createComponent({ props: { isEditing: true } });
@@ -85,6 +104,18 @@ describe('issue_note_body component', () => {
       // but instead an instance object property
       // which is defined in `app/assets/javascripts/notes/mixins/autosave.js`
       expect(wrapper.vm.autosave.key).toEqual(autosaveKey);
+    });
+
+    describe('isConfidential', () => {
+      beforeEach(() => {
+        wrapper.setProps({ isConfidential: true });
+      });
+
+      it('should not have confidential classes', () => {
+        expect(wrapper.findByTestId('note-confidential-container').classes()).not.toEqual(
+          CONFIDENTIAL_CLASSES,
+        );
+      });
     });
   });
 

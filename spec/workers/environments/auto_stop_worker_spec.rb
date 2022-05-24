@@ -23,7 +23,7 @@ RSpec.describe Environments::AutoStopWorker do
   it 'stops the environment' do
     expect { subject }
       .to change { Environment.find_by_name('review/feature').state }
-      .from('available').to('stopped')
+      .from('available').to('stopping')
   end
 
   it 'executes the stop action' do

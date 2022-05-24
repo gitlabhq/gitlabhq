@@ -8,7 +8,7 @@ RSpec.describe BuildSuccessWorker do
 
     context 'when build exists' do
       context 'when the build will stop an environment' do
-        let!(:build) { create(:ci_build, :stop_review_app, environment: environment.name, project: environment.project) }
+        let!(:build) { create(:ci_build, :stop_review_app, environment: environment.name, project: environment.project, status: :success) }
         let(:environment) { create(:environment, state: :available) }
 
         it 'stops the environment' do
@@ -17,6 +17,33 @@ RSpec.describe BuildSuccessWorker do
           subject
 
           expect(environment.reload).to be_stopped
+        end
+
+        context 'when the build fails' do
+          before do
+            build.update!(status: :failed)
+            environment.update!(state: :available)
+          end
+
+          it 'does not stop the environment' do
+            expect(environment).to be_available
+
+            stub_feature_flags(env_stopped_on_stop_success: true)
+
+            subject
+
+            expect(environment.reload).not_to be_stopped
+          end
+
+          it 'does stop the environment when feature flag is disabled' do
+            expect(environment).to be_available
+
+            stub_feature_flags(env_stopped_on_stop_success: false)
+
+            subject
+
+            expect(environment.reload).to be_stopped
+          end
         end
       end
     end

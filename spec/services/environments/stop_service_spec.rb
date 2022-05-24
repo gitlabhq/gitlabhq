@@ -29,12 +29,25 @@ RSpec.describe Environments::StopService do
         review_job.success!
       end
 
-      it 'stops the environment' do
-        expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+      context 'without stop action' do
+        let!(:environment) { create(:environment, :available, project: project) }
+
+        it 'stops the environment' do
+          expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+        end
       end
 
       it 'plays the stop action' do
         expect { subject }.to change { stop_review_job.reload.status }.from('manual').to('pending')
+      end
+
+      context 'force option' do
+        let(:service) { described_class.new(project, user, { force: true }) }
+
+        it 'does not play the stop action when forced' do
+          expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+          expect(stop_review_job.reload.status).to eq('manual')
+        end
       end
 
       context 'when an environment has already been stopped' do
@@ -77,7 +90,7 @@ RSpec.describe Environments::StopService do
 
         context 'when environment is associated with removed branch' do
           it 'stops environment' do
-            expect_environment_stopped_on('feature')
+            expect_environment_stopping_on('feature')
           end
         end
 
@@ -195,8 +208,7 @@ RSpec.describe Environments::StopService do
 
       it 'stops the active environment' do
         subject
-
-        expect(pipeline.environments_in_self_and_descendants.first).to be_stopped
+        expect(pipeline.environments_in_self_and_descendants.first).to be_stopping
       end
 
       context 'when pipeline is a branch pipeline for merge request' do
@@ -266,6 +278,11 @@ RSpec.describe Environments::StopService do
   def expect_environment_stopped_on(branch)
     expect { service.execute_for_branch(branch) }
       .to change { Environment.last.state }.from('available').to('stopped')
+  end
+
+  def expect_environment_stopping_on(branch)
+    expect { service.execute_for_branch(branch) }
+      .to change { Environment.last.state }.from('available').to('stopping')
   end
 
   def expect_environment_not_stopped_on(branch)

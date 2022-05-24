@@ -586,6 +586,24 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
             expect(action).to eq(close_action)
             expect(action.user).to eq(user)
           end
+
+          context 'env_stopped_on_stop_success feature flag' do
+            it 'environment is not stopped when flag is enabled' do
+              stub_feature_flags(env_stopped_on_stop_success: true)
+
+              subject
+
+              expect(environment).not_to be_stopped
+            end
+
+            it 'environment is stopped when flag is disabled' do
+              stub_feature_flags(env_stopped_on_stop_success: false)
+
+              subject
+
+              expect(environment).to be_stopped
+            end
+          end
         end
 
         context 'if action did finish' do
@@ -1730,17 +1748,17 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       let!(:environment3) { create(:environment, project: project, state: 'stopped') }
 
       it 'returns the environments count grouped by state' do
-        expect(project.environments.count_by_state).to eq({ stopped: 2, available: 1 })
+        expect(project.environments.count_by_state).to eq({ stopped: 2, available: 1, stopping: 0 })
       end
 
       it 'returns the environments count grouped by state with zero value' do
         environment2.update!(state: 'stopped')
-        expect(project.environments.count_by_state).to eq({ stopped: 3, available: 0 })
+        expect(project.environments.count_by_state).to eq({ stopped: 3, available: 0, stopping: 0 })
       end
     end
 
     it 'returns zero state counts when environments are empty' do
-      expect(project.environments.count_by_state).to eq({ stopped: 0, available: 0 })
+      expect(project.environments.count_by_state).to eq({ stopped: 0, available: 0, stopping: 0 })
     end
   end
 

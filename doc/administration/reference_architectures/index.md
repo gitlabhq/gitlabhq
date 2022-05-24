@@ -116,7 +116,7 @@ per 1,000 users:
 ### How to interpret the results
 
 NOTE:
-Read our blog post on [how our QA team leverages GitLab’s performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
+Read our blog post on [how our QA team leverages GitLab performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
 
 Testing is done publicly and all results are shared.
 

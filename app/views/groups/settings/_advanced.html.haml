@@ -23,7 +23,7 @@
           title: group_url_error_message,
           maxlength: ::Namespace::URL_MAX_LENGTH,
           "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
-    = f.submit s_('GroupSettings|Change group URL'), class: 'btn gl-button btn-warning'
+    = f.submit s_('GroupSettings|Change group URL'), class: 'btn gl-button btn-danger'
 
 = render 'groups/settings/transfer', group: @group
 = render 'groups/settings/remove', group: @group, remove_form_id: remove_form_id

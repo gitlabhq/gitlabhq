@@ -589,7 +589,7 @@ You can only upgrade one minor release at a time.
 
 This section describes the steps required to upgrade a multi-node / HA
 deployment with Geo. Some steps must be performed on a particular node. This
-node is known as the “deploy node” and is noted through the following
+node is known as the "deploy node" and is noted through the following
 instructions.
 
 Updates must be performed in the following order:

@@ -91,7 +91,7 @@ Introduced in GitLab 13.6, the themes [Solarized](https://gitlab.com/gitlab-org/
 
 ## Diff colors
 
-A diff compares the old/removed content with the new/added content (e.g. when
+A diff compares the old/removed content with the new/added content (for example, when
 [reviewing a merge request](../project/merge_requests/reviews/index.md#review-a-merge-request) or in a
 [Markdown inline diff](../markdown.md#inline-diff)).
 Typically, the colors red and green are used for removed and added lines in diffs.

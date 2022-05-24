@@ -284,7 +284,6 @@ RSpec.describe 'Environment' do
                   click_button('Stop')
                   click_button('Stop environment') # confirm modal
                   wait_for_all_requests
-                  expect(page).to have_button('Delete')
                 end
               end
 
@@ -362,8 +361,6 @@ RSpec.describe 'Environment' do
       end
 
       visit_environment(environment)
-
-      expect(page).not_to have_button('Stop')
     end
 
     ##

@@ -211,7 +211,7 @@ sudo apt-get install -y libimage-exiftool-perl
 ## 2. Ruby
 
 The Ruby interpreter is required to run GitLab.
-See the [requirements section of this page](#software-requirements) for the minimum
+See the [requirements section](#software-requirements) for the minimum
 Ruby requirements.
 
 The use of Ruby version managers such as [`RVM`](https://rvm.io/), [`rbenv`](https://github.com/rbenv/rbenv) or [`chruby`](https://github.com/postmodern/chruby) with GitLab

@@ -67,9 +67,9 @@ In the `detect-tests` job, we use this mapping to identify the minimal tests nee
 In addition, there are a few circumstances where we would always run the full RSpec tests:
 
 - when the `pipeline:run-all-rspec` label is set on the merge request
-- when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
+- when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 ### Jest minimal jobs
 
@@ -83,11 +83,11 @@ In this mode, `jest` would resolve all the dependencies of related to the change
 In addition, there are a few circumstances where we would always run the full Jest tests:
 
 - when the `pipeline:run-all-jest` label is set on the merge request
-- when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
+- when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
-- when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
-- when any vendored JavaScript file is changed (i.e. `vendor/assets/javascripts/**/*`)
+- when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any frontend "core" file is changed (for example, `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
+- when any vendored JavaScript file is changed (for example, `vendor/assets/javascripts/**/*`)
 - when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
 
 ### Fork pipelines
@@ -226,7 +226,7 @@ of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
 - when the merge request is created in the `gitlab-org/security/gitlab` project
-- when any CI configuration file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
 set and get the `ee/` folder removed before the tests start running.
@@ -339,7 +339,7 @@ In general, pipelines for an MR fall into one of the following types (from short
 - [Frontend pipeline](#frontend-pipeline): For MRs that touch frontend code.
 - [End-to-end pipeline](#end-to-end-pipeline): For MRs that touch code in the `qa/` folder.
 
-A "pipeline type" is an abstract term that mostly describes the "critical path" (i.e. the chain of jobs for which the sum
+A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
 of individual duration equals the pipeline's duration).
 We use these "pipeline types" in [metrics dashboards](https://app.periscopedata.com/app/gitlab/858266/GitLab-Pipeline-Durations)
 in order to detect what types and jobs need to be optimized first.
@@ -719,11 +719,11 @@ This job tries to download a generic package that contains GitLab Workhorse bina
 We also changed the `setup-test-env` job to:
 
 1. First download the GitLab Workhorse generic package build and uploaded by `build-components`.
-1. If the package is retrieved successfully, its content is placed in the right folder (i.e. `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
+1. If the package is retrieved successfully, its content is placed in the right folder (for example, `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
 1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab Workhorse binaries are built as part of `scripts/setup-test-env`.
 
 NOTE:
-The version of the package is the workhorse tree SHA (i.e. `git rev-parse HEAD:workhorse`).
+The version of the package is the workhorse tree SHA (for example, `git rev-parse HEAD:workhorse`).
 
 ### Pre-clone step
 

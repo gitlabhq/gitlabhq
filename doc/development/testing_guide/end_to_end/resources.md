@@ -531,7 +531,7 @@ When you implement a new type of reusable resource there are two `private` metho
 can be validated. They are:
 
 - `reference_resource`: creates a new instance of the resource that can be compared with the one that was used during the tests.
-- `unique_identifiers`: returns an array of attributes that allow the resource to be identified (e.g., name) and that are therefore
+- `unique_identifiers`: returns an array of attributes that allow the resource to be identified (for example, name) and that are therefore
 expected to differ when comparing the reference resource with the resource reused in the tests.
 
 The following example shows the implementation of those two methods in `QA::Resource::ReusableProject`.

@@ -104,6 +104,6 @@ To get started, see an [example merge request](https://gitlab.com/gitlab-org/git
 
 ## Useful links
 
-- [Routing improvements master plan](https://gitlab.com/gitlab-org/gitlab/-/issues/215362)
+- [Routing improvements main plan](https://gitlab.com/gitlab-org/gitlab/-/issues/215362)
 - [Scoped routing explained](https://gitlab.com/gitlab-org/gitlab/-/issues/214217)
 - [Removal of deprecated routes](https://gitlab.com/gitlab-org/gitlab/-/issues/28848)

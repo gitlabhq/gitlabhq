@@ -158,7 +158,7 @@ RSpec.describe 'Merge request > User posts notes', :js do
         page.within("#note_#{note.id}") do
           expect(find('.current-note-edit-form', visible: true)).to be_visible
           expect(find('.note-edit-form', visible: true)).to be_visible
-          expect(find(:css, '.note-body > .note-text', visible: false)).not_to be_visible
+          expect(find(:css, '.note-body .note-text', visible: false)).not_to be_visible
         end
       end
 

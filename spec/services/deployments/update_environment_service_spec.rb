@@ -84,7 +84,7 @@ RSpec.describe Deployments::UpdateEnvironmentService do
 
       context 'and environment is stopped' do
         before do
-          environment.stop
+          environment.stop_complete
         end
 
         it 'makes environment available' do
