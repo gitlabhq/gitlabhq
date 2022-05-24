@@ -202,7 +202,7 @@ The runner tags list can not be empty when it's not allowed to pick untagged job
 
 Below are some example scenarios of different variations.
 
-### runner runs only tagged jobs
+### Runner runs only tagged jobs
 
 The following examples illustrate the potential impact of the runner being set
 to run only tagged jobs.
@@ -222,7 +222,7 @@ Example 3:
 1. The runner is configured to run only tagged jobs and has the `docker` tag.
 1. A job that has no tags defined is executed and stuck.
 
-### runner is allowed to run untagged jobs
+### Runner is allowed to run untagged jobs
 
 The following examples illustrate the potential impact of the runner being set
 to run tagged and untagged jobs.
@@ -280,6 +280,17 @@ variables:
     script:
       - echo "Hello runner selector feature"
 ```
+
+## Runner statuses
+
+A runner can have one of the following statuses.
+
+| Status | Description |
+|--------|-------------|
+| **online** | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
+| **offline** | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
+| **stale** | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
+| **never_contacted** | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
 ## Configure runner behavior with variables
 

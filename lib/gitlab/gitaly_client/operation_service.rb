@@ -473,6 +473,21 @@ module Gitlab
         )
 
         handle_cherry_pick_or_revert_response(response)
+      rescue GRPC::BadStatus => e
+        detailed_error = decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :cherry_pick_conflict
+          raise Gitlab::Git::Repository::CreateTreeError, 'CONFLICT'
+        when :target_branch_diverged
+          raise Gitlab::Git::CommitError, 'branch diverged'
+        else
+          raise e
+        end
       end
 
       def handle_cherry_pick_or_revert_response(response)

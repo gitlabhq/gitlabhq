@@ -416,6 +416,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
     end
   end
 
+  shared_examples '#user_cherry_pick with a gRPC error' do
+    it 'raises an exception' do
+      expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_cherry_pick)
+        .and_raise(raised_error)
+
+      expect { subject }.to raise_error(expected_error, expected_error_message)
+    end
+  end
+
   describe '#user_cherry_pick' do
     let(:response_class) { Gitaly::UserCherryPickResponse }
 
@@ -430,13 +439,74 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
       )
     end
 
-    before do
-      expect_any_instance_of(Gitaly::OperationService::Stub)
-        .to receive(:user_cherry_pick).with(kind_of(Gitaly::UserCherryPickRequest), kind_of(Hash))
-        .and_return(response)
+    context 'when errors are not raised but returned in the response' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_cherry_pick).with(kind_of(Gitaly::UserCherryPickRequest), kind_of(Hash))
+          .and_return(response)
+      end
+
+      it_behaves_like 'cherry pick and revert errors'
     end
 
-    it_behaves_like 'cherry pick and revert errors'
+    context 'when AccessCheckError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INTERNAL,
+          'something failed',
+          Gitaly::UserCherryPickError.new(
+            access_check: Gitaly::AccessCheckError.new(
+              error_message: 'something went wrong'
+            )))
+      end
+
+      let(:expected_error) { Gitlab::Git::PreReceiveError }
+      let(:expected_error_message) { "something went wrong" }
+
+      it_behaves_like '#user_cherry_pick with a gRPC error'
+    end
+
+    context 'when NotAncestorError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'Branch diverged',
+          Gitaly::UserCherryPickError.new(
+            target_branch_diverged: Gitaly::NotAncestorError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::CommitError }
+      let(:expected_error_message) { 'branch diverged' }
+
+      it_behaves_like '#user_cherry_pick with a gRPC error'
+    end
+
+    context 'when MergeConflictError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'Conflict',
+          Gitaly::UserCherryPickError.new(
+            cherry_pick_conflict: Gitaly::MergeConflictError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
+      let(:expected_error_message) { }
+
+      it_behaves_like '#user_cherry_pick with a gRPC error'
+    end
+
+    context 'when a non-detailed gRPC error is raised' do
+      let(:raised_error) { GRPC::Internal.new('non-detailed error') }
+      let(:expected_error) { GRPC::Internal }
+      let(:expected_error_message) { }
+
+      it_behaves_like '#user_cherry_pick with a gRPC error'
+    end
   end
 
   describe '#user_revert' do

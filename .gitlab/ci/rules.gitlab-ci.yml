@@ -185,6 +185,7 @@
   - "doc/**/*"
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
