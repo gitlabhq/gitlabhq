@@ -115,13 +115,26 @@ RSpec.describe PasswordsController do
         stub_application_setting(recaptcha_enabled: true)
       end
 
-      it 'displays an error when the reCAPTCHA is not solved' do
-        Recaptcha.configuration.skip_verify_env.delete('test')
+      context 'when the reCAPTCHA is not solved' do
+        before do
+          Recaptcha.configuration.skip_verify_env.delete('test')
+        end
 
-        perform_request
+        it 'displays an error' do
+          perform_request
 
-        expect(response).to render_template(:new)
-        expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+          expect(response).to render_template(:new)
+          expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+        end
+
+        it 'sets gon variables' do
+          Gon.clear
+
+          perform_request
+
+          expect(response).to render_template(:new)
+          expect(Gon.all_variables).not_to be_empty
+        end
       end
 
       it 'successfully sends password reset when reCAPTCHA is solved' do

@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, quarantine: {
+    only: { subdomain: %i[staging staging-canary] },
+    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/363188",
+    type: :investigating
+  } do
     describe 'NuGet group level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

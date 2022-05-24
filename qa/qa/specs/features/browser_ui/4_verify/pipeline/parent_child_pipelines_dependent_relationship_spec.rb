@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, :reliable do
+  RSpec.describe 'Verify', :runner, :reliable, quarantine: {
+    only: { subdomain: %i[staging staging-canary] },
+    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/363188",
+    type: :investigating
+  } do
     describe 'Parent-child pipelines dependent relationship' do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|

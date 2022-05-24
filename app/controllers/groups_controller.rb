@@ -360,6 +360,7 @@ class GroupsController < Groups::ApplicationController
     flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
     flash.delete :recaptcha_error
     @group = Group.new(group_params)
+    add_gon_variables
     render action: 'new'
   end
 

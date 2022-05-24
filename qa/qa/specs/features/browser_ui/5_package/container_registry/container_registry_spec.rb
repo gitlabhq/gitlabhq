@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Container Registry', :reliable, only: { subdomain: %i[staging pre] } do
+    describe 'Container Registry', :reliable, only: { subdomain: %i[staging pre] }, quarantine: {
+      only: { subdomain: %i[staging staging-canary] },
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/363188",
+      type: :investigating
+    } do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-registry'
@@ -37,7 +41,7 @@ module QA
                 do
                     docker info && break
                     sleep 1s
-                done       
+                done
             script:
               - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
               - docker build -t $IMAGE_TAG .

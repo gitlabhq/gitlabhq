@@ -373,13 +373,26 @@ RSpec.describe GroupsController, factory_default: :keep do
         end
       end
 
-      it 'displays an error when the reCAPTCHA is not solved' do
-        allow(controller).to receive(:verify_recaptcha).and_return(false)
+      context 'when the reCAPTCHA is not solved' do
+        before do
+          allow(controller).to receive(:verify_recaptcha).and_return(false)
+        end
 
-        post :create, params: { group: { name: 'new_group', path: "new_group" } }
+        it 'displays an error' do
+          post :create, params: { group: { name: 'new_group', path: "new_group" } }
 
-        expect(response).to render_template(:new)
-        expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
+          expect(response).to render_template(:new)
+          expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
+        end
+
+        it 'sets gon variables' do
+          Gon.clear
+
+          post :create, params: { group: { name: 'new_group', path: "new_group" } }
+
+          expect(response).to render_template(:new)
+          expect(Gon.all_variables).not_to be_empty
+        end
       end
 
       it 'allows creating a group when the reCAPTCHA is solved' do
