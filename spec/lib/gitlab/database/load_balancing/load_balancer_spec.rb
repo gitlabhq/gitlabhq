@@ -487,46 +487,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe 'primary connection re-use', :reestablished_active_record_base, :add_ci_connection do
-    let(:model) { Ci::ApplicationRecord }
-
-    describe '#read' do
-      it 'returns ci replica connection' do
-        expect { |b| lb.read(&b) }.to yield_with_args do |args|
-          expect(args.pool.db_config.name).to eq('ci_replica')
-        end
-      end
-
-      context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
-        it 'returns ci replica connection' do
-          stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
-
-          expect { |b| lb.read(&b) }.to yield_with_args do |args|
-            expect(args.pool.db_config.name).to eq('ci_replica')
-          end
-        end
-      end
-    end
-
-    describe '#read_write' do
-      it 'returns Ci::ApplicationRecord connection' do
-        expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
-          expect(args.pool.db_config.name).to eq('ci')
-        end
-      end
-
-      context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
-        it 'returns ActiveRecord::Base connection' do
-          stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
-
-          expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
-            expect(args.pool.db_config.name).to eq('main')
-          end
-        end
-      end
-    end
-  end
-
   describe '#wal_diff' do
     it 'returns the diff between two write locations' do
       loc1 = lb.send(:get_write_location, lb.pool.connection)

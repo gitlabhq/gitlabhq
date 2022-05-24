@@ -257,7 +257,6 @@ control over how the Pages daemon runs and serves content in your environment.
 | `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
-| `inplace_chroot`                        | [REMOVED in GitLab 14.3.](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/561) On [systems that don't support bind-mounts](index.md#gitlab-pages-fails-to-start-in-docker-container), this instructs GitLab Pages to `chroot` into its `pages_path` directory. Some caveats exist when using in-place `chroot`; refer to the GitLab Pages [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md#caveats) for more information. |
 | `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
 | `insecure_ciphers`                      | Use default list of cipher suites, may contain insecure ones like 3DES and RC4. |
 | `internal_gitlab_server`                | Internal GitLab server address used exclusively for API requests. Useful if you want to send that traffic over an internal load balancer. Defaults to GitLab `external_url`. |
@@ -1208,72 +1207,6 @@ sudo gitlab-ctl tail gitlab-pages
 
 You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
 
-### `open /etc/ssl/ca-bundle.pem: permission denied`
-
-WARNING:
-This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
-
-GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
-`/tmp/gitlab-pages-*`.
-
-In the jail, a bundle of trusted certificates is
-provided at `/etc/ssl/ca-bundle.pem`. It's
-[copied there](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/51)
-from `/opt/gitlab/embedded/ssl/certs/cacert.pem`
-as part of starting up Pages.
-
-If the permissions on the source file are incorrect (they should be `0644`), then
-the file inside the `chroot` jail is also wrong.
-
-Pages logs errors in `/var/log/gitlab/gitlab-pages/current` like:
-
-```plaintext
-x509: failed to load system roots and no roots provided
-open /etc/ssl/ca-bundle.pem: permission denied
-```
-
-The use of a `chroot` jail makes this error misleading, as it is not
-referring to `/etc/ssl` on the root file system.
-
-The fix is to correct the source file permissions and restart Pages:
-
-```shell
-sudo chmod 644 /opt/gitlab/embedded/ssl/certs/cacert.pem
-sudo gitlab-ctl restart gitlab-pages
-```
-
-### `dial tcp: lookup gitlab.example.com` and `x509: certificate signed by unknown authority`
-
-WARNING:
-This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
-
-When setting both `inplace_chroot` and `access_control` to `true`, you might encounter errors like:
-
-```plaintext
-dial tcp: lookup gitlab.example.com on [::1]:53: dial udp [::1]:53: connect: cannot assign requested address
-```
-
-Or:
-
-```plaintext
-open /opt/gitlab/embedded/ssl/certs/cacert.pem: no such file or directory
-x509: certificate signed by unknown authority
-```
-
-The reason for those errors is that the files `resolv.conf`, `/etc/hosts/`, `/etc/nsswitch.conf` and `ca-bundle.pem` are missing inside the `chroot`.
-The fix is to copy these files inside the `chroot`:
-
-```shell
-sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl
-sudo mkdir -p /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/certs/
-
-sudo cp /etc/resolv.conf /var/opt/gitlab/gitlab-rails/shared/pages/etc/
-sudo cp /etc/hosts /var/opt/gitlab/gitlab-rails/shared/pages/etc/
-sudo cp /etc/nsswitch.conf /var/opt/gitlab/gitlab-rails/shared/pages/etc/
-sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/opt/gitlab/embedded/ssl/certs/
-sudo cp /opt/gitlab/embedded/ssl/certs/cacert.pem /var/opt/gitlab/gitlab-rails/shared/pages/etc/ssl/ca-bundle.pem
-```
-
 ### `unsupported protocol scheme \"\""`
 
 If you see the following error:
@@ -1551,28 +1484,6 @@ To do that:
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-### GitLab Pages fails to start in Docker container
-
-WARNING:
-This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
-
-The GitLab Pages daemon doesn't have permissions to bind mounts when it runs
-in a Docker container. To overcome this issue, you must change the `chroot`
-behavior:
-
-1. Edit `/etc/gitlab/gitlab.rb`.
-1. Set the `inplace_chroot` to `true` for GitLab Pages:
-
-   ```ruby
-   gitlab_pages['inplace_chroot'] = true
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-NOTE:
-`inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
-The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
 
 ### GitLab Pages deploy job fails with error "is not a recognized provider"
 

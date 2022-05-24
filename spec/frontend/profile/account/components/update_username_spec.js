@@ -52,7 +52,7 @@ describe('UpdateUsername component', () => {
       openModalBtn: wrapper.find('[data-testid="username-change-confirmation-modal"]'),
       modalBody: modal.find('.modal-body'),
       modalHeader: modal.find('.modal-title'),
-      confirmModalBtn: wrapper.find('.btn-warning'),
+      confirmModalBtn: wrapper.find('.btn-confirm'),
     };
   };
 

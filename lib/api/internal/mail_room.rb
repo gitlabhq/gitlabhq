@@ -12,6 +12,10 @@ module API
     class MailRoom < ::API::Base
       feature_category :service_desk
 
+      format :json
+      content_type :txt, 'text/plain'
+      default_format :txt
+
       before do
         authenticate_gitlab_mailroom_request!
       end

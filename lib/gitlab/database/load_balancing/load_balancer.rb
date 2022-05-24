@@ -232,14 +232,14 @@ module Gitlab
         # host - An optional host name to use instead of the default one.
         # port - An optional port to connect to.
         def create_replica_connection_pool(pool_size, host = nil, port = nil)
-          db_config = @configuration.replica_db_config
+          db_config = @configuration.db_config
 
           env_config = db_config.configuration_hash.dup
           env_config[:pool] = pool_size
           env_config[:host] = host if host
           env_config[:port] = port if port
 
-          replica_db_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          db_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
             db_config.env_name,
             db_config.name + REPLICA_SUFFIX,
             env_config
@@ -249,7 +249,7 @@ module Gitlab
           # as it will rewrite ActiveRecord::Base.connection
           ActiveRecord::ConnectionAdapters::ConnectionHandler
             .new
-            .establish_connection(replica_db_config)
+            .establish_connection(db_config)
         end
 
         # ActiveRecord::ConnectionAdapters::ConnectionHandler handles fetching,
@@ -258,7 +258,7 @@ module Gitlab
         # rubocop:disable Database/MultipleDatabases
         def pool
           ActiveRecord::Base.connection_handler.retrieve_connection_pool(
-            @configuration.primary_connection_specification_name,
+            @configuration.connection_specification_name,
             role: ActiveRecord::Base.writing_role,
             shard: ActiveRecord::Base.default_shard
           ) || raise(::ActiveRecord::ConnectionNotEstablished)

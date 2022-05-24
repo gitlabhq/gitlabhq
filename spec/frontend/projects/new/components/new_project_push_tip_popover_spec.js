@@ -57,7 +57,7 @@ describe('New project push tip popover', () => {
     });
     expect(findFormInput().attributes()).toMatchObject({
       'aria-label': 'Push project from command line',
-      readonly: 'readonly',
+      readonly: '',
     });
   });
 

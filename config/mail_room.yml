@@ -46,6 +46,7 @@
       :delivery_method: postback
       :delivery_options:
         :delivery_url: <%= config[:gitlab_url] %>/api/v4/internal/mail_room/<%= key %>
+        :content_type: text/plain
         :jwt_auth_header: <%= Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER %>
         :jwt_issuer: <%= Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER %>
         :jwt_algorithm: "HS256"

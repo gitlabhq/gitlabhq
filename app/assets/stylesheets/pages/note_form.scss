@@ -77,6 +77,10 @@
   }
 }
 
+.md-area:focus-within {
+  @include gl-focus;
+}
+
 .md-header .nav-links {
   display: flex;
   flex-flow: row wrap;
@@ -427,7 +431,11 @@ table {
 }
 
 .comment-warning-wrapper {
+  transition: border-color ease-in-out 0.15s,
+    box-shadow ease-in-out 0.15s;
+
   .md-area {
     border: 0;
+    box-shadow: none;
   }
 }

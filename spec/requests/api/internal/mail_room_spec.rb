@@ -215,5 +215,29 @@ RSpec.describe API::Internal::MailRoom do
         expect(job).to match a_hash_including('args' => [encoded_email_content])
       end
     end
+
+    context 'handle text/plain request content type' do
+      let(:auth_headers) do
+        jwt_token = JWT.encode(auth_payload, incoming_email_secret, 'HS256')
+        {
+          Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER => jwt_token,
+          'Content-Type' => 'text/plain'
+        }
+      end
+
+      it 'schedules a EmailReceiverWorker job with email content encoded to utf-8 forcefully' do
+        Sidekiq::Testing.fake! do
+          expect do
+            post api("/internal/mail_room/incoming_email"), headers: auth_headers, params: email_content
+          end.to change { EmailReceiverWorker.jobs.size }.by(1)
+        end
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.content_type).to eql('application/json')
+
+        job = EmailReceiverWorker.jobs.last
+        expect(job).to match a_hash_including('args' => [email_content])
+      end
+    end
   end
 end

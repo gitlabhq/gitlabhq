@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "14.1.2",
   "vulnerabilities": [
     {
       "category": "sast",

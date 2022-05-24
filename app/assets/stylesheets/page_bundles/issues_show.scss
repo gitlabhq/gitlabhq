@@ -22,9 +22,10 @@
       inset-inline-start: 1rem;
     }
 
-    /* The inside bullet aligns itself to the bottom, which we see when text to its right wraps.
-     * We fix this by aligning it to the top. Targeting ::marker doesn't seem to work. */
-    > * {
+    /* The inside bullet aligns itself to the bottom, which we see when text to the right of
+     * a multi-line list item wraps. We fix this by aligning it to the top, and excluding
+     * other elements adversely affected by this. Targeting ::marker doesn't seem to work. */
+    > *:not(code):not(input):not(.gl-label) {
       vertical-align: top;
     }
 
@@ -38,7 +39,23 @@
 
     /* We fix the other paragraphs not indenting to the
      * right of the bullet due to the inside bullet. */
-    > :not(p:first-of-type):not(.drag-icon):not(.task-list-item-checkbox):not(.gfm-issue):not(.js-add-task) {
+    p ~ a,
+    p ~ blockquote,
+    p ~ code,
+    p ~ details,
+    p ~ dl,
+    p ~ h1,
+    p ~ h2,
+    p ~ h3,
+    p ~ h4,
+    p ~ h5,
+    p ~ h6,
+    p ~ hr,
+    p ~ ol,
+    p ~ p,
+    p ~ table:not(.code), /* We need :not(.code) to override typography.scss */
+    p ~ ul,
+    p ~ .markdown-code-block {
       margin-inline-start: 1rem;
     }
   }

@@ -1394,81 +1394,68 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
-    [
-      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
-      "WIP ", "(WIP)",
-      "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
-    ].each do |draft_prefix|
-      it "doesn't detect '#{draft_prefix}' at the start of the title as a draft" do
-        subject.title = "#{draft_prefix}#{subject.title}"
+    context "returns false" do
+      # We have removed support for variations of "WIP", and additionally need
+      #   to test unsupported variations of "Draft" that we have seen users
+      #   attempt.
+      #
+      [
+        'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
+        "WIP ", "(WIP)",
+        "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
+      ].each do |trigger|
+        it "when '#{trigger}' prefixes the title" do
+          subject.title = "#{trigger}#{subject.title}"
 
-        expect(subject.work_in_progress?).to eq false
+          expect(subject.draft?).to eq false
+        end
       end
-    end
 
-    it "doesn't detect merge request title just saying 'wip'" do
-      subject.title = "wip"
+      ["WIP", "Draft"].each do |trigger| # rubocop:disable Style/WordArray
+        it "when merge request title is simply '#{trigger}'" do
+          subject.title = trigger
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it "does not detect merge request title just saying 'draft'" do
-      subject.title = "draft"
+        it "when #{trigger} is in the middle of the title" do
+          subject.title = "Something with #{trigger} in the middle"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it 'does not detect WIP in the middle of the title' do
-      subject.title = 'Something with WIP in the middle'
+        it "when #{trigger} is at the end of the title" do
+          subject.title = "Something ends with #{trigger}"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it 'does not detect Draft in the middle of the title' do
-      subject.title = 'Something with Draft in the middle'
+        it "when title contains words starting with #{trigger}" do
+          subject.title = "#{trigger}foo #{subject.title}"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it 'does not detect Draft: in the middle of the title' do
-      subject.title = 'Something with Draft: in the middle'
+        it "when title contains words containing with #{trigger}" do
+          subject.title = "Foo#{trigger}Bar #{subject.title}"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
+      end
 
-    it 'does not detect WIP at the end of the title' do
-      subject.title = 'Something ends with WIP'
+      it 'when Draft: in the middle of the title' do
+        subject.title = 'Something with Draft: in the middle'
 
-      expect(subject.work_in_progress?).to eq false
-    end
+        expect(subject.draft?).to eq false
+      end
 
-    it 'does not detect Draft at the end of the title' do
-      subject.title = 'Something ends with Draft'
+      it "when the title does not contain draft" do
+        expect(subject.draft?).to eq false
+      end
 
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect WIP for words starting with WIP" do
-      subject.title = "Wipwap #{subject.title}"
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect WIP for words containing with WIP" do
-      subject.title = "WupWipwap #{subject.title}"
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect draft for words containing with draft" do
-      subject.title = "Drafting #{subject.title}"
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect WIP by default" do
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "is aliased to #draft?" do
-      expect(subject.method(:work_in_progress?)).to eq(subject.method(:draft?))
+      it "is aliased to #draft?" do
+        expect(subject.method(:work_in_progress?)).to eq(subject.method(:draft?))
+      end
     end
   end
 

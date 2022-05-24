@@ -199,6 +199,7 @@ $system-note-svg-size: 16px;
     }
 
     .note-body {
+      padding: $gl-padding-4;
       overflow-x: auto;
       overflow-y: hidden;
 
@@ -615,6 +616,7 @@ $system-note-svg-size: 16px;
 
 .note-header-info {
   min-width: 0;
+  padding-left: $gl-padding-4;
 
   &.discussion {
     padding-bottom: 0;
@@ -623,7 +625,7 @@ $system-note-svg-size: 16px;
 
 .note-header-info,
 .note-actions {
-  padding-bottom: $gl-padding-8;
+  padding-bottom: $gl-padding-4;
 }
 
 .system-note .note-header-info {

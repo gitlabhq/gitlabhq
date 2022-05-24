@@ -10,6 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+
+	"gitlab.com/gitlab-org/labkit/fips"
 )
 
 type s3Session struct {
@@ -61,8 +63,9 @@ func setupS3Session(s3Credentials config.S3Credentials, s3Config config.S3Config
 	}
 
 	cfg := &aws.Config{
-		Region:           aws.String(s3Config.Region),
-		S3ForcePathStyle: aws.Bool(s3Config.PathStyle),
+		Region:                        aws.String(s3Config.Region),
+		S3ForcePathStyle:              aws.Bool(s3Config.PathStyle),
+		S3DisableContentMD5Validation: aws.Bool(fips.Enabled()),
 	}
 
 	// In case IAM profiles aren't being used, use the static credentials

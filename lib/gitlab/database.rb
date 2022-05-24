@@ -223,8 +223,11 @@ module Gitlab
     def self.db_config_for_connection(connection)
       return unless connection
 
+      # For a ConnectionProxy we want to avoid ambiguous db_config as it may
+      # sometimes default to replica so we always return the primary config
+      # instead.
       if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
-        return connection.load_balancer.configuration.primary_db_config
+        return connection.load_balancer.configuration.db_config
       end
 
       # During application init we might receive `NullPool`

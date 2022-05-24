@@ -256,16 +256,6 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    if example.metadata.fetch(:stub_feature_flags, true)
-      # It doesn't make sense for this to default to enabled as we only plan to
-      # use this temporarily to override an environment variable but eventually
-      # we'll just use the environment variable value when we've completed the
-      # gradual rollout. This stub must happen in around block as there are other
-      # around blocks in tests that will run before this and get the wrong
-      # database connection.
-      stub_feature_flags(force_no_sharing_primary_model: false)
-    end
-
     example.run
   end
 

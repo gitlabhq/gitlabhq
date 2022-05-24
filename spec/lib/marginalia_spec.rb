@@ -59,7 +59,7 @@ RSpec.describe 'Marginalia spec' do
           "application"    => "test",
           "endpoint_id"    => "MarginaliaTestController#first_user",
           "correlation_id" => correlation_id,
-          "db_config_name" => ENV['GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci'] == 'main' ? 'main' : 'ci'
+          "db_config_name" => 'ci'
         }
       end
 

@@ -110,6 +110,7 @@ label {
   }
 
   &:focus {
+    border-color: $gray-400;
     @include gl-focus;
   }
 }

@@ -14350,7 +14350,6 @@ CREATE TABLE deploy_tokens (
     expires_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone NOT NULL,
     name character varying NOT NULL,
-    token character varying,
     username character varying,
     token_encrypted character varying(255),
     deploy_token_type smallint DEFAULT 2 NOT NULL,
@@ -27633,10 +27632,6 @@ CREATE INDEX index_deploy_keys_projects_on_deploy_key_id ON deploy_keys_projects
 CREATE INDEX index_deploy_keys_projects_on_project_id ON deploy_keys_projects USING btree (project_id);
 
 CREATE INDEX index_deploy_tokens_on_creator_id ON deploy_tokens USING btree (creator_id);
-
-CREATE UNIQUE INDEX index_deploy_tokens_on_token ON deploy_tokens USING btree (token);
-
-CREATE INDEX index_deploy_tokens_on_token_and_expires_at_and_id ON deploy_tokens USING btree (token, expires_at, id) WHERE (revoked IS FALSE);
 
 CREATE UNIQUE INDEX index_deploy_tokens_on_token_encrypted ON deploy_tokens USING btree (token_encrypted);
 
