@@ -85,9 +85,9 @@ To protect or unprotect a runner:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the runner you want to protect or unprotect. Make sure it's enabled.
-1. Click the pencil button.
+1. Select the pencil button.
 1. Check the **Protected** option.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ![specific runners edit icon](img/protected_runners_check_box_v14_1.png)
 
@@ -113,7 +113,7 @@ To reset the registration token:
 
 1. Go to the project's **Settings > CI/CD**.
 1. Expand the **General pipelines settings** section.
-1. Find the **Runner token** form field and click the **Reveal value** button.
+1. Find the **Runner token** form field and select **Reveal value**.
 1. Delete the value and save the form.
 1. After the page is refreshed, expand the **Runners settings** section
    and check the registration token - it should be changed.
@@ -193,9 +193,9 @@ To make a runner pick untagged jobs:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the runner you want to pick untagged jobs and make sure it's enabled.
-1. Click the pencil button.
+1. Select the pencil button.
 1. Check the **Run untagged jobs** option.
-1. Click the **Save changes** button for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 NOTE:
 The runner tags list can not be empty when it's not allowed to pick untagged jobs.

@@ -481,6 +481,11 @@ module Gitlab
       "can contain only lowercase letters, digits, '_' and '-'. " \
       "Must start with a letter, and cannot end with '-' or '_'"
     end
+
+    # One or more `part`s, separated by separator
+    def sep_by_1(separator, part)
+      %r(#{part} (#{separator} #{part})*)x
+    end
   end
 end
 

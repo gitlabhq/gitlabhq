@@ -122,7 +122,7 @@ RSpec.describe QuickActions::InterpretService do
         inprogress # populate the label
         _, updates, _ = service.execute(content, issuable)
 
-        expect(updates).to eq(add_label_ids: [bug.id, inprogress.id])
+        expect(updates).to match(add_label_ids: contain_exactly(bug.id, inprogress.id))
       end
 
       it 'returns the label message' do
@@ -130,7 +130,10 @@ RSpec.describe QuickActions::InterpretService do
         inprogress # populate the label
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Added #{bug.to_reference(format: :name)} #{inprogress.to_reference(format: :name)} labels.")
+        # Compare message without making assumptions about ordering.
+        expect(message).to match %r{Added ~".*" ~".*" labels.}
+        expect(message).to include(bug.to_reference(format: :name))
+        expect(message).to include(inprogress.to_reference(format: :name))
       end
     end
 
@@ -1194,6 +1197,64 @@ RSpec.describe QuickActions::InterpretService do
     it_behaves_like 'label command' do
       let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~unknown) }
       let(:issuable) { merge_request }
+    end
+
+    context 'with a colon label' do
+      let(:bug) { create(:label, project: project, title: 'Category:Bug') }
+      let(:inprogress) { create(:label, project: project, title: 'status:in:progress') }
+
+      context 'when quoted' do
+        let(:content) { %(/label ~"#{inprogress.title}" ~"#{bug.title}" ~unknown) }
+
+        it_behaves_like 'label command' do
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'label command' do
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'when unquoted' do
+        let(:content) { %(/label ~#{inprogress.title} ~#{bug.title} ~unknown) }
+
+        it_behaves_like 'label command' do
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'label command' do
+          let(:issuable) { issue }
+        end
+      end
+    end
+
+    context 'with a scoped label' do
+      let(:bug) { create(:label, :scoped, project: project) }
+      let(:inprogress) { create(:label, project: project, title: 'three::part::label') }
+
+      context 'when quoted' do
+        let(:content) { %(/label ~"#{inprogress.title}" ~"#{bug.title}" ~unknown) }
+
+        it_behaves_like 'label command' do
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'label command' do
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'when unquoted' do
+        let(:content) { %(/label ~#{inprogress.title} ~#{bug.title} ~unknown) }
+
+        it_behaves_like 'label command' do
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'label command' do
+          let(:issuable) { issue }
+        end
+      end
     end
 
     it_behaves_like 'multiple label command' do

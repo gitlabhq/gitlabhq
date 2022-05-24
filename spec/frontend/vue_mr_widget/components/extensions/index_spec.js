@@ -21,8 +21,8 @@ describe('MR widget extension registering', () => {
       expect.objectContaining({
         extends: ExtensionBase,
         name: 'Test',
-        props: ['helloWorld'],
         computed: {
+          helloWorld: expect.any(Function),
           test: expect.any(Function),
         },
         methods: {

@@ -100,7 +100,7 @@ Supported attributes:
 | Attribute       | Type           | Required               | Description |
 |-----------------|----------------|------------------------|-------------|
 | `project_id`    | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `name`          | string         | **{check-circle}** Yes | The `name` of the file being uploaded. The file name must be unique within the project. |
+| `name`          | string         | **{check-circle}** Yes | The `name` of the file being uploaded. The filename must be unique within the project. |
 | `file`          | file           | **{check-circle}** Yes | The `file` being uploaded (5 MB limit). |
 
 Example request:

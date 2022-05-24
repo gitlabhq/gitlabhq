@@ -91,7 +91,7 @@ To change your personal details, including name, billing address, and email addr
 1. Select **My account > Account details**.
 1. Expand the **Personal details** section.
 1. Edit your personal details.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Change your company details
 
@@ -101,7 +101,7 @@ To change your company details, including company name and VAT number:
 1. Select **My account > Account details**.
 1. Expand the **Company details** section.
 1. Edit the company details.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Change your payment method
 
@@ -117,7 +117,7 @@ To change your payment method:
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My account > Payment methods**.
 1. **Edit** an existing payment method's information or **Add new payment method**.
-1. Click **Save Changes**.
+1. Select **Save Changes**.
 
 #### Set a default payment method
 
@@ -127,7 +127,7 @@ method as the default:
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My account > Payment methods**.
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
-1. Click **Save Changes**.
+1. Select **Save Changes**.
 
 ### Change the linked account
 
@@ -137,8 +137,8 @@ To change the GitLab.com account linked to your Customers Portal account:
    [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com) and ensure you
    are not logged in.
-1. On the Customers Portal page, click **My account > Account details**.
-1. Under **Your GitLab.com account**, click **Change linked account**.
+1. On the Customers Portal page, select **My account > Account details**.
+1. Under **Your GitLab.com account**, select **Change linked account**.
 1. Log in to the [GitLab SaaS](https://gitlab.com) account you want to link to the Customers Portal
    account.
 
@@ -164,9 +164,9 @@ Only one namespace can be linked to a subscription.
 To change the password for this customers portal account:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and click on **Account details**.
+1. Select the **My account** drop-down and select on **Account details**.
 1. Make the required changes to the **Your password** section.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Community program subscriptions
 

@@ -1,0 +1,6 @@
+query getCurrentLicensePlan {
+  currentLicense {
+    id
+    plan
+  }
+}

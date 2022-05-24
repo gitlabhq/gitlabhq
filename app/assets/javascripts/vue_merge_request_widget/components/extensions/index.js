@@ -10,12 +10,26 @@ export const registerExtension = (extension) => {
   registeredExtensions.extensions.push({
     extends: ExtensionBase,
     name: extension.name,
-    props: extension.props,
+    props: {
+      mr: {
+        type: Object,
+        required: true,
+      },
+    },
     i18n: extension.i18n,
     expandEvent: extension.expandEvent,
     enablePolling: extension.enablePolling,
     modalComponent: extension.modalComponent,
     computed: {
+      ...extension.props.reduce(
+        (acc, propKey) => ({
+          ...acc,
+          [propKey]() {
+            return this.mr[propKey];
+          },
+        }),
+        {},
+      ),
       ...Object.keys(extension.computed).reduce(
         (acc, computedKey) => ({
           ...acc,

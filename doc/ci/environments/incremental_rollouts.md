@@ -63,7 +63,7 @@ rollout 10%:
     ROLLOUT_PERCENTAGE: 10
 ```
 
-When the jobs are built, a **play** button appears next to the job's name. Click the **play** button
+When the jobs are built, a **play** button appears next to the job's name. Select **play**
 to release each stage of pods. You can also rollback by running a lower percentage job. Once 100%
 is reached, you cannot roll back using this method. It is still possible to roll back by redeploying
 the old version using the **Rollback** button on the environment page.

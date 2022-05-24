@@ -82,7 +82,7 @@ table, use the Azure defaults. For a list of required attributes, refer to the [
 
 For guidance, you can view [an example configuration in the troubleshooting reference](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory).
 
-1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
+1. Below the mapping list select **Show advanced options > Edit attribute list for AppName**.
 1. Ensure the `id` is the primary and required field, and `externalId` is also required.
 
    NOTE:

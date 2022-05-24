@@ -84,7 +84,7 @@ To disable shared runners for a group:
 1. Go to the group's **Settings > CI/CD** and expand the **Runners** section.
 1. In the **Shared runners** area, turn off the **Enable shared runners for this group** toggle.
 1. Optionally, to allow shared runners to be enabled for individual projects or subgroups,
-   click **Allow projects and subgroups to override the group setting**.
+   select **Allow projects and subgroups to override the group setting**.
 
 NOTE:
 To re-enable the shared runners for a group, turn on the
@@ -200,11 +200,11 @@ You must have the Owner role for the group.
 
 1. Go to the group you want to remove or pause the runner for.
 1. On the left sidebar, select **CI/CD > Runners**.
-1. Click **Pause** or **Remove runner**.
+1. Select **Pause** or **Remove runner**.
    - If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
    - From the group view, you cannot remove a runner that is assigned to more than one project.
      You must remove it from each project first.
-1. On the confirmation dialog, click **OK**.
+1. On the confirmation dialog, select **OK**.
 
 ## Specific runners
 

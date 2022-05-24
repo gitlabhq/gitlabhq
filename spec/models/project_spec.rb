@@ -8323,14 +8323,6 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#security_training_available?' do
-    subject { build(:project) }
-
-    it 'returns false' do
-      expect(subject.security_training_available?).to eq false
-    end
-  end
-
   private
 
   def finish_job(export_job)

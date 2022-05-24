@@ -49,7 +49,7 @@ Select the desired period from the calendar dropdown.
 
 ## Sorting by different factors
 
-Contributions per group member are also presented in tabular format. Click a column header to sort the table by that column:
+Contributions per group member are also presented in tabular format. Select a column header to sort the table by that column:
 
 - Member name
 - Number of pushed events

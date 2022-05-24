@@ -4,9 +4,10 @@ import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
+import currentLicenseQuery from '~/security_configuration/graphql/current_license.query.graphql';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
-import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
+import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY, LICENSE_ULTIMATE } from './constants';
 import FeatureCard from './feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
 import UpgradeBanner from './upgrade_banner.vue';
@@ -50,6 +51,17 @@ export default {
     TrainingProviderList,
   },
   inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath'],
+  apollo: {
+    currentLicensePlan: {
+      query: currentLicenseQuery,
+      update({ currentLicense }) {
+        return currentLicense?.plan;
+      },
+      error() {
+        this.hasCurrentLicenseFetchError = true;
+      },
+    },
+  },
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -84,15 +96,13 @@ export default {
       required: false,
       default: '',
     },
-    securityTrainingEnabled: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
+      currentLicensePlan: '',
+      hasCurrentLicenseFetchError: false,
     };
   },
   computed: {
@@ -112,6 +122,12 @@ export default {
         this.autoDevopsEnabled &&
         !this.autoDevopsEnabledAlertDismissedProjects.includes(this.projectFullPath)
       );
+    },
+    shouldShowVulnerabilityManagementTab() {
+      // if the query fails (if the plan is `null` also means an error has occurred) we still want to show the feature
+      const hasQueryError = this.hasCurrentLicenseFetchError || this.currentLicensePlan === null;
+
+      return hasQueryError || this.currentLicensePlan === LICENSE_ULTIMATE;
     },
   },
   methods: {
@@ -237,9 +253,9 @@ export default {
               {{ $options.i18n.description }}
             </p>
             <p v-if="canViewCiHistory">
-              <gl-link data-testid="compliance-view-history-link" :href="gitlabCiHistoryPath">
-                {{ $options.i18n.configurationHistory }}
-              </gl-link>
+              <gl-link data-testid="compliance-view-history-link" :href="gitlabCiHistoryPath">{{
+                $options.i18n.configurationHistory
+              }}</gl-link>
             </p>
           </template>
           <template #features>
@@ -254,18 +270,20 @@ export default {
         </section-layout>
       </gl-tab>
       <gl-tab
-        v-if="securityTrainingEnabled"
+        v-if="shouldShowVulnerabilityManagementTab"
         data-testid="vulnerability-management-tab"
         :title="$options.i18n.vulnerabilityManagement"
         query-param-value="vulnerability-management"
       >
         <section-layout :heading="$options.i18n.securityTraining">
           <template #description>
-            <p>{{ $options.i18n.securityTrainingDescription }}</p>
             <p>
-              <gl-link :href="vulnerabilityTrainingDocsPath">
-                {{ $options.i18n.securityTrainingDoc }}
-              </gl-link>
+              {{ $options.i18n.securityTrainingDescription }}
+            </p>
+            <p>
+              <gl-link :href="vulnerabilityTrainingDocsPath">{{
+                $options.i18n.securityTrainingDoc
+              }}</gl-link>
             </p>
           </template>
           <template #features>

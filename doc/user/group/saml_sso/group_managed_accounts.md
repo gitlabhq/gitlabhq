@@ -115,7 +115,7 @@ To set a limit on how long personal access tokens are valid for users in a group
 1. Navigate to the **Settings > General** page in your group's sidebar.
 1. Expand the **Permissions and group features** section.
 1. Fill in the **Maximum allowable lifetime for access tokens (days)** field.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 Once a lifetime for personal access tokens is set:
 

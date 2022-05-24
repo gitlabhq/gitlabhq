@@ -56,7 +56,6 @@ export const initSecurityConfiguration = (el) => {
             'gitlabCiPresent',
             'autoDevopsEnabled',
             'canEnableAutoDevops',
-            'securityTrainingEnabled',
           ]),
         },
       });

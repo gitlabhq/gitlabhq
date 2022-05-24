@@ -34,13 +34,7 @@ export default {
                   { ...extension },
                   {
                     props: {
-                      ...extension.props.reduce(
-                        (acc, key) => ({
-                          ...acc,
-                          [key]: this.mr[key],
-                        }),
-                        {},
-                      ),
+                      mr: this.mr,
                     },
                   },
                 ),

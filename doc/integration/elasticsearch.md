@@ -261,7 +261,7 @@ To enable languages support:
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
-1. Click **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
 1. Enable plugins support for **Searching** after the previous step is completed.
 
@@ -435,7 +435,7 @@ Some migrations are built with a retry limit. If the migration cannot finish wit
 it is halted and a notification is displayed in the Advanced Search integration settings.
 It is recommended to check the [`elasticsearch.log` file](../administration/logs.md#elasticsearchlog) to
 debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
-fixed the cause of the failure, click "Retry migration", and the migration is scheduled to be retried
+fixed the cause of the failure, select "Retry migration", and the migration is scheduled to be retried
 in the background.
 
 If you cannot get the migration to succeed, you may
@@ -611,7 +611,7 @@ Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
    You can view the jobs in **Menu > Admin > Monitoring > Background Jobs > Queues Tab**
-   and click `elastic_commit_indexer`, or you can query indexing status using a Rake task:
+   and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell
    # Omnibus installations

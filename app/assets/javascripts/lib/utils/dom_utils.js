@@ -38,9 +38,9 @@ export const toggleContainerClasses = (containerEl, classList) => {
 /**
  * Return a object mapping element dataset names to booleans.
  *
- * This is useful for data- attributes whose presence represent
- * a truthiness, no matter the value of the attribute. The absence of the
- * attribute represents falsiness.
+ * This is useful for data- attributes whose presense represent
+ * a truthiness, no matter the value of the attribute. The absense of the
+ * attribute represents  falsiness.
  *
  * This can be useful when Rails-provided boolean-like values are passed
  * directly to the HAML template, rather than cast to a string.

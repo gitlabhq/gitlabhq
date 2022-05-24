@@ -181,7 +181,7 @@ Search history is available for issues and merge requests, and is stored locally
 in your browser. To run a search from history:
 
 1. In the top menu, select **Issues** or **Merge requests**.
-1. To the left of the search bar, click **Recent searches**, and select a search from the list.
+1. To the left of the search bar, select **Recent searches**, and select a search from the list.
 
 ## Removing search filters
 

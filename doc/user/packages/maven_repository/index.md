@@ -701,7 +701,7 @@ dependencies {
 
 For your project, go to **Packages & Registries > Package Registry**.
 
-To remove a package, click the red trash icon or, from the package details, the **Delete** button.
+To remove a package, select the red trash icon or, from the package details, the **Delete** button.
 
 ## Create Maven packages with GitLab CI/CD
 

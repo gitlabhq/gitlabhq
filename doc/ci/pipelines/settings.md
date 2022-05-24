@@ -92,7 +92,7 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211339) in GitLab 13.6.
 
 A deployment job can fail because a newer one has run. If you retry the failed deployment job, the
-environment could be overwritten with older source code. If you click **Retry**, a modal warns you
+environment could be overwritten with older source code. If you select **Retry**, a modal warns you
 about this and asks for confirmation.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).

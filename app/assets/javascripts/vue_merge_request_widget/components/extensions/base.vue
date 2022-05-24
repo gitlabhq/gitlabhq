@@ -155,7 +155,7 @@ export default {
       requests.forEach((request) => {
         const poll = new Poll({
           resource: {
-            fetchData: () => request(this.$props),
+            fetchData: () => request(this),
           },
           method: 'fetchData',
           successCallback: (response) => {
@@ -180,7 +180,7 @@ export default {
     initExtensionPolling() {
       const poll = new Poll({
         resource: {
-          fetchData: () => this.fetchCollapsedData(this.$props),
+          fetchData: () => this.fetchCollapsedData(this),
         },
         method: 'fetchData',
         successCallback: ({ data }) => {
@@ -208,7 +208,7 @@ export default {
           this.initExtensionPolling();
         }
       } else {
-        this.fetchCollapsedData(this.$props)
+        this.fetchCollapsedData(this)
           .then((data) => {
             this.setCollapsedData(data);
           })
@@ -231,7 +231,7 @@ export default {
 
       this.loadingState = LOADING_STATES.expandedLoading;
 
-      this.fetchFullData(this.$props)
+      this.fetchFullData(this)
         .then((data) => {
           this.loadingState = null;
           this.fullData = data.map((x, i) => ({ id: i, ...x }));

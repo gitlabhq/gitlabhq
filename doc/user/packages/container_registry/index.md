@@ -57,7 +57,7 @@ To download and run a container image hosted in the GitLab Container Registry:
 1. Copy the link to your container image:
    - Go to your project or group's **Packages & Registries > Container Registry**
      and find the image you want.
-   - Next to the image name, click the **Copy** button.
+   - Next to the image name, select **Copy**.
 
     ![Container Registry image URL](img/container_registry_hover_path_13_4.png)
 
@@ -404,7 +404,7 @@ To delete images from within GitLab:
      by clicking the red **{remove}** **Trash** icon next to the tag you want
      to delete.
 
-1. In the dialog box, click **Remove tag**.
+1. In the dialog box, select **Remove tag**.
 
 ### Delete images using the API
 
@@ -506,7 +506,7 @@ You can, however, remove the Container Registry for a project:
 1. Go to your project's **Settings > General** page.
 1. Expand the **Visibility, project features, permissions** section
    and disable **Container Registry**.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
 

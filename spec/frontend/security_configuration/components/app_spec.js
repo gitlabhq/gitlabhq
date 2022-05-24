@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlTab, GlTabs, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
@@ -19,14 +20,22 @@ import {
   LICENSE_COMPLIANCE_DESCRIPTION,
   LICENSE_COMPLIANCE_HELP_PATH,
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
+  LICENSE_ULTIMATE,
+  LICENSE_PREMIUM,
+  LICENSE_FREE,
 } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import currentLicenseQuery from '~/security_configuration/graphql/current_license.query.graphql';
+import waitForPromises from 'helpers/wait_for_promises';
+
 import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
 import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
   REPORT_TYPE_SAST,
 } from '~/vue_shared/security_reports/constants';
+import { getCurrentLicensePlanResponse } from '../mock_data';
 
 const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
@@ -41,40 +50,31 @@ Vue.use(VueApollo);
 describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
+  let mockApollo;
 
-  const securityFeaturesMock = [
-    {
-      name: SAST_NAME,
-      shortName: SAST_SHORT_NAME,
-      description: SAST_DESCRIPTION,
-      helpPath: SAST_HELP_PATH,
-      configurationHelpPath: SAST_CONFIG_HELP_PATH,
-      type: REPORT_TYPE_SAST,
-      available: true,
-    },
-  ];
-
-  const complianceFeaturesMock = [
-    {
-      name: LICENSE_COMPLIANCE_NAME,
-      description: LICENSE_COMPLIANCE_DESCRIPTION,
-      helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-      type: REPORT_TYPE_LICENSE_COMPLIANCE,
-      configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    },
-  ];
-
-  const createComponent = ({ shouldShowCallout = true, ...propsData } = {}) => {
+  const createComponent = ({
+    shouldShowCallout = true,
+    licenseQueryResponse = LICENSE_ULTIMATE,
+    ...propsData
+  }) => {
     userCalloutDismissSpy = jest.fn();
+
+    mockApollo = createMockApollo([
+      [
+        currentLicenseQuery,
+        jest
+          .fn()
+          .mockResolvedValue(
+            licenseQueryResponse instanceof Error
+              ? licenseQueryResponse
+              : getCurrentLicensePlanResponse(licenseQueryResponse),
+          ),
+      ],
+    ]);
 
     wrapper = extendedWrapper(
       mount(SecurityConfigurationApp, {
-        propsData: {
-          augmentedSecurityFeatures: securityFeaturesMock,
-          augmentedComplianceFeatures: complianceFeaturesMock,
-          securityTrainingEnabled: true,
-          ...propsData,
-        },
+        propsData,
         provide: {
           upgradePath,
           autoDevopsHelpPagePath,
@@ -82,6 +82,7 @@ describe('App component', () => {
           projectFullPath,
           vulnerabilityTrainingDocsPath,
         },
+        apolloProvider: mockApollo,
         stubs: {
           ...stubChildren(SecurityConfigurationApp),
           GlLink: false,
@@ -132,13 +133,40 @@ describe('App component', () => {
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
 
+  const securityFeaturesMock = [
+    {
+      name: SAST_NAME,
+      shortName: SAST_SHORT_NAME,
+      description: SAST_DESCRIPTION,
+      helpPath: SAST_HELP_PATH,
+      configurationHelpPath: SAST_CONFIG_HELP_PATH,
+      type: REPORT_TYPE_SAST,
+      available: true,
+    },
+  ];
+
+  const complianceFeaturesMock = [
+    {
+      name: LICENSE_COMPLIANCE_NAME,
+      description: LICENSE_COMPLIANCE_DESCRIPTION,
+      helpPath: LICENSE_COMPLIANCE_HELP_PATH,
+      type: REPORT_TYPE_LICENSE_COMPLIANCE,
+      configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
+    },
+  ];
+
   afterEach(() => {
     wrapper.destroy();
+    mockApollo = null;
   });
 
   describe('basic structure', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+      });
+      await waitForPromises();
     });
 
     it('renders main-heading with correct text', () => {
@@ -198,7 +226,10 @@ describe('App component', () => {
 
   describe('Manage via MR Error Alert', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+      });
     });
 
     describe('on initial load', () => {
@@ -234,6 +265,8 @@ describe('App component', () => {
     describe('given the right props', () => {
       beforeEach(() => {
         createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
           autoDevopsEnabled: false,
           gitlabCiPresent: false,
           canEnableAutoDevops: true,
@@ -255,7 +288,10 @@ describe('App component', () => {
 
     describe('given the wrong props', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
+        });
       });
       it('should not show AutoDevopsAlert', () => {
         expect(findAutoDevopsAlert().exists()).toBe(false);
@@ -279,7 +315,11 @@ describe('App component', () => {
           );
         }
 
-        createComponent({ autoDevopsEnabled });
+        createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
+          autoDevopsEnabled,
+        });
       });
 
       it(shouldRender ? 'renders' : 'does not render', () => {
@@ -305,7 +345,12 @@ describe('App component', () => {
               );
             }
 
-            createComponent({ autoDevopsEnabled: true });
+            createComponent({
+              augmentedSecurityFeatures: securityFeaturesMock,
+              augmentedComplianceFeatures: complianceFeaturesMock,
+              autoDevopsEnabled: true,
+            });
+
             findAutoDevopsEnabledAlert().vm.$emit('dismiss');
           });
 
@@ -330,6 +375,7 @@ describe('App component', () => {
     describe('given at least one unavailable feature', () => {
       beforeEach(() => {
         createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
           augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
         });
       });
@@ -350,6 +396,7 @@ describe('App component', () => {
     describe('given at least one unavailable feature, but banner is already dismissed', () => {
       beforeEach(() => {
         createComponent({
+          augmentedSecurityFeatures: securityFeaturesMock,
           augmentedComplianceFeatures: complianceFeaturesMock.map(makeAvailable(false)),
           shouldShowCallout: false,
         });
@@ -376,7 +423,11 @@ describe('App component', () => {
 
   describe('when given latestPipelinePath props', () => {
     beforeEach(() => {
-      createComponent({ latestPipelinePath: 'test/path' });
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+        latestPipelinePath: 'test/path',
+      });
     });
 
     it('should show latest pipeline info on the security tab  with correct link when latestPipelinePath is defined', () => {
@@ -401,6 +452,8 @@ describe('App component', () => {
   describe('given gitlabCiPresent & gitlabCiHistoryPath props', () => {
     beforeEach(() => {
       createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
         gitlabCiPresent: true,
         gitlabCiHistoryPath,
       });
@@ -415,36 +468,48 @@ describe('App component', () => {
     });
   });
 
-  describe('Vulnerability management tab', () => {
-    it('does not show tab if security training is disabled', () => {
-      createComponent({ securityTrainingEnabled: false });
-
-      expect(findVulnerabilityManagementTab().exists()).toBe(false);
+  describe('Vulnerability management', () => {
+    beforeEach(async () => {
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+      });
+      await waitForPromises();
     });
 
-    describe('security training enabled', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('shows the tab if security training is enabled', () => {
-        expect(findVulnerabilityManagementTab().exists()).toBe(true);
-      });
-
-      it('renders TrainingProviderList component', () => {
-        expect(findTrainingProviderList().exists()).toBe(true);
-      });
-
-      it('renders security training description', () => {
-        expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
-      });
-
-      it('renders link to help docs', () => {
-        const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
-
-        expect(trainingLink.text()).toBe('Learn more about vulnerability training');
-        expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
-      });
+    it('renders TrainingProviderList component', () => {
+      expect(findTrainingProviderList().exists()).toBe(true);
     });
+
+    it('renders security training description', () => {
+      expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
+    });
+
+    it('renders link to help docs', () => {
+      const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
+
+      expect(trainingLink.text()).toBe('Learn more about vulnerability training');
+      expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
+    });
+
+    it.each`
+      licenseQueryResponse | display
+      ${LICENSE_ULTIMATE}  | ${true}
+      ${LICENSE_PREMIUM}   | ${false}
+      ${LICENSE_FREE}      | ${false}
+      ${null}              | ${true}
+      ${new Error()}       | ${true}
+    `(
+      'displays $display for license $licenseQueryResponse',
+      async ({ licenseQueryResponse, display }) => {
+        createComponent({
+          licenseQueryResponse,
+          augmentedSecurityFeatures: securityFeaturesMock,
+          augmentedComplianceFeatures: complianceFeaturesMock,
+        });
+        await waitForPromises();
+        expect(findVulnerabilityManagementTab().exists()).toBe(display);
+      },
+    );
   });
 });
