@@ -11,6 +11,8 @@ const TEST_PROJECT_ID = 'abcproject';
 const TEST_MERGE_REQUEST_ID = '9001';
 const TEST_MERGE_REQUEST_URL = `${TEST_HOST}merge-requests/${TEST_MERGE_REQUEST_ID}`;
 
+jest.mock('~/lib/utils/poll');
+
 describe('ideStatusBar', () => {
   let store;
   let vm;

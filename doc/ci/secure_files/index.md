@@ -20,6 +20,8 @@ are stored securely outside of your project's repository, and are not version co
 It is safe to store sensitive information in these files. Secure files support both
 plain text and binary file types.
 
+You can manage secure files in the project settings, or with the [secure files API](../../api/secure_files.md).
+
 Secure files can be [downloaded and used by CI/CD jobs](#use-secure-files-in-cicd-jobs)
 by using the [load-secure-files](https://gitlab.com/gitlab-org/incubation-engineering/devops-for-mobile-apps/load-secure-files)
 tool.
@@ -30,49 +32,14 @@ Additional features and capabilities are planned.
 
 ## Add a secure file to a project
 
-To add a secure file to a project, use the [Secure Files API](../../api/secure_files.md#create-secure-file).
+To add a secure file to a project:
 
-Send a POST request to the secure files endpoint for your project:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/:project_id/secure_files" --form "name=myfile.jks" --form "file=@/path/to/file/myfile.jks"
-```
-
-The response returns all of the metadata for the file you just uploaded. For example:
-
-```json
-{
-    "id": 1,
-    "name": "myfile.jks",
-    "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
-    "checksum_algorithm": "sha256",
-    "created_at": "2022-02-22T22:22:22.222Z"
-}
-```
-
-## List all secure files in a project
-
-To list all secure files in a project, use the [Secure Files API](../../api/secure_files.md#list-project-secure-files).
-
-Send a GET request to the secure files endpoint for your project:
-
-```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/:project_id/secure_files"
-```
-
-The response returns an array of all of the secure files in the project. For example:
-
-```json
-[{
-    "id": 1,
-    "name": "myfile.jks",
-    "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
-    "checksum_algorithm": "sha256",
-    "created_at": "2022-02-22T22:22:22.222Z"
-}]
-```
+1. On the top bar, select **Menu > Projects** and find your project. 
+1. On the left sidebar, select **Settings > CI/CD**. 
+1. In the **Secure Files** section, select **Manage**.
+1. Select **Upload File**.
+1. Find the file to upload, select **Open**, and the file upload begins immediately.
+   The file shows up in the list when the upload is complete.
 
 ## Use secure files in CI/CD jobs
 

@@ -213,32 +213,42 @@ HTML which differs from the canonical HTML examples from the specification.
 For every Markdown example in the GLFM specification, three
 versions of HTML can potentially be rendered from the example:
 
-1. **Static HTML**: HTML produced by the backend (Ruby) renderer, which
-   contains extra styling and behavioral HTML. For example, **Create task** buttons
-   added for dynamically creating an issue from a task list item.
-   The GitLab [Markdown API](../../../api/markdown.md) generates HTML
-   for a given Markdown string using this method.
-1. **WYSIWYG HTML**: HTML produced by the frontend (JavaScript) Content Editor,
-   which includes parsing and rendering logic. Used to present an editable document
-   in the ProseMirror WYSIWYG editor.
-1. **Canonical HTML**: The clean, basic version of HTML rendered from Markdown.
-   1. For the examples which come from the CommonMark specification and
-      GFM extensions specification,
-      the canonical HTML is the exact identical HTML found in the
-      GFM
-      `spec.txt` example blocks.
-   1. For GLFM extensions to the <abbr title="GitHub Flavored Markdown">GFM</abbr> / CommonMark
-      specification, a `glfm_canonical_examples.txt`
-      [input specification file](#input-specification-files) contains the
-      Markdown examples and corresponding canonical HTML examples.
+- Static HTML.
+- WYSIWYG HTML.
+- Canonical HTML.
 
-As the rendered static and WYSIWYG HTML from the backend (Ruby) and frontend (JavaScript)
-renderers contain extra HTML, their rendered HTML can be converted to canonical HTML
-by a [canonicalization](#canonicalization-of-html) process.
+#### Static HTML
 
-#### Canonicalization of HTML
+**Static HTML** is HTML produced by the backend (Ruby) renderer, which
+contains extra styling and behavioral HTML. For example, **Create task** buttons
+added for dynamically creating an issue from a task list item.
+The GitLab [Markdown API](../../../api/markdown.md) generates HTML
+for a given Markdown string using this method.
 
-Neither the backend (Ruby) nor the frontend (JavaScript) rendered can directly render canonical HTML.
+#### WYSIWYG HTML
+
+**WYSIWYG HTML** is HTML produced by the frontend (JavaScript) Content Editor,
+which includes parsing and rendering logic. It is used to present an editable document
+in the ProseMirror WYSIWYG editor.
+
+#### Canonical HTML
+
+**Canonical HTML** is the clean, basic version of HTML rendered from Markdown.
+
+1. For the examples which come from the CommonMark specification and
+   GFM extensions specification, the canonical HTML is the exact identical HTML found in the
+   GFM `spec.txt` example blocks.
+1. For GLFM extensions to the <abbr title="GitHub Flavored Markdown">GFM</abbr> / CommonMark
+   specification, a `glfm_canonical_examples.txt` [input specification file](#input-specification-files)
+   contains the Markdown examples and corresponding canonical HTML examples.
+
+### Canonicalization of HTML
+
+The rendered [static HTML](#static-html) and [WYSIWYG HTML](#wysiwyg-html)
+from the backend (Ruby) and frontend (JavaScript) renderers usually contains extra styling
+or HTML elements, to support specific appearance and behavioral requirements.
+
+Neither the backend nor the frontend rendering logic can directly render the clean, basic canonical HTML.
 Nor should they be able to, because:
 
 - It's not a direct requirement to support any GitLab application feature.
@@ -578,23 +588,57 @@ The actual file should not have these prefixed `|` characters.
 controls the behavior of the [scripts](#scripts) and [tests](#types-of-markdown-tests-driven-by-the-glfm-specification).
 
 - It is manually updated.
-- It controls the status of automatic generation of files based on Markdown examples.
-- It allows example snapshot generation, Markdown conformance tests, or
-  Markdown snapshot tests to be skipped for individual examples. For example, if
-  they are unimplemented, broken, or cannot be tested for some reason.
+- The `skip_update_example_snapshot*` fields control the status of automatic generation of
+  snapshot example entries based on Markdown examples.
+- The `skip_running_*` control allow Markdown conformance tests or
+  Markdown snapshot tests to be skipped for individual examples.
+- This allows control over skipping this processing or testing of various examples when they
+  are unimplemented, partially implemented, broken, or cannot be generated or tested for some reason.
+- All entries default to false. They can be set to true by specifying a Ruby
+  value which evaluates as truthy. This could be the boolean `true` value, but ideally should
+  be a string describing why the example's updating or testing is being skipped.
+- When a `skip_update_example_snapshot*` entry is true, the existing value is preserved.
+  However, since the YAML is re-written, the style of the string value and its
+  [Block Chomping Indicator (`|`)](https://yaml.org/spec/1.2.2/#8112-block-chomping-indicator)
+  may be modified, because the Ruby `psych` YAML library automatically determines this.
+
+The following optional entries are supported for each example. They all default to `false`:
+
+- `skip_update_example_snapshots`: When true, skips any addition or update of any this example's entries
+  in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file
+  or the [`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) file.
+  If this value is truthy, then no other `skip_update_example_snapshot_*` entries can be truthy,
+  and an error is raised if any of them are.
+- `skip_update_example_snapshot_html_static`: When true, skips addition or update of this example's [static HTML](#static-html)
+  entry in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file.
+- `skip_update_example_snapshot_html_wysiwyg`: When true, skips addition or update of this example's [WYSIWYG HTML](#wysiwyg-html)
+  entry in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file.
+- `skip_update_example_snapshot_prosemirror_json`: When true, skips addition or update of this example's
+  entry in the [`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) file.
+- `skip_running_conformance_static_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
+  of the [static HTML](#static-html) for this example.
+- `skip_running_conformance_wysiwyg_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
+  of the [WYSIWYG HTML](#wysiwyg-html) for this example.
+- `skip_running_snapshot_static_html_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
+  of the [static HTML](#multiple-versions-of-rendered-html) for this example.
+- `skip_running_snapshot_wysiwyg_html_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
+  of the [WYSIWYG HTML](#wysiwyg-html) for this example.
+- `skip_running_snapshot_prosemirror_json_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
+  of the [ProseMirror JSON](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) for this example.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` sample entry:
 
 ```yaml
 07_99_an_example_with_incomplete_wysiwyg_implementation_1:
-  skip_update_example_snapshots: false
-  skip_update_example_snapshot_html_static: false
-  skip_update_example_snapshot_html_wysiwyg: false
-  skip_running_conformance_static_tests: false
-  skip_running_conformance_wysiwyg_tests: false
-  skip_running_snapshot_static_html_tests: false
-  skip_running_snapshot_wysiwyg_html_tests: false
-  skip_running_snapshot_prosemirror_json_tests: false
+  skip_update_example_snapshots: 'An explanation of the reason for skipping.'
+  skip_update_example_snapshot_html_static: 'An explanation of the reason for skipping.'
+  skip_update_example_snapshot_html_wysiwyg: 'An explanation of the reason for skipping.'
+  skip_update_example_snapshot_prosemirror_json: 'An explanation of the reason for skipping.'
+  skip_running_conformance_static_tests: 'An explanation of the reason for skipping.'
+  skip_running_conformance_wysiwyg_tests: 'An explanation of the reason for skipping.'
+  skip_running_snapshot_static_html_tests: 'An explanation of the reason for skipping.'
+  skip_running_snapshot_wysiwyg_html_tests: 'An explanation of the reason for skipping.'
+  skip_running_snapshot_prosemirror_json_tests: 'An explanation of the reason for skipping.'
 ```
 
 #### Output specification files

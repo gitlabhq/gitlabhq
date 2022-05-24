@@ -72,5 +72,6 @@ danger-review-local:
 reviewers-recommender:
   extends:
     - .default-retry
+    - .review:rules:reviewers-recommender
   stage: test
   needs: []

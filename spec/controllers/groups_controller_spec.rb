@@ -18,7 +18,6 @@ RSpec.describe GroupsController, factory_default: :keep do
   let_it_be(:guest) { group.add_guest(create(:user)).user }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
     enable_admin_mode!(admin_with_admin_mode)
   end
 

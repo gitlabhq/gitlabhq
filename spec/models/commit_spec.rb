@@ -746,7 +746,7 @@ eos
     end
   end
 
-  describe '#work_in_progress?' do
+  describe '#draft?' do
     [
       'squash! ', 'fixup! ',
       'draft: ', '[Draft] ', '(draft) ', 'Draft: '
@@ -754,21 +754,21 @@ eos
       it "detects the '#{draft_prefix}' prefix" do
         commit.message = "#{draft_prefix}#{commit.message}"
 
-        expect(commit).to be_work_in_progress
+        expect(commit).to be_draft
       end
     end
 
-    it "does not detect WIP for a commit just saying 'draft'" do
+    it "does not detect a commit just saying 'draft' as draft? == true" do
       commit.message = "draft"
 
-      expect(commit).not_to be_work_in_progress
+      expect(commit).not_to be_draft
     end
 
     ["FIXUP!", "Draft - ", "Wipeout", "WIP: ", "[WIP] ", "wip: "].each do |draft_prefix|
       it "doesn't detect '#{draft_prefix}' at the start of the title as a draft" do
         commit.message = "#{draft_prefix} #{commit.message}"
 
-        expect(commit).not_to be_work_in_progress
+        expect(commit).not_to be_draft
       end
     end
   end

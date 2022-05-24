@@ -11,6 +11,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
+import api from '~/api';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = { ...ISetter };
@@ -149,7 +150,7 @@ export default class CreateMergeRequestDropdown {
       });
   }
 
-  createBranch() {
+  createBranch(navigateToBranch = true) {
     this.isCreatingBranch = true;
 
     return axios
@@ -158,7 +159,10 @@ export default class CreateMergeRequestDropdown {
       })
       .then(({ data }) => {
         this.branchCreated = true;
-        window.location.href = data.url;
+
+        if (navigateToBranch) {
+          window.location.href = data.url;
+        }
       })
       .catch(() =>
         createFlash({
@@ -170,23 +174,25 @@ export default class CreateMergeRequestDropdown {
   createMergeRequest() {
     return new Promise(() => {
       this.isCreatingMergeRequest = true;
-      return this.createBranch().then(() => {
-        let path = canCreateConfidentialMergeRequest()
-          ? this.createMrPath.replace(
-              this.projectPath,
-              confidentialMergeRequestState.selectedProject.pathWithNamespace,
-            )
-          : this.createMrPath;
-        path = mergeUrlParams(
-          {
-            'merge_request[target_branch]': this.refInput.value,
-            'merge_request[source_branch]': this.branchInput.value,
-          },
-          path,
-        );
+      return this.createBranch(false)
+        .then(() => api.trackRedisHllUserEvent('i_code_review_user_create_mr_from_issue'))
+        .then(() => {
+          let path = canCreateConfidentialMergeRequest()
+            ? this.createMrPath.replace(
+                this.projectPath,
+                confidentialMergeRequestState.selectedProject.pathWithNamespace,
+              )
+            : this.createMrPath;
+          path = mergeUrlParams(
+            {
+              'merge_request[target_branch]': this.refInput.value,
+              'merge_request[source_branch]': this.branchInput.value,
+            },
+            path,
+          );
 
-        window.location.href = path;
-      });
+          window.location.href = path;
+        });
     });
   }
 

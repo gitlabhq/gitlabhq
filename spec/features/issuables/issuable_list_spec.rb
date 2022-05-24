@@ -9,8 +9,6 @@ RSpec.describe 'issuable list', :js do
   issuable_types = [:issue, :merge_request]
 
   before do
-    stub_feature_flags(vue_issues_list: true)
-
     project.add_user(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }

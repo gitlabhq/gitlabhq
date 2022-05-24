@@ -7684,6 +7684,9 @@ msgstr ""
 msgid "Checkout|Name of company or organization using GitLab"
 msgstr ""
 
+msgid "Checkout|Name: %{errors}"
+msgstr ""
+
 msgid "Checkout|Need more users? Purchase GitLab for your %{company}."
 msgstr ""
 
@@ -21828,16 +21831,7 @@ msgstr ""
 msgid "JiraService|This feature requires a Premium plan."
 msgstr ""
 
-msgid "JiraService|This is a Premium feature"
-msgstr ""
-
-msgid "JiraService|This is an Ultimate feature"
-msgstr ""
-
 msgid "JiraService|Transition Jira issues to their final state:"
-msgstr ""
-
-msgid "JiraService|Upgrade your plan to enable this feature of the Jira Integration."
 msgstr ""
 
 msgid "JiraService|Use Jira as this project's issue tracker."
@@ -40733,9 +40727,6 @@ msgid "Updating…"
 msgstr ""
 
 msgid "Upgrade offers available!"
-msgstr ""
-
-msgid "Upgrade your plan"
 msgstr ""
 
 msgid "Upload"

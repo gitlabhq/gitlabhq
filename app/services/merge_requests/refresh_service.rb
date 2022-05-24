@@ -255,17 +255,17 @@ module MergeRequests
 
       commit_shas = merge_request.commit_shas
 
-      wip_commit = @commits.detect do |commit|
-        commit.work_in_progress? && commit_shas.include?(commit.sha)
+      draft_commit = @commits.detect do |commit|
+        commit.draft? && commit_shas.include?(commit.sha)
       end
 
-      if wip_commit && !merge_request.work_in_progress?
-        merge_request.update(title: merge_request.wip_title)
+      if draft_commit && !merge_request.draft?
+        merge_request.update(title: merge_request.draft_title)
         SystemNoteService.add_merge_request_draft_from_commit(
           merge_request,
           merge_request.project,
           @current_user,
-          wip_commit
+          draft_commit
         )
       end
     end

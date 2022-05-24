@@ -15,10 +15,6 @@ RSpec.describe 'Issues > Labels bulk assignment' do
   let(:issue_1_selector) { "#issuable_#{issue1.id}" }
   let(:issue_2_selector) { "#issuable_#{issue2.id}" }
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   context 'as an allowed user', :js do
     before do
       project.add_maintainer(user)

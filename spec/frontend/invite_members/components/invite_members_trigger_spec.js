@@ -2,7 +2,11 @@ import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
-import { TRIGGER_ELEMENT_BUTTON, TRIGGER_ELEMENT_SIDE_NAV } from '~/invite_members/constants';
+import {
+  TRIGGER_ELEMENT_BUTTON,
+  TRIGGER_ELEMENT_SIDE_NAV,
+  TRIGGER_DEFAULT_QA_SELECTOR,
+} from '~/invite_members/constants';
 
 jest.mock('~/experimentation/experiment_tracking');
 
@@ -50,11 +54,23 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
     wrapper.destroy();
   });
 
-  describe('displayText', () => {
+  describe('configurable attributes', () => {
     it('includes the correct displayText for the button', () => {
       createComponent();
 
       expect(findButton().text()).toBe(displayText);
+    });
+
+    it('uses the default qa selector value', () => {
+      createComponent();
+
+      expect(findButton().attributes('data-qa-selector')).toBe(TRIGGER_DEFAULT_QA_SELECTOR);
+    });
+
+    it('sets the qa selector value', () => {
+      createComponent({ qaSelector: '_qaSelector_' });
+
+      expect(findButton().attributes('data-qa-selector')).toBe('_qaSelector_');
     });
   });
 

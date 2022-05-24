@@ -308,10 +308,6 @@ RSpec.configure do |config|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
       stub_feature_flags(file_identifier_hash: false)
 
-      # The following `vue_issues_list` stub can be removed
-      # once the Vue issues page has feature parity with the current Haml page
-      stub_feature_flags(vue_issues_list: false)
-
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
       # It's done in order to preserve the concistency in tests

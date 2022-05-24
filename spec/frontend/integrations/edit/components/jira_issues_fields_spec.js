@@ -11,7 +11,6 @@ describe('JiraIssuesFields', () => {
 
   const defaultProps = {
     showJiraVulnerabilitiesIntegration: true,
-    upgradePlanPath: 'https://gitlab.com',
   };
 
   const createComponent = ({

@@ -32,7 +32,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
 
       it 'creates an MR' do
         expect(merge_request).to be_valid
-        expect(merge_request.work_in_progress?).to be(false)
+        expect(merge_request.draft?).to be(false)
         expect(merge_request.title).to eq('Awesome merge_request')
         expect(merge_request.assignees).to be_empty
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
@@ -74,7 +74,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           end
 
           it 'sets MR to draft' do
-            expect(merge_request.work_in_progress?).to be(true)
+            expect(merge_request.draft?).to be(true)
           end
         end
 
@@ -90,7 +90,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
           end
 
           it 'sets MR to draft' do
-            expect(merge_request.work_in_progress?).to be(true)
+            expect(merge_request.draft?).to be(true)
           end
         end
       end

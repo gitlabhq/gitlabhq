@@ -177,6 +177,8 @@ Dangerfile @gl-quality/eng-prod
 
 [Application Security]
 /app/assets/javascripts/lib/dompurify.js @gitlab-com/gl-security/appsec
+/app/assets/javascripts/gfm_auto_complete.js @gitlab-com/gl-security/appsec
+/ee/app/assets/javascripts/gfm_auto_complete.js @gitlab-com/gl-security/appsec
 /app/validators/addressable_url_validator.rb  @gitlab-com/gl-security/appsec
 /app/validators/public_url_validator.rb  @gitlab-com/gl-security/appsec
 /config/initializers/content_security_policy.rb @gitlab-com/gl-security/appsec

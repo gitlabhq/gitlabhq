@@ -12,7 +12,7 @@
   = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,
     autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title'), dir: 'auto'
 
-  - if issuable.respond_to?(:work_in_progress?)
+  - if issuable.respond_to?(:draft?)
     .form-text.text-muted
       .js-wip-explanation{ style: "display: none;" }
         = remove_wip_text

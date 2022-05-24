@@ -18,6 +18,7 @@ export const USERS_FILTER_ALL = 'all';
 export const USERS_FILTER_SAML_PROVIDER_ID = 'saml_provider_id';
 export const TRIGGER_ELEMENT_BUTTON = 'button';
 export const TRIGGER_ELEMENT_SIDE_NAV = 'side-nav';
+export const TRIGGER_DEFAULT_QA_SELECTOR = 'invite_members_button';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
 export const MEMBERS_MODAL_CELEBRATE_TITLE = s__(
   'InviteMembersModal|GitLab is better with colleagues!',

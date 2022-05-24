@@ -27,7 +27,7 @@ module SystemNotes
     end
 
     def handle_merge_request_draft
-      action = noteable.work_in_progress? ? "draft" : "ready"
+      action = noteable.draft? ? "draft" : "ready"
 
       body = "marked this merge request as **#{action}**"
 

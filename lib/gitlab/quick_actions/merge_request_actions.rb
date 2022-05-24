@@ -91,7 +91,7 @@ module Gitlab
         desc 'Toggle the Draft status'
         explanation do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          if quick_action_target.work_in_progress?
+          if quick_action_target.draft?
             _("Unmarks this %{noun} as a draft.")
           else
             _("Marks this %{noun} as a draft.")
@@ -99,7 +99,7 @@ module Gitlab
         end
         execution_message do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          if quick_action_target.work_in_progress?
+          if quick_action_target.draft?
             _("Unmarked this %{noun} as a draft.")
           else
             _("Marked this %{noun} as a draft.")
@@ -108,12 +108,13 @@ module Gitlab
 
         types MergeRequest
         condition do
-          quick_action_target.respond_to?(:work_in_progress?) &&
-            # Allow it to mark as WIP on MR creation page _or_ through MR notes.
+          quick_action_target.respond_to?(:draft?) &&
+            # Allow it to mark as draft on MR creation page or through MR notes
+            #
             (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
         end
         command :draft do
-          @updates[:wip_event] = quick_action_target.work_in_progress? ? 'unwip' : 'wip'
+          @updates[:wip_event] = quick_action_target.draft? ? 'unwip' : 'wip'
         end
 
         desc _('Set target branch')

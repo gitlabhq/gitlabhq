@@ -64,6 +64,7 @@ variables:
   NODE_ENV: "test"
   BUNDLE_WITHOUT: "production:development"
   BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3 --quiet"
+  BUNDLE_FROZEN: "true"
   # we override the max_old_space_size to prevent OOM errors
   NODE_OPTIONS: --max_old_space_size=3584
   GIT_DEPTH: "20"

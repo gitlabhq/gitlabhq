@@ -1663,6 +1663,12 @@
     - <<: *if-merge-request
       changes: *danger-patterns
 
+.review:rules:reviewers-recommender:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request
+
 ###############
 # Setup rules #
 ###############

@@ -13,8 +13,6 @@ RSpec.describe 'Recent searches', :js do
   let(:project_1_local_storage_key) { "#{project_1.full_path}-issue-recent-searches" }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
-
     # Visit any fast-loading page so we can clear local storage without a DOM exception
     visit '/404'
     remove_recent_searches

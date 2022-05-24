@@ -12,10 +12,6 @@ RSpec.describe Projects::IssuesController do
   let(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   describe "GET #index" do
     context 'external issue tracker' do
       before do

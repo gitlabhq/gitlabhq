@@ -345,8 +345,6 @@
   - 3
 - - project_cache
   - 1
-- - project_daily_statistics
-  - 1
 - - project_destroy
   - 1
 - - project_export

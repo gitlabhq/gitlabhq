@@ -10,8 +10,6 @@ RSpec.describe 'Dropdown author', :js do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
-
     project.add_maintainer(user)
     sign_in(user)
 

@@ -43,18 +43,6 @@ RSpec.describe Repositories::GitHttpController do
           post :git_upload_pack, params: params
         end
 
-        context 'on a read-only instance' do
-          before do
-            allow(Gitlab::Database).to receive(:read_only?).and_return(true)
-          end
-
-          it 'does not update project statistics' do
-            expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
-
-            send_request
-          end
-        end
-
         it 'updates project statistics sync for projects' do
           stub_feature_flags(disable_git_http_fetch_writes: false)
 
@@ -83,7 +71,6 @@ RSpec.describe Repositories::GitHttpController do
 
           it 'does not increment statistics' do
             expect(Projects::FetchStatisticsIncrementService).not_to receive(:new)
-            expect(ProjectDailyStatisticsWorker).not_to receive(:perform_async)
 
             send_request
           end

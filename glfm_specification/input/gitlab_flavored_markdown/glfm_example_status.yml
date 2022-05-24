@@ -1,17 +1,14 @@
 ---
-- 06_05__inlines__emphasis_and_strong_emphasis__37:
-  skip_update_example_snapshots: 'Psych YAML library has a problem with dumping "5__6__78", it thinks its an invalid integer'
-- 07_01_first_gitlab_specific_section_with_examples_strong_but_with_two_asterisks:
+02_01__preliminaries__tabs__001:
+  # NOTE: False values are optional, they are only included here for reference. See
+  # https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#glfm_example_statusyml
+  # for more details.
   skip_update_example_snapshots: false
-  skip_running_snapshot_static_html_tests: false
-  skip_running_snapshot_wysiwyg_html_tests: false
-  skip_running_snapshot_prosemirror_json_tests: false
-  skip_running_conformance_static_tests: false
-  skip_running_conformance_wysiwyg_tests: false
-- 07_02_first_gitlab_specific_section_with_examples_strong_but_with_html:
-  skip_update_example_snapshots: false
-  skip_running_snapshot_static_html_tests: false
-  skip_running_snapshot_wysiwyg_html_tests: false
-  skip_running_snapshot_prosemirror_json_tests: false
-  skip_running_conformance_static_tests: false
-  skip_running_conformance_wysiwyg_tests: false
+  skip_update_example_snapshot_html_static: false
+  skip_update_example_snapshot_html_wysiwyg: false
+  skip_update_example_snapshot_prosemirror_json: false
+  skip_running_conformance_static_tests: false # NOT YET SUPPORTED
+  skip_running_conformance_wysiwyg_tests: false # NOT YET SUPPORTED
+  skip_running_snapshot_static_html_tests: false # NOT YET SUPPORTED
+  skip_running_snapshot_wysiwyg_html_tests: false # NOT YET SUPPORTED
+  skip_running_snapshot_prosemirror_json_tests: false # NOT YET SUPPORTED

@@ -519,9 +519,10 @@ class Commit
   #
   DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/.freeze
 
-  def work_in_progress?
+  def draft?
     !!(title =~ DRAFT_REGEX)
   end
+  alias_method :work_in_progress?, :draft?
 
   def merged_merge_request?(user)
     !!merged_merge_request(user)

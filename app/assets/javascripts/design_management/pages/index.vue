@@ -354,7 +354,7 @@ export default {
   >
     <header
       v-if="showToolbar"
-      class="row-content-block gl-border-t-0 gl-py-3 gl-display-flex"
+      class="gl-display-flex gl-my-0 gl-text-gray-900"
       data-testid="design-toolbar-wrapper"
     >
       <div

@@ -2749,15 +2749,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: project_daily_statistics
-  :worker_name: ProjectDailyStatisticsWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: project_destroy
   :worker_name: ProjectDestroyWorker
   :feature_category: :source_code_management

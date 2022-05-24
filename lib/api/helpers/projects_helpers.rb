@@ -169,7 +169,6 @@ module API
           :merge_commit_template,
           :squash_commit_template,
           :repository_storage,
-          :compliance_framework_setting,
           :packages_enabled,
           :service_desk_enabled,
           :keep_latest_artifact,

@@ -308,7 +308,7 @@ RSpec.describe MergeRequestPresenter do
     end
 
     before do
-      allow(resource).to receive(:work_in_progress?).and_return(true)
+      allow(resource).to receive(:draft?).and_return(true)
     end
 
     context 'when merge request enabled and has permission' do

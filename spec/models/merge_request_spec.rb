@@ -1381,7 +1381,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe "#work_in_progress?" do
+  describe "#draft?" do
     subject { build_stubbed(:merge_request) }
 
     [
@@ -1390,7 +1390,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it "detects the '#{draft_prefix}' prefix" do
         subject.title = "#{draft_prefix}#{subject.title}"
 
-        expect(subject.work_in_progress?).to eq true
+        expect(subject.draft?).to eq true
       end
     end
 

@@ -52,9 +52,9 @@ work it needs to perform and how long it takes to complete:
      - Clean-ups, like removing unused columns.
      - Adding non-critical indices on high-traffic tables.
      - Adding non-critical indices that take a long time to create.
-1. [**Background migrations.**](database/background_migrations.md) These aren't regular Rails migrations, but application code that is
+1. [**Batched background migrations.**](database/batched_background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
-   exceed the timing guidelines for post-deploy migrations. Background migrations should _not_ change the schema.
+   exceed the timing guidelines for post-deploy migrations. Batched background migrations should _not_ change the schema.
 
 Use the following diagram to guide your decision, but keep in mind that it is just a tool, and
 the final outcome will always be dependent on the specific changes being made:

@@ -20,7 +20,7 @@
             %li.gl-new-dropdown-item
               = link_to toggle_draft_merge_request_path(@merge_request), method: :put, class: 'dropdown-item js-draft-toggle-button' do
                 .gl-new-dropdown-item-text-wrapper
-                  = @merge_request.work_in_progress? ? _('Mark as ready') : _('Mark as draft')
+                  = @merge_request.draft? ? _('Mark as ready') : _('Mark as draft')
             %li.gl-new-dropdown-item.js-close-item
               = link_to close_issuable_path(@merge_request), method: :put, class: 'dropdown-item' do
                 .gl-new-dropdown-item-text-wrapper

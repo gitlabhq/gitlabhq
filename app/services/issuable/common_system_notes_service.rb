@@ -54,7 +54,7 @@ module Issuable
     def create_draft_note(old_title)
       return unless issuable.is_a?(MergeRequest)
 
-      if MergeRequest.work_in_progress?(old_title) != issuable.work_in_progress?
+      if MergeRequest.draft?(old_title) != issuable.draft?
         SystemNoteService.handle_merge_request_draft(issuable, issuable.project, current_user)
       end
     end

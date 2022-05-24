@@ -27,10 +27,6 @@ body {
   text-align: left;
   background-color: #fff;
 }
-h1 {
-  margin-top: 0;
-  margin-bottom: 0.25rem;
-}
 ul {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -89,15 +85,6 @@ button::-moz-focus-inner,
 }
 [type="search"] {
   outline-offset: -2px;
-}
-h1 {
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: #303030;
-}
-h1 {
-  font-size: 2.1875rem;
 }
 .list-unstyled {
   padding-left: 0;
@@ -531,10 +518,6 @@ button,
 html [type="button"],
 [role="button"] {
   cursor: pointer;
-}
-h1 {
-  margin-top: 20px;
-  margin-bottom: 10px;
 }
 strong {
   font-weight: bold;

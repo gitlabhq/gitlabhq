@@ -378,7 +378,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'PostReceive' => 3,
         'ProcessCommitWorker' => 3,
         'ProjectCacheWorker' => 3,
-        'ProjectDailyStatisticsWorker' => 3,
         'ProjectDestroyWorker' => 3,
         'ProjectExportWorker' => false,
         'ProjectImportScheduleWorker' => 1,

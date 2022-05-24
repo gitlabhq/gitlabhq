@@ -11,8 +11,6 @@ RSpec.describe 'Dropdown label', :js do
   let_it_be(:label) { create(:label, project: project, title: 'bug-label') }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
-
     project.add_maintainer(user)
     sign_in(user)
 
