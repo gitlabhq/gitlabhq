@@ -27337,6 +27337,18 @@ msgstr ""
 msgid "Passwords should be unique and not used for any other sites or services."
 msgstr ""
 
+msgid "Password|requires at least one lowercase letter"
+msgstr ""
+
+msgid "Password|requires at least one number"
+msgstr ""
+
+msgid "Password|requires at least one symbol character"
+msgstr ""
+
+msgid "Password|requires at least one uppercase letter"
+msgstr ""
+
 msgid "Past due"
 msgstr ""
 

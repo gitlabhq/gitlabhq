@@ -971,7 +971,7 @@ module Gitlab
             "but it is '#{migration.status_name}':" \
             "\t#{configuration}" \
             "\n\n" \
-            "Finalize it manually by running" \
+            "Finalize it manually by running the following command in a `bash` or `sh` shell:" \
             "\n\n" \
             "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.to_json.gsub(',', '\,')}']" \
             "\n\n" \

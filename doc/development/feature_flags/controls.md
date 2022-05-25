@@ -199,6 +199,14 @@ For groups the `--group` flag is available:
 /chatops run feature set --group=gitlab-org some_feature true
 ```
 
+Note that `--group` does not work with user namespaces. To enable a feature flag for a
+generic namespace (including groups) use `--namespace`:
+
+```shell
+/chatops run feature set --namespace=gitlab-org some_feature true
+/chatops run feature set --namespace=myusername some_feature true
+```
+
 Note that actor-based gates are applied before percentages. For example, considering the
 `group/project` as `gitlab-org/gitlab` and a given example feature as `some_feature`, if
 you run these 2 commands:

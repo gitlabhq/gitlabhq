@@ -316,7 +316,7 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
   let(:pipeline_created_event) { Ci::PipelineCreatedEvent.new(data: ({ pipeline_id: pipeline.id })) }
 
   # This shared example ensures that an event is published and correctly processed by
-  # the current subscriber (`described_class`).
+  # the current subscriber (`described_class`). It also ensures that the worker is idempotent.
   it_behaves_like 'subscribes to event' do
     let(:event) { pipeline_created_event }
   end
