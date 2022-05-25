@@ -2420,14 +2420,6 @@ RSpec.describe Group do
 
           group.update!(auto_devops_enabled: true)
         end
-
-        it 'does not clear cache when the feature is disabled' do
-          stub_feature_flags(namespaces_cache_first_auto_devops_config: false)
-
-          expect(Rails.cache).not_to receive(:delete_multi)
-
-          parent.update!(auto_devops_enabled: true)
-        end
       end
     end
   end

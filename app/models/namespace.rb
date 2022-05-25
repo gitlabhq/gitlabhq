@@ -413,12 +413,10 @@ class Namespace < ApplicationRecord
     return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
 
     strong_memoize(:first_auto_devops_config) do
-      if has_parent? && cache_first_auto_devops_config?
+      if has_parent?
         Rails.cache.fetch(first_auto_devops_config_cache_key_for(id), expires_in: 1.day) do
           parent.first_auto_devops_config
         end
-      elsif has_parent?
-        parent.first_auto_devops_config
       else
         { scope: :instance, status: Gitlab::CurrentSettings.auto_devops_enabled? }
       end
@@ -661,17 +659,11 @@ class Namespace < ApplicationRecord
   end
 
   def expire_first_auto_devops_config_cache
-    return unless cache_first_auto_devops_config?
-
     descendants_to_expire = self_and_descendants.as_ids
     return if descendants_to_expire.load.empty?
 
     keys = descendants_to_expire.map { |group| first_auto_devops_config_cache_key_for(group.id) }
     Rails.cache.delete_multi(keys)
-  end
-
-  def cache_first_auto_devops_config?
-    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config)
   end
 
   def write_projects_repository_config

@@ -660,7 +660,6 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-workflow {
   margin-top: $gl-padding;
-  overflow: hidden;
   position: relative;
 
   &:not(:last-child)::before {
