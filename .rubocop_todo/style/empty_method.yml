@@ -53,7 +53,7 @@ Style/EmptyMethod:
     - 'app/controllers/projects/pipeline_schedules_controller.rb'
     - 'app/controllers/projects/product_analytics_controller.rb'
     - 'app/controllers/projects/runners_controller.rb'
-    - 'app/controllers/projects/services_controller.rb'
+    - 'app/controllers/projects/settings/integrations_controller.rb'
     - 'app/controllers/projects/settings/packages_and_registries_controller.rb'
     - 'app/controllers/projects/tags/releases_controller.rb'
     - 'app/controllers/projects/terraform_controller.rb'

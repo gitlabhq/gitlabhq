@@ -54,7 +54,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Integrations'),
             link: project_settings_integrations_path(context.project),
-            active_routes: { path: %w[integrations#show services#edit] },
+            active_routes: { path: %w[integrations#index integrations#edit] },
             item_id: :integrations
           )
         end

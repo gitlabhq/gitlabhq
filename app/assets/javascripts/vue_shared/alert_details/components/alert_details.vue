@@ -18,7 +18,6 @@ import { toggleContainerClasses } from '~/lib/utils/dom_utils';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import initUserPopovers from '~/user_popovers';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import MetricImagesTab from '~/vue_shared/components/metric_images/metric_images_tab.vue';
@@ -175,7 +174,6 @@ export default {
   updated() {
     this.$nextTick(() => {
       highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member'));
-      initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
     });
   },
   methods: {

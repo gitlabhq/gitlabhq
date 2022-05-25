@@ -2,29 +2,9 @@
 import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
-import SplitButton from '~/vue_shared/components/split_button.vue';
-
-const splitButtonActionItems = [
-  {
-    title: s__('ClusterIntegration|Remove integration and resources'),
-    description: s__(
-      'ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal',
-    ),
-    eventName: 'remove-cluster-and-cleanup',
-  },
-  {
-    title: s__('ClusterIntegration|Remove integration'),
-    description: s__(
-      'ClusterIntegration|Removes cluster from project but keeps associated resources',
-    ),
-    eventName: 'remove-cluster',
-  },
-];
 
 export default {
-  splitButtonActionItems,
   components: {
-    SplitButton,
     GlModal,
     GlButton,
     GlFormInput,
@@ -79,6 +59,9 @@ export default {
     canCleanupResources() {
       return !this.hasManagementProject;
     },
+    buttonCategory() {
+      return !this.hasManagementProject ? 'secondary' : 'primary';
+    },
   },
   methods: {
     handleClickRemoveCluster(cleanup = false) {
@@ -99,19 +82,20 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-end">
-    <split-button
-      v-if="canCleanupResources"
-      :action-items="$options.splitButtonActionItems"
-      menu-class="dropdown-menu-large"
-      variant="danger"
-      @remove-cluster="handleClickRemoveCluster(false)"
-      @remove-cluster-and-cleanup="handleClickRemoveCluster(true)"
-    />
+  <div class="gl-display-flex">
     <gl-button
-      v-else
+      v-if="canCleanupResources"
+      data-testid="remove-integration-and-resources-button"
+      class="gl-mr-3"
       variant="danger"
-      data-testid="btnRemove"
+      @click="handleClickRemoveCluster(true)"
+    >
+      {{ s__('ClusterIntegration|Remove integration and resources') }}
+    </gl-button>
+    <gl-button
+      data-testid="remove-integration-button"
+      :category="buttonCategory"
+      variant="danger"
       @click="handleClickRemoveCluster(false)"
     >
       {{ s__('ClusterIntegration|Remove integration') }}
@@ -163,13 +147,7 @@ export default {
         <template v-if="confirmCleanup">
           <gl-button
             :disabled="!canSubmit"
-            variant="warning"
-            category="primary"
-            @click="handleSubmit"
-            >{{ s__('ClusterIntegration|Remove integration') }}</gl-button
-          >
-          <gl-button
-            :disabled="!canSubmit"
+            data-testid="remove-integration-and-resources-modal-button"
             variant="danger"
             category="primary"
             @click="handleSubmit(true)"
@@ -179,6 +157,7 @@ export default {
         <template v-else>
           <gl-button
             :disabled="!canSubmit"
+            data-testid="remove-integration-modal-button"
             variant="danger"
             category="primary"
             @click="handleSubmit"

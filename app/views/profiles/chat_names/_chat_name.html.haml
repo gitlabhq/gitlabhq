@@ -10,7 +10,7 @@
   %td
     %strong
       - if can?(current_user, :admin_project, project)
-        = link_to integration.title, edit_project_integration_path(project, integration)
+        = link_to integration.title, edit_project_settings_integration_path(project, integration)
       - else
         = integration.title
   %td

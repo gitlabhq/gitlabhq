@@ -44,7 +44,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   describe('when the CSV contains errors', () => {
     it('should render alert with correct props', async () => {
       createComponent({ csv: brokenCsv });
-      await nextTick;
+      await nextTick();
 
       expect(findAlert().props()).toMatchObject({
         papaParseErrors: [{ code: 'UndetectableDelimiter' }],
@@ -55,14 +55,14 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   describe('when the CSV contains no errors', () => {
     it('should not render alert', async () => {
       createComponent();
-      await nextTick;
+      await nextTick();
 
       expect(findAlert().exists()).toBe(false);
     });
 
     it('renders the CSV table with the correct attributes', async () => {
       createComponent();
-      await nextTick;
+      await nextTick();
 
       expect(findCsvTable().attributes()).toMatchObject({
         'empty-text': 'No CSV data to display.',
@@ -72,7 +72,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
 
     it('renders the CSV table with the correct content', async () => {
       createComponent({ mountFunction: mount });
-      await nextTick;
+      await nextTick();
 
       expect(getAllByRole(wrapper.element, 'row', { name: /One/i })).toHaveLength(1);
       expect(getAllByRole(wrapper.element, 'row', { name: /Two/i })).toHaveLength(1);
@@ -93,7 +93,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
         skipEmptyLines: true,
         complete: expect.any(Function),
       });
-      await nextTick;
+      await nextTick();
       expect(wrapper.vm.items).toEqual(validCsv.split(','));
     });
   });

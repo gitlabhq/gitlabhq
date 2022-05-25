@@ -99,7 +99,6 @@ module Gitlab
                                      #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
-                                     #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns
                                      #{config.root}/app/graphql/mutations/concerns
                                      #{config.root}/app/graphql/types/concerns])

@@ -265,7 +265,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Select **Configure Security Settings** and set the following:
    1. Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
    1. Under **Select a Cipher**, pick a predefined security policy from the dropdown. You can see a breakdown of [Predefined SSL Security Policies for Classic Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-policy-table.html) in the AWS docs. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
-1. Click **Configure Health Check** and set up a health check for your EC2 instances.
+1. Select **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.
    1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You'll need to add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP Allowlist](../../administration/monitoring/ip_whitelist.md) for the [Health Check endpoints](../../user/admin_area/monitoring/health_check.md)
@@ -282,7 +282,7 @@ you might have.
 
 On the Route 53 dashboard, select **Hosted zones** in the left navigation bar:
 
-1. Select an existing hosted zone or, if you do not already have one for your domain, click **Create Hosted Zone**, enter your domain name, and click **Create**.
+1. Select an existing hosted zone or, if you do not already have one for your domain, select **Create Hosted Zone**, enter your domain name, and select **Create**.
 1. Select **Create Record Set** and provide the following values:
     1. **Name:** Use the domain name (the default value) or enter a subdomain.
     1. **Type:** Select **A - IPv4 address**.
@@ -377,7 +377,7 @@ persistence and is used to store session data, temporary cache information, and 
 
 1. Navigate to the ElastiCache dashboard from your AWS console.
 1. Go to **Subnet Groups** in the left menu, and create a new subnet group (we'll name ours `gitlab-redis-group`).
-   Make sure to select our VPC and its [private subnets](#subnets). 
+   Make sure to select our VPC and its [private subnets](#subnets).
 1. Select **Create** when ready.
 
    ![ElastiCache subnet](img/ec_subnet.png)

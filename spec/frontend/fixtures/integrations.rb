@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ServicesController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::Settings::IntegrationsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
-  let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
-  let!(:integration) { create(:prometheus_integration, project: project) }
+  let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'integrations-project') }
+  let!(:service)  { create(:custom_issue_tracker_integration, project: project) }
   let(:user) { project.first_owner }
 
   render_views
@@ -20,11 +20,11 @@ RSpec.describe Projects::ServicesController, '(JavaScript fixtures)', type: :con
     remove_repository(project)
   end
 
-  it 'services/prometheus/prometheus_service.html' do
+  it 'settings/integrations/edit.html' do
     get :edit, params: {
       namespace_id: namespace,
       project_id: project,
-      id: integration.to_param
+      id: service.to_param
     }
 
     expect(response).to be_successful

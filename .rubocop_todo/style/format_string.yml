@@ -41,7 +41,6 @@ Style/FormatString:
     - 'app/controllers/projects/merge_requests_controller.rb'
     - 'app/controllers/projects/performance_monitoring/dashboards_controller.rb'
     - 'app/controllers/projects/pipeline_schedules_controller.rb'
-    - 'app/controllers/projects/services_controller.rb'
     - 'app/controllers/projects/settings/ci_cd_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/search_controller.rb'

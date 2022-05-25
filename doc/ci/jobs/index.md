@@ -266,7 +266,7 @@ In this example:
 When running manual jobs you can supply additional job specific variables.
 
 You can do this from the job page of the manual job you want to run with
-additional variables. To access this page, click on the **name** of the manual job in
+additional variables. To access this page, select the **name** of the manual job in
 the pipeline view, *not* the play (**{play}**) button.
 
 This is useful when you want to alter the execution of a job that uses
@@ -337,7 +337,7 @@ In the example above:
 - `my_first_section`: The name given to the section.
 - `\r\e[0K`: Prevents the section markers from displaying in the rendered (colored)
   job log, but they are displayed in the raw job log. To see them, in the top right
-  of the job log, click **{doc-text}** (**Show complete raw**).
+  of the job log, select **{doc-text}** (**Show complete raw**).
   - `\r`: carriage return.
   - `\e[0K`: clear line ANSI escape code.
 

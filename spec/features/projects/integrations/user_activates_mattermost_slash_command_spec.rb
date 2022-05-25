@@ -15,7 +15,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js do
       let(:mattermost_enabled) { true }
 
       describe 'activation' do
-        let(:edit_path) { edit_project_integration_path(project, :mattermost_slash_commands) }
+        let(:edit_path) { edit_project_settings_integration_path(project, :mattermost_slash_commands) }
 
         include_examples 'user activates the Mattermost Slash Command integration'
       end

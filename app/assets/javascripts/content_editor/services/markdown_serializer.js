@@ -65,6 +65,7 @@ import {
   italic,
   link,
   code,
+  strike,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -89,12 +90,7 @@ const defaultSerializerConfig = {
       close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
       escape: false,
     },
-    [Strike.name]: {
-      open: '~~',
-      close: '~~',
-      mixable: true,
-      expelEnclosingWhitespace: true,
-    },
+    [Strike.name]: strike,
     ...HTMLMarks.reduce(
       (acc, { name }) => ({
         ...acc,

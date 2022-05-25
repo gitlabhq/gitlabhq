@@ -29930,8 +29930,6 @@ CREATE INDEX tmp_index_projects_on_id_and_runners_token ON projects USING btree 
 
 CREATE INDEX tmp_index_projects_on_id_and_runners_token_encrypted ON projects USING btree (id, runners_token_encrypted) WHERE (runners_token_encrypted IS NOT NULL);
 
-CREATE INDEX tp_index_created_at_cluster_id_project_id_on_deployments ON deployments USING btree (created_at, cluster_id, project_id) WHERE ((cluster_id IS NOT NULL) AND (created_at > '2022-04-03 00:00:00'::timestamp without time zone));
-
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_components_on_distribution_id_and_name ON packages_debian_group_components USING btree (distribution_id, name);

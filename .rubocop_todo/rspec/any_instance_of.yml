@@ -152,8 +152,8 @@ RSpec/AnyInstanceOf:
   - spec/controllers/projects/labels_controller_spec.rb
   - spec/controllers/projects/merge_requests_controller_spec.rb
   - spec/controllers/projects/pipelines_controller_spec.rb
-  - spec/controllers/projects/service_hook_logs_controller_spec.rb
-  - spec/controllers/projects/services_controller_spec.rb
+  - spec/controllers/projects/settings/integration_hook_logs_controller_spec.rb
+  - spec/controllers/projects/settings/integrations_controller_spec.rb
   - spec/controllers/projects/tags_controller_spec.rb
   - spec/controllers/registrations/experience_levels_controller_spec.rb
   - spec/controllers/registrations_controller_spec.rb
@@ -177,7 +177,6 @@ RSpec/AnyInstanceOf:
   - spec/features/projects/jobs_spec.rb
   - spec/features/projects/navbar_spec.rb
   - spec/features/projects/pages_spec.rb
-  - spec/features/projects/services/user_activates_mattermost_slash_command_spec.rb
   - spec/features/projects/settings/service_desk_setting_spec.rb
   - spec/features/projects/show/user_sees_setup_shortcut_buttons_spec.rb
   - spec/features/snippets/embedded_snippet_spec.rb

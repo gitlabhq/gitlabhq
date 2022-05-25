@@ -487,8 +487,8 @@ describe('issue_comment_form component', () => {
 
               await findCloseReopenButton().trigger('click');
 
-              await nextTick;
-              await nextTick;
+              await nextTick();
+              await nextTick();
 
               expect(createFlash).toHaveBeenCalledWith({
                 message: `Something went wrong while closing the ${type}. Please try again later.`,
@@ -523,8 +523,8 @@ describe('issue_comment_form component', () => {
 
             await findCloseReopenButton().trigger('click');
 
-            await nextTick;
-            await nextTick;
+            await nextTick();
+            await nextTick();
 
             expect(createFlash).toHaveBeenCalledWith({
               message: `Something went wrong while reopening the ${type}. Please try again later.`,

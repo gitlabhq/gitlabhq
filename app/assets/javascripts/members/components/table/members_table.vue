@@ -4,7 +4,6 @@ import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import initUserPopovers from '~/user_popovers';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import {
   FIELD_KEY_ACTIONS,
@@ -84,9 +83,6 @@ export default {
     isInvitedUser() {
       return this.tabQueryParamValue === TAB_QUERY_PARAM_VALUES.invite;
     },
-  },
-  mounted() {
-    initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
   },
   methods: {
     hasActionButtons(member) {

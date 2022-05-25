@@ -1126,6 +1126,15 @@ Payload example:
          "email": "user@gitlab.com"
       }
    },
+   "source_pipeline":{
+      "project":{
+        "id": 41,
+        "web_url": "https://gitlab.example.com/gitlab-org/upstream-project",
+        "path_with_namespace": "gitlab-org/upstream-project",
+      },
+      "pipeline_id": 30,
+      "job_id": 3401
+   },
    "builds":[
       {
          "id": 380,

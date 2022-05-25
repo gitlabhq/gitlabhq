@@ -13,6 +13,7 @@ import Link from './link';
 import ListItem from './list_item';
 import OrderedList from './ordered_list';
 import Paragraph from './paragraph';
+import Strike from './strike';
 
 export default Extension.create({
   addGlobalAttributes() {
@@ -33,6 +34,7 @@ export default Extension.create({
           ListItem.name,
           OrderedList.name,
           Paragraph.name,
+          Strike.name,
         ],
         attributes: {
           sourceMarkdown: {

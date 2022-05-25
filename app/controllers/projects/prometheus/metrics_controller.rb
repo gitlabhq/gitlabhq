@@ -67,7 +67,7 @@ module Projects
         )
 
         if @metric.persisted?
-          redirect_to edit_project_integration_path(project, ::Integrations::Prometheus),
+          redirect_to edit_project_settings_integration_path(project, ::Integrations::Prometheus),
                       notice: _('Metric was successfully added.')
         else
           render 'new'
@@ -78,7 +78,7 @@ module Projects
         @metric = prometheus_metric
 
         if @metric.update(metrics_params)
-          redirect_to edit_project_integration_path(project, ::Integrations::Prometheus),
+          redirect_to edit_project_settings_integration_path(project, ::Integrations::Prometheus),
                       notice: _('Metric was successfully updated.')
         else
           render 'edit'
@@ -94,7 +94,7 @@ module Projects
 
         respond_to do |format|
           format.html do
-            redirect_to edit_project_integration_path(project, ::Integrations::Prometheus), status: :see_other
+            redirect_to edit_project_settings_integration_path(project, ::Integrations::Prometheus), status: :see_other
           end
           format.json do
             head :ok

@@ -4,10 +4,10 @@ class ServiceHookPresenter < Gitlab::View::Presenter::Delegated
   presents ::ServiceHook, as: :service_hook
 
   def logs_details_path(log)
-    project_integration_hook_log_path(integration.project, integration, log)
+    project_settings_integration_hook_log_path(integration.project, integration, log)
   end
 
   def logs_retry_path(log)
-    retry_project_integration_hook_log_path(integration.project, integration, log)
+    retry_project_settings_integration_hook_log_path(integration.project, integration, log)
   end
 end

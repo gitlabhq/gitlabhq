@@ -67,7 +67,7 @@ describe('NewDirectoryModal', () => {
     await findBranchName().vm.$emit('input', branchName);
     await findCommitMessage().vm.$emit('input', commitMessage);
     await findMrToggle().vm.$emit('change', createNewMr);
-    await nextTick;
+    await nextTick();
   };
 
   const submitForm = async () => {

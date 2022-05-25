@@ -102,29 +102,13 @@ Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recomme
 
 #### Sum batch operation
 
-There is no support for `sum` for database metrics.
-
 Sum the values of a given ActiveRecord_Relation on given column and handles errors.
 Handles the `ActiveRecord::StatementInvalid` error
 
 Method:
 
 ```ruby
-sum(relation, column, batch_size: nil, start: nil, finish: nil)
-```
-
-Arguments:
-
-- `relation`: the ActiveRecord_Relation to perform the operation
-- `column`: the column to sum on
-- `batch_size`: if none set it uses default value 1000 from `Gitlab::Database::BatchCounter`
-- `start`: custom start of the batch counting to avoid complex min calculations
-- `end`: custom end of the batch counting to avoid complex min calculations
-
-Examples:
-
-```ruby
-sum(JiraImportState.finished, :imported_issues_count)
+add_metric('JiraImportsTotalImportedIssuesCountMetric')
 ```
 
 #### Grouping and batch operations

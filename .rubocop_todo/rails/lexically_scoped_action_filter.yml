@@ -36,7 +36,6 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/projects/project_members_controller.rb'
     - 'app/controllers/projects/prometheus/alerts_controller.rb'
     - 'app/controllers/projects/releases_controller.rb'
-    - 'app/controllers/projects/service_hook_logs_controller.rb'
     - 'app/controllers/projects/snippets_controller.rb'
     - 'app/controllers/projects/tags_controller.rb'
     - 'app/controllers/projects/todos_controller.rb'

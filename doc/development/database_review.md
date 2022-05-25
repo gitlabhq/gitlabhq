@@ -25,7 +25,7 @@ A database review is required for:
   generally up to the author of a merge request to decide whether or
   not complex queries are being introduced and if they require a
   database review.
-- Changes in Service Data metrics that use `count`, `distinct_count` and `estimate_batch_distinct_count`.
+- Changes in Service Data metrics that use `count`, `distinct_count`, `estimate_batch_distinct_count` and `sum`.
   These metrics could have complex queries over large tables.
   See the [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
   for implementation details.

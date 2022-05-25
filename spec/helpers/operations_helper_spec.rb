@@ -32,7 +32,7 @@ RSpec.describe OperationsHelper do
         expect(subject).to eq(
           'alerts_setup_url' => help_page_path('operations/incident_management/integrations.md', anchor: 'configuration'),
           'alerts_usage_url' => project_alert_management_index_path(project),
-          'prometheus_form_path' => project_integration_path(project, prometheus_integration),
+          'prometheus_form_path' => project_settings_integration_path(project, prometheus_integration),
           'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(project),
           'prometheus_authorization_key' => nil,
           'prometheus_api_url' => nil,

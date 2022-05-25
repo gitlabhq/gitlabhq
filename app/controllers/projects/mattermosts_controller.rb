@@ -20,7 +20,7 @@ class Projects::MattermostsController < Projects::ApplicationController
 
     if result
       flash[:notice] = 'This service is now configured'
-      redirect_to edit_project_integration_path(@project, integration)
+      redirect_to edit_project_settings_integration_path(@project, integration)
     else
       flash[:alert] = message || 'Failed to configure service'
       redirect_to new_project_mattermost_path(@project)

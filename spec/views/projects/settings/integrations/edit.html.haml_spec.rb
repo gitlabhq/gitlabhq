@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/services/edit' do
+RSpec.describe 'projects/settings/integrations/edit' do
   let(:integration) { create(:drone_ci_integration, project: project) }
   let(:project) { create(:project) }
 

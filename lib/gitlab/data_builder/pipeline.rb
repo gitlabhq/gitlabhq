@@ -12,7 +12,7 @@ module Gitlab
       def initialize(pipeline)
         @pipeline = pipeline
 
-        super(
+        attrs = {
           object_kind: 'pipeline',
           object_attributes: hook_attrs(pipeline),
           merge_request: pipeline.merge_request && merge_request_attrs(pipeline.merge_request),
@@ -23,7 +23,13 @@ module Gitlab
             preload_builds(pipeline, :latest_builds)
             pipeline.latest_builds.map(&method(:build_hook_attrs))
           end
-        )
+        }
+
+        if pipeline.source_pipeline.present?
+          attrs[:source_pipeline] = source_pipeline_attrs(pipeline.source_pipeline)
+        end
+
+        super(attrs)
       end
 
       def with_retried_builds
@@ -69,6 +75,20 @@ module Gitlab
           duration: pipeline.duration,
           queued_duration: pipeline.queued_duration,
           variables: pipeline.variables.map(&:hook_attrs)
+        }
+      end
+
+      def source_pipeline_attrs(source_pipeline)
+        project = source_pipeline.source_project
+
+        {
+          project: {
+            id: project.id,
+            web_url: project.web_url,
+            path_with_namespace: project.full_path
+          },
+          job_id: source_pipeline.source_job_id,
+          pipeline_id: source_pipeline.source_pipeline_id
         }
       end
 

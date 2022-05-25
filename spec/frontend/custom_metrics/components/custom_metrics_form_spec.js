@@ -18,7 +18,7 @@ describe('CustomMetricsForm', () => {
     wrapper = shallowMount(CustomMetricsForm, {
       propsData: {
         customMetricsPath: '',
-        editProjectServicePath: '',
+        editIntegrationPath: '',
         metricPersisted,
         validateQueryPath: '',
         formData,

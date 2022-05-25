@@ -13,6 +13,7 @@ import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
+import Strike from '~/content_editor/extensions/strike';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 
@@ -34,6 +35,7 @@ const tiptapEditor = createTestEditor({
     ListItem,
     OrderedList,
     Sourcemap,
+    Strike,
   ],
 });
 
@@ -54,6 +56,7 @@ const {
     link,
     listItem,
     orderedList,
+    strike,
   },
 } = createDocBuilder({
   tiptapEditor,
@@ -72,6 +75,7 @@ const {
     listItem: { nodeType: ListItem.name },
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
+    strike: { nodeType: Strike.name },
   },
 });
 
@@ -566,10 +570,50 @@ const fn = () => 'GitLab';
         ),
       ),
     },
+    {
+      markdown: '~~Strikedthrough text~~',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:23', '~~Strikedthrough text~~'),
+          strike(sourceAttrs('0:23', '~~Strikedthrough text~~'), 'Strikedthrough text'),
+        ),
+      ),
+    },
+    {
+      markdown: '<del>Strikedthrough text</del>',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:30', '<del>Strikedthrough text</del>'),
+          strike(sourceAttrs('0:30', '<del>Strikedthrough text</del>'), 'Strikedthrough text'),
+        ),
+      ),
+    },
+    {
+      markdown: '<strike>Strikedthrough text</strike>',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:36', '<strike>Strikedthrough text</strike>'),
+          strike(
+            sourceAttrs('0:36', '<strike>Strikedthrough text</strike>'),
+            'Strikedthrough text',
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: '<s>Strikedthrough text</s>',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:26', '<s>Strikedthrough text</s>'),
+          strike(sourceAttrs('0:26', '<s>Strikedthrough text</s>'), 'Strikedthrough text'),
+        ),
+      ),
+    },
   ])('processes %s correctly', async ({ markdown, expectedDoc }) => {
     const trimmed = markdown.trim();
     const document = await deserialize(trimmed);
 
+    expect(expectedDoc).not.toBeFalsy();
     expect(document.toJSON()).toEqual(expectedDoc.toJSON());
     expect(serialize(document)).toEqual(trimmed);
   });

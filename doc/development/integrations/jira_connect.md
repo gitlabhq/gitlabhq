@@ -37,13 +37,13 @@ To install the app in Jira:
    Marketplace:
 
    1. In Jira, navigate to **Jira settings > Apps > Manage apps**.
-   1. Scroll to the bottom of the **Manage apps** page and click **Settings**.
-   1. Select **Enable development mode** and click **Apply**.
+   1. Scroll to the bottom of the **Manage apps** page and select **Settings**.
+   1. Select **Enable development mode** and select **Apply**.
 
 1. Install the app:
 
    1. In Jira, navigate to **Jira settings > Apps > Manage apps**.
-   1. Click **Upload app**.
+   1. Select **Upload app**.
    1. In the **From this URL** field, provide a link to the app descriptor. The host and port must point to your GitLab instance.
 
       For example:
@@ -52,10 +52,10 @@ To install the app in Jira:
       https://xxxx.gitpod.io/-/jira_connect/app_descriptor.json
       ```
 
-   1. Click **Upload**.
+   1. Select **Upload**.
 
    If the install was successful, you should see the **GitLab.com for Jira Cloud** app under **Manage apps**.
-   You can also click **Getting Started** to open the configuration page rendered from your GitLab instance.
+   You can also select **Getting Started** to open the configuration page rendered from your GitLab instance.
 
    _Note that any changes to the app descriptor requires you to uninstall then reinstall the app._
 

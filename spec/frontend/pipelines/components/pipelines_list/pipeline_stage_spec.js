@@ -55,6 +55,8 @@ describe('Pipelines stage component', () => {
   const findDropdownToggle = () => wrapper.find('button.dropdown-toggle');
   const findDropdownMenu = () =>
     wrapper.find('[data-testid="mini-pipeline-graph-dropdown-menu-list"]');
+  const findDropdownMenuTitle = () =>
+    wrapper.find('[data-testid="pipeline-stage-dropdown-menu-title"]');
   const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');
 
   const openStageDropdown = () => {
@@ -97,6 +99,7 @@ describe('Pipelines stage component', () => {
 
     it('should render the received data and emit `clickedDropdown` event', async () => {
       expect(findDropdownMenu().text()).toContain(stageReply.latest_statuses[0].name);
+      expect(findDropdownMenuTitle().text()).toContain(stageReply.name);
       expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
     });
 

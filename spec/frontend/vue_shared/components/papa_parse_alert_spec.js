@@ -22,7 +22,7 @@ describe('app/assets/javascripts/vue_shared/components/papa_parse_alert.vue', ()
 
   it('should render alert with correct props', async () => {
     createComponent({ errorMessages: [{ code: 'MissingQuotes' }] });
-    await nextTick;
+    await nextTick();
 
     expect(findAlert().props()).toMatchObject({
       variant: 'danger',
@@ -37,7 +37,7 @@ describe('app/assets/javascripts/vue_shared/components/papa_parse_alert.vue', ()
     createComponent({
       errorMessages: [{ code: 'NotDefined', message: 'Error code is undefined' }],
     });
-    await nextTick;
+    await nextTick();
 
     expect(findAlert().text()).toContain('Error code is undefined');
   });

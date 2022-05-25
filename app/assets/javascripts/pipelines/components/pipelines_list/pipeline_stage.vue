@@ -21,6 +21,9 @@ import eventHub from '../../event_hub';
 import JobItem from './job_item.vue';
 
 export default {
+  i18n: {
+    stage: __('Stage:'),
+  },
   components: {
     CiIcon,
     GlLoadingIcon,
@@ -48,20 +51,26 @@ export default {
   },
   data() {
     return {
+      isDropdownOpen: false,
       isLoading: false,
       dropdownContent: [],
+      stageName: '',
     };
   },
   watch: {
     updateDropdown() {
-      if (this.updateDropdown && this.isDropdownOpen() && !this.isLoading) {
+      if (this.updateDropdown && this.isDropdownOpen && !this.isLoading) {
         this.fetchJobs();
       }
     },
   },
   methods: {
+    onHideDropdown() {
+      this.isDropdownOpen = false;
+    },
     onShowDropdown() {
       eventHub.$emit('clickedDropdown');
+      this.isDropdownOpen = true;
       this.isLoading = true;
       this.fetchJobs();
     },
@@ -70,6 +79,7 @@ export default {
         .get(this.stage.dropdown_path)
         .then(({ data }) => {
           this.dropdownContent = data.latest_statuses;
+          this.stageName = data.name;
           this.isLoading = false;
         })
         .catch(() => {
@@ -80,9 +90,6 @@ export default {
             message: __('Something went wrong on our end.'),
           });
         });
-    },
-    isDropdownOpen() {
-      return this.$el.classList.contains('show');
     },
     pipelineActionRequestComplete() {
       // close the dropdown in MR widget
@@ -112,15 +119,17 @@ export default {
     } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
     :toggle-class="['gl-rounded-full!']"
     menu-class="mini-pipeline-graph-dropdown-menu"
+    @hide="onHideDropdown"
     @show="onShowDropdown"
   >
     <template #button-content>
       <ci-icon
         is-interactive
         css-classes="gl-rounded-full"
+        :is-active="isDropdownOpen"
         :size="24"
         :status="stage.status"
-        class="gl-align-items-center gl-display-inline-flex"
+        class="gl-align-items-center gl-display-inline-flex gl-z-index-1"
       />
     </template>
     <gl-loading-icon v-if="isLoading" size="sm" />
@@ -129,6 +138,12 @@ export default {
       class="js-builds-dropdown-list scrollable-menu"
       data-testid="mini-pipeline-graph-dropdown-menu-list"
     >
+      <div
+        class="gl-align-items-center gl-border-b gl-display-flex gl-font-weight-bold gl-justify-content-center gl-pb-3"
+      >
+        <span class="gl-mr-1">{{ $options.i18n.stage }}</span>
+        <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
+      </div>
       <li v-for="job in dropdownContent" :key="job.id">
         <job-item
           :dropdown-length="dropdownContent.length"

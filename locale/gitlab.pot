@@ -8624,9 +8624,6 @@ msgstr ""
 msgid "ClusterIntegration|Create a Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Deletes all GitLab resources attached to this cluster during removal"
-msgstr ""
-
 msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr ""
 
@@ -8784,9 +8781,6 @@ msgid "ClusterIntegration|Remove integration?"
 msgstr ""
 
 msgid "ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster."
-msgstr ""
-
-msgid "ClusterIntegration|Removes cluster from project but keeps associated resources"
 msgstr ""
 
 msgid "ClusterIntegration|Save changes"
@@ -36031,6 +36025,9 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
+msgid "Stage:"
+msgstr ""
+
 msgid "Standard"
 msgstr ""
 
@@ -41561,6 +41558,9 @@ msgid "ValueStreamAnalytics|There was an error while fetching value stream analy
 msgstr ""
 
 msgid "ValueStreamAnalytics|Total number of deploys to production."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Value Stream"
 msgstr ""
 
 msgid "ValueStreamEvent|Items in stage"

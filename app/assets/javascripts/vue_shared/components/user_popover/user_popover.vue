@@ -14,12 +14,14 @@ import { glEmojiTag } from '~/emoji';
 import createFlash from '~/flash';
 import { followUser, unfollowUser } from '~/rest_api';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
+import { USER_POPOVER_DELAY } from './constants';
 
 const MAX_SKELETON_LINES = 4;
 
 export default {
   name: 'UserPopover',
   maxSkeletonLines: MAX_SKELETON_LINES,
+  USER_POPOVER_DELAY,
   components: {
     GlIcon,
     GlLink,
@@ -47,6 +49,11 @@ export default {
       type: String,
       required: false,
       default: 'top',
+    },
+    show: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -133,8 +140,15 @@ export default {
 </script>
 
 <template>
-  <!-- 200ms delay so not every mouseover triggers Popover -->
-  <gl-popover :target="target" :delay="200" :placement="placement" boundary="viewport">
+  <!-- delay so not every mouseover triggers Popover -->
+  <gl-popover
+    :show="show"
+    :target="target"
+    :delay="$options.USER_POPOVER_DELAY"
+    :placement="placement"
+    boundary="viewport"
+    triggers="hover focus manual"
+  >
     <div class="gl-p-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
       <div
         class="gl-p-2 flex-shrink-1 gl-display-flex gl-flex-direction-column align-items-center gl-w-70p"

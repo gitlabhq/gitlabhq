@@ -1176,6 +1176,10 @@ Oranges are orange [^1]
     ${'link'}   | ${'<a href="https://gitlab.com">link</a>'} | ${'<a href="https://gitlab.com">link modified</a>'}
     ${'code'}   | ${'`code`'}                                | ${'`code modified`'}
     ${'code'}   | ${'<code>code</code>'}                     | ${'<code>code modified</code>'}
+    ${'strike'} | ${'~~striked~~'}                           | ${'~~striked modified~~'}
+    ${'strike'} | ${'<del>striked</del>'}                    | ${'<del>striked modified</del>'}
+    ${'strike'} | ${'<strike>striked</strike>'}              | ${'<strike>striked modified</strike>'}
+    ${'strike'} | ${'<s>striked</s>'}                        | ${'<s>striked modified</s>'}
   `(
     'preserves original $mark syntax when sourceMarkdown is available',
     async ({ content, modifiedContent }) => {

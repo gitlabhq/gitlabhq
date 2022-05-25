@@ -111,6 +111,7 @@ module.exports = (path, options = {}) => {
     'remark-.*',
     'hast*',
     'unist.*',
+    'markdown-table',
     'mdast-util-.*',
     'micromark.*',
     'vfile.*',

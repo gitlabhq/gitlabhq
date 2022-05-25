@@ -152,13 +152,13 @@ describe('LabelsSelectRoot', () => {
 
     it('renders `dropdown-value-collapsed` component when `allowLabelCreate` prop is `true`', async () => {
       createComponent();
-      await nextTick;
+      await nextTick();
       expect(wrapper.find(DropdownValueCollapsed).exists()).toBe(true);
     });
 
     it('renders `dropdown-title` component', async () => {
       createComponent();
-      await nextTick;
+      await nextTick();
       expect(wrapper.find(DropdownTitle).exists()).toBe(true);
     });
 
@@ -166,7 +166,7 @@ describe('LabelsSelectRoot', () => {
       createComponent(mockConfig, {
         default: 'None',
       });
-      await nextTick;
+      await nextTick();
 
       const valueComp = wrapper.find(DropdownValue);
 
@@ -177,14 +177,14 @@ describe('LabelsSelectRoot', () => {
     it('renders `dropdown-button` component when `showDropdownButton` prop is `true`', async () => {
       createComponent();
       wrapper.vm.$store.dispatch('toggleDropdownButton');
-      await nextTick;
+      await nextTick();
       expect(wrapper.find(DropdownButton).exists()).toBe(true);
     });
 
     it('renders `dropdown-contents` component when `showDropdownButton` & `showDropdownContents` prop is `true`', async () => {
       createComponent();
       wrapper.vm.$store.dispatch('toggleDropdownContents');
-      await nextTick;
+      await nextTick();
       expect(wrapper.find(DropdownContents).exists()).toBe(true);
     });
 

@@ -66,6 +66,10 @@ const factorySpecs = {
       title: hastNode.properties.title,
     }),
   },
+  strike: {
+    type: 'mark',
+    selector: (hastNode) => ['strike', 's', 'del'].includes(hastNode.tagName),
+  },
 };
 
 export default () => {

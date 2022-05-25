@@ -38,12 +38,12 @@ as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#brea
 Before updating GitLab, review the details carefully to determine if you need to make any
 changes to your code, settings, or workflow.
 
-A breaking change was made to the Runner [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints
-in 15.0.
+The Runner [API](https://docs.gitlab.com/ee/api/runners.html#runners-api) endpoints have changed in 15.0.
 
-Instead of the GitLab Runner API endpoints returning `offline` and `not_connected` for runners that have not
-contacted the GitLab instance in the past three months, the API endpoints now return the `stale` value,
-which was introduced in 14.6.
+If a runner has not contacted the GitLab instance in more than three months, the API returns `stale` instead of `offline` or `not_connected`.
+The `stale` status was introduced in 14.6.
+
+The `not_connected` status is no longer valid. It was replaced with `never_contacted`. Available statuses are `online`, `offline`, `stale`, and `never_contacted`.
 
 ### Audit events for repository push events
 

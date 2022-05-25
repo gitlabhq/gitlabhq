@@ -21,7 +21,7 @@ module Gitlab
           end
         end
 
-        def migrate(direction)
+        def exec_migration(conn, direction)
           if unmatched_schemas.any?
             migration_skipped
             return
@@ -37,8 +37,9 @@ module Gitlab
         private
 
         def migration_skipped
-          say "Current migration is skipped since it modifies "\
-            "'#{self.class.allowed_gitlab_schemas}' which is outside of '#{allowed_schemas_for_connection}'"
+          say "The migration is skipped since it modifies the schemas: #{self.class.allowed_gitlab_schemas}."
+          say "This database can only apply migrations in one of the following schemas: " \
+            "#{allowed_schemas_for_connection}."
         end
 
         def validator_class

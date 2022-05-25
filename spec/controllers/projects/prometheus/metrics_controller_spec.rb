@@ -141,7 +141,7 @@ RSpec.describe Projects::Prometheus::MetricsController do
 
         expect(flash[:notice]).to include('Metric was successfully added.')
 
-        expect(response).to redirect_to(edit_project_integration_path(project, ::Integrations::Prometheus))
+        expect(response).to redirect_to(edit_project_settings_integration_path(project, ::Integrations::Prometheus))
       end
     end
 
@@ -168,7 +168,7 @@ RSpec.describe Projects::Prometheus::MetricsController do
 
         expect(metric.reload.title).to eq('new_title')
         expect(flash[:notice]).to include('Metric was successfully updated.')
-        expect(response).to redirect_to(edit_project_integration_path(project, ::Integrations::Prometheus))
+        expect(response).to redirect_to(edit_project_settings_integration_path(project, ::Integrations::Prometheus))
       end
     end
   end
@@ -180,7 +180,7 @@ RSpec.describe Projects::Prometheus::MetricsController do
       it 'destroys the metric' do
         delete :destroy, params: project_params(id: metric.id)
 
-        expect(response).to redirect_to(edit_project_integration_path(project, ::Integrations::Prometheus))
+        expect(response).to redirect_to(edit_project_settings_integration_path(project, ::Integrations::Prometheus))
         expect(PrometheusMetric.find_by(id: metric.id)).to be_nil
       end
     end

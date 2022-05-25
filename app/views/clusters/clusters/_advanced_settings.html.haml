@@ -35,7 +35,7 @@
         = s_("ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts.")
       - else
         = s_("ClusterIntegration|This is necessary to clear existing environment-namespace associations from clusters previously managed by GitLab.")
-    = link_to(s_('ClusterIntegration|Clear cluster cache'), clusterable.clear_cluster_cache_path(@cluster), method: :delete, class: 'btn gl-button btn-info')
+    = link_to(s_('ClusterIntegration|Clear cluster cache'), clusterable.clear_cluster_cache_path(@cluster), method: :delete, class: 'btn gl-button btn-confirm')
 
   .sub-section.form-group
     %h4.text-danger

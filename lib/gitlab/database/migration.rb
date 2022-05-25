@@ -37,6 +37,7 @@ module Gitlab
       class V1_0 < ActiveRecord::Migration[6.1] # rubocop:disable Naming/ClassAndModuleCamelCase
         include LockRetriesConcern
         include Gitlab::Database::MigrationHelpers::V2
+        include Gitlab::Database::MigrationHelpers::AnnounceDatabase
 
         # When running migrations, the `db:migrate` switches connection of
         # ActiveRecord::Base depending where the migration runs.

@@ -18,7 +18,7 @@ RSpec.describe EnvironmentsHelper do
 
     it 'returns data' do
       expect(metrics_data).to include(
-        'settings_path' => edit_project_integration_path(project, 'prometheus'),
+        'settings_path' => edit_project_settings_integration_path(project, 'prometheus'),
         'clusters_path' => project_clusters_path(project),
         'metrics_dashboard_base_path' => project_metrics_dashboard_path(project, environment: environment),
         'current_environment_name' => environment.name,

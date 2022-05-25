@@ -50,6 +50,11 @@ export default {
       required: false,
       default: false,
     },
+    isActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isInteractive: {
       type: Boolean,
       required: false,
@@ -74,8 +79,9 @@ export default {
 </script>
 <template>
   <span
-    :class="[wrapperStyleClasses, { interactive: isInteractive }]"
+    :class="[wrapperStyleClasses, { interactive: isInteractive, active: isActive }]"
     :style="{ height: `${size}px`, width: `${size}px` }"
+    data-testid="ci-icon-wrapper"
   >
     <gl-icon :name="icon" :size="size" :class="cssClasses" :aria-label="status.icon" />
   </span>

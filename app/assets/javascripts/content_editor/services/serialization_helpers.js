@@ -364,7 +364,7 @@ export function preserveUnchanged(render) {
   };
 }
 
-const generateBoldTags = (open = true) => {
+const generateBoldTags = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(\*\*|__|<strong|<b).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
@@ -375,7 +375,7 @@ const generateBoldTags = (open = true) => {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       case '<strong':
       case '<b':
-        return (open ? openTag : closeTag)(type.substring(1));
+        return wrapTagName(type.substring(1));
       default:
         return '**';
     }
@@ -384,12 +384,12 @@ const generateBoldTags = (open = true) => {
 
 export const bold = {
   open: generateBoldTags(),
-  close: generateBoldTags(false),
+  close: generateBoldTags(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
 };
 
-const generateItalicTag = (open = true) => {
+const generateItalicTag = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(\*|_|<em|<i).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
@@ -400,7 +400,7 @@ const generateItalicTag = (open = true) => {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       case '<em':
       case '<i':
-        return (open ? openTag : closeTag)(type.substring(1));
+        return wrapTagName(type.substring(1));
       default:
         return '_';
     }
@@ -409,17 +409,17 @@ const generateItalicTag = (open = true) => {
 
 export const italic = {
   open: generateItalicTag(),
-  close: generateItalicTag(false),
+  close: generateItalicTag(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
 };
 
-const generateCodeTag = (open = true) => {
+const generateCodeTag = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(`|<code).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
     if (type === '<code') {
-      return (open ? openTag : closeTag)(type.substring(1));
+      return wrapTagName(type.substring(1));
     }
 
     return '`';
@@ -428,7 +428,7 @@ const generateCodeTag = (open = true) => {
 
 export const code = {
   open: generateCodeTag(),
-  close: generateCodeTag(false),
+  close: generateCodeTag(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
 };
@@ -479,4 +479,29 @@ export const link = {
 
     return `](${state.esc(canonicalSrc || href)}${title ? ` ${state.quote(title)}` : ''})`;
   },
+};
+
+const generateStrikeTag = (wrapTagName = openTag) => {
+  return (_, mark) => {
+    const type = /^(~~|<del|<strike|<s).*/.exec(mark.attrs.sourceMarkdown)?.[1];
+
+    switch (type) {
+      case '~~':
+        return type;
+      /* eslint-disable @gitlab/require-i18n-strings */
+      case '<del':
+      case '<strike':
+      case '<s':
+        return wrapTagName(type.substring(1));
+      default:
+        return '~~';
+    }
+  };
+};
+
+export const strike = {
+  open: generateStrikeTag(),
+  close: generateStrikeTag(closeTag),
+  mixable: true,
+  expelEnclosingWhitespace: true,
 };

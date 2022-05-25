@@ -74,11 +74,8 @@
 
 .stage-cell {
   .stage-container {
-    align-items: center;
-    display: inline-flex;
-
-    + .stage-container {
-      margin-left: 4px;
+    &:last-child {
+      margin-right: 0;
     }
 
     // Hack to show a button tooltip inline
@@ -94,10 +91,11 @@
     &:not(:last-child) {
       &::after {
         content: '';
-        width: 4px;
+        border-bottom: 2px solid $gray-200;
         position: absolute;
         right: -4px;
-        border-bottom: 2px solid $gray-200;
+        top: 11px;
+        width: 4px;
       }
     }
   }

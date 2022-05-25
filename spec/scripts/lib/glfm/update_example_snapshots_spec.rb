@@ -419,7 +419,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
           static: |-
             <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
           wysiwyg: |-
-            <p>~~Hi~~ Hello, world!</p>
+            <p><s>Hi</s> Hello, world!</p>
         03_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
           canonical: |
             <p><strong>bold</strong></p>
@@ -475,7 +475,16 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
                 "content": [
                   {
                     "type": "text",
-                    "text": "~~Hi~~ Hello, world!"
+                    "marks": [
+                      {
+                        "type": "strike"
+                      }
+                    ],
+                    "text": "Hi"
+                  },
+                  {
+                    "type": "text",
+                    "text": " Hello, world!"
                   }
                 ]
               }

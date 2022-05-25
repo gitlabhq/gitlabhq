@@ -72,7 +72,7 @@ describe('boards sidebar remove issue', () => {
       createComponent({ canUpdate: true, slots });
       findEditButton().vm.$emit('click');
 
-      await nextTick;
+      await nextTick();
 
       expect(findCollapsed().isVisible()).toBe(false);
       expect(findExpanded().isVisible()).toBe(true);

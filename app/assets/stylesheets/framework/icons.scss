@@ -1,94 +1,55 @@
-.ci-status-icon-success,
-.ci-status-icon-passed {
-  svg {
-    fill: $green-500;
+@mixin icon-styles($primary-color, $svg-color) {
+  svg,
+  .gl-icon {
+    fill: $primary-color;
   }
 
   &.interactive {
     &:hover {
-      background: $green-500;
+      background: $primary-color;
 
-      svg {
-        --svg-status-bg: #{$green-100};
-        box-shadow: 0 0 0 1px $green-500;
+      .gl-icon {
+        --svg-status-bg: #{$svg-color};
+        box-shadow: 0 0 0 1px $primary-color;
+      }
+    }
+
+    &.active {
+      background: $primary-color;
+
+      .gl-icon {
+        box-shadow: 0 0 0 1px $primary-color;
       }
     }
   }
 }
 
+.ci-status-icon-success,
+.ci-status-icon-passed {
+  @include icon-styles($green-500, $green-100);
+}
+
 .ci-status-icon-error,
 .ci-status-icon-failed {
-  svg {
-    fill: $red-500;
-  }
-
-  &.interactive {
-    &:hover {
-      background: $red-500;
-
-      svg {
-        --svg-status-bg: #{$red-100};
-        box-shadow: 0 0 0 1px $red-500;
-      }
-    }
-  }
+  @include icon-styles($red-500, $red-100);
 }
 
 .ci-status-icon-pending,
 .ci-status-icon-waiting-for-resource,
 .ci-status-icon-failed-with-warnings,
 .ci-status-icon-success-with-warnings {
-  svg {
-    fill: $orange-500;
-  }
-
-  &.interactive {
-    &:hover {
-      background: $orange-500;
-
-      svg {
-        --svg-status-bg: #{$orange-100};
-        box-shadow: 0 0 0 1px $orange-500;
-      }
-    }
-  }
+  @include icon-styles($orange-500, $orange-100);
 }
 
 .ci-status-icon-running {
-  svg {
-    fill: $blue-500;
-  }
-
-  &.interactive {
-    &:hover {
-      background: $blue-500;
-
-      svg {
-        --svg-status-bg: #{$blue-100};
-        box-shadow: 0 0 0 1px $blue-500;
-      }
-    }
-  }
+  @include icon-styles($blue-500, $blue-100);
 }
 
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-scheduled,
 .ci-status-icon-manual {
-  svg {
-    fill: $gray-900;
-  }
-
-  &.interactive {
-    &:hover {
-      background: $gray-900;
-
-      svg {
-        --svg-status-bg: #{$gray-100};
-        box-shadow: 0 0 0 1px $gray-900;
-      }
-    }
-  }
+  @include icon-styles($gray-900, $gray-100);
 }
 
 .ci-status-icon-notification,
@@ -96,20 +57,7 @@
 .ci-status-icon-created,
 .ci-status-icon-skipped,
 .ci-status-icon-notfound {
-  svg {
-    fill: $gray-500;
-  }
-
-  &.interactive {
-    &:hover {
-      background: $gray-500;
-
-      svg {
-        --svg-status-bg: #{$gray-100};
-        box-shadow: 0 0 0 1px $gray-500;
-      }
-    }
-  }
+  @include icon-styles($gray-500, $gray-100);
 }
 
 .icon-link {

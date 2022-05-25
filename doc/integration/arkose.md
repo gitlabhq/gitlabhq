@@ -56,7 +56,7 @@ To enable Arkose Protect:
    ```
 
 1. Optional. To prevent high risk sessions from signing, enable the `arkose_labs_prevent_login` feature flag. Run the following command in the Rails console:
- 
+
    ```ruby
    Feature.enable(:arkose_labs_prevent_login)
    ```
@@ -73,5 +73,5 @@ test suite doesn't fail. This bypass is done in the `UserVerificationService` cl
 
 ## Feedback Job
 
-To help Arkose improve their protection service, we created a daily background job to send them the list of blocked users by us. 
+To help Arkose improve their protection service, we created a daily background job to send them the list of blocked users by us.
 This job is performed by the `Arkose::BlockedUsersReportWorker` class.

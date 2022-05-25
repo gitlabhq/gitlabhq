@@ -34,7 +34,7 @@ RSpec.describe 'User activates Slack notifications', :js do
         pipeline_channel: 6,
         wiki_page_channel: 7)
 
-      visit(edit_project_integration_path(project, integration))
+      visit(edit_project_settings_integration_path(project, integration))
     end
 
     it 'filters events by channel' do

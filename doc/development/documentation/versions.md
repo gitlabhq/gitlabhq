@@ -25,7 +25,7 @@ To view versions that are not available on `docs.gitlab.com`:
 ## Documenting version-specific features
 
 When a feature is added or updated, you can include its version information
-either as a **Version history** bullet or as an inline text reference.
+either as a **Version history** list item or as an inline text reference.
 
 You do not need to add version information on the pages in the `/development` directory.
 
