@@ -22,22 +22,24 @@
 .admin-dashboard.gl-mt-3
   .h3.gl-mb-5.gl-mt-0= _('Instance overview')
   .row
+    - component_params = { body_options: { class: 'gl-display-flex gl-justify-content-space-between gl-align-items-center gl-p-6' },
+                           footer_options: { class: 'gl-bg-transparent'} }
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body.d-flex.justify-content-between.align-items-center.gl-p-6
+      = render Pajamas::CardComponent.new(**component_params) do |c|
+        = c.body do
           %span
             .d-flex.align-items-center
               = sprite_icon('project', size: 16, css_class: 'gl-text-gray-700')
               %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Project)
             .gl-mt-3.text-uppercase= s_('AdminArea|Projects')
           = link_to(s_('AdminArea|New project'), new_project_path, class: "btn gl-button btn-default")
-        .gl-card-footer.gl-bg-transparent
+        = c.footer do
           .d-flex.align-items-center
             = link_to(s_('AdminArea|View latest projects'), admin_projects_path)
             = sprite_icon('angle-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body.d-flex.justify-content-between.align-items-center.gl-p-6
+      = render Pajamas::CardComponent.new(**component_params) do |c|
+        = c.body do
           %span
             .d-flex.align-items-center
               = sprite_icon('users', size: 16, css_class: 'gl-text-gray-700')
@@ -54,20 +56,20 @@
               = s_('AdminArea|Users')
               = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "text-capitalize gl-ml-2")
           = link_to(s_('AdminArea|New user'), new_admin_user_path, class: "btn gl-button btn-default")
-        .gl-card-footer.gl-bg-transparent
+        = c.footer do
           .d-flex.align-items-center
             = link_to(s_('AdminArea|View latest users'), admin_users_path)
             = sprite_icon('angle-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body.d-flex.justify-content-between.align-items-center.gl-p-6
+      = render Pajamas::CardComponent.new(**component_params) do |c|
+        = c.body do
           %span
             .d-flex.align-items-center
               = sprite_icon('group', size: 16, css_class: 'gl-text-gray-700')
               %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Group)
             .gl-mt-3.text-uppercase= s_('AdminArea|Groups')
           = link_to(s_('AdminArea|New group'), new_admin_group_path, class: "btn gl-button btn-default")
-        .gl-card-footer.gl-bg-transparent
+        = c.footer do
           .d-flex.align-items-center
             = link_to(s_('AdminArea|View latest groups'), admin_groups_path)
             = sprite_icon('angle-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
@@ -75,8 +77,8 @@
     .col-md-4.gl-mb-6
       #js-admin-statistics-container
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body
+      = render Pajamas::CardComponent.new do |c|
+        = c.body do
           %h4= s_('AdminArea|Features')
           = feature_entry(_('Sign up'),
             href: general_admin_application_settings_path(anchor: 'js-signup-settings'),
@@ -114,8 +116,8 @@
             href: admin_runners_path,
             enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body
+      = render Pajamas::CardComponent.new do |c|
+        = c.body do
           %h4
             = s_('AdminArea|Components')
             - if show_version_check?
@@ -171,8 +173,8 @@
             = link_to _("Gitaly Servers"), admin_gitaly_servers_path
   .row
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body
+      = render Pajamas::CardComponent.new do |c|
+        = c.body do
           %h4= s_('AdminArea|Latest projects')
           - @projects.each do |project|
             .gl-display-flex.gl-py-3
@@ -181,8 +183,8 @@
               %span.gl-white-space-nowrap.gl-text-right
                 #{time_ago_with_tooltip(project.created_at)}
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body
+      = render Pajamas::CardComponent.new do |c|
+        = c.body do
           %h4= s_('AdminArea|Latest users')
           - @users.each do |user|
             .gl-display-flex.gl-py-3
@@ -192,8 +194,8 @@
               %span.gl-white-space-nowrap.gl-text-right
                 #{time_ago_with_tooltip(user.created_at)}
     .col-md-4.gl-mb-6
-      .gl-card
-        .gl-card-body
+      = render Pajamas::CardComponent.new do |c|
+        = c.body do
           %h4= s_('AdminArea|Latest groups')
           - @groups.each do |group|
             .gl-display-flex.gl-py-3

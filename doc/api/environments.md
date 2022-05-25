@@ -386,7 +386,7 @@ POST /projects/:id/environments/:environment_id/stop
 |------------------|----------------|----------|----------------------------------------------------------------------------------------------------------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `environment_id` | integer        | yes      | The ID of the environment                                                                                      |
-| `force`          | boolean        | no       | Force environment to stop even when `on_stop` action fails                                                     |
+| `force`          | boolean        | no       | Force environment to stop without executing `on_stop` actions                                                     |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"

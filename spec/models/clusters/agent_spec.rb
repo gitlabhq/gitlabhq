@@ -7,8 +7,7 @@ RSpec.describe Clusters::Agent do
 
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:project).class_name('::Project') }
-  it { is_expected.to have_many(:agent_tokens).class_name('Clusters::AgentToken') }
-  it { is_expected.to have_many(:last_used_agent_tokens).class_name('Clusters::AgentToken') }
+  it { is_expected.to have_many(:agent_tokens).class_name('Clusters::AgentToken').order(Clusters::AgentToken.arel_table[:last_used_at].desc.nulls_last) }
   it { is_expected.to have_many(:group_authorizations).class_name('Clusters::Agents::GroupAuthorization') }
   it { is_expected.to have_many(:authorized_groups).through(:group_authorizations) }
   it { is_expected.to have_many(:project_authorizations).class_name('Clusters::Agents::ProjectAuthorization') }
@@ -114,23 +113,6 @@ RSpec.describe Clusters::Agent do
       let(:last_used_at) { 2.minutes.ago }
 
       it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#last_used_agent_tokens' do
-    let_it_be(:agent) { create(:cluster_agent) }
-
-    subject { agent.last_used_agent_tokens }
-
-    context 'agent has no tokens' do
-      it { is_expected.to be_empty }
-    end
-
-    context 'agent has active and inactive tokens' do
-      let!(:active_token) { create(:cluster_agent_token, agent: agent, last_used_at: 1.minute.ago) }
-      let!(:inactive_token) { create(:cluster_agent_token, agent: agent, last_used_at: 2.hours.ago) }
-
-      it { is_expected.to contain_exactly(active_token, inactive_token) }
     end
   end
 

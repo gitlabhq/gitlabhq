@@ -652,9 +652,10 @@ We return fallback values in these cases:
 
 | Case                        | Value |
 |-----------------------------|-------|
-| Deprecated Metric           | -1000 |
+| Deprecated Metric ([Removed with version 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/335894)) | -1000 |
 | Timeouts, general failures  | -1    |
 | Standard errors in counters | -2    |
+| Histogram metrics failure   | { '-1' => -1 } |
 
 ## Test counters manually using your Rails console
 

@@ -122,7 +122,7 @@ RSpec.describe 'Container Registry', :js do
       it 'renders the tags list correctly' do
         expect(page).to have_content('latest')
         expect(page).to have_content('stable')
-        expect(page).to have_content('Digest: N/A')
+        expect(page).to have_content('Digest: Not applicable.')
       end
     end
 

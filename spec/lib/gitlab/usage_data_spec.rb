@@ -723,7 +723,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
-      expect(counts_monthly[:promoted_issues]).to eq(Gitlab::UsageData::DEPRECATED_VALUE)
     end
   end
 

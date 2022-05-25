@@ -18,7 +18,6 @@
 
 module Gitlab
   class UsageData
-    DEPRECATED_VALUE = -1000
     MAX_GENERATION_TIME_FOR_SAAS = 40.hours
 
     CE_MEMOIZED_VALUES = %i(
@@ -193,8 +192,7 @@ module Gitlab
             packages: count(::Packages::Package.where(monthly_time_range_db_params)),
             personal_snippets: count(PersonalSnippet.where(monthly_time_range_db_params)),
             project_snippets: count(ProjectSnippet.where(monthly_time_range_db_params)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id),
-            promoted_issues: DEPRECATED_VALUE
+            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id)
           }.tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end

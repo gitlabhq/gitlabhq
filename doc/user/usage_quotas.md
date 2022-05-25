@@ -32,7 +32,7 @@ You can view storage usage for your project or [namespace](../user/group/#namesp
 The statistics are displayed. Select any title to view details. The information on this page
 is updated every 90 minutes.
 
-If your namespace shows `N/A`, push a commit to any project in the
+If your namespace shows `'Not applicable.'`, push a commit to any project in the
 namespace to recalculate the storage.
 
 ## Storage usage statistics

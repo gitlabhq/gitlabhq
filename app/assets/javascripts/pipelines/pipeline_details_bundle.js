@@ -40,10 +40,12 @@ export default async function initPipelineDetailsBundle() {
   }
 
   if (gon.features?.pipelineTabsVue) {
+    const { createAppOptions } = await import('ee_else_ce/pipelines/pipeline_tabs');
     const { createPipelineTabs } = await import('./pipeline_tabs');
 
     try {
-      createPipelineTabs(SELECTORS.PIPELINE_TABS, apolloProvider);
+      const appOptions = createAppOptions(SELECTORS.PIPELINE_TABS, apolloProvider);
+      createPipelineTabs(appOptions);
     } catch {
       createFlash({
         message: __('An error occurred while loading a section of this page.'),

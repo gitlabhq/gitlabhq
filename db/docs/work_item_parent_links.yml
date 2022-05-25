@@ -1,0 +1,10 @@
+---
+table_name: work_item_parent_links
+classes:
+- WorkItem
+- WorkItems::ParentLink
+feature_categories:
+- team_planning
+description: Persists link between work item and its parent.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87283
+milestone: '15.1'

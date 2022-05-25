@@ -6,7 +6,7 @@
       - if can?(current_user, :read_project, project)
         = link_to project.full_name, project_path(project)
       - else
-        .light= _('N/A')
+        .light= _('Not applicable.')
   %td
     %strong
       - if can?(current_user, :admin_project, project)

@@ -3,6 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe WorkItem do
+  describe 'associations' do
+    it { is_expected.to have_one(:work_item_parent).class_name('WorkItem') }
+
+    it 'has one `parent_link`' do
+      is_expected.to have_one(:parent_link)
+        .class_name('::WorkItems::ParentLink')
+        .with_foreign_key('work_item_id')
+    end
+
+    it 'has many `work_item_children`' do
+      is_expected.to have_many(:work_item_children)
+        .class_name('WorkItem')
+        .with_foreign_key('work_item_id')
+    end
+
+    it 'has many `child_links`' do
+      is_expected.to have_many(:child_links)
+        .class_name('::WorkItems::ParentLink')
+        .with_foreign_key('work_item_parent_id')
+    end
+  end
+
   describe '#noteable_target_type_name' do
     it 'returns `issue` as the target name' do
       work_item = build(:work_item)

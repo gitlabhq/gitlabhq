@@ -67,7 +67,7 @@ export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(
 
 export const UPDATED_AT = s__('ContainerRegistry|Last updated %{time}');
 
-export const NOT_AVAILABLE_TEXT = __('N/A');
+export const NOT_AVAILABLE_TEXT = __('Not applicable.');
 export const NOT_AVAILABLE_SIZE = __('0 bytes');
 
 export const CLEANUP_UNSCHEDULED_TEXT = s__('ContainerRegistry|Cleanup will run %{time}');
