@@ -9,7 +9,6 @@ module API
     before { authenticate_non_get! }
 
     helpers Helpers::MergeRequestsHelpers
-    helpers Helpers::SSEHelpers
 
     # These endpoints are defined in `TimeTrackingEndpoints` and is shared by
     # API::Issues. In order to be able to define the feature category of these
@@ -233,8 +232,6 @@ module API
         merge_request = ::MergeRequests::CreateService.new(project: user_project, current_user: current_user, params: mr_params).execute
 
         handle_merge_request_errors!(merge_request)
-
-        Gitlab::UsageDataCounters::EditorUniqueCounter.track_sse_edit_action(author: current_user) if request_from_sse?(user_project)
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end

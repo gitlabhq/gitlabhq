@@ -783,7 +783,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/settings/import_export.md @eread
 /doc/user/project/settings/index.md @fneill
 /doc/user/project/settings/project_access_tokens.md @eread
-/doc/user/project/static_site_editor/index.md @aqualls
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/index.md @aqualls
 /doc/user/project/wiki/group.md @aqualls

@@ -1,7 +1,7 @@
 <script>
 import { GlPagination, GlModal, GlSprintf } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
@@ -42,11 +42,21 @@ export default {
     isListEmpty() {
       return !this.list || this.list.length === 0;
     },
-    modalAction() {
-      return s__('PackageRegistry|Delete package');
-    },
     deletePackageName() {
       return this.itemToBeDeleted?.name ?? '';
+    },
+    deleteModalActionPrimaryProps() {
+      return {
+        text: this.$options.i18n.modalAction,
+        attributes: {
+          variant: 'danger',
+        },
+      };
+    },
+    deleteModalActionCancelProps() {
+      return {
+        text: __('Cancel'),
+      };
     },
     tracking() {
       return {
@@ -74,6 +84,7 @@ export default {
     deleteModalContent: s__(
       'PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?',
     ),
+    modalAction: s__('PackageRegistry|Delete package'),
   },
 };
 </script>
@@ -110,12 +121,12 @@ export default {
         ref="packageListDeleteModal"
         size="sm"
         modal-id="confirm-delete-pacakge"
-        ok-variant="danger"
+        :action-primary="deleteModalActionPrimaryProps"
+        :action-cancel="deleteModalActionCancelProps"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
       >
-        <template #modal-title>{{ modalAction }}</template>
-        <template #modal-ok>{{ modalAction }}</template>
+        <template #modal-title>{{ $options.i18n.modalAction }}</template>
         <gl-sprintf :message="$options.i18n.deleteModalContent">
           <template #name>
             <strong>{{ deletePackageName }}</strong>

@@ -247,7 +247,6 @@ Style/GuardClause:
     - 'app/services/projects/update_service.rb'
     - 'app/services/protected_branches/legacy_api_update_service.rb'
     - 'app/services/snippets/repository_validation_service.rb'
-    - 'app/services/static_site_editor/config_service.rb'
     - 'app/services/todo_service.rb'
     - 'app/services/users/build_service.rb'
     - 'app/services/users/update_service.rb'

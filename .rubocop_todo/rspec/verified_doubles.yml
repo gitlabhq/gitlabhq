@@ -382,7 +382,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/api/helpers/graphql_helpers_spec.rb
     - spec/lib/api/helpers/pagination_spec.rb
     - spec/lib/api/helpers/pagination_strategies_spec.rb
-    - spec/lib/api/helpers/sse_helpers_spec.rb
     - spec/lib/api/helpers/variables_helpers_spec.rb
     - spec/lib/api/helpers_spec.rb
     - spec/lib/atlassian/jira_connect/client_spec.rb
@@ -1054,7 +1053,6 @@ RSpec/VerifiedDoubles:
     - spec/services/spam/ham_service_spec.rb
     - spec/services/spam/spam_action_service_spec.rb
     - spec/services/spam/spam_params_spec.rb
-    - spec/services/static_site_editor/config_service_spec.rb
     - spec/services/system_note_service_spec.rb
     - spec/services/system_notes/commit_service_spec.rb
     - spec/services/system_notes/issuables_service_spec.rb

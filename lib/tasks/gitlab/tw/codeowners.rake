@@ -61,7 +61,6 @@ namespace :tw do
       CodeOwnerRule.new('Sharding', '@sselhorn'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Static Site Editor', '@aqualls'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@claytoncornell'),

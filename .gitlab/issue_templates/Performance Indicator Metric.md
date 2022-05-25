@@ -3,7 +3,7 @@ Performance Indicator Metric issues are used for adding, updating, or removing p
 
 Please title your issue with the following format: "{action}(Add|Update|Remove) Metric name as performance indicator"
 
-Example of title: "Add static_site_editor_views as gmau"
+Example of title: "Add some_feature_views as gmau"
 
 -->
 

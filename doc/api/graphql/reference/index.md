@@ -685,6 +685,10 @@ Input type: `AlertTodoCreateInput`
 
 ### `Mutation.apiFuzzingCiConfigurationCreate`
 
+WARNING:
+**Deprecated** in 15.1.
+The configuration snippet is now generated client-side.
+
 Input type: `ApiFuzzingCiConfigurationCreateInput`
 
 #### Arguments

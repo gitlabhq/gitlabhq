@@ -1775,21 +1775,6 @@
     "@tiptap/extension-floating-menu" "^2.0.0-beta.51"
     prosemirror-view "^1.23.6"
 
-"@toast-ui/editor@^2.5.2":
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-2.5.2.tgz#0637e1bbdb205c1ab53b6d3722ced26399b2f0ca"
-  integrity sha512-ldTOMCVKpSIummf9X3JqPuOUMjlAxyFePniHChmCMst9j+ZbHxdalOhEUDV/ASrq4jkjgRm4m0nCCUvjdljZSw==
-  dependencies:
-    "@types/codemirror" "0.0.71"
-    codemirror "^5.48.4"
-
-"@toast-ui/vue-editor@^2.5.2":
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/@toast-ui/vue-editor/-/vue-editor-2.5.2.tgz#0b54107a196471eacb18aabb7100101606917b27"
-  integrity sha512-zF33zKsG4wusL/OgwIUHWWDAXHuNx94tL1Jzgww9SbJ/mF23WRbvbOT4tvhpr6KZhbIbUUwzxwhPQabYSLjNRw==
-  dependencies:
-    "@toast-ui/editor" "^2.5.2"
-
 "@types/aria-query@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.0.tgz#14264692a9d6e2fa4db3df5e56e94b5e25647ac0"
@@ -1843,13 +1828,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/codemirror@0.0.71":
-  version "0.0.71"
-  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.71.tgz#861f1bcb3100c0a064567c5400f2981cf4ae8ca7"
-  integrity sha512-b2oEEnno1LIGKMR7uBEsr40al1UijF1HEpRn0+Yf1xOLl24iQgB7DBpZVMM7y54G5wCNoclDrRO65E6KHPNO2w==
-  dependencies:
-    "@types/tern" "*"
-
 "@types/connect-history-api-fallback@^1.3.5":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/connect-history-api-fallback/-/connect-history-api-fallback-1.3.5.tgz#d1f7a8a09d0ed5a57aee5ae9c18ab9b803205dae"
@@ -1871,11 +1849,6 @@
   integrity sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==
   dependencies:
     "@types/ms" "*"
-
-"@types/estree@*":
-  version "0.0.44"
-  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.44.tgz#980cc5a29a3ef3bea6ff1f7d021047d7ea575e21"
-  integrity sha512-iaIVzr+w2ZJ5HkidlZ3EJM8VTZb2MJLCjw3V+505yVts0gRC4UMvjw0d1HPtGqI/HQC/KdsYtayfzl+AXY2R8g==
 
 "@types/events@*":
   version "1.2.0"
@@ -2164,13 +2137,6 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw==
-
-"@types/tern@*":
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/@types/tern/-/tern-0.23.3.tgz#4b54538f04a88c9ff79de1f6f94f575a7f339460"
-  integrity sha512-imDtS4TAoTcXk0g7u4kkWqedB3E4qpjXzCpD2LU5M5NAXHzCDsypyvXSaG7mM8DKYkCRa7tFp4tS/lp/Wo7Q3w==
-  dependencies:
-    "@types/estree" "*"
 
 "@types/unist@*", "@types/unist@^2.0.0":
   version "2.0.6"

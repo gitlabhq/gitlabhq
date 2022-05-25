@@ -407,7 +407,6 @@ Layout/SpaceInsideBlockBraces:
     - 'spec/initializers/trusted_proxies_spec.rb'
     - 'spec/lib/api/entities/ci/job_request/image_spec.rb'
     - 'spec/lib/api/entities/ci/job_request/port_spec.rb'
-    - 'spec/lib/api/helpers/sse_helpers_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/lib/banzai/cross_project_reference_spec.rb'
     - 'spec/lib/banzai/filter/broadcast_message_placeholders_filter_spec.rb'

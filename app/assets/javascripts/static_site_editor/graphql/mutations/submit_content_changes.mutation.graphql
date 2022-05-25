@@ -1,7 +1,0 @@
-mutation submitContentChanges($input: SubmitContentChangesInput) {
-  submitContentChanges(input: $input) @client {
-    branch
-    commit
-    mergeRequest
-  }
-}

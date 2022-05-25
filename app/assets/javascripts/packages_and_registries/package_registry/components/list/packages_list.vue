@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlModal, GlSprintf, GlKeysetPagination } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import {
@@ -72,6 +72,19 @@ export default {
           this.itemToBeDeleted = null;
         }
       },
+    },
+    deleteModalActionPrimaryProps() {
+      return {
+        text: this.$options.i18n.modalAction,
+        attributes: {
+          variant: 'danger',
+        },
+      };
+    },
+    deleteModalActionCancelProps() {
+      return {
+        text: __('Cancel'),
+      };
     },
     errorTitleAlert() {
       return sprintf(
@@ -161,12 +174,12 @@ export default {
         v-model="showDeleteModal"
         modal-id="confirm-delete-pacakge"
         size="sm"
-        ok-variant="danger"
+        :action-primary="deleteModalActionPrimaryProps"
+        :action-cancel="deleteModalActionCancelProps"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
       >
         <template #modal-title>{{ $options.i18n.modalAction }}</template>
-        <template #modal-ok>{{ $options.i18n.modalAction }}</template>
         <gl-sprintf :message="$options.i18n.deleteModalContent">
           <template #name>
             <strong>{{ deletePackageName }}</strong>

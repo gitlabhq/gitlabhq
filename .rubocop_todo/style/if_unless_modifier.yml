@@ -387,7 +387,6 @@ Style/IfUnlessModifier:
     - 'app/services/snippets/repository_validation_service.rb'
     - 'app/services/spam/spam_action_service.rb'
     - 'app/services/spam/spam_verdict_service.rb'
-    - 'app/services/static_site_editor/config_service.rb'
     - 'app/services/system_notes/issuables_service.rb'
     - 'app/services/tags/destroy_service.rb'
     - 'app/services/two_factor/destroy_service.rb'

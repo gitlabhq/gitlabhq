@@ -54,7 +54,6 @@ Rails.autoloaders.each do |autoloader|
     'sca' => 'SCA',
     'spdx' => 'SPDX',
     'sql' => 'SQL',
-    'sse_helpers' => 'SSEHelpers',
     'ssh_key' => 'SSHKey',
     'ssh_key_with_user' => 'SSHKeyWithUser',
     'ssh_public_key' => 'SSHPublicKey',

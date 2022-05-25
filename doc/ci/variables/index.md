@@ -697,6 +697,10 @@ You can override the value of a variable when you:
 
 The pipeline variables declared in these events take [priority over other variables](#cicd-variable-precedence).
 
+NOTE:
+You should avoid overriding [predefined variables](predefined_variables.md),
+as it can cause the pipeline to behave unexpectedly.
+
 ### Override a variable when running a pipeline manually
 
 You can override the value of a CI/CD variable when you

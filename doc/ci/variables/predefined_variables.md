@@ -16,6 +16,10 @@ with a `script` command.
 
 There are also a number of [variables you can use to configure runner behavior](../runners/configure_runners.md#configure-runner-behavior-with-variables) globally or for individual jobs.
 
+NOTE:
+You should avoid [overriding](index.md#override-a-defined-cicd-variable) predefined variables,
+as it can cause the pipeline to behave unexpectedly.
+
 | Variable                                 | GitLab | Runner | Description |
 |------------------------------------------|--------|--------|-------------|
 | `CHAT_CHANNEL`                           | 10.6   | all    | The Source chat channel that triggered the [ChatOps](../chatops/index.md) command. |

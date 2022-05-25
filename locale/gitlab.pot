@@ -1337,9 +1337,6 @@ msgstr ""
 msgid "0 bytes"
 msgstr ""
 
-msgid "0t1DgySidms"
-msgstr ""
-
 msgid "1 Day"
 msgid_plural "%d Days"
 msgstr[0] ""
@@ -2118,12 +2115,6 @@ msgstr ""
 msgid "Add a horizontal rule"
 msgstr ""
 
-msgid "Add a line"
-msgstr ""
-
-msgid "Add a link"
-msgstr ""
-
 msgid "Add a new issue"
 msgstr ""
 
@@ -2173,9 +2164,6 @@ msgid "Add approvers"
 msgstr ""
 
 msgid "Add attention request"
-msgstr ""
-
-msgid "Add bold text"
 msgstr ""
 
 msgid "Add broadcast message"
@@ -2232,9 +2220,6 @@ msgstr ""
 msgid "Add internal note"
 msgstr ""
 
-msgid "Add italic text"
-msgstr ""
-
 msgid "Add key"
 msgstr ""
 
@@ -2275,9 +2260,6 @@ msgid "Add reaction"
 msgstr ""
 
 msgid "Add request manually"
-msgstr ""
-
-msgid "Add strikethrough text"
 msgstr ""
 
 msgid "Add suggestion to batch"
@@ -4186,9 +4168,6 @@ msgid "An error occurred while loading the pipeline."
 msgstr ""
 
 msgid "An error occurred while loading the pipelines jobs."
-msgstr ""
-
-msgid "An error occurred while loading your content. Please try again."
 msgstr ""
 
 msgid "An error occurred while making the request."
@@ -6641,9 +6620,6 @@ msgid "Branches|protected"
 msgstr ""
 
 msgid "Breadcrumbs"
-msgstr ""
-
-msgid "Brief title about the change"
 msgstr ""
 
 msgid "Broadcast Message was successfully created."
@@ -12768,9 +12744,6 @@ msgstr ""
 msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}."
 msgstr ""
 
-msgid "Description template"
-msgstr ""
-
 msgid "Description:"
 msgstr ""
 
@@ -17657,9 +17630,6 @@ msgstr ""
 msgid "Go to your snippets"
 msgstr ""
 
-msgid "Goal of the changes and what reviewers should be aware of"
-msgstr ""
-
 msgid "Google Cloud"
 msgstr ""
 
@@ -18735,9 +18705,6 @@ msgstr ""
 msgid "Heading 4"
 msgstr ""
 
-msgid "Headings"
-msgstr ""
-
 msgid "Health"
 msgstr ""
 
@@ -19153,9 +19120,6 @@ msgstr ""
 msgid "If no options are selected, only administrators can register runners."
 msgstr ""
 
-msgid "If the YouTube URL is https://www.youtube.com/watch?v=0t1DgySidms then the video ID is %{id}"
-msgstr ""
-
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
 msgstr ""
 
@@ -19235,9 +19199,6 @@ msgid "Ignored"
 msgstr ""
 
 msgid "Image URL"
-msgstr ""
-
-msgid "Image details"
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -20320,9 +20281,6 @@ msgstr ""
 msgid "Increase"
 msgstr ""
 
-msgid "Indent"
-msgstr ""
-
 msgid "Index"
 msgstr ""
 
@@ -20413,12 +20371,6 @@ msgstr ""
 msgid "Insert a quote"
 msgstr ""
 
-msgid "Insert a video"
-msgstr ""
-
-msgid "Insert an image"
-msgstr ""
-
 msgid "Insert code"
 msgstr ""
 
@@ -20431,9 +20383,6 @@ msgstr ""
 msgid "Insert image"
 msgstr ""
 
-msgid "Insert inline code"
-msgstr ""
-
 msgid "Insert link"
 msgstr ""
 
@@ -20444,9 +20393,6 @@ msgid "Insert row before"
 msgstr ""
 
 msgid "Insert suggestion"
-msgstr ""
-
-msgid "Insert video"
 msgstr ""
 
 msgid "Insights"
@@ -22146,9 +22092,6 @@ msgstr ""
 msgid "Keep divergent refs"
 msgstr ""
 
-msgid "Keep editing"
-msgstr ""
-
 msgid "Keeping all SAST analyzers enabled future-proofs the project in case new languages are added later on. Determining which analyzers apply is a process that consumes minimal resources and adds minimal time to the pipeline. Leaving all SAST analyzers enabled ensures maximum coverage."
 msgstr ""
 
@@ -22976,9 +22919,6 @@ msgstr ""
 msgid "Link title is required"
 msgstr ""
 
-msgid "Link to an image"
-msgstr ""
-
 msgid "Link to go to GitLab pipeline documentation"
 msgstr ""
 
@@ -23598,9 +23538,6 @@ msgid "Maximum file size is 1MB. Pages are optimized for a 24px tall header logo
 msgstr ""
 
 msgid "Maximum file size is 1MB. Pages are optimized for a 640x360 px logo."
-msgstr ""
-
-msgid "Maximum file size is 2MB. Please select a smaller file."
 msgstr ""
 
 msgid "Maximum files in a diff"
@@ -26810,9 +26747,6 @@ msgstr ""
 msgid "OutdatedBrowser|Please install a %{browser_link_start}supported web browser%{browser_link_end} for a better experience."
 msgstr ""
 
-msgid "Outdent"
-msgstr ""
-
 msgid "Overridden"
 msgstr ""
 
@@ -27275,9 +27209,6 @@ msgid "Packages & Registries"
 msgstr ""
 
 msgid "Page not found"
-msgstr ""
-
-msgid "Page settings"
 msgstr ""
 
 msgid "PagerDutySettings|Active"
@@ -28420,9 +28351,6 @@ msgstr ""
 msgid "Please check your email (%{email}) to verify that you own this address and unlock the power of CI/CD. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
 msgstr ""
 
-msgid "Please choose a file"
-msgstr ""
-
 msgid "Please complete your profile with email address"
 msgstr ""
 
@@ -28513,13 +28441,7 @@ msgstr ""
 msgid "Please provide a name."
 msgstr ""
 
-msgid "Please provide a valid URL"
-msgstr ""
-
 msgid "Please provide a valid URL."
-msgstr ""
-
-msgid "Please provide a valid YouTube URL or ID"
 msgstr ""
 
 msgid "Please provide a valid email address."
@@ -34512,9 +34434,6 @@ msgstr ""
 msgid "Select epic"
 msgstr ""
 
-msgid "Select file"
-msgstr ""
-
 msgid "Select group"
 msgstr ""
 
@@ -35695,9 +35614,6 @@ msgstr ""
 msgid "Something went wrong while initializing the OpenAPI viewer"
 msgstr ""
 
-msgid "Something went wrong while inserting your image. Please try again."
-msgstr ""
-
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."
 msgstr ""
 
@@ -36247,69 +36163,6 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
-msgid "StaticSiteEditor|1. Add a clear title to describe the change."
-msgstr ""
-
-msgid "StaticSiteEditor|2. Add a description to explain why the change is being made."
-msgstr ""
-
-msgid "StaticSiteEditor|3. Assign a person to review and accept the merge request."
-msgstr ""
-
-msgid "StaticSiteEditor|A link to view the merge request will appear once ready."
-msgstr ""
-
-msgid "StaticSiteEditor|An error occurred while submitting your changes."
-msgstr ""
-
-msgid "StaticSiteEditor|Automatic formatting changes"
-msgstr ""
-
-msgid "StaticSiteEditor|Branch could not be created."
-msgstr ""
-
-msgid "StaticSiteEditor|Copy update"
-msgstr ""
-
-msgid "StaticSiteEditor|Could not commit the content changes."
-msgstr ""
-
-msgid "StaticSiteEditor|Could not create merge request."
-msgstr ""
-
-msgid "StaticSiteEditor|Creating your merge request"
-msgstr ""
-
-msgid "StaticSiteEditor|Incompatible file content"
-msgstr ""
-
-msgid "StaticSiteEditor|Markdown formatting preferences introduced by the Static Site Editor"
-msgstr ""
-
-msgid "StaticSiteEditor|Return to site"
-msgstr ""
-
-msgid "StaticSiteEditor|Static site editor"
-msgstr ""
-
-msgid "StaticSiteEditor|The Static Site Editor is currently configured to only edit Markdown content on pages generated from Middleman. Visit the documentation to learn more about configuring your site to use the Static Site Editor."
-msgstr ""
-
-msgid "StaticSiteEditor|To see your changes live you will need to do the following things:"
-msgstr ""
-
-msgid "StaticSiteEditor|Update %{sourcePath} file"
-msgstr ""
-
-msgid "StaticSiteEditor|View documentation"
-msgstr ""
-
-msgid "StaticSiteEditor|You can set an assignee to get your changes reviewed and deployed once your merge request is created."
-msgstr ""
-
-msgid "StaticSiteEditor|Your merge request has been created"
-msgstr ""
-
 msgid "Statistics"
 msgstr ""
 
@@ -36547,12 +36400,6 @@ msgstr ""
 msgid "Submit as spam"
 msgstr ""
 
-msgid "Submit changes"
-msgstr ""
-
-msgid "Submit changes..."
-msgstr ""
-
 msgid "Submit feedback"
 msgstr ""
 
@@ -36563,9 +36410,6 @@ msgid "Submit search"
 msgstr ""
 
 msgid "Submit the current review."
-msgstr ""
-
-msgid "Submit your changes"
 msgstr ""
 
 msgid "Submitted as ham"
@@ -40750,9 +40594,6 @@ msgstr ""
 msgid "Upload a private key for your certificate"
 msgstr ""
 
-msgid "Upload an image"
-msgstr ""
-
 msgid "Upload file"
 msgstr ""
 
@@ -41916,9 +41757,6 @@ msgid "View log"
 msgstr ""
 
 msgid "View logs"
-msgstr ""
-
-msgid "View merge request"
 msgstr ""
 
 msgid "View milestones"
@@ -43868,9 +43706,6 @@ msgid "You've rejected %{user}"
 msgstr ""
 
 msgid "YouTube"
-msgstr ""
-
-msgid "YouTube URL or ID"
 msgstr ""
 
 msgid "Your %{doc_link_start}namespace%{doc_link_end}, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_limit} members. From June 22, 2022, it will be limited to %{free_limit}, and the remaining members will get a %{link_start}status of Over limit%{link_end} and lose access to the namespace. You can go to the Usage Quotas page to manage which %{free_limit} members will remain in your namespace. To get more members, an owner can start a trial or upgrade to a paid tier."

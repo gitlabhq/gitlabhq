@@ -3681,7 +3681,6 @@ Layout/LineLength:
     - 'lib/gitlab/slash_commands/issue_new.rb'
     - 'lib/gitlab/sql/pattern.rb'
     - 'lib/gitlab/ssh_public_key.rb'
-    - 'lib/gitlab/static_site_editor/config/generated_config.rb'
     - 'lib/gitlab/subscription_portal.rb'
     - 'lib/gitlab/tracking.rb'
     - 'lib/gitlab/tracking/destinations/snowplow.rb'

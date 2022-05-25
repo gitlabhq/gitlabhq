@@ -155,7 +155,7 @@ variables:
 You can disable all default SAST analyzers, leaving only [custom analyzers](#custom-analyzers)
 enabled.
 
-To disable all default analyzers, set the CI/CD variable `SAST_DISABLED` to `true` in your
+To disable all default analyzers, set the CI/CD variable `SAST_DISABLED` to `"true"` in your
 `.gitlab-ci.yml` file.
 
 Example:
@@ -165,7 +165,7 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  SAST_DISABLED: true
+  SAST_DISABLED: "true"
 ```
 
 ### Disable specific default analyzers

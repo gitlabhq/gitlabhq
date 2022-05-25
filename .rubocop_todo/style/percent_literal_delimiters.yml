@@ -675,7 +675,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/controllers/projects/performance_monitoring/dashboards_controller_spec.rb'
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/controllers/projects/settings/ci_cd_controller_spec.rb'
-    - 'spec/controllers/projects/static_site_editor_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/controllers/registrations/welcome_controller_spec.rb'
     - 'spec/controllers/search_controller_spec.rb'

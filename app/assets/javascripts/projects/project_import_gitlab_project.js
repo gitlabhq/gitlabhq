@@ -34,12 +34,12 @@ export default () => {
 
   // generate slug when project name changes
   $projectName.on('keyup', () => {
-    projectNew.onProjectNameChange($projectName, $projectPath);
+    projectNew.onProjectNameChangeJq($projectName, $projectPath);
     hasUserDefinedProjectName = $projectName.val().trim().length > 0;
   });
 
   // generate project name from the slug if one isn't set
   $projectPath.on('keyup', () =>
-    projectNew.onProjectPathChange($projectName, $projectPath, hasUserDefinedProjectName),
+    projectNew.onProjectPathChangeJq($projectName, $projectPath, hasUserDefinedProjectName),
   );
 };

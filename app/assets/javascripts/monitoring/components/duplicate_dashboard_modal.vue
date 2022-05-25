@@ -1,7 +1,7 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlAlert, GlModal } from '@gitlab/ui';
 import { mapActions, mapGetters } from 'vuex';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import DuplicateDashboardForm from './duplicate_dashboard_form.vue';
 
 const events = {
@@ -9,7 +9,7 @@ const events = {
 };
 
 export default {
-  components: { GlAlert, GlLoadingIcon, GlModal, DuplicateDashboardForm },
+  components: { GlAlert, GlModal, DuplicateDashboardForm },
   props: {
     defaultBranch: {
       type: String,
@@ -31,6 +31,20 @@ export default {
     ...mapGetters('monitoringDashboard', ['selectedDashboard']),
     okButtonText() {
       return this.loading ? s__('Metrics|Duplicating...') : s__('Metrics|Duplicate');
+    },
+    actionPrimaryProps() {
+      return {
+        text: this.okButtonText,
+        attributes: {
+          loading: this.loading,
+          variant: 'confirm',
+        },
+      };
+    },
+    actionCancelProps() {
+      return {
+        text: __('Cancel'),
+      };
     },
   },
   methods: {
@@ -75,7 +89,8 @@ export default {
     ref="duplicateDashboardModal"
     :modal-id="modalId"
     :title="s__('Metrics|Duplicate dashboard')"
-    ok-variant="success"
+    :action-primary="actionPrimaryProps"
+    :action-cancel="actionCancelProps"
     @ok="ok"
     @hide="hide"
   >
@@ -87,9 +102,5 @@ export default {
       :default-branch="defaultBranch"
       @change="formChange"
     />
-    <template #modal-ok>
-      <gl-loading-icon v-if="loading" size="sm" inline color="light" />
-      {{ okButtonText }}
-    </template>
   </gl-modal>
 </template>

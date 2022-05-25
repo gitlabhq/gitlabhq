@@ -293,7 +293,8 @@ background migration.
          job_class_name: MIGRATION,
          table_name: :routes,
          column_name: :id,
-         job_arguments: []
+         job_arguments: [],
+         finalize: true
        )
      end
 
@@ -302,6 +303,11 @@ background migration.
      end
    end
    ```
+
+   NOTE:
+   If the batched background migration is not finished, the system will
+   execute the batched background migration inline. If you don't want
+   to see this behavior, you need to pass `finalize: false`.
 
    If the application does not depend on the data being 100% migrated (for
    instance, the data is advisory, and not mission-critical), then you can skip this

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import projectNew from '~/projects/project_new';
@@ -7,6 +6,9 @@ describe('New Project', () => {
   let $projectImportUrl;
   let $projectPath;
   let $projectName;
+
+  const mockKeyup = (el) => el.dispatchEvent(new KeyboardEvent('keyup'));
+  const mockChange = (el) => el.dispatchEvent(new Event('change'));
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -29,122 +31,127 @@ describe('New Project', () => {
       </div>
     `);
 
-    $projectImportUrl = $('#project_import_url');
-    $projectPath = $('#project_path');
-    $projectName = $('#project_name');
+    $projectImportUrl = document.querySelector('#project_import_url');
+    $projectPath = document.querySelector('#project_path');
+    $projectName = document.querySelector('#project_name');
   });
 
   afterEach(() => {
     resetHTMLFixture();
   });
 
+  const setValueAndTriggerEvent = (el, value, event) => {
+    event(el);
+    el.value = value;
+  };
+
   describe('deriveProjectPathFromUrl', () => {
     const dummyImportUrl = `${TEST_HOST}/dummy/import/url.git`;
 
     beforeEach(() => {
       projectNew.bindEvents();
-      $projectPath.val('').keyup().val(dummyImportUrl);
+      setValueAndTriggerEvent($projectPath, dummyImportUrl, mockKeyup);
     });
 
     it('does not change project path for disabled $projectImportUrl', () => {
-      $projectImportUrl.prop('disabled', true);
+      $projectImportUrl.setAttribute('disabled', true);
 
       projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-      expect($projectPath.val()).toEqual(dummyImportUrl);
+      expect($projectPath.value).toEqual(dummyImportUrl);
     });
 
     describe('for enabled $projectImportUrl', () => {
       beforeEach(() => {
-        $projectImportUrl.prop('disabled', false);
+        $projectImportUrl.setAttribute('disabled', false);
       });
 
       it('does not change project path if it is set by user', () => {
-        $projectPath.keyup();
+        mockKeyup($projectPath);
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual(dummyImportUrl);
+        expect($projectPath.value).toEqual(dummyImportUrl);
       });
 
       it('does not change project path for empty $projectImportUrl', () => {
-        $projectImportUrl.val('');
+        $projectImportUrl.value = '';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual(dummyImportUrl);
+        expect($projectPath.value).toEqual(dummyImportUrl);
       });
 
       it('does not change project path for whitespace $projectImportUrl', () => {
-        $projectImportUrl.val('   ');
+        $projectImportUrl.value = '   ';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual(dummyImportUrl);
+        expect($projectPath.value).toEqual(dummyImportUrl);
       });
 
       it('does not change project path for $projectImportUrl without slashes', () => {
-        $projectImportUrl.val('has-no-slash');
+        $projectImportUrl.value = 'has-no-slash';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual(dummyImportUrl);
+        expect($projectPath.value).toEqual(dummyImportUrl);
       });
 
       it('changes project path to last $projectImportUrl component', () => {
-        $projectImportUrl.val('/this/is/last');
+        $projectImportUrl.value = '/this/is/last';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('last');
+        expect($projectPath.value).toEqual('last');
       });
 
       it('ignores trailing slashes in $projectImportUrl', () => {
-        $projectImportUrl.val('/has/trailing/slash/');
+        $projectImportUrl.value = '/has/trailing/slash/';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('slash');
+        expect($projectPath.value).toEqual('slash');
       });
 
       it('ignores fragment identifier in $projectImportUrl', () => {
-        $projectImportUrl.val('/this/has/a#fragment-identifier/');
+        $projectImportUrl.value = '/this/has/a#fragment-identifier/';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('a');
+        expect($projectPath.value).toEqual('a');
       });
 
       it('ignores query string in $projectImportUrl', () => {
-        $projectImportUrl.val('/url/with?query=string');
+        $projectImportUrl.value = '/url/with?query=string';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('with');
+        expect($projectPath.value).toEqual('with');
       });
 
       it('ignores trailing .git in $projectImportUrl', () => {
-        $projectImportUrl.val('/repository.git');
+        $projectImportUrl.value = '/repository.git';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('repository');
+        expect($projectPath.value).toEqual('repository');
       });
 
       it('changes project path for HTTPS URL in $projectImportUrl', () => {
-        $projectImportUrl.val('https://gitlab.company.com/group/project.git');
+        $projectImportUrl.value = 'https://gitlab.company.com/group/project.git';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('project');
+        expect($projectPath.value).toEqual('project');
       });
 
       it('changes project path for SSH URL in $projectImportUrl', () => {
-        $projectImportUrl.val('git@gitlab.com:gitlab-org/gitlab-ce.git');
+        $projectImportUrl.value = 'git@gitlab.com:gitlab-org/gitlab-ce.git';
 
         projectNew.deriveProjectPathFromUrl($projectImportUrl);
 
-        expect($projectPath.val()).toEqual('gitlab-ce');
+        expect($projectPath.value).toEqual('gitlab-ce');
       });
     });
   });
@@ -152,27 +159,27 @@ describe('New Project', () => {
   describe('deriveSlugFromProjectName', () => {
     beforeEach(() => {
       projectNew.bindEvents();
-      $projectName.val('').keyup();
+      setValueAndTriggerEvent($projectName, '', mockKeyup);
     });
 
     it('converts project name to lower case and dash-limited slug', () => {
       const dummyProjectName = 'My Awesome Project';
 
-      $projectName.val(dummyProjectName);
+      $projectName.value = dummyProjectName;
 
       projectNew.onProjectNameChange($projectName, $projectPath);
 
-      expect($projectPath.val()).toEqual('my-awesome-project');
+      expect($projectPath.value).toEqual('my-awesome-project');
     });
 
     it('does not add additional dashes in the slug if the project name already contains dashes', () => {
       const dummyProjectName = 'My-Dash-Delimited Awesome Project';
 
-      $projectName.val(dummyProjectName);
+      $projectName.value = dummyProjectName;
 
       projectNew.onProjectNameChange($projectName, $projectPath);
 
-      expect($projectPath.val()).toEqual('my-dash-delimited-awesome-project');
+      expect($projectPath.value).toEqual('my-dash-delimited-awesome-project');
     });
   });
 
@@ -182,27 +189,28 @@ describe('New Project', () => {
 
     beforeEach(() => {
       projectNew.bindEvents();
-      $projectPath.val('').change();
+      setValueAndTriggerEvent($projectPath, '', mockChange);
     });
 
     it('converts slug to humanized project name', () => {
-      $projectPath.val(dummyProjectPath);
+      $projectPath.value = dummyProjectPath;
+      mockChange($projectPath);
 
       projectNew.onProjectPathChange($projectName, $projectPath);
 
-      expect($projectName.val()).toEqual('My Awesome Project');
+      expect($projectName.value).toEqual('My Awesome Project');
     });
 
     it('does not convert slug to humanized project name if a project name already exists', () => {
-      $projectName.val(dummyProjectName);
-      $projectPath.val(dummyProjectPath);
+      $projectName.value = dummyProjectName;
+      $projectPath.value = dummyProjectPath;
       projectNew.onProjectPathChange(
         $projectName,
         $projectPath,
-        $projectName.val().trim().length > 0,
+        $projectName.value.trim().length > 0,
       );
 
-      expect($projectName.val()).toEqual(dummyProjectName);
+      expect($projectName.value).toEqual(dummyProjectName);
     });
   });
 });

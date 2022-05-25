@@ -57,13 +57,6 @@ scope format: false do
 
     resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::PathRegex.git_reference_regex }
     resources :protected_tags, only: [:index, :show, :create, :update, :destroy]
-
-    scope constraints: { id: /[^\0]+?/ } do
-      scope controller: :static_site_editor do
-        get '/sse/:id(/*vueroute)', action: :show, as: :show_sse
-        get '/sse', as: :root_sse, action: :index
-      end
-    end
   end
 
   scope constraints: { id: /[^\0]+/ } do
