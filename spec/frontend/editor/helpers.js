@@ -49,6 +49,12 @@ export const SEConstExt = () => {
   };
 };
 
+export const SEExtWithoutAPI = () => {
+  return {
+    extensionName: 'SEExtWithoutAPI',
+  };
+};
+
 export class SEWithSetupExt {
   static get extensionName() {
     return 'SEWithSetupExt';

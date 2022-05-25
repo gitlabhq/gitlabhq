@@ -9,3 +9,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::DeviseFailure.prepend_mod

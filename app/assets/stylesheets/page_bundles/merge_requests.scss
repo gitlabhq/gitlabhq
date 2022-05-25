@@ -743,3 +743,14 @@ $tabs-holder-z-index: 250;
     grid-gap: 5%;
   }
 }
+
+.container-fluid:not(.container-limited) {
+  .detail-page-header,
+  .detail-page-description,
+  .merge-request-tabs-container {
+    &.is-merge-request {
+      @include gl-mx-auto;
+      max-width: $fixed-layout-width - ($gl-padding * 2);
+    }
+  }
+}

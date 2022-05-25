@@ -417,6 +417,7 @@ export default {
       }
 
       this.isMakingRequest = true;
+      this.editCommitMessage = false;
 
       if (!useAutoMerge) {
         this.mr.transitionStateMachine({ transition: MERGE });
@@ -663,7 +664,11 @@ export default {
               <gl-sprintf v-else :message="mergeDisabledText" />
             </div>
             <template v-if="glFeatures.restructuredMrWidget">
-              <div v-show="editCommitMessage" class="gl-w-full gl-order-n1">
+              <div
+                v-if="editCommitMessage"
+                class="gl-w-full gl-order-n1"
+                data-testid="edit_commit_message"
+              >
                 <ul
                   :class="{
                     'content-list': !glFeatures.restructuredMrWidget,

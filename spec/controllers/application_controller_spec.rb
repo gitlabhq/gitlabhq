@@ -105,10 +105,6 @@ RSpec.describe ApplicationController do
 
   describe 'session expiration' do
     controller(described_class) do
-      # The anonymous controller will report 401 and fail to run any actions.
-      # Normally, GitLab will just redirect you to sign in.
-      skip_before_action :authenticate_user!, only: :index
-
       def index
         render html: 'authenticated'
       end

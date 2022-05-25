@@ -1,5 +1,7 @@
-.detail-page-description.py-2
-  - if Feature.enabled?(:updated_mr_header, @project)
+- updated_mr_header = Feature.enabled?(:updated_mr_header, @project)
+
+.detail-page-description.py-2{ class: "#{'is-merge-request' if updated_mr_header && !fluid_layout}" }
+  - if updated_mr_header
     = render 'shared/issuable/status_box', issuable: @merge_request
     = merge_request_header(@project, @merge_request)
   - else

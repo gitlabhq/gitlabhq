@@ -12,6 +12,6 @@ export default class EditorExtension {
   }
 
   get api() {
-    return this.obj.provides?.();
+    return this.obj.provides?.() || {};
   }
 }

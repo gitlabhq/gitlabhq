@@ -87,7 +87,11 @@ const createReadyToMergeResponse = (customMr) => {
   });
 };
 
-const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) => {
+const createComponent = (
+  customConfig = {},
+  mergeRequestWidgetGraphql = false,
+  restructuredMrWidget = false,
+) => {
   wrapper = shallowMount(ReadyToMerge, {
     localVue,
     propsData: {
@@ -97,6 +101,7 @@ const createComponent = (customConfig = {}, mergeRequestWidgetGraphql = false) =
     provide: {
       glFeatures: {
         mergeRequestWidgetGraphql,
+        restructuredMrWidget,
       },
     },
     stubs: {
@@ -307,6 +312,20 @@ describe('ReadyToMerge', () => {
         },
       });
 
+      beforeEach(() => {
+        readyToMergeResponseSpy = jest
+          .fn()
+          .mockResolvedValueOnce(createReadyToMergeResponse({ squash: true, squashOnMerge: true }))
+          .mockResolvedValue(
+            createReadyToMergeResponse({
+              squash: true,
+              squashOnMerge: true,
+              defaultMergeCommitMessage: '',
+              defaultSquashCommitMessage: '',
+            }),
+          );
+      });
+
       it('should handle merge when pipeline succeeds', async () => {
         createComponent();
 
@@ -378,6 +397,27 @@ describe('ReadyToMerge', () => {
 
         expect(params.should_remove_source_branch).toBeTruthy();
         expect(params.auto_merge_strategy).toBeUndefined();
+      });
+
+      it('hides edit commit message', async () => {
+        createComponent({}, true, true);
+
+        await waitForPromises();
+
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+        jest.spyOn(wrapper.vm.service, 'merge').mockResolvedValue(response('success'));
+
+        await wrapper
+          .findComponent('[data-testid="widget_edit_commit_message"]')
+          .vm.$emit('input', true);
+
+        expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(true);
+
+        wrapper.vm.handleMergeButtonClick();
+
+        await waitForPromises();
+
+        expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(false);
       });
     });
 

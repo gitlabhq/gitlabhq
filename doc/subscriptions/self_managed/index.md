@@ -357,7 +357,10 @@ To add seats to a subscription:
 
 A payment receipt is emailed to you, which you can also access in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
 
-For subscriptions that use cloud licensing, the additional seats are reflected on your instance immediately and no further action is needed. If you're using a legacy license, you receive an updated license file. [Add this license](../../user/admin_area/license.md) to your instance to use it.
+If your subscription was activated with an activation code, the additional seats are reflected in
+your instance immediately. If you're using a license file, you receive an updated file.
+To add the seats, [add the license file](../../user/admin_area/license_file.md)
+to your instance.
 
 ### Renew a subscription
 

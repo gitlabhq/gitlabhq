@@ -195,22 +195,22 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             },
             'high urgency CI queues' => {
               query: 'feature_category=continuous_integration&urgency=high',
-              included_queues: %w(pipeline_cache:expire_job_cache pipeline_cache:expire_pipeline_cache),
+              included_queues: %w(pipeline_default:ci_drop_pipeline),
               excluded_queues: %w(merge)
             },
             'CPU-bound high urgency CI queues' => {
               query: 'feature_category=continuous_integration&urgency=high&resource_boundary=cpu',
-              included_queues: %w(pipeline_cache:expire_pipeline_cache),
-              excluded_queues: %w(pipeline_cache:expire_job_cache merge)
+              included_queues: %w(pipeline_default:ci_create_downstream_pipeline),
+              excluded_queues: %w(pipeline_default:ci_drop_pipeline merge)
             },
             'CPU-bound high urgency non-CI queues' => {
               query: 'feature_category!=continuous_integration&urgency=high&resource_boundary=cpu',
               included_queues: %w(new_issue),
-              excluded_queues: %w(pipeline_cache:expire_pipeline_cache)
+              excluded_queues: %w(pipeline_default:ci_create_downstream_pipeline)
             },
             'CI and SCM queues' => {
               query: 'feature_category=continuous_integration|feature_category=source_code_management',
-              included_queues: %w(pipeline_cache:expire_job_cache merge),
+              included_queues: %w(pipeline_default:ci_drop_pipeline merge),
               excluded_queues: %w(mailers)
             }
           }

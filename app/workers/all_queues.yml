@@ -1614,24 +1614,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: pipeline_cache:expire_job_cache
-  :worker_name: ExpireJobCacheWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 3
-  :idempotent: true
-  :tags: []
-- :name: pipeline_cache:expire_pipeline_cache
-  :worker_name: ExpirePipelineCacheWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies:
-  :urgency: :high
-  :resource_boundary: :cpu
-  :weight: 3
-  :idempotent:
-  :tags: []
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
   :feature_category: :continuous_integration
