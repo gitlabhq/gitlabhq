@@ -27,7 +27,7 @@ export default {
   <div id="peek-view-add-request" class="view">
     <form class="form-inline" @submit.prevent>
       <button
-        class="btn-blank btn-link bold gl-text-blue-300"
+        class="btn-link bold gl-text-blue-300 gl-button"
         type="button"
         :title="__(`Add request manually`)"
         @click="toggleInput"

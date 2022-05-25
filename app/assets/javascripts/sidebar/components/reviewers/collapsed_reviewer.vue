@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <button type="button" class="btn-link">
+  <button type="button" class="btn-link gl-button">
     <reviewer-avatar :user="user" :img-size="24" />
     <span class="author"> {{ user.name }} </span>
   </button>

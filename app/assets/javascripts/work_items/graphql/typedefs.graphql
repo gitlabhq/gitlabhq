@@ -1,0 +1,16 @@
+enum LocalWidgetType {
+  ASSIGNEES
+}
+
+interface LocalWorkItemWidget {
+  type: LocalWidgetType!
+}
+
+type LocalWorkItemAssignees implements LocalWorkItemWidget {
+  type: LocalWidgetType!
+  nodes: [UserCore]
+}
+
+extend type WorkItem {
+  mockWidgets: [LocalWorkItemWidget]
+}

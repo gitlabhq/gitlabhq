@@ -1,8 +1,0 @@
----
-name: ci_show_all_projects_with_usage_sorted_descending
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83680
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362331
-milestone: '15.0'
-type: development
-group: group::pipeline execution
-default_enabled: false

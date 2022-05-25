@@ -123,7 +123,7 @@ export default {
       :user="user"
       :issuable-type="issuableType"
     />
-    <button v-if="hasMoreThanTwoAssignees" class="btn-link" type="button">
+    <button v-if="hasMoreThanTwoAssignees" class="btn-link gl-button" type="button">
       <span
         class="avatar-counter sidebar-avatar-counter gl-display-flex gl-align-items-center gl-pl-3"
       >

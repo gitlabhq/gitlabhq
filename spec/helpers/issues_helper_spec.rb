@@ -440,6 +440,90 @@ RSpec.describe IssuesHelper do
     end
   end
 
+  describe '#status_box_class' do
+    context 'when updated_mr_header feature flag is enabled' do
+      before do
+        stub_feature_flags(updated_mr_header: true)
+      end
+
+      context 'when object is expired' do
+        it 'returns orange background' do
+          milestone = build(:milestone, due_date: Date.today.prev_month)
+          expect(helper.status_box_class(milestone)).to eq('gl-bg-orange-500')
+        end
+      end
+
+      context 'when object is merged' do
+        it 'returns blue background' do
+          merge_request = build(:merge_request, :merged)
+          expect(helper.status_box_class(merge_request)).to eq('badge-info')
+        end
+      end
+
+      context 'when object is closed' do
+        it 'returns red background' do
+          merge_request = build(:merge_request, :closed)
+          expect(helper.status_box_class(merge_request)).to eq('badge-danger')
+        end
+      end
+
+      context 'when object is upcoming' do
+        it 'returns gray background' do
+          milestone = build(:milestone, start_date: Date.today.next_month)
+          expect(helper.status_box_class(milestone)).to eq('gl-bg-gray-500')
+        end
+      end
+
+      context 'when object is opened' do
+        it 'returns green background' do
+          merge_request = build(:merge_request, :opened)
+          expect(helper.status_box_class(merge_request)).to eq('badge-success')
+        end
+      end
+    end
+
+    context 'when updated_mr_header feature flag is disabled' do
+      before do
+        stub_feature_flags(updated_mr_header: false)
+      end
+
+      context 'when object is expired' do
+        it 'returns orange background' do
+          milestone = build(:milestone, due_date: Date.today.prev_month)
+          expect(helper.status_box_class(milestone)).to eq('gl-bg-orange-500')
+        end
+      end
+
+      context 'when object is merged' do
+        it 'returns blue background' do
+          merge_request = build(:merge_request, :merged)
+          expect(helper.status_box_class(merge_request)).to eq('gl-bg-blue-500')
+        end
+      end
+
+      context 'when object is closed' do
+        it 'returns red background' do
+          merge_request = build(:merge_request, :closed)
+          expect(helper.status_box_class(merge_request)).to eq('gl-bg-red-500')
+        end
+      end
+
+      context 'when object is upcoming' do
+        it 'returns gray background' do
+          milestone = build(:milestone, start_date: Date.today.next_month)
+          expect(helper.status_box_class(milestone)).to eq('gl-bg-gray-500')
+        end
+      end
+
+      context 'when object is opened' do
+        it 'returns green background' do
+          merge_request = build(:merge_request, :opened)
+          expect(helper.status_box_class(merge_request)).to eq('gl-bg-green-500')
+        end
+      end
+    end
+  end
+
   describe '#issue_hidden?' do
     context 'when issue is hidden' do
       let_it_be(:banned_user) { build(:user, :banned) }

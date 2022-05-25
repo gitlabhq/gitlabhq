@@ -98,11 +98,11 @@ The following assumes you already have Vault installed and running.
 
    1. Go to your Vault UI (example: [http://127.0.0.1:8200/ui/vault/auth?with=oidc](http://127.0.0.1:8200/ui/vault/auth?with=oidc)).
    1. If the `OIDC` method is not currently selected, open the dropdown and select it.
-   1. Click the **Sign in With GitLab** button, which opens a modal window:
+   1. Select **Sign in With GitLab**, which opens a modal window:
 
       ![Sign into Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
 
-   1. Click **Authorize** on the modal to allow Vault to sign in through GitLab. This redirects you back to your Vault UI as a signed-in user.
+   1. Select **Authorize** to allow Vault to sign in through GitLab. This redirects you back to your Vault UI as a signed-in user.
 
       ![Authorize Vault to connect with GitLab](img/authorize_vault_with_gitlab_v12_6.png)
 
@@ -127,7 +127,7 @@ The following assumes you already have Vault installed and running.
       [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
 
    After running the command, it presents a link in the terminal.
-   Click the link in the terminal and a browser tab opens that confirms you're signed into Vault via OIDC:
+   Select the link in the terminal and a browser tab opens that confirms you're signed into Vault via OIDC:
 
    ![Signed into Vault via OIDC](img/signed_into_vault_via_oidc_v12_6.png)
 

@@ -12,7 +12,7 @@ RSpec.describe 'Query.runner(id)' do
     create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
            active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
            access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom,
-           maintenance_note: 'Test maintenance note')
+           maintenance_note: '**Test maintenance note**')
   end
 
   let_it_be(:inactive_instance_runner) do
@@ -66,6 +66,8 @@ RSpec.describe 'Query.runner(id)' do
         'architectureName' => runner.architecture,
         'platformName' => runner.platform,
         'maintenanceNote' => runner.maintenance_note,
+        'maintenanceNoteHtml' =>
+          runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
         'jobCount' => 0,
         'jobs' => a_hash_including("count" => 0, "nodes" => [], "pageInfo" => anything),
         'projectCount' => nil,

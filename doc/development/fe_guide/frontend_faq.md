@@ -189,10 +189,10 @@ To see what polyfills are being used:
 1. Navigate to your merge request.
 1. In the secondary menu below the title of the merge request, click **Pipelines**, then
    click the pipeline you want to view, to display the jobs in that pipeline.
-1. Click the [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job.
-1. In the right-hand sidebar, scroll to **Job Artifacts**, and click **Browse**.
-1. Click the **webpack-report** folder to open it, and click **index.html**.
-1. In the upper left corner of the page, click the right arrow **{angle-right}**
+1. Select the [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job.
+1. In the right-hand sidebar, scroll to **Job Artifacts**, and select **Browse**.
+1. Select the **webpack-report** folder to open it, and select **index.html**.
+1. In the upper left corner of the page, select the right arrow **{angle-right}**
    to display the explorer.
 1. In the **Search modules** field, enter `gitlab/node_modules/core-js` to see
    which polyfills are being loaded and where:

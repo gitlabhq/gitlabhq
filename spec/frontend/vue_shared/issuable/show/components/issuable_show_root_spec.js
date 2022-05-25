@@ -47,7 +47,6 @@ describe('IssuableShowRoot', () => {
 
   describe('template', () => {
     const {
-      statusBadgeClass,
       statusIcon,
       statusIconClass,
       enableEdit,
@@ -69,7 +68,6 @@ describe('IssuableShowRoot', () => {
       expect(issuableHeader.exists()).toBe(true);
       expect(issuableHeader.props()).toMatchObject({
         issuableState: state,
-        statusBadgeClass,
         statusIcon,
         statusIconClass,
         blocked,
@@ -91,7 +89,6 @@ describe('IssuableShowRoot', () => {
       expect(issuableBody.exists()).toBe(true);
       expect(issuableBody.props()).toMatchObject({
         issuable: mockIssuable,
-        statusBadgeClass,
         statusIcon,
         enableEdit,
         enableAutocomplete,

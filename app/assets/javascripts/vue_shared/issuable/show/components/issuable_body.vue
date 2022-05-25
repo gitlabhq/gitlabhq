@@ -22,10 +22,6 @@ export default {
       type: Object,
       required: true,
     },
-    statusBadgeClass: {
-      type: String,
-      required: true,
-    },
     statusIcon: {
       type: String,
       required: true,
@@ -162,7 +158,6 @@ export default {
       <template v-else>
         <issuable-title
           :issuable="issuable"
-          :status-badge-class="statusBadgeClass"
           :status-icon="statusIcon"
           :enable-edit="enableEdit"
           @edit-issuable="$emit('edit-issuable', $event)"

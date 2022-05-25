@@ -36,9 +36,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   urlSortParams,
@@ -65,6 +67,8 @@ describe('CE IssuesListApp component', () => {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
+    canReadCrmContact: false,
+    canReadCrmOrganization: false,
     emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
     fullPath: 'path/to/project',
@@ -589,6 +593,21 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
+    describe('when user does not have CRM enabled', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: { canReadCrmContact: false, canReadCrmOrganization: false },
+        });
+      });
+
+      it('does not render Contact or Organization tokens', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_CONTACT },
+          { type: TOKEN_TYPE_ORGANIZATION },
+        ]);
+      });
+    });
+
     describe('when all tokens are available', () => {
       const originalGon = window.gon;
 
@@ -601,7 +620,13 @@ describe('CE IssuesListApp component', () => {
           current_user_avatar_url: mockCurrentUser.avatar_url,
         };
 
-        wrapper = mountComponent({ provide: { isSignedIn: true } });
+        wrapper = mountComponent({
+          provide: {
+            canReadCrmContact: true,
+            canReadCrmOrganization: true,
+            isSignedIn: true,
+          },
+        });
       });
 
       afterEach(() => {
@@ -617,9 +642,11 @@ describe('CE IssuesListApp component', () => {
           { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
           { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
           { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_CONTACT },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_ORGANIZATION },
           { type: TOKEN_TYPE_RELEASE },
           { type: TOKEN_TYPE_TYPE },
         ]);

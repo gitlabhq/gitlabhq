@@ -39,8 +39,7 @@ containing a CRON expression for when the scans will be run.
 
 ```yaml
 starboard:
-  vulnerability_report:
-    cadence: '0 0 * * *' # Daily at 00:00 (Kubernetes cluster time)
+  cadence: '0 0 * * *' # Daily at 00:00 (Kubernetes cluster time)
 ```
 
 The `cadence` field is required. GitLab supports the following types of CRON syntax for the cadence field:
@@ -58,8 +57,8 @@ namespaces, you can use this configuration:
 
 ```yaml
 starboard:
+  cadence: '0 0 * * *'
   vulnerability_report:
-    cadence: '0 0 * * *'
     namespaces:
       - development
       - staging

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TempIndexForProjectNamespaceMemberBackfill < Gitlab::Database::Migration[1.0]
+class TempIndexForProjectNamespaceMemberBackfill < Gitlab::Database::Migration[2.0]
   INDEX_NAME = 'tmp_index_for_namespace_id_migration_on_project_members'
 
   disable_ddl_transaction!

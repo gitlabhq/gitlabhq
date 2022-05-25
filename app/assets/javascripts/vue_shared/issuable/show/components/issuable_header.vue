@@ -40,11 +40,6 @@ export default {
       required: false,
       default: '',
     },
-    statusBadgeClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     statusIcon: {
       type: String,
       required: false,
@@ -113,11 +108,7 @@ export default {
 <template>
   <div class="detail-page-header">
     <div class="detail-page-header-body">
-      <gl-badge
-        class="issuable-status-badge gl-mr-3"
-        :class="statusBadgeClass"
-        :variant="badgeVariant"
-      >
+      <gl-badge class="issuable-status-badge gl-mr-3" :variant="badgeVariant">
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
         <span class="gl-display-none gl-sm-display-block"><slot name="status-badge"></slot></span>
       </gl-badge>

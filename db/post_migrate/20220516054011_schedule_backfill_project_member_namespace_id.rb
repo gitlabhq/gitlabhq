@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class ScheduleBackfillProjectMemberNamespaceId < Gitlab::Database::Migration[1.0]
+class ScheduleBackfillProjectMemberNamespaceId < Gitlab::Database::Migration[2.0]
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   MIGRATION = 'BackfillProjectMemberNamespaceId'
   INTERVAL = 2.minutes
   BATCH_SIZE = 1_000

@@ -98,9 +98,6 @@ describe('IssuableTitle', () => {
 
       expect(stickyHeaderEl.exists()).toBe(true);
       expect(stickyHeaderEl.findComponent(GlBadge).props('variant')).toBe('success');
-      expect(stickyHeaderEl.findComponent(GlBadge).classes()).toContain(
-        mockIssuableShowProps.statusBadgeClass,
-      );
       expect(stickyHeaderEl.findComponent(GlIcon).props('name')).toBe(
         issuableTitleProps.statusIcon,
       );

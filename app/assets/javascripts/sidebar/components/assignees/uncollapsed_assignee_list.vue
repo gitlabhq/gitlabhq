@@ -120,7 +120,7 @@ export default {
     <div v-if="renderShowMoreSection" class="user-list-more gl-hover-text-blue-800">
       <button
         type="button"
-        class="btn-link"
+        class="btn-link gl-button gl-reset-color!"
         data-qa-selector="more_assignees_link"
         @click="toggleShowLess"
       >

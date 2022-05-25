@@ -1,0 +1,8 @@
+---
+name: work_item_assignees
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88003
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363030
+milestone: '15.1'
+type: development
+group: group::project management
+default_enabled: false

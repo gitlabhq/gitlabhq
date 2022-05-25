@@ -321,8 +321,8 @@ You can [cancel the subscription](#enable-or-disable-automatic-renewal) to disab
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
 1. For each locked project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
-1. Click **Purchase more storage** and you are taken to the Customers Portal.
-1. Click **Add new subscription**.
+1. Select **Purchase more storage** and you are taken to the Customers Portal.
+1. Select **Add new subscription**.
 1. Scroll to **Purchase add-on subscriptions** and select **Buy storage subscription**.
 1. In the **Subscription details** section select the name of the user or group from the dropdown.
 1. Enter the desired quantity of storage packs.

@@ -29,20 +29,14 @@ module QA
           start_pipeline_via_api_with_variable(i + 1)
           wait_for_pipelines
 
-          # Is inheritable when true
-          expect(child1_pipeline).to have_variable(key: key, value: value),
-                                     "Expected to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
-            " but got #{child1_pipeline.pipeline_variables}"
+          # When forward:pipeline_variables is true
+          expect_downstream_pipeline_to_inherit_variable
 
-          # Is not inheritable when false
-          expect(child2_pipeline).not_to have_variable(key: key, value: value),
-                                         "Did not expect to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
-            " but got #{child2_pipeline.pipeline_variables}"
+          # When forward:pipeline_variables is false
+          expect_downstream_pipeline_not_to_inherit_variable(upstream_project, 'child2_trigger')
 
-          # Is not inheritable by default
-          expect(downstream1_pipeline).not_to have_variable(key: key, value: value),
-                                              "Did not expect to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
-            " but got #{downstream1_pipeline.pipeline_variables}"
+          # When forward:pipeline_variables is default
+          expect_downstream_pipeline_not_to_inherit_variable(downstream1_project, 'downstream1_trigger')
         end
       end
 
@@ -83,6 +77,20 @@ module QA
                 project: #{downstream1_project.full_path}
           YAML
         }
+      end
+
+      def expect_downstream_pipeline_to_inherit_variable
+        pipeline = downstream_pipeline(upstream_project, 'child1_trigger')
+        expect(pipeline).to have_variable(key: key, value: value),
+                            "Expected to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
+            " but got #{pipeline.pipeline_variables}"
+      end
+
+      def expect_downstream_pipeline_not_to_inherit_variable(project, bridge_name)
+        pipeline = downstream_pipeline(project, bridge_name)
+        expect(pipeline).not_to have_variable(key: key, value: value),
+                                "Did not expect to find `{key: 'TEST_VAR', value: 'This is great!'}`" \
+            " but got #{pipeline.pipeline_variables}"
       end
     end
   end

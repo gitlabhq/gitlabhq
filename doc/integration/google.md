@@ -50,7 +50,7 @@ In Google's side:
    To do so you should:
 
    1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard).
-   1. Click on **ENABLE APIS AND SERVICES** button at the top of the page.
+   1. Select **ENABLE APIS AND SERVICES** at the top of the page.
    1. Find each of the above APIs. On the page for the API, press the **ENABLE** button.
       It may take a few minutes for the API to be fully functional.
 
@@ -123,6 +123,6 @@ On your GitLab server:
    respectively.
 
 On the sign in page there should now be a Google icon below the regular sign in
-form. Click the icon to begin the authentication process. Google asks the
+form. Select the icon to begin the authentication process. Google asks the
 user to sign in and authorize the GitLab application. If everything goes well
 the user is returned to GitLab and is signed in.

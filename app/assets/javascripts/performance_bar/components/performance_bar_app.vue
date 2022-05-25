@@ -150,7 +150,7 @@ export default {
   <div id="js-peek" :class="env">
     <div
       v-if="currentRequest"
-      class="d-flex container-fluid container-limited justify-content-center"
+      class="d-flex container-fluid container-limited justify-content-center gl-align-items-center"
       data-qa-selector="performance_bar"
     >
       <div id="peek-view-host" class="view">

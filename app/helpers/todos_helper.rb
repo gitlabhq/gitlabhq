@@ -100,17 +100,22 @@ module TodosHelper
   def todo_target_state_pill(todo)
     return unless show_todo_state?(todo)
 
-    type =
-      case todo.target
-      when MergeRequest
-        'mr'
-      when Issue
-        'issue'
-      when AlertManagement::Alert
-        'alert'
-      end
+    state = todo.target.state.to_s
 
-    tag.span class: "gl-my-0 gl-px-2 status-box status-box-#{type}-#{todo.target.state.to_s.dasherize}" do
+    case todo.target
+    when MergeRequest
+      if state == 'closed'
+        background_class = 'gl-bg-red-500'
+      elsif state == 'merged'
+        background_class = 'gl-bg-blue-500'
+      end
+    when Issue
+      background_class = 'gl-bg-blue-500' if state == 'closed'
+    when AlertManagement::Alert
+      background_class = 'gl-bg-blue-500' if state == 'resolved'
+    end
+
+    tag.span class: "gl-my-0 gl-px-2 status-box #{background_class}" do
       todo.target.state.to_s.capitalize
     end
   end

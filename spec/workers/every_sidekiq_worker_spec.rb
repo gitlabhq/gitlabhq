@@ -192,7 +192,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'CreateGithubWebhookWorker' => 3,
         'CreateNoteDiffFileWorker' => 3,
         'CreatePipelineWorker' => 3,
-        'DastSiteValidationWorker' => 3,
         'DeleteContainerRepositoryWorker' => 3,
         'DeleteDiffFilesWorker' => 3,
         'DeleteMergedBranchesWorker' => 3,

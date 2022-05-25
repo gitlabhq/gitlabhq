@@ -64,7 +64,7 @@ main pieces of the desired UI and UX of a registry page. The most important comp
 
 - `code-instruction`: represents a copyable box containing code. Supports multiline and single line
   code boxes. Snowplow tracks the code copy event.
-- `details-row`: represents a row of details. Used to add additional info in the details area of
+- `details-row`: represents a row of details. Used to add additional information in the details area of
   the `list-item` component.
 - `history-item`: represents a history list item used to build a timeline.
 - `list-item`: represents a list element in the registry. It supports: left action, left primary and

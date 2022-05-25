@@ -30,9 +30,11 @@ import {
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_CONTACT,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -54,9 +56,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   UPDATED_DESC,
@@ -113,6 +117,8 @@ export default {
     'autocompleteAwardEmojisPath',
     'calendarPath',
     'canBulkUpdate',
+    'canReadCrmContact',
+    'canReadCrmOrganization',
     'emptyStateSvgPath',
     'exportCsvPath',
     'fullPath',
@@ -357,6 +363,28 @@ export default {
             { icon: 'eye-slash', value: 'yes', title: this.$options.i18n.confidentialYes },
             { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
           ],
+        });
+      }
+
+      if (this.canReadCrmContact) {
+        tokens.push({
+          type: TOKEN_TYPE_CONTACT,
+          title: TOKEN_TITLE_CONTACT,
+          icon: 'user',
+          token: GlFilteredSearchToken,
+          operators: OPERATOR_IS_ONLY,
+          unique: true,
+        });
+      }
+
+      if (this.canReadCrmOrganization) {
+        tokens.push({
+          type: TOKEN_TYPE_ORGANIZATION,
+          title: TOKEN_TITLE_ORGANIZATION,
+          icon: 'users',
+          token: GlFilteredSearchToken,
+          operators: OPERATOR_IS_ONLY,
+          unique: true,
         });
       }
 

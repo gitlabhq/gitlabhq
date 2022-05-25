@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Testing experiments with RSpec
 
-In the course of working with experiments, you'll probably want to utilize the RSpec
+In the course of working with experiments, you'll probably want to use the RSpec
 tooling that's built in. This happens automatically for files in `spec/experiments`, but
 for other files and specs you want to include it in, you can specify the `:experiment` type:
 

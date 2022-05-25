@@ -152,7 +152,7 @@ RSpec.describe TodosHelper do
     shared_examples 'a rendered state pill' do |attr|
       it 'returns expected html' do
         aggregate_failures do
-          expect(subject).to have_css(".status-box-#{attr[:type]}-#{attr[:state].dasherize}")
+          expect(subject).to have_css(attr[:css])
           expect(subject).to have_content(attr[:state].capitalize)
         end
       end
@@ -167,12 +167,20 @@ RSpec.describe TodosHelper do
 
       it_behaves_like 'no state pill'
 
+      context 'closed MR' do
+        before do
+          todo.target.update!(state: 'closed')
+        end
+
+        it_behaves_like 'a rendered state pill', css: '.gl-bg-red-500', state: 'closed'
+      end
+
       context 'merged MR' do
         before do
           todo.target.update!(state: 'merged')
         end
 
-        it_behaves_like 'a rendered state pill', type: 'mr', state: 'merged'
+        it_behaves_like 'a rendered state pill', css: '.gl-bg-blue-500', state: 'merged'
       end
     end
 
@@ -186,7 +194,7 @@ RSpec.describe TodosHelper do
           todo.target.update!(state: 'closed')
         end
 
-        it_behaves_like 'a rendered state pill', type: 'issue', state: 'closed'
+        it_behaves_like 'a rendered state pill', css: '.gl-bg-blue-500', state: 'closed'
       end
     end
 
@@ -200,7 +208,7 @@ RSpec.describe TodosHelper do
           todo.target.resolve!
         end
 
-        it_behaves_like 'a rendered state pill', type: 'alert', state: 'resolved'
+        it_behaves_like 'a rendered state pill', css: '.gl-bg-blue-500', state: 'resolved'
       end
     end
   end

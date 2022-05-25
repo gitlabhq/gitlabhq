@@ -357,25 +357,6 @@
   }
 }
 
-.btn-link {
-  padding: 0;
-  background-color: transparent;
-  color: $blue-600;
-  font-weight: normal;
-  border-radius: 0;
-  border-color: transparent;
-  border-width: 0;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $blue-800;
-    text-decoration: underline;
-    background-color: transparent;
-    border-color: transparent;
-  }
-}
-
 // The .btn-svg class is available for legacy icon buttons to
 // preserve a 34px height and have 16x16 icons at the same time.
 // Once a button is migrated (to the current 32px height)

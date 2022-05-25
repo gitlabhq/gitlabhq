@@ -50,6 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:paginated_issue_discussions, project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:work_item_assignees)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

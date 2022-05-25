@@ -26,7 +26,7 @@ export default {
 };
 </script>
 <template>
-  <button type="button" class="btn-link">
+  <button type="button" class="gl-button btn-link">
     <assignee-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
     <user-name-with-status
       :name="user.name"

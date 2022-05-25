@@ -1455,7 +1455,7 @@ msgstr[1] ""
 msgid "1-9 contributions"
 msgstr ""
 
-msgid "1. Effective June 1, 2022, all free tier public projects will be %{minutes_quota_link}."
+msgid "1. Effective June 1, 2022, all GitLab Free tier public projects will be %{minutes_quota_link}."
 msgstr ""
 
 msgid "10-19 contributions"
@@ -1470,7 +1470,7 @@ msgstr ""
 msgid "1st contribution!"
 msgstr ""
 
-msgid "2. Before July 1, 2022, all free tier public open source projects must %{enrollment_link} to continue to receive GitLab Ultimate benefits."
+msgid "2. Before July 1, 2022, all GitLab Free tier public open source projects must %{enrollment_link} to continue to receive GitLab Ultimate benefits."
 msgstr ""
 
 msgid "20-29 contributions"
@@ -7407,7 +7407,7 @@ msgstr ""
 msgid "Changes the title to \"%{title_param}\"."
 msgstr ""
 
-msgid "Changes to free tier public projects"
+msgid "Changes to GitLab Free tier public projects"
 msgstr ""
 
 msgid "Changes to the title have not been saved"
@@ -10847,6 +10847,9 @@ msgid "Credit card:"
 msgstr ""
 
 msgid "Critical vulnerabilities present"
+msgstr ""
+
+msgid "Crm|Contact"
 msgstr ""
 
 msgid "Crm|Contact has been added."

@@ -67,7 +67,7 @@ maintaining deterministic output for given input, while masking any relation to 
 #### How events are pseudonymized
 
 Pseudonymization uses an allowlist that provides privacy by default. Therefore, each
-attribute received as part of a Snowplow event is pseudonymized unless the attribute 
+attribute received as part of a Snowplow event is pseudonymized unless the attribute
 is an allowed exception.
 
 Pseudonymization is done using the HMAC-SHA256 keyed hash algorithm.

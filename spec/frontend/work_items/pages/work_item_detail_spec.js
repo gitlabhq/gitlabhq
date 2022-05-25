@@ -7,9 +7,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
+import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
+import { temporaryConfig } from '~/work_items/graphql/provider';
 import { workItemTitleSubscriptionResponse, workItemQueryResponse } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -24,18 +26,32 @@ describe('WorkItemDetail component', () => {
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
+  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
 
   const createComponent = ({
     workItemId = workItemQueryResponse.data.workItem.id,
     handler = successHandler,
     subscriptionHandler = initialSubscriptionHandler,
+    assigneesEnabled = false,
+    includeAssigneesWidget = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemDetail, {
-      apolloProvider: createMockApollo([
-        [workItemQuery, handler],
-        [workItemTitleSubscription, subscriptionHandler],
-      ]),
+      apolloProvider: createMockApollo(
+        [
+          [workItemQuery, handler],
+          [workItemTitleSubscription, subscriptionHandler],
+        ],
+        {},
+        {
+          typePolicies: includeAssigneesWidget ? temporaryConfig.cacheConfig.typePolicies : {},
+        },
+      ),
       propsData: { workItemId },
+      provide: {
+        glFeatures: {
+          workItemAssignees: assigneesEnabled,
+        },
+      },
     });
   };
 
@@ -117,5 +133,34 @@ describe('WorkItemDetail component', () => {
     findWorkItemTitle().vm.$emit('updated');
 
     expect(wrapper.emitted('workItemUpdated')).toEqual([[], []]);
+  });
+
+  describe('when assignees feature flag is enabled', () => {
+    it('renders assignees component when assignees widget is returned from the API', async () => {
+      createComponent({
+        assigneesEnabled: true,
+        includeAssigneesWidget: true,
+      });
+      await waitForPromises();
+
+      expect(findWorkItemAssignees().exists()).toBe(true);
+    });
+
+    it('does not render assignees component when assignees widget is not returned from the API', async () => {
+      createComponent({
+        assigneesEnabled: true,
+        includeAssigneesWidget: false,
+      });
+      await waitForPromises();
+
+      expect(findWorkItemAssignees().exists()).toBe(false);
+    });
+  });
+
+  it('does not render assignees component when assignees feature flag is disabled', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findWorkItemAssignees().exists()).toBe(false);
   });
 });

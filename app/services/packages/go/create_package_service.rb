@@ -38,10 +38,11 @@ module Packages
         raise GoZipSizeError, "#{version.mod.name}@#{version.name}.#{type} exceeds size limit" if file.size > project.actual_limits.golang_max_file_size
 
         digests = {
-          md5: Digest::MD5.hexdigest(content),
           sha1: Digest::SHA1.hexdigest(content),
           sha256: Digest::SHA256.hexdigest(content)
         }
+
+        digests[:md5] = Digest::MD5.hexdigest(content) unless Gitlab::FIPS.enabled?
 
         [file, digests]
       end

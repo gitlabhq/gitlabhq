@@ -160,7 +160,7 @@ At a minimum the IdP *must* provide a claim containing the user's email address 
 See [the assertions list](#assertions) for other available claims.
 
 On the sign in page there should now be a SAML button below the regular sign in form.
-Click the icon to begin the authentication process. If everything goes well the user
+Select the icon to begin the authentication process. If everything goes well the user
 is returned to GitLab and signed in.
 
 ### Use multiple SAML identity providers
@@ -486,7 +486,7 @@ In addition to the changes in GitLab, make sure that your IdP is returning the
 ### `auto_sign_in_with_provider`
 
 You can add this setting to your GitLab configuration to automatically redirect you
-to your SAML server for authentication. This removes the requirement to click a button
+to your SAML server for authentication. This removes the requirement to select a button
 before actually signing in.
 
 For Omnibus package:
@@ -812,7 +812,7 @@ The following guidance is based on this Okta article, on adding a [SAML Applicat
 1. The last part of the configuration is the feedback section where you can
    just say you're a customer and creating an app for internal use.
 1. When you have your app you can see a few tabs on the top of the app's
-   profile. Click on the SAML 2.0 configuration instructions button.
+   profile. Select the SAML 2.0 configuration instructions button.
 1. On the screen that comes up take note of the
    **Identity Provider Single Sign-On URL** which you can use for the
    `idp_sso_target_url` on your GitLab configuration file.

@@ -29,10 +29,6 @@ export default {
       type: Object,
       required: true,
     },
-    statusBadgeClass: {
-      type: String,
-      required: true,
-    },
     statusIcon: {
       type: String,
       required: true,
@@ -92,11 +88,7 @@ export default {
           <div
             class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
           >
-            <gl-badge
-              class="gl-white-space-nowrap gl-mr-3"
-              :class="statusBadgeClass"
-              :variant="badgeVariant"
-            >
+            <gl-badge class="gl-white-space-nowrap gl-mr-3" :variant="badgeVariant">
               <gl-icon v-if="statusIcon" class="gl-sm-display-none" :name="statusIcon" />
               <span class="gl-display-none gl-sm-display-block">
                 <slot name="status-badge"></slot>

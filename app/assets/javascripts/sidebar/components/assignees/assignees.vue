@@ -55,7 +55,12 @@ export default {
         {{ __('None') }}
         <template v-if="editable">
           -
-          <button type="button" class="btn-link" data-testid="assign-yourself" @click="assignSelf">
+          <button
+            type="button"
+            class="gl-button btn-link gl-reset-color!"
+            data-testid="assign-yourself"
+            @click="assignSelf"
+          >
             {{ __('assign yourself') }}
           </button>
         </template>

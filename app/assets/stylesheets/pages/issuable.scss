@@ -1,3 +1,14 @@
+.status-box {
+  padding: 0 $gl-btn-padding;
+  border-radius: $border-radius-default;
+  display: block;
+  float: left;
+  margin-right: $gl-padding-8;
+  color: $white;
+  font-size: $gl-font-size;
+  line-height: $gl-line-height-24;
+}
+
 .issuable-warning-icon {
   background-color: $orange-50;
   border-radius: $border-radius-default;

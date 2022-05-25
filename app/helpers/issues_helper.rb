@@ -31,15 +31,15 @@ module IssuesHelper
     updated_mr_header_enabled = Feature.enabled?(:updated_mr_header, @project)
 
     if item.try(:expired?)
-      'status-box-expired'
+      'gl-bg-orange-500'
     elsif item.try(:merged?)
-      updated_mr_header_enabled ? 'badge-info' : 'status-box-mr-merged'
+      updated_mr_header_enabled ? 'badge-info' : 'gl-bg-blue-500'
     elsif item.closed?
-      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-danger' : 'status-box-mr-closed'
+      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-danger' : 'gl-bg-red-500'
     elsif item.try(:upcoming?)
-      'status-box-upcoming'
+      'gl-bg-gray-500'
     else
-      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-success' : 'status-box-open'
+      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-success' : 'gl-bg-green-500'
     end
   end
 
@@ -218,6 +218,8 @@ module IssuesHelper
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
       can_import_issues: can?(current_user, :import_issues, @project).to_s,
+      can_read_crm_contact: can?(current_user, :read_crm_contact, project.group).to_s,
+      can_read_crm_organization: can?(current_user, :read_crm_organization, project.group).to_s,
       email: current_user&.notification_email_or_default,
       emails_help_page_path: help_page_path('development/emails', anchor: 'email-namespace'),
       export_csv_path: export_csv_project_issues_path(project),
@@ -238,6 +240,8 @@ module IssuesHelper
 
   def group_issues_list_data(group, current_user)
     common_issues_list_data(group, current_user).merge(
+      can_read_crm_contact: can?(current_user, :read_crm_contact, group).to_s,
+      can_read_crm_organization: can?(current_user, :read_crm_organization, group).to_s,
       has_any_issues: @has_issues.to_s,
       has_any_projects: @has_projects.to_s
     )

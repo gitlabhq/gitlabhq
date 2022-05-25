@@ -12,3 +12,5 @@ export const i18n = {
 };
 
 export const DEFAULT_MODAL_TYPE = 'Task';
+
+export const WIDGET_TYPE_ASSIGNEE = 'ASSIGNEES';

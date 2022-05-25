@@ -86,6 +86,12 @@ module Types
       field :version, GraphQL::Types::String, null: true,
             description: 'Version of the runner.'
 
+      markdown_field :maintenance_note_html, null: true
+
+      def maintenance_note_html_resolver
+        ::MarkupHelper.markdown(object.maintenance_note, context.to_h.dup)
+      end
+
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT
         runner.builds.limit(JOB_COUNT_LIMIT + 1).count

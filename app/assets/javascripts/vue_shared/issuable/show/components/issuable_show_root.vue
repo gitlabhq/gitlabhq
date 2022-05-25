@@ -17,11 +17,6 @@ export default {
       type: Object,
       required: true,
     },
-    statusBadgeClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     statusIcon: {
       type: String,
       required: false,
@@ -108,7 +103,6 @@ export default {
   <div class="issuable-show-container" data-qa-selector="issuable_show_container">
     <issuable-header
       :issuable-state="issuable.state"
-      :status-badge-class="statusBadgeClass"
       :status-icon="statusIcon"
       :status-icon-class="statusIconClass"
       :blocked="issuable.blocked"
@@ -127,7 +121,6 @@ export default {
 
     <issuable-body
       :issuable="issuable"
-      :status-badge-class="statusBadgeClass"
       :status-icon="statusIcon"
       :status-icon-class="statusIconClass"
       :enable-edit="enableEdit"

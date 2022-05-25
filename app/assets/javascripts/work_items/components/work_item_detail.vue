@@ -1,23 +1,27 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import { i18n } from '../constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { i18n, WIDGET_TYPE_ASSIGNEE } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemLinks from './work_item_links/work_item_links.vue';
+import WorkItemAssignees from './work_item_assignees.vue';
 
 export default {
   i18n,
   components: {
     GlAlert,
     GlSkeletonLoader,
+    WorkItemAssignees,
     WorkItemActions,
     WorkItemTitle,
     WorkItemState,
     WorkItemLinks,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     workItemId: {
       type: String,
@@ -68,6 +72,12 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    workItemAssigneesEnabled() {
+      return this.glFeatures.workItemAssignees;
+    },
+    workItemAssignees() {
+      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEE);
+    },
   },
 };
 </script>
@@ -102,6 +112,10 @@ export default {
           @error="error = $event"
         />
       </div>
+      <work-item-assignees
+        v-if="workItemAssigneesEnabled && workItemAssignees"
+        :assignees="workItemAssignees.nodes"
+      />
       <work-item-state
         :work-item="workItem"
         @error="error = $event"

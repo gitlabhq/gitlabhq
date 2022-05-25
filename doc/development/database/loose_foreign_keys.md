@@ -429,7 +429,7 @@ ALTER TABLE ONLY vulnerability_occurrence_pipelines
 In this example we expect to delete all associated `vulnerability_occurrence_pipelines` records
 whenever we delete the `ci_pipelines` record associated with them. In this case
 you might end up with some vulnerability page in GitLab which shows an occurrence
-of a vulnerability. However, when you try to click a link to the pipeline, you get
+of a vulnerability. However, when you try to select a link to the pipeline, you get
 a 404, because the pipeline is deleted. Then, when you navigate back you might find the
 occurrence has disappeared too.
 
