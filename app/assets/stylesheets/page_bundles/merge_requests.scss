@@ -610,10 +610,10 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-extension {
   border-top: 1px solid var(--border-color, $border-color);
-  background-color: var(--gray-50, $gray-50);
+  background-color: var(--gray-10, $gray-10);
 
   &.clickable:hover {
-    background-color: var(--gray-100, $gray-100);
+    background-color: var(--gray-50, $gray-50);
     cursor: pointer;
   }
 }
@@ -660,6 +660,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-workflow {
   margin-top: $gl-padding;
+  overflow: hidden;
   position: relative;
 
   &:not(:last-child)::before {
@@ -739,7 +740,7 @@ $tabs-holder-z-index: 250;
 .merge-request-overview {
   @include media-breakpoint-up(md) {
     display: grid;
-    grid-template-columns: 1fr 270px;
+    grid-template-columns: calc(95% - 270px) auto;
     grid-gap: 5%;
   }
 }

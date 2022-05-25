@@ -160,7 +160,7 @@ module ContainerRegistry
 
       def next_aborted_repository
         strong_memoize(:next_aborted_repository) do
-          ContainerRepository.with_migration_state('import_aborted').take # rubocop:disable CodeReuse/ActiveRecord
+          ContainerRepository.with_migration_state('import_aborted').limit(2)[0] # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 

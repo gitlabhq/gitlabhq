@@ -215,6 +215,13 @@
     text-decoration: none;
   }
 
+  &:active,
+  &:focus,
+  &:focus:active,
+  &.is-focused {
+    @include gl-focus($inset: true);
+  }
+
   &.dropdown-menu-user-link {
     line-height: 16px;
     padding-top: 10px;
@@ -280,7 +287,6 @@
     display: block;
     text-align: left;
     list-style: none;
-    padding: 0 1px;
 
     > a,
     button,
@@ -846,6 +852,15 @@
 
     li.section-empty.section-failure {
       color: $red-700;
+    }
+
+    .frequent-items-list-item-container .gl-button {
+      &:active,
+      &:focus,
+      &:focus:active,
+      &.is-focused {
+        @include gl-focus($inset: true);
+      }
     }
 
     .frequent-items-list-item-container a {

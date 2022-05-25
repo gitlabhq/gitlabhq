@@ -11,8 +11,8 @@ describe('MR Popover', () => {
       propsData: {
         target: document.createElement('a'),
         projectPath: 'foo/bar',
-        mergeRequestIID: '1',
-        mergeRequestTitle: 'MR Title',
+        iid: '1',
+        cachedTitle: 'MR Title',
       },
       mocks: {
         $apollo: {

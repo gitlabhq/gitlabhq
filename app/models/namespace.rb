@@ -210,7 +210,7 @@ class Namespace < ApplicationRecord
       end
     end
 
-    def clean_path(path)
+    def clean_path(path, limited_to: Namespace.all)
       path = path.dup
       # Get the email username by removing everything after an `@` sign.
       path.gsub!(/@.*\z/,                "")
@@ -231,7 +231,7 @@ class Namespace < ApplicationRecord
       path = "blank" if path.blank?
 
       uniquify = Uniquify.new
-      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
+      uniquify.string(path) { |s| limited_to.find_by_path_or_name(s) }
     end
 
     def clean_name(value)

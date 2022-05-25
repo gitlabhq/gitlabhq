@@ -15,7 +15,7 @@ RSpec.describe SchedulePurgingStaleSecurityScans do
   let_it_be(:pipeline) { pipelines.create!(project_id: project.id, ref: 'master', sha: 'adf43c3a', status: 'success') }
   let_it_be(:ci_build) { builds.create!(commit_id: pipeline.id, retried: false, type: 'Ci::Build') }
 
-  let!(:security_scan_1) { security_scans.create!(build_id: ci_build.id, scan_type: 1, created_at: 91.days.ago) }
+  let!(:security_scan_1) { security_scans.create!(build_id: ci_build.id, scan_type: 1, created_at: 92.days.ago) }
   let!(:security_scan_2) { security_scans.create!(build_id: ci_build.id, scan_type: 2, created_at: 91.days.ago) }
 
   let(:com?) { false }

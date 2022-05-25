@@ -8,18 +8,9 @@ module Mutations
                   " Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice."
 
       include Mutations::SpamProtection
+      include Mutations::WorkItems::UpdateArguments
 
       authorize :update_work_item
-
-      argument :id, ::Types::GlobalIDType[::WorkItem],
-               required: true,
-               description: 'Global ID of the work item.'
-      argument :state_event, Types::WorkItems::StateEventEnum,
-               description: 'Close or reopen a work item.',
-               required: false
-      argument :title, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::WorkItemType, :title)
 
       field :work_item, Types::WorkItemType,
             null: true,

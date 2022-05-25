@@ -54,6 +54,11 @@
         padding: 2px 8px;
         margin: 4px 2px 4px -12px;
         border-radius: $border-radius-default;
+
+        &:active,
+        &:focus {
+          @include gl-focus($focus-ring: $focus-ring-dark);
+        }
       }
 
       .canary-badge {
@@ -213,6 +218,11 @@
         text-decoration: none;
         outline: 0;
         color: $white;
+      }
+
+      &:active,
+      &:focus {
+        @include gl-focus($focus-ring: $focus-ring-dark);
       }
     }
 

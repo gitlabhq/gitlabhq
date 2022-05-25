@@ -4,6 +4,6 @@ classes:
 - Operations::FeatureFlagsClient
 feature_categories:
 - feature_flags
-description: TODO
+description: https://docs.gitlab.com/ee/operations/feature_flags.html
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433
 milestone: '11.4'

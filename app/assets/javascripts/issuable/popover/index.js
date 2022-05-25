@@ -1,7 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import IssuePopover from './components/issue_popover.vue';
 import MRPopover from './components/mr_popover.vue';
+
+const componentsByReferenceType = {
+  issue: IssuePopover,
+  merge_request: MRPopover,
+};
 
 let renderedPopover;
 let renderFn;
@@ -22,20 +28,24 @@ const handleIssuablePopoverMouseOut = ({ target }) => {
  * Adds a MergeRequestPopover component to the body, hands over as much data as the target element has in data attributes.
  * loads based on data-project-path and data-iid more data about an MR from the API and sets it on the popover
  */
-const handleIssuablePopoverMount = ({ apolloProvider, projectPath, title, iid }) => ({
-  target,
-}) => {
+const handleIssuablePopoverMount = ({
+  apolloProvider,
+  projectPath,
+  title,
+  iid,
+  referenceType,
+}) => ({ target }) => {
   // Add listener to actually remove it again
   target.addEventListener('mouseleave', handleIssuablePopoverMouseOut);
 
   renderFn = setTimeout(() => {
-    const MRPopoverComponent = Vue.extend(MRPopover);
-    renderedPopover = new MRPopoverComponent({
+    const PopoverComponent = Vue.extend(componentsByReferenceType[referenceType]);
+    renderedPopover = new PopoverComponent({
       propsData: {
         target,
         projectPath,
-        mergeRequestIID: iid,
-        mergeRequestTitle: title,
+        iid,
+        cachedTitle: title,
       },
       apolloProvider,
     });
@@ -54,13 +64,13 @@ export default (elements) => {
     const listenerAddedAttr = 'data-popover-listener-added';
 
     elements.forEach((el) => {
-      const { projectPath, iid } = el.dataset;
+      const { projectPath, iid, referenceType } = el.dataset;
       const title = el.dataset.mrTitle || el.title;
 
-      if (!el.getAttribute(listenerAddedAttr) && projectPath && title && iid) {
+      if (!el.getAttribute(listenerAddedAttr) && projectPath && title && iid && referenceType) {
         el.addEventListener(
           'mouseenter',
-          handleIssuablePopoverMount({ apolloProvider, projectPath, title, iid }),
+          handleIssuablePopoverMount({ apolloProvider, projectPath, title, iid, referenceType }),
         );
         el.setAttribute(listenerAddedAttr, true);
       }

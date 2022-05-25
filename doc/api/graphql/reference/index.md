@@ -5477,6 +5477,29 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemupdateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemUpdateTask`
+
+Updates a work item's task by Global ID. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
+
+Input type: `WorkItemUpdateTaskInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemupdatetaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemupdatetaskid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemupdatetasktaskdata"></a>`taskData` | [`WorkItemUpdatedTaskInput!`](#workitemupdatedtaskinput) | Arguments necessary to update a task. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemupdatetaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemupdatetaskerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemupdatetasktask"></a>`task` | [`WorkItem`](#workitem) | Updated task. |
+| <a id="mutationworkitemupdatetaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
+
 ## Connections
 
 Some types in our schema are `Connection` types - they represent a paginated
@@ -21278,3 +21301,13 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="workitemdeletedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the task referenced in the work item's description. |
 | <a id="workitemdeletedtaskinputlinenumberend"></a>`lineNumberEnd` | [`Int!`](#int) | Last line in the Markdown source that defines the list item task. |
 | <a id="workitemdeletedtaskinputlinenumberstart"></a>`lineNumberStart` | [`Int!`](#int) | First line in the Markdown source that defines the list item task. |
+
+### `WorkItemUpdatedTaskInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemupdatedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="workitemupdatedtaskinputstateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
+| <a id="workitemupdatedtaskinputtitle"></a>`title` | [`String`](#string) | Title of the work item. |

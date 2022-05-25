@@ -10,6 +10,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [ZenTao](https://www.zentao.net/) is a web-based project management platform.
 
+The following versions of ZenTao are supported:
+
+- ZenTao 15.4
+- ZenTao Pro 10.2
+- ZenTao Biz 5.2
+- ZenTao Max 2.2
+
 ## Configure ZenTao
 
 This integration requires a ZenTao API secret key.

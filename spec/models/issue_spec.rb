@@ -1565,4 +1565,20 @@ RSpec.describe Issue do
       expect(issue.escalation_status).to eq(escalation_status)
     end
   end
+
+  describe '#expire_etag_cache' do
+    let_it_be(:issue) { create(:issue) }
+
+    subject(:expire_cache) { issue.expire_etag_cache }
+
+    it 'touches the etag cache store' do
+      key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(issue.project, issue)
+
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |cache_store|
+        expect(cache_store).to receive(:touch).with(key)
+      end
+
+      expire_cache
+    end
+  end
 end

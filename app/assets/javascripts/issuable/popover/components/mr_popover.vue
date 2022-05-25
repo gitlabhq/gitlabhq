@@ -25,11 +25,11 @@ export default {
       type: String,
       required: true,
     },
-    mergeRequestIID: {
+    iid: {
       type: String,
       required: true,
     },
-    mergeRequestTitle: {
+    cachedTitle: {
       type: String,
       required: true,
     },
@@ -67,7 +67,7 @@ export default {
       }
     },
     title() {
-      return this.mergeRequest?.title || this.mergeRequestTitle;
+      return this.mergeRequest?.title || this.cachedTitle;
     },
     showDetails() {
       return Object.keys(this.mergeRequest).length > 0;
@@ -78,11 +78,11 @@ export default {
       query,
       update: (data) => data.project.mergeRequest,
       variables() {
-        const { projectPath, mergeRequestIID } = this;
+        const { projectPath, iid } = this;
 
         return {
           projectPath,
-          mergeRequestIID,
+          iid,
         };
       },
     },
@@ -108,7 +108,7 @@ export default {
       <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
       <div class="gl-text-secondary">
-        {{ `${projectPath}!${mergeRequestIID}` }}
+        {{ `${projectPath}!${iid}` }}
       </div>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
     </div>

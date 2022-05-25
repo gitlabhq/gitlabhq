@@ -613,6 +613,11 @@ class Issue < ApplicationRecord
     super || WorkItems::Type.default_by_type(issue_type)
   end
 
+  def expire_etag_cache
+    key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
+    Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
   private
 
   override :persist_pg_full_text_search_vector
@@ -641,11 +646,6 @@ class Issue < ApplicationRecord
   def publicly_visible?
     project.public? && project.feature_available?(:issues, nil) &&
       !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
-  end
-
-  def expire_etag_cache
-    key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
-    Gitlab::EtagCaching::Store.new.touch(key)
   end
 
   def could_not_move(exception)

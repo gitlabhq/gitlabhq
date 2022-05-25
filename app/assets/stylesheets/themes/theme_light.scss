@@ -33,6 +33,14 @@ body {
           &.active > button {
             color: $white;
           }
+
+          > a,
+          > button {
+            &:active,
+            &:focus {
+              @include gl-focus;
+            }
+          }
         }
       }
 

@@ -294,7 +294,7 @@ export default {
     />
     <emoji-picker
       v-if="canAwardEmoji"
-      toggle-class="note-action-button note-emoji-button btn-icon gl-shadow-none!"
+      toggle-class="note-action-button note-emoji-button btn-icon gl-shadow-none! btn-default-tertiary"
       data-testid="note-emoji-button"
       @click="setAwardEmoji"
     >

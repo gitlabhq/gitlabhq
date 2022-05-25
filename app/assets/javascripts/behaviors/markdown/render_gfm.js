@@ -24,7 +24,7 @@ $.fn.renderGFM = function renderGFM() {
   highlightCurrentUser(this.find('.gfm-project_member').get());
   initUserPopovers(this.find('.js-user-link').get());
 
-  const issuablePopoverElements = this.find('.gfm-merge_request').get();
+  const issuablePopoverElements = this.find('.gfm-issue, .gfm-merge_request').get();
   if (issuablePopoverElements.length) {
     import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
       .then(({ default: initIssuablePopovers }) => {

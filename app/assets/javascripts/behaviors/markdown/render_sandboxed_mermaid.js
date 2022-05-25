@@ -138,7 +138,7 @@ function renderMermaids($els) {
               <div>
                 <div class="js-warning-text"></div>
                 <div class="gl-alert-actions">
-                  <button type="button" class="js-lazy-render-mermaid btn gl-alert-action btn-warning btn-md gl-button">Display</button>
+                  <button type="button" class="js-lazy-render-mermaid btn gl-alert-action btn-confirm btn-md gl-button">Display</button>
                 </div>
               </div>
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">

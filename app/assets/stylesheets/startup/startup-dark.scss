@@ -671,7 +671,6 @@ body {
   display: block;
   text-align: left;
   list-style: none;
-  padding: 0 1px;
 }
 .dropdown-menu li > a,
 .dropdown-menu li button {
@@ -696,6 +695,12 @@ body {
   color: #fafafa;
   outline: 0;
   text-decoration: none;
+}
+.dropdown-menu li > a:active,
+.dropdown-menu li button:active {
+  box-shadow: inset 0 0 0 2px #1f75cb, inset 0 0 0 3px #333,
+    inset 0 0 0 1px #333;
+  outline: none;
 }
 .dropdown-menu .divider {
   height: 1px;
@@ -780,6 +785,10 @@ input {
   padding: 2px 8px;
   margin: 4px 2px 4px -12px;
   border-radius: 4px;
+}
+.navbar-gitlab .header-content .title a:active {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 0 3px #1068bf;
+  outline: none;
 }
 .navbar-gitlab .header-content .title .canary-badge {
   margin-left: -8px;
@@ -885,6 +894,13 @@ input {
   border-radius: 4px;
   height: 32px;
   font-weight: 600;
+}
+.navbar-sub-nav > li > a:active,
+.navbar-sub-nav > li > button:active,
+.navbar-nav > li > a:active,
+.navbar-nav > li > button:active {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 0 3px #1068bf;
+  outline: none;
 }
 .navbar-sub-nav > li .top-nav-toggle,
 .navbar-sub-nav > li > button,
