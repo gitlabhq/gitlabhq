@@ -8,9 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Refer to the information below when troubleshooting Gitaly and Gitaly Cluster.
 
-Before troubleshooting, see the Gitaly and Gitaly Cluster
-[frequently asked questions](faq.md).
-
 ## Troubleshoot Gitaly
 
 The following sections provide possible solutions to Gitaly errors.

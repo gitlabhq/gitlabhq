@@ -20,6 +20,14 @@ module WorkItems
       task:        { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 }
     }.freeze
 
+    WIDGETS_FOR_TYPE = {
+      issue: [Widgets::Description],
+      incident: [Widgets::Description],
+      test_case: [Widgets::Description],
+      requirement: [Widgets::Description],
+      task: [Widgets::Description]
+    }.freeze
+
     cache_markdown_field :description, pipeline: :single_line
 
     enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }
@@ -40,6 +48,10 @@ module WorkItems
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
 
+    def self.available_widgets
+      WIDGETS_FOR_TYPE.values.flatten.uniq
+    end
+
     def self.default_by_type(type)
       found_type = find_by(namespace_id: nil, base_type: type)
       return found_type if found_type
@@ -58,6 +70,10 @@ module WorkItems
 
     def default?
       namespace.blank?
+    end
+
+    def widgets
+      WIDGETS_FOR_TYPE[base_type.to_sym]
     end
 
     private

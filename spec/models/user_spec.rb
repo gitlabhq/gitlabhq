@@ -4363,16 +4363,6 @@ RSpec.describe User do
       it_behaves_like '#ci_owned_runners'
     end
 
-    context 'when FF ci_owned_runners_cross_joins_fix is disabled' do
-      before do
-        skip_if_multiple_databases_are_setup
-
-        stub_feature_flags(ci_owned_runners_cross_joins_fix: false)
-      end
-
-      it_behaves_like '#ci_owned_runners'
-    end
-
     context 'when FF ci_owned_runners_unnest_index is disabled uses GIN index' do
       before do
         stub_feature_flags(ci_owned_runners_unnest_index: false)

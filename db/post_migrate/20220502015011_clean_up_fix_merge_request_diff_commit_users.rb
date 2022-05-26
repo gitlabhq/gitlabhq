@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CleanUpFixMergeRequestDiffCommitUsers < Gitlab::Database::Migration[1.0]
+class CleanUpFixMergeRequestDiffCommitUsers < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   MIGRATION_CLASS = 'FixMergeRequestDiffCommitUsers'

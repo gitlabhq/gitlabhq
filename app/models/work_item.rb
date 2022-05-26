@@ -15,6 +15,12 @@ class WorkItem < Issue
     'issue'
   end
 
+  def widgets
+    work_item_type.widgets.map do |widget_class|
+      widget_class.new(self)
+    end
+  end
+
   private
 
   def record_create_action

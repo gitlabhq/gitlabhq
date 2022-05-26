@@ -54,7 +54,7 @@ Achieving acceptable latency between Gitaly nodes:
   are designed for this type of synchronization. Latency of less than 2ms should be sufficient for Gitaly Cluster.
 
 If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
-more information, see [How does Gitaly Cluster compare to Geo](faq.md#how-does-gitaly-cluster-compare-to-geo).
+more information, see [Comparison to Geo](index.md#comparison-to-geo).
 
 Gitaly Cluster [components](index.md#components) communicate with each other over many routes. Your firewall rules must
 allow the following for Gitaly Cluster to function properly:
@@ -73,6 +73,16 @@ NOTE:
 Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
 load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
 the Gitaly nodes.
+
+### Praefect database storage
+
+The requirements are relatively low because the database contains only metadata of:
+
+- Where repositories are located.
+- Some queued work.
+
+It depends on the number of repositories, but a useful minimum is 5-10 GB, similar to the main
+GitLab application database.
 
 ## Setup Instructions
 
@@ -167,6 +177,18 @@ The following options are available:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
      [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
+
+Setting up PostgreSQL creates empty Praefect tables. For more information, see the
+[relevant troubleshooting section](troubleshooting.md#relation-does-not-exist-errors).
+
+#### Running GitLab and Praefect databases on the same server
+
+The GitLab application database and the Praefect database can be run on the same server. However, Praefect should have
+its own database server when using Omnibus GitLab PostgreSQL. If there is a failover, Praefect isn't aware and starts to
+fail as the database it's trying to use would either:
+
+- Be unavailable.
+- In read-only mode.
 
 #### Manual database setup
 
@@ -278,8 +300,12 @@ reads distribution caching is enabled by configuration
 #### Use PgBouncer
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
-[PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. To do
-this, you must point Praefect to PgBouncer by setting database parameters on Praefect configuration:
+[PgBouncer](https://www.pgbouncer.org/) in front of the PostgreSQL instance. However, PgBouncer isn't required because
+Praefect makes a low number of connections. If you choose to use PgBouncer, you can use the same PgBouncer instance for
+both the GitLab application database and the Praefect database.
+
+To configure PgBouncer in front of the PostgreSQL instance, you must point Praefect to PgBouncer by setting database
+parameters on Praefect configuration:
 
 ```ruby
 praefect['database_host'] = PGBOUNCER_HOST
@@ -1220,6 +1246,18 @@ You can configure:
 
 If `default_replication_factor` is unset, the repositories are always replicated on every node defined in `virtual_storages`. If a new
 node is introduced to the virtual storage, both new and existing repositories are replicated to the node automatically.
+
+### Repository storage recommendations
+
+The size of the required storage can vary between instances and depends on the set
+[replication factor](index.md#replication-factor). You might want to include implementing
+repository storage redundancy.
+
+For a replication factor:
+
+- Of `1`: NFS, Gitaly, and Gitaly Cluster have roughly the same storage requirements.
+- More than `1`: The amount of required storage is `used space * replication factor`. `used space`
+  should include any planned future growth.
 
 ## Repository verification
 

@@ -247,8 +247,6 @@ Rails.application.routes.draw do
         get  :connect
         get  :new_cluster_docs
         post :create_user
-        post :create_aws
-        post :authorize_aws_role
       end
 
       resource :integration, controller: 'clusters/integrations', only: [] do

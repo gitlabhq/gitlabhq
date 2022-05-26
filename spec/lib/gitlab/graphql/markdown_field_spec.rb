@@ -55,6 +55,20 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
         end
       end
 
+      context 'when a block is passed for the resolved object' do
+        let(:type_class) do
+          class_with_markdown_field(:note_html, null: false) do |resolved_object|
+            resolved_object.object
+          end
+        end
+
+        let(:type_instance) { type_class.authorized_new(class_wrapped_object(note), context) }
+
+        it 'renders markdown from the same property as the field name without the `_html` suffix' do
+          expect(field.resolve(type_instance, {}, context)).to eq(expected_markdown)
+        end
+      end
+
       describe 'basic verification that references work' do
         let_it_be(:project) { create(:project, :public) }
 
@@ -83,12 +97,22 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
     end
   end
 
-  def class_with_markdown_field(name, **args)
+  def class_with_markdown_field(name, **args, &blk)
     Class.new(Types::BaseObject) do
       prepend Gitlab::Graphql::MarkdownField
       graphql_name 'MarkdownFieldTest'
 
-      markdown_field name, **args
+      markdown_field name, **args, &blk
     end
+  end
+
+  def class_wrapped_object(object)
+    Class.new do
+      def initialize(object)
+        @object = object
+      end
+
+      attr_accessor :object
+    end.new(object)
   end
 end

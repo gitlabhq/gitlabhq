@@ -1650,33 +1650,15 @@ class User < ApplicationRecord
 
   def ci_owned_runners
     @ci_owned_runners ||= begin
-      if ci_owned_runners_cross_joins_fix_enabled?
-        Ci::Runner
-          .from_union([ci_owned_project_runners_from_project_members,
-                       ci_owned_project_runners_from_group_members,
-                       ci_owned_group_runners])
-      else
-        Ci::Runner
-          .from_union([ci_legacy_owned_project_runners, ci_legacy_owned_group_runners])
-          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436')
-      end
+      Ci::Runner
+        .from_union([ci_owned_project_runners_from_project_members,
+                     ci_owned_project_runners_from_group_members,
+                     ci_owned_group_runners])
     end
   end
 
   def owns_runner?(runner)
-    if ci_owned_runners_cross_joins_fix_enabled?
-      ci_owned_runners.exists?(runner.id)
-    else
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
-        ci_owned_runners.exists?(runner.id)
-      end
-    end
-  end
-
-  def ci_owned_runners_cross_joins_fix_enabled?
-    strong_memoize(:ci_owned_runners_cross_joins_fix_enabled) do
-      Feature.enabled?(:ci_owned_runners_cross_joins_fix, self)
-    end
+    ci_owned_runners.exists?(runner.id)
   end
 
   def notification_email_for(notification_group)
@@ -2256,20 +2238,6 @@ class User < ApplicationRecord
     return unless ::Gitlab::Auth::Ldap::Config.enabled? && ldap_blocked?
 
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
-  end
-
-  def ci_legacy_owned_project_runners
-    Ci::RunnerProject
-      .select('ci_runners.*')
-      .joins(:runner)
-      .where(project: authorized_projects(Gitlab::Access::MAINTAINER))
-  end
-
-  def ci_legacy_owned_group_runners
-    Ci::RunnerNamespace
-      .select('ci_runners.*')
-      .joins(:runner)
-      .where(namespace_id: owned_groups.self_and_descendant_ids)
   end
 
   def ci_owned_project_runners_from_project_members

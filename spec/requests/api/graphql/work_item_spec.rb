@@ -7,7 +7,7 @@ RSpec.describe 'Query.work_item(id)' do
 
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :private).tap { |project| project.add_developer(developer) } }
-  let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be(:work_item) { create(:work_item, project: project, description: '- List item') }
 
   let(:current_user) { developer }
   let(:work_item_data) { graphql_data['workItem'] }
@@ -36,6 +36,34 @@ RSpec.describe 'Query.work_item(id)' do
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
         'userPermissions' => { 'readWorkItem' => true, 'updateWorkItem' => true, 'deleteWorkItem' => false }
       )
+    end
+
+    context 'when querying widgets' do
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetDescription {
+              description
+              descriptionHtml
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'returns widget information' do
+        expect(work_item_data).to include(
+          'id' => work_item.to_gid.to_s,
+          'widgets' => contain_exactly(
+            hash_including(
+              'type' => 'DESCRIPTION',
+              'description' => work_item.description,
+              'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {})
+            )
+          )
+        )
+      end
     end
 
     context 'when an Issue Global ID is provided' do

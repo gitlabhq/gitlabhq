@@ -18,6 +18,8 @@ module Types
           description: 'State of the work item.'
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the work item.'
+    field :widgets, [Types::WorkItems::WidgetInterface], null: true,
+          description: 'Collection of widgets that belong to the work item.'
     field :work_item_type, Types::WorkItems::TypeType, null: false,
           description: 'Type assigned to the work item.'
 

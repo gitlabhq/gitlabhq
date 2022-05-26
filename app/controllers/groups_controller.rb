@@ -30,10 +30,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action :user_actions, only: [:show]
 
-  before_action do
-    push_frontend_feature_flag(:vue_issues_list, @group)
-  end
-
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
   before_action :track_experiment_event, only: [:new]
@@ -212,7 +208,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
-    return super if !html_request? || Feature.disabled?(:vue_issues_list, group)
+    return super unless html_request?
 
     @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
       .non_archived

@@ -60,7 +60,13 @@ RSpec.describe WorkItems::Type do
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }
   end
 
-  describe 'default?' do
+  describe '.available_widgets' do
+    subject { described_class.available_widgets }
+
+    it { is_expected.to contain_exactly(::WorkItems::Widgets::Description) }
+  end
+
+  describe '#default?' do
     subject { build(:work_item_type, namespace: namespace).default? }
 
     context 'when namespace is nil' do

@@ -23,7 +23,7 @@ class Projects::IssuesController < Projects::ApplicationController
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
   before_action :set_issuables_index, if: ->(c) {
-    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !vue_issues_list?
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
   }
 
   # Allow write(create) issue
@@ -39,7 +39,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:vue_issues_list, project&.group)
     push_frontend_feature_flag(:contacts_autocomplete, project&.group)
     push_frontend_feature_flag(:incident_timeline, project)
   end
@@ -82,7 +81,7 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
-    if vue_issues_list?
+    if index_html_request?
       set_sort_order
     else
       @issues = @issuables
@@ -258,10 +257,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
-  def vue_issues_list?
-    action_name.to_sym == :index &&
-      html_request? &&
-      Feature.enabled?(:vue_issues_list, project&.group)
+  def index_html_request?
+    action_name.to_sym == :index && html_request?
   end
 
   def sorting_field

@@ -22,8 +22,10 @@ module Gitlab
           field name, GraphQL::Types::String, **kwargs
 
           define_method resolver_method do
+            markdown_object = block_given? ? yield(object) : object
+
             # We need to `dup` the context so the MarkdownHelper doesn't modify it
-            ::MarkupHelper.markdown_field(object, method_name.to_sym, context.to_h.dup)
+            ::MarkupHelper.markdown_field(markdown_object, method_name.to_sym, context.to_h.dup)
           end
         end
       end

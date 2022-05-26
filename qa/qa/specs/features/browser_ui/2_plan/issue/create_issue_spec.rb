@@ -4,7 +4,6 @@ module QA
   RSpec.describe(
     'Plan',
     :smoke,
-    feature_flag: { name: 'vue_issues_list', scope: :group },
     quarantine: { issue: 'https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7099', type: :investigating, only: { subdomain: 'pre' } }
   ) do
     describe 'Issue creation' do
@@ -12,8 +11,6 @@ module QA
       let(:closed_issue) { Resource::Issue.fabricate_via_api! { |issue| issue.project = project } }
 
       before do
-        Runtime::Feature.enable(:vue_issues_list, group: project.group)
-
         Flow::Login.sign_in
       end
 
@@ -25,9 +22,6 @@ module QA
         issue = Resource::Issue.fabricate_via_browser_ui! { |issue| issue.project = project }
 
         Page::Project::Menu.perform(&:click_issues)
-
-        # TODO: Remove this method when the `Runtime::Feature.enable` method call is removed
-        Page::Project::Issue::Index.perform(&:wait_for_vue_issues_list_ff)
 
         Page::Project::Issue::Index.perform do |index|
           expect(index).to have_issue(issue)
@@ -48,9 +42,6 @@ module QA
         end
 
         Page::Project::Menu.perform(&:click_issues)
-
-        # TODO: Remove this method when the `Runtime::Feature.enable` method call is removed
-        Page::Project::Issue::Index.perform(&:wait_for_vue_issues_list_ff)
 
         Page::Project::Issue::Index.perform do |index|
           expect(index).not_to have_issue(closed_issue)

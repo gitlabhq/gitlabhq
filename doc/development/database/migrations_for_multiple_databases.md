@@ -13,11 +13,6 @@ for [the decomposed GitLab application using multiple databases](https://gitlab.
 
 Learn more about general multiple databases support in a [separate document](multiple_databases.md).
 
-WARNING:
-If you experience any issues using `Gitlab::Database::Migration[2.0]`,
-you can temporarily revert back to the previous behavior by changing the version to `Gitlab::Database::Migration[1.0]`.
-Please report any issues with `Gitlab::Database::Migration[2.0]` in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/358430).
-
 The design for multiple databases (except for the Geo database) assumes
 that all decomposed databases have **the same structure** (for example, schema), but **the data is different** in each database. This means that some tables do not contain data on each database.
 

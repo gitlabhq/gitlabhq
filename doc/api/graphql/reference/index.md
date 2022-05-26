@@ -17868,6 +17868,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | <a id="workitemuserpermissions"></a>`userPermissions` | [`WorkItemPermissions!`](#workitempermissions) | Permissions for the current user on the resource. |
+| <a id="workitemwidgets"></a>`widgets` | [`[WorkItemWidget!]`](#workitemwidget) | Collection of widgets that belong to the work item. |
 | <a id="workitemworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the work item. |
 
 ### `WorkItemPermissions`
@@ -17891,6 +17892,18 @@ Check permissions for the current user on a work item.
 | <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
 | <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
+
+### `WorkItemWidgetDescription`
+
+Represents a description widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdescriptiondescription"></a>`description` | [`String`](#string) | Description of the work item. |
+| <a id="workitemwidgetdescriptiondescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
+| <a id="workitemwidgetdescriptiontype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ## Enumeration types
 
@@ -19636,6 +19649,14 @@ Values for work item state events.
 | <a id="workitemstateeventclose"></a>`CLOSE` | Closes the work item. |
 | <a id="workitemstateeventreopen"></a>`REOPEN` | Reopens the work item. |
 
+### `WorkItemWidgetType`
+
+Type of a work item widget.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
+
 ## Scalar types
 
 Scalar values are atomic values, and do not have fields of their own.
@@ -20830,6 +20851,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="usertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="usertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="usertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
+
+#### `WorkItemWidget`
+
+Implementations:
+
+- [`WorkItemWidgetDescription`](#workitemwidgetdescription)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgettype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ## Input types
 

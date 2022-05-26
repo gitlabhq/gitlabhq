@@ -206,6 +206,29 @@ WARNING:
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
 RPO and RTO discussed above.
 
+### Comparison to Geo
+
+Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+
+- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
+  not aware when Gitaly Cluster is used.
+- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
+  an entire instance of GitLab. Users know when they are using Geo for
+  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  including Git data.
+
+The following table outlines the major differences between Gitaly Cluster and Geo:
+
+| Tool           | Nodes    | Locations | Latency tolerance                                                                                     | Failover                                                                    | Consistency                           | Provides redundancy for |
+|:---------------|:---------|:----------|:------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------|:--------------------------------------|:------------------------|
+| Gitaly Cluster | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](praefect.md#network-latency-and-connectivity) | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](index.md#strong-consistency) | Data storage in Git     |
+| Geo            | Multiple | Multiple  | Up to one minute                                                                                      | [Manual](../geo/disaster_recovery/index.md)                                 | Eventual                              | Entire GitLab instance  |
+
+For more information, see:
+
+- Geo [use cases](../geo/index.md#use-cases).
+- Geo [architecture](../geo/index.md#architecture).
+
 ### Virtual storage
 
 Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
@@ -501,7 +524,7 @@ See the [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster) sect
 for migrating to Gitaly Cluster involves:
 
 1. Create the required storage. Refer to
-   [repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
+   [repository storage recommendations](praefect.md#repository-storage-recommendations).
 1. Create and configure [Gitaly Cluster](praefect.md).
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories). To migrate to
    Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
