@@ -272,7 +272,7 @@ This saves reviewers time and helps authors catch mistakes earlier.
 [Review the merge request](#reviewing-a-merge-request) thoroughly. When you are confident
 that it meets all requirements, you should:
 
-- Click the Approve button.
+- Select **Approve**.
 - `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
 - Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
 however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.

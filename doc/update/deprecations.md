@@ -1565,23 +1565,6 @@ In GitLab 15.0 and later, the default value for this configuration option will c
 **Planned removal milestone: <span class="removal-milestone">15.0</span> (2022-05-22)**
 </div>
 
-<div class="deprecation removal-150 breaking-change">
-
-### Must explicitly assign `AuthenticationType` for `[runners.cache.s3]`
-
-WARNING:
-This feature will be changed or removed in 15.0
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
-
-In GitLab 15.0 and later, to access the AWS S3 cache, you must specify the `AuthenticationType` for [`[runners.cache.s3]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section). The `AuthenticationType` must be `IAM` or `credentials`.
-
-Prior to 14.5, if you did not define the `AuthenticationType`, GitLab Runner chose a type for you.
-
-**Planned removal milestone: <span class="removal-milestone">15.0</span> (2022-05-22)**
-</div>
-
 <div class="deprecation removal-160 breaking-change">
 
 ### Package pipelines in API payload is paginated

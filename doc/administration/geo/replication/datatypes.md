@@ -26,7 +26,7 @@ verification methods:
 | Type     | Feature / component                             | Replication method                    | Verification method    |
 |:---------|:------------------------------------------------|:--------------------------------------|:-----------------------|
 | Database | Application data in PostgreSQL                  | Native                                | Native                 |
-| Database | Redis                                           | _N/A_ (*1*)                           | _N/A_                  |
+| Database | Redis                                           | Not applicable (*1*)                  | Not applicable         |
 | Database | Elasticsearch                                   | Native                                | Native                 |
 | Database | SSH public keys                                 | PostgreSQL Replication                | PostgreSQL Replication |
 | Git      | Project repository                              | Geo with Gitaly                       | Gitaly Checksum        |

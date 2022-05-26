@@ -87,7 +87,7 @@ navigation bar contains:
   [custom dashboards](dashboards/index.md).
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34779) in GitLab 12.5.)
   - **Duplicate current dashboard** - Save a [complete copy of a dashboard](dashboards/index.md#duplicate-a-gitlab-defined-dashboard). Only available on GitLab-defined dashboards.
-  - **Star dashboard** **{star-o}** - Click to mark a dashboard as a favorite.
+  - **Star dashboard** **{star-o}** - Mark a dashboard as a favorite.
   Starred dashboards display a solid star **{star}** button, and display first
   in the **Dashboard** dropdown list.
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214582) in GitLab 13.0.)

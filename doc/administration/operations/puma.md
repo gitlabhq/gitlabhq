@@ -252,19 +252,19 @@ To switch from Unicorn to Puma:
    | `unicorn['enable']`                  | `puma['enable']`                   |
    | `unicorn['worker_timeout']`          | `puma['worker_timeout']`           |
    | `unicorn['worker_processes']`        | `puma['worker_processes']`         |
-   | n/a                                  | `puma['ha']`                       |
-   | n/a                                  | `puma['min_threads']`              |
-   | n/a                                  | `puma['max_threads']`              |
+   | Not applicable                       | `puma['ha']`                       |
+   | Not applicable                       | `puma['min_threads']`              |
+   | Not applicable                       | `puma['max_threads']`              |
    | `unicorn['listen']`                  | `puma['listen']`                   |
    | `unicorn['port']`                    | `puma['port']`                     |
    | `unicorn['socket']`                  | `puma['socket']`                   |
    | `unicorn['pidfile']`                 | `puma['pidfile']`                  |
-   | `unicorn['tcp_nopush']`              | n/a                                |
-   | `unicorn['backlog_socket']`          | n/a                                |
+   | `unicorn['tcp_nopush']`              | Not applicable                     |
+   | `unicorn['backlog_socket']`          | Not applicable                     |
    | `unicorn['somaxconn']`               | `puma['somaxconn']`                |
-   | n/a                                  | `puma['state_path']`               |
+   | Not applicable                       | `puma['state_path']`               |
    | `unicorn['log_directory']`           | `puma['log_directory']`            |
-   | `unicorn['worker_memory_limit_min']` | n/a                                |
+   | `unicorn['worker_memory_limit_min']` | Not applicable                     |
    | `unicorn['worker_memory_limit_max']` | `puma['per_worker_max_memory_mb']` |
    | `unicorn['exporter_enabled']`        | `puma['exporter_enabled']`         |
    | `unicorn['exporter_address']`        | `puma['exporter_address']`         |

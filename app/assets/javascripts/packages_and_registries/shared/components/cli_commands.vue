@@ -49,7 +49,7 @@ export default {
 <template>
   <gl-dropdown
     :text="$options.i18n.QUICK_START"
-    variant="info"
+    variant="confirm"
     right
     @shown="track('click_dropdown')"
   >

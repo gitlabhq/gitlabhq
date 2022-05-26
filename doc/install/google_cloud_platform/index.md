@@ -13,7 +13,7 @@ NOTE:
 To deploy production-ready GitLab on
 Google Kubernetes Engine,
 you can follow Google Cloud Platform's
-[Click to Deploy steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
+[`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
 It's an alternative to using a GCP VM, and uses
 the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 

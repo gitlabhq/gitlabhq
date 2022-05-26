@@ -54,7 +54,7 @@ you create the project again, it's created in its default state.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, go to **Settings > Metrics and profiling** and expand **Self monitoring**.
 1. Toggle **Self monitoring** off.
-1. In the confirmation dialog that opens, click **Delete self monitoring project**.
+1. In the confirmation dialog that opens, select **Delete self monitoring project**.
    It can take a few seconds for it to be deleted.
 1. After the project is deleted, GitLab displays a message confirming your action.
 

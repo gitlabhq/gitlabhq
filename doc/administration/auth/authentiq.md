@@ -69,7 +69,7 @@ Authentiq generates a Client ID and the accompanying Client Secret for you to us
 
 1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
 
-On the sign in page there should now be an Authentiq icon below the regular sign in form. Click the
+On the sign in page there should now be an Authentiq icon below the regular sign in form. Select the
 icon to begin the authentication process. If the user:
 
 - Has the Authentiq ID app installed in their iOS or Android device, they can:

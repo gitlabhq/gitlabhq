@@ -57,7 +57,7 @@ bundle exec rake db:reset RAILS_ENV=test
 
 Access the database via one of these commands (they all get you to the same place)
 
-```ruby
+```shell
 gdk psql -d gitlabhq_development
 bundle exec rails dbconsole -e development
 bundle exec rails db -e development
@@ -72,7 +72,7 @@ bundle exec rails db -e development
 
 ## Access the database with a GUI
 
-Most GUIs (DataGrid, RubyMine, DBeaver) require a TCP connection to the database, but by default
+Most GUIs (DataGrip, RubyMine, DBeaver) require a TCP connection to the database, but by default
 the database runs on a UNIX socket. To be able to access the database from these tools, some steps
 are needed:
 

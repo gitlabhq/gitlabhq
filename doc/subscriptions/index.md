@@ -53,8 +53,8 @@ at each tier for each product, see:
 
 ## Find your subscription
 
-The following chart should help you determine your subscription model. Click
-on the list item to go to the respective help page.
+The following chart should help you determine your subscription model. Select
+the list item to go to the respective help page.
 
 ```mermaid
 graph TD
@@ -164,7 +164,7 @@ Only one namespace can be linked to a subscription.
 To change the password for this customers portal account:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and select on **Account details**.
+1. Select the **My account** drop-down and select **Account details**.
 1. Make the required changes to the **Your password** section.
 1. Select **Save changes**.
 

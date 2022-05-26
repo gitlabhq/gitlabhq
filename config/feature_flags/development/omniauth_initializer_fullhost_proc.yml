@@ -1,8 +1,0 @@
----
-name: omniauth_initializer_fullhost_proc
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82703
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355579
-milestone: '14.10'
-type: development
-group: group::geo
-default_enabled: true

@@ -101,8 +101,8 @@ Therefore, document new uploads here by slotting them into the following tables:
 | Pipeline artifacts                       | `carrierwave`       | `sidekiq`               | `/artifacts/<proj_id_hash>/pipelines/<pipeline_id>/artifacts/<artifact_id>`                               |
 | Live job traces                          | `fog`               | `sidekiq`               | `/artifacts/tmp/builds/<job_id>/chunks/<chunk_index>.log`                                                 |
 | Job traces archive                       | `carrierwave`       | `sidekiq`               | `/artifacts/<proj_id_hash>/<date>/<job_id>/<artifact_id>/job.log`                                         |
-| Autoscale runner caching                 | N/A               | `gitlab-runner`         | `/gitlab-com-[platform-]runners-cache/???`                                                                |
-| Backups                                  | N/A               | `s3cmd`, `awscli`, or `gcs` | `/gitlab-backups/???`                                                                                     |
+| Autoscale runner caching                 | Not applicable      | `gitlab-runner`         | `/gitlab-com-[platform-]runners-cache/???`                                                                |
+| Backups                                  | Not applicable      | `s3cmd`, `awscli`, or `gcs` | `/gitlab-backups/???`                                                                                     |
 | Git LFS                                  | `direct upload`     | `workhorse`             | `/lfs-objects/<lfs_obj_oid[0:2]>/<lfs_obj_oid[2:2]>`                                                      |
 | Design management files                  | `disk buffering`    | `rails controller`      | `/lsf-objects/<lfs_obj_oid[0:2]>/<lfs_obj_oid[2:2]>`                                                      |
 | Design management thumbnails             | `carrierwave`       | `sidekiq`               | `/uploads/design_management/action/image_v432x230/<model_id>/<original_lfs_obj_oid[2:2]`                                             |

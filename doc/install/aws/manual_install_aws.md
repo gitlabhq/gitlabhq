@@ -705,7 +705,7 @@ From the EC2 dashboard:
 
 ### Create an auto scaling group
 
-1. As soon as the launch configuration is created, you'll see an option to **Create an Auto Scaling group using this launch configuration**. Click that to start creating the auto scaling group.
+1. After the launch configuration is created, select **Create an Auto Scaling group using this launch configuration** to start creating the auto scaling group.
 1. Enter a **Group name** (we'll use `gitlab-auto-scaling-group`).
 1. For **Group size**, enter the number of instances you want to start with (we'll enter `2`).
 1. Select the `gitlab-vpc` from the **Network** dropdown.

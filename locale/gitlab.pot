@@ -33822,9 +33822,6 @@ msgstr ""
 msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
-msgid "SecurityOrchestration|Policy description"
-msgstr ""
-
 msgid "SecurityOrchestration|Policy editor"
 msgstr ""
 

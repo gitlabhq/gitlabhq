@@ -68,6 +68,11 @@ A single Cobertura XML file can be no more than 10MiB. For large projects, split
 smaller files. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328772) for more details.
 When submitting many files, it can take a few minutes for coverage to show on a merge request.
 
+The visualization only displays after the pipeline is complete. If the pipeline has
+a [blocking manual job](../../../ci/jobs/job_control.md#types-of-manual-jobs), the
+pipeline waits for the manual job before continuing and is not considered complete.
+The visualization cannot be displayed if the blocking manual job did not run.
+
 ### Artifact expiration
 
 By default, the [pipeline artifact](../../../ci/pipelines/pipeline_artifacts.md#storage) used

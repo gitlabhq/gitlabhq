@@ -321,12 +321,12 @@ To match the versions of `markdownlint-cli` and `vale` used in the GitLab projec
 [versions used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml)
 when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
-| Tool               | Version   | Command                                   | Additional information |
-|--------------------|-----------|-------------------------------------------|------------------------|
-| `markdownlint-cli` | Latest    | `yarn global add markdownlint-cli`        | n/a                    |
-| `markdownlint-cli` | Specific  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
-| Vale               | Latest    | `brew update && brew upgrade vale`        | This command is for macOS only. |
-| Vale               | Specific  | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
+| Tool               | Version   | Command                                                | Additional information |
+|--------------------|-----------|--------------------------------------------------------|------------------------|
+| `markdownlint-cli` | Latest    | `yarn global add markdownlint-cli`                     | None.                  |
+| `markdownlint-cli` | Specific  | `yarn global add markdownlint-cli@0.23.2`              | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
+| Vale               | Latest    | `brew update && brew upgrade vale`                     | This command is for macOS only. |
+| Vale               | Specific  | Not applicable.                                        | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
 
 ### Configure editors
 

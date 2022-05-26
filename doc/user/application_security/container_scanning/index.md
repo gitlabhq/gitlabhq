@@ -260,7 +260,7 @@ Support depends on which scanner is used:
 | Distribution   | Grype | Trivy |
 | -------------- | ----- | ----- |
 | Alma Linux     |       |  ✅   |
-| Alpine Linux   |  ✅   |       |
+| Alpine Linux   |  ✅   |  ✅   |
 | Amazon Linux   |  ✅   |  ✅   |
 | BusyBox        |  ✅   |       |
 | CentOS         |  ✅   |  ✅   |

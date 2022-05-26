@@ -36,7 +36,7 @@ Alerts can be used to trigger actions, like opening an issue automatically
 1. Enable the option to create issues.
 1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
 1. Optionally, select whether to send an email notification to the developers of the project.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 After enabling, GitLab automatically opens an issue when an alert is triggered containing
 values extracted from the [`alerts` field in webhook payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
