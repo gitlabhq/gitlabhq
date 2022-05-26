@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Terraform::State do
+RSpec.describe API::Terraform::State, :snowplow do
   include HttpBasicAuthHelpers
 
   let_it_be(:project) { create(:project) }
@@ -25,10 +25,16 @@ RSpec.describe API::Terraform::State do
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
 
-      it 'does not track unique event' do
+      it 'does not track unique hll event' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
         request
+      end
+
+      it 'does not track Snowplow event' do
+        request
+
+        expect_no_snowplow_event
       end
     end
 
@@ -38,6 +44,29 @@ RSpec.describe API::Terraform::State do
       it_behaves_like 'tracking unique hll events' do
         let(:target_event) { 'p_terraform_state_api_unique_users' }
         let(:expected_value) { instance_of(Integer) }
+      end
+
+      it 'tracks Snowplow event' do
+        request
+
+        expect_snowplow_event(
+          category: described_class.to_s,
+          action: 'p_terraform_state_api_unique_users',
+          namespace: project.namespace.reload,
+          user: current_user
+        )
+      end
+
+      context 'when route_hll_to_snowplow_phase2 FF is disabled' do
+        before do
+          stub_feature_flags(route_hll_to_snowplow_phase2: false)
+        end
+
+        it 'does not track Snowplow event' do
+          request
+
+          expect_no_snowplow_event
+        end
       end
     end
   end

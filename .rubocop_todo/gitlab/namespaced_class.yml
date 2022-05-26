@@ -1089,7 +1089,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/workers/project_import_schedule_worker.rb'
     - 'ee/app/workers/project_template_export_worker.rb'
     - 'ee/app/workers/refresh_license_compliance_checks_worker.rb'
-    - 'ee/app/workers/repository_push_audit_event_worker.rb'
     - 'ee/app/workers/repository_update_mirror_worker.rb'
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/app/workers/set_user_status_based_on_user_cap_setting_worker.rb'

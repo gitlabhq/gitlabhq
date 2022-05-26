@@ -3,7 +3,7 @@
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - updated_mr_header_enabled = Feature.enabled?(:updated_mr_header, @project)
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-#{updated_mr_header_enabled}"]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-#{updated_mr_header_enabled}", moved_mr_sidebar_enabled?]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -13,7 +13,7 @@
       = c.body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.pt-0.pb-0{ class: "#{'gl-display-block gl-md-display-flex!' if updated_mr_header_enabled} #{'is-merge-request' if updated_mr_header_enabled && !fluid_layout}" }
+  .detail-page-header.border-bottom-0.pt-0.pb-0{ class: "#{'gl-display-block gl-md-display-flex!' if updated_mr_header_enabled} #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
     .detail-page-header-body
       - unless updated_mr_header_enabled
         = render "shared/issuable/status_box", issuable: @merge_request

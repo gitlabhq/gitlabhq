@@ -113,7 +113,6 @@ Style/SymbolProc:
     - 'ee/app/workers/geo/batch/project_registry_worker.rb'
     - 'ee/app/workers/geo/sync_timeout_cron_worker.rb'
     - 'ee/app/workers/geo/verification_cron_worker.rb'
-    - 'ee/app/workers/repository_push_audit_event_worker.rb'
     - 'ee/lib/api/entities/pending_member.rb'
     - 'ee/lib/api/related_epic_links.rb'
     - 'ee/lib/ee/api/entities/audit_event.rb'

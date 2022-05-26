@@ -24,6 +24,11 @@ module API
         authorize! :read_terraform_state, user_project
 
         increment_unique_values('p_terraform_state_api_unique_users', current_user.id)
+
+        if Feature.enabled?(:route_hll_to_snowplow_phase2, user_project&.namespace)
+          Gitlab::Tracking.event('API::Terraform::State', 'p_terraform_state_api_unique_users',
+            namespace: user_project&.namespace, user: current_user)
+        end
       end
 
       params do

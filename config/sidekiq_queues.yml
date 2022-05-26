@@ -395,8 +395,6 @@
   - 1
 - - repository_import
   - 1
-- - repository_push_audit_event
-  - 1
 - - repository_update_mirror
   - 1
 - - repository_update_remote_mirror

@@ -140,8 +140,9 @@ export default {
 </script>
 
 <template>
-  <!-- delay so not every mouseover triggers Popover -->
+  <!-- Delayed so not every mouseover triggers Popover -->
   <gl-popover
+    :css-classes="['gl-max-w-48']"
     :show="show"
     :target="target"
     :delay="$options.USER_POPOVER_DELAY"
@@ -149,23 +150,11 @@ export default {
     boundary="viewport"
     triggers="hover focus manual"
   >
-    <div class="gl-p-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
-      <div
-        class="gl-p-2 flex-shrink-1 gl-display-flex gl-flex-direction-column align-items-center gl-w-70p"
-      >
+    <div class="gl-py-3 gl-line-height-normal gl-display-flex" data-testid="user-popover">
+      <div class="gl-mr-4 gl-flex-shrink-0">
         <user-avatar-image :img-src="user.avatarUrl" :size="64" css-classes="gl-m-0!" />
-        <div v-if="shouldRenderToggleFollowButton" class="gl-mt-3">
-          <gl-button
-            :variant="toggleFollowButtonVariant"
-            :loading="toggleFollowLoading"
-            size="small"
-            data-testid="toggle-follow-button"
-            @click="toggleFollow"
-            >{{ toggleFollowButtonText }}</gl-button
-          >
-        </div>
       </div>
-      <div class="gl-w-full gl-min-w-0 gl-word-break-word">
+      <div class="gl-w-full gl-word-break-word gl-display-flex gl-align-items-center">
         <template v-if="userIsLoading">
           <gl-skeleton-loader
             :lines="$options.maxSkeletonLines"
@@ -175,7 +164,7 @@ export default {
           />
         </template>
         <template v-else>
-          <div class="gl-mb-3">
+          <div>
             <h5 class="gl-m-0">
               <user-name-with-status
                 :name="user.name"
@@ -184,42 +173,64 @@ export default {
               />
             </h5>
             <span class="gl-text-gray-500">@{{ user.username }}</span>
-          </div>
-          <div class="gl-text-gray-500">
-            <div v-if="user.bio" class="gl-display-flex gl-mb-2">
-              <gl-icon name="profile" class="gl-flex-shrink-0" />
-              <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
+            <div v-if="shouldRenderToggleFollowButton" class="gl-mt-3">
+              <gl-button
+                :variant="toggleFollowButtonVariant"
+                :loading="toggleFollowLoading"
+                size="small"
+                data-testid="toggle-follow-button"
+                @click="toggleFollow"
+                >{{ toggleFollowButtonText }}</gl-button
+              >
             </div>
-            <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
-              <gl-icon name="work" class="gl-flex-shrink-0" />
-              <span ref="workInformation" class="gl-ml-2">{{ user.workInformation }}</span>
-            </div>
-            <div v-if="user.location" class="gl-display-flex gl-mb-2">
-              <gl-icon name="location" class="gl-flex-shrink-0" />
-              <span class="gl-ml-2">{{ user.location }}</span>
-            </div>
-            <div
-              v-if="user.localTime && !user.bot"
-              class="gl-display-flex gl-mb-2"
-              data-testid="user-popover-local-time"
-            >
-              <gl-icon name="clock" class="gl-flex-shrink-0" />
-              <span class="gl-ml-2">{{ user.localTime }}</span>
-            </div>
-          </div>
-          <div v-if="statusHtml" class="gl-mb-2" data-testid="user-popover-status">
-            <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
-          </div>
-          <div v-if="user.bot && user.websiteUrl" class="gl-text-blue-500">
-            <gl-icon name="question" />
-            <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
-              <gl-sprintf :message="__('Learn more about %{username}')">
-                <template #username>{{ user.name }}</template>
-              </gl-sprintf>
-            </gl-link>
           </div>
         </template>
       </div>
+    </div>
+    <div class="gl-mt-2 gl-w-full gl-word-break-word">
+      <template v-if="userIsLoading">
+        <gl-skeleton-loader
+          :lines="$options.maxSkeletonLines"
+          preserve-aspect-ratio="none"
+          equal-width-lines
+          :height="24"
+        />
+      </template>
+      <template v-else>
+        <div class="gl-text-gray-500">
+          <div v-if="user.bio" class="gl-display-flex gl-mb-2">
+            <gl-icon name="profile" class="gl-flex-shrink-0" />
+            <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
+          </div>
+          <div v-if="user.workInformation" class="gl-display-flex gl-mb-2">
+            <gl-icon name="work" class="gl-flex-shrink-0" />
+            <span ref="workInformation" class="gl-ml-2">{{ user.workInformation }}</span>
+          </div>
+          <div v-if="user.location" class="gl-display-flex gl-mb-2">
+            <gl-icon name="location" class="gl-flex-shrink-0" />
+            <span class="gl-ml-2">{{ user.location }}</span>
+          </div>
+          <div
+            v-if="user.localTime && !user.bot"
+            class="gl-display-flex gl-mb-2"
+            data-testid="user-popover-local-time"
+          >
+            <gl-icon name="clock" class="gl-flex-shrink-0" />
+            <span class="gl-ml-2">{{ user.localTime }}</span>
+          </div>
+        </div>
+        <div v-if="statusHtml" class="gl-mb-2" data-testid="user-popover-status">
+          <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
+        </div>
+        <div v-if="user.bot && user.websiteUrl" class="gl-text-blue-500">
+          <gl-icon name="question" />
+          <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
+            <gl-sprintf :message="__('Learn more about %{username}')">
+              <template #username>{{ user.name }}</template>
+            </gl-sprintf>
+          </gl-link>
+        </div>
+      </template>
     </div>
   </gl-popover>
 </template>

@@ -405,7 +405,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'RepositoryForkWorker' => 5,
         'RepositoryImportWorker' => false,
         'RepositoryUpdateMirrorWorker' => false,
-        'RepositoryPushAuditEventWorker' => 3,
         'RepositoryUpdateRemoteMirrorWorker' => 3,
         'RequirementsManagement::ImportRequirementsCsvWorker' => 3,
         'RequirementsManagement::ProcessRequirementsReportsWorker' => 3,
