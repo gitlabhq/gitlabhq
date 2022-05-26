@@ -2,8 +2,7 @@
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
-- updated_mr_header_enabled = Feature.enabled?(:updated_mr_header, @project)
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-#{updated_mr_header_enabled}", moved_mr_sidebar_enabled?]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-updated_header", moved_mr_sidebar_enabled?]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -13,24 +12,18 @@
       = c.body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.pt-0.pb-0{ class: "#{'gl-display-block gl-md-display-flex!' if updated_mr_header_enabled} #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
+  .detail-page-header.border-bottom-0.pt-0.pb-0.gl-display-block{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
     .detail-page-header-body
-      - unless updated_mr_header_enabled
-        = render "shared/issuable/status_box", issuable: @merge_request
-      .issuable-meta{ class: "#{'gl-display-flex' if updated_mr_header_enabled}" }
-        - if updated_mr_header_enabled
-          #js-issuable-header-warnings
-          %h2.title.gl-my-0.gl-display-inline-block{ data: { qa_selector: 'title_content' } }
-            = markdown_field(@merge_request, :title)
-        - else
-          #js-issuable-header-warnings
-          = issuable_meta(@merge_request, @project)
+      .issuable-meta.gl-display-flex
+        #js-issuable-header-warnings
+        %h2.title.gl-my-0.gl-display-inline-block{ data: { qa_selector: 'title_content' } }
+          = markdown_field(@merge_request, :title)
 
       %div
         %button.gl-button.btn.btn-default.btn-icon.float-right.gl-display-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ type: 'button', class: "#{'gl-md-display-none!' if moved_mr_sidebar_enabled? } #{'gl-sm-display-none!' unless moved_mr_sidebar_enabled?}" }
           = sprite_icon('chevron-double-lg-left')
 
-    .detail-page-header-actions.js-issuable-actions{ class: "#{'gl-align-self-start is-merge-request' if updated_mr_header_enabled}" }
+    .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions
       - if can_update_merge_request
         = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
 

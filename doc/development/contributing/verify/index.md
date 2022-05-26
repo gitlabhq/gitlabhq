@@ -164,12 +164,26 @@ data from the database, file system, or object storage, you should get an extra 
 of eyes on your changes. When you are defining a new retention policy, you
 should double check with PMs and EMs.
 
+### Get your design reviewed
+
+When you are designing a subsystem for pipeline processing and transitioning
+CI/CD statuses, request an additional opinion on the design from a Verify maintainer (`@gitlab-org/maintainers/cicd-verify`)
+as early as possible and hold others accountable for doing the same. Having your
+design reviewed by a Verify maintainer helps to identify any blind spots you might
+have overlooked as early as possible and possibly leads to a better solution.
+
+By having the design reviewed before any development work is started, it also helps to
+make merge request review more efficient. You would be less likely to encounter
+significantly differing opinions or change requests during the maintainer review
+if the design has been reviewed by a Verify maintainer. As a result, the merge request
+could be merged sooner.
+
 ### Get your changes reviewed
 
 When your merge request is ready for reviews you must assign
 reviewers and then maintainers. Depending on the complexity of a change, you
 might want to involve the people that know the most about the codebase area you are
-changing. We do have many domain experts in Verify and it is absolutely acceptable to
+changing. We do have many domain experts and maintainers in Verify and it is absolutely acceptable to
 ask them to review your code when you are not certain if a reviewer or
 maintainer assigned by the Reviewer Roulette has enough context about the
 change.
@@ -229,7 +243,3 @@ There are much more likely scenarios that
 can have disastrous consequences. GitLab CI/CD is being used by companies
 building medical, aviation, and automotive software. Continuous Integration is
 a mission critical part of software engineering.
-
-When you are working on a subsystem for pipeline processing and transitioning
-CI/CD statuses, request an additional opinion on the design from a domain expert
-as early as possible and hold others accountable for doing the same.

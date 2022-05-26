@@ -30,7 +30,7 @@ export default {
     <p>{{ $options.i18n.description }}</p>
     <gl-form :action="url" method="post">
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-      <gl-button category="secondary" variant="warning" type="submit">
+      <gl-button category="secondary" variant="danger" type="submit">
         {{ $options.i18n.title }}
       </gl-button>
     </gl-form>

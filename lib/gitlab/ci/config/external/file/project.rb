@@ -65,7 +65,9 @@ module Gitlab
               return unless can_access_local_content?
               return unless sha
 
-              project.repository.blob_data_at(sha, location)
+              context.logger.instrument(:config_file_fetch_project_content) do
+                project.repository.blob_data_at(sha, location)
+              end
             rescue GRPC::NotFound, GRPC::Internal
               nil
             end

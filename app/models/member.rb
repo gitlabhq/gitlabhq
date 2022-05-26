@@ -170,6 +170,7 @@ class Member < ApplicationRecord
   scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :with_user, -> (user) { where(user: user) }
   scope :by_access_level, -> (access_level) { active.where(access_level: access_level) }
+  scope :all_by_access_level, -> (access_level) { where(access_level: access_level) }
 
   scope :preload_user_and_notification_settings, -> { preload(user: :notification_settings) }
 

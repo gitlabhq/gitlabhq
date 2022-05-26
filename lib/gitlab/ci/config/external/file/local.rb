@@ -42,7 +42,9 @@ module Gitlab
             end
 
             def fetch_local_content
-              context.project.repository.blob_data_at(context.sha, location)
+              context.logger.instrument(:config_file_fetch_local_content) do
+                context.project.repository.blob_data_at(context.sha, location)
+              end
             rescue GRPC::InvalidArgument
               errors.push("Sha #{context.sha} is not valid!")
 

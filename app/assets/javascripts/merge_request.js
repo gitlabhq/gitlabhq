@@ -156,11 +156,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
   } else {
     toast(__('Marked as draft. Can only be merged when marked as ready.'));
   }
-  const titleEl = document.querySelector(
-    `.merge-request .detail-page-${
-      window.gon?.features?.updatedMrHeader ? 'header' : 'description'
-    } .title`,
-  );
+  const titleEl = document.querySelector(`.merge-request .detail-page-header .title`);
 
   if (titleEl) {
     titleEl.textContent = title;

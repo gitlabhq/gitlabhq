@@ -54,6 +54,14 @@ module API
         present paginate(tokens), with: Entities::PersonalAccessToken
       end
 
+      get ':id' do
+        token = PersonalAccessToken.find_by_id(params[:id])
+
+        unauthorized! unless token && Ability.allowed?(current_user, :read_user_personal_access_tokens, token.user)
+
+        present token, with: Entities::PersonalAccessToken
+      end
+
       delete 'self' do
         revoke_token(access_token)
       end

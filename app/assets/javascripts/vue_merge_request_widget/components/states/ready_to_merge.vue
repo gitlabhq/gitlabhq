@@ -722,10 +722,7 @@ export default {
                   {{ __('Merge details') }}
                 </strong>
                 <ul class="gl-pl-4 gl-m-0">
-                  <li
-                    v-if="mr.divergedCommitsCount > 0 && glFeatures.updatedMrHeader"
-                    class="gl-line-height-normal"
-                  >
+                  <li v-if="mr.divergedCommitsCount > 0" class="gl-line-height-normal">
                     <gl-sprintf
                       :message="s__('mrWidget|The source branch is %{link} the target branch')"
                     >

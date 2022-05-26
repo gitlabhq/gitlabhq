@@ -45360,12 +45360,6 @@ msgstr ""
 msgid "mrWidget|More information"
 msgstr ""
 
-msgid "mrWidget|Open in Gitpod"
-msgstr ""
-
-msgid "mrWidget|Open in Web IDE"
-msgstr ""
-
 msgid "mrWidget|Please restore it or use a different %{type} branch."
 msgstr ""
 
@@ -45382,9 +45376,6 @@ msgid "mrWidget|Refreshing now"
 msgstr ""
 
 msgid "mrWidget|Remove from merge train"
-msgstr ""
-
-msgid "mrWidget|Request to merge"
 msgstr ""
 
 msgid "mrWidget|Resolve conflicts"
@@ -45460,9 +45451,6 @@ msgid "mrWidget|What is a merge train?"
 msgstr ""
 
 msgid "mrWidget|Your password"
-msgstr ""
-
-msgid "mrWidget|into"
 msgstr ""
 
 msgid "must be a Debian package"

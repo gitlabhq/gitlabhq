@@ -74,8 +74,7 @@ export default {
       return [
         CLASSES[this.state],
         {
-          'gl-vertical-align-bottom':
-            this.issuableType === IssuableType.MergeRequest && this.glFeatures.updatedMrHeader,
+          'gl-vertical-align-bottom': this.issuableType === IssuableType.MergeRequest,
         },
       ];
     },

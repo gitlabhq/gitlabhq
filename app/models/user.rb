@@ -1366,9 +1366,16 @@ class User < ApplicationRecord
   end
 
   def solo_owned_groups
-    @solo_owned_groups ||= owned_groups.includes(:owners).select do |group|
-      group.owners == [self]
-    end
+    # For each owned group, count the owners found in self and ancestors.
+    counts = GroupMember
+      .from('unnest(namespaces.traversal_ids) AS ancestors(ancestor_id), members')
+      .where('members.source_id = ancestors.ancestor_id')
+      .all_by_access_level(GroupMember::OWNER)
+      .having('count(members.user_id) = 1')
+
+    Group
+      .from(owned_groups, :namespaces)
+      .where_exists(counts)
   end
 
   def with_defaults

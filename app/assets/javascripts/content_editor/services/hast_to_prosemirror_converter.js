@@ -63,10 +63,12 @@ function maybeMerge(a, b) {
 function createSourceMapAttributes(hastNode, source) {
   const { position } = hastNode;
 
-  return {
-    sourceMapKey: `${position.start.offset}:${position.end.offset}`,
-    sourceMarkdown: source.substring(position.start.offset, position.end.offset),
-  };
+  return position.end
+    ? {
+        sourceMapKey: `${position.start.offset}:${position.end.offset}`,
+        sourceMarkdown: source.substring(position.start.offset, position.end.offset),
+      }
+    : {};
 }
 
 /**
@@ -252,11 +254,19 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
   const factories = {
     root: {
       selector: 'root',
-      handle: (state, hastNode) => state.openNode(schema.topNodeType, hastNode, {}),
+      handle: (state, hastNode) =>
+        state.openNode(
+          schema.topNodeType,
+          hastNode,
+          {},
+          {
+            wrapTextInParagraph: true,
+          },
+        ),
     },
     text: {
       selector: 'text',
-      handle: (state, hastNode) => {
+      handle: (state, hastNode, parent) => {
         const { factorySpec } = state.top;
 
         if (/^\s+$/.test(hastNode.value)) {
@@ -264,7 +274,7 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
         }
 
         if (factorySpec.wrapTextInParagraph === true) {
-          state.openNode(schema.nodeType('paragraph'));
+          state.openNode(schema.nodeType('paragraph'), hastNode, getAttrs({}, parent, [], source));
           state.addText(schema, hastNode.value);
           state.closeNode();
         } else {

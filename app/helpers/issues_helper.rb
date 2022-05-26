@@ -28,18 +28,16 @@ module IssuesHelper
   end
 
   def status_box_class(item)
-    updated_mr_header_enabled = Feature.enabled?(:updated_mr_header, @project)
-
     if item.try(:expired?)
       'gl-bg-orange-500'
     elsif item.try(:merged?)
-      updated_mr_header_enabled ? 'badge-info' : 'gl-bg-blue-500'
+      'badge-info'
     elsif item.closed?
-      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-danger' : 'gl-bg-red-500'
+      item.is_a?(MergeRequest) ? 'badge-danger' : 'gl-bg-red-500'
     elsif item.try(:upcoming?)
       'gl-bg-gray-500'
     else
-      item.is_a?(MergeRequest) && updated_mr_header_enabled ? 'badge-success' : 'gl-bg-green-500'
+      item.is_a?(MergeRequest) ? 'badge-success' : 'gl-bg-green-500'
     end
   end
 

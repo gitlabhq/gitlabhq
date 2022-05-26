@@ -2,11 +2,9 @@
 - default_ref = params[:ref] || @project.default_branch
 
 - if @error
-  .gl-alert.gl-alert-danger
-    = sprite_icon('error', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-    %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-      = sprite_icon('close', css_class: 'gl-icon')
-    = @error
+  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: true, close_button_class: 'gl-alert-dismiss') do |c|
+    = c.body do
+      = @error
 
 %h3.page-title
   = s_('TagsPage|New Tag')

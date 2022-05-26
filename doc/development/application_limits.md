@@ -189,3 +189,23 @@ the middleware level, this can be used at the controller or API level.
 
 See the `CheckRateLimit` concern for use in controllers. In other parts of the code
 the `Gitlab::ApplicationRateLimiter` module can be called directly.
+
+## Next rate limiting architecture
+
+In May 2022 we've started working on the next iteration of our application
+limits framework using a forward looking rate limiting architecture.
+
+We are working on defining new requirements and designing the next
+architecture, so if you need new functionalities to add new limits, instead of
+building them right now, consider contributing to the
+[Rate Limiting Architecture Working Group](https://about.gitlab.com/company/team/structure/working-groups/rate-limit-architecture/)
+
+Examples of what features we might want to build into the next iteration of
+rate limiting architecture:
+
+1. Making it possible to define and override limits per namespace / per plan.
+1. Automatically generating documentation about what limits are implemented and
+   what the defaults are.
+1. Defining limits in a single place that is easy to find an explore.
+1. Soft and hard limits, with support for notifying users when a limit is
+   approaching.

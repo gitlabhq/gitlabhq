@@ -70,6 +70,29 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
+## Get single personal access token by ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
+
+Get a single personal access token by its ID. Users can get their own tokens.
+Administrators can get any token.
+
+```plaintext
+GET /personal_access_tokens/:id
+```
+
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer/string | yes | ID of personal access token |
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<id>"
+```
+
+### Responses
+
+- `401: Unauthorized` if the user doesn't have access to the token they're requesting the ID or if the token with matching ID doesn't exist.
+
 ## Revoke a personal access token
 
 Revoke a personal access token by either:

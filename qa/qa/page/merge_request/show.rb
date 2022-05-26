@@ -115,12 +115,9 @@ module QA
           element :description_content
         end
 
-        view 'app/views/projects/merge_requests/_mr_box.html.haml' do
-          element :title_content, required: true
-        end
-
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
           element :edit_button
+          element :title_content, required: true
         end
 
         view 'app/views/projects/merge_requests/show.html.haml' do

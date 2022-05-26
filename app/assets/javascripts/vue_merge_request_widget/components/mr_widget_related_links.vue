@@ -93,9 +93,7 @@ export default {
       </span>
     </p>
     <div
-      v-if="
-        divergedCommitsCount > 0 && glFeatures.updatedMrHeader && !glFeatures.restructuredMrWidget
-      "
+      v-if="divergedCommitsCount > 0 && !glFeatures.restructuredMrWidget"
       class="diverged-commits-count"
     >
       <gl-sprintf :message="s__('mrWidget|The source branch is %{link} the target branch')">

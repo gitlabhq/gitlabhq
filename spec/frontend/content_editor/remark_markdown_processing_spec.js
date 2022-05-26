@@ -207,6 +207,19 @@ describe('Client side Markdown processing', () => {
       ),
     },
     {
+      markdown: `
+<i class="foo">
+  *bar*
+</i>
+      `,
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:28', '<i class="foo">\n  *bar*\n</i>'),
+          italic(sourceAttrs('0:28', '<i class="foo">\n  *bar*\n</i>'), '\n  *bar*\n'),
+        ),
+      ),
+    },
+    {
       markdown: '[GitLab](https://gitlab.com "Go to GitLab")',
       expectedDoc: doc(
         paragraph(
@@ -342,8 +355,14 @@ two
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:27', '- List item 1\n- List item 2'),
-          listItem(sourceAttrs('0:13', '- List item 1'), paragraph('List item 1')),
-          listItem(sourceAttrs('14:27', '- List item 2'), paragraph('List item 2')),
+          listItem(
+            sourceAttrs('0:13', '- List item 1'),
+            paragraph(sourceAttrs('0:13', '- List item 1'), 'List item 1'),
+          ),
+          listItem(
+            sourceAttrs('14:27', '- List item 2'),
+            paragraph(sourceAttrs('14:27', '- List item 2'), 'List item 2'),
+          ),
         ),
       ),
     },
@@ -355,8 +374,14 @@ two
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:27', '* List item 1\n* List item 2'),
-          listItem(sourceAttrs('0:13', '* List item 1'), paragraph('List item 1')),
-          listItem(sourceAttrs('14:27', '* List item 2'), paragraph('List item 2')),
+          listItem(
+            sourceAttrs('0:13', '* List item 1'),
+            paragraph(sourceAttrs('0:13', '* List item 1'), 'List item 1'),
+          ),
+          listItem(
+            sourceAttrs('14:27', '* List item 2'),
+            paragraph(sourceAttrs('14:27', '* List item 2'), 'List item 2'),
+          ),
         ),
       ),
     },
@@ -368,8 +393,14 @@ two
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:27', '+ List item 1\n+ List item 2'),
-          listItem(sourceAttrs('0:13', '+ List item 1'), paragraph('List item 1')),
-          listItem(sourceAttrs('14:27', '+ List item 2'), paragraph('List item 2')),
+          listItem(
+            sourceAttrs('0:13', '+ List item 1'),
+            paragraph(sourceAttrs('0:13', '+ List item 1'), 'List item 1'),
+          ),
+          listItem(
+            sourceAttrs('14:27', '+ List item 2'),
+            paragraph(sourceAttrs('14:27', '+ List item 2'), 'List item 2'),
+          ),
         ),
       ),
     },
@@ -381,8 +412,14 @@ two
       expectedDoc: doc(
         orderedList(
           sourceAttrs('0:29', '1. List item 1\n1. List item 2'),
-          listItem(sourceAttrs('0:14', '1. List item 1'), paragraph('List item 1')),
-          listItem(sourceAttrs('15:29', '1. List item 2'), paragraph('List item 2')),
+          listItem(
+            sourceAttrs('0:14', '1. List item 1'),
+            paragraph(sourceAttrs('0:14', '1. List item 1'), 'List item 1'),
+          ),
+          listItem(
+            sourceAttrs('15:29', '1. List item 2'),
+            paragraph(sourceAttrs('15:29', '1. List item 2'), 'List item 2'),
+          ),
         ),
       ),
     },
@@ -394,8 +431,14 @@ two
       expectedDoc: doc(
         orderedList(
           sourceAttrs('0:29', '1. List item 1\n2. List item 2'),
-          listItem(sourceAttrs('0:14', '1. List item 1'), paragraph('List item 1')),
-          listItem(sourceAttrs('15:29', '2. List item 2'), paragraph('List item 2')),
+          listItem(
+            sourceAttrs('0:14', '1. List item 1'),
+            paragraph(sourceAttrs('0:14', '1. List item 1'), 'List item 1'),
+          ),
+          listItem(
+            sourceAttrs('15:29', '2. List item 2'),
+            paragraph(sourceAttrs('15:29', '2. List item 2'), 'List item 2'),
+          ),
         ),
       ),
     },
@@ -407,8 +450,14 @@ two
       expectedDoc: doc(
         orderedList(
           sourceAttrs('0:29', '1) List item 1\n2) List item 2'),
-          listItem(sourceAttrs('0:14', '1) List item 1'), paragraph('List item 1')),
-          listItem(sourceAttrs('15:29', '2) List item 2'), paragraph('List item 2')),
+          listItem(
+            sourceAttrs('0:14', '1) List item 1'),
+            paragraph(sourceAttrs('0:14', '1) List item 1'), 'List item 1'),
+          ),
+          listItem(
+            sourceAttrs('15:29', '2) List item 2'),
+            paragraph(sourceAttrs('15:29', '2) List item 2'), 'List item 2'),
+          ),
         ),
       ),
     },
@@ -422,10 +471,13 @@ two
           sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'),
           listItem(
             sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'),
-            paragraph('List item 1\n'),
+            paragraph(sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'), 'List item 1\n'),
             bulletList(
               sourceAttrs('16:33', '- Sub list item 1'),
-              listItem(sourceAttrs('16:33', '- Sub list item 1'), paragraph('Sub list item 1')),
+              listItem(
+                sourceAttrs('16:33', '- Sub list item 1'),
+                paragraph(sourceAttrs('16:33', '- Sub list item 1'), 'Sub list item 1'),
+              ),
             ),
           ),
         ),
@@ -477,8 +529,14 @@ two
           sourceAttrs('0:31', '> - List item 1\n> - List item 2'),
           bulletList(
             sourceAttrs('2:31', '- List item 1\n> - List item 2'),
-            listItem(sourceAttrs('2:15', '- List item 1'), paragraph('List item 1')),
-            listItem(sourceAttrs('18:31', '- List item 2'), paragraph('List item 2')),
+            listItem(
+              sourceAttrs('2:15', '- List item 1'),
+              paragraph(sourceAttrs('2:15', '- List item 1'), 'List item 1'),
+            ),
+            listItem(
+              sourceAttrs('18:31', '- List item 2'),
+              paragraph(sourceAttrs('18:31', '- List item 2'), 'List item 2'),
+            ),
           ),
         ),
       ),

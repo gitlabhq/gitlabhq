@@ -15,7 +15,6 @@ import SmartInterval from '~/smart_interval';
 import { setFaviconOverlay } from '../lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
-import WidgetHeader from './components/mr_widget_header.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
@@ -59,7 +58,6 @@ export default {
   components: {
     Loading,
     ExtensionsContainer,
-    'mr-widget-header': WidgetHeader,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
     'mr-widget-related-links': WidgetRelatedLinks,
@@ -233,9 +231,6 @@ export default {
     },
     isRestructuredMrWidgetEnabled() {
       return window.gon?.features?.restructuredMrWidget;
-    },
-    isUpdatedHeaderEnabled() {
-      return window.gon?.features?.updatedMrHeader;
     },
   },
   watch: {
@@ -531,14 +526,12 @@ export default {
 <template>
   <div v-if="isLoaded" class="mr-state-widget gl-mt-3">
     <header
-      v-if="shouldRenderCollaborationStatus || !isUpdatedHeaderEnabled"
-      :class="{ 'mr-widget-workflow gl-mt-0!': isUpdatedHeaderEnabled }"
-      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden"
+      v-if="shouldRenderCollaborationStatus"
+      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden mr-widget-workflow gl-mt-0!"
     >
       <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
       </mr-widget-alert-message>
-      <mr-widget-header v-if="!isUpdatedHeaderEnabled" :mr="mr" />
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"

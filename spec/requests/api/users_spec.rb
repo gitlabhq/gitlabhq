@@ -2098,7 +2098,7 @@ RSpec.describe API::Users do
   describe "DELETE /users/:id" do
     let_it_be(:issue) { create(:issue, author: user) }
 
-    it "deletes user", :sidekiq_might_not_need_inline do
+    it "deletes user", :sidekiq_inline do
       namespace_id = user.namespace.id
 
       perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
@@ -2119,10 +2119,26 @@ RSpec.describe API::Users do
       end
 
       context "hard delete enabled" do
-        it "delete user and group", :sidekiq_might_not_need_inline do
+        it "delete user and group", :sidekiq_inline do
           perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
           expect(response).to have_gitlab_http_status(:no_content)
           expect(Group.exists?(group.id)).to be_falsy
+        end
+
+        context "with subgroup owning" do
+          let(:parent_group) { create(:group) }
+          let(:subgroup) { create(:group, parent: parent_group) }
+
+          before do
+            parent_group.add_owner(create(:user))
+            subgroup.add_owner(user)
+          end
+
+          it "delete only user", :sidekiq_inline do
+            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(Group.exists?(subgroup.id)).to be_truthy
+          end
         end
       end
     end
