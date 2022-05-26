@@ -121,7 +121,7 @@ export default {
         @error="error = $event"
         @updated="$emit('workItemUpdated')"
       />
-      <work-item-links :work-item-id="workItem.id" />
+      <work-item-links v-if="glFeatures.workItemsHierarchy" :work-item-id="workItem.id" />
     </template>
   </section>
 </template>

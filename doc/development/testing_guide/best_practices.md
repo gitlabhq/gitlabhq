@@ -215,6 +215,39 @@ In this case, the `total time` and `top-level time` numbers match more closely:
        8           8        0.0477s            0.0477s             0.0477s          namespace
 ```
 
+#### Stubbing methods within factories
+
+You should avoid using `allow(object).to receive(:method)` in factories, as this makes the factory unable to be used with `let_it_be`.
+
+Instead, you can use `stub_method` to stub the method:
+
+```ruby
+  before(:create) do |user, evaluator|
+    # Stub a method.
+    stub_method(user, :some_method) { 'stubbed!' }
+    # Or with arguments, including named ones
+    stub_method(user, :some_method) { |var1| "Returning #{var1}!" }
+    stub_method(user, :some_method) { |var1: 'default'| "Returning #{var1}!" }
+  end
+
+  # Un-stub the method.
+  # This may be useful where the stubbed object is created with `let_it_be`
+  # and you want to reset the method between tests.
+  after(:create) do  |user, evaluator|
+    restore_original_method(user, :some_method)
+    # or
+    restore_original_methods(user)
+  end
+```
+
+NOTE:
+`stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
+
+`stub_method` does not support method existence and method arity checks.
+
+WARNING:
+`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec's mocks](https://relishapp.com/rspec/rspec-mocks/v/3-10/docs/basics) if available.
+
 #### Identify slow tests
 
 Running a spec with profiling is a good way to start optimizing a spec. This can

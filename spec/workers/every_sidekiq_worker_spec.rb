@@ -308,8 +308,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'InvalidGpgSignatureUpdateWorker' => 3,
         'IrkerWorker' => 3,
         'IssuableExportCsvWorker' => 3,
-        'IssuePlacementWorker' => 3,
-        'IssueRebalancingWorker' => 3,
         'Issues::PlacementWorker' => 3,
         'Issues::RebalancingWorker' => 3,
         'IterationsUpdateStatusWorker' => 3,

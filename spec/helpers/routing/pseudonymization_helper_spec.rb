@@ -8,8 +8,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:subproject) { create(:project, group: subgroup) }
   let_it_be(:issue) { create(:issue, project: project) }
-
-  let(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let(:subject) { helper.masked_page_url(group: group, project: project) }
 

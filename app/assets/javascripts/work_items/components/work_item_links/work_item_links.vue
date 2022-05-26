@@ -30,6 +30,11 @@ export default {
     toggleIcon() {
       return this.isOpen ? 'angle-up' : 'angle-down';
     },
+    toggleLabel() {
+      return this.isOpen
+        ? s__('WorkItem|Collapse child items')
+        : s__('WorkItem|Expand child items');
+    },
   },
   methods: {
     toggle() {
@@ -60,6 +65,7 @@ export default {
         <gl-button
           category="tertiary"
           :icon="toggleIcon"
+          :aria-label="toggleLabel"
           data-testid="toggle-links"
           @click="toggle"
         />

@@ -42939,6 +42939,9 @@ msgstr ""
 msgid "WorkItem|Child items"
 msgstr ""
 
+msgid "WorkItem|Collapse child items"
+msgstr ""
+
 msgid "WorkItem|Convert to work item"
 msgstr ""
 
@@ -42946,6 +42949,9 @@ msgid "WorkItem|Create work item"
 msgstr ""
 
 msgid "WorkItem|Delete work item"
+msgstr ""
+
+msgid "WorkItem|Expand child items"
 msgstr ""
 
 msgid "WorkItem|New Task"

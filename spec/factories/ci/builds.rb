@@ -494,13 +494,15 @@ FactoryBot.define do
 
     trait :with_commit do
       after(:build) do |build|
-        allow(build).to receive(:commit).and_return build(:commit, :without_author)
+        commit = build(:commit, :without_author)
+        stub_method(build, :commit) { commit }
       end
     end
 
     trait :with_commit_and_author do
       after(:build) do |build|
-        allow(build).to receive(:commit).and_return build(:commit)
+        commit = build(:commit)
+        stub_method(build, :commit) { commit }
       end
     end
 

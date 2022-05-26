@@ -45,13 +45,11 @@ module QA
     end
 
     before do
-      Runtime::Feature.enable(:ci_trigger_forward_variables)
       Flow::Login.sign_in
     end
 
     after do
       runner.remove_via_api!
-      Runtime::Feature.disable(:ci_trigger_forward_variables)
     end
 
     def start_pipeline_with_variable

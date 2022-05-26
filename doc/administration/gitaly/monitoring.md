@@ -144,6 +144,7 @@ The following metrics are available from the `/metrics` endpoint:
 - `gitaly_praefect_node_latency_bucket`, a histogram measuring the latency in Gitaly returning
   health check information to Praefect. This indicates Praefect connection saturation. Available in
   GitLab 12.10 and later.
+- `gitaly_praefect_connections_total`, the total number of connections to Praefect. [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4220) in GitLab 14.7.
 
 To monitor [strong consistency](index.md#strong-consistency), you can use the following Prometheus metrics:
 

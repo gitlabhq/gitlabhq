@@ -182,10 +182,12 @@ Follow the Google Workspace documentation on
 [setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en)
 with the notes below for consideration.
 
-| GitLab setting                 | Google Workspace field |
-|:-------------------------------|:-----------------------|
-| Identifier                     | Entity ID              |
-| Assertion consumer service URL | ACS URL                |
+| GitLab setting                       | Google Workspace field |
+|:-------------------------------------|:-----------------------|
+| Identifier                           | Entity ID              |
+| Assertion consumer service URL       | ACS URL                |
+| GitLab single sign-on URL            | Start URL              |
+| Identity provider single sign-on URL | SSO URL                |
 
 You must download the certificate to get the SHA1 certificate fingerprint.
 
@@ -200,8 +202,7 @@ For NameID, the following settings are recommended:
 - **Name ID format** is set to `EMAIL`.
 - **NameID** set to `Basic Information > Primary email`.
 
-When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning about the NameID format
-"persistent" being recommended.
+When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning recommending setting the NameID format to "persistent".
 
 See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#google-workspace) for an example configuration.
 

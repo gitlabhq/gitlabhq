@@ -301,8 +301,8 @@ FactoryBot.define do
 
     trait :stubbed_repository do
       after(:build) do |project|
-        allow(project).to receive(:empty_repo?).and_return(false)
-        allow(project.repository).to receive(:empty?).and_return(false)
+        stub_method(project, :empty_repo?) { false }
+        stub_method(project.repository, :empty?) { false }
       end
     end
 
