@@ -561,7 +561,7 @@ For installations from source:
      backup:
        # snip
        upload:
-         # Fog storage connection settings, see http://fog.io/storage/ .
+         # Fog storage connection settings, see https://fog.io/storage/ .
          connection:
            provider: AWS
            region: eu-west-1
@@ -811,7 +811,7 @@ For installations from source:
    ```yaml
    backup:
      upload:
-       # Fog storage connection settings, see http://fog.io/storage/ .
+       # Fog storage connection settings, see https://fog.io/storage/ .
        connection:
          provider: Local
          local_root: '/mnt/backups'

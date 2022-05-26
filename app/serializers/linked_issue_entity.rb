@@ -3,6 +3,10 @@
 class LinkedIssueEntity < Grape::Entity
   include RequestAwareEntity
 
+  format_with(:upcase) do |item|
+    item.try(:upcase)
+  end
+
   expose :id, :confidential, :title
 
   expose :assignees, using: UserEntity
@@ -20,6 +24,11 @@ class LinkedIssueEntity < Grape::Entity
   expose :path do |link|
     Gitlab::UrlBuilder.build(link, only_path: true)
   end
+
+  expose :issue_type,
+         as: :type,
+         format_with: :upcase,
+         documentation: { type: "String", desc: "One of #{::WorkItems::Type.base_types.keys.map(&:upcase)}" }
 
   expose :relation_path
 

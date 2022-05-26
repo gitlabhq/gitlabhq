@@ -255,7 +255,7 @@ run tests:
     - coverage run -m pytest
     - coverage report
     - coverage xml
-  coverage: '/TOTAL.*\s([.\d]+)%/'
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:
       coverage_report:

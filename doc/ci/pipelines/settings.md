@@ -273,7 +273,7 @@ Use this regex for commonly used test tools.
 <!-- vale gitlab.Spelling = NO -->
 
 - Simplecov (Ruby). Example: `\(\d+.\d+\%\) covered`.
-- pytest-cov (Python). Example: `^TOTAL.+?(\d+\%)$`.
+- pytest-cov (Python). Example: `(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$`.
 - Scoverage (Scala). Example: `Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)`.
 - `phpunit --coverage-text --colors=never` (PHP). Example: `^\s*Lines:\s*\d+.\d+\%`.
 - gcovr (C/C++). Example: `^TOTAL.*\s+(\d+\%)$`.

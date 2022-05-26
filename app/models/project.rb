@@ -3104,7 +3104,6 @@ class Project < ApplicationRecord
     # create project_namespace when project is created
     build_project_namespace if project_namespace_creation_enabled?
 
-    # we need to keep project and project namespace in sync if there is one
     sync_attributes(project_namespace) if sync_project_namespace?
   end
 
@@ -3117,11 +3116,24 @@ class Project < ApplicationRecord
   end
 
   def sync_attributes(project_namespace)
-    project_namespace.name = name
-    project_namespace.path = path
-    project_namespace.parent = namespace
-    project_namespace.shared_runners_enabled = shared_runners_enabled
-    project_namespace.visibility_level = visibility_level
+    attributes_to_sync = changes.slice(*%w(name path namespace_id namespace visibility_level shared_runners_enabled))
+                           .transform_values { |val| val[1] }
+
+    # if visibility_level is not set explicitly for project, it defaults to 0,
+    # but for namespace visibility_level defaults to 20,
+    # so it gets out of sync right away if we do not set it explicitly when creating the project namespace
+    attributes_to_sync['visibility_level'] ||= visibility_level if new_record?
+
+    # when a project is associated with a group while the group is created we need to ensure we associate the new
+    # group with the project namespace as well.
+    # E.g.
+    # project = create(:project) <- project is saved
+    # create(:group, projects: [project]) <- associate project with a group that is not yet created.
+    if attributes_to_sync.has_key?('namespace_id') && attributes_to_sync['namespace_id'].blank? && namespace.present?
+      attributes_to_sync['parent'] = namespace
+    end
+
+    project_namespace.assign_attributes(attributes_to_sync)
   end
 
   # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)

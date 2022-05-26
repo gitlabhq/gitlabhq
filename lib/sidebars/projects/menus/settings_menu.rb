@@ -112,7 +112,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Packages & Registries'),
             link: project_settings_packages_and_registries_path(context.project),
-            active_routes: { path: 'packages_and_registries#index' },
+            active_routes: { path: 'packages_and_registries#show' },
             item_id: :packages_and_registries
           )
         end

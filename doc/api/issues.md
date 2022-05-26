@@ -227,7 +227,7 @@ Issues created by users on GitLab Premium or higher include the `iteration` prop
       "updated_at":"2022-03-14T05:21:11.929Z",
       "start_date":"2022-03-08",
       "due_date":"2022-03-14",
-      "web_url":"http://gitlab.com/groups/my-group/-/iterations/90"
+      "web_url":"https://gitlab.com/groups/my-group/-/iterations/90"
    }
    ...
 }

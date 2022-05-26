@@ -8,7 +8,11 @@ class ProtectedTag < ApplicationRecord
   protected_ref_access_levels :create
 
   def self.protected?(project, ref_name)
-    refs = project.protected_tags.select(:name)
+    return false if ref_name.blank?
+
+    refs = Gitlab::SafeRequestStore.fetch("protected-tag:#{project.cache_key}:refs") do
+      project.protected_tags.select(:name)
+    end
 
     self.matching(ref_name, protected_refs: refs).present?
   end

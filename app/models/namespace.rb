@@ -632,7 +632,7 @@ class Namespace < ApplicationRecord
       return
     end
 
-    if parent.project_namespace?
+    if parent&.project_namespace?
       errors.add(:parent_id, _('project namespace cannot be the parent of another namespace'))
     end
 

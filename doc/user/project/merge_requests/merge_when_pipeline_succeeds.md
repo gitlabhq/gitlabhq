@@ -56,10 +56,11 @@ As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci
 does not disable this feature, as it is possible to use pipelines from external
 CI providers with this feature. To enable it, you must:
 
-1. Navigate to your project's **Settings > General** page.
-1. Expand the **Merge requests** section.
-1. In the **Merge checks** subsection, select the **Pipelines must succeed** checkbox.
-1. Press **Save** for the changes to take effect.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. Under **Merge checks**, select the **Pipelines must succeed** checkbox.
+1. Select **Save**.
 
 This setting also prevents merge requests from being merged if there is no pipeline.
 You should be careful to configure CI/CD so that pipelines run for every merge request.
@@ -104,11 +105,13 @@ for details on avoiding two pipelines for a single merge request.
 When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
 merge requests from being merged. To change this behavior:
 
-1. Navigate to your project's **Settings > General** page.
-1. Expand the **Merge requests** section.
-1. In the **Merge checks** subsection, ensure **Pipelines must succeed** is checked.
-1. In the **Merge checks** subsection, select the **Skipped pipelines are considered successful** checkbox.
-1. Press **Save** for the changes to take effect.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Merge requests**.
+1. Under **Merge checks**:
+   - Ensure **Pipelines must succeed** is selected.
+   - Select the **Skipped pipelines are considered successful** checkbox.
+1. Select **Save**.
 
 ## From the command line
 

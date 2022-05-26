@@ -96,6 +96,106 @@ A finding's location fingerprint is a text value that's unique for each location
 surface. Each Secure product defines this according to its type of attack surface. For example, SAST
 incorporates file path and line number.
 
+### Package managers
+
+A Package manager is a system that manages your project dependencies.
+
+The package manager provides a method to install new dependencies (also referred to as "packages"), manage where packages are stored on your file system, and offer capabilities for you to publish your own packages.
+
+### Package types
+
+Each package manager, platform, type, or ecosystem has its own conventions and protocols to identify, locate, and provision software packages.
+
+The following table is a non-exhaustive list of some of the package managers and types referenced in GitLab documentation and software tools.
+
+<style>
+table.package-managers-and-types tr:nth-child(even) {
+    background-color: transparent;
+}
+
+table.package-managers-and-types td {
+    border-left: 1px solid #dbdbdb;
+    border-right: 1px solid #dbdbdb;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+table.package-managers-and-types tr td:first-child {
+    border-left: 0;
+}
+
+table.package-managers-and-types tr td:last-child {
+    border-right: 0;
+}
+
+table.package-managers-and-types ul {
+    font-size: 1em;
+    list-style-type: none;
+    padding-left: 0px;
+    margin-bottom: 0px;
+}
+</style>
+
+<table class="package-managers-and-types">
+  <thead>
+    <tr>
+      <th>Package Type</th>
+      <th>Package Manager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>gem</td>
+      <td><a href="https://bundler.io/">bundler</a></td>
+    </tr>
+    <tr>
+      <td>packagist</td>
+      <td><a href="https://getcomposer.org/">composer</a></td>
+    </tr>
+    <tr>
+      <td>conan</td>
+      <td><a href="https://conan.io/">conan</a></td>
+    </tr>
+    <tr>
+      <td>go</td>
+      <td><a href="https://go.dev/blog/using-go-modules">go</a></td>
+    </tr>
+    <tr>
+      <td rowspan="3">maven</td>
+      <td><a href="https://gradle.org/">gradle</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://maven.apache.org/">maven</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.scala-sbt.org">sbt</a></td>
+    </tr>
+    <tr>
+      <td rowspan="2">npm</td>
+      <td><a href="https://www.npmjs.com">npm</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://classic.yarnpkg.com/en">yarn</a></td>
+    </tr>
+    <tr>
+      <td>nuget</td>
+      <td><a href="https://www.nuget.org/">nuget</a></td>
+    </tr>
+    <tr>
+      <td rowspan="4">pypi</td>
+      <td><a href="https://setuptools.pypa.io/en/latest/">setuptools</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://pip.pypa.io/en/stable">pip</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://pipenv.pypa.io/en/latest">Pipenv</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://python-poetry.org/">Poetry</a></td>
+    </tr>
+  </tbody>
+</table>
+
 ### Pipeline Security tab
 
 A page that displays findings discovered in the associated CI pipeline.

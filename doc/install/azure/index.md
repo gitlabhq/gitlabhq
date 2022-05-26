@@ -155,7 +155,7 @@ to assign a descriptive DNS name to the VM:
 1. Enter a descriptive DNS name for your instance in the **DNS name label** field,
    for example `gitlab-prod`. This makes the VM accessible at
    `gitlab-prod.eastus.cloudapp.azure.com`.
-1. Select **Save** for the changes to take effect.
+1. Select **Save**.
 
 Eventually, most users want to use their own domain name. For you to do this, you need to add a DNS `A` record
 with your domain registrar that points to the public IP address of your Azure VM.

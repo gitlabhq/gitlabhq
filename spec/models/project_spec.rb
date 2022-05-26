@@ -288,41 +288,35 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'updating a project' do
-      shared_examples 'project update' do
-        let_it_be(:project_namespace) { create(:project_namespace) }
-        let_it_be(:project) { project_namespace.project }
+      let_it_be(:project_namespace) { create(:project_namespace) }
+      let_it_be(:project) { project_namespace.project }
 
-        context 'when project namespace is not set' do
-          before do
-            project.update_column(:project_namespace_id, nil)
-            project.reload
-          end
+      context 'when project has an associated project namespace' do
+        # when FF is disabled creating a project does not create a project_namespace, so we create one
+        it 'project is INVALID when trying to remove project namespace' do
+          project.reload
+          # check that project actually has an associated project namespace
+          expect(project.project_namespace_id).to eq(project_namespace.id)
 
-          it 'updates the project successfully' do
-            # pre-check that project does not have a project namespace
-            expect(project.project_namespace).to be_nil
-
-            project.update!(path: 'hopefully-valid-path2')
-
-            expect(project).to be_persisted
-            expect(project).to be_valid
-            expect(project.path).to eq('hopefully-valid-path2')
-            expect(project.project_namespace).to be_nil
-          end
+          expect do
+            project.update!(project_namespace_id: nil, path: 'hopefully-valid-path1')
+          end.to raise_error(ActiveRecord::RecordInvalid)
+          expect(project).to be_invalid
+          expect(project.errors.full_messages).to include("Project namespace can't be blank")
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
 
-        context 'when project has an associated project namespace' do
-          # when FF is disabled creating a project does not create a project_namespace, so we create one
-          it 'project is INVALID when trying to remove project namespace' do
-            project.reload
-            # check that project actually has an associated project namespace
-            expect(project.project_namespace_id).to eq(project_namespace.id)
+        context 'when same project is being updated in 2 instances' do
+          it 'syncs only changed attributes' do
+            project1 = Project.last
+            project2 = Project.last
 
-            expect do
-              project.update!(project_namespace_id: nil, path: 'hopefully-valid-path1')
-            end.to raise_error(ActiveRecord::RecordInvalid)
-            expect(project).to be_invalid
-            expect(project.errors.full_messages).to include("Project namespace can't be blank")
+            project_name = project1.name
+            project_path = project1.path
+
+            project1.update!(name: project_name + "-1")
+            project2.update!(path: project_path + "-1")
+
             expect(project.reload.project_namespace).to be_in_sync_with_project(project)
           end
         end
