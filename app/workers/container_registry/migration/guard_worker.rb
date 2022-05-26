@@ -75,7 +75,17 @@ module ContainerRegistry
                     end
         end
 
+        if repository.migration_state == 'pre_importing' &&
+           Feature.enabled?(:registry_migration_guard_dynamic_pre_import_timeout) &&
+           migration_start_timestamp(repository).before?(timeout.ago)
+          timeout = dynamic_pre_import_timeout_for(repository)
+        end
+
         migration_start_timestamp(repository).before?(timeout.ago)
+      end
+
+      def dynamic_pre_import_timeout_for(repository)
+        (repository.tags_count * migration.pre_import_tags_rate).seconds
       end
 
       def external_state_matches_migration_state?(repository)

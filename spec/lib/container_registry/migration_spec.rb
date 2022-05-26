@@ -186,6 +186,18 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
+  describe '.pre_import_tags_rate' do
+    let(:value) { 2.5 }
+
+    before do
+      stub_application_setting(container_registry_pre_import_tags_rate: value)
+    end
+
+    it 'returns the matching application_setting' do
+      expect(described_class.pre_import_tags_rate).to eq(value)
+    end
+  end
+
   describe '.target_plans' do
     subject { described_class.target_plans }
 

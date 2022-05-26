@@ -22,7 +22,8 @@ flexibility:
 - Specify a list of users who act as [code owners](../../code_owners.md) for specific files,
   and require their approval before work can merge.
 
-You can configure merge request approvals on a per-project basis. Administrators of
+You can configure merge request approvals on a per-project basis, and
+[on the group level](../../../group/index.md#group-merge-request-approval-settings). Administrators of
 [GitLab Premium](https://about.gitlab.com/pricing/) and
 [GitLab Ultimate](https://about.gitlab.com/pricing/) self-managed GitLab instances
 can also configure approvals

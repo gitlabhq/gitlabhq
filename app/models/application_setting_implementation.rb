@@ -224,6 +224,7 @@ module ApplicationSettingImplementation
         container_registry_import_max_retries: 3,
         container_registry_import_start_max_retries: 50,
         container_registry_import_max_step_duration: 5.minutes,
+        container_registry_pre_import_tags_rate: 0.5,
         container_registry_pre_import_timeout: 30.minutes,
         container_registry_import_timeout: 10.minutes,
         container_registry_import_target_plan: 'free',

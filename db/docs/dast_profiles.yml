@@ -4,6 +4,6 @@ classes:
 - Dast::Profile
 feature_categories:
 - dynamic_application_security_testing
-description: TODO
+description: Profile used to run a DAST on-demand scan
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51296
 milestone: '13.9'

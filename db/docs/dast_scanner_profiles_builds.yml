@@ -4,6 +4,6 @@ classes:
 - Dast::ScannerProfilesBuild
 feature_categories:
 - dynamic_application_security_testing
-description: TODO
+description: Join table between DAST Scanner Profiles and CI Builds
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63362
 milestone: '14.1'

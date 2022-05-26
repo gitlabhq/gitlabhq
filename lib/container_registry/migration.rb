@@ -22,6 +22,7 @@ module ContainerRegistry
       delegate :container_registry_import_created_before, to: ::Gitlab::CurrentSettings
       delegate :container_registry_pre_import_timeout, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_timeout, to: ::Gitlab::CurrentSettings
+      delegate :container_registry_pre_import_tags_rate, to: ::Gitlab::CurrentSettings
 
       alias_method :max_tags_count, :container_registry_import_max_tags_count
       alias_method :max_retries, :container_registry_import_max_retries
@@ -31,6 +32,7 @@ module ContainerRegistry
       alias_method :created_before, :container_registry_import_created_before
       alias_method :pre_import_timeout, :container_registry_pre_import_timeout
       alias_method :import_timeout, :container_registry_import_timeout
+      alias_method :pre_import_tags_rate, :container_registry_pre_import_tags_rate
     end
 
     def self.enabled?

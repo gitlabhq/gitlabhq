@@ -382,6 +382,9 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :container_registry_pre_import_tags_rate,
+            allow_nil: false,
+            numericality: { greater_than_or_equal_to: 0 }
   validates :container_registry_import_target_plan, presence: true
   validates :container_registry_import_created_before, presence: true
 
