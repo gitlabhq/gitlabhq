@@ -22160,6 +22160,24 @@ CREATE SEQUENCE vulnerability_scanners_id_seq
 
 ALTER SEQUENCE vulnerability_scanners_id_seq OWNED BY vulnerability_scanners.id;
 
+CREATE TABLE vulnerability_state_transitions (
+    id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    to_state smallint NOT NULL,
+    from_state smallint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_state_transitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_state_transitions_id_seq OWNED BY vulnerability_state_transitions.id;
+
 CREATE TABLE vulnerability_statistics (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23418,6 +23436,8 @@ ALTER TABLE ONLY vulnerability_reads ALTER COLUMN id SET DEFAULT nextval('vulner
 ALTER TABLE ONLY vulnerability_remediations ALTER COLUMN id SET DEFAULT nextval('vulnerability_remediations_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_scanners ALTER COLUMN id SET DEFAULT nextval('vulnerability_scanners_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_state_transitions ALTER COLUMN id SET DEFAULT nextval('vulnerability_state_transitions_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_statistics ALTER COLUMN id SET DEFAULT nextval('vulnerability_statistics_id_seq'::regclass);
 
@@ -25705,6 +25725,9 @@ ALTER TABLE ONLY vulnerability_remediations
 
 ALTER TABLE ONLY vulnerability_scanners
     ADD CONSTRAINT vulnerability_scanners_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_state_transitions
+    ADD CONSTRAINT vulnerability_state_transitions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_statistics
     ADD CONSTRAINT vulnerability_statistics_pkey PRIMARY KEY (id);
@@ -29784,6 +29807,8 @@ CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum 
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON vulnerability_scanners USING btree (project_id, external_id);
 
+CREATE INDEX index_vulnerability_state_transitions_on_vulnerability_id ON vulnerability_state_transitions USING btree (vulnerability_id);
+
 CREATE INDEX index_vulnerability_statistics_on_latest_pipeline_id ON vulnerability_statistics USING btree (latest_pipeline_id);
 
 CREATE INDEX index_vulnerability_statistics_on_letter_grade ON vulnerability_statistics USING btree (letter_grade);
@@ -32763,6 +32788,9 @@ ALTER TABLE ONLY incident_management_oncall_participants
 
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_state_transitions
+    ADD CONSTRAINT fk_rails_60e4899648 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT fk_rails_60f6c325a6 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

@@ -58,7 +58,7 @@ GitLab to create incident automatically whenever an alert is triggered:
    with the Developer role, select
    **Send a separate email notification to Developers**. Email notifications are
    also sent to users with the **Maintainer** and **Owner** roles.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Create incidents via the PagerDuty webhook
 
@@ -149,7 +149,7 @@ displays it in the Incident Details view:
 
 For live examples of GitLab incidents, visit the `tanuki-inc` project's
 [incident list page](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc/-/incidents).
-Click any incident in the list to display its incident details page.
+Select any incident in the list to display its incident details page.
 
 ### Summary
 
@@ -199,7 +199,7 @@ field populated.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in GitLab 13.5.
 
-To quickly see the latest updates on an incident, click
+To quickly see the latest updates on an incident, select
 **{history}** **Turn recent updates view on** in the comment bar to display comments
 un-threaded and ordered chronologically, newest to oldest:
 
@@ -217,11 +217,11 @@ every 15 minutes so you do not have to refresh the page to see the time remainin
 To configure the timer:
 
 1. Navigate to **Settings > Monitor**.
-1. Scroll to **Incidents** and click **Expand**, then select the
+1. Scroll to **Incidents** and select **Expand**, then select the
    **Incident settings** tab.
 1. Select **Activate "time to SLA" countdown timer**.
 1. Set a time limit in increments of 15 minutes.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 After you enable the SLA countdown timer, the **Time to SLA** attribute is displayed
 as a column in the Incidents List, and as a field on newly created Incidents. If
@@ -250,8 +250,8 @@ You can also change the severity using the [`/severity` quick action](../../user
 
 ### Add a to-do item
 
-Add a to-do for incidents that you want to track in your to-do list. Click the
-**Add a to do** button at the top of the right-hand side bar to add a to-do item.
+Add a to-do for incidents that you want to track in your to-do list. Select
+**Add a to do** at the top of the right-hand side bar to add a to-do item.
 
 ### Change incident status
 
@@ -336,7 +336,7 @@ With at least the Maintainer role, you can enable
 
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Check the **Automatically close associated Incident** checkbox.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 When GitLab receives a **Recovery Alert**, it closes the associated incident.
 This action is recorded as a system message on the incident indicating that it

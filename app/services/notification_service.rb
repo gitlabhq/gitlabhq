@@ -447,7 +447,9 @@ class NotificationService
       return false
     end
 
-    recipients = NotificationRecipients::BuildService.build_new_release_recipients(release)
+    recipients = NotificationRecipients::BuildService.build_recipients(release,
+      release.author,
+      action: "new")
 
     recipients.each do |recipient|
       mailer.new_release_email(recipient.user.id, release, recipient.reason).deliver_later

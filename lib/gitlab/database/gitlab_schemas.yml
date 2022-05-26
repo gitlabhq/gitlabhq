@@ -552,6 +552,7 @@ vulnerability_occurrences: :gitlab_main
 vulnerability_reads: :gitlab_main
 vulnerability_remediations: :gitlab_main
 vulnerability_scanners: :gitlab_main
+vulnerability_state_transitions: :gitlab_main
 vulnerability_statistics: :gitlab_main
 vulnerability_user_mentions: :gitlab_main
 webauthn_registrations: :gitlab_main

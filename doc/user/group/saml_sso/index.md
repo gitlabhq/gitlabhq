@@ -578,7 +578,7 @@ To generate a SAML Response:
    - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
 1. Open a new browser tab.
 1. Open the SAML tracer console:
-   - Chrome: Right click on the page, select **Inspect**, then select the SAML tab in the opened developer console.
+   - Chrome: Right-click on the page, select **Inspect**, then select the **SAML** tab in the opened developer console.
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
 1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
 1. Select **Authorize** or attempt to log in. A SAML response is displayed in the tracer console that resembles this

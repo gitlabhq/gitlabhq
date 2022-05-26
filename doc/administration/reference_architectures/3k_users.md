@@ -28,21 +28,21 @@ For a full list of reference architectures, see
 >   - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
 
-| Service                                    | Nodes       | Configuration         | GCP             | AWS          | Azure    |
-|--------------------------------------------|-------------|-----------------------|-----------------|--------------|----------|
-| External load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Redis<sup>2</sup>                          | 3           | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Consul<sup>1</sup> + Sentinel<sup>2</sup>  | 3           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL<sup>1</sup>                     | 3           | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| PgBouncer<sup>1</sup>                      | 3           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Gitaly<sup>5</sup>                         | 3           | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| Praefect<sup>5</sup>                       | 3           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Praefect PostgreSQL<sup>1</sup>            | 1+          | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| GitLab Rails                               | 3           | 8 vCPU, 7.2 GB memory | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
-| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>4</sup>                 | n/a         | n/a                   | n/a             | n/a          | n/a      |
+| Service                                    | Nodes          | Configuration         | GCP             | AWS            | Azure          |
+|--------------------------------------------|----------------|-----------------------|-----------------|----------------|----------------|
+| External load balancing node<sup>3</sup>   | 1              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Redis<sup>2</sup>                          | 3              | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`     | `D2s v3`       |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup>  | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| PostgreSQL<sup>1</sup>                     | 3              | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`     | `D2s v3`       |
+| PgBouncer<sup>1</sup>                      | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Internal load balancing node<sup>3</sup>   | 1              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Gitaly<sup>5</sup>                         | 3              | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`    | `D4s v3`       |
+| Praefect<sup>5</sup>                       | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Praefect PostgreSQL<sup>1</sup>            | 1+             | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Sidekiq                                    | 4              | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`     | `D2s v3`       |
+| GitLab Rails                               | 3              | 8 vCPU, 7.2 GB memory | `n1-highcpu-8`  | `c5.2xlarge`   | `F8s v2`       |
+| Monitoring node                            | 1              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Object storage<sup>4</sup>                 | Not applicable | Not applicable        | Not applicable  | Not applicable | Not applicable |
 | NFS server (non-Gitaly)     | 1           | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
@@ -2269,17 +2269,17 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                   | Nodes | Configuration         | GCP             | AWS         |
-|-------------------------------------------|-------|-----------------------|-----------------|-------------|
-| Redis<sup>2</sup>                         | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`  |
-| Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`  |
-| PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge` |
-| Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Object storage<sup>4</sup>                | n/a   | n/a                   | n/a             | n/a         |
+| Service                                   | Nodes          | Configuration         | GCP             | AWS            |
+|-------------------------------------------|----------------|-----------------------|-----------------|----------------|
+| Redis<sup>2</sup>                         | 3              | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`     |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| PostgreSQL<sup>1</sup>                    | 3              | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`     |
+| PgBouncer<sup>1</sup>                     | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Internal load balancing node<sup>3</sup>  | 1              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Gitaly<sup>5</sup>                        | 3              | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`    |
+| Praefect<sup>5</sup>                      | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Praefect PostgreSQL<sup>1</sup>           | 1+             | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Object storage<sup>4</sup>                | Not applicable | Not applicable        | Not applicable  | Not applicable |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

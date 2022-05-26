@@ -12,8 +12,8 @@ This is the documentation for the Omnibus GitLab packages. For using your own
 non-bundled Redis, follow the [relevant documentation](replication_and_failover_external.md).
 
 NOTE:
-In Redis lingo, primary is called master. In this document, primary is used
-instead of master, except the settings where `master` is required.
+In Redis lingo, `primary` is called `master`. In this document, `primary` is used
+instead of `master`, except the settings where `master` is required.
 
 Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
 topology with a [Redis Sentinel](https://redis.io/topics/sentinel) service to watch and automatically

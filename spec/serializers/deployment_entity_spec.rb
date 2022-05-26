@@ -69,7 +69,7 @@ RSpec.describe DeploymentEntity do
 
     it 'returns another manual action' do
       expect(subject[:manual_actions].count).to eq(2)
-      expect(subject[:manual_actions].second[:name]).to eq('another deploy')
+      expect(subject[:manual_actions].pluck(:name)).to match_array(['test', 'another deploy'])
     end
 
     context 'when user is a reporter' do

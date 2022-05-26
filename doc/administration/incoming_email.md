@@ -132,7 +132,7 @@ issue by email" or
 "[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email)"
 features by using a project's unique address as the email when signing up for
 Slack. This would send a confirmation email, which would create a new issue or
-merge request on the project owned by the attacker, allowing them to click the
+merge request on the project owned by the attacker, allowing them to select the
 confirmation link and validate their account on your company's private Slack
 instance.
 

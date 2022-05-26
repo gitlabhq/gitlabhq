@@ -154,7 +154,7 @@ table.supported-languages ul {
   <tbody>
     <tr>
       <td>Ruby</td>
-      <td>N/A</td>
+      <td>Not applicable</td>
       <td><a href="https://bundler.io/">Bundler</a></td>
       <td>
         <ul>
@@ -167,7 +167,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>PHP</td>
-      <td>N/A</td>
+      <td>Not applicable</td>
       <td><a href="https://getcomposer.org/">Composer</a></td>
       <td><code>composer.lock</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -175,7 +175,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>C</td>
-      <td rowspan="2">N/A</td>
+      <td rowspan="2">Not applicable</td>
       <td rowspan="2"><a href="https://conan.io/">Conan</a></td>
       <td rowspan="2"><a href="https://docs.conan.io/en/latest/versioning/lockfiles.html"><code>conan.lock</code></a></td>
       <td rowspan="2"><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -186,7 +186,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>Go</td>
-      <td>N/A</td>
+      <td>Not applicable</td>
       <td><a href="https://go.dev/">Go</a></td>
       <td><code>go.sum</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -213,7 +213,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td rowspan="2">JavaScript</td>
-      <td>N/A</td>
+      <td>Not applicable</td>
       <td><a href="https://www.npmjs.com/">npm</a></td>
       <td>
         <ul>
@@ -225,7 +225,7 @@ table.supported-languages ul {
       <td>Y</td>
     </tr>
     <tr>
-      <td>N/A</td>
+      <td>Not applicable</td>
       <td><a href="https://classic.yarnpkg.com/en/">yarn</a></td>
       <td><code>yarn.lock</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -233,7 +233,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>.NET</td>
-      <td rowspan="2">N/A</td>
+      <td rowspan="2">Not applicable</td>
       <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
       <td rowspan="2"><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
       <td rowspan="2"><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -281,7 +281,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td>Scala</td>
-      <td>N/A</td>
+      <td>Not applicable</td>
       <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td><code>build.sbt</code></td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a></td>
@@ -342,10 +342,10 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 
 | Package Manager | Supported File Format Versions | Tested Versions                                                                                                                                                                                                                    |
 | ------          | ------                         | ------                                                                                                                                                                                                                             |
-| Bundler         | N/A                            | [1.17.3](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/ruby-bundler/default/Gemfile.lock#L118), [2.1.4](https://gitlab.com/gitlab-org/security-products/tests/ruby-bundler/-/blob/bundler2-FREEZE/Gemfile.lock#L118) |
-| Composer        | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/php-composer/default/composer.lock)                                                                                                                              |
+| Bundler         | Not applicable                 | [1.17.3](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/ruby-bundler/default/Gemfile.lock#L118), [2.1.4](https://gitlab.com/gitlab-org/security-products/tests/ruby-bundler/-/blob/bundler2-FREEZE/Gemfile.lock#L118) |
+| Composer        | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/php-composer/default/composer.lock)                                                                                                                              |
 | Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/default/conan.lock)                                                                                                                                      |
-| Go              | N/A                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/default/go.sum)                                                                                                                                       |
+| Go              | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/default/go.sum)                                                                                                                                       |
 | NuGet           | v1                             | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                               |
 | npm             | v1, v2                         | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4)         |
 | yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/default/yarn.lock#L2)                                                                                                                                       |

@@ -56,19 +56,19 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. Expand the **Alerts** section.
 1. For each endpoint you want to create:
 
-   1. Click the **Add new integration** button.
+   1. Select **Add new integration**.
    1. In the **Select integration type** dropdown menu, select **HTTP Endpoint**.
    1. Name the integration.
    1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
       configuration are available in the **View credentials** tab after you save the integration.
       You must also input the URL and Authorization Key in your external service.
    1. Optional. To map fields from your monitoring tool's alert to GitLab fields, enter a sample
-      payload and click **Parse payload for custom mapping**. Valid JSON is required. If you update
+      payload and select **Parse payload for custom mapping**. Valid JSON is required. If you update
       a sample payload, you must also remap the fields.
 
    1. Optional. If you provided a valid sample payload, select each value in
       **Payload alert key** to [map to a **GitLab alert key**](#map-fields-in-custom-alerts).
-   1. To save your integration, click **Save Integration**. If desired, you can send a test alert
+   1. To save your integration, select **Save Integration**. If desired, you can send a test alert
       from your integration's **Send test alert** tab after the integration is created.
 
 The new HTTP Endpoint displays in the [integrations list](#integrations-list).
@@ -218,11 +218,11 @@ alert to confirm your integration works properly.
 
 1. Sign in as a user with at least the Developer role.
 1. Navigate to **Settings > Monitor** in your project.
-1. Click **Alerts** to expand the section.
-1. Click the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
+1. Select **Alerts** to expand the section.
+1. Select the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.
 1. Enter a test payload in the payload field (valid JSON is required).
-1. Click **Send**.
+1. Select **Send**.
 
 GitLab displays an error or success message, depending on the outcome of your test.
 

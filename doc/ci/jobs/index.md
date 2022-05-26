@@ -129,7 +129,7 @@ they are collapsed into a single group in regular pipeline graphs (not the mini 
 
 You can recognize when a pipeline has grouped jobs if you don't see the retry or
 cancel button inside them. Hovering over them shows the number of grouped
-jobs. Click to expand them.
+jobs. Select to expand them.
 
 ![Grouped pipelines](img/pipeline_grouped_jobs_v14_2.png)
 

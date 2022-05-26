@@ -210,7 +210,7 @@ the components outlined above and the pre-loaded demo runbook.
 
    1. Select **Save variables**.
 
-   1. In Jupyter, select the **Run SQL queries in Notebook** heading, and then click
+   1. In Jupyter, select the **Run SQL queries in Notebook** heading, and then select
       **Run**. The results are displayed inline as follows:
 
       ![PostgreSQL query](img/postgres-query.png)

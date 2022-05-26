@@ -266,7 +266,7 @@ export default {
                 }}
               </p>
               <gl-button
-                variant="info"
+                variant="confirm"
                 category="primary"
                 size="small"
                 @click="handleSuggestDismissed"

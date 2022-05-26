@@ -380,8 +380,8 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 You can add task lists anywhere Markdown is supported.
 
-- In issues, merge requests, and comments, you can click to select the boxes.
-- In all other places, you cannot click to select the boxes. You must edit the Markdown manually
+- In issues, merge requests, and comments, you can select the boxes.
+- In all other places, you cannot select the boxes. You must edit the Markdown manually
   by adding or removing an `x` in the brackets.
 
 To create a task list, follow the format of an ordered or unordered list:

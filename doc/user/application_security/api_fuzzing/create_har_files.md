@@ -151,7 +151,7 @@ export it as a HAR file.
 1. Select **Preserve log**.
 1. Browse pages that call the API.
 1. Select one or more requests.
-1. Right click and select **Save all as HAR with content**.
+1. Right-click and select **Save all as HAR with content**.
 1. Enter a filename and select **Save**.
 1. To append additional requests, select and save them to the same file.
 
@@ -170,7 +170,7 @@ and export it as a HAR file.
    `Perform a request or Reload the page to see detailed information about network activity`,
    select **Reload** to start recording requests.
 1. Select one or more requests.
-1. Right click and select **Save All As HAR**.
+1. Right-click and select **Save All As HAR**.
 1. Enter a filename and select **Save**.
 1. To append additional requests, select and save them to the same file.
 
