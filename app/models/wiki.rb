@@ -227,32 +227,22 @@ class Wiki
   end
 
   def create_page(title, content, format = :markdown, message = nil)
-    if Feature.enabled?(:gitaly_replace_wiki_create_page, container, type: :undefined)
-      with_valid_format(format) do |default_extension|
-        if file_exists_by_regex?(title)
-          raise_duplicate_page_error!
-        end
-
-        capture_git_error(:created) do
-          create_wiki_repository unless repository_exists?
-          sanitized_path = sluggified_full_path(title, default_extension)
-          repository.create_file(user, sanitized_path, content, **multi_commit_options(:created, message, title))
-          repository.expire_status_cache if repository.empty?
-          after_wiki_activity
-
-          true
-        rescue Gitlab::Git::Index::IndexError
-          raise_duplicate_page_error!
-        end
+    with_valid_format(format) do |default_extension|
+      if file_exists_by_regex?(title)
+        raise_duplicate_page_error!
       end
-    else
-      commit = commit_details(:created, message, title)
 
-      wiki.write_page(title, format.to_sym, content, commit)
-      repository.expire_status_cache if repository.empty?
-      after_wiki_activity
+      capture_git_error(:created) do
+        create_wiki_repository unless repository_exists?
+        sanitized_path = sluggified_full_path(title, default_extension)
+        repository.create_file(user, sanitized_path, content, **multi_commit_options(:created, message, title))
+        repository.expire_status_cache if repository.empty?
+        after_wiki_activity
 
-      true
+        true
+      rescue Gitlab::Git::Index::IndexError
+        raise_duplicate_page_error!
+      end
     end
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = _("Duplicate page: %{error_message}" % { error_message: e.message })
@@ -393,17 +383,6 @@ class Wiki
       author_email: git_user.email,
       author_name: git_user.name
     }
-  end
-
-  def commit_details(action, message = nil, title = nil)
-    commit_message = build_commit_message(action, message, title)
-    git_user = Gitlab::Git::User.from_gitlab(user)
-
-    Gitlab::Git::Wiki::CommitDetails.new(user.id,
-                                         git_user.username,
-                                         git_user.name,
-                                         git_user.email,
-                                         commit_message)
   end
 
   def build_commit_message(action, message, title)
