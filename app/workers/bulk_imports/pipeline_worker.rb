@@ -52,7 +52,7 @@ module BulkImports
         raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?(pipeline_tracker)
         raise(Pipeline::FailedError, export_status.error) if export_status.failed?
 
-        return reenqueue(pipeline_tracker) if export_status.started?
+        return reenqueue(pipeline_tracker) if export_status.empty? || export_status.started?
       end
 
       pipeline_tracker.update!(status_event: 'start', jid: jid)

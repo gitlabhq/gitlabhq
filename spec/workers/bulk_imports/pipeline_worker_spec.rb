@@ -178,7 +178,7 @@ RSpec.describe BulkImports::PipelineWorker do
         )
 
         exception = BulkImports::NetworkError.new(
-          response: double(code: 429, headers: {})
+          response: instance_double(HTTParty::Response, code: 429, headers: {})
         )
 
         expect_next_instance_of(pipeline_class) do |pipeline|
@@ -260,6 +260,7 @@ RSpec.describe BulkImports::PipelineWorker do
     it 'runs the pipeline successfully' do
       allow_next_instance_of(BulkImports::ExportStatus) do |status|
         allow(status).to receive(:started?).and_return(false)
+        allow(status).to receive(:empty?).and_return(false)
         allow(status).to receive(:failed?).and_return(false)
       end
 
@@ -272,6 +273,28 @@ RSpec.describe BulkImports::PipelineWorker do
       it 'reenqueues pipeline worker' do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
           allow(status).to receive(:started?).and_return(true)
+          allow(status).to receive(:empty?).and_return(false)
+          allow(status).to receive(:failed?).and_return(false)
+        end
+
+        expect(described_class)
+          .to receive(:perform_in)
+          .with(
+            described_class::FILE_EXTRACTION_PIPELINE_PERFORM_DELAY,
+            pipeline_tracker.id,
+            pipeline_tracker.stage,
+            entity.id
+          )
+
+        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+      end
+    end
+
+    context 'when export status is empty' do
+      it 'reenqueues pipeline worker' do
+        allow_next_instance_of(BulkImports::ExportStatus) do |status|
+          allow(status).to receive(:started?).and_return(false)
+          allow(status).to receive(:empty?).and_return(true)
           allow(status).to receive(:failed?).and_return(false)
         end
 

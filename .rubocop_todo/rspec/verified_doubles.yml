@@ -831,7 +831,6 @@ RSpec/VerifiedDoubles:
     - spec/models/application_record_spec.rb
     - spec/models/badge_spec.rb
     - spec/models/badges/project_badge_spec.rb
-    - spec/models/bulk_imports/export_status_spec.rb
     - spec/models/ci/build_spec.rb
     - spec/models/ci/build_trace_chunk_spec.rb
     - spec/models/ci/commit_with_pipeline_spec.rb
@@ -1128,7 +1127,6 @@ RSpec/VerifiedDoubles:
     - spec/views/shared/milestones/_issuables.html.haml_spec.rb
     - spec/views/shared/wikis/_sidebar.html.haml_spec.rb
     - spec/workers/bulk_imports/export_request_worker_spec.rb
-    - spec/workers/bulk_imports/pipeline_worker_spec.rb
     - spec/workers/chat_notification_worker_spec.rb
     - spec/workers/ci/build_prepare_worker_spec.rb
     - spec/workers/ci/create_cross_project_pipeline_worker_spec.rb
