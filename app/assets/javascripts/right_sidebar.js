@@ -8,7 +8,7 @@ import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
 
 const updateSidebarClasses = (layoutPage, rightSidebar) => {
-  if (window.innerWidth >= 768) {
+  if (window.innerWidth >= 992) {
     layoutPage.classList.remove('right-sidebar-expanded', 'right-sidebar-collapsed');
     rightSidebar.classList.remove('right-sidebar-collapsed');
     rightSidebar.classList.add('right-sidebar-expanded');

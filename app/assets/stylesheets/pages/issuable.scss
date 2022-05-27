@@ -145,8 +145,9 @@
   }
 
   &.right-sidebar-merge-requests {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(md) {
       @include right-sidebar;
+      z-index: 251;
     }
   }
 
@@ -197,7 +198,7 @@
     }
 
     .block {
-      @include media-breakpoint-up(md) {
+      @include media-breakpoint-up(lg) {
         padding: $gl-spacing-scale-5 0;
       }
     }
@@ -287,7 +288,7 @@
       padding: 0 20px;
 
       &.is-merge-request {
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-up(lg) {
           padding: 0;
         }
       }
@@ -341,7 +342,7 @@
     }
 
     &.right-sidebar-merge-requests {
-      @include media-breakpoint-up(md) {
+      @include media-breakpoint-up(lg) {
         display: block;
       }
     }

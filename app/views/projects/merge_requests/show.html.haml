@@ -22,7 +22,7 @@
     = render "projects/merge_requests/mr_box"
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
       .merge-request-tabs-container{ class: "#{'is-merge-request' if !fluid_layout}" }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links
+        %ul.merge-request-tabs.nav-tabs.nav.nav-links{ class: "#{'gl-w-full gl-lg-w-auto!' if Feature.enabled?(:moved_mr_sidebar, @project)}" }
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
@@ -41,6 +41,11 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }
+          - if Feature.enabled?(:moved_mr_sidebar, @project)
+            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex{ class: "gl-lg-display-none!" }
+              %button.btn.btn-default.gl-button.btn-sm.js-sidebar-toggle{ type: 'button' }
+                = sprite_icon('angle-double-left', size: 12, css_class: 'gl-mr-2')
+                = _('Expand')
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
 

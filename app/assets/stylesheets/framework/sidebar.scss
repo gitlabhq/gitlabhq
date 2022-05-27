@@ -28,7 +28,7 @@
   }
 
   &.is-merge-request {
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       .content-wrapper {
         padding-right: $gutter-collapsed-width;
       }
@@ -73,9 +73,11 @@
     }
   }
 
-  @include media-breakpoint-up(md) {
-    .content-wrapper {
-      padding-right: $gutter-width;
+  &:not(.is-merge-request) {
+    @include media-breakpoint-up(md) {
+      .content-wrapper {
+        padding-right: $gutter-width;
+      }
     }
   }
 }
@@ -84,7 +86,7 @@
   border-left: 1px solid $gray-100;
 
   &.right-sidebar-merge-requests {
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       border-left: 0;
     }
   }
