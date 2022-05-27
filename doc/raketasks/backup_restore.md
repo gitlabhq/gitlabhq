@@ -426,6 +426,25 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=storage1,storage2
 ```
 
+#### Back up specific project repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+
+You can back up a specific project or list of projects using the `REPOSITORIES_PATHS` option. The option accepts a comma-separated list of
+project paths. For example:
+
+- Omnibus GitLab installations:
+
+  ```shell
+  sudo gitlab-backup create REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  ```
+
+- Installations from source:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  ```
+
 #### Uploading backups to a remote (cloud) storage
 
 You can let the backup script upload (using the [Fog library](https://fog.io/))
@@ -1258,6 +1277,25 @@ For example, for installations from source:
 ```shell
 sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
 ```
+
+#### Restore specific project repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+
+You can restore a specific project or list of projects using the `REPOSITORIES_PATHS` option. These projects must exist within the
+specified backup. The option accepts a comma-separated list of project paths. For example:
+
+- Omnibus GitLab installations:
+
+  ```shell
+  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  ```
+
+- Installations from source:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  ```
 
 ## Alternative backup strategies
 

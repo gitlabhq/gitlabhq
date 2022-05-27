@@ -104,12 +104,31 @@ The following example demonstrates how to change the state name. The same workfl
 You can use a GitLab-managed Terraform state backend as a
 [Terraform data source](https://www.terraform.io/language/state/remote-state-data).
 
-1. Create a file named `example.auto.tfvars` with the following contents:
+1. In your `main.tf` or other relevant file, declare these variables. Leave the values empty.
+
+   ```hcl
+   variable "example_remote_state_address" {
+     type = string
+     description = "Gitlab remote state file address"
+   }
+
+   variable "example_username" {
+     type = string
+     description = "Gitlab username to query remote state"
+   }
+
+   variable "example_access_token" {
+     type = string
+     description = "Gitlab acess token to query remote state"
+   }
+   ```
+
+1. To override the values from the previous step, create a file named `example.auto.tfvars`. This file should **not** be versioned in your project repository.
 
    ```plaintext
-   example_remote_state_address=https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>
-   example_username=<GitLab username>
-   example_access_token=<GitLab Personal Access Token>
+   example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"
+   example_username = "<GitLab username>"
+   example_access_token = "<GitLab Personal Access Token>"
    ```
 
 1. In a `.tf` file, define the data source by using [Terraform input variables](https://www.terraform.io/language/values/variables):

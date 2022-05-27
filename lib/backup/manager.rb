@@ -11,7 +11,8 @@ module Backup
 
     LIST_ENVS = {
       skipped: 'SKIP',
-      repositories_storages: 'REPOSITORIES_STORAGES'
+      repositories_storages: 'REPOSITORIES_STORAGES',
+      repositories_paths: 'REPOSITORIES_PATHS'
     }.freeze
 
     TaskDefinition = Struct.new(
@@ -190,7 +191,11 @@ module Backup
       max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
       strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
 
-      Repositories.new(progress, strategy: strategy, storages: repositories_storages)
+      Repositories.new(progress,
+                       strategy: strategy,
+                       storages: list_env(:repositories_storages),
+                       paths: list_env(:repositories_paths)
+                      )
     end
 
     def build_files_task(app_files_dir, excludes: [])
@@ -266,7 +271,8 @@ module Backup
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
         skipped: ENV['SKIP'],
-        repositories_storages: ENV['REPOSITORIES_STORAGES']
+        repositories_storages: ENV['REPOSITORIES_STORAGES'],
+        repositories_paths: ENV['REPOSITORIES_PATHS']
       }
     end
 
@@ -279,7 +285,8 @@ module Backup
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
         skipped: list_env(:skipped).join(','),
-        repositories_storages: list_env(:repositories_storages).join(',')
+        repositories_storages: list_env(:repositories_storages).join(','),
+        repositories_paths: list_env(:repositories_paths).join(',')
       )
     end
 
@@ -470,10 +477,6 @@ module Backup
 
     def skipped
       @skipped ||= list_env(:skipped)
-    end
-
-    def repositories_storages
-      @repositories_storages ||= list_env(:repositories_storages)
     end
 
     def list_env(name)

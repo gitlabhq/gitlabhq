@@ -3,19 +3,25 @@
 require 'yaml'
 
 module Backup
+  # Backup and restores repositories by querying the database
   class Repositories < Task
     extend ::Gitlab::Utils::Override
 
-    def initialize(progress, strategy:, storages: [])
+    # @param [IO] progress IO interface to output progress
+    # @param [Object] :strategy Fetches backups from gitaly
+    # @param [Array<String>] :storages Filter by specified storage names. Empty means all storages.
+    # @param [Array<String>] :paths Filter by specified project paths. Empty means all projects, groups and snippets.
+    def initialize(progress, strategy:, storages: [], paths: [])
       super(progress)
 
       @strategy = strategy
       @storages = storages
+      @paths = paths
     end
 
     override :dump
-    def dump(path, backup_id)
-      strategy.start(:create, path, backup_id: backup_id)
+    def dump(destination_path, backup_id)
+      strategy.start(:create, destination_path, backup_id: backup_id)
       enqueue_consecutive
 
     ensure
@@ -23,8 +29,8 @@ module Backup
     end
 
     override :restore
-    def restore(path)
-      strategy.start(:restore, path)
+    def restore(destination_path)
+      strategy.start(:restore, destination_path)
       enqueue_consecutive
 
     ensure
@@ -36,7 +42,7 @@ module Backup
 
     private
 
-    attr_reader :strategy, :storages
+    attr_reader :strategy, :storages, :paths
 
     def enqueue_consecutive
       enqueue_consecutive_projects
@@ -66,12 +72,14 @@ module Backup
     def project_relation
       scope = Project.includes(:route, :group, namespace: :owner)
       scope = scope.id_in(ProjectRepository.for_repository_storage(storages).select(:project_id)) if storages.any?
+      scope = scope.where_full_path_in(paths) if paths.any?
       scope
     end
 
     def snippet_relation
       scope = Snippet.all
       scope = scope.id_in(SnippetRepository.for_repository_storage(storages).select(:snippet_id)) if storages.any?
+      scope = scope.joins(:project).merge(Project.where_full_path_in(paths)) if paths.any?
       scope
     end
 
