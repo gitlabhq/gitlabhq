@@ -4785,7 +4785,6 @@ Layout/LineLength:
     - 'spec/lib/bulk_imports/groups/loaders/group_loader_spec.rb'
     - 'spec/lib/bulk_imports/groups/pipelines/group_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/groups/pipelines/subgroup_entities_pipeline_spec.rb'
-    - 'spec/lib/bulk_imports/groups/stage_spec.rb'
     - 'spec/lib/bulk_imports/ndjson_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/pipeline_spec.rb'
     - 'spec/lib/bulk_imports/projects/pipelines/external_pull_requests_pipeline_spec.rb'

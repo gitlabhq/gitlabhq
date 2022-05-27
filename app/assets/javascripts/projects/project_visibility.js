@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import eventHub from '~/projects/new/event_hub';
@@ -63,9 +62,8 @@ export default function initProjectVisibilitySelector() {
 
   const namespaceSelector = document.querySelector('select.js-select-namespace');
   if (namespaceSelector) {
-    $('.select2.js-select-namespace').on('change', () =>
-      handleSelect2DropdownChange(namespaceSelector),
-    );
+    const el = document.querySelector('.select2.js-select-namespace');
+    el.addEventListener('change', () => handleSelect2DropdownChange(namespaceSelector));
     handleSelect2DropdownChange(namespaceSelector);
   }
 }

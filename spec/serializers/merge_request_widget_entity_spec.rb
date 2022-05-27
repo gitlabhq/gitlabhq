@@ -77,46 +77,6 @@ RSpec.describe MergeRequestWidgetEntity do
       .to eq("/#{resource.project.full_path}/-/merge_requests/#{resource.iid}.diff")
   end
 
-  describe 'codequality report artifacts', :request_store do
-    let(:merge_base_pipeline) { create(:ci_pipeline, :with_codequality_reports, project: project) }
-
-    before do
-      project.add_developer(user)
-
-      allow(resource).to receive_messages(
-        merge_base_pipeline: merge_base_pipeline,
-        base_pipeline: pipeline,
-        head_pipeline: pipeline
-      )
-    end
-
-    context 'with report artifacts' do
-      let(:pipeline) { create(:ci_pipeline, :with_codequality_reports, project: project) }
-      let(:generic_job_id) { pipeline.builds.first.id }
-      let(:merge_base_job_id) { merge_base_pipeline.builds.first.id }
-
-      it 'has head_path and base_path entries' do
-        expect(subject[:codeclimate][:head_path]).to include("/jobs/#{generic_job_id}/artifacts/download?file_type=codequality")
-        expect(subject[:codeclimate][:base_path]).to include("/jobs/#{generic_job_id}/artifacts/download?file_type=codequality")
-      end
-
-      context 'on pipelines for merged results' do
-        let(:pipeline) { create(:ci_pipeline, :merged_result_pipeline, :with_codequality_reports, project: project) }
-
-        it 'returns URLs from the head_pipeline and merge_base_pipeline' do
-          expect(subject[:codeclimate][:head_path]).to include("/jobs/#{generic_job_id}/artifacts/download?file_type=codequality")
-          expect(subject[:codeclimate][:base_path]).to include("/jobs/#{merge_base_job_id}/artifacts/download?file_type=codequality")
-        end
-      end
-    end
-
-    context 'without artifacts' do
-      it 'does not have data entry' do
-        expect(subject).not_to include(:codeclimate)
-      end
-    end
-  end
-
   describe 'merge_request_add_ci_config_path' do
     let!(:project_auto_devops) { create(:project_auto_devops, :disabled, project: project) }
 

@@ -128,20 +128,6 @@ class MergeRequestWidgetEntity < Grape::Entity
     end
   end
 
-  expose :codeclimate, if: -> (mr, _) { head_pipeline_downloadable_path_for_report_type(:codequality) } do
-    expose :head_path do |merge_request|
-      head_pipeline_downloadable_path_for_report_type(:codequality)
-    end
-
-    expose :base_path do |merge_request|
-      if use_merge_base_with_merged_results?
-        merge_base_pipeline_downloadable_path_for_report_type(:codequality)
-      else
-        base_pipeline_downloadable_path_for_report_type(:codequality)
-      end
-    end
-  end
-
   expose :security_reports_docs_path do |merge_request|
     help_page_path('user/application_security/index.md', anchor: 'view-security-scan-information-in-merge-requests')
   end

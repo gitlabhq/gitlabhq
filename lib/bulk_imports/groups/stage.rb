@@ -5,6 +5,21 @@ module BulkImports
     class Stage < ::BulkImports::Stage
       private
 
+      # To skip the execution of a pipeline in a specific source instance version, define the attributes
+      # `minimum_source_version` and `maximum_source_version`.
+      #
+      # Use the `minimum_source_version` to inform that the pipeline needs to run when importing from source instances
+      # version greater than or equal to the specified minimum source version. For example, if the
+      # `minimum_source_version` is equal to 15.1.0, the pipeline will be executed when importing from source instances
+      # running versions 15.1.0, 15.1.1, 15.2.0, 16.0.0, etc. And it won't be executed when the source instance version
+      # is 15.0.1, 15.0.0, 14.10.0, etc.
+      #
+      # Use the `maximum_source_version` to inform that the pipeline needs to run when importing from source instance
+      # versions less than or equal to the specified maximum source version. For example, if the
+      # `maximum_source_version` is equal to 15.1.0, the pipeline will be executed when importing from source instances
+      # running versions 15.1.1 (patch), 15.1.0, 15.0.1, 15.0.0, 14.10.0, etc. And it won't be executed when the source
+      # instance version is 15.2.0, 15.2.1, 16.0.0, etc.
+
       def config
         @config ||= {
           group: {
@@ -21,7 +36,8 @@ module BulkImports
           },
           namespace_settings: {
             pipeline: BulkImports::Groups::Pipelines::NamespaceSettingsPipeline,
-            stage: 1
+            stage: 1,
+            minimum_source_version: '15.0.0'
           },
           members: {
             pipeline: BulkImports::Common::Pipelines::MembersPipeline,

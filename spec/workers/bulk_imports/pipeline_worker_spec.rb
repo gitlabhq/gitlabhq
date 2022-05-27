@@ -24,7 +24,7 @@ RSpec.describe BulkImports::PipelineWorker do
 
     allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
       allow(instance).to receive(:pipelines)
-        .and_return([[0, pipeline_class]])
+        .and_return([{ stage: 0, pipeline: pipeline_class }])
     end
   end
 
@@ -253,7 +253,7 @@ RSpec.describe BulkImports::PipelineWorker do
 
       allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
         allow(instance).to receive(:pipelines)
-                             .and_return([[0, file_extraction_pipeline]])
+                             .and_return([{ stage: 0, pipeline: file_extraction_pipeline }])
       end
     end
 

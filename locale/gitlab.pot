@@ -12190,9 +12190,6 @@ msgstr ""
 msgid "Dependencies|All"
 msgstr ""
 
-msgid "Dependencies|Based on the %{linkStart}latest successful%{linkEnd} scan"
-msgstr ""
-
 msgid "Dependencies|Component"
 msgstr ""
 
@@ -12221,6 +12218,9 @@ msgid "Dependencies|Location and dependency path"
 msgstr ""
 
 msgid "Dependencies|Packager"
+msgstr ""
+
+msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
 msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."

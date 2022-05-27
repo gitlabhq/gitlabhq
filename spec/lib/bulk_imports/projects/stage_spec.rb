@@ -2,39 +2,7 @@
 
 require 'spec_helper'
 
-# Any new stages must be added to
-# `ee/spec/lib/ee/bulk_imports/projects/stage_spec.rb` as well.
 RSpec.describe BulkImports::Projects::Stage do
-  let(:pipelines) do
-    [
-      [0, BulkImports::Projects::Pipelines::ProjectPipeline],
-      [1, BulkImports::Projects::Pipelines::RepositoryPipeline],
-      [1, BulkImports::Projects::Pipelines::ProjectAttributesPipeline],
-      [2, BulkImports::Common::Pipelines::LabelsPipeline],
-      [2, BulkImports::Common::Pipelines::MilestonesPipeline],
-      [2, BulkImports::Common::Pipelines::BadgesPipeline],
-      [3, BulkImports::Projects::Pipelines::IssuesPipeline],
-      [3, BulkImports::Projects::Pipelines::SnippetsPipeline],
-      [4, BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline],
-      [4, BulkImports::Common::Pipelines::BoardsPipeline],
-      [4, BulkImports::Projects::Pipelines::MergeRequestsPipeline],
-      [4, BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline],
-      [4, BulkImports::Projects::Pipelines::ProtectedBranchesPipeline],
-      [4, BulkImports::Projects::Pipelines::ProjectFeaturePipeline],
-      [4, BulkImports::Projects::Pipelines::ContainerExpirationPolicyPipeline],
-      [4, BulkImports::Projects::Pipelines::ServiceDeskSettingPipeline],
-      [4, BulkImports::Projects::Pipelines::ReleasesPipeline],
-      [5, BulkImports::Projects::Pipelines::CiPipelinesPipeline],
-      [5, BulkImports::Common::Pipelines::WikiPipeline],
-      [5, BulkImports::Common::Pipelines::UploadsPipeline],
-      [5, BulkImports::Common::Pipelines::LfsObjectsPipeline],
-      [5, BulkImports::Projects::Pipelines::DesignBundlePipeline],
-      [5, BulkImports::Projects::Pipelines::AutoDevopsPipeline],
-      [5, BulkImports::Projects::Pipelines::PipelineSchedulesPipeline],
-      [6, BulkImports::Common::Pipelines::EntityFinisher]
-    ]
-  end
-
   subject do
     entity = build(:bulk_import_entity, :project_entity)
 
@@ -42,9 +10,49 @@ RSpec.describe BulkImports::Projects::Stage do
   end
 
   describe '#pipelines' do
-    it 'list all the pipelines with their stage number, ordered by stage' do
-      expect(subject.pipelines & pipelines).to contain_exactly(*pipelines)
-      expect(subject.pipelines.last.last).to eq(BulkImports::Common::Pipelines::EntityFinisher)
+    it 'list all the pipelines' do
+      pipelines = subject.pipelines
+
+      expect(pipelines).to include(
+        hash_including({ stage: 0, pipeline: BulkImports::Projects::Pipelines::ProjectPipeline }),
+        hash_including({ stage: 1, pipeline: BulkImports::Projects::Pipelines::RepositoryPipeline })
+      )
+      expect(pipelines.last).to match(hash_including({ pipeline: BulkImports::Common::Pipelines::EntityFinisher }))
+    end
+
+    it 'only have pipelines with valid keys' do
+      pipeline_keys = subject.pipelines.collect(&:keys).flatten.uniq
+      allowed_keys = %i[pipeline stage minimum_source_version maximum_source_version]
+
+      expect(pipeline_keys - allowed_keys).to be_empty
+    end
+
+    it 'only has pipelines with valid versions' do
+      pipelines = subject.pipelines
+      minimum_source_versions = pipelines.collect { _1[:minimum_source_version] }.flatten.compact
+      maximum_source_versions = pipelines.collect { _1[:maximum_source_version] }.flatten.compact
+      version_regex = /^(\d+)\.(\d+)\.0$/
+
+      expect(minimum_source_versions.all? { version_regex =~ _1 }).to eq(true)
+      expect(maximum_source_versions.all? { version_regex =~ _1 }).to eq(true)
+    end
+
+    context 'when stages are out of order in the config hash' do
+      it 'list all the pipelines ordered by stage' do
+        allow_next_instance_of(BulkImports::Projects::Stage) do |stage|
+          allow(stage).to receive(:config).and_return(
+            {
+              a: { stage: 2 },
+              b: { stage: 1 },
+              c: { stage: 0 },
+              d: { stage: 2 }
+            }
+          )
+        end
+
+        expected_stages = subject.pipelines.collect { _1[:stage] }
+        expect(expected_stages).to eq([0, 1, 2, 2])
+      end
     end
   end
 end

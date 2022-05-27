@@ -15,9 +15,6 @@ module BulkImports
       @pipelines ||= config
         .values
         .sort_by { |entry| entry[:stage] }
-        .map do |entry|
-          [entry[:stage], entry[:pipeline]]
-        end
     end
 
     private

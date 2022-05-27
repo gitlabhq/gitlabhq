@@ -113,7 +113,7 @@ export default {
             data-testid="ok"
             category="primary"
             class="gl-mt-2"
-            variant="info"
+            variant="confirm"
             :href="pipelinePath"
             :data-track-property="humanAccess"
             :data-track-value="$options.SP_SHOW_TRACK_VALUE"
