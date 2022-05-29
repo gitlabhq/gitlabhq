@@ -313,7 +313,7 @@ export default {
               class="ml-2"
               data-testid="view_issue_button"
               :href="error.gitlabIssuePath"
-              variant="success"
+              variant="confirm"
             >
               {{ __('View issue') }}
             </gl-button>
