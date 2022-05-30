@@ -583,7 +583,7 @@ This is the template for the example component which is tested in the
           data-testid="text-input"
         >
         <gl-button
-          variant="success"
+          variant="confirm"
           data-testid="add-button"
           @click="addTodo"
         >Add</gl-button>

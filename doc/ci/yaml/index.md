@@ -3842,18 +3842,18 @@ variables:
 Use `when` to configure the conditions for when jobs run. If not defined in a job,
 the default value is `when: on_success`.
 
-**Keyword type**: Job keyword. You can use it only as part of a job.
+**Keyword type**: Job keyword. You can use it as part of a job. `when: always` and `when: never` can also be used in [`workflow:rules`](#workflow).
 
 **Possible inputs**:
 
 - `on_success` (default): Run the job only when all jobs in earlier stages succeed
   or have `allow_failure: true`.
 - `manual`: Run the job only when [triggered manually](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
-- `always`: Run the job regardless of the status of jobs in earlier stages.
+- `always`: Run the job regardless of the status of jobs in earlier stages. Can also be used in `workflow:rules`.
 - `on_failure`: Run the job only when at least one job in an earlier stage fails.
 - `delayed`: [Delay the execution of a job](../jobs/job_control.md#run-a-job-after-a-delay)
   for a specified duration.
-- `never`: Don't run the job.
+- `never`: Don't run the job. Can only be used in a [`rules`](#rules) section or `workflow: rules`.
 
 **Example of `when`**:
 
