@@ -189,7 +189,7 @@ makes sure that booleans are encoded and decoded consistently.
 
 The Redis [`PFCOUNT`](https://redis.io/commands/pfcount),
 [`PFADD`](https://redis.io/commands/pfadd), and
-[`PFMERGE`](https://redis.io/commands/pfmergge) commands operate on
+[`PFMERGE`](https://redis.io/commands/pfmerge) commands operate on
 HyperLogLogs, a data structure that allows estimating the number of unique
 elements with low memory usage. (In addition to the `PFCOUNT` documentation,
 Thoughtbot's article on [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis)

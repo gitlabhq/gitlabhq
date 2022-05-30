@@ -103,6 +103,7 @@ review-qa-smoke:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-smoke
+  retry: 1
   variables:
     QA_RUN_TYPE: review-qa-smoke
     RSPEC_TAGS: --tag smoke
@@ -111,6 +112,7 @@ review-qa-reliable:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-reliable
+  retry: 1
   parallel: 10
   variables:
     QA_RUN_TYPE: review-qa-reliable

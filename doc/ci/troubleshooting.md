@@ -26,7 +26,8 @@ experience (rather than the single file editor or the Web IDE). It includes:
 - The [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration),
   a graphical representation of your `.gitlab-ci.yml` file.
 
-If you prefer to use another editor, you can use a schema like [the Schemastore `gitlab-ci` schema](https://json.schemastore.org/gitlab-ci)
+If you prefer to use another editor, you can use a schema like
+[the `gitlab-ci` schema](https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json)
 with your editor of choice.
 
 ### Verify syntax with CI Lint tool

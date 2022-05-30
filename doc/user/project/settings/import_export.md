@@ -152,6 +152,9 @@ Administrators can set the maximum import file size one of two ways:
 
 The default is `0` (unlimited).
 
+For the GitLab.com setting, see the [Account and limit settings](../../gitlab_com/index.md#account-and-limit-settings)
+section of the GitLab.com settings page.
+
 ## Map users for import
 
 Imported users can be mapped by their public email addresses on self-managed instances, if an administrator (not an owner) does the import.

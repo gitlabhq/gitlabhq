@@ -110,12 +110,12 @@ As described in the section on the responsibility of the maintainer below, you
 are recommended to get your merge request approved and merged by maintainers
 with [domain expertise](#domain-experts).
 
-1. If your merge request includes backend changes (*1*), it must be
+1. If your merge request includes `~backend` changes (*1*), it must be
    **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_backend)**.
 1. If your merge request includes database migrations or changes to expensive queries (*2*), it must be
    **approved by a [database maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_database)**.
    Read the [database review guidelines](database_review.md) for more details.
-1. If your merge request includes frontend changes (*1*), it must be
+1. If your merge request includes `~frontend` changes (*1*), it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
 1. If your merge request includes user-facing changes (*3*), it must be
    **approved by a [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX)**.
@@ -143,7 +143,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request introduces a new service to GitLab (Puma, Sidekiq, Gitaly are examples), it must be **approved by a [product manager](https://about.gitlab.com/company/team/)**. See the [process for adding a service component to GitLab](adding_service_component.md) for details.
 1. If your merge request includes changes related to authentication or authorization, it must be **approved by a [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/)**. Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files.
 
-- (*1*): Specs other than JavaScript specs are considered backend code.
+- (*1*): Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code within Haml templates is considered `~backend` code.
 - (*2*): We encourage you to seek guidance from a database maintainer if your merge
   request is potentially introducing expensive queries. It is most efficient to comment
   on the line of code in question with the SQL queries so they can give their advice.

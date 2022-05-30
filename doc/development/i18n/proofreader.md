@@ -101,7 +101,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Horberlan Brito - [GitLab](https://gitlab.com/horberlan), [Crowdin](https://crowdin.com/profile/horberlan)
 - Romanian
   - Mircea Pop - [GitLab](https://gitlab.com/eeex), [Crowdin](https://crowdin.com/profile/eex)
-  - Rareș Pița - [GitLab](https://gitlab.com/dlphin), [Crowdin](https://crowdin.com/profile/dlphin)
+  - Rareș Pița - [GitLab](https://gitlab.com/dlphin)
   - Nicolae Liviu - [GitLab](https://gitlab.com/nicklcanada), [Crowdin](https://crowdin.com/profile/nicklcanada)
 - Russian
   - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)

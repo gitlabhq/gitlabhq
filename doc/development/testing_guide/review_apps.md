@@ -199,7 +199,7 @@ subgraph "CNG-mirror pipeline"
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing,
+- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing (note that we already retry them once),
   please check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
