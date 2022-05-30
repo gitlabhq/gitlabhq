@@ -4,34 +4,35 @@ require 'spec_helper'
 
 RSpec.describe HelpController do
   include StubVersion
+  include DocUrlHelper
 
   let(:user) { create(:user) }
 
   shared_examples 'documentation pages local render' do
     it 'renders HTML' do
       aggregate_failures do
-        is_expected.to render_template('show.html.haml')
+        is_expected.to render_template('help/show')
         expect(response.media_type).to eq 'text/html'
       end
     end
   end
 
   shared_examples 'documentation pages redirect' do |documentation_base_url|
-    let(:gitlab_version) { '13.4.0-ee' }
+    let(:gitlab_version) { version }
 
     before do
       stub_version(gitlab_version, 'ignored_revision_value')
     end
 
     it 'redirects user to custom documentation url with a specified version' do
-      is_expected.to redirect_to("#{documentation_base_url}/13.4/ee/#{path}.html")
+      is_expected.to redirect_to(doc_url(documentation_base_url))
     end
 
     context 'when it is a pre-release' do
       let(:gitlab_version) { '13.4.0-pre' }
 
       it 'redirects user to custom documentation url without a version' do
-        is_expected.to redirect_to("#{documentation_base_url}/ee/#{path}.html")
+        is_expected.to redirect_to(doc_url_without_version(documentation_base_url))
       end
     end
   end
@@ -43,7 +44,7 @@ RSpec.describe HelpController do
   describe 'GET #index' do
     context 'with absolute url' do
       it 'keeps the URL absolute' do
-        stub_readme("[API](/api/README.md)")
+        stub_doc_file_read(content: "[API](/api/README.md)")
 
         get :index
 
@@ -53,7 +54,7 @@ RSpec.describe HelpController do
 
     context 'with relative url' do
       it 'prefixes it with /help/' do
-        stub_readme("[API](api/README.md)")
+        stub_doc_file_read(content: "[API](api/README.md)")
 
         get :index
 
@@ -63,7 +64,7 @@ RSpec.describe HelpController do
 
     context 'when url is an external link' do
       it 'does not change it' do
-        stub_readme("[external](https://some.external.link)")
+        stub_doc_file_read(content: "[external](https://some.external.link)")
 
         get :index
 
@@ -73,7 +74,7 @@ RSpec.describe HelpController do
 
     context 'when relative url with external on same line' do
       it 'prefix it with /help/' do
-        stub_readme("[API](api/README.md) [external](https://some.external.link)")
+        stub_doc_file_read(content: "[API](api/README.md) [external](https://some.external.link)")
 
         get :index
 
@@ -83,7 +84,7 @@ RSpec.describe HelpController do
 
     context 'when relative url with http:// in query' do
       it 'prefix it with /help/' do
-        stub_readme("[API](api/README.md?go=https://example.com/)")
+        stub_doc_file_read(content: "[API](api/README.md?go=https://example.com/)")
 
         get :index
 
@@ -93,7 +94,7 @@ RSpec.describe HelpController do
 
     context 'when mailto URL' do
       it 'do not change it' do
-        stub_readme("[report bug](mailto:bugs@example.com)")
+        stub_doc_file_read(content: "[report bug](mailto:bugs@example.com)")
 
         get :index
 
@@ -103,7 +104,7 @@ RSpec.describe HelpController do
 
     context 'when protocol-relative link' do
       it 'do not change it' do
-        stub_readme("[protocol-relative](//example.com)")
+        stub_doc_file_read(content: "[protocol-relative](//example.com)")
 
         get :index
 
@@ -146,7 +147,7 @@ RSpec.describe HelpController do
 
       context 'when requested file exists' do
         before do
-          expect_file_read(File.join(Rails.root, 'doc/user/ssh.md'), content: fixture_file('blockquote_fence_after.md'))
+          stub_doc_file_read(file_name: 'user/ssh.md', content: fixture_file('blockquote_fence_after.md'))
 
           subject
         end
@@ -263,10 +264,6 @@ RSpec.describe HelpController do
         expect(response).to be_not_found
       end
     end
-  end
-
-  def stub_readme(content)
-    expect_file_read(Rails.root.join('doc', 'index.md'), content: content)
   end
 
   def stub_two_factor_required

@@ -1,4 +1,4 @@
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import UsageCounts from '~/analytics/usage_trends/components/usage_counts.vue';
@@ -30,7 +30,7 @@ describe('UsageCounts', () => {
     wrapper.destroy();
   });
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoading);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findAllSingleStats = () => wrapper.findAllComponents(GlSingleStat);
 
   describe('while loading', () => {

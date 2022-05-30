@@ -14,7 +14,6 @@ first: '\b([A-Z]{3,5})\b'
 second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 # ... with the exception of these:
 exceptions:
-  - AAAA
   - AJAX
   - ANSI
   - API
@@ -30,7 +29,6 @@ exceptions:
   - CIDR
   - CLI
   - CNA
-  - CNAME
   - CNCF
   - CORE
   - CORS
@@ -52,6 +50,7 @@ exceptions:
   - DSA
   - DSL
   - DVCS
+  - DVD
   - ECDSA
   - ECS
   - EFS
@@ -80,6 +79,7 @@ exceptions:
   - GNU
   - GPG
   - GPL
+  - GPS
   - GPU
   - GUI
   - HAML
@@ -107,6 +107,7 @@ exceptions:
   - JSON
   - JVM
   - JWT
+  - KICS
   - LAN
   - LDAP
   - LDAPS
@@ -118,6 +119,7 @@ exceptions:
   - LTS
   - MIME
   - MIT
+  - MITRE
   - MVC
   - NAT
   - NDA
@@ -165,6 +167,7 @@ exceptions:
   - SAN
   - SAST
   - SATA
+  - SBOM
   - SCIM
   - SCP
   - SCSS
@@ -186,7 +189,6 @@ exceptions:
   - SPF
   - SQL
   - SRE
-  - SRV
   - SSD
   - SSG
   - SSH
@@ -205,6 +207,7 @@ exceptions:
   - TOML
   - TOTP
   - TTL
+  - UBI
   - UDP
   - UID
   - UID

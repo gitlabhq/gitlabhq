@@ -59,6 +59,27 @@ RSpec.describe 'getting milestone listings nested in a project' do
     end
   end
 
+  context 'the user does not have access' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:milestones) { create_list(:milestone, 2, project: project) }
+
+    it 'is nil' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project)).to be_nil
+    end
+
+    context 'the user has access' do
+      let(:expected) { milestones }
+
+      before do
+        project.add_guest(current_user)
+      end
+
+      it_behaves_like 'searching with parameters'
+    end
+  end
+
   context 'there are no search params' do
     let(:search_params) { nil }
     let(:expected) { all_milestones }

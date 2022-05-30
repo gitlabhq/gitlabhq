@@ -6,9 +6,10 @@
 
 - if verification_enabled && domain_presenter.unverified?
   = content_for :flash_message do
-    .gl-alert.gl-alert-warning
-      .container-fluid.container-limited
-        = _("This domain is not verified. You will need to verify ownership before access is enabled.")
+    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
+      = c.body do
+        .container-fluid.container-limited
+          = _("This domain is not verified. You will need to verify ownership before access is enabled.")
 
 %h3.page-title
   = _('Pages Domain')

@@ -15,8 +15,8 @@ module Graphql
 
     private
 
-    def simple_resolver(resolved_value = 'Resolved value')
-      Class.new(Resolvers::BaseResolver) do
+    def simple_resolver(resolved_value = 'Resolved value', base_class: Resolvers::BaseResolver)
+      Class.new(base_class) do
         define_method :resolve do |**_args|
           resolved_value
         end

@@ -7,7 +7,6 @@
  * @property {Object} options The Monaco editor options
  */
 
-import { debounce } from 'lodash';
 import { KeyCode, KeyMod, Range } from 'monaco-editor';
 import { EDITOR_TYPE_DIFF } from '~/editor/constants';
 import Disposable from '~/ide/lib/common/disposable';
@@ -59,13 +58,10 @@ const renderSideBySide = (domElement) => {
   return domElement.offsetWidth >= 700;
 };
 
-const updateInstanceDimensions = (instance) => {
-  instance.layout();
-  if (isDiffEditorType(instance)) {
-    instance.updateOptions({
-      renderSideBySide: renderSideBySide(instance.getDomNode()),
-    });
-  }
+const updateDiffInstanceRendering = (instance) => {
+  instance.updateOptions({
+    renderSideBySide: renderSideBySide(instance.getDomNode()),
+  });
 };
 
 export class EditorWebIdeExtension {
@@ -85,15 +81,14 @@ export class EditorWebIdeExtension {
     this.options = setupOptions.options;
 
     this.disposable = new Disposable();
-    this.debouncedUpdate = debounce(() => {
-      updateInstanceDimensions(instance);
-    }, UPDATE_DIMENSIONS_DELAY);
-
     addActions(instance, setupOptions.store);
-  }
 
-  onUse(instance) {
-    window.addEventListener('resize', this.debouncedUpdate, false);
+    if (isDiffEditorType(instance)) {
+      updateDiffInstanceRendering(instance);
+      instance.getModifiedEditor().onDidLayoutChange(() => {
+        updateDiffInstanceRendering(instance);
+      });
+    }
 
     instance.onDidDispose(() => {
       this.onUnuse();
@@ -101,8 +96,6 @@ export class EditorWebIdeExtension {
   }
 
   onUnuse() {
-    window.removeEventListener('resize', this.debouncedUpdate);
-
     // catch any potential errors with disposing the error
     // this is mainly for tests caused by elements not existing
     try {
@@ -149,7 +142,6 @@ export class EditorWebIdeExtension {
           modified: model.getModel(),
         });
       },
-      updateDimensions: (instance) => updateInstanceDimensions(instance),
       setPos: (instance, { lineNumber, column }) => {
         instance.revealPositionInCenter({
           lineNumber,

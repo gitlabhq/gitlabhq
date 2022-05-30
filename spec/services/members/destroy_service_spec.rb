@@ -105,26 +105,46 @@ RSpec.describe Members::DestroyService do
       context 'with a project member' do
         let(:member) { group_project.members.find_by(user_id: member_user.id) }
 
-        before do
-          group_project.add_developer(member_user)
+        context 'when current user does not have any membership management permissions' do
+          before do
+            group_project.add_developer(member_user)
+          end
+
+          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+
+          context 'when skipping authorisation' do
+            it_behaves_like 'a service destroying a member with access' do
+              let(:opts) { { skip_authorization: true, unassign_issuables: true } }
+            end
+          end
         end
 
-        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+        context 'when a project maintainer tries to destroy a project owner' do
+          before do
+            group_project.add_owner(member_user)
+          end
 
-        it_behaves_like 'a service destroying a member with access' do
-          let(:opts) { { skip_authorization: true, unassign_issuables: true } }
+          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+
+          context 'when skipping authorisation' do
+            it_behaves_like 'a service destroying a member with access' do
+              let(:opts) { { skip_authorization: true, unassign_issuables: true } }
+            end
+          end
         end
       end
+    end
 
-      context 'with a group member' do
-        let(:member) { group.members.find_by(user_id: member_user.id) }
+    context 'with a group member' do
+      let(:member) { group.members.find_by(user_id: member_user.id) }
 
-        before do
-          group.add_developer(member_user)
-        end
+      before do
+        group.add_developer(member_user)
+      end
 
-        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+      it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
 
+      context 'when skipping authorisation' do
         it_behaves_like 'a service destroying a member with access' do
           let(:opts) { { skip_authorization: true, unassign_issuables: true } }
         end

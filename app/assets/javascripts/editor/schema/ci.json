@@ -912,7 +912,7 @@
         "cache": { "$ref": "#/definitions/cache" },
         "secrets": { "$ref": "#/definitions/secrets" },
         "script": {
-          "description": "Shell scripts executed by the Runner. The only required property of jobs. Be careful with special characters (e.g. `:`, `{`, `}`, `&`) and use single or double quotes to avoid issues.",
+          "markdownDescription": "Shell scripts executed by the Runner. The only required property of jobs. Be careful with special characters (e.g. `:`, `{`, `}`, `&`) and use single or double quotes to avoid issues. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#script)",
           "oneOf": [
             {
               "type": "string",

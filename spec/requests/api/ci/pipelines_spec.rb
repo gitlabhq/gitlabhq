@@ -1018,6 +1018,18 @@ RSpec.describe API::Ci::Pipelines do
           expect { build.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
+
+      context 'when project is undergoing stats refresh' do
+        it_behaves_like 'preventing request because of ongoing project stats refresh' do
+          let(:make_request) { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }
+
+          it 'does not delete the pipeline' do
+            make_request
+
+            expect(pipeline.reload).to be_persisted
+          end
+        end
+      end
     end
 
     context 'unauthorized user' do

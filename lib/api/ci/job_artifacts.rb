@@ -3,6 +3,8 @@
 module API
   module Ci
     class JobArtifacts < ::API::Base
+      helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
+
       before { authenticate_non_get! }
 
       feature_category :build_artifacts
@@ -137,6 +139,8 @@ module API
           build = find_build!(params[:job_id])
           authorize!(:destroy_artifacts, build)
 
+          reject_if_build_artifacts_size_refreshing!(build.project)
+
           build.erase_erasable_artifacts!
 
           status :no_content
@@ -145,6 +149,8 @@ module API
         desc 'Expire the artifacts files from a project'
         delete ':id/artifacts' do
           authorize_destroy_artifacts!
+
+          reject_if_build_artifacts_size_refreshing!(user_project)
 
           ::Ci::JobArtifacts::DeleteProjectArtifactsService.new(project: user_project).execute
 

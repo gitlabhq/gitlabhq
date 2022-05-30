@@ -83,7 +83,7 @@ added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/-/issue
 ### DNS configuration
 
 GitLab Pages expect to run on their own virtual host. In your DNS server/provider
-add a [wildcard DNS A record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the
+add a [wildcard DNS `A` record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```plaintext

@@ -323,7 +323,12 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
   include ExceedQueryLimitHelpers
 
   match do |block|
-    verify_count(&block)
+    if block.is_a?(ActiveRecord::QueryRecorder)
+      @recorder = block
+      verify_count
+    else
+      verify_count(&block)
+    end
   end
 
   failure_message_when_negated do |actual|

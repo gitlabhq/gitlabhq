@@ -8,6 +8,7 @@ export const defaultEditorOptions = {
   },
   wordWrap: 'on',
   glyphMargin: true,
+  automaticLayout: true,
 };
 
 export const defaultDiffOptions = {

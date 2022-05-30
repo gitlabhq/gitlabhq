@@ -82,20 +82,20 @@ Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214718) for de
 
 Root domains (`example.com`) require:
 
-- A [DNS A record](dns_concepts.md#a-record) pointing your domain to the Pages server.
-- A [TXT record](dns_concepts.md#txt-record) to verify your domain's ownership.
+- A [DNS `A` record](dns_concepts.md#a-record) pointing your domain to the Pages server.
+- A [`TXT` record](dns_concepts.md#txt-record) to verify your domain's ownership.
 
 | From                                          | DNS Record | To              |
 | --------------------------------------------- | ---------- | --------------- |
-| `example.com`                                 | A          | `35.185.44.232` |
-| `_gitlab-pages-verification-code.example.com` | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `example.com`                                 | `A`        | `35.185.44.232` |
+| `_gitlab-pages-verification-code.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 For projects on GitLab.com, this IP is `35.185.44.232`.
 For projects living in other GitLab instances (CE or EE), please contact
 your sysadmin asking for this information (which IP address is Pages
 server running on your instance).
 
-![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
+![DNS `A` record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
 
 WARNING:
 Note that if you use your root domain for your GitLab Pages website
@@ -111,7 +111,7 @@ as it most likely doesn't work if you set an [`MX` record](dns_concepts.md#mx-re
 Subdomains (`subdomain.example.com`) require:
 
 - A DNS [`ALIAS` or `CNAME` record](dns_concepts.md#cname-record) pointing your subdomain to the Pages server.
-- A DNS [TXT record](dns_concepts.md#txt-record) to verify your domain's ownership.
+- A DNS [`TXT` record](dns_concepts.md#txt-record) to verify your domain's ownership.
 
 | From                                                    | DNS Record      | To                    |
 |:--------------------------------------------------------|:----------------|:----------------------|
@@ -122,7 +122,7 @@ Note that, whether it's a user or a project website, the DNS record
 should point to your Pages domain (`namespace.gitlab.io`),
 without any `/project-name`.
 
-![DNS CNAME record pointing to GitLab.com project](img/dns_cname_record_example.png)
+![DNS `CNAME` record pointing to GitLab.com project](img/dns_cname_record_example.png)
 
 ##### For both root and subdomains
 
@@ -137,11 +137,11 @@ They require:
 
 | From                                              | DNS Record | To                     |
 | ------------------------------------------------- | ---------- | ---------------------- |
-| `example.com`                                     | A          | `35.185.44.232`        |
-| `_gitlab-pages-verification-code.example.com`     | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `example.com`                                     | `A`        | `35.185.44.232`        |
+| `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 |---------------------------------------------------+------------+------------------------|
-| `www.example.com`                                 | CNAME      | `namespace.gitlab.io`  |
-| `_gitlab-pages-verification-code.www.example.com` | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io`  |
+| `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 If you're using Cloudflare, check
 [Redirecting `www.domain.com` to `domain.com` with Cloudflare](#redirecting-wwwdomaincom-to-domaincom-with-cloudflare).
@@ -208,15 +208,15 @@ For a root domain:
 
 | From                                              | DNS Record | To                     |
 | ------------------------------------------------- | ---------- | ---------------------- |
-| `example.com`                                     | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-| `_gitlab-pages-verification-code.example.com`     | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `example.com`                                     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 For a subdomain:
 
 | From                                              | DNS Record | To                     |
 | ------------------------------------------------- | ---------- | ---------------------- |
-| `www.example.com`                                 | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-| `_gitlab-pages-verification-code.www.example.com` | `TXT`        | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `www.example.com`                                 | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 ### Adding more domain aliases
 

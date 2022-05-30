@@ -4,13 +4,14 @@ require 'spec_helper'
 
 RSpec.describe API::Members do
   let(:maintainer) { create(:user, username: 'maintainer_user') }
+  let(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }
   let(:stranger) { create(:user) }
   let(:user_with_minimal_access) { create(:user) }
 
   let(:project) do
-    create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
+    create(:project, :public, creator_id: maintainer.id, group: create(:group, :public)) do |project|
       project.add_maintainer(maintainer)
       project.add_developer(developer, current_user: maintainer)
       project.request_access(access_requester)
@@ -238,21 +239,48 @@ RSpec.describe API::Members do
               expect(response).to have_gitlab_http_status(:forbidden)
             end
           end
+
+          context 'adding a member of higher access level' do
+            before do
+              # the other 'maintainer' is in fact an owner of the group!
+              source.add_maintainer(maintainer2)
+            end
+
+            context 'when an access requester' do
+              it 'is not successful' do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer2),
+                     params: { user_id: access_requester.id, access_level: Member::OWNER }
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
+
+            context 'when a totally new user' do
+              it 'is not successful' do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer2),
+                     params: { user_id: stranger.id, access_level: Member::OWNER }
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
+          end
         end
       end
 
-      context 'when authenticated as a maintainer/owner' do
+      context 'when authenticated as a member with membership management rights' do
         context 'and new member is already a requester' do
-          it 'transforms the requester into a proper member' do
-            expect do
-              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+          context 'when the requester is of equal or lower access level' do
+            it 'transforms the requester into a proper member' do
+              expect do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                     params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
 
-              expect(response).to have_gitlab_http_status(:created)
-            end.to change { source.members.count }.by(1)
-            expect(source.requesters.count).to eq(0)
-            expect(json_response['id']).to eq(access_requester.id)
-            expect(json_response['access_level']).to eq(Member::MAINTAINER)
+                expect(response).to have_gitlab_http_status(:created)
+              end.to change { source.members.count }.by(1)
+              expect(source.requesters.count).to eq(0)
+              expect(json_response['id']).to eq(access_requester.id)
+              expect(json_response['access_level']).to eq(Member::MAINTAINER)
+            end
           end
         end
 
@@ -430,7 +458,7 @@ RSpec.describe API::Members do
 
       it 'returns 404 when the user_id is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: 0, access_level: Member::MAINTAINER }
+             params: { user_id: non_existing_record_id, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
@@ -500,16 +528,49 @@ RSpec.describe API::Members do
             end
           end
         end
+
+        context 'as a maintainer updating a member to one with higher access level than themselves' do
+          before do
+            # the other 'maintainer' is in fact an owner of the group!
+            source.add_maintainer(maintainer2)
+          end
+
+          it 'returns 403' do
+            put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer2),
+                params: { access_level: Member::OWNER }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
       end
 
       context 'when authenticated as a maintainer/owner' do
-        it 'updates the member' do
-          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-              params: { access_level: Member::MAINTAINER }
+        context 'when updating a member with the same or lower access level' do
+          it 'updates the member' do
+            put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
+                params: { access_level: Member::MAINTAINER }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['id']).to eq(developer.id)
-          expect(json_response['access_level']).to eq(Member::MAINTAINER)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['id']).to eq(developer.id)
+            expect(json_response['access_level']).to eq(Member::MAINTAINER)
+          end
+        end
+
+        context 'when updating a member with higher access level' do
+          let(:owner) { create(:user) }
+
+          before do
+            source.add_owner(owner)
+            # the other 'maintainer' is in fact an owner of the group!
+            source.add_maintainer(maintainer2)
+          end
+
+          it 'returns 403' do
+            put api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer2),
+                params: { access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
       end
 
@@ -604,6 +665,23 @@ RSpec.describe API::Members do
           end
         end
 
+        context 'when attempting to delete a member with higher access level' do
+          let(:owner) { create(:user) }
+
+          before do
+            source.add_owner(owner)
+            # the other 'maintainer' is in fact an owner of the group!
+            source.add_maintainer(maintainer2)
+          end
+
+          it 'returns 403' do
+            delete api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer2),
+                   params: { access_level: Member::DEVELOPER }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
         it 'deletes the member' do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer)
@@ -679,13 +757,11 @@ RSpec.describe API::Members do
     end
 
     context 'adding owner to project' do
-      it 'returns created status' do
-        expect do
-          post api("/projects/#{project.id}/members", maintainer),
-               params: { user_id: stranger.id, access_level: Member::OWNER }
+      it 'returns 403' do
+        post api("/projects/#{project.id}/members", maintainer),
+             params: { user_id: stranger.id, access_level: Member::OWNER }
 
-          expect(response).to have_gitlab_http_status(:created)
-        end.to change { project.members.count }.by(1)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 

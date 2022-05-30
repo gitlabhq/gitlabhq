@@ -150,6 +150,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>View project [Audit Events](../administration/audit_events.md)                                                                                      |          |          | ✓ (*10*)  | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add [deploy keys](project/deploy_keys/index.md)                                                                                                     |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add new [team members](project/members/index.md)                                                                                                    |          |          |           | ✓          | ✓        |
+| [Projects](project/index.md):<br>Manage [team members](project/members/index.md)                                                                                                     |          |          |           | ✓ (*21*)   | ✓        |
 | [Projects](project/index.md):<br>Change [project features visibility](public_access.md) level                                                                                        |          |          |           | ✓ (*13*)   | ✓        |
 | [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                                                              |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                                                                                          |          |          | ✓         | ✓          | ✓        |
@@ -237,6 +238,7 @@ The following table lists project permissions available for each role:
 18. Authors and assignees of issues can modify the title and description even if they don't have the Reporter role.
 19. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
 20. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
+21. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role.
 
 <!-- markdownlint-enable MD029 -->
 

@@ -401,6 +401,15 @@ RSpec.shared_examples_for "bulk member creation" do
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
+    context 'when current user does not have permission' do
+      it 'does not succeed' do
+        # maintainers cannot add owners
+        source.add_maintainer(user)
+
+        expect(described_class.add_users(source, [user1, user2], :owner, current_user: user)).to be_empty
+      end
+    end
+
     it 'returns a Member objects' do
       members = described_class.add_users(source, [user1, user2], :maintainer)
 
@@ -542,6 +551,32 @@ RSpec.shared_examples_for "bulk member creation" do
           expect(member.tasks_to_be_done).to match_array([:issues])
           expect(member.member_task.project).to eq(task_project)
         end
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'owner management' do
+  describe '.cannot_manage_owners?' do
+    subject { described_class.cannot_manage_owners?(source, current_user) }
+
+    context 'when maintainer' do
+      before do
+        source.add_maintainer(current_user)
+      end
+
+      it 'cannot manage owners' do
+        expect(subject).to be_truthy
+      end
+    end
+
+    context 'when owner' do
+      before do
+        source.add_owner(current_user)
+      end
+
+      it 'can manage owners' do
+        expect(subject).to be_falsey
       end
     end
   end

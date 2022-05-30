@@ -11,5 +11,14 @@ module Gitlab
 
       Gitlab::AppLogger.warn(payload)
     end
+
+    def self.warn_request_rejected_during_stats_refresh(project_id)
+      payload = Gitlab::ApplicationContext.current.merge(
+        message: 'Rejected request due to project undergoing stats refresh',
+        project_id: project_id
+      )
+
+      Gitlab::AppLogger.warn(payload)
+    end
   end
 end

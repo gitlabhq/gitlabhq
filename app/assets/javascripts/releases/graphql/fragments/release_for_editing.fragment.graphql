@@ -1,4 +1,5 @@
 fragment ReleaseForEditing on Release {
+  id
   name
   tagName
   description

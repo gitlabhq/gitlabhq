@@ -110,8 +110,7 @@ export default {
       } else if (this.showUnapprove) {
         return {
           text: s__('mrWidget|Revoke approval'),
-          variant: 'warning',
-          category: 'secondary',
+          variant: 'default',
           action: () => this.unapprove(),
         };
       }

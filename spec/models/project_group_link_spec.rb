@@ -30,6 +30,12 @@ RSpec.describe ProjectGroupLink do
 
       expect(project_group_link).not_to be_valid
     end
+
+    it 'does not allow a project to be shared with `OWNER` access level' do
+      project_group_link.group_access = Gitlab::Access::OWNER
+
+      expect(project_group_link).not_to be_valid
+    end
   end
 
   describe 'scopes' do

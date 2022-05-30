@@ -11,19 +11,13 @@ import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markd
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import SourceEditor from '~/editor/source_editor';
 import RepoEditor from '~/ide/components/repo_editor.vue';
-import {
-  leftSidebarViews,
-  FILE_VIEW_MODE_EDITOR,
-  FILE_VIEW_MODE_PREVIEW,
-  viewerTypes,
-} from '~/ide/constants';
+import { leftSidebarViews, FILE_VIEW_MODE_PREVIEW, viewerTypes } from '~/ide/constants';
 import ModelManager from '~/ide/lib/common/model_manager';
 import service from '~/ide/services';
 import { createStoreOptions } from '~/ide/stores';
 import axios from '~/lib/utils/axios_utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import SourceEditorInstance from '~/editor/source_editor_instance';
-import { spyOnApi } from 'jest/editor/helpers';
 import { file } from '../helpers';
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
@@ -196,11 +190,8 @@ describe('RepoEditor', () => {
     });
 
     describe('when files is markdown', () => {
-      let layoutSpy;
-
       beforeEach(async () => {
         await createComponent({ activeFile });
-        layoutSpy = jest.spyOn(wrapper.vm.editor, 'layout');
       });
 
       it('renders an Edit and a Preview Tab', () => {
@@ -217,10 +208,6 @@ describe('RepoEditor', () => {
         expect(wrapper.find(ContentViewer).html()).toContain(defaultFileProps.content);
       });
 
-      it('should not trigger layout', async () => {
-        expect(layoutSpy).not.toHaveBeenCalled();
-      });
-
       describe('when file changes to non-markdown file', () => {
         beforeEach(async () => {
           wrapper.setProps({ file: dummyFile.empty });
@@ -228,10 +215,6 @@ describe('RepoEditor', () => {
 
         it('should hide tabs', () => {
           expect(findTabs()).toHaveLength(0);
-        });
-
-        it('should trigger refresh dimensions', async () => {
-          expect(layoutSpy).toHaveBeenCalledTimes(1);
         });
       });
     });
@@ -373,53 +356,6 @@ describe('RepoEditor', () => {
     });
   });
 
-  describe('editor updateDimensions', () => {
-    let updateDimensionsSpy;
-    beforeEach(async () => {
-      await createComponent();
-      const ext = extensionsStore.get('EditorWebIde');
-      updateDimensionsSpy = jest.fn();
-      spyOnApi(ext, {
-        updateDimensions: updateDimensionsSpy,
-      });
-    });
-
-    it('calls updateDimensions only when panelResizing is false', async () => {
-      expect(updateDimensionsSpy).not.toHaveBeenCalled();
-      expect(vm.$store.state.panelResizing).toBe(false); // default value
-
-      vm.$store.state.panelResizing = true;
-      await nextTick();
-
-      expect(updateDimensionsSpy).not.toHaveBeenCalled();
-
-      vm.$store.state.panelResizing = false;
-      await nextTick();
-
-      expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
-
-      vm.$store.state.panelResizing = true;
-      await nextTick();
-
-      expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls updateDimensions when rightPane is toggled', async () => {
-      expect(updateDimensionsSpy).not.toHaveBeenCalled();
-      expect(vm.$store.state.rightPane.isOpen).toBe(false); // default value
-
-      vm.$store.state.rightPane.isOpen = true;
-      await nextTick();
-
-      expect(updateDimensionsSpy).toHaveBeenCalledTimes(1);
-
-      vm.$store.state.rightPane.isOpen = false;
-      await nextTick();
-
-      expect(updateDimensionsSpy).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe('editor tabs', () => {
     beforeEach(async () => {
       await createComponent();
@@ -439,7 +375,6 @@ describe('RepoEditor', () => {
   });
 
   describe('files in preview mode', () => {
-    let updateDimensionsSpy;
     const changeViewMode = (viewMode) =>
       vm.$store.dispatch('editor/updateFileEditor', {
         path: vm.file.path,
@@ -451,12 +386,6 @@ describe('RepoEditor', () => {
         activeFile: dummyFile.markdown,
       });
 
-      const ext = extensionsStore.get('EditorWebIde');
-      updateDimensionsSpy = jest.fn();
-      spyOnApi(ext, {
-        updateDimensions: updateDimensionsSpy,
-      });
-
       changeViewMode(FILE_VIEW_MODE_PREVIEW);
       await nextTick();
     });
@@ -464,15 +393,6 @@ describe('RepoEditor', () => {
     it('do not show the editor', () => {
       expect(vm.showEditor).toBe(false);
       expect(findEditor().isVisible()).toBe(false);
-    });
-
-    it('updates dimensions when switching view back to edit', async () => {
-      expect(updateDimensionsSpy).not.toHaveBeenCalled();
-
-      changeViewMode(FILE_VIEW_MODE_EDITOR);
-      await nextTick();
-
-      expect(updateDimensionsSpy).toHaveBeenCalled();
     });
   });
 

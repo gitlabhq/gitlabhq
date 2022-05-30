@@ -13854,6 +13854,7 @@ Represents a milestone.
 | <a id="milestoneid"></a>`id` | [`ID!`](#id) | ID of the milestone. |
 | <a id="milestoneiid"></a>`iid` | [`ID!`](#id) | Internal ID of the milestone. |
 | <a id="milestoneprojectmilestone"></a>`projectMilestone` | [`Boolean!`](#boolean) | Indicates if milestone is at project level. |
+| <a id="milestonereleases"></a>`releases` | [`ReleaseConnection`](#releaseconnection) | Releases associated with this milestone. (see [Connections](#connections)) |
 | <a id="milestonestartdate"></a>`startDate` | [`Time`](#time) | Timestamp of the milestone start date. |
 | <a id="milestonestate"></a>`state` | [`MilestoneStateEnum!`](#milestonestateenum) | State of the milestone. |
 | <a id="milestonestats"></a>`stats` | [`MilestoneStats`](#milestonestats) | Milestone statistics. |
@@ -15851,6 +15852,7 @@ Represents a release.
 | <a id="releasedescription"></a>`description` | [`String`](#string) | Description (also known as "release notes") of the release. |
 | <a id="releasedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="releaseevidences"></a>`evidences` | [`ReleaseEvidenceConnection`](#releaseevidenceconnection) | Evidence for the release. (see [Connections](#connections)) |
+| <a id="releaseid"></a>`id` | [`ReleaseID!`](#releaseid) | Global ID of the release. |
 | <a id="releaselinks"></a>`links` | [`ReleaseLinks`](#releaselinks) | Links of the release. |
 | <a id="releasemilestones"></a>`milestones` | [`MilestoneConnection`](#milestoneconnection) | Milestones associated to the release. (see [Connections](#connections)) |
 | <a id="releasename"></a>`name` | [`String`](#string) | Name of the release. |
@@ -20132,6 +20134,12 @@ String or integer.
 A `ProjectID` is a global ID. It is encoded as a string.
 
 An example `ProjectID` is: `"gid://gitlab/Project/1"`.
+
+### `ReleaseID`
+
+A `ReleaseID` is a global ID. It is encoded as a string.
+
+An example `ReleaseID` is: `"gid://gitlab/Release/1"`.
 
 ### `ReleasesLinkID`
 

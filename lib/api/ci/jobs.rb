@@ -4,6 +4,9 @@ module API
   module Ci
     class Jobs < ::API::Base
       include PaginationParams
+
+      helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
+
       before { authenticate! }
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -136,6 +139,8 @@ module API
           build = find_build!(params[:job_id])
           authorize!(:erase_build, build)
           break forbidden!('Job is not erasable!') unless build.erasable?
+
+          reject_if_build_artifacts_size_refreshing!(build.project)
 
           build.erase(erased_by: current_user)
           present build, with: Entities::Ci::Job

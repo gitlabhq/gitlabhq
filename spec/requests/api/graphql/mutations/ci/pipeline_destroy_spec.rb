@@ -28,4 +28,21 @@ RSpec.describe 'PipelineDestroy' do
     expect(response).to have_gitlab_http_status(:success)
     expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  context 'when project is undergoing stats refresh' do
+    before do
+      create(:project_build_artifacts_size_refresh, :pending, project: pipeline.project)
+    end
+
+    it 'returns an error and does not destroy the pipeline' do
+      expect(Gitlab::ProjectStatsRefreshConflictsLogger)
+        .to receive(:warn_request_rejected_during_stats_refresh)
+        .with(pipeline.project.id)
+
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(graphql_mutation_response(:pipeline_destroy)['errors']).not_to be_empty
+      expect(pipeline.reload).to be_persisted
+    end
+  end
 end

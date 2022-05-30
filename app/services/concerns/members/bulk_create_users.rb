@@ -9,6 +9,9 @@ module Members
         def add_users(source, users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
           return [] unless users.present?
 
+          # If this user is attempting to manage Owner members and doesn't have permission, do not allow
+          return [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
+
           emails, users, existing_members = parse_users_list(source, users)
 
           Member.transaction do
@@ -27,6 +30,10 @@ module Members
         end
 
         private
+
+        def managing_owners?(current_user, access_level)
+          current_user && Gitlab::Access.sym_options_with_owner[access_level] == Gitlab::Access::OWNER
+        end
 
         def parse_users_list(source, list)
           emails = []

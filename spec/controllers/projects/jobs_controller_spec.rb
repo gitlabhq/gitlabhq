@@ -1075,63 +1075,81 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     before do
       project.add_role(user, role)
       sign_in(user)
-
-      post_erase
     end
 
-    shared_examples_for 'erases' do
-      it 'redirects to the erased job page' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+    context 'when project is not undergoing stats refresh' do
+      before do
+        post_erase
       end
 
-      it 'erases artifacts' do
-        expect(job.artifacts_file.present?).to be_falsey
-        expect(job.artifacts_metadata.present?).to be_falsey
-      end
-
-      it 'erases trace' do
-        expect(job.trace.exist?).to be_falsey
-      end
-    end
-
-    context 'when job is successful and has artifacts' do
-      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
-
-      it_behaves_like 'erases'
-    end
-
-    context 'when job has live trace and unarchived artifact' do
-      let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
-
-      it_behaves_like 'erases'
-    end
-
-    context 'when job is erased' do
-      let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
-
-      it 'returns unprocessable_entity' do
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      end
-    end
-
-    context 'when user is developer' do
-      let(:role) { :developer }
-      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline, user: triggered_by) }
-
-      context 'when triggered by same user' do
-        let(:triggered_by) { user }
-
-        it 'has successful status' do
+      shared_examples_for 'erases' do
+        it 'redirects to the erased job page' do
           expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+        end
+
+        it 'erases artifacts' do
+          expect(job.artifacts_file.present?).to be_falsey
+          expect(job.artifacts_metadata.present?).to be_falsey
+        end
+
+        it 'erases trace' do
+          expect(job.trace.exist?).to be_falsey
         end
       end
 
-      context 'when triggered by different user' do
-        let(:triggered_by) { create(:user) }
+      context 'when job is successful and has artifacts' do
+        let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
 
-        it 'does not have successful status' do
-          expect(response).not_to have_gitlab_http_status(:found)
+        it_behaves_like 'erases'
+      end
+
+      context 'when job has live trace and unarchived artifact' do
+        let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+        it_behaves_like 'erases'
+      end
+
+      context 'when job is erased' do
+        let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
+
+        it 'returns unprocessable_entity' do
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'when user is developer' do
+        let(:role) { :developer }
+        let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline, user: triggered_by) }
+
+        context 'when triggered by same user' do
+          let(:triggered_by) { user }
+
+          it 'has successful status' do
+            expect(response).to have_gitlab_http_status(:found)
+          end
+        end
+
+        context 'when triggered by different user' do
+          let(:triggered_by) { create(:user) }
+
+          it 'does not have successful status' do
+            expect(response).not_to have_gitlab_http_status(:found)
+          end
+        end
+      end
+    end
+
+    context 'when project is undergoing stats refresh' do
+      it_behaves_like 'preventing request because of ongoing project stats refresh' do
+        let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
+        let(:make_request) { post_erase }
+
+        it 'does not erase artifacts' do
+          make_request
+
+          expect(job.artifacts_file).to be_present
+          expect(job.artifacts_metadata).to be_present
         end
       end
     end

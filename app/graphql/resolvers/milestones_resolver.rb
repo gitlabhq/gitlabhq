@@ -4,6 +4,11 @@ module Resolvers
   class MilestonesResolver < BaseResolver
     include Gitlab::Graphql::Authorize::AuthorizeResource
     include TimeFrameArguments
+    include LooksAhead
+
+    # authorize before resolution
+    authorize :read_milestone
+    authorizes_object!
 
     argument :ids, [GraphQL::Types::ID],
              required: false,
@@ -34,12 +39,10 @@ module Resolvers
 
     NON_STABLE_CURSOR_SORTS = %i[expired_last_due_date_asc expired_last_due_date_desc].freeze
 
-    def resolve(**args)
+    def resolve_with_lookahead(**args)
       validate_timeframe_params!(args)
 
-      authorize!
-
-      milestones = MilestonesFinder.new(milestones_finder_params(args)).execute
+      milestones = apply_lookahead(MilestonesFinder.new(milestones_finder_params(args)).execute)
 
       if non_stable_cursor_sort?(args[:sort])
         offset_pagination(milestones)
@@ -49,6 +52,12 @@ module Resolvers
     end
 
     private
+
+    def preloads
+      {
+        releases: :releases
+      }
+    end
 
     def milestones_finder_params(args)
       {
@@ -67,12 +76,6 @@ module Resolvers
 
     def parent_id_parameters(args)
       raise NotImplementedError
-    end
-
-    # MilestonesFinder does not check for current_user permissions,
-    # so for now we need to keep it here.
-    def authorize!
-      Ability.allowed?(context[:current_user], :read_milestone, parent) || raise_resource_not_available_error!
     end
 
     def parse_gids(gids)

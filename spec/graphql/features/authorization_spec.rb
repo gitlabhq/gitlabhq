@@ -179,7 +179,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
   describe 'type and field authorizations together' do
     let(:authorizing_object) { anything }
     let(:permission_1) { permission_collection.first }
-    let(:permission_2) { permission_collection.last }
+    let(:permission_2) { permission_collection.second }
 
     let(:type) do
       type_factory do |type|
@@ -222,6 +222,55 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       end
 
       include_examples 'authorization with a collection of permissions'
+    end
+
+    context 'when the resolver is a subclass of one that authorizes the object' do
+      let(:permission_object_one) { be_nil }
+      let(:permission_object_two) { be_nil }
+      let(:parent) do
+        parent = Class.new(Resolvers::BaseResolver)
+        parent.include(::Gitlab::Graphql::Authorize::AuthorizeResource)
+        parent.authorizes_object!
+        parent.authorize permission_1
+        parent
+      end
+
+      let(:resolver) do
+        simple_resolver(test_object, base_class: parent)
+      end
+
+      include_examples 'authorization with a collection of permissions'
+    end
+
+    context 'when the resolver is a subclass of one that authorizes the object, extra permission' do
+      let(:permission_object_one) { be_nil }
+      let(:permission_object_two) { be_nil }
+      let(:parent) do
+        parent = Class.new(Resolvers::BaseResolver)
+        parent.include(::Gitlab::Graphql::Authorize::AuthorizeResource)
+        parent.authorizes_object!
+        parent.authorize permission_1
+        parent
+      end
+
+      let(:resolver) do
+        resolver = simple_resolver(test_object, base_class: parent)
+        resolver.include(::Gitlab::Graphql::Authorize::AuthorizeResource)
+        resolver.authorize permission_2
+        resolver
+      end
+
+      context 'when the field does not define any permissions' do
+        let(:query_type) do
+          query_factory do |query|
+            query.field :item, type,
+                        null: true,
+                        resolver: resolver
+          end
+        end
+
+        include_examples 'authorization with a collection of permissions'
+      end
     end
 
     context 'when the resolver does not authorize the object, but instead calls authorized_find!' do

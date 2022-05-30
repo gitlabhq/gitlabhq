@@ -1,4 +1,4 @@
-%h3.page-title
+%h1.page-title
   = _('New merge request')
 
 = form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
@@ -6,10 +6,10 @@
     = hidden_field_tag(:nav_source, params[:nav_source])
   .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
     .col-lg-6
-      .card.card-new-merge-request
-        .card-header
+      .card-new-merge-request
+        %h2.gl-font-size-h2
           Source branch
-        .card-body.clearfix
+        .clearfix
           .merge-request-select.dropdown
             = f.hidden_field :source_project_id
             = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
@@ -28,15 +28,15 @@
               = dropdown_filter(_("Search branches"))
               = dropdown_content
               = dropdown_loading
-        .card-footer
+        .gl-bg-gray-50.gl-rounded-base.gl-mx-2.gl-my-4
           = gl_loading_icon(css_class: 'js-source-loading gl-my-3')
           %ul.list-unstyled.mr_source_commit
 
     .col-lg-6
-      .card.card-new-merge-request
-        .card-header
+      .card-new-merge-request
+        %h2.gl-font-size-h2
           Target branch
-        .card-body.clearfix
+        .clearfix
           - projects = target_projects(@project)
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
@@ -56,10 +56,10 @@
               = dropdown_filter(_("Search branches"))
               = dropdown_content
               = dropdown_loading
-        .card-footer
+        .gl-bg-gray-50.gl-rounded-base.gl-mx-2.gl-my-4
           = gl_loading_icon(css_class: 'js-target-loading gl-my-3')
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?
     = form_errors(@merge_request)
-  = f.submit 'Compare branches and continue', class: "gl-button btn btn-confirm mr-compare-btn", data: { qa_selector: "compare_branches_button" }
+  = f.submit 'Compare branches and continue', class: "gl-button btn btn-confirm mr-compare-btn gl-mt-4", data: { qa_selector: "compare_branches_button" }

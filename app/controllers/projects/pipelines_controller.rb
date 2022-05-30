@@ -3,6 +3,7 @@
 class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
   include RedisTracking
+  include ProjectStatsRefreshConflictsGuard
 
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,
@@ -19,6 +20,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
+  before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
 
   before_action do
     push_frontend_feature_flag(:pipeline_tabs_vue, @project)

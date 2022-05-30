@@ -1289,6 +1289,18 @@ RSpec.describe Projects::PipelinesController do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'and project is undergoing stats refresh' do
+        it_behaves_like 'preventing request because of ongoing project stats refresh' do
+          let(:make_request) { delete_pipeline }
+
+          it 'does not delete the pipeline' do
+            make_request
+
+            expect(Ci::Pipeline.exists?(pipeline.id)).to be_truthy
+          end
+        end
+      end
     end
 
     context 'when user has no privileges' do

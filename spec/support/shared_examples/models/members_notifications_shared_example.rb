@@ -33,6 +33,18 @@ RSpec.shared_examples 'members notifications' do |entity_type|
     end
   end
 
+  describe '#after_commit' do
+    context 'on creation of a member requesting access' do
+      let(:member) { build(:"#{entity_type}_member", :access_request) }
+
+      it "calls NotificationService.new_access_request" do
+        expect(notification_service).to receive(:new_access_request).with(member)
+
+        member.save!
+      end
+    end
+  end
+
   describe '#accept_request' do
     let(:member) { create(:"#{entity_type}_member", :access_request) }
 

@@ -245,6 +245,7 @@ class ProjectPolicy < BasePolicy
     enable :set_warn_about_potentially_unwanted_characters
 
     enable :register_project_runners
+    enable :manage_owners
   end
 
   rule { can?(:guest_access) }.policy do

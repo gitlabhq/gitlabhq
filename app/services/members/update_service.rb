@@ -5,6 +5,7 @@ module Members
     # returns the updated member
     def execute(member, permission: :update)
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, action_member_permission(permission, member), member)
+      raise Gitlab::Access::AccessDeniedError if prevent_upgrade_to_owner?(member) || prevent_downgrade_from_owner?(member)
 
       old_access_level = member.human_access
       old_expiry = member.expires_at
@@ -27,6 +28,22 @@ module Members
 
     def downgrading_to_guest?
       params[:access_level] == Gitlab::Access::GUEST
+    end
+
+    def upgrading_to_owner?
+      params[:access_level] == Gitlab::Access::OWNER
+    end
+
+    def downgrading_from_owner?(member)
+      member.owner?
+    end
+
+    def prevent_upgrade_to_owner?(member)
+      upgrading_to_owner? && cannot_assign_owner_responsibilities_to_member_in_project?(member)
+    end
+
+    def prevent_downgrade_from_owner?(member)
+      downgrading_from_owner?(member) && cannot_revoke_owner_responsibilities_from_member_in_project?(member)
     end
   end
 end

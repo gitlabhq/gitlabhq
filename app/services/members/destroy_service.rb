@@ -3,7 +3,12 @@
 module Members
   class DestroyService < Members::BaseService
     def execute(member, skip_authorization: false, skip_subresources: false, unassign_issuables: false, destroy_bot: false)
-      raise Gitlab::Access::AccessDeniedError unless skip_authorization || authorized?(member, destroy_bot)
+      unless skip_authorization
+        raise Gitlab::Access::AccessDeniedError unless authorized?(member, destroy_bot)
+
+        raise Gitlab::Access::AccessDeniedError if destroying_member_with_owner_access_level?(member) &&
+          cannot_revoke_owner_responsibilities_from_member_in_project?(member)
+      end
 
       @skip_auth = skip_authorization
 
@@ -88,6 +93,10 @@ module Members
 
     def can_destroy_bot_member?(member)
       can?(current_user, destroy_bot_member_permission(member), member)
+    end
+
+    def destroying_member_with_owner_access_level?(member)
+      member.owner?
     end
 
     def destroy_member_permission(member)

@@ -41,42 +41,58 @@ RSpec.describe API::Ci::JobArtifacts do
   describe 'DELETE /projects/:id/jobs/:job_id/artifacts' do
     let!(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
-    before do
-      delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+    context 'when project is not undergoing stats refresh' do
+      before do
+        delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+      end
+
+      context 'when user is anonymous' do
+        let(:api_user) { nil }
+
+        it 'does not delete artifacts' do
+          expect(job.job_artifacts.size).to eq 2
+        end
+
+        it 'returns status 401 (unauthorized)' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'with developer' do
+        it 'does not delete artifacts' do
+          expect(job.job_artifacts.size).to eq 2
+        end
+
+        it 'returns status 403 (forbidden)' do
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with authorized user' do
+        let(:maintainer) { create(:project_member, :maintainer, project: project).user }
+        let!(:api_user) { maintainer }
+
+        it 'deletes artifacts' do
+          expect(job.job_artifacts.size).to eq 0
+        end
+
+        it 'returns status 204 (no content)' do
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
     end
 
-    context 'when user is anonymous' do
-      let(:api_user) { nil }
+    context 'when project is undergoing stats refresh' do
+      it_behaves_like 'preventing request because of ongoing project stats refresh' do
+        let(:maintainer) { create(:project_member, :maintainer, project: project).user }
+        let(:api_user) { maintainer }
+        let(:make_request) { delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user) }
 
-      it 'does not delete artifacts' do
-        expect(job.job_artifacts.size).to eq 2
-      end
+        it 'does not delete artifacts' do
+          make_request
 
-      it 'returns status 401 (unauthorized)' do
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
-    end
-
-    context 'with developer' do
-      it 'does not delete artifacts' do
-        expect(job.job_artifacts.size).to eq 2
-      end
-
-      it 'returns status 403 (forbidden)' do
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'with authorized user' do
-      let(:maintainer) { create(:project_member, :maintainer, project: project).user }
-      let!(:api_user) { maintainer }
-
-      it 'deletes artifacts' do
-        expect(job.job_artifacts.size).to eq 0
-      end
-
-      it 'returns status 204 (no content)' do
-        expect(response).to have_gitlab_http_status(:no_content)
+          expect(job.job_artifacts.size).to eq 2
+        end
       end
     end
   end
@@ -130,6 +146,22 @@ RSpec.describe API::Ci::JobArtifacts do
         delete api("/projects/#{project.id}/artifacts", api_user)
 
         expect(response).to have_gitlab_http_status(:accepted)
+      end
+
+      context 'when project is undergoing stats refresh' do
+        let!(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+
+        it_behaves_like 'preventing request because of ongoing project stats refresh' do
+          let(:maintainer) { create(:project_member, :maintainer, project: project).user }
+          let(:api_user) { maintainer }
+          let(:make_request) { delete api("/projects/#{project.id}/artifacts", api_user) }
+
+          it 'does not delete artifacts' do
+            make_request
+
+            expect(job.job_artifacts.size).to eq 2
+          end
+        end
       end
     end
   end

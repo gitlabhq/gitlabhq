@@ -97,9 +97,9 @@ For example, on an environment that has PostgreSQL running on the hosts `host1.e
 
 Service discovery allows GitLab to automatically retrieve a list of PostgreSQL
 hosts to use. It periodically
-checks a DNS A record, using the IPs returned by this record as the addresses
+checks a DNS `A` record, using the IPs returned by this record as the addresses
 for the secondaries. For service discovery to work, all you need is a DNS server
-and an A record containing the IP addresses of your secondaries.
+and an `A` record containing the IP addresses of your secondaries.
 
 When using Omnibus GitLab the provided [Consul](../consul.md) service works as
 a DNS server and returns PostgreSQL addresses via the `postgresql-ha.service.consul`
@@ -125,23 +125,23 @@ record. For example:
 |----------------------|---------------------------------------------------------------------------------------------------|-----------|
 | `nameserver`         | The nameserver to use for looking up the DNS record.                                              | localhost |
 | `record`             | The record to look up. This option is required for service discovery to work.                     |           |
-| `record_type`        | Optional record type to look up, this can be either A or SRV (GitLab 12.3 and later)              | A         |
+| `record_type`        | Optional record type to look up, this can be either `A` or `SRV` (GitLab 12.3 and later)          | `A`         |
 | `port`               | The port of the nameserver.                                                                       | 8600      |
 | `interval`           | The minimum time in seconds between checking the DNS record.                                      | 60        |
 | `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |
 | `use_tcp`            | Lookup DNS resources using TCP instead of UDP                                                     | false     |
 
 If `record_type` is set to `SRV`, then GitLab continues to use round-robin algorithm
-and ignores the `weight` and `priority` in the record. Since SRV records usually
+and ignores the `weight` and `priority` in the record. Since `SRV` records usually
 return hostnames instead of IPs, GitLab needs to look for the IPs of returned hostnames
-in the additional section of the SRV response. If no IP is found for a hostname, GitLab
-needs to query the configured `nameserver` for ANY record for each such hostname looking for A or AAAA
+in the additional section of the `SRV` response. If no IP is found for a hostname, GitLab
+needs to query the configured `nameserver` for ANY record for each such hostname looking for `A` or `AAAA`
 records, eventually dropping this hostname from rotation if it can't resolve its IP.
 
-The `interval` value specifies the _minimum_ time between checks. If the A
+The `interval` value specifies the _minimum_ time between checks. If the `A`
 record has a TTL greater than this value, then service discovery honors said
-TTL. For example, if the TTL of the A record is 90 seconds, then service
-discovery waits at least 90 seconds before checking the A record again.
+TTL. For example, if the TTL of the `A` record is 90 seconds, then service
+discovery waits at least 90 seconds before checking the `A` record again.
 
 When the list of hosts is updated, it might take a while for the old connections
 to be terminated. The `disconnect_timeout` setting can be used to enforce an

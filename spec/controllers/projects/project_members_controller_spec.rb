@@ -170,6 +170,46 @@ RSpec.describe Projects::ProjectMembersController do
           expect(requester.reload.human_access).to eq(label)
         end
       end
+
+      describe 'managing project direct owners' do
+        context 'when a Maintainer tries to elevate another user to OWNER' do
+          it 'does not allow the operation' do
+            params = {
+              project_member: { access_level: Gitlab::Access::OWNER },
+              namespace_id: project.namespace,
+              project_id: project,
+              id: requester
+            }
+
+            put :update, params: params, xhr: true
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when a user with OWNER access tries to elevate another user to OWNER' do
+          # inherited owner role via personal project association
+          let(:user) { project.first_owner }
+
+          before do
+            sign_in(user)
+          end
+
+          it 'returns success' do
+            params = {
+              project_member: { access_level: Gitlab::Access::OWNER },
+              namespace_id: project.namespace,
+              project_id: project,
+              id: requester
+            }
+
+            put :update, params: params, xhr: true
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(requester.reload.access_level).to eq(Gitlab::Access::OWNER)
+          end
+        end
+      end
     end
 
     context 'access expiry date' do
@@ -275,19 +315,40 @@ RSpec.describe Projects::ProjectMembersController do
 
     context 'when member is found' do
       context 'when user does not have enough rights' do
-        before do
-          project.add_developer(user)
+        context 'when user does not have rights to manage other members' do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'returns 404', :aggregate_failures do
+            delete :destroy, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: member
+            }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(project.members).to include member
+          end
         end
 
-        it 'returns 404', :aggregate_failures do
-          delete :destroy, params: {
-                             namespace_id: project.namespace,
-                             project_id: project,
-                             id: member
-                           }
+        context 'when user does not have rights to manage Owner members' do
+          let_it_be(:member) { create(:project_member, project: project, access_level: Gitlab::Access::OWNER) }
 
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(project.members).to include member
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'returns 403', :aggregate_failures do
+            delete :destroy, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: member
+            }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(project.members).to include member
+          end
         end
       end
 
@@ -434,7 +495,7 @@ RSpec.describe Projects::ProjectMembersController do
     end
 
     context 'when member is found' do
-      context 'when user does not have enough rights' do
+      context 'when user does not have rights to manage other members' do
         before do
           project.add_developer(user)
         end

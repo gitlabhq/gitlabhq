@@ -52,6 +52,7 @@ module Types
 
     field :milestone, ::Types::MilestoneType,
           null: true,
+          extras: [:lookahead],
           description: 'Find a milestone.' do
             argument :id, ::Types::GlobalIDType[Milestone], required: true, description: 'Find a milestone by its ID.'
           end
@@ -156,8 +157,9 @@ module Types
       GitlabSchema.find_by_gid(id)
     end
 
-    def milestone(id:)
-      GitlabSchema.find_by_gid(id)
+    def milestone(id:, lookahead:)
+      preloads = [:releases] if lookahead.selects?(:releases)
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(id.model_class, id.model_id, preloads).find
     end
 
     def container_repository(id:)

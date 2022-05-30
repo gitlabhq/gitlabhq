@@ -25,7 +25,7 @@ module QA
       end
 
       def sandbox_name
-        Runtime::Env.sandbox_name || 'gitlab-qa-sandbox-group'
+        @sandbox_name ||= Runtime::Env.sandbox_name || "gitlab-qa-sandbox-group-#{Time.now.wday}"
       end
     end
   end

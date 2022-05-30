@@ -877,7 +877,7 @@ module Gitlab
           gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :project_entity })
         }
 
-        counters[:total] = add(*counters.values)
+        counters[:total] = add_metric('CountImportedProjectsTotalMetric', time_frame: time_frame)
 
         counters
       end

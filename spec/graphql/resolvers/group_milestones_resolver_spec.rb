@@ -126,16 +126,6 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
       end
     end
 
-    context 'when user cannot read milestones' do
-      it 'generates an error' do
-        unauthorized_user = create(:user)
-
-        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
-          resolve_group_milestones({}, { current_user: unauthorized_user })
-        end
-      end
-    end
-
     context 'when including descendant milestones in a public group' do
       let_it_be(:group) { create(:group, :public) }
 

@@ -199,7 +199,6 @@ class Member < ApplicationRecord
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? && !member.invite_accepted_at? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
-  after_create :send_request, if: :request?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
@@ -207,6 +206,7 @@ class Member < ApplicationRecord
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_save :log_invitation_token_cleanup
 
+  after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
   after_commit on: [:create, :update], unless: :importing? do
     refresh_member_authorized_projects(blocking: blocking_refresh)
   end

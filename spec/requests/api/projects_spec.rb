@@ -3106,6 +3106,13 @@ RSpec.describe API::Projects do
       expect(json_response['error']).to eq 'group_access does not have a valid value'
     end
 
+    it "returns a 400 error when the project-group share is created with an OWNER access level" do
+      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::OWNER }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq 'group_access does not have a valid value'
+    end
+
     it "returns a 409 error when link is not saved" do
       allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
         .and_return({ status: :error, http_status: 409, message: 'error' })

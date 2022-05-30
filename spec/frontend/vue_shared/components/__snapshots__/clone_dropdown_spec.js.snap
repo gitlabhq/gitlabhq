@@ -12,7 +12,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
   right="true"
   size="medium"
   text="Clone"
-  variant="info"
+  variant="confirm"
 >
   <div
     class="pb-2 mx-1"

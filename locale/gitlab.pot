@@ -6490,6 +6490,9 @@ msgstr ""
 msgid "Branch not loaded - %{branchId}"
 msgstr ""
 
+msgid "Branch rules"
+msgstr ""
+
 msgid "Branches"
 msgstr ""
 
@@ -11944,6 +11947,9 @@ msgstr ""
 msgid "Define how approval rules are applied to merge requests."
 msgstr ""
 
+msgid "Define rules for who can push, merge, and the required approvals for each branch."
+msgstr ""
+
 msgid "Definition"
 msgstr ""
 
@@ -14558,9 +14564,6 @@ msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd}
 msgstr ""
 
 msgid "Epics|Assign Epic"
-msgstr ""
-
-msgid "Epics|Enter a title for your epic"
 msgstr ""
 
 msgid "Epics|Leave empty to inherit from milestone dates"
@@ -39386,6 +39389,9 @@ msgid "Tip: add a %{linkStart}CODEOWNERS%{linkEnd} to automatically add approver
 msgstr ""
 
 msgid "Title"
+msgstr ""
+
+msgid "Title (required)"
 msgstr ""
 
 msgid "Title:"

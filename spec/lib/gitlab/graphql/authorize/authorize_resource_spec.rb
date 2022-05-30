@@ -103,4 +103,36 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
         .to contain_exactly(:base_authorization, :sub_authorization)
     end
   end
+
+  describe 'authorizes_object?' do
+    it 'is false by default' do
+      a_class = Class.new do
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+      end
+
+      expect(a_class).not_to be_authorizes_object
+    end
+
+    it 'is true after calling authorizes_object!' do
+      a_class = Class.new do
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+
+        authorizes_object!
+      end
+
+      expect(a_class).to be_authorizes_object
+    end
+
+    it 'is true if a parent authorizes_object' do
+      parent = Class.new do
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+
+        authorizes_object!
+      end
+
+      child = Class.new(parent)
+
+      expect(child).to be_authorizes_object
+    end
+  end
 end
