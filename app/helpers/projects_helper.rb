@@ -596,6 +596,7 @@ module ProjectsHelper
     feature = project.project_feature
     {
       packagesEnabled: !!project.packages_enabled,
+      packageRegistryAccessLevel: feature.package_registry_access_level,
       visibilityLevel: project.visibility_level,
       requestAccessEnabled: !!project.request_access_enabled,
       issuesAccessLevel: feature.issues_access_level,

@@ -182,6 +182,38 @@ class Deployment < ApplicationRecord
     find(ids)
   end
 
+  # This method returns the deployment records of the last deployment pipeline, that successfully executed for the given environment.
+  # e.g.
+  # A pipeline contains
+  #   - deploy job A => production environment
+  #   - deploy job B => production environment
+  # In this case, `last_deployment_group` returns both deployments.
+  #
+  # NOTE: Preload environment.last_deployment and pipeline.latest_successful_builds prior to avoid N+1.
+  def self.last_deployment_group_for_environment(env)
+    return self.none unless env.last_deployment_pipeline&.latest_successful_builds&.present?
+
+    BatchLoader.for(env).batch do |environments, loader|
+      latest_successful_build_ids = []
+      environments_hash = {}
+
+      environments.each do |environment|
+        environments_hash[environment.id] = environment
+
+        # Refer comment note above, if not preloaded this can lead to N+1.
+        latest_successful_build_ids << environment.last_deployment_pipeline.latest_successful_builds.map(&:id)
+      end
+
+      Deployment
+        .where(deployable_type: 'CommitStatus', deployable_id: latest_successful_build_ids.flatten)
+        .preload(last_deployment_group_associations)
+        .group_by { |deployment| deployment.environment_id }
+        .each do |env_id, deployment_group|
+          loader.call(environments_hash[env_id], deployment_group)
+        end
+    end
+  end
+
   def self.distinct_on_environment
     order('environment_id, deployments.id DESC')
       .select('DISTINCT ON (environment_id) deployments.*')
@@ -439,6 +471,18 @@ class Deployment < ApplicationRecord
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
   end
+
+  def self.last_deployment_group_associations
+    {
+      deployable: {
+        pipeline: {
+          manual_actions: []
+        }
+      }
+    }
+  end
+
+  private_class_method :last_deployment_group_associations
 end
 
 Deployment.prepend_mod_with('Deployment')

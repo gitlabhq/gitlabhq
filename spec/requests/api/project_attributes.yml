@@ -122,6 +122,7 @@ project_feature:
     - id
     - created_at
     - metrics_dashboard_access_level
+    - package_registry_access_level
     - project_id
     - updated_at
   computed_attributes:

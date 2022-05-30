@@ -7348,6 +7348,44 @@ RSpec.describe Project, factory_default: :keep do
     subject { create(:project).packages_enabled }
 
     it { is_expected.to be true }
+
+    context 'when packages_enabled is enabled' do
+      where(:project_visibility, :expected_result) do
+        Gitlab::VisibilityLevel::PRIVATE  | ProjectFeature::PRIVATE
+        Gitlab::VisibilityLevel::INTERNAL | ProjectFeature::ENABLED
+        Gitlab::VisibilityLevel::PUBLIC   | ProjectFeature::PUBLIC
+      end
+
+      with_them do
+        it 'set package_registry_access_level to correct value' do
+          project = create(:project,
+            visibility_level: project_visibility,
+            packages_enabled: false,
+            package_registry_access_level: ProjectFeature::DISABLED
+          )
+
+          project.update!(packages_enabled: true)
+
+          expect(project.package_registry_access_level).to eq(expected_result)
+        end
+      end
+    end
+
+    context 'when packages_enabled is disabled' do
+      Gitlab::VisibilityLevel.options.values.each do |project_visibility|
+        it 'set package_registry_access_level to DISABLED' do
+          project = create(:project,
+            visibility_level: project_visibility,
+            packages_enabled: true,
+            package_registry_access_level: ProjectFeature::PUBLIC
+          )
+
+          project.update!(packages_enabled: false)
+
+          expect(project.package_registry_access_level).to eq(ProjectFeature::DISABLED)
+        end
+      end
+    end
   end
 
   describe '#related_group_ids' do

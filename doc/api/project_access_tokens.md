@@ -87,6 +87,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a [project access token](../user/project/settings/project_access_tokens.md).
 
+**NOTE:** Project Maintainers cannot create project access tokens with Owner (50) access level.
+
 ```plaintext
 POST projects/:id/access_tokens
 ```

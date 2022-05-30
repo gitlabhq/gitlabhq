@@ -1,4 +1,4 @@
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -61,7 +61,7 @@ describe('ValueStreamMetrics', () => {
     it('will display a loader with pending requests', async () => {
       await nextTick();
 
-      expect(wrapper.findComponent(GlSkeletonLoading).exists()).toBe(true);
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
     });
 
     describe('with data loaded', () => {
@@ -88,7 +88,7 @@ describe('ValueStreamMetrics', () => {
       });
 
       it('will not display a loading icon', () => {
-        expect(wrapper.find(GlSkeletonLoading).exists()).toBe(false);
+        expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(false);
       });
 
       describe('filterFn', () => {

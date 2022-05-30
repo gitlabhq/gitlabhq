@@ -121,6 +121,8 @@ class Project < ApplicationRecord
   before_save :ensure_runners_token
   before_validation :ensure_project_namespace_in_sync
 
+  before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
+
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
@@ -445,7 +447,7 @@ class Project < ApplicationRecord
     :pages_enabled?, :analytics_enabled?, :snippets_enabled?, :public_pages?, :private_pages?,
     :merge_requests_access_level, :forking_access_level, :issues_access_level,
     :wiki_access_level, :snippets_access_level, :builds_access_level,
-    :repository_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level,
+    :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level,
     :operations_enabled?, :operations_access_level, :security_and_compliance_access_level,
     :container_registry_access_level, :container_registry_enabled?,
     to: :project_feature, allow_nil: true
@@ -3148,6 +3150,23 @@ class Project < ApplicationRecord
 
     if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
       raise ExportLimitExceeded, _('The project size exceeds the export limit.')
+    end
+  end
+
+  def set_package_registry_access_level
+    return if !project_feature || project_feature.package_registry_access_level_changed?
+
+    self.project_feature.package_registry_access_level = packages_enabled ? enabled_package_registry_access_level_by_project_visibility : ProjectFeature::DISABLED
+  end
+
+  def enabled_package_registry_access_level_by_project_visibility
+    case visibility_level
+    when PUBLIC
+      ProjectFeature::PUBLIC
+    when INTERNAL
+      ProjectFeature::ENABLED
+    else
+      ProjectFeature::PRIVATE
     end
   end
 end

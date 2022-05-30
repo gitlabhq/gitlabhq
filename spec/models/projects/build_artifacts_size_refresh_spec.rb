@@ -49,7 +49,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
 
     describe '#process!' do
       context 'when refresh state is created' do
-        let!(:refresh) do
+        let_it_be_with_reload(:refresh) do
           create(
             :project_build_artifacts_size_refresh,
             :created,
@@ -59,25 +59,31 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
           )
         end
 
+        let!(:last_job_artifact_id_on_refresh_start) { create(:ci_job_artifact, project: refresh.project) }
+
         before do
           stats = create(:project_statistics, project: refresh.project, build_artifacts_size: 120)
           stats.increment_counter(:build_artifacts_size, 30)
         end
 
         it 'transitions the state to running' do
-          expect { refresh.process! }.to change { refresh.reload.state }.to(described_class::STATES[:running])
+          expect { refresh.process! }.to change { refresh.state }.to(described_class::STATES[:running])
         end
 
         it 'sets the refresh_started_at' do
-          expect { refresh.process! }.to change { refresh.reload.refresh_started_at.to_i }.to(now.to_i)
+          expect { refresh.process! }.to change { refresh.refresh_started_at.to_i }.to(now.to_i)
+        end
+
+        it 'sets last_job_artifact_id_on_refresh_start' do
+          expect { refresh.process! }.to change { refresh.last_job_artifact_id_on_refresh_start.to_i }.to(last_job_artifact_id_on_refresh_start.id)
         end
 
         it 'bumps the updated_at' do
-          expect { refresh.process! }.to change { refresh.reload.updated_at.to_i }.to(now.to_i)
+          expect { refresh.process! }.to change { refresh.updated_at.to_i }.to(now.to_i)
         end
 
         it 'resets the build artifacts size stats' do
-          expect { refresh.process! }.to change { refresh.project.statistics.reload.build_artifacts_size }.to(0)
+          expect { refresh.process! }.to change { refresh.project.statistics.build_artifacts_size }.to(0)
         end
 
         it 'resets the counter attribute to zero' do
@@ -214,7 +220,8 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         project: project,
         updated_at: 2.days.ago,
         refresh_started_at: 10.days.ago,
-        last_job_artifact_id: artifact_1.id
+        last_job_artifact_id: artifact_1.id,
+        last_job_artifact_id_on_refresh_start: artifact_3.id
       )
     end
 

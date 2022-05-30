@@ -479,7 +479,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     context 'when matching action is defined' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, :success) }
 
       let!(:deployment) do
         create(:deployment, :success,
@@ -549,7 +549,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when matching action is defined' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build_a) { create(:ci_build, pipeline: pipeline) }
+      let(:build_a) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
         create(:deployment, :success,
@@ -650,8 +650,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when there are more then one stop action for the environment' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build_a) { create(:ci_build, pipeline: pipeline) }
-      let(:build_b) { create(:ci_build, pipeline: pipeline) }
+      let(:build_a) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:build_b) { create(:ci_build, :success, pipeline: pipeline) }
 
       let!(:close_actions) do
         [
@@ -684,9 +684,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         expect(actions.pluck(:user)).to match_array(close_actions.pluck(:user))
       end
 
-      context 'when there are failed deployment jobs' do
+      context 'when there are failed builds' do
         before do
-          create(:ci_build, pipeline: pipeline, name: 'close_app_c')
+          create(:ci_build, :failed, pipeline: pipeline, name: 'close_app_c')
 
           create(:deployment, :failed,
             environment: environment,
@@ -694,11 +694,11 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
             on_stop: 'close_app_c')
         end
 
-        it 'returns only stop actions from successful deployment jobs' do
+        it 'returns only stop actions from successful builds' do
           actions = subject
 
           expect(actions).to match_array(close_actions)
-          expect(actions.count).to eq(environment.successful_deployments.count)
+          expect(actions.count).to eq(pipeline.latest_successful_builds.count)
         end
       end
     end
@@ -715,8 +715,8 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when there are multiple deployments with actions' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline) }
-      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline) }
+      let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline) }
+      let(:ci_build_b) { create(:ci_build, :success, project: project, pipeline: pipeline) }
       let!(:ci_build_c) { create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'close_app_a') }
       let!(:ci_build_d) { create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'close_app_b') }
 
@@ -732,7 +732,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       before do
         # Create failed deployment without stop_action.
-        build = create(:ci_build, project: project, pipeline: pipeline)
+        build = create(:ci_build, :failed, project: project, pipeline: pipeline)
         create(:deployment, :failed, project: project, environment: environment, deployable: build)
       end
 
@@ -754,10 +754,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     context 'when there are deployments for multiple pipelines' do
       let(:pipeline_a) { create(:ci_pipeline, project: project) }
       let(:pipeline_b) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, project: project, pipeline: pipeline_a) }
-      let(:ci_build_b) { create(:ci_build, project: project, pipeline: pipeline_b) }
-      let(:ci_build_c) { create(:ci_build, project: project, pipeline: pipeline_a) }
-      let(:ci_build_d) { create(:ci_build, project: project, pipeline: pipeline_a) }
+      let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+      let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
+      let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+      let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
 
       # Successful deployments for pipeline_a
       let!(:deployment_a) { create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a) }
@@ -773,6 +773,16 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       it 'returns the successful deployment jobs for the last deployment pipeline' do
         expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(batch_load_environment_last_deployment_group: false)
+        end
+
+        it 'returns the successful deployment jobs for the last deployment pipeline' do
+          expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
+        end
       end
     end
   end

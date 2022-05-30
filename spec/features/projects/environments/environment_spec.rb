@@ -261,6 +261,8 @@ RSpec.describe 'Environment' do
 
           context 'when environment is available' do
             context 'with stop action' do
+              let(:build) { create(:ci_build, :success, pipeline: pipeline, environment: environment.name) }
+
               let(:action) do
                 create(:ci_build, :manual, pipeline: pipeline,
                        name: 'close_app',

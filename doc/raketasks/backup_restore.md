@@ -1708,6 +1708,7 @@ decrypt those columns, preventing access to the following items:
 - [Project error tracking](../operations/error_tracking.md)
 - [Runner authentication](../ci/runners/index.md)
 - [Project mirroring](../user/project/repository/mirror/index.md)
+- [Integrations](../user/project/integrations/index.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
 In cases like CI/CD variables and runner authentication, you can experience
@@ -1882,12 +1883,14 @@ A similar strategy can be employed for the remaining features. By removing the
 data that can't be decrypted, GitLab can be returned to operation, and the
 lost data can be manually replaced.
 
-#### Fix project integrations
+#### Fix integrations and webhooks
 
-If you've lost your secrets, the [projects' integrations settings pages](../user/project/integrations/index.md)
-are probably displaying `500` error messages.
+If you've lost your secrets, the [integrations settings pages](../user/project/integrations/index.md)
+and [webhooks settings pages](../user/project/integrations/webhooks.md) are probably displaying `500` error messages.
 
-The fix is to truncate the `web_hooks` table:
+The fix is to truncate the affected tables (those containing encrypted columns).
+This deletes all your configured integrations, webhooks, and related metadata.
+You should verify that the secrets are the root cause before deleting any data.
 
 1. Enter the database console:
 
@@ -1915,11 +1918,11 @@ The fix is to truncate the `web_hooks` table:
    sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
-1. Truncate the table:
+1. Truncate the following tables:
 
    ```sql
    -- truncate web_hooks table
-   TRUNCATE web_hooks CASCADE;
+   TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs;
    ```
 
 ### Container Registry push failures after restoring from a backup

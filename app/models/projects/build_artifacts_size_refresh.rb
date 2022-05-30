@@ -36,6 +36,7 @@ module Projects
       before_transition created: :running do |refresh|
         refresh.reset_project_statistics!
         refresh.refresh_started_at = Time.zone.now
+        refresh.last_job_artifact_id_on_refresh_start = refresh.project.job_artifacts.last&.id
       end
 
       before_transition running: any do |refresh, transition|
@@ -83,9 +84,9 @@ module Projects
 
     def next_batch(limit:)
       project.job_artifacts.select(:id, :size)
-        .created_at_before(refresh_started_at)
+        .id_before(last_job_artifact_id_on_refresh_start)
         .id_after(last_job_artifact_id.to_i)
-        .ordered_by_created_at_and_id_asc
+        .ordered_by_id
         .limit(limit)
     end
 

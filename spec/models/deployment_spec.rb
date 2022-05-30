@@ -640,6 +640,143 @@ RSpec.describe Deployment do
         is_expected.to contain_exactly(deployment1, deployment2)
       end
     end
+
+    describe 'last_deployment_group_for_environment' do
+      def subject_method(environment)
+        described_class.last_deployment_group_for_environment(environment)
+      end
+
+      let!(:project) { create(:project, :repository) }
+      let!(:environment) { create(:environment, project: project) }
+
+      context 'when there are no deployments and builds' do
+        it do
+          expect(subject_method(environment)).to eq(Deployment.none)
+        end
+      end
+
+      context 'when there are no successful builds' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:ci_build) { create(:ci_build, :running, project: project, pipeline: pipeline) }
+
+        before do
+          create(:deployment, :success, environment: environment, project: project, deployable: ci_build)
+        end
+
+        it do
+          expect(subject_method(environment)).to eq(Deployment.none)
+        end
+      end
+
+      context 'when there are deployments for multiple pipelines' do
+        let(:pipeline_a) { create(:ci_pipeline, project: project) }
+        let(:pipeline_b) { create(:ci_pipeline, project: project) }
+        let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
+        let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
+
+        # Successful deployments for pipeline_a
+        let!(:deployment_a) do
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        end
+
+        let!(:deployment_b) do
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_c)
+        end
+
+        before do
+          # Failed deployment for pipeline_a
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
+
+          # Failed deployment for pipeline_b
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+        end
+
+        it 'returns the successful deployment jobs for the last deployment pipeline' do
+          expect(subject_method(environment).pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
+        end
+      end
+
+      context 'when there are many environments' do
+        let(:environment_b) { create(:environment, project: project) }
+
+        let(:pipeline_a) { create(:ci_pipeline, project: project) }
+        let(:pipeline_b) { create(:ci_pipeline, project: project) }
+        let(:pipeline_c) { create(:ci_pipeline, project: project) }
+        let(:pipeline_d) { create(:ci_pipeline, project: project) }
+
+        # Builds for first environment: 'environment' with pipeline_a and pipeline_b
+        let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
+        let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
+        let!(:stop_env_a) { create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_env_a') }
+
+        # Builds for second environment: 'environment_b' with pipeline_c and pipeline_d
+        let(:ci_build_e) { create(:ci_build, :success, project: project, pipeline: pipeline_c) }
+        let(:ci_build_f) { create(:ci_build, :failed, project: project, pipeline: pipeline_d) }
+        let(:ci_build_g) { create(:ci_build, :success, project: project, pipeline: pipeline_c) }
+        let(:ci_build_h) { create(:ci_build, :failed, project: project, pipeline: pipeline_c) }
+        let!(:stop_env_b) { create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_env_b') }
+
+        # Successful deployments for 'environment' from pipeline_a
+        let!(:deployment_a) do
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        end
+
+        let!(:deployment_b) do
+          create(:deployment, :success,
+            project: project, environment: environment, deployable: ci_build_c, on_stop: 'stop_env_a')
+        end
+
+        # Successful deployments for 'environment_b' from pipeline_c
+        let!(:deployment_c) do
+          create(:deployment, :success, project: project, environment: environment_b, deployable: ci_build_e)
+        end
+
+        let!(:deployment_d) do
+          create(:deployment, :success,
+            project: project, environment: environment_b, deployable: ci_build_g, on_stop: 'stop_env_b')
+        end
+
+        before do
+          # Failed deployment for 'environment' from pipeline_a and pipeline_b
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+
+          # Failed deployment for 'environment_b' from pipeline_c and pipeline_d
+          create(:deployment, :failed, project: project, environment: environment_b, deployable: ci_build_h)
+          create(:deployment, :failed, project: project, environment: environment_b, deployable: ci_build_f)
+        end
+
+        it 'batch loads for environments' do
+          environments = [environment, environment_b]
+
+          # Loads Batch loader
+          environments.each do |env|
+            subject_method(env)
+          end
+
+          expect(subject_method(environments.first).pluck(:id))
+            .to contain_exactly(deployment_a.id, deployment_b.id)
+
+          expect { subject_method(environments.second).pluck(:id) }.not_to exceed_query_limit(0)
+
+          expect(subject_method(environments.second).pluck(:id))
+            .to contain_exactly(deployment_c.id, deployment_d.id)
+
+          expect(subject_method(environments.first).map(&:stop_action).compact)
+            .to contain_exactly(stop_env_a)
+
+          expect { subject_method(environments.second).map(&:stop_action) }
+            .not_to exceed_query_limit(0)
+
+          expect(subject_method(environments.second).map(&:stop_action).compact)
+            .to contain_exactly(stop_env_b)
+        end
+      end
+    end
   end
 
   describe 'latest_for_sha' do

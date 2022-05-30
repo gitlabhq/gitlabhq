@@ -274,6 +274,7 @@ ci_pipelines:
 - security_findings
 - daily_build_group_report_results
 - latest_builds
+- latest_successful_builds
 - daily_report_results
 - latest_builds_report_results
 - messages

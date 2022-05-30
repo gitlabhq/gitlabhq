@@ -175,10 +175,8 @@
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
 
 .yaml-lint-patterns: &yaml-lint-patterns
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*.yml"
-  - "data/**/*.yml"
-  - "lib/gitlab/ci/templates/**/*.yml"
+  - "*.yml"
+  - "**/*.yml"
 
 .docs-patterns: &docs-patterns
   - ".gitlab/route-map.yml"

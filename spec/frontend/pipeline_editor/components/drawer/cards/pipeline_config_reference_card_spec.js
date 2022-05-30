@@ -1,9 +1,12 @@
 import { getByRole } from '@testing-library/dom';
 import { mount } from '@vue/test-utils';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PipelineConfigReferenceCard from '~/pipeline_editor/components/drawer/cards/pipeline_config_reference_card.vue';
+import { pipelineEditorTrackingOptions } from '~/pipeline_editor/constants';
 
 describe('Pipeline config reference card', () => {
   let wrapper;
+  let trackingSpy;
 
   const defaultProvide = {
     ciExamplesHelpPagePath: 'help/ci/examples/',
@@ -20,7 +23,7 @@ describe('Pipeline config reference card', () => {
     });
   };
 
-  const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name }).href;
+  const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name });
   const findCiExamplesLink = () => getLinkByName(/CI\/CD examples and templates/i);
   const findCiIntroLink = () => getLinkByName(/GitLab CI\/CD concepts/i);
   const findNeedsLink = () => getLinkByName(/Needs keyword/i);
@@ -43,9 +46,44 @@ describe('Pipeline config reference card', () => {
   });
 
   it('renders the links', () => {
-    expect(findCiExamplesLink()).toContain(defaultProvide.ciExamplesHelpPagePath);
-    expect(findCiIntroLink()).toContain(defaultProvide.ciHelpPagePath);
-    expect(findNeedsLink()).toContain(defaultProvide.needsHelpPagePath);
-    expect(findYmlSyntaxLink()).toContain(defaultProvide.ymlHelpPagePath);
+    expect(findCiExamplesLink().href).toContain(defaultProvide.ciExamplesHelpPagePath);
+    expect(findCiIntroLink().href).toContain(defaultProvide.ciHelpPagePath);
+    expect(findNeedsLink().href).toContain(defaultProvide.needsHelpPagePath);
+    expect(findYmlSyntaxLink().href).toContain(defaultProvide.ymlHelpPagePath);
+  });
+
+  describe('tracking', () => {
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    const testTracker = async (element, expectedAction) => {
+      const { label } = pipelineEditorTrackingOptions;
+
+      await element.click();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, expectedAction, {
+        label,
+      });
+    };
+
+    it('tracks help page links', async () => {
+      const {
+        CI_EXAMPLES_LINK,
+        CI_HELP_LINK,
+        CI_NEEDS_LINK,
+        CI_YAML_LINK,
+      } = pipelineEditorTrackingOptions.actions.helpDrawerLinks;
+
+      testTracker(findCiExamplesLink(), CI_EXAMPLES_LINK);
+      testTracker(findCiIntroLink(), CI_HELP_LINK);
+      testTracker(findNeedsLink(), CI_NEEDS_LINK);
+      testTracker(findYmlSyntaxLink(), CI_YAML_LINK);
+    });
   });
 });

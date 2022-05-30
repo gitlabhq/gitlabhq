@@ -6,7 +6,7 @@ const twoFactorNode = document.querySelector('.js-two-factor-auth');
 const skippable = twoFactorNode ? parseBoolean(twoFactorNode.dataset.twoFactorSkippable) : false;
 
 if (skippable) {
-  const button = `<br/><a class="btn btn-sm btn-confirm gl-mt-3" data-qa-selector="configure_it_later_button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>`;
+  const button = `<br/><a class="btn gl-button btn-sm btn-confirm gl-mt-3" data-qa-selector="configure_it_later_button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>`;
   const flashAlert = document.querySelector('.flash-alert');
   if (flashAlert) flashAlert.insertAdjacentHTML('beforeend', button);
 }

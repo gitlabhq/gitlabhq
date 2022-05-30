@@ -46,7 +46,7 @@ FactoryBot.define do
       after(:create) do |environment, evaluator|
         pipeline = create(:ci_pipeline, project: environment.project)
 
-        deployable = create(:ci_build, name: "#{environment.name}:deploy",
+        deployable = create(:ci_build, :success, name: "#{environment.name}:deploy",
                                        pipeline: pipeline)
 
         deployment = create(:deployment,

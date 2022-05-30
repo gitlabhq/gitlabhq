@@ -212,7 +212,10 @@ RSpec.describe EnvironmentSerializer do
       upcoming_deployment = nil
       create(:environment, project: project).tap do |environment|
         create(:deployment, :success, environment: environment, project: project)
-        last_deployment = create(:deployment, :success, environment: environment, project: project)
+
+        create(:ci_build, :success, project: project).tap do |build|
+          last_deployment = create(:deployment, :success, environment: environment, project: project, deployable: build)
+        end
 
         create(:deployment, :running, environment: environment, project: project)
         upcoming_deployment = create(:deployment, :running, environment: environment, project: project)
@@ -227,11 +230,22 @@ RSpec.describe EnvironmentSerializer do
 
   def create_environment_with_associations(project)
     create(:environment, project: project).tap do |environment|
-      pipeline = create(:ci_pipeline, project: project)
-      manual_build = create(:ci_build, :manual, project: project, pipeline: pipeline, environment: environment.name)
-      scheduled_build = create(:ci_build, :scheduled, project: project, pipeline: pipeline, environment: environment.name)
-      create(:deployment, :success, environment: environment, project: project, deployable: manual_build)
-      create(:deployment, :running, environment: environment, project: project, deployable: scheduled_build)
+      create(:ci_pipeline, project: project).tap do |pipeline|
+        create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'stop-action',
+            environment: environment.name)
+
+        create(:ci_build, :scheduled, project: project, pipeline: pipeline,
+          environment: environment.name).tap do |scheduled_build|
+            create(:deployment, :running, environment: environment, project: project,
+              deployable: scheduled_build)
+          end
+
+        create(:ci_build, :success, :manual, project: project, pipeline: pipeline,
+          environment: environment.name).tap do |manual_build|
+            create(:deployment, :success, environment: environment, project: project,
+              deployable: manual_build, on_stop: 'stop-action')
+          end
+      end
     end
   end
 end

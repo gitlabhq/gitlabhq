@@ -52,19 +52,30 @@ class EnvironmentSerializer < BaseSerializer
   end
 
   def batch_load(resource)
+    temp_deployment_associations = deployment_associations
+
     resource = resource.preload(environment_associations.except(:last_deployment, :upcoming_deployment))
 
-    Preloaders::Environments::DeploymentPreloader.new(resource)
-      .execute_with_union(:last_deployment, deployment_associations)
+    if ::Feature.enabled?(:batch_load_environment_last_deployment_group, resource.first&.project)
+      temp_deployment_associations[:deployable][:pipeline][:latest_successful_builds] = []
+    end
 
     Preloaders::Environments::DeploymentPreloader.new(resource)
-      .execute_with_union(:upcoming_deployment, deployment_associations)
+      .execute_with_union(:last_deployment, temp_deployment_associations)
+
+    Preloaders::Environments::DeploymentPreloader.new(resource)
+      .execute_with_union(:upcoming_deployment, temp_deployment_associations)
 
     resource.to_a.tap do |environments|
       environments.each do |environment|
         # Batch loading the commits of the deployments
         environment.last_deployment&.commit&.try(:lazy_author)
         environment.upcoming_deployment&.commit&.try(:lazy_author)
+
+        if ::Feature.enabled?(:batch_load_environment_last_deployment_group, environment.project)
+          # Batch loading last_deployment_group which is called later by environment.stop_actions
+          environment.last_deployment_group
+        end
       end
     end
   end
@@ -89,10 +100,11 @@ class EnvironmentSerializer < BaseSerializer
         user: [],
         metadata: [],
         pipeline: {
-          manual_actions: [:metadata],
+          manual_actions: [:metadata, :deployment],
           scheduled_actions: [:metadata]
         },
-        project: project_associations
+        project: project_associations,
+        deployment: []
       }
     }
   end

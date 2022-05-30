@@ -73,6 +73,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    describe '#latest_successful_builds' do
+      it 'has a one to many relationship with its latest successful builds' do
+        _old_build = create(:ci_build, :retried, pipeline: pipeline)
+        _expired_build = create(:ci_build, :expired, pipeline: pipeline)
+        _failed_builds = create_list(:ci_build, 2, :failed, pipeline: pipeline)
+        successful_builds = create_list(:ci_build, 2, :success, pipeline: pipeline)
+
+        expect(pipeline.latest_successful_builds).to contain_exactly(successful_builds.first, successful_builds.second)
+      end
+    end
+
     describe '#downloadable_artifacts' do
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }

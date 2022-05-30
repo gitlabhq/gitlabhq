@@ -1,6 +1,7 @@
 - page_title _('Preferences')
 - @content_class = "limit-container-width" unless fluid_layout
 - user_theme_id = Gitlab::Themes.for_user(@user).id
+- user_color_schema_id = Gitlab::ColorSchemes.for_user(@user).id
 - user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json
 - @themes = Gitlab::Themes::available_themes.to_json
 - data_attributes = { themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path }
@@ -20,8 +21,9 @@
         - Gitlab::Themes.each do |theme|
           %label.col-6.col-sm-4.col-md-3.gl-mb-5.gl-text-center
             .preview{ class: theme.css_class }
-            = f.radio_button :theme_id, theme.id, checked: user_theme_id == theme.id
-            = theme.name
+            = f.gitlab_ui_radio_component :theme_id, theme.id,
+              theme.name,
+              radio_options: { checked: user_theme_id == theme.id }
 
     .col-sm-12
       %hr
@@ -38,8 +40,9 @@
       - Gitlab::ColorSchemes.each do |scheme|
         = label_tag do
           .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
-          = f.radio_button :color_scheme_id, scheme.id
-          = scheme.name
+          = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
+             scheme.name,
+             radio_options: { checked: user_color_schema_id == scheme.id }
 
     .col-sm-12
       %hr

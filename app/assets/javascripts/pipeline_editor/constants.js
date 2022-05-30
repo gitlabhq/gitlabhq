@@ -55,10 +55,25 @@ export const FILE_TREE_TIP_DISMISSED_KEY = 'pipeline_editor_file_tree_tip_dismis
 
 export const STARTER_TEMPLATE_NAME = 'Getting-Started';
 
+export const CI_EXAMPLES_LINK = 'CI_EXAMPLES_LINK';
+export const CI_HELP_LINK = 'CI_HELP_LINK';
+export const CI_NEEDS_LINK = 'CI_NEEDS_LINK';
+export const CI_RUNNERS_LINK = 'CI_RUNNERS_LINK';
+export const CI_YAML_LINK = 'CI_YAML_LINK';
+
 export const pipelineEditorTrackingOptions = {
   label: 'pipeline_editor',
   actions: {
-    browse_templates: 'browse_templates',
+    browseTemplates: 'browse_templates',
+    closeHelpDrawer: 'close_help_drawer',
+    helpDrawerLinks: {
+      [CI_EXAMPLES_LINK]: 'visit_help_drawer_link_ci_examples',
+      [CI_HELP_LINK]: 'visit_help_drawer_link_ci_help',
+      [CI_NEEDS_LINK]: 'visit_help_drawer_link_needs',
+      [CI_RUNNERS_LINK]: 'visit_help_drawer_link_runners',
+      [CI_YAML_LINK]: 'visit_help_drawer_link_yaml',
+    },
+    openHelpDrawer: 'open_help_drawer',
   },
 };
 

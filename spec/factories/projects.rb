@@ -29,6 +29,7 @@ FactoryBot.define do
       merge_requests_access_level { ProjectFeature::ENABLED }
       repository_access_level { ProjectFeature::ENABLED }
       analytics_access_level { ProjectFeature::ENABLED }
+      package_registry_access_level { ProjectFeature::ENABLED }
       pages_access_level do
         visibility_level == Gitlab::VisibilityLevel::PUBLIC ? ProjectFeature::ENABLED : ProjectFeature::PRIVATE
       end
@@ -67,6 +68,7 @@ FactoryBot.define do
         forking_access_level: evaluator.forking_access_level,
         merge_requests_access_level: merge_requests_access_level,
         repository_access_level: evaluator.repository_access_level,
+        package_registry_access_level: evaluator.package_registry_access_level,
         pages_access_level: evaluator.pages_access_level,
         metrics_dashboard_access_level: evaluator.metrics_dashboard_access_level,
         operations_access_level: evaluator.operations_access_level,

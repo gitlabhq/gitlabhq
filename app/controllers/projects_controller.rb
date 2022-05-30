@@ -43,6 +43,7 @@ class ProjectsController < Projects::ApplicationController
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_assignees)
+    push_frontend_feature_flag(:package_registry_access_level)
   end
 
   layout :determine_layout
@@ -411,6 +412,7 @@ class ProjectsController < Projects::ApplicationController
       repository_access_level
       snippets_access_level
       wiki_access_level
+      package_registry_access_level
       pages_access_level
       metrics_dashboard_access_level
       analytics_access_level

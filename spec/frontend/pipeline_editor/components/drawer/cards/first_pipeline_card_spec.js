@@ -1,9 +1,12 @@
 import { getByRole } from '@testing-library/dom';
 import { mount } from '@vue/test-utils';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import FirstPipelineCard from '~/pipeline_editor/components/drawer/cards/first_pipeline_card.vue';
+import { pipelineEditorTrackingOptions } from '~/pipeline_editor/constants';
 
 describe('First pipeline card', () => {
   let wrapper;
+  let trackingSpy;
 
   const defaultProvide = {
     runnerHelpPagePath: '/help/runners',
@@ -17,7 +20,7 @@ describe('First pipeline card', () => {
     });
   };
 
-  const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name }).href;
+  const getLinkByName = (name) => getByRole(wrapper.element, 'link', { name });
   const findRunnersLink = () => getLinkByName(/make sure your instance has runners available/i);
   const findInstructionsList = () => wrapper.find('ol');
   const findAllInstructions = () => findInstructionsList().findAll('li');
@@ -40,6 +43,26 @@ describe('First pipeline card', () => {
   });
 
   it('renders the link', () => {
-    expect(findRunnersLink()).toContain(defaultProvide.runnerHelpPagePath);
+    expect(findRunnersLink().href).toContain(defaultProvide.runnerHelpPagePath);
+  });
+
+  describe('tracking', () => {
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks runners help page click', async () => {
+      const { label } = pipelineEditorTrackingOptions;
+      const { runners } = pipelineEditorTrackingOptions.actions.helpDrawerLinks;
+
+      await findRunnersLink().click();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, runners, { label });
+    });
   });
 });
