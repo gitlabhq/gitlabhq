@@ -9,6 +9,7 @@ import {
   MEMBER_TYPES,
   TAB_QUERY_PARAM_VALUES,
   ACTIVE_TAB_QUERY_PARAM_NAME,
+  FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
 } from '~/members/constants';
 import { pagination } from '../mock_data';
 
@@ -42,6 +43,7 @@ describe('MembersTabs', () => {
             },
             filteredSearchBar: {
               searchParam: 'search_groups',
+              tokens: [FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS.type],
             },
           },
         },
@@ -158,6 +160,18 @@ describe('MembersTabs', () => {
       });
 
       it('shows tab that corresponds to search param', async () => {
+        await createComponent({ totalItems: 0 });
+
+        expect(findTabByText('Groups')).not.toBeUndefined();
+      });
+    });
+
+    describe('when url param matches `filteredSearchBar.tokens`', () => {
+      beforeEach(() => {
+        setWindowLocation('?groups_with_inherited_permissions=exclude');
+      });
+
+      it('shows tab that corresponds to filtered search token', async () => {
         await createComponent({ totalItems: 0 });
 
         expect(findTabByText('Groups')).not.toBeUndefined();

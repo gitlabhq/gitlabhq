@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	DefaultClaims = jwt.StandardClaims{Issuer: "gitlab-workhorse"}
+	DefaultClaims = jwt.RegisteredClaims{Issuer: "gitlab-workhorse"}
 )
 
 func JWTTokenString(claims jwt.Claims) (string, error) {

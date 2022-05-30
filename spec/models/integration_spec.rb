@@ -250,7 +250,7 @@ RSpec.describe Integration do
 
     context 'with all existing instances' do
       def integration_hash(type)
-        Integration.new(instance: true, type: type).to_integration_hash
+        Integration.new(instance: true, type: type).to_database_hash
       end
 
       before do
@@ -977,19 +977,25 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#to_integration_hash' do
+  describe '#to_database_hash' do
     let(:properties) { { foo: 1, bar: true } }
     let(:db_props) { properties.stringify_keys }
     let(:record) { create(:integration, :instance, properties: properties) }
 
     it 'does not include the properties key' do
-      hash = record.to_integration_hash
+      hash = record.to_database_hash
 
       expect(hash).not_to have_key('properties')
     end
 
+    it 'does not include certain attributes' do
+      hash = record.to_database_hash
+
+      expect(hash.keys).not_to include('id', 'instance', 'project_id', 'group_id', 'created_at', 'updated_at')
+    end
+
     it 'saves correctly using insert_all' do
-      hash = record.to_integration_hash
+      hash = record.to_database_hash
       hash[:project_id] = project.id
 
       expect do
@@ -999,8 +1005,8 @@ RSpec.describe Integration do
       expect(described_class.last).to have_attributes(properties: db_props)
     end
 
-    it 'is part of the to_integration_hash' do
-      hash = record.to_integration_hash
+    it 'decrypts encrypted properties correctly' do
+      hash = record.to_database_hash
 
       expect(hash).to include('encrypted_properties' => be_present, 'encrypted_properties_iv' => be_present)
       expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
@@ -1016,14 +1022,14 @@ RSpec.describe Integration do
     context 'when the properties are empty' do
       let(:properties) { {} }
 
-      it 'is part of the to_integration_hash' do
-        hash = record.to_integration_hash
+      it 'is part of the to_database_hash' do
+        hash = record.to_database_hash
 
         expect(hash).to include('encrypted_properties' => be_nil, 'encrypted_properties_iv' => be_nil)
       end
 
       it 'saves correctly using insert_all' do
-        hash = record.to_integration_hash
+        hash = record.to_database_hash
         hash[:project_id] = project
 
         expect do

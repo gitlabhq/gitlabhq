@@ -77,6 +77,10 @@ export default {
         urlParams.push(state.filteredSearchBar.searchParam);
       }
 
+      if (state?.filteredSearchBar?.tokens) {
+        urlParams.push(...state.filteredSearchBar.tokens);
+      }
+
       return urlParams;
     },
     getTabCount({ namespace }) {

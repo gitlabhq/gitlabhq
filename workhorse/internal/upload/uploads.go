@@ -25,7 +25,7 @@ type PreAuthorizer interface {
 
 type MultipartClaims struct {
 	RewrittenFields map[string]string `json:"rewritten_fields"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // MultipartFormProcessor abstracts away implementation differences

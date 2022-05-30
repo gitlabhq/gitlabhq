@@ -7,13 +7,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Security Dashboards and Security Center **(ULTIMATE)**
 
-You can use Security Dashboards to view details about vulnerabilities
-detected by [security scanners](../index.md#security-scanning-tools).
-These details are shown in pipelines, projects, and groups.
+You can use Security Dashboards to view trends about vulnerabilities
+detected by [security scanners](../index.md#application-coverage).
+These trends are shown in projects, groups, and the Security Center.
 
 To use the Security Dashboards, you must:
 
-- Configure at least one [security scanner](../index.md#security-scanning-tools) in a project.
+- Configure at least one [security scanner](../index.md#application-coverage) in a project.
 - Configure jobs to use the [`reports` syntax](../../../ci/yaml/index.md#artifactsreports).
 - Use [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or later. If you use the
   shared runners on GitLab.com, you are using the correct version.

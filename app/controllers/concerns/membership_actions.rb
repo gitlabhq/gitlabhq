@@ -143,8 +143,8 @@ module MembershipActions
     raise NotImplementedError
   end
 
-  def requested_relations
-    case params[:with_inherited_permissions].presence
+  def requested_relations(inherited_permissions = :with_inherited_permissions)
+    case params[inherited_permissions].presence
     when 'exclude'
       [:direct]
     when 'only'

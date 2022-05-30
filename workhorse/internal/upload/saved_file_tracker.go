@@ -44,7 +44,7 @@ func (s *SavedFileTracker) Finalize(_ context.Context) error {
 		return nil
 	}
 
-	claims := MultipartClaims{RewrittenFields: s.rewrittenFields, StandardClaims: secret.DefaultClaims}
+	claims := MultipartClaims{RewrittenFields: s.rewrittenFields, RegisteredClaims: secret.DefaultClaims}
 	tokenString, err := secret.JWTTokenString(claims)
 	if err != nil {
 		return fmt.Errorf("savedFileTracker.Finalize: %v", err)

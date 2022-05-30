@@ -26268,7 +26268,7 @@ msgstr ""
 msgid "OnDemandScans|%{learnMoreLinkStart}Learn more about on-demand scans%{learnMoreLinkEnd}."
 msgstr ""
 
-msgid "OnDemandScans|%{scannerType} profile library"
+msgid "OnDemandScans|%{profileType} profile library"
 msgstr ""
 
 msgid "OnDemandScans|Add a schedule to run this scan at a specified date and time or on a recurring basis. Scheduled scans are automatically saved to scan library."
@@ -26322,7 +26322,7 @@ msgstr ""
 msgid "OnDemandScans|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
-msgid "OnDemandScans|Edit %{scannerType} profile"
+msgid "OnDemandScans|Edit %{profileType} profile"
 msgstr ""
 
 msgid "OnDemandScans|Edit on-demand DAST scan"
@@ -26349,7 +26349,7 @@ msgstr ""
 msgid "OnDemandScans|My daily scan"
 msgstr ""
 
-msgid "OnDemandScans|New %{scannerType} profile"
+msgid "OnDemandScans|New %{profileType} profile"
 msgstr ""
 
 msgid "OnDemandScans|New on-demand DAST scan"
@@ -26364,7 +26364,7 @@ msgstr ""
 msgid "OnDemandScans|New scan"
 msgstr ""
 
-msgid "OnDemandScans|No %{scannerType} profiles found for DAST"
+msgid "OnDemandScans|No %{profileType} profiles found for DAST"
 msgstr ""
 
 msgid "OnDemandScans|No profile yet. In order to create a new scan, you need to have at least one completed scanner profile."

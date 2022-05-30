@@ -752,6 +752,15 @@ Other issues:
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
+- GitLab 13.11 includes a faulty background migration ([`RescheduleArtifactExpiryBackfillAgain`](https://gitlab.com/gitlab-org/gitlab/-/blob/ccc70031b843ff8cff1185988c2e472a521c2701/db/post_migrate/20210413132500_reschedule_artifact_expiry_backfill_again.rb))
+  that incorrectly sets the `expire_at` column in the `ci_job_artifacts` database table.
+  Incorrect `expire_at` values can potentially cause data loss.
+
+  To prevent this risk of data loss, you must remove the content of the `RescheduleArtifactExpiryBackfillAgain`
+  migration, which makes it a no-op migration. You can repeat the changes from the
+  [commit that makes the migration no-op in 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/blob/42c3dfc5a1c8181767bbb5c76e7c5fa6fefbbc2b/db/post_migrate/20210413132500_reschedule_artifact_expiry_backfill_again.rb).
+  For more information, please see [how to disable a data migration](../development/database/deleting_migrations.md#how-to-disable-a-data-migration).
+
 ### 13.10.0
 
 See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).

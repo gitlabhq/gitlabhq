@@ -44,7 +44,7 @@ initMembersApp(document.querySelector('.js-group-members-list-app'), {
       ? {
           filteredSearchBar: {
             show: true,
-            tokens: ['with_inherited_permissions'],
+            tokens: ['groups_with_inherited_permissions'],
             searchParam: 'search_groups',
             placeholder: s__('Members|Filter groups'),
             recentSearchesStorageKey: 'group_links_members',

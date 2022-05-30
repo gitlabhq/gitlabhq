@@ -152,7 +152,7 @@ func ParseJWT(token *jwt.Token) (interface{}, error) {
 // UploadClaims represents the JWT claim for upload parameters
 type UploadClaims struct {
 	Upload map[string]string `json:"upload"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func Retry(t testing.TB, timeout time.Duration, fn func() error) {

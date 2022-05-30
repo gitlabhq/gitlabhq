@@ -91,7 +91,7 @@ the defined policy.
 
 Requirements and limitations:
 
-- You must add the respective [security scanning tools](../index.md#security-scanning-tools).
+- You must add the respective [security scanning tools](../index.md#application-coverage).
   Otherwise, scan result policies won't have any effect.
 - The maximum number of policies is five.
 - Each policy can have a maximum of five rules.

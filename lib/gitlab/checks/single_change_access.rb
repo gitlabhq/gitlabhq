@@ -35,8 +35,7 @@ module Gitlab
       end
 
       def commits
-        @commits ||= project.repository.new_commits(newrev,
-                                                    allow_quarantine: Feature.enabled?(:filter_quarantined_commits))
+        @commits ||= project.repository.new_commits(newrev)
       end
 
       protected

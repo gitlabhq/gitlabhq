@@ -54,7 +54,7 @@ type FileHandler struct {
 
 type uploadClaims struct {
 	Upload map[string]string `json:"upload"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // SHA256 hash of the handled file
@@ -97,7 +97,7 @@ func (fh *FileHandler) GitLabFinalizeFields(prefix string) (map[string]string, e
 		signedData[hashName] = hash
 	}
 
-	claims := uploadClaims{Upload: signedData, StandardClaims: secret.DefaultClaims}
+	claims := uploadClaims{Upload: signedData, RegisteredClaims: secret.DefaultClaims}
 	jwtData, err := secret.JWTTokenString(claims)
 	if err != nil {
 		return nil, err

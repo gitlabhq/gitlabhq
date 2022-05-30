@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BulkCreateIntegrationService
+  include Integrations::BulkOperationHashes
+
   def initialize(integration, batch, association)
     @integration = integration
     @batch = batch
@@ -8,13 +10,13 @@ class BulkCreateIntegrationService
   end
 
   def execute
-    service_list = ServiceList.new(batch, integration_hash, association).to_array
+    service_list = ServiceList.new(batch, integration_hash(:create), association).to_array
 
     Integration.transaction do
       results = bulk_insert(*service_list)
 
       if integration.data_fields_present?
-        data_list = DataList.new(results, data_fields_hash, integration.data_fields.class).to_array
+        data_list = DataList.new(results, data_fields_hash(:create), integration.data_fields.class).to_array
 
         bulk_insert(*data_list)
       end
@@ -29,13 +31,5 @@ class BulkCreateIntegrationService
     items_to_insert = values_array.map { |array| Hash[columns.zip(array)] }
 
     klass.insert_all(items_to_insert, returning: [:id])
-  end
-
-  def integration_hash
-    integration.to_integration_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
-  end
-
-  def data_fields_hash
-    integration.to_data_fields_hash
   end
 end

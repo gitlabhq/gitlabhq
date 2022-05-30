@@ -36,35 +36,17 @@ module Gitlab
       # any of the new revisions.
       def commits
         strong_memoize(:commits) do
-          allow_quarantine = true
-
           newrevs = @changes.map do |change|
-            oldrev = change[:oldrev]
             newrev = change[:newrev]
 
             next if blank_rev?(newrev)
-
-            # In case any of the old revisions is blank, then we cannot reliably
-            # detect which commits are new for a given change when enumerating
-            # objects via the object quarantine directory given that the client
-            # may have pushed too many commits, and we don't know when to
-            # terminate the walk. We thus fall back to using `git rev-list --not
-            # --all`, which is a lot less efficient but at least can only ever
-            # returns commits which really are new.
-            allow_quarantine = false if allow_quarantine && blank_rev?(oldrev)
 
             newrev
           end.compact
 
           next [] if newrevs.empty?
 
-          # When filtering quarantined commits we can enable usage of the object
-          # quarantine no matter whether we have an `oldrev` or not.
-          if Feature.enabled?(:filter_quarantined_commits)
-            allow_quarantine = true
-          end
-
-          project.repository.new_commits(newrevs, allow_quarantine: allow_quarantine)
+          project.repository.new_commits(newrevs)
         end
       end
 

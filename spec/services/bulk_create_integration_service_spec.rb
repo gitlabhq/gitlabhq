@@ -21,7 +21,7 @@ RSpec.describe BulkCreateIntegrationService do
     ]
   end
 
-  shared_examples 'creates integration from batch ids' do
+  shared_examples 'creates integration successfully' do
     def attributes(record)
       record.reload.attributes.except(*excluded_attributes)
     end
@@ -41,14 +41,30 @@ RSpec.describe BulkCreateIntegrationService do
         expect(attributes(created_integration.data_fields))
           .to eq attributes(integration.data_fields)
       end
-    end
-  end
 
-  shared_examples 'updates inherit_from_id' do
+      it 'sets created_at and updated_at timestamps', :freeze_time do
+        described_class.new(integration, batch, association).execute
+
+        expect(created_integration.data_fields.reload).to have_attributes(
+          created_at: eq(Time.current),
+          updated_at: eq(Time.current)
+        )
+      end
+    end
+
     it 'updates inherit_from_id attributes' do
       described_class.new(integration, batch, association).execute
 
       expect(created_integration.reload.inherit_from_id).to eq(inherit_from_id)
+    end
+
+    it 'sets created_at and updated_at timestamps', :freeze_time do
+      described_class.new(integration, batch, association).execute
+
+      expect(created_integration.reload).to have_attributes(
+        created_at: eq(Time.current),
+        updated_at: eq(Time.current)
+      )
     end
   end
 
@@ -62,8 +78,7 @@ RSpec.describe BulkCreateIntegrationService do
       let(:batch) { Project.where(id: project.id) }
       let(:association) { 'project' }
 
-      it_behaves_like 'creates integration from batch ids'
-      it_behaves_like 'updates inherit_from_id'
+      it_behaves_like 'creates integration successfully'
     end
 
     context 'with a group association' do
@@ -72,8 +87,7 @@ RSpec.describe BulkCreateIntegrationService do
       let(:batch) { Group.where(id: group.id) }
       let(:association) { 'group' }
 
-      it_behaves_like 'creates integration from batch ids'
-      it_behaves_like 'updates inherit_from_id'
+      it_behaves_like 'creates integration successfully'
     end
   end
 
@@ -88,15 +102,13 @@ RSpec.describe BulkCreateIntegrationService do
       let(:association) { 'project' }
       let(:inherit_from_id) { integration.id }
 
-      it_behaves_like 'creates integration from batch ids'
-      it_behaves_like 'updates inherit_from_id'
+      it_behaves_like 'creates integration successfully'
 
       context 'with different foreign key of data_fields' do
         let(:integration) { create(:zentao_integration, :group, group: group) }
         let(:created_integration) { project.zentao_integration }
 
-        it_behaves_like 'creates integration from batch ids'
-        it_behaves_like 'updates inherit_from_id'
+        it_behaves_like 'creates integration successfully'
       end
     end
 
@@ -108,14 +120,12 @@ RSpec.describe BulkCreateIntegrationService do
       let(:association) { 'group' }
       let(:inherit_from_id) { instance_integration.id }
 
-      it_behaves_like 'creates integration from batch ids'
-      it_behaves_like 'updates inherit_from_id'
+      it_behaves_like 'creates integration successfully'
 
       context 'with different foreign key of data_fields' do
         let(:integration) { create(:zentao_integration, :group, group: group, inherit_from_id: instance_integration.id) }
 
-        it_behaves_like 'creates integration from batch ids'
-        it_behaves_like 'updates inherit_from_id'
+        it_behaves_like 'creates integration successfully'
       end
     end
   end

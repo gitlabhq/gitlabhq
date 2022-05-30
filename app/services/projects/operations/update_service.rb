@@ -112,7 +112,7 @@ module Projects
 
         integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
         integration.assign_attributes(attrs)
-        attrs = integration.to_integration_hash.except('created_at', 'updated_at')
+        attrs = integration.to_database_hash
 
         { prometheus_integration_attributes: attrs }
       end
