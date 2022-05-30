@@ -18,25 +18,25 @@ describe('content_editor/services/code_block_language_loader', () => {
     languageLoader.lowlight = lowlight;
   });
 
-  describe('findLanguageBySyntax', () => {
+  describe('findOrCreateLanguageBySyntax', () => {
     it.each`
       syntax          | language
       ${'javascript'} | ${{ syntax: 'javascript', label: 'Javascript' }}
       ${'js'}         | ${{ syntax: 'javascript', label: 'Javascript' }}
       ${'jsx'}        | ${{ syntax: 'javascript', label: 'Javascript' }}
     `('returns a language by syntax and its variants', ({ syntax, language }) => {
-      expect(languageLoader.findLanguageBySyntax(syntax)).toMatchObject(language);
+      expect(languageLoader.findOrCreateLanguageBySyntax(syntax)).toMatchObject(language);
     });
 
     it('returns Custom (syntax) if the language does not exist', () => {
-      expect(languageLoader.findLanguageBySyntax('foobar')).toMatchObject({
+      expect(languageLoader.findOrCreateLanguageBySyntax('foobar')).toMatchObject({
         syntax: 'foobar',
         label: 'Custom (foobar)',
       });
     });
 
     it('returns plaintext if no syntax is passed', () => {
-      expect(languageLoader.findLanguageBySyntax('')).toMatchObject({
+      expect(languageLoader.findOrCreateLanguageBySyntax('')).toMatchObject({
         syntax: 'plaintext',
         label: 'Plain text',
       });

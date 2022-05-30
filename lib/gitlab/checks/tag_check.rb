@@ -6,7 +6,9 @@ module Gitlab
       ERROR_MESSAGES = {
         change_existing_tags: 'You are not allowed to change existing tags on this project.',
         update_protected_tag: 'Protected tags cannot be updated.',
-        delete_protected_tag: 'Protected tags cannot be deleted.',
+        delete_protected_tag: 'You are not allowed to delete protected tags from this project. '\
+          'Only a project maintainer or owner can delete a protected tag.',
+        delete_protected_tag_non_web: 'You can only delete protected tags using the web interface.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.'
       }.freeze
 
@@ -34,7 +36,16 @@ module Gitlab
           return unless ProtectedTag.protected?(project, tag_name) # rubocop:disable Cop/AvoidReturnFromBlocks
 
           raise(GitAccess::ForbiddenError, ERROR_MESSAGES[:update_protected_tag]) if update?
-          raise(GitAccess::ForbiddenError, ERROR_MESSAGES[:delete_protected_tag]) if deletion?
+
+          if deletion?
+            unless user_access.user.can?(:maintainer_access, project)
+              raise(GitAccess::ForbiddenError, ERROR_MESSAGES[:delete_protected_tag])
+            end
+
+            unless updated_from_web?
+              raise GitAccess::ForbiddenError, ERROR_MESSAGES[:delete_protected_tag_non_web]
+            end
+          end
 
           unless user_access.can_create_tag?(tag_name)
             raise GitAccess::ForbiddenError, ERROR_MESSAGES[:create_protected_tag]

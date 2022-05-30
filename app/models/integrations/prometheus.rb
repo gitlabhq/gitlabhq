@@ -84,6 +84,8 @@ module Integrations
 
     # Check we can connect to the Prometheus API
     def test(*args)
+      return { success: false, result: 'Prometheus configuration error' } unless prometheus_client
+
       prometheus_client.ping
       { success: true, result: 'Checked API endpoint' }
     rescue Gitlab::PrometheusClient::Error => err

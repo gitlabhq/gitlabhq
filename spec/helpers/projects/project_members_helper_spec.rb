@@ -86,4 +86,30 @@ RSpec.describe Projects::ProjectMembersHelper do
       end
     end
   end
+
+  describe '#project_member_header_subtext' do
+    before do
+      allow(helper).to receive(:can?).with(current_user, :admin_project_member, project).and_return(can_admin_member)
+    end
+
+    context 'when user can admin project members' do
+      let(:can_admin_member) { true }
+
+      before do
+        assign(:project, project)
+      end
+
+      it 'contains expected text' do
+        expect(helper.project_member_header_subtext(project)).to match('You can invite a new member to')
+      end
+    end
+
+    context 'when user cannot admin project members' do
+      let(:can_admin_member) { false }
+
+      it 'contains expected text' do
+        expect(helper.project_member_header_subtext(project)).to match('Members can be added by project')
+      end
+    end
+  end
 end

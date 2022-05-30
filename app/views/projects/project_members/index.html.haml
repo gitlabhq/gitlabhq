@@ -12,11 +12,8 @@
             %h4
               = _("Project members")
             .gl-justify-content-bottom.gl-display-flex.align-items-center
-              - if can?(current_user, :admin_project_member, @project)
-                %p= share_project_description(@project)
-              - else
-                %p
-                  = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }
+              %p
+                = project_member_header_subtext(@project)
         .col-md-12.col-lg-6
           .gl-display-flex.gl-flex-wrap.gl-justify-content-end
             - if can_admin_project_member?(@project)
@@ -36,7 +33,8 @@
         %h4
           = _("Project members")
         - if can?(current_user, :admin_project_member, @project)
-          %p= share_project_description(@project)
+          %p
+            = project_member_header_subtext(@project)
         - else
           %p
             = html_escape(_("Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % { i_open: '<i>'.html_safe, i_close: '</i>'.html_safe }

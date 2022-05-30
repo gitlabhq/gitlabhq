@@ -11,7 +11,7 @@
           %h4
             = _('Group members')
           %p
-            = html_escape(_('You can invite a new member to %{strong_start}%{group_name}%{strong_end}.')) % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
+            = group_member_header_subtext(@group)
         .gl-w-half.gl-xs-w-full
           .gl-display-flex.gl-flex-wrap.gl-justify-content-end.gl-mb-3
             .js-invite-group-trigger{ data: { classes: 'gl-mt-3 gl-sm-w-auto gl-w-full', display_text: _('Invite a group') } }

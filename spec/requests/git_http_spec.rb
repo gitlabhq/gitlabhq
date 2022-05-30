@@ -245,6 +245,16 @@ RSpec.describe 'Git HTTP requests' do
           end
         end
 
+        context 'when project name is missing' do
+          let(:path) { "/#{user.namespace.path}/info/refs" }
+
+          it 'does not redirect to the incorrect path' do
+            get path
+
+            expect(response).not_to redirect_to("/#{user.namespace.path}.git/info/refs")
+          end
+        end
+
         it_behaves_like 'project path without .git suffix' do
           let(:repository_path) { "#{user.namespace.path}/project.git-project" }
         end

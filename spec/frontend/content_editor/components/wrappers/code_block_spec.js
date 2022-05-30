@@ -25,7 +25,7 @@ describe('content/components/wrappers/code_block', () => {
   };
 
   beforeEach(() => {
-    codeBlockLanguageLoader.findLanguageBySyntax.mockReturnValue({ syntax: language });
+    codeBlockLanguageLoader.findOrCreateLanguageBySyntax.mockReturnValue({ syntax: language });
   });
 
   afterEach(() => {

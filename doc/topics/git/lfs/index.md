@@ -198,11 +198,7 @@ If the status `error 501` is shown, it is because:
   remove the line and try to update your Git LFS client. Only version 1.0.1 and
   newer are supported.
 
-<!-- vale gitlab.Spelling = NO -->
-
-### getsockopt: connection refused
-
-<!-- vale gitlab.Spelling = YES -->
+### `getsockopt: connection refused`
 
 If you push an LFS object to a project and receive an error like this,
 the LFS client is trying to reach GitLab through HTTPS. However, your GitLab
@@ -262,11 +258,7 @@ If you are storing LFS files outside of GitLab you can disable LFS on the projec
 
 It is possible to host LFS objects externally by setting a custom LFS URL with `git config -f .lfsconfig lfs.url https://example.com/<project>.git/info/lfs`.
 
-<!-- vale gitlab.Spelling = NO -->
-
-You might choose to do this if you are using an appliance like a Sonatype Nexus to store LFS data. If you choose to use an external LFS store,
+You might choose to do this if you are using an appliance like a Nexus Repository to store LFS data. If you choose to use an external LFS store,
 GitLab can't verify LFS objects. Pushes then fail if you have GitLab LFS support enabled.
-
-<!-- vale gitlab.Spelling = YES -->
 
 To stop push failure, LFS support can be disabled in the [Project settings](../../../user/project/settings/index.md), which also disables GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).

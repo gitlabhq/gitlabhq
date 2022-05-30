@@ -505,6 +505,10 @@ class ApplicationSetting < ApplicationRecord
             length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
+  validates :jira_connect_application_key,
+            length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
+            allow_blank: true
+
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period
     validates :throttle_unauthenticated_api_period_in_seconds

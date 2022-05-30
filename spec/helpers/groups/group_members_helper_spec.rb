@@ -5,14 +5,7 @@ require "spec_helper"
 RSpec.describe Groups::GroupMembersHelper do
   include MembersPresentation
 
-  let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
-
-  before do
-    allow(helper).to receive(:can?).with(current_user, :export_group_memberships, group).and_return(false)
-    allow(helper).to receive(:can?).with(current_user, :owner_access, group).and_return(true)
-    allow(helper).to receive(:current_user).and_return(current_user)
-  end
 
   describe '.group_member_select_options' do
     before do
@@ -27,11 +20,23 @@ RSpec.describe Groups::GroupMembersHelper do
   describe '#group_members_app_data' do
     include_context 'group_group_link'
 
+    let_it_be(:current_user) { create(:user) }
+
     let(:members) { create_list(:group_member, 2, group: shared_group, created_by: current_user) }
     let(:invited) { create_list(:group_member, 2, :invited, group: shared_group, created_by: current_user) }
     let!(:access_requests) { create_list(:group_member, 2, :access_request, group: shared_group, created_by: current_user) }
 
     let(:members_collection) { members }
+
+    before do
+      allow(helper).to receive(:can?).with(current_user, :export_group_memberships, group).and_return(false)
+      allow(helper).to receive(:can?).with(current_user, :owner_access, group).and_return(true)
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).with(current_user, :export_group_memberships, shared_group).and_return(true)
+      allow(helper).to receive(:group_group_member_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
+      allow(helper).to receive(:group_group_link_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
+      allow(helper).to receive(:can?).with(current_user, :admin_group_member, shared_group).and_return(true)
+    end
 
     subject do
       helper.group_members_app_data(
@@ -52,13 +57,6 @@ RSpec.describe Groups::GroupMembersHelper do
       it 'sets `member_path` property' do
         expect(subject[member_type.to_sym][:member_path]).to eq('/groups/foo-bar/-/group_members/:id')
       end
-    end
-
-    before do
-      allow(helper).to receive(:can?).with(current_user, :export_group_memberships, shared_group).and_return(true)
-      allow(helper).to receive(:group_group_member_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
-      allow(helper).to receive(:group_group_link_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
-      allow(helper).to receive(:can?).with(current_user, :admin_group_member, shared_group).and_return(true)
     end
 
     it 'returns expected json' do
@@ -186,6 +184,12 @@ RSpec.describe Groups::GroupMembersHelper do
 
         expect(subject[:user][:pagination].as_json).to include(expected)
       end
+    end
+  end
+
+  describe '#group_member_header_subtext' do
+    it 'contains expected text with group name' do
+      expect(helper.group_member_header_subtext(group)).to match("You can invite a new member to .*#{group.name}")
     end
   end
 end

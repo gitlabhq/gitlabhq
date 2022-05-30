@@ -10,6 +10,7 @@ RSpec.describe 'Developer deletes tag', :js do
   before do
     project.add_developer(user)
     sign_in(user)
+    create(:protected_tag, project: project, name: 'v1.1.1')
     visit project_tags_path(project)
   end
 
@@ -22,6 +23,16 @@ RSpec.describe 'Developer deletes tag', :js do
 
       expect(page).not_to have_content 'v1.1.0'
     end
+
+    context 'protected tags' do
+      it 'can not delete protected tags' do
+        expect(page).to have_content 'v1.1.1'
+
+        container = page.find('.content .flex-row', text: 'v1.1.1')
+        expect(container).to have_button('Only a project maintainer or owner can delete a protected tag',
+          disabled: true)
+      end
+    end
   end
 
   context 'from a specific tag page' do
@@ -33,7 +44,7 @@ RSpec.describe 'Developer deletes tag', :js do
       container = page.find('.nav-controls')
       delete_tag container
 
-      expect(page).to have_current_path("#{project_tags_path(project)}/", ignore_query: true)
+      expect(page).to have_current_path(project_tags_path(project), ignore_query: true)
       expect(page).not_to have_content 'v1.0.0'
     end
   end
@@ -55,9 +66,9 @@ RSpec.describe 'Developer deletes tag', :js do
   end
 
   def delete_tag(container)
-    container.find('.js-remove-tag').click
+    container.find('.js-delete-tag-button').click
 
-    page.within('.modal') { click_button('Delete tag') }
+    page.within('.modal') { click_button('Yes, delete tag') }
     wait_for_requests
   end
 end

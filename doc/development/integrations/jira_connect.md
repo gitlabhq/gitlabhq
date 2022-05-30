@@ -106,11 +106,7 @@ The following steps describe setting up an environment to test the GitLab OAuth 
     - Trusted: **No**
     - Confidential: **No**
 1. Copy the Application ID.
+1. Go to **Admin > Settings > General**.
+1. Scroll down and expand the GitLab for Jira App section.
 1. Go to [gitpod.io/variables](https://gitpod.io/variables).
-1. Create a new variable named `JIRA_CONNECT_OAUTH_CLIENT_ID`, with a scope of `*/*`, and paste the Application ID as the value.
-
-If you already have an active Gitpod instance, use the following command in the Gitpod terminal to set the environment variable:
-
-```shell
-eval $(gp env -e JIRA_CONNECT_OAUTH_CLIENT_ID=$YOUR_APPLICATION_ID)
-```
+1. Paste the Application ID into the **Jira Connect Application ID** field and click **Save changes**

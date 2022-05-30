@@ -102,6 +102,7 @@ module ApplicationSettingImplementation
         import_sources: Settings.gitlab['import_sources'],
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
+        jira_connect_application_key: nil,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
         mailgun_signing_key: nil,

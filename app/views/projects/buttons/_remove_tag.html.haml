@@ -1,6 +1,12 @@
 - project = local_assigns.fetch(:project, nil)
 - tag = local_assigns.fetch(:tag, nil)
 - return unless project && tag
+- title = s_('TagsPage|Delete tag')
+- if protected_tag?(project, tag)
+  - title = s_('TagsPage|Delete protected tag')
+  - if !can?(current_user, :maintainer_access, project)
+    - title = s_('TagsPage|Only a project maintainer or owner can delete a protected tag')
+    - disabled = true
 
-%button{ type: "button", class: "js-remove-tag js-confirm-modal-button gl-button btn btn-default btn-icon has-tooltip gl-ml-3\! #{protected_tag?(project, tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), data: { container: 'body', path: project_tag_path(@project, tag.name), modal_attributes: delete_tag_modal_attributes(tag.name) } }
+%button{ type: "button", class: "js-delete-tag-button gl-button btn btn-default btn-icon has-tooltip gl-ml-3\! #{disabled ? 'disabled' : ''}", title: title, disabled: disabled, data: { path: project_tag_path(@project, tag.name), tag_name: tag.name, is_protected: protected_tag?(project, tag).to_s } }
   = sprite_icon('remove', css_class: 'gl-icon')

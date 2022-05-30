@@ -22,4 +22,5 @@ namespace :jira_connect do
   end
 
   resources :oauth_callbacks, only: [:index]
+  resource :oauth_application_id, only: [:show]
 end

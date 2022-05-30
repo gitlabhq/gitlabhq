@@ -45,19 +45,6 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
                 .and change { stale_migration.reload.migration_state }.to('import_aborted')
                 .and not_change { ongoing_migration.migration_state }
           end
-
-          context 'registry_migration_guard_thresholds feature flag disabled' do
-            before do
-              stub_feature_flags(registry_migration_guard_thresholds: false)
-            end
-
-            it 'falls back on the hardcoded value' do
-              expect(ContainerRegistry::Migration).not_to receive(:pre_import_timeout)
-
-              expect { subject }
-                .to change { stale_migration.reload.migration_state }.to('import_aborted')
-            end
-          end
         end
 
         context 'migration is canceled' do
@@ -84,19 +71,6 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
 
               expect(stale_migration.reload.migration_state).to eq('import_skipped')
               expect(stale_migration.reload.migration_skipped_reason).to eq('migration_canceled')
-            end
-
-            context 'registry_migration_guard_thresholds feature flag disabled' do
-              before do
-                stub_feature_flags(registry_migration_guard_thresholds: false)
-              end
-
-              it 'falls back on the hardcoded value' do
-                expect(ContainerRegistry::Migration).not_to receive(timeout)
-
-                expect { subject }
-                  .to change { stale_migration.reload.migration_state }.to('import_skipped')
-              end
             end
           end
 

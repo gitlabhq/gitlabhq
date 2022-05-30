@@ -63,3 +63,6 @@
       = markdown_field(@release, :description)
   - else
     = s_('TagsPage|This tag has no release notes.')
+
+- if can?(current_user, :admin_tag, @project)
+  .js-delete-tag-modal

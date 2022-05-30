@@ -65,6 +65,8 @@ export default {
       modelManager: new ModelManager(),
       isEditorLoading: true,
       unwatchCiYaml: null,
+      SELivepreviewExtension: null,
+      MarkdownLivePreview: null,
     };
   },
   computed: {
@@ -307,25 +309,6 @@ export default {
           },
         ]);
 
-        if (
-          this.fileType === MARKDOWN_FILE_TYPE &&
-          this.editor?.getEditorType() === EDITOR_TYPE_CODE &&
-          this.previewMarkdownPath
-        ) {
-          import('~/editor/extensions/source_editor_markdown_livepreview_ext')
-            .then(({ EditorMarkdownPreviewExtension: MarkdownLivePreview }) => {
-              this.editor.use({
-                definition: MarkdownLivePreview,
-                setupOptions: { previewMarkdownPath: this.previewMarkdownPath },
-              });
-            })
-            .catch((e) =>
-              createFlash({
-                message: e,
-              }),
-            );
-        }
-
         this.$nextTick(() => {
           this.setupEditor();
         });
@@ -334,6 +317,35 @@ export default {
 
     setupEditor() {
       if (!this.file || !this.editor || this.file.loading) return;
+
+      const useLivePreviewExtension = () => {
+        this.SELivepreviewExtension = this.editor.use({
+          definition: this.MarkdownLivePreview,
+          setupOptions: { previewMarkdownPath: this.previewMarkdownPath },
+        });
+      };
+      if (
+        this.fileType === MARKDOWN_FILE_TYPE &&
+        this.editor?.getEditorType() === EDITOR_TYPE_CODE &&
+        this.previewMarkdownPath
+      ) {
+        if (this.MarkdownLivePreview) {
+          useLivePreviewExtension();
+        } else {
+          import('~/editor/extensions/source_editor_markdown_livepreview_ext')
+            .then(({ EditorMarkdownPreviewExtension }) => {
+              this.MarkdownLivePreview = EditorMarkdownPreviewExtension;
+              useLivePreviewExtension();
+            })
+            .catch((e) =>
+              createFlash({
+                message: e,
+              }),
+            );
+        }
+      } else if (this.SELivepreviewExtension) {
+        this.editor.unuse(this.SELivepreviewExtension);
+      }
 
       const head = this.getStagedFile(this.file.path);
 

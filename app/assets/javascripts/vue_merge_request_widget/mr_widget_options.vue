@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import securityReportExtension from 'ee_else_ce/vue_merge_request_widget/extensions/security_reports';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -188,7 +189,7 @@ export default {
       );
     },
     shouldRenderSecurityReport() {
-      return Boolean(this.mr.pipeline.id);
+      return Boolean(this.mr?.pipeline?.id);
     },
     shouldRenderTerraformPlans() {
       return Boolean(this.mr?.terraformReportsPath);
@@ -229,6 +230,9 @@ export default {
         window.gon?.features?.refactorMrWidgetsExtensionsUser
       );
     },
+    shouldShowSecurityExtension() {
+      return window.gon?.features?.refactorSecurityExtension;
+    },
     isRestructuredMrWidgetEnabled() {
       return window.gon?.features?.restructuredMrWidget;
     },
@@ -263,6 +267,11 @@ export default {
     shouldRenderTestReport(newVal) {
       if (newVal) {
         this.registerTestReportExtension();
+      }
+    },
+    shouldRenderSecurityReport(newVal) {
+      if (newVal) {
+        this.registerSecurityReportExtension();
       }
     },
   },
@@ -520,6 +529,11 @@ export default {
         registerExtension(testReportExtension);
       }
     },
+    registerSecurityReportExtension() {
+      if (this.shouldRenderSecurityReport && this.shouldShowSecurityExtension) {
+        registerExtension(securityReportExtension);
+      }
+    },
   },
 };
 </script>
@@ -585,7 +599,7 @@ export default {
       />
 
       <security-reports-app
-        v-if="shouldRenderSecurityReport"
+        v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
         :pipeline-id="mr.pipeline.id"
         :project-id="mr.sourceProjectId"
         :security-reports-docs-path="mr.securityReportsDocsPath"

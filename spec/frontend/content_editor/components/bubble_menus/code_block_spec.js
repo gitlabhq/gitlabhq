@@ -1,12 +1,21 @@
 import { BubbleMenu } from '@tiptap/vue-2';
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import Vue from 'vue';
+import {
+  GlDropdown,
+  GlDropdownForm,
+  GlDropdownItem,
+  GlSearchBoxByType,
+  GlFormInput,
+} from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
 import { createTestEditor, emitEditorEvent } from '../../test_utils';
+
+const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
 describe('content_editor/components/bubble_menus/code_block', () => {
   let wrapper;
@@ -25,6 +34,9 @@ describe('content_editor/components/bubble_menus/code_block', () => {
         tiptapEditor,
         eventHub,
       },
+      stubs: {
+        GlDropdownItem: stubComponent(GlDropdownItem),
+      },
     });
   };
 
@@ -36,7 +48,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
       checked: x.props('isChecked'),
     }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     buildEditor();
     buildWrapper();
   });
@@ -110,16 +122,18 @@ describe('content_editor/components/bubble_menus/code_block', () => {
 
       wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'js');
 
-      await Vue.nextTick();
+      await nextTick();
     });
 
     it('shows dropdown items', () => {
-      expect(findDropdownItemsData()).toEqual([
-        { text: 'Javascript', visible: true, checked: true },
-        { text: 'Java', visible: true, checked: false },
-        { text: 'Javascript', visible: false, checked: false },
-        { text: 'JSON', visible: true, checked: false },
-      ]);
+      expect(findDropdownItemsData()).toEqual(
+        expect.arrayContaining([
+          { text: 'Javascript', visible: true, checked: true },
+          { text: 'Java', visible: true, checked: false },
+          { text: 'Javascript', visible: false, checked: false },
+          { text: 'JSON', visible: true, checked: false },
+        ]),
+      );
     });
 
     describe('when dropdown item is clicked', () => {
@@ -128,7 +142,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
 
         findDropdownItems().at(1).vm.$emit('click');
 
-        await Vue.nextTick();
+        await nextTick();
       });
 
       it('loads language', () => {
@@ -150,6 +164,79 @@ describe('content_editor/components/bubble_menus/code_block', () => {
 
       it('updates selected dropdown', () => {
         expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Java');
+      });
+    });
+
+    describe('Create custom type', () => {
+      beforeEach(async () => {
+        tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+
+        await wrapper.findComponent(GlDropdown).vm.show();
+        await wrapper.findByTestId('create-custom-type').trigger('click');
+      });
+
+      it('shows custom language input form and hides dropdown items', () => {
+        expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(false);
+        expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(false);
+        expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(true);
+      });
+
+      describe('on clicking back', () => {
+        it('hides the custom language input form and shows dropdown items', async () => {
+          await wrapper.findByRole('button', { name: 'Go back' }).trigger('click');
+
+          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
+          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
+          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
+        });
+      });
+
+      describe('on clicking cancel', () => {
+        it('hides the custom language input form and shows dropdown items', async () => {
+          await wrapper.findByRole('button', { name: 'Cancel' }).trigger('click');
+
+          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
+          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
+          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
+        });
+      });
+
+      describe('on dropdown hide', () => {
+        it('hides the form', async () => {
+          wrapper.findComponent(GlFormInput).setValue('foobar');
+          await wrapper.findComponent(GlDropdown).vm.$emit('hide');
+
+          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
+          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
+          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
+        });
+      });
+
+      describe('on clicking apply', () => {
+        beforeEach(async () => {
+          wrapper.findComponent(GlFormInput).setValue('foobar');
+          await wrapper.findComponent(GlDropdownForm).vm.$emit('submit', createFakeEvent());
+
+          await emitEditorEvent({ event: 'transaction', tiptapEditor });
+        });
+
+        it('hides the custom language input form and shows dropdown items', async () => {
+          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
+          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
+          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
+        });
+
+        it('updates dropdown value to the custom language type', () => {
+          expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Custom (foobar)');
+        });
+
+        it('updates tiptap editor to the custom language type', () => {
+          expect(tiptapEditor.getAttributes(CodeBlockHighlight.name)).toEqual(
+            expect.objectContaining({
+              language: 'foobar',
+            }),
+          );
+        });
       });
     });
   });

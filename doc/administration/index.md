@@ -194,7 +194,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Monitoring GitLab](monitoring/index.md):
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-  - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+  - [IP allowlist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
   - [Monitoring GitHub imports](monitoring/github_imports.md): The GitLab GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 
 ### Performance Monitoring

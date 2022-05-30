@@ -19,7 +19,7 @@ module JiraConnectHelper
 
   def jira_connect_oauth_data
     oauth_authorize_url = oauth_authorization_url(
-      client_id: ENV['JIRA_CONNECT_OAUTH_CLIENT_ID'],
+      client_id: Gitlab::CurrentSettings.jira_connect_application_key,
       response_type: 'code',
       scope: 'api',
       redirect_uri: jira_connect_oauth_callbacks_url,
@@ -32,7 +32,7 @@ module JiraConnectHelper
       state: oauth_state,
       oauth_token_payload: {
         grant_type: :authorization_code,
-        client_id: ENV['JIRA_CONNECT_OAUTH_CLIENT_ID'],
+        client_id: Gitlab::CurrentSettings.jira_connect_application_key,
         redirect_uri: jira_connect_oauth_callbacks_url
       }
     }

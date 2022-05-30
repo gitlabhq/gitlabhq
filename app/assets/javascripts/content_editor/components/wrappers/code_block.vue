@@ -20,7 +20,7 @@ export default {
     },
   },
   async mounted() {
-    const lang = codeBlockLanguageLoader.findLanguageBySyntax(this.node.attrs.language);
+    const lang = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(this.node.attrs.language);
     await codeBlockLanguageLoader.loadLanguage(lang.syntax);
 
     this.updateAttributes({ language: this.node.attrs.language });

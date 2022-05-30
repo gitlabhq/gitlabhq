@@ -416,8 +416,8 @@ query getLocalData {
 }
 ```
 
-Similar to resolvers, your `typePolicies` will execute when the `@client` query is used. However,
-using `makeVar` will trigger every relevant active Apollo query to reactively update when the state
+Similar to resolvers, your `typePolicies` execute when the `@client` query is used. However,
+using `makeVar` triggers every relevant active Apollo query to reactively update when the state
 mutates.
 
 ```javascript
@@ -490,7 +490,7 @@ return new Vue({
 });
 ```
 
-Wherever used, the local query will update as the state updates thanks to the **reactive variable**.
+Wherever used, the local query updates as the state updates thanks to the **reactive variable**.
 
 ### Using with Vuex
 
@@ -522,7 +522,7 @@ of the backend.
 
 #### Implementing frontend queries and mutations ahead of the backend
 
-In such case, the frontend will define GraphQL schemas or fields that do not correspond to any
+In such case, the frontend defines GraphQL schemas or fields that do not correspond to any
 backend resolver yet. This is fine as long as the implementation is properly feature-flagged so it
 does not translate to public-facing errors in the product. However, we do validate client-side
 queries/mutations against the backend GraphQL schema with the `graphql-verify` CI job.
@@ -535,7 +535,7 @@ The preferred approach is to use the `@client` directive on any new query, mutat
 isn't yet supported by the backend. Any entity with the directive is skipped by the
 `graphql-verify` validation job.
 
-Additionally Apollo will attempt to resolve them client-side, which can be used in conjunction with
+Additionally Apollo attempts to resolve them client-side, which can be used in conjunction with
 [Mocking API response with local Apollo cache](#mocking-api-response-with-local-apollo-cache). This
 provides a convenient way of testing your feature with fake data defined client-side.
 When opening a merge request for your changes, it can be a good idea to provide local resolvers as a
@@ -550,7 +550,7 @@ GraphQL queries/mutations validation can be completely turned off for specific f
 paths to the
 [`config/known_invalid_graphql_queries.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/known_invalid_graphql_queries.yml)
 file, much like you would disable ESLint for some files via an `.eslintignore` file.
-Bear in mind that any file listed in here will not be validated at all. So if you're only adding
+Bear in mind that any file listed in here is not validated at all. So if you're only adding
 fields to an existing query, use the `@client` directive approach so that the rest of the query
 is still validated.
 

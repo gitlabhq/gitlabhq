@@ -331,22 +331,6 @@ module ProjectsHelper
     false
   end
 
-  def share_project_description(project)
-    share_with_group   = project.allowed_to_share_with_group?
-    share_with_members = !membership_locked?
-
-    description =
-      if share_with_group && share_with_members
-        _("You can invite a new member to %{project_name} or invite another group.")
-      elsif share_with_group
-        _("You can invite another group to %{project_name}.")
-      elsif share_with_members
-        _("You can invite a new member to %{project_name}.")
-      end
-
-    html_escape(description) % { project_name: tag.strong(project.name) }
-  end
-
   def metrics_external_dashboard_url
     @project.metrics_setting_external_dashboard_url
   end

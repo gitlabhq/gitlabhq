@@ -4,11 +4,10 @@
 - return unless issuable.is_a?(MergeRequest)
 - return if issuable.closed_or_merged_without_fork?
 
-.form-group.row
-  .col-sm-2.col-form-label.pt-sm-0
+.form-group.row.gl-mb-7
+  .col-12
     %label
       = _('Merge options')
-  .col-sm-10
     - if issuable.can_remove_source_branch?(current_user)
       .form-check.gl-mb-3
         = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil

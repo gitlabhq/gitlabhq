@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { editor as monacoEditor, Range } from 'monaco-editor';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { shallowMount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
 import waitForPromises from 'helpers/wait_for_promises';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
@@ -23,37 +23,40 @@ import { file } from '../helpers';
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const CURRENT_PROJECT_ID = 'gitlab-org/gitlab';
 
-const defaultFileProps = {
-  ...file('file.txt'),
-  content: 'hello world',
-  active: true,
-  tempFile: true,
-};
-const createActiveFile = (props) => {
-  return {
-    ...defaultFileProps,
-    ...props,
-  };
+const dummyFile = {
+  text: {
+    ...file('file.txt'),
+    content: 'hello world',
+    active: true,
+    tempFile: true,
+  },
+  markdown: {
+    ...file('sample.md'),
+    projectId: 'namespace/project',
+    path: 'sample.md',
+    content: 'hello world',
+    tempFile: true,
+    active: true,
+  },
+  binary: {
+    ...file('file.dat'),
+    content: '🐱', // non-ascii binary content,
+    tempFile: true,
+    active: true,
+  },
+  empty: {
+    ...file('empty'),
+    tempFile: false,
+    content: '',
+    raw: '',
+  },
 };
 
-const dummyFile = {
-  markdown: (() =>
-    createActiveFile({
-      projectId: 'namespace/project',
-      path: 'sample.md',
-      name: 'sample.md',
-    }))(),
-  binary: (() =>
-    createActiveFile({
-      name: 'file.dat',
-      content: '🐱', // non-ascii binary content,
-    }))(),
-  empty: (() =>
-    createActiveFile({
-      tempFile: false,
-      content: '',
-      raw: '',
-    }))(),
+const createActiveFile = (props) => {
+  return {
+    ...dummyFile.text,
+    ...props,
+  };
 };
 
 const prepareStore = (state, activeFile) => {
@@ -103,7 +106,7 @@ describe('RepoEditor', () => {
       vm.$once('editorSetup', resolve);
     });
 
-  const createComponent = async ({ state = {}, activeFile = defaultFileProps } = {}) => {
+  const createComponent = async ({ state = {}, activeFile = dummyFile.text } = {}) => {
     const store = prepareStore(state, activeFile);
     wrapper = shallowMount(RepoEditor, {
       store,
@@ -181,7 +184,7 @@ describe('RepoEditor', () => {
       mock = new MockAdapter(axios);
 
       mock.onPost(/(.*)\/preview_markdown/).reply(200, {
-        body: `<p>${defaultFileProps.content}</p>`,
+        body: `<p>${dummyFile.text.content}</p>`,
       });
     });
 
@@ -205,7 +208,7 @@ describe('RepoEditor', () => {
       it('renders markdown for tempFile', async () => {
         findPreviewTab().trigger('click');
         await waitForPromises();
-        expect(wrapper.find(ContentViewer).html()).toContain(defaultFileProps.content);
+        expect(wrapper.find(ContentViewer).html()).toContain(dummyFile.text.content);
       });
 
       describe('when file changes to non-markdown file', () => {
@@ -275,16 +278,62 @@ describe('RepoEditor', () => {
         expect(vm.editor.methods[fn]).toBe('EditorWebIde');
       });
     });
+  });
+
+  describe('setupEditor', () => {
+    it('creates new model on load', async () => {
+      await createComponent();
+      // We always create two models per file to be able to build a diff of changes
+      expect(createModelSpy).toHaveBeenCalledTimes(2);
+      // The model with the most recent changes is the last one
+      const [content] = createModelSpy.mock.calls[1];
+      expect(content).toBe(dummyFile.text.content);
+    });
+
+    it('does not create a new model on subsequent calls to setupEditor and re-uses the already-existing model', async () => {
+      await createComponent();
+      const existingModel = vm.model;
+      createModelSpy.mockClear();
+
+      vm.setupEditor();
+
+      expect(createModelSpy).not.toHaveBeenCalled();
+      expect(vm.model).toBe(existingModel);
+    });
+
+    it('updates state with the value of the model', async () => {
+      await createComponent();
+      const newContent = 'As Gregor Samsa\n awoke one morning\n';
+      vm.model.setValue(newContent);
+
+      vm.setupEditor();
+
+      expect(vm.file.content).toBe(newContent);
+    });
+
+    it('sets head model as staged file', async () => {
+      await createComponent();
+      vm.modelManager.dispose();
+      const addModelSpy = jest.spyOn(ModelManager.prototype, 'addModel');
+
+      vm.$store.state.stagedFiles.push({ ...vm.file, key: 'staged' });
+      vm.file.staged = true;
+      vm.file.key = `unstaged-${vm.file.key}`;
+
+      vm.setupEditor();
+
+      expect(addModelSpy).toHaveBeenCalledWith(vm.file, vm.$store.state.stagedFiles[0]);
+    });
 
     it.each`
       prefix          | activeFile            | viewer              | shouldHaveMarkdownExtension
-      ${'Should not'} | ${createActiveFile()} | ${viewerTypes.edit} | ${false}
+      ${'Should not'} | ${dummyFile.text}     | ${viewerTypes.edit} | ${false}
       ${'Should'}     | ${dummyFile.markdown} | ${viewerTypes.edit} | ${true}
       ${'Should not'} | ${dummyFile.empty}    | ${viewerTypes.edit} | ${false}
-      ${'Should not'} | ${createActiveFile()} | ${viewerTypes.diff} | ${false}
+      ${'Should not'} | ${dummyFile.text}     | ${viewerTypes.diff} | ${false}
       ${'Should not'} | ${dummyFile.markdown} | ${viewerTypes.diff} | ${false}
       ${'Should not'} | ${dummyFile.empty}    | ${viewerTypes.diff} | ${false}
-      ${'Should not'} | ${createActiveFile()} | ${viewerTypes.mr}   | ${false}
+      ${'Should not'} | ${dummyFile.text}     | ${viewerTypes.mr}   | ${false}
       ${'Should not'} | ${dummyFile.markdown} | ${viewerTypes.mr}   | ${false}
       ${'Should not'} | ${dummyFile.empty}    | ${viewerTypes.mr}   | ${false}
     `(
@@ -308,51 +357,21 @@ describe('RepoEditor', () => {
         }
       },
     );
-  });
 
-  describe('setupEditor', () => {
-    beforeEach(async () => {
-      await createComponent();
-    });
+    it('fetches the live preview extension even if markdown is not the first opened file', async () => {
+      const textFile = dummyFile.text;
+      const mdFile = dummyFile.markdown;
+      const previewExtConfig = {
+        definition: EditorMarkdownPreviewExtension,
+        setupOptions: { previewMarkdownPath: PREVIEW_MARKDOWN_PATH },
+      };
+      await createComponent({ activeFile: textFile });
+      applyExtensionSpy.mockClear();
 
-    it('creates new model on load', () => {
-      // We always create two models per file to be able to build a diff of changes
-      expect(createModelSpy).toHaveBeenCalledTimes(2);
-      // The model with the most recent changes is the last one
-      const [content] = createModelSpy.mock.calls[1];
-      expect(content).toBe(defaultFileProps.content);
-    });
+      await wrapper.setProps({ file: mdFile });
+      await waitForPromises();
 
-    it('does not create a new model on subsequent calls to setupEditor and re-uses the already-existing model', () => {
-      const existingModel = vm.model;
-      createModelSpy.mockClear();
-
-      vm.setupEditor();
-
-      expect(createModelSpy).not.toHaveBeenCalled();
-      expect(vm.model).toBe(existingModel);
-    });
-
-    it('updates state with the value of the model', () => {
-      const newContent = 'As Gregor Samsa\n awoke one morning\n';
-      vm.model.setValue(newContent);
-
-      vm.setupEditor();
-
-      expect(vm.file.content).toBe(newContent);
-    });
-
-    it('sets head model as staged file', () => {
-      vm.modelManager.dispose();
-      const addModelSpy = jest.spyOn(ModelManager.prototype, 'addModel');
-
-      vm.$store.state.stagedFiles.push({ ...vm.file, key: 'staged' });
-      vm.file.staged = true;
-      vm.file.key = `unstaged-${vm.file.key}`;
-
-      vm.setupEditor();
-
-      expect(addModelSpy).toHaveBeenCalledWith(vm.file, vm.$store.state.stagedFiles[0]);
+      expect(applyExtensionSpy).toHaveBeenCalledWith(previewExtConfig);
     });
   });
 
@@ -407,7 +426,7 @@ describe('RepoEditor', () => {
 
     it('does not fetch file information for temp entries', async () => {
       await createComponent({
-        activeFile: createActiveFile(),
+        activeFile: dummyFile.text,
       });
 
       expect(vm.getFileData).not.toHaveBeenCalled();
@@ -426,7 +445,7 @@ describe('RepoEditor', () => {
 
     it('does not initialize editor for files already with content when shouldHideEditor is `true`', async () => {
       await createComponent({
-        activeFile: createActiveFile(),
+        activeFile: dummyFile.text,
       });
 
       await hideEditorAndRunFn();
@@ -597,9 +616,6 @@ describe('RepoEditor', () => {
         activeFile: setFileName('bar.md'),
       });
 
-      vm.setupEditor();
-
-      await waitForPromises();
       // set cursor to line 2, column 1
       vm.editor.setSelection(new Range(2, 1, 2, 1));
       vm.editor.focus();

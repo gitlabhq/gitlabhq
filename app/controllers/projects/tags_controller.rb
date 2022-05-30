@@ -94,11 +94,10 @@ class Projects::TagsController < Projects::ApplicationController
   def destroy
     result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
 
-    if result[:status] == :success
-      render json: result
-    else
-      render json: { message: result[:message] }, status: result[:return_code]
-    end
+    flash_type = result[:status] == :error ? :alert : :notice
+    flash[flash_type] = result[:message]
+
+    redirect_to project_tags_path(@project), status: :see_other
   end
 
   private

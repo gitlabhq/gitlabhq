@@ -17,10 +17,9 @@
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
-.form-group.row
-  = form.label :title, class: 'col-form-label col-sm-2' do
-    = _('Title')
-    %i{ aria: { hidden: true } }= '*'
+.form-group
+  = form.label :title do
+    = _('Title (required)')
 
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:draft?)
 #js-suggestions{ data: { project_path: @project.full_path } }
@@ -36,27 +35,26 @@
 = render 'shared/issuable/form/contribution', issuable: issuable, form: form
 
 - if @merge_request_to_resolve_discussions_of
-  .form-group.row
-    .col-sm-10.offset-sm-2
-      = sprite_icon('information-o')
-      - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
-        = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
-        - if @discussion_to_resolve
-          = hidden_field_tag 'discussion_to_resolve', @discussion_to_resolve.id
-          Creating this issue will resolve the thread in
-        - else
-          Creating this issue will resolve all threads in
-        = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
+  .form-group
+    = sprite_icon('information-o')
+    - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
+      = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
+      - if @discussion_to_resolve
+        = hidden_field_tag 'discussion_to_resolve', @discussion_to_resolve.id
+        Creating this issue will resolve the thread in
       - else
-        The
-        = @discussion_to_resolve ? 'thread' : 'threads'
-        at
-        = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
-        will stay unresolved. Ask someone with permission to resolve
-        = @discussion_to_resolve ? 'it.' : 'them.'
+        Creating this issue will resolve all threads in
+      = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
+    - else
+      The
+      = @discussion_to_resolve ? 'thread' : 'threads'
+      at
+      = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
+      will stay unresolved. Ask someone with permission to resolve
+      = @discussion_to_resolve ? 'it.' : 'them.'
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
-.row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
+.gl-mt-5{ class: (is_footer ? "footer-block" : "middle-block") }
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = issuable.project.present.contribution_guide_path)
     .gl-mb-5
       Please review the

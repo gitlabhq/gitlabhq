@@ -1,5 +1,5 @@
-= form.label :assignee_id, issuable.allows_multiple_assignees? ? _('Assignees') : _('Assignee'), class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
-.col-sm-10{ class: ("col-md-8" if has_due_date) }
+= form.label :assignee_id, issuable.allows_multiple_assignees? ? _('Assignees') : _('Assignee'), class: "col-12"
+.col-12
   .issuable-form-select-holder.selectbox
     - issuable.assignees.each do |assignee|
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name, avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }

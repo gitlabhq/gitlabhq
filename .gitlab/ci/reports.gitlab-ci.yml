@@ -91,7 +91,7 @@ gemnasium-python-dependency_scanning:
 
 yarn-audit-dependency_scanning:
   extends: .ds-analyzer
-  image: "registry.gitlab.com/gitlab-org/security-products/analyzers/npm-audit:1.4.1"
+  image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/analyzers/npm-audit:1.4.1"
   variables:
     TOOL: yarn
   rules: !reference [".reports:rules:yarn-audit-dependency_scanning", rules]
@@ -102,7 +102,7 @@ yarn-audit-dependency_scanning:
   extends: .default-retry
   stage: test
   image:
-    name: registry.gitlab.com/gitlab-org/security-products/package-hunter-cli:v1.3.2@sha256:7529deaef9ea21aab56bfb74ae1abbc121311affdb6ece49ce7b1c360f997ca2
+    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/package-hunter-cli:v1.3.2@sha256:7529deaef9ea21aab56bfb74ae1abbc121311affdb6ece49ce7b1c360f997ca2
     entrypoint: [""]
   variables:
     HTR_user: '$PACKAGE_HUNTER_USER'

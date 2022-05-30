@@ -65,15 +65,11 @@ module ContainerRegistry
       end
 
       def long_running_migration?(repository)
-        timeout = long_running_migration_threshold
-
-        if Feature.enabled?(:registry_migration_guard_thresholds)
-          timeout = if repository.migration_state == 'pre_importing'
-                      migration.pre_import_timeout.seconds
-                    else
-                      migration.import_timeout.seconds
-                    end
-        end
+        timeout = if repository.migration_state == 'pre_importing'
+                    migration.pre_import_timeout.seconds
+                  else
+                    migration.import_timeout.seconds
+                  end
 
         if repository.migration_state == 'pre_importing' &&
            Feature.enabled?(:registry_migration_guard_dynamic_pre_import_timeout) &&
@@ -115,10 +111,6 @@ module ContainerRegistry
 
       def migration
         ::ContainerRegistry::Migration
-      end
-
-      def long_running_migration_threshold
-        @threshold ||= 10.minutes
       end
 
       def cancel_long_running_migration(repository)

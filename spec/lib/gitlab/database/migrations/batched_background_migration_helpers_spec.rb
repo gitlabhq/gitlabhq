@@ -301,8 +301,12 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
   end
 
   describe '#delete_batched_background_migration' do
+    let(:transaction_open) { false }
+
     before do
       expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
+
+      allow(migration).to receive(:transaction_open?).and_return(transaction_open)
     end
 
     context 'when migration exists' do
@@ -354,6 +358,15 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
             :id,
             [[:id], [:id_convert_to_bigint]])
         end.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
+      end
+    end
+
+    context 'when within transaction' do
+      let(:transaction_open) { true }
+
+      it 'raises an exception' do
+        expect { migration.delete_batched_background_migration('MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]]) }
+          .to raise_error /`#delete_batched_background_migration` cannot be run inside a transaction./
       end
     end
   end

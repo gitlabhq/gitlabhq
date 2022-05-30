@@ -86,6 +86,26 @@ To prevent this problem:
 
 Users can still create branches, but not tags, with the protected names.
 
+## Delete a protected tag
+
+You can manually delete protected tags with the GitLab API, or the
+GitLab user interface.
+
+Prerequisite:
+
+- You must have at least the Maintainer role in your project.
+
+To do this:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Tags**.
+1. Next to the tag you want to delete, select **Delete** (**{remove}**).
+1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.
+
+Protected tags can only be deleted by using GitLab either from the UI or API.
+These protections prevent you from accidentally deleting a tag through local
+Git commands or third-party Git clients.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

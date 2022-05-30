@@ -8,7 +8,7 @@ const codeBlockLanguageLoader = {
 
   allLanguages: CODE_BLOCK_LANGUAGES,
 
-  findLanguageBySyntax(value) {
+  findOrCreateLanguageBySyntax(value) {
     const lowercaseValue = value?.toLowerCase() || 'plaintext';
     return (
       this.allLanguages.find(
@@ -38,7 +38,7 @@ const codeBlockLanguageLoader = {
   },
 
   loadLanguageFromInputRule(match) {
-    const { syntax } = this.findLanguageBySyntax(match[1]);
+    const { syntax } = this.findOrCreateLanguageBySyntax(match[1]);
 
     this.loadLanguage(syntax);
 

@@ -19,16 +19,16 @@ For a full list of reference architectures, see
 >   - **Test requests per second (RPS) rates:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/2k)**
 
-| Service                                  | Nodes  | Configuration           | GCP             | AWS          | Azure    |
-|------------------------------------------|--------|-------------------------|-----------------|--------------|----------|
-| Load balancer<sup>3</sup>                | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL<sup>1</sup>                   | 1      | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Redis<sup>2</sup>                        | 1      | 1 vCPU, 3.75 GB memory  | `n1-standard-1` | `m5.large`   | `D2s v3` |
-| Gitaly                                   | 1      | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| GitLab Rails                             | 2      | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
-| Monitoring node                          | 1      | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>4</sup>               | n/a    | n/a                     | n/a             | n/a          | n/a      |
-| NFS server (non-Gitaly)   | 1      | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
+| Service                                  | Nodes          | Configuration           | GCP             | AWS            | Azure          |
+|------------------------------------------|----------------|-------------------------|-----------------|----------------|----------------|
+| Load balancer<sup>3</sup>                | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| PostgreSQL<sup>1</sup>                   | 1              | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`     | `D2s v3`       |
+| Redis<sup>2</sup>                        | 1              | 1 vCPU, 3.75 GB memory  | `n1-standard-1` | `m5.large`     | `D2s v3`       |
+| Gitaly                                   | 1              | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`    | `D4s v3`       |
+| GitLab Rails                             | 2              | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`  | `c5.2xlarge`   | `F8s v2`       |
+| Monitoring node                          | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Object storage<sup>4</sup>               | Not applicable | Not applicable          | Not applicable  | Not applicable | Not applicable |
+| NFS server (non-Gitaly)                  | 1              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`    | `F4s v2`       |
 
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work, however Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However it is also used optionally by Prometheus for Omnibus auto host discovery.
@@ -1018,12 +1018,12 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                    | Nodes | Configuration          | GCP             | AWS         |
-|----------------------------|-------|------------------------|-----------------|-------------|
-| PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
-| Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
-| Gitaly                     | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
-| Object storage<sup>3</sup> | n/a   | n/a                    | n/a             | n/a         |
+| Service                    | Nodes          | Configuration          | GCP             | AWS            |
+|----------------------------|----------------|------------------------|-----------------|----------------|
+| PostgreSQL<sup>1</sup>     | 1              | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`     |
+| Redis<sup>2</sup>          | 1              | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`     |
+| Gitaly                     | 1              | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`    |
+| Object storage<sup>3</sup> | Not applicable | Not applicable         | Not applicable  | Not applicable |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

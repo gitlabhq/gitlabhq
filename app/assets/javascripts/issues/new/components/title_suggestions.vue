@@ -66,8 +66,8 @@ export default {
 </script>
 
 <template>
-  <div v-show="showSuggestions" class="form-group row">
-    <div v-once class="col-form-label col-sm-2 pt-0">
+  <div v-show="showSuggestions" class="form-group">
+    <div v-once class="gl-pb-3">
       {{ __('Similar issues') }}
       <gl-icon
         v-gl-tooltip.bottom
@@ -77,18 +77,16 @@ export default {
         class="text-secondary gl-cursor-help"
       />
     </div>
-    <div class="col-sm-10">
-      <ul class="list-unstyled m-0">
-        <li
-          v-for="(suggestion, index) in issues"
-          :key="suggestion.id"
-          :class="{
-            'gl-mb-3': index !== issues.length - 1,
-          }"
-        >
-          <title-suggestions-item :suggestion="suggestion" />
-        </li>
-      </ul>
-    </div>
+    <ul class="gl-list-style-none gl-m-0 gl-p-0">
+      <li
+        v-for="(suggestion, index) in issues"
+        :key="suggestion.id"
+        :class="{
+          'gl-mb-3': index !== issues.length - 1,
+        }"
+      >
+        <title-suggestions-item :suggestion="suggestion" />
+      </li>
+    </ul>
   </div>
 </template>

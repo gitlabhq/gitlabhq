@@ -10,7 +10,7 @@ RSpec.describe JiraConnectHelper do
     let(:client_id) { '123' }
 
     before do
-      stub_env('JIRA_CONNECT_OAUTH_CLIENT_ID', client_id)
+      stub_application_setting(jira_connect_application_key: client_id)
     end
 
     subject { helper.jira_connect_app_data([subscription]) }

@@ -14,7 +14,7 @@ import {
   MEMBER_STATE_ACTIVE,
   USER_STATE_BLOCKED_PENDING_APPROVAL,
   BADGE_LABELS_AWAITING_USER_SIGNUP,
-  BADGE_LABELS_PENDING_OWNER_APPROVAL,
+  BADGE_LABELS_PENDING_OWNER_ACTION,
 } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
@@ -174,7 +174,7 @@ export default {
       return memberInviteMetadata?.userState === USER_STATE_BLOCKED_PENDING_APPROVAL;
     },
     /**
-     * Returns whether the member is awaiting owner approval
+     * Returns whether the member is awaiting owner action
      *
      * This checks Member.state exposed via MemberEntity
      *
@@ -183,16 +183,16 @@ export default {
      * @see {@link ~/app/serializers/member_entity.rb}
      * @returns {boolean}
      */
-    isMemberPendingOwnerApproval(memberState) {
+    isMemberPendingOwnerAction(memberState) {
       return memberState === MEMBER_STATE_AWAITING;
     },
     isUserAwaiting(memberInviteMetadata, memberState) {
       return (
         this.isUserPendingRootApproval(memberInviteMetadata) ||
-        this.isMemberPendingOwnerApproval(memberState)
+        this.isMemberPendingOwnerAction(memberState)
       );
     },
-    shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState) {
+    shouldAddPendingOwnerActionBadge(memberInviteMetadata, memberState) {
       return (
         this.isUserAwaiting(memberInviteMetadata, memberState) &&
         !this.isNewUser(memberInviteMetadata)
@@ -212,8 +212,8 @@ export default {
         return BADGE_LABELS_AWAITING_USER_SIGNUP;
       }
 
-      if (this.shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState)) {
-        return BADGE_LABELS_PENDING_OWNER_APPROVAL;
+      if (this.shouldAddPendingOwnerActionBadge(memberInviteMetadata, memberState)) {
+        return BADGE_LABELS_PENDING_OWNER_ACTION;
       }
 
       return '';

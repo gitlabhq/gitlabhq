@@ -10474,6 +10474,9 @@ msgstr ""
 msgid "Create confidential merge request and branch"
 msgstr ""
 
+msgid "Create custom type"
+msgstr ""
+
 msgid "Create directory"
 msgstr ""
 
@@ -16132,6 +16135,9 @@ msgstr ""
 msgid "First seen"
 msgstr ""
 
+msgid "Fixed"
+msgstr ""
+
 msgid "Fixed burndown chart"
 msgstr ""
 
@@ -16832,10 +16838,13 @@ msgstr ""
 msgid "Geo|Resync all"
 msgstr ""
 
-msgid "Geo|Resync all %{replicableType}"
+msgid "Geo|Resync all %{projects_count} projects"
 msgstr ""
 
-msgid "Geo|Resync all projects"
+msgid "Geo|Resync all %{total}%{replicableType}"
+msgstr ""
+
+msgid "Geo|Resync project"
 msgstr ""
 
 msgid "Geo|Retry count"
@@ -16847,7 +16856,10 @@ msgstr ""
 msgid "Geo|Reverify all"
 msgstr ""
 
-msgid "Geo|Reverify all projects"
+msgid "Geo|Reverify all %{projects_count} projects"
+msgstr ""
+
+msgid "Geo|Reverify project"
 msgstr ""
 
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
@@ -17172,6 +17184,9 @@ msgid "GitLab events trigger webhooks. Use the request details of a webhook to h
 msgstr ""
 
 msgid "GitLab export"
+msgstr ""
+
+msgid "GitLab for Jira Cloud"
 msgstr ""
 
 msgid "GitLab group: %{source_link}"
@@ -21612,6 +21627,9 @@ msgstr ""
 msgid "Jira-GitLab user mapping template"
 msgstr ""
 
+msgid "JiraConnect|Configure your Jira Connect Application ID."
+msgstr ""
+
 msgid "JiraConnect|Create branch for Jira issue %{jiraIssue}"
 msgstr ""
 
@@ -21619,6 +21637,12 @@ msgid "JiraConnect|Failed to create branch."
 msgstr ""
 
 msgid "JiraConnect|Failed to create branch. Please try again."
+msgstr ""
+
+msgid "JiraConnect|GitLab for Jira App"
+msgstr ""
+
+msgid "JiraConnect|Jira Connect Application ID"
 msgstr ""
 
 msgid "JiraConnect|New branch was successfully created."
@@ -22270,6 +22294,9 @@ msgid "Labels|Promoting %{labelTitle} will make it available for all projects in
 msgstr ""
 
 msgid "Language"
+msgstr ""
+
+msgid "Language type"
 msgstr ""
 
 msgid "Large File Storage"
@@ -27421,7 +27448,7 @@ msgstr ""
 msgid "Pending deletion"
 msgstr ""
 
-msgid "Pending owner approval"
+msgid "Pending owner action"
 msgstr ""
 
 msgid "Pending sync…"
@@ -37074,6 +37101,9 @@ msgstr ""
 msgid "Tags:"
 msgstr ""
 
+msgid "TagsPage|After you confirm and select %{strongStart}%{buttonText},%{strongEnd} you cannot recover this tag."
+msgstr ""
+
 msgid "TagsPage|Browse commits"
 msgstr ""
 
@@ -37086,13 +37116,25 @@ msgstr ""
 msgid "TagsPage|Cancel"
 msgstr ""
 
+msgid "TagsPage|Cancel, keep tag"
+msgstr ""
+
 msgid "TagsPage|Create tag"
+msgstr ""
+
+msgid "TagsPage|Delete protected tag"
+msgstr ""
+
+msgid "TagsPage|Delete protected tag. Are you ABSOLUTELY SURE?"
 msgstr ""
 
 msgid "TagsPage|Delete tag"
 msgstr ""
 
-msgid "TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?"
+msgid "TagsPage|Delete tag. Are you ABSOLUTELY SURE?"
+msgstr ""
+
+msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} tag cannot be undone. Are you sure?"
 msgstr ""
 
 msgid "TagsPage|Edit release notes"
@@ -37110,10 +37152,16 @@ msgstr ""
 msgid "TagsPage|New tag"
 msgstr ""
 
+msgid "TagsPage|Only a project maintainer or owner can delete a protected tag"
+msgstr ""
+
 msgid "TagsPage|Optionally, add a message to the tag. Leaving this blank creates a %{link_start}lightweight tag.%{link_end}"
 msgstr ""
 
 msgid "TagsPage|Optionally, create a public Release of your project, based on this tag. Release notes are displayed on the %{releases_page_link_start}Releases%{link_end} page. %{docs_link_start}More information%{link_end}"
+msgstr ""
+
+msgid "TagsPage|Please type the following to confirm:"
 msgstr ""
 
 msgid "TagsPage|Release notes"
@@ -37141,6 +37189,18 @@ msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
 msgid "TagsPage|Write your release notes or drag files here…"
+msgstr ""
+
+msgid "TagsPage|Yes, delete protected tag"
+msgstr ""
+
+msgid "TagsPage|Yes, delete tag"
+msgstr ""
+
+msgid "TagsPage|You're about to permanently delete the protected tag %{strongStart}%{tagName}.%{strongEnd}"
+msgstr ""
+
+msgid "TagsPage|You're about to permanently delete the tag %{strongStart}%{tagName}.%{strongEnd}"
 msgstr ""
 
 msgid "TagsPage|protected"
@@ -39515,6 +39575,9 @@ msgid "To keep this project going, create a new merge request"
 msgstr ""
 
 msgid "To learn more about this project, read %{link_to_wiki}"
+msgstr ""
+
+msgid "To manage all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
 msgstr ""
 
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
@@ -44360,6 +44423,12 @@ msgstr ""
 msgid "ciReport|%{sameNum} same"
 msgstr ""
 
+msgid "ciReport|%{scanner} detected %{number} new potential %{vulnStr}"
+msgstr ""
+
+msgid "ciReport|%{scanner} detected no new %{vulnStr}"
+msgstr ""
+
 msgid "ciReport|: Loading resulted in an error"
 msgstr ""
 
@@ -44575,10 +44644,16 @@ msgstr ""
 msgid "ciReport|Secret detection"
 msgstr ""
 
+msgid "ciReport|Security reports failed loading results"
+msgstr ""
+
 msgid "ciReport|Security scanning"
 msgstr ""
 
 msgid "ciReport|Security scanning failed loading any results"
+msgstr ""
+
+msgid "ciReport|Security scanning is loading"
 msgstr ""
 
 msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"
