@@ -29,12 +29,12 @@
                 = render "layouts/nav/top_nav"
 
       .navbar-collapse.gl-transition-medium.collapse
-        %ul.nav.navbar-nav.gl-w-full
+        %ul.nav.navbar-nav.gl-w-full.gl-align-items-center.gl-justify-content-end
           - if current_user
             = render 'layouts/header/new_dropdown', class: 'gl-display-none gl-sm-display-block gl-white-space-nowrap gl-text-right'
           - if top_nav_show_search
             - search_menu_item = top_nav_search_menu_item_attrs
-            %li.nav-item.header-search-new.gl-display-none.gl-lg-display-block.m-auto.gl-w-full
+            %li.nav-item.header-search-new.gl-display-none.gl-lg-display-block.gl-w-full
               - unless current_controller?(:search)
                 - if Feature.enabled?(:new_header_search)
                   = render 'layouts/header_search'

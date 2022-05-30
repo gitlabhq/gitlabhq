@@ -24,11 +24,11 @@ module Database
         def tracking_database
           raise NotImplementedError, "#{self.name} does not implement #{__method__}"
         end
+        # :nocov:
 
         def enabled?
-          raise NotImplementedError, "#{self.name} does not implement #{__method__}"
+          Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops)
         end
-        # :nocov:
 
         def lease_key
           name.demodulize.underscore

@@ -5,8 +5,7 @@ module Mutations
     class UpdateTask < BaseMutation
       graphql_name 'WorkItemUpdateTask'
       description "Updates a work item's task by Global ID." \
-                  " Available only when feature flag `work_items` is enabled. The feature is experimental and is" \
-                  " subject to change without notice."
+                  " Available only when feature flag `work_items` is enabled."
 
       include Mutations::SpamProtection
 

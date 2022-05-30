@@ -556,7 +556,11 @@ Returns [`Vulnerability`](#vulnerability).
 
 ### `Query.workItem`
 
-Find a work item. Returns `null` if `work_items` feature flag is disabled. The feature is experimental and is subject to change without notice.
+Find a work item. Returns `null` if `work_items` feature flag is disabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Returns [`WorkItem`](#workitem).
 
@@ -5365,7 +5369,11 @@ Input type: `VulnerabilityRevertToDetectedInput`
 
 ### `Mutation.workItemCreate`
 
-Creates a work item. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
+Creates a work item. Available only when feature flag `work_items` is enabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Input type: `WorkItemCreateInput`
 
@@ -5389,7 +5397,11 @@ Input type: `WorkItemCreateInput`
 
 ### `Mutation.workItemCreateFromTask`
 
-Creates a work item from a task in another work item's description. Available only when feature flag `work_items` is enabled. This feature is experimental and is subject to change without notice.
+Creates a work item from a task in another work item's description. Available only when feature flag `work_items` is enabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Input type: `WorkItemCreateFromTaskInput`
 
@@ -5412,7 +5424,11 @@ Input type: `WorkItemCreateFromTaskInput`
 
 ### `Mutation.workItemDelete`
 
-Deletes a work item. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
+Deletes a work item. Available only when feature flag `work_items` is enabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Input type: `WorkItemDeleteInput`
 
@@ -5433,7 +5449,11 @@ Input type: `WorkItemDeleteInput`
 
 ### `Mutation.workItemDeleteTask`
 
-Deletes a task in a work item's description. Available only when feature flag `work_items` is enabled. This feature is experimental and is subject to change without notice.
+Deletes a task in a work item's description. Available only when feature flag `work_items` is enabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Input type: `WorkItemDeleteTaskInput`
 
@@ -5456,7 +5476,11 @@ Input type: `WorkItemDeleteTaskInput`
 
 ### `Mutation.workItemUpdate`
 
-Updates a work item by Global ID. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
+Updates a work item by Global ID. Available only when feature flag `work_items` is enabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Input type: `WorkItemUpdateInput`
 
@@ -5479,7 +5503,11 @@ Input type: `WorkItemUpdateInput`
 
 ### `Mutation.workItemUpdateTask`
 
-Updates a work item's task by Global ID. Available only when feature flag `work_items` is enabled. The feature is experimental and is subject to change without notice.
+Updates a work item's task by Global ID. Available only when feature flag `work_items` is enabled.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
 
 Input type: `WorkItemUpdateTaskInput`
 

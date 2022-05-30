@@ -4,6 +4,6 @@ classes:
 - Ci::PipelineChatData
 feature_categories:
 - chatops
-description: TODO
+description: Stores information about a CI pipeline created via chatops
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466
 milestone: '10.6'

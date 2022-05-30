@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database, feature_flag:|
+RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database|
   include ExclusiveLeaseHelpers
 
   describe 'defining the job attributes' do
@@ -40,12 +40,16 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
   end
 
   describe '.enabled?' do
-    it 'does not raise an error' do
-      expect { described_class.enabled? }.not_to raise_error
+    it 'returns true when execute_batched_migrations_on_schedule feature flag is enabled' do
+      stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
+      expect(described_class.enabled?).to be_truthy
     end
 
-    it 'returns true' do
-      expect(described_class.enabled?).to be_truthy
+    it 'returns false when execute_batched_migrations_on_schedule feature flag is disabled' do
+      stub_feature_flags(execute_batched_migrations_on_schedule: false)
+
+      expect(described_class.enabled?).to be_falsey
     end
   end
 
@@ -86,7 +90,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
       context 'when the feature flag is disabled' do
         before do
-          stub_feature_flags(feature_flag => false)
+          stub_feature_flags(execute_batched_migrations_on_schedule: false)
         end
 
         it 'does nothing' do
@@ -101,7 +105,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
 
         before do
-          stub_feature_flags(feature_flag => true)
+          stub_feature_flags(execute_batched_migrations_on_schedule: true)
 
           allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
             .with(connection: base_model.connection)
@@ -292,7 +296,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         WHERE some_column = #{migration_records - 5};
       SQL
 
-      stub_feature_flags(feature_flag => true)
+      stub_feature_flags(execute_batched_migrations_on_schedule: true)
 
       stub_const('Gitlab::BackgroundMigration::ExampleDataMigration', migration_class)
     end

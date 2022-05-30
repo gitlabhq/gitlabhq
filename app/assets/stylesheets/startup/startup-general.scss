@@ -335,9 +335,6 @@ button::-moz-focus-inner,
   white-space: nowrap;
   border: 0;
 }
-.m-auto {
-  margin: auto !important;
-}
 .gl-badge {
   display: inline-flex;
   align-items: center;
@@ -1722,11 +1719,17 @@ svg.s16 {
 .gl-display-inline-block\! {
   display: inline-block !important;
 }
+.gl-align-items-center {
+  align-items: center;
+}
 .gl-align-items-stretch {
   align-items: stretch;
 }
 .gl-flex-grow-1 {
   flex-grow: 1;
+}
+.gl-justify-content-end {
+  justify-content: flex-end;
 }
 .gl-relative {
   position: relative;

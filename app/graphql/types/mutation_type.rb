@@ -137,12 +137,12 @@ module Types
     mount_mutation Mutations::Packages::Destroy
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Echo
-    mount_mutation Mutations::WorkItems::Create
-    mount_mutation Mutations::WorkItems::CreateFromTask
-    mount_mutation Mutations::WorkItems::Delete
-    mount_mutation Mutations::WorkItems::DeleteTask
-    mount_mutation Mutations::WorkItems::Update
-    mount_mutation Mutations::WorkItems::UpdateTask
+    mount_mutation Mutations::WorkItems::Create, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::CreateFromTask, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::Delete, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::DeleteTask, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::Update, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::UpdateTask, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
     mount_mutation Mutations::SavedReplies::Destroy

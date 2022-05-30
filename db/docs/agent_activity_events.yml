@@ -4,6 +4,6 @@ classes:
 - Clusters::Agents::ActivityEvent
 feature_categories:
 - kubernetes_management
-description: TODO
+description: Historical timeline events belonging to a cluster agent
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74577
 milestone: '14.6'

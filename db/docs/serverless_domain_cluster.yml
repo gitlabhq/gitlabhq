@@ -3,7 +3,7 @@ table_name: serverless_domain_cluster
 classes:
 - Serverless::DomainCluster
 feature_categories:
-- deployment_management
-description: TODO
+- kubernetes_management
+description: (Deprecated) A custom domain for a GitLab managed Knative installation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19835
 milestone: '12.6'
