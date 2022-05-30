@@ -4839,9 +4839,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#has_expired_test_reports?' do
-    subject { pipeline_with_test_report.has_expired_test_reports? }
+    subject { pipeline.has_expired_test_reports? }
 
-    let(:pipeline_with_test_report) { create(:ci_pipeline, :with_test_reports) }
+    let(:pipeline) { create(:ci_pipeline, :success, :with_test_reports) }
 
     context 'when artifacts are not expired' do
       it { is_expected.to be_falsey }
@@ -4849,10 +4849,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     context 'when artifacts are expired' do
       before do
-        pipeline_with_test_report.job_artifacts.first.update!(expire_at: Date.yesterday)
+        pipeline.job_artifacts.first.update!(expire_at: Date.yesterday)
       end
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'when the pipeline is still running' do
+      let(:pipeline) { create(:ci_pipeline, :running) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the pipeline is completed without test reports' do
+      let(:pipeline) { create(:ci_pipeline, :success) }
+
+      it { is_expected.to be_falsey }
     end
   end
 

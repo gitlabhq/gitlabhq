@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -26,11 +25,7 @@ func TestServingNonExistingFile(t *testing.T) {
 }
 
 func TestServingDirectory(t *testing.T) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 	w := httptest.NewRecorder()
@@ -64,11 +59,7 @@ func TestExecutingHandlerWhenNoFileFound(t *testing.T) {
 }
 
 func TestServingTheActualFile(t *testing.T) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 
@@ -121,11 +112,7 @@ func TestExcludedPaths(t *testing.T) {
 }
 
 func testServingThePregzippedFile(t *testing.T, enableGzip bool) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 

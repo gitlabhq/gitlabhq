@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
@@ -43,9 +42,7 @@ func TestUploadWrongSize(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpFolder)
+	tmpFolder := t.TempDir()
 
 	opts := &destination.UploadOpts{LocalTempPath: tmpFolder}
 	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, "upload", opts)
@@ -59,9 +56,7 @@ func TestUploadWithKnownSizeExceedLimit(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpFolder)
+	tmpFolder := t.TempDir()
 
 	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
 	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
@@ -75,9 +70,7 @@ func TestUploadWithUnknownSizeExceedLimit(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpFolder)
+	tmpFolder := t.TempDir()
 
 	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
 	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), -1, "upload", opts)
@@ -139,9 +132,7 @@ func TestUpload(t *testing.T) {
 		remoteMultipart
 	)
 
-	tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpFolder)
+	tmpFolder := t.TempDir()
 
 	tests := []struct {
 		name   string
@@ -301,8 +292,7 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 }
 
 func TestUploadWithAzureWorkhorseClient(t *testing.T) {
-	mux, bucketDir, cleanup := test.SetupGoCloudFileBucket(t, "azblob")
-	defer cleanup()
+	mux, bucketDir := test.SetupGoCloudFileBucket(t, "azblob")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -427,10 +417,6 @@ func TestUploadRemoteFileWithLimit(t *testing.T) {
 			var opts destination.UploadOpts
 
 			for _, remoteType := range remoteTypes {
-				tmpFolder, err := ioutil.TempDir("", "workhorse-test-tmp")
-				require.NoError(t, err)
-				defer os.RemoveAll(tmpFolder)
-
 				osStub, ts := test.StartObjectStore()
 				defer ts.Close()
 

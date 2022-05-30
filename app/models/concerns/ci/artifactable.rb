@@ -21,7 +21,7 @@ module Ci
       }, _suffix: true
 
       scope :expired_before, -> (timestamp) { where(arel_table[:expire_at].lt(timestamp)) }
-      scope :expired, -> (limit) { expired_before(Time.current).limit(limit) }
+      scope :expired, -> { expired_before(Time.current) }
       scope :project_id_in, ->(ids) { where(project_id: ids) }
     end
 

@@ -2,9 +2,7 @@ package test
 
 import (
 	"context"
-	"io/ioutil"
 	"net/url"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,18 +18,14 @@ func (o *dirOpener) OpenBucketURL(ctx context.Context, u *url.URL) (*blob.Bucket
 	return fileblob.OpenBucket(o.tmpDir, nil)
 }
 
-func SetupGoCloudFileBucket(t *testing.T, scheme string) (m *blob.URLMux, bucketDir string, cleanup func()) {
-	tmpDir, err := ioutil.TempDir("", "")
-	require.NoError(t, err)
+func SetupGoCloudFileBucket(t *testing.T, scheme string) (m *blob.URLMux, bucketDir string) {
+	tmpDir := t.TempDir()
 
 	mux := new(blob.URLMux)
 	fake := &dirOpener{tmpDir: tmpDir}
 	mux.RegisterBucket(scheme, fake)
-	cleanup = func() {
-		os.RemoveAll(tmpDir)
-	}
 
-	return mux, tmpDir, cleanup
+	return mux, tmpDir
 }
 
 func GoCloudObjectExists(t *testing.T, bucketDir string, objectName string) {

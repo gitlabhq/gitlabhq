@@ -124,13 +124,10 @@ func S3ObjectDoesNotExist(t *testing.T, sess *session.Session, config config.S3C
 }
 
 func downloadObject(t *testing.T, sess *session.Session, config config.S3Config, objectName string, handler func(tmpfile *os.File, numBytes int64, err error)) {
-	tmpDir, err := ioutil.TempDir("", "workhorse-test-")
-	require.NoError(t, err)
-	defer os.Remove(tmpDir)
+	tmpDir := t.TempDir()
 
 	tmpfile, err := ioutil.TempFile(tmpDir, "s3-output")
 	require.NoError(t, err)
-	defer os.Remove(tmpfile.Name())
 
 	downloadSvc := s3manager.NewDownloader(sess)
 	numBytes, err := downloadSvc.Download(tmpfile, &s3.GetObjectInput{

@@ -130,8 +130,7 @@ type testServer struct {
 }
 
 func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format string, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *testServer {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
+	tempPath := t.TempDir()
 
 	if authResponse == nil {
 		authResponse = &api.Response{TempPath: tempPath}
@@ -147,7 +146,6 @@ func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format 
 
 	cleanup := func() {
 		ts.Close()
-		require.NoError(t, os.RemoveAll(tempPath))
 		require.NoError(t, writer.Close())
 	}
 
@@ -292,8 +290,7 @@ func TestUploadFormProcessing(t *testing.T) {
 }
 
 func TestLsifFileProcessing(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
+	tempPath := t.TempDir()
 
 	s := setupWithTmpPath(t, "file", true, "zip", &api.Response{TempPath: tempPath, ProcessLsif: true}, nil)
 	defer s.cleanup()
@@ -312,8 +309,7 @@ func TestLsifFileProcessing(t *testing.T) {
 }
 
 func TestInvalidLsifFileProcessing(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
+	tempPath := t.TempDir()
 
 	s := setupWithTmpPath(t, "file", true, "zip", &api.Response{TempPath: tempPath, ProcessLsif: true}, nil)
 	defer s.cleanup()

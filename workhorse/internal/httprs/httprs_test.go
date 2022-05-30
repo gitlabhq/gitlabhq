@@ -111,11 +111,9 @@ func newRSFactory(flags int) RSFactory {
 
 func TestHttpWebServer(t *testing.T) {
 	Convey("Scenario: testing WebServer", t, func() {
-		dir, err := ioutil.TempDir("", "webserver")
-		So(err, ShouldBeNil)
-		defer os.RemoveAll(dir)
+		dir := t.TempDir()
 
-		err = ioutil.WriteFile(filepath.Join(dir, "file"), make([]byte, 10000), 0755)
+		err := ioutil.WriteFile(filepath.Join(dir, "file"), make([]byte, 10000), 0755)
 		So(err, ShouldBeNil)
 
 		server := httptest.NewServer(http.FileServer(http.Dir(dir)))

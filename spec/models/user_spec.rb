@@ -4374,14 +4374,6 @@ RSpec.describe User do
 
       it_behaves_like '#ci_owned_runners'
     end
-
-    context 'when FF ci_owned_runners_unnest_index is disabled uses GIN index' do
-      before do
-        stub_feature_flags(ci_owned_runners_unnest_index: false)
-      end
-
-      it_behaves_like '#ci_owned_runners'
-    end
   end
 
   describe '#projects_with_reporter_access_limited_to' do

@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http/httptest"
-	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -75,8 +74,7 @@ func TestUploadPackTimesOut(t *testing.T) {
 func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) string {
 	t.Helper()
 
-	tmp, err := ioutil.TempDir("", "")
-	require.NoError(t, err)
+	tmp := t.TempDir()
 
 	socket := filepath.Join(tmp, "gitaly.sock")
 	ln, err := net.Listen("unix", socket)
@@ -90,7 +88,6 @@ func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) strin
 
 	t.Cleanup(func() {
 		srv.GracefulStop()
-		require.NoError(t, os.RemoveAll(tmp), "error removing temp dir %q", tmp)
 	})
 
 	return fmt.Sprintf("%s://%s", ln.Addr().Network(), ln.Addr().String())
