@@ -161,7 +161,7 @@ export default {
         <gl-button
           v-if="canUserConfigure"
           v-gl-modal="'configure-feature-flags'"
-          variant="info"
+          variant="confirm"
           category="secondary"
           data-qa-selector="configure_feature_flags_button"
           data-testid="ff-configure-button"
@@ -197,7 +197,7 @@ export default {
             :href="userListPath"
             variant="confirm"
             category="tertiary"
-            class="gl-mb-0 gl-mr-4"
+            class="gl-mb-0 gl-mr-3"
             data-testid="ff-user-list-button"
           >
             {{ s__('FeatureFlags|View user lists') }}
@@ -205,11 +205,11 @@ export default {
           <gl-button
             v-if="canUserConfigure"
             v-gl-modal="'configure-feature-flags'"
-            variant="info"
+            variant="confirm"
             category="secondary"
             data-qa-selector="configure_feature_flags_button"
             data-testid="ff-configure-button"
-            class="gl-mb-0 gl-mr-4"
+            class="gl-mb-0 gl-mr-3"
           >
             {{ s__('FeatureFlags|Configure') }}
           </gl-button>

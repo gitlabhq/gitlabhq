@@ -17,7 +17,9 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 | [16.4](16.4.md) | X-Backend-Server header exposes server information | Info | Passive |
 | [16.5](16.5.md) | AspNet header exposes version information | Low | Passive |
 | [16.6](16.6.md) | AspNetMvc header exposes version information | Low | Passive |
+| [16.7](16.7.md) | Strict-Transport-Security header missing or invalid | Low | Passive |
 | [200.1](200.1.md) | Exposure of sensitive information to an unauthorized actor (private IP address) | Low | Passive |
+| [352.1](352.1.md) | Absence of anti-CSRF tokens | Medium | Passive |
 | [359.1](359.1.md) | Exposure of Private Personal Information (PII) to an unauthorized actor (credit card) | Medium | Passive |
 | [359.2](359.2.md) | Exposure of Private Personal Information (PII) to an unauthorized actor (United States social security number) | Medium | Passive |
 | [548.1](548.1.md) | Exposure of information through directory listing | Low | Passive |

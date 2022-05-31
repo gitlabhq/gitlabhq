@@ -164,6 +164,14 @@ This setting limits global search requests.
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
 
+### Pipeline creation rate limit
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+
+This setting limits the request rate to the pipeline creation endpoints.
+
+Read more about [pipeline creation rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md).
+
 ## Gitaly concurrency limit
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in Gitaly's configuration file.
