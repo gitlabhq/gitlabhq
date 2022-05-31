@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlBadge, GlLink } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 /**
  * Renders Stuck Runners block for job's view.
@@ -9,6 +9,7 @@ export default {
     GlAlert,
     GlBadge,
     GlLink,
+    GlSprintf,
   },
   props: {
     hasOfflineRunnersForProject: {
@@ -29,11 +30,15 @@ export default {
     hasNoRunnersWithCorrespondingTags() {
       return this.tags.length > 0;
     },
+    protectedBranchSettingsDocsLink() {
+      return 'https://docs.gitlab.com/runner/security/index.html#reduce-the-security-risk-of-using-privileged-containers';
+    },
     stuckData() {
       if (this.hasNoRunnersWithCorrespondingTags) {
         return {
-          text: s__(`Job|This job is stuck because you don't have
-                any active runners online or available with any of these tags assigned to them:`),
+          text: s__(
+            `Job|This job is stuck because of one of the following problems. There are no active runners online, no runners for the %{linkStart}protected branch%{linkEnd}, or no runners that match all of the job's tags:`,
+          ),
           dataTestId: 'job-stuck-with-tags',
           showTags: true,
         };
@@ -59,7 +64,17 @@ export default {
 <template>
   <gl-alert variant="warning" :dismissible="false">
     <p class="gl-mb-0" :data-testid="stuckData.dataTestId">
-      {{ stuckData.text }}
+      <gl-sprintf :message="stuckData.text">
+        <template #link="{ content }">
+          <a
+            class="gl-display-inline-block"
+            :href="protectedBranchSettingsDocsLink"
+            target="_blank"
+          >
+            {{ content }}
+          </a>
+        </template>
+      </gl-sprintf>
       <template v-if="stuckData.showTags">
         <gl-badge v-for="tag in tags" :key="tag" variant="info">
           {{ tag }}

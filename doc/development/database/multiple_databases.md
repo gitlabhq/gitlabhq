@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Sharding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -597,3 +597,21 @@ way to replace cascading deletes so we don't end up with orphaned data
 or records that point to nowhere, which might lead to bugs. As such we created
 ["loose foreign keys"](loose_foreign_keys.md) which is an asynchronous
 process of cleaning up orphaned records.
+
+## Locking writes on the tables that don't belong to the database schemas
+
+When the CI database is promoted and the two databases are fully split,
+as an extra safeguard against creating a split brain situation,
+run the Rake task `gitlab:db:lock_writes`. This command locks writes on:
+
+- The `gitlab_main` tables on the CI Database.
+- The `gitlab_ci` tables on the Main Database.
+
+This Rake task adds triggers to all the tables, to prevent any
+`INSERT`, `UPDATE`, `DELETE`, or `TRUNCATE` statements from running
+against the tables that need to be locked.
+
+If this task was run against a GitLab setup that uses only a single database
+for both `gitlab_main` and `gitlab_ci` tables, then no tables will be locked.
+
+To undo the operation, run the opposite Rake task: `gitlab:db:unlock_writes`.

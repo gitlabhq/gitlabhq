@@ -3,7 +3,7 @@
 - page_title @application.name, _("Applications")
 - @content_class = "limit-container-width" unless fluid_layout
 
-%h3.page-title
+%h1.page-title
   = _("Application: %{name}") % { name: @application.name }
 
 = render 'shared/doorkeeper/applications/show',

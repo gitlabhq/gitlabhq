@@ -1,7 +1,7 @@
 - page_title _('Pages')
 
 - if @project.pages_enabled?
-  %h3.page-title.with-button
+  %h1.page-title.with-button
     = s_('GitLabPages|Pages')
 
     - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)

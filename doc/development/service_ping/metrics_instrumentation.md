@@ -293,7 +293,7 @@ There is support for:
 
 There is no support for:
 
-- `add`, `sum`, `histogram` for database metrics.
+- `add`, `histogram` for database metrics.
 
 You can [track the progress to support these](https://gitlab.com/groups/gitlab-org/-/epics/6118).
 

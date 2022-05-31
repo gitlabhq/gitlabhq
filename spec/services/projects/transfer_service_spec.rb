@@ -53,9 +53,6 @@ RSpec.describe Projects::TransferService do
       allow_next_instance_of(Gitlab::UploadsTransfer) do |service|
         allow(service).to receive(:move_project).and_return(true)
       end
-      allow_next_instance_of(Gitlab::PagesTransfer) do |service|
-        allow(service).to receive(:move_project).and_return(true)
-      end
 
       group.add_owner(user)
     end
@@ -723,15 +720,6 @@ RSpec.describe Projects::TransferService do
 
     before do
       group.add_owner(user)
-    end
-
-    it 'schedules a job when pages are deployed' do
-      project.mark_pages_as_deployed
-
-      expect(PagesTransferWorker).to receive(:perform_async)
-                                       .with("move_project", [project.path, user.namespace.full_path, group.full_path])
-
-      execute_transfer
     end
 
     it 'does not schedule a job when no pages are deployed' do

@@ -10,7 +10,7 @@ RSpec.describe Mutations::Commits::Create do
 
   let(:context) do
     GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: nil),
+      query: double('query', schema: nil), # rubocop:disable RSpec/VerifiedDoubles
       values: { current_user: user },
       object: nil
     )

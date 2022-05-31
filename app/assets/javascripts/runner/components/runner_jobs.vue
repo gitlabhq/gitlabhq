@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import runnerJobsQuery from '../graphql/show/runner_jobs.query.graphql';
 import { I18N_FETCH_ERROR, I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '../constants';
@@ -11,7 +11,7 @@ import RunnerPagination from './runner_pagination.vue';
 export default {
   name: 'RunnerJobs',
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     RunnerJobsTable,
     RunnerPagination,
   },
@@ -68,7 +68,9 @@ export default {
 
 <template>
   <div class="gl-pt-3">
-    <gl-skeleton-loading v-if="loading" class="gl-py-5" />
+    <div v-if="loading" class="gl-py-5">
+      <gl-skeleton-loader />
+    </div>
     <runner-jobs-table v-else-if="jobs.items.length" :jobs="jobs.items" />
     <p v-else>{{ $options.I18N_NO_JOBS_FOUND }}</p>
 

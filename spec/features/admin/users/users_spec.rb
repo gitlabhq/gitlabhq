@@ -492,9 +492,7 @@ RSpec.describe 'Admin::Users' do
       within(:css, '.gl-mb-3 + .card') do
         click_link group.name
       end
-      within(:css, 'h3.page-title') do
-        expect(page).to have_content "Group: #{group.name}"
-      end
+      expect(page).to have_content "Group: #{group.name}"
       expect(page).to have_content project.name
     end
 

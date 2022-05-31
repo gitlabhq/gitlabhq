@@ -6,7 +6,7 @@
 - noteable_url = show_project_path ? url_for([@sent_notification.project, noteable]) : breadcrumb_title_link
 - page_title _('Unsubscribe'), noteable_text, noteable_type.pluralize, project_path
 
-%h3.page-title
+%h1.page-title
   = _("Unsubscribe from %{type}") % { type: noteable_type }
 
 %p

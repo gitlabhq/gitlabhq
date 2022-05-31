@@ -60,8 +60,7 @@ RSpec.describe 'Admin Groups' do
 
       expect(page).to have_current_path admin_group_path(Group.find_by(path: path_component)), ignore_query: true
       content = page.find('#content-body')
-      h3_texts = content.all('h3').collect(&:text).join("\n")
-      expect(h3_texts).to match group_name
+      expect(page).to have_content group_name
       li_texts = content.all('li').collect(&:text).join("\n")
       expect(li_texts).to match group_name
       expect(li_texts).to match path_component

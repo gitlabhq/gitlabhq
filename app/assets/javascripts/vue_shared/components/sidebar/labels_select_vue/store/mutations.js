@@ -2,8 +2,39 @@ import { isScopedLabel, scopedLabelKey } from '~/lib/utils/common_utils';
 import { DropdownVariant } from '../constants';
 import * as types from './mutation_types';
 
+const transformLabels = (labels, selectedLabels) =>
+  labels.map((label) => {
+    const selectedLabel = selectedLabels.find(({ id }) => id === label.id);
+
+    return {
+      ...label,
+      set: Boolean(selectedLabel?.set),
+      indeterminate: Boolean(selectedLabel?.indeterminate),
+    };
+  });
+
 export default {
   [types.SET_INITIAL_STATE](state, props) {
+    // We need to ensure that selectedLabels have
+    // `set` & `indeterminate` properties defined.
+    if (props.selectedLabels?.length) {
+      props.selectedLabels.forEach((label) => {
+        /* eslint-disable no-param-reassign */
+        if (label.set === undefined && label.indeterminate === undefined) {
+          label.set = true;
+          label.indeterminate = false;
+        } else if (label.set === undefined && label.indeterminate !== undefined) {
+          label.set = false;
+        } else if (label.set !== undefined && label.indeterminate === undefined) {
+          label.indeterminate = false;
+        } else {
+          label.set = false;
+          label.indeterminate = false;
+        }
+        /* eslint-enable no-param-reassign */
+      });
+    }
+
     Object.assign(state, { ...props });
   },
 
@@ -36,10 +67,7 @@ export default {
     // selectedLabels array.
     state.labelsFetchInProgress = false;
     state.labelsFetched = true;
-    state.labels = labels.map((label) => ({
-      ...label,
-      set: state.selectedLabels.some((selectedLabel) => selectedLabel.id === label.id),
-    }));
+    state.labels = transformLabels(labels, state.selectedLabels);
   },
   [types.RECEIVE_SET_LABELS_FAILURE](state) {
     state.labelsFetchInProgress = false;
@@ -62,7 +90,8 @@ export default {
     const candidateLabel = state.labels.find((label) => labelId === label.id);
     if (candidateLabel) {
       candidateLabel.touched = true;
-      candidateLabel.set = !candidateLabel.set;
+      candidateLabel.set = candidateLabel.indeterminate ? true : !candidateLabel.set;
+      candidateLabel.indeterminate = false;
     }
 
     if (isScopedLabel(candidateLabel)) {
@@ -80,9 +109,6 @@ export default {
   },
 
   [types.UPDATE_LABELS_SET_STATE](state) {
-    state.labels = state.labels.map((label) => ({
-      ...label,
-      set: state.selectedLabels.some((selectedLabel) => selectedLabel.id === label.id),
-    }));
+    state.labels = transformLabels(state.labels, state.selectedLabels);
   },
 };

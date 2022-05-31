@@ -17,24 +17,39 @@ describe('LabelsSelect Getters', () => {
       },
     );
 
-    it('returns label title when state.labels has only 1 label', () => {
-      const labels = [{ id: 1, title: 'Foobar', set: true }];
+    describe.each`
+      dropdownVariant | isDropdownVariantSidebar | isDropdownVariantEmbedded
+      ${'sidebar'}    | ${true}                  | ${false}
+      ${'embedded'}   | ${false}                 | ${true}
+    `(
+      'when dropdown variant is $dropdownVariant',
+      ({ isDropdownVariantSidebar, isDropdownVariantEmbedded }) => {
+        it('returns label title when state.labels has only 1 label', () => {
+          const labels = [{ id: 1, title: 'Foobar', set: true }];
 
-      expect(getters.dropdownButtonText({ labels }, { isDropdownVariantSidebar: true })).toBe(
-        'Foobar',
-      );
-    });
+          expect(
+            getters.dropdownButtonText(
+              { labels },
+              { isDropdownVariantSidebar, isDropdownVariantEmbedded },
+            ),
+          ).toBe('Foobar');
+        });
 
-    it('returns first label title and remaining labels count when state.labels has more than 1 label', () => {
-      const labels = [
-        { id: 1, title: 'Foo', set: true },
-        { id: 2, title: 'Bar', set: true },
-      ];
+        it('returns first label title and remaining labels count when state.labels has more than 1 label', () => {
+          const labels = [
+            { id: 1, title: 'Foo', set: true },
+            { id: 2, title: 'Bar', set: true },
+          ];
 
-      expect(getters.dropdownButtonText({ labels }, { isDropdownVariantSidebar: true })).toBe(
-        'Foo +1 more',
-      );
-    });
+          expect(
+            getters.dropdownButtonText(
+              { labels },
+              { isDropdownVariantSidebar, isDropdownVariantEmbedded },
+            ),
+          ).toBe('Foo +1 more');
+        });
+      },
+    );
   });
 
   describe('selectedLabelsList', () => {

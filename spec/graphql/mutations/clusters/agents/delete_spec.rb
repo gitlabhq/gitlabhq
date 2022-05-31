@@ -10,7 +10,7 @@ RSpec.describe Mutations::Clusters::Agents::Delete do
   let(:user) { create(:user) }
   let(:context) do
     GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: nil),
+      query: double('query', schema: nil), # rubocop:disable RSpec/VerifiedDoubles
       values: { current_user: user },
       object: nil
     )

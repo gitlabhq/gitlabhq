@@ -1,7 +1,12 @@
-import { __ } from '~/locale';
-
 <script>
+import { GlForm, GlFormInput, GlButton } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlForm,
+    GlButton,
+    GlFormInput,
+  },
   data() {
     return {
       inputEnabled: false,
@@ -24,25 +29,26 @@ export default {
 };
 </script>
 <template>
-  <div id="peek-view-add-request" class="view">
-    <form class="form-inline" @submit.prevent>
-      <button
-        class="btn-link bold gl-text-blue-300 gl-button"
-        type="button"
-        :title="__(`Add request manually`)"
+  <div id="peek-view-add-request" class="view gl-display-flex">
+    <gl-form class="gl-display-flex gl-align-items-center" @submit.prevent>
+      <gl-button
+        class="gl-text-blue-300! gl-mr-2"
+        category="tertiary"
+        variant="link"
+        icon="plus"
+        size="small"
+        :title="__('Add request manually')"
         @click="toggleInput"
-      >
-        +
-      </button>
-      <input
+      />
+      <gl-form-input
         v-if="inputEnabled"
         v-model="urlOrRequestId"
         type="text"
         :placeholder="__(`URL or request ID`)"
-        class="form-control form-control-sm d-inline-block ml-1"
+        class="gl-ml-2"
         @keyup.enter="addRequest"
         @keyup.esc="clearForm"
       />
-    </form>
+    </gl-form>
   </div>
 </template>

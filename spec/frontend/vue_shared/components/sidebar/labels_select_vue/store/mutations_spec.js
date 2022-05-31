@@ -80,7 +80,10 @@ describe('LabelsSelect Mutations', () => {
   });
 
   describe(`${types.RECEIVE_SET_LABELS_SUCCESS}`, () => {
-    const selectedLabels = [{ id: 2 }, { id: 4 }];
+    const selectedLabels = [
+      { id: 2, set: true },
+      { id: 4, set: true },
+    ];
     const labels = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
 
     it('sets value of `state.labelsFetchInProgress` to false', () => {
@@ -196,20 +199,23 @@ describe('LabelsSelect Mutations', () => {
     it('updates labels `set` state to match selected labels', () => {
       const state = {
         labels: [
-          { id: 1, title: 'scoped::test', set: false },
-          { id: 2, set: true, title: 'scoped::one', touched: true },
-          { id: 3, title: '' },
-          { id: 4, title: '' },
+          { id: 1, title: 'scoped::test', set: false, indeterminate: false },
+          { id: 2, title: 'scoped::one', set: true, indeterminate: false, touched: true },
+          { id: 3, title: '', set: false, indeterminate: false },
+          { id: 4, title: '', set: false, indeterminate: false },
         ],
-        selectedLabels: [{ id: 1 }, { id: 3 }],
+        selectedLabels: [
+          { id: 1, set: true },
+          { id: 3, set: true },
+        ],
       };
       mutations[types.UPDATE_LABELS_SET_STATE](state);
 
       expect(state.labels).toEqual([
-        { id: 1, title: 'scoped::test', set: true },
-        { id: 2, set: false, title: 'scoped::one', touched: true },
-        { id: 3, title: '', set: true },
-        { id: 4, title: '', set: false },
+        { id: 1, title: 'scoped::test', set: true, indeterminate: false },
+        { id: 2, title: 'scoped::one', set: false, indeterminate: false, touched: true },
+        { id: 3, title: '', set: true, indeterminate: false },
+        { id: 4, title: '', set: false, indeterminate: false },
       ]);
     });
   });

@@ -120,7 +120,6 @@ module Projects
 
     # Overridden in EE
     def post_update_hooks(project)
-      move_pages(project)
       ensure_personal_project_owner_membership(project)
     end
 
@@ -230,13 +229,6 @@ module Projects
         @old_namespace.full_path,
         @new_namespace.full_path
       )
-    end
-
-    def move_pages(project)
-      return unless project.pages_deployed?
-
-      transfer = Gitlab::PagesTransfer.new.async
-      transfer.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
     end
 
     def old_wiki_repo_path

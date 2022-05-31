@@ -61,7 +61,7 @@ describe('New feature flag form', () => {
   });
 
   it('renders form title', () => {
-    expect(wrapper.find('h3').text()).toEqual('New feature flag');
+    expect(wrapper.text()).toContain('New feature flag');
   });
 
   it('should render feature flag form', () => {

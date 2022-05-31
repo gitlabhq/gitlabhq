@@ -81,9 +81,9 @@ export default {
 </script>
 <template>
   <div>
-    <h3 class="page-title">
+    <h1 class="page-title">
       {{ title }}
-    </h3>
+    </h1>
     <hr />
     <div class="row gl-mt-3 gl-mb-3">
       <div class="col-lg-3">

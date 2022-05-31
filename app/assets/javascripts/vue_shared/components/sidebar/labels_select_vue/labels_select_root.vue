@@ -198,11 +198,12 @@ export default {
         !state.showDropdownButton &&
         !state.showDropdownContents
       ) {
-        let filterFn = (label) => label.touched;
-        if (this.isDropdownVariantEmbedded) {
-          filterFn = (label) => label.set;
-        }
-        this.handleDropdownClose(state.labels.filter(filterFn));
+        const filterTouchedLabelsFn = (label) => label.touched;
+        const filterSetLabelsFn = (label) => label.set;
+        const labels = this.isDropdownVariantEmbedded
+          ? state.labels.filter(filterSetLabelsFn)
+          : state.labels.filter(filterTouchedLabelsFn);
+        this.handleDropdownClose(labels, state.labels.filter(filterTouchedLabelsFn));
       }
     },
     /**
@@ -265,11 +266,11 @@ export default {
         isInDropdownContents
       );
     },
-    handleDropdownClose(labels) {
-      // Only emit label updates if there are any labels to update
-      // on UI.
+    handleDropdownClose(labels, touchedLabels) {
+      // Only emit label updates if there are any
+      // labels to update on UI.
       if (labels.length) this.$emit('updateSelectedLabels', labels);
-      this.$emit('onDropdownClose');
+      this.$emit('onDropdownClose', touchedLabels);
     },
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');

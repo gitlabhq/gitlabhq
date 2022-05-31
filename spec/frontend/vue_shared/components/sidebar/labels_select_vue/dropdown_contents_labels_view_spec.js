@@ -226,12 +226,7 @@ describe('DropdownContentsLabelsView', () => {
           preventDefault: fakePreventDefault,
         });
 
-        expect(wrapper.vm.updateSelectedLabels).toHaveBeenCalledWith([
-          {
-            ...mockLabels[2],
-            set: true,
-          },
-        ]);
+        expect(wrapper.vm.updateSelectedLabels).toHaveBeenCalledWith([mockLabels[2]]);
       });
 
       it('calls action `toggleDropdownContents` when Esc key is pressed', () => {

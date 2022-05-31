@@ -18,7 +18,7 @@
  */
 import {
   GlButton,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlSkeletonLoader,
   GlTooltipDirective,
   GlIcon,
   GlSafeHtmlDirective as SafeHtml,
@@ -46,7 +46,7 @@ export default {
     noteHeader,
     TimelineEntryItem,
     GlButton,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -172,7 +172,7 @@ export default {
         </div>
         <div v-if="shouldShowDescriptionVersion" class="description-version pt-2">
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
-            <gl-skeleton-loading />
+            <gl-skeleton-loader />
           </pre>
           <pre v-else v-safe-html="descriptionVersion" class="wrapper mt-2"></pre>
           <gl-button
@@ -218,7 +218,9 @@ export default {
             </tr>
           </table>
         </div>
-        <gl-skeleton-loading v-else-if="showLines" class="gl-mt-4" />
+        <div v-else-if="showLines" class="mt-4">
+          <gl-skeleton-loader />
+        </div>
       </div>
     </div>
   </timeline-entry-item>

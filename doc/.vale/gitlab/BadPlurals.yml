@@ -6,9 +6,8 @@
 # For a list of all options, see https://docs.errata.ai/vale/styles
 extends: existence
 message: 'Rewrite "%s" to be plural, without parentheses.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#s
 level: warning
-scope: raw
 ignorecase: true
 raw:
   - '\b\w+\(s\)(?<!http\(s\))'

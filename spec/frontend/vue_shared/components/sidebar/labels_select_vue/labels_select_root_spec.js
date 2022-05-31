@@ -46,9 +46,15 @@ describe('LabelsSelectRoot', () => {
 
   describe('methods', () => {
     describe('handleVuexActionDispatch', () => {
+      const touchedLabels = [
+        {
+          id: 2,
+          touched: true,
+        },
+      ];
+
       it('calls `handleDropdownClose` when params `action.type` is `toggleDropdownContents` and state has `showDropdownButton` & `showDropdownContents` props `false`', () => {
         createComponent();
-        jest.spyOn(wrapper.vm, 'handleDropdownClose').mockImplementation();
 
         wrapper.vm.handleVuexActionDispatch(
           { type: 'toggleDropdownContents' },
@@ -59,14 +65,12 @@ describe('LabelsSelectRoot', () => {
           },
         );
 
-        expect(wrapper.vm.handleDropdownClose).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            {
-              id: 2,
-              touched: true,
-            },
-          ]),
-        );
+        // We're utilizing `onDropdownClose` event emitted from the component to always include `touchedLabels`
+        // while the first param of the method is the labels list which were added/removed.
+        expect(wrapper.emitted('updateSelectedLabels')).toBeTruthy();
+        expect(wrapper.emitted('updateSelectedLabels')[0]).toEqual([touchedLabels]);
+        expect(wrapper.emitted('onDropdownClose')).toBeTruthy();
+        expect(wrapper.emitted('onDropdownClose')[0]).toEqual([touchedLabels]);
       });
 
       it('calls `handleDropdownClose` with state.labels filterd using `set` prop when dropdown variant is `embedded`', () => {
@@ -74,8 +78,6 @@ describe('LabelsSelectRoot', () => {
           ...mockConfig,
           variant: 'embedded',
         });
-
-        jest.spyOn(wrapper.vm, 'handleDropdownClose').mockImplementation();
 
         wrapper.vm.handleVuexActionDispatch(
           { type: 'toggleDropdownContents' },
@@ -86,34 +88,17 @@ describe('LabelsSelectRoot', () => {
           },
         );
 
-        expect(wrapper.vm.handleDropdownClose).toHaveBeenCalledWith(
-          expect.arrayContaining([
+        expect(wrapper.emitted('updateSelectedLabels')).toBeTruthy();
+        expect(wrapper.emitted('updateSelectedLabels')[0]).toEqual([
+          [
             {
               id: 2,
               set: true,
             },
-          ]),
-        );
-      });
-    });
-
-    describe('handleDropdownClose', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('emits `updateSelectedLabels` & `onDropdownClose` events on component when provided `labels` param is not empty', () => {
-        wrapper.vm.handleDropdownClose([{ id: 1 }, { id: 2 }]);
-
-        expect(wrapper.emitted().updateSelectedLabels).toBeTruthy();
-        expect(wrapper.emitted().onDropdownClose).toBeTruthy();
-      });
-
-      it('emits only `onDropdownClose` event on component when provided `labels` param is empty', () => {
-        wrapper.vm.handleDropdownClose([]);
-
-        expect(wrapper.emitted().updateSelectedLabels).toBeFalsy();
-        expect(wrapper.emitted().onDropdownClose).toBeTruthy();
+          ],
+        ]);
+        expect(wrapper.emitted('onDropdownClose')).toBeTruthy();
+        expect(wrapper.emitted('onDropdownClose')[0]).toEqual([[]]);
       });
     });
 

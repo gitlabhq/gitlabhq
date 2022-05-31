@@ -6906,6 +6906,9 @@ msgstr ""
 msgid "CICDAnalytics|Shared Runners Usage"
 msgstr ""
 
+msgid "CICDAnalytics|Shared runner duration is the total runtime of all jobs that ran on shared runners"
+msgstr ""
+
 msgid "CICDAnalytics|Shared runner pipeline minute duration by month"
 msgstr ""
 
@@ -6916,6 +6919,9 @@ msgid "CICDAnalytics|Shared runner usage is the total runtime of all jobs that r
 msgstr ""
 
 msgid "CICDAnalytics|Something went wrong while fetching release statistics"
+msgstr ""
+
+msgid "CICDAnalytics|What is shared runner duration?"
 msgstr ""
 
 msgid "CICDAnalytics|What is shared runner usage?"
@@ -22053,10 +22059,10 @@ msgstr ""
 msgid "Job|This job failed because the necessary resources were not successfully created."
 msgstr ""
 
-msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
+msgid "Job|This job is stuck because of one of the following problems. There are no active runners online, no runners for the %{linkStart}protected branch%{linkEnd}, or no runners that match all of the job's tags:"
 msgstr ""
 
-msgid "Job|This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:"
+msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Job|This job is stuck because you don't have any active runners that can run this job."
@@ -34563,6 +34569,12 @@ msgstr ""
 msgid "Selected commits"
 msgstr ""
 
+msgid "Selected for all items."
+msgstr ""
+
+msgid "Selected for some items."
+msgstr ""
+
 msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
 msgstr ""
 
@@ -40852,7 +40864,7 @@ msgstr ""
 msgid "UsageQuota|Shared bits of code and text."
 msgstr ""
 
-msgid "UsageQuota|Shared runner usage"
+msgid "UsageQuota|Shared runner duration"
 msgstr ""
 
 msgid "UsageQuota|Snippets"
@@ -40871,6 +40883,12 @@ msgid "UsageQuota|Storage type"
 msgstr ""
 
 msgid "UsageQuota|Storage used"
+msgstr ""
+
+msgid "UsageQuota|The table below shows current period usage"
+msgstr ""
+
+msgid "UsageQuota|The table below shows usage since %{timeElapsed}"
 msgstr ""
 
 msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."

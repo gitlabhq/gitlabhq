@@ -94,9 +94,9 @@ export default {
 <template>
   <header class="top-area gl-justify-content-between">
     <div class="gl-display-flex gl-flex-grow-1 gl-align-items-center">
-      <h3 class="page-title">
+      <h1 class="page-title">
         {{ environment.name }}
-      </h3>
+      </h1>
       <p v-if="shouldShowCancelAutoStopButton" class="gl-mb-0 gl-ml-3" data-testid="auto-stops-at">
         <gl-sprintf :message="$options.i18n.autoStopAtText">
           <template #autoStopAt>

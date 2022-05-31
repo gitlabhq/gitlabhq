@@ -364,7 +364,6 @@ export default {
               v-if="error.gitlabIssuePath"
               data-qa-selector="view_issue_button"
               :href="error.gitlabIssuePath"
-              variant="success"
               >{{ __('View issue') }}</gl-dropdown-item
             >
             <gl-dropdown-item

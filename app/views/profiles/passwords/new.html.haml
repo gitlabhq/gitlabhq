@@ -1,7 +1,7 @@
 - page_title _('New Password')
 - breadcrumb_title _('New Password')
 
-%h3.page-title= _('Set up new password')
+%h1.page-title= _('Set up new password')
 %hr
 = form_for @user, url: profile_password_path, method: :post do |f|
   %p.slead
