@@ -50,8 +50,11 @@ module QA
 
           # 500 error page in header surrounded by newlines, try to match
           five_hundred_test = Nokogiri::HTML.parse(page.html).xpath("//h1/text()").map.first
+          five_hundred_title = Nokogiri::HTML.parse(page.html).xpath("//head/title/text()").map.first
           unless five_hundred_test.nil?
-            error_code = 500 if five_hundred_test.text.include?('500')
+            error_code = 500 if
+              five_hundred_test.text.include?('500') &&
+                five_hundred_title.text.eql?('Something went wrong (500)')
           end
           # GDK shows backtrace rather than error page
           error_code = 500 if Nokogiri::HTML.parse(page.html).xpath("//body//section").map { |t| t[:class] }.first.eql?('backtrace')

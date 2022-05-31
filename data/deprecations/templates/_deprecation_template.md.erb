@@ -4,15 +4,7 @@ group: none
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Deprecations by milestone
-
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+# Deprecations by version
 
 <!-- vale off -->
 
@@ -38,33 +30,38 @@ For deprecation reviewers (Technical Writers only):
 
 {::options parse_block_html="true" /}
 
-View deprecations by the product versions in which they were announced.
+In each release, GitLab announces features that are deprecated and no longer recommended for use.
+Each deprecated feature will be removed in a future release.
+Some features cause breaking changes when they are removed.
 
-Each deprecation has a **planned removal milestone** and indicates whether it is a breaking change.
-
-Most of the deprecations are **planned for removal in 15.0**, and many of them are **breaking changes**.
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
 <div class="js-deprecation-filters"></div>
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
 <div class="announcement-milestone">
 
-## <%= milestone %>
+## Announced in <%= milestone %>
     <%- entries.select{|d| d["announcement_milestone"] == milestone}.each do |deprecation| %>
 <div class="deprecation removal-<%= deprecation["removal_milestone"].gsub('.', '') %><% if deprecation["breaking_change"] -%> breaking-change<% end %>">
 
 ### <%= deprecation["name"]%>
+
+Planned removal: GitLab <span class="removal-milestone"><%= deprecation["removal_milestone"]%></span> (<%= deprecation["removal_date"]%>)
 <% if deprecation["breaking_change"] -%>
 
 WARNING:
-This feature will be changed or removed in <%= deprecation["removal_milestone"]%>
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
 
 <%= deprecation["body"] -%><% else %>
 <%= deprecation["body"] -%><% end %><%- if deprecation["removal_milestone"] -%>
 
-**Planned removal milestone: <span class="removal-milestone"><%= deprecation["removal_milestone"]%></span> (<%= deprecation["removal_date"]%>)**
 </div>
       <%- end -%>
     <%- end -%>

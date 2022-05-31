@@ -24,14 +24,10 @@ snippets disabled. These features
 
 To connect to an external repository:
 
-<!-- vale gitlab.Spelling = NO -->
-
 1. On the top bar, select **Menu > Projects > Create new project**.
 1. Select **Run CI/CD for external repository**.
-1. Select **GitHub** or **Repo by URL**.
+1. Select **GitHub** or **Repository by URL**.
 1. Complete the fields.
-
-<!-- vale gitlab.Spelling = YES -->
 
 ## Pipelines for external pull requests
 

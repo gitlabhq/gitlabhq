@@ -182,9 +182,10 @@ RSpec.describe QA::Support::PageErrorChecker do
       "</div>"
     end
 
-    let(:error_500_str) { "<h1>   500   </h1>"}
-    let(:backtrace_str) {"<body><section class=\"backtrace\">foo</section></body>"}
-    let(:no_error_str) {"<body>no 404 or 500 or backtrace</body>"}
+    let(:error_500_str) { "<head><title>Something went wrong (500)</title></head><body><h1>   500   </h1></body>"}
+    let(:project_name_500_str) {"<head><title>Project</title></head><h1 class=\"home-panel-title gl-mt-3 gl-mb-2\" itemprop=\"name\">qa-test-2022-05-25-12-12-16-d4500c2e79c37289</h1>"}
+    let(:backtrace_str) {"<head><title>Error::Backtrace</title></head><body><section class=\"backtrace\">foo</section></body>"}
+    let(:no_error_str) {"<head><title>Nothing wrong here</title></head><body>no 404 or 500 or backtrace</body>"}
 
     it 'calls report with 404 if 404 found' do
       allow(page).to receive(:html).and_return(error_404_str)
@@ -205,6 +206,13 @@ RSpec.describe QA::Support::PageErrorChecker do
       allow(Nokogiri::HTML).to receive(:parse).with(backtrace_str).and_return(NokogiriParse.parse(backtrace_str))
 
       expect(QA::Support::PageErrorChecker).to receive(:report!).with(page, 500)
+      QA::Support::PageErrorChecker.check_page_for_error_code(page)
+    end
+    it 'does not call report if 500 found in project name' do
+      allow(page).to receive(:html).and_return(project_name_500_str)
+      allow(Nokogiri::HTML).to receive(:parse).with(project_name_500_str).and_return(NokogiriParse.parse(project_name_500_str))
+
+      expect(QA::Support::PageErrorChecker).not_to receive(:report!)
       QA::Support::PageErrorChecker.check_page_for_error_code(page)
     end
     it 'does not call report if no 404, 500 or backtrace found' do

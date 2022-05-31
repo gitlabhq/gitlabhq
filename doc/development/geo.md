@@ -192,11 +192,15 @@ The database configuration is set in [`config/database.yml`](https://gitlab.com/
 The directory [`ee/db/geo`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/geo)
 contains the schema and migrations for this database.
 
-To write a migration for the database, use the `GeoMigrationGenerator`:
+To write a migration for the database, run:
 
 ```shell
-rails g geo_migration [args] [options]
+rails g migration [args] [options] --database geo
 ```
+
+Geo should continue using `Gitlab::Database::Migration[1.0]` until the `gitlab_geo` schema is supported, and is for the time being exempt from being validated by `Gitlab::Database::Migration[2.0]`. This requires a developer to manually amend the migration file to change from `[2.0]` to `[1.0]` due to the migration defaults being 2.0.
+
+For more information, see the [Enable Geo migrations to use Migration[2.0]](https://gitlab.com/gitlab-org/gitlab/-/issues/363491) issue.
 
 To migrate the tracking database, run:
 

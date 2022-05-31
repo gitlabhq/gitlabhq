@@ -229,32 +229,4 @@ RSpec.describe ContainerRegistry::Migration do
       it { is_expected.to eq(false) }
     end
   end
-
-  describe '.enqueue_twice?' do
-    subject { described_class.enqueue_twice? }
-
-    it { is_expected.to eq(true) }
-
-    context 'feature flag disabled' do
-      before do
-        stub_feature_flags(container_registry_migration_phase2_enqueue_twice: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
-  describe '.enqueue_loop?' do
-    subject { described_class.enqueuer_loop? }
-
-    it { is_expected.to eq(true) }
-
-    context 'feature flag disabled' do
-      before do
-        stub_feature_flags(container_registry_migration_phase2_enqueuer_loop: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
 end

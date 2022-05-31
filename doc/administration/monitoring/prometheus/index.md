@@ -381,11 +381,12 @@ memory, disk, and CPU utilization.
 
 [Read more about the node exporter](node_exporter.md).
 
-### Puma exporter
+### Web exporter
 
-The Puma exporter allows you to measure various Puma metrics.
+The web exporter is a dedicated metrics server that allows splitting end-user and Prometheus traffic
+into two separate applications to improve performance and availability.
 
-[Read more about the Puma exporter](puma_exporter.md).
+[Read more about the web exporter](puma_exporter.md).
 
 ### Redis exporter
 

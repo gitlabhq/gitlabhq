@@ -4,7 +4,7 @@ group: none
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Removals by milestone
+# Removals by version
 
 <!-- vale off -->
 
@@ -35,13 +35,11 @@ For removal reviewers (Technical Writers only):
 <% if removal["breaking_change"] -%>
 
 WARNING:
-This feature was changed or removed in <%= removal["removal_milestone"]%>
-as a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
-Before updating GitLab, review the details carefully to determine if you need to make any
-changes to your code, settings, or workflow.
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
 
 <%= removal["body"] -%><% else %>
 <%= removal["body"] -%><% end %><%- end -%><%- end -%>
 <%- else -%>
-Features scheduled for removal will be listed here, sorted by GitLab milestone.
+Features scheduled for removal will be listed here, sorted by GitLab version.
 <% end -%>

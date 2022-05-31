@@ -281,4 +281,4 @@ To switch from Unicorn to Puma:
 
 ## Related topics
 
-- [Use the Puma exporter to measure various Puma metrics](../monitoring/prometheus/puma_exporter.md)
+- [Use a dedicated metrics server to export web metrics](../monitoring/prometheus/puma_exporter.md)

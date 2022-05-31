@@ -43,7 +43,7 @@ To import the project:
 
 1. On the top bar, select **Menu > Create new project**.
 1. Select **Import project**.
-1. Select **Repo by URL**.
+1. Select **Repository by URL**.
 1. For the **Git repository URL**, enter `https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke.git`.
 1. Complete the fields and select **Create project**.
 

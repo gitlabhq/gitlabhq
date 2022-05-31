@@ -31,7 +31,7 @@ by default:
 |   GitLab Exporter    |      Yes      |       Port       |      X      |                    9168                    |
 |   Sidekiq exporter   |      Yes      |       Port       |      X      |                    8082                    |
 | Sidekiq health check |      No       |       Port       |      X      |                    8092[^Sidekiq-health] |
-|    Puma exporter     |      No       |       Port       |      X      |                    8083                    |
+|    Web exporter      |      No       |       Port       |      X      |                    8083                    |
 |    Geo PostgreSQL    |      No       |      Socket      | Port (5431) |                     X                      |
 |    Redis Sentinel    |      No       |       Port       |      X      |                   26379                    |
 |    Incoming email    |      No       |       Port       |      X      |                    143                     |

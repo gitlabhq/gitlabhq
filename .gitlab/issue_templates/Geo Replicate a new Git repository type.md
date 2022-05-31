@@ -48,8 +48,12 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
 - [ ] Create the migration file in `ee/db/geo/migrate`:
 
   ```shell
-  bin/rails generate geo_migration CreateCoolWidgetRegistry
+  bin/rails generate migration CreateCoolWidgetRegistry --database geo
   ```
+
+Geo should continue using `Gitlab::Database::Migration[1.0]` until the `gitlab_geo` schema is supported, and is for the time being exempt from being validated by `Gitlab::Database::Migration[2.0]`. This requires a developer to manually amend the migration file to change from `[2.0]` to `[1.0]` due to the migration defaults being 2.0.
+
+For more information, see the [Enable Geo migrations to use Migration[2.0]](https://gitlab.com/gitlab-org/gitlab/-/issues/363491) issue.
 
 - [ ] Replace the contents of the migration file with the following. Note that we cannot add a foreign key constraint on `cool_widget_id` because the `cool_widgets` table is in a different database. The application code must handle logic such as propagating deletions.
 

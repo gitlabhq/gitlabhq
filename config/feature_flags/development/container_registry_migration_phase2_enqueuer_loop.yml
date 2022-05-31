@@ -1,8 +1,0 @@
----
-name: container_registry_migration_phase2_enqueuer_loop
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87168
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350543
-milestone: '15.0'
-type: development
-group: group::package
-default_enabled: false

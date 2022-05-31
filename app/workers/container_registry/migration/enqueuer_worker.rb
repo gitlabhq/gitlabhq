@@ -17,19 +17,8 @@ module ContainerRegistry
       idempotent!
 
       def perform
-        migration.enqueuer_loop? ? perform_with_loop : perform_without_loop
-      end
-
-      def self.enqueue_a_job
-        perform_async
-        perform_in(7.seconds) if ::ContainerRegistry::Migration.enqueue_twice?
-      end
-
-      private
-
-      def perform_with_loop
         try_obtain_lease do
-          while runnable? && Time.zone.now < loop_deadline && migration.enqueuer_loop?
+          while runnable? && Time.zone.now < loop_deadline
             repository_handled = handle_aborted_migration || handle_next_migration
 
             # no repository was found: stop the loop
@@ -43,21 +32,14 @@ module ContainerRegistry
         end
       end
 
-      def perform_without_loop
-        re_enqueue = false
-        try_obtain_lease do
-          break unless runnable?
-
-          re_enqueue = handle_aborted_migration || handle_next_migration
-        end
-        re_enqueue_if_capacity if re_enqueue
+      def self.enqueue_a_job
+        perform_async
       end
+
+      private
 
       def handle_aborted_migration
         return unless next_aborted_repository
-
-        log_on_done(:import_type, 'retry')
-        log_repository(next_aborted_repository)
 
         next_aborted_repository.retry_aborted_migration
 
@@ -65,17 +47,13 @@ module ContainerRegistry
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, next_aborted_repository_id: next_aborted_repository&.id)
 
-        migration.enqueuer_loop? ? false : true
+        false
       ensure
-        log_repository_migration_state(next_aborted_repository)
         log_repository_info(next_aborted_repository, import_type: 'retry')
       end
 
       def handle_next_migration
         return unless next_repository
-
-        log_on_done(:import_type, 'next')
-        log_repository(next_repository)
 
         # We return true because the repository was successfully processed (migration_state is changed)
         return true if tag_count_too_high?
@@ -88,7 +66,6 @@ module ContainerRegistry
 
         false
       ensure
-        log_repository_migration_state(next_repository)
         log_repository_info(next_repository, import_type: 'next')
       end
 
@@ -97,8 +74,6 @@ module ContainerRegistry
         return false unless next_repository.tags_count > migration.max_tags_count
 
         next_repository.skip_import(reason: :too_many_tags)
-        log_on_done(:tags_count_too_high, true)
-        log_on_done(:max_tags_count_setting, migration.max_tags_count)
 
         true
       end
@@ -180,29 +155,11 @@ module ContainerRegistry
         self.class.enqueue_a_job
       end
 
-      def log_repository(repository)
-        log_on_done(:container_repository_id, repository&.id)
-        log_on_done(:container_repository_path, repository&.path)
-      end
-
-      def log_repository_migration_state(repository)
-        return unless repository
-
-        log_on_done(:container_repository_migration_state, repository.migration_state)
-      end
-
-      def log_on_done(key, value)
-        return if migration.enqueuer_loop?
-
-        log_extra_metadata_on_done(key, value)
-      end
-
       def log_info(extras)
         logger.info(structured_payload(extras))
       end
 
       def log_repository_info(repository, extras = {})
-        return unless migration.enqueuer_loop?
         return unless repository
 
         repository_info = {

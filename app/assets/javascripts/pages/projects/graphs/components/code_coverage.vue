@@ -1,8 +1,8 @@
 <script>
 import { GlAlert, GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
-import dateFormat from 'dateformat';
 import { get } from 'lodash';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 
 import { __ } from '~/locale';
@@ -38,7 +38,10 @@ export default {
         },
         xAxis: {
           name: '',
-          type: 'category',
+          type: 'time',
+          axisLabel: {
+            formatter: (value) => formatDate(value, 'mmm dd'),
+          },
         },
       },
     };
@@ -74,7 +77,7 @@ export default {
       );
     },
     formattedData() {
-      return this.sortedData.map((value) => [dateFormat(value.date, 'mmm dd'), value.coverage]);
+      return this.sortedData.map((value) => [value.date, value.coverage]);
     },
     chartData() {
       return [
@@ -106,7 +109,7 @@ export default {
       this.selectedCoverageIndex = index;
     },
     formatTooltipText(params) {
-      this.tooltipTitle = params.value;
+      this.tooltipTitle = formatDate(params.value, 'mmm dd');
       this.coveragePercentage = get(params, 'seriesData[0].data[1]', '');
     },
   },

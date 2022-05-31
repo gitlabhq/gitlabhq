@@ -208,22 +208,8 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     shared_examples 'queueing the next import' do
       it 'starts the worker' do
         expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
-        expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_in)
 
         subject
-      end
-
-      context 'enqueue_twice feature flag disabled' do
-        before do
-          stub_feature_flags(container_registry_migration_phase2_enqueue_twice: false)
-        end
-
-        it 'starts the worker only once' do
-          expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
-          expect(::ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_in)
-
-          subject
-        end
       end
     end
 

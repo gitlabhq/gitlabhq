@@ -31,7 +31,6 @@ Rails/FilePath:
     - 'ee/db/fixtures/development/32_compliance_report_violations.rb'
     - 'ee/lib/ee/feature/definition.rb'
     - 'ee/lib/ee/gitlab/usage/metric_definition.rb'
-    - 'ee/lib/generators/geo_migration/geo_migration_generator.rb'
     - 'ee/lib/gitlab/geo/health_check.rb'
     - 'ee/lib/tasks/gitlab/seed/metrics.rake'
     - 'ee/spec/db/production/license_spec.rb'
