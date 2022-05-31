@@ -390,6 +390,9 @@ In the following example, we list 50 [namespaces](namespaces.md) per page:
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
+NOTE:
+There is a [max offset allowed limit](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination) for offset pagination. You can change the limit in self-managed instances.
+
 #### Pagination `Link` header
 
 [`Link` headers](https://www.w3.org/wiki/LinkHeader) are returned with each

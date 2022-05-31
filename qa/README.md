@@ -51,34 +51,32 @@ Note that tests are using `Chrome` web browser by default so it should be instal
 
 ### Run the end-to-end tests in a local development environment
 
-Follow the GDK instructions to [install](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md) your local GitLab development environment.
+1. Follow the instructions to [install GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md), your local GitLab development environment.
 
-Once you have GDK running, switch to the `qa` directory. E.g., if you setup
-GDK to develop in the main `gitlab-ce` repo, the GitLab source code will be
-in a `gitlab` directory and so the end-to-end test code will be in `gitlab/qa`.
+1. Navigate to the QA folder and run the following commands. 
 
-Make sure to install the dependencies first with `bundle install`.
+```bash
+cd gitlab-development-kit/gitlab/qa
+bundle install
+export WEBDRIVER_HEADLESS=false
+export GITLAB_INITIAL_ROOT_PASSWORD={your current root user's password}
+```
 
-Most tests that do not require special setup could simply be run with:
+1. Most tests that do not require special setup could simply be run with the following command. However, tests that are tagged with `:orchestrated` tag require special setup. These tests can only be run with [bin/qa](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/README.md#running-tests-with-a-custom-binqa-test-runner) script.
 
-```shell
+```bash
 bundle exec rspec <path/to/spec.rb>
 ```
 
-However, tests that are tagged with `:orchestrated` tag require special setup. These tests can only be run with [bin/qa](#running-tests-with-a-custom-binqa-test-runner) script.
+1. For test that are tagged with `:orchestrated`, [re-configure IP address in GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#run-qa-tests-against-your-gdk-setup) to run QA tests.  Once you have reconfigured GDK, ensure GitLab is running successfully on the IP address configured, then run the following command:
 
-Note: If you want to run tests requiring SSH against GDK, you
-will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
-
-Note: When you log into your GDK instance of GitLab for the first time, the root password requires a change.
-GitLab QA expects the default initial password to be used in tests; see all default values listed in
-[Supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
-If you have changed your root password, you must set the `GITLAB_INITIAL_ROOT_PASSWORD` environment
-variable.
-
-```shell
-export GITLAB_INITIAL_ROOT_PASSWORD="<GDK root password>"
+```bash
+bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
 ```
+
+- Note: If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
+- Note: If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, use that when exporting `GITLAB_INITIAL_ROOT_PASSWORD`.
+
 
 #### Running EE tests
 

@@ -222,7 +222,7 @@ create an issue or an MR to propose a change to the user interface text.
 If the term is not in the word list, ask a GitLab Technical Writer for advice.
 
 Do not match the capitalization of terms or phrases on the [Features page](https://about.gitlab.com/features/)
-or [features.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
+or [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
 by default.
 
 #### Other terms

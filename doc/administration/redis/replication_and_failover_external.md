@@ -218,7 +218,7 @@ The following steps should be performed in the GitLab application server
 which ideally should not have Redis or Sentinels in the same machine:
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in
-   [resque.yml.example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/resque.yml.example), and uncomment the Sentinel lines, pointing to
+   [`resque.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/resque.yml.example), and uncomment the Sentinel lines, pointing to
    the correct server credentials:
 
    ```yaml

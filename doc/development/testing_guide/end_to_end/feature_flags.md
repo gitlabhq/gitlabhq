@@ -192,10 +192,26 @@ End-to-end tests should pass with a feature flag enabled before it is enabled on
 
 ### Automatic test execution when a feature flag definition changes
 
-If a merge request adds or edits a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation),
-two `package-and-qa` jobs will be included automatically in the merge request pipeline. One job will enable the defined
-feature flag and the other will disable it. The jobs execute the same suite of tests to confirm that they pass with if
-the feature flag is either enabled or disabled.
+There are two ways to confirm that end-to-end tests pass:
+
+- If a merge request adds or edits a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation),
+  two `package-and-qa` jobs (`package-and-qa-ff-enabled` and `package-and-qa-ff-disabled`) are included automatically in the merge request
+  pipeline. One job enables the defined feature flag and the other job disables it. The jobs execute the same suite of tests to confirm
+  that they pass with the feature flag either enabled or disabled.
+- In some cases, if `package-and-qa` hasn't been triggered automatically, or if it has run the tests with the default feature flag values
+  (which might not be desired), you can create a Draft MR that enables the feature flag to ensure that all E2E tests pass with the feature
+  flag enabled.
+
+### Troubleshooting end-to-end test failures with feature flag enabled
+
+If enabling the feature flag results in E2E test failures, you can browse the artifacts in the failed pipeline to see screenshots of the failed tests. After which, you can either:
+
+- Identify tests that need to be updated and contact the relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning/) and a required test update is not made, test failures could block deployment. 
+- Run the failed tests [locally](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#run-the-end-to-end-tests-in-a-local-development-environment)
+  with the [feature flag enabled](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled-or-disabled).
+  This option requires considerable amount of setup, but you'll be able to see what the browser is doing as it's running the failed
+  tests, which can help debug the problem faster. You can also refer to the [Troubleshooting Guide for E2E tests](troubleshooting.md) for
+  support for common blockers.  
 
 ### Test execution during feature development
 

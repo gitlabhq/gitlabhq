@@ -41,6 +41,10 @@ export default {
     text: s__('ProjectTemplates|Pages/Hugo'),
     icon: '.template-option .icon-hugo',
   },
+  pelican: {
+    text: s__('ProjectTemplates|Pages/Pelican'),
+    icon: '.template-option .icon-pelican',
+  },
   jekyll: {
     text: s__('ProjectTemplates|Pages/Jekyll'),
     icon: '.template-option .icon-jekyll',

@@ -13543,6 +13543,9 @@ msgstr ""
 msgid "Due to inactivity, the %{project_name} (%{project_link}) project is scheduled to be deleted on %{deletion_date}. To unschedule the deletion of %{project_name}, perform some activity on it. For example:"
 msgstr ""
 
+msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
+msgstr ""
+
 msgid "Duplicate page: %{error_message}"
 msgstr ""
 
@@ -15130,6 +15133,9 @@ msgid "Everything you need to create a GitLab Pages site using Jekyll"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Middleman"
+msgstr ""
+
+msgid "Everything you need to create a GitLab Pages site using Pelican"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using plain HTML"
@@ -30140,6 +30146,9 @@ msgid "ProjectTemplates|Pages/Jekyll"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Middleman"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Pelican"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Plain HTML"

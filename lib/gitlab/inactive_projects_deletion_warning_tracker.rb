@@ -2,6 +2,8 @@
 
 module Gitlab
   class InactiveProjectsDeletionWarningTracker
+    include Gitlab::Utils::StrongMemoize
+
     attr_reader :project_id
 
     DELETION_TRACKING_REDIS_KEY = 'inactive_projects_deletion_warning_email_notified'
@@ -38,9 +40,32 @@ module Gitlab
       end
     end
 
+    def notification_date
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.hget(DELETION_TRACKING_REDIS_KEY, "project:#{project_id}")
+      end
+    end
+
+    def scheduled_deletion_date
+      if notification_date.present?
+        (notification_date.to_date + grace_period_after_notification).to_s
+      else
+        grace_period_after_notification.from_now.to_date.to_s
+      end
+    end
+
     def reset
       Gitlab::Redis::SharedState.with do |redis|
         redis.hdel(DELETION_TRACKING_REDIS_KEY, "project:#{project_id}")
+      end
+    end
+
+    private
+
+    def grace_period_after_notification
+      strong_memoize(:grace_period_after_notification) do
+        (::Gitlab::CurrentSettings.inactive_projects_delete_after_months -
+          ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months).months
       end
     end
   end

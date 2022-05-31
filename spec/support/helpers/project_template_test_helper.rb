@@ -9,6 +9,7 @@ module ProjectTemplateTestHelper
         nfjekyll nfplainhtml nfgitbook nfhexo salesforcedx
         serverless_framework tencent_serverless_framework
         jsonnet cluster_management kotlin_native_linux
+        pelican
       ]
   end
 end

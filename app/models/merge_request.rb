@@ -231,7 +231,10 @@ class MergeRequest < ApplicationRecord
     # rubocop: disable CodeReuse/ServiceClass
     after_transition [:unchecked, :checking] => :cannot_be_merged do |merge_request, transition|
       if merge_request.notify_conflict?
-        NotificationService.new.merge_request_unmergeable(merge_request)
+        merge_request.run_after_commit do
+          NotificationService.new.merge_request_unmergeable(merge_request)
+        end
+
         TodoService.new.merge_request_became_unmergeable(merge_request)
       end
     end

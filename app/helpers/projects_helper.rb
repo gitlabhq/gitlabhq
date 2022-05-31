@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ProjectsHelper
+  include Gitlab::Utils::StrongMemoize
+
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting
@@ -430,6 +432,18 @@ module ProjectsHelper
     configure_oauth_import_message('GitLab.com', help_page_path("integration/gitlab"))
   end
 
+  def show_inactive_project_deletion_banner?(project)
+    return false unless project.present? && project.saved?
+    return false unless delete_inactive_projects?
+    return false unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
+
+    project.inactive?
+  end
+
+  def inactive_project_deletion_date(project)
+    Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
+  end
+
   private
 
   def configure_oauth_import_message(provider, help_url)
@@ -719,6 +733,12 @@ module ProjectsHelper
 
       push_to_schema_breadcrumb(name, url)
       link_to(name, url)
+    end
+  end
+
+  def delete_inactive_projects?
+    strong_memoize(:delete_inactive_projects_setting) do
+      ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
   end
 end

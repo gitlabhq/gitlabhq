@@ -450,7 +450,7 @@ To allowlist specific vulnerabilities, follow these steps:
    the format described in [`vulnerability-allowlist.yml` data format](#vulnerability-allowlistyml-data-format).
 1. Add the `vulnerability-allowlist.yml` file to the root folder of your project's Git repository.
 
-#### vulnerability-allowlist.yml data format
+#### `vulnerability-allowlist.yml` data format
 
 The `vulnerability-allowlist.yml` file is a YAML file that specifies a list of CVE IDs of vulnerabilities that are **allowed** to exist, because they're _false positives_, or they're _not applicable_.
 

@@ -158,7 +158,9 @@ class ProjectMember < Member
   end
 
   def after_accept_invite
-    notification_service.accept_project_invite(self)
+    run_after_commit_or_now do
+      notification_service.accept_project_invite(self)
+    end
 
     super
   end

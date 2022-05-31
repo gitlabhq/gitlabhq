@@ -859,7 +859,7 @@ You can set the Administrator/root password and email by supplying them in envir
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_LICENSE_FILE="/path/to/license"
 ```
 
-### Secure secrets.yml
+### Secure `secrets.yml`
 
 The `secrets.yml` file stores encryption keys for sessions and secure variables.
 Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.

@@ -112,7 +112,10 @@ class GroupMember < Member
   end
 
   def after_accept_invite
-    notification_service.accept_group_invite(self)
+    run_after_commit_or_now do
+      notification_service.accept_group_invite(self)
+    end
+
     update_two_factor_requirement
 
     super

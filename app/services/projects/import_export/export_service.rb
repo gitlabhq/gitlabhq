@@ -143,7 +143,12 @@ module Projects
           project_id: project.id
         )
 
-        notification_service.project_not_exported(project, current_user, shared.errors)
+        user = current_user
+        errors = shared.errors
+
+        project.run_after_commit_or_now do |project|
+          NotificationService.new.project_not_exported(project, user, errors)
+        end
       end
     end
   end

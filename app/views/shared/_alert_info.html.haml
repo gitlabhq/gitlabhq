@@ -1,6 +1,3 @@
-.gl-alert.gl-alert-info
-  = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')
-  %button.js-close.gl-alert-dismiss{ type: 'button', 'aria-label' => _('Dismiss') }
-    = sprite_icon('close', css_class: 'gl-icon')
-  .gl-alert-body
+= render Pajamas::AlertComponent.new(variant: :info, dismissible: true) do |c|
+  = c.body do
     = body

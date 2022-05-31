@@ -88,7 +88,7 @@ of the "GitLab" project on the Engineering Projects
 page in the handbook.
 
 To add yourself to this list, add the following to your profile in the
-[team.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/team.yml)
+[`team.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/team.yml)
 file and ask your manager to review and merge.
 
 ```yaml

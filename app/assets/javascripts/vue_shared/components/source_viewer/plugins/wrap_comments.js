@@ -24,12 +24,13 @@ export default (result) => {
   result.value = result.value // Highlight.js expects the result param to be mutated for plugins to work
     .split('\n')
     .map((lineContent) => {
-      if (lineContent.includes(HLJS_COMMENT_SELECTOR)) {
+      const includesClosingTag = lineContent.includes('</span>');
+      if (lineContent.includes(HLJS_COMMENT_SELECTOR) && !includesClosingTag) {
         wrapComment = true;
         return lineContent;
       }
       const line = wrapComment ? createWrapper(lineContent) : lineContent;
-      if (lineContent.includes('</span>')) {
+      if (includesClosingTag) {
         wrapComment = false;
       }
       return line;

@@ -1,0 +1,4 @@
+fragment EscalationStatusFragment on Issue {
+  id
+  escalationStatus
+}

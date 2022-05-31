@@ -1,10 +1,12 @@
+#import "ee_else_ce/sidebar/queries/escalation_status.fragment.graphql"
+
 mutation updateEscalationStatus($projectPath: ID!, $status: IssueEscalationStatus!, $iid: String!) {
   issueSetEscalationStatus(input: { projectPath: $projectPath, status: $status, iid: $iid }) {
     errors
     clientMutationId
     issue {
       id
-      escalationStatus
+      ...EscalationStatusFragment
     }
   }
 }

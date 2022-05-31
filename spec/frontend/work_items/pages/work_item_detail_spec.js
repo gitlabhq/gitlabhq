@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
+import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
@@ -26,6 +27,7 @@ describe('WorkItemDetail component', () => {
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findWorkItemState = () => wrapper.findComponent(WorkItemState);
+  const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
 
   const createComponent = ({
@@ -91,6 +93,22 @@ describe('WorkItemDetail component', () => {
       expect(findSkeleton().exists()).toBe(false);
       expect(findWorkItemState().exists()).toBe(true);
       expect(findWorkItemTitle().exists()).toBe(true);
+    });
+  });
+
+  describe('description', () => {
+    it('does not show description widget if loading description fails', () => {
+      createComponent();
+
+      expect(findWorkItemDescription().exists()).toBe(false);
+    });
+
+    it('shows description widget if description loads', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findWorkItemDescription().exists()).toBe(true);
     });
   });
 

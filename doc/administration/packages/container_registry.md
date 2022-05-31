@@ -488,7 +488,7 @@ To configure the `s3` storage driver in Omnibus:
 
 **Installations from source**
 
-Configuring the storage driver is done in the registry configuration YML file created
+Configuring the storage driver is done in the registry configuration YAML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 `s3` storage driver example:
@@ -611,7 +611,7 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 **Installations from source**
 
-1. Add the `redirect` flag to your registry configuration YML file:
+1. Add the `redirect` flag to your registry configuration YAML file:
 
     ```yaml
     storage:
@@ -663,7 +663,7 @@ For Omnibus GitLab installations:
 
 For installations from source:
 
-1. Edit your registry configuration YML file:
+1. Edit your registry configuration YAML file:
 
     ```yaml
     storage:
@@ -856,7 +856,7 @@ To configure a notification endpoint in Omnibus:
 
 **Installations from source**
 
-Configuring the notification endpoint is done in your registry configuration YML file created
+Configuring the notification endpoint is done in your registry configuration YAML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 Example:
@@ -1366,7 +1366,7 @@ You can add a configuration option for backwards compatibility.
 
 **For installations from source**
 
-1. Edit the YML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
+1. Edit the YAML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
 
    ```yaml
    compatibility:
@@ -1414,7 +1414,7 @@ and a simple solution would be to enable relative URLs in the Registry.
 
 **For installations from source**
 
-1. Edit the YML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
+1. Edit the YAML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
 
    ```yaml
    http:

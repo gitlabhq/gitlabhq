@@ -15,6 +15,15 @@ export const workItemQueryResponse = {
         deleteWorkItem: false,
         updateWorkItem: false,
       },
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetDescription',
+          type: 'DESCRIPTION',
+          description: 'some **great** text',
+          descriptionHtml:
+            '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+        },
+      ],
     },
   },
 };
@@ -38,6 +47,7 @@ export const updateWorkItemMutationResponse = {
           deleteWorkItem: false,
           updateWorkItem: false,
         },
+        widgets: [],
       },
     },
   },
@@ -77,6 +87,7 @@ export const createWorkItemMutationResponse = {
           deleteWorkItem: false,
           updateWorkItem: false,
         },
+        widgets: [],
       },
     },
   },

@@ -15,6 +15,15 @@ describe('Highlight.js plugin for wrapping comments', () => {
     const inputValue = '<span class="hljs-keyword">const</span>';
     const hljsResultMock = { value: inputValue };
 
+    wrapComments(hljsResultMock);
+    expect(hljsResultMock.value).toBe(inputValue);
+  });
+
+  it('does not mutate the input value if the hljs comment line includes a closing tag', () => {
+    const inputValue = `<span class="${HLJS_COMMENT_SELECTOR}">/* Line 1 </span> \n* Line 2 \n*/`;
+    const hljsResultMock = { value: inputValue };
+
+    wrapComments(hljsResultMock);
     expect(hljsResultMock.value).toBe(inputValue);
   });
 });

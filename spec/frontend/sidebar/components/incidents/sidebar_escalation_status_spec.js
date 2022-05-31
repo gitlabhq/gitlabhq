@@ -9,10 +9,15 @@ import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue'
 import { escalationStatusQuery, escalationStatusMutation } from '~/sidebar/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import EscalationStatus from 'ee_else_ce/sidebar/components/incidents/escalation_status.vue';
+import {
+  fetchData,
+  fetchError,
+  mutationData,
+  mutationError,
+} from 'any_jest/sidebar/components/incidents/mock_data';
 import { STATUS_ACKNOWLEDGED } from '~/sidebar/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
-import { fetchData, fetchError, mutationData, mutationError } from './mock_data';
 
 jest.mock('~/lib/logger');
 jest.mock('~/flash');

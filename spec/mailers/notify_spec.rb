@@ -1858,7 +1858,7 @@ RSpec.describe Notify do
       end
     end
 
-    subject { ActionMailer::Base.deliveries.last }
+    subject { ActionMailer::Base.deliveries.first }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like "a user cannot unsubscribe through footer link"

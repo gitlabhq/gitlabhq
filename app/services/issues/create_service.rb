@@ -56,6 +56,7 @@ module Issues
       handle_add_related_issue(issue)
       resolve_discussions_with_issue(issue)
       create_escalation_status(issue)
+      try_to_associate_contact(issue)
 
       super
     end
@@ -98,6 +99,13 @@ module Issues
       return unless @add_related_issue
 
       IssueLinks::CreateService.new(issue, issue.author, { target_issuable: @add_related_issue }).execute
+    end
+
+    def try_to_associate_contact(issue)
+      return unless issue.external_author
+      return unless current_user.can?(:set_issue_crm_contacts, issue)
+
+      set_crm_contacts(issue, [issue.external_author])
     end
   end
 end

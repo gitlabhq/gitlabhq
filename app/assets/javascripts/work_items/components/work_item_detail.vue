@@ -1,12 +1,13 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { i18n, WIDGET_TYPE_ASSIGNEE } from '../constants';
+import { i18n, WIDGET_TYPE_ASSIGNEE, WIDGET_TYPE_DESCRIPTION } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
+import WorkItemDescription from './work_item_description.vue';
 import WorkItemLinks from './work_item_links/work_item_links.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 
@@ -17,6 +18,7 @@ export default {
     GlSkeletonLoader,
     WorkItemAssignees,
     WorkItemActions,
+    WorkItemDescription,
     WorkItemTitle,
     WorkItemState,
     WorkItemLinks,
@@ -72,6 +74,9 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    workItemDescription() {
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
+    },
     workItemAssigneesEnabled() {
       return this.glFeatures.workItemAssignees;
     },
@@ -118,6 +123,13 @@ export default {
       />
       <work-item-state
         :work-item="workItem"
+        @error="error = $event"
+        @updated="$emit('workItemUpdated')"
+      />
+      <work-item-description
+        v-if="workItemDescription"
+        :work-item="workItem"
+        :work-item-description="workItemDescription"
         @error="error = $event"
         @updated="$emit('workItemUpdated')"
       />

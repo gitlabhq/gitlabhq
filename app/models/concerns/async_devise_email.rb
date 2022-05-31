@@ -2,6 +2,7 @@
 
 module AsyncDeviseEmail
   extend ActiveSupport::Concern
+  include AfterCommitQueue
 
   private
 
@@ -9,6 +10,8 @@ module AsyncDeviseEmail
   def send_devise_notification(notification, *args)
     return true unless can?(:receive_notifications)
 
-    devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
+    run_after_commit_or_now do
+      devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 end

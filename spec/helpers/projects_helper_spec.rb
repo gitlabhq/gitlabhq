@@ -1112,4 +1112,82 @@ RSpec.describe ProjectsHelper do
 
     it_behaves_like 'configure import method modal'
   end
+
+  describe '#show_inactive_project_deletion_banner?' do
+    shared_examples 'does not show the banner' do |pass_project: true|
+      it { expect(helper.show_inactive_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
+    end
+
+    context 'with no project' do
+      it_behaves_like 'does not show the banner', pass_project: false
+    end
+
+    context 'with unsaved project' do
+      let_it_be(:project) { build(:project) }
+
+      it_behaves_like 'does not show the banner'
+    end
+
+    context 'with the setting disabled' do
+      before do
+        stub_application_setting(delete_inactive_projects: false)
+      end
+
+      it_behaves_like 'does not show the banner'
+    end
+
+    context 'with the setting enabled' do
+      before do
+        stub_application_setting(delete_inactive_projects: true)
+      end
+
+      context 'with the feature flag disabled' do
+        before do
+          stub_feature_flags(inactive_projects_deletion: false)
+        end
+
+        it_behaves_like 'does not show the banner'
+      end
+
+      context 'with the feature flag enabled' do
+        before do
+          stub_feature_flags(inactive_projects_deletion: true)
+          stub_application_setting(inactive_projects_min_size_mb: 0)
+          stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
+        end
+
+        context 'with an active project' do
+          it_behaves_like 'does not show the banner'
+        end
+
+        context 'with an inactive project' do
+          before do
+            project.statistics.storage_size = 1.megabyte
+            project.last_activity_at = 1.year.ago
+            project.save!
+          end
+
+          it 'shows the banner' do
+            expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#inactive_project_deletion_date' do
+    let(:tracker) { instance_double(::Gitlab::InactiveProjectsDeletionWarningTracker) }
+
+    before do
+      stub_application_setting(inactive_projects_delete_after_months: 2)
+      stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
+
+      allow(::Gitlab::InactiveProjectsDeletionWarningTracker).to receive(:new).with(project.id).and_return(tracker)
+      allow(tracker).to receive(:scheduled_deletion_date).and_return('2022-03-01')
+    end
+
+    it 'returns the deletion date' do
+      expect(helper.inactive_project_deletion_date(project)).to eq('2022-03-01')
+    end
+  end
 end
