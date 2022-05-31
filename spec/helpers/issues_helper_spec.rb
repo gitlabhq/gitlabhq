@@ -355,12 +355,14 @@ RSpec.describe IssuesHelper do
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
+        can_create_projects: 'true',
         empty_state_svg_path: '#',
         full_path: group.full_path,
         has_any_issues: false.to_s,
         has_any_projects: true.to_s,
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
+        new_project_path: new_project_path(namespace_id: group.id),
         rss_path: '#',
         sign_in_path: new_user_session_path
       }

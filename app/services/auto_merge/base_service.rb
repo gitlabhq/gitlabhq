@@ -55,7 +55,10 @@ module AutoMerge
     def available_for?(merge_request)
       strong_memoize("available_for_#{merge_request.id}") do
         merge_request.can_be_merged_by?(current_user) &&
-          merge_request.mergeable_state?(skip_ci_check: true) &&
+          merge_request.open? &&
+          !merge_request.broken? &&
+          !merge_request.draft? &&
+          merge_request.mergeable_discussions_state? &&
           yield
       end
     end

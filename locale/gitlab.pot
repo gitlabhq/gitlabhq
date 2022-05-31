@@ -21324,6 +21324,9 @@ msgstr ""
 msgid "Issues closed"
 msgstr ""
 
+msgid "Issues exist in projects, so to create an issue, first create a project."
+msgstr ""
+
 msgid "Issues must match this scope to appear in this list."
 msgstr ""
 

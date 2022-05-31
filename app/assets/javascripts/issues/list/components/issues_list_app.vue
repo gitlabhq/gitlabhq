@@ -117,6 +117,7 @@ export default {
     'autocompleteAwardEmojisPath',
     'calendarPath',
     'canBulkUpdate',
+    'canCreateProjects',
     'canReadCrmContact',
     'canReadCrmOrganization',
     'emptyStateSvgPath',
@@ -136,6 +137,7 @@ export default {
     'isSignedIn',
     'jiraIntegrationPath',
     'newIssuePath',
+    'newProjectPath',
     'releasesPath',
     'rssPath',
     'showNewIssueLink',
@@ -844,12 +846,17 @@ export default {
     </issuable-list>
 
     <template v-else-if="isSignedIn">
-      <gl-empty-state
-        :description="$options.i18n.noIssuesSignedInDescription"
-        :title="$options.i18n.noIssuesSignedInTitle"
-        :svg-path="emptyStateSvgPath"
-      >
+      <gl-empty-state :title="$options.i18n.noIssuesSignedInTitle" :svg-path="emptyStateSvgPath">
+        <template #description>
+          <p>{{ $options.i18n.noIssuesSignedInDescription }}</p>
+          <p v-if="canCreateProjects">
+            <strong>{{ $options.i18n.noGroupIssuesSignedInDescription }}</strong>
+          </p>
+        </template>
         <template #actions>
+          <gl-button v-if="canCreateProjects" :href="newProjectPath" variant="confirm">
+            {{ $options.i18n.newProjectLabel }}
+          </gl-button>
           <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
             {{ $options.i18n.newIssueLabel }}
           </gl-button>

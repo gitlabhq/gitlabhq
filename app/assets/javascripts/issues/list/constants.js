@@ -29,7 +29,11 @@ export const i18n = {
   jiraIntegrationSecondaryMessage: s__('JiraService|This feature requires a Premium plan.'),
   jiraIntegrationTitle: s__('JiraService|Using Jira for issue tracking?'),
   newIssueLabel: __('New issue'),
+  newProjectLabel: __('New project'),
   noClosedIssuesTitle: __('There are no closed issues'),
+  noGroupIssuesSignedInDescription: __(
+    'Issues exist in projects, so to create an issue, first create a project.',
+  ),
   noOpenIssuesDescription: __('To keep this project going, create a new issue'),
   noOpenIssuesTitle: __('There are no open issues'),
   noIssuesSignedInDescription: __(

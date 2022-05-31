@@ -67,6 +67,7 @@ describe('CE IssuesListApp component', () => {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
+    canCreateProjects: false,
     canReadCrmContact: false,
     canReadCrmOrganization: false,
     emptyStateSvgPath: 'empty-state.svg',
@@ -88,6 +89,7 @@ describe('CE IssuesListApp component', () => {
     isSignedIn: true,
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
+    newProjectPath: 'new/project/path',
     releasesPath: 'releases/path',
     rssPath: 'rss/path',
     showNewIssueLink: true,
@@ -118,6 +120,7 @@ describe('CE IssuesListApp component', () => {
     issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
     issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
+    stubs = {},
     mountFn = shallowMount,
   } = {}) => {
     const requestHandlers = [
@@ -136,6 +139,7 @@ describe('CE IssuesListApp component', () => {
       data() {
         return data;
       },
+      stubs,
     });
   };
 
@@ -521,10 +525,12 @@ describe('CE IssuesListApp component', () => {
 
         it('shows empty state', () => {
           expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noIssuesSignedInDescription,
             title: IssuesListApp.i18n.noIssuesSignedInTitle,
             svgPath: defaultProvide.emptyStateSvgPath,
           });
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noIssuesSignedInDescription,
+          );
         });
 
         it('shows "New issue" and import/export buttons', () => {
@@ -538,15 +544,38 @@ describe('CE IssuesListApp component', () => {
 
         it('shows Jira integration information', () => {
           const paragraphs = wrapper.findAll('p');
-          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(2).text()).toContain(
+          expect(paragraphs.at(2).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
+          expect(paragraphs.at(3).text()).toContain(
             'Enable the Jira integration to view your Jira issues in GitLab.',
           );
-          expect(paragraphs.at(3).text()).toContain(
+          expect(paragraphs.at(4).text()).toContain(
             IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
           );
           expect(findGlLink().text()).toBe('Enable the Jira integration');
           expect(findGlLink().attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
+        });
+      });
+
+      describe('when user is logged in and can create projects', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { canCreateProjects: true, hasAnyIssues: false, isSignedIn: true },
+            stubs: { GlEmptyState },
+          });
+        });
+
+        it('shows empty state with additional description about creating projects', () => {
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noIssuesSignedInDescription,
+          );
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noGroupIssuesSignedInDescription,
+          );
+        });
+
+        it('shows "New project" button', () => {
+          expect(findGlButton().text()).toBe(IssuesListApp.i18n.newProjectLabel);
+          expect(findGlButton().attributes('href')).toBe(defaultProvide.newProjectPath);
         });
       });
 

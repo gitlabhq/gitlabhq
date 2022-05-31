@@ -238,10 +238,12 @@ module IssuesHelper
 
   def group_issues_list_data(group, current_user)
     common_issues_list_data(group, current_user).merge(
+      can_create_projects: can?(current_user, :create_projects, group).to_s,
       can_read_crm_contact: can?(current_user, :read_crm_contact, group).to_s,
       can_read_crm_organization: can?(current_user, :read_crm_organization, group).to_s,
       has_any_issues: @has_issues.to_s,
-      has_any_projects: @has_projects.to_s
+      has_any_projects: @has_projects.to_s,
+      new_project_path: new_project_path(namespace_id: group.id)
     )
   end
 
