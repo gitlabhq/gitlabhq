@@ -19,10 +19,6 @@ module Projects
       feature_category :incident_management
       urgency :low
 
-      def index
-        render json: serialize_as_json(alerts)
-      end
-
       def show
         render json: serialize_as_json(alert)
       end

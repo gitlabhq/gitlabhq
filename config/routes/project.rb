@@ -520,7 +520,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :prometheus do
-        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+        resources :alerts, constraints: { id: /\d+/ }, only: [:show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
           member do
             get :metrics_dashboard # rubocop:todo Cop/PutProjectRoutesUnderScope

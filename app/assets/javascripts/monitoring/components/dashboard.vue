@@ -132,16 +132,6 @@ export default {
       required: false,
       default: false,
     },
-    alertsEndpoint: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    prometheusAlertsAvailable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     rearrangePanelsAvailable: {
       type: Boolean,
       required: false,
@@ -461,9 +451,7 @@ export default {
         :settings-path="settingsPath"
         :clipboard-text="generatePanelUrl(expandedPanel.group, expandedPanel.panel)"
         :graph-data="expandedPanel.panel"
-        :alerts-endpoint="alertsEndpoint"
         :height="600"
-        :prometheus-alerts-available="prometheusAlertsAvailable"
         @timerangezoom="onTimeRangeZoom"
       >
         <template #top-left>
@@ -526,8 +514,6 @@ export default {
                   :settings-path="settingsPath"
                   :clipboard-text="generatePanelUrl(groupData.group, graphData)"
                   :graph-data="graphData"
-                  :alerts-endpoint="alertsEndpoint"
-                  :prometheus-alerts-available="prometheusAlertsAvailable"
                   @timerangezoom="onTimeRangeZoom"
                   @expand="onExpandPanel(groupData.group, graphData)"
                 />

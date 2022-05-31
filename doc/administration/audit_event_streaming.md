@@ -13,8 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Users can set an HTTP endpoint for a top-level group to receive all audit events about the group, its subgroups, and
 projects as structured JSON. Event streaming is only available for top-level groups.
 
-Top-level group owners can manage their audit logs in third-party systems such as Splunk, using the Splunk
-[HTTP Event Collector](https://docs.splunk.com/Documentation/Splunk/8.2.2/Data/UsetheHTTPEventCollector). Any service that can receive
+Top-level group owners can manage their audit logs in third-party systems. Any service that can receive
 structured JSON data can be used as the endpoint.
 
 NOTE:

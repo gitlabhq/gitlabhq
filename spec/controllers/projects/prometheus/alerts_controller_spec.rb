@@ -53,61 +53,6 @@ RSpec.describe Projects::Prometheus::AlertsController do
     end
   end
 
-  describe 'GET #index' do
-    def make_request(opts = {})
-      get :index, params: request_params(opts, environment_id: environment)
-    end
-
-    context 'when project has no prometheus alert' do
-      it 'returns an empty response' do
-        make_request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_empty
-      end
-    end
-
-    context 'when project has prometheus alerts' do
-      let(:production) { create(:environment, project: project) }
-      let(:staging) { create(:environment, project: project) }
-      let(:json_alert_ids) { json_response.map { |alert| alert['id'] } }
-
-      let!(:production_alerts) do
-        create_list(:prometheus_alert, 2, project: project, environment: production)
-      end
-
-      let!(:staging_alerts) do
-        create_list(:prometheus_alert, 1, project: project, environment: staging)
-      end
-
-      it 'contains prometheus alerts only for the production environment' do
-        make_request(environment_id: production)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.count).to eq(2)
-        expect(json_alert_ids).to eq(production_alerts.map(&:id))
-      end
-
-      it 'contains prometheus alerts only for the staging environment' do
-        make_request(environment_id: staging)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.count).to eq(1)
-        expect(json_alert_ids).to eq(staging_alerts.map(&:id))
-      end
-
-      it 'does not return prometheus alerts without environment' do
-        make_request(environment_id: nil)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_empty
-      end
-    end
-
-    it_behaves_like 'unprivileged'
-    it_behaves_like 'project non-specific environment', :ok
-  end
-
   describe 'GET #show' do
     let(:alert) do
       create(:prometheus_alert,

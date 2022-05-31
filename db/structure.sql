@@ -16304,6 +16304,27 @@ CREATE SEQUENCE issuable_metric_images_id_seq
 
 ALTER SEQUENCE issuable_metric_images_id_seq OWNED BY issuable_metric_images.id;
 
+CREATE TABLE issuable_resource_links (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    link_text text,
+    link text NOT NULL,
+    link_type smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_67be6729db CHECK ((char_length(link) <= 2200)),
+    CONSTRAINT check_b137147e0b CHECK ((char_length(link_text) <= 255))
+);
+
+CREATE SEQUENCE issuable_resource_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE issuable_resource_links_id_seq OWNED BY issuable_resource_links.id;
+
 CREATE TABLE issuable_severities (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
@@ -22971,6 +22992,8 @@ ALTER TABLE ONLY ip_restrictions ALTER COLUMN id SET DEFAULT nextval('ip_restric
 
 ALTER TABLE ONLY issuable_metric_images ALTER COLUMN id SET DEFAULT nextval('issuable_metric_images_id_seq'::regclass);
 
+ALTER TABLE ONLY issuable_resource_links ALTER COLUMN id SET DEFAULT nextval('issuable_resource_links_id_seq'::regclass);
+
 ALTER TABLE ONLY issuable_severities ALTER COLUMN id SET DEFAULT nextval('issuable_severities_id_seq'::regclass);
 
 ALTER TABLE ONLY issuable_slas ALTER COLUMN id SET DEFAULT nextval('issuable_slas_id_seq'::regclass);
@@ -24886,6 +24909,9 @@ ALTER TABLE ONLY ip_restrictions
 
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT issuable_metric_images_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY issuable_resource_links
+    ADD CONSTRAINT issuable_resource_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT issuable_severities_pkey PRIMARY KEY (id);
@@ -28187,6 +28213,8 @@ CREATE INDEX index_ip_restrictions_on_group_id ON ip_restrictions USING btree (g
 
 CREATE INDEX index_issuable_metric_images_on_issue_id ON issuable_metric_images USING btree (issue_id);
 
+CREATE INDEX index_issuable_resource_links_on_issue_id ON issuable_resource_links USING btree (issue_id);
+
 CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities USING btree (issue_id);
 
 CREATE INDEX index_issuable_slas_on_due_at_id_label_applied_issuable_closed ON issuable_slas USING btree (due_at, id) WHERE ((label_applied = false) AND (issuable_closed = false));
@@ -29950,8 +29978,6 @@ CREATE INDEX tmp_index_issues_on_issue_type_and_id ON issues USING btree (issue_
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
 
 CREATE INDEX tmp_index_merge_requests_draft_and_status ON merge_requests USING btree (id) WHERE ((draft = false) AND (state_id = 1) AND ((title)::text ~* '^(\[draft\]|\(draft\)|draft:|draft|\[WIP\]|WIP:|WIP)'::text));
-
-CREATE INDEX tmp_index_notes_on_id_where_discussion_id_is_null ON notes USING btree (id) WHERE (discussion_id IS NULL);
 
 CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
 
@@ -32591,6 +32617,9 @@ ALTER TABLE ONLY epic_user_mentions
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_rails_3ec9fd7912 FOREIGN KEY (end_event_label_id) REFERENCES labels(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issuable_resource_links
+    ADD CONSTRAINT fk_rails_3f0ec6b1cf FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;

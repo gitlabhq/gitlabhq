@@ -102,7 +102,6 @@ module EnvironmentsHelper
       'metrics_endpoint'     => additional_metrics_project_environment_path(project, environment, format: :json),
       'dashboard_endpoint'   => metrics_dashboard_project_environment_path(project, environment, format: :json),
       'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
-      'alerts_endpoint'      => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
       'operations_settings_path' => project_settings_operations_path(project),
       'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s,
       'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)

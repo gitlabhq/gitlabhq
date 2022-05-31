@@ -45,7 +45,6 @@ methods, the majority which use the Linux packages:
 | [AWS (HA)](aws/index.md)                                      | Install GitLab on AWS using the community AMIs provided by GitLab. |
 | [Google Cloud Platform (GCP)](google_cloud_platform/index.md) | Install GitLab on a VM in GCP. |
 | [Azure](azure/index.md)                                       | Install GitLab from Azure Marketplace. |
-| [DigitalOcean](https://about.gitlab.com/blog/2016/04/27/getting-started-with-gitlab-and-digitalocean/) | Install GitLab on DigitalOcean. You can also [test GitLab on DigitalOcean using Docker Machine](digitaloceandocker.md). |
 
 ## Next steps
 

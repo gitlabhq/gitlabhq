@@ -267,6 +267,7 @@ integrations: :gitlab_main
 internal_ids: :gitlab_main
 ip_restrictions: :gitlab_main
 issuable_metric_images: :gitlab_main
+issuable_resource_links: :gitlab_main
 issuable_severities: :gitlab_main
 issuable_slas: :gitlab_main
 issue_assignees: :gitlab_main

@@ -1,0 +1,9 @@
+---
+table_name: issuable_resource_links
+classes:
+- IncidentManagement::IssuableResourceLink
+feature_categories:
+- incident_management
+description: Persists resources links for an issuable, particularly incident.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88417
+milestone: '15.1'

@@ -122,7 +122,14 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_commits
-    @commits = compare.present? ? set_commits_for_rendering(@compare.commits) : []
+    strong_memoize(:commits) do
+      if compare.present?
+        commits = compare.commits.with_markdown_cache.with_latest_pipeline(head_ref)
+        set_commits_for_rendering(commits)
+      else
+        []
+      end
+    end
   end
 
   def define_diffs
