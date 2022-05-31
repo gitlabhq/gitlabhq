@@ -7,17 +7,17 @@ RSpec.describe Gitlab::ImportSources do
     it 'returns a hash' do
       expected =
         {
-          'GitHub'           => 'github',
-          'Bitbucket Cloud'  => 'bitbucket',
-          'Bitbucket Server' => 'bitbucket_server',
-          'GitLab.com'       => 'gitlab',
-          'Google Code'      => 'google_code',
-          'FogBugz'          => 'fogbugz',
-          'Repo by URL'      => 'git',
-          'GitLab export'    => 'gitlab_project',
-          'Gitea'            => 'gitea',
-          'Manifest file'    => 'manifest',
-          'Phabricator'      => 'phabricator'
+          'GitHub'            => 'github',
+          'Bitbucket Cloud'   => 'bitbucket',
+          'Bitbucket Server'  => 'bitbucket_server',
+          'GitLab.com'        => 'gitlab',
+          'Google Code'       => 'google_code',
+          'FogBugz'           => 'fogbugz',
+          'Repository by URL' => 'git',
+          'GitLab export'     => 'gitlab_project',
+          'Gitea'             => 'gitea',
+          'Manifest file'     => 'manifest',
+          'Phabricator'       => 'phabricator'
         }
 
       expect(described_class.options).to eq(expected)
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::ImportSources do
       'gitlab' => 'GitLab.com',
       'google_code' => 'Google Code',
       'fogbugz' => 'FogBugz',
-      'git' => 'Repo by URL',
+      'git' => 'Repository by URL',
       'gitlab_project' => 'GitLab export',
       'gitea' => 'Gitea',
       'manifest' => 'Manifest file',

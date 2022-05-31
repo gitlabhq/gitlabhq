@@ -50,6 +50,7 @@ describe('RunnerInstructionsModal component', () => {
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
   const findOsxPlatformButton = () => wrapper.find({ ref: 'osx' });
   const findArchitectureDropdownItems = () => wrapper.findAllByTestId('architecture-dropdown-item');
+  const findBinaryDownloadButton = () => wrapper.findByTestId('binary-download-button');
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
 
@@ -177,23 +178,28 @@ describe('RunnerInstructionsModal component', () => {
   });
 
   describe('after a platform and architecture are selected', () => {
+    const windowsIndex = 2;
     const { installInstructions } = mockGraphqlInstructionsWindows.data.runnerSetup;
 
     beforeEach(async () => {
       runnerSetupInstructionsHandler.mockResolvedValue(mockGraphqlInstructionsWindows);
 
-      findPlatformButtons().at(2).vm.$emit('click'); // another option, happens to be windows
-      await nextTick();
-
-      findArchitectureDropdownItems().at(1).vm.$emit('click'); // another option
-      await nextTick();
+      findPlatformButtons().at(windowsIndex).vm.$emit('click');
+      await waitForPromises();
     });
 
     it('runner instructions are requested', () => {
-      expect(runnerSetupInstructionsHandler).toHaveBeenCalledWith({
+      expect(runnerSetupInstructionsHandler).toHaveBeenLastCalledWith({
         platform: 'windows',
-        architecture: '386',
+        architecture: 'amd64',
       });
+    });
+
+    it('architecture download link is updated', () => {
+      const architectures =
+        mockGraphqlRunnerPlatforms.data.runnerPlatforms.nodes[windowsIndex].architectures.nodes;
+
+      expect(findBinaryDownloadButton().attributes('href')).toBe(architectures[0].downloadLocation);
     });
 
     it('other binary instructions are shown', () => {
@@ -208,6 +214,16 @@ describe('RunnerInstructionsModal component', () => {
       expect(command).toBe(
         './gitlab-runner.exe register --url http://gdk.test:3000/ --registration-token MY_TOKEN',
       );
+    });
+
+    it('runner instructions are requested with another architecture', async () => {
+      findArchitectureDropdownItems().at(1).vm.$emit('click');
+      await waitForPromises();
+
+      expect(runnerSetupInstructionsHandler).toHaveBeenLastCalledWith({
+        platform: 'windows',
+        architecture: '386',
+      });
     });
   });
 

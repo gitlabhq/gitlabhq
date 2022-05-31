@@ -11,7 +11,7 @@ This guide describes how to develop Service Ping metrics using metrics instrumen
 ## Nomenclature
 
 - **Instrumentation class**:
-  - Inherits one of the metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric` or `GenericMetric`.
+  - Inherits one of the metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, `NumbersMetric` or `GenericMetric`.
   - Implements the logic that calculates the value for a Service Ping metric.
 
 - **Metric definition**
@@ -24,7 +24,7 @@ This guide describes how to develop Service Ping metrics using metrics instrumen
 
 A metric definition has the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class.
 
-The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, or `GenericMetric`.
+The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `RedisMetric`, `RedisHLLMetric`, `NumbersMetric` or `GenericMetric`.
 
 The current convention is that a single instrumentation class corresponds to a single metric. On a rare occasions, there are exceptions to that convention like [Redis metrics](#redis-metrics). To use a single instrumentation class for more than one metric, please reach out to one of the `@gitlab-org/growth/product-intelligence/engineers` members to consult about your case.
 
@@ -221,6 +221,43 @@ options:
     - i_quickactions_approve
 ```
 
+## Numbers metrics
+
+- `operation`: Operations for the given `data` block. Currently we only support `add` operation.
+- `data`: a `block` which contains an array of numbers.
+- `available?`: Specifies whether the metric should be reported. The default is `true`.
+
+```ruby
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+          class IssuesBoardsCountMetric < NumbersMetric
+            operation :add
+
+            data do |time_frame|
+              [
+                 CountIssuesMetric.new(time_frame: time_frame).value,
+                 CountBoardsMetric.new(time_frame: time_frame).value
+              ]
+            end
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+You must also include the instrumentation class name in the YAML setup.
+
+```yaml
+time_frame: 28d
+instrumentation_class: 'IssuesBoardsCountMetric'
+```
+
 ## Generic metrics
 
 - `value`: Specifies the value of the metric.
@@ -251,6 +288,7 @@ There is support for:
 - `count`, `distinct_count`, `estimate_batch_distinct_count`, `sum` for [database metrics](#database-metrics).
 - [Redis metrics](#redis-metrics).
 - [Redis HLL metrics](#redis-hyperloglog-metrics).
+- `add` for [numbers metrics](#numbers-metrics).
 - [Generic metrics](#generic-metrics), which are metrics based on settings or configurations.
 
 There is no support for:
@@ -284,6 +322,7 @@ This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usag
 - [Database metric](#database-metrics)
 - [Redis HyperLogLog metrics](#redis-hyperloglog-metrics)
 - [Redis metric](#redis-metrics)
+- [Numbers metric](#numbers-metrics)
 - [Generic metric](#generic-metrics)
 
 1. Determine the location of instrumentation class: either under `ee` or outside `ee`.

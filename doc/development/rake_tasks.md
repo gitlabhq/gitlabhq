@@ -166,7 +166,7 @@ There are a few caveats for this Rake task:
 - The pipeline must have been completed.
 - You may need to wait for the test report to be parsed and retry again.
 
-This Rake task depends on the [unit test reports](../ci/unit_test_reports.md) feature,
+This Rake task depends on the [unit test reports](../ci/testing/unit_test_reports.md) feature,
 which only gets parsed when it is requested for the first time.
 
 ### Speed up tests, Rake tasks, and migrations

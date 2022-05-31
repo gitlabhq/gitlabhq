@@ -91,7 +91,7 @@ module QA
         end
 
         def click_repo_by_url_link
-          click_button 'Repo by URL'
+          click_button 'Repository by URL'
         end
 
         def disable_initialize_with_readme

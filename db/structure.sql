@@ -28627,6 +28627,8 @@ CREATE INDEX index_namespaces_on_traversal_ids ON namespaces USING gin (traversa
 
 CREATE INDEX index_namespaces_on_traversal_ids_for_groups ON namespaces USING gin (traversal_ids) WHERE ((type)::text = 'Group'::text);
 
+CREATE INDEX index_namespaces_on_traversal_ids_for_groups_btree ON namespaces USING btree (traversal_ids) WHERE ((type)::text = 'Group'::text);
+
 CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id);
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));

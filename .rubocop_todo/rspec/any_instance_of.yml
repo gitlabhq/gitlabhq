@@ -484,7 +484,6 @@ RSpec/AnyInstanceOf:
   - spec/workers/expire_pipeline_cache_worker_spec.rb
   - spec/workers/group_export_worker_spec.rb
   - spec/workers/group_import_worker_spec.rb
-  - spec/workers/namespaceless_project_destroy_worker_spec.rb
   - spec/workers/namespaces/root_statistics_worker_spec.rb
   - spec/workers/new_note_worker_spec.rb
   - spec/workers/object_pool/create_worker_spec.rb

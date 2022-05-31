@@ -363,10 +363,6 @@ table.u2f-registrations {
   color: $gl-text-color-secondary;
 }
 
-.gitlab-slack-body {
-  max-width: 420px;
-}
-
 .gitlab-slack-slack-logo {
   transform: scale(200%); // Slack logo SVG is scaled down 50% and has empty space around it
 }

@@ -61,7 +61,7 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.import_sources).to be_empty
 
         page.within('.as-visibility-access') do
-          check "Repo by URL"
+          check "Repository by URL"
           click_button 'Save changes'
         end
 

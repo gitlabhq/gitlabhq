@@ -833,9 +833,9 @@ prevent any more changes from rendering. For more information about these limits
 
 Reports that go over the 20 MB limit aren't loaded. Affected reports:
 
-- [Merge request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports)
+- [Merge request security reports](../ci/testing/index.md#security-reports)
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
-- [Unit test reports](../ci/unit_test_reports.md)
+- [Unit test reports](../ci/testing/unit_test_reports.md)
 
 ## Advanced Search limits
 

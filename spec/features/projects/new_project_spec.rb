@@ -57,7 +57,7 @@ RSpec.describe 'New project', :js do
       expect(page).to have_link('GitHub')
       expect(page).to have_link('Bitbucket')
       expect(page).to have_link('GitLab.com')
-      expect(page).to have_button('Repo by URL')
+      expect(page).to have_button('Repository by URL')
       expect(page).to have_link('GitLab export')
     end
 
@@ -175,7 +175,7 @@ RSpec.describe 'New project', :js do
       it 'does not show the initialize with Readme checkbox on "Import project" tab' do
         visit new_project_path
         click_link 'Import project'
-        click_button 'Repo by URL'
+        click_button 'Repository by URL'
 
         page.within '#import-project-pane' do
           expect(page).not_to have_css('input#project_initialize_with_readme')
@@ -277,7 +277,7 @@ RSpec.describe 'New project', :js do
         click_link 'Import project'
       end
 
-      context 'from git repository url, "Repo by URL"' do
+      context 'from git repository url, "Repository by URL"' do
         before do
           first('.js-import-git-toggle-button').click
         end

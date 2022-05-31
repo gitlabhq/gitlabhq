@@ -3902,7 +3902,6 @@ RSpec/ContextWording:
     - 'spec/workers/issues/placement_worker_spec.rb'
     - 'spec/workers/merge_requests/delete_source_branch_worker_spec.rb'
     - 'spec/workers/metrics/dashboard/prune_old_annotations_worker_spec.rb'
-    - 'spec/workers/namespaceless_project_destroy_worker_spec.rb'
     - 'spec/workers/packages/composer/cache_update_worker_spec.rb'
     - 'spec/workers/packages/go/sync_packages_worker_spec.rb'
     - 'spec/workers/packages/maven/metadata/sync_worker_spec.rb'

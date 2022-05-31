@@ -94,28 +94,5 @@ RSpec.describe Ci::AbortPipelinesService do
         end
       end
     end
-
-    context 'with user pipelines' do
-      def abort_user_pipelines
-        described_class.new.execute(user.pipelines, :user_blocked)
-      end
-
-      it 'fails all running pipelines and related jobs' do
-        expect(abort_user_pipelines).to be_success
-
-        expect_correct_cancellations
-
-        expect(other_users_pipeline.status).not_to eq('failed')
-      end
-
-      it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new { abort_user_pipelines }.count
-
-        pipelines = create_list(:ci_pipeline, 5, :running, project: project, user: user)
-        create_list(:ci_build, 5, :running, pipeline: pipelines.first)
-
-        expect { abort_user_pipelines }.not_to exceed_query_limit(control_count)
-      end
-    end
   end
 end

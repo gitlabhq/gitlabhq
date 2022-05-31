@@ -798,7 +798,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/merge_request_mergeability_check_worker.rb'
     - 'app/workers/merge_worker.rb'
     - 'app/workers/migrate_external_diffs_worker.rb'
-    - 'app/workers/namespaceless_project_destroy_worker.rb'
     - 'app/workers/new_issue_worker.rb'
     - 'app/workers/new_merge_request_worker.rb'
     - 'app/workers/new_note_worker.rb'

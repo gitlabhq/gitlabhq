@@ -219,7 +219,7 @@ For a software developer working in a team:
 1. You checkout a new branch, and submit your changes through a merge request.
 1. You gather feedback from your team.
 1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md).
-1. You verify your changes with [Unit test reports](../../../ci/unit_test_reports.md) in GitLab CI/CD.
+1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
 1. You avoid using dependencies whose license is not compatible with your project with [License Compliance reports](../../compliance/license_compliance/index.md).
 1. You request the [approval](approvals/index.md) from your manager.
 1. Your manager:
@@ -244,7 +244,7 @@ For a web developer writing a webpage for your company's website:
 - [Create a merge request](creating_merge_requests.md)
 - [Review a merge request](reviews/index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
-- [Testing and reports](testing_and_reports_in_merge_requests.md)
+- [Testing and reports](../../../ci/testing/index.md)
 - [GitLab keyboard shortcuts](../../shortcuts.md)
 - [Comments and threads](../../discussions/index.md)
 - [Suggest code changes](reviews/suggestions.md)

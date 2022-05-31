@@ -815,9 +815,7 @@ module Gitlab
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated
         # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/217407.
-        add count(Issue.with_alert_management_alerts, start: minimum_id(Issue), finish: maximum_id(Issue)),
-          count(::Issue.with_self_managed_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue)),
-          count(::Issue.with_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue))
+        add_metric('IssuesCreatedFromAlertsMetric')
       end
 
       def clear_memoized

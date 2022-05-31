@@ -165,7 +165,7 @@ Example of response
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202525) in GitLab 13.0.
 
 NOTE:
-This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.
+This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report
@@ -221,7 +221,7 @@ Sample response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471) in GitLab 14.2.
 
 NOTE:
-This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.
+This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report_summary

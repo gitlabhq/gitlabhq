@@ -219,7 +219,7 @@ The `junit` report collects [JUnit report format XML files](https://www.ibm.com/
 The collected Unit test reports upload to GitLab as an artifact. Although JUnit was originally developed in Java, there
 are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 
-See [Unit test reports](../unit_test_reports.md) for more details and examples.
+See [Unit test reports](../testing/unit_test_reports.md) for more details and examples.
 Below is an example of collecting a JUnit report format XML file from Ruby's RSpec test tool:
 
 ```yaml
@@ -235,8 +235,8 @@ rspec:
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [code quality widget](../../ci/unit_test_reports.md#how-it-works).
-- The [full report](../../ci/unit_test_reports.md#viewing-unit-test-reports-on-gitlab).
+- The merge request [code quality widget](../testing/unit_test_reports.md#how-it-works).
+- The [full report](../testing/unit_test_reports.md#view-unit-test-reports-on-gitlab).
 
 Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to
 concatenate them into a single file. Use either:

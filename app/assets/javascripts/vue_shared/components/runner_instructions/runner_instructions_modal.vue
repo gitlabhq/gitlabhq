@@ -134,7 +134,10 @@ export default {
       const { registerInstructions } = this.instructions || {};
 
       if (this.registrationToken) {
-        return registerInstructions.replace(REGISTRATION_TOKEN_PLACEHOLDER, this.registrationToken);
+        return registerInstructions?.replace(
+          REGISTRATION_TOKEN_PLACEHOLDER,
+          this.registrationToken,
+        );
       }
 
       return registerInstructions;
@@ -155,9 +158,13 @@ export default {
     selectPlatform(platform) {
       this.selectedPlatform = platform;
 
-      if (!platform.architectures?.some(({ name }) => name === this.selectedArchitectureName)) {
-        // Select first architecture when current value is not available
-        this.selectArchitecture(platform.architectures[0]);
+      // Update architecture when platform changes
+      const architectures = platform.architectures || [];
+      const arch = architectures.find(({ name }) => name === this.selectedArchitectureName);
+      if (arch) {
+        this.selectArchitecture(arch);
+      } else {
+        this.selectArchitecture(architectures[0]);
       }
     },
     selectArchitecture(architecture) {
@@ -220,7 +227,7 @@ export default {
             v-for="platform in platforms"
             :key="platform.name"
             :ref="platform.name"
-            :selected="selectedPlatform && selectedPlatform.name === platform.name"
+            :selected="selectedPlatformName === platform.name"
             @click="selectPlatform(platform)"
           >
             {{ platform.humanReadableName }}

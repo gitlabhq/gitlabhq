@@ -74,7 +74,7 @@ hosted with a paid cloud service may be provisioned with:
 The [Pipeline success and duration charts](index.md#pipeline-success-and-duration-charts)
 give information about pipeline runtime and failed job counts.
 
-Tests like [unit tests](../unit_test_reports.md), integration tests, end-to-end tests,
+Tests like [unit tests](../testing/unit_test_reports.md), integration tests, end-to-end tests,
 [code quality](../../user/project/merge_requests/code_quality.md) tests, and others
 ensure that problems are automatically found by the CI/CD pipeline. There could be many
 pipeline stages involved causing long runtimes.

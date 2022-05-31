@@ -2542,15 +2542,6 @@
   :weight: 1
   :idempotent:
   :tags: []
-- :name: namespaceless_project_destroy
-  :worker_name: NamespacelessProjectDestroyWorker
-  :feature_category: :authentication_and_authorization
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: namespaces_onboarding_issue_created
   :worker_name: Namespaces::OnboardingIssueCreatedWorker
   :feature_category: :onboarding

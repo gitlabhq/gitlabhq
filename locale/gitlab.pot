@@ -23234,6 +23234,9 @@ msgstr ""
 msgid "Make issue confidential"
 msgstr ""
 
+msgid "Make sure you have the correct permissions to link your project."
+msgstr ""
+
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
@@ -25659,6 +25662,9 @@ msgid "No prioritized labels with such name or description"
 msgstr ""
 
 msgid "No project subscribes to the pipelines in this project."
+msgstr ""
+
+msgid "No projects available."
 msgstr ""
 
 msgid "No projects found"
@@ -31823,9 +31829,6 @@ msgstr ""
 msgid "Reply…"
 msgstr ""
 
-msgid "Repo by URL"
-msgstr ""
-
 msgid "Report abuse"
 msgstr ""
 
@@ -32099,6 +32102,9 @@ msgid "Repository Settings"
 msgstr ""
 
 msgid "Repository already read-only"
+msgstr ""
+
+msgid "Repository by URL"
 msgstr ""
 
 msgid "Repository check"
@@ -43521,9 +43527,6 @@ msgid "You don't have any deployments right now."
 msgstr ""
 
 msgid "You don't have any open merge requests"
-msgstr ""
-
-msgid "You don't have any projects available."
 msgstr ""
 
 msgid "You don't have any recent searches"

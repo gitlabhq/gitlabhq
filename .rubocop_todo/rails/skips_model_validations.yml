@@ -150,7 +150,6 @@ Rails/SkipsModelValidations:
     - 'app/workers/concerns/dependency_proxy/expireable.rb'
     - 'app/workers/concerns/packages/cleanup_artifact_worker.rb'
     - 'app/workers/container_expiration_policy_worker.rb'
-    - 'app/workers/namespaceless_project_destroy_worker.rb'
     - 'app/workers/packages/helm/extraction_worker.rb'
     - 'app/workers/packages/nuget/extraction_worker.rb'
     - 'app/workers/packages/rubygems/extraction_worker.rb'

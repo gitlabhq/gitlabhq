@@ -335,7 +335,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'Metrics::Dashboard::PruneOldAnnotationsWorker' => 3,
         'Metrics::Dashboard::SyncDashboardsWorker' => 3,
         'MigrateExternalDiffsWorker' => 3,
-        'NamespacelessProjectDestroyWorker' => 3,
         'Namespaces::OnboardingIssueCreatedWorker' => 3,
         'Namespaces::OnboardingPipelineCreatedWorker' => 3,
         'Namespaces::OnboardingProgressWorker' => 3,
