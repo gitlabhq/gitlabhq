@@ -127,7 +127,7 @@ export default {
     <jobs-table v-else :jobs="jobs" :table-fields="$options.fields" data-testid="jobs-tab-table" />
 
     <gl-intersection-observer v-if="jobsPageInfo.hasNextPage" @appear="fetchMoreJobs">
-      <gl-loading-icon v-if="showLoadingSpinner" size="md" />
+      <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
     </gl-intersection-observer>
   </div>
 </template>

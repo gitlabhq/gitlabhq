@@ -64,7 +64,7 @@ export default {
       </div>
     </div>
     <div class="blob-viewer" data-qa-selector="blob_viewer_content" itemprop="about">
-      <gl-loading-icon v-if="loading > 0" size="md" color="dark" class="my-4 mx-auto" />
+      <gl-loading-icon v-if="loading > 0" size="lg" color="dark" class="my-4 mx-auto" />
       <div
         v-else-if="readme"
         ref="readme"

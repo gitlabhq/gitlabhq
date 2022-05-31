@@ -81,7 +81,7 @@ export function registerLanguages(def, ...defs) {
   languages.setLanguageConfiguration(languageId, def.conf);
 }
 
-export function registerSchema(schema) {
+export function registerSchema(schema, options = {}) {
   const defaults = [languages.json.jsonDefaults, languages.yaml.yamlDefaults];
   defaults.forEach((d) =>
     d.setDiagnosticsOptions({
@@ -90,6 +90,7 @@ export function registerSchema(schema) {
       hover: true,
       completion: true,
       schemas: [schema],
+      ...options,
     }),
   );
 }

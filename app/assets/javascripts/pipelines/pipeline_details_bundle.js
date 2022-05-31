@@ -84,14 +84,12 @@ export default async function initPipelineDetailsBundle() {
       });
     }
 
-    if (gon.features?.failedJobsTabVue) {
-      try {
-        createPipelineFailedJobsApp(SELECTORS.PIPELINE_FAILED_JOBS);
-      } catch {
-        createFlash({
-          message: s__('Jobs|An error occurred while loading the Failed Jobs tab.'),
-        });
-      }
+    try {
+      createPipelineFailedJobsApp(SELECTORS.PIPELINE_FAILED_JOBS);
+    } catch {
+      createFlash({
+        message: s__('Jobs|An error occurred while loading the Failed Jobs tab.'),
+      });
     }
   }
 }

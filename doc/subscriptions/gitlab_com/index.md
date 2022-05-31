@@ -241,7 +241,7 @@ You can hover your mouse on the **Renew** button to see the date when it will be
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 
-Your updated subscription is applied to your namespace on the renewal period start date.
+Your updated subscription is applied to your namespace on the renewal period start date. It may take up to one day for the renewal to be processed.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page.
 If you have difficulty during the renewal process, contact the [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
@@ -249,14 +249,14 @@ If you have difficulty during the renewal process, contact the [Support team](ht
 For details on upgrading your subscription tier, see
 [Upgrade your GitLab SaaS subscription tier](#upgrade-your-gitlab-saas-subscription-tier).
 
-### Automatic renewal
+### Automatic subscription renewal
 
 When you enable automatic renewal, the subscription automatically renews on the
 expiration date without a gap in available service. An invoice is
 generated for the renewal and available for viewing or download on the
 [View invoices](https://customers.gitlab.com/receipts) page.
 
-#### Enable or disable automatic renewal
+#### Enable or disable automatic subscription renewal
 
 To view or change automatic subscription renewal (at the same tier as the
 previous period), log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
@@ -312,8 +312,8 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 You can purchase a storage subscription for your personal or group namespace.
 
 NOTE:
-Storage subscriptions **[renew automatically](#automatic-renewal) each year**.
-You can [cancel the subscription](#enable-or-disable-automatic-renewal) to disable the automatic renewal.
+Storage subscriptions **[renew automatically](#automatic-subscription-renewal) each year**.
+You can [cancel the subscription](#enable-or-disable-automatic-subscription-renewal) to disable the automatic renewal.
 
 #### For your personal namespace
 

@@ -71,7 +71,7 @@ export default {
       <gl-loading-icon
         v-if="statusIcon === 'loading'"
         css-class="report-block-list-loading-icon"
-        size="md"
+        size="lg"
       />
       <ci-icon v-else :status="iconStatus" :size="statusIconSize" data-testid="summary-row-icon" />
     </div>

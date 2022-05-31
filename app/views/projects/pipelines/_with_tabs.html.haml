@@ -33,44 +33,7 @@
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.tab-pane
-      - if Feature.enabled?(:failed_jobs_tab_vue, @project)
-        #js-pipeline-failed-jobs-vue{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid, failed_jobs_summary_data: prepare_failed_jobs_summary_data(@pipeline.failed_builds) } }
-      - else
-        .build-failures.build-page
-          %table.table.gl-table.responsive-table.ci-table.responsive-table-sm-rounded
-            %thead
-              %th
-              %th= _('Name')
-              %th= _('Stage')
-              %th= _('Failure')
-              %th
-
-            %tbody
-              - @pipeline.failed_builds.each_with_index do |build, index|
-                - job = build.present(current_user: current_user)
-                %tr.build-state.responsive-table-border-start
-                  %td.responsive-table-cell.ci-status-icon-failed{ data: { column: _('Status')} }
-                    .d-none.d-md-block.build-icon
-                      = sprite_icon("status_#{build.status}")
-                    .d-md-none.build-badge
-                      = render "ci/status/badge", link: false, status: job.detailed_status(current_user)
-                  %td.responsive-table-cell.build-name{ data: { column: _('Name')} }
-                    = link_to build.name, pipeline_job_url(pipeline, build)
-                  %td.responsive-table-cell.build-stage{ data: { column: _('Stage')} }
-                    = build.stage.titleize
-                  %td.responsive-table-cell.build-failure{ data: { column: _('Failure')} }
-                    = build.present.callout_failure_message
-                  %td.responsive-table-cell.build-actions
-                    - if can?(current_user, :update_build, job) && job.retryable?
-                      = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'gl-button btn btn-default btn-icon' do
-                        = sprite_icon('repeat', css_class: 'gl-icon')
-                - if can?(current_user, :read_build, job)
-                  %tr.build-log-row.responsive-table-border-end
-                    %td
-                    %td.responsive-table-cell.build-log-container{ colspan: 4 }
-                      %pre.build-log.build-log-rounded
-                        %code.bash.js-build-output
-                          = build_summary(build)
+      #js-pipeline-failed-jobs-vue{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid, failed_jobs_summary_data: prepare_failed_jobs_summary_data(@pipeline.failed_builds) } }
 
   #js-tab-dag.tab-pane
     #js-pipeline-dag-vue{ data: { pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, empty_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'), about_dag_doc_path: help_page_path('ci/directed_acyclic_graph/index.md'), dag_doc_path: help_page_path('ci/yaml/index.md', anchor: 'needs')} }

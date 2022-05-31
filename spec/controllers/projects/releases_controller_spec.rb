@@ -115,15 +115,6 @@ RSpec.describe Projects::ReleasesController do
         expect(json_response.map { |release| release["id"] } ).to eq([release_2.id, release_1.id])
       end
 
-      # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/360903
-      it "returns release sha when remove_sha_from_releases_json is disabled" do
-        stub_feature_flags(remove_sha_from_releases_json: false)
-
-        get_index
-
-        expect(json_response).to eq([release_2, release_1].as_json)
-      end
-
       it_behaves_like 'common access controls'
 
       context 'when the project is private and the user is not logged in' do

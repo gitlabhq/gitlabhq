@@ -117,7 +117,7 @@ Install the required packages (needed to compile Ruby and native extensions to R
 ```shell
 sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev \
   libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
-  libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake runit-systemd
+  libcurl4-openssl-dev libicu-dev logrotate rsync python3-docutils pkg-config cmake runit-systemd
 ```
 
 If you want to use Kerberos for user authentication, install `libkrb5-dev`

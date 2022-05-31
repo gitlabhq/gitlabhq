@@ -6,10 +6,11 @@ RSpec.describe Releases::CreateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:tag_name) { project.repository.tag_names.first }
+  let(:tag_message) { nil }
   let(:tag_sha) { project.repository.find_tag(tag_name).dereferenced_target.sha }
   let(:name) { 'Bionic Beaver' }
   let(:description) { 'Awesome release!' }
-  let(:params) { { tag: tag_name, name: name, description: description, ref: ref } }
+  let(:params) { { tag: tag_name, name: name, description: description, ref: ref, tag_message: tag_message } }
   let(:ref) { nil }
   let(:service) { described_class.new(project, user, params) }
 
@@ -67,6 +68,24 @@ RSpec.describe Releases::CreateService do
         expect(result[:status]).to eq(:success)
         expect(result[:tag]).not_to be_nil
         expect(result[:release]).not_to be_nil
+      end
+
+      context 'and tag_message is provided' do
+        let(:ref) { 'master' }
+        let(:tag_name) { 'foobar' }
+        let(:tag_message) { 'Annotated tag message' }
+
+        it_behaves_like 'a successful release creation'
+
+        it 'creates a tag if the tag does not exist' do
+          expect(project.repository.ref_exists?("refs/tags/#{tag_name}")).to be_falsey
+
+          result = service.execute
+          expect(result[:status]).to eq(:success)
+          expect(result[:tag]).not_to be_nil
+          expect(result[:release]).not_to be_nil
+          expect(project.repository.find_tag(tag_name).message).to eq(tag_message)
+        end
       end
     end
 

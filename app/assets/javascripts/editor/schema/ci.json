@@ -15,6 +15,7 @@
     "after_script": { "$ref": "#/definitions/after_script" },
     "variables": { "$ref": "#/definitions/globalVariables" },
     "cache": { "$ref": "#/definitions/cache" },
+    "!reference": {"$ref" : "#/definitions/!reference"},
     "default": {
       "type": "object",
       "properties": {
@@ -27,7 +28,8 @@
         "retry": { "$ref": "#/definitions/retry" },
         "services": { "$ref": "#/definitions/services" },
         "tags": { "$ref": "#/definitions/tags" },
-        "timeout": { "$ref": "#/definitions/timeout" }
+        "timeout": { "$ref": "#/definitions/timeout" },
+        "!reference": {"$ref" : "#/definitions/!reference"}
       },
       "additionalProperties": false
     },
@@ -341,6 +343,13 @@
         }
       ]
     },
+    "!reference": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
     "image": {
       "oneOf": [
         {
@@ -489,25 +498,39 @@
       "type": "array",
       "markdownDescription": "Rules allows for an array of individual rule objects to be evaluated in order, until one matches and dynamically provides attributes to the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rules).",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "if": { "$ref": "#/definitions/if" },
-          "changes": { "$ref": "#/definitions/changes" },
-          "exists": { "$ref": "#/definitions/exists" },
-          "variables": { "$ref": "#/definitions/variables" },
-          "when": { "$ref": "#/definitions/when" },
-          "start_in": { "$ref": "#/definitions/start_in" },
-          "allow_failure": { "$ref": "#/definitions/allow_failure" }
-        }
+        "anyOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "if": { "$ref": "#/definitions/if" },
+              "changes": { "$ref": "#/definitions/changes" },
+              "exists": { "$ref": "#/definitions/exists" },
+              "variables": { "$ref": "#/definitions/variables" },
+              "when": { "$ref": "#/definitions/when" },
+              "start_in": { "$ref": "#/definitions/start_in" },
+              "allow_failure": { "$ref": "#/definitions/allow_failure" }
+            }
+          },
+          {"type": "string", "minLength": 1},
+          {"type": "array", "minLength": 1, "items": { "type": "string" }}
+        ]
       }
     },
     "globalVariables": {
       "markdownDescription": "Defines environment variables globally. Job level property overrides global variables. If a job sets `variables: {}`, all global variables are turned off. You can use the value and description keywords to define variables that are prefilled when running a pipeline manually. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
-      "type": "object",
+      "anyOf": [
+        {"type": "object"},
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
       "additionalProperties": {
         "anyOf": [
-          {"type": ["string", "integer"]},
+          {"type": ["string", "integer", "array"]},
           {
             "type": "object",
             "properties": {
@@ -540,11 +563,21 @@
       }
     },
     "variables": {
-      "type": "object",
       "markdownDescription": "Defines environment variables for specific jobs. Job level property overrides global variables. If a job sets `variables: {}`, all global variables are turned off. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesvariables).",
-      "additionalProperties": {
-        "type": ["string", "integer"]
-      }
+      "anyOf": [
+        {
+          "type": "object",   
+          "additionalProperties": {
+            "type": ["string", "integer", "array"]
+          }
+        }, 
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     },
     "timeout": {
       "type": "string",
@@ -889,14 +922,7 @@
     },
     "job": {
       "allOf": [
-        { "$ref": "#/definitions/job_template" },
-        {
-          "anyOf": [
-            { "required": ["script"] },
-            { "required": ["extends"] },
-            { "required": ["trigger"] }
-          ]
-        }
+        { "$ref": "#/definitions/job_template" }
       ]
     },
     "job_template": {

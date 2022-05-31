@@ -172,7 +172,7 @@ export default {
       </p>
     </template>
     <template v-else-if="!hasPipeline">
-      <gl-loading-icon size="md" />
+      <gl-loading-icon size="lg" />
       <p
         class="gl-flex-grow-1 gl-display-flex gl-ml-3 gl-mb-0"
         data-testid="monitoring-pipeline-message"

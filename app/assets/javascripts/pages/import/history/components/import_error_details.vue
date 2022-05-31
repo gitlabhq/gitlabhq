@@ -36,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <gl-loading-icon v-if="loading" size="md" />
+  <gl-loading-icon v-if="loading" size="lg" />
   <pre
     v-else
   ><code>{{ error || s__('BulkImport|No additional information provided.') }}</code></pre>

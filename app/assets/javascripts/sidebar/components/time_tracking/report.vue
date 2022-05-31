@@ -88,7 +88,7 @@ export default {
 
 <template>
   <div>
-    <div v-if="isLoading"><gl-loading-icon size="md" /></div>
+    <div v-if="isLoading"><gl-loading-icon size="lg" /></div>
     <gl-table-lite v-else :items="report" :fields="$options.fields" foot-clone>
       <template #cell(spentAt)="{ item: { spentAt } }">
         <div>{{ formatDate(spentAt) }}</div>

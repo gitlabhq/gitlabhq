@@ -73,7 +73,7 @@ export default {
 </script>
 <template>
   <div id="conflicts">
-    <gl-loading-icon v-if="isLoading" size="md" data-testid="loading-spinner" />
+    <gl-loading-icon v-if="isLoading" size="lg" data-testid="loading-spinner" />
     <div v-if="hasError" class="nothing-here-block">
       {{ conflictsData.errorMessage }}
     </div>

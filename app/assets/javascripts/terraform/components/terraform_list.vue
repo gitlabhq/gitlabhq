@@ -105,7 +105,7 @@ export default {
           </p>
         </template>
 
-        <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-3" />
+        <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />
 
         <div v-else-if="statesList">
           <div v-if="statesCount">

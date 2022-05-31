@@ -213,7 +213,7 @@ export default {
     <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
       <gl-loading-icon
         v-if="showLoadingSpinner"
-        size="md"
+        size="lg"
         :aria-label="$options.i18n.loadingAriaLabel"
       />
     </gl-intersection-observer>

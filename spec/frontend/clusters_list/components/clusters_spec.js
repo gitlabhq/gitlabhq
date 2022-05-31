@@ -1,9 +1,4 @@
-import {
-  GlLoadingIcon,
-  GlPagination,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlTableLite,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlPagination, GlSkeletonLoader, GlTableLite } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -171,7 +166,7 @@ describe('Clusters', () => {
         if (nodeSize) {
           expect(size.text()).toBe(nodeSize);
         } else {
-          expect(size.find(GlSkeletonLoading).exists()).toBe(true);
+          expect(size.findComponent(GlSkeletonLoader).exists()).toBe(true);
         }
       });
     });
@@ -195,7 +190,7 @@ describe('Clusters', () => {
         const size = sizes.at(lineNumber);
 
         expect(size.text()).toContain(nodeText);
-        expect(size.find(GlSkeletonLoading).exists()).toBe(false);
+        expect(size.findComponent(GlSkeletonLoader).exists()).toBe(false);
       });
     });
 
@@ -221,12 +216,12 @@ describe('Clusters', () => {
   describe('cluster CPU', () => {
     it.each`
       clusterCpu           | lineNumber
-      ${''}                | ${0}
+      ${'Loading'}         | ${0}
       ${'1.93 (87% free)'} | ${1}
       ${'3.87 (86% free)'} | ${2}
       ${'(% free)'}        | ${3}
       ${'(% free)'}        | ${4}
-      ${''}                | ${5}
+      ${'Loading'}         | ${5}
     `('renders total cpu for each cluster', ({ clusterCpu, lineNumber }) => {
       const clusterCpus = findTable().findAll('td:nth-child(4)');
       const cpuData = clusterCpus.at(lineNumber);
@@ -238,12 +233,12 @@ describe('Clusters', () => {
   describe('cluster Memory', () => {
     it.each`
       clusterMemory         | lineNumber
-      ${''}                 | ${0}
+      ${'Loading'}          | ${0}
       ${'5.92 (78% free)'}  | ${1}
       ${'12.86 (79% free)'} | ${2}
       ${'(% free)'}         | ${3}
       ${'(% free)'}         | ${4}
-      ${''}                 | ${5}
+      ${'Loading'}          | ${5}
     `('renders total memory for each cluster', ({ clusterMemory, lineNumber }) => {
       const clusterMemories = findTable().findAll('td:nth-child(5)');
       const memoryData = clusterMemories.at(lineNumber);

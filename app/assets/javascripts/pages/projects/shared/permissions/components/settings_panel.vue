@@ -205,6 +205,7 @@ export default {
       warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
+      enforceAuthChecksOnUploads: true,
       highlightChangesClass: false,
       emailsDisabled: false,
       cveIdRequestEnabled: true,
@@ -308,6 +309,13 @@ export default {
     },
     packageRegistryAccessLevelEnabled() {
       return this.glFeatures.packageRegistryAccessLevel;
+    },
+    showAdditonalSettings() {
+      if (this.glFeatures.enforceAuthChecksOnUploads) {
+        return true;
+      }
+
+      return this.visibilityLevel !== this.visibilityOptions.PRIVATE;
     },
   },
 
@@ -519,15 +527,38 @@ export default {
           )
         }}</span>
         <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
-        <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="gl-line-height-28">
-          <input
-            :value="requestAccessEnabled"
-            type="hidden"
-            name="project[request_access_enabled]"
-          />
-          <input v-model="requestAccessEnabled" type="checkbox" />
-          {{ s__('ProjectSettings|Users can request access') }}
-        </label>
+        <div v-if="showAdditonalSettings" class="gl-mt-4">
+          <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
+          <label
+            v-if="visibilityLevel !== visibilityOptions.PRIVATE"
+            class="gl-line-height-28 gl-font-weight-normal gl-mb-0"
+          >
+            <input
+              :value="requestAccessEnabled"
+              type="hidden"
+              name="project[request_access_enabled]"
+            />
+            <input v-model="requestAccessEnabled" type="checkbox" />
+            {{ s__('ProjectSettings|Users can request access') }}
+          </label>
+          <label
+            v-if="
+              visibilityLevel !== visibilityOptions.PUBLIC && glFeatures.enforceAuthChecksOnUploads
+            "
+            class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
+          >
+            <input
+              :value="enforceAuthChecksOnUploads"
+              type="hidden"
+              name="project[project_setting_attributes][enforce_auth_checks_on_uploads]"
+            />
+            <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
+            {{ s__('ProjectSettings|Require authentication to view media files') }}
+            <span class="gl-text-gray-500 gl-display-block gl-ml-5 gl-mt-n3">{{
+              s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
+            }}</span>
+          </label>
+        </div>
       </project-setting-row>
     </div>
     <div

@@ -178,7 +178,7 @@ export default {
       <div class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-button
           class="gl-mt-5"
-          variant="info"
+          variant="confirm"
           category="primary"
           :aria-label="__('Trigger manual job')"
           :disabled="triggerBtnDisabled"

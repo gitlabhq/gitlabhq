@@ -81,7 +81,7 @@ class SafeMathRenderer {
                 'math|Displaying this math block may cause performance issues on this page',
               )}</div>
               <div class="gl-alert-actions">
-                <button class="js-lazy-render-math btn gl-alert-action btn-primary btn-md gl-button">Display anyway</button>
+                <button class="js-lazy-render-math btn gl-alert-action btn-confirm btn-md gl-button">Display anyway</button>
               </div>
             </div>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">

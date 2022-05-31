@@ -186,7 +186,7 @@ export default {
               v-track-event="getAddMetricTrackingOptions()"
               data-testid="add-metric-modal-submit-button"
               :disabled="!customMetricsFormIsValid"
-              variant="success"
+              variant="confirm"
               @click="submitCustomMetricsForm"
             >
               {{ __('Save changes') }}

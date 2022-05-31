@@ -25,7 +25,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:pipeline_tabs_vue, @project)
     push_frontend_feature_flag(:downstream_retry_action, @project)
-    push_frontend_feature_flag(:failed_jobs_tab_vue, @project)
   end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596

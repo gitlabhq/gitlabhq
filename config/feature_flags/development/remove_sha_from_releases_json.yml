@@ -1,8 +1,0 @@
----
-name: remove_sha_from_releases_json
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86233
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360903
-milestone: '15.0'
-type: development
-group: group::release
-default_enabled: false

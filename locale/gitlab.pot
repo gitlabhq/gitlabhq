@@ -325,11 +325,6 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d open issue"
-msgid_plural "%d open issues"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
 msgstr[0] ""
@@ -357,6 +352,11 @@ msgstr[1] ""
 
 msgid "%d project selected"
 msgid_plural "%d projects selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d remaining"
+msgid_plural "%d remaining"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1066,7 +1066,7 @@ msgstr ""
 msgid "%{total_warnings} warning(s) found:"
 msgstr ""
 
-msgid "%{total} open issue weight"
+msgid "%{total} remaining issue weight"
 msgstr ""
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
@@ -1455,9 +1455,6 @@ msgstr[1] ""
 msgid "1-9 contributions"
 msgstr ""
 
-msgid "1. Effective June 1, 2022, all GitLab Free tier public projects will be %{minutes_quota_link}."
-msgstr ""
-
 msgid "10-19 contributions"
 msgstr ""
 
@@ -1468,9 +1465,6 @@ msgid "192.168.0.0/24 or 2001:0DB8:1234::/48"
 msgstr ""
 
 msgid "1st contribution!"
-msgstr ""
-
-msgid "2. Before July 1, 2022, all GitLab Free tier public open source projects must %{enrollment_link} to continue to receive GitLab Ultimate benefits."
 msgstr ""
 
 msgid "20-29 contributions"
@@ -5764,6 +5758,9 @@ msgstr ""
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
 msgstr ""
 
+msgid "Before July 1, 2022, all free tier public open source projects must %{enrollment_link} to continue to receive GitLab Ultimate benefits."
+msgstr ""
+
 msgid "Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}"
 msgstr ""
 
@@ -6784,10 +6781,7 @@ msgstr ""
 msgid "Burndown chart"
 msgstr ""
 
-msgid "BurndownChartLabel|Open issue weight"
-msgstr ""
-
-msgid "BurndownChartLabel|Open issues"
+msgid "BurndownChartLabel|Remaining"
 msgstr ""
 
 msgid "Burnup chart"
@@ -7416,7 +7410,7 @@ msgstr ""
 msgid "Changes the title to \"%{title_param}\"."
 msgstr ""
 
-msgid "Changes to GitLab Free tier public projects"
+msgid "Changes to free tier open source projects"
 msgstr ""
 
 msgid "Changes to the title have not been saved"
@@ -29731,6 +29725,9 @@ msgstr ""
 msgid "ProjectSettings|%{link_start}What variables can I use?%{link_end}"
 msgstr ""
 
+msgid "ProjectSettings|Additional options"
+msgstr ""
+
 msgid "ProjectSettings|Additional settings that influence how and when merges are done."
 msgstr ""
 
@@ -29944,6 +29941,9 @@ msgstr ""
 msgid "ProjectSettings|Pipelines must succeed"
 msgstr ""
 
+msgid "ProjectSettings|Prevents direct linking to potentially sensitive media files"
+msgstr ""
+
 msgid "ProjectSettings|Private"
 msgstr ""
 
@@ -29960,6 +29960,9 @@ msgid "ProjectSettings|Require"
 msgstr ""
 
 msgid "ProjectSettings|Require an associated issue from Jira"
+msgstr ""
+
+msgid "ProjectSettings|Require authentication to view media files"
 msgstr ""
 
 msgid "ProjectSettings|Requirements"
@@ -37941,6 +37944,9 @@ msgstr ""
 msgid "The issue was successfully promoted to an epic. Redirecting to epic..."
 msgstr ""
 
+msgid "The last owner cannot be set to awaiting"
+msgstr ""
+
 msgid "The latest artifacts created by jobs in the most recent successful pipeline will be stored."
 msgstr ""
 
@@ -38311,6 +38317,9 @@ msgid "There is no data available."
 msgstr ""
 
 msgid "There is no data available. Please change your selection."
+msgstr ""
+
+msgid "There is no seat left to activate the member"
 msgstr ""
 
 msgid "There is no table data available."
@@ -43457,6 +43466,9 @@ msgstr ""
 msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
+msgid "You cannot approve all pending members on a free plan"
+msgstr ""
+
 msgid "You cannot approve your own deployment."
 msgstr ""
 
@@ -43479,6 +43491,9 @@ msgid "You cannot play this scheduled pipeline at the moment. Please wait a minu
 msgstr ""
 
 msgid "You cannot rename an environment after it's created."
+msgstr ""
+
+msgid "You cannot set yourself to awaiting"
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

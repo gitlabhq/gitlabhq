@@ -38,7 +38,7 @@ export default {
   <div class="gl-display-flex gl-align-self-start">
     <div class="square s24 h-auto d-flex-center gl-mr-3">
       <div v-if="isLoading" class="mr-widget-icon gl-display-inline-flex">
-        <gl-loading-icon size="md" class="mr-loading-icon gl-display-inline-flex" />
+        <gl-loading-icon size="lg" class="mr-loading-icon gl-display-inline-flex" />
       </div>
       <ci-icon v-else :status="statusObj" :size="24" />
     </div>

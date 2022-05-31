@@ -46,6 +46,10 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:package_registry_access_level)
   end
 
+  before_action only: :edit do
+    push_frontend_feature_flag(:enforce_auth_checks_on_uploads, @project)
+  end
+
   layout :determine_layout
 
   feature_category :projects, [

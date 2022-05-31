@@ -137,7 +137,7 @@ export default {
         {{ s__('BulkImport|Project import history') }}
       </h1>
     </div>
-    <gl-loading-icon v-if="loading" size="md" class="gl-mt-5" />
+    <gl-loading-icon v-if="loading" size="lg" class="gl-mt-5" />
     <gl-empty-state
       v-else-if="!hasHistoryItems"
       :title="s__('BulkImport|No history is available')"

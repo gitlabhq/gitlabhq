@@ -39,7 +39,7 @@ module QA
       end
 
       def fetch_group_id
-        group_name = ENV['TOP_LEVEL_GROUP_NAME'] || 'gitlab-qa-sandbox-group'
+        group_name = ENV['TOP_LEVEL_GROUP_NAME'] || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
         group_search_response = get Runtime::API::Request.new(@api_client, "/groups/#{group_name}" ).url
         JSON.parse(group_search_response.body)["id"]
       end
