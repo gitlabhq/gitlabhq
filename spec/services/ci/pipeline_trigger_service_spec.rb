@@ -56,6 +56,15 @@ RSpec.describe Ci::PipelineTriggerService do
         end
       end
 
+      context 'when trigger owner does not have a permission to read a project' do
+        let(:params) { { token: trigger.token, ref: 'master', variables: nil } }
+        let(:trigger) { create(:ci_trigger, project: project, owner: create(:user)) }
+
+        it 'does nothing' do
+          expect { result }.not_to change { Ci::Pipeline.count }
+        end
+      end
+
       context 'when params have an existing trigger token' do
         context 'when params have an existing ref' do
           let(:params) { { token: trigger.token, ref: 'master', variables: nil } }
