@@ -183,7 +183,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         end
 
         context 'with web terminal' do
-          let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
 
           it 'exposes the terminal path' do
             expect(response).to have_gitlab_http_status(:ok)
@@ -1285,7 +1285,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     context 'when job exists' do
       context 'and it has a terminal' do
-        let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+        let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
 
         it 'has a job' do
           get_terminal(id: job.id)
@@ -1296,7 +1296,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'and does not have a terminal' do
-        let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+        let!(:job) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
         it 'returns not_found' do
           get_terminal(id: job.id)
@@ -1325,7 +1325,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   end
 
   describe 'GET #terminal_websocket_authorize' do
-    let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+    let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline, user: user) }
 
     before do
       project.add_developer(user)
