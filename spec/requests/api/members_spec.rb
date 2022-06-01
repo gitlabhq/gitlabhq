@@ -180,6 +180,21 @@ RSpec.describe API::Members do
       expect(json_response).to be_an Array
       expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id]
     end
+
+    context 'with a subgroup' do
+      let(:group) { create(:group, :private)}
+      let(:subgroup) { create(:group, :private, parent: group)}
+      let(:project) { create(:project, group: subgroup) }
+
+      before do
+        subgroup.add_developer(developer)
+      end
+
+      it 'subgroup member cannot get parent group members list' do
+        get api("/groups/#{group.id}/members/all", developer)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   shared_examples 'GET /:source_type/:id/members/(all/):user_id' do |source_type, all|

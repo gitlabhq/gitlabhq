@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.9.5 (2022-06-01)
+
+### Security (7 changes)
+
+- [Fix IP restrictions not applying to deploy tokens](gitlab-org/security/gitlab@b429997e253110ea5eb4d20a8b90e9879be97300) ([merge request](gitlab-org/security/gitlab!2472))
+- [Trigger token should respect group IP restrictions](gitlab-org/security/gitlab@326993794bba8659208cde212433a5a19fd3e5a9) ([merge request](gitlab-org/security/gitlab!2477))
+- [Fix content injection in Jira issue title](gitlab-org/security/gitlab@c968f7be35d829bfefbf089794343d2d20cdd078) ([merge request](gitlab-org/security/gitlab!2465))
+- [Subgroup member can list members of parent group](gitlab-org/security/gitlab@1606689819eeae574bd5d65c8c971c2d4eb19e41) ([merge request](gitlab-org/security/gitlab!2481))
+- [Do not allow project member import when membership is locked](gitlab-org/security/gitlab@e8324068c61c4c58d50646d4fa8dff77c4d147ae) ([merge request](gitlab-org/security/gitlab!2448))
+- [Disable changing user attributes when updating SCIM provisioned user](gitlab-org/security/gitlab@9d5aca002edb2e0ab3c7d5b6eb00ea781d3dde9f) ([merge request](gitlab-org/security/gitlab!2455))
+- [Allow only job owner to run interactive terminal](gitlab-org/security/gitlab@c9fe31e3a963c421db3d9c47c65dd98a2867a699) ([merge request](gitlab-org/security/gitlab!2434))
+
 ## 14.9.4 (2022-04-29)
 
 ### Security (15 changes)

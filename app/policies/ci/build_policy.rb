@@ -84,7 +84,7 @@ module Ci
       enable :update_commit_status
     end
 
-    rule { can?(:update_build) & terminal }.enable :create_build_terminal
+    rule { can?(:update_build) & terminal & owner_of_job }.enable :create_build_terminal
 
     rule { can?(:update_build) }.enable :play_job
 

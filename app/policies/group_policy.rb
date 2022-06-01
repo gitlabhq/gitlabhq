@@ -22,6 +22,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
+  condition(:can_read_group_member) { can_read_group_member? }
 
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
@@ -126,6 +127,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
+
+  rule { ~can_read_group_member }.policy do
+    prevent :read_group_member
+  end
 
   rule { ~can?(:read_group) }.policy do
     prevent :read_design_activity
@@ -306,6 +311,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   def resource_access_token_feature_available?
     true
+  end
+
+  def can_read_group_member?
+    !(@subject.private? && access_level == GroupMember::NO_ACCESS)
   end
 
   def resource_access_token_creation_allowed?
