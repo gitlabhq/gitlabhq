@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 # If this spec fails, we need to add the new code review event to the correct aggregated metric
+# NOTE: ONLY user related metrics to be added to the aggregates - otherwise add it to the exception list
 RSpec.describe 'Code review events' do
   it 'the aggregated metrics contain all the code review metrics' do
     path = Rails.root.join('config/metrics/aggregates/code_review.yml')

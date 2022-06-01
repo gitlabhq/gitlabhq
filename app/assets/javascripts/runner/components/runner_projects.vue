@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { sprintf, formatNumber } from '~/locale';
 import { createAlert } from '~/flash';
 import runnerProjectsQuery from '../graphql/show/runner_projects.query.graphql';
@@ -17,7 +17,7 @@ import RunnerPagination from './runner_pagination.vue';
 export default {
   name: 'RunnerProjects',
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     RunnerAssignedItem,
     RunnerPagination,
   },
@@ -86,7 +86,9 @@ export default {
       {{ heading }}
     </h3>
 
-    <gl-skeleton-loading v-if="loading" class="gl-py-5" />
+    <div v-if="loading" class="gl-py-5">
+      <gl-skeleton-loader />
+    </div>
     <template v-else-if="projects.items.length">
       <runner-assigned-item
         v-for="(project, i) in projects.items"

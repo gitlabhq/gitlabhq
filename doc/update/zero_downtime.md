@@ -182,7 +182,28 @@ load balancer to latest GitLab version.
 Gitaly and the Praefect component. It has its own PostgreSQL database, independent of the rest of
 the application.
 
-Before you update the main application you need to update Praefect.
+Before you update the main GitLab application you need to update the Gitaly nodes
+and then Praefect.
+
+**Gitaly nodes**
+
+Upgrade the Gitaly nodes in your Gitaly cluster one at a time
+to ensure access to Git repositories is maintained.
+
+Update the GitLab package:
+
+```shell
+# Debian/Ubuntu
+sudo apt-get update && sudo apt-get install gitlab-ee
+
+# Centos/RHEL
+sudo yum install gitlab-ee
+```
+
+If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+
+**Praefect**
+
 Out of your Praefect nodes, pick one to be your Praefect deploy node.
 This is where you install the new Omnibus package first and run
 database migrations.

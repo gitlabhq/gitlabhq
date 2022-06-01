@@ -44,8 +44,8 @@ export default {
         <gl-button
           v-if="resolutionPath"
           :href="resolutionPath"
-          variant="info"
-          class="gl-mr-5 gl-alert-action"
+          variant="confirm"
+          class="gl-mr-3 gl-alert-action"
         >
           {{ __('Resolve conflicts') }}
         </gl-button>

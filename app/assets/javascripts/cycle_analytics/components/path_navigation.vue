@@ -1,10 +1,5 @@
 <script>
-import {
-  GlPath,
-  GlPopover,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlPath, GlPopover, GlSkeletonLoader, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { OVERVIEW_STAGE_ID } from '../constants';
 import FormattedStageCount from './formatted_stage_count.vue';
@@ -13,7 +8,7 @@ export default {
   name: 'PathNavigation',
   components: {
     GlPath,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     GlPopover,
     FormattedStageCount,
   },
@@ -57,7 +52,7 @@ export default {
 };
 </script>
 <template>
-  <gl-skeleton-loading v-if="loading" :lines="2" />
+  <gl-skeleton-loader v-if="loading" :width="235" :lines="2" />
   <gl-path v-else :key="selectedStage.id" :items="stages" @selected="onSelectStage">
     <template #default="{ pathItem, pathId }">
       <gl-popover
