@@ -67,6 +67,12 @@ class Groups::ApplicationController < ApplicationController
     end
   end
 
+  def authorize_read_group_member!
+    unless can?(current_user, :read_group_member, group)
+      render_403
+    end
+  end
+
   def build_canonical_path(group)
     params[:group_id] = group.to_param
 

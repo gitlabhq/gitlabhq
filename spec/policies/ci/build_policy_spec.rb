@@ -405,4 +405,52 @@ RSpec.describe Ci::BuildPolicy do
       end
     end
   end
+
+  describe 'ability :create_build_terminal' do
+    let(:project) { create(:project, :private) }
+
+    subject { described_class.new(user, build) }
+
+    context 'when user can update_build' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'when job has terminal' do
+        before do
+          allow(build).to receive(:has_terminal?).and_return(true)
+        end
+
+        context 'when current user is the job owner' do
+          before do
+            build.update!(user: user)
+          end
+
+          it { expect_allowed(:create_build_terminal) }
+        end
+
+        context 'when current user is not the job owner' do
+          it { expect_disallowed(:create_build_terminal) }
+        end
+      end
+
+      context 'when job does not have terminal' do
+        before do
+          allow(build).to receive(:has_terminal?).and_return(false)
+          build.update!(user: user)
+        end
+
+        it { expect_disallowed(:create_build_terminal) }
+      end
+    end
+
+    context 'when user cannot update build' do
+      before do
+        project.add_guest(user)
+        allow(build).to receive(:has_terminal?).and_return(true)
+      end
+
+      it { expect_disallowed(:create_build_terminal) }
+    end
+  end
 end
