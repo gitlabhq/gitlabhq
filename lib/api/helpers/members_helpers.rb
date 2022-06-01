@@ -15,6 +15,10 @@ module API
         public_send("find_#{source_type}!", id) # rubocop:disable GitlabSecurity/PublicSend
       end
 
+      def authorize_read_source_member!(source_type, source)
+        authorize! :"read_#{source_type}_member", source
+      end
+
       def authorize_admin_source!(source_type, source)
         authorize! :"admin_#{source_type}", source
       end
