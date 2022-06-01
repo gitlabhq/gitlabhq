@@ -346,6 +346,14 @@ that do not exist in a repository.
 "error":"not found: .gitlab-ci.yml"
 ```
 
+### Git pushes are slow when Dynatrace is enabled
+
+Dynatrace can cause the `/opt/gitlab/embedded/bin/gitaly-hooks` reference transaction hook,
+to take several seconds to start up and shut down. `gitaly-hooks` is executed twice when users
+push, which causes a significant delay.
+
+If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
+
 ## Troubleshoot Praefect (Gitaly Cluster)
 
 The following sections provide possible solutions to Gitaly Cluster errors.

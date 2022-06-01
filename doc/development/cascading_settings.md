@@ -210,25 +210,13 @@ This function should be imported and called in the [page-specific JavaScript](fe
       = s_('Settings|Merge method')
 
     .gl-form-radio.custom-control.custom-radio
-      = f.radio_button :merge_method, :merge, class: "custom-control-input", disabled: merge_method_locked
-      = f.label :merge_method_merge, class: 'custom-control-label' do
-        = s_('Settings|Merge commit')
-        %p.help-text
-          = s_('Settings|Every merge creates a merge commit.')
+      = f.gitlab_ui_radio_component :merge_method, :merge, s_('Settings|Merge commit'), help_text: s_('Settings|Every merge creates a merge commit.'), radio_options: { disabled: merge_method_locked }
 
     .gl-form-radio.custom-control.custom-radio
-      = f.radio_button :merge_method, :rebase_merge, class: "custom-control-input", disabled: merge_method_locked
-      = f.label :merge_method_rebase_merge, class: 'custom-control-label' do
-        = s_('Settings|Merge commit with semi-linear history')
-        %p.help-text
-          = s_('Settings|Every merge creates a merge commit.')
+      = f.gitlab_ui_radio_component :merge_method, :rebase_merge, s_('Settings|Merge commit with semi-linear history'), help_text: s_('Settings|Every merge creates a merge commit.'), radio_options: { disabled: merge_method_locked }
 
     .gl-form-radio.custom-control.custom-radio
-      = f.radio_button :merge_method, :ff, class: "custom-control-input", disabled: merge_method_locked
-      = f.label :merge_method_ff, class: 'custom-control-label' do
-        = s_('Settings|Fast-forward merge')
-        %p.help-text
-          = s_('Settings|No merge commits are created.')
+      = f.gitlab_ui_radio_component :merge_method, :ff, s_('Settings|Fast-forward merge'), help_text: s_('Settings|No merge commits are created.'), radio_options: { disabled: merge_method_locked }
 
     = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
       attribute: :merge_method,

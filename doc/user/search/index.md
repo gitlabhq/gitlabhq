@@ -1,10 +1,65 @@
 ---
-stage: Create
-group: Editor
+stage: Data Stores
+group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Searching in GitLab **(FREE)**
+
+GitLab has two types of searches available: _basic_ and _advanced_.
+
+Both types of search are the same, except when you are searching through code.
+
+- When you use basic search to search code, your search includes one project at a time.
+- When you use [advanced search](advanced_search.md) to search code, your search includes all projects at once.
+
+## Basic search
+
+Use basic search to find:
+
+- Projects
+- Issues
+- Merge requests
+- Milestones
+- Users
+- Epics (when searching in a group only)
+- Code
+- Comments
+- Commits
+- Wiki
+
+## Perform a search
+
+To start a search, type your search query in the search bar on the top-right of the screen.
+
+![basic search](img/basic_search_v15_1.png)
+
+After the results are displayed, you can modify the search, select a different type of data to
+search, or choose a specific group or project.
+
+![basic_search_results](img/basic_search_results_v15_1.png)
+
+## Code search
+
+To search through code or other documents in a single project, you can use
+the search field on the top-right of your screen while the project page is open.
+Code search shows only the first result in the file.
+
+### Git blame from code search
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
+
+You can access Git blame from any line that returned a result from the code search:
+
+![code search results](img/code_search_git_blame_v15_1.png)
+
+## SHA search
+
+You can quickly access a commit from the project dashboard by entering the SHA
+into the search field on the top right of the screen. If a single result is found, you are
+redirected to the commit result and given the option to return to the search results page.
+
+![project SHA search redirect](img/project_search_sha_redirect.png)
 
 ## Search issues and merge requests
 
@@ -257,63 +312,6 @@ In the search bar, you can view autocomplete suggestions for:
 - Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
 - Recently viewed epics (try and type some word from the title of a recently viewed epic)
 - [GitLab Flavored Markdown](../markdown.md#gitlab-specific-references) (GLFM) for issues in a project (try and type a GLFM reference for an issue)
-
-## Basic search
-
-The Basic search in GitLab enables you to search
-across the entire GitLab instance, in a group, or in a single project. Basic search is
-backed by the database and allows searching in:
-
-- Projects
-- Issues
-- Merge requests
-- Milestones
-- Users
-- Epics (Group only)
-- Code (Project only)
-- Comments (Project only)
-- Commits (Project only)
-- Wiki (Project only)
-
-To start a search, type into the search bar on the top-right of the screen. You can always search
-in all GitLab and may also see the options to search in a group or project if you are in the
-group or project dashboard.
-
-![basic search](img/basic_search_v14_4.png)
-
-After the results are returned, you can modify the search, select a different type of data to
-search, or choose a specific group or project.
-
-![basic_search_results](img/basic_search_results.png)
-
-### Code search
-
-To search through code or other documents in a single project, you can use
-the search field on the top-right of your screen while the project page is open.
-Code search shows only the first result in the file.
-
-#### Git blame from code search **(FREE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
-
-You can access Git blame from any line that returned a result from the code search:
-
-![code search results](img/code_search_git_blame_v14_9.png)
-
-### SHA search
-
-You can quickly access a commit from the project dashboard by entering the SHA
-into the search field on the top right of the screen. If a single result is found, you are
-redirected to the commit result and given the option to return to the search results page.
-
-![project SHA search redirect](img/project_search_sha_redirect.png)
-
-## Advanced Search **(PREMIUM)**
-
-Leverage Elasticsearch for faster, more advanced code search across your entire
-GitLab instance.
-
-[Learn how to use the Advanced Search.](advanced_search.md)
 
 ## Search settings
 

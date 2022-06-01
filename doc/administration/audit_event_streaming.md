@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Feature flag `ff_external_audit_events_namespace`](https://gitlab.com/gitlab-org/gitlab/-/issues/349588) removed in GitLab 14.8.
 
 Users can set an HTTP endpoint for a top-level group to receive all audit events about the group, its subgroups, and
-projects as structured JSON. Event streaming is only available for top-level groups.
+projects as structured JSON.
 
 Top-level group owners can manage their audit logs in third-party systems. Any service that can receive
 structured JSON data can be used as the endpoint.

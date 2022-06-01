@@ -9,14 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can import your existing repositories by providing the Git URL:
 
-1. From your GitLab dashboard select **New project**.
-1. Switch to the **Import project** tab.
+1. On the top bar, select **Menu > Create new project**.
+1. Select the **Import project** tab.
 1. Select **Repository by URL**.
-1. Fill in the "Git repository URL" and the remaining project fields.
-1. Select **Create project** to begin the import process.
-1. Once complete, you are redirected to your newly created project.
+1. Enter a **Git repository URL**.
+1. Complete the remaining fields.
+1. Select **Create project**.
 
-![Import project by repository URL](img/import_projects_from_repo_url.png)
+Your newly created project is displayed.
 
 ## Automate group and project import **(PREMIUM)**
 

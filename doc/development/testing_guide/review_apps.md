@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Review Apps
 
-Review Apps are deployed using the `start-review-app-pipeline` job. This job triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a Review App.
+Review Apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a Review App.
 
 ![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
 
@@ -27,12 +27,18 @@ On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in
 `review` stage), the `review-qa-smoke` and `review-qa-reliable` jobs are automatically started. The `review-qa-smoke` runs
 the QA smoke suite and the `review-qa-reliable` executes E2E tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests).
 
+`review-qa-*` jobs ensure that end-to-end tests for the changes in the merge request pass in a live environment. This shifts the identification of e2e failures from an environment on the path to production to the merge request, to prevent breaking features on GitLab.com or costly GitLab.com deployment blockers. `review-qa-*` failures should be investigated with counterpart SET involvement if needed to help determine the root cause of the error.
+
 You can also manually start the `review-qa-all`: it runs the full QA suite.
 
 After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
 the `allure-report-qa-smoke`, `allure-report-qa-reliable`, and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
 
 Errors can be found in the `gitlab-review-apps` Sentry project and [filterable by Review App URL](https://sentry.gitlab.net/gitlab/gitlab-review-apps/?query=url%3A%22https%3A%2F%2Fgitlab-review-require-ve-u92nn2.gitlab-review.app%2F%22) or [commit SHA](https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/6095b501da7/all-events/).
+
+### Bypass failed review app deployment to merge a broken `master` fix
+
+Maintainers can elect to use the [process for merging during broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#instructions-for-the-maintainer) if a customer-critical merge request is blocked by pipelines failing due to review app deployment failures.
 
 ## Performance Metrics
 
