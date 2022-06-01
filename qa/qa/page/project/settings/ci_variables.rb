@@ -21,7 +21,7 @@ module QA
             element :reveal_ci_variable_value_button
           end
 
-          def fill_variable(key, value, masked)
+          def fill_variable(key, value, masked = false)
             within_element(:ci_variable_key_field) { find('input').set key }
             fill_element :ci_variable_value_field, value
             click_ci_variable_save_button

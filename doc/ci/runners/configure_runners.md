@@ -717,3 +717,47 @@ variables:
 | `ARTIFACT_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
+
+## Clean up stale runners
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `stale_runner_cleanup_for_namespace_development`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `stale_runner_cleanup_for_namespace_development`.
+
+You can clean up group runners that have been inactive for more than three months.
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Turn on the **Enable stale runner cleanup** toggle.
+
+### View stale runner cleanup logs
+
+You can check the [Sidekiq logs](../../administration/logs.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
+
+```json
+{
+  "query": {
+    "match_phrase": {
+      "json.class.keyword": "Ci::Runners::StaleGroupRunnersPruneCronWorker"
+    }
+  }
+}
+```
+
+Filter entries where stale runners were removed:
+
+```json
+{
+  "query": {
+    "range": {
+      "json.extra.ci_runners_stale_group_runners_prune_cron_worker.total_pruned": {
+        "gte": 1,
+        "lt": null
+      }
+    }
+  }
+}
+```

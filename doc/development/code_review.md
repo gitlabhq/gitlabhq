@@ -117,7 +117,7 @@ with [domain expertise](#domain-experts).
    Read the [database review guidelines](database_review.md) for more details.
 1. If your merge request includes `~frontend` changes (*1*), it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend)**.
-1. If your merge request includes user-facing changes (*3*), it must be
+1. If your merge request includes (`~UX`) user-facing changes (*3*), it must be
    **approved by a [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX)**.
    See the [design and user interface guidelines](contributing/design.md) for details.
 1. If your merge request includes adding a new JavaScript library (*1*)...

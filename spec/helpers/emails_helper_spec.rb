@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe EmailsHelper do
+  include EmailsHelperTestHelper
+
   describe 'closure_reason_text' do
     context 'when given a MergeRequest' do
       let(:merge_request) { create(:merge_request) }
@@ -238,17 +240,13 @@ RSpec.describe EmailsHelper do
       it 'returns the default header logo' do
         create :appearance, header_logo: nil
 
-        expect(header_logo).to match(
-          %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
-        )
+        expect(header_logo).to match(default_header_logo)
       end
     end
 
     context 'there is no brand item' do
       it 'returns the default header logo' do
-        expect(header_logo).to match(
-          %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
-        )
+        expect(header_logo).to match(default_header_logo)
       end
     end
   end

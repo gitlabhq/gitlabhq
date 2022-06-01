@@ -82,6 +82,20 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
       end
     end
 
+    describe 'Tracing' do
+      let(:item_id) { :tracing }
+
+      it_behaves_like 'access rights checks'
+
+      context 'when feature disabled' do
+        before do
+          stub_feature_flags(monitor_tracing: false)
+        end
+
+        specify { is_expected.to be_nil }
+      end
+    end
+
     describe 'Error Tracking' do
       let(:item_id) { :error_tracking }
 

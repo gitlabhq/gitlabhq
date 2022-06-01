@@ -1,8 +1,7 @@
 <script>
 import { GlToggle, GlAlert } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
-import { ERROR_MESSAGE } from '../constants';
+import { I18N_UPDATE_ERROR_MESSAGE, I18N_REFRESH_MESSAGE } from '../constants';
 
 export default {
   components: {
@@ -62,8 +61,8 @@ export default {
         })
         .catch((error) => {
           const message = [
-            error.response?.data?.error || __('An error occurred while updating configuration.'),
-            ERROR_MESSAGE,
+            error.response?.data?.error || I18N_UPDATE_ERROR_MESSAGE,
+            I18N_REFRESH_MESSAGE,
           ].join(' ');
 
           this.error = message;

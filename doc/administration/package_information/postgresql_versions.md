@@ -21,6 +21,9 @@ For example:
 [Find out which versions of PostgreSQL (and other components) ship with
 each Omnibus GitLab release](https://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
 
+The lowest supported PostgreSQL versions are listed in the
+[installation requirements](../../install/requirements.md#postgresql-requirements).
+
 Read more about update policies and warnings in the PostgreSQL
 [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 

@@ -437,6 +437,32 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
+    describe 'Tracing' do
+      it 'has a link to the tracing page' do
+        render
+
+        expect(rendered).to have_link('Tracing', href: project_tracing_path(project))
+      end
+
+      context 'without project.tracing_external_url' do
+        it 'has a link to the tracing page' do
+          render
+
+          expect(rendered).to have_link('Tracing', href: project_tracing_path(project))
+        end
+      end
+
+      describe 'when the user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the tracing page' do
+          render
+
+          expect(rendered).not_to have_text 'Tracing'
+        end
+      end
+    end
+
     describe 'Error Tracking' do
       it 'has a link to the error tracking page' do
         render

@@ -32668,10 +32668,16 @@ msgstr[1] ""
 msgid "Runners|A capacity of 1 enables warm HA through Auto Scaling group re-spawn. A capacity of 2 enables hot HA because the service is available even when a node is lost. A capacity of 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
+msgid "Runners|A periodic background task deletes runners that haven't contacted GitLab in more than %{elapsedTime}. %{linkStart}Can I view how many runners were deleted?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|Active"
 msgstr ""
 
 msgid "Runners|All"
+msgstr ""
+
+msgid "Runners|All group runners that have not contacted GitLab in more than %{elapsedTime} are deleted permanently. This task runs periodically in the background."
 msgstr ""
 
 msgid "Runners|Amazon Linux 2 Docker HA with manual scaling and optional scheduling. %{percentage} spot."
@@ -32758,6 +32764,12 @@ msgid "Runners|Download and install binary"
 msgstr ""
 
 msgid "Runners|Download latest binary"
+msgstr ""
+
+msgid "Runners|Enable stale runner cleanup"
+msgstr ""
+
+msgid "Runners|Enable stale runner cleanup?"
 msgstr ""
 
 msgid "Runners|Enter the number of seconds. This timeout takes precedence over lower timeouts set for the project."
@@ -33002,6 +33014,14 @@ msgstr ""
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr ""
 
+msgid "Runners|This group currently has 1 stale runner."
+msgid_plural "Runners|This group currently has %d stale runners."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Runners|This group currently has no stale runners."
+msgstr ""
+
 msgid "Runners|This runner has not run any jobs."
 msgstr ""
 
@@ -33042,6 +33062,9 @@ msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
+msgstr ""
+
+msgid "Runners|Yes, start deleting stale runners"
 msgstr ""
 
 msgid "Runners|You can set up a specific runner to be used by multiple projects but you cannot make this a shared runner."

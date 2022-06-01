@@ -27,6 +27,7 @@ module Ci
     def create_pipeline_from_trigger(trigger)
       # this check is to not leak the presence of the project if user cannot read it
       return unless trigger.project == project
+      return unless can?(trigger.owner, :read_project, project)
 
       response = Ci::CreatePipelineService
         .new(project, trigger.owner, ref: params[:ref], variables_attributes: variables)
