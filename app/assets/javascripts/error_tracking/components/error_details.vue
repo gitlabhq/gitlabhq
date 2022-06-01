@@ -301,7 +301,7 @@ export default {
             <gl-button
               class="ml-2"
               category="secondary"
-              variant="info"
+              variant="confirm"
               :loading="updatingResolveStatus"
               data-testid="update-resolve-status-btn"
               @click="onResolveStatusUpdate"

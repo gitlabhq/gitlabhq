@@ -66,7 +66,6 @@ module QA
           end
 
           def open_branch_selector_dropdown
-            dismiss_file_tree_popover if has_element?(:file_tree_popover, wait: 1)
             click_element(:branch_selector_button)
           end
 

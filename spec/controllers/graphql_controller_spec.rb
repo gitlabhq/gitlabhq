@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe GraphqlController do
   include GraphqlHelpers
 
+  # two days is enough to make timezones irrelevant
+  let_it_be(:last_activity_on) { 2.days.ago.to_date }
+
   before do
     stub_feature_flags(graphql: true)
   end
@@ -40,7 +43,7 @@ RSpec.describe GraphqlController do
 
   describe 'POST #execute' do
     context 'when user is logged in' do
-      let(:user) { create(:user, last_activity_on: Date.yesterday) }
+      let(:user) { create(:user, last_activity_on: last_activity_on) }
 
       before do
         sign_in(user)
@@ -161,7 +164,7 @@ RSpec.describe GraphqlController do
     end
 
     context 'when 2FA is required for the user' do
-      let(:user) { create(:user, last_activity_on: Date.yesterday) }
+      let(:user) { create(:user, last_activity_on: last_activity_on) }
 
       before do
         group = create(:group, require_two_factor_authentication: true)
@@ -186,14 +189,14 @@ RSpec.describe GraphqlController do
     end
 
     context 'when user uses an API token' do
-      let(:user) { create(:user, last_activity_on: Date.yesterday) }
+      let(:user) { create(:user, last_activity_on: last_activity_on) }
       let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }
       let(:query) { '{ __typename }' }
 
       subject { post :execute, params: { query: query, access_token: token.token } }
 
       context 'when the user is a project bot' do
-        let(:user) { create(:user, :project_bot, last_activity_on: Date.yesterday) }
+        let(:user) { create(:user, :project_bot, last_activity_on: last_activity_on) }
 
         it 'updates the users last_activity_on field' do
           expect { subject }.to change { user.reload.last_activity_on }

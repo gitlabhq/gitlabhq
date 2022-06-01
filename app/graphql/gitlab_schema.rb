@@ -14,17 +14,19 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::Tracers::ApplicationContextTracer
   use Gitlab::Graphql::Tracers::MetricsTracer
   use Gitlab::Graphql::Tracers::LoggerTracer
-  use Gitlab::Graphql::GenericTracing # Old tracer which will be removed eventually
+
+  # TODO: Old tracer which will be removed eventually
+  #       See https://gitlab.com/gitlab-org/gitlab/-/issues/345396
+  use Gitlab::Graphql::GenericTracing
   use Gitlab::Graphql::Tracers::TimerTracer
 
   use GraphQL::Subscriptions::ActionCableSubscriptions
-  use GraphQL::Pagination::Connections
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Pagination::Connections
   use Gitlab::Graphql::Timeout, max_seconds: Gitlab.config.gitlab.graphql_timeout
 
-  query_analyzer Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer.new
-  query_analyzer Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer.new
+  query_analyzer Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer
+  query_analyzer Gitlab::Graphql::QueryAnalyzers::AST::RecursionAnalyzer
 
   query Types::QueryType
   mutation Types::MutationType
@@ -49,10 +51,10 @@ class GitlabSchema < GraphQL::Schema
       super(queries, **kwargs)
     end
 
-    def get_type(type_name)
+    def get_type(type_name, context = GraphQL::Query::NullContext)
       type_name = Gitlab::GlobalId::Deprecations.apply_to_graphql_name(type_name)
 
-      super(type_name)
+      super(type_name, context)
     end
 
     def id_from_object(object, _type = nil, _ctx = nil)
@@ -77,8 +79,7 @@ class GitlabSchema < GraphQL::Schema
     end
 
     def resolve_type(type, object, ctx = :__undefined__)
-      tc = type.metadata[:type_class]
-      return if tc.respond_to?(:assignable?) && !tc.assignable?(object)
+      return if type.respond_to?(:assignable?) && !type.assignable?(object)
 
       super
     end
@@ -168,14 +169,3 @@ class GitlabSchema < GraphQL::Schema
 end
 
 GitlabSchema.prepend_mod_with('GitlabSchema') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
-# Force the schema to load as a workaround for intermittent errors we
-# see due to a lack of thread safety.
-#
-# TODO: We can remove this workaround when we convert the schema to use
-# the new query interpreter runtime.
-#
-# See:
-# - https://gitlab.com/gitlab-org/gitlab/-/issues/211478
-# - https://gitlab.com/gitlab-org/gitlab/-/issues/210556
-GitlabSchema.graphql_definition

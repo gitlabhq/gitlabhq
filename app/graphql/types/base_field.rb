@@ -53,6 +53,30 @@ module Types
       field_authorized?(object, ctx) && resolver_authorized?(object, ctx)
     end
 
+    # This gets called from the gem's `calculate_complexity` method, allowing us
+    # to ensure our complexity calculation is used even for connections.
+    # This code is actually a copy of the default case in `calculate_complexity`
+    # in `lib/graphql/schema/field.rb`
+    # (https://github.com/rmosolgo/graphql-ruby/blob/master/lib/graphql/schema/field.rb)
+    def complexity_for(child_complexity:, query:, lookahead:)
+      defined_complexity = complexity
+
+      case defined_complexity
+      when Proc
+        arguments = query.arguments_for(lookahead.ast_nodes.first, self)
+
+        if arguments.respond_to?(:keyword_arguments)
+          defined_complexity.call(query.context, arguments.keyword_arguments, child_complexity)
+        else
+          child_complexity
+        end
+      when Numeric
+        defined_complexity + child_complexity
+      else
+        raise("Invalid complexity: #{defined_complexity.inspect} on #{path} (#{inspect})")
+      end
+    end
+
     def base_complexity
       complexity = DEFAULT_COMPLEXITY
       complexity += 1 if calls_gitaly?

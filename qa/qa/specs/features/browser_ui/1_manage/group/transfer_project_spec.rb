@@ -2,7 +2,10 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project transfer between groups', :reliable do
+    describe 'Project transfer between groups', :reliable, quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/359043',
+      type: :investigating
+    } do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
           group.path = "source-group-#{SecureRandom.hex(8)}"

@@ -47,7 +47,6 @@ RSpec.describe 'Database schema' do
     events: %w[target_id],
     forked_project_links: %w[forked_from_project_id],
     geo_event_log: %w[hashed_storage_attachments_event_id],
-    geo_lfs_object_deleted_events: %w[lfs_object_id],
     geo_node_statuses: %w[last_event_id cursor_last_event_id],
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],

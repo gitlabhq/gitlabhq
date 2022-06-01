@@ -73,7 +73,7 @@ export default {
     <gl-button
       :href="detailsLink"
       category="primary"
-      variant="info"
+      variant="confirm"
       class="gl-display-block d-md-none gl-mb-4 mb-md-0"
     >
       {{ __('More details') }}

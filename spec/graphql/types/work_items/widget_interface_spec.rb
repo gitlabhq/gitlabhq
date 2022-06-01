@@ -21,9 +21,8 @@ RSpec.describe Types::WorkItems::WidgetInterface do
     it 'raises an error for an unknown type' do
       project = build(:project)
 
-      expect_graphql_error_to_be_created("Unknown GraphQL type for widget #{project}") do
-        described_class.resolve_type(project, {})
-      end
+      expect { described_class.resolve_type(project, {}) }
+        .to raise_error("Unknown GraphQL type for widget #{project}")
     end
   end
 end

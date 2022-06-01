@@ -15,6 +15,9 @@ QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 Dir[::File.join(__dir__, "features/shared_examples/*.rb")].sort.each { |f| require f }
 Dir[::File.join(__dir__, "features/shared_contexts/*.rb")].sort.each { |f| require f }
 
+# For JH additionally process when `jh/` exists
+require_relative('../../../jh/qa/qa/specs/spec_helper') if GitlabEdition.jh?
+
 RSpec.configure do |config|
   config.include QA::Support::Matchers::EventuallyMatcher
   config.include QA::Support::Matchers::HaveMatcher

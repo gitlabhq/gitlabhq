@@ -21,8 +21,7 @@ RSpec.describe GitlabSchema.types['Time'] do
       .to raise_error(GraphQL::CoercionError)
   end
 
-  it 'rejects nil' do
-    expect { described_class.coerce_isolated_input(nil) }
-      .to raise_error(GraphQL::CoercionError)
+  it 'allows nil' do
+    expect(described_class.coerce_isolated_input(nil)).to be_nil
   end
 end

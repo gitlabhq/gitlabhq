@@ -143,23 +143,6 @@ RSpec.describe Gitlab::Graphql::Present::FieldExtension do
       it_behaves_like 'calling the presenter method'
     end
 
-    # This is exercised here using an explicit `resolve:` proc, but
-    # @resolver_proc values are used in field instrumentation as well.
-    context 'when the field uses a resolve proc' do
-      let(:presenter) { base_presenter }
-      let(:field) do
-        ::Types::BaseField.new(
-          name: field_name,
-          type: GraphQL::Types::String,
-          null: true,
-          owner: owner,
-          resolve: ->(obj, args, ctx) { 'Hello from a proc' }
-        )
-      end
-
-      specify { expect(resolve_value).to eq 'Hello from a proc' }
-    end
-
     context 'when the presenter provides a new method' do
       def presenter
         Class.new(base_presenter) do

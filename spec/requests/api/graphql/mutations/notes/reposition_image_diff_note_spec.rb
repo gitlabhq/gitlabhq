@@ -68,15 +68,7 @@ RSpec.describe 'Repositioning an ImageDiffNote' do
     let(:new_position) { { x: nil } }
 
     it_behaves_like 'a mutation that returns top-level errors' do
-      let(:match_errors) { include(/RepositionImageDiffNoteInput! was provided invalid value/) }
-    end
-
-    it 'contains an explanation for the error' do
-      post_graphql_mutation(mutation, current_user: current_user)
-
-      explanation = graphql_errors.first['extensions']['problems'].first['explanation']
-
-      expect(explanation).to eq('At least one property of `UpdateDiffImagePositionInput` must be set')
+      let(:match_errors) { include(/At least one property of `UpdateDiffImagePositionInput` must be set/) }
     end
   end
 end

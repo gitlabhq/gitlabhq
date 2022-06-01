@@ -123,3 +123,47 @@ RSpec.describe 'Query.runners' do
     end
   end
 end
+
+RSpec.describe 'Group.runners' do
+  include GraphqlHelpers
+
+  let_it_be(:group) { create(:group) }
+  let_it_be(:group_owner) { create_default(:user) }
+
+  before do
+    group.add_owner(group_owner)
+  end
+
+  describe 'edges' do
+    let_it_be(:runner) do
+      create(:ci_runner, :group, active: false, version: 'def', revision: '456',
+             description: 'Project runner', groups: [group], ip_address: '127.0.0.1')
+    end
+
+    let(:query) do
+      %(
+        query($path: ID!) {
+          group(fullPath: $path) {
+            runners {
+              edges {
+                webUrl
+                editUrl
+                node { #{all_graphql_fields_for('CiRunner')} }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'contains custom edge information' do
+      r = GitlabSchema.execute(query,
+                               context: { current_user: group_owner },
+                               variables: { path: group.full_path })
+
+      edges = graphql_dig_at(r.to_h, :data, :group, :runners, :edges)
+
+      expect(edges).to contain_exactly(a_graphql_entity_for(web_url: be_present, edit_url: be_present))
+    end
+  end
+end

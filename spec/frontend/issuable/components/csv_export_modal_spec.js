@@ -1,7 +1,8 @@
-import { GlModal, GlIcon, GlButton } from '@gitlab/ui';
+import { GlModal, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import CsvExportModal from '~/issuable/components/csv_export_modal.vue';
+import { __ } from '~/locale';
 
 describe('CsvExportModal', () => {
   let wrapper;
@@ -34,7 +35,6 @@ describe('CsvExportModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findButton = () => wrapper.findComponent(GlButton);
 
   describe('template', () => {
     describe.each`
@@ -47,11 +47,25 @@ describe('CsvExportModal', () => {
       });
 
       it('displays the modal title "$modalTitle"', () => {
-        expect(findModal().text()).toContain(modalTitle);
+        expect(findModal().props('title')).toBe(modalTitle);
       });
 
-      it('displays the button with title "$modalTitle"', () => {
-        expect(findButton().text()).toBe(modalTitle);
+      it('displays the primary button with title "$modalTitle" and href', () => {
+        expect(findModal().props('actionPrimary')).toMatchObject({
+          text: modalTitle,
+          attributes: {
+            href: 'export/csv/path',
+            variant: 'confirm',
+            'data-method': 'post',
+            'data-qa-selector': `export_${issuableType}_button`,
+            'data-track-action': 'click_button',
+            'data-track-label': `export_${issuableType}_csv`,
+          },
+        });
+      });
+
+      it('displays the cancel button', () => {
+        expect(findModal().props('actionCancel')).toEqual({ text: __('Cancel') });
       });
     });
 
@@ -70,14 +84,6 @@ describe('CsvExportModal', () => {
         expect(findModal().text()).toContain(
           `The CSV export will be created in the background. Once finished, it will be sent to ${email} in an attachment.`,
         );
-      });
-    });
-
-    describe('primary button', () => {
-      it('passes the exportCsvPath to the button', () => {
-        const exportCsvPath = '/gitlab-org/gitlab-test/-/issues/export_csv';
-        wrapper = createComponent({ props: { exportCsvPath } });
-        expect(findButton().attributes('href')).toBe(exportCsvPath);
       });
     });
   });

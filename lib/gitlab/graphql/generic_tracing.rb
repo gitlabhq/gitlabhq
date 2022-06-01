@@ -23,6 +23,14 @@ module Gitlab
         "#{type.name}.#{field.name}"
       end
 
+      def platform_authorized_key(type)
+        "#{type.graphql_name}.authorized"
+      end
+
+      def platform_resolve_type_key(type)
+        "#{type.graphql_name}.resolve_type"
+      end
+
       def platform_trace(platform_key, key, data, &block)
         tags = { platform_key: platform_key, key: key }
         start = Gitlab::Metrics::System.monotonic_time

@@ -190,3 +190,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ApplicationRateLimiter.prepend_mod

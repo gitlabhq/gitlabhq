@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Clusters::Agents::Delete do
+  include GraphqlHelpers
+
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   let(:cluster_agent) { create(:cluster_agent) }
@@ -10,7 +12,7 @@ RSpec.describe Mutations::Clusters::Agents::Delete do
   let(:user) { create(:user) }
   let(:context) do
     GraphQL::Query::Context.new(
-      query: double('query', schema: nil), # rubocop:disable RSpec/VerifiedDoubles
+      query: query_double(schema: nil), # rubocop:disable RSpec/VerifiedDoubles
       values: { current_user: user },
       object: nil
     )

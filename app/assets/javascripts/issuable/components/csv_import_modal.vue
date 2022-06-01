@@ -18,6 +18,9 @@ export default {
   actionPrimary: {
     text: __('Import issues'),
   },
+  actionCancel: {
+    text: __('Cancel'),
+  },
   components: {
     GlModal,
     GlFormGroup,
@@ -55,6 +58,7 @@ export default {
     :modal-id="modalId"
     :title="$options.i18n.importIssuesText"
     :action-primary="$options.actionPrimary"
+    :action-cancel="$options.actionCancel"
     @primary="submitForm"
   >
     <form ref="form" :action="importCsvIssuesPath" enctype="multipart/form-data" method="post">

@@ -46,7 +46,7 @@ module Graphql
 
     NO_SKIP = ->(_name, _field) { false }
 
-    def self.select_fields(type, skip = NO_SKIP, parent_types = Set.new, max_depth = 3)
+    def self.select_fields(type, skip = NO_SKIP, max_depth = 3)
       return new if max_depth <= 0 || !type.kind.fields?
 
       new(type.fields.flat_map do |name, field|
@@ -55,12 +55,8 @@ module Graphql
         inspected = ::Graphql::FieldInspection.new(field)
         singular_field_type = inspected.type
 
-        # If field type is the same as parent type, then we're hitting into
-        # mutual dependency. Break it from infinite recursion
-        next [] if parent_types.include?(singular_field_type)
-
         if inspected.nested_fields?
-          subselection = select_fields(singular_field_type, skip, parent_types | [type], max_depth - 1)
+          subselection = select_fields(singular_field_type, skip, max_depth - 1)
           next [] if subselection.empty?
 
           [[name, subselection.to_h]]

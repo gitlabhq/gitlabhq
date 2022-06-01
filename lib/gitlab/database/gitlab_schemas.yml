@@ -218,7 +218,6 @@ geo_event_log: :gitlab_main
 geo_events: :gitlab_main
 geo_hashed_storage_attachments_events: :gitlab_main
 geo_hashed_storage_migrated_events: :gitlab_main
-geo_lfs_object_deleted_events: :gitlab_main
 geo_node_namespace_links: :gitlab_main
 geo_nodes: :gitlab_main
 geo_node_statuses: :gitlab_main

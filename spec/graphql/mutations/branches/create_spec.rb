@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Branches::Create do
+  include GraphqlHelpers
+
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   let_it_be(:project) { create(:project, :public, :repository) }
@@ -10,7 +12,7 @@ RSpec.describe Mutations::Branches::Create do
 
   let(:context) do
     GraphQL::Query::Context.new(
-      query: double('query', schema: nil),
+      query: query_double(schema: nil),
       values: { current_user: user },
       object: nil
     )
