@@ -175,7 +175,7 @@ copying over indexes and foreign keys.
 
 If a column contains one or more indexes that don't contain the name of the
 original column, the previously described procedure will fail. In that case,
-you'll first need to rename these indexes.
+you need to rename these indexes.
 
 ### Step 2: Add A Post-Deployment Migration
 

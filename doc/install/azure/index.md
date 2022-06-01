@@ -15,7 +15,7 @@ Enterprise Edition in a single Virtual Machine (VM).
 
 ## Prerequisite
 
-You'll need an account on Azure. Use of the following methods to obtain an account:
+You need an account on Azure. Use of the following methods to obtain an account:
 
 - If you or your company already have an account with a subscription, use that account.
   If not, you can [open your own Azure account for free](https://azure.microsoft.com/en-us/free/).

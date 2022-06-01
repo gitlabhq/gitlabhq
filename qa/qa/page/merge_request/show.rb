@@ -19,6 +19,10 @@ module QA
           element :review_bar_content
         end
 
+        view 'app/assets/javascripts/batch_comments/components/draft_note.vue' do
+          element :draft_note_content
+        end
+
         view 'app/assets/javascripts/diffs/components/compare_dropdown_layout.vue' do
           element :dropdown_content
         end
@@ -150,6 +154,8 @@ module QA
           has_element?(:submit_review_button)
           within_element(:review_bar_content) do
             click_element(:review_preview_dropdown)
+          end
+          within_element(:draft_note_content) do
             click_element(:submit_review_button)
           end
           # After clicking the button, wait for it to disappear

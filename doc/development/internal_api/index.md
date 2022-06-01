@@ -763,7 +763,7 @@ Example response:
 
 ### Moving additional packs
 
-Use a PATCH to move additional packs from one namespace to another.
+Use a `PATCH` to move additional packs from one namespace to another.
 
 ```plaintext
 PATCH /namespaces/:id/minutes/move/:target_id

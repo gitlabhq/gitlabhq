@@ -14,11 +14,11 @@ at [bundling dependencies document](omnibus_packages.md).
 
 The released package versions are in the format `MAJOR.MINOR.PATCH-EDITION.OMNIBUS_RELEASE`
 
-| Component         | Meaning | Example |
-|-------------------|---------|---------|
-| MAJOR.MINOR.PATCH | The GitLab version this corresponds to. | 13.3.0 |
-| EDITION           | The edition of GitLab this corresponds to. | ee |
-| OMNIBUS_RELEASE   | The Omnibus GitLab release. Usually, this is 0. This is incremented if we need to build a new package without changing the GitLab version. | 0 |
+| Component           | Meaning | Example |
+|---------------------|---------|---------|
+| `MAJOR.MINOR.PATCH` | The GitLab version this corresponds to. | 13.3.0 |
+| `EDITION`           | The edition of GitLab this corresponds to. | ee |
+| `OMNIBUS_RELEASE`   | The Omnibus GitLab release. Usually, this is 0. This is incremented if we need to build a new package without changing the GitLab version. | 0 |
 
 ## Licenses
 

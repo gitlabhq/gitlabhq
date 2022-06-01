@@ -90,7 +90,7 @@ page, with these behaviors:
 1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
 1. It always picks the same reviewers and maintainers for the same
-   branch name (unless their out-of-office (OOO) status changes, as in point 1). It
+   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
    removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
    that it can be stable for backport branches.
 

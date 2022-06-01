@@ -406,9 +406,8 @@ variable).
 
 Since daemons are long-running applications, they should have mechanisms to
 manage cancellations, and avoid unnecessary resources consumption (which could
-lead to DDOS vulnerabilities). [Go
-Context](https://github.com/golang/go/wiki/CodeReviewComments#contexts) should
-be used in functions that can block and passed as the first parameter.
+lead to DDoS vulnerabilities). [Go Context](https://github.com/golang/go/wiki/CodeReviewComments#contexts)
+should be used in functions that can block and passed as the first parameter.
 
 ## Dockerfiles
 

@@ -31,7 +31,7 @@ consists of 2-3 steps, for a total of 3-4 steps visible to the user.
 <script>
   import PipelineWizard from '~/pipeline_wizard/pipeline_wizard.vue'
   import template from '~/pipeline_wizard/templates/my_template.yml';
-  
+
   export default {
     name: "MyComponent",
     components: { PipelineWizard },
@@ -73,7 +73,7 @@ steps:
         required: true
         pattern: "^(?:(?=[^:\/]{1,253})(?!-)[a-zA-Z0-9-]{1,63}(?<!-)(?:\.(?!-)[a-zA-Z0-9-]{1,63}(?<!-))*(?::[0-9]{1,5})?\/)?((?![._-])(?:[a-z0-9._-]*)(?<![._-])(?:\/(?![._-])[a-z0-9._-]*(?<![._-]))*)(?::(?![.-])[a-zA-Z0-9_.-]{1,128})?$"
         invalid-feedback: Please enter a valid docker image
-      
+
       # Second input widget
       - label: Installation Steps
         description: "Enter the steps that need to run to set up a local build
@@ -90,11 +90,11 @@ steps:
         image: $BUILD_IMAGE
 
         before_script: $INSTALLATION_STEPS
-            
+
         artifacts:
           paths:
             - foo
-  
+
   # Step 2
   - inputs:
       # This is the only input widget for this step
@@ -104,7 +104,7 @@ steps:
         placeholder: npm ci
         widget: list
         target: $INSTALLATION_STEPS
-    
+
     template:
       # Functions that should be executed before the build script runs
       before_script: $INSTALLATION_STEPS
@@ -127,13 +127,13 @@ is planned to add the ability to create a MR from here.
 
 ### Props
 
-- `template` (required): The template content as an unparsed String. See 
+- `template` (required): The template content as an unparsed String. See
   [Template file location](#template-file-location) for more information.
-- `project-path` (required): The full path of the project the final file 
+- `project-path` (required): The full path of the project the final file
   should be committed to
-- `default-branch` (required): The branch that will be pre-selected during 
+- `default-branch` (required): The branch that will be pre-selected during
   the commit step. This can be changed by the user.
-- `default-filename` (optional, default: `.gitlab-ci.yml`): The Filename 
+- `default-filename` (optional, default: `.gitlab-ci.yml`): The Filename
   to be used for the file. This can be overridden in the template file.
 
 ### Events
@@ -181,12 +181,12 @@ Each step can contain one or more `inputs`. For an ideal user experience, it sho
 contain more than three.
 
 The look and feel of the input, as well as the YAML type it produces (string, list, and so on)
-depends on the [`widget`](#widgets) used. [`widget: text`](#text) displays a 
+depends on the [`widget`](#widgets) used. [`widget: text`](#text) displays a
 text input
 and inserts the user's input as a string into the template. [`widget: list`](#list)
 displays one or more input fields and inserts a list.
 
-All `inputs` must have a `label`, `widget`, and optionally `target`, but 
+All `inputs` must have a `label`, `widget`, and optionally `target`, but
 most properties
 are dependent on the widget being used:
 

@@ -14,6 +14,17 @@ new audit events.
 Audit Events are a tool for GitLab owners and administrators to view records of important
 actions performed across the application.
 
+## What should NOT be Audit Events?
+
+While any events could trigger an Audit Event, not all events should. In general, events that are not good candidates for audit events are:
+
+- Not attributable to one specific user.
+- Not of specific interest to an admin or owner persona.
+- Are tracking information for product feature adoption.
+- Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/manage/compliance/audit-events/#what-is-not-planned-right-now).
+
+If you have any questions, please reach out to `@gitlab-org/manage/compliance` to see if an Audit Event, or some other approach, may be best for your event.
+
 ## Audit Event Schemas
 
 To instrument an audit event, the following attributes should be provided:

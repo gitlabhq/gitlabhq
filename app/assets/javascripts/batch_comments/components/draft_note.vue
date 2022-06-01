@@ -113,7 +113,7 @@ export default {
         class="referenced-commands draft-note-commands"
       ></div>
 
-      <p class="draft-note-actions d-flex">
+      <p class="draft-note-actions d-flex" data-qa-selector="draft_note_content">
         <publish-button
           :show-count="true"
           :should-publish="false"

@@ -160,7 +160,7 @@ For more details, see the Git documentation for
    ```
 
    WARNING:
-   Git integrations with `bash`, `zsh`, etc and editors that automatically
+   Git integrations with `bash`, Zsh, etc and editors that automatically
    show Git status information often run `git fetch` which fetches the
    entire repository. Disabling or reconfiguring these integrations might be required.
 

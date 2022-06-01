@@ -381,9 +381,9 @@ comment - content which is not included in the output document
 It's possible to have color written in `HEX`, `RGB`, or `HSL` format rendered with a color indicator.
 Supported formats (named colors are not supported):
 
-- HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
-- RGB: `` `RGB[A](R, G, B[, A])` ``
-- HSL: `` `HSL[A](H, S, L[, A])` ``
+- `HEX`: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+- `RGB`: `` `RGB[A](R, G, B[, A])` ``
+- `HSL`: `` `HSL[A](H, S, L[, A])` ``
 
 Color written inside backticks is followed by a color "chip":
 

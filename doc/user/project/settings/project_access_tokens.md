@@ -102,7 +102,7 @@ These bot users do not count as licensed seats.
 The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
-**Note** Project maintainers cannot select Owner role for bot users. 
+**Note** Project maintainers cannot select Owner role for bot users.
 
 - The name is set to the name of the token.
 - The username is set to `project_{project_id}_bot` for the first access token. For example, `project_123_bot`.
