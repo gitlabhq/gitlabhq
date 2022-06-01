@@ -106,14 +106,6 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
             end
           end
         end
-
-        context 'by at_version in parent' do
-          before do
-            query_context[:at_version_argument] = first_version.to_global_id
-          end
-
-          it_behaves_like 'a query for all_versions up to the first_version'
-        end
       end
     end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Helpers do
   using RSpec::Parameterized::TableSyntax
 
-  subject { Class.new.include(described_class).new }
+  subject(:helper) { Class.new.include(described_class).new }
 
   describe '#current_user' do
     include Rack::Test::Methods
@@ -69,17 +69,17 @@ RSpec.describe API::Helpers do
     shared_examples 'project finder' do
       context 'when project exists' do
         it 'returns requested project' do
-          expect(subject.find_project(existing_id)).to eq(project)
+          expect(helper.find_project(existing_id)).to eq(project)
         end
 
         it 'returns nil' do
-          expect(subject.find_project(non_existing_id)).to be_nil
+          expect(helper.find_project(non_existing_id)).to be_nil
         end
       end
 
       context 'when project id is not provided' do
         it 'returns nil' do
-          expect(subject.find_project(nil)).to be_nil
+          expect(helper.find_project(nil)).to be_nil
         end
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe API::Helpers do
         it 'does not hit the database' do
           expect(Project).not_to receive(:find_by_full_path)
 
-          subject.find_project(non_existing_id)
+          helper.find_project(non_existing_id)
         end
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe API::Helpers do
       it 'does not return the project pending delete' do
         expect(Project).not_to receive(:find_by_full_path)
 
-        expect(subject.find_project(project_pending_delete.id)).to be_nil
+        expect(helper.find_project(project_pending_delete.id)).to be_nil
       end
     end
 
@@ -126,7 +126,7 @@ RSpec.describe API::Helpers do
       it 'does not return the hidden project' do
         expect(Project).not_to receive(:find_by_full_path)
 
-        expect(subject.find_project(hidden_project.id)).to be_nil
+        expect(helper.find_project(hidden_project.id)).to be_nil
       end
     end
   end
@@ -138,25 +138,25 @@ RSpec.describe API::Helpers do
     shared_examples 'private project without access' do
       before do
         project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
-        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
       end
 
       it 'returns not found' do
-        expect(subject).to receive(:not_found!)
+        expect(helper).to receive(:not_found!)
 
-        subject.find_project!(project.id)
+        helper.find_project!(project.id)
       end
     end
 
     context 'when user is authenticated' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
       end
 
       context 'public project' do
         it 'returns requested project' do
-          expect(subject.find_project!(project.id)).to eq(project)
+          expect(helper.find_project!(project.id)).to eq(project)
         end
       end
 
@@ -167,13 +167,13 @@ RSpec.describe API::Helpers do
 
     context 'when user is not authenticated' do
       before do
-        allow(subject).to receive(:current_user).and_return(nil)
-        allow(subject).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:initial_current_user).and_return(nil)
       end
 
       context 'public project' do
         it 'returns requested project' do
-          expect(subject.find_project!(project.id)).to eq(project)
+          expect(helper.find_project!(project.id)).to eq(project)
         end
       end
 
@@ -188,21 +188,21 @@ RSpec.describe API::Helpers do
       let(:user) { project.first_owner}
 
       before do
-        allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:authorized_project_scope?).and_return(true)
-        allow(subject).to receive(:job_token_authentication?).and_return(false)
-        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:authorized_project_scope?).and_return(true)
+        allow(helper).to receive(:job_token_authentication?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
       end
 
       shared_examples 'project finder' do
         context 'when project exists' do
           it 'returns requested project' do
-            expect(subject.find_project!(existing_id)).to eq(project)
+            expect(helper.find_project!(existing_id)).to eq(project)
           end
 
           it 'returns nil' do
-            expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
-            expect(subject.find_project!(non_existing_id)).to be_nil
+            expect(helper).to receive(:render_api_error!).with('404 Project Not Found', 404)
+            expect(helper.find_project!(non_existing_id)).to be_nil
           end
         end
       end
@@ -227,9 +227,9 @@ RSpec.describe API::Helpers do
 
           it 'does not hit the database' do
             expect(Project).not_to receive(:find_by_full_path)
-            expect(subject).to receive(:render_api_error!).with('404 Project Not Found', 404)
+            expect(helper).to receive(:render_api_error!).with('404 Project Not Found', 404)
 
-            subject.find_project!(non_existing_id)
+            helper.find_project!(non_existing_id)
           end
         end
       end
@@ -243,25 +243,25 @@ RSpec.describe API::Helpers do
     shared_examples 'private group without access' do
       before do
         group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
-        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
       end
 
       it 'returns not found' do
-        expect(subject).to receive(:not_found!)
+        expect(helper).to receive(:not_found!)
 
-        subject.find_group!(group.id)
+        helper.find_group!(group.id)
       end
     end
 
     context 'when user is authenticated' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
       end
 
       context 'public group' do
         it 'returns requested group' do
-          expect(subject.find_group!(group.id)).to eq(group)
+          expect(helper.find_group!(group.id)).to eq(group)
         end
       end
 
@@ -272,13 +272,13 @@ RSpec.describe API::Helpers do
 
     context 'when user is not authenticated' do
       before do
-        allow(subject).to receive(:current_user).and_return(nil)
-        allow(subject).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:initial_current_user).and_return(nil)
       end
 
       context 'public group' do
         it 'returns requested group' do
-          expect(subject.find_group!(group.id)).to eq(group)
+          expect(helper.find_group!(group.id)).to eq(group)
         end
       end
 
@@ -293,21 +293,21 @@ RSpec.describe API::Helpers do
       let(:user) { group.first_owner }
 
       before do
-        allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:authorized_project_scope?).and_return(true)
-        allow(subject).to receive(:job_token_authentication?).and_return(false)
-        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:authorized_project_scope?).and_return(true)
+        allow(helper).to receive(:job_token_authentication?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
       end
 
       shared_examples 'group finder' do
         context 'when group exists' do
           it 'returns requested group' do
-            expect(subject.find_group!(existing_id)).to eq(group)
+            expect(helper.find_group!(existing_id)).to eq(group)
           end
 
           it 'returns nil' do
-            expect(subject).to receive(:render_api_error!).with('404 Group Not Found', 404)
-            expect(subject.find_group!(non_existing_id)).to be_nil
+            expect(helper).to receive(:render_api_error!).with('404 Group Not Found', 404)
+            expect(helper.find_group!(non_existing_id)).to be_nil
           end
         end
       end
@@ -335,25 +335,25 @@ RSpec.describe API::Helpers do
     shared_examples 'private group without access' do
       before do
         group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
-        allow(subject).to receive(:authenticate_non_public?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
       end
 
       it 'returns not found' do
-        expect(subject).to receive(:not_found!)
+        expect(helper).to receive(:not_found!)
 
-        subject.find_group_by_full_path!(group.full_path)
+        helper.find_group_by_full_path!(group.full_path)
       end
     end
 
     context 'when user is authenticated' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:initial_current_user).and_return(user)
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
       end
 
       context 'public group' do
         it 'returns requested group' do
-          expect(subject.find_group_by_full_path!(group.full_path)).to eq(group)
+          expect(helper.find_group_by_full_path!(group.full_path)).to eq(group)
         end
       end
 
@@ -367,7 +367,7 @@ RSpec.describe API::Helpers do
           end
 
           it 'returns requested group with access' do
-            expect(subject.find_group_by_full_path!(group.full_path)).to eq(group)
+            expect(helper.find_group_by_full_path!(group.full_path)).to eq(group)
           end
         end
       end
@@ -375,13 +375,13 @@ RSpec.describe API::Helpers do
 
     context 'when user is not authenticated' do
       before do
-        allow(subject).to receive(:current_user).and_return(nil)
-        allow(subject).to receive(:initial_current_user).and_return(nil)
+        allow(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:initial_current_user).and_return(nil)
       end
 
       context 'public group' do
         it 'returns requested group' do
-          expect(subject.find_group_by_full_path!(group.full_path)).to eq(group)
+          expect(helper.find_group_by_full_path!(group.full_path)).to eq(group)
         end
       end
 
@@ -397,13 +397,13 @@ RSpec.describe API::Helpers do
     shared_examples 'namespace finder' do
       context 'when namespace exists' do
         it 'returns requested namespace' do
-          expect(subject.find_namespace(existing_id)).to eq(namespace)
+          expect(helper.find_namespace(existing_id)).to eq(namespace)
         end
       end
 
       context "when namespace doesn't exists" do
         it 'returns nil' do
-          expect(subject.find_namespace(non_existing_id)).to be_nil
+          expect(helper.find_namespace(non_existing_id)).to be_nil
         end
       end
     end
@@ -427,9 +427,9 @@ RSpec.describe API::Helpers do
     let(:user1) { create(:user) }
 
     before do
-      allow(subject).to receive(:current_user).and_return(user1)
-      allow(subject).to receive(:header).and_return(nil)
-      allow(subject).to receive(:not_found!).and_raise('404 Namespace not found')
+      allow(helper).to receive(:current_user).and_return(user1)
+      allow(helper).to receive(:header).and_return(nil)
+      allow(helper).to receive(:not_found!).and_raise('404 Namespace not found')
     end
 
     context 'when namespace is group' do
@@ -477,7 +477,7 @@ RSpec.describe API::Helpers do
 
   describe '#find_namespace!' do
     let(:namespace_finder) do
-      subject.find_namespace!(namespace.id)
+      helper.find_namespace!(namespace.id)
     end
 
     it_behaves_like 'user namespace finder'
@@ -488,7 +488,7 @@ RSpec.describe API::Helpers do
     let_it_be(:other_project) { create(:project) }
     let_it_be(:job) { create(:ci_build) }
 
-    let(:send_authorized_project_scope) { subject.authorized_project_scope?(project) }
+    let(:send_authorized_project_scope) { helper.authorized_project_scope?(project) }
 
     where(:job_token_authentication, :route_setting, :feature_flag, :same_job_project, :expected_result) do
       false | false | false | false | true
@@ -511,9 +511,9 @@ RSpec.describe API::Helpers do
 
     with_them do
       before do
-        allow(subject).to receive(:job_token_authentication?).and_return(job_token_authentication)
-        allow(subject).to receive(:route_authentication_setting).and_return(job_token_scope: route_setting ? :project : nil)
-        allow(subject).to receive(:current_authenticated_job).and_return(job)
+        allow(helper).to receive(:job_token_authentication?).and_return(job_token_authentication)
+        allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: route_setting ? :project : nil)
+        allow(helper).to receive(:current_authenticated_job).and_return(job)
         allow(job).to receive(:project).and_return(same_job_project ? project : other_project)
 
         stub_feature_flags(ci_job_token_scope: false)
@@ -531,15 +531,15 @@ RSpec.describe API::Helpers do
     let(:blob) { double(name: 'foobar') }
 
     let(:send_git_blob) do
-      subject.send(:send_git_blob, repository, blob)
-      subject.header
+      helper.send(:send_git_blob, repository, blob)
+      helper.header
     end
 
     before do
-      allow(subject).to receive(:env).and_return({})
-      allow(subject).to receive(:content_type)
-      allow(subject).to receive(:header).and_return({})
-      allow(subject).to receive(:body).and_return('')
+      allow(helper).to receive(:env).and_return({})
+      allow(helper).to receive(:content_type)
+      allow(helper).to receive(:header).and_return({})
+      allow(helper).to receive(:body).and_return('')
       allow(Gitlab::Workhorse).to receive(:send_git_blob)
     end
 
@@ -572,19 +572,19 @@ RSpec.describe API::Helpers do
     it 'tracks redis hll event' do
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with(event_name, values: value)
 
-      subject.increment_unique_values(event_name, value)
+      helper.increment_unique_values(event_name, value)
     end
 
     it 'logs an exception for unknown event' do
       expect(Gitlab::AppLogger).to receive(:warn).with("Redis tracking event failed for event: #{unknown_event}, message: Unknown event #{unknown_event}")
 
-      subject.increment_unique_values(unknown_event, value)
+      helper.increment_unique_values(unknown_event, value)
     end
 
     it 'does not track event for nil values' do
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
-      subject.increment_unique_values(unknown_event, nil)
+      helper.increment_unique_values(unknown_event, nil)
     end
   end
 
@@ -659,21 +659,21 @@ RSpec.describe API::Helpers do
 
     context 'when unmodified check passes' do
       before do
-        allow(subject).to receive(:check_unmodified_since!).with(project.updated_at).and_return(true)
+        allow(helper).to receive(:check_unmodified_since!).with(project.updated_at).and_return(true)
       end
 
       it 'destroys given project' do
-        allow(subject).to receive(:status).with(204)
-        allow(subject).to receive(:body).with(false)
+        allow(helper).to receive(:status).with(204)
+        allow(helper).to receive(:body).with(false)
         expect(project).to receive(:destroy).and_call_original
 
-        expect { subject.destroy_conditionally!(project) }.to change(Project, :count).by(-1)
+        expect { helper.destroy_conditionally!(project) }.to change(Project, :count).by(-1)
       end
     end
 
     context 'when unmodified check fails' do
       before do
-        allow(subject).to receive(:check_unmodified_since!).with(project.updated_at).and_throw(:error)
+        allow(helper).to receive(:check_unmodified_since!).with(project.updated_at).and_throw(:error)
       end
 
       # #destroy_conditionally! uses Grape errors which Ruby-throws a symbol, shifting execution to somewhere else.
@@ -683,7 +683,7 @@ RSpec.describe API::Helpers do
       it 'does not destroy given project' do
         expect(project).not_to receive(:destroy)
 
-        expect { subject.destroy_conditionally!(project) }.to throw_symbol(:error).and change { Project.count }.by(0)
+        expect { helper.destroy_conditionally!(project) }.to throw_symbol(:error).and change { Project.count }.by(0)
       end
     end
   end
@@ -692,30 +692,30 @@ RSpec.describe API::Helpers do
     let(:unmodified_since_header) { Time.now.change(usec: 0) }
 
     before do
-      allow(subject).to receive(:headers).and_return('If-Unmodified-Since' => unmodified_since_header.to_s)
+      allow(helper).to receive(:headers).and_return('If-Unmodified-Since' => unmodified_since_header.to_s)
     end
 
     context 'when last modified is later than header value' do
       it 'renders error' do
-        expect(subject).to receive(:render_api_error!)
+        expect(helper).to receive(:render_api_error!)
 
-        subject.check_unmodified_since!(unmodified_since_header + 1.hour)
+        helper.check_unmodified_since!(unmodified_since_header + 1.hour)
       end
     end
 
     context 'when last modified is earlier than header value' do
       it 'does not render error' do
-        expect(subject).not_to receive(:render_api_error!)
+        expect(helper).not_to receive(:render_api_error!)
 
-        subject.check_unmodified_since!(unmodified_since_header - 1.hour)
+        helper.check_unmodified_since!(unmodified_since_header - 1.hour)
       end
     end
 
     context 'when last modified is equal to header value' do
       it 'does not render error' do
-        expect(subject).not_to receive(:render_api_error!)
+        expect(helper).not_to receive(:render_api_error!)
 
-        subject.check_unmodified_since!(unmodified_since_header)
+        helper.check_unmodified_since!(unmodified_since_header)
       end
     end
 
@@ -723,9 +723,9 @@ RSpec.describe API::Helpers do
       let(:unmodified_since_header) { nil }
 
       it 'does not render error' do
-        expect(subject).not_to receive(:render_api_error!)
+        expect(helper).not_to receive(:render_api_error!)
 
-        subject.check_unmodified_since!(Time.now)
+        helper.check_unmodified_since!(Time.now)
       end
     end
 
@@ -733,9 +733,9 @@ RSpec.describe API::Helpers do
       let(:unmodified_since_header) { "abcd" }
 
       it 'does not render error' do
-        expect(subject).not_to receive(:render_api_error!)
+        expect(helper).not_to receive(:render_api_error!)
 
-        subject.check_unmodified_since!(Time.now)
+        helper.check_unmodified_since!(Time.now)
       end
     end
   end
@@ -810,14 +810,71 @@ RSpec.describe API::Helpers do
 
       before do
         u = current_user_set ? user : nil
-        subject.instance_variable_set(:@current_user, u)
+        helper.instance_variable_set(:@current_user, u)
 
-        allow(subject).to receive(:params).and_return(params)
+        allow(helper).to receive(:params).and_return(params)
       end
 
       it 'returns the expected result' do
-        expect(subject.order_by_similarity?(allow_unauthorized: allow_unauthorized)).to eq(expected)
+        expect(helper.order_by_similarity?(allow_unauthorized: allow_unauthorized)).to eq(expected)
       end
+    end
+  end
+
+  describe '#render_api_error_with_reason!' do
+    before do
+      allow(helper).to receive(:env).and_return({})
+      allow(helper).to receive(:header).and_return({})
+      allow(helper).to receive(:error!)
+    end
+
+    it 'renders error with code' do
+      expect(helper).to receive(:set_status_code_in_env).with(999)
+      expect(helper).to receive(:error!).with({ 'message' => 'a message - good reason' }, 999, {})
+
+      helper.render_api_error_with_reason!(999, 'a message', 'good reason')
+    end
+  end
+
+  describe '#unauthorized!' do
+    it 'renders 401' do
+      expect(helper).to receive(:render_api_error_with_reason!).with(401, '401 Unauthorized', nil)
+
+      helper.unauthorized!
+    end
+
+    it 'renders 401 with a reason' do
+      expect(helper).to receive(:render_api_error_with_reason!).with(401, '401 Unauthorized', 'custom reason')
+
+      helper.unauthorized!('custom reason')
+    end
+  end
+
+  describe '#forbidden!' do
+    it 'renders 401' do
+      expect(helper).to receive(:render_api_error_with_reason!).with(403, '403 Forbidden', nil)
+
+      helper.forbidden!
+    end
+
+    it 'renders 401 with a reason' do
+      expect(helper).to receive(:render_api_error_with_reason!).with(403, '403 Forbidden', 'custom reason')
+
+      helper.forbidden!('custom reason')
+    end
+  end
+
+  describe '#bad_request!' do
+    it 'renders 400' do
+      expect(helper).to receive(:render_api_error_with_reason!).with(400, '400 Bad request', nil)
+
+      helper.bad_request!
+    end
+
+    it 'renders 401 with a reason' do
+      expect(helper).to receive(:render_api_error_with_reason!).with(400, '400 Bad request', 'custom reason')
+
+      helper.bad_request!('custom reason')
     end
   end
 end

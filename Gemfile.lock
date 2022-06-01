@@ -409,7 +409,7 @@ GEM
       fog-json
       ipaddress (~> 0.8)
       xml-simple (~> 1.1)
-    fog-aws (3.12.0)
+    fog-aws (3.14.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
@@ -1488,7 +1488,7 @@ DEPENDENCIES
   flipper-active_support_cache_store (~> 0.21.0)
   flowdock (~> 0.7)
   fog-aliyun (~> 0.3)
-  fog-aws (~> 3.12)
+  fog-aws (~> 3.14)
   fog-core (= 2.1.0)
   fog-google (~> 1.15)
   fog-local (~> 0.6)

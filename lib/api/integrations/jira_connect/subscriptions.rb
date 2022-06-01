@@ -23,7 +23,7 @@ module API
                 installation = JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
 
                 if !installation || !jwt.valid?(installation.shared_secret) || !jwt.verify_context_qsh_claim
-                  unauthorized!
+                  unauthorized!('JWT authentication failed')
                 end
 
                 jira_user = installation.client.user_info(jwt.sub_claim)

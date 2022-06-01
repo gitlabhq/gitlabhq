@@ -42,8 +42,6 @@ module Resolvers
       def cutoff(id, sha)
         if sha.present? || id.present?
           specific_version(id, sha)
-        elsif at_version = context[:at_version_argument]
-          by_id(at_version) # See: DesignsResolver
         else
           :unconstrained
         end

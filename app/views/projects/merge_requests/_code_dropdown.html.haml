@@ -34,6 +34,6 @@
               .gl-new-dropdown-item-text-wrapper
                 = _('Email patches')
           %li.gl-new-dropdown-item
-            = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', data: { qa_selector: 'download_plain_diff_menu_item' } do
+            = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', download: '', data: { qa_selector: 'download_plain_diff_menu_item' } do
               .gl-new-dropdown-item-text-wrapper
                 = _('Plain diff')

@@ -2645,6 +2645,7 @@ RSpec.describe API::MergeRequests do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(source_repository.branch_exists?(source_branch)).to be false
+        expect(merge_request.reload.should_remove_source_branch?).to be true
       end
     end
 
@@ -2663,6 +2664,7 @@ RSpec.describe API::MergeRequests do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(source_repository.branch_exists?(source_branch)).to be false
+        expect(merge_request.reload.should_remove_source_branch?).to be nil
       end
 
       it 'does not remove the source branch' do
@@ -2673,6 +2675,7 @@ RSpec.describe API::MergeRequests do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(source_repository.branch_exists?(source_branch)).to be_truthy
+        expect(merge_request.reload.should_remove_source_branch?).to be false
       end
     end
 

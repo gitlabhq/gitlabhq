@@ -239,18 +239,19 @@ in the `connection` setting.
 
 The connection settings match those provided by [fog-aws](https://github.com/fog/fog-aws):
 
-| Setting                         | Description                        | Default |
-|---------------------------------|------------------------------------|---------|
-| `provider`                      | Always `AWS` for compatible hosts. | `AWS` |
-| `aws_access_key_id`             | AWS credentials, or compatible.    | |
-| `aws_secret_access_key`         | AWS credentials, or compatible.    | |
-| `aws_signature_version`         | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
-| `enable_signature_v4_streaming` | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
-| `region`                        | AWS region.                        | |
-| `host`                          | S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
-| `endpoint`                      | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
-| `path_style`                    | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false`. |
-| `use_iam_profile`               | Set to `true` to use IAM profile instead of access keys. | `false` |
+| Setting                                     | Description                        | Default |
+|---------------------------------------------|------------------------------------|---------|
+| `provider`                                  | Always `AWS` for compatible hosts. | `AWS` |
+| `aws_access_key_id`                         | AWS credentials, or compatible.    | |
+| `aws_secret_access_key`                     | AWS credentials, or compatible.    | |
+| `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
+| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
+| `region`                                    | AWS region.                        | |
+| `host`                                      | S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
+| `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
+| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false`. |
+| `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
+| `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) when using temporary credentials in IAM. | `15` |
 
 #### Oracle Cloud S3 connection settings
 

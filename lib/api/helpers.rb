@@ -409,15 +409,11 @@ module API
     # error helpers
 
     def forbidden!(reason = nil)
-      message = ['403 Forbidden']
-      message << "- #{reason}" if reason
-      render_api_error!(message.join(' '), 403)
+      render_api_error_with_reason!(403, '403 Forbidden', reason)
     end
 
     def bad_request!(reason = nil)
-      message = ['400 Bad request']
-      message << "- #{reason}" if reason
-      render_api_error!(message.join(' '), 400)
+      render_api_error_with_reason!(400, '400 Bad request', reason)
     end
 
     def bad_request_missing_attribute!(attribute)
@@ -437,8 +433,8 @@ module API
       end
     end
 
-    def unauthorized!
-      render_api_error!('401 Unauthorized', 401)
+    def unauthorized!(reason = nil)
+      render_api_error_with_reason!(401, '401 Unauthorized', reason)
     end
 
     def not_allowed!(message = nil)
@@ -489,6 +485,12 @@ module API
 
     def model_error_messages(model)
       model.errors.messages
+    end
+
+    def render_api_error_with_reason!(status, message, reason)
+      message = [message]
+      message << "- #{reason}" if reason
+      render_api_error!(message.join(' '), status)
     end
 
     def render_api_error!(message, status)

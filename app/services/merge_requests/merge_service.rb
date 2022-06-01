@@ -117,6 +117,8 @@ module MergeRequests
       if delete_source_branch?
         MergeRequests::DeleteSourceBranchWorker.perform_async(@merge_request.id, @merge_request.source_branch_sha, branch_deletion_user.id)
       end
+
+      merge_request_merge_param
     end
 
     def clean_merge_jid
@@ -133,6 +135,12 @@ module MergeRequests
     def delete_source_branch?
       params.fetch('should_remove_source_branch', @merge_request.force_remove_source_branch?) &&
         @merge_request.can_remove_source_branch?(branch_deletion_user)
+    end
+
+    def merge_request_merge_param
+      if @merge_request.can_remove_source_branch?(branch_deletion_user) && !params.fetch('should_remove_source_branch', nil).nil?
+        @merge_request.update(merge_params: @merge_request.merge_params.merge('should_remove_source_branch' => params['should_remove_source_branch']))
+      end
     end
 
     def handle_merge_error(log_message:, save_message_on_model: false)
