@@ -21423,9 +21423,6 @@ msgstr ""
 msgid "Iterations"
 msgstr ""
 
-msgid "Iterations|Add a duration, and number of upcoming iterations in order to convert this cadence to automatic scheduling."
-msgstr ""
-
 msgid "Iterations|Add iteration"
 msgstr ""
 
@@ -21436,6 +21433,9 @@ msgid "Iterations|Cadence configuration is invalid."
 msgstr ""
 
 msgid "Iterations|Cadence name"
+msgstr ""
+
+msgid "Iterations|Can be converted"
 msgstr ""
 
 msgid "Iterations|Cancel"
@@ -21492,10 +21492,10 @@ msgstr ""
 msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
 msgstr ""
 
-msgid "Iterations|Iterations can no longer be scheduled manually. Convert all cadences to automatic scheduling to keep your iterations working as expected."
+msgid "Iterations|Learn more about automatic scheduling"
 msgstr ""
 
-msgid "Iterations|Learn more about automatic scheduling"
+msgid "Iterations|Manual management of iterations will be deprecated in GitLab 15.6. Convert your manual cadence to use automated scheduling when you are ready."
 msgstr ""
 
 msgid "Iterations|Move incomplete issues to the next iteration."
@@ -21531,9 +21531,6 @@ msgstr ""
 msgid "Iterations|Open"
 msgstr ""
 
-msgid "Iterations|Requires update"
-msgstr ""
-
 msgid "Iterations|Roll over issues"
 msgstr ""
 
@@ -21549,9 +21546,6 @@ msgstr ""
 msgid "Iterations|Select start date"
 msgstr ""
 
-msgid "Iterations|Some of your cadences need to be updated"
-msgstr ""
-
 msgid "Iterations|Start date"
 msgstr ""
 
@@ -21564,7 +21558,7 @@ msgstr ""
 msgid "Iterations|The start date of the first iteration determines when your cadence begins."
 msgstr ""
 
-msgid "Iterations|This cadence requires an update"
+msgid "Iterations|This cadence can be converted to use automated scheduling"
 msgstr ""
 
 msgid "Iterations|This will delete the cadence as well as all of the iterations within it."
@@ -21574,6 +21568,9 @@ msgid "Iterations|This will remove the iteration from any issues that are assign
 msgstr ""
 
 msgid "Iterations|Title"
+msgstr ""
+
+msgid "Iterations|To convert this cadence to automatic scheduling, add a duration and number of upcoming iterations. The upgrade is irreversible."
 msgstr ""
 
 msgid "Iterations|Unable to find iteration cadence."
@@ -21586,6 +21583,9 @@ msgid "Iterations|Unable to save cadence. Please try again."
 msgstr ""
 
 msgid "Iterations|Upcoming iterations"
+msgstr ""
+
+msgid "Iterations|Your manual cadence can be converted to use automated scheduling"
 msgstr ""
 
 msgid "Iteration|Dates cannot overlap with other existing Iterations within this group"

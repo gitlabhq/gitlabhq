@@ -62,6 +62,7 @@ export default {
     return {
       hasActionTooltip: false,
       isActionLoading: false,
+      isExpandBtnFocus: false,
     };
   },
   computed: {
@@ -88,6 +89,9 @@ export default {
       return this.isUpstream
         ? ['gl-border-r-0!', ...this.$options.styles.flatRightBorder]
         : ['gl-border-l-0!', ...this.$options.styles.flatLeftBorder];
+    },
+    buttonShadowClass() {
+      return this.isExpandBtnFocus ? '' : 'gl-shadow-none!';
     },
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;
@@ -214,6 +218,9 @@ export default {
     setActionTooltip(flag) {
       this.hasActionTooltip = flag;
     },
+    setExpandBtnActiveState(flag) {
+      this.isExpandBtnFocus = flag;
+    },
   },
 };
 </script>
@@ -277,12 +284,16 @@ export default {
     <div class="gl-display-flex">
       <gl-button
         :id="buttonId"
-        class="gl-border! gl-shadow-none! gl-rounded-lg!"
-        :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses]"
+        class="gl-border! gl-rounded-lg!"
+        :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses, buttonShadowClass]"
         :icon="expandedIcon"
         :aria-label="__('Expand pipeline')"
         data-testid="expand-pipeline-button"
         data-qa-selector="expand_linked_pipeline_button"
+        @mouseover="setExpandBtnActiveState(true)"
+        @mouseout="setExpandBtnActiveState(false)"
+        @focus="setExpandBtnActiveState(true)"
+        @blur="setExpandBtnActiveState(false)"
         @click="onClickLinkedPipeline"
       />
     </div>

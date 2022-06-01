@@ -209,7 +209,7 @@ module API
             .select { |_role, role_access_level| role_access_level <= user_access_level }
             .map(&:first)
 
-          environment = if environment_slug = current_authenticated_job.deployment&.environment&.slug
+          environment = if environment_slug = current_authenticated_job.persisted_environment&.slug
                           { slug: environment_slug }
                         end
 

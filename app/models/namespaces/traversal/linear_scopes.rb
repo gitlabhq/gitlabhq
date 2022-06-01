@@ -187,14 +187,12 @@ module Namespaces
           superset_sql = <<~SQL
             SELECT d1.traversal_ids
             FROM #{base_name} d1
-            LEFT JOIN LATERAL (
-              SELECT d2.id as ancestor_id
+            WHERE NOT EXISTS (
+              SELECT 1
               FROM #{base_name} d2
               WHERE d2.id = ANY(d1.traversal_ids)
                 AND d2.id <> d1.id
-              LIMIT 1
-            ) covered ON TRUE
-            WHERE covered.ancestor_id IS NULL
+            )
           SQL
 
           Gitlab::SQL::CTE.new(:superset, superset_sql, materialized: false)

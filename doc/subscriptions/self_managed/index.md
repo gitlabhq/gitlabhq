@@ -430,6 +430,10 @@ before this occurs.
 - To resume functionality, activate a new license.
 - To fall back to Free features, delete the expired license.
 
+## Activate a license file or key
+
+If you have a license file or key, you can activate it [in the Admin Area](../../user/admin_area/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+
 ## Contact Support
 
 Learn more about:

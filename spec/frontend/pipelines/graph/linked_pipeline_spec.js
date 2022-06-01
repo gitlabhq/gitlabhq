@@ -378,6 +378,31 @@ describe('Linked pipeline', () => {
         expect(findExpandButton().classes()).toContain(buttonBorderClasses);
       },
     );
+
+    describe('shadow border', () => {
+      beforeEach(() => {
+        createWrapper({ propsData: downstreamProps });
+      });
+
+      it.each`
+        activateEventName | deactivateEventName
+        ${'mouseover'}    | ${'mouseout'}
+        ${'focus'}        | ${'blur'}
+      `(
+        'applies the class on $activateEventName and removes it on $deactivateEventName ',
+        async ({ activateEventName, deactivateEventName }) => {
+          const shadowClass = 'gl-shadow-none!';
+
+          expect(findExpandButton().classes()).toContain(shadowClass);
+
+          await findExpandButton().vm.$emit(activateEventName);
+          expect(findExpandButton().classes()).not.toContain(shadowClass);
+
+          await findExpandButton().vm.$emit(deactivateEventName);
+          expect(findExpandButton().classes()).toContain(shadowClass);
+        },
+      );
+    });
   });
 
   describe('when isLoading is true', () => {

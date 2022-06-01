@@ -121,9 +121,10 @@ export default {
   },
   created() {
     const [tabQueryParam] = getParameterValues(TAB_QUERY_PARAM);
+    const tabName = Object.keys(TABS_INDEX)[tabQueryParam];
 
-    if (tabQueryParam && TABS_INDEX[tabQueryParam]) {
-      this.setDefaultTab(tabQueryParam);
+    if (tabName) {
+      this.setDefaultTab(tabName);
     }
   },
   methods: {

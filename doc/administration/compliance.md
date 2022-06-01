@@ -6,12 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Compliance features **(FREE)**
 
-These GitLab features can help ensure that your GitLab instance meets common
-compliance standards. For more information about compliance management, see the
-compliance management [solutions page](https://about.gitlab.com/solutions/compliance/).
+GitLab compliance features ensure your GitLab instance meets common compliance standards, and are available at various pricing tiers. For more information about compliance management, see the compliance
+management [solutions page](https://about.gitlab.com/solutions/compliance/).
 
-The [security features](../security/index.md) in GitLab may also help you meet
-relevant compliance standards.
+The [security features](../security/index.md) in GitLab may also help you meet relevant compliance standards.
 
 ## Policy management
 

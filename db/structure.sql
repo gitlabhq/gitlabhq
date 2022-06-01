@@ -29963,6 +29963,8 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 
 CREATE INDEX tmp_idx_container_repos_on_non_migrated ON container_repositories USING btree (project_id, id) WHERE ((migration_state <> 'import_done'::text) AND (created_at < '2022-01-23 00:00:00'::timestamp without time zone));
 
+CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
+
 CREATE INDEX tmp_index_ci_job_artifacts_on_id_where_trace_and_expire_at ON ci_job_artifacts USING btree (id) WHERE ((file_type = 3) AND (expire_at = ANY (ARRAY['2021-04-22 00:00:00+00'::timestamp with time zone, '2021-05-22 00:00:00+00'::timestamp with time zone, '2021-06-22 00:00:00+00'::timestamp with time zone, '2022-01-22 00:00:00+00'::timestamp with time zone, '2022-02-22 00:00:00+00'::timestamp with time zone, '2022-03-22 00:00:00+00'::timestamp with time zone, '2022-04-22 00:00:00+00'::timestamp with time zone])));
 
 CREATE INDEX tmp_index_container_repositories_on_id_migration_state ON container_repositories USING btree (id, migration_state);

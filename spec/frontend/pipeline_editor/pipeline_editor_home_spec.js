@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { GlButton, GlDrawer, GlModal } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import CiEditorHeader from '~/pipeline_editor/components/editor/ci_editor_header.vue';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
 import PipelineEditorDrawer from '~/pipeline_editor/components/drawer/pipeline_editor_drawer.vue';
@@ -11,11 +12,12 @@ import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switche
 import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import {
-  MERGED_TAB,
-  VISUALIZE_TAB,
   CREATE_TAB,
-  LINT_TAB,
   FILE_TREE_DISPLAY_KEY,
+  LINT_TAB,
+  MERGED_TAB,
+  TABS_INDEX,
+  VISUALIZE_TAB,
 } from '~/pipeline_editor/constants';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 
@@ -161,6 +163,24 @@ describe('Pipeline editor home wrapper', () => {
       findPipelineEditorTabs().vm.$emit('set-current-tab', CREATE_TAB);
       await nextTick();
       expect(findCommitSection().exists()).toBe(true);
+    });
+
+    describe('rendering with tab params', () => {
+      it.each`
+        tab              | shouldShow
+        ${MERGED_TAB}    | ${false}
+        ${VISUALIZE_TAB} | ${false}
+        ${LINT_TAB}      | ${false}
+        ${CREATE_TAB}    | ${true}
+      `(
+        'when the tab query param is $tab the commit form is shown: $shouldShow',
+        async ({ tab, shouldShow }) => {
+          setWindowLocation(`https://gitlab.test/ci/editor/?tab=${TABS_INDEX[tab]}`);
+          await createComponent({ stubs: { PipelineEditorTabs } });
+
+          expect(findCommitSection().exists()).toBe(shouldShow);
+        },
+      );
     });
   });
 

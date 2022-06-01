@@ -13,9 +13,7 @@ import {
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_VALID,
-  MERGED_TAB,
   TAB_QUERY_PARAM,
-  TABS_INDEX,
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import { mockLintResponse, mockLintResponseWithoutMerged, mockCiYml } from '../mock_data';
@@ -219,18 +217,6 @@ describe('Pipeline editor tabs component', () => {
       expect(window.location).toMatchObject({
         ...matchObject,
         search: `?${TAB_QUERY_PARAM}=${queryValue}`,
-      });
-    });
-
-    it('is the tab specified in query param and transform it into an index value', async () => {
-      setWindowLocation(`${gitlabUrl}?${TAB_QUERY_PARAM}=${MERGED_TAB}`);
-      createComponent();
-
-      // If the query param has changed to an index, it means we have synced the
-      // query with.
-      expect(window.location).toMatchObject({
-        ...matchObject,
-        search: `?${TAB_QUERY_PARAM}=${TABS_INDEX[MERGED_TAB]}`,
       });
     });
   });

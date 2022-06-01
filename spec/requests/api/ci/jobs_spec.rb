@@ -239,6 +239,17 @@ RSpec.describe API::Ci::Jobs do
         end
       end
 
+      context 'when non-deployment environment action' do
+        let(:job) do
+          create(:environment, name: 'review', project_id: project.id)
+          create(:ci_build, :artifacts, :stop_review_app, environment: 'review', pipeline: pipeline, user: api_user, status: job_status)
+        end
+
+        it 'includes environment slug' do
+          expect(json_response.dig('environment', 'slug')).to eq('review')
+        end
+      end
+
       context 'when passing the token as params' do
         let(:headers) { {} }
         let(:params) { { job_token: job.token } }
