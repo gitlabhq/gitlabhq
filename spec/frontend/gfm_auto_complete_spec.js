@@ -868,4 +868,19 @@ describe('GfmAutoComplete', () => {
       );
     });
   });
+
+  describe('Contacts', () => {
+    it('escapes name and email correct', () => {
+      const xssPayload = '<script>alert(1)</script>';
+      const escapedPayload = '&lt;script&gt;alert(1)&lt;/script&gt;';
+
+      expect(
+        GfmAutoComplete.Contacts.templateFunction({
+          email: xssPayload,
+          firstName: xssPayload,
+          lastName: xssPayload,
+        }),
+      ).toBe(`<li><small>${escapedPayload} ${escapedPayload}</small> ${escapedPayload}</li>`);
+    });
+  });
 });

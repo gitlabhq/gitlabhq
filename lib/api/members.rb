@@ -32,6 +32,8 @@ module API
         get ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
+          authorize_read_source_member!(source_type, source)
+
           members = paginate(retrieve_members(source, params: params))
 
           present_members members
@@ -51,6 +53,8 @@ module API
         get ":id/members/all", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
+          authorize_read_source_member!(source_type, source)
+
           members = paginate(retrieve_members(source, params: params, deep: true))
 
           present_members members
@@ -65,6 +69,8 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/members/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
+
+          authorize_read_source_member!(source_type, source)
 
           members = source_members(source)
           member = members.find_by!(user_id: params[:user_id])
@@ -82,6 +88,8 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/members/all/:user_id", feature_category: feature_category do
           source = find_source(source_type, params[:id])
+
+          authorize_read_source_member!(source_type, source)
 
           members = find_all_members(source)
           member = members.find_by!(user_id: params[:user_id])
