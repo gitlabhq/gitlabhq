@@ -61,7 +61,7 @@ RSpec.describe QA::Runtime::Feature do
             .to receive(:get)
             .and_return(Struct.new(:code, :body).new(200, %Q([{ "name": "a_flag", "state": "conditional", "gates": #{gates} }])))
 
-          expect(described_class.enabled?(feature_flag, scope => actor)).to be_truthy
+          expect(described_class.enabled?(feature_flag, scope => actor)).to be true
         end
       end
     end
@@ -172,7 +172,7 @@ RSpec.describe QA::Runtime::Feature do
           .to receive(:get)
           .and_return(Struct.new(:code, :body).new(200, '[{ "name": "a_flag", "state": "on" }]'))
 
-        expect(described_class.enabled?(feature_flag)).to be_truthy
+        expect(described_class.enabled?(feature_flag)).to be true
       end
 
       it 'raises an error when the scope is unknown' do
@@ -222,6 +222,75 @@ RSpec.describe QA::Runtime::Feature do
           let(:actor_name) { 'foo' }
           let(:actor) { "foo" }
           let(:gates) { %q([{"key": "groups", "value": ["foo"]}]) }
+        end
+      end
+
+      context 'when a feature flag is not found via the API and there is no definition file' do
+        before do
+          allow(QA::Runtime::API::Request)
+            .to receive(:new)
+            .with(api_client, "/features")
+            .and_return(request)
+          allow(described_class)
+            .to receive(:get)
+            .and_return(Struct.new(:code, :body).new(200, '[]'))
+          allow(Dir).to receive(:glob).and_return([])
+        end
+
+        it 'raises an error' do
+          expect { described_class.enabled?(feature_flag) }
+            .to raise_error(QA::Runtime::Feature::UnknownFeatureFlagError)
+        end
+      end
+
+      context 'with definition files' do
+        context 'when no features are found via the API' do
+          before do
+            allow(QA::Runtime::API::Request)
+              .to receive(:new)
+              .with(api_client, "/features")
+              .and_return(request)
+            allow(described_class)
+              .to receive(:get)
+              .and_return(Struct.new(:code, :body).new(200, '[]'))
+            allow(Dir).to receive(:glob).and_return(['file_path'])
+            allow(File).to receive(:read).and_return(definition)
+          end
+
+          context 'with a default enabled defintion' do
+            let(:definition) { 'default_enabled: true' }
+
+            it 'returns a default enabled flag' do
+              expect(described_class.enabled?(feature_flag)).to be true
+            end
+          end
+
+          context 'with a default disabled defintion' do
+            let(:definition) { 'default_enabled: false' }
+
+            it 'returns a default disabled flag' do
+              expect(described_class.enabled?(feature_flag)).to be false
+            end
+          end
+        end
+
+        context 'when the feature is found via the API' do
+          before do
+            allow(QA::Runtime::API::Request)
+              .to receive(:new)
+              .with(api_client, "/features")
+              .and_return(request)
+            allow(described_class)
+              .to receive(:get)
+              .and_return(Struct.new(:code, :body).new(200, '[{ "name": "a_flag", "state": "on" }]'))
+          end
+
+          it 'returns the value from the API not the definition file' do
+            expect(Dir).not_to receive(:glob)
+            expect(File).not_to receive(:read)
+
+            expect(described_class.enabled?(feature_flag)).to be true
+          end
         end
       end
     end

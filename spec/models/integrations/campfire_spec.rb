@@ -44,7 +44,7 @@ RSpec.describe Integrations::Campfire do
 
     it "calls Campfire API to get a list of rooms and speak in a room" do
       # make sure a valid list of rooms is returned
-      body = File.read(Rails.root + 'spec/fixtures/project_services/campfire/rooms.json')
+      body = File.read(Rails.root + 'spec/fixtures/integrations/campfire/rooms.json')
 
       stub_full_request(@rooms_url).with(basic_auth: @auth).to_return(
         body: body,
@@ -65,7 +65,7 @@ RSpec.describe Integrations::Campfire do
 
     it "calls Campfire API to get a list of rooms but shouldn't speak in a room" do
       # return a list of rooms that do not contain a room named 'test-room'
-      body = File.read(Rails.root + 'spec/fixtures/project_services/campfire/rooms2.json')
+      body = File.read(Rails.root + 'spec/fixtures/integrations/campfire/rooms2.json')
       stub_full_request(@rooms_url).with(basic_auth: @auth).to_return(
         body: body,
         status: 200,

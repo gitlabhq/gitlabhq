@@ -44,7 +44,7 @@ Integration.available_integration_names.each do |integration|
 
     let(:licensed_features) do
       {
-        'github' => :github_project_service_integration
+        'github' => :github_integration
       }
     end
 

@@ -1,7 +1,5 @@
 import { s__ } from '~/locale';
 
-export const PLATFORMS_WITHOUT_ARCHITECTURES = ['docker', 'kubernetes'];
-
 export const REGISTRATION_TOKEN_PLACEHOLDER = '$REGISTRATION_TOKEN';
 
 export const INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES = {

@@ -17,7 +17,6 @@ import { __, s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import {
   INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES,
-  PLATFORMS_WITHOUT_ARCHITECTURES,
   REGISTRATION_TOKEN_PLACEHOLDER,
 } from './constants';
 import getRunnerPlatformsQuery from './graphql/queries/get_runner_platforms.query.graphql';
@@ -60,20 +59,20 @@ export default {
     platforms: {
       query: getRunnerPlatformsQuery,
       update(data) {
-        return data?.runnerPlatforms?.nodes.map(({ name, humanReadableName, architectures }) => {
-          return {
-            name,
-            humanReadableName,
-            architectures: architectures?.nodes || [],
-          };
-        });
+        return (
+          data?.runnerPlatforms?.nodes.map(({ name, humanReadableName, architectures }) => {
+            return {
+              name,
+              humanReadableName,
+              architectures: architectures?.nodes || [],
+            };
+          }) ?? []
+        );
       },
       result() {
-        if (this.platforms.length) {
-          // If it is set and available, select the defaultSelectedPlatform.
-          // Otherwise, select the first available platform
-          this.selectPlatform(this.defaultPlatform() || this.platforms[0]);
-        }
+        // If it is set and available, select the defaultSelectedPlatform.
+        // Otherwise, select the first available platform
+        this.selectPlatform(this.defaultPlatformName || this.platforms?.[0].name);
       },
       error() {
         this.toggleAlert(true);
@@ -86,8 +85,8 @@ export default {
       },
       variables() {
         return {
-          platform: this.selectedPlatformName,
-          architecture: this.selectedArchitectureName || '',
+          platform: this.selectedPlatform,
+          architecture: this.selectedArchitecture || '',
         };
       },
       update(data) {
@@ -109,26 +108,21 @@ export default {
     };
   },
   computed: {
-    platformsEmpty() {
-      return isEmpty(this.platforms);
-    },
     instructionsEmpty() {
       return isEmpty(this.instructions);
     },
-    selectedPlatformName() {
-      return this.selectedPlatform?.name;
+    architectures() {
+      return this.platforms.find(({ name }) => name === this.selectedPlatform)?.architectures || [];
     },
-    selectedArchitectureName() {
-      return this.selectedArchitecture?.name;
-    },
-    hasArchitecureList() {
-      return !PLATFORMS_WITHOUT_ARCHITECTURES.includes(this.selectedPlatformName);
+    binaryUrl() {
+      return this.architectures.find(({ name }) => name === this.selectedArchitecture)
+        ?.downloadLocation;
     },
     instructionsWithoutArchitecture() {
-      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatformName]?.instructions;
+      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatform]?.instructions;
     },
     runnerInstallationLink() {
-      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatformName]?.link;
+      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatform]?.link;
     },
     registerInstructionsWithToken() {
       const { registerInstructions } = this.instructions || {};
@@ -139,7 +133,6 @@ export default {
           this.registrationToken,
         );
       }
-
       return registerInstructions;
     },
   },
@@ -150,21 +143,17 @@ export default {
     focusSelected() {
       // By default the first platform always gets the focus, but when the `defaultPlatformName`
       // property is present, any other platform might actually be selected.
-      this.$refs[this.selectedPlatformName]?.[0].$el.focus();
+      this.$refs[this.selectedPlatform]?.[0].$el.focus();
     },
-    defaultPlatform() {
-      return this.platforms.find((platform) => platform.name === this.defaultPlatformName);
-    },
-    selectPlatform(platform) {
-      this.selectedPlatform = platform;
+    selectPlatform(platformName) {
+      this.selectedPlatform = platformName;
 
       // Update architecture when platform changes
-      const architectures = platform.architectures || [];
-      const arch = architectures.find(({ name }) => name === this.selectedArchitectureName);
+      const arch = this.architectures.find(({ name }) => name === this.selectedArchitecture);
       if (arch) {
-        this.selectArchitecture(arch);
+        this.selectArchitecture(arch.name);
       } else {
-        this.selectArchitecture(architectures[0]);
+        this.selectArchitecture(this.architectures[0]?.name);
       }
     },
     selectArchitecture(architecture) {
@@ -210,9 +199,9 @@ export default {
       {{ $options.i18n.fetchError }}
     </gl-alert>
 
-    <gl-skeleton-loader v-if="platformsEmpty && $apollo.loading" />
+    <gl-skeleton-loader v-if="!platforms.length && $apollo.loading" />
 
-    <template v-if="!platformsEmpty">
+    <template v-if="platforms.length">
       <h5>
         {{ __('Environment') }}
       </h5>
@@ -227,29 +216,29 @@ export default {
             v-for="platform in platforms"
             :key="platform.name"
             :ref="platform.name"
-            :selected="selectedPlatformName === platform.name"
-            @click="selectPlatform(platform)"
+            :selected="selectedPlatform === platform.name"
+            @click="selectPlatform(platform.name)"
           >
             {{ platform.humanReadableName }}
           </gl-button>
         </gl-button-group>
       </div>
     </template>
-    <template v-if="hasArchitecureList">
+    <template v-if="architectures.length">
       <template v-if="selectedPlatform">
         <h5>
           {{ $options.i18n.architecture }}
           <gl-loading-icon v-if="$apollo.loading" size="sm" inline />
         </h5>
 
-        <gl-dropdown class="gl-mb-3" :text="selectedArchitectureName">
+        <gl-dropdown class="gl-mb-3" :text="selectedArchitecture">
           <gl-dropdown-item
-            v-for="architecture in selectedPlatform.architectures"
+            v-for="architecture in architectures"
             :key="architecture.name"
             :is-check-item="true"
-            :is-checked="selectedArchitectureName === architecture.name"
+            :is-checked="selectedArchitecture === architecture.name"
             data-testid="architecture-dropdown-item"
-            @click="selectArchitecture(architecture)"
+            @click="selectArchitecture(architecture.name)"
           >
             {{ architecture.name }}
           </gl-dropdown-item>
@@ -257,8 +246,9 @@ export default {
         <div class="gl-sm-display-flex gl-align-items-center gl-mb-3">
           <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
           <gl-button
+            v-if="binaryUrl"
             class="gl-ml-auto"
-            :href="selectedArchitecture.downloadLocation"
+            :href="binaryUrl"
             download
             icon="download"
             data-testid="binary-download-button"

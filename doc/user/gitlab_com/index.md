@@ -160,6 +160,7 @@ the related documentation.
 | Maximum test cases per [unit test report](../../ci/testing/unit_test_reports.md) | `500000`                                                                                                                  | Unlimited                                                                                                                                                                                |
 | Maximum registered runners                                               | Free tier: `50` per-group / `50` per-project<br/>All paid tiers: `1000` per-group  / `1000` per-project                   | See [Number of registered runners per scope](../../administration/instance_limits.md#number-of-registered-runners-per-scope)                                                             |
 | Limit of dotenv variables                                                | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150`                                                              | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables)                                                                                             |
+| Authorization token duration (minutes)                                   | `15`                          | To set a custom value, in the Rails console, run `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)`, where `<integer>` is the desired number of minutes. |
 
 ## Package registry limits
 

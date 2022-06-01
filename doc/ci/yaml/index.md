@@ -3196,8 +3196,9 @@ job:
   with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - For performance reasons, GitLab matches a maximum of 10,000 `exists` patterns or
   file paths. After the 10,000th check, rules with patterned globs always match.
-  In other words, the `exists` rule always assumes a match in projects with more
-  than 10,000 files.
+  In other words, `exists` always reports `true` if more than 10,000 checks
+  run. Repositories with less than 10,000 files might still be impacted if the `exists`
+  rules are checked more than 10,000 times.
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
 
 #### `rules:allow_failure`

@@ -44,6 +44,14 @@ RSpec.describe Projects::CompareController do
         expect(response).to be_successful
       end
     end
+
+    context 'with missing parameters' do
+      let(:params) { super().merge(from: '', to: '') }
+
+      it 'returns successfully' do
+        expect(response).to be_successful
+      end
+    end
   end
 
   describe 'GET show' do

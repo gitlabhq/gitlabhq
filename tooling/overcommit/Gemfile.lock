@@ -34,7 +34,7 @@ GEM
     parallel (1.19.2)
     parser (2.7.2.0)
       ast (~> 2.4.1)
-    rack (2.2.3)
+    rack (2.2.3.1)
     rainbow (3.0.0)
     regexp_parser (1.8.2)
     rexml (3.2.4)

@@ -112,13 +112,13 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def start_ref
-    @start_ref ||= Addressable::URI.unescape(compare_params[:from])
+    @start_ref ||= Addressable::URI.unescape(compare_params[:from]).presence
   end
 
   def head_ref
     return @ref if defined?(@ref)
 
-    @ref = @head_ref = Addressable::URI.unescape(compare_params[:to])
+    @ref = @head_ref = Addressable::URI.unescape(compare_params[:to]).presence
   end
 
   def define_commits
