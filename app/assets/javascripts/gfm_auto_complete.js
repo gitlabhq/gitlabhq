@@ -955,7 +955,7 @@ GfmAutoComplete.Milestones = {
 };
 GfmAutoComplete.Contacts = {
   templateFunction({ email, firstName, lastName }) {
-    return `<li><small>${firstName} ${lastName}</small> ${escape(email)}</li>`;
+    return `<li><small>${escape(firstName)} ${escape(lastName)}</small> ${escape(email)}</li>`;
   },
 };
 

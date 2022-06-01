@@ -170,13 +170,13 @@ Returns a `201` status code if successful.
 
 Fields that can be updated are:
 
-| SCIM/IdP field                   | GitLab field                           |
-|:---------------------------------|:---------------------------------------|
-| `id/externalId`                  | `extern_uid`                           |
-| `name.formatted`                 | `name`                                 |
-| `emails\[type eq "work"\].value` | `email`                                |
-| `active`                         | Identity removal if `active` = `false` |
-| `userName`                       | `username`                             |
+| SCIM/IdP field                   | GitLab field                                                                 |
+|:---------------------------------|:-----------------------------------------------------------------------------|
+| `id/externalId`                  | `extern_uid`                                                                 |
+| `name.formatted`                 | `name` ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363058))     |
+| `emails\[type eq "work"\].value` | `email` ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363058))    |
+| `active`                         | Identity removal if `active` = `false`                                       |
+| `userName`                       | `username` ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363058)) |
 
 ```plaintext
 PATCH /api/scim/v2/groups/:group_path/Users/:id
