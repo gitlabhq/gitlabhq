@@ -744,6 +744,10 @@ class ProjectPolicy < BasePolicy
     prevent :register_project_runners
   end
 
+  rule { can?(:admin_project_member) }.policy do
+    enable :import_project_members_from_another_project
+  end
+
   private
 
   def user_is_user?
