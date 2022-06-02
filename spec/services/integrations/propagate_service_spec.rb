@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Integrations::PropagateService do
   describe '.propagate' do
-    include JiraServiceHelper
+    include JiraIntegrationHelpers
 
     before do
       stub_jira_integration_test

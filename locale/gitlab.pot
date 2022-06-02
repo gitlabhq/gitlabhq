@@ -8978,6 +8978,9 @@ msgstr ""
 msgid "Collapse issues"
 msgstr ""
 
+msgid "Collapse jobs"
+msgstr ""
+
 msgid "Collapse milestones"
 msgstr ""
 
@@ -15193,13 +15196,13 @@ msgstr ""
 msgid "Expand issues"
 msgstr ""
 
+msgid "Expand jobs"
+msgstr ""
+
 msgid "Expand milestones"
 msgstr ""
 
 msgid "Expand panel"
-msgstr ""
-
-msgid "Expand pipeline"
 msgstr ""
 
 msgid "Expand settings section"

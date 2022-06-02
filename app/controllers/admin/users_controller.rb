@@ -9,7 +9,7 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :check_ban_user_feature_flag, only: [:ban]
 
-  feature_category :users
+  feature_category :user_management
 
   PAGINATION_WITH_COUNT_LIMIT = 1000
 

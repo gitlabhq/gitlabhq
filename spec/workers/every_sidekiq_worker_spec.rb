@@ -305,6 +305,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'IncidentManagement::OncallRotations::PersistAllRotationsShiftsJob' => 3,
         'IncidentManagement::OncallRotations::PersistShiftsJob' => 3,
         'IncidentManagement::PagerDuty::ProcessIncidentWorker' => 3,
+        'Integrations::ExecuteWorker' => 3,
         'InvalidGpgSignatureUpdateWorker' => 3,
         'IrkerWorker' => 3,
         'IssuableExportCsvWorker' => 3,

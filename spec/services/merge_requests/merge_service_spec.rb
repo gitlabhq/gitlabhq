@@ -161,7 +161,7 @@ RSpec.describe MergeRequests::MergeService do
       end
 
       context 'with Jira integration' do
-        include JiraServiceHelper
+        include JiraIntegrationHelpers
 
         let(:jira_tracker) { project.create_jira_integration }
         let(:jira_issue)   { ExternalIssue.new('JIRA-123', project) }

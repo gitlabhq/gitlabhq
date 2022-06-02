@@ -6216,7 +6216,6 @@ Layout/LineLength:
     - 'spec/support/helpers/global_id_deprecation_helpers.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/helpers/javascript_fixtures_helpers.rb'
-    - 'spec/support/helpers/jira_service_helper.rb'
     - 'spec/support/helpers/kubernetes_helpers.rb'
     - 'spec/support/helpers/lets_encrypt_helpers.rb'
     - 'spec/support/helpers/live_debugger.rb'

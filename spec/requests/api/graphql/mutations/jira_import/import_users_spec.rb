@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Importing Jira Users' do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
   include GraphqlHelpers
 
   let_it_be(:user)    { create(:user) }

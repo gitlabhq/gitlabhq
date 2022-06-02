@@ -109,6 +109,7 @@ Rails.application.routes.draw do
       get '/autocomplete/project_groups' => 'autocomplete#project_groups'
       get '/autocomplete/project_routes' => 'autocomplete#project_routes'
       get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
+      get '/autocomplete/group_subgroups' => 'autocomplete#group_subgroups'
     end
 
     # sandbox

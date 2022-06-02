@@ -317,7 +317,6 @@ Style/StringConcatenation:
     - 'spec/support/helpers/git_helpers.rb'
     - 'spec/support/helpers/gitaly_setup.rb'
     - 'spec/support/helpers/javascript_fixtures_helpers.rb'
-    - 'spec/support/helpers/jira_service_helper.rb'
     - 'spec/support/helpers/kubernetes_helpers.rb'
     - 'spec/support/helpers/stub_configuration.rb'
     - 'spec/support/helpers/workhorse_helpers.rb'

@@ -63,7 +63,10 @@
         "rules": {
           "type": "array",
           "items": {
-            "type": "object",
+            "anyOf": [
+              {"type": "object"},
+              {"type": "array", "minLength": 1, "items": { "type": "string" }}
+            ],
             "properties": {
               "if": { "$ref": "#/definitions/if" },
               "changes": { "$ref": "#/definitions/changes" },

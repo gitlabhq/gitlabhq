@@ -43,7 +43,7 @@ RSpec.describe Admin::IntegrationsController do
   end
 
   describe '#update' do
-    include JiraServiceHelper
+    include JiraIntegrationHelpers
 
     let(:integration) { create(:jira_integration, :instance) }
 

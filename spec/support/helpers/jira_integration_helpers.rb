@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module JiraServiceHelper
-  JIRA_URL = "http://jira.example.net"
-  JIRA_API = JIRA_URL + "/rest/api/2"
+module JiraIntegrationHelpers
+  JIRA_URL = 'http://jira.example.net'
+  JIRA_API = "#{JIRA_URL}/rest/api/2"
 
   def jira_integration_settings
     url = JIRA_URL
@@ -17,6 +17,7 @@ module JiraServiceHelper
   end
 
   def jira_issue_comments
+    # rubocop: disable Layout/LineLength
     "{\"startAt\":0,\"maxResults\":11,\"total\":11,
       \"comments\":[{\"self\":\"http://0.0.0.0:4567/rest/api/2/issue/10002/comment/10609\",
       \"id\":\"10609\",\"author\":{\"self\":\"http://0.0.0.0:4567/rest/api/2/user?username=gitlab\",
@@ -51,30 +52,31 @@ module JiraServiceHelper
         \"updated\":\"2015-04-01T03:45:55.667+0200\"
       }
       ]}"
+    # rubocop: enable Layout/LineLength
   end
 
   def jira_project_url
-    JIRA_API + "/project"
+    "#{JIRA_API}/project"
   end
 
   def jira_api_comment_url(issue_id)
-    JIRA_API + "/issue/#{issue_id}/comment"
+    "#{JIRA_API}/issue/#{issue_id}/comment"
   end
 
   def jira_api_remote_link_url(issue_id)
-    JIRA_API + "/issue/#{issue_id}/remotelink"
+    "#{JIRA_API}/issue/#{issue_id}/remotelink"
   end
 
   def jira_api_transition_url(issue_id)
-    JIRA_API + "/issue/#{issue_id}/transitions"
+    "#{JIRA_API}/issue/#{issue_id}/transitions"
   end
 
   def jira_api_test_url
-    JIRA_API + "/myself"
+    "#{JIRA_API}/myself"
   end
 
   def jira_issue_url(issue_id)
-    JIRA_API + "/issue/#{issue_id}"
+    "#{JIRA_API}/issue/#{issue_id}"
   end
 
   def stub_jira_integration_test

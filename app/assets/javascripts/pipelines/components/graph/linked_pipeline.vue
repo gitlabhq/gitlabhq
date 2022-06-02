@@ -107,6 +107,9 @@ export default {
       }
       return this.expanded ? 'angle-left' : 'angle-right';
     },
+    expandBtnText() {
+      return this.expanded ? __('Collapse jobs') : __('Expand jobs');
+    },
     childPipeline() {
       return this.isDownstream && this.isSameProject;
     },
@@ -161,7 +164,7 @@ export default {
       return Boolean(this.action?.method && this.action?.icon && this.action?.ariaLabel);
     },
     showCardTooltip() {
-      return !this.hasActionTooltip;
+      return !this.hasActionTooltip && !this.isExpandBtnFocus;
     },
     sourceJobName() {
       return this.pipeline.sourceJob?.name ?? '';
@@ -284,10 +287,12 @@ export default {
     <div class="gl-display-flex">
       <gl-button
         :id="buttonId"
+        v-gl-tooltip
+        :title="expandBtnText"
         class="gl-border! gl-rounded-lg!"
         :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses, buttonShadowClass]"
         :icon="expandedIcon"
-        :aria-label="__('Expand pipeline')"
+        :aria-label="expandBtnText"
         data-testid="expand-pipeline-button"
         data-qa-selector="expand_linked_pipeline_button"
         @mouseover="setExpandBtnActiveState(true)"

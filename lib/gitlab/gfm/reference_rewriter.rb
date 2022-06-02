@@ -31,29 +31,40 @@ module Gitlab
     #  http://gitlab.com/some/link/#1234, and code `puts #1234`'
     #
     class ReferenceRewriter
+      include Gitlab::Utils::StrongMemoize
+
       RewriteError = Class.new(StandardError)
 
-      def initialize(text, source_parent, current_user)
+      def initialize(text, text_html, source_parent, current_user)
         @text = text
+
+        # If for some reason cached html is not present it gets rendered here
+        @text_html = text_html || original_html
+
         @source_parent = source_parent
         @current_user = current_user
-        @original_html = markdown(text)
         @pattern = Gitlab::ReferenceExtractor.references_pattern
       end
 
       def rewrite(target_parent)
         return @text unless needs_rewrite?
 
-        @text.gsub(@pattern) do |reference|
+        @text.gsub!(@pattern) do |reference|
           unfold_reference(reference, Regexp.last_match, target_parent)
         end
       end
 
       def needs_rewrite?
-        @text =~ @pattern
+        strong_memoize(:needs_rewrite) { @text_html.include?('data-reference-type=') }
       end
 
       private
+
+      def original_html
+        strong_memoize(:original_html) do
+          markdown(@text)
+        end
+      end
 
       def unfold_reference(reference, match, target_parent)
         before = @text[0...match.begin(0)]
@@ -89,7 +100,7 @@ module Gitlab
       end
 
       def substitution_valid?(substituted)
-        @original_html == markdown(substituted)
+        original_html == markdown(substituted)
       end
 
       def markdown(text)

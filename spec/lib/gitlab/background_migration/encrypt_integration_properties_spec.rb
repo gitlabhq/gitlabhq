@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::EncryptIntegrationProperties do
+RSpec.describe Gitlab::BackgroundMigration::EncryptIntegrationProperties, schema: 20220415124804 do
   let(:integrations) do
     table(:integrations) do |integrations|
       integrations.send :attr_encrypted, :encrypted_properties_tmp,

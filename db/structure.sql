@@ -12534,6 +12534,7 @@ CREATE TABLE ci_group_variables (
     masked boolean DEFAULT false NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
     environment_scope text DEFAULT '*'::text NOT NULL,
+    raw boolean DEFAULT true NOT NULL,
     CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255))
 );
 
@@ -12554,6 +12555,7 @@ CREATE TABLE ci_instance_variables (
     key text NOT NULL,
     encrypted_value text,
     encrypted_value_iv text,
+    raw boolean DEFAULT true NOT NULL,
     CONSTRAINT check_07a45a5bcb CHECK ((char_length(encrypted_value_iv) <= 255)),
     CONSTRAINT check_5aede12208 CHECK ((char_length(key) <= 255)),
     CONSTRAINT check_956afd70f1 CHECK ((char_length(encrypted_value) <= 13579))
@@ -12642,7 +12644,8 @@ CREATE TABLE ci_job_variables (
     encrypted_value_iv character varying,
     job_id bigint NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
-    source smallint DEFAULT 0 NOT NULL
+    source smallint DEFAULT 0 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_job_variables_id_seq
@@ -12808,7 +12811,8 @@ CREATE TABLE ci_pipeline_schedule_variables (
     pipeline_schedule_id integer NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
-    variable_type smallint DEFAULT 1 NOT NULL
+    variable_type smallint DEFAULT 1 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_schedule_variables_id_seq
@@ -12851,7 +12855,8 @@ CREATE TABLE ci_pipeline_variables (
     encrypted_value_salt character varying,
     encrypted_value_iv character varying,
     pipeline_id integer NOT NULL,
-    variable_type smallint DEFAULT 1 NOT NULL
+    variable_type smallint DEFAULT 1 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
@@ -13292,7 +13297,8 @@ CREATE TABLE ci_variables (
     protected boolean DEFAULT false NOT NULL,
     environment_scope character varying DEFAULT '*'::character varying NOT NULL,
     masked boolean DEFAULT false NOT NULL,
-    variable_type smallint DEFAULT 1 NOT NULL
+    variable_type smallint DEFAULT 1 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_variables_id_seq
@@ -16195,7 +16201,6 @@ CREATE TABLE integrations (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     active boolean DEFAULT false NOT NULL,
-    properties text,
     push_events boolean DEFAULT true,
     issues_events boolean DEFAULT true,
     merge_requests_events boolean DEFAULT true,
@@ -29819,7 +29824,7 @@ CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum 
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON vulnerability_scanners USING btree (project_id, external_id);
 
-CREATE INDEX index_vulnerability_state_transitions_on_vulnerability_id ON vulnerability_state_transitions USING btree (vulnerability_id);
+CREATE INDEX index_vulnerability_state_transitions_id_and_vulnerability_id ON vulnerability_state_transitions USING btree (vulnerability_id, id);
 
 CREATE INDEX index_vulnerability_statistics_on_latest_pipeline_id ON vulnerability_statistics USING btree (latest_pipeline_id);
 

@@ -3,7 +3,7 @@
 class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 
-  feature_category :users
+  feature_category :authentication_and_authorization
   urgency :low, [:show]
 
   def show

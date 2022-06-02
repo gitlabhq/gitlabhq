@@ -200,10 +200,14 @@ describe('Linked pipeline', () => {
                 expect(findRetryButton().exists()).toBe(true);
               });
 
-              it('hides the card tooltip when the action button tooltip is hovered', async () => {
+              it.each`
+                findElement         | name
+                ${findRetryButton}  | ${'retry button'}
+                ${findExpandButton} | ${'expand button'}
+              `('hides the card tooltip when $name is hovered', async ({ findElement }) => {
                 expect(findCardTooltip().exists()).toBe(true);
 
-                await findRetryButton().trigger('mouseover');
+                await findElement().trigger('mouseover');
 
                 expect(findCardTooltip().exists()).toBe(false);
               });
@@ -262,10 +266,14 @@ describe('Linked pipeline', () => {
                 expect(findRetryButton().exists()).toBe(false);
               });
 
-              it('hides the card tooltip when the action button tooltip is hovered', async () => {
+              it.each`
+                findElement         | name
+                ${findCancelButton} | ${'cancel button'}
+                ${findExpandButton} | ${'expand button'}
+              `('hides the card tooltip when $name is hovered', async ({ findElement }) => {
                 expect(findCardTooltip().exists()).toBe(true);
 
-                await findCancelButton().trigger('mouseover');
+                await findElement().trigger('mouseover');
 
                 expect(findCardTooltip().exists()).toBe(false);
               });

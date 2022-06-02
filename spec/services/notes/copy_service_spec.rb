@@ -16,9 +16,8 @@ RSpec.describe Notes::CopyService do
     let_it_be(:group) { create(:group) }
     let_it_be(:from_project) { create(:project, :public, group: group) }
     let_it_be(:to_project) { create(:project, :public, group: group) }
-
-    let(:from_noteable) { create(:issue, project: from_project) }
-    let(:to_noteable) { create(:issue, project: to_project) }
+    let_it_be(:from_noteable) { create(:issue, project: from_project) }
+    let_it_be(:to_noteable) { create(:issue, project: to_project) }
 
     subject(:execute_service) { described_class.new(user, from_noteable, to_noteable).execute }
 
@@ -85,6 +84,15 @@ RSpec.describe Notes::CopyService do
             expect(execute_service).to be_success
           end
         end
+
+        it 'copies rendered markdown from note_html' do
+          expect(Banzai::Renderer).not_to receive(:cacheless_render_field)
+
+          execute_service
+
+          new_note = to_noteable.notes.first
+          expect(new_note.note_html).to eq(notes.first.note_html)
+        end
       end
 
       context 'notes with mentions' do
@@ -119,6 +127,13 @@ RSpec.describe Notes::CopyService do
             expect(new_note.author).to eq(note.author)
           end
         end
+
+        it 'does not copy rendered markdown from note_html' do
+          execute_service
+
+          new_note = to_noteable.notes.first
+          expect(new_note.note_html).not_to eq(note.note_html)
+        end
       end
 
       context 'notes with upload' do
@@ -136,6 +151,13 @@ RSpec.describe Notes::CopyService do
             expect(note.note).not_to eq(new_note.note)
             expect(note.note_html).not_to eq(new_note.note_html)
           end
+        end
+
+        it 'does not copy rendered markdown from note_html' do
+          execute_service
+
+          new_note = to_noteable.notes.first
+          expect(new_note.note_html).not_to eq(note.note_html)
         end
       end
 

@@ -29,9 +29,10 @@ class UsersController < ApplicationController
 
   feature_category :users, [:show, :activity, :groups, :projects, :contributed, :starred,
                             :followers, :following, :calendar, :calendar_activities,
-                            :exists, :activity, :follow, :unfollow, :ssh_keys, :gpg_keys]
+                            :exists, :activity, :follow, :unfollow, :ssh_keys]
 
   feature_category :snippets, [:snippets]
+  feature_category :source_code_management, [:gpg_keys]
 
   # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357914
   urgency :low, [:show, :calendar_activities, :contributed, :activity, :projects, :groups, :calendar]

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::JiraImport do
   let(:project_id) { 321 }
 
   describe '.validate_project_settings!' do
-    include JiraServiceHelper
+    include JiraIntegrationHelpers
 
     let_it_be(:project, reload: true) { create(:project) }
 

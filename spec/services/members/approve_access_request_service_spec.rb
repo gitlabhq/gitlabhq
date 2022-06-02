@@ -9,36 +9,34 @@ RSpec.describe Members::ApproveAccessRequestService do
   let(:access_requester_user) { create(:user) }
   let(:access_requester) { source.requesters.find_by!(user_id: access_requester_user.id) }
   let(:opts) { {} }
-
-  shared_examples 'a service raising ActiveRecord::RecordNotFound' do
-    it 'raises ActiveRecord::RecordNotFound' do
-      expect { described_class.new(current_user).execute(access_requester, **opts) }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
+  let(:params) { {} }
+  let(:custom_access_level) { Gitlab::Access::MAINTAINER }
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(current_user).execute(access_requester, **opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect { described_class.new(current_user, params).execute(access_requester, **opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   shared_examples 'a service approving an access request' do
     it 'succeeds' do
-      expect { described_class.new(current_user).execute(access_requester, **opts) }.to change { source.requesters.count }.by(-1)
+      expect { described_class.new(current_user, params).execute(access_requester, **opts) }.to change { source.requesters.count }.by(-1)
     end
 
     it 'returns a <Source>Member' do
-      member = described_class.new(current_user).execute(access_requester, **opts)
+      member = described_class.new(current_user, params).execute(access_requester, **opts)
 
       expect(member).to be_a "#{source.class}Member".constantize
       expect(member.requested_at).to be_nil
     end
 
     context 'with a custom access level' do
-      it 'returns a ProjectMember with the custom access level' do
-        member = described_class.new(current_user, access_level: Gitlab::Access::MAINTAINER).execute(access_requester, **opts)
+      let(:params) { { access_level: custom_access_level } }
 
-        expect(member.access_level).to eq(Gitlab::Access::MAINTAINER)
+      it 'returns a ProjectMember with the custom access level' do
+        member = described_class.new(current_user, params).execute(access_requester, **opts)
+
+        expect(member.access_level).to eq(custom_access_level)
       end
     end
   end
@@ -109,6 +107,39 @@ RSpec.describe Members::ApproveAccessRequestService do
 
       it_behaves_like 'a service approving an access request' do
         let(:source) { group }
+      end
+    end
+
+    context 'in a project' do
+      let_it_be(:group_project) { create(:project, :public, group: create(:group, :public)) }
+
+      let(:source) { group_project }
+      let(:custom_access_level) { Gitlab::Access::OWNER }
+      let(:params) { { access_level: custom_access_level } }
+
+      before do
+        group_project.request_access(access_requester_user)
+      end
+
+      context 'maintainers' do
+        before do
+          group_project.add_maintainer(current_user)
+        end
+
+        context 'cannot approve the access request of a requester to give them OWNER permissions' do
+          it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError'
+        end
+      end
+
+      context 'owners' do
+        before do
+          # so that `current_user` is considered an `OWNER` in the project via inheritance.
+          group_project.group.add_owner(current_user)
+        end
+
+        context 'can approve the access request of a requester to give them OWNER permissions' do
+          it_behaves_like 'a service approving an access request'
+        end
       end
     end
   end

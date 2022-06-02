@@ -41,14 +41,15 @@ module Issuable
       end
 
       def update_new_entity_description
-        rewritten_description = MarkdownContentRewriterService.new(
+        update_description_params = MarkdownContentRewriterService.new(
           current_user,
-          original_entity.description,
+          original_entity,
+          :description,
           original_entity.project,
           new_parent
         ).execute
 
-        new_entity.update!(description: rewritten_description)
+        new_entity.update!(update_description_params)
       end
 
       def update_new_entity_attributes

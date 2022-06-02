@@ -820,7 +820,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/project_daily_statistics_worker.rb'
     - 'app/workers/project_destroy_worker.rb'
     - 'app/workers/project_export_worker.rb'
-    - 'app/workers/project_service_worker.rb'
     - 'app/workers/propagate_integration_group_worker.rb'
     - 'app/workers/propagate_integration_inherit_descendant_worker.rb'
     - 'app/workers/propagate_integration_inherit_worker.rb'

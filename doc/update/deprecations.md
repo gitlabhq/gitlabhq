@@ -158,7 +158,7 @@ GitLab 15.2 to simplify the codebase and prevent any unwanted performance degrad
 
 ### Dependency Scanning default Java version changed to 17
 
-Planned removal: GitLab <span class="removal-milestone">15.0</span> (2021-05-22)
+Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
@@ -204,7 +204,7 @@ For more information about iteration cadences, you can refer to
 
 ### Outdated indices of Advanced Search migrations
 
-Planned removal: GitLab <span class="removal-milestone">15.0</span> (2021-05-22)
+Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
@@ -412,7 +412,7 @@ For additional context, or to provide feedback regarding this change, please ref
 
 ### Dependency Scanning Python 3.9 and 3.6 image deprecation
 
-Planned removal: GitLab <span class="removal-milestone">15.0</span> (2021-05-22)
+Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).

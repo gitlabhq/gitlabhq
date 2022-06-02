@@ -1205,4 +1205,46 @@ RSpec.describe Integration do
       end
     end
   end
+
+  describe '#async_execute' do
+    let(:integration) { described_class.new(id: 123) }
+    let(:data) { { object_kind: 'push' } }
+    let(:supported_events) { %w[push] }
+
+    subject(:async_execute) { integration.async_execute(data) }
+
+    before do
+      allow(integration).to receive(:supported_events).and_return(supported_events)
+    end
+
+    it 'queues a Integrations::ExecuteWorker' do
+      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data)
+      expect(ProjectServiceWorker).not_to receive(:perform_async)
+
+      async_execute
+    end
+
+    context 'when the event is not supported' do
+      let(:supported_events) { %w[issue] }
+
+      it 'does not queue a worker' do
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
+
+    context 'when the FF :rename_integration_workers is disabled' do
+      before do
+        stub_feature_flags(rename_integrations_workers: false)
+      end
+
+      it 'queues a ProjectServiceWorker' do
+        expect(ProjectServiceWorker).to receive(:perform_async).with(integration.id, data)
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
+  end
 end

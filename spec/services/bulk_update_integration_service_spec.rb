@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkUpdateIntegrationService do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
 
   before_all do
     stub_jira_integration_test

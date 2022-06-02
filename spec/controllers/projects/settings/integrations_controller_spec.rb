@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Settings::IntegrationsController do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project, :repository) }

@@ -12,7 +12,9 @@ module Gitlab
     #
     #
     class UploadsRewriter
-      def initialize(text, source_project, _current_user)
+      include Gitlab::Utils::StrongMemoize
+
+      def initialize(text, _text_html, source_project, _current_user)
         @text = text
         @source_project = source_project
         @pattern = FileUploader::MARKDOWN_PATTERN
@@ -21,7 +23,7 @@ module Gitlab
       def rewrite(target_parent)
         return @text unless needs_rewrite?
 
-        @text.gsub(@pattern) do |markdown|
+        @text.gsub!(@pattern) do |markdown|
           file = find_file($~[:secret], $~[:file])
           # No file will be returned for a path traversal
           next if file.nil?
@@ -43,15 +45,9 @@ module Gitlab
       end
 
       def needs_rewrite?
-        files.any?
-      end
-
-      def files
-        referenced_files = @text.scan(@pattern).map do
-          find_file($~[:secret], $~[:file])
+        strong_memoize(:needs_rewrite) do
+          FileUploader::MARKDOWN_PATTERN.match?(@text)
         end
-
-        referenced_files.compact.select(&:exists?)
       end
 
       def was_embedded?(markdown)

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
   let(:user) { create(:user) }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
-  let(:rewriter) { described_class.new(text, old_project, user) }
+  let(:rewriter) { described_class.new(+text, nil, old_project, user) }
 
   context 'text contains links to uploads' do
     let(:image_uploader) do
@@ -22,13 +22,21 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
       "Text and #{image_uploader.markdown_link} and #{zip_uploader.markdown_link}"
     end
 
+    def referenced_files(text, project)
+      referenced_files = text.scan(FileUploader::MARKDOWN_PATTERN).map do
+        UploaderFinder.new(project, $~[:secret], $~[:file]).execute
+      end
+
+      referenced_files.compact.select(&:exists?)
+    end
+
     shared_examples "files are accessible" do
       describe '#rewrite' do
         let!(:new_text) { rewriter.rewrite(new_project) }
 
         let(:old_files) { [image_uploader, zip_uploader] }
         let(:new_files) do
-          described_class.new(new_text, new_project, user).files
+          referenced_files(new_text, new_project)
         end
 
         let(:old_paths) { old_files.map(&:path) }
@@ -68,9 +76,9 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
     it 'does not rewrite plain links as embedded' do
       embedded_link = image_uploader.markdown_link
       plain_image_link = embedded_link.delete_prefix('!')
-      text = "#{plain_image_link} and #{embedded_link}"
+      text = +"#{plain_image_link} and #{embedded_link}"
 
-      moved_text = described_class.new(text, old_project, user).rewrite(new_project)
+      moved_text = described_class.new(text, nil, old_project, user).rewrite(new_project)
 
       expect(moved_text.scan(/!\[.*?\]/).count).to eq(1)
       expect(moved_text.scan(/\A\[.*?\]/).count).to eq(1)
@@ -96,12 +104,6 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
       subject { rewriter.needs_rewrite? }
 
       it { is_expected.to eq true }
-    end
-
-    describe '#files' do
-      subject { rewriter.files }
-
-      it { is_expected.to be_an(Array) }
     end
   end
 end

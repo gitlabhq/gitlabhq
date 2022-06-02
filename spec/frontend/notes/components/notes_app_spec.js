@@ -222,7 +222,7 @@ describe('note_app', () => {
     });
 
     it('renders skeleton notes', () => {
-      expect(wrapper.find('.animation-container').exists()).toBe(true);
+      expect(wrapper.find('.gl-skeleton-loader-default-container').exists()).toBe(true);
     });
 
     it('should render form', () => {

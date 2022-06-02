@@ -26,6 +26,6 @@ export default {
 
 <template>
   <div ref="viewer" class="file-content" :data-endpoint="url" data-testid="sketch">
-    <gl-loading-icon class="my-4 js-loading-icon" size="md" />
+    <gl-loading-icon class="my-4 js-loading-icon" size="lg" />
   </div>
 </template>

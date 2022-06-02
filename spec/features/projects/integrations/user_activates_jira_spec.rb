@@ -61,7 +61,7 @@ RSpec.describe 'User activates Jira', :js do
   end
 
   describe 'user disables the Jira integration' do
-    include JiraServiceHelper
+    include JiraIntegrationHelpers
 
     before do
       stub_jira_integration_test
