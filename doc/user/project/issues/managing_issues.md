@@ -481,7 +481,7 @@ Referenced issues are still displayed, but are not closed automatically.
 
 The automatic issue closing is disabled by default in a project if the project has the issue tracker
 disabled. If you want to enable automatic issue closing, make sure to
-[enable GitLab Issues](../settings/index.md#sharing-and-permissions).
+[enable GitLab Issues](../settings/index.md#configure-project-visibility-features-and-permissions).
 
 Changing this setting applies only to new merge requests or commits. Already
 closed issues remain as they are.

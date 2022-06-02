@@ -38,7 +38,7 @@ project pages. This link takes you to the appropriate Bugzilla project.
 
 You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
 Learn more about the steps and consequences of disabling GitLab issues in
-[Sharing and permissions](../settings/index.md#sharing-and-permissions).
+[Sharing and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
 
 ## Reference Bugzilla issues in GitLab
 

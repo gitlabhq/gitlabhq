@@ -17,7 +17,7 @@ Every project in the group, but not its subgroups, can be selected when a new pr
 is created, based on the user's access permissions:
 
 - Public projects can be selected by any signed-in user as a template for a new project,
-  if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
+  if all enabled [project features](../project/settings/index.md#configure-project-visibility-features-and-permissions)
   except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
   The same applies to internal projects.
 - Private projects can be selected only by users who are members of the projects.

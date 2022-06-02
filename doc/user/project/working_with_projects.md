@@ -59,7 +59,7 @@ To explore project topics:
 The **Projects** page shows list of topics sorted by the number of associated projects.
 To view projects associated with a topic, select a topic from the list.
 
-You can assign topics to a project on the [Project Settings page](settings/index.md#topics).
+You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 
 If you're an instance administrator, you can administer all project topics from the
 [Admin Area's Topics page](../admin_area/index.md#administering-topics).
@@ -484,5 +484,5 @@ download starts, the `insteadOf` configuration sends the traffic to the secondar
 - [Import a project](../../user/project/import/index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 - [Fork a project](repository/forking_workflow.md#creating-a-fork).
-- [Adjust project visibility and access levels](settings/index.md#sharing-and-permissions).
+- [Adjust project visibility and access levels](settings/index.md#configure-project-visibility-features-and-permissions).
 - [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)

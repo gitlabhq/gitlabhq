@@ -270,7 +270,7 @@ Support for displaying a generated table of contents with a custom side navigati
 
 Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)
 can enable or disable a project wiki by following the instructions in
-[Sharing and permissions](../settings/index.md#sharing-and-permissions).
+[Sharing and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
 
 Administrators for self-managed GitLab installs can
 [configure additional wiki settings](../../../administration/wikis/index.md).
