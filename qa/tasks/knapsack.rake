@@ -34,7 +34,7 @@ namespace :knapsack do
 
   desc "Report long running spec files"
   task :notify_long_running_specs do
-    QA::Support::LongRunningSpecReporter.execute
+    QA::Tools::LongRunningSpecReporter.execute
   end
 end
 # rubocop:enable Rails/RakeEnvironment

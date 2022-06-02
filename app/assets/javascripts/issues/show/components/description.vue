@@ -23,6 +23,7 @@ import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import animateMixin from '../mixins/animate';
 import { convertDescriptionWithNewSort } from '../utils';
@@ -314,7 +315,7 @@ export default {
             this.workItemId = workItemId;
             this.updateWorkItemIdUrlQuery(issue);
             this.track('viewed_work_item_from_modal', {
-              category: 'workItems:show',
+              category: TRACKING_CATEGORY_SHOW,
               label: 'work_item_view',
               property: `type_${referenceType}`,
             });

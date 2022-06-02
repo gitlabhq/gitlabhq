@@ -1,5 +1,6 @@
 enum LocalWidgetType {
   ASSIGNEES
+  WEIGHT
 }
 
 interface LocalWorkItemWidget {
@@ -9,6 +10,11 @@ interface LocalWorkItemWidget {
 type LocalWorkItemAssignees implements LocalWorkItemWidget {
   type: LocalWidgetType!
   nodes: [UserCore]
+}
+
+type LocalWorkItemWeight implements LocalWorkItemWidget {
+  type: LocalWidgetType!
+  weight: Int
 }
 
 extend type WorkItem {

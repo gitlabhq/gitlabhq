@@ -287,6 +287,7 @@ Use this regex for commonly used test tools.
 - .NET (OpenCover). Example: `(Visited Points).*\((.*)\)`.
 - .NET (`dotnet test` line coverage). Example: `Total\s*\|\s*(\d+(?:\.\d+)?)`.
 - tarpaulin (Rust). Example: `^\d+.\d+% coverage`.
+- Pester (PowerShell). Example: `Covered (\d+\.\d+%)`.
 
 <!-- vale gitlab.Spelling = YES -->
 

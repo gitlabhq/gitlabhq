@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import { TRACKING_CATEGORY_SHOW } from '../constants';
 
 export default {
   directives: {
@@ -21,7 +22,7 @@ export default {
   computed: {
     tracking() {
       return {
-        category: 'workItems:show',
+        category: TRACKING_CATEGORY_SHOW,
         label: 'item_description',
         property: `type_${this.workItem.workItemType.name}`,
       };

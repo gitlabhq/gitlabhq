@@ -6,7 +6,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ItemTitle from '~/work_items/components/item_title.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
-import { i18n } from '~/work_items/constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import { updateWorkItemMutationResponse, workItemQueryResponse } from '../mock_data';
 
@@ -91,8 +91,8 @@ describe('WorkItemTitle component', () => {
       findItemTitle().vm.$emit('title-changed', 'new title');
       await waitForPromises();
 
-      expect(trackingSpy).toHaveBeenCalledWith('workItems:show', 'updated_title', {
-        category: 'workItems:show',
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_title', {
+        category: TRACKING_CATEGORY_SHOW,
         label: 'item_title',
         property: 'type_Task',
       });

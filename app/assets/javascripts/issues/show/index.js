@@ -83,7 +83,7 @@ export function initIssueApp(issueData, store) {
 
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
-  const { canCreateIncident, ...issueProps } = issueData;
+  const { canCreateIncident, hasIssueWeightsFeature, ...issueProps } = issueData;
 
   return new Vue({
     el,
@@ -93,6 +93,7 @@ export function initIssueApp(issueData, store) {
     provide: {
       canCreateIncident,
       fullPath,
+      hasIssueWeightsFeature,
     },
     computed: {
       ...mapGetters(['getNoteableData']),

@@ -7,6 +7,7 @@ import {
   STATE_CLOSED,
   STATE_EVENT_CLOSE,
   STATE_EVENT_REOPEN,
+  TRACKING_CATEGORY_SHOW,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import ItemState from './item_state.vue';
@@ -33,7 +34,7 @@ export default {
     },
     tracking() {
       return {
-        category: 'workItems:show',
+        category: TRACKING_CATEGORY_SHOW,
         label: 'item_state',
         property: `type_${this.workItemType}`,
       };

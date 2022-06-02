@@ -39,6 +39,11 @@ export const temporaryConfig = {
                     },
                   ],
                 },
+                {
+                  __typename: 'LocalWorkItemWeight',
+                  type: 'WEIGHT',
+                  weight: 0,
+                },
               ];
             },
           },

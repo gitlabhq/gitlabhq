@@ -115,7 +115,7 @@ Built-in templates are sourced from the following groups:
 - [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
 - [`pages`](https://gitlab.com/pages)
 
-Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates/).
+Anyone can [contribute a built-in template](../../development/project_templates.md).
 
 To create a project from a built-in template:
 

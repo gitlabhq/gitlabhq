@@ -4,6 +4,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
   include RedisTracking
   include ProjectStatsRefreshConflictsGuard
+  include ZuoraCSP
 
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,
@@ -42,23 +43,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   wrap_parameters Ci::Pipeline
 
   POLLING_INTERVAL = 10_000
-
-  content_security_policy do |policy|
-    next if policy.directives.blank?
-
-    default_script_src = policy.directives['script-src'] || policy.directives['default-src']
-    script_src_values = Array.wrap(default_script_src) | ["'self'", "'unsafe-eval'", 'https://*.zuora.com']
-
-    default_frame_src = policy.directives['frame-src'] || policy.directives['default-src']
-    frame_src_values = Array.wrap(default_frame_src) | ["'self'", 'https://*.zuora.com']
-
-    default_child_src = policy.directives['child-src'] || policy.directives['default-src']
-    child_src_values = Array.wrap(default_child_src) | ["'self'", 'https://*.zuora.com']
-
-    policy.script_src(*script_src_values)
-    policy.frame_src(*frame_src_values)
-    policy.child_src(*child_src_values)
-  end
 
   feature_category :continuous_integration, [
                      :charts, :show, :config_variables, :stage, :cancel, :retry,

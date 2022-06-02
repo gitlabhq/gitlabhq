@@ -230,6 +230,22 @@ All three tracks can be worked on in parallel:
 
 In progress.
 
+## Timeline
+
+- 2021-01-21: Parent [CI Scaling](../ci_scale/) blueprint [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52203) created.
+- 2021-04-26: CI Scaling blueprint approved and merged.
+- 2021-09-10: CI/CD data time decay blueprint discussions started.
+- 2022-01-07: CI/CD data time decay blueprint [merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70052).
+- 2022-02-01: Blueprint [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79110) with new content and links to epics.
+- 2022-02-08: Pipeline partitioning PoC [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186) started.
+- 2022-02-23: Pipeline partitioning PoC [successful](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186#note_852704724)
+- 2022-03-07: A way to attach an existing table as a partition [found and proven](https://gitlab.com/gitlab-org/gitlab/-/issues/353380#note_865237214).
+- 2022-03-23: Pipeline partitioning design [Google Doc](https://docs.google.com/document/d/1ARdoTZDy4qLGf6Z1GIHh83-stG_ZLpqsibjKr_OXMgc) started.
+- 2022-03-29: Pipeline partitioning PoC [concluded](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80186#note_892674358).
+- 2022-04-15: Partitioned pipeline data associations PoC [shipped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84071).
+- 2022-04-30: Additional [benchmarking started](https://gitlab.com/gitlab-org/gitlab/-/issues/361019) to evaluate impact.
+- 2022-06-31: [Pipeline partitioning design](pipeline_partitioning.md) document [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87683) merged.
+
 ## Who
 
 Proposal:

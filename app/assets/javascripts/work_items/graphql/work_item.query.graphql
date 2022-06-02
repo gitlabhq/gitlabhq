@@ -14,6 +14,10 @@ query workItem($id: WorkItemID!) {
           webUrl
         }
       }
+      ... on LocalWorkItemWeight {
+        type
+        weight
+      }
     }
   }
 }

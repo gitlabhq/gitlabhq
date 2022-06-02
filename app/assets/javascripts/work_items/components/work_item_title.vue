@@ -1,6 +1,6 @@
 <script>
 import Tracking from '~/tracking';
-import { i18n } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import ItemTitle from './item_title.vue';
 
@@ -29,7 +29,7 @@ export default {
   computed: {
     tracking() {
       return {
-        category: 'workItems:show',
+        category: TRACKING_CATEGORY_SHOW,
         label: 'item_title',
         property: `type_${this.workItemType}`,
       };
