@@ -148,12 +148,12 @@ This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 1
 
 The daily job provides **only** the following information to the Customers Portal:
 
-- Company name
-- Licensee name
-- Licensee email
 - Date
 - Timestamp
 - License key
+  - Company name (encrypted within license key)
+  - Licensee name (encrypted within license key)
+  - Licensee email (encrypted within license key)
 - Historical maximum user count
 - Billable users count
 - GitLab version

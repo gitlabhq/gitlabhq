@@ -152,6 +152,12 @@ export default {
     isLoading() {
       return this.$apollo.queries.boardList.loading;
     },
+    totalWeight() {
+      return this.boardList?.totalWeight;
+    },
+    canShowTotalWeight() {
+      return this.weightFeatureAvailable && !this.isLoading;
+    },
   },
   apollo: {
     boardList: {
@@ -356,7 +362,7 @@ export default {
         <div v-if="weightFeatureAvailable && !isLoading">
           •
           <gl-sprintf :message="__('%{totalWeight} total weight')">
-            <template #totalWeight>{{ boardList.totalWeight }}</template>
+            <template #totalWeight>{{ totalWeight }}</template>
           </gl-sprintf>
         </div>
       </gl-tooltip>
@@ -381,11 +387,11 @@ export default {
             />
           </span>
           <!-- EE start -->
-          <template v-if="weightFeatureAvailable && !isEpicBoard && !isLoading">
+          <template v-if="canShowTotalWeight">
             <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
-            <span ref="weightTooltip" class="gl-display-inline-flex gl-ml-3">
+            <span ref="weightTooltip" class="gl-display-inline-flex gl-ml-3" data-testid="weight">
               <gl-icon class="gl-mr-2" name="weight" />
-              {{ boardList.totalWeight }}
+              {{ totalWeight }}
             </span>
           </template>
           <!-- EE end -->

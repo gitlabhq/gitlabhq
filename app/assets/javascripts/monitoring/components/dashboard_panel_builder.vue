@@ -106,7 +106,7 @@ export default {
             <div class="gl-text-right">
               <gl-button
                 ref="clipboardCopyBtn"
-                variant="success"
+                variant="confirm"
                 category="secondary"
                 :data-clipboard-text="yml"
                 class="gl-xs-w-full gl-xs-mb-3"
@@ -116,7 +116,7 @@ export default {
               </gl-button>
               <gl-button
                 type="submit"
-                variant="success"
+                variant="confirm"
                 :disabled="panelPreviewIsLoading"
                 class="js-no-auto-disable gl-xs-w-full"
               >
@@ -170,7 +170,7 @@ export default {
             </gl-button>
             <gl-button
               ref="openRepositoryBtn"
-              variant="success"
+              variant="confirm"
               :href="projectPath"
               class="gl-xs-w-full"
             >

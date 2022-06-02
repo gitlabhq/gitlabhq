@@ -1,29 +1,28 @@
 ---
-type: reference, howto
 stage: Manage
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Migrate groups from another instance of GitLab **(FREE)**
+# Migrating groups **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
+[disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`. On GitLab.com, this feature is
+available.
 
 You can migrate your existing top-level groups to any of the following:
 
-- Another GitLab instance, including GitLab.com.
 - Another top-level group.
 - The subgroup of any existing top-level group.
+- Another GitLab instance, including GitLab.com.
 
-Migrating groups is not the same as [group import/export](../settings/import_export.md).
-
-- Group import/export requires you to export a group to a file and then import that file in
-  another GitLab instance.
-- Group migration automates this process.
+Migrating groups using the method documented here is not the same as [migrating groups using file exports](../settings/import_export.md).
+Importing and exporting groups using file exports requires you to export a group to a file and then import that file in
+another GitLab instance. Migrating groups using the method documented here automates this step.
 
 ## Import your groups into GitLab
 

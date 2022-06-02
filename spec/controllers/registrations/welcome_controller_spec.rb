@@ -31,6 +31,7 @@ RSpec.describe Registrations::WelcomeController do
 
     context 'when role and setup_for_company is set' do
       before do
+        stub_feature_flags(about_your_company_registration_flow: false)
         user.update!(setup_for_company: false)
         sign_in(user)
       end
@@ -60,6 +61,10 @@ RSpec.describe Registrations::WelcomeController do
   end
 
   describe '#update' do
+    before do
+      stub_feature_flags(about_your_company_registration_flow: false)
+    end
+
     subject(:update) do
       patch :update, params: { user: { role: 'software_developer', setup_for_company: 'false' } }
     end

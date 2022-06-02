@@ -7173,6 +7173,9 @@ msgstr ""
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
+msgid "Cannot assign an issue that does not belong under the same group (or descendant) as the epic."
+msgstr ""
+
 msgid "Cannot be merged automatically"
 msgstr ""
 
@@ -11193,17 +11196,6 @@ msgstr ""
 msgid "CycleAnalytics|Show"
 msgstr ""
 
-msgid "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCount} label"
-msgid_plural "CycleAnalytics|Showing %{subjectFilterText} and %{selectedLabelsCount} labels"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "CycleAnalytics|Showing data for group '%{groupName}' and %{selectedProjectCount} projects from %{createdAfter} to %{createdBefore}"
-msgstr ""
-
-msgid "CycleAnalytics|Showing data for group '%{groupName}' from %{createdAfter} to %{createdBefore}"
-msgstr ""
-
 msgid "CycleAnalytics|Stage time: %{title}"
 msgstr ""
 
@@ -11229,9 +11221,6 @@ msgid "CycleAnalytics|Time to Restore Service"
 msgstr ""
 
 msgid "CycleAnalytics|Total time"
-msgstr ""
-
-msgid "CycleAnalytics|Type of work"
 msgstr ""
 
 msgid "CycleAnalytics|group dropdown filter"
@@ -15017,6 +15006,9 @@ msgid "Estimate"
 msgstr ""
 
 msgid "Estimated"
+msgstr ""
+
+msgid "Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -26564,7 +26556,13 @@ msgstr ""
 msgid "Only Issue ID or merge request ID is required"
 msgstr ""
 
+msgid "Only Issue can be parent of Task."
+msgstr ""
+
 msgid "Only Project Members"
+msgstr ""
+
+msgid "Only Task can be assigned as a child in hierarchy."
 msgstr ""
 
 msgid "Only active projects show up in the search and on the dashboard."
@@ -27319,10 +27317,16 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
+msgid "Parent already has maximum number of children."
+msgstr ""
+
 msgid "Parent epic doesn't exist."
 msgstr ""
 
 msgid "Parent epic is not present."
+msgstr ""
+
+msgid "Parent must be in the same project as child."
 msgstr ""
 
 msgid "Parsing error for param :embed_json. %{message}"
@@ -41628,6 +41632,11 @@ msgstr ""
 msgid "ValueStreamAnalytics|%{stageCount}+ items"
 msgstr ""
 
+msgid "ValueStreamAnalytics|%{subjectFilterText} and %{selectedLabelsCount} label"
+msgid_plural "ValueStreamAnalytics|%{subjectFilterText} and %{selectedLabelsCount} labels"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ValueStreamAnalytics|%{value}M"
 msgstr ""
 
@@ -41682,13 +41691,22 @@ msgstr ""
 msgid "ValueStreamAnalytics|Percentage of deployments that cause an incident in production."
 msgstr ""
 
+msgid "ValueStreamAnalytics|Shows %{selectedFiltersDescription} for group '%{groupName}' and %{selectedProjectCount} projects from %{createdAfter} to %{createdBefore}"
+msgstr ""
+
+msgid "ValueStreamAnalytics|Shows %{selectedFiltersDescription} for group '%{groupName}' from %{createdAfter} to %{createdBefore}"
+msgstr ""
+
+msgid "ValueStreamAnalytics|Tasks by type"
+msgstr ""
+
 msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Total number of deploys to production."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Value Stream"
+msgid "ValueStreamAnalytics|Value stream"
 msgstr ""
 
 msgid "ValueStreamEvent|Items in stage"
@@ -44175,8 +44193,10 @@ msgstr ""
 msgid "Your subscription expired!"
 msgstr ""
 
-msgid "Your subscription has %{remaining_seats_count} out of %{total_seats_count} seats remaining. Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
-msgstr ""
+msgid "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seat remaining."
+msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seats remaining."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance. To use Free tier, remove your current license."
 msgstr ""

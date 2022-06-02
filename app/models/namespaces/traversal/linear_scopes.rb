@@ -5,6 +5,8 @@ module Namespaces
     module LinearScopes
       extend ActiveSupport::Concern
 
+      include AsCte
+
       class_methods do
         # When filtering namespaces by the traversal_ids column to compile a
         # list of namespace IDs, it can be faster to reference the ID in
@@ -25,25 +27,15 @@ module Namespaces
         def self_and_ancestors(include_self: true, upto: nil, hierarchy_order: nil)
           return super unless use_traversal_ids_for_ancestor_scopes?
 
-          ancestors_cte, base_cte = ancestor_ctes
-          namespaces = Arel::Table.new(:namespaces)
-
-          records = unscoped
-            .with(base_cte.to_arel, ancestors_cte.to_arel)
-            .distinct
-            .from([ancestors_cte.table, namespaces])
-            .where(namespaces[:id].eq(ancestors_cte.table[:ancestor_id]))
-            .order_by_depth(hierarchy_order)
-
-          unless include_self
-            records = records.where(ancestors_cte.table[:base_id].not_eq(ancestors_cte.table[:ancestor_id]))
+          if Feature.enabled?(:use_traversal_ids_for_ancestor_scopes_with_inner_join)
+            self_and_ancestors_from_inner_join(include_self: include_self,
+                                               upto: upto, hierarchy_order:
+                                               hierarchy_order)
+          else
+            self_and_ancestors_from_ancestors_cte(include_self: include_self,
+                                                  upto: upto,
+                                                  hierarchy_order: hierarchy_order)
           end
-
-          if upto
-            records = records.where.not(id: unscoped.where(id: upto).select('unnest(traversal_ids)'))
-          end
-
-          records
         end
 
         def self_and_ancestor_ids(include_self: true)
@@ -87,7 +79,7 @@ module Namespaces
           depth_order = hierarchy_order == :asc ? :desc : :asc
 
           all
-            .select(Arel.star, 'array_length(traversal_ids, 1) as depth')
+            .select(Namespace.default_select_columns, 'array_length(traversal_ids, 1) as depth')
             .order(depth: depth_order, id: :asc)
         end
 
@@ -125,10 +117,73 @@ module Namespaces
             use_traversal_ids?
         end
 
+        def self_and_ancestors_from_ancestors_cte(include_self: true, upto: nil, hierarchy_order: nil)
+          base_cte = all.select('namespaces.id', 'namespaces.traversal_ids').as_cte(:base_ancestors_cte)
+
+          # We have to alias id with 'AS' to avoid ambiguous column references by calling methods.
+          ancestors_cte = unscoped
+            .unscope(where: [:type])
+            .select('id as base_id',
+                    "#{unnest_func(base_cte.table['traversal_ids']).to_sql} as ancestor_id")
+            .from(base_cte.table)
+            .as_cte(:ancestors_cte)
+
+          namespaces = Arel::Table.new(:namespaces)
+
+          records = unscoped
+            .with(base_cte.to_arel, ancestors_cte.to_arel)
+            .distinct
+            .from([ancestors_cte.table, namespaces])
+            .where(namespaces[:id].eq(ancestors_cte.table[:ancestor_id]))
+            .order_by_depth(hierarchy_order)
+
+          unless include_self
+            records = records.where(ancestors_cte.table[:base_id].not_eq(ancestors_cte.table[:ancestor_id]))
+          end
+
+          if upto
+            records = records.where.not(id: unscoped.where(id: upto).select('unnest(traversal_ids)'))
+          end
+
+          records
+        end
+
+        def self_and_ancestors_from_inner_join(include_self: true, upto: nil, hierarchy_order: nil)
+          base_cte = all.reselect('namespaces.traversal_ids').as_cte(:base_ancestors_cte)
+
+          unnest = if include_self
+                     base_cte.table[:traversal_ids]
+                   else
+                     base_cte_traversal_ids = 'base_ancestors_cte.traversal_ids'
+                     traversal_ids_range = "1:array_length(#{base_cte_traversal_ids},1)-1"
+                     Arel.sql("#{base_cte_traversal_ids}[#{traversal_ids_range}]")
+                   end
+
+          ancestor_subselect = "SELECT DISTINCT #{unnest_func(unnest).to_sql} FROM base_ancestors_cte"
+          ancestors_join = <<~SQL
+            INNER JOIN (#{ancestor_subselect}) AS ancestors(ancestor_id) ON namespaces.id = ancestors.ancestor_id
+          SQL
+
+          namespaces = Arel::Table.new(:namespaces)
+
+          records = unscoped
+            .with(base_cte.to_arel)
+            .from(namespaces)
+            .joins(ancestors_join)
+            .order_by_depth(hierarchy_order)
+
+          if upto
+            upto_ancestor_ids = unscoped.where(id: upto).select(unnest_func(Arel.sql('traversal_ids')))
+            records = records.where.not(id: upto_ancestor_ids)
+          end
+
+          records
+        end
+
         def self_and_descendants_with_comparison_operators(include_self: true)
           base = all.select(:traversal_ids)
           base = base.select(:id) if Feature.enabled?(:linear_scopes_superset)
-          base_cte = Gitlab::SQL::CTE.new(:descendants_base_cte, base)
+          base_cte = base.as_cte(:descendants_base_cte)
 
           namespaces = Arel::Table.new(:namespaces)
 
@@ -169,6 +224,10 @@ module Namespaces
           Arel::Nodes::NamedFunction.new('next_traversal_ids_sibling', args)
         end
 
+        def unnest_func(*args)
+          Arel::Nodes::NamedFunction.new('unnest', args)
+        end
+
         def self_and_descendants_with_duplicates_with_array_operator(include_self: true)
           base_ids = select(:id)
 
@@ -196,20 +255,6 @@ module Namespaces
           SQL
 
           Gitlab::SQL::CTE.new(:superset, superset_sql, materialized: false)
-        end
-
-        def ancestor_ctes
-          base_scope = all.select('namespaces.id', 'namespaces.traversal_ids')
-          base_cte = Gitlab::SQL::CTE.new(:base_ancestors_cte, base_scope)
-
-          # We have to alias id with 'AS' to avoid ambiguous column references by calling methods.
-          ancestors_scope = unscoped
-            .unscope(where: [:type])
-            .select('id as base_id', 'unnest(traversal_ids) as ancestor_id')
-            .from(base_cte.table)
-          ancestors_cte = Gitlab::SQL::CTE.new(:ancestors_cte, ancestors_scope)
-
-          [ancestors_cte, base_cte]
         end
       end
     end

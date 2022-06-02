@@ -58,7 +58,16 @@ module Registrations
     def path_for_signed_in_user(user)
       return users_almost_there_path(email: user.email) if requires_confirmation?(user)
 
-      stored_location_for(user) || members_activity_path(user.members)
+      stored_url = stored_location_for(user)
+      if ::Feature.enabled?(:about_your_company_registration_flow) &&
+          stored_url&.include?(new_users_sign_up_company_path)
+        company_params = update_params.slice(:role, :other_role, :registration_objective)
+                          .merge(params.permit(:jobs_to_be_done_other))
+        redirect_uri = Gitlab::Utils.add_url_parameters(stored_url, company_params)
+        store_location_for(:user, redirect_uri)
+      else
+        stored_url || members_activity_path(user.members)
+      end
     end
 
     def members_activity_path(members)

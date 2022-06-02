@@ -135,6 +135,9 @@ builds archival, to make it consistent and reliable.
 
 Epic: [Partition CI/CD pipelines database tables](https://gitlab.com/groups/gitlab-org/-/epics/5417).
 
+For more technical details about this topic see
+[pipeline data partitioning design](pipeline_partitioning.md).
+
 ### Partition CI/CD builds queuing database tables
 
 While working on the [CI/CD Scale](../ci_scale/index.md) blueprint, we have
@@ -158,6 +161,9 @@ that builds created more 24 hours ago need to be removed from the queue. This
 business rule is present in the product since the inception of GitLab CI.
 
 Epic: [Partition CI/CD builds queuing database tables](https://gitlab.com/groups/gitlab-org/-/epics/7438).
+
+For more technical details about this topic see
+[pipeline data partitioning design](pipeline_partitioning.md).
 
 ## Principles
 

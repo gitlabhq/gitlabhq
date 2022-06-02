@@ -63,6 +63,8 @@ module Gitlab
       end
 
       def build_mail
+        # See https://github.com/mikel/mail/blob/641060598f8f4be14d79bad8d703e9f2967e1cdb/spec/mail/message_spec.rb#L569
+        # for mail structure
         Mail::Message.new(@raw)
       rescue Encoding::UndefinedConversionError,
              Encoding::InvalidByteSequenceError => e

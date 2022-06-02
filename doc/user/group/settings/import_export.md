@@ -1,16 +1,24 @@
 ---
-type: reference
 stage: Manage
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group import/export **(FREE)**
+# Migrating groups using file exports (deprecated) **(FREE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6.
 
-You can export groups, with all their related data, from one GitLab instance to another.
-You can also [export projects](../../project/settings/import_export.md).
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
+[a different migration method](../import/index.md). To follow progress on a solution for
+[offline environments](../../application_security/offline_deployments/index.md), see
+[the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/363406).
+
+You can export groups, with all their related data, from one GitLab instance to another. You can also:
+
+- [Migrate groups](../import/index.md) using the preferred method.
+- [Migrate projects using file exports](../../project/settings/import_export.md).
 
 ## Enable export for a group
 
@@ -63,10 +71,6 @@ For more details on the specific data persisted in a group export, see the
 
 ## Export a group
 
-WARNING:
-This feature will be [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619)
-in GitLab 14.6 and replaced by [GitLab Migration](../import/).
-
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -96,16 +100,11 @@ You can export groups from the [Community Edition to the Enterprise Edition](htt
 
 The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information, see [downgrading from EE to CE](../../../index.md).
 
-## Importing the group
-
-WARNING:
-This feature will be [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619)
-in GitLab 14.8 and replaced by [GitLab Migration](../import/).
+## Import the group
 
 1. Create a new group:
    - On the top bar, select **New** (**{plus}**) and then **New group**.
    - On an existing group's page, select the **New subgroup** button.
-
 1. Select **Import group**.
 1. Enter your group name.
 1. Accept or modify the associated group URL.

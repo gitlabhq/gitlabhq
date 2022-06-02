@@ -53,6 +53,18 @@ RSpec.describe Gitlab::Email::ServiceDeskReceiver do
     end
   end
 
+  context 'when the email contains no key in the To header and contains reference header with no key' do
+    let(:email) { fixture_file('emails/service_desk_reference_headers.eml') }
+
+    before do
+      stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
+    end
+
+    it 'sends a rejection email' do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
+    end
+  end
+
   context 'when the email does not contain a valid email address' do
     before do
       stub_service_desk_email_setting(enabled: true, address: 'other_support+%{key}@example.com')

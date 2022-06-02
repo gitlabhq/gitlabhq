@@ -366,7 +366,7 @@ The chart shows data for the last 500 workflow items.
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 
-## Type of work - Tasks by type chart
+## Tasks by type chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
 

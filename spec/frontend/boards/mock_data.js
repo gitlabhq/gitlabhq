@@ -778,3 +778,15 @@ export const boardListQueryResponse = (issuesCount = 20) => ({
     },
   },
 });
+
+export const epicBoardListQueryResponse = (totalWeight = 5) => ({
+  data: {
+    epicBoardList: {
+      __typename: 'EpicList',
+      id: 'gid://gitlab/Boards::EpicList/3',
+      metadata: {
+        totalWeight,
+      },
+    },
+  },
+});
