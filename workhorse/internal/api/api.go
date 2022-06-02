@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -263,26 +264,22 @@ func (api *API) newRequest(r *http.Request, suffix string) (*http.Request, error
 
 // PreAuthorize performs a pre-authorization check against the API for the given HTTP request
 //
-// If `outErr` is set, the other fields will be nil and it should be treated as
-// a 500 error.
+// If the returned *http.Response is not nil, the caller is responsible for closing its body
 //
-// If httpResponse is present, the caller is responsible for closing its body
-//
-// authResponse will only be present if the authorization check was successful
-func (api *API) PreAuthorize(suffix string, r *http.Request) (httpResponse *http.Response, authResponse *Response, outErr error) {
+// Only upon successful authorization do we return a non-nil *Response
+func (api *API) PreAuthorize(suffix string, r *http.Request) (_ *http.Response, _ *Response, err error) {
 	authReq, err := api.newRequest(r, suffix)
 	if err != nil {
 		return nil, nil, fmt.Errorf("preAuthorizeHandler newUpstreamRequest: %v", err)
 	}
 
-	httpResponse, err = api.doRequestWithoutRedirects(authReq)
+	httpResponse, err := api.doRequestWithoutRedirects(authReq)
 	if err != nil {
 		return nil, nil, fmt.Errorf("preAuthorizeHandler: do request: %v", err)
 	}
 	defer func() {
-		if outErr != nil {
+		if err != nil {
 			httpResponse.Body.Close()
-			httpResponse = nil
 		}
 	}()
 	requestsCounter.WithLabelValues(strconv.Itoa(httpResponse.StatusCode), authReq.Method).Inc()
@@ -293,15 +290,41 @@ func (api *API) PreAuthorize(suffix string, r *http.Request) (httpResponse *http
 		return httpResponse, nil, nil
 	}
 
-	authResponse = &Response{}
+	authResponse := &Response{}
 	// The auth backend validated the client request and told us additional
 	// request metadata. We must extract this information from the auth
 	// response body.
 	if err := json.NewDecoder(httpResponse.Body).Decode(authResponse); err != nil {
-		return httpResponse, nil, fmt.Errorf("preAuthorizeHandler: decode authorization response: %v", err)
+		return nil, nil, fmt.Errorf("preAuthorizeHandler: decode authorization response: %v", err)
 	}
 
 	return httpResponse, authResponse, nil
+}
+
+// PreAuthorizeFixedPath makes an internal Workhorse API call to a fixed
+// path, using the HTTP headers of r.
+func (api *API) PreAuthorizeFixedPath(r *http.Request, method string, path string) (*Response, error) {
+	authReq, err := http.NewRequestWithContext(r.Context(), method, api.URL.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("construct auth request: %w", err)
+	}
+	authReq.Header = helper.HeaderClone(r.Header)
+
+	ignoredResponse, apiResponse, err := api.PreAuthorize(path, authReq)
+	if err != nil {
+		return nil, fmt.Errorf("PreAuthorize: %w", err)
+	}
+
+	// We don't need the contents of ignoredResponse but we are responsible
+	// for closing it. Part of the reason PreAuthorizeFixedPath exists is to
+	// hide this awkwardness.
+	ignoredResponse.Body.Close()
+
+	if apiResponse == nil {
+		return nil, errors.New("no api response on fixed path")
+	}
+
+	return apiResponse, nil
 }
 
 func (api *API) PreAuthorizeHandler(next HandleFunc, suffix string) http.Handler {

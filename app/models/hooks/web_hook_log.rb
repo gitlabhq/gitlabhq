@@ -26,6 +26,13 @@ class WebHookLog < ApplicationRecord
       .order(created_at: :desc)
   end
 
+  # Delete a batch of log records. Returns true if there may be more remaining.
+  def self.delete_batch_for(web_hook, batch_size:)
+    raise ArgumentError, 'batch_size is too small' if batch_size < 1
+
+    where(web_hook: web_hook).limit(batch_size).delete_all == batch_size
+  end
+
   def success?
     response_status =~ /^2/
   end

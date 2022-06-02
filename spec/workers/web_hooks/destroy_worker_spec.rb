@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WebHooks::DestroyWorker do
+  include AfterNextHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -20,23 +22,26 @@ RSpec.describe WebHooks::DestroyWorker do
       let!(:other_log) { create(:web_hook_log, web_hook: other_hook) }
 
       it "deletes the Web hook and logs", :aggregate_failures do
+        expect(WebHooks::LogDestroyWorker).to receive(:perform_async)
+
         expect { subject.perform(user.id, hook.id) }
-          .to change { WebHookLog.count }.from(2).to(1)
-          .and change { WebHook.count }.from(2).to(1)
+          .to change { WebHook.count }.from(2).to(1)
 
         expect(WebHook.find(other_hook.id)).to be_present
         expect(WebHookLog.find(other_log.id)).to be_present
       end
 
       it "raises and tracks an error if destroy failed" do
-        allow_next_instance_of(::WebHooks::DestroyService) do |instance|
-          expect(instance).to receive(:sync_destroy).with(anything).and_return({ status: :error, message: "failed" })
-        end
+        expect_next(::WebHooks::DestroyService)
+          .to receive(:sync_destroy).with(anything)
+          .and_return(ServiceResponse.error(message: "failed"))
 
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                                       .with(an_instance_of(::WebHooks::DestroyService::DestroyError), web_hook_id: hook.id)
-                                       .and_call_original
-        expect { subject.perform(user.id, hook.id) }.to raise_error(::WebHooks::DestroyService::DestroyError)
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_and_raise_exception)
+          .with(an_instance_of(described_class::DestroyError), { web_hook_id: hook.id })
+          .and_call_original
+
+        expect { subject.perform(user.id, hook.id) }.to raise_error(described_class::DestroyError)
       end
 
       context 'with unknown hook' do

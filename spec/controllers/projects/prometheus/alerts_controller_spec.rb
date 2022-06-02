@@ -53,57 +53,6 @@ RSpec.describe Projects::Prometheus::AlertsController do
     end
   end
 
-  describe 'GET #show' do
-    let(:alert) do
-      create(:prometheus_alert,
-             :with_runbook_url,
-             project: project,
-             environment: environment,
-             prometheus_metric: metric)
-    end
-
-    def make_request(opts = {})
-      get :show, params: request_params(
-        opts,
-        id: alert.prometheus_metric_id,
-        environment_id: environment
-      )
-    end
-
-    context 'when alert does not exist' do
-      it 'returns not_found' do
-        make_request(id: 0)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when alert exists' do
-      let(:alert_params) do
-        {
-          'id' => alert.id,
-          'title' => alert.title,
-          'query' => alert.query,
-          'operator' => alert.computed_operator,
-          'threshold' => alert.threshold,
-          'runbook_url' => alert.runbook_url,
-          'alert_path' => alert_path(alert)
-        }
-      end
-
-      it 'renders the alert' do
-        make_request
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to include(alert_params)
-      end
-
-      it_behaves_like 'unprivileged'
-      it_behaves_like 'project non-specific environment', :not_found
-      it_behaves_like 'project non-specific metric', :not_found
-    end
-  end
-
   describe 'POST #notify' do
     let(:alert_1) { build(:alert_management_alert, :prometheus, project: project) }
     let(:alert_2) { build(:alert_management_alert, :prometheus, project: project) }

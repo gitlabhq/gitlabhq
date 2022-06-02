@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
-import { GlBadge, GlPopover, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlBadge, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { mrStates, humanMRStates } from '../constants';
@@ -12,7 +12,7 @@ export default {
   components: {
     GlBadge,
     GlPopover,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     CiIcon,
   },
   mixins: [timeagoMixin],
@@ -93,9 +93,9 @@ export default {
 <template>
   <gl-popover :target="target" boundary="viewport" placement="top" show>
     <div class="mr-popover">
-      <div v-if="$apollo.queries.mergeRequest.loading">
-        <gl-skeleton-loading :lines="1" class="animation-container-small mt-1" />
-      </div>
+      <gl-skeleton-loader v-if="$apollo.queries.mergeRequest.loading" :height="15">
+        <rect width="250" height="15" rx="4" />
+      </gl-skeleton-loader>
       <div v-else-if="showDetails" class="d-flex align-items-center justify-content-between">
         <div class="d-inline-flex align-items-center">
           <gl-badge class="gl-mr-3" :variant="badgeVariant">

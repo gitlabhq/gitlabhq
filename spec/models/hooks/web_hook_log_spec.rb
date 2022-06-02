@@ -48,6 +48,62 @@ RSpec.describe WebHookLog do
     end
   end
 
+  describe '.delete_batch_for' do
+    let(:hook) { create(:project_hook) }
+
+    before do
+      create_list(:web_hook_log, 3, web_hook: hook)
+      create_list(:web_hook_log, 3)
+    end
+
+    subject { described_class.delete_batch_for(hook, batch_size: batch_size) }
+
+    shared_examples 'deletes batch of web hook logs' do
+      it { is_expected.to be(batch_size <= 3) }
+
+      it 'deletes min(batch_size, total) records' do
+        deleted = [batch_size, 3].min
+
+        expect { subject }.to change(described_class, :count).by(-deleted)
+      end
+    end
+
+    context 'when the batch size is less than one' do
+      let(:batch_size) { 0 }
+
+      it 'raises an argument error' do
+        expect { subject }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when the batch size is smaller than the total' do
+      let(:batch_size) { 2 }
+
+      include_examples 'deletes batch of web hook logs'
+    end
+
+    context 'when the batch size is equal to the total' do
+      let(:batch_size) { 3 }
+
+      include_examples 'deletes batch of web hook logs'
+    end
+
+    context 'when the batch size is greater than the total' do
+      let(:batch_size) { 1000 }
+
+      include_examples 'deletes batch of web hook logs'
+    end
+
+    it 'does not loop forever' do
+      batches = 0
+      batches += 1 while described_class.delete_batch_for(hook, batch_size: 1)
+
+      expect(hook.web_hook_logs).to be_none
+      expect(described_class.count).to eq 3
+      expect(batches).to eq 3 # true three times, stops at first false
+    end
+  end
+
   describe '#success?' do
     let(:web_hook_log) { build(:web_hook_log, response_status: status) }
 

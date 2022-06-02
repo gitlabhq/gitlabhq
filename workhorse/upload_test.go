@@ -68,7 +68,7 @@ func expectSignedRequest(t *testing.T, r *http.Request) {
 
 func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/authorize") {
+		if strings.HasSuffix(r.URL.Path, "/authorize") || r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
 			expectSignedRequest(t, r)
 
 			w.Header().Set("Content-Type", api.ResponseContentType)
@@ -154,6 +154,10 @@ func TestAcceleratedUpload(t *testing.T) {
 		t.Run(tt.resource, func(t *testing.T) {
 			ts := uploadTestServer(t,
 				func(r *http.Request) {
+					if r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
+						// Nothing to validate: this is a hard coded URL
+						return
+					}
 					resource := strings.TrimRight(tt.resource, "/")
 					// Validate %2F characters haven't been unescaped
 					require.Equal(t, resource+"/authorize", r.URL.String())
@@ -270,24 +274,23 @@ func TestUnacceleratedUploads(t *testing.T) {
 
 func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 	canary := "untrusted header passed by user"
+	multiPartBody, multiPartContentType, err := multipartBodyWithFile()
+	require.NoError(t, err)
+
 	testCases := []struct {
 		desc        string
 		contentType string
 		body        io.Reader
 		present     bool
 	}{
-		{"multipart with file", "", nil, true}, // placeholder
+		{"multipart with file", multiPartContentType, multiPartBody, true},
 		{"no multipart", "text/plain", nil, false},
 	}
-
-	var err error
-	testCases[0].body, testCases[0].contentType, err = multipartBodyWithFile()
-	require.NoError(t, err)
 
 	for _, tc := range testCases {
 		ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 			key := upload.RewrittenFieldsHeader
-			if tc.present {
+			if tc.present && r.URL.Path != "/api/v4/internal/workhorse/authorize_upload" {
 				require.Contains(t, r.Header, key)
 			} else {
 				require.NotContains(t, r.Header, key)

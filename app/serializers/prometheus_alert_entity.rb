@@ -13,10 +13,6 @@ class PrometheusAlertEntity < Grape::Entity
     prometheus_alert.computed_operator
   end
 
-  expose :alert_path do |prometheus_alert|
-    project_prometheus_alert_path(prometheus_alert.project, prometheus_alert.prometheus_metric_id, environment_id: prometheus_alert.environment.id, format: :json)
-  end
-
   private
 
   alias_method :prometheus_alert, :object

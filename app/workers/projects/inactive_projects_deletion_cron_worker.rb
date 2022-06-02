@@ -9,34 +9,53 @@ module Projects
     idempotent!
     data_consistency :always
     feature_category :compliance_management
+    urgency :low
 
-    INTERVAL = 2.seconds.to_i
+    # This cron worker is executed at an interval of 10 minutes.
+    # Maximum run time is kept as 4 minutes to avoid breaching maximum allowed execution latency of 5 minutes.
+    MAX_RUN_TIME = 4.minutes
+    LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY = 'last_processed_inactive_project_id'
+
+    TimeoutError = Class.new(StandardError)
 
     def perform
       return unless ::Gitlab::CurrentSettings.delete_inactive_projects?
 
+      @start_time ||= ::Gitlab::Metrics::System.monotonic_time
       admin_user = User.admins.active.first
 
       return unless admin_user
 
       notified_inactive_projects = Gitlab::InactiveProjectsDeletionWarningTracker.notified_projects
 
-      Project.inactive.without_deleted.find_each(batch_size: 100).with_index do |project, index| # rubocop: disable CodeReuse/ActiveRecord
-        next unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
+      project_id = last_processed_project_id
 
-        delay = index * INTERVAL
+      Project.where('projects.id > ?', project_id).each_batch(of: 100) do |batch| # rubocop: disable CodeReuse/ActiveRecord
+        inactive_projects = batch.inactive.without_deleted
 
-        with_context(project: project, user: admin_user) do
-          deletion_warning_email_sent_on = notified_inactive_projects["project:#{project.id}"]
+        inactive_projects.each do |project|
+          next unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
 
-          if send_deletion_warning_email?(deletion_warning_email_sent_on, project)
-            send_notification(delay, project, admin_user)
-          elsif deletion_warning_email_sent_on && delete_due_to_inactivity?(deletion_warning_email_sent_on)
-            Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
-            delete_project(project, admin_user)
+          with_context(project: project, user: admin_user) do
+            deletion_warning_email_sent_on = notified_inactive_projects["project:#{project.id}"]
+
+            if send_deletion_warning_email?(deletion_warning_email_sent_on, project)
+              send_notification(project, admin_user)
+            elsif deletion_warning_email_sent_on && delete_due_to_inactivity?(deletion_warning_email_sent_on)
+              Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
+              delete_project(project, admin_user)
+            end
+          end
+
+          if over_time?
+            save_last_processed_project_id(project.id)
+            raise TimeoutError
           end
         end
       end
+      reset_last_processed_project_id
+    rescue TimeoutError
+      # no-op
     end
 
     private
@@ -64,8 +83,30 @@ module Projects
       ::Projects::DestroyService.new(project, user, {}).async_execute
     end
 
-    def send_notification(delay, project, user)
-      ::Projects::InactiveProjectsDeletionNotificationWorker.perform_in(delay, project.id, deletion_date)
+    def send_notification(project, user)
+      ::Projects::InactiveProjectsDeletionNotificationWorker.perform_async(project.id, deletion_date)
+    end
+
+    def over_time?
+      (::Gitlab::Metrics::System.monotonic_time - @start_time) > MAX_RUN_TIME
+    end
+
+    def save_last_processed_project_id(project_id)
+      Gitlab::Redis::Cache.with do |redis|
+        redis.set(LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY, project_id)
+      end
+    end
+
+    def last_processed_project_id
+      Gitlab::Redis::Cache.with do |redis|
+        redis.get(LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY).to_i
+      end
+    end
+
+    def reset_last_processed_project_id
+      Gitlab::Redis::Cache.with do |redis|
+        redis.del(LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY)
+      end
     end
   end
 end

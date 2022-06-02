@@ -16,9 +16,9 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"gitlab.com/gitlab-org/labkit/log"
-
 	"golang.org/x/image/tiff"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
@@ -233,14 +233,14 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 		log.WithContextFields(ctx, log.Fields{
 			"filename":  filename,
 			"imageType": imageType,
-		}).Print("invalid content type, not running exiftool")
+		}).Info("invalid content type, not running exiftool")
 
 		return tmpfile, nil
 	}
 
 	log.WithContextFields(ctx, log.Fields{
 		"filename": filename,
-	}).Print("running exiftool to remove any metadata")
+	}).Info("running exiftool to remove any metadata")
 
 	cleaner, err := exif.NewCleaner(ctx, tmpfile)
 	if err != nil {
@@ -309,3 +309,35 @@ func (ea *eagerAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error)
 }
 
 var _ fileAuthorizer = &eagerAuthorizer{}
+
+type apiAuthorizer struct {
+	api *api.API
+}
+
+func (aa *apiAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error) {
+	return aa.api.PreAuthorizeFixedPath(
+		r,
+		"POST",
+		"/api/v4/internal/workhorse/authorize_upload",
+	)
+}
+
+var _ fileAuthorizer = &apiAuthorizer{}
+
+type testAuthorizer struct {
+	test   fileAuthorizer
+	actual fileAuthorizer
+}
+
+func (ta *testAuthorizer) AuthorizeFile(r *http.Request) (*api.Response, error) {
+	logger := log.WithRequest(r)
+	if response, err := ta.test.AuthorizeFile(r); err != nil {
+		logger.WithError(err).Error("test api preauthorize request failed")
+	} else {
+		logger.WithFields(log.Fields{
+			"temp_path": response.TempPath,
+		}).Info("test api preauthorize request")
+	}
+
+	return ta.actual.AuthorizeFile(r)
+}

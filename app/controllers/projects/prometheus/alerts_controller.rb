@@ -14,14 +14,10 @@ module Projects
       prepend_before_action :repository, :project_without_auth, only: [:notify]
 
       before_action :authorize_read_prometheus_alerts!, except: [:notify]
-      before_action :alert, only: [:show, :metrics_dashboard]
+      before_action :alert, only: [:metrics_dashboard]
 
       feature_category :incident_management
       urgency :low
-
-      def show
-        render json: serialize_as_json(alert)
-      end
 
       def notify
         token = extract_alert_manager_token(request)

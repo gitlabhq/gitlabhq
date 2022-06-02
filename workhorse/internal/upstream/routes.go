@@ -223,7 +223,7 @@ func configureRoutes(u *upstream) {
 	mimeMultipartUploader := upload.Multipart(api, signingProxy, preparer)
 
 	uploadPath := path.Join(u.DocumentRoot, "uploads/tmp")
-	tempfileMultipartProxy := upload.SkipRailsPreAuthMultipart(uploadPath, proxy, preparer)
+	tempfileMultipartProxy := upload.SkipRailsPreAuthMultipart(uploadPath, api, proxy, preparer)
 	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout)
 	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, redis.WatchKey, u.APICILongPollingDuration)
 

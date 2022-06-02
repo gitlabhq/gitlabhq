@@ -492,7 +492,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect do
         destroy_project(project, user)
       end.to change(WebHook, :count).by(-2)
-         .and change(WebHookLog, :count).by(-1)
     end
 
     context 'when an error is raised deleting webhooks' do

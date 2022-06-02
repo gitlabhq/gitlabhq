@@ -24,10 +24,18 @@ func Multipart(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 // where we cannot pre-authorize both because we don't know which Rails
 // endpoint to call, and because eagerly pre-authorizing would add too
 // much overhead.
-func SkipRailsPreAuthMultipart(tempPath string, h http.Handler, p Preparer) http.Handler {
+func SkipRailsPreAuthMultipart(tempPath string, myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		s := &SavedFileTracker{Request: r}
-		fa := &eagerAuthorizer{&api.Response{TempPath: tempPath}}
+
+		// We use testAuthorizer as a temporary measure. When
+		// https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/742 is done, we
+		// should only be using apiAuthorizer.
+		fa := &testAuthorizer{
+			test:   &apiAuthorizer{myAPI},
+			actual: &eagerAuthorizer{&api.Response{TempPath: tempPath}},
+		}
+
 		interceptMultipartFiles(w, r, h, s, fa, p)
 	})
 }

@@ -792,7 +792,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/reserved_names.md @fneill
 /doc/user/search/advanced_search.md @sselhorn
 /doc/user/search/global_search/advanced_search_syntax.md @sselhorn
-/doc/user/search/index.md @aqualls
+/doc/user/search/index.md @sselhorn
 /doc/user/shortcuts.md @aqualls
 /doc/user/snippets.md @aqualls
 /doc/user/ssh.md @eread

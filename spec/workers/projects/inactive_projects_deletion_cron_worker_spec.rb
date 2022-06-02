@@ -44,7 +44,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
       end
 
       it 'does not invoke Projects::InactiveProjectsDeletionNotificationWorker' do
-        expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_in)
+        expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
         expect(::Projects::DestroyService).not_to receive(:new)
 
         worker.perform
@@ -68,7 +68,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
         end
 
         it 'does not invoke Projects::InactiveProjectsDeletionNotificationWorker' do
-          expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_in)
+          expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
           expect(::Projects::DestroyService).not_to receive(:new)
 
           worker.perform
@@ -82,8 +82,6 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
       end
 
       context 'when feature flag is enabled', :clean_gitlab_redis_shared_state, :sidekiq_inline do
-        let_it_be(:delay) { anything }
-
         before do
           stub_feature_flags(inactive_projects_deletion: true)
         end
@@ -93,8 +91,8 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
             expect(redis).to receive(:hset).with('inactive_projects_deletion_warning_email_notified',
                                                  "project:#{inactive_large_project.id}", Date.current)
           end
-          expect(::Projects::InactiveProjectsDeletionNotificationWorker).to receive(:perform_in).with(
-            delay, inactive_large_project.id, deletion_date).and_call_original
+          expect(::Projects::InactiveProjectsDeletionNotificationWorker).to receive(:perform_async).with(
+            inactive_large_project.id, deletion_date).and_call_original
           expect(::Projects::DestroyService).not_to receive(:new)
 
           worker.perform
@@ -106,7 +104,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
                        Date.current.to_s)
           end
 
-          expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_in)
+          expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
           expect(::Projects::DestroyService).not_to receive(:new)
 
           worker.perform
@@ -118,7 +116,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
                        15.months.ago.to_date.to_s)
           end
 
-          expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_in)
+          expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
           expect(::Projects::DestroyService).to receive(:new).with(inactive_large_project, admin_user, {})
                                                              .at_least(:once).and_call_original
 
@@ -129,6 +127,34 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
           Gitlab::Redis::SharedState.with do |redis|
             expect(redis.hget('inactive_projects_deletion_warning_email_notified',
                               "project:#{inactive_large_project.id}")).to be_nil
+          end
+        end
+
+        context 'when the worker is running for more than 4 minutes' do
+          before do
+            subject.instance_variable_set(:@start_time, ::Gitlab::Metrics::System.monotonic_time - 5.minutes)
+          end
+
+          it 'stores the last processed inactive project_id in redis cache' do
+            Gitlab::Redis::Cache.with do |redis|
+              expect { worker.perform }
+                .to change { redis.get('last_processed_inactive_project_id') }.to(inactive_large_project.id.to_s)
+            end
+          end
+        end
+
+        context 'when the worker finishes processing in less than 4 minutes' do
+          before do
+            Gitlab::Redis::Cache.with do |redis|
+              redis.set('last_processed_inactive_project_id', inactive_large_project.id)
+            end
+          end
+
+          it 'clears the last processed inactive project_id from redis cache' do
+            Gitlab::Redis::Cache.with do |redis|
+              expect { worker.perform }
+                .to change { redis.get('last_processed_inactive_project_id') }.to(nil)
+            end
           end
         end
       end

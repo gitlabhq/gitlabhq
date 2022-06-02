@@ -627,7 +627,7 @@ Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_wo
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['cron'] ||= '2/17 * * * *'
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['job_class'] = 'Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker'
 Settings.cron_jobs['inactive_projects_deletion_cron_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '0 1 * * *'
+Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '*/10 * * * *'
 Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Projects::InactiveProjectsDeletionCronWorker'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'

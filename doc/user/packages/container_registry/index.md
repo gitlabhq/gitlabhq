@@ -113,7 +113,7 @@ To authenticate, you can use:
 Both of these require the minimum scope to be:
 
 - For read (pull) access, `read_registry`.
-- For write (push) access, `write_registry`.
+- For write (push) access, `write_registry` & `read_registry`.
 
 To authenticate, run the `docker` command. For example:
 

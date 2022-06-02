@@ -1,80 +1,119 @@
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import MRPopover from '~/issuable/popover/components/mr_popover.vue';
+import mergeRequestQuery from '~/issuable/popover/queries/merge_request.query.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('MR Popover', () => {
   let wrapper;
 
-  beforeEach(() => {
+  Vue.use(VueApollo);
+
+  const mrQueryResponse = {
+    data: {
+      project: {
+        __typename: 'Project',
+        id: '1',
+        mergeRequest: {
+          __typename: 'Merge Request',
+          id: 'gid://gitlab/Merge_Request/1',
+          createdAt: '2020-07-01T04:08:01Z',
+          state: 'opened',
+          title: 'MR title',
+          headPipeline: {
+            id: '1',
+            detailedStatus: {
+              id: '1',
+              icon: 'status_success',
+              group: 'success',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const mrQueryResponseWithoutDetailedStatus = {
+    data: {
+      project: {
+        __typename: 'Project',
+        id: '1',
+        mergeRequest: {
+          __typename: 'Merge Request',
+          id: 'gid://gitlab/Merge_Request/1',
+          createdAt: '2020-07-01T04:08:01Z',
+          state: 'opened',
+          title: 'MR title',
+          headPipeline: {
+            id: '1',
+            detailedStatus: null,
+          },
+        },
+      },
+    },
+  };
+
+  const mountComponent = ({
+    queryResponse = jest.fn().mockResolvedValue(mrQueryResponse),
+  } = {}) => {
     wrapper = shallowMount(MRPopover, {
+      apolloProvider: createMockApollo([[mergeRequestQuery, queryResponse]]),
       propsData: {
         target: document.createElement('a'),
         projectPath: 'foo/bar',
         iid: '1',
-        cachedTitle: 'MR Title',
+        cachedTitle: 'Cached Title',
       },
-      mocks: {
-        $apollo: {
-          queries: {
-            mergeRequest: {
-              loading: false,
-            },
-          },
-        },
-      },
+    });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  it('shows skeleton-loader while apollo is loading', () => {
+    mountComponent();
+
+    expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
+  });
+
+  describe('when loaded', () => {
+    beforeEach(() => {
+      mountComponent();
+      return waitForPromises();
+    });
+
+    it('shows opened time', () => {
+      expect(wrapper.text()).toContain('Opened 4 days ago');
+    });
+
+    it('shows title', () => {
+      expect(wrapper.find('h5').text()).toBe(mrQueryResponse.data.project.mergeRequest.title);
+    });
+
+    it('shows reference', () => {
+      expect(wrapper.text()).toContain('foo/bar!1');
+    });
+
+    it('shows CI Icon if there is pipeline data', async () => {
+      expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
     });
   });
 
-  it('shows skeleton-loader while apollo is loading', async () => {
-    wrapper.vm.$apollo.queries.mergeRequest.loading = true;
-
-    await nextTick();
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
-  describe('loaded state', () => {
-    it('matches the snapshot', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        mergeRequest: {
-          title: 'Updated Title',
-          state: 'opened',
-          createdAt: new Date(),
-          headPipeline: {
-            detailedStatus: {
-              group: 'success',
-              status: 'status_success',
-            },
-          },
-        },
+  describe('without detailed status', () => {
+    beforeEach(() => {
+      mountComponent({
+        queryResponse: jest.fn().mockResolvedValue(mrQueryResponseWithoutDetailedStatus),
       });
-
-      await nextTick();
-      expect(wrapper.element).toMatchSnapshot();
+      return waitForPromises();
     });
 
-    it('does not show CI Icon if there is no pipeline data', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        mergeRequest: {
-          state: 'opened',
-          headPipeline: null,
-          stateHumanName: 'Open',
-          title: 'Merge Request Title',
-          createdAt: new Date(),
-        },
-      });
-
-      await nextTick();
-      expect(wrapper.find(CiIcon).exists()).toBe(false);
-    });
-
-    it('falls back to cached MR title when request fails', async () => {
-      await nextTick();
-      expect(wrapper.text()).toContain('MR Title');
+    it('does not show CI icon if there is no pipeline data', async () => {
+      expect(wrapper.findComponent(CiIcon).exists()).toBe(false);
     });
   });
 });
