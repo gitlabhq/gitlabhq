@@ -14,6 +14,8 @@ import ListItem from './list_item';
 import OrderedList from './ordered_list';
 import Paragraph from './paragraph';
 import Strike from './strike';
+import TaskList from './task_list';
+import TaskItem from './task_item';
 
 export default Extension.create({
   addGlobalAttributes() {
@@ -35,6 +37,8 @@ export default Extension.create({
           OrderedList.name,
           Paragraph.name,
           Strike.name,
+          TaskList.name,
+          TaskItem.name,
         ],
         attributes: {
           sourceMarkdown: {

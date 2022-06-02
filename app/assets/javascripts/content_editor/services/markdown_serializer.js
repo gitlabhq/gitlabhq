@@ -60,6 +60,7 @@ import {
   renderPlayable,
   renderHTMLNode,
   renderContent,
+  renderBulletList,
   preserveUnchanged,
   bold,
   italic,
@@ -120,7 +121,7 @@ const defaultSerializerConfig = {
         state.wrapBlock('> ', null, node, () => state.renderContent(node));
       }
     }),
-    [BulletList.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.bullet_list),
+    [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
     [Diagram.name]: renderCodeBlock,
     [Division.name]: (state, node) => {
@@ -196,14 +197,14 @@ const defaultSerializerConfig = {
     [TableCell.name]: renderTableCell,
     [TableHeader.name]: renderTableCell,
     [TableRow.name]: renderTableRow,
-    [TaskItem.name]: (state, node) => {
+    [TaskItem.name]: preserveUnchanged((state, node) => {
       state.write(`[${node.attrs.checked ? 'x' : ' '}] `);
       state.renderContent(node);
-    },
-    [TaskList.name]: (state, node) => {
+    }),
+    [TaskList.name]: preserveUnchanged((state, node) => {
       if (node.attrs.numeric) renderOrderedList(state, node);
-      else defaultMarkdownSerializer.nodes.bullet_list(state, node);
-    },
+      else renderBulletList(state, node);
+    }),
     [Text.name]: defaultMarkdownSerializer.nodes.text,
     [Video.name]: renderPlayable,
     [WordBreak.name]: (state) => state.write('<wbr>'),

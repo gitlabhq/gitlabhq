@@ -6,7 +6,7 @@
 # For a list of all options, see https://docs.errata.ai/vale/styles.
 extends: conditional
 message: "'%s' is uppercase. Use lowercase or `backticks` if possible. Otherwise add this word to the rule's exception list."
-link: https://about.gitlab.com/handbook/marketing/growth-marketing/content/editorial-team/#acronyms
+link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-uppercase-acronym-test
 level: warning
 ignorecase: false
 # Ensures that the existence of 'first' implies the existence of 'second'.

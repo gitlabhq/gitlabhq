@@ -22,7 +22,7 @@
 import { Mark } from 'prosemirror-model';
 import { visitParents } from 'unist-util-visit-parents';
 import { toString } from 'hast-util-to-string';
-import { isFunction } from 'lodash';
+import { isFunction, noop } from 'lodash';
 
 /**
  * Merges two ProseMirror text nodes if both text nodes
@@ -268,17 +268,19 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
       selector: 'text',
       handle: (state, hastNode, parent) => {
         const { factorySpec } = state.top;
+        const { processText, wrapTextInParagraph } = factorySpec;
+        const { value: text } = hastNode;
 
-        if (/^\s+$/.test(hastNode.value)) {
+        if (/^\s+$/.test(text)) {
           return;
         }
 
-        if (factorySpec.wrapTextInParagraph === true) {
+        if (wrapTextInParagraph === true) {
           state.openNode(schema.nodeType('paragraph'), hastNode, getAttrs({}, parent, [], source));
-          state.addText(schema, hastNode.value);
+          state.addText(schema, isFunction(processText) ? processText(text) : text);
           state.closeNode();
         } else {
-          state.addText(schema, hastNode.value);
+          state.addText(schema, text);
         }
       },
     },
@@ -287,6 +289,7 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
     const factory = {
       selector: factorySpec.selector,
       skipChildren: factorySpec.skipChildren,
+      processText: factorySpec.processText,
     };
 
     if (factorySpec.type === 'block') {
@@ -335,6 +338,8 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
           state.addText(schema, hastNode.value);
         }
       };
+    } else if (factorySpec.type === 'ignore') {
+      factory.handle = noop;
     } else {
       throw new RangeError(
         `Unrecognized ProseMirror object type ${JSON.stringify(factorySpec.type)}`,
@@ -347,12 +352,12 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
   return factories;
 };
 
-const findFactory = (hastNode, factories) =>
+const findFactory = (hastNode, ancestors, factories) =>
   Object.entries(factories).find(([, factorySpec]) => {
     const { selector } = factorySpec;
 
     return isFunction(selector)
-      ? selector(hastNode)
+      ? selector(hastNode, ancestors)
       : [hastNode.tagName, hastNode.type].includes(selector);
   })?.[1];
 
@@ -408,6 +413,8 @@ const findFactory = (hastNode, factories) =>
  * 2. "inline": A ProseMirror node that doesn’t contain any children although
  *    it can have inline content like an image or a mention object.
  * 3. "mark": A ProseMirror mark.
+ * 4. "ignore": A hast node that should be ignored and won’t be mapped to a
+ *     ProseMirror node.
  *
  * **selector**
  *
@@ -417,8 +424,8 @@ const findFactory = (hastNode, factories) =>
  * that equals the string value.
  *
  * If you assign a function, the converter will invoke the function with
- * the hast node. The function should return `true` if the hastNode matches
- * the custom criteria implemented in the function
+ * the hast node and its ancestors. The function should return `true`
+ * if the hastNode matches the custom criteria implemented in the function
  *
  * **getAttrs**
  *
@@ -434,6 +441,12 @@ const findFactory = (hastNode, factories) =>
  * This property only applies to block nodes. If a block node contains text,
  * it will wrap that text in a paragraph. This is useful for ProseMirror block
  * nodes that don’t allow text directly such as list items and tables.
+ *
+ * **processText**
+ *
+ * This property only applies to block nodes. If a block node contains text,
+ * it allows applying a processing function to that text. This is useful when
+ * you can transform the text node, i.e trim(), substring(), etc.
  *
  * **skipChildren**
  *
@@ -461,7 +474,8 @@ export const createProseMirrorDocFromMdastTree = ({ schema, factorySpecs, tree, 
   const state = new HastToProseMirrorConverterState();
 
   visitParents(tree, (hastNode, ancestors) => {
-    const factory = findFactory(hastNode, proseMirrorNodeFactories);
+    const factory = findFactory(hastNode, ancestors, proseMirrorNodeFactories);
+    const parent = ancestors[ancestors.length - 1];
 
     if (!factory) {
       throw new Error(
@@ -470,8 +484,6 @@ export const createProseMirrorDocFromMdastTree = ({ schema, factorySpecs, tree, 
         }" not supported by this converter. Please, provide an specification.`,
       );
     }
-
-    const parent = ancestors[ancestors.length - 1];
 
     factory.handle(state, hastNode, parent);
 

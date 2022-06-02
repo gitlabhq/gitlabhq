@@ -1163,25 +1163,33 @@ Oranges are orange [^1]
   });
 
   it.each`
-    mark        | content                                    | modifiedContent
-    ${'bold'}   | ${'**bold**'}                              | ${'**bold modified**'}
-    ${'bold'}   | ${'__bold__'}                              | ${'__bold modified__'}
-    ${'bold'}   | ${'<strong>bold</strong>'}                 | ${'<strong>bold modified</strong>'}
-    ${'bold'}   | ${'<b>bold</b>'}                           | ${'<b>bold modified</b>'}
-    ${'italic'} | ${'_italic_'}                              | ${'_italic modified_'}
-    ${'italic'} | ${'*italic*'}                              | ${'*italic modified*'}
-    ${'italic'} | ${'<em>italic</em>'}                       | ${'<em>italic modified</em>'}
-    ${'italic'} | ${'<i>italic</i>'}                         | ${'<i>italic modified</i>'}
-    ${'link'}   | ${'[gitlab](https://gitlab.com)'}          | ${'[gitlab modified](https://gitlab.com)'}
-    ${'link'}   | ${'<a href="https://gitlab.com">link</a>'} | ${'<a href="https://gitlab.com">link modified</a>'}
-    ${'code'}   | ${'`code`'}                                | ${'`code modified`'}
-    ${'code'}   | ${'<code>code</code>'}                     | ${'<code>code modified</code>'}
-    ${'strike'} | ${'~~striked~~'}                           | ${'~~striked modified~~'}
-    ${'strike'} | ${'<del>striked</del>'}                    | ${'<del>striked modified</del>'}
-    ${'strike'} | ${'<strike>striked</strike>'}              | ${'<strike>striked modified</strike>'}
-    ${'strike'} | ${'<s>striked</s>'}                        | ${'<s>striked modified</s>'}
+    mark          | content                                    | modifiedContent
+    ${'bold'}     | ${'**bold**'}                              | ${'**bold modified**'}
+    ${'bold'}     | ${'__bold__'}                              | ${'__bold modified__'}
+    ${'bold'}     | ${'<strong>bold</strong>'}                 | ${'<strong>bold modified</strong>'}
+    ${'bold'}     | ${'<b>bold</b>'}                           | ${'<b>bold modified</b>'}
+    ${'italic'}   | ${'_italic_'}                              | ${'_italic modified_'}
+    ${'italic'}   | ${'*italic*'}                              | ${'*italic modified*'}
+    ${'italic'}   | ${'<em>italic</em>'}                       | ${'<em>italic modified</em>'}
+    ${'italic'}   | ${'<i>italic</i>'}                         | ${'<i>italic modified</i>'}
+    ${'link'}     | ${'[gitlab](https://gitlab.com)'}          | ${'[gitlab modified](https://gitlab.com)'}
+    ${'link'}     | ${'<a href="https://gitlab.com">link</a>'} | ${'<a href="https://gitlab.com">link modified</a>'}
+    ${'code'}     | ${'`code`'}                                | ${'`code modified`'}
+    ${'code'}     | ${'<code>code</code>'}                     | ${'<code>code modified</code>'}
+    ${'strike'}   | ${'~~striked~~'}                           | ${'~~striked modified~~'}
+    ${'strike'}   | ${'<del>striked</del>'}                    | ${'<del>striked modified</del>'}
+    ${'strike'}   | ${'<strike>striked</strike>'}              | ${'<strike>striked modified</strike>'}
+    ${'strike'}   | ${'<s>striked</s>'}                        | ${'<s>striked modified</s>'}
+    ${'list'}     | ${'- list item'}                           | ${'- list item modified'}
+    ${'list'}     | ${'* list item'}                           | ${'* list item modified'}
+    ${'list'}     | ${'+ list item'}                           | ${'+ list item modified'}
+    ${'list'}     | ${'- list item 1\n- list item 2'}          | ${'- list item 1\n- list item 2 modified'}
+    ${'list'}     | ${'2) list item'}                          | ${'2) list item modified'}
+    ${'list'}     | ${'1. list item'}                          | ${'1. list item modified'}
+    ${'taskList'} | ${'2) [ ] task list item'}                 | ${'2) [ ] task list item modified'}
+    ${'taskList'} | ${'2) [x] task list item'}                 | ${'2) [x] task list item modified'}
   `(
-    'preserves original $mark syntax when sourceMarkdown is available',
+    'preserves original $mark syntax when sourceMarkdown is available for $content',
     async ({ content, modifiedContent }) => {
       const { document } = await remarkMarkdownDeserializer().deserialize({
         schema: tiptapEditor.schema,

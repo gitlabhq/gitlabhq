@@ -14,6 +14,8 @@ import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
+import TaskList from '~/content_editor/extensions/task_list';
+import TaskItem from '~/content_editor/extensions/task_item';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 
@@ -36,6 +38,8 @@ const tiptapEditor = createTestEditor({
     OrderedList,
     Sourcemap,
     Strike,
+    TaskList,
+    TaskItem,
   ],
 });
 
@@ -57,6 +61,8 @@ const {
     listItem,
     orderedList,
     strike,
+    taskItem,
+    taskList,
   },
 } = createDocBuilder({
   tiptapEditor,
@@ -76,6 +82,8 @@ const {
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
     strike: { nodeType: Strike.name },
+    taskItem: { nodeType: TaskItem.name },
+    taskList: { nodeType: TaskList.name },
   },
 });
 
@@ -332,7 +340,7 @@ hard line break`,
 Heading
 one
 ======
-        `,
+      `,
       expectedDoc: doc(
         heading({ ...sourceAttrs('0:18', 'Heading\none\n======'), level: 1 }, 'Heading\none'),
       ),
@@ -342,7 +350,7 @@ one
 Heading
 two
 -------
-        `,
+      `,
       expectedDoc: doc(
         heading({ ...sourceAttrs('0:19', 'Heading\ntwo\n-------'), level: 2 }, 'Heading\ntwo'),
       ),
@@ -351,7 +359,7 @@ two
       markdown: `
 - List item 1
 - List item 2
-        `,
+      `,
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:27', '- List item 1\n- List item 2'),
@@ -370,7 +378,7 @@ two
       markdown: `
 * List item 1
 * List item 2
-        `,
+      `,
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:27', '* List item 1\n* List item 2'),
@@ -389,7 +397,7 @@ two
       markdown: `
 + List item 1
 + List item 2
-        `,
+      `,
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:27', '+ List item 1\n+ List item 2'),
@@ -408,7 +416,7 @@ two
       markdown: `
 1. List item 1
 1. List item 2
-        `,
+      `,
       expectedDoc: doc(
         orderedList(
           sourceAttrs('0:29', '1. List item 1\n1. List item 2'),
@@ -427,7 +435,7 @@ two
       markdown: `
 1. List item 1
 2. List item 2
-        `,
+      `,
       expectedDoc: doc(
         orderedList(
           sourceAttrs('0:29', '1. List item 1\n2. List item 2'),
@@ -446,7 +454,7 @@ two
       markdown: `
 1) List item 1
 2) List item 2
-        `,
+      `,
       expectedDoc: doc(
         orderedList(
           sourceAttrs('0:29', '1) List item 1\n2) List item 2'),
@@ -465,13 +473,13 @@ two
       markdown: `
 - List item 1
   - Sub list item 1
-        `,
+      `,
       expectedDoc: doc(
         bulletList(
           sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'),
           listItem(
             sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'),
-            paragraph(sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'), 'List item 1\n'),
+            paragraph(sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'), 'List item 1'),
             bulletList(
               sourceAttrs('16:33', '- Sub list item 1'),
               listItem(
@@ -489,7 +497,7 @@ two
 
   List item 1 paragraph 2
 - List item 2
-        `,
+      `,
       expectedDoc: doc(
         bulletList(
           sourceAttrs(
@@ -511,7 +519,7 @@ two
     {
       markdown: `
 > This is a blockquote
-        `,
+      `,
       expectedDoc: doc(
         blockquote(
           sourceAttrs('0:22', '> This is a blockquote'),
@@ -523,7 +531,7 @@ two
       markdown: `
 > - List item 1
 > - List item 2
-        `,
+      `,
       expectedDoc: doc(
         blockquote(
           sourceAttrs('0:31', '> - List item 1\n> - List item 2'),
@@ -547,7 +555,7 @@ code block
 
     const fn = () => 'GitLab';
 
-      `,
+        `,
       expectedDoc: doc(
         paragraph(sourceAttrs('0:10', 'code block'), 'code block'),
         codeBlock(
@@ -664,6 +672,90 @@ const fn = () => 'GitLab';
         paragraph(
           sourceAttrs('0:26', '<s>Strikedthrough text</s>'),
           strike(sourceAttrs('0:26', '<s>Strikedthrough text</s>'), 'Strikedthrough text'),
+        ),
+      ),
+    },
+    {
+      markdown: `
+- [ ] task list item 1
+- [ ] task list item 2
+      `,
+      expectedDoc: doc(
+        taskList(
+          {
+            numeric: false,
+            ...sourceAttrs('0:45', '- [ ] task list item 1\n- [ ] task list item 2'),
+          },
+          taskItem(
+            {
+              checked: false,
+              ...sourceAttrs('0:22', '- [ ] task list item 1'),
+            },
+            paragraph(sourceAttrs('0:22', '- [ ] task list item 1'), 'task list item 1'),
+          ),
+          taskItem(
+            {
+              checked: false,
+              ...sourceAttrs('23:45', '- [ ] task list item 2'),
+            },
+            paragraph(sourceAttrs('23:45', '- [ ] task list item 2'), 'task list item 2'),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+- [x] task list item 1
+- [x] task list item 2
+      `,
+      expectedDoc: doc(
+        taskList(
+          {
+            numeric: false,
+            ...sourceAttrs('0:45', '- [x] task list item 1\n- [x] task list item 2'),
+          },
+          taskItem(
+            {
+              checked: true,
+              ...sourceAttrs('0:22', '- [x] task list item 1'),
+            },
+            paragraph(sourceAttrs('0:22', '- [x] task list item 1'), 'task list item 1'),
+          ),
+          taskItem(
+            {
+              checked: true,
+              ...sourceAttrs('23:45', '- [x] task list item 2'),
+            },
+            paragraph(sourceAttrs('23:45', '- [x] task list item 2'), 'task list item 2'),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+1. [ ] task list item 1
+2. [ ] task list item 2
+      `,
+      expectedDoc: doc(
+        taskList(
+          {
+            numeric: true,
+            ...sourceAttrs('0:47', '1. [ ] task list item 1\n2. [ ] task list item 2'),
+          },
+          taskItem(
+            {
+              checked: false,
+              ...sourceAttrs('0:23', '1. [ ] task list item 1'),
+            },
+            paragraph(sourceAttrs('0:23', '1. [ ] task list item 1'), 'task list item 1'),
+          ),
+          taskItem(
+            {
+              checked: false,
+              ...sourceAttrs('24:47', '2. [ ] task list item 2'),
+            },
+            paragraph(sourceAttrs('24:47', '2. [ ] task list item 2'), 'task list item 2'),
+          ),
         ),
       ),
     },
