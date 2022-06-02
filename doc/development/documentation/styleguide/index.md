@@ -86,7 +86,7 @@ move in this direction, so we can address these issues:
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.
 
-GitLab uses these [topic type templates](../structure.md).
+GitLab uses these [topic types](../structure.md).
 
 ### Link instead of repeating text
 
@@ -142,6 +142,25 @@ Hard-coded HTML is valid, although it's discouraged from being used. HTML is per
 - Advanced tables are necessary.
 - Special styling is required.
 - Reviewed and approved by a technical writer.
+
+### Headings in Markdown
+
+Each documentation page begins with a level 1 heading (`#`). This becomes the `h1` element when
+the page is rendered to HTML. There can be only **one** level 1 heading per page.
+
+- For each subsection, increment the heading level. In other words, increment the number of `#` characters
+  in front of the heading.
+- Do not skip a level. For example: `##` > `####`.
+- Leave one blank line before and after the heading.
+
+When you change heading text, the anchor link changes. To avoid broken links:
+
+- Do not use step numbers in headings.
+- When possible, do not use words that might change in the future.
+
+Also, do not use links as part of heading text.
+
+See also [heading guidelines for specific topic types](../structure.md).
 
 ### Markdown Rules
 
@@ -647,45 +666,6 @@ Valid for Markdown content only, not for front matter entries:
 For other punctuation rules, refer to the
 [Pajamas Design System Punctuation section](https://design.gitlab.com/content/punctuation/).
 This is overridden by the [documentation-specific punctuation rules](#punctuation).
-
-## Headings
-
-In the Markdown document:
-
-- Add one H1 (`#`) at the start of the page. The `h1` becomes the document `<title>`.
-- After the H1, follow the order `h2` > `h3` > `h4` > `h5` > `h6`.
-- Do not skip a level. For example: `h2` > `h4`.
-- Leave one blank line before and after the heading.
-
-For the heading text, **do**:
-
-- Be clear and direct. Make every word count.
-- Use active, imperative verbs for [tasks](../structure.md#task). For example, `Create an issue`.
-- Use `ing` (gerund) verbs only when you need a topic that introduces tasks. For example, `Configuring GDK`.
-- Use nouns for [concepts](../structure.md#concept). For example, `GDK dependency management`. If a noun is
-  ambiguous, you can add a gerund. For example, `Documenting versions` instead of `Versions`.
-- Talk about what the product does, realistically but from a positive perspective. Instead of
-  `Limitations`, move the content near other similar information. If you must, you can
-  use the title `Known issues`.
-- Use articles and prepositions.
-- Add the [product badge](#product-tier-badges) that corresponds to the license tier.
-- Follow [capitalization](#capitalization) guidelines.
-
-For the heading text, **do not**:
-
-- Use generic words like `Overview` or `Use cases`. Instead, incorporate
-  the information under a concept heading.
-- Use `How it works`. Incorporate this information under a concept, or use a
-  noun followed by `workflow`. For example, `Merge request workflow`.
-- Use `Important Notes`. Incorporate this information closer to where it belongs.
-- Use numbers to indicate steps. If the numbers change, the anchor links changes,
-  which eventually leads to dead links. If you think you must add numbers in headings,
-  at least discuss it with a writer in the merge request.
-- Use words that might change in the future. Changing
-  a heading changes its anchor URL, which affects other linked pages.
-- Repeat text from earlier headings. For example, instead of `Troubleshooting merge requests`,
-  use `Troubleshooting`.
-- Use links.
 
 ### Anchor links
 

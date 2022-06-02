@@ -15008,9 +15008,6 @@ msgstr ""
 msgid "Estimated"
 msgstr ""
 
-msgid "Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
-msgstr ""
-
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -44193,10 +44190,8 @@ msgstr ""
 msgid "Your subscription expired!"
 msgstr ""
 
-msgid "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seat remaining."
-msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seats remaining."
-msgstr[0] ""
-msgstr[1] ""
+msgid "Your subscription has %{remaining_seats_count} out of %{total_seats_count} seats remaining. Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
+msgstr ""
 
 msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance. To use Free tier, remove your current license."
 msgstr ""

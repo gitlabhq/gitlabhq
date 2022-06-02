@@ -4,6 +4,6 @@ classes:
 - Ci::InstanceVariable
 feature_categories:
 - pipeline_authoring
-description: TODO
+description: CI/CD variables available to all projects and groups in an instance.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30156
 milestone: '13.0'

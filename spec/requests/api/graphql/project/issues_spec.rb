@@ -635,6 +635,18 @@ RSpec.describe 'getting an issue list for a project' do
 
       include_examples 'N+1 query check'
     end
+    context 'when requesting `closed_as_duplicate_of`' do
+      let(:requested_fields) { 'closedAsDuplicateOf { id }' }
+      let(:issue_a_dup) { create(:issue, project: project) }
+      let(:issue_b_dup) { create(:issue, project: project) }
+
+      before do
+        issue_a.update!(duplicated_to_id: issue_a_dup)
+        issue_b.update!(duplicated_to_id: issue_a_dup)
+      end
+
+      include_examples 'N+1 query check'
+    end
   end
 
   def issues_ids
