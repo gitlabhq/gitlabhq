@@ -6,6 +6,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Removals by version
 
+In each release, GitLab removes features that were deprecated in an earlier release.
+Some features cause breaking changes when they are removed.
+
 <!-- vale off -->
 
 <!--
@@ -28,7 +31,7 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
-## 15.0
+## Removed in 15.0
 
 ### API: `stale` status returned instead of `offline` or `not_connected`
 
@@ -622,7 +625,7 @@ We are removing bundler-audit from Dependency Scanning on May 22, 2022 in 15.0. 
 
 If you have explicitly excluded bundler-audit using the `DS_EXCLUDED_ANALYZERS` variable, then you will be able to remove the reference to bundler-audit. If you have customized your pipeline’s Dependency Scanning configuration related to the `bundler-audit-dependency_scanning` job, then you will want to switch to `gemnasium-dependency_scanning`. If you have not used the `DS_EXCLUDED_ANALYZERS` to reference bundler-audit or customized your template specifically for bundler-audit, you will not need to take any action.
 
-## 14.10
+## Removed in 14.10
 
 ### Permissions change for downloading Composer dependencies
 
@@ -634,7 +637,7 @@ The GitLab Composer repository can be used to push, search, fetch metadata about
 
 Downloading Composer dependencies without authentication is deprecated in GitLab 14.9, and will be removed in GitLab 15.0. Starting with GitLab 15.0, you must authenticate to download Composer dependencies.
 
-## 14.9
+## Removed in 14.9
 
 ### Integrated error tracking disabled by default
 
@@ -646,7 +649,7 @@ In GitLab 14.4, GitLab released an integrated error tracking backend that replac
 
 For additional background on this removal, please reference [Disable Integrated Error Tracking by Default](https://gitlab.com/groups/gitlab-org/-/epics/7580). If you have feedback please add a comment to [Feedback: Removal of Integrated Error Tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/355493).
 
-## 14.6
+## Removed in 14.6
 
 ### Limit the number of triggered pipeline to 25K in free tier
 
@@ -656,7 +659,7 @@ A large amount of triggered pipelines in a single project impacts the performanc
 
 The [release-cli](https://gitlab.com/gitlab-org/release-cli) will be released as a [generic package](https://gitlab.com/gitlab-org/release-cli/-/packages) starting in GitLab 14.2. We will continue to deploy it as a binary to S3 until GitLab 14.5 and stop distributing it in S3 in GitLab 14.6.
 
-## 14.3
+## Removed in 14.3
 
 ### Introduced limit of 50 tags for jobs
 
@@ -672,14 +675,14 @@ The support for [`gitlab_pages['use_legacy_storage']` setting](https://docs.gitl
 
 In 14.0 we removed [`domain_config_source`](https://docs.gitlab.com/ee/administration/pages/index.html#domain-source-configuration-before-140) which had been previously deprecated, and allowed users to specify disk storage. In 14.0 we added `use_legacy_storage` as a **temporary** flag to unblock upgrades, and allow us to debug issues with our users and it was deprecated and communicated for removal in 14.3.
 
-## 14.2
+## Removed in 14.2
 
 ### Max job log file size of 100 MB
 
 GitLab values efficiency for all users in our wider community of contributors, so we're always working hard to make sure the application performs at a high level with a lovable UX.
   In GitLab 14.2, we have introduced a [job log file size limit](https://docs.gitlab.com/ee/administration/instance_limits.html#maximum-file-size-for-job-logs), set to 100 megabytes by default. Administrators of self-managed GitLab instances can customize this to any value. All jobs that exceed this limit are dropped and marked as failed, helping prevent performance impacts or over-use of resources. This ensures that everyone using GitLab has the best possible experience.
 
-## 14.1
+## Removed in 14.1
 
 ### Remove support for `prometheus.listen_address` and `prometheus.enable`
 
@@ -705,7 +708,7 @@ The minimum supported browser versions are:
 - Chromium 84.
 - Microsoft Edge 84.
 
-## 14.0
+## Removed in 14.0
 
 ### Auto Deploy CI template v1
 

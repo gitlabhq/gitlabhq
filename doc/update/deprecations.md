@@ -61,6 +61,19 @@ The `maintainer_note` argument in the `POST /runners` REST endpoint was deprecat
 The `maintainer_note` argument will be removed in GitLab 16.0.
 
 </div>
+
+<div class="deprecation removal-153">
+
+### Vulnerability Report sort by Tool
+
+Planned removal: GitLab <span class="removal-milestone">15.3</span> (2022-08-22)
+
+The ability to sort the Vulnerability Report by the `Tool` column (scan type) was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
+of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
+by this value remains performant. Due to very low usage of the `Tool` column for sorting, the feature flag will instead be removed in
+GitLab 15.3 to simplify the codebase and prevent any unwanted performance degradation.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

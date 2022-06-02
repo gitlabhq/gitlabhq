@@ -6,6 +6,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Removals by version
 
+In each release, GitLab removes features that were deprecated in an earlier release.
+Some features cause breaking changes when they are removed.
+
 <!-- vale off -->
 
 <!--
@@ -29,7 +32,7 @@ For removal reviewers (Technical Writers only):
 -->
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
-## <%= milestone %>
+## Removed in <%= milestone %>
     <%- entries.select{|entry| entry["removal_milestone"] == milestone}.each do |removal| %>
 ### <%= removal["name"]%>
 <% if removal["breaking_change"] -%>

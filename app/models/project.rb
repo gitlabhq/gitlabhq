@@ -602,6 +602,7 @@ class Project < ApplicationRecord
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
+  scope :with_group, -> { includes(:group) }
   scope :with_import_state, -> { includes(:import_state) }
   scope :include_project_feature, -> { includes(:project_feature) }
   scope :include_integration, -> (integration_association_name) { includes(integration_association_name) }
