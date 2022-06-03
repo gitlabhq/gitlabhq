@@ -30,11 +30,6 @@
   redis_slot: edit
   expiry: 29
   aggregation: daily
-- name: g_edit_by_sse
-  category: ide_edit
-  redis_slot: edit
-  expiry: 29
-  aggregation: daily
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit

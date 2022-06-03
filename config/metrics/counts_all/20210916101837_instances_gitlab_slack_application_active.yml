@@ -10,7 +10,7 @@ value_type: number
 status: active
 milestone: "14.3"
 introduced_by_url: https://gilab.com/gitlab-org/gitlab/-/merge_requests/70496
-time_frame: 7d
+time_frame: all
 data_source: database
 data_category: optional
 performance_indicator_type: []

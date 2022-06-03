@@ -780,7 +780,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/gitlab/usage/metrics/query_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/designs_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/snippet_counter_spec.rb'
-    - 'spec/lib/gitlab/usage_data_counters/static_site_editor_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/wiki_page_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_queries_spec.rb'
     - 'spec/lib/mattermost/session_spec.rb'

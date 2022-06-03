@@ -5462,6 +5462,19 @@ RSpec.describe Ci::Build do
       subject
     end
 
+    context 'with deployment' do
+      let(:environment) { create(:environment) }
+      let(:build) { create(:ci_build, :with_deployment, environment: environment.name, pipeline: pipeline) }
+
+      it 'updates the deployment status', :aggregate_failures do
+        expect(build.deployment).to receive(:sync_status_with).with(build).and_call_original
+
+        subject
+
+        expect(build.deployment.reload.status).to eq("failed")
+      end
+    end
+
     context 'with queued builds' do
       let(:traits) { [:queued] }
 

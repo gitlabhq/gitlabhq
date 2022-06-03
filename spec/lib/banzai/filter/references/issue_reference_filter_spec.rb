@@ -93,7 +93,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
     it 'includes default classes' do
       doc = reference_filter("Issue #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
 
     it 'includes a data-project attribute' do
@@ -110,6 +110,14 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
       expect(link).to have_attribute('data-issue')
       expect(link.attr('data-issue')).to eq issue.id.to_s
+    end
+
+    it 'includes data attributes for issuable popover' do
+      doc = reference_filter("See #{reference}")
+      link = doc.css('a').first
+
+      expect(link.attr('data-project-path')).to eq project.full_path
+      expect(link.attr('data-iid')).to eq issue.iid.to_s
     end
 
     it 'includes a data-original attribute' do
@@ -201,7 +209,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     it 'includes default classes' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
@@ -253,7 +261,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     it 'includes default classes' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
@@ -305,7 +313,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     it 'includes default classes' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
@@ -347,7 +355,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     it 'includes default classes' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
   end
 
@@ -378,7 +386,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     it 'includes default classes' do
       doc = reference_filter("Fixed (#{reference_link}.)")
 
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
   end
 
@@ -409,7 +417,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     it 'includes default classes' do
       doc = reference_filter("Fixed (#{reference_link}.)")
 
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
   end
 

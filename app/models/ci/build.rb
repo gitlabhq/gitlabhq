@@ -1083,6 +1083,8 @@ module Ci
         all_runtime_metadata.delete_all
       end
 
+      deployment&.sync_status_with(self)
+
       Gitlab::AppLogger.info(
         message: 'Build doomed',
         class: self.class.name,
