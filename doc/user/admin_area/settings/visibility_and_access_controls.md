@@ -142,7 +142,9 @@ To restrict visibility levels for projects, snippets, and selected pages:
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
    If you restrict the **Public** level:
    - User profiles are only visible to logged in users via the Web interface.
-   - User attributes are only visible to authenticated users via the GraphQL API.
+   - User attributes via the GraphQL API are:
+     - Not visible in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020).
+     - Only visible to authenticated users between [GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33195) and GitLab 15.0.
 1. Select **Save changes**.
 
 For more details on project visibility, see

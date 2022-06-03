@@ -160,7 +160,7 @@ export const TAB_QUERY_PARAM_VALUES = {
  * This user state value comes from the User model
  * see the state machine in app/models/user.rb
  */
-export const USER_STATE_BLOCKED_PENDING_APPROVAL = 'blocked_pending_approval';
+export const USER_STATE_BLOCKED = 'blocked_pending_approval';
 
 /**
  * This and following member state constants' values
@@ -170,8 +170,8 @@ export const MEMBER_STATE_CREATED = 0;
 export const MEMBER_STATE_AWAITING = 1;
 export const MEMBER_STATE_ACTIVE = 2;
 
-export const BADGE_LABELS_AWAITING_USER_SIGNUP = __('Awaiting user signup');
-export const BADGE_LABELS_PENDING_OWNER_ACTION = __('Pending owner action');
+export const BADGE_LABELS_AWAITING_SIGNUP = __('Awaiting user signup');
+export const BADGE_LABELS_PENDING = __('Pending owner action');
 
 export const DAYS_TO_EXPIRE_SOON = 7;
 

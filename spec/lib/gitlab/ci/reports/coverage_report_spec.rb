@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::CoverageReports do
+RSpec.describe Gitlab::Ci::Reports::CoverageReport do
   let(:coverage_report) { described_class.new }
 
   it { expect(coverage_report.files).to eq({}) }

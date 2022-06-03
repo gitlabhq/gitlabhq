@@ -10,7 +10,7 @@ module Gitlab
 
       attr_reader :marker_ranges
       attr_writer :text, :rich_text
-      attr_accessor :index, :old_pos, :new_pos, :line_code, :type
+      attr_accessor :index, :old_pos, :new_pos, :line_code, :type, :embedded_image
 
       def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil, rich_text: nil)
         @text = text

@@ -14,6 +14,7 @@ module Gitlab
           LOG_IPYNBDIFF_TIMEOUT = 'IPYNB_DIFF_TIMEOUT'
           LOG_IPYNBDIFF_INVALID = 'IPYNB_DIFF_INVALID'
           LOG_IPYNBDIFF_TRUNCATED = 'IPYNB_DIFF_TRUNCATED'
+          EMBEDDED_IMAGE_PATTERN = '    ![](data:image'
 
           attr_reader :source_diff
 
@@ -69,7 +70,6 @@ module Gitlab
               Timeout.timeout(timeout_time) do
                 IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
                                raise_if_invalid_nb: true,
-                               hide_images: true,
                                diffy_opts: { include_diff_info: true })&.tap do
                   log_event(LOG_IPYNBDIFF_GENERATED)
                 end
@@ -109,6 +109,9 @@ module Gitlab
             line.type = "#{line.type || 'unchanged'}-nomappinginraw" unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
 
             line.line_code = line_code(line)
+
+            line.rich_text = image_as_rich_text(line)
+
             line
           end
 
@@ -151,6 +154,18 @@ module Gitlab
             Gitlab::AppLogger.info({ message: message })
             Gitlab::ErrorTracking.log_exception(error) if error
             nil
+          end
+
+          def image_as_rich_text(line)
+            # Strip the initial +, -, or space for the diff context
+            line_text = line.text[1..]
+
+            if line_text.starts_with?(EMBEDDED_IMAGE_PATTERN)
+              image_body = line_text.delete_prefix(EMBEDDED_IMAGE_PATTERN).delete_suffix(')')
+              "<img src=\"data:image#{CGI.escapeHTML(image_body)}\">".html_safe
+            else
+              line.rich_text
+            end
           end
         end
       end

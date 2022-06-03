@@ -74,3 +74,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GitAccessProject.prepend_mod_with('Gitlab::GitAccessProject')

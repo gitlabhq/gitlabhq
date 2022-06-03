@@ -2,6 +2,8 @@
 
 module Resolvers
   class UserResolver < BaseResolver
+    include Gitlab::Graphql::Authorize::AuthorizeResource
+
     description 'Retrieve a single user'
 
     type Types::UserType, null: true
@@ -23,6 +25,8 @@ module Resolvers
     end
 
     def resolve(id: nil, username: nil)
+      authorize!
+
       if id
         GitlabSchema.object_from_id(id, expected_type: User)
       else
@@ -38,6 +42,12 @@ module Resolvers
           loader.call(user.username, user)
         end
       end
+    end
+
+    def authorize!
+      return unless Feature.enabled?(:require_auth_for_graphql_user_resolver)
+
+      raise_resource_not_available_error! unless context[:current_user].present?
     end
   end
 end

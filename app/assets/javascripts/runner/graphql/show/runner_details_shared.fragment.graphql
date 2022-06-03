@@ -1,0 +1,39 @@
+fragment RunnerDetailsShared on CiRunner {
+  __typename
+  id
+  shortSha
+  runnerType
+  active
+  accessLevel
+  runUntagged
+  locked
+  ipAddress
+  executorName
+  architectureName
+  platformName
+  description
+  maximumTimeout
+  jobCount
+  tagList
+  createdAt
+  status(legacyMode: null)
+  contactedAt
+  version
+  editAdminUrl
+  userPermissions {
+    updateRunner
+    deleteRunner
+  }
+  groups {
+    # Only a single group can be loaded here, while projects
+    # are loaded separately using the query with pagination
+    # parameters `runner_projects.query.graphql`.
+    nodes {
+      id
+      avatarUrl
+      name
+      fullName
+      webUrl
+    }
+  }
+}

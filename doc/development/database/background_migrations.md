@@ -503,6 +503,6 @@ View the production Sidekiq log and filter for:
 - `json.meta.caller_id: <MyBackgroundMigrationSchedulingMigrationClassName>`
 - `json.args: <MyBackgroundMigrationClassName>`
 
-Looking at the `json.error_class`, `json.error_message` and `json.error_backtrace` values may be helpful in understanding why the jobs failed.
+Looking at the `json.exception.class`, `json.exception.message`, `json.exception.backtrace`, and `json.exception.sql` values may be helpful in understanding why the jobs failed.
 
 Depending on when and how the failure occurred, you may find other helpful information by filtering with `json.class: <MyBackgroundMigrationClassName>`.

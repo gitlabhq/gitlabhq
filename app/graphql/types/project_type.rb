@@ -4,6 +4,8 @@ module Types
   class ProjectType < BaseObject
     graphql_name 'Project'
 
+    connection_type_class(Types::CountableConnectionType)
+
     authorize :read_project
 
     expose_permissions Types::PermissionTypes::Project

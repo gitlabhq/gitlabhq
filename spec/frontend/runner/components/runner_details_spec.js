@@ -1,8 +1,8 @@
 import { GlSprintf, GlIntersperse, GlTab } from '@gitlab/ui';
-import { createWrapper, ErrorWrapper } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { useFakeDate } from 'helpers/fake_date';
+import { findDd } from 'helpers/dl_locator_helper';
 import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner/constants';
 
 import RunnerDetails from '~/runner/components/runner_details.vue';
@@ -23,20 +23,6 @@ describe('RunnerDetails', () => {
   const mockOneHourAgo = '2021-01-15T11:00:00Z';
 
   useFakeDate(mockNow);
-
-  /**
-   * Find the definition (<dd>) that corresponds to this term (<dt>)
-   * @param {string} dtLabel - Label for this value
-   * @returns Wrapper
-   */
-  const findDd = (dtLabel) => {
-    const dt = wrapper.findByText(dtLabel).element;
-    const dd = dt.nextElementSibling;
-    if (dt.tagName === 'DT' && dd.tagName === 'DD') {
-      return createWrapper(dd, {});
-    }
-    return ErrorWrapper(dtLabel);
-  };
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
   const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
@@ -108,7 +94,7 @@ describe('RunnerDetails', () => {
       });
 
       it(`displays expected value "${expectedValue}"`, () => {
-        expect(findDd(field).text()).toBe(expectedValue);
+        expect(findDd(field, wrapper).text()).toBe(expectedValue);
       });
     });
 
@@ -123,7 +109,7 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
+        expect(findDd('Tags', wrapper).text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
       });
 
       it('displays "None" when runner has no tags', () => {
@@ -134,7 +120,7 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('None');
+        expect(findDd('Tags', wrapper).text().replace(/\s+/g, ' ')).toBe('None');
       });
     });
 

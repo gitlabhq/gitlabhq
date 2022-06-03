@@ -41,11 +41,17 @@ Use the following template to help you get started. Be sure to list any
 required attributes first in the table.
 
 ````markdown
-## Descriptive title
+## API name
 
 > Version history note.
 
 One or two sentence description of what endpoint does.
+
+### Method title
+
+> Version history note.
+
+Description of the method.
 
 ```plaintext
 METHOD /endpoint
@@ -83,8 +89,40 @@ Example response:
 ```
 ````
 
-Adjust the [version history note accordingly](versions.md#add-a-version-history-item)
-to describe the GitLab release that introduced the API call.
+## Version history
+
+Add [version history](versions.md#documenting-version-specific-features)
+to describe new or updated API calls.
+
+To add version history for an individual attribute, include it in the version history
+for the section. For example:
+
+```markdown
+### Edit a widget
+
+> `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
+```
+
+## Attribute deprecation
+
+To deprecate an attribute:
+
+1. Add a version history note.
+
+   ```markdown
+   > - `widget_name` [deprecated](<link-to-issue>) in GitLab 14.7.
+   ```
+
+1. Add inline deprecation text to the description.
+
+   ```markdown
+   | Attribute     | Type   | Required               | Description                                  |
+   |:--------------|:-------|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
+   | `widget_name` | string | **{dotted-circle}** No | [Deprecated](<link-to-issue>) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
+   ```
+
+1. Optional. To widely announce the change, or if it's a breaking change,
+   [update the deprecations and removals documentation](../deprecation_guidelines/#update-the-deprecations-and-removals-documentation).
 
 ## Method description
 

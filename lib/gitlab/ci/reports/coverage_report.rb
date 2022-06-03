@@ -3,7 +3,7 @@
 module Gitlab
   module Ci
     module Reports
-      class CoverageReports
+      class CoverageReport
         attr_reader :files
 
         def initialize

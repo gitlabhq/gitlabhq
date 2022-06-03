@@ -77,6 +77,15 @@ describe('InputCopyToggleVisibility', () => {
       expect(event.preventDefault).toHaveBeenCalled();
     });
 
+    it('emits `copy` event when manually copied the token', () => {
+      expect(wrapper.emitted('copy')).toBeUndefined();
+
+      findFormInput().element.dispatchEvent(createCopyEvent());
+
+      expect(wrapper.emitted('copy')).toHaveLength(1);
+      expect(wrapper.emitted('copy')[0]).toEqual([]);
+    });
+
     describe('visibility toggle button', () => {
       it('renders a reveal button', () => {
         const revealButton = findRevealButton();

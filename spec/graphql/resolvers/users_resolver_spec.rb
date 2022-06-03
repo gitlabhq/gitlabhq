@@ -14,14 +14,6 @@ RSpec.describe Resolvers::UsersResolver do
   end
 
   describe '#resolve' do
-    it 'generates an error when read_users_list is not authorized' do
-      expect(Ability).to receive(:allowed?).with(current_user, :read_users_list).and_return(false)
-
-      expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
-        resolve_users
-      end
-    end
-
     context 'when no arguments are passed' do
       it 'returns all users' do
         expect(resolve_users).to contain_exactly(user1, user2, current_user)
@@ -79,8 +71,26 @@ RSpec.describe Resolvers::UsersResolver do
         end
       end
 
-      it 'allows to search by username' do
-        expect(resolve_users(args: { usernames: [user1.username] })).to contain_exactly(user1)
+      it 'prohibits search by username' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_users(args: { usernames: [user1.username] })
+        end
+      end
+
+      context 'require_auth_for_graphql_user_resolver feature flag is disabled' do
+        before do
+          stub_feature_flags(require_auth_for_graphql_user_resolver: false)
+        end
+
+        it 'prohibits search without usernames passed' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+            resolve_users
+          end
+        end
+
+        it 'allows to search by username' do
+          expect(resolve_users(args: { usernames: [user1.username] })).to contain_exactly(user1)
+        end
       end
     end
   end

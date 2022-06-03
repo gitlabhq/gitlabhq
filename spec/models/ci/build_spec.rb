@@ -4481,7 +4481,7 @@ RSpec.describe Ci::Build do
   describe '#collect_coverage_reports!' do
     subject { build.collect_coverage_reports!(coverage_report) }
 
-    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReports.new }
+    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReport.new }
 
     it { expect(coverage_report.files).to eq({}) }
 

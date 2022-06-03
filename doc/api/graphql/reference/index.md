@@ -7779,6 +7779,7 @@ The connection type for [`Project`](#project).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="projectconnectionedges"></a>`edges` | [`[ProjectEdge]`](#projectedge) | A list of edges. |
 | <a id="projectconnectionnodes"></a>`nodes` | [`[Project]`](#project) | A list of nodes. |
 | <a id="projectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

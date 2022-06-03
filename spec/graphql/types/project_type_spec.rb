@@ -42,6 +42,34 @@ RSpec.describe GitlabSchema.types['Project'] do
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
+  describe 'count' do
+    let_it_be(:user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          projects {
+              count
+              edges {
+                node {
+                  id
+              }
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    it 'returns valid projects count' do
+      create(:project, namespace: user.namespace)
+      create(:project, namespace: user.namespace)
+
+      expect(subject.dig('data', 'projects', 'count')).to eq(2)
+    end
+  end
+
   describe 'container_registry_enabled' do
     let_it_be(:project, reload: true) { create(:project, :public) }
     let_it_be(:user) { create(:user) }

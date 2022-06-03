@@ -224,6 +224,16 @@ actors.
 Feature.enabled?(:some_feature, group)
 ```
 
+Multiple actors can be passed together in a comma-separated form:
+
+```shell
+/chatops run feature set --project=gitlab-org/gitlab,example-org/example-project some_feature true
+
+/chatops run feature set --group=gitlab-org,example-org some_feature true
+
+/chatops run feature set --namespace=gitlab-org,example-org some_feature true
+```
+
 Lastly, to verify that the feature is deemed stable in as many cases as possible,
 you should fully roll out the feature by enabling the flag **globally** by running:
 

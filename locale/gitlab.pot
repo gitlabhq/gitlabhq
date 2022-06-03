@@ -32681,6 +32681,9 @@ msgstr ""
 msgid "Runners|Active"
 msgstr ""
 
+msgid "Runners|Add notes, like who owns the runner or what it should be used for."
+msgstr ""
+
 msgid "Runners|All"
 msgstr ""
 
@@ -32804,6 +32807,9 @@ msgid "Runners|Last contact"
 msgstr ""
 
 msgid "Runners|Locked to this project"
+msgstr ""
+
+msgid "Runners|Maintenance note"
 msgstr ""
 
 msgid "Runners|Maximum job timeout"

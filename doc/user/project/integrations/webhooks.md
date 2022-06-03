@@ -40,7 +40,9 @@ including:
 ## Group webhooks **(PREMIUM)**
 
 You can configure a group webhook, which is triggered by events
-that occur across all projects in the group.
+that occur across all projects in the group. If you configure identical webhooks
+in a group and a project, they are both triggered by an event in the
+project.
 
 Group webhooks can also be configured to listen for events that are
 specific to a group, including:
@@ -171,7 +173,8 @@ work you must have Ruby installed.
    ruby print_http_body.rb 8000
    ```
 
-1. In GitLab, add your webhook receiver as `http://my.host:8000/`.
+1. In GitLab, [configure the webhook](#configure-a-webhook-in-gitlab) and add your
+   receiver's URL, for example, `http://receiver.example.com:8000/`.
 
 1. Select **Test**. You should see something like this in the console:
 

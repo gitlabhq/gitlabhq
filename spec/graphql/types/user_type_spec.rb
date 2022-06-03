@@ -91,8 +91,8 @@ RSpec.describe GitlabSchema.types['User'] do
         context 'when requester is nil' do
           let(:current_user) { nil }
 
-          it 'returns `****`' do
-            expect(user_name).to eq('****')
+          it 'returns nothing' do
+            expect(user_name).to be_nil
           end
         end
 
@@ -134,8 +134,8 @@ RSpec.describe GitlabSchema.types['User'] do
           context 'when requester is nil' do
             let(:current_user) { nil }
 
-            it 'returns `****`' do
-              expect(user_name).to eq('****')
+            it 'returns nothing' do
+              expect(user_name).to be_nil
             end
           end
 

@@ -101,6 +101,8 @@ export default {
       this.$emit('copy');
     },
     handleFormInputCopy(event) {
+      this.handleCopyButtonClick();
+
       if (this.computedValueIsVisible) {
         return;
       }

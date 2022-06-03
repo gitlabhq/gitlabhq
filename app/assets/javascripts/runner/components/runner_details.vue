@@ -18,6 +18,8 @@ export default {
     GlTab,
     GlIntersperse,
     RunnerDetail,
+    RunnerMaintenanceNoteDetail: () =>
+      import('ee_component/runner/components/runner_maintenance_note_detail.vue'),
     RunnerGroups,
     RunnerProjects,
     RunnerJobs,
@@ -106,6 +108,11 @@ export default {
                 />
               </template>
             </runner-detail>
+
+            <runner-maintenance-note-detail
+              class="gl-pt-4 gl-border-t-gray-100 gl-border-t-1 gl-border-t-solid"
+              :value="runner.maintenanceNoteHtml"
+            />
           </dl>
         </div>
 

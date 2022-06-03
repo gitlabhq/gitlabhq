@@ -6,7 +6,40 @@ RSpec.describe Resolvers::UserResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
+    let_it_be(:current_user) { nil }
     let_it_be(:user) { create(:user) }
+
+    shared_examples 'queries user' do
+      context 'authenticated access' do
+        let_it_be(:current_user) { create(:user) }
+
+        it 'returns the correct user' do
+          expect(
+            resolve_user(args)
+          ).to eq(user)
+        end
+      end
+
+      context 'unauthenticated access' do
+        it 'forbids search' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+            resolve_user(args)
+          end
+        end
+
+        context 'require_auth_for_graphql_user_resolver feature flag is disabled' do
+          before do
+            stub_feature_flags(require_auth_for_graphql_user_resolver: false)
+          end
+
+          it 'returns the correct user' do
+            expect(
+              resolve_user(args)
+            ).to eq(user)
+          end
+        end
+      end
+    end
 
     context 'when neither an ID or a username is provided' do
       it 'generates an ArgumentError' do
@@ -23,25 +56,21 @@ RSpec.describe Resolvers::UserResolver do
     end
 
     context 'by username' do
-      it 'returns the correct user' do
-        expect(
-          resolve_user(username: user.username)
-        ).to eq(user)
+      include_examples "queries user" do
+        let(:args) { { username: user.username } }
       end
     end
 
     context 'by ID' do
-      it 'returns the correct user' do
-        expect(
-          resolve_user(id: user.to_global_id)
-        ).to eq(user)
+      include_examples "queries user" do
+        let(:args) { { id: user.to_global_id } }
       end
     end
   end
 
   private
 
-  def resolve_user(args = {})
-    sync(resolve(described_class, args: args))
+  def resolve_user(args = {}, context = { current_user: current_user })
+    sync(resolve(described_class, args: args, ctx: context))
   end
 end

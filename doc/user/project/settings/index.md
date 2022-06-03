@@ -224,7 +224,7 @@ This alternative ensures the compliance pipeline does not re-start the parent pi
 
 ## Configure project visibility, features, and permissions
 
-To configure project permissions:
+To configure visibility, features, and permissions for a project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
@@ -233,27 +233,6 @@ To configure project permissions:
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
 1. Use the [toggles](#project-feature-settings) to enable or disable features in the project.
 1. Select **Save changes**.
-
-When you disable a feature, the following additional features are disabled:
-
-- If you disable the **Issues** feature, project users cannot use:
-  - **Issue Boards**
-  - **Service Desk**
-  - Project users can still access **Milestones** from merge requests.
-
-- If you disable **Issues** and **Merge Requests**, project users cannot use:
-  - **Labels**
-  - **Milestones**
-
-- If you disable **Repository**, project users cannot access:
-  - **Merge requests**
-  - **CI/CD**
-  - **Container Registry**
-  - **Git Large File Storage**
-  - **Packages**
-
-- Metrics dashboard access requires reading project environments and deployments.
-  Users with access to the metrics dashboard can also access environments and deployments.
 
 ### Project feature settings
 
@@ -277,6 +256,27 @@ Use the toggles to enable or disable features in the project.
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/). |
 | **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
+
+When you disable a feature, the following additional features are also disabled:
+
+- If you disable the **Issues** feature, project users cannot use:
+  - **Issue Boards**
+  - **Service Desk**
+  - Project users can still access **Milestones** from merge requests.
+
+- If you disable **Issues** and **Merge Requests**, project users cannot use:
+  - **Labels**
+  - **Milestones**
+
+- If you disable **Repository**, project users cannot access:
+  - **Merge requests**
+  - **CI/CD**
+  - **Container Registry**
+  - **Git Large File Storage**
+  - **Packages**
+
+- Metrics dashboard access requires reading project environments and deployments.
+  Users with access to the metrics dashboard can also access environments and deployments.
 
 ## Disabling the CVE ID request button **(FREE SAAS)**
 

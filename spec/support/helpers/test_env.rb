@@ -53,7 +53,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => 'a867a602',
+    'add-ipython-files'                  => '4963fef',
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',

@@ -59,6 +59,21 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
 
+      it 'logs the normalized SQL query for statement timeouts' do
+        travel_to(timestamp) do
+          expect(logger).to receive(:info).with(start_payload)
+          expect(logger).to receive(:warn).with(
+            include('exception.sql' => 'SELECT "users".* FROM "users" WHERE "users"."id" = $1 AND "users"."foo" = $2')
+          )
+
+          expect do
+            call_subject(job, 'test_queue') do
+              raise ActiveRecord::StatementInvalid.new(sql: 'SELECT "users".* FROM "users" WHERE "users"."id" = 1 AND "users"."foo" = 2')
+            end
+          end.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+
       it 'logs the root cause of an Sidekiq::JobRetry::Skip exception in the job' do
         travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
@@ -100,8 +115,8 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
             include(
               'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',
               'job_status' => 'fail',
-              'error_class' => 'Sidekiq::JobRetry::Skip',
-              'error_message' => 'Sidekiq::JobRetry::Skip'
+              'exception.class' => 'Sidekiq::JobRetry::Skip',
+              'exception.message' => 'Sidekiq::JobRetry::Skip'
             )
           )
           expect(subject).to receive(:log_job_start).and_call_original

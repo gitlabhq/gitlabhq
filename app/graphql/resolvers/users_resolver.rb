@@ -47,8 +47,12 @@ module Resolvers
     end
 
     def authorize!(usernames)
-      authorized = Ability.allowed?(context[:current_user], :read_users_list)
-      authorized &&= usernames.present? if context[:current_user].blank?
+      if Feature.enabled?(:require_auth_for_graphql_user_resolver)
+        authorized = context[:current_user].present?
+      else
+        authorized = Ability.allowed?(context[:current_user], :read_users_list)
+        authorized &&= usernames.present? if context[:current_user].blank?
+      end
 
       raise_resource_not_available_error! unless authorized
     end

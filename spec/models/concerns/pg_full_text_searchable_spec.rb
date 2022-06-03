@@ -99,6 +99,17 @@ RSpec.describe PgFullTextSearchable do
     it 'does not support searching by non-Latin characters' do
       expect(model_class.pg_full_text_search('日本')).to be_empty
     end
+
+    context 'when search term has a URL' do
+      let(:with_url) { model_class.create!(project: project, title: 'issue with url', description: 'sample url,https://gitlab.com/gitlab-org/gitlab') }
+
+      it 'allows searching by full URL, ignoring the scheme' do
+        with_url.update_search_data!
+
+        expect(model_class.pg_full_text_search('https://gitlab.com/gitlab-org/gitlab')).to contain_exactly(with_url)
+        expect(model_class.pg_full_text_search('gopher://gitlab.com/gitlab-org/gitlab')).to contain_exactly(with_url)
+      end
+    end
   end
 
   describe '#update_search_data!' do

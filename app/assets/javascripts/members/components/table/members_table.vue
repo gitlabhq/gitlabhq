@@ -12,9 +12,9 @@ import {
   TAB_QUERY_PARAM_VALUES,
   MEMBER_STATE_AWAITING,
   MEMBER_STATE_ACTIVE,
-  USER_STATE_BLOCKED_PENDING_APPROVAL,
-  BADGE_LABELS_AWAITING_USER_SIGNUP,
-  BADGE_LABELS_PENDING_OWNER_ACTION,
+  USER_STATE_BLOCKED,
+  BADGE_LABELS_AWAITING_SIGNUP,
+  BADGE_LABELS_PENDING,
 } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
@@ -162,7 +162,7 @@ export default {
       );
     },
     /**
-     * Returns whether the user is awaiting root approval
+     * Returns whether the user is blocked awaiting root approval
      *
      * This checks User.state exposed via MemberEntity
      *
@@ -170,11 +170,11 @@ export default {
      * @see {@link ~/app/serializers/member_entity.rb}
      * @returns {boolean}
      */
-    isUserPendingRootApproval(memberInviteMetadata) {
-      return memberInviteMetadata?.userState === USER_STATE_BLOCKED_PENDING_APPROVAL;
+    isUserBlocked(memberInviteMetadata) {
+      return memberInviteMetadata?.userState === USER_STATE_BLOCKED;
     },
     /**
-     * Returns whether the member is awaiting owner action
+     * Returns whether the member is awaiting state
      *
      * This checks Member.state exposed via MemberEntity
      *
@@ -183,16 +183,13 @@ export default {
      * @see {@link ~/app/serializers/member_entity.rb}
      * @returns {boolean}
      */
-    isMemberPendingOwnerAction(memberState) {
+    isMemberAwaiting(memberState) {
       return memberState === MEMBER_STATE_AWAITING;
     },
     isUserAwaiting(memberInviteMetadata, memberState) {
-      return (
-        this.isUserPendingRootApproval(memberInviteMetadata) ||
-        this.isMemberPendingOwnerAction(memberState)
-      );
+      return this.isUserBlocked(memberInviteMetadata) || this.isMemberAwaiting(memberState);
     },
-    shouldAddPendingOwnerActionBadge(memberInviteMetadata, memberState) {
+    shouldAddPendingBadge(memberInviteMetadata, memberState) {
       return (
         this.isUserAwaiting(memberInviteMetadata, memberState) &&
         !this.isNewUser(memberInviteMetadata)
@@ -209,11 +206,11 @@ export default {
      */
     inviteBadge(memberInviteMetadata, memberState) {
       if (this.isNewUser(memberInviteMetadata, memberState)) {
-        return BADGE_LABELS_AWAITING_USER_SIGNUP;
+        return BADGE_LABELS_AWAITING_SIGNUP;
       }
 
-      if (this.shouldAddPendingOwnerActionBadge(memberInviteMetadata, memberState)) {
-        return BADGE_LABELS_PENDING_OWNER_ACTION;
+      if (this.shouldAddPendingBadge(memberInviteMetadata, memberState)) {
+        return BADGE_LABELS_PENDING;
       }
 
       return '';
