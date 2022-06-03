@@ -12,6 +12,7 @@ import Vue from 'vue';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issues/constants';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -66,7 +67,7 @@ export default {
     issuableType: {
       type: String,
       required: false,
-      default: 'issue',
+      default: IssuableType.Issue,
     },
     updateUrl: {
       type: String,
@@ -177,7 +178,9 @@ export default {
           onError: this.taskListUpdateError.bind(this),
         });
 
-        this.renderSortableLists();
+        if (this.issuableType === IssuableType.Issue) {
+          this.renderSortableLists();
+        }
       }
     },
     renderSortableLists() {
@@ -185,6 +188,10 @@ export default {
 
       const lists = document.querySelectorAll('.description ul, .description ol');
       lists.forEach((list) => {
+        if (list.children.length <= 1) {
+          return;
+        }
+
         Array.from(list.children).forEach((listItem) => {
           listItem.prepend(this.createDragIconElement());
           this.addPointerEventListeners(listItem);
@@ -211,13 +218,18 @@ export default {
     },
     addPointerEventListeners(listItem) {
       const pointeroverListener = (event) => {
-        if (isDragging() || this.isUpdating) {
+        const dragIcon = event.target.closest('li').querySelector('.drag-icon');
+        if (!dragIcon || isDragging() || this.isUpdating) {
           return;
         }
-        event.target.closest('li').querySelector('.drag-icon').style.visibility = 'visible'; // eslint-disable-line no-param-reassign
+        dragIcon.style.visibility = 'visible';
       };
       const pointeroutListener = (event) => {
-        event.target.closest('li').querySelector('.drag-icon').style.visibility = 'hidden'; // eslint-disable-line no-param-reassign
+        const dragIcon = event.target.closest('li').querySelector('.drag-icon');
+        if (!dragIcon) {
+          return;
+        }
+        dragIcon.style.visibility = 'hidden';
       };
 
       // We use pointerover/pointerout instead of CSS so that when we hover over a

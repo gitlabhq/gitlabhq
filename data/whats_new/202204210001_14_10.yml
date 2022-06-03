@@ -24,7 +24,9 @@
   release: 14.10
 - title: "Escalating manually created incidents"
   body: |
-    In GitLab 13.10, we [released](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/issues/6) the GitLab Runner Operator for the Red Hat OpenShift container platform for Kubernetes. That release provided OpenShift users with the automation and management capabilities of the Operator Framework and simplified the ongoing management of runners in an OpenShift Kubernetes cluster. Available starting in 14.10 is a GitLab Runner Operator v1.7.0 that you can use in non-OpenShift Kubernetes clusters. This GitLab Runner Operator is available on [OperatorHub.io](https://operatorhub.io/operator/gitlab-runner-operator).
+    Incident Management is set up to trigger escalation policies for new alerts. In this scenario, the on-call responder who is paged can end the paging by acknowledging the alert. If the responder changes the status back to triggered, we restart the escalation policy and begin paging again. When a user creates an incident manually, there is no associated alert and therefore no way to page on-call responders.
+
+    This release enables paging on manually created incidents. Responders now have the ability to acknowledge the page on incidents, or restart paging by resetting the status to triggered, just as you can for alerts.
   stage: monitor
   self-managed: true
   gitlab-com: true

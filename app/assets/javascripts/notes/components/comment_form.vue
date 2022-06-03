@@ -111,7 +111,7 @@ export default {
       return this.getNoteableData.current_user.can_create_note;
     },
     canSetConfidential() {
-      return this.getNoteableData.current_user.can_update;
+      return this.getNoteableData.current_user.can_update && (this.isIssue || this.isEpic);
     },
     issueActionButtonTitle() {
       const openOrClose = this.isOpen ? 'close' : 'reopen';
@@ -165,6 +165,9 @@ export default {
     },
     isIssue() {
       return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.ISSUE_NOTEABLE_TYPE;
+    },
+    isEpic() {
+      return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.EPIC_NOTEABLE_TYPE;
     },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);

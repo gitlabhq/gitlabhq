@@ -1,5 +1,5 @@
 variables:
-  AUTO_DEPLOY_IMAGE_VERSION: 'v2.25.0'
+  AUTO_DEPLOY_IMAGE_VERSION: 'v2.28.2'
 
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"

@@ -156,6 +156,9 @@ gemnasium-python-dependency_scanning:
 
 bundler-audit-dependency_scanning:
   extends: .ds-analyzer
+  variables:
+    DS_ANALYZER_NAME: "bundler-audit"
+    DS_MAJOR_VERSION: 2
   script:
     - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
     - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/347491"
@@ -165,6 +168,9 @@ bundler-audit-dependency_scanning:
 
 retire-js-dependency_scanning:
   extends: .ds-analyzer
+  variables:
+    DS_ANALYZER_NAME: "retire.js"
+    DS_MAJOR_VERSION: 2
   script:
     - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.0"
     - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/289830"

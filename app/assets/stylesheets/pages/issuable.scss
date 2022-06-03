@@ -769,8 +769,12 @@
 
 .add-issuable-form-input-wrapper {
   &.focus {
-    border-color: $blue-300;
-    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
+    border-color: $gray-700;
+    @include gl-focus;
+
+    input {
+      @include gl-shadow-none;
+    }
   }
 
   .gl-show-field-errors &.form-control:not(textarea) {

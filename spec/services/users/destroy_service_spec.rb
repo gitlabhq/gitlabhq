@@ -215,6 +215,27 @@ RSpec.describe Users::DestroyService do
       end
     end
 
+    context 'deletions with inherited group owners' do
+      let(:group) { create(:group, :nested) }
+      let(:user) { create(:user) }
+      let(:inherited_owner) { create(:user) }
+
+      before do
+        group.parent.add_owner(inherited_owner)
+        group.add_owner(user)
+
+        service.execute(user, delete_solo_owned_groups: true)
+      end
+
+      it 'does not delete the group' do
+        expect(Group.exists?(id: group)).to be_truthy
+      end
+
+      it 'deletes the user' do
+        expect(User.exists?(id: user)).to be_falsey
+      end
+    end
+
     context 'migrating associated records' do
       let!(:issue) { create(:issue, author: user) }
 

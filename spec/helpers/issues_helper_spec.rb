@@ -302,7 +302,7 @@ RSpec.describe IssuesHelper do
         is_anonymous_search_disabled: 'true',
         is_issue_repositioning_disabled: 'true',
         is_project: 'true',
-        is_public_visibility_restricted: 'false',
+        is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
         markdown_help_path: help_page_path('user/markdown'),
@@ -335,6 +335,16 @@ RSpec.describe IssuesHelper do
     context 'when user is anonymous' do
       it_behaves_like 'issues list data' do
         let(:current_user) { nil }
+      end
+    end
+
+    context 'when restricted visibility levels is nil' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:restricted_visibility_levels).and_return(nil)
+      end
+
+      it_behaves_like 'issues list data' do
+        let(:current_user) { double.as_null_object }
       end
     end
   end

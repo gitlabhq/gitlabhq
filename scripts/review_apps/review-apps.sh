@@ -248,7 +248,6 @@ function download_chart() {
   helm repo add gitlab https://charts.gitlab.io
 
   echoinfo "Building the gitlab chart's dependencies..."
-  helm dependency build "gitlab-${GITLAB_HELM_CHART_REF}"
 }
 
 function base_config_changed() {

@@ -3740,7 +3740,7 @@ RSpec.describe User do
     end
 
     context 'has owned groups' do
-      let_it_be(:group) { create(:group) }
+      let(:group) { create(:group) }
 
       before do
         group.add_owner(user)
@@ -3749,11 +3749,23 @@ RSpec.describe User do
       context 'not solo owner' do
         let_it_be(:user2) { create(:user) }
 
-        before do
-          group.add_owner(user2)
+        context 'with another direct owner' do
+          before do
+            group.add_owner(user2)
+          end
+
+          it { is_expected.to be_empty }
         end
 
-        it { is_expected.to be_empty }
+        context 'with an inherited owner' do
+          let_it_be(:group) { create(:group, :nested) }
+
+          before do
+            group.parent.add_owner(user2)
+          end
+
+          it { is_expected.to be_empty }
+        end
       end
 
       context 'solo owner' do

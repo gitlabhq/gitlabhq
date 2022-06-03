@@ -24,7 +24,7 @@ module Gitlab
 
           instrumented_payload = Gitlab::Usage::ServicePing::InstrumentedPayload.new(instrumented_metrics_key_paths, output_method).build
 
-          old_payload.deep_merge(instrumented_payload)
+          old_payload.with_indifferent_access.deep_merge(instrumented_payload)
         end
 
         def all_metrics_values(cached)

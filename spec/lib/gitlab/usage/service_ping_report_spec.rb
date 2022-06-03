@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_caching do
   include UsageDataHelpers
 
-  let(:usage_data) { { uuid: "1111", counts: { issue: 0 } } }
+  let(:usage_data) { { uuid: "1111", counts: { issue: 0 } }.deep_stringify_keys }
 
   before do
     allow_next_instance_of(Gitlab::Usage::ServicePing::PayloadKeysProcessor) do |instance|
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
   context 'all_metrics_values' do
     it 'generates the service ping when there are no missing values' do
       expect(Gitlab::UsageData).to receive(:data).and_return(usage_data)
-      expect(described_class.for(output: :all_metrics_values)).to eq({ uuid: "1111", counts: { issue: 0 } })
+      expect(described_class.for(output: :all_metrics_values)).to eq({ uuid: "1111", counts: { issue: 0 } }.deep_stringify_keys)
     end
 
     it 'generates the service ping with the missing values' do
@@ -33,7 +33,24 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
       end
 
       expect(Gitlab::UsageData).to receive(:data).and_return(usage_data)
-      expect(described_class.for(output: :all_metrics_values)).to eq({ uuid: "1111", counts: { issue: 0, boards: 1 } })
+      expect(described_class.for(output: :all_metrics_values)).to eq({ uuid: "1111", counts: { issue: 0, boards: 1 } }.deep_stringify_keys)
+    end
+
+    context 'with usage data payload with symbol keys and instrumented payload with string keys' do
+      let(:usage_data) { { uuid: "1111", counts: { issue: 0 } } }
+
+      it 'correctly merges string and symbol keys' do
+        expect_next_instance_of(Gitlab::Usage::ServicePing::PayloadKeysProcessor, usage_data) do |instance|
+          expect(instance).to receive(:missing_instrumented_metrics_key_paths).and_return(['counts.boards'])
+        end
+
+        expect_next_instance_of(Gitlab::Usage::ServicePing::InstrumentedPayload, ['counts.boards'], :with_value) do |instance|
+          expect(instance).to receive(:build).and_return({ 'counts' => { 'boards' => 1 } })
+        end
+
+        expect(Gitlab::UsageData).to receive(:data).and_return(usage_data)
+        expect(described_class.for(output: :all_metrics_values)).to eq({ uuid: "1111", counts: { issue: 0, boards: 1 } }.deep_stringify_keys)
+      end
     end
   end
 
@@ -54,9 +71,9 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
   end
 
   context 'when using cached' do
-    context 'for cached: true' do
-      let(:new_usage_data) { { uuid: "1112" } }
+    let(:new_usage_data) { { 'uuid' => '1112' } }
 
+    context 'for cached: true' do
       it 'caches the values' do
         allow(Gitlab::UsageData).to receive(:data).and_return(usage_data, new_usage_data)
 
@@ -78,8 +95,6 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
     end
 
     context 'when no caching' do
-      let(:new_usage_data) { { uuid: "1112" } }
-
       it 'returns fresh data' do
         allow(Gitlab::UsageData).to receive(:data).and_return(usage_data, new_usage_data)
 
