@@ -190,6 +190,8 @@ To pull images from the Dependency Proxy, you must:
 
 ### GitLab deploy token
 
+> Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_variable_for_group_gitlab_deploy_token`. Disabled by default.
+
 There's a special case when it comes to deploy tokens. If a user creates one
 named `gitlab-deploy-token`, the username and token of the deploy token is
 automatically exposed to the CI/CD jobs as CI/CD variables: `CI_DEPLOY_USER`
@@ -203,9 +205,10 @@ docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 ```
 
 NOTE:
-The special handling for the `gitlab-deploy-token` deploy token is not
-implemented for group deploy tokens. To make the group-level deploy token available for
-CI/CD jobs, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` variables should be set under **Settings** to the name and token of the group deploy token respectively.
+In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token
+does not work for group deploy tokens. To make the group-level deploy token available
+for CI/CD jobs, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables must be
+set in **Settings > CI/CD > Variables** to the name and token of the group deploy token.
 
 ## Troubleshooting
 

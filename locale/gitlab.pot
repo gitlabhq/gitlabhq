@@ -22362,6 +22362,9 @@ msgstr ""
 msgid "Last edited by %{link_start}%{avatar} %{name}%{link_end}"
 msgstr ""
 
+msgid "Last event"
+msgstr ""
+
 msgid "Last item before this page loaded in your browser:"
 msgstr ""
 
@@ -33856,9 +33859,6 @@ msgid "SecurityOrchestration|Enabled"
 msgstr ""
 
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
-msgstr ""
-
-msgid "SecurityOrchestration|Group level policy"
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."

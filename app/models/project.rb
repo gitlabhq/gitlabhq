@@ -2509,7 +2509,13 @@ class Project < ApplicationRecord
   end
 
   def gitlab_deploy_token
-    @gitlab_deploy_token ||= deploy_tokens.gitlab_deploy_token
+    strong_memoize(:gitlab_deploy_token) do
+      if Feature.enabled?(:ci_variable_for_group_gitlab_deploy_token, self)
+        deploy_tokens.gitlab_deploy_token || group&.gitlab_deploy_token
+      else
+        deploy_tokens.gitlab_deploy_token
+      end
+    end
   end
 
   def any_lfs_file_locks?
@@ -2566,7 +2572,7 @@ class Project < ApplicationRecord
   end
 
   def leave_pool_repository
-    pool_repository&.mark_obsolete_if_last(repository) && update_column(:pool_repository_id, nil)
+    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
   end
 
   def link_pool_repository

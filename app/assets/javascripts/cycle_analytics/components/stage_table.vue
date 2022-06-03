@@ -13,6 +13,7 @@ import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import {
   NOT_ENOUGH_DATA_ERROR,
+  FIELD_KEY_TITLE,
   PAGINATION_SORT_FIELD_END_EVENT,
   PAGINATION_SORT_FIELD_DURATION,
   PAGINATION_SORT_DIRECTION_ASC,
@@ -22,7 +23,8 @@ import TotalTime from './total_time.vue';
 
 const DEFAULT_WORKFLOW_TITLE_PROPERTIES = {
   thClass: 'gl-w-half',
-  key: PAGINATION_SORT_FIELD_END_EVENT,
+  key: FIELD_KEY_TITLE,
+  sortable: false,
 };
 
 const WORKFLOW_COLUMN_TITLES = {
@@ -132,14 +134,16 @@ export default {
       return [
         this.workflowTitle,
         {
-          key: PAGINATION_SORT_FIELD_DURATION,
-          label: __('Time'),
-          thClass: 'gl-w-half',
+          key: PAGINATION_SORT_FIELD_END_EVENT,
+          label: __('Last event'),
+          sortable: this.sortable,
         },
-      ].map((field) => ({
-        ...field,
-        sortable: this.sortable,
-      }));
+        {
+          key: PAGINATION_SORT_FIELD_DURATION,
+          label: __('Duration'),
+          sortable: this.sortable,
+        },
+      ];
     },
     prevPage() {
       return Math.max(this.pagination.page - 1, 0);
@@ -201,7 +205,7 @@ export default {
       :empty-text="emptyStateMessage"
       @sort-changed="onSort"
     >
-      <template v-if="stageCount" #head(end_event)="data">
+      <template v-if="stageCount" #head(title)="data">
         <span>{{ data.label }}</span
         ><gl-badge class="gl-ml-2" size="sm"
           ><formatted-stage-count :stage-count="stageCount"
@@ -210,7 +214,10 @@ export default {
       <template #head(duration)="data">
         <span data-testid="vsa-stage-header-duration">{{ data.label }}</span>
       </template>
-      <template #cell(end_event)="{ item }">
+      <template #head(end_event)="data">
+        <span data-testid="vsa-stage-header-last-event">{{ data.label }}</span>
+      </template>
+      <template #cell(title)="{ item }">
         <div data-testid="vsa-stage-event">
           <div v-if="item.id" data-testid="vsa-stage-content">
             <p class="gl-m-0">
@@ -281,6 +288,9 @@ export default {
       </template>
       <template #cell(duration)="{ item }">
         <total-time :time="item.totalTime" data-testid="vsa-stage-event-time" />
+      </template>
+      <template #cell(end_event)="{ item }">
+        <span data-testid="vsa-stage-last-event">{{ item.endEventTimestamp }}</span>
       </template>
     </gl-table>
     <gl-pagination

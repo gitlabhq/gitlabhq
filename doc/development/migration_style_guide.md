@@ -898,6 +898,44 @@ def down
 end
 ```
 
+## Dropping a sequence
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
+
+Dropping a sequence is uncommon, but you can use the `drop_sequence` method provided by the database team.
+
+Under the hood, it works like this:
+
+Remove a sequence:
+
+- Remove the default value if the sequence is actually used.
+- Execute `DROP SEQUENCE`.
+
+Re-add a sequence:
+
+- Create the sequence, with the possibility of specifying the current value.
+- Change the default value of the column.
+
+A Rails migration example:
+
+```ruby
+class DropSequenceTest < Gitlab::Database::Migration[2.0]
+  def up
+    drop_sequence(:ci_pipelines_config, :pipeline_id, :ci_pipelines_config_pipeline_id_seq)
+  end
+
+  def down
+    default_value = Ci::Pipeline.maximum(:id) + 10_000
+
+    add_sequence(:ci_pipelines_config, :pipeline_id, :ci_pipelines_config_pipeline_id_seq, default_value)
+  end
+end
+```
+
+NOTE:
+`add_sequence` should be avoided for columns with foreign keys.
+Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
+
 ## Integer column type
 
 By default, an integer column can hold up to a 4-byte (32-bit) number. That is

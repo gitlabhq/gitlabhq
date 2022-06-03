@@ -3281,4 +3281,20 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       model.rename_constraint(:test_table, :fk_old_name, :fk_new_name)
     end
   end
+
+  describe '#drop_sequence' do
+    it "executes the statement to drop the sequence" do
+      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "test_table_id_seq"/
+
+      model.drop_sequence(:test_table, :test_column, :test_table_id_seq)
+    end
+  end
+
+  describe '#add_sequence' do
+    it "executes the statement to add the sequence" do
+      expect(model).to receive(:execute).with "CREATE SEQUENCE \"test_table_id_seq\" START 1;\nALTER TABLE \"test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'test_table_id_seq\')\n"
+
+      model.add_sequence(:test_table, :test_column, :test_table_id_seq, 1)
+    end
+  end
 end

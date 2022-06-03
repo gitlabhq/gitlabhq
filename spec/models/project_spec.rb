@@ -6220,7 +6220,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#gitlab_deploy_token' do
     let(:project) { create(:project) }
 
-    subject { project.gitlab_deploy_token }
+    subject(:gitlab_deploy_token) { project.gitlab_deploy_token }
 
     context 'when there is a gitlab deploy token associated' do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
@@ -6252,9 +6252,42 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'when there is a deploy token associated to a different project' do
       let(:project_2) { create(:project) }
-      let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project_2]) }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when the project group has a gitlab deploy token associated' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to eq(deploy_token) }
+
+      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
+        before do
+          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when the project and its group has a gitlab deploy token associated' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+      let!(:project_deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
+      let!(:group_deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to eq(project_deploy_token) }
+
+      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
+        before do
+          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
+        end
+
+        it { is_expected.to eq(project_deploy_token) }
+      end
     end
   end
 

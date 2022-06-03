@@ -50,8 +50,7 @@ To view value stream analytics for your group:
       - In the **To** field, select an end date. The charts and list show workflow items created
         during the date range.
 1. Optional. Sort results by ascending or descending:
-      - To sort by most recent or oldest workflow item, select the **Merge requests** or **Issues**
-        header. The header name differs based on the stage you select.
+      - To sort by most recent or oldest workflow item, select the **Last event** header.
       - To sort by most or least amount of time spent in each stage, select the **Time** header.
 
 A badge next to the workflow items table header shows the number of workflow items that

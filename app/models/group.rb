@@ -863,6 +863,12 @@ class Group < Namespace
     end
   end
 
+  def gitlab_deploy_token
+    strong_memoize(:gitlab_deploy_token) do
+      deploy_tokens.gitlab_deploy_token
+    end
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag)

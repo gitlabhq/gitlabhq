@@ -583,7 +583,13 @@ RSpec.describe Namespace do
     end
   end
 
-  describe '#container_repositories_size' do
+  describe '#container_repositories_size_cache_key' do
+    it 'returns the correct cache key' do
+      expect(namespace.container_repositories_size_cache_key).to eq "namespaces:#{namespace.id}:container_repositories_size"
+    end
+  end
+
+  describe '#container_repositories_size', :clean_gitlab_redis_cache do
     let(:project_namespace) { create(:namespace) }
 
     subject { project_namespace.container_repositories_size }
@@ -611,10 +617,27 @@ RSpec.describe Namespace do
         end
 
         it { is_expected.to eq(expected_result) }
+
+        it 'caches the result when all migrated' do
+          if all_migrated
+            expect(Rails.cache)
+              .to receive(:fetch)
+              .with(project_namespace.container_repositories_size_cache_key, expires_in: 7.days)
+
+            subject
+          end
+        end
       end
     end
 
     context 'not on gitlab.com' do
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'for a sub-group' do
+      let(:parent_namespace) { create(:group) }
+      let(:project_namespace) { create(:group, parent: parent_namespace) }
+
       it { is_expected.to eq(nil) }
     end
   end

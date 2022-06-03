@@ -1499,6 +1499,20 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
       end
 
+      def drop_sequence(table_name, column_name, sequence_name)
+        execute <<~SQL
+          ALTER TABLE #{quote_table_name(table_name)} ALTER COLUMN #{quote_column_name(column_name)} DROP DEFAULT;
+          DROP SEQUENCE IF EXISTS #{quote_table_name(sequence_name)}
+        SQL
+      end
+
+      def add_sequence(table_name, column_name, sequence_name, start_value)
+        execute <<~SQL
+          CREATE SEQUENCE #{quote_table_name(sequence_name)} START #{start_value};
+          ALTER TABLE #{quote_table_name(table_name)} ALTER COLUMN #{quote_column_name(column_name)} SET DEFAULT nextval(#{quote(sequence_name)})
+        SQL
+      end
+
       private
 
       def create_temporary_columns_and_triggers(table, columns, primary_key: :id, data_type: :bigint)

@@ -3396,4 +3396,42 @@ RSpec.describe Group do
       end
     end
   end
+
+  describe '#gitlab_deploy_token' do
+    subject(:gitlab_deploy_token) { group.gitlab_deploy_token }
+
+    context 'when there is a gitlab deploy token associated' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, groups: [group]) }
+
+      it { is_expected.to eq(deploy_token) }
+    end
+
+    context 'when there is no a gitlab deploy token associated' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but is has been revoked' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, :revoked, groups: [group]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but it is expired' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, :expired, groups: [group]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated with a different name' do
+      let!(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated to a different group' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, groups: [create(:group)]) }
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

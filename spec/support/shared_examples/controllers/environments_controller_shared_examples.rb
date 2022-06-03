@@ -65,20 +65,3 @@ RSpec.shared_examples 'failed response for #cancel_auto_stop' do
     end
   end
 end
-
-RSpec.shared_examples 'avoids N+1 queries on environment detail page' do
-  render_views
-
-  before do
-    create_deployment_with_associations(sequence: 0)
-  end
-
-  it 'avoids N+1 queries' do
-    control = ActiveRecord::QueryRecorder.new { get :show, params: environment_params }
-
-    create_deployment_with_associations(sequence: 1)
-    create_deployment_with_associations(sequence: 2)
-
-    expect { get :show, params: environment_params }.not_to exceed_query_limit(control.count).with_threshold(34)
-  end
-end
