@@ -1297,7 +1297,10 @@ openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry
 ```
 
 If the two pieces of the certificate do not align, remove the files and run `gitlab-ctl reconfigure`
-to regenerate the pair. If you have overridden the automatically generated self-signed pair with
+to regenerate the pair. The pair is recreated using the existing values in `/etc/gitlab/gitlab-secrets.json` if they exist. To generate a new pair,
+delete the `registry` section in your `/etc/gitlab/gitlab-secrets.json` before running `gitlab-ctl reconfigure`.
+
+If you have overridden the automatically generated self-signed pair with
 your own certificates and have made sure that their contents align, you can delete the 'registry'
 section in your `/etc/gitlab/gitlab-secrets.json` and run `gitlab-ctl reconfigure`.
 

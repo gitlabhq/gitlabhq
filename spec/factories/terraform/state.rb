@@ -12,6 +12,10 @@ FactoryBot.define do
       locked_by_user { association(:user) }
     end
 
+    trait :deletion_in_progress do
+      deleted_at { Time.current }
+    end
+
     trait :with_version do
       after(:create) do |state|
         create(:terraform_state_version, terraform_state: state)

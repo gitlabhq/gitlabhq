@@ -49,14 +49,6 @@ RSpec.describe 'Setting the escalation status of an incident' do
     it_behaves_like 'a mutation that returns top-level errors', errors: ['Feature unavailable for provided issue']
   end
 
-  context 'with feature disabled' do
-    before do
-      stub_feature_flags(incident_escalations: false)
-    end
-
-    it_behaves_like 'a mutation that returns top-level errors', errors: ['Feature unavailable for provided issue']
-  end
-
   it 'sets given escalation_policy to the escalation status for the issue' do
     post_graphql_mutation(mutation, current_user: current_user)
 

@@ -37427,6 +37427,9 @@ msgstr ""
 msgid "Terraform|Cancel"
 msgstr ""
 
+msgid "Terraform|Cannot remove a locked state"
+msgstr ""
+
 msgid "Terraform|Copy Terraform init command"
 msgstr ""
 
@@ -37520,7 +37523,7 @@ msgstr ""
 msgid "Terraform|You are about to remove the state file %{name}. This will permanently delete all the State versions and history. The infrastructure provisioned previously will remain intact, and only the state file with all its versions will be removed. This action cannot be undone."
 msgstr ""
 
-msgid "Terraform|You cannot remove the State file because it's locked. Unlock the State file first before removing it."
+msgid "Terraform|You have insufficient permissions to delete this state"
 msgstr ""
 
 msgid "Terraform|Your project doesn't have any Terraform state files"

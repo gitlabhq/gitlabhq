@@ -131,14 +131,6 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | DB | Sets up EE specific database functionality'
-
-    if Gitlab.ee?
-      task setup_ee: %w[db:drop:geo db:create:geo db:schema:load:geo db:migrate:geo]
-    else
-      task :setup_ee
-    end
-
     desc 'This adjusts and cleans db/structure.sql - it runs after db:structure:dump'
     task :clean_structure_sql do |task_name|
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|

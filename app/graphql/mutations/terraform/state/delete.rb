@@ -8,9 +8,9 @@ module Mutations
 
         def resolve(id:)
           state = authorized_find!(id: id)
-          state.destroy
+          response = ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute
 
-          { errors: errors_on_object(state) }
+          { errors: response.errors }
         end
       end
     end

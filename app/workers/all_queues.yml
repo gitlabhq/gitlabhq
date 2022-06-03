@@ -1866,6 +1866,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: terraform:terraform_states_destroy
+  :worker_name: Terraform::States::DestroyWorker
+  :feature_category: :infrastructure_as_code
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: todos_destroyer:todos_destroyer_confidential_issue
   :worker_name: TodosDestroyer::ConfidentialIssueWorker
   :feature_category: :team_planning

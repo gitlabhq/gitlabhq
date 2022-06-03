@@ -291,14 +291,6 @@ RSpec.describe GitlabSchema.types['Issue'] do
         let!(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue) }
 
         it { is_expected.to eq(escalation_status.status_name.to_s.upcase) }
-
-        context 'with feature disabled' do
-          before do
-            stub_feature_flags(incident_escalations: false)
-          end
-
-          it { is_expected.to be_nil }
-        end
       end
     end
   end

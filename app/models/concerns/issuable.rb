@@ -195,8 +195,6 @@ module Issuable
     end
 
     def supports_escalation?
-      return false unless ::Feature.enabled?(:incident_escalations, project)
-
       incident?
     end
 

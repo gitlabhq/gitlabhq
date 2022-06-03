@@ -71,6 +71,18 @@ RSpec.describe API::Terraform::State, :snowplow do
     end
   end
 
+  shared_context 'cannot access a state that is scheduled for deletion' do
+    before do
+      state.update!(deleted_at: Time.current)
+    end
+
+    it 'returns unprocessable entity' do
+      request
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+  end
+
   describe 'GET /projects/:id/terraform/state/:name' do
     subject(:request) { get api(state_path), headers: auth_header }
 
@@ -106,6 +118,8 @@ RSpec.describe API::Terraform::State, :snowplow do
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
+
+        it_behaves_like 'cannot access a state that is scheduled for deletion'
       end
 
       context 'with developer permissions' do
@@ -191,6 +205,8 @@ RSpec.describe API::Terraform::State, :snowplow do
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
         end
+
+        it_behaves_like 'cannot access a state that is scheduled for deletion'
       end
 
       context 'without body' do
@@ -269,13 +285,19 @@ RSpec.describe API::Terraform::State, :snowplow do
 
     context 'with maintainer permissions' do
       let(:current_user) { maintainer }
+      let(:deletion_service) { instance_double(Terraform::States::TriggerDestroyService) }
 
-      it 'deletes the state and returns empty body' do
-        expect { request }.to change { Terraform::State.count }.by(-1)
+      it 'schedules the state for deletion and returns empty body' do
+        expect(Terraform::States::TriggerDestroyService).to receive(:new).and_return(deletion_service)
+        expect(deletion_service).to receive(:execute).once
+
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)).to be_empty
       end
+
+      it_behaves_like 'cannot access a state that is scheduled for deletion'
     end
 
     context 'with developer permissions' do
@@ -305,6 +327,7 @@ RSpec.describe API::Terraform::State, :snowplow do
     subject(:request) { post api("#{state_path}/lock"), headers: auth_header, params: params }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'cannot access a state that is scheduled for deletion'
 
     it 'locks the terraform state' do
       request
@@ -356,6 +379,10 @@ RSpec.describe API::Terraform::State, :snowplow do
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
 
     it_behaves_like 'endpoint with unique user tracking' do
+      let(:lock_id) { 'irrelevant to this test, just needs to be present' }
+    end
+
+    it_behaves_like 'cannot access a state that is scheduled for deletion' do
       let(:lock_id) { 'irrelevant to this test, just needs to be present' }
     end
 

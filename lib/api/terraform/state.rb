@@ -13,6 +13,7 @@ module API
       default_format :json
 
       rescue_from(
+        ::Terraform::RemoteStateHandler::StateDeletedError,
         ::ActiveRecord::RecordNotUnique,
         ::PG::UniqueViolation
       ) do |e|
@@ -81,7 +82,7 @@ module API
             authorize! :admin_terraform_state, user_project
 
             remote_state_handler.handle_with_lock do |state|
-              state.destroy!
+              ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute
             end
 
             body false

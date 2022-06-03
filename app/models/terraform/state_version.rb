@@ -2,6 +2,7 @@
 
 module Terraform
   class StateVersion < ApplicationRecord
+    include EachBatch
     include FileStoreMounter
 
     belongs_to :terraform_state, class_name: 'Terraform::State', optional: false

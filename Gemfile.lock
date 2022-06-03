@@ -413,7 +413,6 @@ GEM
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
-      ipaddress (~> 0.8)
     fog-core (2.1.0)
       builder
       excon (~> 0.58)

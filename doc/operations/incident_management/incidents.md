@@ -257,11 +257,7 @@ Add a to-do for incidents that you want to track in your to-do list. Select
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
-
-FLAG:
-This feature is available by default. To disable it per project or for your entire
-instance, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
-named `incident_escalations`.
+> - [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
 
 For users with the Developer role or higher, select **Edit** in the **Status** section of the
 right-hand side bar of an incident, then select a status. **Triggered** is the default status for
@@ -281,11 +277,7 @@ updating the incident status also updates the alert status.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
-
-FLAG:
-This feature is available by default. To disable it per project or for your entire
-instance, ask an administrator to [disable the feature flag](../../administration/feature_flags.md)
-named `incident_escalations`.
+> - [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
 
 For users with the Developer role or higher, select **Edit** in the **Escalation policy** section of
 the right-hand side bar of an incident, then select a policy. By default, new incidents do not have

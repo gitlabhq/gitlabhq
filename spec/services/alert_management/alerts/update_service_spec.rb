@@ -291,14 +291,6 @@ RSpec.describe AlertManagement::Alerts::UpdateService do
 
               it_behaves_like 'does not sync with the incident status'
             end
-
-            context 'when feature flag is disabled' do
-              before do
-                stub_feature_flags(incident_escalations: false)
-              end
-
-              it_behaves_like 'does not sync with the incident status'
-            end
           end
         end
       end

@@ -104,12 +104,24 @@ module Gitlab
         # Yields a connection that can be used for both reads and writes.
         def read_write
           connection = nil
+          transaction_open = nil
           # In the event of a failover the primary may be briefly unavailable.
           # Instead of immediately grinding to a halt we'll retry the operation
           # a few times.
           retry_with_backoff do
             connection = pool.connection
+            transaction_open = connection.transaction_open?
+
             yield connection
+          rescue StandardError => e
+            if transaction_open && connection_error?(e)
+              ::Gitlab::Database::LoadBalancing::Logger.warn(
+                event: :transaction_leak,
+                message: 'A write transaction has leaked during database fail-over'
+              )
+            end
+
+            raise e
           end
         end
 

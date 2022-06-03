@@ -573,22 +573,6 @@ RSpec.describe Resolvers::IssuesResolver do
             issues = resolve_issues(sort: :created_desc).to_a
             expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
           end
-
-          context 'when incident_escalations feature flag is disabled' do
-            before do
-              stub_feature_flags(incident_escalations: false)
-            end
-
-            it 'defaults ascending status sort to created_desc' do
-              issues = resolve_issues(sort: :escalation_status_asc).to_a
-              expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
-            end
-
-            it 'defaults descending status sort to created_desc' do
-              issues = resolve_issues(sort: :escalation_status_desc).to_a
-              expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
-            end
-          end
         end
 
         context 'when sorting with non-stable cursors' do

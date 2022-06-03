@@ -44,18 +44,5 @@ RSpec.describe 'Incident Management index', :js do
       expect(table).to have_content('Date created')
       expect(table).to have_content('Assignees')
     end
-
-    context 'when :incident_escalations feature is disabled' do
-      before do
-        stub_feature_flags(incident_escalations: false)
-      end
-
-      it 'does not include the Status columns' do
-        visit project_incidents_path(project)
-        wait_for_requests
-
-        expect(page.find('.gl-table')).not_to have_content('Status')
-      end
-    end
   end
 end

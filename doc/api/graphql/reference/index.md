@@ -16895,7 +16895,19 @@ Represents a historically accurate report about the timebox.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="timeboxreportburnuptimeseries"></a>`burnupTimeSeries` | [`[BurnupChartDailyTotals!]`](#burnupchartdailytotals) | Daily scope and completed totals for burnup charts. |
+| <a id="timeboxreporterror"></a>`error` | [`TimeboxReportError`](#timeboxreporterror) | If the report cannot be generated, information about why. |
 | <a id="timeboxreportstats"></a>`stats` | [`TimeReportStats`](#timereportstats) | Represents the time report stats for the timebox. |
+
+### `TimeboxReportError`
+
+Explains why we could not generate a timebox report.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="timeboxreporterrorcode"></a>`code` | [`TimeboxReportErrorReason`](#timeboxreporterrorreason) | Machine readable code, categorizing the error. |
+| <a id="timeboxreporterrormessage"></a>`message` | [`String`](#string) | Human readable message explaining what happened. |
 
 ### `TimelineEventType`
 
@@ -18711,8 +18723,8 @@ Values for sorting issues.
 | <a id="issuesortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="issuesortdue_date_asc"></a>`DUE_DATE_ASC` | Due date by ascending order. |
 | <a id="issuesortdue_date_desc"></a>`DUE_DATE_DESC` | Due date by descending order. |
-| <a id="issuesortescalation_status_asc"></a>`ESCALATION_STATUS_ASC` | Status from triggered to resolved. Defaults to `CREATED_DESC` if `incident_escalations` feature flag is disabled. |
-| <a id="issuesortescalation_status_desc"></a>`ESCALATION_STATUS_DESC` | Status from resolved to triggered. Defaults to `CREATED_DESC` if `incident_escalations` feature flag is disabled. |
+| <a id="issuesortescalation_status_asc"></a>`ESCALATION_STATUS_ASC` | Status from triggered to resolved. |
+| <a id="issuesortescalation_status_desc"></a>`ESCALATION_STATUS_DESC` | Status from resolved to triggered. |
 | <a id="issuesortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
 | <a id="issuesortlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | Label priority by descending order. |
 | <a id="issuesortmilestone_due_asc"></a>`MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
@@ -19415,6 +19427,30 @@ State of a test report.
 | ----- | ----------- |
 | <a id="testreportstatefailed"></a>`FAILED` | Failed test report. |
 | <a id="testreportstatepassed"></a>`PASSED` | Passed test report. |
+
+### `TimeboxReportErrorReason`
+
+Category of error.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="timeboxreporterrorreasoncreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="timeboxreporterrorreasoncreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="timeboxreporterrorreasonlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
+| <a id="timeboxreporterrorreasonlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | Label priority by descending order. |
+| <a id="timeboxreporterrorreasonmilestone_due_asc"></a>`MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
+| <a id="timeboxreporterrorreasonmilestone_due_desc"></a>`MILESTONE_DUE_DESC` | Milestone due date by descending order. |
+| <a id="timeboxreporterrorreasonmissing_dates"></a>`MISSING_DATES` | One or both of start_date and due_date is missing. |
+| <a id="timeboxreporterrorreasonpriority_asc"></a>`PRIORITY_ASC` | Priority by ascending order. |
+| <a id="timeboxreporterrorreasonpriority_desc"></a>`PRIORITY_DESC` | Priority by descending order. |
+| <a id="timeboxreporterrorreasontoo_many_events"></a>`TOO_MANY_EVENTS` | There are too many events. |
+| <a id="timeboxreporterrorreasonunsupported"></a>`UNSUPPORTED` | This type does not support timebox reports. |
+| <a id="timeboxreporterrorreasonupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="timeboxreporterrorreasonupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="timeboxreporterrorreasoncreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="timeboxreporterrorreasoncreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="timeboxreporterrorreasonupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="timeboxreporterrorreasonupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `TodoActionEnum`
 

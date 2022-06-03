@@ -85,7 +85,6 @@ describe('Incidents List', () => {
           assigneeUsernameQuery: '',
           slaFeatureAvailable: true,
           canCreateIncident: true,
-          incidentEscalationsAvailable: true,
           ...provide,
         },
         stubs: {
@@ -209,20 +208,6 @@ describe('Incidents List', () => {
         statuses.forEach((status, index) => {
           expect(status.text()).toEqual(expectedStatuses[index]);
           expect(status.classes('gl-text-truncate')).toBe(true);
-        });
-      });
-
-      describe('when feature is disabled', () => {
-        beforeEach(() => {
-          mountComponent({
-            data: { incidents: { list: mockIncidents }, incidentsCount },
-            provide: { incidentEscalationsAvailable: false },
-            loading: false,
-          });
-        });
-
-        it('is absent if feature flag is disabled', () => {
-          expect(findEscalationStatus().length).toBe(0);
         });
       });
     });

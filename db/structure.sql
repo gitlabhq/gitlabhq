@@ -21122,7 +21122,8 @@ CREATE TABLE terraform_states (
     locked_by_user_id bigint,
     uuid character varying(32) NOT NULL,
     name character varying(255) NOT NULL,
-    versioning_enabled boolean DEFAULT true NOT NULL
+    versioning_enabled boolean DEFAULT true NOT NULL,
+    deleted_at timestamp with time zone
 );
 
 CREATE SEQUENCE terraform_states_id_seq

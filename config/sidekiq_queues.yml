@@ -433,6 +433,8 @@
   - 1
 - - tasks_to_be_done_create
   - 1
+- - terraform
+  - 1
 - - todos_destroyer
   - 1
 - - unassign_issuables
