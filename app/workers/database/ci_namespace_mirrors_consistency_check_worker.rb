@@ -13,8 +13,6 @@ module Database
     version 1
 
     def perform
-      return if Feature.disabled?(:ci_namespace_mirrors_consistency_check)
-
       results = ConsistencyCheckService.new(
         source_model: Namespace,
         target_model: Ci::NamespaceMirror,

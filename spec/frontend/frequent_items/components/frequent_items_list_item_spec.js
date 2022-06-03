@@ -117,7 +117,7 @@ describe('FrequentItemsListItemComponent', () => {
       link.vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
-        label: 'projects_dropdown_frequent_items_list_item',
+        label: 'projects_dropdown_frequent_items_list_item_git_lab_community_edition',
       });
     });
   });

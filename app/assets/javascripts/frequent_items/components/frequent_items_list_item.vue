@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
+import { snakeCase } from 'lodash';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { mapVuexModuleState } from '~/lib/utils/vuex_module_mappers';
@@ -56,6 +57,9 @@ export default {
     highlightedItemName() {
       return highlight(this.itemName, this.matcher);
     },
+    itemTrackingLabel() {
+      return `${this.dropdownType}_dropdown_frequent_items_list_item_${snakeCase(this.itemName)}`;
+    },
   },
 };
 </script>
@@ -66,7 +70,7 @@ export default {
       category="tertiary"
       :href="webUrl"
       class="gl-text-left gl-justify-content-start!"
-      @click="track('click_link', { label: `${dropdownType}_dropdown_frequent_items_list_item` })"
+      @click="track('click_link', { label: itemTrackingLabel })"
     >
       <project-avatar
         class="gl-float-left gl-mr-3"

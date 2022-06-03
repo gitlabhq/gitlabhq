@@ -83,7 +83,7 @@ function parseDatasetToProps(data) {
     learnMorePath,
     aboutPricingUrl,
     triggerEvents: JSON.parse(triggerEvents),
-    sections: JSON.parse(sections, { deep: true }),
+    sections: JSON.parse(sections),
     fields: convertObjectPropsToCamelCase(JSON.parse(fields), { deep: true }),
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,

@@ -27,12 +27,16 @@ module Gitlab
       :create_wiki
     end
 
-    override :check_download_access!
-    def check_download_access!
-      super
+    private
 
-      raise ForbiddenError, download_forbidden_message if build_cannot_download?
-      raise ForbiddenError, download_forbidden_message if deploy_token_cannot_download?
+    override :build_can_download?
+    def build_can_download?
+      super && user_access.can_do_action?(download_ability)
+    end
+
+    override :deploy_token_can_download?
+    def deploy_token_can_download?
+      super && deploy_token.can?(download_ability, container)
     end
 
     override :check_change_access!
@@ -52,17 +56,6 @@ module Gitlab
 
     def not_found_message
       error_message(:not_found)
-    end
-
-    private
-
-    # when accessing via the CI_JOB_TOKEN
-    def build_cannot_download?
-      build_can_download_code? && !user_access.can_do_action?(download_ability)
-    end
-
-    def deploy_token_cannot_download?
-      deploy_token && !deploy_token.can?(download_ability, container)
     end
   end
 end

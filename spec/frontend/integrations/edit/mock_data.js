@@ -9,7 +9,10 @@ export const mockIntegrationProps = {
     initialEnableComments: false,
   },
   jiraIssuesProps: {},
-  triggerEvents: [],
+  triggerEvents: [
+    { name: 'push_events', title: 'Push', value: true },
+    { name: 'issues_events', title: 'Issue', value: true },
+  ],
   sections: [],
   fields: [],
   type: '',

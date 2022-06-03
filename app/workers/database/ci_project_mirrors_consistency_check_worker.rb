@@ -13,8 +13,6 @@ module Database
     version 1
 
     def perform
-      return if Feature.disabled?(:ci_project_mirrors_consistency_check)
-
       results = ConsistencyCheckService.new(
         source_model: Project,
         target_model: Ci::ProjectMirror,

@@ -18,7 +18,7 @@ RSpec.describe Gitlab::GitAccessWiki do
                         redirected_path: redirected_path)
   end
 
-  RSpec.shared_examples 'wiki access by level' do
+  RSpec.shared_examples 'download wiki access by level' do
     where(:project_visibility, :project_member?, :wiki_access_level, :wiki_repo?, :expected_behavior) do
       [
         # Private project - is a project member
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::GitAccessWiki do
     subject { access.check('git-upload-pack', Gitlab::GitAccess::ANY) }
 
     context 'when actor is a user' do
-      it_behaves_like 'wiki access by level'
+      it_behaves_like 'download wiki access by level'
     end
 
     context 'when the actor is a deploy token' do
@@ -116,14 +116,20 @@ RSpec.describe Gitlab::GitAccessWiki do
 
       subject { access.check('git-upload-pack', changes) }
 
-      context 'when the wiki is enabled' do
+      context 'when the wiki feature is enabled' do
         let(:wiki_access_level) { ProjectFeature::ENABLED }
 
         it { expect { subject }.not_to raise_error }
       end
 
-      context 'when the wiki is disabled' do
+      context 'when the wiki feature is disabled' do
         let(:wiki_access_level) { ProjectFeature::DISABLED }
+
+        it { expect { subject }.to raise_wiki_forbidden }
+      end
+
+      context 'when the wiki feature is private' do
+        let(:wiki_access_level) { ProjectFeature::PRIVATE }
 
         it { expect { subject }.to raise_wiki_forbidden }
       end
@@ -140,7 +146,7 @@ RSpec.describe Gitlab::GitAccessWiki do
 
       subject { access.check('git-upload-pack', changes) }
 
-      it_behaves_like 'wiki access by level'
+      it_behaves_like 'download wiki access by level'
     end
   end
 

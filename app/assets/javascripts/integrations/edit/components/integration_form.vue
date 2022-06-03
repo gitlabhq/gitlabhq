@@ -49,6 +49,10 @@ export default {
       import(
         /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'
       ),
+    IntegrationSectionTrigger: () =>
+      import(
+        /* webpackChunkName: 'integrationSectionTrigger' */ '~/integrations/edit/components/sections/trigger.vue'
+      ),
     GlBadge,
     GlButton,
     GlForm,

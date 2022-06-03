@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Check a user's access to perform a git action. All public methods in this
-# class return an instance of `GitlabAccessStatus`
+# Checks a user's access to perform a git action.
+# All public methods in this class return an instance of `GitlabAccessStatus`
+
 module Gitlab
   class GitAccess
     include Gitlab::Utils::StrongMemoize
@@ -99,7 +100,7 @@ module Gitlab
       @logger ||= Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
     end
 
-    def guest_can_download_code?
+    def guest_can_download?
       Guest.can?(download_ability, container)
     end
 
@@ -110,7 +111,7 @@ module Gitlab
         (project? && project&.repository_access_level != ::Featurable::DISABLED)
     end
 
-    def user_can_download_code?
+    def user_can_download?
       authentication_abilities.include?(:download_code) &&
         user_access.can_do_action?(download_ability)
     end
@@ -125,10 +126,6 @@ module Gitlab
       raise NotImplementedError
     end
 
-    def build_can_download_code?
-      authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
-    end
-
     def request_from_ci_build?
       return false unless protocol == 'http'
 
@@ -140,6 +137,31 @@ module Gitlab
     end
 
     private
+
+    # when accessing via the CI_JOB_TOKEN
+    def build_can_download_code?
+      authentication_abilities.include?(:build_download_code) && user_access.can_do_action?(:build_download_code)
+    end
+
+    def build_can_download?
+      build_can_download_code?
+    end
+
+    def deploy_token_can_download?
+      deploy_token?
+    end
+
+    # When overriding this method, be careful using super
+    # as deploy_token_can_download? and build_can_download?
+    # do not consider the download_ability in the inheriting class
+    # for deploy tokens and builds
+    def can_download?
+      deploy_key_can_download_code? ||
+      deploy_token_can_download? ||
+      build_can_download? ||
+      user_can_download? ||
+      guest_can_download?
+    end
 
     def check_container!
       # Strict nil check, to avoid any surprises with Object#present?
@@ -273,15 +295,9 @@ module Gitlab
     end
 
     def check_download_access!
-      passed = deploy_key_can_download_code? ||
-        deploy_token? ||
-        user_can_download_code? ||
-        build_can_download_code? ||
-        guest_can_download_code?
+      return if can_download?
 
-      unless passed
-        raise ForbiddenError, download_forbidden_message
-      end
+      raise ForbiddenError, download_forbidden_message
     end
 
     def download_forbidden_message
