@@ -264,20 +264,6 @@ RSpec.describe QA::Runtime::Env do
     end
   end
 
-  describe '.log_destination' do
-    it 'returns $stdout if QA_LOG_PATH is not defined' do
-      stub_env('QA_LOG_PATH', nil)
-
-      expect(described_class.log_destination).to eq($stdout)
-    end
-
-    it 'returns the path if QA_LOG_PATH is defined' do
-      stub_env('QA_LOG_PATH', 'path/to_file')
-
-      expect(described_class.log_destination).to eq('path/to_file')
-    end
-  end
-
   describe '.can_test?' do
     it_behaves_like 'boolean method with parameter',
       method: :can_test?,

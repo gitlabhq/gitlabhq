@@ -112,7 +112,7 @@ RSpec.describe QA::Resource::Base do
       let(:method) { 'api' }
 
       before do
-        allow(QA::Runtime::Logger).to receive(:debug)
+        allow(QA::Runtime::Logger).to receive(:info)
         allow(resource).to receive(:api_support?).and_return(true)
         allow(resource).to receive(:fabricate_via_api!)
         allow(resource).to receive(:api_client) { api_client }
@@ -123,7 +123,7 @@ RSpec.describe QA::Resource::Base do
 
         subject.fabricate_via_api!('something', resource: resource, parents: [])
 
-        expect(QA::Runtime::Logger).to have_received(:debug) do |&msg|
+        expect(QA::Runtime::Logger).to have_received(:info) do |&msg|
           expect(msg.call).to match_regex(log_regex)
         end
       end
@@ -155,7 +155,7 @@ RSpec.describe QA::Resource::Base do
       let(:method) { 'browser_ui' }
 
       before do
-        allow(QA::Runtime::Logger).to receive(:debug)
+        allow(QA::Runtime::Logger).to receive(:info)
       end
 
       it 'logs the resource and build method' do
@@ -163,7 +163,7 @@ RSpec.describe QA::Resource::Base do
 
         subject.fabricate_via_browser_ui!('something', resource: resource, parents: [])
 
-        expect(QA::Runtime::Logger).to have_received(:debug) do |&msg|
+        expect(QA::Runtime::Logger).to have_received(:info) do |&msg|
           expect(msg.call).to match_regex(log_regex)
         end
       end

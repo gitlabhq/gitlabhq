@@ -13,10 +13,11 @@ module Ci
       def execute
         return unless @user.present? && @user.can?(:update_runners_registration_token, scope)
 
-        if scope.respond_to?(:runners_registration_token)
+        case scope
+        when ::ApplicationSetting
           scope.reset_runners_registration_token!
-          scope.runners_registration_token
-        else
+          ApplicationSetting.current_without_cache.runners_registration_token
+        when ::Group, ::Project
           scope.reset_runners_token!
           scope.runners_token
         end

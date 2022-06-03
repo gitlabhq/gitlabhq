@@ -9,10 +9,14 @@ module QA
 
       def_delegators :logger, :debug, :info, :warn, :error, :fatal, :unknown
 
+      # Global logger instance
+      #
+      # @return [ActiveSupport::Logger]
       def self.logger
         @logger ||= Gitlab::QA::TestLogger.logger(
-          level: Runtime::Env.debug? ? ::Logger::DEBUG : ::Logger::INFO,
-          source: 'QA Tests'
+          level: Runtime::Env.debug? ? "DEBUG" : Gitlab::QA::Runtime::Env.log_level,
+          source: 'QA Tests',
+          path: File.expand_path('../../tmp', __dir__)
         )
       end
     end

@@ -73,10 +73,6 @@ module QA
         ENV['QA_DEFAULT_BRANCH'] || 'main'
       end
 
-      def log_destination
-        ENV['QA_LOG_PATH'] || $stdout
-      end
-
       def colorized_logs?
         enabled?(ENV['COLORIZED_LOGS'], default: false)
       end

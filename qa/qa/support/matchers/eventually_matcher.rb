@@ -53,7 +53,7 @@ module QA
             def wait_and_check(actual, expectation_name)
               attempt = 0
 
-              QA::Runtime::Logger.debug(
+              QA::Runtime::Logger.info(
                 "Running eventually matcher with '#{operator_msg}' operator with: '#{retry_args}' arguments"
               )
               QA::Support::Retrier.retry_until(**retry_args, log: false) do

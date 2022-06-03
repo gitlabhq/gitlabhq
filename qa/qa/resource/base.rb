@@ -99,13 +99,13 @@ module QA
               fabrication_time: fabrication_time
             )
 
-            Runtime::Logger.debug do
+            Runtime::Logger.info do
               msg = ["==#{'=' * parents.size}>"]
               msg << "#{fabrication_http_method} a #{Rainbow(name).black.bg(:white)}"
               msg << resource.identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{fabrication_method}"
-              msg << "in #{fabrication_time} seconds"
+              msg << "in #{fabrication_time.round(2)} seconds"
 
               msg.compact.join(' ')
             end
@@ -161,7 +161,7 @@ module QA
       end
 
       def visit!(skip_resp_code_check: false)
-        Runtime::Logger.debug("Visiting #{Rainbow(self.class.name).black.bg(:white)} at #{web_url}")
+        Runtime::Logger.info("Visiting #{Rainbow(self.class.name).black.bg(:white)} at #{web_url}")
 
         # Just in case an async action is not yet complete
         Support::WaitForRequests.wait_for_requests(skip_resp_code_check: skip_resp_code_check)
@@ -224,7 +224,7 @@ module QA
       def remove_via_api!
         super
 
-        Runtime::Logger.debug(["Removed a #{self.class.name}", identifier].compact.join(' '))
+        Runtime::Logger.info(["Removed a #{self.class.name}", identifier].compact.join(' '))
       end
 
       protected

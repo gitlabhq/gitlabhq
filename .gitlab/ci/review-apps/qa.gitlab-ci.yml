@@ -13,8 +13,8 @@ include:
 
 .test_variables:
   variables:
-    QA_DEBUG: "true"
     QA_GENERATE_ALLURE_REPORT: "true"
+    COLORIZED_LOGS: "true"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITLAB_ADMIN_USERNAME: "root"

@@ -4,6 +4,7 @@ RSpec.describe QA::Git::Repository do
   include QA::Support::Helpers::StubEnv
 
   shared_context 'unresolvable git directory' do
+    let(:logger) { instance_double(Logger, info: nil, debug: nil) }
     let(:repo_uri) { 'http://foo/bar.git' }
     let(:repo_uri_with_credentials) { 'http://root@foo/bar.git' }
     let(:env_vars) { [%q{HOME="temp"}] }
@@ -22,6 +23,7 @@ RSpec.describe QA::Git::Repository do
     before do
       stub_env('GITLAB_USERNAME', 'root')
       allow(repository).to receive(:tmp_home_dir).and_return(tmp_netrc_dir)
+      allow(QA::Runtime::Logger).to receive(:logger).and_return(logger)
     end
 
     around do |example|

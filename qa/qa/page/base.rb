@@ -5,10 +5,12 @@ require 'capybara/dsl'
 module QA
   module Page
     class Base
-      prepend Support::Page::Logging if Runtime::Env.debug?
+      prepend Support::Page::Logging
+
       include Capybara::DSL
       include Scenario::Actable
       include Support::WaitForRequests
+
       extend Validatable
       extend SingleForwardable
 
