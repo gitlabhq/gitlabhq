@@ -1,8 +1,0 @@
----
-name: usage_data_i_incident_management_oncall_notification_sent
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58606
-rollout_issue_url:
-milestone: '13.11'
-type: development
-group: group::respond
-default_enabled: true

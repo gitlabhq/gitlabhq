@@ -128,9 +128,12 @@ The general flow of contributing to GitLab is:
 1. In the merge request's description:
    - Ensure you provide complete and accurate information.
    - Review the provided checklist.
-1. Assign the merge request (if possible) to, or [mention](../../user/discussions/index.md#mentions),
-   one of the [code owners](../../user/project/code_owners.md) for the relevant project,
-   and explain that you are ready for review.
+1. Once you're ready, mark your MR as ready for review with `@gitlab-bot ready`.
+   - This will add the `~"workflow::ready for review"` label, and then automatically assign a merge request coach as reviewer.
+   - If you know a relevant reviewer (e.g. someone that was involved a related issue), you can also
+     assign them directly with `@gitlab-bot ready @username`.
+
+#### Review process
 
 When you submit code to GitLab, we really want it to get merged! However, we always review
 submissions carefully, and this takes time. Code submissions will usually be reviewed by two
@@ -139,7 +142,11 @@ submissions carefully, and this takes time. Code submissions will usually be rev
 - A [reviewer](../code_review.md#the-responsibility-of-the-reviewer).
 - A [maintainer](../code_review.md#the-responsibility-of-the-maintainer).
 
-Keep the following in mind when submitting merge requests:
+After review, the reviewer could ask the author to update the merge request. In that case, the reviewer would set the `~"workflow::in dev"` label.
+Once the merge request has been updated and set as ready for review again (e.g. with `@gitlab-bot ready`), they will review the code again.
+This process may repeat any number of times before merge, to help make the contribution the best it can be.
+
+Lastly, keep the following in mind when submitting merge requests:
 
 - When reviewers are reading through a merge request they may request guidance from other
   reviewers.
@@ -154,13 +161,11 @@ Keep the following in mind when submitting merge requests:
   [approval](../../user/project/merge_requests/approvals/index.md) of merge requests, the
   maintainer may require [approvals from certain reviewers](../code_review.md#approval-guidelines)
   before merging a merge request.
-- After review, the author may be asked to update the merge request. Once the merge request has been
-  updated and reassigned to the reviewer, they will review the code again. This process may repeat
-  any number of times before merge, to help make the contribution the best it can be.
+- Sometimes a maintainer may choose to close a merge request. They will fully disclose why it will not
+  be merged, as well as some guidance. The maintainers will be open to discussion about how to change
+  the code so it can be approved and merged in the future.
 
-Sometimes a maintainer may choose to close a merge request. They will fully disclose why it will not
-be merged, as well as some guidance. The maintainers will be open to discussion about how to change
-the code so it can be approved and merged in the future.
+#### Getting attention on your merge request
 
 GitLab will do its best to review community contributions as quickly as possible. Specially
 appointed developers review community contributions daily. Look at the
@@ -170,8 +175,9 @@ written some front-end code, you should mention the frontend merge request coach
 your code has multiple disciplines, you may mention multiple merge request coaches.
 
 GitLab receives a lot of community contributions. If your code has not been reviewed within two
-working days of its initial submission, feel free to mention all merge request coaches with
-`@gitlab-org/coaches` to get their attention.
+working days of its initial submission, you can ask for help with `@gitlab-bot help`.
+
+#### Addition of external libraries
 
 When submitting code to GitLab, you may feel that your contribution requires the aid of an external
 library. If your code includes an external library, please provide a link to the library, as well as

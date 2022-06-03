@@ -231,7 +231,7 @@ To configure project permissions:
 1. Expand the **Visibility, project features, permissions** section.
 1. To change the project visibility, select the dropdown list. If you select to **Public**, you limit access to some features to **Only Project Members**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
-1. Use the toggles to enable or disable features in the project.
+1. Use the [toggles](#project-feature-settings) to enable or disable features in the project.
 1. Select **Save changes**.
 
 When you disable a feature, the following additional features are disabled:
@@ -254,6 +254,29 @@ When you disable a feature, the following additional features are disabled:
 
 - Metrics dashboard access requires reading project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
+
+### Project feature settings
+
+Use the toggles to enable or disable features in the project.
+
+| Option                           | More access limit options | Description   |
+|:---------------------------------|:--------------------------|:--------------|
+| **Issues**                       | ✓                         | Activates the GitLab issues tracker. |
+| **Repository**                   | ✓                         | Enables [repository](../repository/) functionality |
+| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
+| **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality. |
+| **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs). |
+| **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality. |
+| **CI/CD**                        | ✓                         | Enables [CI/CD](../../../ci/index.md) functionality. |
+| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/) for your Docker images. |
+| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/). |
+| **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md). |
+| **Security & Compliance**        | ✓                         | Control access to [security features](../../application_security/index.md). |
+| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
+| **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
+| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/). |
+| **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
+| **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
 
 ## Disabling the CVE ID request button **(FREE SAAS)**
 

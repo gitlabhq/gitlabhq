@@ -4350,6 +4350,56 @@ RSpec.describe Ci::Build do
         end
       end
     end
+
+    context 'when build is part of parallel build' do
+      let(:build_1) { create(:ci_build, name: 'build 1/2') }
+      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+
+      before do
+        build_1.collect_test_reports!(test_report)
+      end
+
+      it 'uses the group name for test suite name' do
+        expect(test_report.test_suites.keys).to contain_exactly('build')
+      end
+
+      context 'when there are more than one parallel builds' do
+        let(:build_2) { create(:ci_build, name: 'build 2/2') }
+
+        before do
+          build_2.collect_test_reports!(test_report)
+        end
+
+        it 'merges the test suite from parallel builds' do
+          expect(test_report.test_suites.keys).to contain_exactly('build')
+        end
+      end
+    end
+
+    context 'when build is part of matrix build' do
+      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+      let(:matrix_build_1) { create(:ci_build, :matrix) }
+
+      before do
+        matrix_build_1.collect_test_reports!(test_report)
+      end
+
+      it 'uses the job name for the test suite' do
+        expect(test_report.test_suites.keys).to contain_exactly(matrix_build_1.name)
+      end
+
+      context 'when there are more than one matrix builds' do
+        let(:matrix_build_2) { create(:ci_build, :matrix) }
+
+        before do
+          matrix_build_2.collect_test_reports!(test_report)
+        end
+
+        it 'keeps separate test suites' do
+          expect(test_report.test_suites.keys).to match_array([matrix_build_1.name, matrix_build_2.name])
+        end
+      end
+    end
   end
 
   describe '#collect_accessibility_reports!' do

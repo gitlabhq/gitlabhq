@@ -36,7 +36,10 @@ RSpec.describe WorkItem do
   describe '#widgets' do
     subject { build(:work_item).widgets }
 
-    it { is_expected.to contain_exactly(instance_of(WorkItems::Widgets::Description)) }
+    it 'returns instances of supported widgets' do
+      is_expected.to match_array([instance_of(WorkItems::Widgets::Description),
+                                  instance_of(WorkItems::Widgets::Hierarchy)])
+    end
   end
 
   describe 'callbacks' do

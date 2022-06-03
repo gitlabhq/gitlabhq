@@ -14,12 +14,15 @@ module Types
         case object
         when ::WorkItems::Widgets::Description
           ::Types::WorkItems::Widgets::DescriptionType
+        when ::WorkItems::Widgets::Hierarchy
+          ::Types::WorkItems::Widgets::HierarchyType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end
       end
 
-      orphan_types ::Types::WorkItems::Widgets::DescriptionType
+      orphan_types ::Types::WorkItems::Widgets::DescriptionType,
+                   ::Types::WorkItems::Widgets::HierarchyType
     end
   end
 end

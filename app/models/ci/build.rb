@@ -1010,7 +1010,7 @@ module Ci
     end
 
     def collect_test_reports!(test_reports)
-      test_reports.get_suite(group_name).tap do |test_suite|
+      test_reports.get_suite(test_suite_name).tap do |test_suite|
         each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
           Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
             blob,
@@ -1183,6 +1183,18 @@ module Ci
     end
 
     private
+
+    def test_suite_name
+      if matrix_build?
+        name
+      else
+        group_name
+      end
+    end
+
+    def matrix_build?
+      options.dig(:parallel, :matrix).present?
+    end
 
     def stick_build_if_status_changed
       return unless saved_change_to_status?

@@ -431,7 +431,9 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             bold
             </strong></p>
           static: |-
-            <strong>&#x000A;bold&#x000A;</strong>
+            <strong>
+            bold
+            </strong>
         05_02__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
           canonical: |
             <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>

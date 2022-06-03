@@ -107,6 +107,11 @@ use the [`artifacts:when:always`](../yaml/index.md#artifactswhen) keyword.
 
 You cannot have multiple tests with the same name and class in your JUnit report format XML file.
 
+In GitLab 15.0 and earlier, test reports from [parallel:matrix](../yaml/index.md#parallel:matrix)
+jobs are aggregated together, which can cause some report information to not be displayed.
+In GitLab 15.1 and later, [this bug is fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/296814),
+and all report information is displayed.
+
 ## View Unit test reports on GitLab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24792) in GitLab 12.5 behind a feature flag (`junit_pipeline_view`), disabled by default.

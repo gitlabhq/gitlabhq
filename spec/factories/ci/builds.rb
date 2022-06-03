@@ -33,6 +33,18 @@ FactoryBot.define do
       name { generate(:job_name) }
     end
 
+    trait :matrix do
+      sequence(:name) { |n| "job: [#{n}]" }
+      options do
+        {
+          parallel: {
+            total: 2,
+            matrix: [{ ID: %w[1 2] }]
+          }
+        }
+      end
+    end
+
     trait :dependent do
       scheduling_type { 'dag' }
 

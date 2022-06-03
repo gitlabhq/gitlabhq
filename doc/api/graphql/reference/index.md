@@ -8811,6 +8811,29 @@ The edge type for [`VulnerabilityScanner`](#vulnerabilityscanner).
 | <a id="vulnerabilityscanneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilityscanneredgenode"></a>`node` | [`VulnerabilityScanner`](#vulnerabilityscanner) | The item at the end of the edge. |
 
+#### `WorkItemConnection`
+
+The connection type for [`WorkItem`](#workitem).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemconnectionedges"></a>`edges` | [`[WorkItemEdge]`](#workitemedge) | A list of edges. |
+| <a id="workitemconnectionnodes"></a>`nodes` | [`[WorkItem]`](#workitem) | A list of nodes. |
+| <a id="workitemconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemEdge`
+
+The edge type for [`WorkItem`](#workitem).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
+
 #### `WorkItemTypeConnection`
 
 The connection type for [`WorkItemType`](#workitemtype).
@@ -9196,6 +9219,10 @@ Represents an epic on an issue board.
 | ---- | ---- | ----------- |
 | <a id="boardepicauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the epic. |
 | <a id="boardepicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of award emojis associated with the epic. (see [Connections](#connections)) |
+| <a id="boardepicblocked"></a>`blocked` | [`Boolean`](#boolean) | Indicates the epic is blocked. |
+| <a id="boardepicblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of epics blocking this epic. |
+| <a id="boardepicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
+| <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="boardepiccolor"></a>`color` | [`String!`](#string) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
@@ -10776,6 +10803,10 @@ Represents an epic.
 | ---- | ---- | ----------- |
 | <a id="epicauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the epic. |
 | <a id="epicawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of award emojis associated with the epic. (see [Connections](#connections)) |
+| <a id="epicblocked"></a>`blocked` | [`Boolean`](#boolean) | Indicates the epic is blocked. |
+| <a id="epicblockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of epics blocking this epic. |
+| <a id="epicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
+| <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
 | <a id="epiccolor"></a>`color` | [`String!`](#string) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
@@ -17955,6 +17986,18 @@ Represents a description widget.
 | <a id="workitemwidgetdescriptiondescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemwidgetdescriptiontype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetHierarchy`
+
+Represents a hierarchy widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgethierarchychildren"></a>`children` | [`WorkItemConnection`](#workitemconnection) | Child work items. (see [Connections](#connections)) |
+| <a id="workitemwidgethierarchyparent"></a>`parent` | [`WorkItem`](#workitem) | Parent work item. |
+| <a id="workitemwidgethierarchytype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ## Enumeration types
 
 Also called _Enums_, enumeration types are a special kind of scalar that
@@ -19730,6 +19773,7 @@ Type of a work item widget.
 | Value | Description |
 | ----- | ----------- |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
+| <a id="workitemwidgettypehierarchy"></a>`HIERARCHY` | Hierarchy widget. |
 
 ## Scalar types
 
@@ -20937,6 +20981,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 Implementations:
 
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
+- [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy)
 
 ##### Fields
 

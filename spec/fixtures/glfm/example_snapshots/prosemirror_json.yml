@@ -2900,8 +2900,20 @@
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__004: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "\n*foo*"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__005: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
@@ -2951,26 +2963,116 @@
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__015: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "foo",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "\n*bar*\n"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__016: |-
   Error - check implementation:
   Hast node of type "warning" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__017: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "\n*bar*\n"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__018: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "\n*bar*"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__019: |-
-  Error - check implementation:
-  Hast node of type "del" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "\n*foo*\n"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__020: |-
   Error - check implementation:
-  Hast node of type "del" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
 04_06__leaf_blocks__html_blocks__021: |-
-  Error - check implementation:
-  Hast node of type "del" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              },
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "foo"
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__022: |-
   {
     "type": "doc",
@@ -3072,6 +3174,7 @@
                 "attrs": {
                   "href": "bar",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3110,6 +3213,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -3136,6 +3240,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "the title",
                   "canonicalSrc": null
                 }
@@ -3162,6 +3267,7 @@
                 "attrs": {
                   "href": "my_(url)",
                   "target": "_blank",
+                  "class": null,
                   "title": "title (with parens)",
                   "canonicalSrc": null
                 }
@@ -3188,6 +3294,7 @@
                 "attrs": {
                   "href": "my%20url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -3214,6 +3321,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "\ntitle\nline1\nline2\n",
                   "canonicalSrc": null
                 }
@@ -3273,6 +3381,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3323,6 +3432,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3352,6 +3462,7 @@
                 "attrs": {
                   "href": "/url%5Cbar*baz",
                   "target": "_blank",
+                  "class": null,
                   "title": "foo\"bar\\baz",
                   "canonicalSrc": null
                 }
@@ -3378,6 +3489,7 @@
                 "attrs": {
                   "href": "url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3404,6 +3516,7 @@
                 "attrs": {
                   "href": "first",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3430,6 +3543,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3456,6 +3570,7 @@
                 "attrs": {
                   "href": "/%CF%86%CE%BF%CF%85",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3619,6 +3734,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3674,6 +3790,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3704,6 +3821,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3730,6 +3848,7 @@
                 "attrs": {
                   "href": "/foo-url",
                   "target": "_blank",
+                  "class": null,
                   "title": "foo",
                   "canonicalSrc": null
                 }
@@ -3749,6 +3868,7 @@
                 "attrs": {
                   "href": "/bar-url",
                   "target": "_blank",
+                  "class": null,
                   "title": "bar",
                   "canonicalSrc": null
                 }
@@ -3768,6 +3888,7 @@
                 "attrs": {
                   "href": "/baz-url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3794,6 +3915,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -4020,132 +4142,20 @@
     ]
   }
 04_10__leaf_blocks__tables_extension__001: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| foo | bar |\n| --- | --- |\n| baz | bim |"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 04_10__leaf_blocks__tables_extension__002: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | defghi |\n:-: | -----------:\nbar | baz"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 04_10__leaf_blocks__tables_extension__003: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| f|oo  |\n| ------ |\n| b "
-          },
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "code"
-              }
-            ],
-            "text": "\\|"
-          },
-          {
-            "type": "text",
-            "text": " az |\n| b "
-          },
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "bold"
-              }
-            ],
-            "text": "|"
-          },
-          {
-            "type": "text",
-            "text": " im |"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 04_10__leaf_blocks__tables_extension__004: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |\n| bar | baz |"
-          }
-        ]
-      },
-      {
-        "type": "blockquote",
-        "attrs": {
-          "multiline": false
-        },
-        "content": [
-          {
-            "type": "paragraph",
-            "content": [
-              {
-                "type": "text",
-                "text": "bar"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 04_10__leaf_blocks__tables_extension__005: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |\n| bar | baz |\nbar"
-          }
-        ]
-      },
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "bar"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 04_10__leaf_blocks__tables_extension__006: |-
   {
     "type": "doc",
@@ -4162,35 +4172,11 @@
     ]
   }
 04_10__leaf_blocks__tables_extension__007: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |\n| bar |\n| bar | baz | boo |"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 04_10__leaf_blocks__tables_extension__008: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
 05_01__container_blocks__block_quotes__001: |-
   {
     "type": "doc",
@@ -7114,161 +7100,8 @@
     ]
   }
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__049: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "bulletList",
-        "attrs": {
-          "bullet": "*"
-        },
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[ ] foo"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[x] bar"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[x] foo\n"
-                  }
-                ]
-              },
-              {
-                "type": "bulletList",
-                "attrs": {
-                  "bullet": "*"
-                },
-                "content": [
-                  {
-                    "type": "listItem",
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "[ ] bar"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "listItem",
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "[x] baz"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[ ] bim"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "foo"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "bar"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "bulletList",
-        "attrs": {
-          "bullet": "*"
-        },
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "baz"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Hast node of type "input" not supported by this converter. Please, provide an specification.
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__050: |-
   {
     "type": "doc",
@@ -8855,6 +8688,7 @@
                 "attrs": {
                   "href": "http://example.com?find=%5C*",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -8890,6 +8724,7 @@
                 "attrs": {
                   "href": "/bar*",
                   "target": "_blank",
+                  "class": null,
                   "title": "ti*tle",
                   "canonicalSrc": null
                 }
@@ -8916,6 +8751,7 @@
                 "attrs": {
                   "href": "/bar*",
                   "target": "_blank",
+                  "class": null,
                   "title": "ti*tle",
                   "canonicalSrc": null
                 }
@@ -9060,6 +8896,7 @@
                 "attrs": {
                   "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
+                  "class": null,
                   "title": "föö",
                   "canonicalSrc": null
                 }
@@ -9086,6 +8923,7 @@
                 "attrs": {
                   "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
+                  "class": null,
                   "title": "föö",
                   "canonicalSrc": null
                 }
@@ -9605,6 +9443,7 @@
                 "attrs": {
                   "href": "`",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -9655,6 +9494,7 @@
                 "attrs": {
                   "href": "http://foo.bar.%60baz",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -10770,6 +10610,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -11198,6 +11039,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -11266,6 +11108,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -11586,6 +11429,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12480,6 +12324,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12510,6 +12355,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12653,6 +12499,7 @@
                 "attrs": {
                   "href": "http://foo.bar/?q=**",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12683,6 +12530,7 @@
                 "attrs": {
                   "href": "http://foo.bar/?q=__",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12703,7 +12551,16 @@
         "content": [
           {
             "type": "text",
-            "text": "~~Hi~~ Hello, world!"
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "Hi"
+          },
+          {
+            "type": "text",
+            "text": " Hello, world!"
           }
         ]
       }
@@ -12748,6 +12605,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -12774,6 +12632,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12800,6 +12659,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12826,6 +12686,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12867,6 +12728,7 @@
                 "attrs": {
                   "href": "/my%20uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12911,6 +12773,7 @@
                 "attrs": {
                   "href": "b)c",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12976,6 +12839,7 @@
                 "attrs": {
                   "href": "(foo)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13002,6 +12866,7 @@
                 "attrs": {
                   "href": "foo(and(bar))",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13028,6 +12893,7 @@
                 "attrs": {
                   "href": "foo(and(bar)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13054,6 +12920,7 @@
                 "attrs": {
                   "href": "foo(and(bar)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13080,6 +12947,7 @@
                 "attrs": {
                   "href": "foo):",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13106,6 +12974,7 @@
                 "attrs": {
                   "href": "#fragment",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13126,6 +12995,7 @@
                 "attrs": {
                   "href": "http://example.com#fragment",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13146,6 +13016,7 @@
                 "attrs": {
                   "href": "http://example.com?foo=3#frag",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13172,6 +13043,7 @@
                 "attrs": {
                   "href": "foo%5Cbar",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13198,6 +13070,7 @@
                 "attrs": {
                   "href": "foo%20b%C3%A4",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13224,6 +13097,7 @@
                 "attrs": {
                   "href": "%22title%22",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13250,6 +13124,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -13276,6 +13151,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title \"\"",
                   "canonicalSrc": null
                 }
@@ -13302,6 +13178,7 @@
                 "attrs": {
                   "href": "/url%C2%A0%22title%22",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13343,6 +13220,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title \"and\" title",
                   "canonicalSrc": null
                 }
@@ -13369,6 +13247,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -13410,6 +13289,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13455,6 +13335,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13481,6 +13362,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13507,6 +13389,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13567,6 +13450,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13610,6 +13494,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13665,6 +13550,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13691,6 +13577,7 @@
                 "attrs": {
                   "href": "baz*",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13772,6 +13659,7 @@
                 "attrs": {
                   "href": "http://example.com/?search=%5D(uri)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13798,6 +13686,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -13824,6 +13713,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13850,6 +13740,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13876,6 +13767,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13936,6 +13828,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13955,6 +13848,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13994,6 +13888,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14013,6 +13908,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14043,6 +13939,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14069,6 +13966,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14126,6 +14024,7 @@
                 "attrs": {
                   "href": "http://example.com/?search=%5D%5Bref%5D",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14152,6 +14051,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14178,6 +14078,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14208,6 +14109,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14238,6 +14140,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14268,6 +14171,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14294,6 +14198,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14407,6 +14312,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14433,6 +14339,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14507,6 +14414,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14533,6 +14441,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14566,6 +14475,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14592,6 +14502,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14622,6 +14533,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14648,6 +14560,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14685,6 +14598,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14722,6 +14636,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14748,6 +14663,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14774,6 +14690,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14823,6 +14740,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14849,6 +14767,7 @@
                 "attrs": {
                   "href": "/url2",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14875,6 +14794,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14901,6 +14821,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14927,6 +14848,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14961,6 +14883,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14987,6 +14910,7 @@
                 "attrs": {
                   "href": "/url2",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15002,6 +14926,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15032,6 +14957,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15508,6 +15434,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -15534,6 +15461,7 @@
                 "attrs": {
                   "href": "http://foo.bar.baz",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15560,6 +15488,7 @@
                 "attrs": {
                   "href": "http://foo.bar.baz/test?q=hello&id=22&boolean",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15586,6 +15515,7 @@
                 "attrs": {
                   "href": "irc://foo.bar:2233/baz",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15612,6 +15542,7 @@
                 "attrs": {
                   "href": "MAILTO:FOO@BAR.BAZ",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15638,6 +15569,7 @@
                 "attrs": {
                   "href": "a+b+c:d",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15664,6 +15596,7 @@
                 "attrs": {
                   "href": "made-up-scheme://foo,bar",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15690,6 +15623,7 @@
                 "attrs": {
                   "href": "http://../",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15716,6 +15650,7 @@
                 "attrs": {
                   "href": "localhost:5001/foo",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15736,7 +15671,27 @@
         "content": [
           {
             "type": "text",
-            "text": "<http://foo.bar/baz bim>"
+            "text": "<"
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://foo.bar/baz",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "http://foo.bar/baz"
+          },
+          {
+            "type": "text",
+            "text": " bim>"
           }
         ]
       }
@@ -15757,6 +15712,7 @@
                 "attrs": {
                   "href": "http://example.com/%5C%5B%5C",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15783,6 +15739,7 @@
                 "attrs": {
                   "href": "mailto:foo@bar.example.com",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15809,6 +15766,7 @@
                 "attrs": {
                   "href": "mailto:foo+special@Bar.baz-bar0.com",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15821,20 +15779,8 @@
     ]
   }
 06_09__inlines__autolinks__013: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "<foo+@bar.example.com>"
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Cannot read properties of undefined (reading 'end')
 06_09__inlines__autolinks__014: |-
   {
     "type": "doc",
@@ -15859,7 +15805,27 @@
         "content": [
           {
             "type": "text",
-            "text": "< http://foo.bar >"
+            "text": "< "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://foo.bar",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "http://foo.bar"
+          },
+          {
+            "type": "text",
+            "text": " >"
           }
         ]
       }
@@ -15904,6 +15870,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://example.com",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "http://example.com"
           }
         ]
@@ -15919,6 +15897,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:foo@bar.example.com",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "foo@bar.example.com"
           }
         ]
@@ -15934,6 +15924,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.commonmark.org"
           }
         ]
@@ -15949,7 +15951,27 @@
         "content": [
           {
             "type": "text",
-            "text": "Visit www.commonmark.org/help for more information."
+            "text": "Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org/help",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org/help"
+          },
+          {
+            "type": "text",
+            "text": " for more information."
           }
         ]
       }
@@ -15964,7 +15986,27 @@
         "content": [
           {
             "type": "text",
-            "text": "Visit www.commonmark.org."
+            "text": "Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org"
+          },
+          {
+            "type": "text",
+            "text": "."
           }
         ]
       },
@@ -15973,7 +16015,27 @@
         "content": [
           {
             "type": "text",
-            "text": "Visit www.commonmark.org/a.b."
+            "text": "Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org/a.b",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org/a.b"
+          },
+          {
+            "type": "text",
+            "text": "."
           }
         ]
       }
@@ -15988,6 +16050,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.google.com/search?q=Markup+(business)"
           }
         ]
@@ -15997,7 +16071,23 @@
         "content": [
           {
             "type": "text",
-            "text": "www.google.com/search?q=Markup+(business)))"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=Markup+(business)"
+          },
+          {
+            "type": "text",
+            "text": "))"
           }
         ]
       },
@@ -16006,7 +16096,27 @@
         "content": [
           {
             "type": "text",
-            "text": "(www.google.com/search?q=Markup+(business))"
+            "text": "("
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=Markup+(business)"
+          },
+          {
+            "type": "text",
+            "text": ")"
           }
         ]
       },
@@ -16015,7 +16125,23 @@
         "content": [
           {
             "type": "text",
-            "text": "(www.google.com/search?q=Markup+(business)"
+            "text": "("
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=Markup+(business)"
           }
         ]
       }
@@ -16030,6 +16156,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=(business))+ok",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.google.com/search?q=(business))+ok"
           }
         ]
@@ -16045,6 +16183,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=commonmark&hl=en",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.google.com/search?q=commonmark&hl=en"
           }
         ]
@@ -16054,7 +16204,23 @@
         "content": [
           {
             "type": "text",
-            "text": "www.google.com/search?q=commonmark&hl;"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=commonmark",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=commonmark"
+          },
+          {
+            "type": "text",
+            "text": "&hl;"
           }
         ]
       }
@@ -16069,7 +16235,23 @@
         "content": [
           {
             "type": "text",
-            "text": "www.commonmark.org/he<lp"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org/he",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org/he"
+          },
+          {
+            "type": "text",
+            "text": "<lp"
           }
         ]
       }
@@ -16084,6 +16266,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://commonmark.org",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "http://commonmark.org"
           }
         ]
@@ -16093,7 +16287,27 @@
         "content": [
           {
             "type": "text",
-            "text": "(Visit https://encrypted.google.com/search?q=Markup+(business))"
+            "text": "(Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://encrypted.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "https://encrypted.google.com/search?q=Markup+(business)"
+          },
+          {
+            "type": "text",
+            "text": ")"
           }
         ]
       },
@@ -16117,6 +16331,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:foo@bar.baz",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "foo@bar.baz"
           }
         ]
@@ -16132,7 +16358,27 @@
         "content": [
           {
             "type": "text",
-            "text": "hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is."
+            "text": "hello@mail+xyz.example isn't valid, but "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:hello+xyz@mail.example",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "hello+xyz@mail.example"
+          },
+          {
+            "type": "text",
+            "text": " is."
           }
         ]
       }
@@ -16147,6 +16393,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:a.b-c_d@a.b",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "a.b-c_d@a.b"
           }
         ]
@@ -16156,7 +16414,23 @@
         "content": [
           {
             "type": "text",
-            "text": "a.b-c_d@a.b."
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:a.b-c_d@a.b",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "a.b-c_d@a.b"
+          },
+          {
+            "type": "text",
+            "text": "."
           }
         ]
       },
@@ -16735,5 +17009,22 @@
     ]
   }
 08_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
+            "text": "\nbold\n"
+          }
+        ]
+      }
+    ]
+  }

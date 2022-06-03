@@ -11,6 +11,8 @@ class WorkItem < Issue
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
             foreign_key: :work_item_id, source: :work_item
 
+  scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
+
   def noteable_target_type_name
     'issue'
   end

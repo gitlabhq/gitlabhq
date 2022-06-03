@@ -63,7 +63,10 @@ RSpec.describe WorkItems::Type do
   describe '.available_widgets' do
     subject { described_class.available_widgets }
 
-    it { is_expected.to contain_exactly(::WorkItems::Widgets::Description) }
+    it 'returns list of all possible widgets' do
+      is_expected.to match_array([::WorkItems::Widgets::Description,
+                                  ::WorkItems::Widgets::Hierarchy])
+    end
   end
 
   describe '#default?' do

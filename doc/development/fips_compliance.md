@@ -191,11 +191,11 @@ to ignore AMI changes.
 
 #### Ansible: Specify the FIPS Omnibus builds
 
-The standard Omnibus GitLab releases build their own OpenSSL library,
-which is not FIPS-validated. However, we have nightly builds that create
-Omnibus packages that link against the operating system's OpenSSL library. To
-use this package, update the `gitlab_repo_script_url` field in the
-Ansible `vars.yml`. For example, you might modify
+The standard Omnibus GitLab releases build their own OpenSSL library, which is
+not FIPS-validated. However, we have nightly builds that create Omnibus packages
+that link against the operating system's OpenSSL library. To use this package,
+update the `gitlab_edition` and `gitlab_repo_script_url` fields in the Ansible
+`vars.yml`. For example, you might modify
 `gitlab-environment-toolkit/ansible/environments/gitlab-10k/inventory/vars.yml`
 in this way:
 
@@ -204,6 +204,7 @@ all:
   vars:
     ...
     gitlab_repo_script_url: "https://packages.gitlab.com/install/repositories/gitlab/nightly-fips-builds/script.deb.sh"
+    gitlab_edition: "gitlab-fips"
 ```
 
 ### Cloud Native Hybrid

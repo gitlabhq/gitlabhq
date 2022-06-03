@@ -19,7 +19,7 @@ module Gitlab
         ::Projects::CreateService.new(
           current_user,
           name: name,
-          path: name,
+          path: repo_slug,
           description: repo.description,
           namespace_id: namespace.id,
           visibility_level: repo.visibility_level,

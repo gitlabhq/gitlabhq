@@ -233,6 +233,9 @@ export default {
     shouldShowSecurityExtension() {
       return window.gon?.features?.refactorSecurityExtension;
     },
+    shouldShowCodeQualityExtension() {
+      return window.gon?.features?.refactorCodeQualityExtension;
+    },
     isRestructuredMrWidgetEnabled() {
       return window.gon?.features?.restructuredMrWidget;
     },
@@ -520,7 +523,7 @@ export default {
       }
     },
     registerCodeQualityExtension() {
-      if (this.shouldRenderCodeQuality && this.shouldShowExtension) {
+      if (this.shouldRenderCodeQuality && this.shouldShowCodeQualityExtension) {
         registerExtension(codeQualityExtension);
       }
     },

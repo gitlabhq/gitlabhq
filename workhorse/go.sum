@@ -768,8 +768,9 @@ github.com/mattn/go-colorable v0.1.6/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope
 github.com/mattn/go-colorable v0.1.8/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
 github.com/mattn/go-colorable v0.1.11/go.mod h1:u5H1YNBxpqRaxsYJYSkiCWKzEfiAb1Gb520KVy5xxl4=
 github.com/mattn/go-ieproxy v0.0.1/go.mod h1:pYabZ6IHcRpFh7vIaLfK7rdcWgFEb3SFJ6/gNWuh88E=
-github.com/mattn/go-ieproxy v0.0.3 h1:YkaHmK1CzE5C4O7A3hv3TCbfNDPSCf0RKZFX+VhBeYk=
 github.com/mattn/go-ieproxy v0.0.3/go.mod h1:6ZpRmhBaYuBX1U2za+9rC9iCGLsSp2tftelZne7CPko=
+github.com/mattn/go-ieproxy v0.0.6 h1:tVDlituRyeHMMkHpGpUu8CJG+hxPMwbYCkIUK2PUCbo=
+github.com/mattn/go-ieproxy v0.0.6/go.mod h1:6ZpRmhBaYuBX1U2za+9rC9iCGLsSp2tftelZne7CPko=
 github.com/mattn/go-isatty v0.0.3/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 github.com/mattn/go-isatty v0.0.4/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 github.com/mattn/go-isatty v0.0.5/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=

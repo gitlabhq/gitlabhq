@@ -19,13 +19,15 @@ module Glfm
       markdown_yml_path = ARGV[0]
       markdown_hash = YAML.load_file(markdown_yml_path)
 
+      context = build_context
+
       # NOTE: We COULD parallelize this loop like the Javascript WYSIWYG example generation does,
       # but it wouldn't save much time. Most of the time is spent loading the Rails environment
       # via `rails runner`. In initial testing, this loop only took ~7 seconds while the entire
       # script took ~20 seconds. Unfortunately, there's no easy way to execute
-      # `ApplicationController.helpers.markdown` without using `rails runner`
+      # `Banzai.render_and_post_process` without using `rails runner`
       static_html_hash = markdown_hash.transform_values do |markdown|
-        ApplicationController.helpers.markdown(markdown)
+        Banzai.render_and_post_process(markdown, context)
       end
 
       static_html_tempfile_path = Dir::Tmpname.create(STATIC_HTML_TEMPFILE_BASENAME) do |path|
@@ -37,14 +39,42 @@ module Glfm
       # Write the path to the output file to stdout
       print static_html_tempfile_path
     end
-  end
-end
 
-# current_user must be in global scope for `markdown` helper to work. Currently it's not supported
-# to pass it in the context.
-def current_user
-  # TODO: This will likely need to be a more realistic user object for some of the GLFM examples
-  User.new
+    private
+
+    def build_context
+      user_username = 'glfm_user_username'
+      user = User.find_by_username(user_username) ||
+        User.create!(
+          email: "glfm_user_email@example.com",
+          name: "glfm_user_name",
+          password: "glfm_user_password",
+          username: user_username
+        )
+
+      # Ensure that we never try to hit Gitaly, even if we
+      # reload the project
+      Project.define_method(:skip_disk_validation) do
+        true
+      end
+
+      project_name = 'glfm_project_name'
+      project = Project.find_by_name(project_name) ||
+        Project.create!(
+          creator: user,
+          description: "glfm_project_description",
+          name: project_name,
+          namespace: user.namespace,
+          path: 'glfm_project_path'
+        )
+
+      {
+        only_path: false,
+        current_user: user,
+        project: project
+      }
+    end
+  end
 end
 
 Glfm::RenderStaticHtml.new.process

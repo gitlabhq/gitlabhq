@@ -126,14 +126,6 @@ export function findDiffFile(files, match, matchKey = 'file_hash') {
   return files.find((file) => file[matchKey] === match);
 }
 
-export const getReversePosition = (linePosition) => {
-  if (linePosition === LINE_POSITION_RIGHT) {
-    return LINE_POSITION_LEFT;
-  }
-
-  return LINE_POSITION_RIGHT;
-};
-
 export function getFormData(params) {
   const {
     commit,

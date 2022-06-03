@@ -6,8 +6,13 @@ RSpec.describe 'Query.work_item(id)' do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project, :private).tap { |project| project.add_developer(developer) } }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:project) { create(:project, :private) }
   let_it_be(:work_item) { create(:work_item, project: project, description: '- List item') }
+  let_it_be(:child_item1) { create(:work_item, :task, project: project) }
+  let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project) }
+  let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
+  let_it_be(:child_link2) { create(:parent_link, work_item_parent: work_item, work_item: child_item2) }
 
   let(:current_user) { developer }
   let(:work_item_data) { graphql_data['workItem'] }
@@ -20,6 +25,9 @@ RSpec.describe 'Query.work_item(id)' do
 
   context 'when the user can read the work item' do
     before do
+      project.add_developer(developer)
+      project.add_guest(guest)
+
       post_graphql(query, current_user: current_user)
     end
 
@@ -39,30 +47,132 @@ RSpec.describe 'Query.work_item(id)' do
     end
 
     context 'when querying widgets' do
-      let(:work_item_fields) do
-        <<~GRAPHQL
-          id
-          widgets {
-            type
-            ... on WorkItemWidgetDescription {
-              description
-              descriptionHtml
+      describe 'description widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDescription {
+                description
+                descriptionHtml
+              }
             }
-          }
-        GRAPHQL
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => match_array([
+              hash_including(
+                'type' => 'DESCRIPTION',
+                'description' => work_item.description,
+                'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {})
+              ),
+              hash_including(
+                'type' => 'HIERARCHY'
+              )
+            ])
+          )
+        end
       end
 
-      it 'returns widget information' do
-        expect(work_item_data).to include(
-          'id' => work_item.to_gid.to_s,
-          'widgets' => contain_exactly(
-            hash_including(
-              'type' => 'DESCRIPTION',
-              'description' => work_item.description,
-              'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {})
-            )
+      describe 'hierarchy widget' do
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetHierarchy {
+                parent {
+                  id
+                }
+                children {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => match_array([
+              hash_including(
+                'type' => 'DESCRIPTION'
+              ),
+              hash_including(
+                'type' => 'HIERARCHY',
+                'parent' => nil,
+                'children' => { 'nodes' => match_array([
+                  hash_including('id' => child_link1.work_item.to_gid.to_s),
+                  hash_including('id' => child_link2.work_item.to_gid.to_s)
+                ]) }
+              )
+            ])
           )
-        )
+        end
+
+        it 'avoids N+1 queries' do
+          post_graphql(query, current_user: current_user) # warm up
+
+          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            post_graphql(query, current_user: current_user)
+          end
+
+          create_list(:parent_link, 3, work_item_parent: work_item)
+
+          expect do
+            post_graphql(query, current_user: current_user)
+          end.not_to exceed_all_query_limit(control_count)
+        end
+
+        context 'when user is guest' do
+          let(:current_user) { guest }
+
+          it 'filters out not accessible children or parent' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => match_array([
+                hash_including(
+                  'type' => 'DESCRIPTION'
+                ),
+                hash_including(
+                  'type' => 'HIERARCHY',
+                  'parent' => nil,
+                  'children' => { 'nodes' => match_array([
+                    hash_including('id' => child_link1.work_item.to_gid.to_s)
+                  ]) }
+                )
+              ])
+            )
+          end
+        end
+
+        context 'when requesting child item' do
+          let_it_be(:work_item) { create(:work_item, :task, project: project, description: '- List item') }
+          let_it_be(:parent_link) { create(:parent_link, work_item: work_item) }
+
+          it 'returns parent information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => match_array([
+                hash_including(
+                  'type' => 'DESCRIPTION'
+                ),
+                hash_including(
+                  'type' => 'HIERARCHY',
+                  'parent' => hash_including('id' => parent_link.work_item_parent.to_gid.to_s),
+                  'children' => { 'nodes' => match_array([]) }
+                )
+              ])
+            )
+          end
+        end
       end
     end
 

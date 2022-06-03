@@ -267,6 +267,10 @@ module SortingHelper
     options.concat([title_option])
   end
 
+  def can_sort_by_issue_weight?(_viewing_issues)
+    false
+  end
+
   def due_date_option
     { value: sort_value_due_date, text: sort_title_due_date, href: page_filter_path(sort: sort_value_due_date) }
   end

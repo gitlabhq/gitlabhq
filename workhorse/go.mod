@@ -79,7 +79,7 @@ require (
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20210210170715-a8dfcb80d3a7 // indirect
 	github.com/lightstep/lightstep-tracer-go v0.25.0 // indirect
-	github.com/mattn/go-ieproxy v0.0.3 // indirect
+	github.com/mattn/go-ieproxy v0.0.6 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mitchellh/reflectwalk v1.0.0 // indirect
 	github.com/oklog/ulid/v2 v2.0.2 // indirect

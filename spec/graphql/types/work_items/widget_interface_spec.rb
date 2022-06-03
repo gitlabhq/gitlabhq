@@ -12,10 +12,19 @@ RSpec.describe Types::WorkItems::WidgetInterface do
   end
 
   describe ".resolve_type" do
-    it 'knows the correct type for objects' do
-      expect(
-        described_class.resolve_type(WorkItems::Widgets::Description.new(build(:work_item)), {})
-      ).to eq(Types::WorkItems::Widgets::DescriptionType)
+    using RSpec::Parameterized::TableSyntax
+
+    where(:widget_class, :widget_type_name) do
+      WorkItems::Widgets::Description | Types::WorkItems::Widgets::DescriptionType
+      WorkItems::Widgets::Hierarchy   | Types::WorkItems::Widgets::HierarchyType
+    end
+
+    with_them do
+      it 'knows the correct type for objects' do
+        expect(
+          described_class.resolve_type(widget_class.new(build(:work_item)), {})
+        ).to eq(widget_type_name)
+      end
     end
 
     it 'raises an error for an unknown type' do

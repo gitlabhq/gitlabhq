@@ -145,7 +145,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ":id", feature_category: :users, urgency: :default do
+      get ":id", feature_category: :users, urgency: :low do
         forbidden!('Not authorized!') unless current_user
 
         unless current_user.admin?
@@ -921,7 +921,7 @@ module API
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end
-        get feature_category: :users, urgency: :default do
+        get feature_category: :users, urgency: :low do
           entity =
             if current_user.admin?
               Entities::UserWithAdmin
