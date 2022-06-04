@@ -19,7 +19,7 @@ export default {
     GlSprintf,
     ModalCopyButton,
   },
-  inject: ['kasAddress'],
+  inject: ['kasAddress', 'kasVersion'],
   props: {
     agentToken: {
       required: true,
@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     agentRegistrationCommand() {
-      return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
+      return generateAgentRegistrationCommand(this.agentToken, this.kasAddress, this.kasVersion);
     },
   },
 };

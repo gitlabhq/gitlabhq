@@ -9,6 +9,7 @@ module Projects::ClusterAgentsHelper
       empty_state_svg_path: image_path('illustrations/operations-dashboard_empty.svg'),
       project_path: project.full_path,
       kas_address: Gitlab::Kas.external_url,
+      kas_version: Gitlab::Kas.version_info,
       can_admin_cluster: can?(current_user, :admin_cluster, project).to_s
     }
   end
