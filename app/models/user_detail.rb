@@ -2,9 +2,6 @@
 
 class UserDetail < ApplicationRecord
   extend ::Gitlab::Utils::Override
-  include IgnorableColumns
-
-  ignore_columns :other_role, remove_after: '2022-07-22', remove_with: '15.3'
 
   REGISTRATION_OBJECTIVE_PAIRS = { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5, joining_team: 6 }.freeze
 

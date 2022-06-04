@@ -56,7 +56,7 @@ installation.
 
 ## Cross-repository Code Search
 
-- [Advanced Search](../integration/elasticsearch.md): Leverage Elasticsearch for
+- [Advanced Search](../integration/elasticsearch.md): Leverage [Elasticsearch](https://www.elastic.co/) or [OpenSearch](https://opensearch.org/) for
   faster, more advanced code search across your entire GitLab instance.
 
 ## Scaling and replication
