@@ -536,7 +536,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # avoid slower tests, because generating the static HTML is slow due to the need to invoke
     # the rails environment. We could have separate sections, but this would require an extra flag
     # to the `process` method to independently skip static vs. WYSIWYG, which is not worth the effort.
-    it 'writes the correct content' do
+    it 'writes the correct content', :unlimited_max_formatted_output_length do
       # expectation that skipping message is only output once per example
       expect(subject).to receive(:output).once.with(/reason.*skipping this example because it is very bad/i)
 

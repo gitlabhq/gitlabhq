@@ -35,4 +35,11 @@ RSpec.configure do |config|
     config.filter_run focus: true
     config.run_all_when_everything_filtered = true
   end
+
+  # Makes diffs show entire non-truncated values.
+  config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
+    config.expect_with :rspec do |c|
+      c.max_formatted_output_length = nil
+    end
+  end
 end
