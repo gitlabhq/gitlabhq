@@ -166,6 +166,7 @@ export default (resolvers = {}, config = {}) => {
         PerformanceBarService.interceptor({
           config: {
             url: httpResponse.url,
+            operationName: operation.operationName,
           },
           headers: {
             'x-request-id': httpResponse.headers.get('x-request-id'),

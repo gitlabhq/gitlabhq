@@ -3,15 +3,19 @@ export default class PerformanceBarStore {
     this.requests = [];
   }
 
-  addRequest(requestId, requestUrl) {
+  addRequest(requestId, requestUrl, operationName) {
     if (!this.findRequest(requestId)) {
-      const shortUrl = PerformanceBarStore.truncateUrl(requestUrl);
+      let displayName = PerformanceBarStore.truncateUrl(requestUrl);
+
+      if (operationName) {
+        displayName += ` (${operationName})`;
+      }
 
       this.requests.push({
         id: requestId,
         url: requestUrl,
-        truncatedUrl: shortUrl,
         details: {},
+        displayName,
       });
     }
 

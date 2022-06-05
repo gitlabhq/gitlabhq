@@ -121,7 +121,7 @@ export default {
       return window.URL.createObjectURL(blob);
     },
     downloadName() {
-      const fileName = this.requests[0].truncatedUrl;
+      const fileName = this.requests[0].displayName;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
     memoryReportPath() {

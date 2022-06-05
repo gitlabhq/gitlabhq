@@ -10,13 +10,15 @@ export default class PerformanceBarService {
 
   static registerInterceptor(peekUrl, callback) {
     PerformanceBarService.interceptor = (response) => {
-      const [fireCallback, requestId, requestUrl] = PerformanceBarService.callbackParams(
-        response,
-        peekUrl,
-      );
+      const [
+        fireCallback,
+        requestId,
+        requestUrl,
+        operationName,
+      ] = PerformanceBarService.callbackParams(response, peekUrl);
 
       if (fireCallback) {
-        callback(requestId, requestUrl);
+        callback(requestId, requestUrl, operationName);
       }
 
       return response;
@@ -36,7 +38,8 @@ export default class PerformanceBarService {
     const cachedResponse =
       response.headers && parseBoolean(response.headers['x-gitlab-from-cache']);
     const fireCallback = requestUrl !== peekUrl && Boolean(requestId) && !cachedResponse;
+    const operationName = response.config?.operationName;
 
-    return [fireCallback, requestId, requestUrl];
+    return [fireCallback, requestId, requestUrl, operationName];
   }
 }

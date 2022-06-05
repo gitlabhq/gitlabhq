@@ -31,7 +31,7 @@ export default {
         :value="request.id"
         data-qa-selector="request_dropdown_option"
       >
-        {{ request.truncatedUrl }}
+        {{ request.displayName }}
       </option>
     </select>
   </div>
