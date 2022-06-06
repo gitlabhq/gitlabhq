@@ -193,7 +193,7 @@ const defaultSerializerConfig = {
       state.write('[[_TOC_]]');
       state.closeBlock(node);
     },
-    [Table.name]: renderTable,
+    [Table.name]: preserveUnchanged(renderTable),
     [TableCell.name]: renderTableCell,
     [TableHeader.name]: renderTableCell,
     [TableRow.name]: renderTableRow,

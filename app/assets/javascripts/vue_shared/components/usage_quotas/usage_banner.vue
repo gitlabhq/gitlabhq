@@ -34,7 +34,7 @@ export default {
         <div class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1">
           <div
             v-if="$slots['left-primary-text']"
-            class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0 gl-mb-4"
+            class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
           >
             <slot name="left-primary-text"></slot>
           </div>

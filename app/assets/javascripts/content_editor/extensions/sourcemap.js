@@ -16,6 +16,10 @@ import Paragraph from './paragraph';
 import Strike from './strike';
 import TaskList from './task_list';
 import TaskItem from './task_item';
+import Table from './table';
+import TableCell from './table_cell';
+import TableHeader from './table_header';
+import TableRow from './table_row';
 
 export default Extension.create({
   addGlobalAttributes() {
@@ -39,6 +43,10 @@ export default Extension.create({
           Strike.name,
           TaskList.name,
           TaskItem.name,
+          Table.name,
+          TableCell.name,
+          TableHeader.name,
+          TableRow.name,
         ],
         attributes: {
           sourceMarkdown: {

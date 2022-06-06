@@ -1179,7 +1179,7 @@ This is how it renders on the GitLab documentation site:
 
 > Notes:
 >
-> - The `figure` tag is required for semantic SEO and the `video_container`
+> - The `figure` tag is required for semantic SEO and the `video-container`
 class is necessary to make sure the video is responsive and displays on
 different mobile devices.
 > - The `<div class="video-fallback">` is a fallback necessary for

@@ -10,6 +10,11 @@ const isTaskItem = (hastNode) => {
   );
 };
 
+const getTableCellAttrs = (hastNode) => ({
+  colspan: parseInt(hastNode.properties.colSpan, 10) || 1,
+  rowspan: parseInt(hastNode.properties.rowSpan, 10) || 1,
+});
+
 const factorySpecs = {
   blockquote: { type: 'block', selector: 'blockquote' },
   paragraph: { type: 'block', selector: 'p' },
@@ -80,6 +85,31 @@ const factorySpecs = {
     type: 'ignore',
     selector: (hastNode, ancestors) =>
       hastNode.tagName === 'input' && isTaskItem(ancestors[ancestors.length - 1]),
+  },
+  table: {
+    type: 'block',
+    selector: 'table',
+  },
+  tableRow: {
+    type: 'block',
+    selector: 'tr',
+    parent: 'table',
+  },
+  tableHeader: {
+    type: 'block',
+    selector: 'th',
+    getAttrs: getTableCellAttrs,
+    wrapTextInParagraph: true,
+  },
+  tableCell: {
+    type: 'block',
+    selector: 'td',
+    getAttrs: getTableCellAttrs,
+    wrapTextInParagraph: true,
+  },
+  ignoredTableNodes: {
+    type: 'ignore',
+    selector: (hastNode) => ['thead', 'tbody', 'tfoot'].includes(hastNode.tagName),
   },
   image: {
     type: 'inline',

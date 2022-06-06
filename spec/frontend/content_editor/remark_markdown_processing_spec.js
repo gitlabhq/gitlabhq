@@ -14,6 +14,10 @@ import OrderedList from '~/content_editor/extensions/ordered_list';
 import Paragraph from '~/content_editor/extensions/paragraph';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
+import Table from '~/content_editor/extensions/table';
+import TableHeader from '~/content_editor/extensions/table_header';
+import TableRow from '~/content_editor/extensions/table_row';
+import TableCell from '~/content_editor/extensions/table_cell';
 import TaskList from '~/content_editor/extensions/task_list';
 import TaskItem from '~/content_editor/extensions/task_item';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
@@ -38,6 +42,10 @@ const tiptapEditor = createTestEditor({
     OrderedList,
     Sourcemap,
     Strike,
+    Table,
+    TableRow,
+    TableHeader,
+    TableCell,
     TaskList,
     TaskItem,
   ],
@@ -61,6 +69,10 @@ const {
     listItem,
     orderedList,
     strike,
+    table,
+    tableRow,
+    tableHeader,
+    tableCell,
     taskItem,
     taskList,
   },
@@ -82,6 +94,10 @@ const {
     orderedList: { nodeType: OrderedList.name },
     paragraph: { nodeType: Paragraph.name },
     strike: { nodeType: Strike.name },
+    table: { nodeType: Table.name },
+    tableCell: { nodeType: TableCell.name },
+    tableHeader: { nodeType: TableHeader.name },
+    tableRow: { nodeType: TableRow.name },
     taskItem: { nodeType: TaskItem.name },
     taskList: { nodeType: TaskList.name },
   },
@@ -755,6 +771,70 @@ const fn = () => 'GitLab';
               ...sourceAttrs('24:47', '2. [ ] task list item 2'),
             },
             paragraph(sourceAttrs('24:47', '2. [ ] task list item 2'), 'task list item 2'),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+| a | b |
+|---|---|
+| c | d |
+`,
+      expectedDoc: doc(
+        table(
+          sourceAttrs('0:29', '| a | b |\n|---|---|\n| c | d |'),
+          tableRow(
+            sourceAttrs('0:9', '| a | b |'),
+            tableHeader(sourceAttrs('0:5', '| a |'), paragraph(sourceAttrs('0:5', '| a |'), 'a')),
+            tableHeader(sourceAttrs('5:9', ' b |'), paragraph(sourceAttrs('5:9', ' b |'), 'b')),
+          ),
+          tableRow(
+            sourceAttrs('20:29', '| c | d |'),
+            tableCell(sourceAttrs('20:25', '| c |'), paragraph(sourceAttrs('20:25', '| c |'), 'c')),
+            tableCell(sourceAttrs('25:29', ' d |'), paragraph(sourceAttrs('25:29', ' d |'), 'd')),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
+<table>
+  <tr>
+    <th colspan="2" rowspan="5">Header</th>
+  </tr>
+  <tr>
+    <td colspan="2" rowspan="5">Body</td>
+  </tr>
+</table>
+`,
+      expectedDoc: doc(
+        table(
+          sourceAttrs(
+            '0:132',
+            '<table>\n  <tr>\n    <th colspan="2" rowspan="5">Header</th>\n  </tr>\n  <tr>\n    <td colspan="2" rowspan="5">Body</td>\n  </tr>\n</table>',
+          ),
+          tableRow(
+            sourceAttrs('10:66', '<tr>\n    <th colspan="2" rowspan="5">Header</th>\n  </tr>'),
+            tableHeader(
+              {
+                ...sourceAttrs('19:58', '<th colspan="2" rowspan="5">Header</th>'),
+                colspan: 2,
+                rowspan: 5,
+              },
+              paragraph(sourceAttrs('19:58', '<th colspan="2" rowspan="5">Header</th>'), 'Header'),
+            ),
+          ),
+          tableRow(
+            sourceAttrs('69:123', '<tr>\n    <td colspan="2" rowspan="5">Body</td>\n  </tr>'),
+            tableCell(
+              {
+                ...sourceAttrs('78:115', '<td colspan="2" rowspan="5">Body</td>'),
+                colspan: 2,
+                rowspan: 5,
+              },
+              paragraph(sourceAttrs('78:115', '<td colspan="2" rowspan="5">Body</td>'), 'Body'),
+            ),
           ),
         ),
       ),

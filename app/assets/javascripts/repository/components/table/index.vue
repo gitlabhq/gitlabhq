@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
+import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __ } from '~/locale';
 import getRefMixin from '../../mixins/get_ref';
@@ -10,7 +10,7 @@ import TableRow from './row.vue';
 
 export default {
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     TableHeader,
     TableRow,
     ParentRow,
@@ -158,11 +158,15 @@ export default {
           </template>
           <template v-if="isLoading">
             <tr v-for="i in 5" :key="i" aria-hidden="true">
-              <td><gl-skeleton-loading :lines="1" class="h-auto" /></td>
+              <td><gl-skeleton-loader :lines="1" /></td>
               <td class="gl-display-none gl-sm-display-block">
-                <gl-skeleton-loading :lines="1" class="h-auto" />
+                <gl-skeleton-loader :lines="1" />
               </td>
-              <td><gl-skeleton-loading :lines="1" class="ml-auto h-auto w-50" /></td>
+              <td>
+                <div class="gl-display-flex gl-lg-justify-content-end">
+                  <gl-skeleton-loader :equal-width-lines="true" :lines="1" />
+                </div>
+              </td>
             </tr>
           </template>
           <template v-if="hasMore">

@@ -34,6 +34,43 @@ RSpec.describe Gitlab::Daemon do
     end
   end
 
+  describe '.initialize_instance' do
+    before do
+      allow(Kernel).to receive(:at_exit)
+    end
+
+    after do
+      described_class.instance_variable_set(:@instance, nil)
+    end
+
+    it 'provides instance of Daemon' do
+      expect(described_class.instance).to be_instance_of(described_class)
+    end
+
+    context 'when instance has already been created' do
+      before do
+        described_class.instance
+      end
+
+      context 'and recreate flag is false' do
+        it 'raises an error' do
+          expect { described_class.initialize_instance }.to raise_error(/singleton instance already initialized/)
+        end
+      end
+
+      context 'and recreate flag is true' do
+        it 'calls stop on existing instance and returns new instance' do
+          old_instance = described_class.instance
+          expect(old_instance).to receive(:stop)
+
+          new_instance = described_class.initialize_instance(recreate: true)
+
+          expect(new_instance.object_id).not_to eq(old_instance.object_id)
+        end
+      end
+    end
+  end
+
   context 'when Daemon is enabled' do
     before do
       allow(subject).to receive(:enabled?).and_return(true)

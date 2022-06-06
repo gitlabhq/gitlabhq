@@ -40864,6 +40864,9 @@ msgstr ""
 msgid "UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images."
 msgstr ""
 
+msgid "UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images. %{linkStart}More information%{linkEnd}"
+msgstr ""
+
 msgid "UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items."
 msgstr ""
 

@@ -1,4 +1,4 @@
-import { uniq, isString } from 'lodash';
+import { uniq, isString, omit } from 'lodash';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null },
@@ -219,7 +219,7 @@ function renderTableRowAsHTML(state, node) {
   node.forEach((cell, _, i) => {
     const tag = cell.type.name === 'tableHeader' ? 'th' : 'td';
 
-    renderTagOpen(state, tag, cell.attrs);
+    renderTagOpen(state, tag, omit(cell.attrs, 'sourceMapKey', 'sourceMarkdown'));
 
     if (!containsParagraphWithOnlyText(cell)) {
       state.closeBlock(node);

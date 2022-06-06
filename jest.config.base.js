@@ -60,7 +60,7 @@ module.exports = (path, options = {}) => {
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
-    '^any_jest/(.*)$': '<rootDir>/spec/frontend/$1',
+    '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
     ...extModuleNameMapper,
   };
@@ -75,7 +75,7 @@ module.exports = (path, options = {}) => {
       '^ee_component(/.*)$': rootDirEE,
       '^ee_else_ce(/.*)$': rootDirEE,
       '^ee_jest/(.*)$': specDirEE,
-      '^any_jest/(.*)$': specDirEE,
+      '^ee_else_ce_jest/(.*)$': specDirEE,
       '^any_else_ce(/.*)$': rootDirEE,
       '^jh_else_ee(/.*)$': rootDirEE,
       [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures-ee$1',
@@ -86,13 +86,13 @@ module.exports = (path, options = {}) => {
   }
 
   if (IS_JH) {
+    // DO NOT add additional path to Jihu side, it might break things.
     const rootDirJH = '<rootDir>/jh/app/assets/javascripts$1';
     const specDirJH = '<rootDir>/jh/spec/frontend/$1';
     Object.assign(moduleNameMapper, {
       '^jh(/.*)$': rootDirJH,
       '^jh_component(/.*)$': rootDirJH,
       '^jh_jest/(.*)$': specDirJH,
-      '^any_jest/(.*)$': specDirJH,
       // jh path alias https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74305#note_732793956
       '^jh_else_ce(/.*)$': rootDirJH,
       '^jh_else_ee(/.*)$': rootDirJH,

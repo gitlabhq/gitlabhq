@@ -15555,6 +15555,7 @@ Returns [`[SecurityTrainingUrl!]`](#securitytrainingurl).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectsecuritytrainingurlsfilename"></a>`filename` | [`String`](#string) | Filename to filter security training URLs by programming language. |
 | <a id="projectsecuritytrainingurlsidentifierexternalids"></a>`identifierExternalIds` | [`[String!]!`](#string) | List of external IDs of vulnerability identifiers. |
 | <a id="projectsecuritytrainingurlslanguage"></a>`language` | [`String`](#string) | Desired language for training urls. |
 
@@ -17000,6 +17001,7 @@ Representing a to-do entry.
 | <a id="todocreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp this to-do item was created. |
 | <a id="todogroup"></a>`group` | [`Group`](#group) | Group this to-do item is associated with. |
 | <a id="todoid"></a>`id` | [`ID!`](#id) | ID of the to-do item. |
+| <a id="todonote"></a>`note` | [`Note`](#note) | Note which created this to-do item. |
 | <a id="todoproject"></a>`project` | [`Project`](#project) | Project this to-do item is associated with. |
 | <a id="todostate"></a>`state` | [`TodoStateEnum!`](#todostateenum) | State of the to-do item. |
 | <a id="todotarget"></a>`target` | [`Todoable!`](#todoable) | Target of the to-do item. |

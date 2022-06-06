@@ -22,7 +22,7 @@
 import { Mark } from 'prosemirror-model';
 import { visitParents } from 'unist-util-visit-parents';
 import { toString } from 'hast-util-to-string';
-import { isFunction, noop } from 'lodash';
+import { isFunction, isString, noop } from 'lodash';
 
 /**
  * Merges two ProseMirror text nodes if both text nodes
@@ -290,6 +290,7 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
       selector: factorySpec.selector,
       skipChildren: factorySpec.skipChildren,
       processText: factorySpec.processText,
+      parent: factorySpec.parent,
     };
 
     if (factorySpec.type === 'block') {
@@ -360,6 +361,14 @@ const findFactory = (hastNode, ancestors, factories) =>
       ? selector(hastNode, ancestors)
       : [hastNode.tagName, hastNode.type].includes(selector);
   })?.[1];
+
+const findParent = (ancestors, parent) => {
+  if (isString(parent)) {
+    return ancestors.reverse().find((ancestor) => ancestor.tagName === parent);
+  }
+
+  return ancestors[ancestors.length - 1];
+};
 
 /**
  * Converts a Hast AST to a ProseMirror document based on a series
@@ -461,6 +470,13 @@ const findFactory = (hastNode, ancestors, factories) =>
  * Use this property along skipChildren to provide custom processing of child nodes
  * for a block node.
  *
+ * **parent**
+ *
+ * Specifies what is the node’s parent. This is useful when the node’s parent is not
+ * its direct ancestor in Abstract Syntax Tree. For example, imagine that you want
+ * to make <tr> elements a direct children of tables and skip `<thead>` and `<tbody>`
+ * altogether.
+ *
  * @param {model.Document_Schema} params.schema A ProseMirror schema that specifies the shape
  * of the ProseMirror document.
  * @param {Object} params.factorySpec A factory specification as described above
@@ -475,7 +491,6 @@ export const createProseMirrorDocFromMdastTree = ({ schema, factorySpecs, tree, 
 
   visitParents(tree, (hastNode, ancestors) => {
     const factory = findFactory(hastNode, ancestors, proseMirrorNodeFactories);
-    const parent = ancestors[ancestors.length - 1];
 
     if (!factory) {
       throw new Error(
@@ -484,6 +499,8 @@ export const createProseMirrorDocFromMdastTree = ({ schema, factorySpecs, tree, 
         }" not supported by this converter. Please, provide an specification.`,
       );
     }
+
+    const parent = findParent(ancestors, factory.parent);
 
     factory.handle(state, hastNode, parent);
 

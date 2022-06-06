@@ -56,7 +56,7 @@
   z-index: $zindex-dropdown-menu;
 
   &.right-sidebar-merge-requests {
-    width: 270px;
+    width: 300px;
 
     @include media-breakpoint-up(md) {
       z-index: auto;
