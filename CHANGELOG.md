@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.0.2 (2022-06-06)
+
+### Added (1 change)
+
+- [Add event type in audit event streaming](gitlab-org/gitlab@55ba03fc8342a608e774db01ecadfa0441ea7f76) ([merge request](gitlab-org/gitlab!89266)) **GitLab Enterprise Edition**
+
+### Fixed (10 changes)
+
+- [Fix Advanced Search Opensearch detection](gitlab-org/gitlab@38b58801fed210cef048daf30b4d52542fefb1cf) ([merge request](gitlab-org/gitlab!89266)) **GitLab Enterprise Edition**
+- [Fix 500 on issues list page](gitlab-org/gitlab@d02cc074f6c3aa0da972d6a368aca423fe50f437) ([merge request](gitlab-org/gitlab!89266))
+- [Include inherited owners when calculating User#solo_owned_groups](gitlab-org/gitlab@d38405007bb4b36441bdb4f15acc5d0093c63115) ([merge request](gitlab-org/gitlab!89266))
+- [Fix issue description list item styling](gitlab-org/gitlab@e1077027f1a2616026e7297ae5742a8ddc09d794) ([merge request](gitlab-org/gitlab!89266))
+- [Fix focus for linked issues input field & IDE cursor](gitlab-org/gitlab@3249749eec2dddde761532d2d899e45c39db815c) ([merge request](gitlab-org/gitlab!89266))
+- [docs: Fix DS_DEFAULT_ANALYZERS variable docs](gitlab-org/gitlab@b5aad346a987a6135e05a0fb6b21b5928101fd7f) ([merge request](gitlab-org/gitlab!89266))
+- [Remove existing repository backups when creating a full backup](gitlab-org/gitlab@d12ab4c65b7a99b94220716e9a0f60fe74296010) ([merge request](gitlab-org/gitlab!89266))
+- [Move LFK scheduling out from EE check](gitlab-org/gitlab@43f352382e3dbeb445732e4d8752c161e3e26088) ([merge request](gitlab-org/gitlab!89266))
+- [Fix drag and drop list item bugs](gitlab-org/gitlab@75957edfd741f0e96645871d73e09a87938b0012) ([merge request](gitlab-org/gitlab!89266))
+- [Hide internal note checkbox on unsupported issuable types](gitlab-org/gitlab@4eaed3e11797c8f1e0c6a710b3a411fe9c38090d) ([merge request](gitlab-org/gitlab!89266)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Update auto-deploy-image to v2.28.2](gitlab-org/gitlab@881ef5713a6a16f6ed5e77cf91f9a82dff788b02) ([merge request](gitlab-org/gitlab!89266))
+
 ## 15.0.1 (2022-06-01)
 
 ### Security (8 changes)
