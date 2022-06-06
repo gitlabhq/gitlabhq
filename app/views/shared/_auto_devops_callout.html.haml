@@ -1,15 +1,13 @@
-%section.js-autodevops-banner.gl-banner{ data: { uid: 'auto_devops_settings_dismissed', project_path: project_path(@project) } }
-  .gl-banner-illustration
-    = image_tag('illustrations/autodevops.svg')
+= render Pajamas::BannerComponent.new(button_text: s_('AutoDevOps|Enable in settings'),
+  button_link: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'),
+  svg_path: 'illustrations/autodevops.svg',
+  banner_options: { class: 'js-autodevops-banner', data: { uid: 'auto_devops_settings_dismissed', project_path: project_path(@project) } },
+  close_options: { 'aria-label' => s_('AutoDevOps|Dismiss Auto DevOps box'), class: 'js-close-callout' }) do |c|
+  - c.title do
+    = s_('AutoDevOps|Auto DevOps')
 
-  .gl-banner-content
-    %h1.gl-banner-title= s_('AutoDevOps|Auto DevOps')
-    %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
-    %p
-      - link = link_to(s_('AutoDevOps|Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer')
-      = s_('AutoDevOps|Learn more in the %{link_to_documentation}').html_safe % { link_to_documentation: link }
-    = link_to s_('AutoDevOps|Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'), class: 'btn btn-md btn-default gl-button js-close-callout'
+  %p= s_('AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
 
-  %button.gl-banner-close.close.js-close-callout{ type: 'button',
-  'aria-label' => s_('AutoDevOps|Dismiss Auto DevOps box') }
-    = sprite_icon('close', size: 16, css_class: 'dismiss-icon')
+  %p
+    - link = link_to(s_('AutoDevOps|Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer')
+    = s_('AutoDevOps|Learn more in the %{link_to_documentation}').html_safe % { link_to_documentation: link }

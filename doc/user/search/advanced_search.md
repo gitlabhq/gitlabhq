@@ -96,7 +96,7 @@ doesn't return any results for searches considered abusive according to the foll
 
 - Searches with less than 2 characters.
 - Searches with any term greater than 100 characters. URL search terms have a maximum of 200 characters.
-- Searches with a stop word as the only term (ie: "the", "and", "if", etc.).
+- Searches with a stop word as the only term (for example, "the", "and", "if", etc.).
 - Searches with a `group_id` or `project_id` parameter that is not completely numeric.
 - Searches with a `repository_ref` or `project_ref` parameter that has special characters not allowed by [Git refname](https://git-scm.com/docs/git-check-ref-format).
 - Searches with a `scope` that is unknown.

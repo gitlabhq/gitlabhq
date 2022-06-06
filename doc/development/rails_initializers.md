@@ -30,7 +30,7 @@ query) from an initializer means that tasks like `db:drop`, and
 being dropped.
 
 To help detect when database connections are opened from initializers, we now
-warn in stderr. For example:
+warn in `STDERR`. For example:
 
 ```shell
 DEPRECATION WARNING: Database connection should not be called during initializers (called from block in <module:HasVariable> at app/models/concerns/ci/has_variable.rb:22)

@@ -174,7 +174,7 @@ hearing back from the Unicorn worker. If the CPU spins to 100% while this in
 progress, there may be something taking longer than it should.
 
 To fix this issue, we first need to figure out what is happening. The
-following tips are only recommended if you do NOT mind users being affected by
+following tips are only recommended if you do not mind users being affected by
 downtime. Otherwise skip to the next section.
 
 1. Load the problematic URL

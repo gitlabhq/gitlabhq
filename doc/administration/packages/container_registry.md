@@ -1151,7 +1151,7 @@ for GitLab to run separately from Registry:
 - `gitlab_rails['registry_enabled']`, must be set to `true`. This setting
   signals to GitLab that it should allow Registry API requests.
 - `gitlab_rails['registry_api_url']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L52). This is the Registry URL used internally that users do not need to interact with, `registry['registry_http_addr']` with scheme.
-- `gitlab_rails['registry_host']`, eg. `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
+- `gitlab_rails['registry_host']`, for example, `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
 - `gitlab_rails['registry_port']`. Registry endpoint port, visible to the end user.
 - `gitlab_rails['registry_issuer']` must match the issuer in the Registry configuration.
 - `gitlab_rails['registry_key_path']`, path to the key that matches the certificate on the

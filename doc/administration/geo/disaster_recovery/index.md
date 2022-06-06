@@ -335,7 +335,7 @@ a **secondary** with only a single node. Instead, you must do this manually.
 
 #### Promoting a **secondary** site with an external PostgreSQL database running GitLab 14.5 and later
 
-The `gitlab-ctl geo promote` command can be used in conjunction with an external PostgreSQL database. 
+The `gitlab-ctl geo promote` command can be used in conjunction with an external PostgreSQL database.
 In this case, you must first manually promote the replica database associated
 with the **secondary** site:
 

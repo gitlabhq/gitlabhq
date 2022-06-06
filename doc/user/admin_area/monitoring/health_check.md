@@ -12,14 +12,14 @@ database connection, Redis connection, and access to the file system. These
 endpoints [can be provided to schedulers like Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to hold
 traffic until the system is ready or restart the container as needed.
 
-## IP whitelist
+## IP allowlist
 
-To access monitoring resources, the requesting client IP needs to be included in a whitelist.
+To access monitoring resources, the requesting client IP needs to be included in the allowlist.
 For details, see [how to add IPs to the allowlist for the monitoring endpoints](../../../administration/monitoring/ip_whitelist.md).
 
 ## Using the endpoints locally
 
-With default whitelist settings, the probes can be accessed from localhost using the following URLs:
+With default allowlist settings, the probes can be accessed from localhost using the following URLs:
 
 ```plaintext
 GET http://localhost/-/health

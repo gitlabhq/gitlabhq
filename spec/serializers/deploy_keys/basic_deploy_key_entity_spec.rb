@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeployKeyEntity do
+RSpec.describe DeployKeys::BasicDeployKeyEntity do
   include RequestAwareEntity
 
   let(:user) { create(:user) }
@@ -18,7 +18,7 @@ RSpec.describe DeployKeyEntity do
     project_private.deploy_keys << deploy_key
   end
 
-  describe 'returns deploy keys with projects a user can read' do
+  describe 'returns deploy keys' do
     let(:expected_result) do
       {
         id: deploy_key.id,
@@ -30,19 +30,7 @@ RSpec.describe DeployKeyEntity do
         almost_orphaned: false,
         created_at: deploy_key.created_at,
         updated_at: deploy_key.updated_at,
-        can_edit: false,
-        deploy_keys_projects: [
-          {
-            can_push: false,
-            project:
-            {
-              id: project.id,
-              name: project.name,
-              full_path: project_path(project),
-              full_name: project.full_name
-            }
-          }
-        ]
+        can_edit: false
       }
     end
 

@@ -169,7 +169,7 @@ If you want to override this to increase the pipeline speed you may choose which
 
 ### Secure job status
 
-Jobs pass if they are able to complete a scan. A _pass_ result does NOT indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
+Jobs pass if they are able to complete a scan. A _pass_ result does not indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
 
 Jobs fail if they are unable to complete a scan. You can view the pipeline logs for more information.
 
@@ -200,11 +200,11 @@ reports are available to download. To download a report, select
 
 ### Ultimate
 
-A merge request contains a security widget which displays a summary of the NEW results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
+A merge request contains a security widget which displays a summary of the new results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
 
 We recommend you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
 
-The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both NEW and EXISTING findings.
+The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 
 From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type. Select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
 

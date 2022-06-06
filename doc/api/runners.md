@@ -370,7 +370,7 @@ GET /runners/:id/jobs
 | `id`      | integer | yes      | The ID of a runner  |
 | `status`  | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
 | `order_by`| string  | no       | Order jobs by `id`. |
-| `sort`    | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`) |
+| `sort`    | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`). Specify `order_by` as well, including for `id`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"

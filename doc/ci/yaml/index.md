@@ -3732,7 +3732,7 @@ successfully complete before starting.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213729) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 14.10.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 15.1. [Feature flag ci_trigger_forward_variables](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 15.1. [Feature flag `ci_trigger_forward_variables`](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) removed.
 
 Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control
 what is forwarded to both [parent-child pipelines](../pipelines/parent_child_pipelines.md)

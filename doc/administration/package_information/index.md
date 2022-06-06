@@ -87,7 +87,7 @@ Depending on the init system, this `WARNING` can be one of:
 /sbin/init: unrecognized option '--version'
 ```
 
-when the underlying init system *IS NOT* upstart.
+when the underlying init system *is not* upstart.
 
 ```plaintext
   -.mount loaded active mounted   /

@@ -31,19 +31,43 @@ To change the visibility of your pipelines and related features:
 1. Select or clear the **Public pipelines** checkbox.
    When it is selected, pipelines and related features are visible:
 
-   - For **public** projects, to everyone.
-   - For **internal** projects, to all logged-in users except [external users](../../user/permissions.md#external-users).
-   - For **private** projects, to all project members (Guest or higher).
+   - For [**Public**](../../user/public_access.md) projects, to everyone.
+   - For **Internal** projects, to all logged-in users except [external users](../../user/permissions.md#external-users).
+   - For **Private** projects, to all project members (Guest or higher).
 
    When it is cleared:
 
-   - For **public** projects, job logs, job artifacts, the pipeline security dashboard,
+   - For **Public** projects, job logs, job artifacts, the pipeline security dashboard,
      and the **CI/CD** menu items are visible only to project members (Reporter or higher).
      Other users, including guest users, can only view the status of pipelines and jobs, and only
      when viewing merge requests or commits.
-   - For **internal** projects, pipelines are visible to all logged in users except [external users](../../user/permissions.md#external-users).
+   - For **Internal** projects, pipelines are visible to all logged in users except [external users](../../user/permissions.md#external-users).
      Related features are visible only to project members (Reporter or higher).
-   - For **private** projects, pipelines and related features are visible to project members (Reporter or higher) only.
+   - For **Private** projects, pipelines and related features are visible to project members (Reporter or higher) only.
+
+### Change pipeline visibility for non-project members in public projects
+
+You can control the visibility of pipelines for non-project members in [public projects](../../user/public_access.md).
+
+This setting has no effect when:
+
+- Project visibility is set to [**Internal** or **Private**](../../user/public_access.md),
+  because non-project members cannot access internal or private projects.
+- The [**Public pipelines**](#change-which-users-can-view-your-pipelines) setting is disabled.
+
+To change the pipeline visibility for non-project members:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. For **CI/CD**, choose:
+   - **Only project members**: Only project members can view pipelines.
+   - **Everyone With Access**: Non-project members can also view pipelines.
+1. Select **Save changes**.
+
+The [CI/CD permissions table](../../user/permissions.md#gitlab-cicd-permissions)
+lists the pipeline features non-project members can access when **Everyone With Access**
+is selected.
 
 ## Auto-cancel redundant pipelines
 

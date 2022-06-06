@@ -13,13 +13,13 @@ module Mailgun
     feature_category :team_planning
 
     WEBHOOK_PROCESSORS = [
-      ::Members::Mailgun::ProcessWebhookService
+      Gitlab::Mailgun::WebhookProcessors::FailureLogger,
+      Gitlab::Mailgun::WebhookProcessors::MemberInvites
     ].freeze
 
     def process_webhook
       WEBHOOK_PROCESSORS.each do |processor_class|
-        processor = processor_class.new(params['event-data'] || {})
-        processor.execute if processor.should_process?
+        processor_class.new(params['event-data']).execute
       end
 
       head :ok

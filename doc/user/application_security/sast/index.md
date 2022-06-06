@@ -525,7 +525,7 @@ defined for the `nodejs-scan` scanner:
 '''
 ```
 
-##### File passthrough for gosec
+##### File passthrough for Gosec
 
 Provide the name of the file containing a custom analyzer configuration. In
 this example, customized rules for the `gosec` scanner are contained in the

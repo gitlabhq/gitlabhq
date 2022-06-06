@@ -737,7 +737,7 @@ by the application as correctly authenticated.
 Authentication supports single form logins, multi-step login forms, and authenticating to URLs outside of the configured target URL.
 
 WARNING:
-**NEVER** run an authenticated scan against a production server. When an authenticated
+**Never** run an authenticated scan against a production server. When an authenticated
 scan is run, it may perform *any* function that the authenticated user can. This
 includes actions like modifying and deleting data, submitting forms, and following links.
 Only run an authenticated scan against a test server.

@@ -1014,7 +1014,7 @@ is used to delete data in all indices in between examples to ensure a clean inde
 
 Note that Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
-You do NOT need to add `:clean_gitlab_redis_shared_state` manually.
+You do not need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 

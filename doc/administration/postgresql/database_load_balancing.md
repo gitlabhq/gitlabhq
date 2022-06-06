@@ -125,7 +125,7 @@ record. For example:
 |----------------------|---------------------------------------------------------------------------------------------------|-----------|
 | `nameserver`         | The nameserver to use for looking up the DNS record.                                              | localhost |
 | `record`             | The record to look up. This option is required for service discovery to work.                     |           |
-| `record_type`        | Optional record type to look up, this can be either `A` or `SRV` (GitLab 12.3 and later)          | `A`         |
+| `record_type`        | Optional record type to look up, this can be either `A` or `SRV` (GitLab 12.3 and later)          | `A`       |
 | `port`               | The port of the nameserver.                                                                       | 8600      |
 | `interval`           | The minimum time in seconds between checking the DNS record.                                      | 60        |
 | `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |
@@ -135,7 +135,7 @@ If `record_type` is set to `SRV`, then GitLab continues to use round-robin algor
 and ignores the `weight` and `priority` in the record. Since `SRV` records usually
 return hostnames instead of IPs, GitLab needs to look for the IPs of returned hostnames
 in the additional section of the `SRV` response. If no IP is found for a hostname, GitLab
-needs to query the configured `nameserver` for ANY record for each such hostname looking for `A` or `AAAA`
+needs to query the configured `nameserver` for `ANY` record for each such hostname looking for `A` or `AAAA`
 records, eventually dropping this hostname from rotation if it can't resolve its IP.
 
 The `interval` value specifies the _minimum_ time between checks. If the `A`

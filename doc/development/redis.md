@@ -56,8 +56,7 @@ the entry, instead of relying on the key changing.
 
 ### Multi-key commands
 
-We don't use [Redis Cluster](https://redis.io/topics/cluster-tutorial) at the
-moment, but may wish to in the future: [#118820](https://gitlab.com/gitlab-org/gitlab/-/issues/118820).
+We don't use Redis Cluster, but support for it is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/118820).
 
 This imposes an additional constraint on naming: where GitLab is performing
 operations that require several keys to be held on the same Redis server - for
@@ -120,8 +119,7 @@ on GitLab.com
 
 <!-- vale gitlab.Substitutions = NO -->
 
-On GitLab.com, entries from the [Redis
-slow log](https://redis.io/commands/slowlog) are available in the
+On GitLab.com, entries from the [Redis slow log](https://redis.io/commands/slowlog/) are available in the
 `pubsub-redis-inf-gprd*` index with the [`redis.slowlog` tag](https://log.gprd.gitlab.net/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_a=(columns:!(json.type,json.command,json.exec_time_s),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AWSQX_Vf93rHTYrsexmk,key:json.tag,negate:!f,params:(query:redis.slowlog),type:phrase),query:(match:(json.tag:(query:redis.slowlog,type:phrase))))),index:AWSQX_Vf93rHTYrsexmk)).
 This shows commands that have taken a long time and may be a performance
 concern.
@@ -187,9 +185,9 @@ makes sure that booleans are encoded and decoded consistently.
 
 ### `Gitlab::Redis::HLL`
 
-The Redis [`PFCOUNT`](https://redis.io/commands/pfcount),
-[`PFADD`](https://redis.io/commands/pfadd), and
-[`PFMERGE`](https://redis.io/commands/pfmerge) commands operate on
+The Redis [`PFCOUNT`](https://redis.io/commands/pfcount/),
+[`PFADD`](https://redis.io/commands/pfadd/), and
+[`PFMERGE`](https://redis.io/commands/pfmerge/) commands operate on
 HyperLogLogs, a data structure that allows estimating the number of unique
 elements with low memory usage. (In addition to the `PFCOUNT` documentation,
 Thoughtbot's article on [HyperLogLogs in Redis](https://thoughtbot.com/blog/hyperloglogs-in-redis)
@@ -204,7 +202,7 @@ For cases where we need to efficiently check the whether an item is in a group
 of items, we can use a Redis set.
 [`Gitlab::SetCache`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/set_cache.rb)
 provides an `#include?` method that uses the
-[`SISMEMBER`](https://redis.io/commands/sismember) command, as well as `#read`
+[`SISMEMBER`](https://redis.io/commands/sismember/) command, as well as `#read`
 to fetch all entries in the set.
 
 This is used by the

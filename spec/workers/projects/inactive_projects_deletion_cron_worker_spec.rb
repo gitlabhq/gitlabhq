@@ -5,6 +5,34 @@ require 'spec_helper'
 RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
   include ProjectHelpers
 
+  shared_examples 'worker is running for more than 4 minutes' do
+    before do
+      subject.instance_variable_set(:@start_time, ::Gitlab::Metrics::System.monotonic_time - 5.minutes)
+    end
+
+    it 'stores the last processed inactive project_id in redis cache' do
+      Gitlab::Redis::Cache.with do |redis|
+        expect { worker.perform }
+          .to change { redis.get('last_processed_inactive_project_id') }.to(inactive_large_project.id.to_s)
+      end
+    end
+  end
+
+  shared_examples 'worker finishes processing in less than 4 minutes' do
+    before do
+      Gitlab::Redis::Cache.with do |redis|
+        redis.set('last_processed_inactive_project_id', inactive_large_project.id)
+      end
+    end
+
+    it 'clears the last processed inactive project_id from redis cache' do
+      Gitlab::Redis::Cache.with do |redis|
+        expect { worker.perform }
+          .to change { redis.get('last_processed_inactive_project_id') }.to(nil)
+      end
+    end
+  end
+
   describe "#perform" do
     subject(:worker) { described_class.new }
 
@@ -79,6 +107,9 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
 
           expect(inactive_large_project.reload.pending_delete).to eq(false)
         end
+
+        it_behaves_like 'worker is running for more than 4 minutes'
+        it_behaves_like 'worker finishes processing in less than 4 minutes'
       end
 
       context 'when feature flag is enabled', :clean_gitlab_redis_shared_state, :sidekiq_inline do
@@ -130,33 +161,8 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker do
           end
         end
 
-        context 'when the worker is running for more than 4 minutes' do
-          before do
-            subject.instance_variable_set(:@start_time, ::Gitlab::Metrics::System.monotonic_time - 5.minutes)
-          end
-
-          it 'stores the last processed inactive project_id in redis cache' do
-            Gitlab::Redis::Cache.with do |redis|
-              expect { worker.perform }
-                .to change { redis.get('last_processed_inactive_project_id') }.to(inactive_large_project.id.to_s)
-            end
-          end
-        end
-
-        context 'when the worker finishes processing in less than 4 minutes' do
-          before do
-            Gitlab::Redis::Cache.with do |redis|
-              redis.set('last_processed_inactive_project_id', inactive_large_project.id)
-            end
-          end
-
-          it 'clears the last processed inactive project_id from redis cache' do
-            Gitlab::Redis::Cache.with do |redis|
-              expect { worker.perform }
-                .to change { redis.get('last_processed_inactive_project_id') }.to(nil)
-            end
-          end
-        end
+        it_behaves_like 'worker is running for more than 4 minutes'
+        it_behaves_like 'worker finishes processing in less than 4 minutes'
       end
 
       it_behaves_like 'an idempotent worker'

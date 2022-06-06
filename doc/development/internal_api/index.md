@@ -816,7 +816,7 @@ Each array element contains:
 | Attribute          | Type       | Required | Description |
 |:-------------------|:-----------|:---------|:------------|
 | `namespace_id`          | integer | yes | ID of the namespace to be reconciled |
-| `next_reconciliation_date` | date | yes | Date when next reconciliation will happen |
+| `next_reconciliation_date` | date | yes | Date of the next reconciliation |
 | `display_alert_from`       | date | yes | Start date to display alert of upcoming reconciliation |
 
 Example request:

@@ -12,7 +12,7 @@ for upgrading Geo sites.
 
 ## Upgrading to 14.9
 
-**DO NOT** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
+**Do not** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
 
 We've discovered an issue with Geo's CI verification feature that may [cause job traces to be lost](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6664). This issue was fixed in [the GitLab 14.9.1 patch release](https://about.gitlab.com/releases/2022/03/23/gitlab-14-9-1-released/).
 

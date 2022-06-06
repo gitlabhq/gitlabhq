@@ -399,10 +399,10 @@ Color written inside backticks is followed by a color "chip":
 - `HSLA(540,70%,50%,0.3)`
 ```
 
-### STEM
+### Equations and Formulas (STEM)
 
-To activate equation and formula support,
-set the `stem` attribute in the document's header to `latexmath`.
+If you need to include Science, Technology, Engineering and Math (STEM)
+expressions, set the `stem` attribute in the document's header to `latexmath`.
 Equations and formulas are rendered using [KaTeX](https://katex.org/):
 
 ```plaintext

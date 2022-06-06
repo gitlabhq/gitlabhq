@@ -124,10 +124,10 @@ As a result, every field in a resource can have different managers. Only fields 
 are checked for drift. This facilitates the use of in-cluster controllers to modify resources like
 [Horizontal Pod Autoscalers](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
 
-## Additional resources
+## Related topics
 
-The following documentation and examples can help you get started with a GitOps workflow.
-
+- [GitOps working examples for training and demos](https://gitlab.com/groups/guided-explorations/gl-k8s-agent/gitops/-/wikis/home)
+- [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)
 - [Managing Kubernetes secrets in a GitOps workflow](gitops/secrets_management.md)
 - [Application and manifest repository example](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service-gitops)
 

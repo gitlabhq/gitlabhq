@@ -97,7 +97,7 @@ It also [restarts GitLab components](#how-to-restart-gitlab)
 where needed, if any of their configuration files have changed.
 
 If you manually edit any files in `/var/opt/gitlab` that are managed by Chef,
-running reconfigure reverts the changes AND restarts the services that
+running reconfigure reverts the changes and restarts the services that
 depend on those files.
 
 ## Installations from source

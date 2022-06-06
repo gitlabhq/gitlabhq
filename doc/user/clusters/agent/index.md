@@ -66,9 +66,11 @@ Read about how to [migrate to the agent for Kubernetes](../../infrastructure/clu
 ## Related topics
 
 - [GitOps workflow](gitops.md)
+- [GitOps examples and learning materials](gitops.md#related-topics)
 - [GitLab CI/CD workflow](ci_cd_workflow.md)
 - [Install the agent](install/index.md)
 - [Work with the agent](repository.md)
 - [Troubleshooting](troubleshooting.md)
 - [Guided explorations for a production ready GitOps setup](https://gitlab.com/groups/guided-explorations/gl-k8s-agent/gitops/-/wikis/home#gitlab-agent-for-kubernetes-gitops-working-examples)
+- [CI/CD for Kubernetes examples and learning materials](ci_cd_workflow.md#related-topics)
 - [Contribute to the agent's development](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/doc)

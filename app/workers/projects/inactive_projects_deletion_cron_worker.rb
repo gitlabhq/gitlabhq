@@ -34,6 +34,11 @@ module Projects
         inactive_projects = batch.inactive.without_deleted
 
         inactive_projects.each do |project|
+          if over_time?
+            save_last_processed_project_id(project.id)
+            raise TimeoutError
+          end
+
           next unless Feature.enabled?(:inactive_projects_deletion, project.root_namespace)
 
           with_context(project: project, user: admin_user) do
@@ -45,11 +50,6 @@ module Projects
               Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
               delete_project(project, admin_user)
             end
-          end
-
-          if over_time?
-            save_last_processed_project_id(project.id)
-            raise TimeoutError
           end
         end
       end

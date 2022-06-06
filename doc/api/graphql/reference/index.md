@@ -14449,6 +14449,7 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelineid"></a>`id` | [`ID!`](#id) | ID of the pipeline. |
 | <a id="pipelineiid"></a>`iid` | [`String!`](#string) | Internal ID of the pipeline. |
 | <a id="pipelinejobartifacts"></a>`jobArtifacts` | [`[CiJobArtifact!]`](#cijobartifact) | Job artifacts of the pipeline. |
+| <a id="pipelinemergerequesteventtype"></a>`mergeRequestEventType` | [`PipelineMergeRequestEventType`](#pipelinemergerequesteventtype) | Event type of the pipeline associated with a merge request. |
 | <a id="pipelinepath"></a>`path` | [`String`](#string) | Relative path to the pipeline's page. |
 | <a id="pipelineproject"></a>`project` | [`Project`](#project) | Project the pipeline belongs to. |
 | <a id="pipelinequeuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the pipeline was queued before starting. |
@@ -19189,6 +19190,16 @@ Values for sorting package.
 | <a id="pipelineconfigsourceenumrepository_source"></a>`REPOSITORY_SOURCE` | Repository source. |
 | <a id="pipelineconfigsourceenumunknown_source"></a>`UNKNOWN_SOURCE` | Unknown source. |
 | <a id="pipelineconfigsourceenumwebide_source"></a>`WEBIDE_SOURCE` | Webide source. |
+
+### `PipelineMergeRequestEventType`
+
+Event type of the pipeline associated with a merge request.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelinemergerequesteventtypedetached"></a>`DETACHED` | Pipeline run on the changes in the merge request source branch. |
+| <a id="pipelinemergerequesteventtypemerged_result"></a>`MERGED_RESULT` | Pipeline run on the changes from the source branch combined with the target branch. |
+| <a id="pipelinemergerequesteventtypemerge_train"></a>`MERGE_TRAIN` | Pipeline ran as part of a merge train. |
 
 ### `PipelineScopeEnum`
 

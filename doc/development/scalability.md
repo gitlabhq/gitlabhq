@@ -222,7 +222,7 @@ only when the primary fails.
 
 ### Redis Sentinels
 
-[Redis Sentinel](https://redis.io/topics/sentinel) provides high
+[Redis Sentinel](https://redis.io/docs/manual/sentinel/) provides high
 availability for Redis by watching the primary. If multiple Sentinels
 detect that the primary has gone away, the Sentinels performs an
 election to determine a new leader.
@@ -232,8 +232,7 @@ election to determine a new leader.
 No leader: A Redis cluster can get into a mode where there are no
 primaries. For example, this can happen if Redis nodes are misconfigured
 to follow the wrong node. Sometimes this requires forcing one node to
-become a primary by using the [`REPLICAOF NO ONE`
-command](https://redis.io/commands/replicaof).
+become a primary by using the [`REPLICAOF NO ONE` command](https://redis.io/commands/replicaof/).
 
 ### Sidekiq
 
@@ -275,8 +274,8 @@ in a timely manner:
   this to `ProcessCommitWorker`.
 - Redistribute/gerrymander Sidekiq processes by queue
   types. Long-running jobs (for example, relating to project import) can often
-  squeeze out jobs that run fast (for example, delivering email). [This technique
-  was used in to optimize our existing Sidekiq deployment](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7219#note_218019483).
+  squeeze out jobs that run fast (for example, delivering email).
+  [We used this technique to optimize our existing Sidekiq deployment](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/7219#note_218019483).
 - Optimize jobs. Eliminating unnecessary work, reducing network calls
   (including SQL and Gitaly), and optimizing processor time can yield significant
   benefits.

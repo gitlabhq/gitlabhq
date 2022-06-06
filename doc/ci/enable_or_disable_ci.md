@@ -5,50 +5,46 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# How to enable or disable GitLab CI/CD **(FREE)**
+# Disabling GitLab CI/CD **(FREE)**
 
-To use GitLab CI/CD, you need:
-
-- A valid [`.gitlab-ci.yml`](yaml/index.md) file present at the root directory
-  of your project.
-- A [runner](runners/index.md) ready to run jobs.
-
-You can read our [quick start guide](quick_start/index.md) to get you started.
-
+GitLab CI/CD is enabled by default on all new projects.
 If you use an external CI/CD server like Jenkins or Drone CI, you can
 disable GitLab CI/CD to avoid conflicts with the commits status
 API.
 
-GitLab CI/CD is enabled by default on all new projects. You can:
+You can disable GitLab CI/CD:
 
-- Disable GitLab CI/CD [under each project's settings](#enable-cicd-in-a-project).
-- Set GitLab CI/CD to be [disabled in all new projects on an instance](../administration/cicd.md).
+- [For each project](#disable-cicd-in-a-project).
+- [For all new projects on an instance](../administration/cicd.md).
 
-If you disable GitLab CI/CD in a project:
+These changes do not apply to projects in an
+[external integration](../user/project/integrations/index.md#available-integrations).
+
+## Disable CI/CD in a project
+
+When you disable GitLab CI/CD:
 
 - The **CI/CD** item in the left sidebar is removed.
 - The `/pipelines` and `/jobs` pages are no longer available.
-- Existing jobs and pipelines are not deleted. Re-enable CI/CD to access them again.
+- Existing jobs and pipelines are hidden, not removed.
 
-The project or instance settings do not enable or disable pipelines run in an
-[external integration](../user/project/integrations/index.md#available-integrations).
-
-## Enable CI/CD in a project
-
-To enable or disable GitLab CI/CD pipelines in your project:
+To disable GitLab CI/CD in your project:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. In the **Repository** section, turn on or off **CI/CD** as required.
+1. In the **Repository** section, turn off **CI/CD**.
+1. Select **Save changes**.
 
-**Project visibility** also affects pipeline visibility. If set to:
+## Enable CI/CD in a project
 
-- **Private**: Only project members can access pipelines.
-- **Internal** or **Public**: Pipelines can be set to either **Only Project Members**
-  or **Everyone With Access** by using the dropdown box.
+To enable GitLab CI/CD in your project:
 
-Press **Save changes** for the settings to take effect.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. In the **Repository** section, turn on **CI/CD**.
+1. Select **Save changes**.
 
 <!-- ## Troubleshooting
 

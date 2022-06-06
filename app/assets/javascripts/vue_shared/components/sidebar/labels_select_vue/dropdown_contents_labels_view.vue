@@ -166,7 +166,7 @@ export default {
         <span class="flex-grow-1">{{ labelsListTitle }}</span>
         <gl-button
           :aria-label="__('Close')"
-          variant="link"
+          category="tertiary"
           size="small"
           class="dropdown-header-button gl-p-0!"
           icon="close"

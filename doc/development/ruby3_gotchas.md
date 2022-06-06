@@ -142,19 +142,19 @@ Build images are not affected because they include the patch set addressing this
 ## Deprecations are not caught in DeprecationToolkit if the method is stubbed
 
 We rely on `deprecation_toolkit` to fail fast when using functionality that is deprecated in Ruby 2 and removed in Ruby 3.
-A common issue caught during the transition from Ruby 2 to Ruby 3 relates to 
-the [separation of positional and keyword arguments in Ruby 3.0](https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/).  
-  
+A common issue caught during the transition from Ruby 2 to Ruby 3 relates to
+the [separation of positional and keyword arguments in Ruby 3.0](https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/).
+
 Unfortunately, if the author has stubbed such methods in tests, deprecations would not be caught.
-We run automated detection for this warning in tests via `deprecation_toolkit`, 
-but it relies on the fact that `Kernel#warn` emits a warning, so stubbing out this call will effectively remove the call to warn, which means `deprecation_toolkit` will never see the deprecation warnings. 
+We run automated detection for this warning in tests via `deprecation_toolkit`,
+but it relies on the fact that `Kernel#warn` emits a warning, so stubbing out this call will effectively remove the call to warn, which means `deprecation_toolkit` will never see the deprecation warnings.
 Stubbing out the implementation removes that warning, and we never pick it up, so the build is green.
 
 Please refer to [issue 364099](https://gitlab.com/gitlab-org/gitlab/-/issues/364099) for more context.
 
 ## Testing in `irb` and `rails console`
 
-Another pitfall is that testing in `irb`/`rails c` silences the deprecation warning, 
+Another pitfall is that testing in `irb`/`rails c` silences the deprecation warning,
 since `irb` in Ruby 2.7.x has a [bug](https://bugs.ruby-lang.org/issues/17377) that prevents deprecation warnings from showing.
 
 When writing code and performing code reviews, pay extra attention to method calls of the form `f({k: v})`.

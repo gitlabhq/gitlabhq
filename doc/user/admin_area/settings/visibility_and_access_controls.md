@@ -95,7 +95,7 @@ To set the default [visibility levels for new projects](../../public_access.md):
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default project visibility:
    - **Private** - Project access must be granted explicitly to each user. If this
-     project is part of a group, access will be granted to members of the group.
+     project is part of a group, access is granted to members of the group.
    - **Internal** - The project can be accessed by any logged in user except external users.
    - **Public** - The project can be accessed without any authentication.
 1. Select **Save changes**.

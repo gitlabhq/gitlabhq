@@ -42,7 +42,8 @@ module Gitlab
           search_rate_limit:                  { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated:  { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           gitlab_shell_operation:       { threshold: 600, interval: 1.minute },
-          pipelines_create:             { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute }
+          pipelines_create:             { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
+          temporary_email_failure:      { threshold: 50, interval: 1.day }
         }.freeze
       end
 

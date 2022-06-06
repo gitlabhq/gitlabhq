@@ -10,7 +10,7 @@ Before you can integrate GitLab with Apple services, install to a device, or dep
 
 To code sign an iOS project, you need the following files:
 
-- A certifcate issued by Apple.
+- A certificate issued by Apple.
 - A provisioning profile.
 
 ## Code signing iOS Projects with fastlane

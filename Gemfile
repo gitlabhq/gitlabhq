@@ -182,8 +182,8 @@ gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
 gem 'rack', '~> 2.2.3'
-# https://github.com/sharpstone/rack-timeout/blob/master/README.md#rails-apps-manually
-gem 'rack-timeout', '~> 0.5.1', require: 'rack/timeout/base'
+# https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
+gem 'rack-timeout', '~> 0.6.0', require: 'rack/timeout/base'
 
 group :puma do
   gem 'puma', '~> 5.6.2', require: false

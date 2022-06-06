@@ -26,6 +26,7 @@ exceptions:
   - BSD
   - CAS
   - CDN
+  - CGI
   - CIDR
   - CLI
   - CNA
@@ -35,6 +36,7 @@ exceptions:
   - CPU
   - CRIME
   - CRM
+  - CRUD
   - CSRF
   - CSS
   - CSV
@@ -145,6 +147,7 @@ exceptions:
   - PNG
   - POSIX
   - POST
+  - PROXY
   - PUT
   - RAID
   - RAM
@@ -169,6 +172,7 @@ exceptions:
   - SATA
   - SBOM
   - SCIM
+  - SCM
   - SCP
   - SCSS
   - SDK
@@ -176,6 +180,7 @@ exceptions:
   - SEO
   - SFTP
   - SHA
+  - SKI
   - SLA
   - SLI
   - SLO

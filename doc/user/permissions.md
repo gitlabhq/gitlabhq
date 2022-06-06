@@ -252,8 +252,8 @@ More details about the permissions for some project-level features follow.
 
 - [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
   When set to public, gives access to certain CI/CD features to *Guest* project members.
-- [Pipeline visibility](../ci/enable_or_disable_ci.md#enable-cicd-in-a-project): When set to **Everyone with Access**,
-  gives access to certain CI/CD "view" features to *non-project* members.
+- [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
+  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to *non-project* members.
 
 | Action                                                                                                                    | Non-member | Guest   | Reporter | Developer | Maintainer | Owner |
 |---------------------------------------------------------------------------------------------------------------------------|------------|---------|----------|-----------|------------|-------|
@@ -521,7 +521,7 @@ and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 - Use `\.internal@domain\.com$` to mark email addresses ending with
   `.internal@domain.com` as internal.
 - Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses
-  NOT including `.ext@domain.com` as internal.
+  not including `.ext@domain.com` as internal.
 
 WARNING:
 Be aware that this regex could lead to a

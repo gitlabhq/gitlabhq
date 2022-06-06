@@ -136,15 +136,15 @@ GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee
 `queue_selector` supports the following operators, listed from highest
 to lowest precedence:
 
-- `|` - the logical OR operator. For example, `query_a|query_b` (where `query_a`
+- `|` - the logical `OR` operator. For example, `query_a|query_b` (where `query_a`
   and `query_b` are queries made up of the other operators here) will include
   queues that match either query.
-- `&` - the logical AND operator. For example, `query_a&query_b` (where
+- `&` - the logical `AND` operator. For example, `query_a&query_b` (where
   `query_a` and `query_b` are queries made up of the other operators here) will
   only include queues that match both queries.
-- `!=` - the NOT IN operator. For example, `feature_category!=issue_tracking`
+- `!=` - the `NOT IN` operator. For example, `feature_category!=issue_tracking`
   excludes all queues from the `issue_tracking` feature category.
-- `=` - the IN operator. For example, `resource_boundary=cpu` includes all
+- `=` - the `IN` operator. For example, `resource_boundary=cpu` includes all
   queues that are CPU bound.
 - `,` - the concatenate set operator. For example,
   `feature_category=continuous_integration,pages` includes all queues from
@@ -152,8 +152,8 @@ to lowest precedence:
   example is also possible using the OR operator, but allows greater brevity, as
   well as being lower precedence.
 
-The operator precedence for this syntax is fixed: it's not possible to make AND
-have higher precedence than OR.
+The operator precedence for this syntax is fixed: it's not possible to make `AND`
+have higher precedence than `OR`.
 
 [In GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26594) and
 later, as with the standard queue group syntax above, a single `*` as the

@@ -37,7 +37,7 @@ Report suspected security vulnerabilities by following the
 [disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
 
 WARNING:
-Do **NOT** create publicly viewable issues for suspected security vulnerabilities.
+Do **not** create publicly viewable issues for suspected security vulnerabilities.
 
 ## Code of conduct
 
@@ -130,7 +130,7 @@ The general flow of contributing to GitLab is:
    - Review the provided checklist.
 1. Once you're ready, mark your MR as ready for review with `@gitlab-bot ready`.
    - This will add the `~"workflow::ready for review"` label, and then automatically assign a merge request coach as reviewer.
-   - If you know a relevant reviewer (e.g. someone that was involved a related issue), you can also
+   - If you know a relevant reviewer (for example, someone that was involved a related issue), you can also
      assign them directly with `@gitlab-bot ready @username`.
 
 #### Review process
@@ -143,7 +143,7 @@ submissions carefully, and this takes time. Code submissions will usually be rev
 - A [maintainer](../code_review.md#the-responsibility-of-the-maintainer).
 
 After review, the reviewer could ask the author to update the merge request. In that case, the reviewer would set the `~"workflow::in dev"` label.
-Once the merge request has been updated and set as ready for review again (e.g. with `@gitlab-bot ready`), they will review the code again.
+Once the merge request has been updated and set as ready for review again (for example, with `@gitlab-bot ready`), they will review the code again.
 This process may repeat any number of times before merge, to help make the contribution the best it can be.
 
 Lastly, keep the following in mind when submitting merge requests:
