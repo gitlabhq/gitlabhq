@@ -13,31 +13,25 @@ module QA
       it(
         'is determined based on forward:pipeline_variables condition',
         :aggregate_failures,
-        :transient,
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/361400',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360745'
       ) do
-        # Due to long runtime, using 5 times trials instead of default 10 times
-        5.times do |i|
-          QA::Runtime::Logger.info("API pipeline variable inheritance transient bug test - Trial #{i + 1}")
-          start_pipeline_via_api_with_variable(i + 1)
-          wait_for_pipelines
+        start_pipeline_via_api_with_variable
+        wait_for_pipelines
 
-          # When forward:pipeline_variables is true
-          expect_downstream_pipeline_to_inherit_variable
+        # When forward:pipeline_variables is true
+        expect_downstream_pipeline_to_inherit_variable
 
-          # When forward:pipeline_variables is false
-          expect_downstream_pipeline_not_to_inherit_variable(upstream_project, 'child2_trigger')
+        # When forward:pipeline_variables is false
+        expect_downstream_pipeline_not_to_inherit_variable(upstream_project, 'child2_trigger')
 
-          # When forward:pipeline_variables is default
-          expect_downstream_pipeline_not_to_inherit_variable(downstream1_project, 'downstream1_trigger')
-        end
+        # When forward:pipeline_variables is default
+        expect_downstream_pipeline_not_to_inherit_variable(downstream1_project, 'downstream1_trigger')
       end
 
-      def start_pipeline_via_api_with_variable(expected_size)
-        # Wait for 1st or previous pipeline to finish
+      def start_pipeline_via_api_with_variable
+        # Wait for 1st pipeline to finish
         Support::Waiter.wait_until do
-          upstream_project.pipelines.size == expected_size && upstream_pipeline.status == 'success'
+          upstream_project.pipelines.size == 1 && upstream_pipeline.status == 'success'
         end
 
         Resource::Pipeline.fabricate_via_api! do |pipeline|
@@ -46,7 +40,7 @@ module QA
         end
 
         # Wait for this pipeline to be created
-        Support::Waiter.wait_until { upstream_project.pipelines.size > expected_size }
+        Support::Waiter.wait_until { upstream_project.pipelines.size > 1 }
       end
 
       def upstream_ci_file

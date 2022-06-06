@@ -82,8 +82,12 @@ in four backticks instead of three:
 GitLab uses a default commit message
 when applying suggestions: `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)`
 
+<!-- vale gitlab.BadPlurals = NO -->
+
 For example, consider that a user applied 3 suggestions to 2 different files, the
 default commit message is: **Apply 3 suggestion(s) to 2 file(s)**
+
+<!-- vale gitlab.BadPlurals = YES -->
 
 These commit messages can be customized to follow any guidelines you might have.
 To do so, expand the **Merge requests** tab within your project's **General**

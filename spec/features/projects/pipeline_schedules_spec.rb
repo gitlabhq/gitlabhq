@@ -9,7 +9,7 @@ RSpec.describe 'Pipeline Schedules', :js do
   let(:scope) { nil }
   let!(:user) { create(:user) }
 
-  context 'logged in as the pipeline scheduler owner' do
+  context 'logged in as the pipeline schedule owner' do
     before do
       stub_feature_flags(bootstrap_confirmation_modals: false)
       project.add_developer(user)

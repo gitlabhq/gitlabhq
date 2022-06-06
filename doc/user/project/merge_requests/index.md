@@ -45,8 +45,12 @@ If your group contains subgroups, this view also displays merge requests from th
 
 To view all merge requests assigned to you:
 
+<!-- vale gitlab.FirstPerson = NO -->
+
 1. On the top bar, put your cursor in the **Search** box.
 1. From the dropdown list, select **Merge requests assigned to me**.
+
+<!-- vale gitlab.FirstPerson = YES -->
 
 Or:
 

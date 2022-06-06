@@ -66,6 +66,7 @@ RSpec.describe Types::BaseField do
                                   resolver_class: resolver)
 
       expect(Ability).to receive(:allowed?).with(current_user, :foo, object).and_return(false)
+      expect(resolver).not_to receive(:authorized?)
 
       expect(field).not_to be_authorized(object, nil, ctx)
     end

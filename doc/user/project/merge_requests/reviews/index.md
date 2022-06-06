@@ -89,7 +89,7 @@ comment itself.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
 
-If you have a review in progress, you will be presented with the option to **Add to review**:
+If you have a review in progress, you are presented with the option to **Add to review**:
 
 ![New thread](img/mr_review_new_comment_v13_11.png)
 

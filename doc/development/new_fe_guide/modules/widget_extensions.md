@@ -234,9 +234,9 @@ export default {
 ```
 
 If the extension needs to poll multiple endpoints at the same time, then `fetchMultiData`
-can be used to return an array of functions. A new `poll` object will be created for each
-endpoint and they will be polled separately. Once all endpoints are resolved, polling will
-be stopped and `setCollapsedData` will be called with an array of `response.data`.
+can be used to return an array of functions. A new `poll` object is created for each
+endpoint and they are polled separately. After all endpoints are resolved, polling is
+stopped and `setCollapsedData` is called with an array of `response.data`.
 
 ```javascript
 export default {
