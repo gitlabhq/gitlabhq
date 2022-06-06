@@ -1131,7 +1131,7 @@ Particular attention should be shown to:
 #### Use TCP for existing GitLab instances
 
 When adding Gitaly Cluster to an existing Gitaly instance, the existing Gitaly storage
-must use a TCP address. If `gitaly_address` is not specified, then a Unix socket is used,
+must be listening on TCP/TLS. If `gitaly_address` is not specified, then a Unix socket is used,
 which prevents the communication with the cluster.
 
 For example:
@@ -1140,7 +1140,7 @@ For example:
 git_data_dirs({
   'default' => { 'gitaly_address' => 'tcp://old-gitaly.internal:8075' },
   'cluster' => {
-    'gitaly_address' => 'tcp://<PRAEFECT_LOADBALANCER_HOST>:2305',
+    'gitaly_address' => 'tls://<PRAEFECT_LOADBALANCER_HOST>:3305',
     'gitaly_token' => '<praefect_external_token>'
   }
 })

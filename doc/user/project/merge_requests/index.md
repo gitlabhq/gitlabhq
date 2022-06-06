@@ -48,10 +48,75 @@ To view all merge requests assigned to you:
 1. On the top bar, put your cursor in the **Search** box.
 1. From the dropdown list, select **Merge requests assigned to me**.
 
-Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>m</kbd>.
+Or:
 
-You can [search and filter](../../search/index.md#filter-issue-and-merge-request-lists),
-the results, or select a merge request to begin a review.
+- To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>m</kbd>.
+- On the top bar, on the top right, select **{merge-request-open}** **Merge requests**.
+  Then select one of the following:
+  - [Review requests](reviews/index.md).
+  - Merge requests assigned.
+
+### Filter merge requests by ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
+
+You can filter the **Merge Request** list to find merge requests by their ID.
+
+For example, enter filter `#30` to return only merge request 30.
+
+### Filter merge requests by approvers **(PREMIUM)**
+
+> Moved to GitLab Premium in 13.9.
+
+To filter merge requests by an individual eligible approver ([Code owner](../code_owners.md)), you can type (or select from
+the dropdown list) **Approver** and select the user.
+
+![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)
+
+### Filter merge requests by "approved by" **(PREMIUM)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in GitLab 13.0.
+> - Moved to GitLab Premium in 13.9.
+
+To filter merge requests already approved by a specific individual, you can type (or select from
+the dropdown list) **Approved-By** and select the user.
+
+![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
+
+### Filter merge requests by reviewer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
+
+To filter review requested merge requests for a specific individual, you can type (or select from
+the dropdown list) **Reviewer** and select the user.
+
+### Filter merge requests by environment or deployment date
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
+
+To filter merge requests by deployment data, such as the environment or a date,
+you can type (or select from the dropdown list) the following:
+
+- Environment
+- Deployed-before
+- Deployed-after
+
+NOTE:
+Projects using a [fast-forward merge method](methods/index.md#fast-forward-merge)
+do not return results, as this method does not create a merge commit.
+
+When filtering by an environment, a dropdown list presents all environments that
+you can choose from:
+
+![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
+
+When filtering by `Deployed-before` or `Deployed-after`, the date refers to when
+the deployment to an environment (triggered by the merge commit) completed successfully.
+You must enter the deploy date manually. Deploy dates
+use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
+both a date and time (`"YYYY-MM-DD HH:MM"`):
+
+![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v14_6.png)
 
 ## Add changes to a merge request
 
@@ -84,8 +149,7 @@ a merge request, or:
 1. Select **Edit**.
 1. Search for the user you want to assign, and select the user.
 
-The merge request is added to the user's
-[assigned merge request list](../../search/index.md#search-issues-and-merge-requests).
+The merge request is added to the user's assigned merge request list.
 
 ### Assign multiple users **(PREMIUM)**
 

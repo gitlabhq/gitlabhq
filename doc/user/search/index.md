@@ -39,57 +39,43 @@ search, or choose a specific group or project.
 
 ![basic_search_results](img/basic_search_results_v15_1.png)
 
-## Code search
+## Search in code
 
-To search through code or other documents in a single project, you can use
-the search field on the top-right of your screen while the project page is open.
+To search through code or other documents in a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, in the search field, type the string you want to search for.
+1. Press **Enter**.
+
 Code search shows only the first result in the file.
 
-### Git blame from code search
+To search across all of GitLab, ask your administrator to enable [advanced search](advanced_search.md).
+
+### View Git blame from code search
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
 
-You can access Git blame from any line that returned a result from the code search:
+After you find search results, you can view who made the last change to the line
+where the results were found.
 
-![code search results](img/code_search_git_blame_v15_1.png)
+1. From the code search result, hover over the line number.
+1. On the left, select **View blame**.
 
-## SHA search
+   ![code search results](img/code_search_git_blame_v15_1.png)
 
-You can quickly access a commit from the project dashboard by entering the SHA
-into the search field on the top right of the screen. If a single result is found, you are
-redirected to the commit result and given the option to return to the search results page.
+## Search for a SHA
+
+You can search for a commit SHA.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the top bar, in the search field, type the SHA.
+
+If a single result is returned, GitLab redirects to the commit result
+and gives you the option to return to the search results page.
 
 ![project SHA search redirect](img/project_search_sha_redirect.png)
 
-## Search issues and merge requests
-
-To search through issues and merge requests in multiple projects, on the top bar, select the **Issues** or **Merge requests** links.
-
-The numbers indicate how many issues, merge requests, and to-do items are assigned to you:
-
-![issues and MRs dashboard links](img/dashboard_links_v14_6.png)
-
-- **{issues}** **Issues**: Issues assigned to you.
-- **{merge-request-open}** **Merge requests**: Open [merge requests](../project/merge_requests/index.md).
-  Select the icon to show a dropdown list of merge request filters:
-  - [Attention requests](../project/merge_requests/index.md#request-attention-to-a-merge-request) (**{attention-solid}**) for you.
-  - [Review requests](../project/merge_requests/reviews/index.md) for you.
-  - Merge requests assigned to you.
-- **{todo-done}** **To-do items**: The [to-do items](../todos.md) assigned to you.
-
-You can search through **Open**, **Closed**, or **All** issues.
-
-You can also filter the results using the search and filter field, as described in
-[Filter issue and merge request lists](#filter-issue-and-merge-request-lists).
-
-### Issues and MRs assigned to you or created by you
-
-GitLab shows shortcuts to issues and merge requests created by you or assigned to you
-in the search field in the upper right corner:
-
-![shortcut to your issues and merge requests](img/issues_mrs_shortcut_v14_6.png)
-
-### Filter issue and merge request lists
+## Filter issue and merge request lists
 
 > - Filtering by epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9.
 > - Filtering by child epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab 13.0.
@@ -130,7 +116,7 @@ groups:
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](#retrieve-search-results-as-feed).
 
-### Searching for specific terms
+## Searching for specific terms
 
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 
@@ -143,7 +129,7 @@ You can filter issues and merge requests by specific terms included in titles or
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
 
-### Retrieve search results as feed
+## Retrieve search results as feed
 
 > Feeds for merge requests were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66336) in GitLab 14.3.
 
@@ -157,68 +143,6 @@ RSS feed of search results:
 
 The URL of the result contains both a feed token, and your search query.
 You can add this URL to your feed reader.
-
-### Filtering by ID
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
-
-You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge requests** list. Enter filter `#30` to return only merge request 30.
-
-![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
-
-### Filtering merge requests by approvers **(PREMIUM)**
-
-> Moved to GitLab Premium in 13.9.
-
-To filter merge requests by an individual eligible approver ([Code owner](../project/code_owners.md)), you can type (or select from
-the dropdown list) **Approver** and select the user.
-
-![Filter MRs by an approver](img/filter_approver_merge_requests_v14_6.png)
-
-### Filtering merge requests by "approved by" **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in GitLab 13.0.
-> - Moved to GitLab Premium in 13.9.
-
-To filter merge requests already approved by a specific individual, you can type (or select from
-the dropdown list) **Approved-By** and select the user.
-
-![Filter MRs by approved by](img/filter_approved_by_merge_requests_v14_6.png)
-
-### Filtering merge requests by reviewer
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
-
-To filter review requested merge requests for a specific individual, you can type (or select from
-the dropdown list) **Reviewer** and select the user.
-
-### Filtering merge requests by environment or deployment date
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
-
-To filter merge requests by deployment data, such as the environment or a date,
-you can type (or select from the dropdown list) the following:
-
-- Environment
-- Deployed-before
-- Deployed-after
-
-NOTE:
-Projects using a [fast-forward merge method](../project/merge_requests/fast_forward_merge.md)
-do not return results, as this method does not create a merge commit.
-
-When filtering by an environment, a dropdown list presents all environments that
-you can choose from:
-
-![Filter MRs by their environment](img/filtering_merge_requests_by_environment_v14_6.png)
-
-When filtering by `Deployed-before` or `Deployed-after`, the date refers to when
-the deployment to an environment (triggered by the merge commit) completed successfully.
-You must enter the deploy date manually. Deploy dates
-use the format `YYYY-MM-DD`, and must be quoted if you wish to specify
-both a date and time (`"YYYY-MM-DD HH:MM"`):
-
-![Filter MRs by a deploy date](img/filtering_merge_requests_by_date_v14_6.png)
 
 ## Filters autocomplete
 
@@ -251,35 +175,9 @@ Some filters can be added multiple times. These include but are not limited to a
 
 ![multiple assignees filtering](img/multiple_assignees.png)
 
-## To-Do List
-
-You can search your [To-Do List](../todos.md) by "to do" and "done".
-You can filter to-do items per project, author, type, and action.
-Also, you can sort them by [**Label priority**](../../user/project/labels.md#set-label-priority),
-**Last created**, and **Oldest created**.
-
-## Projects
-
-You can search through your projects from the top bar, by selecting **Menu > Projects**.
-On the field **Filter by name**, type the project or group name you want to find, and GitLab
-filters them for you as you type.
-
-You can also look for the projects you [starred](../project/working_with_projects.md#star-a-project) (**Starred projects**).
-You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
-through **Trending**, best rated with **Most stars**, or **All** of them.
-
-You can also sort them by:
-
-- Name
-- Created date
-- Updated date
-- Owner
-
-You can also choose to hide or show archived projects.
-
 ## Groups
 
-Similarly to [projects search](#projects), you can search through your groups from
+You can search through your groups from
 the left menu, by clicking the menu bar, then **Groups**.
 
 On the field **Filter by name**, type the group name you want to find, and GitLab

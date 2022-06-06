@@ -109,7 +109,7 @@ Every issue and merge request can be assigned a milestone. The milestones are vi
 
 ### Filtering in list pages
 
-From the project and group issue/merge request list pages, you can [filter](../../search/index.md#search-issues-and-merge-requests) by both group and project milestones.
+From the project and group issue/merge request list pages, you can filter by both group and project milestones.
 
 ### Filtering in issue boards
 

@@ -564,6 +564,28 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 
 Alternatively, you can use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
+## View all issues assigned to you
+
+To view all issues assigned to you:
+
+1. On the top bar, put your cursor in the **Search** box.
+1. From the dropdown list, select **Issues assigned to me**.
+
+Or:
+
+- To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
+- On the top bar, on the top right, select **{issues}** **Issues**.
+
+### Filter issues by ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > List**.
+1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
+
+![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
+
 ## Copy issue reference
 
 To refer to an issue elsewhere in GitLab, you can use its full URL or a short reference, which looks like

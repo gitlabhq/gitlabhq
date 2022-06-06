@@ -12,10 +12,13 @@ module Gitlab
     ALLOWED_SUPERCLASSES = {
       generic: 'Generic',
       database: 'Database',
-      redis: 'Redis'
+      redis: 'Redis',
+      numbers: 'Numbers'
     }.freeze
 
-    ALLOWED_OPERATIONS = %w(count distinct_count estimate_batch_distinct_count sum).freeze
+    ALLOWED_DATABASE_OPERATIONS = %w(count distinct_count estimate_batch_distinct_count sum).freeze
+    ALLOWED_NUMBERS_OPERATIONS = %w(add).freeze
+    ALLOWED_OPERATIONS = ALLOWED_DATABASE_OPERATIONS | ALLOWED_NUMBERS_OPERATIONS
 
     source_root File.expand_path('usage_metric/templates', __dir__)
 
@@ -29,6 +32,7 @@ module Gitlab
       validate!
 
       template "database_instrumentation_class.rb.template", file_path if type == 'database'
+      template "numbers_instrumentation_class.rb.template", file_path if type == 'numbers'
       template "generic_instrumentation_class.rb.template", file_path if type == 'generic'
 
       template "instrumentation_class_spec.rb.template", spec_file_path
@@ -39,7 +43,8 @@ module Gitlab
     def validate!
       raise ArgumentError, "Type is required, valid options are #{ALLOWED_SUPERCLASSES.keys.join(', ')}" unless type.present?
       raise ArgumentError, "Unknown type '#{type}', valid options are #{ALLOWED_SUPERCLASSES.keys.join(', ')}" if metric_superclass.nil?
-      raise ArgumentError, "Unknown operation '#{operation}' valid operations are #{ALLOWED_OPERATIONS.join(', ')}" if type == 'database' && !ALLOWED_OPERATIONS.include?(operation)
+      raise ArgumentError, "Unknown operation '#{operation}' valid operations for database are #{ALLOWED_DATABASE_OPERATIONS.join(', ')}" if type == 'database' && ALLOWED_DATABASE_OPERATIONS.exclude?(operation)
+      raise ArgumentError, "Unknown operation '#{operation}' valid operations for numbers are #{ALLOWED_NUMBERS_OPERATIONS.join(', ')}" if type == 'numbers' && ALLOWED_NUMBERS_OPERATIONS.exclude?(operation)
     end
 
     def ee?

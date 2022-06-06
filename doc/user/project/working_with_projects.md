@@ -336,6 +336,29 @@ To view the activity of a project:
 1. On the left sidebar, select **Project information > Activity**.
 1. Select a tab to view the type of project activity.
 
+## Search in projects
+
+You can search through your projects.
+
+1. On the top bar, select **Menu**.
+1. In **Search your projects**, type the project name.
+
+GitLab filters as you type.
+
+You can also look for the projects you [starred](#star-a-project) (**Starred projects**).
+
+You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
+through **Trending**, best rated with **Most stars**, or **All** of them.
+
+You can sort projects by:
+
+- Name
+- Created date
+- Updated date
+- Owner
+
+You can also choose to hide or show archived projects.
+
 ## Leave a project
 
 If you leave a project, you are no longer a project

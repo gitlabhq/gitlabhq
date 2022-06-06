@@ -32,6 +32,7 @@ RSpec.describe Gitlab::UsageMetricGenerator, :silence_stdout do
     let(:sample_metric_dir) { 'lib/generators/gitlab/usage_metric_generator' }
     let(:generic_sample_metric) { fixture_file(File.join(sample_metric_dir, 'sample_generic_metric.rb')) }
     let(:database_sample_metric) { fixture_file(File.join(sample_metric_dir, 'sample_database_metric.rb')) }
+    let(:numbers_sample_metric) { fixture_file(File.join(sample_metric_dir, 'sample_numbers_metric.rb')) }
     let(:sample_spec) { fixture_file(File.join(sample_metric_dir, 'sample_metric_test.rb')) }
 
     it 'creates CE metric instrumentation files using the template' do
@@ -63,6 +64,17 @@ RSpec.describe Gitlab::UsageMetricGenerator, :silence_stdout do
       end
     end
 
+    context 'for numbers type' do
+      let(:options) { { 'type' => 'numbers', 'operation' => 'add' } }
+
+      it 'creates the metric instrumentation file using the template' do
+        described_class.new(args, options).invoke_all
+
+        expect_generated_file(ce_temp_dir, 'count_foo_metric.rb', numbers_sample_metric)
+        expect_generated_file(spec_ce_temp_dir, 'count_foo_metric_spec.rb', sample_spec)
+      end
+    end
+
     context 'with type option missing' do
       let(:options) { {} }
 
@@ -89,6 +101,22 @@ RSpec.describe Gitlab::UsageMetricGenerator, :silence_stdout do
 
     context 'with wrong operation for database metric' do
       let(:options) { { 'type' => 'database', 'operation' => 'sleep' } }
+
+      it 'raises an ArgumentError' do
+        expect { described_class.new(args, options).invoke_all }.to raise_error(ArgumentError, /Unknown operation 'sleep'/)
+      end
+    end
+
+    context 'without operation for numbers metric' do
+      let(:options) { { 'type' => 'numbers' } }
+
+      it 'raises an ArgumentError' do
+        expect { described_class.new(args, options).invoke_all }.to raise_error(ArgumentError, /Unknown operation ''/)
+      end
+    end
+
+    context 'with wrong operation for numbers metric' do
+      let(:options) { { 'type' => 'numbers', 'operation' => 'sleep' } }
 
       it 'raises an ArgumentError' do
         expect { described_class.new(args, options).invoke_all }.to raise_error(ArgumentError, /Unknown operation 'sleep'/)

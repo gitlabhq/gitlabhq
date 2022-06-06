@@ -23,6 +23,14 @@ To access your To-Do List:
 
 On the top bar, in the top right, select To-Do List (**{task-done}**).
 
+## Search the To-Do List
+
+You can search your To-Do List by `to do` and `done`.
+
+You can filter to-do items per project, author, type, and action.
+Also, you can sort them by [**Label priority**](project/labels.md#set-label-priority),
+**Last created**, and **Oldest created**.
+
 ## Actions that create to-do items
 
 Many to-do items are created automatically.
