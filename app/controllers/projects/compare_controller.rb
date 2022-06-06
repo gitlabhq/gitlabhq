@@ -102,7 +102,11 @@ class Projects::CompareController < Projects::ApplicationController
 
   # source == head_ref == to
   def source_project
-    project
+    strong_memoize(:source_project) do
+      # Eager load project's avatar url to prevent batch loading
+      # for all forked projects
+      project&.tap(&:avatar_url)
+    end
   end
 
   def compare

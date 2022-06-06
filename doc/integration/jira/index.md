@@ -113,3 +113,9 @@ authenticate with the Jira site.
 
 To fix this error, sign in to your Jira instance
 and complete the CAPTCHA.
+
+### Jira integration does not work for imported project
+
+There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571) 
+where the Jira integration sometimes does not work for a project that has been imported. 
+As a workaround, disable the integration and then re-enable it.

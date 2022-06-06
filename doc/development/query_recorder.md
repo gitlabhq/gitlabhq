@@ -24,9 +24,26 @@ it "avoids N+1 database queries" do
 end
 ```
 
+You can if you wish, have both the expectation and the control as
+`QueryRecorder` instances:
+
+```ruby
+it "avoids N+1 database queries" do
+  control = ActiveRecord::QueryRecorder.new { visit_some_page }
+  create_list(:issue, 5)
+  action = ActiveRecord::QueryRecorder.new { visit_some_page }
+
+  expect(action).not_to exceed_query_limit(control)
+end
+```
+
 As an example you might create 5 issues in between counts, which would cause the query count to increase by 5 if an N+1 problem exists.
 
 In some cases the query count might change slightly between runs for unrelated reasons. In this case you might need to test `exceed_query_limit(control_count + acceptable_change)`, but this should be avoided if possible.
+
+If this test fails, and the control was passed as a `QueryRecorder`, then the
+failure message indicates where the extra queries are by matching queries on
+the longest common prefix, grouping similar queries together.
 
 ## Cached queries
 

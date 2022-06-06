@@ -69,17 +69,14 @@ you can still perform multiple actions in a single commit. For example:
 
 ## Configure a GitLab application for DVCS
 
-We recommend you create and use a `jira` user in GitLab, and use the account
+For projects in a single group we recommend you create a [group application](../oauth_provider.md#group-owned-applications).
+For projects across multiple groups we recommend you create and use a `jira` user in GitLab, and use the account
 only for integration work. A separate account ensures regular account
-maintenance does not affect your integration. If a `jira` user is not feasible,
-you can set up this integration with your own account instead.
+maintenance does not affect your integration. If a `jira` user or group application is not feasible,
+you can set up this integration as an [instance-wide application](../oauth_provider.md#instance-wide-applications)
+or with a [user owned application](../oauth_provider.md#user-owned-applications) instead.
 
-1. In GitLab, [create a user](../../user/profile/account/create_accounts.md) for Jira to
-   use to connect to GitLab. This user must be added to each project you want Jira to have access to,
-   or be an administrator to access all projects.
-1. Sign in as the `jira` user.
-1. On the top bar, in the top right corner, select the user's avatar, and select **Edit profile**.
-1. On the left sidebar, select **Applications**.
+1. Navigate to the [appropriate **Applications** section](../oauth_provider.md#introduction-to-oauth).
 1. In the **Name** field, enter a descriptive name for the integration, such as `Jira`.
 1. In the **Redirect URI** field, enter the URI appropriate for your version of GitLab,
    replacing `<gitlab.example.com>` with your GitLab instance domain:

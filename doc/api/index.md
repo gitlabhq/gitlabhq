@@ -342,13 +342,14 @@ The following table gives an overview of how the API functions generally behave.
 | `GET`         | Access one or more resources and return the result as JSON. |
 | `POST`        | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
-| `DELETE`      | Returns `204 No Content` if the resource was deleted successfully. |
+| `DELETE`      | Returns `204 No Content` if the resource was deleted successfully or `202 Accepted` if the resource is scheduled to be deleted. |
 
 The following table shows the possible return codes for API requests.
 
 | Return values            | Description |
 |--------------------------|-------------|
 | `200 OK`                 | The `GET`, `PUT` or `DELETE` request was successful, and the resource itself is returned as JSON. |
+| `202 Accepted`           | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing. |
 | `204 No Content`         | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body. |
 | `201 Created`            | The `POST` request was successful, and the resource is returned as JSON. |
 | `304 Not Modified`       | The resource hasn't been modified since the last request. |

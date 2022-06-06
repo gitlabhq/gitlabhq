@@ -25,38 +25,28 @@ RSpec.describe 'projects/tags/index.html.haml' do
   end
 
   context 'when tag is associated with a release' do
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(fix_release_path_in_tag_index_page: false)
-      end
-
-      it 'renders a link to the release page with anchor' do
+    context 'when name does not contain a backslash' do
+      it 'renders a link to the release page' do
         render
-        expect(rendered).to have_link(release.name, href: project_releases_path(project, anchor: release))
+        expect(rendered).to have_link(release.name, href: project_release_path(project, release))
       end
     end
 
-    context 'with feature flag enabled' do
-      before do
-        stub_feature_flags(fix_release_path_in_tag_index_page: true)
+    context 'when name contains backslash' do
+      let_it_be(:release) { create(:release, project: project, tag: 'test/v1') }
+
+      before_all do
+        project.repository.add_tag(project.owner, 'test/v1', project.default_branch_or_main)
+        project.repository.expire_tags_cache
+
+        project.releases.reload
+
+        assign(:tags, Kaminari.paginate_array(tags).page(0))
       end
 
-      context 'when name contains backslash' do
-        let_it_be(:release) { create(:release, project: project, tag: 'test/v1') }
-
-        before_all do
-          project.repository.add_tag(project.owner, 'test/v1', project.default_branch_or_main)
-          project.repository.expire_tags_cache
-
-          project.releases.reload
-
-          assign(:tags, Kaminari.paginate_array(tags).page(0))
-        end
-
-        it 'renders a link to the release page with backslash escaped' do
-          render
-          expect(rendered).to have_link(release.name, href: project_release_path(project, release))
-        end
+      it 'renders a link to the release page with backslash escaped' do
+        render
+        expect(rendered).to have_link(release.name, href: project_release_path(project, release))
       end
     end
   end

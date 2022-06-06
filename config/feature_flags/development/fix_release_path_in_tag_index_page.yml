@@ -1,8 +1,0 @@
----
-name: fix_release_path_in_tag_index_page
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87736
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362915
-milestone: '15.1'
-type: development
-group: group::release
-default_enabled: false
