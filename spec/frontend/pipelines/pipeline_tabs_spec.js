@@ -26,6 +26,8 @@ describe('~/pipelines/pipeline_tabs.js', () => {
       el.dataset.downloadablePathForReportType = 'downloadablePathForReportType';
       el.dataset.exposeSecurityDashboard = 'true';
       el.dataset.exposeLicenseScanningData = 'true';
+      el.dataset.failedJobsCount = 1;
+      el.dataset.failedJobsSummary = '[]';
       el.dataset.graphqlResourceEtag = 'graphqlResourceEtag';
       el.dataset.pipelineIid = '123';
       el.dataset.pipelineProjectPath = 'pipelineProjectPath';
@@ -49,6 +51,8 @@ describe('~/pipelines/pipeline_tabs.js', () => {
           downloadablePathForReportType: 'downloadablePathForReportType',
           exposeSecurityDashboard: true,
           exposeLicenseScanningData: true,
+          failedJobsCount: '1',
+          failedJobsSummary: [],
           graphqlResourceEtag: 'graphqlResourceEtag',
           pipelineIid: '123',
           pipelineProjectPath: 'pipelineProjectPath',

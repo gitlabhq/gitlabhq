@@ -1126,10 +1126,6 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
-    before do
-      stub_feature_flags(pipeline_tabs_vue: false)
-    end
-
     subject { visit pipeline_failures_page }
 
     context 'with failed build' do
@@ -1160,7 +1156,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('#js-tab-failures', match: :first)) do
+          page.within(find('[data-testid="tab-failures"]', match: :first)) do
             expect(page).not_to have_button('Retry')
           end
         end
@@ -1175,7 +1171,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('#js-tab-failures', match: :first)) do
+          page.within(find('[data-testid="tab-failures"]', match: :first)) do
             expect(page).to have_button('Retry')
           end
         end
@@ -1220,7 +1216,6 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'does not show the failure tab' do
-        skip('unskip when the failure tab has been implemented in ff `pipeline_tabs_vue`')
         subject
 
         expect(page).not_to have_content('Failed Jobs')

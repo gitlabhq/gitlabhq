@@ -26,6 +26,7 @@
     &.gl-snippet-icon-doc-code { background-position: 0 0;  }
     &.gl-snippet-icon-doc-text {  background-position: 0 -16px; }
     &.gl-snippet-icon-download {  background-position: 0 -32px; }
+    &.gl-snippet-icon-copy-to-clipboard {  background-position: 0 -48px; }
   }
 
   .blob-viewer {
@@ -109,6 +110,7 @@
 
     .file-header-content {
       max-width: 75%;
+      align-self: center;
 
       .file-title-name {
         font-weight: $gl-font-weight-bold;
@@ -143,6 +145,7 @@
   }
 
   .btn-group {
+    button.btn,
     a.btn {
       background-color: $white;
       text-decoration: none;
@@ -164,6 +167,10 @@
         border-radius: 0 $border-radius-default $border-radius-default 0;
         border-right: $border-style;
       }
+    }
+
+    button.btn {
+      padding: 9px 9px 8px;
     }
   }
 }

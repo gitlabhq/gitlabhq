@@ -22,19 +22,22 @@ describe('The Pipeline Tabs', () => {
   const findPipelineApp = () => wrapper.findComponent(PipelineGraphWrapper);
   const findTestsApp = () => wrapper.findComponent(TestReports);
 
+  const findFailedJobsBadge = () => wrapper.findByTestId('failed-builds-counter');
   const findJobsBadge = () => wrapper.findByTestId('builds-counter');
 
   const defaultProvide = {
     defaultTabValue: '',
+    failedJobsCount: 1,
+    failedJobsSummary: [],
     totalJobCount: 10,
   };
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (provide = {}) => {
     wrapper = extendedWrapper(
       shallowMount(PipelineTabs, {
-        propsData,
         provide: {
           ...defaultProvide,
+          ...provide,
         },
         stubs: {
           GlTab,
@@ -44,16 +47,10 @@ describe('The Pipeline Tabs', () => {
     );
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });
 
-  // The failed jobs MUST be removed from here and tested individually once
-  // the logic for the tab is implemented.
   describe('Tabs', () => {
     it.each`
       tabName          | tabComponent         | appComponent
@@ -62,21 +59,32 @@ describe('The Pipeline Tabs', () => {
       ${'Jobs'}        | ${findJobsTab}       | ${findJobsApp}
       ${'Failed Jobs'} | ${findFailedJobsTab} | ${findFailedJobsApp}
       ${'Tests'}       | ${findTestsTab}      | ${findTestsApp}
-    `(
-      'shows $tabName tab with its badge and its associated component',
-      ({ appComponent, tabComponent }) => {
-        expect(tabComponent().exists()).toBe(true);
-        expect(appComponent().exists()).toBe(true);
-      },
-    );
+    `('shows $tabName tab with its associated component', ({ appComponent, tabComponent }) => {
+      createComponent();
+
+      expect(tabComponent().exists()).toBe(true);
+      expect(appComponent().exists()).toBe(true);
+    });
+
+    describe('with no failed jobs', () => {
+      beforeEach(() => {
+        createComponent({ failedJobsCount: 0 });
+      });
+
+      it('hides the failed jobs tab', () => {
+        expect(findFailedJobsTab().exists()).toBe(false);
+      });
+    });
   });
 
-  // We are going to add more tabs tests here as we do each tab MR
   describe('Tabs badges', () => {
     it.each`
-      tabName   | badgeComponent   | badgeText
-      ${'Jobs'} | ${findJobsBadge} | ${String(defaultProvide.totalJobCount)}
+      tabName          | badgeComponent         | badgeText
+      ${'Jobs'}        | ${findJobsBadge}       | ${String(defaultProvide.totalJobCount)}
+      ${'Failed Jobs'} | ${findFailedJobsBadge} | ${String(defaultProvide.failedJobsCount)}
     `('shows badge for $tabName with the correct text', ({ badgeComponent, badgeText }) => {
+      createComponent();
+
       expect(badgeComponent().exists()).toBe(true);
       expect(badgeComponent().text()).toBe(badgeText);
     });

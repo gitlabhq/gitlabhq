@@ -14,8 +14,8 @@
 
     .file-actions.d-none.d-sm-block
       .btn-group{ role: "group" }<
+        = embedded_copy_snippet_button(blob)
         = embedded_raw_snippet_button(@snippet, blob)
-
         = embedded_snippet_download_button(@snippet, blob)
   %figure.file-holder.snippet-file-content{ "aria-label" => _('Code snippet') }
     = render 'projects/blob/viewer', viewer: blob.simple_viewer, load_async: false, external_embed: true

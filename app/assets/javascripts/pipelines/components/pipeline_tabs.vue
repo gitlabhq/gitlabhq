@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { failedJobsTabName, jobsTabName, needsTabName, testReportTabName } from '../constants';
 import PipelineGraphWrapper from './graph/graph_component_wrapper.vue';
 import Dag from './dag/dag.vue';
+import FailedJobsApp from './jobs/failed_jobs_app.vue';
 import JobsApp from './jobs/jobs_app.vue';
 import TestReports from './test_reports/test_reports.vue';
 
@@ -29,11 +30,16 @@ export default {
     GlTab,
     GlTabs,
     JobsApp,
-    FailedJobsApp: JobsApp,
+    FailedJobsApp,
     PipelineGraphWrapper,
     TestReports,
   },
-  inject: ['defaultTabValue', 'totalJobCount'],
+  inject: ['defaultTabValue', 'failedJobsCount', 'failedJobsSummary', 'totalJobCount'],
+  computed: {
+    showFailedJobsTab() {
+      return this.failedJobsCount > 0;
+    },
+  },
   methods: {
     isActive(tabName) {
       return tabName === this.defaultTabValue;
@@ -63,12 +69,17 @@ export default {
       <jobs-app />
     </gl-tab>
     <gl-tab
+      v-if="showFailedJobsTab"
       :title="$options.i18n.tabs.failedJobsTitle"
       :active="isActive($options.tabNames.failures)"
       data-testid="failed-jobs-tab"
       lazy
     >
-      <failed-jobs-app />
+      <template #title>
+        <span class="gl-mr-2">{{ $options.i18n.tabs.failedJobsTitle }}</span>
+        <gl-badge size="sm" data-testid="failed-builds-counter">{{ failedJobsCount }}</gl-badge>
+      </template>
+      <failed-jobs-app :failed-jobs-summary="failedJobsSummary" />
     </gl-tab>
     <gl-tab
       :title="$options.i18n.tabs.testsTitle"

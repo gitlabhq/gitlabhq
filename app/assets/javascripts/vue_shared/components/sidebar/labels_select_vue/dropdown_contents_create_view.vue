@@ -54,7 +54,7 @@ export default {
     <div class="dropdown-title d-flex align-items-center pt-0 pb-2 gl-mb-0">
       <gl-button
         :aria-label="__('Go back')"
-        variant="link"
+        category="tertiary"
         size="small"
         class="js-btn-back dropdown-header-button p-0"
         icon="arrow-left"
@@ -63,7 +63,7 @@ export default {
       <span class="flex-grow-1">{{ labelsCreateTitle }}</span>
       <gl-button
         :aria-label="__('Close')"
-        variant="link"
+        category="tertiary"
         size="small"
         class="dropdown-header-button p-0"
         icon="close"

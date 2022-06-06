@@ -1159,4 +1159,113 @@ RSpec.describe 'Pipeline', :js do
       end
     end
   end
+
+  describe 'GET /:project/-/pipelines/:id/failures' do
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
+    let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
+    let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    subject { visit pipeline_failures_page }
+
+    context 'with failed build' do
+      before do
+        failed_build.trace.set('4 examples, 1 failure')
+      end
+
+      it 'lists failed builds' do
+        subject
+
+        expect(page).to have_content(failed_build.name)
+        expect(page).to have_content(failed_build.stage)
+      end
+
+      it 'shows build failure logs' do
+        subject
+
+        expect(page).to have_content('4 examples, 1 failure')
+      end
+
+      it 'shows the failure reason' do
+        subject
+
+        expect(page).to have_content('There is an unknown failure, please try again')
+      end
+
+      context 'when user does not have permission to retry build' do
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).not_to have_button('Retry')
+          end
+        end
+      end
+
+      context 'when user does have permission to retry build' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).to have_button('Retry')
+          end
+        end
+      end
+    end
+
+    context 'when missing build logs' do
+      it 'lists failed builds' do
+        subject
+
+        expect(page).to have_content(failed_build.name)
+        expect(page).to have_content(failed_build.stage)
+      end
+
+      it 'does not show log' do
+        subject
+
+        expect(page).to have_content('No job log')
+      end
+    end
+
+    context 'without permission to access builds' do
+      let(:role) { :guest }
+
+      before do
+        project.update!(public_builds: false)
+      end
+
+      context 'when accessing failed jobs page' do
+        it 'renders a 404 page' do
+          requests = inspect_requests { subject }
+
+          expect(page).to have_title('Not Found')
+          expect(requests.first.status_code).to eq(404)
+        end
+      end
+    end
+
+    context 'without failures' do
+      before do
+        failed_build.update!(status: :success)
+      end
+
+      it 'does not show the failure tab' do
+        subject
+
+        expect(page).not_to have_content('Failed Jobs')
+      end
+
+      it 'displays the pipeline graph' do
+        subject
+
+        expect(page).to have_current_path(pipeline_path(pipeline), ignore_query: true)
+        expect(page).to have_selector('.js-pipeline-graph')
+      end
+    end
+  end
 end
