@@ -2,21 +2,18 @@
   = form_errors(@label)
 
   .form-group.row
-    .col-sm-2.col-form-label
+    .col-12
       = f.label :title
-    .col-sm-10
       = f.text_field :title, class: "gl-form-input form-control js-label-title qa-label-title", required: true, autofocus: true
     = render_if_exists 'shared/labels/create_label_help_text'
 
   .form-group.row
-    .col-sm-2.col-form-label
+    .col-12
       = f.label :description
-    .col-sm-10
       = f.text_field :description, class: "gl-form-input form-control js-quick-submit qa-label-description"
   .form-group.row
-    .col-sm-2.col-form-label
+    .col-12
       = f.label :color, _("Background color")
-    .col-sm-10
       .input-group
         .input-group-prepend
           .input-group-text.label-color-preview &nbsp;
@@ -26,13 +23,13 @@
         %br
         = _("Or you can choose one of the suggested colors below")
       = render_suggested_colors
-  .gl-display-flex.gl-justify-content-space-between.gl-p-5.gl-bg-gray-10.gl-border-t-solid.gl-border-t-gray-100.gl-border-t-1
+  .gl-display-flex.gl-justify-content-space-between
     %div
       - if @label.persisted?
-        = f.submit _('Save changes'), class: 'btn gl-button btn-confirm js-save-button'
+        = f.submit _('Save changes'), class: 'btn gl-button btn-confirm js-save-button gl-mr-2'
       - else
-        = f.submit _('Create label'), class: 'btn gl-button btn-confirm js-save-button qa-label-create-button'
-      = link_to _('Cancel'), back_path, class: 'btn gl-button btn-default btn-cancel'
+        = f.submit _('Create label'), class: 'btn gl-button btn-confirm js-save-button qa-label-create-button gl-mr-2'
+      = link_to _('Cancel'), back_path, class: 'btn gl-button btn-default btn-cancel gl-mr-2'
     - if @label.persisted?
       - presented_label = @label.present
       %button.btn.btn-danger.gl-button.btn-danger-secondary.js-delete-label-modal-button{ type: 'button', data: { label_name: presented_label.name, subject_name: presented_label.subject_name, destroy_path: presented_label.destroy_path } }

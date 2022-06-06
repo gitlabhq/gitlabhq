@@ -7,7 +7,7 @@ import NoteAwardsList from '~/notes/components/note_awards_list.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import createStore from '~/notes/stores';
 import notes from '~/notes/stores/modules/index';
-import { CONFIDENTIAL_CLASSES } from '~/notes/constants';
+import { INTERNAL_NOTE_CLASSES } from '~/notes/constants';
 
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
@@ -59,20 +59,20 @@ describe('issue_note_body component', () => {
     expect(wrapper.findComponent(NoteAwardsList).exists()).toBe(true);
   });
 
-  it('should not have confidential classes', () => {
-    expect(wrapper.findByTestId('note-confidential-container').classes()).not.toEqual(
-      CONFIDENTIAL_CLASSES,
+  it('should not have internal note classes', () => {
+    expect(wrapper.findByTestId('note-internal-container').classes()).not.toEqual(
+      INTERNAL_NOTE_CLASSES,
     );
   });
 
-  describe('isConfidential', () => {
+  describe('isInternalNote', () => {
     beforeEach(() => {
-      wrapper = createComponent({ props: { isConfidential: true } });
+      wrapper = createComponent({ props: { isInternalNote: true } });
     });
 
-    it('should have confidential classes', () => {
-      expect(wrapper.findByTestId('note-confidential-container').classes()).toEqual(
-        CONFIDENTIAL_CLASSES,
+    it('should have internal note classes', () => {
+      expect(wrapper.findByTestId('note-internal-container').classes()).toEqual(
+        INTERNAL_NOTE_CLASSES,
       );
     });
   });
@@ -106,14 +106,14 @@ describe('issue_note_body component', () => {
       expect(wrapper.vm.autosave.key).toEqual(autosaveKey);
     });
 
-    describe('isConfidential', () => {
+    describe('isInternalNote', () => {
       beforeEach(() => {
-        wrapper.setProps({ isConfidential: true });
+        wrapper.setProps({ isInternalNote: true });
       });
 
-      it('should not have confidential classes', () => {
-        expect(wrapper.findByTestId('note-confidential-container').classes()).not.toEqual(
-          CONFIDENTIAL_CLASSES,
+      it('should not have internal note classes', () => {
+        expect(wrapper.findByTestId('note-internal-container').classes()).not.toEqual(
+          INTERNAL_NOTE_CLASSES,
         );
       });
     });

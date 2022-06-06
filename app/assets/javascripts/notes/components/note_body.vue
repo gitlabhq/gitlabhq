@@ -8,7 +8,7 @@ import { __ } from '~/locale';
 import '~/behaviors/markdown/render_gfm';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import autosave from '../mixins/autosave';
-import { CONFIDENTIAL_CLASSES } from '../constants';
+import { INTERNAL_NOTE_CLASSES } from '../constants';
 import noteAttachment from './note_attachment.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteEditedText from './note_edited_text.vue';
@@ -55,7 +55,7 @@ export default {
       required: false,
       default: '',
     },
-    isConfidential: {
+    isInternalNote: {
       type: Boolean,
       required: false,
       default: false,
@@ -101,9 +101,9 @@ export default {
 
       return escape(suggestion);
     },
-    confidentialContainerClasses() {
-      if (this.isConfidential && !this.isEditing) {
-        return CONFIDENTIAL_CLASSES;
+    internalNoteContainerClasses() {
+      if (this.isInternalNote && !this.isEditing) {
+        return INTERNAL_NOTE_CLASSES;
       }
       return '';
     },
@@ -179,7 +179,7 @@ export default {
     }"
     class="note-body"
   >
-    <div :class="confidentialContainerClasses" data-testid="note-confidential-container">
+    <div :class="internalNoteContainerClasses" data-testid="note-internal-container">
       <suggestions
         v-if="hasSuggestion && !isEditing"
         :suggestions="note.suggestions"

@@ -60,7 +60,7 @@ export default {
       note: '',
       noteType: constants.COMMENT,
       errors: [],
-      noteIsConfidential: false,
+      noteIsInternal: false,
       isSubmitting: false,
     };
   },
@@ -91,13 +91,13 @@ export default {
     },
     commentButtonTitle() {
       const { comment, internalComment, startThread, startInternalThread } = this.$options.i18n;
-      if (this.noteIsConfidential) {
+      if (this.noteIsInternal) {
         return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
       }
       return this.noteType === constants.COMMENT ? comment : startThread;
     },
     textareaPlaceholder() {
-      return this.noteIsConfidential
+      return this.noteIsInternal
         ? this.$options.i18n.bodyPlaceholderInternal
         : this.$options.i18n.bodyPlaceholder;
     },
@@ -110,7 +110,7 @@ export default {
     canCreateNote() {
       return this.getNoteableData.current_user.can_create_note;
     },
-    canSetConfidential() {
+    canSetInternalNote() {
       return this.getNoteableData.current_user.can_update && (this.isIssue || this.isEpic);
     },
     issueActionButtonTitle() {
@@ -172,7 +172,7 @@ export default {
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
-    confidentialNotesEnabled() {
+    internalNotesEnabled() {
       return Boolean(this.glFeatures.confidentialNotes);
     },
     disableSubmitButton() {
@@ -217,7 +217,11 @@ export default {
             note: {
               noteable_type: this.noteableType,
               noteable_id: this.getNoteableData.id,
-              confidential: this.noteIsConfidential,
+              // Internal notes were identified as `confidential`
+              // before we decided to treat them as _internal_
+              // so now until API is updated we need to use `confidential`
+              // in request payload.
+              confidential: this.noteIsInternal,
               note: this.note,
             },
             merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,
@@ -292,7 +296,7 @@ export default {
 
       if (shouldClear) {
         this.note = '';
-        this.noteIsConfidential = false;
+        this.noteIsInternal = false;
         this.resizeTextarea();
         this.$refs.markdownField.previewMarkdown = false;
       }
@@ -356,7 +360,7 @@ export default {
             <comment-field-layout
               :with-alert-container="true"
               :noteable-data="getNoteableData"
-              :note-is-confidential="noteIsConfidential"
+              :is-internal-note="noteIsInternal"
               :noteable-type="noteableType"
             >
               <markdown-field
@@ -410,17 +414,17 @@ export default {
               </template>
               <template v-else>
                 <gl-form-checkbox
-                  v-if="confidentialNotesEnabled && canSetConfidential"
-                  v-model="noteIsConfidential"
+                  v-if="internalNotesEnabled && canSetInternalNote"
+                  v-model="noteIsInternal"
                   class="gl-mb-6"
-                  data-testid="confidential-note-checkbox"
+                  data-testid="internal-note-checkbox"
                 >
-                  {{ $options.i18n.confidential }}
+                  {{ $options.i18n.internal }}
                   <gl-icon
                     v-gl-tooltip:tooltipcontainer.bottom
                     name="question"
                     :size="16"
-                    :title="$options.i18n.confidentialVisibility"
+                    :title="$options.i18n.internalVisibility"
                     class="gl-text-gray-500"
                   />
                 </gl-form-checkbox>
@@ -429,7 +433,7 @@ export default {
                   class="gl-mr-3"
                   :disabled="disableSubmitButton"
                   :tracking-label="trackingLabel"
-                  :is-internal-note="noteIsConfidential"
+                  :is-internal-note="noteIsInternal"
                   :noteable-display-name="noteableDisplayName"
                   :discussions-require-resolution="discussionsRequireResolution"
                   @click="handleSave"

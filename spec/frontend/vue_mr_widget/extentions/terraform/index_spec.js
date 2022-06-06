@@ -134,16 +134,13 @@ describe('Terraform extension', () => {
 
   describe('polling', () => {
     let pollRequest;
-    let pollStop;
 
     beforeEach(() => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
-      pollStop = jest.spyOn(Poll.prototype, 'stop');
     });
 
     afterEach(() => {
       pollRequest.mockRestore();
-      pollStop.mockRestore();
     });
 
     describe('successful poll', () => {
@@ -155,7 +152,6 @@ describe('Terraform extension', () => {
 
       it('does not make additional requests after poll is successful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
-        expect(pollStop).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -171,7 +167,6 @@ describe('Terraform extension', () => {
 
       it('does not make additional requests after poll is unsuccessful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
-        expect(pollStop).toHaveBeenCalledTimes(1);
       });
     });
   });

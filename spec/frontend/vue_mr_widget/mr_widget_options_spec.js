@@ -983,35 +983,30 @@ describe('MrWidgetOptions', () => {
 
   describe('mock polling extension', () => {
     let pollRequest;
-    let pollStop;
+
+    const findWidgetTestExtension = () => wrapper.find('[data-testid="widget-extension"]');
 
     beforeEach(() => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
-      pollStop = jest.spyOn(Poll.prototype, 'stop');
 
       registeredExtensions.extensions = [];
     });
 
     afterEach(() => {
       pollRequest.mockRestore();
-      pollStop.mockRestore();
 
       registeredExtensions.extensions = [];
+
+      // Clear all left-over timeouts that may be registered in the poll class
+      let id = window.setTimeout(() => {}, 0);
+
+      while (id > 0) {
+        window.clearTimeout(id);
+        id -= 1;
+      }
     });
 
     describe('success - multi polling', () => {
-      const findWidgetTestExtension = () => wrapper.find('[data-testid="widget-extension"]');
-
-      // Clear all left-over timeouts that may be registered in the poll class
-      afterEach(() => {
-        let id = window.setTimeout(() => {}, 0);
-
-        while (id > 0) {
-          window.clearTimeout(id);
-          id -= 1;
-        }
-      });
-
       it('sets data when polling is complete', async () => {
         registerExtension(
           multiPollingExtension([
@@ -1052,21 +1047,34 @@ describe('MrWidgetOptions', () => {
         );
 
         await createComponent();
-        expect(findWidgetTestExtension().html()).toContain('Loading...');
+        expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
       });
     });
 
     describe('success', () => {
-      beforeEach(() => {
+      it('does not make additional requests after poll is successful', async () => {
         registerExtension(pollingExtension);
-
-        createComponent();
-      });
-
-      it('does not make additional requests after poll is successful', () => {
+        await createComponent();
         // called two times due to parent component polling (mount) and extension polling
         expect(pollRequest).toHaveBeenCalledTimes(2);
-        expect(pollStop).toHaveBeenCalledTimes(1);
+      });
+
+      it('keeps polling when poll-interval header is provided', async () => {
+        registerExtension({
+          ...pollingExtension,
+          methods: {
+            ...pollingExtension.methods,
+            fetchCollapsedData() {
+              return Promise.resolve({
+                data: {},
+                headers: { 'poll-interval': 1 },
+                status: 204,
+              });
+            },
+          },
+        });
+        await createComponent();
+        expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
       });
     });
 
@@ -1084,7 +1092,6 @@ describe('MrWidgetOptions', () => {
       it('does not make additional requests after poll has failed', () => {
         // called two times due to parent component polling (mount) and extension polling
         expect(pollRequest).toHaveBeenCalledTimes(2);
-        expect(pollStop).toHaveBeenCalledTimes(1);
       });
 
       it('captures sentry error and displays error when poll has failed', () => {

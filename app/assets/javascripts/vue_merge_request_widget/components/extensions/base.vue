@@ -159,11 +159,7 @@ export default {
           },
           method: 'fetchData',
           successCallback: (response) => {
-            const headers = normalizeHeaders(response.headers);
-
-            if (!headers['POLL-INTERVAL']) {
-              allData.push(response.data);
-            }
+            this.headerCheck(response, (data) => allData.push(data));
 
             if (allData.length === requests.length) {
               this.setCollapsedData(allData);
@@ -183,20 +179,22 @@ export default {
           fetchData: () => this.fetchCollapsedData(this),
         },
         method: 'fetchData',
-        successCallback: ({ data }) => {
-          if (Object.keys(data).length > 0) {
-            poll.stop();
-            this.setCollapsedData(data);
-          }
+        successCallback: (response) => {
+          this.headerCheck(response, (data) => this.setCollapsedData(data));
         },
         errorCallback: (e) => {
-          poll.stop();
-
           this.setCollapsedError(e);
         },
       });
 
       poll.makeRequest();
+    },
+    headerCheck(response, callback) {
+      const headers = normalizeHeaders(response.headers);
+
+      if (!headers['POLL-INTERVAL']) {
+        callback(response.data);
+      }
     },
     loadCollapsedData() {
       this.loadingState = LOADING_STATES.collapsedLoading;

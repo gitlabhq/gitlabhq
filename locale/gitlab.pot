@@ -475,12 +475,6 @@ msgid_plural "%{bold_start}%{count}%{bold_end} opened merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{codeStart}type%{codeEnd} is deprecated and will be removed in 15.0. Use %{codeStart}stage%{codeEnd} instead. %{linkStart}Learn More %{linkEnd}"
-msgstr ""
-
-msgid "%{codeStart}types%{codeEnd} is deprecated and will be removed in 15.0. Use %{codeStart}stages%{codeEnd} instead. %{linkStart}Learn More %{linkEnd}"
-msgstr ""
-
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
@@ -16347,9 +16341,6 @@ msgid "Found errors in your %{gitlab_ci_yml}:"
 msgstr ""
 
 msgid "Found errors in your .gitlab-ci.yml:"
-msgstr ""
-
-msgid "Found warning in your .gitlab-ci.yml"
 msgstr ""
 
 msgid "Framework successfully deleted"

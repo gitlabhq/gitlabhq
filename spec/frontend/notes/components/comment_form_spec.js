@@ -32,7 +32,7 @@ describe('issue_comment_form component', () => {
   const findTextArea = () => wrapper.findByTestId('comment-field');
   const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
   const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
-  const findConfidentialNoteCheckbox = () => wrapper.findByTestId('confidential-note-checkbox');
+  const findConfidentialNoteCheckbox = () => wrapper.findByTestId('internal-note-checkbox');
   const findCommentTypeDropdown = () => wrapper.findComponent(CommentTypeDropdown);
   const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
@@ -249,15 +249,15 @@ describe('issue_comment_form component', () => {
     describe('textarea', () => {
       describe('general', () => {
         it.each`
-          noteType           | confidential | placeholder
-          ${'comment'}       | ${false}     | ${'Write a comment or drag your files here…'}
-          ${'internal note'} | ${true}      | ${'Write an internal note or drag your files here…'}
+          noteType           | noteIsInternal | placeholder
+          ${'comment'}       | ${false}       | ${'Write a comment or drag your files here…'}
+          ${'internal note'} | ${true}        | ${'Write an internal note or drag your files here…'}
         `(
           'should render textarea with placeholder for $noteType',
-          ({ confidential, placeholder }) => {
+          ({ noteIsInternal, placeholder }) => {
             mountComponent({
               mountFunction: mount,
-              initialData: { noteIsConfidential: confidential },
+              initialData: { noteIsInternal },
             });
 
             expect(findTextArea().attributes('placeholder')).toBe(placeholder);
@@ -389,14 +389,14 @@ describe('issue_comment_form component', () => {
       });
 
       it.each`
-        confidential | buttonText
-        ${false}     | ${'Comment'}
-        ${true}      | ${'Add internal note'}
-      `('renders comment button with text "$buttonText"', ({ confidential, buttonText }) => {
+        noteIsInternal | buttonText
+        ${false}       | ${'Comment'}
+        ${true}        | ${'Add internal note'}
+      `('renders comment button with text "$buttonText"', ({ noteIsInternal, buttonText }) => {
         mountComponent({
           mountFunction: mount,
-          noteableData: createNotableDataMock({ confidential }),
-          initialData: { noteIsConfidential: confidential },
+          noteableData: createNotableDataMock({ confidential: noteIsInternal }),
+          initialData: { noteIsInternal },
         });
 
         expect(findCommentButton().text()).toBe(buttonText);

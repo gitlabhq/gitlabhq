@@ -19,7 +19,10 @@ export default {
     },
     testCase: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => {
+        return {};
+      },
     },
   },
   computed: {
@@ -49,6 +52,7 @@ export default {
   },
   text: {
     name: __('Name'),
+    file: __('File'),
     duration: __('Execution time'),
     history: __('History'),
     trace: __('System output'),
@@ -74,10 +78,23 @@ export default {
       </div>
     </div>
 
+    <div v-if="testCase.file" class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
+      <strong class="gl-text-right col-sm-3">{{ $options.text.file }}</strong>
+      <div class="col-sm-9" data-testid="test-case-file">
+        <gl-link v-if="testCase.filePath" :href="testCase.filePath">
+          {{ testCase.file }}
+        </gl-link>
+        <span v-else>{{ testCase.file }}</span>
+      </div>
+    </div>
+
     <div class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.duration }}</strong>
-      <div class="col-sm-9" data-testid="test-case-duration">
+      <div v-if="testCase.formattedTime" class="col-sm-9" data-testid="test-case-duration">
         {{ testCase.formattedTime }}
+      </div>
+      <div v-else-if="testCase.execution_time" class="col-sm-9" data-testid="test-case-duration">
+        {{ sprintf('%{value} s', { value: testCase.execution_time }) }}
       </div>
     </div>
 

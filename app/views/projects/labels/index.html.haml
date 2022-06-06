@@ -9,7 +9,7 @@
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.gl-mt-3.gl-bg-gray-10.gl-border-solid.gl-border-1.gl-border-gray-100
+  .labels-container.gl-mt-5
     - if can_admin_label && search.blank?
       %p.text-muted
         = _('Labels can be applied to issues and merge requests.')
@@ -19,8 +19,8 @@
     -# Only show it in the first page
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
     .prioritized-labels.gl-mb-7{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
-      %h5.gl-mt-3= _('Prioritized Labels')
-      .content-list.manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
+      %h4.gl-mt-3= _('Prioritized Labels')
+      .manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
         #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
           = render 'shared/empty_states/priority_labels'
         - if @prioritized_labels.any?
@@ -31,14 +31,14 @@
 
     - if @labels.any?
       .other-labels
-        %h5{ class: ('hide' if hide) }= _('Other Labels')
-        .content-list.manage-labels-list.js-other-labels
+        %h4{ class: ('hide' if hide) }= _('Other Labels')
+        .manage-labels-list.js-other-labels
           = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
           = paginate @labels, theme: 'gitlab'
     - elsif search.present?
       .other-labels
         - if @available_labels.any?
-          %h5
+          %h4
             = _('Other Labels')
           .nothing-here-block
             = _('No other labels with such name or description')

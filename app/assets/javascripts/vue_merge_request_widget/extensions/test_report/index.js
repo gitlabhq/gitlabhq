@@ -1,5 +1,6 @@
 import { uniqueId } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
+import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import {
   summaryTextBuilder,
@@ -7,6 +8,7 @@ import {
   reportSubTextBuilder,
   countRecentlyFailedTests,
   recentFailuresTextBuilder,
+  formatFilePath,
 } from './utils';
 import { i18n, TESTS_FAILED_STATUS, ERROR_STATUS } from './constants';
 
@@ -16,6 +18,7 @@ export default {
   i18n,
   expandEvent: 'i_testing_summary_widget_total',
   props: ['testResultsPath', 'headBlobPath', 'pipeline'],
+  modalComponent: TestCaseDetails,
   computed: {
     summary(data) {
       if (data.parsingInProgress) {
@@ -53,8 +56,11 @@ export default {
   },
   methods: {
     fetchCollapsedData() {
-      return axios.get(this.testResultsPath).then(({ data = {}, status }) => {
+      return axios.get(this.testResultsPath).then((res) => {
+        const { data = {}, status } = res;
+
         return {
+          ...res,
           data: {
             hasSuiteError: data.suites?.some((suite) => suite.status === ERROR_STATUS),
             parsingInProgress: status === 204,
@@ -94,8 +100,18 @@ export default {
         return {
           id: uniqueId('test-'),
           header: this.testHeader(test, sectionHeader, index),
+          modal: {
+            text: test.name,
+            onClick: () => {
+              this.modalData = {
+                testCase: {
+                  filePath: test.file && `${this.headBlobPath}/${formatFilePath(test.file)}`,
+                  ...test,
+                },
+              };
+            },
+          },
           icon: { name: iconName },
-          text: test.name,
         };
       };
     },

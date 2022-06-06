@@ -52,4 +52,4 @@ export const toggleStateErrorMessage = {
   },
 };
 
-export const CONFIDENTIAL_CLASSES = ['gl-bg-orange-50', 'gl-px-4', 'gl-py-2'];
+export const INTERNAL_NOTE_CLASSES = ['gl-bg-orange-50', 'gl-px-4', 'gl-py-2'];

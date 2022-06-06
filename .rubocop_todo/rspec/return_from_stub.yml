@@ -286,7 +286,6 @@ RSpec/ReturnFromStub:
     - 'spec/services/projects/in_product_marketing_campaign_emails_service_spec.rb'
     - 'spec/services/projects/update_remote_mirror_service_spec.rb'
     - 'spec/services/projects/update_service_spec.rb'
-    - 'spec/services/static_site_editor/config_service_spec.rb'
     - 'spec/services/suggestions/apply_service_spec.rb'
     - 'spec/services/suggestions/create_service_spec.rb'
     - 'spec/services/verify_pages_domain_service_spec.rb'

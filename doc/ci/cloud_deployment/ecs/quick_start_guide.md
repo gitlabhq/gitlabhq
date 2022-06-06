@@ -4,11 +4,10 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Getting started with Continuous Deployment to AWS Elastic Container Service **(FREE)**
+# Deploy to Amazon Elastic Container Service **(FREE)**
 
-This step-by-step guide helps you use [Continuous Deployment to ECS](../index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs)
-that deploys a project hosted on GitLab.com to [Elastic Container Service](https://aws.amazon.com/ecs/)
-(ECS) on AWS.
+This step-by-step guide helps you deploy a project hosted on GitLab.com to
+the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
 
 In this guide, you begin by creating an ECS cluster manually using the AWS console. You create and
 deploy a simple application that you create from a GitLab template.
@@ -68,7 +67,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
 1. Select **Setup up CI/CD**. It brings you to a `.gitlab-ci.yml`
    creation form.
 1. Copy and paste the following content into the empty `.gitlab-ci.yml`. This defines
-   [a pipeline for continuous deployment to ECS](../index.md#deploy-your-application-to-the-aws-elastic-container-service-ecs).
+   a pipeline for continuous deployment to ECS.
 
    ```yaml
    include:

@@ -74,21 +74,11 @@
 
   > li:not(.empty-message):not(.no-border) {
     background-color: $white;
-    margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
-    padding: $gl-padding;
-    border-radius: $border-radius-default;
-    border: 1px solid $gray-50;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
 
     .prioritized-labels:not(.is-not-draggable) & {
-      box-shadow: 0 1px 2px $issue-boards-card-shadow;
       cursor: grab;
-      border: 0;
 
       &:active {
         cursor: grabbing;
@@ -109,11 +99,6 @@
 
 .label-subscription {
   width: 109px;
-}
-
-.labels-container {
-  border-radius: $border-radius-default;
-  padding: $gl-padding $gl-padding-8;
 }
 
 .label-actions-list {

@@ -70,7 +70,7 @@ export default {
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
             </div>
             <div v-if="data.modal">
-              <gl-link v-gl-modal="modalId" @click="data.modal.onClick">
+              <gl-link v-gl-modal="modalId" data-testid="modal-link" @click="data.modal.onClick">
                 {{ data.modal.text }}
               </gl-link>
             </div>

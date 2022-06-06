@@ -135,14 +135,14 @@ describe('Comment Field Layout Component', () => {
     });
   });
 
-  describe('issue has email participants, but note is confidential', () => {
+  describe('issue has email participants, but note is internal', () => {
     it('does not show EmailParticipantsWarning', () => {
       createWrapper({
         noteableData: {
           ...noteableDataMock,
           issue_email_participants: [{ email: 'someone@gitlab.com' }],
         },
-        noteIsConfidential: true,
+        isInternalNote: true,
       });
 
       expect(findEmailParticipantsWarning().exists()).toBe(false);

@@ -14,7 +14,7 @@ export default {
       type: Object,
       required: true,
     },
-    noteIsConfidential: {
+    isInternalNote: {
       type: Boolean,
       required: false,
       default: false,
@@ -44,7 +44,7 @@ export default {
       return this.noteableData.issue_email_participants?.map(({ email }) => email) || [];
     },
     showEmailParticipantsWarning() {
-      return this.emailParticipants.length && !this.noteIsConfidential;
+      return this.emailParticipants.length && !this.isInternalNote;
     },
   },
 };

@@ -67,7 +67,7 @@ export default {
       required: false,
       default: true,
     },
-    isConfidential: {
+    isInternalNote: {
       type: Boolean,
       required: false,
       default: false,
@@ -110,7 +110,7 @@ export default {
     authorName() {
       return this.author.name;
     },
-    noteConfidentialityTooltip() {
+    internalNoteTooltip() {
       return s__('Notes|This internal note will always remain confidential');
     },
   },
@@ -231,13 +231,13 @@ export default {
         <time-ago-tooltip v-else ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>
       <gl-badge
-        v-if="isConfidential"
+        v-if="isInternalNote"
         v-gl-tooltip:tooltipcontainer.bottom
         data-testid="internalNoteIndicator"
         variant="warning"
         size="sm"
         class="gl-mb-3 gl-ml-2"
-        :title="noteConfidentialityTooltip"
+        :title="internalNoteTooltip"
       >
         {{ __('Internal note') }}
       </gl-badge>

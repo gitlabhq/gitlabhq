@@ -447,7 +447,7 @@ export default {
           :author="author"
           :created-at="note.created_at"
           :note-id="note.id"
-          :is-confidential="note.confidential"
+          :is-internal-note="note.confidential"
           :noteable-type="noteableType"
         >
           <template #note-header-info>
@@ -494,7 +494,7 @@ export default {
           ref="noteBody"
           :note="note"
           :can-edit="note.current_user.can_edit"
-          :is-confidential="note.confidential"
+          :is-internal-note="note.confidential"
           :line="line"
           :file="diffFile"
           :is-editing="isEditing"

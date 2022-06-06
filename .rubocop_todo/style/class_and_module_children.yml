@@ -225,7 +225,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/projects/snippets/blobs_controller.rb'
     - 'app/controllers/projects/snippets_controller.rb'
     - 'app/controllers/projects/starrers_controller.rb'
-    - 'app/controllers/projects/static_site_editor_controller.rb'
     - 'app/controllers/projects/tags/releases_controller.rb'
     - 'app/controllers/projects/tags_controller.rb'
     - 'app/controllers/projects/templates_controller.rb'

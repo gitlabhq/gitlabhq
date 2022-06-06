@@ -4,11 +4,14 @@ export const workingExtension = (shouldCollapse = true) => ({
   name: 'WidgetTestExtension',
   props: ['targetProjectFullPath'],
   expandEvent: 'test_expand_event',
+  i18n: {
+    loading: 'Test extension loading...',
+  },
   computed: {
-    summary({ count, targetProjectFullPath }) {
+    summary({ count, targetProjectFullPath } = {}) {
       return `Test extension summary count: ${count} & ${targetProjectFullPath}`;
     },
-    statusIcon({ count }) {
+    statusIcon({ count } = {}) {
       return count > 0 ? EXTENSION_ICONS.warning : EXTENSION_ICONS.success;
     },
     shouldCollapse() {
@@ -108,7 +111,10 @@ export const pollingExtension = {
 
 export const multiPollingExtension = (endpointsToBePolled) => ({
   name: 'WidgetTestMultiPollingExtension',
-  props: ['targetProjectFullPath'],
+  props: [],
+  i18n: {
+    loading: 'Test extension loading...',
+  },
   computed: {
     summary(data) {
       return `Multi polling test extension reports: ${data?.[0]?.reports}, count: ${data.length}`;

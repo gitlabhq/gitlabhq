@@ -21,7 +21,7 @@ describe('NoteHeader component', () => {
   const findActionText = () => wrapper.find({ ref: 'actionText' });
   const findTimestampLink = () => wrapper.find({ ref: 'noteTimestampLink' });
   const findTimestamp = () => wrapper.find({ ref: 'noteTimestamp' });
-  const findConfidentialIndicator = () => wrapper.findByTestId('internalNoteIndicator');
+  const findInternalNoteIndicator = () => wrapper.findByTestId('internalNoteIndicator');
   const findSpinner = () => wrapper.find({ ref: 'spinner' });
   const findAuthorStatus = () => wrapper.find({ ref: 'authorStatus' });
 
@@ -283,20 +283,20 @@ describe('NoteHeader component', () => {
     });
   });
 
-  describe('with confidentiality indicator', () => {
+  describe('with internal note badge', () => {
     it.each`
       status   | condition
       ${true}  | ${'shows'}
       ${false} | ${'hides'}
-    `('$condition icon indicator when isConfidential is $status', ({ status }) => {
-      createComponent({ isConfidential: status });
-      expect(findConfidentialIndicator().exists()).toBe(status);
+    `('$condition badge when isInternalNote is $status', ({ status }) => {
+      createComponent({ isInternalNote: status });
+      expect(findInternalNoteIndicator().exists()).toBe(status);
     });
 
-    it('shows confidential indicator tooltip for project context', () => {
-      createComponent({ isConfidential: true, noteableType: 'issue' });
+    it('shows internal note badge tooltip for project context', () => {
+      createComponent({ isInternalNote: true, noteableType: 'issue' });
 
-      expect(findConfidentialIndicator().attributes('title')).toBe(
+      expect(findInternalNoteIndicator().attributes('title')).toBe(
         'This internal note will always remain confidential',
       );
     });

@@ -6,7 +6,7 @@
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - tooltip_title = label_status_tooltip(label, status) if status
 
-%li.label-list-item{ id: label_css_id, data: { id: label.id } }
+%li.label-list-item{ id: label_css_id, class: "gl-p-5 gl-border-b", data: { id: label.id } }
   = render "shared/label_row", label: label, force_priority: force_priority
   %ul.label-actions-list
     - if can?(current_user, :admin_label, @project)
