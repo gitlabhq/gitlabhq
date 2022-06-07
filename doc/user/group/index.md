@@ -640,6 +640,10 @@ To restrict group access by IP address:
 
    ![Domain restriction by IP address](img/restrict-by-ip.gif)
 
+In self-managed installations of GitLab 15.1 and later, you can also configure
+[globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
+at the group level.
+
 ## Restrict group access by domain **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in GitLab 12.2.
@@ -845,6 +849,7 @@ Support for group-level settings for merge request approval rules is tracked in 
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
 - Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md).
+- [Control access and visibility](../admin_area/settings/visibility_and_access_controls.md).
 
 ## Troubleshooting
 

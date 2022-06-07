@@ -1,7 +1,8 @@
-import { GlTable } from '@gitlab/ui';
+import { GlPagination, GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
+import { EVENT_SUCCESS, PAGE_SIZE } from '~/access_tokens/components/constants';
 import { __, s__, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 
@@ -57,13 +58,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   const triggerSuccess = async (activeAccessTokens = defaultActiveAccessTokens) => {
     wrapper
       .findComponent(DomElementListener)
-      .vm.$emit('ajax:success', { detail: [{ active_access_tokens: activeAccessTokens }] });
+      .vm.$emit(EVENT_SUCCESS, { detail: [{ active_access_tokens: activeAccessTokens }] });
     await nextTick();
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
   const findHeaders = () => findTable().findAll('th > :first-child');
   const findCells = () => findTable().findAll('td');
+  const findPagination = () => wrapper.findComponent(GlPagination);
 
   afterEach(() => {
     wrapper?.destroy();
@@ -224,5 +226,16 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     // First and second rows have swapped
     expect(cells.at(3).text()).not.toBe('Never');
     expect(cells.at(10).text()).toBe('Never');
+  });
+
+  it('should show the pagination component when needed', async () => {
+    createComponent();
+    expect(findPagination().exists()).toBe(false);
+
+    await triggerSuccess(Array(PAGE_SIZE).fill(defaultActiveAccessTokens[0]));
+    expect(findPagination().exists()).toBe(false);
+
+    await triggerSuccess(Array(PAGE_SIZE + 1).fill(defaultActiveAccessTokens[0]));
+    expect(findPagination().exists()).toBe(true);
   });
 });

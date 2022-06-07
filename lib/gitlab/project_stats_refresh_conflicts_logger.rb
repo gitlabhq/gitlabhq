@@ -20,5 +20,15 @@ module Gitlab
 
       Gitlab::AppLogger.warn(payload)
     end
+
+    def self.warn_skipped_artifact_deletion_during_stats_refresh(project_ids:, method:)
+      payload = Gitlab::ApplicationContext.current.merge(
+        message: 'Skipped deleting artifacts undergoing refresh',
+        method: method,
+        project_ids: project_ids
+      )
+
+      Gitlab::AppLogger.warn(payload)
+    end
   end
 end

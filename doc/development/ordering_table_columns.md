@@ -24,15 +24,15 @@ The first column is a 4-byte integer. The next is text of variable length. The
 bytes. To meet the alignment requirements, four zeros are to be added right
 after the first column, so `id` occupies 4 bytes, then 4 bytes of alignment
 padding, and only next `name` is being stored. Therefore, in this case, 8 bytes
-will be spent for storing a 4-byte integer.
+are spent for storing a 4-byte integer.
 
 The space between rows is also subject to alignment padding. The `user_id`
-column takes only 4 bytes, and on 64-bit platform, 4 zeroes will be added for
+column takes only 4 bytes, and on 64-bit platform, 4 zeroes are added for
 alignment padding, to allow storing the next row beginning with the "clear" word.
 
 As a result, the actual size of each column would be (omitting variable length
 data and 24-byte tuple header): 8 bytes, variable, 8 bytes. This means that
-each row will require at least 16 bytes for the two 4-byte integers. If a table
+each row requires at least 16 bytes for the two 4-byte integers. If a table
 has a few rows this is not an issue. However, once you start storing millions of
 rows you can save space by using a different order. For the above example, the
 ideal column order would be the following:
@@ -49,7 +49,7 @@ or
 
 In these examples, the `id` and `user_id` columns are packed together, which
 means we only need 8 bytes to store _both_ of them. This in turn means each row
-will require 8 bytes less space.
+requires 8 bytes less space.
 
 Since Ruby on Rails 5.1, the default data type for IDs is `bigint`, which uses 8 bytes.
 We are using `integer` in the examples to showcase a more realistic reordering scenario.
@@ -57,7 +57,7 @@ We are using `integer` in the examples to showcase a more realistic reordering s
 ## Type Sizes
 
 While the [PostgreSQL documentation](https://www.postgresql.org/docs/current/datatype.html) contains plenty
-of information we will list the sizes of common types here so it's easier to
+of information we list the sizes of common types here so it's easier to
 look them up. Here "word" refers to the word size, which is 4 bytes for a 32
 bits platform and 8 bytes for a 64 bits platform.
 
@@ -69,7 +69,7 @@ bits platform and 8 bytes for a 64 bits platform.
 | `real`             | 4 bytes                              | 1 word     |
 | `double precision` | 8 bytes                              | 8 bytes    |
 | `boolean`          | 1 byte                               | not needed |
-| `text` / `string`    | variable, 1 byte plus the data       | 1 word     |
+| `text` / `string`  | variable, 1 byte plus the data       | 1 word     |
 | `bytea`            | variable, 1 or 4 bytes plus the data | 1 word     |
 | `timestamp`        | 8 bytes                              | 8 bytes    |
 | `timestamptz`      | 8 bytes                              | 8 bytes    |
@@ -77,7 +77,7 @@ bits platform and 8 bytes for a 64 bits platform.
 
 A "variable" size means the actual size depends on the value being stored. If
 PostgreSQL determines this can be embedded directly into a row it may do so, but
-for very large values it will store the data externally and store a pointer (of
+for very large values it stores the data externally and store a pointer (of
 1 word in size) in the column. Because of this variable sized columns should
 always be at the end of a table.
 

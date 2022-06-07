@@ -19639,6 +19639,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumstorage_enforcement_banner_fourth_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_FOURTH_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_fourth_enforcement_threshold. |
 | <a id="usercalloutfeaturenameenumstorage_enforcement_banner_second_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_SECOND_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_second_enforcement_threshold. |
 | <a id="usercalloutfeaturenameenumstorage_enforcement_banner_third_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_THIRD_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_third_enforcement_threshold. |
+| <a id="usercalloutfeaturenameenumsubmit_license_usage_data_banner"></a>`SUBMIT_LICENSE_USAGE_DATA_BANNER` | Callout feature name for submit_license_usage_data_banner. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |
 | <a id="usercalloutfeaturenameenumsuggest_popover_dismissed"></a>`SUGGEST_POPOVER_DISMISSED` | Callout feature name for suggest_popover_dismissed. |
 | <a id="usercalloutfeaturenameenumtabs_position_highlight"></a>`TABS_POSITION_HIGHLIGHT` | Callout feature name for tabs_position_highlight. |

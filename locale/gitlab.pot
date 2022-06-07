@@ -32219,6 +32219,9 @@ msgstr ""
 msgid "Request attention from assignee(s) or reviewer(s)"
 msgstr ""
 
+msgid "Request data is too large"
+msgstr ""
+
 msgid "Request details"
 msgstr ""
 

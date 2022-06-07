@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
 
-When adding new columns that will be used to store strings or other textual information:
+When adding new columns to store strings or other textual information:
 
 1. We always use the `text` data type instead of the `string` data type.
 1. `text` columns should always have a limit set, either by using the `create_table` with
@@ -142,8 +142,8 @@ instance of GitLab could have such records, so we would follow the same process 
 We first add the limit as a `NOT VALID` check constraint to the table, which enforces consistency when
 new records are inserted or current records are updated.
 
-In the example above, the existing issues with more than 1024 characters in their title will not be
-affected and you'll be still able to update records in the `issues` table. However, when you'd try
+In the example above, the existing issues with more than 1024 characters in their title are not
+affected, and you are still able to update records in the `issues` table. However, when you'd try
 to update the `title_html` with a title that has more than 1024 characters, the constraint causes
 a database error.
 
@@ -182,7 +182,7 @@ end
 #### Data migration to fix existing records (current release)
 
 The approach here depends on the data volume and the cleanup strategy. The number of records that must
-be fixed on GitLab.com is a nice indicator that will help us decide whether to use a post-deployment
+be fixed on GitLab.com is a nice indicator that helps us decide whether to use a post-deployment
 migration or a background data migration:
 
 - If the data volume is less than `1,000` records, then the data migration can be executed within the post-migration.
@@ -233,7 +233,7 @@ You can find more information on the guide about [background migrations](backgro
 
 #### Validate the text limit (next release)
 
-Validating the text limit will scan the whole table and make sure that each record is correct.
+Validating the text limit scans the whole table, and makes sure that each record is correct.
 
 Still in our example, for the 13.1 milestone (next), we run the `validate_text_limit` migration
 helper in a final post-deployment migration,
@@ -276,11 +276,11 @@ end
 ## Text limit constraints on large tables
 
 If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
-(for example, the `artifacts` in `ci_builds`), your background migration will go on for a while and
-it will need an additional [background migration cleaning up](background_migrations.md#cleaning-up)
+(for example, the `artifacts` in `ci_builds`), your background migration goes on for a while and
+it needs an additional [background migration cleaning up](background_migrations.md#cleaning-up)
 in the release after adding the data migration.
 
-In that rare case you will need 3 releases end-to-end:
+In that rare case you need 3 releases end-to-end:
 
 1. Release `N.M` - Add the text limit and the background migration to fix the existing records.
 1. Release `N.M+1` - Cleanup the background migration.

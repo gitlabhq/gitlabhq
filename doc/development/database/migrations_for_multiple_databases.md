@@ -260,7 +260,7 @@ the `database_tasks: false` set. `gitlab:db:validate_config` always runs before 
 
 ## Validation
 
-Validation in a nutshell uses [pg_query](https://github.com/pganalyze/pg_query) to analyze
+Validation in a nutshell uses [`pg_query`](https://github.com/pganalyze/pg_query) to analyze
 each query and classify tables with information from [`gitlab_schema.yml`](multiple_databases.md#gitlab-schema).
 The migration is skipped if the specified `gitlab_schema` is outside of a list of schemas
 managed by a given database connection (`Gitlab::Database::gitlab_schemas_for_connection`).
@@ -427,7 +427,7 @@ updating all `ci_pipelines`, you would set
 
 As with all DML migrations, you cannot query another database outside of
 `restrict_gitlab_migration` or `gitlab_shared`. If you need to query another database,
-you'll likely need to separate these into two migrations somehow.
+separate the migrations.
 
 Because the actual migration logic (not the queueing step) for background
 migrations runs in a Sidekiq worker, the logic can perform DML queries on

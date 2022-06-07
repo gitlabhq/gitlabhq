@@ -4,7 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobArtifacts::DestroyBatchService do
   let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id, trace_artifact.id]) }
-  let(:service) { described_class.new(artifacts, pick_up_at: Time.current) }
+  let(:skip_projects_on_refresh) { false }
+  let(:service) do
+    described_class.new(
+      artifacts,
+      pick_up_at: Time.current,
+      skip_projects_on_refresh: skip_projects_on_refresh
+    )
+  end
 
   let_it_be(:artifact_with_file, refind: true) do
     create(:ci_job_artifact, :zip)
@@ -76,18 +83,101 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
         create(:project_build_artifacts_size_refresh, :running, project: artifact_under_refresh_2.project)
       end
 
-      it 'logs the artifacts undergoing refresh and continues with the delete', :aggregate_failures do
-        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
-          method: 'Ci::JobArtifacts::DestroyBatchService#execute',
-          project_id: artifact_under_refresh_1.project.id
-        ).once
+      shared_examples 'avoiding N+1 queries' do
+        let!(:control_artifact_on_refresh) do
+          create(:ci_job_artifact, :zip)
+        end
 
-        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
-          method: 'Ci::JobArtifacts::DestroyBatchService#execute',
-          project_id: artifact_under_refresh_2.project.id
-        ).once
+        let!(:control_artifact_non_refresh) do
+          create(:ci_job_artifact, :zip)
+        end
 
-        expect { subject }.to change { Ci::JobArtifact.count }.by(-4)
+        let!(:other_artifact_on_refresh) do
+          create(:ci_job_artifact, :zip)
+        end
+
+        let!(:other_artifact_on_refresh_2) do
+          create(:ci_job_artifact, :zip)
+        end
+
+        let!(:other_artifact_non_refresh) do
+          create(:ci_job_artifact, :zip)
+        end
+
+        let!(:control_artifacts) do
+          Ci::JobArtifact.where(
+            id: [
+              control_artifact_on_refresh.id,
+              control_artifact_non_refresh.id
+            ]
+          )
+        end
+
+        let!(:artifacts) do
+          Ci::JobArtifact.where(
+            id: [
+              other_artifact_on_refresh.id,
+              other_artifact_on_refresh_2.id,
+              other_artifact_non_refresh.id
+            ]
+          )
+        end
+
+        let(:control_service) do
+          described_class.new(
+            control_artifacts,
+            pick_up_at: Time.current,
+            skip_projects_on_refresh: skip_projects_on_refresh
+          )
+        end
+
+        before do
+          create(:project_build_artifacts_size_refresh, :pending, project: control_artifact_on_refresh.project)
+          create(:project_build_artifacts_size_refresh, :pending, project: other_artifact_on_refresh.project)
+          create(:project_build_artifacts_size_refresh, :pending, project: other_artifact_on_refresh_2.project)
+        end
+
+        it 'does not make multiple queries when fetching multiple project refresh records' do
+          control = ActiveRecord::QueryRecorder.new { control_service.execute }
+
+          expect { subject }.not_to exceed_query_limit(control)
+        end
+      end
+
+      context 'and skip_projects_on_refresh is set to false (default)' do
+        it 'logs the projects undergoing refresh and continues with the delete', :aggregate_failures do
+          expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+            method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+            project_id: artifact_under_refresh_1.project.id
+          ).once
+
+          expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+            method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+            project_id: artifact_under_refresh_2.project.id
+          ).once
+
+          expect { subject }.to change { Ci::JobArtifact.count }.by(-4)
+        end
+
+        it_behaves_like 'avoiding N+1 queries'
+      end
+
+      context 'and skip_projects_on_refresh is set to true' do
+        let(:skip_projects_on_refresh) { true }
+
+        it 'logs the projects undergoing refresh and excludes the artifacts from deletion', :aggregate_failures do
+          expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_skipped_artifact_deletion_during_stats_refresh).with(
+            method: 'Ci::JobArtifacts::DestroyBatchService#execute',
+            project_ids: match_array([artifact_under_refresh_1.project.id, artifact_under_refresh_2.project.id])
+          )
+
+          expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+          expect(Ci::JobArtifact.where(id: artifact_under_refresh_1.id)).to exist
+          expect(Ci::JobArtifact.where(id: artifact_under_refresh_2.id)).to exist
+          expect(Ci::JobArtifact.where(id: artifact_under_refresh_3.id)).to exist
+        end
+
+        it_behaves_like 'avoiding N+1 queries'
       end
     end
 

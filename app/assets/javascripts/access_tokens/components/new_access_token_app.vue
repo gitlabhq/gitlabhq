@@ -4,15 +4,11 @@ import { createAlert, VARIANT_INFO } from '~/flash';
 import { __, n__, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
-
-const ERROR_EVENT = 'ajax:error';
-const FORM_SELECTOR = '#js-new-access-token-form';
-const SUCCESS_EVENT = 'ajax:success';
+import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from './constants';
 
 export default {
-  ERROR_EVENT,
-  FORM_SELECTOR,
-  SUCCESS_EVENT,
+  EVENT_ERROR,
+  EVENT_SUCCESS,
   name: 'NewAccessTokenApp',
   components: { DomElementListener, GlAlert, InputCopyToggleVisibility },
   i18n: {
@@ -50,13 +46,16 @@ export default {
         name: this.$options.tokenInputId,
       };
     },
+    formSelector() {
+      return `#${FORM_SELECTOR}`;
+    },
     label() {
       return sprintf(this.$options.i18n.label, { accessTokenType: this.accessTokenType });
     },
   },
   mounted() {
     /** @type {HTMLFormElement} */
-    this.form = document.querySelector(this.$options.FORM_SELECTOR);
+    this.form = document.getElementById(FORM_SELECTOR);
 
     /** @type {HTMLInputElement} */
     this.submitButton = this.form.querySelector('input[type=submit]');
@@ -93,9 +92,9 @@ export default {
 
 <template>
   <dom-element-listener
-    :selector="$options.FORM_SELECTOR"
-    @[$options.ERROR_EVENT]="onError"
-    @[$options.SUCCESS_EVENT]="onSuccess"
+    :selector="formSelector"
+    @[$options.EVENT_ERROR]="onError"
+    @[$options.EVENT_SUCCESS]="onSuccess"
   >
     <div ref="container">
       <template v-if="newToken">

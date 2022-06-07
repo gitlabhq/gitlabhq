@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Understanding EXPLAIN plans
 
 PostgreSQL allows you to obtain query plans using the `EXPLAIN` command. This
-command can be invaluable when trying to determine how a query will perform.
+command can be invaluable when trying to determine how a query performs.
 You can use this command directly in your SQL query, as long as the query starts
 with it:
 
@@ -26,7 +26,7 @@ Aggregate  (cost=922411.76..922411.77 rows=1 width=8)
         Filter: (visibility_level = ANY ('{0,20}'::integer[]))
 ```
 
-When using _just_ `EXPLAIN`, PostgreSQL won't actually execute our query,
+When using _just_ `EXPLAIN`, PostgreSQL does not actually execute our query,
 instead it produces an _estimated_ execution plan based on the available
 statistics. This means the actual plan can differ quite a bit. Fortunately,
 PostgreSQL provides us with the option to execute the query as well. To do so,
@@ -39,7 +39,7 @@ FROM projects
 WHERE visibility_level IN (0, 20);
 ```
 
-This will produce:
+This produces:
 
 ```sql
 Aggregate  (cost=922420.60..922420.61 rows=1 width=8) (actual time=3428.535..3428.535 rows=1 loops=1)
@@ -54,7 +54,7 @@ As we can see this plan is quite different, and includes a lot more data. Let's
 discuss this step by step.
 
 Because `EXPLAIN ANALYZE` executes the query, care should be taken when using a
-query that will write data or might time out. If the query modifies data,
+query that writes data or might time out. If the query modifies data,
 consider wrapping it in a transaction that rolls back automatically like so:
 
 ```sql
@@ -73,7 +73,7 @@ FROM projects
 WHERE visibility_level IN (0, 20);
 ```
 
-This will then produce:
+This then produces:
 
 ```sql
 Aggregate  (cost=922420.60..922420.61 rows=1 width=8) (actual time=3428.535..3428.535 rows=1 loops=1)
@@ -120,10 +120,10 @@ Aggregate  (cost=922411.76..922411.77 rows=1 width=8)
 Here the first node executed is `Seq scan on projects`. The `Filter:` is an
 additional filter applied to the results of the node. A filter is very similar
 to Ruby's `Array#select`: it takes the input rows, applies the filter, and
-produces a new list of rows. Once the node is done, we perform the `Aggregate`
+produces a new list of rows. After the node is done, we perform the `Aggregate`
 above it.
 
-Nested nodes will look like this:
+Nested nodes look like this:
 
 ```sql
 Aggregate  (cost=176.97..176.98 rows=1 width=8) (actual time=0.252..0.252 rows=1 loops=1)
@@ -152,7 +152,7 @@ number of rows produced, the number of loops performed, and more. For example:
 Seq Scan on projects  (cost=0.00..908044.47 rows=5746914 width=0)
 ```
 
-Here we can see that our cost ranges from `0.00..908044.47` (we'll cover this in
+Here we can see that our cost ranges from `0.00..908044.47` (we cover this in
 a moment), and we estimate (since we're using `EXPLAIN` and not `EXPLAIN
 ANALYZE`) a total of 5,746,914 rows to be produced by this node. The `width`
 statistics describes the estimated width of each row, in bytes.
@@ -171,7 +171,7 @@ The startup cost states how expensive it was to start the node, with the total
 cost describing how expensive the entire node was. In general: the greater the
 values, the more expensive the node.
 
-When using `EXPLAIN ANALYZE`, these statistics will also include the actual time
+When using `EXPLAIN ANALYZE`, these statistics also include the actual time
 (in milliseconds) spent, and other runtime statistics (for example, the actual number of
 produced rows):
 
@@ -183,7 +183,7 @@ Here we can see we estimated 5,746,969 rows to be returned, but in reality we
 returned 5,746,940 rows. We can also see that _just_ this sequential scan took
 2.98 seconds to run.
 
-Using `EXPLAIN (ANALYZE, BUFFERS)` will also give us information about the
+Using `EXPLAIN (ANALYZE, BUFFERS)` also gives us information about the
 number of rows removed by a filter, the number of buffers used, and more. For
 example:
 
@@ -242,7 +242,7 @@ retrieving lots of rows, so it's best to avoid these for large tables.
 
 A scan on an index that did not require fetching anything from the table. In
 certain cases an index only scan may still fetch data from the table, in this
-case the node will include a `Heap Fetches:` statistic.
+case the node includes a `Heap Fetches:` statistic.
 
 ### Index Scan
 
@@ -273,7 +273,7 @@ Sorts the input rows as specified using an `ORDER BY` statement.
 
 ### Nested Loop
 
-A nested loop will execute its child nodes for every row produced by a node that
+A nested loop executes its child nodes for every row produced by a node that
 precedes it. For example:
 
 ```sql
@@ -316,7 +316,7 @@ FROM users
 WHERE twitter != '';
 ```
 
-This will produce the following plan:
+This produces the following plan:
 
 ```sql
 Aggregate  (cost=845110.21..845110.22 rows=1 width=8) (actual time=1271.157..1271.158 rows=1 loops=1)
@@ -435,7 +435,7 @@ This index would only index the `email` value of rows that match `WHERE id <
 CREATE INDEX CONCURRENTLY twitter_test ON users (twitter) WHERE twitter != '';
 ```
 
-Once created, if we run our query again we will be given the following plan:
+After being created, if we run our query again we are given the following plan:
 
 ```sql
 Aggregate  (cost=1608.26..1608.27 rows=1 width=8) (actual time=19.821..19.821 rows=1 loops=1)
@@ -466,7 +466,7 @@ be used for comparison (for example, it depends a lot on the state of cache).
 When optimizing a query, we usually need to reduce the amount of data we're
 dealing with. Indexes are the way to work with fewer pages (buffers) to get the
 result, so, during optimization, look at the number of buffers used (read and hit),
-and work on reducing these numbers. Reduced timing will be the consequence of reduced
+and work on reducing these numbers. Reduced timing is the consequence of reduced
 buffer numbers. [Database Lab Engine](#database-lab-engine) guarantees that the plan is structurally
 identical to production (and overall number of buffers is the same as on production),
 but difference in cache state and I/O speed may lead to different timings.
@@ -508,8 +508,8 @@ index on `projects.visibility_level` to somehow turn this Sequential scan +
 filter into an index-only scan.
 
 Unfortunately, doing so is unlikely to improve anything. Contrary to what some
-might believe, an index being present _does not guarantee_ that PostgreSQL will
-actually use it. For example, when doing a `SELECT * FROM projects` it is much
+might believe, an index being present _does not guarantee_ that PostgreSQL
+actually uses it. For example, when doing a `SELECT * FROM projects` it is much
 cheaper to just scan the entire table, instead of using an index and then
 fetching data from the table. In such cases PostgreSQL may decide to not use an
 index.
@@ -539,7 +539,7 @@ For GitLab.com this produces:
 Here the total number of projects is 5,811,804, and 5,746,126 of those are of
 level 0 or 20. That's 98% of the entire table!
 
-So no matter what we do, this query will retrieve 98% of the entire table. Since
+So no matter what we do, this query retrieves 98% of the entire table. Since
 most time is spent doing exactly that, there isn't really much we can do to
 improve this query, other than _not_ running it at all.
 
@@ -589,7 +589,7 @@ Foreign-key constraints:
     "fk_rails_722ceba4f7" FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 ```
 
-Let's rewrite our query to JOIN this table onto our projects, and get the
+Let's rewrite our query to `JOIN` this table onto our projects, and get the
 projects for a specific user:
 
 ```sql
@@ -604,7 +604,7 @@ AND user_interacted_projects.user_id = 1;
 What we do here is the following:
 
 1. Get our projects.
-1. INNER JOIN `user_interacted_projects`, meaning we're only left with rows in
+1. `INNER JOIN` `user_interacted_projects`, meaning we're only left with rows in
    `projects` that have a corresponding row in `user_interacted_projects`.
 1. Limit this to the projects with `visibility_level` of 0 or 20, and to
    projects that the user with ID 1 interacted with.
@@ -765,7 +765,7 @@ The web interface comes with the following execution plan visualizers included:
 
 #### Tips & Tricks
 
-The database connection is now maintained during your whole session, so you can use `exec set ...` for any session variables (such as `enable_seqscan` or `work_mem`). These settings will be applied to all subsequent commands until you reset them. For example you can disable parallel queries with
+The database connection is now maintained during your whole session, so you can use `exec set ...` for any session variables (such as `enable_seqscan` or `work_mem`). These settings are applied to all subsequent commands until you reset them. For example you can disable parallel queries with
 
 ```sql
 exec SET max_parallel_workers_per_gather = 0

@@ -11,7 +11,7 @@ This document describes various guidelines to follow when optimizing SQL queries
 When you are optimizing your SQL queries, there are two dimensions to pay attention to:
 
 1. The query execution time. This is paramount as it reflects how the user experiences GitLab.
-1. The query plan. Optimizing the query plan is important in allowing queries to independently scale over time. Realizing that an index will keep a query performing well as the table grows before the query degrades is an example of why we analyze these plans.
+1. The query plan. Optimizing the query plan is important in allowing queries to independently scale over time. Realizing that an index keeps a query performing well as the table grows before the query degrades is an example of why we analyze these plans.
 
 ## Timing guidelines for queries
 
@@ -39,9 +39,9 @@ cache, or what PostgreSQL calls shared buffers. This is the "warm cache" query.
 When analyzing an [`EXPLAIN` plan](understanding_explain_plans.md), you can see
 the difference not only in the timing, but by looking at the output for `Buffers`
 by running your explain with `EXPLAIN(analyze, buffers)`. [Database Lab](understanding_explain_plans.md#database-lab-engine)
-will automatically include these options.
+automatically includes these options.
 
-If you are making a warm cache query, you will only see the `shared hits`.
+If you are making a warm cache query, you see only the `shared hits`.
 
 For example in #database-lab:
 
@@ -57,7 +57,7 @@ Or in the explain plan from `psql`:
 Buffers: shared hit=7323
 ```
 
-If the cache is cold, you will also see `reads`.
+If the cache is cold, you also see `reads`.
 
 In #database-lab:
 

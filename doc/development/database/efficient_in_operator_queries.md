@@ -26,7 +26,7 @@ Pagination may be used to fetch subsequent records.
 Example tasks requiring querying nested domain objects from the group level:
 
 - Show first 20 issues by creation date or due date from the group `gitlab-org`.
-- Show first 20 merge_requests by merged at date from the group `gitlab-com`.
+- Show first 20 merge requests by merged at date from the group `gitlab-com`.
 
 Unfortunately, ordered group-level queries typically perform badly
 as their executions require heavy I/O, memory, and computations.
@@ -877,7 +877,7 @@ this cursor would be (`2020-01-05`, `3`) for `project_id=9`.
 
 ### Initializing the recursive CTE query
 
-For the initial recursive query, we'll need to produce exactly one row, we call this the
+For the initial recursive query, we need to produce exactly one row, we call this the
 initializer query (`initializer_query`).
 
 Use `ARRAY_AGG` function to compact the initial result set into a single row

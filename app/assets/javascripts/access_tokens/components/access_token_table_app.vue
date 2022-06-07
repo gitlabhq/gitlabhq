@@ -1,24 +1,23 @@
 <script>
-import { GlButton, GlIcon, GlLink, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { __, s__, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
-
-const FORM_SELECTOR = '#js-new-access-token-form';
-const SUCCESS_EVENT = 'ajax:success';
+import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from './constants';
 
 export default {
-  FORM_SELECTOR,
-  SUCCESS_EVENT,
+  EVENT_SUCCESS,
+  PAGE_SIZE,
   name: 'AccessTokenTableApp',
   components: {
     DomElementListener,
     GlButton,
     GlIcon,
     GlLink,
+    GlPagination,
     GlTable,
     TimeAgoTooltip,
     UserDate,
@@ -39,58 +38,6 @@ export default {
     revokeButton: __('Revoke'),
     tokenValidity: __('Token valid until revoked'),
   },
-  fields: [
-    {
-      key: 'name',
-      label: __('Token name'),
-      sortable: true,
-      tdClass: `gl-text-black-normal`,
-      thClass: `gl-text-black-normal`,
-    },
-    {
-      formatter(scopes) {
-        return scopes?.length ? scopes.join(', ') : __('no scopes selected');
-      },
-      key: 'scopes',
-      label: __('Scopes'),
-      sortable: true,
-      tdClass: `gl-text-black-normal`,
-      thClass: `gl-text-black-normal`,
-    },
-    {
-      key: 'createdAt',
-      label: s__('AccessTokens|Created'),
-      sortable: true,
-      tdClass: `gl-text-black-normal`,
-      thClass: `gl-text-black-normal`,
-    },
-    {
-      key: 'lastUsedAt',
-      label: __('Last Used'),
-      sortable: true,
-      tdClass: `gl-text-black-normal`,
-      thClass: `gl-text-black-normal`,
-    },
-    {
-      key: 'expiresAt',
-      label: __('Expires'),
-      sortable: true,
-      tdClass: `gl-text-black-normal`,
-      thClass: `gl-text-black-normal`,
-    },
-    {
-      key: 'role',
-      label: __('Role'),
-      tdClass: `gl-text-black-normal`,
-      thClass: `gl-text-black-normal`,
-      sortable: true,
-    },
-    {
-      key: 'action',
-      label: __('Action'),
-      thClass: `gl-text-black-normal`,
-    },
-  ],
   inject: [
     'accessTokenType',
     'accessTokenTypePlural',
@@ -101,13 +48,15 @@ export default {
   data() {
     return {
       activeAccessTokens: this.initialActiveAccessTokens,
+      currentPage: INITIAL_PAGE,
     };
   },
   computed: {
     filteredFields() {
-      return this.showRole
-        ? this.$options.fields
-        : this.$options.fields.filter((field) => field.key !== 'role');
+      return this.showRole ? FIELDS : FIELDS.filter((field) => field.key !== 'role');
+    },
+    formSelector() {
+      return `#${FORM_SELECTOR}`;
     },
     header() {
       return sprintf(this.$options.i18n.header, {
@@ -120,11 +69,15 @@ export default {
         accessTokenType: this.accessTokenType,
       });
     },
+    showPagination() {
+      return this.activeAccessTokens.length > PAGE_SIZE;
+    },
   },
   methods: {
     onSuccess(event) {
       const [{ active_access_tokens: activeAccessTokens }] = event.detail;
       this.activeAccessTokens = convertObjectPropsToCamelCase(activeAccessTokens, { deep: true });
+      this.currentPage = INITIAL_PAGE;
     },
     sortingChanged(aRow, bRow, key) {
       if (['createdAt', 'lastUsedAt', 'expiresAt'].includes(key)) {
@@ -144,7 +97,7 @@ export default {
 </script>
 
 <template>
-  <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.SUCCESS_EVENT]="onSuccess">
+  <dom-element-listener :selector="formSelector" @[$options.EVENT_SUCCESS]="onSuccess">
     <div>
       <hr />
       <h5>{{ header }}</h5>
@@ -154,6 +107,8 @@ export default {
         :empty-text="noActiveTokensMessage"
         :fields="filteredFields"
         :items="activeAccessTokens"
+        :per-page="$options.PAGE_SIZE"
+        :current-page="currentPage"
         :sort-compare="sortingChanged"
         show-empty
       >
@@ -199,6 +154,17 @@ export default {
           />
         </template>
       </gl-table>
+      <gl-pagination
+        v-if="showPagination"
+        v-model="currentPage"
+        :per-page="$options.PAGE_SIZE"
+        :total-items="activeAccessTokens.length"
+        :prev-text="__('Prev')"
+        :next-text="__('Next')"
+        :label-next-page="__('Go to next page')"
+        :label-prev-page="__('Go to previous page')"
+        align="center"
+      />
     </div>
   </dom-element-listener>
 </template>

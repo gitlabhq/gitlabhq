@@ -30,8 +30,11 @@
 
 %h4.gl-mt-6= _('Request')
 %pre
-  :escaped
-    #{Gitlab::Json.pretty_generate(hook_log.request_data)}
+  - if hook_log.oversize?
+    = _('Request data is too large')
+  - else
+    :escaped
+      #{Gitlab::Json.pretty_generate(hook_log.request_data)}
 
 %h5= _('Headers')
 %pre

@@ -48,7 +48,9 @@ exceptions:
   - CVSS
   - DAG
   - DAST
+  - DDL
   - DHCP
+  - DML
   - DNS
   - DOM
   - DSA
@@ -151,6 +153,7 @@ exceptions:
   - POST
   - PROXY
   - PUT
+  - QPS
   - RAID
   - RAM
   - RBAC

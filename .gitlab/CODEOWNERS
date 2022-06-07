@@ -632,6 +632,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/topics/offline/index.md @axil
 /doc/topics/offline/quick_start_guide.md @axil
 /doc/topics/plan_and_track.md @msedlakjakubowski
+/doc/tutorials/ @kpaizee
 /doc/update/ @axil
 /doc/update/mysql_to_postgresql.md @aqualls
 /doc/update/upgrading_postgresql_using_slony.md @aqualls

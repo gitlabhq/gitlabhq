@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state do
   include StubRequests
 
+  let(:ellipsis) { '…' }
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:project_hook) { create(:project_hook, project: project) }
 
@@ -268,6 +269,20 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
     end
 
     context 'execution logging' do
+      let(:default_log_data) do
+        {
+          trigger: 'push_hooks',
+          url: project_hook.url,
+          request_headers: headers,
+          request_data: data,
+          response_body: 'Success',
+          response_headers: {},
+          response_status: 200,
+          execution_duration: be > 0,
+          internal_error_message: nil
+        }
+      end
+
       context 'with success' do
         before do
           stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
@@ -280,7 +295,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
             expect(::WebHooks::LogExecutionWorker).not_to receive(:perform_async)
             expect(::WebHooks::LogExecutionService)
               .to receive(:new)
-              .with(hook: project_hook, log_data: Hash, response_category: :ok)
+              .with(hook: project_hook, log_data: default_log_data, response_category: :ok)
               .and_return(double(execute: nil))
 
             service_instance.execute
@@ -291,17 +306,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(
-                trigger: 'push_hooks',
-                url: project_hook.url,
-                request_headers: headers,
-                request_data: data,
-                response_body: 'Success',
-                response_headers: {},
-                response_status: 200,
-                execution_duration: be > 0,
-                internal_error_message: nil
-              ),
+              hash_including(default_log_data),
               :ok,
               nil
             )
@@ -328,15 +333,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
             .with(
               project_hook.id,
               hash_including(
-                trigger: 'push_hooks',
-                url: project_hook.url,
-                request_headers: headers,
-                request_data: data,
-                response_body: 'Bad request',
-                response_headers: {},
-                response_status: 400,
-                execution_duration: be > 0,
-                internal_error_message: nil
+                default_log_data.merge(
+                  response_body: 'Bad request',
+                  response_status: 400
+                )
               ),
               :failed,
               nil
@@ -356,15 +356,11 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
             .with(
               project_hook.id,
               hash_including(
-                trigger: 'push_hooks',
-                url: project_hook.url,
-                request_headers: headers,
-                request_data: data,
-                response_body: '',
-                response_headers: {},
-                response_status: 'internal error',
-                execution_duration: be > 0,
-                internal_error_message: 'Some HTTP Post error'
+                default_log_data.merge(
+                  response_body: '',
+                  response_status: 'internal error',
+                  internal_error_message: 'Some HTTP Post error'
+                )
               ),
               :error,
               nil
@@ -383,22 +379,136 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
           expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
             .with(
               project_hook.id,
-              hash_including(
-                trigger: 'push_hooks',
-                url: project_hook.url,
-                request_headers: headers,
-                request_data: data,
-                response_body: '',
-                response_headers: {},
-                response_status: 200,
-                execution_duration: be > 0,
-                internal_error_message: nil
-              ),
+              hash_including(default_log_data.merge(response_body: '')),
               :ok,
               nil
             )
 
           service_instance.execute
+        end
+      end
+
+      context 'with oversize response body' do
+        let(:oversize_body) { 'a' * (described_class::RESPONSE_BODY_SIZE_LIMIT + 1) }
+        let(:stripped_body) { 'a' * (described_class::RESPONSE_BODY_SIZE_LIMIT - ellipsis.bytesize) + ellipsis }
+
+        before do
+          stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: oversize_body)
+        end
+
+        it 'queues LogExecutionWorker with stripped response_body' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(default_log_data.merge(response_body: stripped_body)),
+              :ok,
+              nil
+            )
+
+          service_instance.execute
+        end
+      end
+
+      context 'with massive amount of headers' do
+        let(:response_headers) do
+          (1..described_class::RESPONSE_HEADERS_COUNT_LIMIT + 1).to_a.to_h do |num|
+            ["header-#{num}", SecureRandom.hex(num)]
+          end
+        end
+
+        let(:expected_response_headers) do
+          (1..described_class::RESPONSE_HEADERS_COUNT_LIMIT).to_a.to_h do |num|
+            # Capitalized
+            ["Header-#{num}", response_headers["header-#{num}"]]
+          end
+        end
+
+        before do
+          stub_full_request(project_hook.url, method: :post).to_return(
+            status: 200, body: 'Success', headers: response_headers
+          )
+        end
+
+        it 'queues LogExecutionWorker with limited amount of headers' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(default_log_data.merge(response_headers: expected_response_headers)),
+              :ok,
+              nil
+            )
+
+          service_instance.execute
+        end
+      end
+
+      context 'with oversize header' do
+        let(:oversize_header) { 'a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT + 1) }
+        let(:stripped_header) { 'a' * (described_class::RESPONSE_HEADERS_SIZE_LIMIT - ellipsis.bytesize) + ellipsis }
+        let(:response_headers) { { 'oversized-header' => oversize_header } }
+        let(:expected_response_headers) { { 'Oversized-Header' => stripped_header } }
+
+        before do
+          stub_full_request(project_hook.url, method: :post).to_return(
+            status: 200, body: 'Success', headers: response_headers
+          )
+        end
+
+        it 'queues LogExecutionWorker with stripped header value' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(default_log_data.merge(response_headers: expected_response_headers)),
+              :ok,
+              nil
+            )
+
+          service_instance.execute
+        end
+      end
+
+      context 'with log data exceeding Sidekiq limit' do
+        before do
+          stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
+        end
+
+        it 'queues LogExecutionWorker with request_data overrided in the second attempt' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(default_log_data),
+              :ok,
+              nil
+            )
+            .and_raise(
+              Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError.new(WebHooks::LogExecutionWorker, 100, 50)
+            )
+            .ordered
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+            .with(
+              project_hook.id,
+              hash_including(default_log_data.merge(request_data: WebHookLog::OVERSIZE_REQUEST_DATA)),
+              :ok,
+              nil
+            )
+            .and_call_original
+            .ordered
+
+          service_instance.execute
+        end
+
+        context 'new log data still exceeds limit' do
+          before do
+            allow(WebHooks::LogExecutionWorker).to receive(:perform_async).and_raise(
+              Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError.new(WebHooks::LogExecutionWorker, 100, 50)
+            )
+          end
+
+          it 'raises an exception' do
+            expect do
+              service_instance.execute
+            end.to raise_error(Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError)
+          end
         end
       end
     end

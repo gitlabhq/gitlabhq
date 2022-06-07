@@ -515,13 +515,13 @@ referenced child tables.
 ### Database structure
 
 The feature relies on triggers installed on the parent tables. When a parent record is deleted,
-the trigger will automatically insert a new record into the `loose_foreign_keys_deleted_records`
+the trigger automatically inserts a new record into the `loose_foreign_keys_deleted_records`
 database table.
 
-The inserted record will store the following information about the deleted record:
+The inserted record stores the following information about the deleted record:
 
 - `fully_qualified_table_name`: name of the database table where the record was located.
-- `primary_key_value`: the ID of the record, the value will be present in the child tables as
+- `primary_key_value`: the ID of the record, the value is present in the child tables as
 the foreign key value. At the moment, composite primary keys are not supported, the parent table
 must have an `id` column.
 - `status`: defaults to pending, represents the status of the cleanup process.
@@ -532,7 +532,7 @@ several runs.
 
 #### Database decomposition
 
-The `loose_foreign_keys_deleted_records` table will exist on both database servers (Ci and Main)
+The `loose_foreign_keys_deleted_records` table exists on both database servers (`ci` and `main`)
 after the [database decomposition](https://gitlab.com/groups/gitlab-org/-/epics/6168). The worker
 ill determine which parent tables belong to which database by reading the
 `lib/gitlab/database/gitlab_schemas.yml` YAML file.
@@ -547,10 +547,10 @@ Example:
   - `ci_builds`
   - `ci_pipelines`
 
-When the worker is invoked for the Ci database, the worker will load deleted records only from the
+When the worker is invoked for the `ci` database, the worker loads deleted records only from the
 `ci_builds` and `ci_pipelines` tables. During the cleanup process, `DELETE` and `UPDATE` queries
-will mostly run on tables located in the Main database. In this example, one `UPDATE` query will
-nullify the `merge_requests.head_pipeline_id` column.
+mostly run on tables located in the Main database. In this example, one `UPDATE` query
+nullifies the `merge_requests.head_pipeline_id` column.
 
 #### Database partitioning
 
@@ -561,7 +561,7 @@ strategy was considered for the feature but due to the large data volume we deci
 new strategy.
 
 A deleted record is considered fully processed when all its direct children records have been
-cleaned up. When this happens, the loose foreign key worker will update the `status` column of
+cleaned up. When this happens, the loose foreign key worker updates the `status` column of
 the deleted record. After this step, the record is no longer needed.
 
 The sliding partitioning strategy provides an efficient way of cleaning up old, unused data by
@@ -591,7 +591,7 @@ Partitions: gitlab_partitions_dynamic.loose_foreign_keys_deleted_records_84 FOR 
 ```
 
 The `partition` column controls the insert direction, the `partition` value determines which
-partition will get the deleted rows inserted via the trigger. Notice that the default value of
+partition gets the deleted rows inserted via the trigger. Notice that the default value of
 the `partition` table matches with the value of the list partition (84). In `INSERT` query
 within the trigger the value of the `partition` is omitted, the trigger always relies on the
 default value of the column.
@@ -709,12 +709,12 @@ To mitigate these issues, several limits are applied when the worker runs.
 
 The limit rules are implemented in the `LooseForeignKeys::ModificationTracker` class. When one of
 the limits (record modification count, time limit) is reached the processing is stopped
-immediately. After some time, the next scheduled worker will continue the cleanup process.
+immediately. After some time, the next scheduled worker continues the cleanup process.
 
 #### Performance characteristics
 
 The database trigger on the parent tables will **decrease** the record deletion speed. Each
-statement that removes rows from the parent table will invoke the trigger to insert records
+statement that removes rows from the parent table invokes the trigger to insert records
 into the `loose_foreign_keys_deleted_records` table.
 
 The queries within the cleanup worker are fairly efficient index scans, with limits in place

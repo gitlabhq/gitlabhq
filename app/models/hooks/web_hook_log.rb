@@ -7,6 +7,8 @@ class WebHookLog < ApplicationRecord
   include CreatedAtFilterable
   include PartitionedTable
 
+  OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
+
   self.primary_key = :id
 
   partitioned_by :created_at, strategy: :monthly, retain_for: 3.months
@@ -39,6 +41,10 @@ class WebHookLog < ApplicationRecord
 
   def internal_error?
     response_status == WebHookService::InternalErrorResponse::ERROR_MESSAGE
+  end
+
+  def oversize?
+    request_data == OVERSIZE_REQUEST_DATA
   end
 
   private

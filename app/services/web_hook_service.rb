@@ -26,6 +26,12 @@ class WebHookService
   end
 
   REQUEST_BODY_SIZE_LIMIT = 25.megabytes
+  # Response body is for UI display only. It does not make much sense to save
+  # whatever the receivers throw back at us
+  RESPONSE_BODY_SIZE_LIMIT = 8.kilobytes
+  # The headers are for debugging purpose. They are displayed on the UI only.
+  RESPONSE_HEADERS_COUNT_LIMIT = 50
+  RESPONSE_HEADERS_SIZE_LIMIT = 1.kilobytes
 
   attr_accessor :hook, :data, :hook_name, :request_options
   attr_reader :uniqueness_token
@@ -141,7 +147,7 @@ class WebHookService
       execution_duration: execution_duration,
       request_headers: build_headers,
       request_data: data,
-      response_headers: format_response_headers(response),
+      response_headers: safe_response_headers(response),
       response_body: safe_response_body(response),
       response_status: response.code,
       internal_error_message: error_message
@@ -150,8 +156,21 @@ class WebHookService
     if @force # executed as part of test - run log-execution inline.
       ::WebHooks::LogExecutionService.new(hook: hook, log_data: log_data, response_category: category).execute
     else
-      ::WebHooks::LogExecutionWorker
-        .perform_async(hook.id, log_data, category, uniqueness_token)
+      queue_log_execution_with_retry(log_data, category)
+    end
+  end
+
+  def queue_log_execution_with_retry(log_data, category)
+    retried = false
+    begin
+      ::WebHooks::LogExecutionWorker.perform_async(hook.id, log_data, category, uniqueness_token)
+    rescue Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError
+      raise if retried
+
+      # Strip request data
+      log_data[:request_data] = ::WebHookLog::OVERSIZE_REQUEST_DATA
+      retried = true
+      retry
     end
   end
 
@@ -181,14 +200,19 @@ class WebHookService
   # Make response headers more stylish
   # Net::HTTPHeader has downcased hash with arrays: { 'content-type' => ['text/html; charset=utf-8'] }
   # This method format response to capitalized hash with strings: { 'Content-Type' => 'text/html; charset=utf-8' }
-  def format_response_headers(response)
-    response.headers.each_capitalized.to_h
+  # rubocop:disable Style/HashTransformValues
+  def safe_response_headers(response)
+    response.headers.each_capitalized.first(RESPONSE_HEADERS_COUNT_LIMIT).to_h do |header_key, header_value|
+      [enforce_utf8(header_key), string_size_limit(enforce_utf8(header_value), RESPONSE_HEADERS_SIZE_LIMIT)]
+    end
   end
+  # rubocop:enable Style/HashTransformValues
 
   def safe_response_body(response)
     return '' unless response.body
 
-    response.body.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+    response_body = enforce_utf8(response.body)
+    string_size_limit(response_body, RESPONSE_BODY_SIZE_LIMIT)
   end
 
   def rate_limited?
@@ -228,5 +252,13 @@ class WebHookService
       recursion_detection: ::Gitlab::WebHooks::RecursionDetection.to_log(hook),
       **Gitlab::ApplicationContext.current
     )
+  end
+
+  def string_size_limit(str, limit)
+    str.truncate_bytes(limit)
+  end
+
+  def enforce_utf8(str)
+    Gitlab::EncodingHelper.encode_utf8(str)
   end
 end

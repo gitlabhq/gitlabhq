@@ -319,6 +319,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'JiraConnect::SyncMergeRequestWorker' => 3,
         'JiraConnect::SyncProjectWorker' => 3,
         'LdapGroupSyncWorker' => 3,
+        'Licenses::ResetSubmitLicenseUsageDataBannerWorker' => 13,
         'MailScheduler::IssueDueWorker' => 3,
         'MailScheduler::NotificationServiceWorker' => 3,
         'MembersDestroyer::UnassignIssuablesWorker' => 3,

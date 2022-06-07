@@ -339,6 +339,11 @@ The order of the items in `stages` defines the execution order for jobs:
 - Jobs in the same stage run in parallel.
 - Jobs in the next stage run after the jobs from the previous stage complete successfully.
 
+If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
+There must be at least one other job in a different stage. `.pre` and `.post` stages
+can be used in [required pipeline configuration](../../user/admin_area/settings/continuous_integration.md#required-pipeline-configuration)
+to define compliance jobs that must run before or after project pipeline jobs.
+
 **Keyword type**: Global keyword.
 
 **Example of `stages`**:
@@ -3510,7 +3515,8 @@ Use the `.pre` stage to make a job run at the start of a pipeline. `.pre` is
 always the first stage in a pipeline. User-defined stages execute after `.pre`.
 You do not have to define `.pre` in [`stages`](#stages).
 
-You must have a job in at least one stage other than `.pre` or `.post`.
+If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
+There must be at least one other job in a different stage.
 
 **Keyword type**: You can only use it with a job's `stage` keyword.
 
@@ -3545,7 +3551,8 @@ Use the `.post` stage to make a job run at the end of a pipeline. `.post`
 is always the last stage in a pipeline. User-defined stages execute before `.post`.
 You do not have to define `.post` in [`stages`](#stages).
 
-You must have a job in at least one stage other than `.pre` or `.post`.
+If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
+There must be at least one other job in a different stage.
 
 **Keyword type**: You can only use it with a job's `stage` keyword.
 

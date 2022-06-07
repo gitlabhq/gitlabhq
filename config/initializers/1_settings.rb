@@ -775,6 +775,9 @@ Gitlab.ee do
   Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron'] ||= Settingslogic.new({})
   Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['cron'] ||= '30 * * * *'
   Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['job_class'] = 'Ci::Runners::StaleGroupRunnersPruneCronWorker'
+  Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner'] ||= Settingslogic.new({})
+  Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['cron'] ||= "0 0 * * *"
+  Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['job_class'] = 'Licenses::ResetSubmitLicenseUsageDataBannerWorker'
 end
 
 #

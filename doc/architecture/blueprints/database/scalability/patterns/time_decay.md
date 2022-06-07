@@ -71,7 +71,7 @@ The second and most important characteristic of time-decay data is that most of 
 able to implicitly or explicitly access the data using a date filter,
 **restricting our results based on a time-related dimension**.
 
-There can be many such dimensions, but we are only going to focus on the creation date as it is both
+There can be many such dimensions, but we focus only on the creation date as it is both
 the most commonly used, and the one that we can control and optimize against. It:
 
 - Is immutable.

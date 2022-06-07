@@ -253,6 +253,33 @@ work in every repository. They can only be re-enabled by an administrator user o
 
 ![Mirror settings](img/mirror_settings.png)
 
+## Configure globally-allowed IP address ranges
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87579) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `group_ip_restrictions_allow_global`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available
+per group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md)
+named `group_ip_restrictions_allow_global`.
+On GitLab.com, this feature is available.
+
+This setting allows you to set IP address ranges to be combined with group-level IP allowlists.
+It helps administrators prevent aspects of the GitLab installation from being blocked
+from working as intended when an IP allowlist is used.
+
+For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, specify that range in this
+field, as otherwise any group-level restrictions that don't include that range cause the Pages
+daemon to be unable to fetch artifacts from the pipeline runs.
+
+To add a IP address range to the group-level allowlist:
+
+1. Sign in to GitLab as a user with Administrator access level.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. In **Globally-allowed IP ranges**, provide a value.
+1. Select **Save changes**.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

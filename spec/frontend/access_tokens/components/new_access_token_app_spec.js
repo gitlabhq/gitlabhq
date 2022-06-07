@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
+import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { __, sprintf } from '~/locale';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
@@ -22,20 +23,18 @@ describe('~/access_tokens/components/new_access_token_app', () => {
   };
 
   const triggerSuccess = async (newToken = 'new token') => {
-    wrapper
-      .find(DomElementListener)
-      .vm.$emit('ajax:success', { detail: [{ new_token: newToken }] });
+    wrapper.find(DomElementListener).vm.$emit(EVENT_SUCCESS, { detail: [{ new_token: newToken }] });
     await nextTick();
   };
 
   const triggerError = async (errors = ['1', '2']) => {
-    wrapper.find(DomElementListener).vm.$emit('ajax:error', { detail: [{ errors }] });
+    wrapper.find(DomElementListener).vm.$emit(EVENT_ERROR, { detail: [{ errors }] });
     await nextTick();
   };
 
   beforeEach(() => {
     // NewAccessTokenApp observes a form element
-    setHTMLFixture('<form id="js-new-access-token-form"><input type="submit"/></form>');
+    setHTMLFixture(`<form id="${FORM_SELECTOR}"><input type="submit"/></form>`);
 
     createComponent();
   });

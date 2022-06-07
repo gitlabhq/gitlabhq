@@ -48,7 +48,7 @@ records = [MyModel.new, ...]
 MyModel.bulk_insert!(records)
 ```
 
-Note that calls to `bulk_insert!` will always attempt to insert _new records_. If instead
+Calls to `bulk_insert!` always attempt to insert _new records_. If instead
 you would like to replace existing records with new values, while still inserting those
 that do not already exist, then you can use `bulk_upsert!`:
 
@@ -59,9 +59,9 @@ MyModel.bulk_upsert!(records, unique_by: [:name])
 ```
 
 In this example, `unique_by` specifies the columns by which records are considered to be
-unique and as such will be updated if they existed prior to insertion. For example, if
+unique and as such are updated if they existed prior to insertion. For example, if
 `existing_model` has a `name` attribute, and if a record with the same `name` value already
-exists, its fields will be updated with those of `existing_model`.
+exists, its fields are updated with those of `existing_model`.
 
 The `unique_by` parameter can also be passed as a `Symbol`, in which case it specifies
 a database index by which a column is considered unique:
@@ -72,8 +72,8 @@ MyModel.bulk_insert!(records, unique_by: :index_on_name)
 
 ### Record validation
 
-The `bulk_insert!` method guarantees that `records` will be inserted transactionally, and
-will run validations on each record prior to insertion. If any record fails to validate,
+The `bulk_insert!` method guarantees that `records` are inserted transactionally, and
+runs validations on each record prior to insertion. If any record fails to validate,
 an error is raised and the transaction is rolled back. You can turn off validations via
 the `:validate` option:
 
@@ -83,7 +83,7 @@ MyModel.bulk_insert!(records, validate: false)
 
 ### Batch size configuration
 
-In those cases where the number of `records` is above a given threshold, insertions will
+In those cases where the number of `records` is above a given threshold, insertions
 occur in multiple batches. The default batch size is defined in
 [`BulkInsertSafe::DEFAULT_BATCH_SIZE`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/bulk_insert_safe.rb).
 Assuming a default threshold of 500, inserting 950 records
@@ -95,7 +95,7 @@ MyModel.bulk_insert!(records, batch_size: 100)
 ```
 
 Assuming the same number of 950 records, this would result in 10 batches being written instead.
-Since this will also affect the number of `INSERT`s that occur, make sure you measure the
+Since this also affects the number of `INSERT` statements that occur, make sure you measure the
 performance impact this might have on your code. There is a trade-off between the number of
 `INSERT` statements the database has to process and the size and cost of each `INSERT`.
 
@@ -127,7 +127,7 @@ records are inserted in bulk, we currently prevent their use.
 The specifics around which callbacks are explicitly allowed are defined in
 [`BulkInsertSafe`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/bulk_insert_safe.rb).
 Consult the module source code for details. If your class uses callbacks that are not explicitly designated
-safe and you `include BulkInsertSafe` the application will fail with an error.
+safe and you `include BulkInsertSafe` the application fails with an error.
 
 ### `BulkInsertSafe` versus `InsertAll`
 
@@ -155,7 +155,7 @@ owner = OwnerModel.new(owned_relations: array_of_owned_relations)
 owner.save!
 ```
 
-This will issue a single `INSERT`, and transaction, for every record in `owned_relations`, which is inefficient if
+This issues a single `INSERT`, and transaction, for every record in `owned_relations`, which is inefficient if
 `array_of_owned_relations` is large. To remedy this, the `BulkInsertableAssociations` concern can be
 used to declare that the owner defines associations that are safe for bulk insertion:
 
@@ -180,8 +180,8 @@ BulkInsertableAssociations.with_bulk_insert do
 end
 ```
 
-Note that you can still save relations that are not `BulkInsertSafe` in this block; they will
-simply be treated as if you had invoked `save` from outside the block.
+You can still save relations that are not `BulkInsertSafe` in this block; they
+simply are treated as if you had invoked `save` from outside the block.
 
 ## Known limitations
 
@@ -192,5 +192,5 @@ There are a few restrictions to how these APIs can be used:
   - It does not yet support `has_many through: ...` relations.
 
 Moreover, input data should either be limited to around 1000 records at most,
-or already batched prior to calling bulk insert. The `INSERT` statement will run in a single
+or already batched prior to calling bulk insert. The `INSERT` statement runs in a single
 transaction, so for large amounts of records it may negatively affect database stability.

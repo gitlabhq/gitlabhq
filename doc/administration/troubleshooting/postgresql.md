@@ -67,7 +67,7 @@ This section is for links to information elsewhere in the GitLab documentation.
   - Required extension: `btree_gist`
 
 - Errors like this in the `production/sidekiq` log; see:
-  [Set default_transaction_isolation into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed):
+  [Set `default_transaction_isolation` into read committed](https://docs.gitlab.com/omnibus/settings/database.html#set-default_transaction_isolation-into-read-committed):
 
   ```plaintext
   ActiveRecord::StatementInvalid PG::TRSerializationFailure: ERROR:  could not serialize access due to concurrent update
@@ -138,7 +138,11 @@ idle_in_transaction_session_timeout = 60s
 
 Quoting from issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528):
 
+<!-- vale gitlab.FutureTense = NO -->
+
 > "If a deadlock is hit, and we resolve it through aborting the transaction after a short period, then the retry mechanisms we already have will make the deadlocked piece of work try again, and it's unlikely we'll deadlock multiple times in a row."
+
+<!-- vale gitlab.FutureTense = YES -->
 
 NOTE:
 In Support, our general approach to reconfiguring timeouts (applies also to the
@@ -148,9 +152,9 @@ problem more completely, implement a hot fix, or make some other change that
 addresses the root cause. Generally, the timeouts should be put back to
 reasonable defaults after the root cause is resolved.
 
-In this case, the guidance we had from development was to drop deadlock_timeout
-or statement_timeout, but to leave the third setting at 60s. Setting
-idle_in_transaction protects the database from sessions potentially hanging for
+In this case, the guidance we had from development was to drop `deadlock_timeout`
+or `statement_timeout`, but to leave the third setting at 60 seconds. Setting
+`idle_in_transaction` protects the database from sessions potentially hanging for
 days. There's more discussion in [the issue relating to introducing this timeout on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1053).
 
 PostgresSQL defaults:
@@ -161,7 +165,7 @@ PostgresSQL defaults:
 Comments in issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 indicate that these should both be set to at least a number of minutes for all
 Omnibus GitLab installations (so they don't hang indefinitely). However, 15s
-for statement_timeout is very short, and will only be effective if the
+for `statement_timeout` is very short, and is only effective if the
 underlying infrastructure is very performant.
 
 See current settings with:

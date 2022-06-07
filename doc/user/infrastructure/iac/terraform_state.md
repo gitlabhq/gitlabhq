@@ -119,7 +119,7 @@ You can use a GitLab-managed Terraform state backend as a
 
    variable "example_access_token" {
      type = string
-     description = "Gitlab acess token to query remote state"
+     description = "GitLab access token to query remote state"
    }
    ```
 
