@@ -304,6 +304,9 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=p
 
 #### Skipping tar creation
 
+NOTE:
+It is not possible to skip the tar creation when using [object storage](#uploading-backups-to-a-remote-cloud-storage) for backups.
+
 The last part of creating a backup is generation of a `.tar` file containing
 all the parts. In some cases (for example, if the backup is picked up by other
 backup software) creating a `.tar` file might be wasted effort or even directly
@@ -450,6 +453,9 @@ For example, to back up all repositories for all projects in **Group A** (`group
   ```
 
 #### Uploading backups to a remote (cloud) storage
+
+NOTE:
+It is not possible to [skip the tar creation](#skipping-tar-creation) when using object storage for backups.
 
 You can let the backup script upload (using the [Fog library](https://fog.io/))
 the `.tar` file it creates. In the following example, we use Amazon S3 for

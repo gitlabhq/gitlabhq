@@ -32,3 +32,5 @@ module SpammableActions::CaptchaCheck::HtmlFormatActionsSupport
     request.headers['X-GitLab-Spam-Log-Id'] = params[:spam_log_id] if params[:spam_log_id]
   end
 end
+
+SpammableActions::CaptchaCheck::HtmlFormatActionsSupport.prepend_mod

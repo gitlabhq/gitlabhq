@@ -140,6 +140,16 @@ class WebHook < ApplicationRecord
     { related_class: type }
   end
 
+  def alert_status
+    if temporarily_disabled?
+      :temporarily_disabled
+    elsif permanently_disabled?
+      :disabled
+    else
+      :executable
+    end
+  end
+
   private
 
   def web_hooks_disable_failed?

@@ -407,6 +407,13 @@ of the fields at once. For example:
 
 Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
 
+## filter
+
+When you are viewing a list of items, like issues or merge requests, you filter the list by
+the available attributes. For example, you might filter by assignee or reviewer.
+
+Filtering is different from [searching](#search).
+
 ## foo
 
 Do not use **foo** in product documentation. You can use it in our API and contributor documentation, but try to use a clearer and more meaningful example instead.
@@ -862,6 +869,13 @@ Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../
 Do not use **scalability** when talking about increasing GitLab performance for additional users. The words scale or scaling
 are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers
 to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page.
+
+## search
+
+When you search, you type a string in the search box on the top bar.
+The search results are displayed on a search page.
+
+Searching is different from [filtering](#filter).
 
 ## section
 

@@ -31262,9 +31262,6 @@ msgstr ""
 msgid "Refresh the page and try again."
 msgstr ""
 
-msgid "Refresh the page in a few minutes to view usage."
-msgstr ""
-
 msgid "Refreshing in a second to show the updated status..."
 msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
@@ -32186,13 +32183,13 @@ msgstr ""
 msgid "Repository size limit (MB)"
 msgstr ""
 
-msgid "Repository size recalculation started"
-msgstr ""
-
 msgid "Repository storage"
 msgstr ""
 
 msgid "Repository update events"
+msgstr ""
+
+msgid "Repository usage recalculation started"
 msgstr ""
 
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
@@ -39752,6 +39749,9 @@ msgid "To use the system's default, set this value to 0."
 msgstr ""
 
 msgid "To view all %{scannedResourcesCount} scanned URLs, %{linkStart}please download the CSV file%{linkEnd}"
+msgstr ""
+
+msgid "To view usage, refresh this page in a few minutes."
 msgstr ""
 
 msgid "To widen your search, change or remove filters above"

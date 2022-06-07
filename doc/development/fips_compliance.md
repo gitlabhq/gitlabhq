@@ -301,7 +301,7 @@ all:
     gitlab_charts_custom_config_file: '/path/to/gitlab-environment-toolkit/ansible/environments/gitlab-10k/inventory/charts.yml'
 ```
 
-Now create `charts.yml` in the location specified above and specify tags with a `-ubi8` suffix. For example:
+Now create `charts.yml` in the location specified above and specify tags with a `-fips` suffix. For example:
 
 ```yaml
 global:
@@ -309,35 +309,38 @@ global:
     pullPolicy: Always
   certificates:
     image:
-      tag: master-ubi8
+      tag: master-fips
+  kubectl:
+    image:
+      tag: master-fips
 
 gitlab:
   gitaly:
     image:
-      tag: master-ubi8
+      tag: master-fips
   gitlab-exporter:
     image:
-      tag: master-ubi8
+      tag: master-fips
   gitlab-shell:
     image:
-      tag: main-ubi8 # The default branch is main, not master
+      tag: main-fips # The default branch is main, not master
   gitlab-mailroom:
     image:
-      tag: master-ubi8
+      tag: master-fips
   migrations:
     image:
-      tag: master-ubi8
+      tag: master-fips
   sidekiq:
     image:
-      tag: master-ubi8
+      tag: master-fips
   toolbox:
     image:
-      tag: master-ubi8
+      tag: master-fips
   webservice:
     image:
-      tag: master-ubi8
+      tag: master-fips
     workhorse:
-      tag: master-ubi8
+      tag: master-fips
 
 nginx-ingress:
   controller:
@@ -353,41 +356,44 @@ See [this issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3153#note_
 how to build NGINX and the Ingress Controller.
 
 You can also use release tags, but the versioning is tricky because each
-component may use its own versioning scheme. For example, for GitLab v14.10:
+component may use its own versioning scheme. For example, for GitLab v15.1:
 
 ```yaml
 global:
   certificates:
     image:
-      tag: 20191127-r2-ubi8
+      tag: 20211220-r0-fips
+  kubectl:
+    image:
+      tag: 1.18.20-fips
 
 gitlab:
   gitaly:
     image:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
   gitlab-exporter:
     image:
-      tag: 11.14.0-ubi8
+      tag: 11.15.2-fips
   gitlab-shell:
     image:
-      tag: v13.25.1-ubi8
+      tag: v15.1.0-fips
   gitlab-mailroom:
     image:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
   migrations:
     image:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
   sidekiq:
     image:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
   toolbox:
     image:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
   webservice:
     image:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
     workhorse:
-      tag: v14.10.0-ubi8
+      tag: v15.1.0-fips
 ```
 
 ## Verify FIPS

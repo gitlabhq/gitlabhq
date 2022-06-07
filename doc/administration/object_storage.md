@@ -541,6 +541,10 @@ supported by consolidated configuration form, refer to the following guides:
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
 | [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
 
+WARNING:
+The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated configuration is not supported. 
+You may start getting [ETag mismatch errors](#etag-mismatch) if you use it.
+
 ### Other alternatives to file system storage
 
 If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,

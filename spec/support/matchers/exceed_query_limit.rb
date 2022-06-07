@@ -121,13 +121,27 @@ module ExceedQueryLimitHelpers
       end
     end
 
-    unless @show_common_queries
-      combined_counts = combined_counts.transform_values do |suffs|
-        suffs.reject { |_k, counts| counts.first == counts.second }
-      end
-    end
+    reject_groups_with_matching_counts(combined_counts)
+  end
 
-    combined_counts.reject { |_prefix, suffs| suffs.empty? }
+  def reject_groups_with_matching_counts(combined_counts)
+    return combined_counts if @show_common_queries
+
+    combined_counts
+      .transform_values { select_suffixes_with_diffs(_1) }
+      .reject { |_prefix, suffs| suffs.empty? }
+  end
+
+  def select_suffixes_with_diffs(suffs)
+    # reject when count in LHS is the same as count in RHS
+    suffs = suffs.reject { |_k, counts| counts.first == counts.second }
+
+    # Reject common case of N queries on LHS and N on right, but with different parameters
+    # accepts as equivalent if a == [0, 1] and b == [1, 0], for example
+    keys = suffs.keys
+    return {} if keys.size == 2 && suffs[keys.first] == suffs[keys.second].reverse
+
+    suffs
   end
 
   def diff_query_group_message(query, suffixes)
@@ -141,7 +155,7 @@ module ExceedQueryLimitHelpers
   def log_message
     if expected.is_a?(ActiveRecord::QueryRecorder)
       diff_counts = diff_query_counts(count_queries(expected), count_queries(@recorder))
-      sections = diff_counts.map { |q, suffixes| diff_query_group_message(q, suffixes) }
+      sections = diff_counts.filter_map { |q, suffixes| diff_query_group_message(q, suffixes) }
 
       <<~MSG
       Query Diff:

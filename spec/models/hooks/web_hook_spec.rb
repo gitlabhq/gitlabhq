@@ -497,4 +497,26 @@ RSpec.describe WebHook do
       end
     end
   end
+
+  describe '#alert_status' do
+    subject(:status) { hook.alert_status }
+
+    it { is_expected.to eq :executable }
+
+    context 'when hook has been disabled' do
+      before do
+        hook.disable!
+      end
+
+      it { is_expected.to eq :disabled }
+    end
+
+    context 'when hook has been backed off' do
+      before do
+        hook.disabled_until = 1.hour.from_now
+      end
+
+      it { is_expected.to eq :temporarily_disabled }
+    end
+  end
 end

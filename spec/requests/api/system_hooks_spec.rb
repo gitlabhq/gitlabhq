@@ -44,6 +44,8 @@ RSpec.describe API::SystemHooks do
         expect(json_response.first['merge_requests_events']).to be false
         expect(json_response.first['repository_update_events']).to be true
         expect(json_response.first['enable_ssl_verification']).to be true
+        expect(json_response.first['disabled_until']).to be nil
+        expect(json_response.first['alert_status']).to eq 'executable'
       end
     end
   end
@@ -79,8 +81,41 @@ RSpec.describe API::SystemHooks do
           'tag_push_events' => be(hook.tag_push_events),
           'merge_requests_events' => be(hook.merge_requests_events),
           'repository_update_events' => be(hook.repository_update_events),
-          'enable_ssl_verification' => be(hook.enable_ssl_verification)
+          'enable_ssl_verification' => be(hook.enable_ssl_verification),
+          'alert_status' => eq(hook.alert_status.to_s),
+          'disabled_until' => eq(hook.disabled_until&.iso8601(3))
         )
+      end
+
+      context 'the hook is disabled' do
+        before do
+          hook.disable!
+        end
+
+        it "has the correct alert status", :aggregate_failures do
+          get api("/hooks/#{hook.id}", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/system_hook')
+          expect(json_response).to include('alert_status' => 'disabled')
+        end
+      end
+
+      context 'the hook is backed-off' do
+        before do
+          hook.backoff!
+        end
+
+        it "has the correct alert status", :aggregate_failures do
+          get api("/hooks/#{hook.id}", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/system_hook')
+          expect(json_response).to include(
+            'alert_status' => 'temporarily_disabled',
+            'disabled_until' => hook.disabled_until.iso8601(3)
+          )
+        end
       end
 
       it 'returns 404 if the system hook does not exist' do

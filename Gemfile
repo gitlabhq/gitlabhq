@@ -344,7 +344,7 @@ gem 'prometheus-client-mmap', '~> 0.15.0', require: 'prometheus/client'
 gem 'warning', '~> 1.2.0'
 
 group :development do
-  gem 'lefthook', '~> 0.7.0', require: false
+  gem 'lefthook', '~> 0.8.0', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.44.3', require: false
 

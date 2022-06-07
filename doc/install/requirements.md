@@ -13,15 +13,7 @@ the minimum requirements needed to install and use GitLab.
 
 ### Supported Linux distributions
 
-- Ubuntu (18.04/20.04)
-- Debian (9/10/11)
-- AlmaLinux (8)
-- CentOS (7)
-- openSUSE Leap (15.3)
-- SUSE Linux Enterprise Server (12 SP2/12 SP5)
-- Red Hat Enterprise Linux (use the AlmaLinux or CentOS instructions)
-- Scientific Linux (use the CentOS instructions)
-- Oracle Linux (use the CentOS instructions)
+See the [list of supported operating systems](../administration/package_information/supported_os.md#supported-operating-systems).
 
 For the installation options, see [the main installation page](index.md).
 

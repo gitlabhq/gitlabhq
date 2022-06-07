@@ -28090,6 +28090,8 @@ CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_rep
 
 CREATE INDEX index_group_wiki_repositories_on_shard_id ON group_wiki_repositories USING btree (shard_id);
 
+CREATE INDEX index_groups_on_parent_id_id ON namespaces USING btree (parent_id, id) WHERE ((type)::text = 'Group'::text);
+
 CREATE INDEX index_historical_data_on_recorded_at ON historical_data USING btree (recorded_at);
 
 CREATE UNIQUE INDEX index_http_integrations_on_active_and_project_and_endpoint ON alert_management_http_integrations USING btree (active, project_id, endpoint_identifier) WHERE active;

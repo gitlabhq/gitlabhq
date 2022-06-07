@@ -149,7 +149,7 @@ class Issue < ApplicationRecord
 
   scope :without_hidden, -> {
     if Feature.enabled?(:ban_user_feature_flag)
-      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
+      where.not(author_id: Users::BannedUser.all.select(:user_id))
     else
       all
     end

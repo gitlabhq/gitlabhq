@@ -44,6 +44,8 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response.first['releases_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
         expect(json_response.first['push_events_branch_filter']).to eq('master')
+        expect(json_response.first['alert_status']).to eq('executable')
+        expect(json_response.first['disabled_until']).to be_nil
       end
     end
 
@@ -76,6 +78,8 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response['releases_events']).to eq(hook.releases_events)
         expect(json_response['deployment_events']).to eq(true)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
+        expect(json_response['alert_status']).to eq(hook.alert_status.to_s)
+        expect(json_response['disabled_until']).to be_nil
       end
 
       it "returns a 404 error if hook id is not available" do

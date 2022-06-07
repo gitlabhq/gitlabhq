@@ -1,6 +1,0 @@
----
-GraphQL/OrderedArguments:
-  Exclude:
-  - app/graphql/resolvers/base_issues_resolver.rb
-  - app/graphql/resolvers/design_management/designs_resolver.rb
-  - app/graphql/resolvers/design_management/version/design_at_version_resolver.rb

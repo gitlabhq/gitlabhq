@@ -599,7 +599,7 @@ You can export a list of members in a group or subgroup as a CSV.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
-## Restrict group access by IP address **(PREMIUM)**
+## Group access restriction by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
@@ -611,25 +611,26 @@ applies to:
 - The GitLab UI, including subgroups, projects, and issues.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
 
-You should consider these security implications before configuring IP address restrictions:
+### Security implications
 
-- **SSH requests, including `git` operations will fail from all IP addresses**: While you can restrict HTTP traffic on GitLab.com with IP address restrictions,
-  they cause SSH requests, including Git operations over SSH, to fail. For more information,
-  read [issue 271673](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
-- **Administrators and group owners can access group settings from any IP address**: Users with these permission levels can always
-  access the group settings, regardless of IP restriction, but they cannot access projects
-  belonging to the group when accessing from a disallowed IP address.
-  - **Some GitLab API endpoints will remain accessible from any IP**: Users coming from denied IP addresses can still see group and project
-    names and hierarchies. Only the [group](../../api/groups.md) (including all [group resources](../../api/api_resources.md#group-resources))
-    APIs and [project](../../api/api_resources.md#project-resources) (including all [project resources](../../api/api_resources.md#project-resources))
-    APIs are protected by IP address restrictions.
-- **Activities performed by GitLab Runners are not bound by IP restrictions**:
-  When you register a runner, it is not bound by the IP restrictions. When the runner
-  requests a new job or an update to a job's state, it is also not bound by
-  the IP restrictions. But when the running CI/CD job sends Git requests from a
+You should consider some security implications before configuring IP address restrictions.
+
+- Restricting HTTP traffic on GitLab.com with IP address restrictions causes SSH requests (including Git operations over
+  SSH) to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
+- Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
+  - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
+  - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
+    Access to projects includes cloning code from them.
+  - Users can still see group and project names and hierarchies. Only the following are restricted:
+    - [Groups](../../api/groups.md), including all [group resources](../../api/api_resources.md#group-resources).
+    - [Project](../../api/projects.md), including all [project resources](../../api/api_resources.md#project-resources).
+- When you register a runner, it is not bound by the IP restrictions. When the runner requests a new job or an update to
+  a job's state, it is also not bound by the IP restrictions. But when the running CI/CD job sends Git requests from a
   restricted IP address, the IP restriction prevents code from being cloned.
-- **User dashboard activity**: Users may still see some events from the IP restricted groups and projects
-  on their dashboard. Activity may include push, merge, issue, or comment events.
+- Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
+  push, merge, issue, or comment events.
+
+### Restrict group access by IP address
 
 To restrict group access by IP address:
 
@@ -637,8 +638,6 @@ To restrict group access by IP address:
 1. Expand the **Permissions and group features** section.
 1. In the **Allow access to the following IP addresses** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
-
-   ![Domain restriction by IP address](img/restrict-by-ip.gif)
 
 In self-managed installations of GitLab 15.1 and later, you can also configure
 [globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
@@ -658,8 +657,6 @@ To restrict group access by domain:
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
 1. Select **Save changes**.
-
-![Domain restriction by email](img/restrict-by-email.gif)
 
 Any time you attempt to add a new user, the user's [primary email](../profile/index.md#change-your-primary-email) is compared against this list.
 Only users with a [primary email](../profile/index.md#change-your-primary-email) that matches any of the configured email domain restrictions
@@ -861,7 +858,7 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 - `json.allowed`: `false`
 
 In viewing the log entries, compare the `remote.ip` with the list of
-[allowed IPs](#restrict-group-access-by-ip-address) for the group.
+[allowed IPs](#group-access-restriction-by-ip-address) for the group.
 
 ### Validation errors on namespaces and groups
 

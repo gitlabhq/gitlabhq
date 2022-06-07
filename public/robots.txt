@@ -20,6 +20,7 @@ Disallow: /admin
 Disallow: /profile
 Disallow: /dashboard
 Disallow: /users
+Disallow: /api/v*
 Disallow: /help
 Disallow: /s/
 Disallow: /-/profile
