@@ -456,19 +456,6 @@ table.code {
   table-layout: fixed;
   border-radius: 0 0 $border-radius-default $border-radius-default;
 
-  .diff-tr:first-of-type.line_expansion > .diff-td,
-  tr:first-of-type.line_expansion > td {
-    border-top: 0;
-  }
-
-  .diff-tr:nth-last-of-type(2).line_expansion > .diff-td,
-  tr:nth-last-of-type(2).line_expansion,
-  tr:last-of-type.line_expansion {
-    > td {
-      border-bottom: 0;
-    }
-  }
-
   .diff-tr.line_holder .diff-td,
   tr.line_holder td {
     line-height: $code-line-height;
@@ -611,20 +598,12 @@ table.code {
     grid-template-columns: 50px 8px 0 1fr;
   }
 
-  .diff-grid-3-col {
-    grid-template-columns: 50px 1fr !important;
-  }
-
   .diff-grid-2-col {
     grid-template-columns: 100px 1fr !important;
 
     &.parallel {
       grid-template-columns: 50px 1fr !important;
     }
-  }
-
-  &.inline-diff-view .diff-grid-3-col {
-    grid-template-columns: 50px 50px 1fr !important;
   }
 
   .diff-grid-comments {

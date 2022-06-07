@@ -100,7 +100,7 @@ to automatically split the job into batches:
 ```ruby
 queue_background_migration_jobs_by_range_at_intervals(
   ClassName,
-  BackgroundMigrationClassName,
+  'BackgroundMigrationClassName',
   2.minutes,
   batch_size: 10_000
   )

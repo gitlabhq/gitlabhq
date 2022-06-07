@@ -101,6 +101,9 @@ export default {
     deleteTable: __('Delete table'),
     editTableActions: __('Edit table'),
   },
+  dropdownPopperOpts: {
+    positionFixed: true,
+  },
 };
 </script>
 <template>
@@ -124,9 +127,7 @@ export default {
         no-caret
         text-sr-only
         :text="$options.i18n.editTableActions"
-        :popper-opts="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-          positionFixed: true,
-        } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        :popper-opts="$options.dropdownPopperOpts"
         @hide="handleHide($event)"
       >
         <gl-dropdown-item @click="runCommand('addColumnBefore')">

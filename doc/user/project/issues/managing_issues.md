@@ -576,6 +576,30 @@ Or:
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
 - On the top bar, on the top right, select **{issues}** **Issues**.
 
+## Filter the list of issues
+
+> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
+> - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
+> - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+> - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
+> - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
+
+To filter the list of issues:
+
+1. Above the list of issues, select **Search or filter results...**.
+1. In the dropdown list that appears, select the attribute you want to filter by.
+1. Select or type the operator to use for filtering the attribute. The following operators are
+   available:
+   - `=`: Is
+   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+1. Enter the text to filter the attribute by.
+   You can filter some attributes by **None** or **Any**.
+1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
+   `AND`.
+
+GitLab displays the results on-screen, but you can also
+[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
+
 ### Filter issues by ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.

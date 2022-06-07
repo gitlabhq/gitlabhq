@@ -125,10 +125,6 @@ $monokai-gh: #75715e;
     color: $monokai-text-color;
   }
 
-  .old-line_expansion {
-    @include old-diff-expansion($monokai-bg, $monokai-border, $monokai-k);
-  }
-
   .diff-line-expand-button {
     @include diff-expansion($gray-600, $gray-200, $gray-300, $white);
   }

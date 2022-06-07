@@ -133,19 +133,6 @@ pre.code,
   color: $white-code-color;
 }
 
-.old-line_expansion {
-  @include old-diff-expansion($gray-light, $border-color, $blue-600);
-
-  &.diff-tr:last-child {
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-
-    .diff-td {
-      border-bottom: 0;
-    }
-  }
-}
-
 .diff-line-expand-button {
   @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
 }

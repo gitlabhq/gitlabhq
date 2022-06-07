@@ -61,6 +61,22 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Get issues relation' do
+        detail 'This feature was introduced in GitLab 15.1.'
+        success Entities::IssueLink
+      end
+      params do
+        requires :issue_link_id, type: Integer, desc: 'The ID of an issue link'
+      end
+      get ':id/issues/:issue_iid/links/:issue_link_id' do
+        issue = find_project_issue(params[:issue_iid])
+        issue_link = IssueLink.for_source_or_target(issue).find(declared_params[:issue_link_id])
+
+        find_project_issue(issue_link.target.iid.to_s, issue_link.target.project_id.to_s)
+
+        present issue_link, with: Entities::IssueLink
+      end
+
       desc 'Remove issues relation' do
         success Entities::IssueLink
       end

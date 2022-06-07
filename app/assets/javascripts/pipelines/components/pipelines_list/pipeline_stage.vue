@@ -24,6 +24,9 @@ export default {
   i18n: {
     stage: __('Stage:'),
   },
+  dropdownPopperOpts: {
+    placement: 'bottom',
+  },
   components: {
     CiIcon,
     GlLoadingIcon,
@@ -114,9 +117,7 @@ export default {
     variant="link"
     :aria-label="stageAriaLabel(stage.title)"
     :lazy="true"
-    :popper-opts="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-      placement: 'bottom',
-    } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    :popper-opts="$options.dropdownPopperOpts"
     :toggle-class="['gl-rounded-full!']"
     menu-class="mini-pipeline-graph-dropdown-menu"
     @hide="onHideDropdown"

@@ -128,10 +128,6 @@ $solarized-dark-il: #2aa198;
     color: $solarized-dark-pre-color;
   }
 
-  .old-line_expansion {
-    @include old-diff-expansion($solarized-dark-line-bg, $solarized-dark-border, $solarized-dark-kd);
-  }
-
   .diff-line-expand-button {
     @include diff-expansion(lighten($solarized-dark-pre-bg, 10%), $gray-200, lighten($solarized-dark-pre-bg, 20%), $white);
   }

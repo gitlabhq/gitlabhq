@@ -296,18 +296,6 @@ namespace = Namespace.find_by_full_path("<new_namespace>")
 ::Projects::TransferService.new(p, current_user).execute(namespace)
 ```
 
-### For Removing webhooks that is getting timeout due to large webhook logs
-
-```ruby
-# ID is the webhook_id
-hook=WebHook.find(ID)
-
-WebHooks::DestroyService.new(current_user).execute(hook)
-
-#In case the service gets timeout consider removing webhook_logs
-hook.web_hook_logs.limit(BATCH_SIZE).delete_all
-```
-
 ### Bulk update service integration password for _all_ projects
 
 For example, change the Jira user's password for all projects that have the Jira

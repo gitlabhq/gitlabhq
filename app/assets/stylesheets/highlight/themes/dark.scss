@@ -154,10 +154,6 @@ $dark-il: #de935f;
     color: $dark-line-color;
   }
 
-  .old-line_expansion {
-    @include old-diff-expansion($dark-main-bg, $dark-border, $dark-na);
-  }
-
   .diff-line-expand-button {
     @include diff-expansion($gray-600, $gray-200, $gray-300, $white);
   }

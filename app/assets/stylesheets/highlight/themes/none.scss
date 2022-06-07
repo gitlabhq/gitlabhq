@@ -44,10 +44,6 @@
     color: $gl-text-color;
   }
 
-  .old-line_expansion {
-    @include old-diff-expansion($gray-light, $white-normal, $gl-text-color);
-  }
-
   .diff-line-expand-button {
     @include diff-expansion($gray-100, $gray-700, $gray-200, $gray-800);
   }

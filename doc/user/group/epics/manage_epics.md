@@ -187,17 +187,17 @@ To view epics in a group:
 The total count of open epics displayed in the sidebar is cached if higher
 than 1000. The cached value is rounded to thousands or millions and updated every 24 hours.
 
-## Search for an epic from epics list page
+## Filter the list of epics
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
-> - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
+> - Filtering by epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195704) in GitLab 12.9.
+> - Filtering by child epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab 13.0.
+> - Filtering by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
 > - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
-> - Searching by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
+> - Filtering by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276189) in GitLab 14.7.
 > - [Feature flag `vue_epics_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed in GitLab 14.8.
 
-You can search for an epic from the list of epics using filtered search bar based on following
-parameters:
+You can filter the list of epics by:
 
 - Title or description
 - Author name / username
@@ -206,9 +206,9 @@ parameters:
 - Confidentiality
 - Reaction emoji
 
-![epics search](img/epics_search_v14_7.png)
+![epics filter](img/epics_filter_v14_7.png)
 
-To search:
+To filter:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Epics**.
@@ -216,7 +216,9 @@ To search:
 1. From the dropdown menu, select the scope or enter plain text to search by epic title or description.
 1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
 
-You can also sort epics list by:
+## Sort the list of epics
+
+You can sort the epics list by:
 
 - Start date
 - Due date

@@ -29,36 +29,6 @@
   }
 }
 
-@mixin old-diff-expansion($background, $border, $link) {
-  background-color: $background;
-
-  .diff-td,
-  td {
-    border-top: 1px solid $border;
-    border-bottom: 1px solid $border;
-  }
-
-  button {
-    color: $link;
-    border: 0;
-    background: transparent;
-
-    &[disabled] {
-      color: desaturate($link, 100%);
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    &:hover:not([disabled]) {
-      text-decoration: underline;
-    }
-
-    &:not(:focus-visible) {
-      outline: 0;
-    }
-  }
-}
-
 
 @mixin dark-diff-expansion-line {
   &.expansion .diff-td {

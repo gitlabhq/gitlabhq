@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:rebase_without_ci_ui, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:realtime_labels, project)
-    push_frontend_feature_flag(:updated_diff_expansion_buttons, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:mr_attention_requests, current_user)
     push_frontend_feature_flag(:remove_diff_header_icons, project)

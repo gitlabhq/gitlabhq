@@ -60,6 +60,24 @@ Or:
   - [Review requests](reviews/index.md).
   - Merge requests assigned.
 
+## Filter the list of merge requests
+
+To filter the list of merge requests:
+
+1. Above the list of merge requests, select **Search or filter results...**.
+1. In the dropdown list that appears, select the attribute you wish to filter by.
+1. Select or type the operator to use for filtering the attribute. The following operators are
+   available:
+   - `=`: Is
+   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+1. Enter the text to filter the attribute by.
+   You can filter some attributes by **None** or **Any**.
+1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
+   `AND`.
+
+GitLab displays the results on-screen, but you can also
+[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
+
 ### Filter merge requests by ID
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
