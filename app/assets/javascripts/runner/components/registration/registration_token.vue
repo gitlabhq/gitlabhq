@@ -13,6 +13,13 @@ export default {
       default: '',
     },
   },
+  computed: {
+    formInputGroupProps() {
+      return {
+        name: 'token-value',
+      };
+    },
+  },
   methods: {
     onCopy() {
       // value already in the clipboard, simply notify the user
@@ -26,8 +33,8 @@ export default {
   <input-copy-toggle-visibility
     class="gl-m-0"
     :value="value"
-    data-testid="token-value"
     :copy-button-title="$options.I18N_COPY_BUTTON_TITLE"
+    :form-input-group-props="formInputGroupProps"
     @copy="onCopy"
   />
 </template>

@@ -38,6 +38,10 @@ module Types
             null: false,
             description: 'Timestamp the Terraform state was updated.'
 
+      field :deleted_at, Types::TimeType,
+            null: true,
+            description: 'Timestamp the Terraform state was deleted.'
+
       def locked_by_user
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.locked_by_user_id).find
       end

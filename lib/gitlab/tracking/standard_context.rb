@@ -7,6 +7,12 @@ module Gitlab
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(namespace: nil, project: nil, user: nil, **extra)
+        if Feature.enabled?(:standard_context_type_check)
+          check_argument_type(:namespace, namespace, [Namespace])
+          check_argument_type(:project, project, [Project, Integer])
+          check_argument_type(:user, user, [User, DeployToken])
+        end
+
         @namespace = namespace
         @plan = namespace&.actual_plan_name
         @project = project
@@ -53,6 +59,14 @@ module Gitlab
 
       def project_id
         project.is_a?(Integer) ? project : project&.id
+      end
+
+      def check_argument_type(argument_name, argument_value, allowed_classes)
+        return if argument_value.nil? || allowed_classes.any? { |allowed_class| argument_value.is_a?(allowed_class) }
+
+        exception = "Invalid argument type passed for #{argument_name}." \
+          " Should be one of #{allowed_classes.map(&:to_s)}"
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ArgumentError.new(exception))
       end
     end
   end

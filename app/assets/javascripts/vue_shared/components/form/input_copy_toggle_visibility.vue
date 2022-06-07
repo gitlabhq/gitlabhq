@@ -1,5 +1,11 @@
 <script>
-import { GlFormInputGroup, GlFormGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlFormInputGroup,
+  GlFormInput,
+  GlFormGroup,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -12,6 +18,7 @@ export default {
   },
   components: {
     GlFormInputGroup,
+    GlFormInput,
     GlFormGroup,
     GlButton,
     ClipboardButton,
@@ -52,20 +59,6 @@ export default {
         return {};
       },
     },
-    /*
-    `inputClass` prop should be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/357848
-    is implemented.
-    */
-    inputClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    qaSelector: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
   },
   data() {
     return {
@@ -87,15 +80,15 @@ export default {
     displayedValue() {
       return this.computedValueIsVisible ? this.value : '*'.repeat(this.value.length || 20);
     },
-    classInput() {
-      return `gl-font-monospace! gl-cursor-default! ${this.inputClass}`.trimEnd();
-    },
   },
   methods: {
     handleToggleVisibilityButtonClick() {
       this.valueIsVisible = !this.valueIsVisible;
 
       this.$emit('visibility-change', this.valueIsVisible);
+    },
+    handleClick() {
+      this.$refs.input.$el.select();
     },
     handleCopyButtonClick() {
       this.$emit('copy');
@@ -115,15 +108,21 @@ export default {
 </script>
 <template>
   <gl-form-group v-bind="$attrs">
-    <gl-form-input-group
-      :value="displayedValue"
-      :input-class="classInput"
-      :data-qa-selector="qaSelector"
-      select-on-click
-      readonly
-      v-bind="formInputGroupProps"
-      @copy="handleFormInputCopy"
-    >
+    <gl-form-input-group>
+      <gl-form-input
+        ref="input"
+        readonly
+        class="gl-font-monospace! gl-cursor-default!"
+        v-bind="formInputGroupProps"
+        :value="displayedValue"
+        @copy="handleFormInputCopy"
+        @click="handleClick"
+      />
+
+      <!--
+        This v-if is necessary to avoid an issue with border radius.
+        See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88059#note_969812649
+       -->
       <template v-if="showToggleVisibilityButton || showCopyButton" #append>
         <gl-button
           v-if="showToggleVisibilityButton"

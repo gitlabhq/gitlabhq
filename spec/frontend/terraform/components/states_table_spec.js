@@ -2,6 +2,8 @@ import { GlBadge, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StatesTable from '~/terraform/components/states_table.vue';
 import StateActions from '~/terraform/components/states_table_actions.vue';
 
@@ -104,11 +106,30 @@ describe('StatesTable', () => {
         updatedAt: '2020-10-10T00:00:00Z',
         latestVersion: null,
       },
+      {
+        _showDetails: false,
+        errorMessages: [],
+        name: 'state-6',
+        loadingLock: false,
+        loadingRemove: false,
+        lockedAt: null,
+        lockedByUser: null,
+        updatedAt: '2020-10-10T00:00:00Z',
+        deletedAt: '2022-02-02T00:00:00Z',
+        latestVersion: null,
+      },
     ],
   };
 
   const createComponent = async (propsData = defaultProps) => {
-    wrapper = mount(StatesTable, { propsData });
+    wrapper = extendedWrapper(
+      mount(StatesTable, {
+        propsData,
+        directives: {
+          GlTooltip: createMockDirective(),
+        },
+      }),
+    );
     await nextTick();
   };
 
@@ -124,27 +145,28 @@ describe('StatesTable', () => {
   });
 
   it.each`
-    name         | toolTipText                            | locked   | loading  | lineNumber
+    name         | toolTipText                            | hasBadge | loading  | lineNumber
     ${'state-1'} | ${'Locked by user-1 2 days ago'}       | ${true}  | ${false} | ${0}
     ${'state-2'} | ${'Locking state'}                     | ${false} | ${true}  | ${1}
     ${'state-3'} | ${'Unlocking state'}                   | ${false} | ${true}  | ${2}
     ${'state-4'} | ${'Locked by Unknown User 5 days ago'} | ${true}  | ${false} | ${3}
     ${'state-5'} | ${'Removing'}                          | ${false} | ${true}  | ${4}
+    ${'state-6'} | ${'Deletion in progress'}              | ${true}  | ${false} | ${5}
   `(
     'displays the name and locked information "$name" for line "$lineNumber"',
-    ({ name, toolTipText, locked, loading, lineNumber }) => {
+    ({ name, toolTipText, hasBadge, loading, lineNumber }) => {
       const states = wrapper.findAll('[data-testid="terraform-states-table-name"]');
-
       const state = states.at(lineNumber);
-      const toolTip = state.find(GlTooltip);
 
       expect(state.text()).toContain(name);
-      expect(state.find(GlBadge).exists()).toBe(locked);
+      expect(state.find(GlBadge).exists()).toBe(hasBadge);
       expect(state.find(GlLoadingIcon).exists()).toBe(loading);
-      expect(toolTip.exists()).toBe(locked);
 
-      if (locked) {
-        expect(toolTip.text()).toMatchInterpolatedText(toolTipText);
+      if (hasBadge) {
+        const badge = wrapper.findByTestId(`state-badge-${name}`);
+
+        expect(getBinding(badge.element, 'gl-tooltip')).toBeDefined();
+        expect(badge.attributes('title')).toMatchInterpolatedText(toolTipText);
       }
     },
   );

@@ -17,7 +17,7 @@ export default {
     text: __('Syntax is incorrect.'),
   },
   includesText: __(
-    'CI configuration validated, including all configuration added with the %{codeStart}includes%{codeEnd} keyword. %{link}',
+    'CI configuration validated, including all configuration added with the %{codeStart}include%{codeEnd} keyword. %{link}',
   ),
   warningTitle: __('The form contains the following warning:'),
   fields: [

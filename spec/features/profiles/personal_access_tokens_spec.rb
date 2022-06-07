@@ -11,7 +11,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
   end
 
   def created_personal_access_token
-    find("[data-testid='new-access-token'] input").value
+    find_field('new-access-token').value
   end
 
   def feed_token_description

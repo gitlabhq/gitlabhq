@@ -21,6 +21,7 @@ export default {
     description: __("Make sure you save it - you won't be able to access it again."),
     label: __('Your new %{accessTokenType}'),
   },
+  tokenInputId: 'new-access-token',
   inject: ['accessTokenType'],
   data() {
     return { errors: null, infoAlert: null, newToken: null };
@@ -40,6 +41,14 @@ export default {
     },
     copyButtonTitle() {
       return sprintf(this.$options.i18n.copyButtonTitle, { accessTokenType: this.accessTokenType });
+    },
+    formInputGroupProps() {
+      return {
+        id: this.$options.tokenInputId,
+        class: 'qa-created-access-token',
+        'data-qa-selector': 'created_access_token_field',
+        name: this.$options.tokenInputId,
+      };
     },
     label() {
       return sprintf(this.$options.i18n.label, { accessTokenType: this.accessTokenType });
@@ -92,16 +101,15 @@ export default {
       <template v-if="newToken">
         <!-- 
           After issue https://gitlab.com/gitlab-org/gitlab/-/issues/360921 is
-          closed remove the `initial-visibility` and `input-class` props.
+          closed remove the `initial-visibility`.
          -->
         <input-copy-toggle-visibility
-          data-testid="new-access-token"
           :copy-button-title="copyButtonTitle"
           :label="label"
+          :label-for="$options.tokenInputId"
           :value="newToken"
           initial-visibility
-          input-class="qa-created-access-token"
-          qa-selector="created_access_token_field"
+          :form-input-group-props="formInputGroupProps"
         >
           <template #description>
             {{ $options.i18n.description }}

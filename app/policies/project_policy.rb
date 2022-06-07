@@ -433,6 +433,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:maintainer_access) }.policy do
     enable :destroy_package
+    enable :admin_package
     enable :admin_issue_board
     enable :push_to_delete_protected_branch
     enable :update_snippet

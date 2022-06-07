@@ -1,49 +1,70 @@
 # Make sure to update the docs if this file moves. Docs URL: https://docs.gitlab.com/ee/development/migration_style_guide.html#when-to-use-the-helper-method
 Migration/UpdateLargeTable:
   Enabled: true
-  HighTrafficTables: &high_traffic_tables # size in GB (>= 10 GB on GitLab.com as of 02/2020) and/or number of records
+  HighTrafficTables: &high_traffic_tables # size in GB (>= 10 GB on GitLab.com as of 06/2022) and/or number of records
+    - :alert_management_alerts
+    - :approval_merge_request_rules_users
     - :audit_events
-    - :ci_build_trace_sections
+    - :authentication_events
+    - :ci_build_needs
+    - :ci_build_report_results
     - :ci_builds
     - :ci_builds_metadata
+    - :ci_build_trace_metadata
     - :ci_job_artifacts
-    - :ci_pipeline_variables
+    - :ci_pipeline_messages
     - :ci_pipelines
+    - :ci_pipelines_config
+    - :ci_pipeline_variables
     - :ci_stages
     - :deployments
+    - :description_versions
+    - :error_tracking_error_events
     - :events
     - :gitlab_subscriptions
+    - :gpg_signatures
     - :issues
+    - :label_links
+    - :lfs_objects
+    - :lfs_objects_projects
     - :members
+    - :merge_request_cleanup_schedules
     - :merge_request_diff_commits
     - :merge_request_diff_files
     - :merge_request_diffs
     - :merge_request_metrics
     - :merge_requests
-    - :namespace_settings
     - :namespaces
+    - :namespace_settings
     - :note_diff_files
     - :notes
+    - :packages_package_files
     - :project_authorizations
-    - :projects
     - :project_ci_cd_settings
-    - :project_settings
+    - :project_daily_statistics
     - :project_features
+    - :projects
+    - :project_settings
     - :protected_branches
     - :push_event_payloads
     - :resource_label_events
+    - :resource_state_events
     - :routes
     - :security_findings
     - :sent_notifications
     - :system_note_metadata
     - :taggings
     - :todos
-    - :users
-    - :user_preferences
+    - :uploads
     - :user_details
-    - :vulnerability_occurrences
-    - :web_hook_logs
+    - :user_preferences
+    - :users
     - :vulnerabilities
+    - :vulnerability_occurrence_identifiers
+    - :vulnerability_occurrence_pipelines
+    - :vulnerability_occurrences
+    - :vulnerability_reads
+    - :web_hook_logs
   DeniedMethods:
     - :change_column_type_concurrently
     - :rename_column_concurrently

@@ -66,7 +66,7 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     it('displays value as hidden', () => {
-      expect(findFormInputGroup().props('value')).toBe('********************');
+      expect(findFormInput().element.value).toBe('********************');
     });
 
     it('saves actual value to clipboard when manually copied', () => {
@@ -107,7 +107,7 @@ describe('InputCopyToggleVisibility', () => {
         });
 
         it('displays value', () => {
-          expect(findFormInputGroup().props('value')).toBe(valueProp);
+          expect(findFormInput().element.value).toBe(valueProp);
         });
 
         it('renders a hide button', () => {
@@ -159,25 +159,52 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     it('displays value as hidden with 20 asterisks', () => {
-      expect(findFormInputGroup().props('value')).toBe('********************');
+      expect(findFormInput().element.value).toBe('********************');
     });
   });
 
   describe('when `initialVisibility` prop is `true`', () => {
+    const label = 'My label';
+
     beforeEach(() => {
       createComponent({
         propsData: {
           value: valueProp,
           initialVisibility: true,
+          label,
+          'label-for': 'my-input',
+          formInputGroupProps: {
+            id: 'my-input',
+          },
         },
       });
     });
 
     it('displays value', () => {
-      expect(findFormInputGroup().props('value')).toBe(valueProp);
+      expect(findFormInput().element.value).toBe(valueProp);
     });
 
     itDoesNotModifyCopyEvent();
+
+    describe('when input is clicked', () => {
+      it('selects input value', async () => {
+        const mockSelect = jest.fn();
+        wrapper.vm.$refs.input.$el.select = mockSelect;
+        await wrapper.findByLabelText(label).trigger('click');
+
+        expect(mockSelect).toHaveBeenCalled();
+      });
+    });
+
+    describe('when label is clicked', () => {
+      it('selects input value', async () => {
+        const mockSelect = jest.fn();
+        wrapper.vm.$refs.input.$el.select = mockSelect;
+        await wrapper.find('label').trigger('click');
+
+        expect(mockSelect).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when `showToggleVisibilityButton` is `false`', () => {
@@ -196,7 +223,7 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     it('displays value', () => {
-      expect(findFormInputGroup().props('value')).toBe(valueProp);
+      expect(findFormInput().element.value).toBe(valueProp);
     });
 
     itDoesNotModifyCopyEvent();
@@ -216,16 +243,30 @@ describe('InputCopyToggleVisibility', () => {
     });
   });
 
-  it('passes `formInputGroupProps` prop to `GlFormInputGroup`', () => {
+  it('passes `formInputGroupProps` prop only to the input', () => {
     createComponent({
       propsData: {
         formInputGroupProps: {
-          label: 'Foo bar',
+          name: 'Foo bar',
+          'data-qa-selector': 'Foo bar',
+          class: 'Foo bar',
+          id: 'Foo bar',
         },
       },
     });
 
-    expect(findFormInputGroup().props('label')).toBe('Foo bar');
+    expect(findFormInput().attributes()).toMatchObject({
+      name: 'Foo bar',
+      'data-qa-selector': 'Foo bar',
+      class: expect.stringContaining('Foo bar'),
+      id: 'Foo bar',
+    });
+
+    const attributesInputGroup = findFormInputGroup().attributes();
+    expect(attributesInputGroup.name).toBeUndefined();
+    expect(attributesInputGroup['data-qa-selector']).toBeUndefined();
+    expect(attributesInputGroup.class).not.toContain('Foo bar');
+    expect(attributesInputGroup.id).toBeUndefined();
   });
 
   it('passes `copyButtonTitle` prop to `ClipboardButton`', () => {
@@ -247,33 +288,5 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     expect(wrapper.findByText(description).exists()).toBe(true);
-  });
-
-  it('passes `inputClass` prop to `GlFormInputGroup`', () => {
-    createComponent();
-    expect(findFormInputGroup().props('inputClass')).toBe('gl-font-monospace! gl-cursor-default!');
-    wrapper.destroy();
-
-    createComponent({
-      propsData: {
-        inputClass: 'Foo bar',
-      },
-    });
-    expect(findFormInputGroup().props('inputClass')).toBe(
-      'gl-font-monospace! gl-cursor-default! Foo bar',
-    );
-  });
-
-  it('passes `qaSelector` prop as an `data-qa-selector` attribute to `GlFormInputGroup`', () => {
-    createComponent();
-    expect(findFormInputGroup().attributes('data-qa-selector')).toBeUndefined();
-    wrapper.destroy();
-
-    createComponent({
-      propsData: {
-        qaSelector: 'Foo bar',
-      },
-    });
-    expect(findFormInputGroup().attributes('data-qa-selector')).toBe('Foo bar');
   });
 });

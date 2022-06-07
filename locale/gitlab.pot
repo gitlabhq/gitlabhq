@@ -6829,7 +6829,7 @@ msgstr ""
 msgid "CI Lint"
 msgstr ""
 
-msgid "CI configuration validated, including all configuration added with the %{codeStart}includes%{codeEnd} keyword. %{link}"
+msgid "CI configuration validated, including all configuration added with the %{codeStart}include%{codeEnd} keyword. %{link}"
 msgstr ""
 
 msgid "CI settings"
@@ -37451,6 +37451,9 @@ msgstr ""
 msgid "Terraform|Copy Terraform init command"
 msgstr ""
 
+msgid "Terraform|Deletion in progress"
+msgstr ""
+
 msgid "Terraform|Details"
 msgstr ""
 
@@ -37494,6 +37497,9 @@ msgid "Terraform|Remove"
 msgstr ""
 
 msgid "Terraform|Remove state file and versions"
+msgstr ""
+
+msgid "Terraform|Removed"
 msgstr ""
 
 msgid "Terraform|Removing"

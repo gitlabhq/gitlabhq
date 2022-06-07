@@ -35,11 +35,11 @@ RSpec.shared_examples 'shows and resets runner registration token' do
 
   it 'has a registration token' do
     click_on 'Click to reveal'
-    expect(page.find('[data-testid="token-value"] input').value).to have_content(registration_token)
+    expect(page.find_field('token-value').value).to have_content(registration_token)
   end
 
   describe 'reset registration token' do
-    let!(:old_registration_token) { find('[data-testid="token-value"] input').value }
+    let!(:old_registration_token) { find_field('token-value').value }
 
     before do
       click_on 'Reset registration token'

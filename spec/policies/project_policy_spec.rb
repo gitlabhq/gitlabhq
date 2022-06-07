@@ -1356,6 +1356,36 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'admin_package' do
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:admin_package) }
+      end
+
+      context 'when admin mode disabled' do
+        it { is_expected.to be_disallowed(:admin_package) }
+      end
+    end
+
+    %i[owner maintainer].each do |role|
+      context "with #{role}" do
+        let(:current_user) { public_send(role) }
+
+        it { is_expected.to be_allowed(:admin_package) }
+      end
+    end
+
+    %i[developer reporter guest non_member anonymous].each do |role|
+      context "with #{role}" do
+        let(:current_user) { public_send(role) }
+
+        it { is_expected.to be_disallowed(:admin_package) }
+      end
+    end
+  end
+
   describe 'read_feature_flag' do
     subject { described_class.new(current_user, project) }
 

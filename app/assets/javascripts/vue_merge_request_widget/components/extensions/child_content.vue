@@ -63,13 +63,13 @@ export default {
       <div class="gl-w-full">
         <div class="gl-display-flex gl-flex-nowrap">
           <div class="gl-flex-wrap gl-display-flex gl-w-full">
-            <div class="gl-mr-4 gl-display-flex gl-align-items-center">
+            <div class="gl-display-flex gl-align-items-center">
               <p v-safe-html="generateText(data.text)" class="gl-m-0"></p>
             </div>
-            <div v-if="data.link">
+            <div v-if="data.link" class="gl-pr-2">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
             </div>
-            <div v-if="data.modal">
+            <div v-if="data.modal" class="gl-pr-2">
               <gl-link v-gl-modal="modalId" data-testid="modal-link" @click="data.modal.onClick">
                 {{ data.modal.text }}
               </gl-link>
@@ -81,7 +81,11 @@ export default {
               {{ data.badge.text }}
             </gl-badge>
           </div>
-          <actions :widget="widgetLabel" :tertiary-buttons="data.actions" class="gl-ml-auto" />
+          <actions
+            :widget="widgetLabel"
+            :tertiary-buttons="data.actions"
+            class="gl-ml-auto gl-pl-3"
+          />
         </div>
         <p
           v-if="data.subtext"

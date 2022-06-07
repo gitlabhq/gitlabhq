@@ -136,6 +136,7 @@ module Types
     mount_mutation Mutations::UserPreferences::Update
     mount_mutation Mutations::Packages::Destroy
     mount_mutation Mutations::Packages::DestroyFile
+    mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo
     mount_mutation Mutations::WorkItems::Create, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::WorkItems::CreateFromTask, deprecated: { milestone: '15.1', reason: :alpha }

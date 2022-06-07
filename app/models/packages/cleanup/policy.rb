@@ -15,7 +15,7 @@ module Packages
       validates :keep_n_duplicated_package_files,
                 inclusion: {
                   in: KEEP_N_DUPLICATED_PACKAGE_FILES_VALUES,
-                  message: 'keep_n_duplicated_package_files is invalid'
+                  message: 'is invalid'
                 }
 
       # used by Schedulable

@@ -5112,6 +5112,26 @@ Input type: `UpdateNoteInput`
 | <a id="mutationupdatenoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationupdatenotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
+### `Mutation.updatePackagesCleanupPolicy`
+
+Input type: `UpdatePackagesCleanupPolicyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatepackagescleanuppolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatepackagescleanuppolicykeepnduplicatedpackagefiles"></a>`keepNDuplicatedPackageFiles` | [`PackagesCleanupKeepDuplicatedPackageFilesEnum`](#packagescleanupkeepduplicatedpackagefilesenum) | Number of duplicated package files to retain. |
+| <a id="mutationupdatepackagescleanuppolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path where the packages cleanup policy is located. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatepackagescleanuppolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatepackagescleanuppolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationupdatepackagescleanuppolicypackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy after mutation. |
+
 ### `Mutation.updateRequirement`
 
 Input type: `UpdateRequirementInput`
@@ -14382,6 +14402,17 @@ Represents a package tag.
 | <a id="packagetagname"></a>`name` | [`String!`](#string) | Name of the tag. |
 | <a id="packagetagupdatedat"></a>`updatedAt` | [`Time!`](#time) | Updated date. |
 
+### `PackagesCleanupPolicy`
+
+A packages cleanup policy designed to keep only packages and packages assets that matter most.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagescleanuppolicykeepnduplicatedpackagefiles"></a>`keepNDuplicatedPackageFiles` | [`PackagesCleanupKeepDuplicatedPackageFilesEnum!`](#packagescleanupkeepduplicatedpackagefilesenum) | Number of duplicated package files to retain. |
+| <a id="packagescleanuppolicynextrunat"></a>`nextRunAt` | [`Time`](#time) | Next time that this packages cleanup policy will be executed. |
+
 ### `PageInfo`
 
 Information about pagination in a connection.
@@ -14690,6 +14721,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectonlyallowmergeifalldiscussionsareresolved"></a>`onlyAllowMergeIfAllDiscussionsAreResolved` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged when all the discussions are resolved. |
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
+| <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
@@ -16765,6 +16797,7 @@ Completion status of tasks.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="terraformstatecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the Terraform state was created. |
+| <a id="terraformstatedeletedat"></a>`deletedAt` | [`Time`](#time) | Timestamp the Terraform state was deleted. |
 | <a id="terraformstateid"></a>`id` | [`ID!`](#id) | ID of the Terraform state. |
 | <a id="terraformstatelatestversion"></a>`latestVersion` | [`TerraformStateVersion`](#terraformstateversion) | Latest version of the Terraform state. |
 | <a id="terraformstatelockedat"></a>`lockedAt` | [`Time`](#time) | Timestamp the Terraform state was locked. |
@@ -19176,6 +19209,18 @@ Values for sorting package.
 | <a id="packagetypeenumpypi"></a>`PYPI` | Packages from the PyPI package manager. |
 | <a id="packagetypeenumrubygems"></a>`RUBYGEMS` | Packages from the Rubygems package manager. |
 | <a id="packagetypeenumterraform_module"></a>`TERRAFORM_MODULE` | Packages from the Terraform Module package manager. |
+
+### `PackagesCleanupKeepDuplicatedPackageFilesEnum`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumall_package_files"></a>`ALL_PACKAGE_FILES` | Value to keep all package files. |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumfifty_package_files"></a>`FIFTY_PACKAGE_FILES` | Value to keep 50 package files. |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumforty_package_files"></a>`FORTY_PACKAGE_FILES` | Value to keep 40 package files. |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumone_package_file"></a>`ONE_PACKAGE_FILE` | Value to keep 1 package files. |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumten_package_files"></a>`TEN_PACKAGE_FILES` | Value to keep 10 package files. |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumthirty_package_files"></a>`THIRTY_PACKAGE_FILES` | Value to keep 30 package files. |
+| <a id="packagescleanupkeepduplicatedpackagefilesenumtwenty_package_files"></a>`TWENTY_PACKAGE_FILES` | Value to keep 20 package files. |
 
 ### `PipelineConfigSourceEnum`
 

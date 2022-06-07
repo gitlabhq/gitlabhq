@@ -45,7 +45,6 @@ export default {
   data() {
     return {
       currentRegistrationToken: this.registrationToken,
-      instructionsModalOpened: false,
     };
   },
   computed: {
@@ -64,15 +63,7 @@ export default {
   },
   methods: {
     onShowInstructionsClick() {
-      // Rendering the modal on demand, to avoid
-      // loading instructions prematurely from API.
-      this.instructionsModalOpened = true;
-
-      this.$nextTick(() => {
-        // $refs.runnerInstructionsModal is defined in
-        // the tick after the modal is rendered
-        this.$refs.runnerInstructionsModal.show();
-      });
+      this.$refs.runnerInstructionsModal.show();
     },
     onTokenReset(token) {
       this.currentRegistrationToken = token;
@@ -94,7 +85,6 @@ export default {
     <gl-dropdown-item @click.capture.native.stop="onShowInstructionsClick">
       {{ $options.i18n.showInstallationInstructions }}
       <runner-instructions-modal
-        v-if="instructionsModalOpened"
         ref="runnerInstructionsModal"
         :registration-token="currentRegistrationToken"
         data-testid="runner-instructions-modal"

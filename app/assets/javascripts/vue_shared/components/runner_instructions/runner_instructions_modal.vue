@@ -58,6 +58,10 @@ export default {
   apollo: {
     platforms: {
       query: getRunnerPlatformsQuery,
+      skip() {
+        // Only load instructions once the modal is shown
+        return !this.shown;
+      },
       update(data) {
         return (
           data?.runnerPlatforms?.nodes.map(({ name, humanReadableName, architectures }) => {
@@ -81,7 +85,7 @@ export default {
     instructions: {
       query: getRunnerSetupInstructionsQuery,
       skip() {
-        return !this.selectedPlatform;
+        return !this.shown || !this.selectedPlatform;
       },
       variables() {
         return {
@@ -99,6 +103,7 @@ export default {
   },
   data() {
     return {
+      shown: false,
       platforms: [],
       selectedPlatform: null,
       selectedArchitecture: null,
@@ -136,13 +141,24 @@ export default {
       return registerInstructions;
     },
   },
+  updated() {
+    // Refocus on dom changes, after loading data
+    this.refocusSelectedPlatformButton();
+  },
   methods: {
     show() {
       this.$refs.modal.show();
     },
-    focusSelected() {
-      // By default the first platform always gets the focus, but when the `defaultPlatformName`
-      // property is present, any other platform might actually be selected.
+    onShown() {
+      this.shown = true;
+      this.refocusSelectedPlatformButton();
+    },
+    refocusSelectedPlatformButton() {
+      // On modal opening, the first focusable element is auto-focused by bootstrap-vue
+      // This can be confusing for users, because the wrong platform button can
+      // get focused when setting a `defaultPlatformName`.
+      // This method refocuses the expected button.
+      // See more about this auto-focus: https://bootstrap-vue.org/docs/components/modal#auto-focus-on-open
       this.$refs[this.selectedPlatform]?.[0].$el.focus();
     },
     selectPlatform(platformName) {
@@ -171,6 +187,7 @@ export default {
     },
   },
   i18n: {
+    environment: __('Environment'),
     installARunner: s__('Runners|Install a runner'),
     architecture: s__('Runners|Architecture'),
     downloadInstallBinary: s__('Runners|Download and install binary'),
@@ -178,6 +195,7 @@ export default {
     registerRunnerCommand: s__('Runners|Command to register runner'),
     fetchError: s__('Runners|An error has occurred fetching instructions'),
     copyInstructions: s__('Runners|Copy instructions'),
+    viewInstallationInstructions: s__('Runners|View installation instructions'),
   },
   closeButton: {
     text: __('Close'),
@@ -193,7 +211,7 @@ export default {
     :action-secondary="$options.closeButton"
     v-bind="$attrs"
     v-on="$listeners"
-    @shown="focusSelected"
+    @shown="onShown"
   >
     <gl-alert v-if="showAlert" variant="danger" @dismiss="toggleAlert(false)">
       {{ $options.i18n.fetchError }}
@@ -203,7 +221,7 @@ export default {
 
     <template v-if="platforms.length">
       <h5>
-        {{ __('Environment') }}
+        {{ $options.i18n.environment }}
       </h5>
       <div v-gl-resize-observer="onPlatformsButtonResize">
         <gl-button-group
@@ -295,7 +313,7 @@ export default {
         <p>{{ instructionsWithoutArchitecture }}</p>
         <gl-button :href="runnerInstallationLink">
           <gl-icon name="external-link" />
-          {{ s__('Runners|View installation instructions') }}
+          {{ $options.i18n.viewInstallationInstructions }}
         </gl-button>
       </div>
     </template>

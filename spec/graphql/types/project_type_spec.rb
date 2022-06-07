@@ -36,7 +36,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       pipeline_analytics squash_read_only sast_ci_configuration
       cluster_agent cluster_agents agent_configurations
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
-      recent_issue_boards ci_config_path_or_default
+      recent_issue_boards ci_config_path_or_default packages_cleanup_policy
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -419,6 +419,12 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { described_class.fields['containerExpirationPolicy'] }
 
     it { is_expected.to have_graphql_type(Types::ContainerExpirationPolicyType) }
+  end
+
+  describe 'packages cleanup policy field' do
+    subject { described_class.fields['packagesCleanupPolicy'] }
+
+    it { is_expected.to have_graphql_type(Types::Packages::Cleanup::PolicyType) }
   end
 
   describe 'terraform state field' do

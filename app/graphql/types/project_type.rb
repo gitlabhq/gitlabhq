@@ -181,6 +181,11 @@ module Types
           description: 'Packages of the project.',
           resolver: Resolvers::ProjectPackagesResolver
 
+    field :packages_cleanup_policy,
+          Types::Packages::Cleanup::PolicyType,
+          null: true,
+          description: 'Packages cleanup policy for the project.'
+
     field :jobs,
           type: Types::Ci::JobType.connection_type,
           null: true,

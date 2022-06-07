@@ -1,6 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerInstructions from '~/vue_shared/components/runner_instructions/runner_instructions.vue';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 
@@ -11,7 +10,11 @@ describe('RunnerInstructions component', () => {
   const findModal = () => wrapper.findComponent(RunnerInstructionsModal);
 
   const createComponent = () => {
-    wrapper = extendedWrapper(shallowMount(RunnerInstructions));
+    wrapper = shallowMountExtended(RunnerInstructions, {
+      directives: {
+        GlModal: createMockDirective(),
+      },
+    });
   };
 
   beforeEach(() => {
@@ -23,19 +26,12 @@ describe('RunnerInstructions component', () => {
   });
 
   it('should show the "Show runner installation instructions" button', () => {
-    expect(findModalButton().exists()).toBe(true);
     expect(findModalButton().text()).toBe('Show runner installation instructions');
   });
 
-  it('should not render the modal once mounted', () => {
-    expect(findModal().exists()).toBe(false);
-  });
+  it('should render the modal', () => {
+    const modalId = getBinding(findModal().element, 'gl-modal');
 
-  it('should render the modal once clicked', async () => {
-    findModalButton().vm.$emit('click');
-
-    await nextTick();
-
-    expect(findModal().exists()).toBe(true);
+    expect(findModalButton().attributes('modal-id')).toBe(modalId);
   });
 });

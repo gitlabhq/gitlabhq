@@ -9,35 +9,19 @@ export default {
     RunnerInstructionsModal,
   },
   directives: {
-    GlModalDirective,
+    GlModal: GlModalDirective,
   },
   modalId: 'runner-instructions-modal',
   i18n: {
     buttonText: s__('Runners|Show runner installation instructions'),
   },
-  data() {
-    return {
-      opened: false,
-    };
-  },
-  methods: {
-    onClick() {
-      // lazily mount modal to prevent premature instructions requests
-      this.opened = true;
-    },
-  },
 };
 </script>
 <template>
   <div>
-    <gl-button
-      v-gl-modal-directive="$options.modalId"
-      class="gl-mt-4"
-      data-testid="show-modal-button"
-      @click="onClick"
-    >
+    <gl-button v-gl-modal="$options.modalId" class="gl-mt-4" data-testid="show-modal-button">
       {{ $options.i18n.buttonText }}
     </gl-button>
-    <runner-instructions-modal v-if="opened" :modal-id="$options.modalId" />
+    <runner-instructions-modal :modal-id="$options.modalId" />
   </div>
 </template>

@@ -231,7 +231,7 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    class="gl-h-full gl-display-flex!"
+    class="gl-h-full gl-display-flex! gl-px-2"
     :class="flexDirection"
     data-qa-selector="linked_pipeline_container"
     @mouseover="onDownstreamHovered"

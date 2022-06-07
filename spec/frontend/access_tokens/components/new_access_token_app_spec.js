@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { __, sprintf } from '~/locale';
@@ -16,7 +16,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
   const accessTokenType = 'personal access token';
 
   const createComponent = (provide = { accessTokenType }) => {
-    wrapper = shallowMount(NewAccessTokenApp, {
+    wrapper = mountExtended(NewAccessTokenApp, {
       provide,
     });
   };
@@ -64,15 +64,24 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         sprintf(__('Copy %{accessTokenType}'), { accessTokenType }),
       );
       expect(InputCopyToggleVisibilityComponent.props('initialVisibility')).toBe(true);
-      expect(InputCopyToggleVisibilityComponent.props('inputClass')).toBe(
-        'qa-created-access-token',
-      );
-      expect(InputCopyToggleVisibilityComponent.props('qaSelector')).toBe(
-        'created_access_token_field',
-      );
       expect(InputCopyToggleVisibilityComponent.attributes('label')).toBe(
         sprintf(__('Your new %{accessTokenType}'), { accessTokenType }),
       );
+    });
+
+    it('input field should contain QA-related selectors', async () => {
+      const newToken = '12345';
+      await triggerSuccess(newToken);
+
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+
+      const inputAttributes = wrapper
+        .findByLabelText(sprintf(__('Your new %{accessTokenType}'), { accessTokenType }))
+        .attributes();
+      expect(inputAttributes).toMatchObject({
+        class: expect.stringContaining('qa-created-access-token'),
+        'data-qa-selector': 'created_access_token_field',
+      });
     });
 
     it('should render an info alert', async () => {
