@@ -47,7 +47,7 @@ As a database reviewer, join the internal `#database` Slack channel and ask ques
 database related issues with other database reviewers and maintainers.
 
 There is also an optional database office hours call held bi-weekly, alternating between
-European/US and APAC friendly hours. You can join the office hours call and bring topics
+European/US and Asia-Pacific (APAC) friendly hours. You can join the office hours call and bring topics
 that require a more in-depth discussion between the database reviewers and maintainers:
 
 - [Database Office Hours Agenda](https://docs.google.com/document/d/1wgfmVL30F8SdMg-9yY6Y8djPSxWNvKmhR5XmsvYX1EI/edit).

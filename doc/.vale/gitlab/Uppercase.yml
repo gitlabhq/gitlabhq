@@ -16,6 +16,7 @@ second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 exceptions:
   - AJAX
   - ANSI
+  - APAC
   - API
   - APM
   - ARM
@@ -40,6 +41,7 @@ exceptions:
   - CSRF
   - CSS
   - CSV
+  - CTE
   - CWE
   - CVE
   - CVS
@@ -211,6 +213,7 @@ exceptions:
   - TODO
   - TOML
   - TOTP
+  - TPS
   - TTL
   - UBI
   - UDP

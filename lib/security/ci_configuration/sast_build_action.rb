@@ -13,16 +13,16 @@ module Security
       private
 
       def variables(params)
-        collect_values(params, 'value')
+        collect_values(params, :value)
       end
 
       def default_sast_values(params)
-        collect_values(params, 'defaultValue')
+        collect_values(params, :default_value)
       end
 
       def collect_values(config, key)
-        global_variables = config['global']&.to_h { |k| [k['field'], k[key]] } || {}
-        pipeline_variables = config['pipeline']&.to_h { |k| [k['field'], k[key]] } || {}
+        global_variables = config[:global]&.to_h { |k| [k[:field], k[key]] } || {}
+        pipeline_variables = config[:pipeline]&.to_h { |k| [k[:field], k[key]] } || {}
 
         analyzer_variables = collect_analyzer_values(config, key)
 
@@ -31,10 +31,10 @@ module Security
 
       def collect_analyzer_values(config, key)
         analyzer_variables = analyzer_variables_for(config, key)
-        analyzer_variables['SAST_EXCLUDED_ANALYZERS'] = if key == 'value'
-                                                          config['analyzers']
-                                                          &.reject {|a| a['enabled'] }
-                                                          &.collect {|a| a['name'] }
+        analyzer_variables['SAST_EXCLUDED_ANALYZERS'] = if key == :value
+                                                          config[:analyzers]
+                                                          &.reject {|a| a[:enabled] }
+                                                          &.collect {|a| a[:name] }
                                                           &.sort
                                                           &.join(', ')
                                                         else
@@ -45,10 +45,10 @@ module Security
       end
 
       def analyzer_variables_for(config, key)
-        config['analyzers']
-          &.select {|a| a['enabled'] && a['variables'] }
-          &.flat_map {|a| a['variables'] }
-          &.collect {|v| [v['field'], v[key]] }.to_h
+        config[:analyzers]
+          &.select {|a| a[:enabled] && a[:variables] }
+          &.flat_map {|a| a[:variables] }
+          &.collect {|v| [v[:field], v[key]] }.to_h
       end
 
       def update_existing_content!

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Configuring PostgreSQL for scaling **(FREE SELF)**
 
-In this section, you'll be guided through configuring a PostgreSQL database to
+In this section, you are guided through configuring a PostgreSQL database to
 be used with GitLab in one of our [reference architectures](../reference_architectures/index.md).
 There are essentially three setups to choose from.
 

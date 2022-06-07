@@ -21,6 +21,10 @@ export default {
   },
   inject: ['kasAddress', 'kasVersion'],
   props: {
+    agentName: {
+      required: true,
+      type: String,
+    },
     agentToken: {
       required: true,
       type: String,
@@ -32,7 +36,12 @@ export default {
   },
   computed: {
     agentRegistrationCommand() {
-      return generateAgentRegistrationCommand(this.agentToken, this.kasAddress, this.kasVersion);
+      return generateAgentRegistrationCommand({
+        name: this.agentName,
+        token: this.agentToken,
+        version: this.kasVersion,
+        address: this.kasAddress,
+      });
     },
   },
 };

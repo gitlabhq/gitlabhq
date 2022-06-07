@@ -7,6 +7,7 @@ import CodeBlock from '~/vue_shared/components/code_block.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 const kasAddress = 'kas.example.com';
+const agentName = 'my-agent';
 const agentToken = 'agent-token';
 const kasVersion = '15.0.0';
 const modalId = INSTALL_AGENT_MODAL_ID;
@@ -26,6 +27,7 @@ describe('InstallAgentModal', () => {
     };
 
     const propsData = {
+      agentName,
       agentToken,
       modalId,
     };
@@ -61,7 +63,12 @@ describe('InstallAgentModal', () => {
     it('renders a copy button', () => {
       expect(findCopyButton().props()).toMatchObject({
         title: 'Copy command',
-        text: generateAgentRegistrationCommand(agentToken, kasAddress, kasVersion),
+        text: generateAgentRegistrationCommand({
+          name: agentName,
+          token: agentToken,
+          version: kasVersion,
+          address: kasAddress,
+        }),
         modalId,
       });
     });
@@ -71,6 +78,7 @@ describe('InstallAgentModal', () => {
     });
 
     it('shows code block with agent installation command', () => {
+      expect(findCodeBlock().props('code')).toContain(`helm upgrade --install ${agentName}`);
       expect(findCodeBlock().props('code')).toContain(`--set config.token=${agentToken}`);
       expect(findCodeBlock().props('code')).toContain(`--set config.kasAddress=${kasAddress}`);
       expect(findCodeBlock().props('code')).toContain(`--set image.tag=v${kasVersion}`);

@@ -15,6 +15,7 @@ import {
   EVENT_ACTIONS_SELECT,
   MODAL_TYPE_EMPTY,
   MODAL_TYPE_REGISTER,
+  INSTALL_AGENT_MODAL_ID,
 } from '~/clusters_list/constants';
 import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.graphql';
 import getAgentConfigurations from '~/clusters_list/graphql/queries/agent_configurations.query.graphql';
@@ -222,7 +223,11 @@ describe('InstallAgentModal', () => {
       });
 
       it('shows agent instructions', () => {
-        expect(findAgentInstructions().exists()).toBe(true);
+        expect(findAgentInstructions().props()).toMatchObject({
+          agentName: 'agent-name',
+          agentToken: 'mock-agent-token',
+          modalId: INSTALL_AGENT_MODAL_ID,
+        });
       });
 
       describe('error creating agent', () => {

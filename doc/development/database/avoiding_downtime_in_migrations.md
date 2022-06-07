@@ -15,7 +15,7 @@ requiring downtime.
 ## Dropping Columns
 
 Removing columns is tricky because running GitLab processes may still be using
-the columns. To work around this safely, you will need three steps in three releases:
+the columns. To work around this safely, you need three steps in three releases:
 
 1. Ignoring the column (release M)
 1. Dropping the column (release M+1)
@@ -174,7 +174,7 @@ This will take care of renaming the column, ensuring data stays in sync, and
 copying over indexes and foreign keys.
 
 If a column contains one or more indexes that don't contain the name of the
-original column, the previously described procedure will fail. In that case,
+original column, the previously described procedure fails. In that case,
 you need to rename these indexes.
 
 ### Step 2: Add A Post-Deployment Migration
@@ -291,8 +291,9 @@ They can also produce a lot of pressure on the database due to it rapidly
 updating many rows in sequence.
 
 To reduce database pressure you should instead use a background migration
-when migrating a column in a large table (for example, `issues`). This will
-spread the work / load over a longer time period, without slowing down deployments.
+when migrating a column in a large table (for example, `issues`). Background
+migrations spread the work / load over a longer time period, without slowing
+down deployments.
 
 For more information, see [the documentation on cleaning up background
 migrations](background_migrations.md#cleaning-up).
@@ -533,7 +534,7 @@ step approach:
 
 Usually this works, but not always. For example, if a field's format is to be
 changed from JSON to something else we have a bit of a problem. If we were to
-change existing data before deploying application code we'll most likely run
+change existing data before deploying application code we would most likely run
 into errors. On the other hand, if we were to migrate after deploying the
 application code we could run into the same problems.
 

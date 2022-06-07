@@ -1,12 +1,12 @@
-export function generateAgentRegistrationCommand(agentToken, kasAddress, kasVersion) {
+export function generateAgentRegistrationCommand({ name, token, version, address }) {
   return `helm repo add gitlab https://charts.gitlab.io
 helm repo update
-helm upgrade --install gitlab-agent gitlab/gitlab-agent \\
+helm upgrade --install ${name} gitlab/gitlab-agent \\
     --namespace gitlab-agent \\
     --create-namespace \\
-    --set image.tag=v${kasVersion} \\
-    --set config.token=${agentToken} \\
-    --set config.kasAddress=${kasAddress}`;
+    --set image.tag=v${version} \\
+    --set config.token=${token} \\
+    --set config.kasAddress=${address}`;
 }
 
 export function getAgentConfigPath(clusterAgentName) {

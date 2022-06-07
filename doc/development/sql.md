@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This document describes various guidelines to follow when writing SQL queries,
 either using ActiveRecord/Arel or raw SQL queries.
 
-## Using LIKE Statements
+## Using `LIKE` Statements
 
 The most common way to search for data is using the `LIKE` statement. For
 example, to get all issues with a title starting with "Draft:" you'd write the
@@ -56,10 +56,10 @@ FROM issues
 WHERE (title ILIKE 'Draft:%' OR foo ILIKE 'Draft:%')
 ```
 
-## LIKE & Indexes
+## `LIKE` & Indexes
 
-PostgreSQL won't use any indexes when using `LIKE` / `ILIKE` with a wildcard at
-the start. For example, this will not use any indexes:
+PostgreSQL does not use any indexes when using `LIKE` / `ILIKE` with a wildcard at
+the start. For example, this does not use any indexes:
 
 ```sql
 SELECT *
@@ -145,7 +145,7 @@ The query:
 Project.select("path, user_id").joins(:merge_requests) # SELECT path, user_id FROM "projects" ...
 ```
 
-Later on, a new feature adds an extra column to the `projects` table: `user_id`. During deployment there might be a short time window where the database migration is already executed, but the new version of the application code is not deployed yet. When the query mentioned above executes during this period, the query will fail with the following error message: `PG::AmbiguousColumn: ERROR: column reference "user_id" is ambiguous`
+Later on, a new feature adds an extra column to the `projects` table: `user_id`. During deployment there might be a short time window where the database migration is already executed, but the new version of the application code is not deployed yet. When the query mentioned above executes during this period, the query fails with the following error message: `PG::AmbiguousColumn: ERROR: column reference "user_id" is ambiguous`
 
 The problem is caused by the way the attributes are selected from the database. The `user_id` column is present in both the `users` and `merge_requests` tables. The query planner cannot decide which table to use when looking up the `user_id` column.
 
@@ -210,7 +210,7 @@ Project.select(:path, :user_id).joins(:merge_requests)
 # SELECT "projects"."path", "user_id" FROM "projects" ...
 ```
 
-When a column list is given, ActiveRecord tries to match the arguments against the columns defined in the `projects` table and prepend the table name automatically. In this case, the `id` column is not going to be a problem, but the `user_id` column could return unexpected data:
+When a column list is given, ActiveRecord tries to match the arguments against the columns defined in the `projects` table and prepend the table name automatically. In this case, the `id` column is not a problem, but the `user_id` column could return unexpected data:
 
 ```ruby
 Project.select(:id, :user_id).joins(:merge_requests)
@@ -225,7 +225,7 @@ Project.select(:id, :user_id).joins(:merge_requests)
 ## Plucking IDs
 
 Never use ActiveRecord's `pluck` to pluck a set of values into memory only to
-use them as an argument for another query. For example, this will execute an
+use them as an argument for another query. For example, this executes an
 extra unnecessary database query and load a lot of unnecessary data into memory:
 
 ```ruby
@@ -314,10 +314,10 @@ union = Gitlab::SQL::Union.new([projects, more_projects, ...])
 Project.from("(#{union.to_sql}) projects")
 ```
 
-### Uneven columns in the UNION sub-queries
+### Uneven columns in the `UNION` sub-queries
 
-When the UNION query has uneven columns in the SELECT clauses, the database returns an error.
-Consider the following UNION query:
+When the `UNION` query has uneven columns in the `SELECT` clauses, the database returns an error.
+Consider the following `UNION` query:
 
 ```sql
 SELECT id FROM users WHERE id = 1
@@ -333,7 +333,7 @@ each UNION query must have the same number of columns
 ```
 
 This problem is apparent and it can be easily fixed during development. One edge-case is when
-UNION queries are combined with explicit column listing where the list comes from the
+`UNION` queries are combined with explicit column listing where the list comes from the
 `ActiveRecord` schema cache.
 
 Example (bad, avoid it):
@@ -387,17 +387,17 @@ User.connection.execute(Gitlab::SQL::Union.new([scope1, scope2]).to_sql)
 
 When ordering records based on the time they were created, you can order
 by the `id` column instead of ordering by `created_at`. Because IDs are always
-unique and incremented in the order that rows are created, doing so will produce the
+unique and incremented in the order that rows are created, doing so produces the
 exact same results. This also means there's no need to add an index on
 `created_at` to ensure consistent performance as `id` is already indexed by
 default.
 
-## Use WHERE EXISTS instead of WHERE IN
+## Use `WHERE EXISTS` instead of `WHERE IN`
 
 While `WHERE IN` and `WHERE EXISTS` can be used to produce the same data it is
 recommended to use `WHERE EXISTS` whenever possible. While in many cases
 PostgreSQL can optimise `WHERE IN` quite well there are also many cases where
-`WHERE EXISTS` will perform (much) better.
+`WHERE EXISTS` performs (much) better.
 
 In Rails you have to use this by creating SQL fragments:
 
@@ -446,7 +446,7 @@ method. This method differs from our `.safe_find_or_create_by` methods
 because it performs the `INSERT`, and then performs the `SELECT` commands only if that call
 fails.
 
-If the `INSERT` fails, it will leave a dead tuple around and
+If the `INSERT` fails, it leaves a dead tuple around and
 increment the primary key sequence (if any), among [other downsides](https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-create_or_find_by).
 
 We prefer `.safe_find_or_create_by` if the common path is that we

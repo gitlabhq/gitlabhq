@@ -11,6 +11,7 @@ import {
   TOKEN_NAME_LIMIT,
   TOKEN_STATUS_ACTIVE,
   MAX_LIST_COUNT,
+  CREATE_TOKEN_MODAL,
 } from '~/clusters/agents/constants';
 import createNewAgentToken from '~/clusters/agents/graphql/mutations/create_new_agent_token.mutation.graphql';
 import getClusterAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
@@ -231,7 +232,11 @@ describe('CreateTokenButton', () => {
         });
 
         it('shows agent instructions', () => {
-          expect(findAgentInstructions().exists()).toBe(true);
+          expect(findAgentInstructions().props()).toMatchObject({
+            agentName,
+            agentToken: 'token-secret',
+            modalId: CREATE_TOKEN_MODAL,
+          });
         });
 
         it('renders a close button', () => {

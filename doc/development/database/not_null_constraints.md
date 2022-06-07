@@ -99,8 +99,8 @@ such records, so we would follow the same process either way.
 We first add the `NOT NULL` constraint with a `NOT VALID` parameter, which enforces consistency
 when new records are inserted or current records are updated.
 
-In the example above, the existing epics with a `NULL` description will not be affected and you'll
-still be able to update records in the `epics` table. However, when you try to update or insert
+In the example above, the existing epics with a `NULL` description are not affected and you are
+still able to update records in the `epics` table. However, when you try to update or insert
 an epic without providing a description, the constraint causes a database error.
 
 Adding or removing a `NOT NULL` clause requires that any application changes are deployed _first_.
@@ -129,7 +129,7 @@ end
 #### Data migration to fix existing records (current release)
 
 The approach here depends on the data volume and the cleanup strategy. The number of records that
-must be fixed on GitLab.com is a nice indicator that will help us decide whether to use a
+must be fixed on GitLab.com is a nice indicator that helps us decide whether to use a
 post-deployment migration or a background data migration:
 
 - If the data volume is less than `1000` records, then the data migration can be executed within the post-migration.
@@ -138,7 +138,7 @@ post-deployment migration or a background data migration:
 When unsure about which option to use, please contact the Database team for advice.
 
 Back to our example, the epics table is not considerably large nor frequently accessed,
-so we are going to add a post-deployment migration for the 13.0 milestone (current),
+so we add a post-deployment migration for the 13.0 milestone (current),
 `db/post_migrate/20200501000002_cleanup_epics_with_null_description.rb`:
 
 ```ruby
@@ -173,7 +173,7 @@ end
 
 #### Validate the `NOT NULL` constraint (next release)
 
-Validating the `NOT NULL` constraint will scan the whole table and make sure that each record is correct.
+Validating the `NOT NULL` constraint scans the whole table and make sure that each record is correct.
 
 Still in our example, for the 13.1 milestone (next), we run the `validate_not_null_constraint`
 migration helper in a final post-deployment migration,
@@ -196,11 +196,11 @@ end
 ## `NOT NULL` constraints on large tables
 
 If you have to clean up a nullable column for a [high-traffic table](../migration_style_guide.md#high-traffic-tables)
-(for example, the `artifacts` in `ci_builds`), your background migration will go on for a while and
-it will need an additional [background migration cleaning up](background_migrations.md#cleaning-up)
+(for example, the `artifacts` in `ci_builds`), your background migration goes on for a while and
+it needs an additional [background migration cleaning up](background_migrations.md#cleaning-up)
 in the release after adding the data migration.
 
-In that rare case you will need 3 releases end-to-end:
+In that rare case you need 3 releases end-to-end:
 
 1. Release `N.M` - Add the `NOT NULL` constraint and the background-migration to fix the existing records.
 1. Release `N.M+1` - Cleanup the background migration.

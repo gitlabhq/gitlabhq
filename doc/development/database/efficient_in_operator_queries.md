@@ -163,7 +163,7 @@ The technique can only optimize `IN` queries that satisfy the following requirem
   (the combination of the columns uniquely identifies one particular column in the table).
 
 WARNING:
-This technique will not improve the performance of the `COUNT(*)` queries.
+This technique does not improve the performance of the `COUNT(*)` queries.
 
 ## The `InOperatorOptimization` module
 
@@ -183,7 +183,7 @@ in `Gitlab::Pagination::Keyset::InOperatorOptimization`.
 
 ### Basic usage of `QueryBuilder`
 
-To illustrate a basic usage, we will build a query that
+To illustrate a basic usage, we build a query that
 fetches 20 issues with the oldest `created_at` from the group `gitlab-org`.
 
 The following ActiveRecord query would produce a query similar to
@@ -226,10 +226,10 @@ Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
   the order by column expressions is available for locating the record. In this example, the
   yielded values are `created_at` and `id` SQL expressions. Finding a record is very fast via the
   primary key, so we don't use the `created_at` value. Providing the `finder_query` lambda is optional.
-  If it's not given, the IN operator optimization will only make the ORDER BY columns available to
+  If it's not given, the `IN` operator optimization only makes the `ORDER BY` columns available to
   the end-user and not the full database row.
 
-  If it's not given, the IN operator optimization will only make the ORDER BY columns available to
+  If it's not given, the `IN` operator optimization only makes the `ORDER BY` columns available to
   the end-user and not the full database row.
 
 The following database index on the `issues` table must be present
@@ -416,7 +416,7 @@ scope = Issue
   .limit(20)
 ```
 
-To construct the array scope, we'll need to take the Cartesian product of the `project_id IN` and
+To construct the array scope, we need to take the Cartesian product of the `project_id IN` and
 the `issue_type IN` queries. `issue_type` is an ActiveRecord enum, so we need to
 construct the following table:
 
@@ -589,7 +589,7 @@ LIMIT 20
 NOTE:
 To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
 
-#### Using calculated ORDER BY expression
+#### Using calculated `ORDER BY` expression
 
 The following example orders epic records by the duration between the creation time and closed
 time. It is calculated with the following formula:
@@ -766,7 +766,7 @@ using the generalized `IN` optimization technique.
 
 ### Array CTE
 
-As the first step, we use a common table expression (CTE) for collecting the `projects.id` values.
+As the first step, we use a Common Table Expression (CTE) for collecting the `projects.id` values.
 This is done by wrapping the incoming `array_scope` ActiveRecord relation parameter with a CTE.
 
 ```sql
@@ -792,7 +792,7 @@ This query produces the following result set with only one column (`projects.id`
 ### Array mapping
 
 For each project (that is, each record storing a project ID in `array_cte`),
-we will fetch the cursor value identifying the first issue respecting the `ORDER BY` clause.
+we fetch the cursor value identifying the first issue respecting the `ORDER BY` clause.
 
 As an example, let's pick the first record `ID=9` from `array_cte`.
 The following query should fetch the cursor value `(created_at, id)` identifying
@@ -805,7 +805,7 @@ ORDER BY "issues"."created_at" ASC, "issues"."id" ASC
 LIMIT 1;
 ```
 
-We will use `LATERAL JOIN` to loop over the records in the `array_cte` and find the
+We use `LATERAL JOIN` to loop over the records in the `array_cte` and find the
 cursor value for each project. The query would be built using the `array_mapping_scope` lambda
 function.
 
@@ -854,11 +854,11 @@ The table shows the cursor values (`created_at, id`) of the first record for eac
 respecting the `ORDER BY` clause.
 
 At this point, we have the initial data. To start collecting the actual records from the database,
-we'll use a recursive CTE query where each recursion locates one row until
+we use a recursive CTE query where each recursion locates one row until
 the `LIMIT` is reached or no more data can be found.
 
-Here's an outline of the steps we will take in the recursive CTE query
-(expressing the steps in SQL is non-trivial but will be explained next):
+Here's an outline of the steps we take in the recursive CTE query
+(expressing the steps in SQL is non-trivial but is explained next):
 
 1. Sort the initial resultset according to the `ORDER BY` clause.
 1. Pick the top cursor to fetch the record, this is our first record. In the example,
@@ -994,7 +994,7 @@ After this, the recursion starts again by finding the next lowest cursor value.
 
 ### Finalizing the query
 
-For producing the final `issues` rows, we're going to wrap the query with another `SELECT` statement:
+For producing the final `issues` rows, we wrap the query with another `SELECT` statement:
 
 ```sql
 SELECT "issues".*
@@ -1034,14 +1034,14 @@ The group and project queries are not using sorting, the necessary columns are r
 indexes. These values are accessed frequently so it's very likely that most of the data will be
 in the PostgreSQL's buffer cache.
 
-The optimized `IN` query will read maximum 519 entries (cursor values) from the index:
+The optimized `IN` query reads maximum 519 entries (cursor values) from the index:
 
 - 500 index-only scans for populating the arrays for each project. The cursor values of the first
-record will be here.
+record is here.
 - Maximum 19 additional index-only scans for the consecutive records.
 
-The optimized `IN` query will sort the array (cursor values per project array) 20 times, which
-means we'll sort 20 x 500 rows. However, this might be a less memory-intensive task than
+The optimized `IN` query sorts the array (cursor values per project array) 20 times, which
+means we sort 20 x 500 rows. However, this might be a less memory-intensive task than
 sorting 10 000 rows at once.
 
 Performance comparison for the `gitlab-org` group:
@@ -1053,5 +1053,5 @@ Performance comparison for the `gitlab-org` group:
 
 NOTE:
 Before taking measurements, the group lookup query was executed separately in order to make
-the group data available in the buffer cache. Since it's a frequently called query, it's going to
-hit many shared buffers during the query execution in the production environment.
+the group data available in the buffer cache. Since it's a frequently called query, it
+hits many shared buffers during the query execution in the production environment.

@@ -16,7 +16,7 @@ module Mutations
           description: 'SAST CI configuration for the project.'
 
         def configure_analyzer(project, **args)
-          ::Security::CiConfiguration::SastCreateService.new(project, current_user, args[:configuration]).execute
+          ::Security::CiConfiguration::SastCreateService.new(project, current_user, args[:configuration].to_h).execute
         end
       end
     end

@@ -268,7 +268,12 @@ export default {
         </p>
       </template>
 
-      <agent-token v-else :agent-token="agentToken" :modal-id="$options.modalId" />
+      <agent-token
+        v-else
+        :agent-name="agentName"
+        :agent-token="agentToken"
+        :modal-id="$options.modalId"
+      />
     </template>
 
     <template v-else>
