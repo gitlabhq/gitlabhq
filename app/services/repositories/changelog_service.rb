@@ -82,6 +82,9 @@ module Repositories
         # batch of commits, instead of needing a query for every commit.
         page.each(&:lazy_author)
 
+        # Preload author permissions
+        @project.team.max_member_access_for_user_ids(page.map(&:author).compact.map(&:id))
+
         page.each do |commit|
           release.add_entry(
             title: commit.title,

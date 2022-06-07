@@ -426,23 +426,27 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=storage1,storage2
 ```
 
-#### Back up specific project repositories
+#### Back up specific repositories
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
 
-You can back up a specific project or list of projects using the `REPOSITORIES_PATHS` option. The option accepts a comma-separated list of
-project paths. For example:
+You can back up a specific repositories using the `REPOSITORIES_PATHS` option.
+The option accepts a comma-separated list of project and group paths. If you
+specify a group path, all repositories in all projects in the group and
+descendent groups are included.
+
+For example, to back up all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
 
 - Omnibus GitLab installations:
 
   ```shell
-  sudo gitlab-backup create REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c
   ```
 
 - Installations from source:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c
   ```
 
 #### Uploading backups to a remote (cloud) storage
@@ -1278,23 +1282,28 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
 ```
 
-#### Restore specific project repositories
+#### Restore specific repositories
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
 
-You can restore a specific project or list of projects using the `REPOSITORIES_PATHS` option. These projects must exist within the
-specified backup. The option accepts a comma-separated list of project paths. For example:
+You can restore specific repositories using the `REPOSITORIES_PATHS` option.
+The option accepts a comma-separated list of project and group paths. If you
+specify a group path, all repositories in all projects in the group and
+descendent groups are included. The project and group repositories must exist
+within the specified backup.
+
+For example, to restore all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
 
 - Omnibus GitLab installations:
 
   ```shell
-  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c
   ```
 
 - Installations from source:
 
   ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=gitlab-org/gitlab,gitlab-org/gitaly
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c
   ```
 
 ## Alternative backup strategies

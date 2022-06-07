@@ -82,6 +82,7 @@ describe('InputCopyToggleVisibility', () => {
 
       findFormInput().element.dispatchEvent(createCopyEvent());
 
+      expect(wrapper.emitted()).toHaveProperty('copy');
       expect(wrapper.emitted('copy')).toHaveLength(1);
       expect(wrapper.emitted('copy')[0]).toEqual([]);
     });
@@ -144,6 +145,8 @@ describe('InputCopyToggleVisibility', () => {
         });
 
         it('emits `copy` event', () => {
+          expect(wrapper.emitted()).toHaveProperty('copy');
+          expect(wrapper.emitted('copy')).toHaveLength(1);
           expect(wrapper.emitted('copy')[0]).toEqual([]);
         });
       });

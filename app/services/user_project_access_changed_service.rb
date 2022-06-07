@@ -2,8 +2,10 @@
 
 class UserProjectAccessChangedService
   DELAY = 1.hour
+  MEDIUM_DELAY = 10.minutes
 
   HIGH_PRIORITY = :high
+  MEDIUM_PRIORITY = :medium
   LOW_PRIORITY = :low
 
   def initialize(user_ids)
@@ -21,6 +23,8 @@ class UserProjectAccessChangedService
       else
         if priority == HIGH_PRIORITY
           AuthorizedProjectsWorker.bulk_perform_async(bulk_args) # rubocop:disable Scalability/BulkPerformWithContext
+        elsif priority == MEDIUM_PRIORITY
+          AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.bulk_perform_in(MEDIUM_DELAY, bulk_args, batch_size: 100, batch_delay: 30.seconds) # rubocop:disable Scalability/BulkPerformWithContext
         else
           with_related_class_context do
             # We wrap the execution in `with_related_class_context`so as to obtain

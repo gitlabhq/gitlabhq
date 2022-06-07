@@ -178,23 +178,6 @@ RSpec.describe 'Merge request > User resolves conflicts', :js do
     end
   end
 
-  context 'sidebar' do
-    let(:merge_request) { create_merge_request('conflict-resolvable') }
-
-    before do
-      project.add_developer(user)
-      sign_in(user)
-
-      visit conflicts_project_merge_request_path(project, merge_request)
-    end
-
-    it 'displays reviewers' do
-      page.within '.issuable-sidebar' do
-        expect(page).to have_selector('[data-testid="reviewer"]', count: 1)
-      end
-    end
-  end
-
   unresolvable_conflicts = {
     'conflict-too-large' => 'when the conflicts contain a large file',
     'conflict-binary-file' => 'when the conflicts contain a binary file',

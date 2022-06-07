@@ -41,7 +41,6 @@ RSpec.describe Snippets::DestroyService do
     shared_examples 'deletes the snippet repository' do
       it 'removes the snippet repository' do
         expect(snippet.repository.exists?).to be_truthy
-        expect(GitlabShellWorker).to receive(:perform_in)
         expect_next_instance_of(Repositories::DestroyService) do |instance|
           expect(instance).to receive(:execute).and_call_original
         end
@@ -57,12 +56,6 @@ RSpec.describe Snippets::DestroyService do
         end
 
         it_behaves_like 'an unsuccessful destroy'
-
-        it 'does not try to rollback repository' do
-          expect(Repositories::DestroyRollbackService).not_to receive(:new)
-
-          subject
-        end
       end
 
       context 'when a destroy error is raised' do
@@ -71,12 +64,6 @@ RSpec.describe Snippets::DestroyService do
         end
 
         it_behaves_like 'an unsuccessful destroy'
-
-        it 'attempts to rollback the repository' do
-          expect(Repositories::DestroyRollbackService).to receive(:new).and_call_original
-
-          subject
-        end
       end
 
       context 'when repository is nil' do

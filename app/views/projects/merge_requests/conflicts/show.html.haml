@@ -1,12 +1,10 @@
 - page_title _("Merge Conflicts"), "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge requests")
 - add_page_specific_style 'page_bundles/merge_conflicts'
 
-= render "projects/merge_requests/mr_title"
+= render "projects/merge_requests/mr_title", hide_gutter_toggle: true
 
 .merge-request-details.issuable-details
   = render "projects/merge_requests/mr_box"
-
-= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
 #conflicts{ data: { conflicts_path: conflicts_project_merge_request_path(@merge_request.project, @merge_request, format: :json),
     resolve_conflicts_path: resolve_conflicts_project_merge_request_path(@merge_request.project, @merge_request),

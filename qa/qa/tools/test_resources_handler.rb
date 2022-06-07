@@ -122,7 +122,7 @@ module QA
 
         transformed_values = resources.transform_values! do |v|
           v.reject do |attributes|
-            attributes['info'].match(/with full_path 'gitlab-qa-sandbox-group(-\d)?'/) ||
+            attributes['info']&.match(/with full_path 'gitlab-qa-sandbox-group(-\d)?'/) ||
               attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-") ||
               attributes['api_path'] == 'Cannot find resource API path'
           end
@@ -160,7 +160,10 @@ module QA
         abort("\nPlease provide GITLAB_ADDRESS") unless ENV['GITLAB_ADDRESS']
         abort("\nPlease provide GITLAB_QA_ACCESS_TOKEN") unless ENV['GITLAB_QA_ACCESS_TOKEN']
 
-        @api_client ||= Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
+        @api_client ||= Runtime::API::Client.new(
+          ENV['GITLAB_ADDRESS'],
+          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN']
+        )
       end
 
       def gcs_storage
@@ -175,7 +178,9 @@ module QA
       # Path to GCS service account json key file
       # Or the content of the key file as a hash
       def json_key
-        abort("\nPlease provide QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS") unless ENV['QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS']
+        unless ENV['QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS']
+          abort("\nPlease provide QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS")
+        end
 
         @json_key ||= ENV["QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS"]
       end

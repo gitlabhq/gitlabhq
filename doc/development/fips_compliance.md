@@ -100,7 +100,7 @@ fips-mode-setup --disable
 
 #### Detect FIPS enablement in code
 
-You can query `GitLab::FIPS` in Ruby code to determine if the instance is FIPS-enabled:
+You can query `Gitlab::FIPS` in Ruby code to determine if the instance is FIPS-enabled:
 
 ```ruby
 def default_min_key_size(name)

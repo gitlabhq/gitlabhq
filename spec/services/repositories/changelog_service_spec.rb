@@ -78,7 +78,7 @@ RSpec.describe Repositories::ChangelogService do
       recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
-      expect(recorder.count).to eq(9)
+      expect(recorder.count).to eq(10)
       expect(changelog).to include('Title 1', 'Title 2')
     end
 
@@ -147,6 +147,22 @@ RSpec.describe Repositories::ChangelogService do
 
         expect(changelog).to include('Title 1', 'Title 2')
       end
+    end
+
+    it 'avoids N+1 queries', :request_store do
+      RequestStore.clear!
+
+      request = ->(to) do
+        described_class
+          .new(project, creator, version: '1.0.0', from: sha1, to: to)
+          .execute(commit_to_changelog: false)
+      end
+
+      control = ActiveRecord::QueryRecorder.new { request.call(sha2) }
+
+      RequestStore.clear!
+
+      expect { request.call(sha3) }.not_to exceed_query_limit(control.count)
     end
   end
 

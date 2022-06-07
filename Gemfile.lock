@@ -221,7 +221,7 @@ GEM
     creole (0.5.0)
     crystalball (0.7.0)
       git
-    css_parser (1.7.0)
+    css_parser (1.11.0)
       addressable
     daemons (1.3.1)
     danger (8.5.0)
@@ -954,7 +954,7 @@ GEM
     png_quantizator (0.2.1)
     po_to_json (1.0.1)
       json (>= 1.6.0)
-    premailer (1.11.1)
+    premailer (1.16.0)
       addressable
       css_parser (>= 1.6.0)
       htmlentities (>= 4.0.0)
@@ -978,7 +978,7 @@ GEM
       pry (~> 0.13.0)
       tty-markdown
       tty-prompt
-    public_suffix (4.0.6)
+    public_suffix (4.0.7)
     puma (5.6.2)
       nio4r (~> 2.0)
     puma_worker_killer (0.3.1)

@@ -11,6 +11,7 @@ RSpec.describe API::Clusters::Agents do
 
   before do
     project.add_maintainer(user)
+    project.add_guest(unauthorized_user)
   end
 
   describe 'GET /projects/:id/cluster_agents' do
@@ -24,6 +25,19 @@ RSpec.describe API::Clusters::Agents do
           expect(response).to match_response_schema('public_api/v4/agents')
           expect(json_response.count).to eq(1)
           expect(json_response.first['name']).to eq(agent.name)
+        end
+      end
+
+      it 'returns empty list when no agents registered' do
+        no_agents_project = create(:project, namespace: user.namespace)
+
+        get api("/projects/#{no_agents_project.id}/cluster_agents", user)
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(response).to match_response_schema('public_api/v4/agents')
+          expect(json_response.count).to eq(0)
         end
       end
     end
@@ -140,10 +154,10 @@ RSpec.describe API::Clusters::Agents do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    it 'returns a 404 if the user is unauthorized to delete' do
+    it 'returns a 403 if the user is unauthorized to delete' do
       delete api("/projects/#{project.id}/cluster_agents/#{agent.id}", unauthorized_user)
 
-      expect(response).to have_gitlab_http_status(:not_found)
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it_behaves_like '412 response' do

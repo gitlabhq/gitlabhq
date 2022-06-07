@@ -7,7 +7,6 @@ namespace :gitlab do
         SEQUENCE_NAME_MATCHER = /nextval\('([a-z_]+)'::regclass\)/.freeze
         # These aren't used by anything so we can ignore these https://gitlab.com/gitlab-org/gitlab/-/issues/362984
         EXCLUDED_SEQUENCES = %w[
-          ci_build_report_results_build_id_seq
           ci_job_artifact_states_job_artifact_id_seq
           ci_pipelines_config_pipeline_id_seq
         ].freeze

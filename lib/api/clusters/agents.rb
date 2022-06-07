@@ -22,7 +22,7 @@ module API
           use :pagination
         end
         get ':id/cluster_agents' do
-          authorize! :read_cluster, user_project
+          not_found!('ClusterAgents') unless can?(current_user, :read_cluster, user_project)
 
           agents = ::Clusters::AgentsFinder.new(user_project, current_user).execute
 
@@ -37,9 +37,7 @@ module API
           requires :agent_id, type: Integer, desc: 'The ID of an agent'
         end
         get ':id/cluster_agents/:agent_id' do
-          authorize! :read_cluster, user_project
-
-          agent = user_project.cluster_agents.find(params[:agent_id])
+          agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
           present agent, with: Entities::Clusters::Agent
         end
@@ -72,7 +70,7 @@ module API
         delete ':id/cluster_agents/:agent_id' do
           authorize! :admin_cluster, user_project
 
-          agent = user_project.cluster_agents.find(params.delete(:agent_id))
+          agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
           destroy_conditionally!(agent)
         end

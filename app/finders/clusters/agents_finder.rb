@@ -2,6 +2,8 @@
 
 module Clusters
   class AgentsFinder
+    include FinderMethods
+
     def initialize(project, current_user, params: {})
       @project = project
       @current_user = current_user

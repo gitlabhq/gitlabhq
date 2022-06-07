@@ -37,7 +37,7 @@ RSpec.describe API::Clusters::AgentTokens do
       it 'cannot access agent tokens' do
         get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens", unauthorized_user)
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe API::Clusters::AgentTokens do
       it 'cannot access single agent token' do
         get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{agent_token_one.id}", unauthorized_user)
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'cannot access token from agent of another project' do

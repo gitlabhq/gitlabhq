@@ -1,5 +1,5 @@
 .qa-job-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-99
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-${CHROME_VERSION}
   extends:
     - .default-retry
     - .qa-cache
@@ -12,7 +12,7 @@
   before_script:
     - !reference [.default-before_script, before_script]
     - cd qa/
-    - bundle_install_script
+    - bundle install
 
 qa:internal:
   extends:

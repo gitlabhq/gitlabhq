@@ -9,7 +9,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:path) { project.repository.disk_path }
-  let(:remove_path) { removal_path(path) }
   let(:async) { false } # execute or async_execute
 
   before do
@@ -24,7 +23,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(Project.unscoped.all).not_to include(project)
 
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
-      expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
     end
 
     it 'publishes a ProjectDeleted event with project id and namespace id' do
@@ -203,10 +201,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     it do
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
-    end
-
-    it do
-      expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_truthy
     end
   end
 
@@ -404,36 +398,13 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
-  context 'repository +deleted path removal' do
-    context 'regular phase' do
-      it 'schedules +deleted removal of existing repos' do
-        service = described_class.new(project, user, {})
-        allow(service).to receive(:schedule_stale_repos_removal)
-
-        expect(Repositories::ShellDestroyService).to receive(:new).and_call_original
-        expect(GitlabShellWorker).to receive(:perform_in)
-          .with(5.minutes, :remove_repository, project.repository_storage, removal_path(project.disk_path))
-
-        service.execute
+  context 'repository removal' do
+    it 'removal of existing repos' do
+      expect_next_instances_of(Repositories::DestroyService, 2) do |instance|
+        expect(instance).to receive(:execute).and_return(status: :success)
       end
-    end
 
-    context 'stale cleanup' do
-      let(:async) { true }
-
-      it 'schedules +deleted wiki and repo removal' do
-        allow(ProjectDestroyWorker).to receive(:perform_async)
-
-        expect(Repositories::ShellDestroyService).to receive(:new).with(project.repository).and_call_original
-        expect(GitlabShellWorker).to receive(:perform_in)
-          .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.disk_path))
-
-        expect(Repositories::ShellDestroyService).to receive(:new).with(project.wiki.repository).and_call_original
-        expect(GitlabShellWorker).to receive(:perform_in)
-          .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.wiki.disk_path))
-
-        destroy_project(project, user, {})
-      end
+      described_class.new(project, user, {}).execute
     end
   end
 
@@ -552,7 +523,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       expect(Project.unscoped.all).not_to include(project)
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
-      expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
       expect(project.all_pipelines).to be_empty
       expect(project.builds).to be_empty
     end
@@ -560,9 +530,5 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
   def destroy_project(project, user, params = {})
     described_class.new(project, user, params).public_send(async ? :async_execute : :execute)
-  end
-
-  def removal_path(path)
-    "#{path}+#{project.id}#{Repositories::DestroyService::DELETED_FLAG}"
   end
 end

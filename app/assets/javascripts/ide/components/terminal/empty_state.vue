@@ -55,7 +55,7 @@ export default {
         <gl-button
           :disabled="!isValid"
           category="primary"
-          variant="info"
+          variant="confirm"
           data-qa-selector="start_web_terminal_button"
           @click="onStart"
         >

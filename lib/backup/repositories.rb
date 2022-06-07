@@ -72,14 +72,26 @@ module Backup
     def project_relation
       scope = Project.includes(:route, :group, namespace: :owner)
       scope = scope.id_in(ProjectRepository.for_repository_storage(storages).select(:project_id)) if storages.any?
-      scope = scope.where_full_path_in(paths) if paths.any?
+      if paths.any?
+        scope = scope.where_full_path_in(paths).or(
+          Project.where(namespace_id: Namespace.where_full_path_in(paths).self_and_descendants)
+        )
+      end
+
       scope
     end
 
     def snippet_relation
       scope = Snippet.all
       scope = scope.id_in(SnippetRepository.for_repository_storage(storages).select(:snippet_id)) if storages.any?
-      scope = scope.joins(:project).merge(Project.where_full_path_in(paths)) if paths.any?
+      if paths.any?
+        scope = scope.joins(:project).merge(
+          Project.where_full_path_in(paths).or(
+            Project.where(namespace_id: Namespace.where_full_path_in(paths).self_and_descendants)
+          )
+        )
+      end
+
       scope
     end
 

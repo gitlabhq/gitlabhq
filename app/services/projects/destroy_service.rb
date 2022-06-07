@@ -10,11 +10,6 @@ module Projects
     def async_execute
       project.update_attribute(:pending_delete, true)
 
-      # Ensure no repository +deleted paths are kept,
-      # regardless of any issue with the ProjectDestroyWorker
-      # job process.
-      schedule_stale_repos_removal
-
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
       log_info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
     end
@@ -107,16 +102,6 @@ module Projects
       result = Repositories::DestroyService.new(repository).execute
 
       result[:status] == :success
-    end
-
-    def schedule_stale_repos_removal
-      repos = [project.repository, project.wiki.repository]
-
-      repos.each do |repository|
-        next unless repository
-
-        Repositories::ShellDestroyService.new(repository).execute(Repositories::ShellDestroyService::STALE_REMOVAL_DELAY)
-      end
     end
 
     def attempt_rollback(project, message)

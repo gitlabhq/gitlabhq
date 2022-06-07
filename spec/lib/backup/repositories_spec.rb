@@ -113,23 +113,46 @@ RSpec.describe Backup::Repositories do
     describe 'paths' do
       let_it_be(:project) { create(:project, :repository) }
 
-      let(:paths) { [project.full_path] }
+      context 'project path' do
+        let(:paths) { [project.full_path] }
 
-      it 'calls enqueue for all repositories on the specified project', :aggregate_failures do
-        excluded_project = create(:project, :repository)
-        excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
-        excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
+        it 'calls enqueue for all repositories on the specified project', :aggregate_failures do
+          excluded_project = create(:project, :repository)
+          excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
+          excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
 
-        subject.dump(destination, backup_id)
+          subject.dump(destination, backup_id)
 
-        expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
-        expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
-        expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
-        expect(strategy).to have_received(:finish!)
+          expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:finish!)
+        end
+      end
+
+      context 'group path' do
+        let(:paths) { [project.namespace.full_path] }
+
+        it 'calls enqueue for all repositories on all descendant projects', :aggregate_failures do
+          excluded_project = create(:project, :repository)
+          excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
+          excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
+
+          subject.dump(destination, backup_id)
+
+          expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:finish!)
+        end
       end
     end
   end
@@ -235,23 +258,46 @@ RSpec.describe Backup::Repositories do
     end
 
     context 'paths' do
-      let(:paths) { [project.full_path] }
+      context 'project path' do
+        let(:paths) { [project.full_path] }
 
-      it 'calls enqueue for all repositories on the specified project', :aggregate_failures do
-        excluded_project = create(:project, :repository)
-        excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
-        excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
+        it 'calls enqueue for all repositories on the specified project', :aggregate_failures do
+          excluded_project = create(:project, :repository)
+          excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
+          excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
 
-        subject.restore(destination)
+          subject.restore(destination)
 
-        expect(strategy).to have_received(:start).with(:restore, destination)
-        expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
-        expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
-        expect(strategy).to have_received(:finish!)
+          expect(strategy).to have_received(:start).with(:restore, destination)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:finish!)
+        end
+      end
+
+      context 'group path' do
+        let(:paths) { [project.namespace.full_path] }
+
+        it 'calls enqueue for all repositories on all descendant projects', :aggregate_failures do
+          excluded_project = create(:project, :repository)
+          excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
+          excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
+
+          subject.restore(destination)
+
+          expect(strategy).to have_received(:start).with(:restore, destination)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_project_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
+          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:finish!)
+        end
       end
     end
   end

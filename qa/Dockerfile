@@ -1,4 +1,7 @@
-FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
+ARG DOCKER_VERSION
+ARG CHROME_VERSION
+
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive"

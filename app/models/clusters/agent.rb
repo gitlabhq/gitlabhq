@@ -46,5 +46,9 @@ module Clusters
         .offset(ACTIVITY_EVENT_LIMIT - 1)
         .pick(:recorded_at)
     end
+
+    def to_ability_name
+      :cluster
+    end
   end
 end

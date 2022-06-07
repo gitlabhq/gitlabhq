@@ -31,7 +31,6 @@ module Snippets
     rescue DestroyError
       service_response_error('Failed to remove snippet repository.', 400)
     rescue StandardError
-      attempt_rollback_repository
       service_response_error('Failed to remove snippet.', 400)
     end
 
@@ -43,10 +42,6 @@ module Snippets
       raise DestroyError if result[:status] == :error
 
       snippet.destroy!
-    end
-
-    def attempt_rollback_repository
-      Repositories::DestroyRollbackService.new(snippet.repository).execute
     end
 
     def user_can_delete_snippet?

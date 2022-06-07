@@ -12328,15 +12328,6 @@ CREATE TABLE ci_build_report_results (
     data jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
-CREATE SEQUENCE ci_build_report_results_build_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_build_report_results_build_id_seq OWNED BY ci_build_report_results.build_id;
-
 CREATE TABLE ci_build_trace_chunks (
     id bigint NOT NULL,
     chunk_index integer NOT NULL,
@@ -22626,8 +22617,6 @@ ALTER TABLE ONLY chat_teams ALTER COLUMN id SET DEFAULT nextval('chat_teams_id_s
 ALTER TABLE ONLY ci_build_needs ALTER COLUMN id SET DEFAULT nextval('ci_build_needs_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_build_pending_states ALTER COLUMN id SET DEFAULT nextval('ci_build_pending_states_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_build_report_results ALTER COLUMN build_id SET DEFAULT nextval('ci_build_report_results_build_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_build_trace_chunks ALTER COLUMN id SET DEFAULT nextval('ci_build_trace_chunks_id_seq'::regclass);
 

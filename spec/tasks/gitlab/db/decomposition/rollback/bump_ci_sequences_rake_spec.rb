@@ -19,7 +19,7 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
 
   let(:main_sequence_name) { 'issues_id_seq' }
   let(:ci_sequence_name) { 'ci_build_needs_id_seq' }
-  let(:ignored_ci_sequence_name) { 'ci_build_report_results_build_id_seq' }
+  let(:ignored_ci_sequence_name) { 'ci_job_artifact_states_job_artifact_id_seq' }
 
   # This is just to make sure that all of the sequences start with `is_called=True`
   # which means that the next call to nextval() is going to increment the sequence.

@@ -12098,12 +12098,6 @@ msgstr ""
 msgid "DeleteProject|Failed to remove wiki repository. Please try again or contact administrator."
 msgstr ""
 
-msgid "DeleteProject|Failed to restore project repository. Please contact the administrator."
-msgstr ""
-
-msgid "DeleteProject|Failed to restore wiki repository. Please contact the administrator."
-msgstr ""
-
 msgid "DeleteValueStream|'%{name}' Value Stream deleted"
 msgstr ""
 
