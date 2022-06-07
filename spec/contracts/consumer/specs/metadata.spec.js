@@ -3,7 +3,7 @@
 const { pactWith } = require('jest-pact');
 
 const { Metadata } = require('../fixtures/metadata.fixture');
-const { getMetadata } = require('../endpoints/merge_request');
+const { getMetadata } = require('../endpoints/merge_requests');
 
 pactWith(
   {
@@ -17,10 +17,11 @@ pactWith(
     describe('Metadata Endpoint', () => {
       beforeEach(() => {
         const interaction = {
+          state: 'a merge request exists',
           ...Metadata.request,
           willRespondWith: Metadata.success,
         };
-        return provider.addInteraction(interaction);
+        provider.addInteraction(interaction);
       });
 
       it('return a successful body', () => {

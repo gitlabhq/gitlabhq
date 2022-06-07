@@ -9,7 +9,7 @@ exports.getMetadata = (endpoint) => {
     .request({
       method: 'GET',
       baseURL: url,
-      url: '/diffs_metadata.json',
+      url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
       headers: { Accept: '*/*' },
     })
     .then((response) => response.data);
@@ -22,7 +22,7 @@ exports.getDiscussions = (endpoint) => {
     .request({
       method: 'GET',
       baseURL: url,
-      url: '/discussions.json',
+      url: '/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json',
       headers: { Accept: '*/*' },
     })
     .then((response) => response.data);
@@ -35,7 +35,7 @@ exports.getDiffs = (endpoint) => {
     .request({
       method: 'GET',
       baseURL: url,
-      url: '/diffs_batch.json?page=0',
+      url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json?page=0',
       headers: { Accept: '*/*' },
     })
     .then((response) => response.data);

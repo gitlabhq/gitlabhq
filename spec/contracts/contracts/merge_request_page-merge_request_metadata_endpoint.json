@@ -8,9 +8,10 @@
   "interactions": [
     {
       "description": "a request for Metadata",
+      "providerState": "a merge request exists",
       "request": {
         "method": "GET",
-        "path": "/diffs_metadata.json",
+        "path": "/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json",
         "headers": {
           "Accept": "*/*"
         }

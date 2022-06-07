@@ -51,7 +51,7 @@ To view value stream analytics for your group:
         during the date range.
 1. Optional. Sort results by ascending or descending:
       - To sort by most recent or oldest workflow item, select the **Last event** header.
-      - To sort by most or least amount of time spent in each stage, select the **Time** header.
+      - To sort by most or least amount of time spent in each stage, select the **Duration** header.
 
 A badge next to the workflow items table header shows the number of workflow items that
 completed during the selected stage.

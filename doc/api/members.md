@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Group and project members API **(FREE)**
 
+> `created_by` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28789) in GitLab 14.10.
+
 ## Valid access levels
 
 The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:

@@ -5,6 +5,9 @@ import { mapState } from 'vuex';
 
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue` instead.
 export default {
   components: {
     GlLabel,

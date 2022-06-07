@@ -2,6 +2,9 @@
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue` instead.
 export default {
   components: {
     GlButton,

@@ -77,7 +77,7 @@ const Diffs = {
     uponReceiving: 'a request for diff lines',
     withRequest: {
       method: 'GET',
-      path: '/diffs_batch.json',
+      path: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json',
       headers: {
         Accept: '*/*',
       },

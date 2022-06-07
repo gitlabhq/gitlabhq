@@ -4,6 +4,7 @@ import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -761,6 +762,25 @@ describe('Design management index page', () => {
 
       expect(findDesigns().at(0).props('id')).toBe('2');
     });
+
+    it.each`
+      breakpoint | reorderDisabled
+      ${'xs'}    | ${true}
+      ${'sm'}    | ${false}
+      ${'md'}    | ${false}
+      ${'lg'}    | ${false}
+      ${'xl'}    | ${false}
+    `(
+      'sets draggable disabled value to $reorderDisabled when breakpoint is $breakpoint',
+      async ({ breakpoint, reorderDisabled }) => {
+        jest.spyOn(breakpointInstance, 'getBreakpointSize').mockReturnValue(breakpoint);
+
+        createComponentWithApollo({});
+        await waitForPromises();
+
+        expect(draggableAttributes().disabled).toBe(reorderDisabled);
+      },
+    );
 
     it('prevents reordering when reorderDesigns mutation is in progress', async () => {
       createComponentWithApollo({});

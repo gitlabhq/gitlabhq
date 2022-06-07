@@ -402,6 +402,8 @@ group :development, :test do
   gem 'test_file_finder', '~> 0.1.3'
 
   gem 'sigdump', '~> 0.2.4', require: 'sigdump/setup'
+
+  gem 'pact', '~> 1.12'
 end
 
 group :development, :test, :danger do

@@ -44,7 +44,7 @@ To view value stream analytics for your project:
       - In the **To** field, select an end date.
 1. Optional. Sort results by ascending or descending:
       - To sort by most recent or oldest workflow item, select the **Last event** header.
-      - To sort by most or least amount of time spent in each stage, select the **Time** header.
+      - To sort by most or least amount of time spent in each stage, select the **Duration** header.
 
 The table shows a list of related workflow items for the selected stage. Based on the stage you choose, this can be:
 

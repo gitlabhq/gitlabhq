@@ -13,6 +13,9 @@ import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/
 
 import LabelItem from './label_item.vue';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue` instead.
 export default {
   components: {
     GlIntersectionObserver,

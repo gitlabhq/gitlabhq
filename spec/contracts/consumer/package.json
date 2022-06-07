@@ -12,6 +12,6 @@
     "prettier": "^2.5.1"
   },
   "scripts": {
-    "test": "jest specs/ --runInBand"
+    "test": "jest --runInBand"
   }
 }

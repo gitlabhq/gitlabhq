@@ -2,6 +2,9 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget` instead.
 export default {
   directives: {
     GlTooltip: GlTooltipDirective,

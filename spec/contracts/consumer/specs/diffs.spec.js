@@ -3,7 +3,7 @@
 const { pactWith } = require('jest-pact');
 
 const { Diffs } = require('../fixtures/diffs.fixture');
-const { getDiffs } = require('../endpoints/merge_request');
+const { getDiffs } = require('../endpoints/merge_requests');
 
 pactWith(
   {
@@ -17,10 +17,11 @@ pactWith(
     describe('Diffs Endpoint', () => {
       beforeEach(() => {
         const interaction = {
+          state: 'a merge request with diffs exists',
           ...Diffs.request,
           willRespondWith: Diffs.success,
         };
-        return provider.addInteraction(interaction);
+        provider.addInteraction(interaction);
       });
 
       it('return a successful body', () => {

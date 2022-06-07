@@ -8,9 +8,10 @@
   "interactions": [
     {
       "description": "a request for discussions",
+      "providerState": "a merge request with discussions exists",
       "request": {
         "method": "GET",
-        "path": "/discussions.json",
+        "path": "/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json",
         "headers": {
           "Accept": "*/*"
         }

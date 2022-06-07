@@ -74,7 +74,7 @@ const Discussions = {
     uponReceiving: 'a request for discussions',
     withRequest: {
       method: 'GET',
-      path: '/discussions.json',
+      path: '/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json',
       headers: {
         Accept: '*/*',
       },

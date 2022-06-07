@@ -8,9 +8,10 @@
   "interactions": [
     {
       "description": "a request for diff lines",
+      "providerState": "a merge request with diffs exists",
       "request": {
         "method": "GET",
-        "path": "/diffs_batch.json",
+        "path": "/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json",
         "query": "page=0",
         "headers": {
           "Accept": "*/*"

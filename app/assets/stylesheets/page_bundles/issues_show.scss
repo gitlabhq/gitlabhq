@@ -24,8 +24,9 @@
 
     /* The inside bullet aligns itself to the bottom, which we see when text to the right of
      * a multi-line list item wraps. We fix this by aligning it to the top, and excluding
-     * other elements adversely affected by this. Targeting ::marker doesn't seem to work. */
-    > *:not(code):not(gl-emoji):not(input):not(.gl-label):not(.js-add-task) {
+     * other elements. Targeting ::marker doesn't seem to work, instead we exclude custom elements
+     * or anything with a class */
+    > *:not(gl-emoji, code, [class]) {
       vertical-align: top;
     }
 

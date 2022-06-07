@@ -4,6 +4,8 @@ module QA
   RSpec.describe 'Create', :runner do
     describe 'Merge requests' do
       shared_examples 'merge when pipeline succeeds' do |repeat: 1|
+        let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
+
         let(:project) do
           Resource::Project.fabricate_via_api! do |project|
             project.name = 'merge-when-pipeline-succeeds'
@@ -14,8 +16,29 @@ module QA
         let!(:runner) do
           Resource::Runner.fabricate! do |runner|
             runner.project = project
-            runner.name = "runner-for-#{project.name}"
-            runner.tags = ["runner-for-#{project.name}"]
+            runner.name = runner_name
+            runner.tags = [runner_name]
+          end
+        end
+
+        let!(:ci_file) do
+          Resource::Repository::Commit.fabricate_via_api! do |commit|
+            commit.project = project
+            commit.commit_message = 'Add .gitlab-ci.yml'
+            commit.add_files(
+              [
+                {
+                  file_path: '.gitlab-ci.yml',
+                  content: <<~YAML
+                    test:
+                      tags: ["#{runner_name}"]
+                      script: sleep 5
+                      only:
+                        - merge_requests
+                  YAML
+                }
+              ]
+            )
           end
         end
 
@@ -25,74 +48,29 @@ module QA
 
         after do
           runner&.remove_via_api!
-          project&.remove_via_api!
         end
 
         it 'merges after pipeline succeeds' do
           transient_test = repeat > 1
 
-          # Push a new pipeline config file
-          Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.project = project
-            commit.commit_message = 'Add .gitlab-ci.yml'
-            commit.add_files(
-              [
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: <<~EOF
-                    test:
-                      tags: ["runner-for-#{project.name}"]
-                      script: sleep 30
-                      only:
-                        - merge_requests
-                  EOF
-                }
-              ]
-            )
-          end
-
           repeat.times do |i|
-            QA::Runtime::Logger.info("Transient bug test - Trial #{i}") if transient_test
+            QA::Runtime::Logger.info("Transient bug test - Trial #{i + 1}") if transient_test
 
-            branch_name = "mr-test-#{SecureRandom.hex(6)}-#{i}"
-
-            # Create a branch that will be merged into the default branch
-            Resource::Repository::ProjectPush.fabricate! do |project_push|
-              project_push.project = project
-              project_push.new_branch = true
-              project_push.branch_name = branch_name
-              project_push.file_name = "#{branch_name}.txt"
-            end
-
-            # Create a merge request to merge the branch we just created
+            # Create a merge request to trigger pipeline
             merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|
               merge_request.project = project
-              merge_request.source_branch = branch_name
-              merge_request.no_preparation = true
+              merge_request.description = Faker::Lorem.sentence
+              merge_request.target_new_branch = false
+              merge_request.source_branch = "mr-test-#{SecureRandom.hex(6)}-#{i + 1}"
+              merge_request.file_name = Faker::Lorem.word
+              merge_request.file_content = Faker::Lorem.sentence
             end
 
             # Load the page so that the browser is as prepared as possible to display the pipeline in progress when we
             # start it.
             merge_request.visit!
 
-            # Push a new file to trigger a new pipeline
-            Resource::Repository::Commit.fabricate_via_api! do |commit|
-              commit.project = project
-              commit.commit_message = 'Add new file'
-              commit.branch = branch_name
-              commit.add_files(
-                [
-                  {
-                    file_path: "#{branch_name}-file.md",
-                    content: "file content"
-                  }
-                ]
-              )
-            end
-
             Page::MergeRequest::Show.perform do |mr|
-              mr.refresh
-
               # Part of the challenge with this test is that the MR widget has many components that could be displayed
               # and many errors states that those components could encounter. Most of the time few of those
               # possible components will be relevant, so it would be inefficient for this test to check for each of
@@ -102,8 +80,6 @@ module QA
               mr.wait_until_ready_to_merge(transient_test: transient_test)
 
               mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
-                merge_request.reload!
-
                 # Click the MWPS button if we can
                 break mr.merge_when_pipeline_succeeds! if mr.has_element?(:merge_button, text: 'Merge when pipeline succeeds')
 

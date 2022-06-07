@@ -208,6 +208,31 @@ RSpec.describe IdeController do
 
         it_behaves_like 'user access rights check'
       end
+
+      describe 'Snowplow view event', :snowplow do
+        it 'is tracked' do
+          subject
+
+          expect_snowplow_event(
+            category: described_class.to_s,
+            action: 'web_ide_views',
+            namespace: project.namespace,
+            user: user
+          )
+        end
+
+        context 'when route_hll_to_snowplow_phase2 FF is disabled' do
+          before do
+            stub_feature_flags(route_hll_to_snowplow_phase2: false)
+          end
+
+          it 'does not track Snowplow event' do
+            subject
+
+            expect_no_snowplow_event
+          end
+        end
+      end
     end
   end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlButton, GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
@@ -96,6 +97,9 @@ export default {
     },
     isSaving() {
       return this.filesToBeSaved.length > 0;
+    },
+    isMobile() {
+      return GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
     canCreateDesign() {
       return this.permissions.createDesign;
@@ -429,7 +433,7 @@ export default {
       <vue-draggable
         v-else
         :value="designs"
-        :disabled="!isLatestVersion || isReorderingInProgress"
+        :disabled="!isLatestVersion || isReorderingInProgress || isMobile"
         v-bind="$options.dragOptions"
         tag="ol"
         draggable=".js-design-tile"

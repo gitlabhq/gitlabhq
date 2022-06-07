@@ -85,7 +85,7 @@ const Metadata = {
     uponReceiving: 'a request for Metadata',
     withRequest: {
       method: 'GET',
-      path: '/diffs_metadata.json',
+      path: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
       headers: {
         Accept: '*/*',
       },

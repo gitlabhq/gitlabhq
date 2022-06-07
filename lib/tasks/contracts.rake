@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+return if Rails.env.production?
+
 require 'pact/tasks/verification_task'
 
-contracts = File.expand_path('../contracts', __dir__)
+contracts = File.expand_path('../../spec/contracts', __dir__)
 provider = File.expand_path('provider', contracts)
 
 # rubocop:disable Rails/RakeEnvironment
@@ -11,21 +13,21 @@ namespace :contracts do
     Pact::VerificationTask.new(:metadata) do |pact|
       pact.uri(
         "#{contracts}/contracts/merge_request_page-merge_request_metadata_endpoint.json",
-        pact_helper: "#{provider}/spec/metadata_helper.rb"
+        pact_helper: "#{provider}/specs/metadata_helper.rb"
       )
     end
 
     Pact::VerificationTask.new(:discussions) do |pact|
       pact.uri(
         "#{contracts}/contracts/merge_request_page-merge_request_discussions_endpoint.json",
-        pact_helper: "#{provider}/spec/discussions_helper.rb"
+        pact_helper: "#{provider}/specs/discussions_helper.rb"
       )
     end
 
     Pact::VerificationTask.new(:diffs) do |pact|
       pact.uri(
         "#{contracts}/contracts/merge_request_page-merge_request_diffs_endpoint.json",
-        pact_helper: "#{provider}/spec/diffs_helper.rb"
+        pact_helper: "#{provider}/specs/diffs_helper.rb"
       )
     end
 
