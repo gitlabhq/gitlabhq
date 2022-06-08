@@ -31,12 +31,9 @@ export default {
     GlTabs,
     StatesTable,
   },
+  inject: ['projectPath'],
   props: {
     emptyStateImage: {
-      required: true,
-      type: String,
-    },
-    projectPath: {
       required: true,
       type: String,
     },

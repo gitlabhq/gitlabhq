@@ -4,22 +4,22 @@
     fill: $primary-color;
   }
 
+  // For the pipeline mini graph, we pass a custom 'gl-border' so that we can enforce
+  // a border of 1px instead of the thicker svg borders to adhere to design standards.
+  // If we implement the component with 'isBorderless' and also pass that border,
+  // this css is to dynamically apply the correct border color for those specific icons.
+  &.borderless {
+    border-color: $primary-color;
+  }
+
   &.interactive {
     &:hover {
-      background: $primary-color;
-
-      .gl-icon {
-        --svg-status-bg: #{$svg-color};
-        box-shadow: 0 0 0 1px $primary-color;
-      }
+      background: $svg-color;
     }
 
+    &:hover,
     &.active {
-      background: $primary-color;
-
-      .gl-icon {
-        box-shadow: 0 0 0 1px $primary-color;
-      }
+      box-shadow: 0 0 0 1px $primary-color;
     }
   }
 }

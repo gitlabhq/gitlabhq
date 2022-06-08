@@ -208,7 +208,7 @@ The following Elasticsearch settings are available:
 | `URL`                                                 | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields described below. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. |
 | `Username`                                                 | The `username` of your Elasticsearch instance. |
 | `Password`                                                 | The password of your Elasticsearch instance. |
-| `Number of Elasticsearch shards`                      | Elasticsearch indexes are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indexes with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
+| `Number of Elasticsearch shards`                      | Elasticsearch indices are split into multiple shards for performance reasons. In general, you should use at least 5 shards, and indices with tens of millions of documents need to have more shards ([see below](#guidance-on-choosing-optimal-cluster-configuration)). Changes to this value do not take effect until the index is recreated. You can read more about tradeoffs in the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/scalability.html). |
 | `Number of Elasticsearch replicas`                    | Each Elasticsearch shard can have a number of replicas. These are a complete copy of the shard, and can provide increased query performance or resilience against hardware failure. Increasing this value increases total disk space required by the index. |
 | `Limit the number of namespaces and projects that can be indexed`   | Enabling this allows you to select namespaces and projects to index. All other namespaces and projects use database search instead. If you enable this option but do not select any namespaces or projects, none are indexed. [Read more below](#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
 | `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html), [AWS EC2 Instance Profile Credentials](https://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli), or [AWS ECS Tasks Credentials](https://docs.aws.amazon.com/AmazonECS/latest/userguide/task-iam-roles.html). Please refer to [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details of AWS hosted OpenSearch domain access policy configuration. |
@@ -284,7 +284,7 @@ To disable the Elasticsearch integration:
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Uncheck **Elasticsearch indexing** and **Search with Elasticsearch enabled**.
 1. Select **Save changes**.
-1. Optional. Delete the existing indexes:
+1. Optional. Delete the existing indices:
 
    ```shell
    # Omnibus installations
@@ -467,7 +467,7 @@ version](../update/index.md#upgrading-to-a-new-major-version).
 Rake tasks are available to:
 
 - [Build and install](#build-and-install) the indexer.
-- Delete indexes when [disabling Elasticsearch](#disable-advanced-search).
+- Delete indices when [disabling Elasticsearch](#disable-advanced-search).
 - Add GitLab data to an index.
 
 The following are some available Rake tasks:
@@ -480,8 +480,8 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created.                                                                                                      |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. Note that this command results in a complete wipe of the index, and it should be used with caution.                                                                                              |
-| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indexes (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indexes and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
+| [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indices (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
+| [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indices and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |
 | [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)     | Wrapper task for `gitlab:elastic:delete_index` and `gitlab:elastic:create_empty_index`.                                                                       |
 | [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Performs an Elasticsearch import that indexes the snippets data.                                                                                                                          |
 | [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)             | Displays which projects are not indexed.                                                                                                                                                  |
@@ -567,7 +567,7 @@ Setup](../administration/reference_architectures/index.md) or creating [extra
 Sidekiq processes](../administration/operations/extra_sidekiq_processes.md).
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).
-1. Create empty indexes:
+1. Create empty indices:
 
    ```shell
    # Omnibus installations
@@ -950,7 +950,7 @@ sudo gitlab-rake gitlab:elastic:clear_locked_projects
 
 ### `Can't specify parent if no parent field has been configured` error
 
-If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indexes, you get
+If you enabled Elasticsearch before GitLab 8.12 and have not rebuilt indices, you get
 exceptions in lots of different cases:
 
 ```plaintext
@@ -967,7 +967,7 @@ Elasticsearch::Transport::Transport::Errors::BadRequest([400] {
 }):
 ```
 
-This is because we changed the index mapping in GitLab 8.12 and the old indexes should be removed and built from scratch again,
+This is because we changed the index mapping in GitLab 8.12 and the old indices should be removed and built from scratch again,
 see details in the [update guide](../update/upgrading_from_source.md).
 
 ### `Elasticsearch::Transport::Transport::Errors::BadRequest`
@@ -1069,7 +1069,7 @@ sudo -u git -H bundle exec rake gitlab:elastic:index
 
 ### How does Advanced Search handle private projects?
 
-Advanced Search stores all the projects in the same Elasticsearch indexes,
+Advanced Search stores all the projects in the same Elasticsearch indices,
 however, searches only surface results that can be viewed by the user.
 Advanced Search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.

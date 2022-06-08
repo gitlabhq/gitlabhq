@@ -176,7 +176,7 @@ export default {
       }}</label>
       <div class="gl-display-flex gl-flex-direction-column">
         <div
-          class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row align-items-start gl-md-align-items-center"
+          class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-md-align-items-center"
         >
           <new-environments-dropdown
             :id="environmentsDropdownId"

@@ -22,11 +22,11 @@ To authenticate to the Terraform module registry, you need either:
 
 When you publish a Terraform Module, if it does not exist, it is created.
 
-If a package with the same name and version already exists, it will not be created. It does not overwrite the existing package.
-
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- A package with the same name and version must not already exist.
+- Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
+- You must [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
 
 ```plaintext
 PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module-version/file
@@ -35,8 +35,8 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/index.md#namespaced-path-encoding).                                    |
-| `module-name`      | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), or hyphens (`-`) and cannot exceed 64 characters.
-| `module-system`    | string          | yes      | The package system. It can contain only lowercase letters (`a-z`) and numbers (`0-9`), and cannot exceed 64 characters. More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
+| `module-name`      | string          | yes      | The package name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`).
+| `module-system`    | string          | yes      | The package system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z), digits (0-9), and hyphens (`-`). More information can be found in the [Terraform Module Registry Protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
 | `module-version`   | string          | yes      | The package version. It must be valid according to the [Semantic Versioning Specification](https://semver.org/).
 
 Provide the file content in the request body.

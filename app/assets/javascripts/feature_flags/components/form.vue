@@ -211,16 +211,16 @@ export default {
       </div>
     </fieldset>
 
-    <div class="form-actions">
+    <div class="gl-mr-6">
       <gl-button
         ref="submitButton"
         type="button"
         variant="confirm"
-        class="js-ff-submit col-xs-12"
+        class="js-ff-submit gl-mr-2"
         @click="handleSubmit"
         >{{ submitText }}</gl-button
       >
-      <gl-button :href="cancelPath" class="js-ff-cancel col-xs-12 float-right">
+      <gl-button :href="cancelPath" class="js-ff-cancel">
         {{ __('Cancel') }}
       </gl-button>
     </div>

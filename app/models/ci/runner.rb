@@ -77,6 +77,7 @@ module Ci
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
 
     before_save :ensure_token
+    before_save :update_semver, if: -> { version_changed? }
 
     scope :active, -> (value = true) { where(active: value) }
     scope :paused, -> { active(false) }
@@ -429,6 +430,7 @@ module Ci
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
         values[:contacted_at] = Time.current
         values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
+        values[:semver] = semver_from_version(values[:version])
 
         cache_attributes(values)
 
@@ -447,6 +449,16 @@ module Ci
 
     def uncached_contacted_at
       read_attribute(:contacted_at)
+    end
+
+    def semver_from_version(version)
+      parsed_runner_version = ::Gitlab::VersionInfo.parse(version)
+
+      parsed_runner_version.valid? ? parsed_runner_version.to_s : nil
+    end
+
+    def update_semver
+      self.semver = semver_from_version(self.version)
     end
 
     def namespace_ids

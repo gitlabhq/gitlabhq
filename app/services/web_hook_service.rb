@@ -234,23 +234,22 @@ class WebHookService
   end
 
   def log_rate_limited
-    Gitlab::AuthLogger.error(
-      message: 'Webhook rate limit exceeded',
-      hook_id: hook.id,
-      hook_type: hook.type,
-      hook_name: hook_name,
-      **Gitlab::ApplicationContext.current
-    )
+    log_auth_error('Webhook rate limit exceeded')
   end
 
   def log_recursion_blocked
+    log_auth_error(
+      'Recursive webhook blocked from executing',
+      recursion_detection: ::Gitlab::WebHooks::RecursionDetection.to_log(hook)
+    )
+  end
+
+  def log_auth_error(message, params = {})
     Gitlab::AuthLogger.error(
-      message: 'Recursive webhook blocked from executing',
-      hook_id: hook.id,
-      hook_type: hook.type,
-      hook_name: hook_name,
-      recursion_detection: ::Gitlab::WebHooks::RecursionDetection.to_log(hook),
-      **Gitlab::ApplicationContext.current
+      params.merge(
+        { message: message, hook_id: hook.id, hook_type: hook.type, hook_name: hook_name },
+        Gitlab::ApplicationContext.current
+      )
     )
   end
 

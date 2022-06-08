@@ -20,7 +20,7 @@
  */
 
 import { Mark } from 'prosemirror-model';
-import { visitParents } from 'unist-util-visit-parents';
+import { visitParents, SKIP } from 'unist-util-visit-parents';
 import { toString } from 'hast-util-to-string';
 import { isFunction, isString, noop } from 'lodash';
 
@@ -143,6 +143,20 @@ class HastToProseMirrorConverterState {
     return this.stack.length === 0;
   }
 
+  findInStack(fn) {
+    const last = this.stack.length - 1;
+
+    for (let i = last; i >= 0; i -= 1) {
+      const item = this.stack[i];
+
+      if (fn(item) === true) {
+        return item;
+      }
+    }
+
+    return null;
+  }
+
   /**
    * Creates a text node and adds it to
    * the top node in the stack.
@@ -254,34 +268,20 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
   const factories = {
     root: {
       selector: 'root',
-      handle: (state, hastNode) =>
-        state.openNode(
-          schema.topNodeType,
-          hastNode,
-          {},
-          {
-            wrapTextInParagraph: true,
-          },
-        ),
+      wrapInParagraph: true,
+      handle: (state, hastNode) => state.openNode(schema.topNodeType, hastNode, {}, {}),
     },
     text: {
       selector: 'text',
-      handle: (state, hastNode, parent) => {
-        const { factorySpec } = state.top;
-        const { processText, wrapTextInParagraph } = factorySpec;
+      handle: (state, hastNode) => {
+        const found = state.findInStack((node) => isFunction(node.factorySpec.processText));
         const { value: text } = hastNode;
 
         if (/^\s+$/.test(text)) {
           return;
         }
 
-        if (wrapTextInParagraph === true) {
-          state.openNode(schema.nodeType('paragraph'), hastNode, getAttrs({}, parent, [], source));
-          state.addText(schema, isFunction(processText) ? processText(text) : text);
-          state.closeNode();
-        } else {
-          state.addText(schema, text);
-        }
+        state.addText(schema, found ? found.factorySpec.processText(text) : text);
       },
     },
   };
@@ -291,6 +291,7 @@ const createProseMirrorNodeFactories = (schema, proseMirrorFactorySpecs, source)
       skipChildren: factorySpec.skipChildren,
       processText: factorySpec.processText,
       parent: factorySpec.parent,
+      wrapInParagraph: factorySpec.wrapInParagraph,
     };
 
     if (factorySpec.type === 'block') {
@@ -370,6 +371,75 @@ const findParent = (ancestors, parent) => {
   return ancestors[ancestors.length - 1];
 };
 
+const calcTextNodePosition = (textNode) => {
+  const { position, value, type } = textNode;
+
+  if (type !== 'text' || (!position.start && !position.end) || (position.start && position.end)) {
+    return textNode.position;
+  }
+
+  const span = value.length - 1;
+
+  if (position.start && !position.end) {
+    const { start } = position;
+
+    return {
+      start,
+      end: {
+        row: start.row,
+        column: start.column + span,
+        offset: start.offset + span,
+      },
+    };
+  }
+
+  const { end } = position;
+
+  return {
+    start: {
+      row: end.row,
+      column: end.column - span,
+      offset: end.offset - span,
+    },
+    end,
+  };
+};
+
+const removeEmptyTextNodes = (nodes) =>
+  nodes.filter(
+    (node) => node.type !== 'text' || (node.type === 'text' && !/^\s+$/.test(node.value)),
+  );
+
+const wrapInlineElements = (nodes, wrappableTags) =>
+  nodes.reduce((children, child) => {
+    const previous = children[children.length - 1];
+
+    if (child.type !== 'text' && !wrappableTags.includes(child.tagName)) {
+      return [...children, child];
+    }
+
+    const wrapperExists = previous?.properties.wrapper;
+
+    if (wrapperExists) {
+      const wrapper = previous;
+
+      wrapper.position.end = child.position.end;
+      wrapper.children.push(child);
+
+      return children;
+    }
+
+    const wrapper = {
+      type: 'element',
+      tagName: 'p',
+      position: calcTextNodePosition(child),
+      children: [child],
+      properties: { wrapper: true },
+    };
+
+    return [...children, wrapper];
+  }, []);
+
 /**
  * Converts a Hast AST to a ProseMirror document based on a series
  * of specifications that describe how to map all the nodes of the former
@@ -445,10 +515,11 @@ const findParent = (ancestors, parent) => {
  * 2. hasParents: All the hast node’s ancestors up to the root node
  * 3. source: Markdown source file’s content
  *
- * **wrapTextInParagraph**
+ * **wrapInParagraph**
  *
- * This property only applies to block nodes. If a block node contains text,
- * it will wrap that text in a paragraph. This is useful for ProseMirror block
+ * This property only applies to block nodes. If a block node contains inline
+ * elements like text, images, links, etc, the converter will wrap those inline
+ * elements in a paragraph. This is useful for ProseMirror block
  * nodes that don’t allow text directly such as list items and tables.
  *
  * **processText**
@@ -485,7 +556,13 @@ const findParent = (ancestors, parent) => {
  *
  * @returns A ProseMirror document
  */
-export const createProseMirrorDocFromMdastTree = ({ schema, factorySpecs, tree, source }) => {
+export const createProseMirrorDocFromMdastTree = ({
+  schema,
+  factorySpecs,
+  wrappableTags,
+  tree,
+  source,
+}) => {
   const proseMirrorNodeFactories = createProseMirrorNodeFactories(schema, factorySpecs, source);
   const state = new HastToProseMirrorConverterState();
 
@@ -502,9 +579,23 @@ export const createProseMirrorDocFromMdastTree = ({ schema, factorySpecs, tree, 
 
     const parent = findParent(ancestors, factory.parent);
 
+    if (factory.wrapInParagraph) {
+      /**
+       * Modifying parameters is a bad practice. For performance reasons,
+       * the author of the unist-util-visit-parents function recommends
+       * modifying nodes in place to avoid traversing the Abstract Syntax
+       * Tree more than once
+       */
+      // eslint-disable-next-line no-param-reassign
+      hastNode.children = wrapInlineElements(
+        removeEmptyTextNodes(hastNode.children),
+        wrappableTags,
+      );
+    }
+
     factory.handle(state, hastNode, parent);
 
-    return factory.skipChildren === true ? 'skip' : true;
+    return factory.skipChildren === true ? SKIP : true;
   });
 
   let doc;

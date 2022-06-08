@@ -312,8 +312,7 @@ The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#reports-json-format),
 [DAST](../../user/application_security/dast/#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
-[Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format),
-and [Cluster Image Scanning](../../user/application_security/cluster_image_scanning/index.md#reports-json-format).
+and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)
 
 You can find the schemas for these scanners here:
 

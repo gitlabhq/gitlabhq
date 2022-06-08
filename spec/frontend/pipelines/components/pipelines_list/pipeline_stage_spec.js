@@ -105,6 +105,17 @@ describe('Pipelines stage component', () => {
       expect(findDropdownToggle().exists()).toBe(true);
       expect(findCiIcon().exists()).toBe(true);
     });
+
+    it('should render a borderless ci-icon', () => {
+      expect(findCiIcon().exists()).toBe(true);
+      expect(findCiIcon().props('isBorderless')).toBe(true);
+      expect(findCiIcon().classes('borderless')).toBe(true);
+    });
+
+    it('should render a ci-icon with a custom border class', () => {
+      expect(findCiIcon().exists()).toBe(true);
+      expect(findCiIcon().classes('gl-border')).toBe(true);
+    });
   });
 
   describe('when update dropdown is changed', () => {

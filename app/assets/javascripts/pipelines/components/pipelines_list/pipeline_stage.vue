@@ -127,12 +127,13 @@ export default {
   >
     <template #button-content>
       <ci-icon
+        is-borderless
         is-interactive
         css-classes="gl-rounded-full"
         :is-active="isDropdownOpen"
         :size="24"
         :status="stage.status"
-        class="gl-align-items-center gl-display-inline-flex gl-z-index-1"
+        class="gl-align-items-center gl-border gl-display-inline-flex gl-z-index-1"
       />
     </template>
     <div

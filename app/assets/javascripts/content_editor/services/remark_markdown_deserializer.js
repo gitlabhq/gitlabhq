@@ -2,6 +2,8 @@ import { isString } from 'lodash';
 import { render } from '~/lib/gfm';
 import { createProseMirrorDocFromMdastTree } from './hast_to_prosemirror_converter';
 
+const wrappableTags = ['img', 'br', 'code', 'i', 'em', 'b', 'strong', 'a', 'strike', 's', 'del'];
+
 const isTaskItem = (hastNode) => {
   const { className } = hastNode.properties;
 
@@ -20,9 +22,9 @@ const factorySpecs = {
   paragraph: { type: 'block', selector: 'p' },
   listItem: {
     type: 'block',
-    wrapTextInParagraph: true,
-    processText: (text) => text.trim(),
+    wrapInParagraph: true,
     selector: (hastNode) => hastNode.tagName === 'li' && !hastNode.properties.className,
+    processText: (text) => text.trimRight(),
   },
   orderedList: {
     type: 'block',
@@ -74,12 +76,12 @@ const factorySpecs = {
   },
   taskItem: {
     type: 'block',
-    wrapTextInParagraph: true,
-    processText: (text) => text.trim(),
+    wrapInParagraph: true,
     selector: isTaskItem,
     getAttrs: (hastNode) => ({
       checked: hastNode.children[0].properties.checked,
     }),
+    processText: (text) => text.trimLeft(),
   },
   taskItemCheckbox: {
     type: 'ignore',
@@ -99,13 +101,13 @@ const factorySpecs = {
     type: 'block',
     selector: 'th',
     getAttrs: getTableCellAttrs,
-    wrapTextInParagraph: true,
+    wrapInParagraph: true,
   },
   tableCell: {
     type: 'block',
     selector: 'td',
     getAttrs: getTableCellAttrs,
-    wrapTextInParagraph: true,
+    wrapInParagraph: true,
   },
   ignoredTableNodes: {
     type: 'ignore',
@@ -160,6 +162,7 @@ export default () => {
             schema,
             factorySpecs,
             tree,
+            wrappableTags,
             source: markdown,
           }),
       });

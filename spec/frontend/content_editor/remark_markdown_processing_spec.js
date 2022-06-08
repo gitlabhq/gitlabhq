@@ -124,7 +124,7 @@ describe('Client side Markdown processing', () => {
     sourceMarkdown,
   });
 
-  it.each([
+  const examples = [
     {
       markdown: '__bold text__',
       expectedDoc: doc(
@@ -240,6 +240,40 @@ describe('Client side Markdown processing', () => {
         paragraph(
           sourceAttrs('0:28', '<i class="foo">\n  *bar*\n</i>'),
           italic(sourceAttrs('0:28', '<i class="foo">\n  *bar*\n</i>'), '\n  *bar*\n'),
+        ),
+      ),
+    },
+    {
+      markdown: `
+
+<img src="bar" alt="foo" />
+
+      `,
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:27', '<img src="bar" alt="foo" />'),
+          image({ ...sourceAttrs('0:27', '<img src="bar" alt="foo" />'), alt: 'foo', src: 'bar' }),
+        ),
+      ),
+    },
+    {
+      markdown: `
+- List item 1
+
+<img src="bar" alt="foo" />
+
+      `,
+      expectedDoc: doc(
+        bulletList(
+          sourceAttrs('0:13', '- List item 1'),
+          listItem(
+            sourceAttrs('0:13', '- List item 1'),
+            paragraph(sourceAttrs('2:13', 'List item 1'), 'List item 1'),
+          ),
+        ),
+        paragraph(
+          sourceAttrs('15:42', '<img src="bar" alt="foo" />'),
+          image({ ...sourceAttrs('15:42', '<img src="bar" alt="foo" />'), alt: 'foo', src: 'bar' }),
         ),
       ),
     },
@@ -381,11 +415,11 @@ two
           sourceAttrs('0:27', '- List item 1\n- List item 2'),
           listItem(
             sourceAttrs('0:13', '- List item 1'),
-            paragraph(sourceAttrs('0:13', '- List item 1'), 'List item 1'),
+            paragraph(sourceAttrs('2:13', 'List item 1'), 'List item 1'),
           ),
           listItem(
             sourceAttrs('14:27', '- List item 2'),
-            paragraph(sourceAttrs('14:27', '- List item 2'), 'List item 2'),
+            paragraph(sourceAttrs('16:27', 'List item 2'), 'List item 2'),
           ),
         ),
       ),
@@ -400,11 +434,11 @@ two
           sourceAttrs('0:27', '* List item 1\n* List item 2'),
           listItem(
             sourceAttrs('0:13', '* List item 1'),
-            paragraph(sourceAttrs('0:13', '* List item 1'), 'List item 1'),
+            paragraph(sourceAttrs('2:13', 'List item 1'), 'List item 1'),
           ),
           listItem(
             sourceAttrs('14:27', '* List item 2'),
-            paragraph(sourceAttrs('14:27', '* List item 2'), 'List item 2'),
+            paragraph(sourceAttrs('16:27', 'List item 2'), 'List item 2'),
           ),
         ),
       ),
@@ -419,11 +453,11 @@ two
           sourceAttrs('0:27', '+ List item 1\n+ List item 2'),
           listItem(
             sourceAttrs('0:13', '+ List item 1'),
-            paragraph(sourceAttrs('0:13', '+ List item 1'), 'List item 1'),
+            paragraph(sourceAttrs('2:13', 'List item 1'), 'List item 1'),
           ),
           listItem(
             sourceAttrs('14:27', '+ List item 2'),
-            paragraph(sourceAttrs('14:27', '+ List item 2'), 'List item 2'),
+            paragraph(sourceAttrs('16:27', 'List item 2'), 'List item 2'),
           ),
         ),
       ),
@@ -438,11 +472,11 @@ two
           sourceAttrs('0:29', '1. List item 1\n1. List item 2'),
           listItem(
             sourceAttrs('0:14', '1. List item 1'),
-            paragraph(sourceAttrs('0:14', '1. List item 1'), 'List item 1'),
+            paragraph(sourceAttrs('3:14', 'List item 1'), 'List item 1'),
           ),
           listItem(
             sourceAttrs('15:29', '1. List item 2'),
-            paragraph(sourceAttrs('15:29', '1. List item 2'), 'List item 2'),
+            paragraph(sourceAttrs('18:29', 'List item 2'), 'List item 2'),
           ),
         ),
       ),
@@ -457,11 +491,11 @@ two
           sourceAttrs('0:29', '1. List item 1\n2. List item 2'),
           listItem(
             sourceAttrs('0:14', '1. List item 1'),
-            paragraph(sourceAttrs('0:14', '1. List item 1'), 'List item 1'),
+            paragraph(sourceAttrs('3:14', 'List item 1'), 'List item 1'),
           ),
           listItem(
             sourceAttrs('15:29', '2. List item 2'),
-            paragraph(sourceAttrs('15:29', '2. List item 2'), 'List item 2'),
+            paragraph(sourceAttrs('18:29', 'List item 2'), 'List item 2'),
           ),
         ),
       ),
@@ -476,11 +510,11 @@ two
           sourceAttrs('0:29', '1) List item 1\n2) List item 2'),
           listItem(
             sourceAttrs('0:14', '1) List item 1'),
-            paragraph(sourceAttrs('0:14', '1) List item 1'), 'List item 1'),
+            paragraph(sourceAttrs('3:14', 'List item 1'), 'List item 1'),
           ),
           listItem(
             sourceAttrs('15:29', '2) List item 2'),
-            paragraph(sourceAttrs('15:29', '2) List item 2'), 'List item 2'),
+            paragraph(sourceAttrs('18:29', 'List item 2'), 'List item 2'),
           ),
         ),
       ),
@@ -495,12 +529,12 @@ two
           sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'),
           listItem(
             sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'),
-            paragraph(sourceAttrs('0:33', '- List item 1\n  - Sub list item 1'), 'List item 1'),
+            paragraph(sourceAttrs('2:13', 'List item 1'), 'List item 1'),
             bulletList(
               sourceAttrs('16:33', '- Sub list item 1'),
               listItem(
                 sourceAttrs('16:33', '- Sub list item 1'),
-                paragraph(sourceAttrs('16:33', '- Sub list item 1'), 'Sub list item 1'),
+                paragraph(sourceAttrs('18:33', 'Sub list item 1'), 'Sub list item 1'),
               ),
             ),
           ),
@@ -534,6 +568,24 @@ two
     },
     {
       markdown: `
+- List item with an image ![bar](foo.png)
+`,
+      expectedDoc: doc(
+        bulletList(
+          sourceAttrs('0:41', '- List item with an image ![bar](foo.png)'),
+          listItem(
+            sourceAttrs('0:41', '- List item with an image ![bar](foo.png)'),
+            paragraph(
+              sourceAttrs('2:41', 'List item with an image ![bar](foo.png)'),
+              'List item with an image',
+              image({ ...sourceAttrs('26:41', '![bar](foo.png)'), alt: 'bar', src: 'foo.png' }),
+            ),
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: `
 > This is a blockquote
       `,
       expectedDoc: doc(
@@ -555,11 +607,11 @@ two
             sourceAttrs('2:31', '- List item 1\n> - List item 2'),
             listItem(
               sourceAttrs('2:15', '- List item 1'),
-              paragraph(sourceAttrs('2:15', '- List item 1'), 'List item 1'),
+              paragraph(sourceAttrs('4:15', 'List item 1'), 'List item 1'),
             ),
             listItem(
               sourceAttrs('18:31', '- List item 2'),
-              paragraph(sourceAttrs('18:31', '- List item 2'), 'List item 2'),
+              paragraph(sourceAttrs('20:31', 'List item 2'), 'List item 2'),
             ),
           ),
         ),
@@ -707,14 +759,14 @@ const fn = () => 'GitLab';
               checked: false,
               ...sourceAttrs('0:22', '- [ ] task list item 1'),
             },
-            paragraph(sourceAttrs('0:22', '- [ ] task list item 1'), 'task list item 1'),
+            paragraph(sourceAttrs('6:22', 'task list item 1'), 'task list item 1'),
           ),
           taskItem(
             {
               checked: false,
               ...sourceAttrs('23:45', '- [ ] task list item 2'),
             },
-            paragraph(sourceAttrs('23:45', '- [ ] task list item 2'), 'task list item 2'),
+            paragraph(sourceAttrs('29:45', 'task list item 2'), 'task list item 2'),
           ),
         ),
       ),
@@ -735,14 +787,14 @@ const fn = () => 'GitLab';
               checked: true,
               ...sourceAttrs('0:22', '- [x] task list item 1'),
             },
-            paragraph(sourceAttrs('0:22', '- [x] task list item 1'), 'task list item 1'),
+            paragraph(sourceAttrs('6:22', 'task list item 1'), 'task list item 1'),
           ),
           taskItem(
             {
               checked: true,
               ...sourceAttrs('23:45', '- [x] task list item 2'),
             },
-            paragraph(sourceAttrs('23:45', '- [x] task list item 2'), 'task list item 2'),
+            paragraph(sourceAttrs('29:45', 'task list item 2'), 'task list item 2'),
           ),
         ),
       ),
@@ -763,14 +815,14 @@ const fn = () => 'GitLab';
               checked: false,
               ...sourceAttrs('0:23', '1. [ ] task list item 1'),
             },
-            paragraph(sourceAttrs('0:23', '1. [ ] task list item 1'), 'task list item 1'),
+            paragraph(sourceAttrs('7:23', 'task list item 1'), 'task list item 1'),
           ),
           taskItem(
             {
               checked: false,
               ...sourceAttrs('24:47', '2. [ ] task list item 2'),
             },
-            paragraph(sourceAttrs('24:47', '2. [ ] task list item 2'), 'task list item 2'),
+            paragraph(sourceAttrs('31:47', 'task list item 2'), 'task list item 2'),
           ),
         ),
       ),
@@ -786,13 +838,13 @@ const fn = () => 'GitLab';
           sourceAttrs('0:29', '| a | b |\n|---|---|\n| c | d |'),
           tableRow(
             sourceAttrs('0:9', '| a | b |'),
-            tableHeader(sourceAttrs('0:5', '| a |'), paragraph(sourceAttrs('0:5', '| a |'), 'a')),
-            tableHeader(sourceAttrs('5:9', ' b |'), paragraph(sourceAttrs('5:9', ' b |'), 'b')),
+            tableHeader(sourceAttrs('0:5', '| a |'), paragraph(sourceAttrs('2:3', 'a'), 'a')),
+            tableHeader(sourceAttrs('5:9', ' b |'), paragraph(sourceAttrs('6:7', 'b'), 'b')),
           ),
           tableRow(
             sourceAttrs('20:29', '| c | d |'),
-            tableCell(sourceAttrs('20:25', '| c |'), paragraph(sourceAttrs('20:25', '| c |'), 'c')),
-            tableCell(sourceAttrs('25:29', ' d |'), paragraph(sourceAttrs('25:29', ' d |'), 'd')),
+            tableCell(sourceAttrs('20:25', '| c |'), paragraph(sourceAttrs('22:23', 'c'), 'c')),
+            tableCell(sourceAttrs('25:29', ' d |'), paragraph(sourceAttrs('26:27', 'd'), 'd')),
           ),
         ),
       ),
@@ -822,7 +874,7 @@ const fn = () => 'GitLab';
                 colspan: 2,
                 rowspan: 5,
               },
-              paragraph(sourceAttrs('19:58', '<th colspan="2" rowspan="5">Header</th>'), 'Header'),
+              paragraph(sourceAttrs('47:53', 'Header'), 'Header'),
             ),
           ),
           tableRow(
@@ -833,13 +885,18 @@ const fn = () => 'GitLab';
                 colspan: 2,
                 rowspan: 5,
               },
-              paragraph(sourceAttrs('78:115', '<td colspan="2" rowspan="5">Body</td>'), 'Body'),
+              paragraph(sourceAttrs('106:110', 'Body'), 'Body'),
             ),
           ),
         ),
       ),
     },
-  ])('processes %s correctly', async ({ markdown, expectedDoc }) => {
+  ];
+
+  const runOnly = examples.find((example) => example.only === true);
+  const runExamples = runOnly ? [runOnly] : examples;
+
+  it.each(runExamples)('processes %s correctly', async ({ markdown, expectedDoc }) => {
     const trimmed = markdown.trim();
     const document = await deserialize(trimmed);
 

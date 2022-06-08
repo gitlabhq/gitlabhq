@@ -23,7 +23,7 @@ export default {
 
 <template>
   <div class="d-flex align-items-center">
-    <ci-icon :status="job.status" :borderless="true" :size="24" class="d-flex" />
+    <ci-icon is-borderless :status="job.status" :size="24" class="d-flex" />
     <span class="gl-ml-3">
       {{ job.name }}
       <a

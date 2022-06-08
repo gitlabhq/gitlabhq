@@ -125,6 +125,7 @@ describe('StatesTable', () => {
     wrapper = extendedWrapper(
       mount(StatesTable, {
         propsData,
+        provide: { projectPath: 'path/to/project' },
         directives: {
           GlTooltip: createMockDirective(),
         },

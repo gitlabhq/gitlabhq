@@ -22096,6 +22096,9 @@ msgstr ""
 msgid "Job|triggered"
 msgstr ""
 
+msgid "Join GitLab today! You and your team can plan, build, and ship secure code all in one application. Get started here for free!"
+msgstr ""
+
 msgid "Join Zoom meeting"
 msgstr ""
 

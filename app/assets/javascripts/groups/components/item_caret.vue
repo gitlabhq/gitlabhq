@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     iconClass() {
-      return this.isGroupOpen ? 'angle-down' : 'angle-right';
+      return this.isGroupOpen ? 'chevron-down' : 'chevron-right';
     },
   },
 };

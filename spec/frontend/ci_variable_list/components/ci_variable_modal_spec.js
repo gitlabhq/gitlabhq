@@ -42,10 +42,7 @@ describe('Ci variable modal', () => {
 
   const findCiEnvironmentsDropdown = () => wrapper.find(CiEnvironmentsDropdown);
   const findModal = () => wrapper.find(ModalStub);
-  const findAddorUpdateButton = () =>
-    findModal()
-      .findAll(GlButton)
-      .wrappers.find((button) => button.props('variant') === 'confirm');
+  const findAddorUpdateButton = () => findModal().find('[data-testid="ciUpdateOrAddVariableBtn"]');
   const deleteVariableButton = () =>
     findModal()
       .findAll(GlButton)

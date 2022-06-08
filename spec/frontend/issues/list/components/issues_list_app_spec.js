@@ -104,6 +104,9 @@ describe('CE IssuesListApp component', () => {
     defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
   }
 
+  const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
+  const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
+
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
   const findGlButton = () => wrapper.findComponent(GlButton);
@@ -117,8 +120,8 @@ describe('CE IssuesListApp component', () => {
   const mountComponent = ({
     provide = {},
     data = {},
-    issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
-    issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
+    issuesQueryResponse = mockIssuesQueryResponse,
+    issuesCountsQueryResponse = mockIssuesCountsQueryResponse,
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
     stubs = {},
     mountFn = shallowMount,
@@ -158,6 +161,22 @@ describe('CE IssuesListApp component', () => {
       wrapper = mountComponent();
       jest.runOnlyPendingTimers();
       return waitForPromises();
+    });
+
+    it('queries list with types `ISSUE` and `INCIDENT', () => {
+      const expectedTypes = ['ISSUE', 'INCIDENT', 'TEST_CASE'];
+
+      expect(mockIssuesQueryResponse).toHaveBeenCalledWith(
+        expect.objectContaining({
+          types: expectedTypes,
+        }),
+      );
+
+      expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
+        expect.objectContaining({
+          types: expectedTypes,
+        }),
+      );
     });
 
     it('renders', () => {

@@ -49,6 +49,21 @@ sole discretion of GitLab Inc.
 
 <div class="deprecation removal-160 breaking-change">
 
+### Jira GitHub Enterprise DVCS integration
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+The [Jira DVCS Connector](https://docs.gitlab.com/ee/integration/jira/dvcs.html) (which enables the [Jira Development Panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)), will no longer support Jira Cloud users starting with GitLab 16.0. The [GitLab for Jira App](https://docs.gitlab.com/ee/integration/jira/connect-app.html) has always been recommended for Jira Cloud users, and it will be required instead of the DVCS connector. If you are a Jira Cloud user, we recommended you begin migrating to the GitLab for Jira App.
+Any Jira Server and Jira Data Center users will need to confirm they are not using the GitHub Enterprise Connector to enable the GitLab DVCS integration, but they may continue to use the [native GitLab DVCS integration](https://docs.gitlab.com/ee/integration/jira/dvcs.html) (supported in Jira 8.14 and later).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### REST API Runner maintainer_note
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)

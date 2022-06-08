@@ -39,7 +39,11 @@ import {
   TOKEN_TITLE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import {
+  IssuableListTabs,
+  IssuableStates,
+  IssuableTypes,
+} from '~/vue_shared/issuable/list/constants';
 import {
   CREATED_DESC,
   i18n,
@@ -98,6 +102,7 @@ const ReleaseToken = () =>
 export default {
   i18n,
   IssuableListTabs,
+  IssuableTypes: [IssuableTypes.Issue, IssuableTypes.Incident, IssuableTypes.TestCase],
   components: {
     CsvImportExportButtons,
     GlButton,
@@ -168,7 +173,9 @@ export default {
     issues: {
       query: getIssuesQuery,
       variables() {
-        return this.queryVariables;
+        const { types } = this.queryVariables;
+
+        return { ...this.queryVariables, types: types ? [types] : this.$options.IssuableTypes };
       },
       update(data) {
         return data[this.namespace]?.issues.nodes ?? [];
@@ -192,7 +199,9 @@ export default {
     issuesCounts: {
       query: getIssuesCountsQuery,
       variables() {
-        return this.queryVariables;
+        const { types } = this.queryVariables;
+
+        return { ...this.queryVariables, types: types ? [types] : this.$options.IssuableTypes };
       },
       update(data) {
         return data[this.namespace] ?? {};
