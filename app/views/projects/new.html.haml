@@ -30,7 +30,7 @@
 
     #import-project-pane.tab-pane.js-toggle-container
       - if import_sources_enabled?
-        = render 'import_project_pane'
+        = render 'import_project_pane', destination_namespace_id: @namespace&.id
       - else
         .nothing-here-block
           %h4= s_('ProjectsNew|No import options available')

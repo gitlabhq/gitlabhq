@@ -81,7 +81,7 @@ export default {
 </script>
 <template>
   <div>
-    <h1 class="page-title">
+    <h1 class="page-title gl-font-size-h-display">
       {{ title }}
     </h1>
     <div class="row col-12">

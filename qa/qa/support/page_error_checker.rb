@@ -8,9 +8,7 @@ module QA
           request_id_string = ''
           if error_code == 500
             request_id = parse_five_c_page_request_id(page)
-            if request_id
-              request_id_string = "\n\n" + Loglinking.failure_metadata(request_id)
-            end
+            request_id_string = "\n\n#{Loglinking.failure_metadata(request_id)}" if request_id
           end
 
           report = if QA::Runtime::Env.browser == :chrome
@@ -26,7 +24,7 @@ module QA
         end
 
         def parse_five_c_page_request_id(page)
-          Nokogiri::HTML.parse(page.html).xpath("/html/body/div/p[1]/code").children.first
+          page_html(page).xpath("/html/body/div/p[1]/code").children.first
         end
 
         def return_chrome_errors(page, error_code)
@@ -43,26 +41,26 @@ module QA
           "Status code #{error_code} found"
         end
 
+        # rubocop:disable Rails/Pluck
         def check_page_for_error_code(page)
-          error_code = 0
           # Test for 404 img alt
-          error_code = 404 if Nokogiri::HTML.parse(page.html).xpath("//img").map { |t| t[:alt] }.first.eql?('404')
+          return report!(page, 404) if page_html(page).xpath("//img").map { |t| t[:alt] }.first.eql?('404')
 
           # 500 error page in header surrounded by newlines, try to match
-          five_hundred_test = Nokogiri::HTML.parse(page.html).xpath("//h1/text()").map.first
-          five_hundred_title = Nokogiri::HTML.parse(page.html).xpath("//head/title/text()").map.first
-          unless five_hundred_test.nil?
-            error_code = 500 if
-              five_hundred_test.text.include?('500') &&
-                five_hundred_title.text.eql?('Something went wrong (500)')
+          five_hundred_test = page_html(page).xpath("//h1/text()").map.first
+          five_hundred_title = page_html(page).xpath("//head/title/text()").map.first
+          if five_hundred_test&.text&.include?('500') && five_hundred_title&.text.eql?('Something went wrong (500)')
+            return report!(page, 500)
           end
-          # GDK shows backtrace rather than error page
-          error_code = 500 if Nokogiri::HTML.parse(page.html).xpath("//body//section").map { |t| t[:class] }.first.eql?('backtrace')
 
-          unless error_code == 0
-            report!(page, error_code)
-          end
+          # GDK shows backtrace rather than error page
+          report!(page, 500) if page_html(page).xpath("//body//section").map { |t| t[:class] }.first.eql?('backtrace')
+        rescue StandardError => e
+          # There are instances where page check can raise errors like: WebDriver::Error::UnexpectedAlertOpenError
+          # Log error but do not fail the test itself
+          Runtime::Logger.error("Page error check raised error: #{e}")
         end
+        # rubocop:enable Rails/Pluck
 
         # Log request errors triggered from async api calls from the browser
         #
@@ -87,9 +85,7 @@ module QA
             "#{error_metadata} -- #{request_id_string}"
           end
 
-          unless errors.nil? || errors.empty?
-            QA::Runtime::Logger.error "Interceptor Api Errors\n#{errors.join("\n")}"
-          end
+          QA::Runtime::Logger.error "Interceptor Api Errors\n#{errors.join("\n")}" unless errors.nil? || errors.empty?
 
           # clear the cache after logging the errors
           page.execute_script <<~JS
@@ -108,6 +104,10 @@ module QA
         end
 
         private
+
+        def page_html(page)
+          Nokogiri::HTML.parse(page.html)
+        end
 
         def group_errors(errors)
           errors.each_with_object({}) do |error, memo|

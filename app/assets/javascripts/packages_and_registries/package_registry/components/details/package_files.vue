@@ -102,7 +102,7 @@ export default {
       <template #cell(name)="{ item, toggleDetails, detailsShowing }">
         <gl-button
           v-if="hasDetails(item)"
-          :icon="detailsShowing ? 'angle-up' : 'angle-down'"
+          :icon="detailsShowing ? 'chevron-up' : 'chevron-down'"
           :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
           category="tertiary"
           size="small"

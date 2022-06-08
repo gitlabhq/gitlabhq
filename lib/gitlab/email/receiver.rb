@@ -158,8 +158,6 @@ module Gitlab
       end
 
       def find_first_key_from_received_headers
-        return unless ::Feature.enabled?(:use_received_header_for_incoming_emails)
-
         recipients_from_received_headers.find do |email|
           key = email_class.key_from_address(email)
           break key if key

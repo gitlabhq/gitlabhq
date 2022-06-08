@@ -90,18 +90,8 @@ RSpec.describe Gitlab::Email::Receiver do
       let(:meta_key) { :received_recipients }
       let(:meta_value) { ['incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com', 'incoming+gitlabhq/gitlabhq@example.com'] }
 
-      context 'when use_received_header_for_incoming_emails is enabled' do
+      describe 'it uses receive headers to find the key' do
         it_behaves_like 'successful receive'
-      end
-
-      context 'when use_received_header_for_incoming_emails is disabled' do
-        let(:expected_error) { Gitlab::Email::UnknownIncomingEmail }
-
-        before do
-          stub_feature_flags(use_received_header_for_incoming_emails: false)
-        end
-
-        it_behaves_like 'failed receive'
       end
     end
   end

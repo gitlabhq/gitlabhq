@@ -101,7 +101,7 @@ export default {
 
 <template>
   <div>
-    <h1 class="page-title">
+    <h1 class="page-title gl-font-size-h-display">
       {{ $options.i18n.pageTitle }}
     </h1>
     <hr />

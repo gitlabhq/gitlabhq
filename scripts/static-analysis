@@ -46,7 +46,7 @@ class StaticAnalysis
     (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 360) : nil),
     Task.new(%w[yarn run lint:prettier], 160),
     Task.new(%w[bin/rake gettext:lint], 85),
-    Task.new(%W[bundle exec license_finder --decisions-file config/dependency_decisions.yml --project-path #{project_path}], 20),
+    Task.new(%W[scripts/license-check.sh #{project_path}], 20),
     Task.new(%w[bin/rake lint:static_verification], 35),
     Task.new(%w[scripts/rubocop-max-files-in-cache-check], 20),
     Task.new(%w[bin/rake config_lint], 10),

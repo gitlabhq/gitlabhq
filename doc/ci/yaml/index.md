@@ -2013,9 +2013,9 @@ job2:
 
 Use `interruptible` if a job should be canceled when a newer pipeline starts before the job completes.
 
-This keyword is used with the [automatic cancellation of redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
-feature. When enabled, a running job with `interruptible: true` can be cancelled when
-a new pipeline starts on the same branch.
+This keyword has no effect if [automatic cancellation of redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
+is disabled. When enabled, a running job with `interruptible: true` is cancelled when
+starting a pipeline for a new change on the same branch.
 
 You can't cancel subsequent jobs after a job with `interruptible: false` starts.
 

@@ -15,7 +15,7 @@
       = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start, link_end: '</a>'.html_safe , icon: external_link_icon }
 
 
-%h1.page-title.blob-edit-page-title
+%h1.page-title.gl-font-size-h-display.blob-edit-page-title
   Edit file
 .file-editor
   = gl_tabs_nav({ class: 'js-edit-mode nav-links gl-border-0'}) do

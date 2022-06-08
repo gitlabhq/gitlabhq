@@ -38,7 +38,7 @@ function bundle_install_script() {
     exit 1;
   fi;
 
-  gem install bundler --no-document --conservative --version 2.3.6
+  gem install bundler --no-document --conservative --version 2.3.15
   bundle --version
   bundle config set path "$(pwd)/vendor"
   bundle config set clean 'true'

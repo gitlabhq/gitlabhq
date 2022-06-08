@@ -144,6 +144,15 @@ module GroupsHelper
     false
   end
 
+  def group_name_and_path_app_data(group)
+    parent = group.parent
+
+    {
+      base_path: URI.join(root_url, parent&.full_path || "").to_s,
+      mattermost_enabled: Gitlab.config.mattermost.enabled.to_s
+    }
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

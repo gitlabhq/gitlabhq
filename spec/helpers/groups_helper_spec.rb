@@ -419,4 +419,31 @@ RSpec.describe GroupsHelper do
       expect(localized_jobs_to_be_done_choices.keys).to match_array(NamespaceSetting.jobs_to_be_dones.keys)
     end
   end
+
+  describe '#group_name_and_path_app_data' do
+    let_it_be(:group) { build(:group, name: 'My awesome group', path: 'my-awesome-group') }
+    let_it_be(:subgroup) { build(:group, parent: group) }
+    let_it_be(:root_url) { 'https://gitlab.com/' }
+
+    before do
+      allow(Gitlab.config.mattermost).to receive(:enabled).and_return(true)
+      allow(helper).to receive(:root_url) { root_url }
+    end
+
+    context 'when group has a parent' do
+      it 'returns expected hash' do
+        expect(group_name_and_path_app_data(subgroup)).to match(
+          { base_path: 'https://gitlab.com/my-awesome-group', mattermost_enabled: 'true' }
+        )
+      end
+    end
+
+    context 'when group does not have a parent' do
+      it 'returns expected hash' do
+        expect(group_name_and_path_app_data(group)).to match(
+          { base_path: root_url, mattermost_enabled: 'true' }
+        )
+      end
+    end
+  end
 end

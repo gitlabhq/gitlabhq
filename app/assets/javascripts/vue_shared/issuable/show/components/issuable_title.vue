@@ -64,7 +64,7 @@ export default {
     <div class="title-container">
       <h1
         v-safe-html="issuable.titleHtml || issuable.title"
-        class="title qa-title"
+        class="title qa-title gl-font-size-h-display"
         dir="auto"
         data-testid="title"
       ></h1>

@@ -17,7 +17,7 @@
           = html_escape(s_('Deprecations|The logs and tracing features were deprecated in GitLab 14.7, and are %{removal_link_start} scheduled for removal %{link_end} in GitLab 15.0. For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}.')) % {removal_link_start: removal_epic_link_start, opstrace_link_start: opstrace_link_start, link_end: link_end }
 
 - if @project.tracing_external_url.present?
-  %h1.page-title= _('Tracing')
+  %h1.page-title.gl-font-size-h-display= _('Tracing')
   .gl-alert.gl-alert-info.gl-mb-5
     .gl-alert-container
       = sprite_icon('information-o', css_class: 'gl-icon gl-alert-icon gl-alert-icon-no-title')

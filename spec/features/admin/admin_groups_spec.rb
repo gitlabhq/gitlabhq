@@ -28,7 +28,7 @@ RSpec.describe 'Admin Groups' do
     end
   end
 
-  describe 'create a group' do
+  describe 'create a group', :js do
     describe 'with expected fields' do
       it 'renders from as expected', :aggregate_failures do
         visit new_admin_group_path
@@ -42,6 +42,8 @@ RSpec.describe 'Admin Groups' do
     end
 
     it 'creates new group' do
+      stub_feature_flags(group_name_path_vue: false)
+
       visit admin_groups_path
 
       page.within '#content-body' do
@@ -75,7 +77,7 @@ RSpec.describe 'Admin Groups' do
       expect_selected_visibility(internal)
     end
 
-    it 'when entered in group name, it auto filled the group path', :js do
+    it 'when entered in group name, it auto filled the group path' do
       visit admin_groups_path
       click_link "New group"
       group_name = 'gitlab'
@@ -84,7 +86,7 @@ RSpec.describe 'Admin Groups' do
       expect(path_field.value).to eq group_name
     end
 
-    it 'auto populates the group path with the group name', :js do
+    it 'auto populates the group path with the group name' do
       visit admin_groups_path
       click_link "New group"
       group_name = 'my gitlab project'
@@ -93,7 +95,9 @@ RSpec.describe 'Admin Groups' do
       expect(path_field.value).to eq 'my-gitlab-project'
     end
 
-    it 'when entering in group path, group name does not change anymore', :js do
+    it 'when entering in group path, group name does not change anymore' do
+      stub_feature_flags(group_name_path_vue: false)
+
       visit admin_groups_path
       click_link "New group"
       group_path = 'my-gitlab-project'

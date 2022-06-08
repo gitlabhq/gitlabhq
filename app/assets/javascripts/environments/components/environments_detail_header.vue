@@ -94,7 +94,7 @@ export default {
 <template>
   <header class="top-area gl-justify-content-between">
     <div class="gl-display-flex gl-flex-grow-1 gl-align-items-center">
-      <h1 class="page-title">
+      <h1 class="page-title gl-font-size-h-display">
         {{ environment.name }}
       </h1>
       <p v-if="shouldShowCancelAutoStopButton" class="gl-mb-0 gl-ml-3" data-testid="auto-stops-at">

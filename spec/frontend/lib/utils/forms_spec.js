@@ -157,7 +157,7 @@ describe('lib/utils/forms', () => {
       mountEl.innerHTML = `
         <input type="text" placeholder="Name" value="Administrator" name="user[name]" id="user_name" data-js-name="name">
         <input type="text" placeholder="Email" value="foo@bar.com" name="user[contact_info][email]" id="user_contact_info_email" data-js-name="contactInfoEmail">
-        <input type="text" placeholder="Phone" value="(123) 456-7890" name="user[contact_info][phone]" id="user_contact_info_phone" data-js-name="contact_info_phone">
+        <input type="text" placeholder="Phone" value="(123) 456-7890" name="user[contact_info][phone]" id="user_contact_info_phone" maxlength="12" pattern="mockPattern" data-js-name="contact_info_phone">
         <input type="hidden" placeholder="Job title" value="" name="user[job_title]" id="user_job_title" data-js-name="jobTitle">
         <textarea name="user[bio]" id="user_bio" data-js-name="bio">Foo bar</textarea>
         <select name="user[timezone]" id="user_timezone" data-js-name="timezone">
@@ -192,6 +192,8 @@ describe('lib/utils/forms', () => {
           id: 'user_contact_info_phone',
           value: '(123) 456-7890',
           placeholder: 'Phone',
+          maxLength: 12,
+          pattern: 'mockPattern',
         },
         jobTitle: {
           name: 'user[job_title]',

@@ -9,6 +9,10 @@ module QA
         def self.included(base)
           super
 
+          base.class_eval do
+            include QA::Page::Component::ConfirmModal
+          end
+
           base.view 'app/assets/javascripts/snippets/components/snippet_title.vue' do
             element :snippet_title_content
           end
@@ -224,9 +228,8 @@ module QA
 
         def delete_comment(comment)
           click_element(:more_actions_dropdown)
-          accept_alert do
-            click_element(:delete_comment_button)
-          end
+          click_element(:delete_comment_button)
+          click_confirmation_ok_button
 
           unless has_no_element?(:note_content, text: comment)
             raise ElementNotFound, "Comment was not removed as expected"

@@ -3,7 +3,7 @@
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 
-%h1.page-title
+%h1.page-title.gl-font-size-h-display
   = _("Edit Snippet")
 %hr
 = render 'shared/snippets/form', url: gitlab_snippet_path(@snippet)

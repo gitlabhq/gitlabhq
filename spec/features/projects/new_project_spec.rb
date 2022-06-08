@@ -61,6 +61,33 @@ RSpec.describe 'New project', :js do
       expect(page).to have_link('GitLab export')
     end
 
+    describe 'github import option' do
+      context 'with user namespace' do
+        before do
+          visit new_project_path
+          click_link 'Import project'
+        end
+
+        it 'renders link to github importer' do
+          expect(page).to have_link(href: new_import_github_path)
+        end
+      end
+
+      context 'with group namespace' do
+        let(:group) { create(:group, :private) }
+
+        before do
+          group.add_owner(user)
+          visit new_project_path(namespace_id: group.id)
+          click_link 'Import project'
+        end
+
+        it 'renders link to github importer including namespace id' do
+          expect(page).to have_link(href: new_import_github_path(namespace_id: group.id))
+        end
+      end
+    end
+
     describe 'manifest import option' do
       before do
         visit new_project_path

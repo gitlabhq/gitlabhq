@@ -254,7 +254,7 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
-    <h1 class="page-title">{{ __('New Jira import') }}</h1>
+    <h1 class="page-title gl-font-size-h-display">{{ __('New Jira import') }}</h1>
 
     <hr />
 

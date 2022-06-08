@@ -8,6 +8,7 @@ module QA
       module Settings
         class AccessTokens < Page::Base
           include Page::Component::AccessTokens
+          include Page::Component::ConfirmModal
         end
       end
     end

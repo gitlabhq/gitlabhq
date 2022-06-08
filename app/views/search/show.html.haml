@@ -16,7 +16,7 @@
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
 .page-title-holder.d-flex.flex-wrap.justify-content-between
-  %h1.page-title.mr-3= _('Search')
+  %h1.page-title.gl-font-size-h-display.mr-3= _('Search')
   = render_if_exists 'search/form_elasticsearch', attrs: { class: 'mb-2 mb-sm-0 align-self-center' }
 
 .gl-mt-3

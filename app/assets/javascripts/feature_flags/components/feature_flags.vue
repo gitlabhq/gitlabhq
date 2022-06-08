@@ -184,7 +184,10 @@ export default {
         class="gl-display-flex gl-align-items-baseline gl-flex-direction-row gl-justify-content-space-between gl-mt-6"
       >
         <div class="gl-display-flex gl-align-items-center">
-          <h2 data-testid="feature-flags-tab-title" class="gl-font-size-h2 gl-my-0">
+          <h2
+            data-testid="feature-flags-tab-title"
+            class="page-title gl-font-size-h-display gl-my-0"
+          >
             {{ s__('FeatureFlags|Feature Flags') }}
           </h2>
           <gl-badge v-if="count" class="gl-ml-4">{{ count }}</gl-badge>
