@@ -28,6 +28,12 @@ module BulkImports
           },
           repository: {
             pipeline: BulkImports::Projects::Pipelines::RepositoryPipeline,
+            maximum_source_version: '15.0.0',
+            stage: 1
+          },
+          repository_bundle: {
+            pipeline: BulkImports::Projects::Pipelines::RepositoryBundlePipeline,
+            minimum_source_version: '15.1.0',
             stage: 1
           },
           project_attributes: {
@@ -112,8 +118,8 @@ module BulkImports
           },
           design: {
             pipeline: BulkImports::Projects::Pipelines::DesignBundlePipeline,
-            stage: 5,
-            minimum_source_version: '15.1.0'
+            minimum_source_version: '15.1.0',
+            stage: 5
           },
           auto_devops: {
             pipeline: BulkImports::Projects::Pipelines::AutoDevopsPipeline,

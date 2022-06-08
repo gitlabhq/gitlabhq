@@ -18,6 +18,8 @@ class BulkImports::Tracker < ApplicationRecord
 
   validates :stage, presence: true
 
+  delegate :file_extraction_pipeline?, to: :pipeline_class
+
   DEFAULT_PAGE_SIZE = 500
 
   scope :next_pipeline_trackers_for, -> (entity_id) {

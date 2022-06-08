@@ -33413,6 +33413,9 @@ msgstr ""
 msgid "Search or filter results…"
 msgstr ""
 
+msgid "Search page"
+msgstr ""
+
 msgid "Search project"
 msgstr ""
 
@@ -39872,9 +39875,6 @@ msgid "Total artifacts size: %{total_size}"
 msgstr ""
 
 msgid "Total cores (CPUs)"
-msgstr ""
-
-msgid "Total issues"
 msgstr ""
 
 msgid "Total memory (GB)"

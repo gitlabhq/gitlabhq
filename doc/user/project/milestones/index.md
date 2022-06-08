@@ -116,12 +116,12 @@ From the project and group issue/merge request list pages, you can filter by bot
 From [project issue boards](../issue_board.md), you can filter by both group milestones and project
 milestones in:
 
-- [Search and filter bar](../../search/index.md#issue-boards)
+- [Search and filter bar](../issue_board.md#filter-issues)
 - [Issue board configuration](../issue_board.md#configurable-issue-boards)
 
 From [group issue boards](../issue_board.md#group-issue-boards), you can filter by only group milestones in:
 
-- [Search and filter bar](../../search/index.md#issue-boards)
+- [Search and filter bar](../issue_board.md#filter-issues)
 - [Issue board configuration](../issue_board.md#configurable-issue-boards)
 
 ### Special milestone filters

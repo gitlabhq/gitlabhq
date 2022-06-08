@@ -118,24 +118,6 @@ Individual filters can be removed by clicking on the filter's (x) button or back
 
 To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
 
-## Filtering with multiple filters of the same type
-
-Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the `AND` logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results include only entries whereby the assignees are assigned to both Sam and Sarah are returned.
-
-![multiple assignees filtering](img/multiple_assignees.png)
-
-## Issue boards
-
-From an [issue board](../../user/project/issue_board.md), you can filter issues by **Author**, **Assignee**, **Milestone**, and **Labels**.
-You can also filter them by name (issue title), from the field **Filter by name**, which is loaded as you type.
-
-To search for issues to add to lists present in your issue board, select
-the button **Add issues** on the top-right of your screen, opening a modal window from which
-you can, besides filtering them by **Name**, **Author**, **Assignee**, **Milestone**,
-and **Labels**, select multiple issues to add to a list of your choice:
-
-![search and select issues to add to board](img/search_issues_board.png)
-
 ## Autocomplete suggestions
 
 In the search bar, you can view autocomplete suggestions for:

@@ -462,11 +462,13 @@ Users granted:
 
 ### Automatic member removal
 
-After a group sync, users who are not members of a mapped SAML group are removed from
-the GitLab group. Even if SSO authentication is successful, if an existing user is not a member of any of the configured groups:
+After a group sync, for GitLab subgroups, users who are not members of a mapped SAML
+group are removed from the group.
 
-- They get an "unauthorized" message if they try to view the group.
-- All of their permissions to subgroups and projects are also removed.
+FLAG:
+In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/364144), on GitLab.com, users in the top-level 
+group are assigned the [default membership role](#role) rather than removed. This setting is enabled with the 
+`saml_group_sync_retain_default_membership` feature flag and can be configured by GitLab.com administrators only.
 
 For example, in the following diagram:
 

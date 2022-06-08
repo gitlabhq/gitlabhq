@@ -147,6 +147,28 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
       it_behaves_like 'skips with given feature flag metadata', { name: 'global_ff', scope: :global }
     end
 
+    context 'when run on pre' do
+      before(:context) do
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://pre.gitlab.com')
+      end
+
+      context 'for only one test in the example group' do
+        it 'only skips specified test and runs all others' do
+          group = describe_successfully 'Feature flag set for one test' do
+            it('is skipped', feature_flag: { name: 'single_test_ff', scope: :group }) {}
+            it('passes') {}
+          end
+
+          expect(group.examples[0].execution_result.status).to eq(:pending)
+          expect(group.examples[1].execution_result.status).to eq(:passed)
+        end
+      end
+
+      it_behaves_like 'skips with given feature flag metadata', { name: 'actor_ff', scope: :project }
+
+      it_behaves_like 'skips with given feature flag metadata', { name: 'global_ff', scope: :global }
+    end
+
     # The nightly package job, for example, does not run against a live environment with
     # a defined gitlab_address. In this case, feature_flag tag logic can be safely ignored
     context 'when run without a gitlab address specified' do

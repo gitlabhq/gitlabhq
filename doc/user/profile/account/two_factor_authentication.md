@@ -322,9 +322,6 @@ To disable 2FA:
 
 This clears all your 2FA registrations, including mobile applications and U2F or WebAuthn devices.
 
-Support Team support for disabling 2FA is limited, depending on your subscription level. For more information, see the
-[Account Recovery](https://about.gitlab.com/support/#account-recovery-and-2fa-resets) section of our website.
-
 ## Recovery options
 
 If you don't have access to your code generation device, you can recover access to your account:

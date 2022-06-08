@@ -29,15 +29,7 @@ build-qa-image:
     - !reference [.base-image-build, script]
     - echo $QA_IMAGE
     - echo $QA_IMAGE_BRANCH
-    - |
-      /kaniko/executor \
-        --context=${CI_PROJECT_DIR} \
-        --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile \
-        --destination=${QA_IMAGE} \
-        --destination=${QA_IMAGE_BRANCH} \
-        --build-arg=CHROME_VERSION=${CHROME_VERSION} \
-        --build-arg=DOCKER_VERSION=${DOCKER_VERSION} \
-        --cache=true
+    - /kaniko/executor --context=${CI_PROJECT_DIR} --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile --destination=${QA_IMAGE} --destination=${QA_IMAGE_BRANCH} --cache=true
 
 # This image is used by:
 # - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335
