@@ -26,6 +26,8 @@ RSpec.describe 'User comments on a diff', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(paginated_notes: false)
+
     project.add_maintainer(user)
     sign_in(user)
 

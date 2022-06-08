@@ -73,25 +73,21 @@ module QA
       private
 
       def expect_owner_permissions_allow_delete_issue
-        expect do
-          issue.visit!
+        issue.visit!
 
-          Page::Project::Issue::Show.perform(&:delete_issue)
+        Page::Project::Issue::Show.perform(&:delete_issue)
 
-          Page::Project::Issue::Index.perform do |index|
-            expect(index).not_to have_issue(issue)
-          end
-        end.not_to raise_error
+        Page::Project::Issue::Index.perform do |index|
+          expect(index).not_to have_issue(issue)
+        end
       end
 
       def expect_maintainer_permissions_do_not_allow_delete_issue
-        expect do
-          issue.visit!
+        issue.visit!
 
-          Page::Project::Issue::Show.perform do |issue|
-            expect(issue).not_to have_delete_issue_button
-          end
-        end.not_to raise_error
+        Page::Project::Issue::Show.perform do |issue|
+          expect(issue).not_to have_delete_issue_button
+        end
       end
     end
   end

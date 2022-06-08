@@ -90,7 +90,10 @@ export const fetchDiscussions = ({ commit, dispatch }, { path, filter, persistFi
       ? { params: { notes_filter: filter, persist_filter: persistFilter } }
       : null;
 
-  if (window.gon?.features?.paginatedIssueDiscussions) {
+  if (
+    window.gon?.features?.paginatedIssueDiscussions ||
+    window.gon?.features?.paginatedMrDiscussions
+  ) {
     return dispatch('fetchDiscussionsBatch', { path, config, perPage: 20 });
   }
 
@@ -128,6 +131,7 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
       });
     }
 
+    commit(types.SET_DONE_FETCHING_BATCH_DISCUSSIONS, true);
     commit(types.SET_FETCHING_DISCUSSIONS, false);
     dispatch('updateResolvableDiscussionsCounts');
 

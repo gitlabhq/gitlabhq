@@ -2195,9 +2195,7 @@
   Foo χρῆν
 06_15__inlines__textual_content__003: |
   Multiple     spaces
-07_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |
-  **bold**
-08_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |
-  <strong>
-  bold
-  </strong>
+07_01__gitlab_specific_markdown__footnotes__001: |
+  footnote reference tag [^1]
+
+  [^1]: footnote text

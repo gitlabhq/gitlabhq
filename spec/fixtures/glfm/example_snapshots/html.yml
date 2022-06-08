@@ -130,9 +130,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo
-    </p><ul bullet="*"><li><p>bar
-    </p><ul bullet="*"><li><p>baz</p></li></ul></li></ul></li></ul>
+    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p><ul bullet="*"><li><p>baz</p></li></ul></li></ul></li></ul>
 02_01__preliminaries__tabs__010:
   canonical: |
     <h1>Foo</h1>
@@ -1849,7 +1847,7 @@
     <p data-sourcepos="2:1-2:5" dir="auto"><em>baz</em></p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__030:
   canonical: |
     <script>
@@ -1872,7 +1870,7 @@
     <p data-sourcepos="5:1-5:4" dir="auto">okay</p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__032:
   canonical: |
     <?php
@@ -1888,7 +1886,7 @@
     <p data-sourcepos="6:1-6:4" dir="auto">okay</p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__033:
   canonical: |
     <!DOCTYPE html>
@@ -1915,7 +1913,7 @@
     <p data-sourcepos="13:1-13:4" dir="auto">okay</p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__035:
   canonical: |2
       <!-- foo -->
@@ -1927,7 +1925,7 @@
     foo --&gt;</span></code></pre>\n<copy-code></copy-code>\n</div>"
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__036:
   canonical: |2
       <div>
@@ -3898,10 +3896,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo
-    </p><ul bullet="*"><li><p>bar
-    </p><ul bullet="*"><li><p>baz
-    </p><ul bullet="*"><li><p>boo</p></li></ul></li></ul></li></ul></li></ul>
+    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p><ul bullet="*"><li><p>baz</p><ul bullet="*"><li><p>boo</p></li></ul></li></ul></li></ul></li></ul>
 05_02__container_blocks__list_items__043:
   canonical: |
     <ul>
@@ -3937,8 +3932,7 @@
     </li>
     </ol>
   wysiwyg: |-
-    <ol parens="false"><li><p>foo
-    </p><ul bullet="*"><li><p>bar</p></li></ul></li></ol>
+    <ol parens="false"><li><p>foo</p><ul bullet="*"><li><p>bar</p></li></ul></li></ol>
 05_02__container_blocks__list_items__045:
   canonical: |
     <ol start="10">
@@ -4072,8 +4066,7 @@
     <li data-sourcepos="9:1-9:5">baz</li>
     </ul>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "input" not supported by this converter. Please, provide an specification.
+    <ul bullet="*"><li><p>baz</p></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__050:
   canonical: |
     <ol>
@@ -4190,9 +4183,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>foo
-    </p><ul bullet="*"><li><p>bar
-    </p><ul bullet="*"><li><p>baz</p><p>bim</p></li></ul></li></ul></li></ul>
+    <ul bullet="*"><li><p>foo</p><ul bullet="*"><li><p>bar</p><ul bullet="*"><li><p>baz</p><p>bim</p></li></ul></li></ul></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__056:
   canonical: |
     <ul>
@@ -4216,7 +4207,7 @@
     </ul>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__057:
   canonical: |
     <ul>
@@ -4248,7 +4239,7 @@
     </div>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__058:
   canonical: |
     <ul>
@@ -4508,8 +4499,7 @@
     <li data-sourcepos="5:1-5:3">d</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a
-    </p><ul bullet="*"><li><p>b</p><p>c</p></li></ul></li><li><p>d</p></li></ul>
+    <ul bullet="*"><li><p>a</p><ul bullet="*"><li><p>b</p><p>c</p></li></ul></li><li><p>d</p></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__068:
   canonical: |
     <ul>
@@ -4530,8 +4520,7 @@
     <li data-sourcepos="4:1-4:3">c</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a
-    </p><blockquote multiline="false"><p>b</p></blockquote></li><li><p>c</p></li></ul>
+    <ul bullet="*"><li><p>a</p><blockquote multiline="false"><p>b</p></blockquote></li><li><p>c</p></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__069:
   canonical: |
     <ul>
@@ -4558,8 +4547,7 @@
     <li data-sourcepos="6:1-6:3">d</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a
-    </p><blockquote multiline="false"><p>b</p></blockquote><pre class="content-editor-code-block undefined code highlight"><code>c</code></pre></li><li><p>d</p></li></ul>
+    <ul bullet="*"><li><p>a</p><blockquote multiline="false"><p>b</p></blockquote><pre class="content-editor-code-block undefined code highlight"><code>c</code></pre></li><li><p>d</p></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__070:
   canonical: |
     <ul>
@@ -4589,8 +4577,7 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>a
-    </p><ul bullet="*"><li><p>b</p></li></ul></li></ul>
+    <ul bullet="*"><li><p>a</p><ul bullet="*"><li><p>b</p></li></ul></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__072:
   canonical: |
     <ol>
@@ -7217,7 +7204,7 @@
     <p data-sourcepos="1:1-2:25" dir="auto">foo </p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__014:
   canonical: |
     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
@@ -7241,7 +7228,7 @@
     <p data-sourcepos="1:1-1:21" dir="auto">foo <?php echo $a; ?></p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__017:
   canonical: |
     <p>foo <!ELEMENT br EMPTY></p>
@@ -7249,7 +7236,7 @@
     <p data-sourcepos="1:1-1:23" dir="auto">foo </p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__018:
   canonical: |
     <p>foo <![CDATA[>&<]]></p>
@@ -7257,7 +7244,7 @@
     <p data-sourcepos="1:1-1:19" dir="auto">foo &amp;</p>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "comment" not supported by this converter. Please, provide an specification.
+    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__019:
   canonical: |
     <p>foo <a href="&ouml;"></p>
@@ -7462,23 +7449,17 @@
     <p data-sourcepos="1:1-1:19" dir="auto">Multiple     spaces</p>
   wysiwyg: |-
     <p>Multiple     spaces</p>
-07_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
-  canonical: |
-    <p><strong>bold</strong></p>
+07_01__gitlab_specific_markdown__footnotes__001:
+  canonical: ""
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
+    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-2118" id="fnref-1-2118" data-footnote-ref>1</a></sup></p>
+    <section data-footnotes class="footnotes">
+    <ol>
+    <li id="fn-1-2118">
+    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-2118" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    </ol>
+    </section>
   wysiwyg: |-
-    <p><strong>bold</strong></p>
-08_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
-  canonical: |
-    <p><strong>
-    bold
-    </strong></p>
-  static: |-
-    <strong>
-    bold
-    </strong>
-  wysiwyg: |-
-    <p><strong>
-    bold
-    </strong></p>
+    Error - check implementation:
+    Hast node of type "sup" not supported by this converter. Please, provide an specification.

@@ -333,7 +333,7 @@ GitLab has the following retention policies for vulnerabilities on non-default b
 
 To view vulnerabilities, either:
 
-- Re-run the pipeline.
+- Run a new pipeline.
 - Download the related CI job artifacts if they are available.
 
 NOTE:

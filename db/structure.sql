@@ -13082,6 +13082,8 @@ CREATE TABLE ci_runners (
     maintainer_note text,
     token_expires_at timestamp with time zone,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
+    semver text,
+    CONSTRAINT check_a4f24953fd CHECK ((char_length(semver) <= 16)),
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -27447,6 +27449,8 @@ CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ci_runners 
 CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners USING btree (created_at DESC, id DESC);
 
 CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_ci_runners_on_id_and_semver_cidr ON ci_runners USING btree (id, ((semver)::cidr));
 
 CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
 

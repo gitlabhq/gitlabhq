@@ -5,6 +5,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
 import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
+import waitForPromises from 'helpers/wait_for_promises';
 import { stageReply } from '../../mock_data';
 
 const dropdownPath = 'path.json';
@@ -58,6 +59,7 @@ describe('Pipelines stage component', () => {
   const findDropdownMenuTitle = () =>
     wrapper.find('[data-testid="pipeline-stage-dropdown-menu-title"]');
   const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');
+  const findLoadingState = () => wrapper.find('[data-testid="pipeline-stage-loading-state"]');
 
   const openStageDropdown = () => {
     findDropdownToggle().trigger('click');
@@ -65,6 +67,29 @@ describe('Pipelines stage component', () => {
       wrapper.vm.$root.$on('bv::dropdown::show', resolve);
     });
   };
+
+  describe('loading state', () => {
+    beforeEach(async () => {
+      createComponent({ updateDropdown: true });
+
+      mock.onGet(dropdownPath).reply(200, stageReply);
+
+      await openStageDropdown();
+    });
+
+    it('displays loading state while jobs are being fetched', () => {
+      const expectedLoadingText = `${PipelineStage.i18n.loadingTextLineOne} ${PipelineStage.i18n.loadingTextLineTwo}`;
+
+      expect(findLoadingState().exists()).toBe(true);
+      expect(findLoadingState().text()).toBe(expectedLoadingText);
+    });
+
+    it('does not display loading state after jobs have been fetched', async () => {
+      await waitForPromises();
+
+      expect(findLoadingState().exists()).toBe(false);
+    });
+  });
 
   describe('default appearance', () => {
     beforeEach(() => {

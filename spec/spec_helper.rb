@@ -53,8 +53,10 @@ end
 require 'rainbow/ext/string'
 Rainbow.enabled = false
 
-require_relative('../ee/spec/spec_helper') if Gitlab.ee?
+# Require JH first because we need override some EE methods with JH methods,
+# if we load EE first, we can't find JH modules in prepend_mod method
 require_relative('../jh/spec/spec_helper') if Gitlab.jh?
+require_relative('../ee/spec/spec_helper') if Gitlab.ee?
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

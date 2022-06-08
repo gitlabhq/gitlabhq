@@ -1382,6 +1382,29 @@ describe('Actions Notes Store', () => {
         ],
       );
     });
+
+    it('dispatches `fetchDiscussionsBatch` action if `paginatedMrDiscussions` feature flag is enabled', () => {
+      window.gon = { features: { paginatedMrDiscussions: true } };
+
+      return testAction(
+        actions.fetchDiscussions,
+        { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
+        null,
+        [],
+        [
+          {
+            type: 'fetchDiscussionsBatch',
+            payload: {
+              config: {
+                params: { notes_filter: 'test-filter', persist_filter: 'test-persist-filter' },
+              },
+              path: 'test-path',
+              perPage: 20,
+            },
+          },
+        ],
+      );
+    });
   });
 
   describe('fetchDiscussionsBatch', () => {
@@ -1401,6 +1424,7 @@ describe('Actions Notes Store', () => {
         null,
         [
           { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
+          { type: mutationTypes.SET_DONE_FETCHING_BATCH_DISCUSSIONS, payload: true },
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
         ],
         [{ type: 'updateResolvableDiscussionsCounts' }],

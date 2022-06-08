@@ -48,6 +48,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_attention_requests, current_user)
     push_frontend_feature_flag(:remove_diff_header_icons, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
+    push_frontend_feature_flag(:paginated_mr_discussions, project)
   end
 
   before_action do

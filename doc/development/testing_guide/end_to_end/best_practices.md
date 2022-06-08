@@ -208,6 +208,54 @@ it 'searches' do
 end
 ```
 
+## Avoid multiple actions in `expect do ... raise_error` blocks
+
+When you wrap multiple actions in a single `expect do ... end.not_to raise_error` or `expect do ... end.to raise_error` block,
+it can be hard to debug the actual cause of the failure, because of how the logs are printed. Important information can be truncated
+or missing altogether.
+
+For example, if you encapsulate some actions and expectations in a private method in the test, like `expect_owner_permissions_allow_delete_issue`:
+
+```ruby
+it "has Owner role with Owner permissions" do
+  Page::Dashboard::Projects.perform do |projects|
+    projects.filter_by_name(project.name)
+    
+    expect(projects).to have_project_with_access_role(project.name, 'Owner')
+  end
+
+  expect_owner_permissions_allow_delete_issue
+end
+```
+
+Then, in the method itself:
+
+```ruby
+#=> Good
+def expect_owner_permissions_allow_delete_issue
+  issue.visit!
+
+  Page::Project::Issue::Show.perform(&:delete_issue)
+
+  Page::Project::Issue::Index.perform do |index|
+    expect(index).not_to have_issue(issue)
+  end
+end
+
+#=> Bad
+def expect_owner_permissions_allow_delete_issue
+  expect do
+    issue.visit!
+
+    Page::Project::Issue::Show.perform(&:delete_issue)
+
+    Page::Project::Issue::Index.perform do |index|
+      expect(index).not_to have_issue(issue)
+    end
+  end.not_to raise_error
+end
+```
+
 ## Prefer to split tests across multiple files
 
 Our framework includes a couple of parallelization mechanisms that work by executing spec files in parallel.

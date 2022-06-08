@@ -233,7 +233,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -251,7 +251,7 @@
                         "content": [
                           {
                             "type": "text",
-                            "text": "bar\n"
+                            "text": "bar"
                           }
                         ]
                       },
@@ -3121,16 +3121,16 @@
   Hast node of type "style" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__029: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__030: |-
   Error - check implementation:
   Hast node of type "script" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__031: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__032: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__033: |-
   {
     "type": "doc",
@@ -3142,10 +3142,10 @@
   }
 04_06__leaf_blocks__html_blocks__034: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__035: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__036: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
@@ -6691,7 +6691,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -6709,7 +6709,7 @@
                         "content": [
                           {
                             "type": "text",
-                            "text": "bar\n"
+                            "text": "bar"
                           }
                         ]
                       },
@@ -6727,7 +6727,7 @@
                                 "content": [
                                   {
                                     "type": "text",
-                                    "text": "baz\n"
+                                    "text": "baz"
                                   }
                                 ]
                               },
@@ -6856,7 +6856,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -7100,8 +7100,33 @@
     ]
   }
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__049: |-
-  Error - check implementation:
-  Hast node of type "input" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "bulletList",
+        "attrs": {
+          "bullet": "*"
+        },
+        "content": [
+          {
+            "type": "listItem",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "baz"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__050: |-
   {
     "type": "doc",
@@ -7346,7 +7371,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -7364,7 +7389,7 @@
                         "content": [
                           {
                             "type": "text",
-                            "text": "bar\n"
+                            "text": "bar"
                           }
                         ]
                       },
@@ -7411,10 +7436,10 @@
   }
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__056: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__057: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__058: |-
   {
     "type": "doc",
@@ -8018,7 +8043,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8091,7 +8116,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8150,7 +8175,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8250,7 +8275,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -16576,7 +16601,7 @@
   }
 06_11__inlines__raw_html__013: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__014: |-
   {
     "type": "doc",
@@ -16618,13 +16643,13 @@
   }
 06_11__inlines__raw_html__016: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__017: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__018: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 06_11__inlines__raw_html__019: |-
   {
     "type": "doc",
@@ -16988,43 +17013,6 @@
       }
     ]
   }
-07_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "bold"
-              }
-            ],
-            "text": "bold"
-          }
-        ]
-      }
-    ]
-  }
-08_01__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "bold"
-              }
-            ],
-            "text": "\nbold\n"
-          }
-        ]
-      }
-    ]
-  }
+07_01__gitlab_specific_markdown__footnotes__001: |-
+  Error - check implementation:
+  Hast node of type "sup" not supported by this converter. Please, provide an specification.

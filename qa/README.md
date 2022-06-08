@@ -41,19 +41,30 @@ This is the recommended option if you would like to contribute to the tests.
 
 Note that tests are using `Chrome` web browser by default so it should be installed and present in `PATH`.
 
+## CI
+
+Tests are executed in merge request pipelines as part of the development lifecycle.
+
+- [Review app environment](../doc/development/testing_guide/review_apps.md)
+- [package-and-qa](../doc/development/testing_guide/end_to_end/index.md#testing-code-in-merge-requests)
+
+### Logging
+
+By default tests on CI use `info` log level. `debug` level is still available in case of failure debugging. Logs are stored in jobs artifacts.
+
 ### Writing tests
 
 - [Writing tests from scratch tutorial](../doc/development/testing_guide/end_to_end/beginners_guide.md)
-    - [Best practices](../doc/development/testing_guide/best_practices.md)
-    - [Using page objects](../doc/development/testing_guide/end_to_end/page_objects.md)
-    - [Guidelines](../doc/development/testing_guide/index.md)
-    - [Tests with special setup for local environments](../doc/development/testing_guide/end_to_end/running_tests_that_require_special_setup.md)
+  - [Best practices](../doc/development/testing_guide/best_practices.md)
+  - [Using page objects](../doc/development/testing_guide/end_to_end/page_objects.md)
+  - [Guidelines](../doc/development/testing_guide/index.md)
+  - [Tests with special setup for local environments](../doc/development/testing_guide/end_to_end/running_tests_that_require_special_setup.md)
 
 ### Run the end-to-end tests in a local development environment
 
 1. Follow the instructions to [install GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md), your local GitLab development environment.
 
-1. Navigate to the QA folder and run the following commands. 
+1. Navigate to the QA folder and run the following commands.
 
 ```bash
 cd gitlab-development-kit/gitlab/qa
@@ -77,7 +88,6 @@ bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
 - Note: If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - Note: If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, use that when exporting `GITLAB_INITIAL_ROOT_PASSWORD`.
 
-
 #### Running EE tests
 
 When running EE tests you'll need to have a license available. GitLab engineers can [request a license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee).
@@ -88,12 +98,12 @@ Once you have the license file you can export it as an environment variable and 
 export EE_LICENSE=$(cat /path/to/gitlab_license)
 ```
 
-### Running specific tests
+#### Running specific tests
 
 You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
-```console
+```shell
 bundle exec rspec qa/specs/features/browser_ui/3_create/repository
 ```
 
@@ -114,7 +124,7 @@ When running tests against GDK, the default address is `http://127.0.0.1:3000`. 
 QA_GITLAB_URL=https://gdk.test:3000 bundle exec rspec
 ```
 
-### Overriding the authenticated user
+#### Overriding the authenticated user
 
 Unless told otherwise, the QA tests will run as the default `root` user seeded
 by the GDK.
@@ -147,13 +157,29 @@ GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sa
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).
 
-### Sending additional cookies
+#### Sending additional cookies
 
 The environment variable `QA_COOKIES` can be set to send additional cookies
 on every request. This is necessary on gitlab.com to direct traffic to the
 canary fleet. To do this set `QA_COOKIES="gitlab_canary=true"`.
 
 To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"`
+
+#### Headless browser
+
+By default tests use headless browser. To override that, `WEBDRIVER_HEADLESS` must be set to `false`:
+
+```shell
+WEBDRIVER_HEADLESS=false bundle exec rspec
+```
+
+#### Log level
+
+By default, the tests use the `info` log level. To change the test's log level, the environment variable `QA_LOG_LEVEL` can be set:
+
+```shell
+QA_LOG_LEVEL=debug bundle exec rspec
+```
 
 ### Building a Docker image to test
 
@@ -181,7 +207,6 @@ bundle exec rspec --tag quarantine
 ### Running tests with a custom bin/qa test runner
 
 `bin/qa` is an additional custom wrapper script that abstracts away some of the more complicated setups that some tests require. This option requires test scenario and test instance's Gitlab address to be specified in the command. For example, to run any `Instance` scenario test, the following command can be used:
-
 
 ```shell
 bundle exec bin/qa Test::Instance::All http://localhost:3000

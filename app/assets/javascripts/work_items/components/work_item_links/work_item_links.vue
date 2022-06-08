@@ -14,11 +14,16 @@ export default {
       required: false,
       default: null,
     },
+    issuableId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       isShownAddForm: false,
-      isOpen: false,
+      isOpen: true,
       children: [],
     };
   },

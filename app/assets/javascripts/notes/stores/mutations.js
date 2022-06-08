@@ -436,4 +436,7 @@ export default {
   [types.SET_FETCHING_DISCUSSIONS](state, value) {
     state.currentlyFetchingDiscussions = value;
   },
+  [types.SET_DONE_FETCHING_BATCH_DISCUSSIONS](state, value) {
+    state.doneFetchingBatchDiscussions = value;
+  },
 };

@@ -23,32 +23,26 @@ describe('WorkItemLinks', () => {
     wrapper.destroy();
   });
 
-  it('is collapsed by default', () => {
-    expect(findToggleButton().props('icon')).toBe('angle-down');
-    expect(findLinksBody().exists()).toBe(false);
+  it('is expanded by default', () => {
+    expect(findToggleButton().props('icon')).toBe('angle-up');
+    expect(findLinksBody().exists()).toBe(true);
   });
 
   it('expands on click toggle button', async () => {
     findToggleButton().vm.$emit('click');
     await nextTick();
 
-    expect(findToggleButton().props('icon')).toBe('angle-up');
-    expect(findLinksBody().exists()).toBe(true);
+    expect(findToggleButton().props('icon')).toBe('angle-down');
+    expect(findLinksBody().exists()).toBe(false);
   });
 
-  it('displays empty state if there are no links', async () => {
-    findToggleButton().vm.$emit('click');
-    await nextTick();
-
+  it('displays empty state if there are no links', () => {
     expect(findEmptyState().exists()).toBe(true);
     expect(findToggleAddFormButton().exists()).toBe(true);
   });
 
   describe('add link form', () => {
     it('displays form on click add button and hides form on cancel', async () => {
-      findToggleButton().vm.$emit('click');
-      await nextTick();
-
       expect(findEmptyState().exists()).toBe(true);
 
       findToggleAddFormButton().vm.$emit('click');

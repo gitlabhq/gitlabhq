@@ -10918,6 +10918,9 @@ msgstr ""
 msgid "CsvParser|Unable to auto-detect delimiter; defaulted to \",\""
 msgstr ""
 
+msgid "Cue dramatic background music..."
+msgstr ""
+
 msgid "Current"
 msgstr ""
 
@@ -23047,6 +23050,9 @@ msgid "Loading snippet"
 msgstr ""
 
 msgid "Loading the GitLab IDE..."
+msgstr ""
+
+msgid "Loading, please wait."
 msgstr ""
 
 msgid "Loading..."
@@ -42742,9 +42748,6 @@ msgid "What is repository mirroring?"
 msgstr ""
 
 msgid "What is squashing?"
-msgstr ""
-
-msgid "What is your job title? (optional)"
 msgstr ""
 
 msgid "What templates can I create?"
