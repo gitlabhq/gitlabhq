@@ -55,7 +55,7 @@ To use this feature, define a [CI/CD variable](../../../ci/variables/index.md#cu
 `CI_PRE_CLONE_SCRIPT` that contains a bash script.
 
 NOTE:
-The `CI_PRE_CLONE_SCRIPT` variable does not work on Windows runners.
+The `CI_PRE_CLONE_SCRIPT` variable does not work on GitLab SaaS Windows or macOS Runners.
 
 ### Pre-clone script example
 

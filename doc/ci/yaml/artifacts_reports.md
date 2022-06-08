@@ -179,7 +179,7 @@ The collected Dependency Scanning report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md#overview).
+- The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md).
 - The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).

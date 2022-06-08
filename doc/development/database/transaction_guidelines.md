@@ -15,8 +15,8 @@ For further reference, check PostgreSQL documentation about [transactions](https
 The [sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/) plans
 to split the main GitLab database and move some of the database tables to other database servers.
 
-We'll start decomposing the `ci_*`-related database tables first. To maintain the current application
-development experience, we'll add tooling and static analyzers to the codebase to ensure correct
+We start decomposing the `ci_*`-related database tables first. To maintain the current application
+development experience, we add tooling and static analyzers to the codebase to ensure correct
 data access and data modification methods. By using the correct form for defining database transactions,
 we can save significant refactoring work in the future.
 
@@ -60,7 +60,7 @@ end
 
 The database tries to acquire the `FOR UPDATE` lock for the referenced `issue` and
 `project` records. In our case, we have two competing transactions for these locks,
-and only one of them will successfully acquire them. The other transaction will have
+and only one of them successfully acquires them. The other transaction has
 to wait in the lock queue until the first transaction finishes. The execution of the
 second transaction is blocked at this point.
 
@@ -139,5 +139,5 @@ end
 ```
 
 The `ActiveRecord::Base` class uses a different database connection than the `Ci::Build` records.
-The two statements in the transaction block will not be part of the transaction and will not be
+The two statements in the transaction block are not part of the transaction and are
 rolled back in case something goes wrong. They act as 3rd part calls.

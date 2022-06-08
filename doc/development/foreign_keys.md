@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-Here you will need to add a foreign key on column `posts.user_id`. This ensures
+Add a foreign key here on column `posts.user_id`. This ensures
 that data consistency is enforced on database level. Foreign keys also mean that
 the database can very quickly remove associated data (for example, when removing a
 user), instead of Rails having to do this.
@@ -28,7 +28,7 @@ Guide](migration_style_guide.md) for more information.
 
 Keep in mind that you can only safely add foreign keys to existing tables after
 you have removed any orphaned rows. The method `add_concurrent_foreign_key`
-does not take care of this so you'll need to do so manually. See
+does not take care of this so you need to do so manually. See
 [adding foreign key constraint to an existing column](database/add_foreign_key_to_existing_column.md).
 
 ## Cascading Deletes
@@ -39,7 +39,7 @@ this should be set to `CASCADE`.
 ## Indexes
 
 When adding a foreign key in PostgreSQL the column is not indexed automatically,
-thus you must also add a concurrent index. Not doing so will result in cascading
+thus you must also add a concurrent index. Not doing so results in cascading
 deletes being very slow.
 
 ## Naming foreign keys
@@ -48,7 +48,7 @@ By default Ruby on Rails uses the `_id` suffix for foreign keys. So we should
 only use this suffix for associations between two tables. If you want to
 reference an ID on a third party platform the `_xid` suffix is recommended.
 
-The spec `spec/db/schema_spec.rb` will test if all columns with the `_id` suffix
+The spec `spec/db/schema_spec.rb` tests if all columns with the `_id` suffix
 have a foreign key constraint. So if that spec fails, don't add the column to
 `IGNORED_FK_COLUMNS`, but instead add the FK constraint, or consider naming it
 differently.
@@ -56,7 +56,7 @@ differently.
 ## Dependent Removals
 
 Don't define options such as `dependent: :destroy` or `dependent: :delete` when
-defining an association. Defining these options means Rails will handle the
+defining an association. Defining these options means Rails handles the
 removal of data, instead of letting the database handle this in the most
 efficient way possible.
 
@@ -80,13 +80,13 @@ foreign keys to remove the data as this would result in the file system data
 being left behind. In such a case you should use a service class instead that
 takes care of removing non database data.
 
-In cases where the relation spans multiple databases you will have even
+In cases where the relation spans multiple databases you have even
 further problems using `dependent: :destroy` or the above hooks. You can
 read more about alternatives at [Avoid `dependent: :nullify` and
 `dependent: :destroy` across
 databases](database/multiple_databases.md#avoid-dependent-nullify-and-dependent-destroy-across-databases).
 
-## Alternative primary keys with has_one associations
+## Alternative primary keys with `has_one` associations
 
 Sometimes a `has_one` association is used to create a one-to-one relationship:
 
@@ -112,9 +112,9 @@ create_table :user_configs, id: false do |t|
 end
 ```
 
-Setting `default: nil` will ensure a primary key sequence is not created, and since the primary key
-will automatically get an index, we set `index: false` to avoid creating a duplicate.
-You will also need to add the new primary key to the model:
+Setting `default: nil` ensures a primary key sequence is not created, and since the primary key
+automatically gets an index, we set `index: false` to avoid creating a duplicate.
+You also need to add the new primary key to the model:
 
 ```ruby
 class UserConfig < ActiveRecord::Base
@@ -126,4 +126,4 @@ end
 
 Using a foreign key as primary key saves space but can make
 [batch counting](service_ping/implement.md#batch-counters) in [Service Ping](service_ping/index.md) less efficient.
-Consider using a regular `id` column if the table will be relevant for Service Ping.
+Consider using a regular `id` column if the table is relevant for Service Ping.

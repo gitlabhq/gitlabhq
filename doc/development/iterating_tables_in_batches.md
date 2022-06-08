@@ -31,7 +31,7 @@ User.each_batch(of: 10) do |relation|
 end
 ```
 
-This will end up producing queries such as:
+This produces queries such as:
 
 ```plaintext
 User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 41654)  ORDER BY "users"."id" ASC LIMIT 1 OFFSET 1000
@@ -46,7 +46,7 @@ all of the arguments that `in_batches` supports. You should always use
 
 One should proceed with extra caution, and possibly avoid iterating over a column that can contain
 duplicate values. When you iterate over an attribute that is not unique, even with the applied max
-batch size, there is no guarantee that the resulting batches will not surpass it. The following
+batch size, there is no guarantee that the resulting batches do not surpass it. The following
 snippet demonstrates this situation when one attempt to select `Ci::Build` entries for users with
 `id` between `1` and `10,000`, the database returns `1 215 178` matching rows.
 
@@ -67,7 +67,7 @@ SELECT "ci_builds".* FROM "ci_builds" WHERE "ci_builds"."type" = 'Ci::Build' AND
 even though the range size is limited to a certain threshold (`10,000` in the previous example) this
 threshold does not translate to the size of the returned dataset. That happens because when taking
 `n` possible values of attributes, one can't tell for sure that the number of records that contains
-them will be less than `n`.
+them is less than `n`.
 
 ## Column definition
 
@@ -99,8 +99,8 @@ determines the data ranges (slices) and schedules the background jobs uses `each
 
 ## Efficient usage of `each_batch`
 
-`EachBatch` helps to iterate over large tables. It's important to highlight that `EachBatch` is
-not going to magically solve all iteration related performance problems and it might not help at
+`EachBatch` helps to iterate over large tables. It's important to highlight that `EachBatch`
+does not magically solve all iteration-related performance problems, and it might not help at
 all in some scenarios. From the database point of view, correctly configured database indexes are
 also necessary to make `EachBatch` perform well.
 
@@ -108,7 +108,7 @@ also necessary to make `EachBatch` perform well.
 
 Let's consider that we want to iterate over the `users` table and print the `User` records to the
 standard output. The `users` table contains millions of records, thus running one query to fetch
-the users will likely time out.
+the users likely times out.
 
 ![Users table overview](img/each_batch_users_table_v13_7.png)
 
@@ -171,7 +171,7 @@ SELECT "users".* FROM "users" WHERE "users"."id" >= 1 AND "users"."id" < 302
 ![Reading the rows from the `users` table](img/each_batch_users_table_iteration_3_v13_7.png)
 
 Notice the `<` sign. Previously six items were read from the index and in this query, the last
-value is "excluded". The query will look at the index to get the location of the five `user`
+value is "excluded". The query looks at the index to get the location of the five `user`
 rows on the disk and read the rows from the table. The returned array is processed in Ruby.
 
 The first iteration is done. For the next iteration, the last `id` value is reused from the
@@ -204,13 +204,13 @@ users.each_batch(of: 5) do |relation|
 end
 ```
 
-`each_batch` will produce the following SQL query for the start `id` value:
+`each_batch` produces the following SQL query for the start `id` value:
 
 ```sql
 SELECT "users"."id" FROM "users" WHERE "users"."sign_in_count" = 0 ORDER BY "users"."id" ASC LIMIT 1
 ```
 
-Selecting only the `id` column and ordering by `id` is going to "force" the database to use the
+Selecting only the `id` column and ordering by `id` forces the database to use the
 index on the `id` (primary key index) column however, we also have an extra condition on the
 `sign_in_count` column. The column is not part of the index, so the database needs to look into
 the actual table to find the first matching row.
@@ -225,7 +225,7 @@ The number of scanned rows depends on the data distribution in the table.
 
 In this particular example, the database had to read 10 rows (regardless of our batch size setting)
 to determine the first `id` value. In a "real-world" application it's hard to predict whether the
-filtering is going to cause problems or not. In the case of GitLab, verifying the data on a
+filtering causes problems or not. In the case of GitLab, verifying the data on a
 production replica is a good start, but keep in mind that data distribution on GitLab.com can be
 different from self-managed instances.
 
@@ -289,7 +289,7 @@ CREATE INDEX index_on_users_never_logged_in ON users (sign_in_count, id)
 
 ![Reading a good index](img/each_batch_users_table_good_index_v13_7.png)
 
-The following index definition is not going to work well with `each_batch` (avoid).
+The following index definition does not work well with `each_batch` (avoid).
 
 ```sql
 CREATE INDEX index_on_users_never_logged_in ON users (sign_in_count)

@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/212145', type: :stale } do
+  RSpec.describe 'Manage' do
     describe 'Check for broken images', :requires_admin do
       before(:context) do
-        admin = QA::Resource::User.init do |user|
-          user.username = QA::Runtime::User.admin_username
-          user.password = QA::Runtime::User.admin_password
-        end
-        @api_client = Runtime::API::Client.new(:gitlab, user: admin)
+        @api_client = Runtime::API::Client.as_admin
         @new_user = Resource::User.fabricate_via_api! do |user|
           user.api_client = @api_client
         end

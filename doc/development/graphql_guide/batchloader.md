@@ -20,7 +20,7 @@ When implementing a new endpoint we should aim to minimise the number of SQL que
 
 Batch loading is useful when a series of queries for inputs `Qα, Qβ, ... Qω` can be combined to a single query for `Q[α, β, ... ω]`. An example of this is lookups by ID, where we can find two users by usernames as cheaply as one, but real-world examples can be more complex.
 
-Batch loading is not suitable when the result sets have different sort-orders, grouping, aggregation or other non-composable features.
+Batch loading is not suitable when the result sets have different sort orders, grouping, aggregation, or other non-composable features.
 
 There are two ways to use the batch-loader in your code. For simple ID lookups, use `::Gitlab::Graphql::Loaders::BatchModelLoader.new(model, id).find`. For more complex cases, you can use the batch API directly.
 
@@ -69,7 +69,7 @@ end
 
 ## How does it work exactly?
 
-Each lazy object knows which data it needs to load and how to batch the query. When we need to use the lazy objects (which we announce by calling `#sync`), they will be loaded along with all other similar objects in the current batch.
+Each lazy object knows which data it needs to load and how to batch the query. When we need to use the lazy objects (which we announce by calling `#sync`), they are loaded along with all other similar objects in the current batch.
 
 Inside the block we execute a batch query for our items (`User`). After that, all we have to do is to call loader by passing an item which was used in `BatchLoader::GraphQL.for` method (`usernames`) and the loaded object itself (`user`):
 

@@ -47,6 +47,7 @@ COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/co
 # The [b] part makes ./ee/app/models/license.r[b] a pattern that is allowed to return no files (which is the case in FOSS)
 COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
 COPY ./config/bundler_setup.rb /home/gitlab/config/
+COPY ./config/feature_flags /home/gitlab/config/feature_flags
 COPY ./lib/gitlab_edition.rb /home/gitlab/lib/
 COPY ./lib/gitlab/utils.rb /home/gitlab/lib/gitlab/
 COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/

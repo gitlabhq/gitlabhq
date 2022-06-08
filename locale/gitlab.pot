@@ -1243,9 +1243,6 @@ msgid_plural "+%d more"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "+%{extra} more"
-msgstr ""
-
 msgid "+%{more_assignees_count}"
 msgstr ""
 
@@ -10496,9 +10493,6 @@ msgid "Create group"
 msgstr ""
 
 msgid "Create group label"
-msgstr ""
-
-msgid "Create incident"
 msgstr ""
 
 msgid "Create issue"
@@ -25183,15 +25177,6 @@ msgstr ""
 msgid "Network:"
 msgstr ""
 
-msgid "NetworkPolicy|Policy"
-msgstr ""
-
-msgid "NetworkPolicy|Search by policy name"
-msgstr ""
-
-msgid "NetworkPolicy|Status"
-msgstr ""
-
 msgid "Never"
 msgstr ""
 
@@ -38475,9 +38460,6 @@ msgstr ""
 msgid "There was an error fetching configuration for charts"
 msgstr ""
 
-msgid "There was an error fetching content, please refresh the page"
-msgstr ""
-
 msgid "There was an error fetching data for the selected stage"
 msgstr ""
 
@@ -39225,61 +39207,19 @@ msgstr ""
 msgid "ThreatMonitoring|Alert Details"
 msgstr ""
 
-msgid "ThreatMonitoring|Alerts"
-msgstr ""
-
-msgid "ThreatMonitoring|Date and time"
-msgstr ""
-
 msgid "ThreatMonitoring|Dismissed"
-msgstr ""
-
-msgid "ThreatMonitoring|Events"
-msgstr ""
-
-msgid "ThreatMonitoring|Failed to create incident, please try again."
-msgstr ""
-
-msgid "ThreatMonitoring|Hide dismissed alerts"
 msgstr ""
 
 msgid "ThreatMonitoring|In review"
 msgstr ""
 
-msgid "ThreatMonitoring|Incident"
-msgstr ""
-
-msgid "ThreatMonitoring|Name"
-msgstr ""
-
-msgid "ThreatMonitoring|No alerts available to display. See %{linkStart}enabling threat alerts%{linkEnd} for more information on adding alerts to the list."
-msgstr ""
-
-msgid "ThreatMonitoring|No alerts to display."
-msgstr ""
-
 msgid "ThreatMonitoring|Resolved"
-msgstr ""
-
-msgid "ThreatMonitoring|Status"
-msgstr ""
-
-msgid "ThreatMonitoring|There was an error displaying the alerts. Confirm your endpoint's configuration details to ensure alerts appear."
-msgstr ""
-
-msgid "ThreatMonitoring|There was an error while updating the status of the alert. Please try again."
 msgstr ""
 
 msgid "ThreatMonitoring|Threat Monitoring"
 msgstr ""
 
-msgid "ThreatMonitoring|Threat Monitoring help page link"
-msgstr ""
-
 msgid "ThreatMonitoring|Unreviewed"
-msgstr ""
-
-msgid "ThreatMonitoring|View documentation"
 msgstr ""
 
 msgid "Threshold in bytes at which to compress Sidekiq job arguments."

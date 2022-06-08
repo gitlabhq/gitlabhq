@@ -178,7 +178,7 @@ To make keyset pagination work, we must configure custom order objects, to do so
 collect information about the order columns:
 
 - `relative_position` can have duplicated values because no unique index is present.
-- `relative_position` can have null values because we don't have a not null constraint on the column. For this, we must determine where we see NULL values, at the beginning of the result set, or the end (`NULLS LAST`).
+- `relative_position` can have null values because we don't have a not null constraint on the column. For this, we must determine where we see `NULL` values, at the beginning of the result set, or the end (`NULLS LAST`).
 - Keyset pagination requires distinct order columns, so we must add the primary key (`id`) to make the order distinct.
 - Jumping to the last page and paginating backwards actually reverses the `ORDER BY` clause. For this, we must provide the reversed `ORDER BY` clause.
 

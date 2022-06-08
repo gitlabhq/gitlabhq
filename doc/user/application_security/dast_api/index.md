@@ -1021,6 +1021,19 @@ variables:
   DAST_API_EXCLUDE_PATHS=/auth*;/v1/*
 ```
 
+To exclude one or more nested levels within a path we use `**`. In this example we are testing API endpoints. We are testing `/api/v1/` and `/api/v2/` of a data query requesting `mass`, `brightness` and `coordinates` data for `planet`, `moon`, `star`, and `satellite` objects. Example paths that could be scanned include, but are not limited to:
+
+- `/api/v2/planet/coordinates`
+- `/api/v1/star/mass`
+- `/api/v2/satellite/brightness`
+
+In this example we test the `brightness` endpoint only:
+
+```yaml
+variables:
+  DAST_API_EXCLUDE_PATHS=/api/**/mass;/api/**/coordinates
+```
+
 ### Exclude parameters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10.

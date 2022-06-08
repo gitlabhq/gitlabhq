@@ -28,9 +28,9 @@ We have two options for rendering the content:
 
 Rendering long lists can significantly affect both the frontend and backend performance:
 
-- The database will need to read a lot of data from the disk.
-- The result of the query (records) will eventually be transformed to Ruby objects which increases memory allocation.
-- Large responses will take more time to send over the wire, to the user's browser.
+- The database reads a lot of data from the disk.
+- The result of the query (records) is eventually transformed to Ruby objects which increases memory allocation.
+- Large responses take more time to send over the wire, to the user's browser.
 - Rendering long lists might freeze the browser (bad user experience).
 
 With pagination, the data is split into equal pieces (pages). On the first visit, the user receives only a limited number of items (page size). The user can see more items by paginating forward which results in a new HTTP request and a new database query.
@@ -127,17 +127,17 @@ We can produce the same query in Rails:
 Issue.where(project_id: 1).page(1).per(20)
 ```
 
-The SQL query will return a maximum of 20 rows from the database. However, it doesn't mean that the database will only read 20 rows from the disk to produce the result.
+The SQL query returns a maximum of 20 rows from the database. However, it doesn't mean that the database only reads 20 rows from the disk to produce the result.
 
-This is what will happen:
+This is what happens:
 
-1. The database will try to plan the execution in the most efficient way possible based on the table statistics and the available indexes.
+1. The database tries to plan the execution in the most efficient way possible based on the table statistics and the available indexes.
 1. The planner knows that we have an index covering the `project_id` column.
-1. The database will read all rows using the index on `project_id`.
-1. The rows at this point are not sorted, so the database will need to sort the rows.
+1. The database reads all rows using the index on `project_id`.
+1. The rows at this point are not sorted, so the database sorts the rows.
 1. The database returns the first 20 rows.
 
-In case the project has 10_000 rows, the database will read 10_000 rows and sort them in memory (or on disk). This is not going to scale well in the long term.
+In case the project has 10,000 rows, the database reads 10,000 rows and sorts them in memory (or on disk). This does not scale well in the long term.
 
 To fix this we need the following index:
 
@@ -145,16 +145,16 @@ To fix this we need the following index:
 CREATE INDEX index_on_issues_project_id ON issues (project_id, id);
 ```
 
-By making the `id` column part of the index, the previous query will read maximum 20 rows. The query will perform well regardless of the number of issues within a project. So with this change, we've also improved the initial page load (when the user loads the issue page).
+By making the `id` column part of the index, the previous query reads maximum 20 rows. The query performs well regardless of the number of issues within a project. So with this change, we've also improved the initial page load (when the user loads the issue page).
 
 NOTE:
-Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows will not require further sorting.
+Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows does not require further sorting.
 
 #### Limitations
 
 ##### `COUNT(*)` on a large dataset
 
-Kaminari by default executes a count query to determine the number of pages for rendering the page links. Count queries can be quite expensive for a large table, in an unfortunate scenario the queries will simply time out.
+Kaminari by default executes a count query to determine the number of pages for rendering the page links. Count queries can be quite expensive for a large table. In an unfortunate scenario the queries simply time out.
 
 To work around this, we can run Kaminari without invoking the count SQL query.
 
@@ -162,11 +162,11 @@ To work around this, we can run Kaminari without invoking the count SQL query.
 Issue.where(project_id: 1).page(1).per(20).without_count
 ```
 
-In this case, the count query will not be executed and the pagination will no longer render the page numbers. We'll see only the next and previous links.
+In this case, the count query is not executed and the pagination no longer renders the page numbers. We see only the next and previous links.
 
 ##### `OFFSET` on a large dataset
 
-When we paginate over a large dataset, we might notice that the response time will get slower and slower. This is due to the `OFFSET` clause that seeks through the rows and skips N rows.
+When we paginate over a large dataset, we might notice that the response time gets slower and slower. This is due to the `OFFSET` clause that seeks through the rows and skips N rows.
 
 From the user point of view, this might not be always noticeable. As the user paginates forward, the previous rows might be still in the buffer cache of the database. If the user shares the link with someone else and it's opened after a few minutes or hours, the response time might be significantly higher or it would even time out.
 
@@ -214,7 +214,7 @@ Limit  (cost=137878.89..137881.65 rows=20 width=1309) (actual time=5523.588..552
 (8 rows)
 ```
 
-We can argue that a normal user will not be going to visit these pages, however, API users could easily navigate to very high page numbers (scraping, collecting data).
+We can argue that a normal user does not visit these pages, however, API users could easily navigate to very high page numbers (scraping, collecting data).
 
 ### Keyset pagination
 
@@ -279,7 +279,7 @@ eyJpZCI6Ijk0NzMzNTk0IiwidXBkYXRlZF9hdCI6IjIwMjEtMDQtMDkgMDg6NTA6MDUuODA1ODg0MDAw
 ```
 
 NOTE:
-Pagination parameters will be visible to the user, so we need to be careful about which columns we order by.
+Pagination parameters are visible to the user, so be careful about which columns we order by.
 
 Keyset pagination can only provide the next, previous, first, and last pages.
 

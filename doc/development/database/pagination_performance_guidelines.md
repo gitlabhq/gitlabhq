@@ -55,13 +55,13 @@ LIMIT 20
 OFFSET 0
 ```
 
-With PostgreSQL version 11, the planner will first look up all issues matching the `project_id` filter and then join all `issue_metrics` rows. The ordering of rows will happen in memory. In case the joined relation is always present (1:1 relationship), the database will read `N * 2` rows where N is the number of rows matching the `project_id` filter.
+With PostgreSQL version 11, the planner first looks up all issues matching the `project_id` filter and then join all `issue_metrics` rows. The ordering of rows happens in memory. In case the joined relation is always present (1:1 relationship), the database reads `N * 2` rows where N is the number of rows matching the `project_id` filter.
 
 For performance reasons, we should avoid mixing columns from different tables when specifying the `ORDER BY` clause.
 
-In this particular case there is no simple way (like index creation) to improve the query. We might think that changing the `issues.id` column to `issue_metrics.issue_id` will help, however, this will likely make the query perform worse because it might force the database to process all rows in the `issue_metrics` table.
+In this particular case there is no simple way (like index creation) to improve the query. We might think that changing the `issues.id` column to `issue_metrics.issue_id` helps, however, this likely makes the query perform worse because it might force the database to process all rows in the `issue_metrics` table.
 
-One idea to address this problem is denormalization. Adding the `project_id` column to the `issue_metrics` table will make the filtering and sorting efficient:
+One idea to address this problem is denormalization. Adding the `project_id` column to the `issue_metrics` table makes the filtering and sorting efficient:
 
 ```sql
 SELECT issues.* FROM issues
@@ -73,7 +73,7 @@ OFFSET 0
 ```
 
 NOTE:
-The query will require an index on `issue_metrics` table with the following column configuration: `(project_id, first_mentioned_in_commit_at DESC, issue_id DESC)`.
+The query requires an index on `issue_metrics` table with the following column configuration: `(project_id, first_mentioned_in_commit_at DESC, issue_id DESC)`.
 
 ## Filtering
 
@@ -81,7 +81,7 @@ The query will require an index on `issue_metrics` table with the following colu
 
 Filtering by a project is a very common use case since we have many features on the project level. Examples: merge requests, issues, boards, iterations.
 
-These features will have a filter on `project_id` in their base query. Loading issues for a project:
+These features have a filter on `project_id` in their base query. Loading issues for a project:
 
 ```ruby
 project = Project.find(5)
@@ -108,9 +108,9 @@ This index fully covers the database query and the pagination.
 
 ### By group
 
-Unfortunately, there is no efficient way to sort and paginate on the group level. The database query execution time will increase based on the number of records in the group.
+Unfortunately, there is no efficient way to sort and paginate on the group level. The database query execution time increases based on the number of records in the group.
 
-Things get worse when group level actually means group and its subgroups. To load the first page, the database needs to look up the group hierarchy, find all projects and then look up all issues.
+Things get worse when group level actually means group and its subgroups. To load the first page, the database looks up the group hierarchy, finds all projects, and then looks up all issues.
 
 The main reason behind the inefficient queries on the group level is the way our database schema is designed; our core domain models are associated with a project, and projects are associated with groups. This doesn't mean that the database structure is bad, it's just in a well-normalized form that is not optimized for efficient group level queries. We might need to look into denormalization in the long term.
 
@@ -184,7 +184,7 @@ LIMIT 20
 OFFSET 0
 ```
 
-Keep in mind that the index above will not support the following project level query:
+The index above does not support the following project level query:
 
 ```sql
 SELECT "issues".*
@@ -213,7 +213,7 @@ OFFSET 0
 
 We might be tempted to add an index on `project_id`, `confidential`, and `iid` to improve the database query, however, in this case it's probably unnecessary. Based on the data distribution in the table, confidential issues are rare. Filtering them out does not make the database query significantly slower. The database might read a few extra rows, the performance difference might not even be visible to the end-user.
 
-On the other hand, if we would implement a special filter where we only show confidential issues, we will surely need the index. Finding 20 confidential issues might require the database to scan hundreds of rows or in the worst case, all issues in the project.
+On the other hand, if we implemented a special filter where we only show confidential issues, we need the index. Finding 20 confidential issues might require the database to scan hundreds of rows or, in the worst case, all issues in the project.
 
 NOTE:
 Be aware of the data distribution and the table access patterns (how features work) when introducing a new database index. Sampling production data might be necessary to make the right decision.
@@ -253,7 +253,7 @@ Example database (oversimplified) execution plan:
     - `SELECT "issues".* FROM "issues" WHERE "issues"."project_id" = 5`
 1. The database estimates the number of rows and the costs to run these queries.
 1. The database executes the cheapest query first.
-1. Using the query result, load the rows from the other table (from the other query) using the JOIN column and filter the rows further.
+1. Using the query result, load the rows from the other table (from the other query) using the `JOIN` column and filter the rows further.
 
 In this particular example, the `issue_assignees` query would likely be executed first.
 
@@ -276,17 +276,17 @@ Running the query in production for the GitLab project produces the following ex
 (13 rows)
 ```
 
-The query looks up the `assignees` first, filtered by the `user_id` (`user_id = 4156052`) and it finds 215 rows. Using that 215 rows, the database will look up the 215 associated issue rows by the primary key. Notice that the filter on the `project_id` column is not backed by an index.
+The query looks up the `assignees` first, filtered by the `user_id` (`user_id = 4156052`) and it finds 215 rows. Using those 215 rows, the database looks up the 215 associated issue rows by the primary key. Notice that the filter on the `project_id` column is not backed by an index.
 
-In most cases, we are lucky that the joined relation will not be going to return too many rows, therefore, we will end up with a relatively efficient database query that accesses low number of rows. As the database grows, these queries might start to behave differently. Let's say the number `issue_assignees` records for a particular user is very high (millions), then this join query will not perform well, and it will likely time out.
+In most cases, we are lucky that the joined relation does not return too many rows, therefore, we end up with a relatively efficient database query that accesses a small number of rows. As the database grows, these queries might start to behave differently. Let's say the number `issue_assignees` records for a particular user is very high, in the millions. This join query does not perform well, and it likely times out.
 
-A similar problem could be a double join, where the filter exists in the 2nd JOIN query. Example: `Issue -> LabelLink -> Label(name=bug)`.
+A similar problem could be a double join, where the filter exists in the 2nd `JOIN` query. Example: `Issue -> LabelLink -> Label(name=bug)`.
 
 There is no easy way to fix these problems. Denormalization of data could help significantly, however, it has also negative effects (data duplication and keeping the data up to date).
 
 Ideas for improving the `issue_assignees` filter:
 
-- Add `project_id` column to the `issue_assignees` table so when JOIN-ing, the extra `project_id` filter will further filter the rows. The sorting will likely happen in memory:
+- Add `project_id` column to the `issue_assignees` table so when performing the `JOIN`, the extra `project_id` filter further filters the rows. The sorting likely happens in memory:
 
   ```sql
   SELECT "issues".*

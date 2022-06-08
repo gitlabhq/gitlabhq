@@ -107,7 +107,7 @@ perspective, but that definition is volatile and not actionable.
 Finally, a characteristic that further differentiates time-decay data in sub-categories with
 slightly different approaches available is **whether we want to keep the old data or not**
 (for example, retention policy) and/or
-**whether old data will be accessible by users through the application**.
+**whether old data is accessible by users through the application**.
 
 #### (optional) Extended definition of time-decay data
 
@@ -148,7 +148,7 @@ factors:
    would include too many unnecessary records in each partition, as is the case for `web_hook_logs`.
 1. **How large are the partitions created?**
    The major purpose of partitioning is accessing tables that are as small as possible. If they get too
-   large by themselves, queries will start underperforming. We may have to re-partition (split) them
+   large by themselves, queries start underperforming. We may have to re-partition (split) them
    in even smaller partitions.
 
 The perfect partitioning scheme keeps **all queries over a dataset almost always over a single partition**,
@@ -194,7 +194,7 @@ The disadvantage of such a solution over large, non-partitioned tables is that w
 access and delete all the records that are considered as not relevant any more. That is a very
 expensive operation, due to multi-version concurrency control in PostgreSQL. It also leads to the
 pruning worker not being able to catch up with new records being created, if that rate exceeds a
-threshold, as is the case of [web_hook_logs](https://gitlab.com/gitlab-org/gitlab/-/issues/256088)
+threshold, as is the case of [`web_hook_logs`](https://gitlab.com/gitlab-org/gitlab/-/issues/256088)
 at the time of writing this document.
 
 For the aforementioned reasons, our proposal is that
@@ -315,7 +315,7 @@ The process required follows:
 1. After the non-partitioned table is dropped, we can add a worker to implement the
    pruning strategy by dropping past partitions.
 
-   In this case, the worker will make sure that only 4 partitions are always active (as the
+   In this case, the worker makes sure that only 4 partitions are always active (as the
    retention policy is 90 days) and drop any partitions older than four months. We have to keep 4
    months of partitions while the current month is still active, as going 90 days back takes you to
    the fourth oldest partition.
@@ -325,7 +325,7 @@ The process required follows:
 Related epic: [Partitioning: Design and implement partitioning strategy for Audit Events](https://gitlab.com/groups/gitlab-org/-/epics/3206)
 
 The `audit_events` table shares a lot of characteristics with the `web_hook_logs` table discussed
-in the previous sub-section, so we are going to focus on the points they differ.
+in the previous sub-section, so we focus on the points they differ.
 
 The consensus was that
 [partitioning could solve most of the performance issues](https://gitlab.com/groups/gitlab-org/-/epics/3206#note_338157248).

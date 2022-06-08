@@ -39,7 +39,7 @@ migration only.
 ### Required
 
 You must provide the following artifacts when you request a ~database review.
-If your merge request description does not include these items, the review will be reassigned back to the author.
+If your merge request description does not include these items, the review is reassigned back to the author.
 
 #### Migrations
 
@@ -96,7 +96,7 @@ A database **maintainer**'s role is to:
 Review workload is distributed using [reviewer roulette](code_review.md#reviewer-roulette)
 ([example](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25181#note_147551725)).
 The MR author should request a review from the suggested database
-**reviewer**. When they give their sign-off, they will hand over to
+**reviewer**. When they sign off, they hand over to
 the suggested database **maintainer**.
 
 If reviewer roulette didn't suggest a database reviewer & maintainer,
@@ -124,10 +124,10 @@ the following preparations into account.
 - When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
 test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slack channel and add the execution time to the MR description:
   - Execution time largely varies between `#database-lab` and GitLab.com, but an elevated execution time from `#database-lab`
-    can give a hint that the execution on GitLab.com will also be considerably high.
+    can give a hint that the execution on GitLab.com is also considerably high.
   - If the execution from `#database-lab` is longer than `1h`, the index should be moved to a [post-migration](database/post_deployment_migrations.md).
     Keep in mind that in this case you may need to split the migration and the application changes in separate releases to ensure the index
-    will be in place when the code that needs it will be deployed.
+    is in place when the code that needs it is deployed.
 - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - This job runs migrations in a production-like environment (similar to `#database_lab`) and posts to the MR its findings (queries, runtime, size change).
   - Review migration runtimes and any warnings.
@@ -142,7 +142,7 @@ Include in the MR description:
 - If the migration itself is not reversible, details of how data changes could be reverted in the event of an incident. For example, in the case of a migration that deletes records (an operation that most of the times is not automatically revertable), how _could_ the deleted records be recovered.
 - If the migration deletes data, apply the label `~data-deletion`.
 - Concise descriptions of possible user experience impact of an error; for example, "Issues would unexpectedly go missing from Epics".
-- Relevant data from the [query plans](#query-plans) that indicate the query works as expected; such as the approximate number of records that will be modified/deleted.
+- Relevant data from the [query plans](#query-plans) that indicate the query works as expected; such as the approximate number of records that are modified or deleted.
 
 #### Preparation when adding or modifying queries
 
@@ -151,9 +151,9 @@ Include in the MR description:
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
   [paste.depesz.com](https://paste.depesz.com) and using regular quotes
-  <!-- vale off -->
+<!-- vale gitlab.NonStandardQuotes = NO -->
   (for example, `"projects"."id"`) and avoiding smart quotes (for example, `“projects”.“id”`).
-  <!-- vale  on -->
+<!-- vale gitlab.NonStandardQuotes = YES -->
 - In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
 
   For example, a finder for issues that may take as a parameter an optional filter on projects,

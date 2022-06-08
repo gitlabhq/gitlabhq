@@ -17,6 +17,24 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
+If you're using [GitLab CI/CD](../../../ci/index.md), you can use dependency scanning to analyze
+your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
+dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
+either:
+
+- [Including the dependency scanning template](#configuration)
+  in your existing `.gitlab-ci.yml` file.
+- Implicitly using
+  the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
+  provided by [Auto DevOps](../../../topics/autodevops/index.md).
+
+GitLab checks the dependency scanning report, compares the found vulnerabilities
+between the source and target branches, and shows the information on the
+merge request. The results are sorted by the [severity](../vulnerabilities/severities.md) of the
+vulnerability.
+
+![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
+
 ## Dependency Scanning compared to Container Scanning
 
 GitLab offers both Dependency Scanning and Container Scanning
@@ -58,26 +76,6 @@ The following table summarizes which types of dependencies each scanning tool ca
 1. Lock file must be present in the image to be detected.
 1. Binary file must be present in the image to be detected.
 
-## Overview
-
-If you're using [GitLab CI/CD](../../../ci/index.md), you can use dependency scanning to analyze
-your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
-dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
-either:
-
-- [Including the dependency scanning template](#configuration)
-  in your existing `.gitlab-ci.yml` file.
-- Implicitly using
-  the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
-  provided by [Auto DevOps](../../../topics/autodevops/index.md).
-
-GitLab checks the dependency scanning report, compares the found vulnerabilities
-between the source and target branches, and shows the information on the
-merge request. The results are sorted by the [severity](../vulnerabilities/severities.md) of the
-vulnerability.
-
-![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
-
 ## Requirements
 
 Dependency Scanning runs in the `test` stage, which is available by default. If you redefine the
@@ -109,6 +107,8 @@ The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rule
 maximum of two directory levels from the repository's root. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
+
+When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 
 The following languages and dependency managers are supported:
 
@@ -419,6 +419,8 @@ GitLab relies on [`rules:exists`](../../../ci/yaml/index.md#rulesexists) to star
 
 The current detection logic limits the maximum search depth to two levels. For example, the `gemnasium-dependency_scanning` job is enabled if
 a repository contains either a `Gemfile.lock`, `api/Gemfile.lock`, or `api/client/Gemfile.lock`, but not if the only supported dependency file is `api/v1/client/Gemfile.lock`.
+
+When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 
 ### How multiple files are processed
 
