@@ -4,7 +4,7 @@ module Gitlab
   module Ci
     module Build
       class Image
-        attr_reader :alias, :command, :entrypoint, :name, :ports, :variables
+        attr_reader :alias, :command, :entrypoint, :name, :ports, :variables, :pull_policy
 
         class << self
           def from_image(job)
@@ -34,6 +34,7 @@ module Gitlab
             @name = image[:name]
             @ports = build_ports(image).select(&:valid?)
             @variables = build_variables(image)
+            @pull_policy = image[:pull_policy]
           end
         end
 

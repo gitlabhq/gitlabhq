@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 0.6.0
+    ref: 0.13.0
     file:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
@@ -28,7 +28,7 @@ include:
     - .qa-cache
     - .test_variables
     - .bundler_variables
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   stage: qa
   needs:
     - review-deploy
@@ -81,7 +81,7 @@ include:
 
 # Store knapsack report as artifact so the same report is reused across all jobs
 download-knapsack-report:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-99
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-${CHROME_VERSION}
   extends:
     - .qa-cache
     - .bundler_variables

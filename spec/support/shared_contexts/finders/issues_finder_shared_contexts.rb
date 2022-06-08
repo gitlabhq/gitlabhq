@@ -12,7 +12,7 @@ RSpec.shared_context 'IssuesFinder context' do
   let_it_be(:milestone) { create(:milestone, project: project1, releases: [release]) }
   let_it_be(:label) { create(:label, project: project2) }
   let_it_be(:label2) { create(:label, project: project2) }
-  let_it_be(:issue1, reload: true) do
+  let_it_be(:item1, reload: true) do
     create(:issue,
            author: user,
            assignees: [user],
@@ -23,7 +23,7 @@ RSpec.shared_context 'IssuesFinder context' do
            updated_at: 1.week.ago)
   end
 
-  let_it_be(:issue2, reload: true) do
+  let_it_be(:item2, reload: true) do
     create(:issue,
            author: user,
            assignees: [user],
@@ -33,7 +33,7 @@ RSpec.shared_context 'IssuesFinder context' do
            updated_at: 1.week.from_now)
   end
 
-  let_it_be(:issue3, reload: true) do
+  let_it_be(:item3, reload: true) do
     create(:issue,
            author: user2,
            assignees: [user2],
@@ -44,8 +44,8 @@ RSpec.shared_context 'IssuesFinder context' do
            updated_at: 2.weeks.from_now)
   end
 
-  let_it_be(:issue4, reload: true) { create(:issue, project: project3) }
-  let_it_be(:issue5, reload: true) do
+  let_it_be(:item4, reload: true) { create(:issue, project: project3) }
+  let_it_be(:item5, reload: true) do
     create(:issue,
            author: user,
            assignees: [user],
@@ -55,18 +55,20 @@ RSpec.shared_context 'IssuesFinder context' do
            updated_at: 3.days.ago)
   end
 
-  let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: issue1) }
-  let_it_be(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: issue2) }
-  let_it_be(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: issue3) }
+  let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: item1) }
+  let_it_be(:award_emoji2) { create(:award_emoji, name: 'thumbsup', user: user2, awardable: item2) }
+  let_it_be(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: item3) }
+
+  let(:items_model) { Issue }
 end
 
 RSpec.shared_context 'IssuesFinder#execute context' do
-  let!(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
-  let!(:label_link) { create(:label_link, label: label, target: issue2) }
-  let!(:label_link2) { create(:label_link, label: label2, target: issue3) }
+  let!(:closed_item) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
+  let!(:label_link) { create(:label_link, label: label, target: item2) }
+  let!(:label_link2) { create(:label_link, label: label2, target: item3) }
   let(:search_user) { user }
   let(:params) { {} }
-  let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
+  let(:items) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
 
   before_all do
     project1.add_maintainer(user)

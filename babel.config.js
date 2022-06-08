@@ -1,3 +1,5 @@
+const coreJSVersion = require('./node_modules/core-js/package.json').version;
+
 const BABEL_ENV = process.env.BABEL_ENV || process.env.NODE_ENV || null;
 
 let presets = [
@@ -5,7 +7,7 @@ let presets = [
     '@babel/preset-env',
     {
       useBuiltIns: 'usage',
-      corejs: { version: 3, proposals: true },
+      corejs: { version: coreJSVersion, proposals: true },
       modules: false,
     },
   ],

@@ -15,17 +15,29 @@ module Limitable
     validate :validate_plan_limit_not_exceeded, on: :create
   end
 
+  def exceeds_limits?
+    limits, relation = fetch_plan_limit_data
+
+    limits&.exceeded?(limit_name, relation)
+  end
+
   private
 
   def validate_plan_limit_not_exceeded
+    limits, relation = fetch_plan_limit_data
+
+    check_plan_limit_not_exceeded(limits, relation)
+  end
+
+  def fetch_plan_limit_data
     if GLOBAL_SCOPE == limit_scope
-      validate_global_plan_limit_not_exceeded
+      global_plan_limits
     else
-      validate_scoped_plan_limit_not_exceeded
+      scoped_plan_limits
     end
   end
 
-  def validate_scoped_plan_limit_not_exceeded
+  def scoped_plan_limits
     scope_relation = self.public_send(limit_scope) # rubocop:disable GitlabSecurity/PublicSend
     return unless scope_relation
     return if limit_feature_flag && ::Feature.disabled?(limit_feature_flag, scope_relation)
@@ -34,18 +46,18 @@ module Limitable
     relation = limit_relation ? self.public_send(limit_relation) : self.class.where(limit_scope => scope_relation) # rubocop:disable GitlabSecurity/PublicSend
     limits = scope_relation.actual_limits
 
-    check_plan_limit_not_exceeded(limits, relation)
+    [limits, relation]
   end
 
-  def validate_global_plan_limit_not_exceeded
+  def global_plan_limits
     relation = self.class.all
     limits = Plan.default.actual_limits
 
-    check_plan_limit_not_exceeded(limits, relation)
+    [limits, relation]
   end
 
   def check_plan_limit_not_exceeded(limits, relation)
-    return unless limits.exceeded?(limit_name, relation)
+    return unless limits&.exceeded?(limit_name, relation)
 
     errors.add(:base, _("Maximum number of %{name} (%{count}) exceeded") %
         { name: limit_name.humanize(capitalize: false), count: limits.public_send(limit_name) }) # rubocop:disable GitlabSecurity/PublicSend

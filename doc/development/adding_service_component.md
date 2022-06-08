@@ -23,7 +23,7 @@ The following outline re-uses the [maturity metric](https://about.gitlab.com/dir
   - [Release management](#release-management)
   - [Enabled on GitLab.com](feature_flags/controls.md#enabling-a-feature-for-gitlabcom)
 - Complete
-  - [Configurable by the GitLab orchestrator](https://gitlab.com/gitlab-org/gitlab-orchestrator)
+  - [Configurable by the GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit)
 - Lovable
   - Enabled by default for the majority of users
 

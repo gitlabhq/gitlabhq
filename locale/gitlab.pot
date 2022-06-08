@@ -14996,6 +14996,9 @@ msgstr ""
 msgid "Estimated"
 msgstr ""
 
+msgid "Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -15541,6 +15544,9 @@ msgid "Failed to load group activity metrics. Please try again."
 msgstr ""
 
 msgid "Failed to load groups, users and deploy keys."
+msgstr ""
+
+msgid "Failed to load groups."
 msgstr ""
 
 msgid "Failed to load iteration cadences."
@@ -20995,6 +21001,9 @@ msgstr ""
 msgid "InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
+msgid "InviteMembersModal|To make more space, you can remove members who no longer need access."
+msgstr ""
+
 msgid "InviteMembersModal|Username or email address"
 msgstr ""
 
@@ -21002,6 +21011,9 @@ msgid "InviteMembersModal|You cannot add more members, but you can remove member
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"
+msgstr ""
+
+msgid "InviteMembersModal|You only have space for %{count} more %{members} in your personal projects"
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."
@@ -21017,6 +21029,9 @@ msgid "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{
 msgstr ""
 
 msgid "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}"
+msgstr ""
+
+msgid "InviteMembersModal|You've reached your %{count} %{members} limit for your personal projects"
 msgstr ""
 
 msgid "InviteMembers|Invite a group"
@@ -30785,6 +30800,9 @@ msgstr ""
 msgid "ProtectedEnvironment|Environment"
 msgstr ""
 
+msgid "ProtectedEnvironment|Only specified groups can execute deployments in protected environments."
+msgstr ""
+
 msgid "ProtectedEnvironment|Only specified users can execute deployments in a protected environment."
 msgstr ""
 
@@ -30801,6 +30819,9 @@ msgid "ProtectedEnvironment|Required approvals"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select an environment"
+msgstr ""
+
+msgid "ProtectedEnvironment|Select groups"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select users"
@@ -33789,6 +33810,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{scanners} %{severities} in an open merge request targeting %{branches}."
 msgstr ""
 
+msgid "SecurityOrchestration|+%{count} more"
+msgstr ""
+
 msgid "SecurityOrchestration|.yaml mode"
 msgstr ""
 
@@ -34120,9 +34144,6 @@ msgid "SecurityOrchestration|vulnerabilities"
 msgstr ""
 
 msgid "SecurityOrchestration|vulnerability"
-msgstr ""
-
-msgid "SecurityPolicies|+%{count} more"
 msgstr ""
 
 msgid "SecurityReports|%{count} Selected"
@@ -44169,8 +44190,10 @@ msgstr ""
 msgid "Your subscription expired!"
 msgstr ""
 
-msgid "Your subscription has %{remaining_seats_count} out of %{total_seats_count} seats remaining. Even if you reach the number of seats in your subscription, you can continue to add users, and GitLab will bill you for the overage."
-msgstr ""
+msgid "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seat remaining."
+msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seats remaining."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance. To use Free tier, remove your current license."
 msgstr ""
@@ -45883,9 +45906,6 @@ msgid "repositories"
 msgstr ""
 
 msgid "repository:"
-msgstr ""
-
-msgid "required"
 msgstr ""
 
 msgid "satisfied"

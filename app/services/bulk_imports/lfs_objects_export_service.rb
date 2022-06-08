@@ -32,6 +32,8 @@ module BulkImports
       destination_filepath = File.join(export_path, lfs_object.oid)
 
       if lfs_object.local_store?
+        return unless File.exist?(lfs_object.file.path)
+
         copy_files(lfs_object.file.path, destination_filepath)
       else
         download(lfs_object.file.url, destination_filepath)

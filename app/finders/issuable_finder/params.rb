@@ -142,7 +142,7 @@ class IssuableFinder
             projects_public_or_visible_to_user
           end
 
-        projects.with_feature_available_for_user(klass, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
+        projects.with_feature_available_for_user(klass.base_class, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
       end
     end
 
@@ -215,7 +215,7 @@ class IssuableFinder
     end
 
     def min_access_level
-      ProjectFeature.required_minimum_access_level(klass)
+      ProjectFeature.required_minimum_access_level(klass.base_class)
     end
 
     def method_missing(method_name, *args, &block)

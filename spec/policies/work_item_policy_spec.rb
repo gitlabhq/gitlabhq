@@ -37,6 +37,12 @@ RSpec.describe WorkItemPolicy do
         let(:current_user) { guest_author }
 
         it { is_expected.to be_allowed(:read_work_item) }
+
+        context 'when work_item is confidential' do
+          let(:work_item_subject) { create(:work_item, confidential: true, project: project) }
+
+          it { is_expected.not_to be_allowed(:read_work_item) }
+        end
       end
     end
 

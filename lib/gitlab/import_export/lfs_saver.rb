@@ -56,7 +56,11 @@ module Gitlab
       end
 
       def copy_file_for_lfs_object(lfs_object)
-        copy_files(lfs_object.file.path, destination_path_for_object(lfs_object))
+        file_path = lfs_object.file.path
+
+        return unless File.exist?(file_path)
+
+        copy_files(file_path, destination_path_for_object(lfs_object))
       end
 
       def append_lfs_json_for_batch(lfs_objects_batch)

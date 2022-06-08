@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'support/helpers/stubbed_feature'
+require 'support/helpers/stub_feature_flags'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Image do
+  include StubFeatureFlags
+
+  before do
+    stub_feature_flags(ci_docker_image_pull_policy: true)
+  end
+
   let(:entry) { described_class.new(config) }
 
   context 'when configuration is a string' do
@@ -41,6 +49,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
     describe '#ports' do
       it "returns image's ports" do
         expect(entry.ports).to be_nil
+      end
+    end
+
+    describe '#pull_policy' do
+      it "returns nil" do
+        expect(entry.pull_policy).to be_nil
       end
     end
   end
@@ -105,6 +119,56 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
         describe '#ports' do
           it "returns image's ports" do
             expect(entry.ports).to eq ports
+          end
+        end
+      end
+    end
+
+    context 'when configuration has pull_policy' do
+      let(:config) { { name: 'image:1.0', pull_policy: 'if-not-present' } }
+
+      describe '#valid?' do
+        it 'is valid' do
+          entry.compose!
+
+          expect(entry).to be_valid
+        end
+
+        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
+          before do
+            stub_feature_flags(ci_docker_image_pull_policy: false)
+          end
+
+          it 'is not valid' do
+            entry.compose!
+
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include('image config contains unknown keys: pull_policy')
+          end
+        end
+      end
+
+      describe '#value' do
+        it "returns value" do
+          entry.compose!
+
+          expect(entry.value).to eq(
+            name: 'image:1.0',
+            pull_policy: ['if-not-present']
+          )
+        end
+
+        context 'when the feature flag ci_docker_image_pull_policy is disabled' do
+          before do
+            stub_feature_flags(ci_docker_image_pull_policy: false)
+          end
+
+          it 'is not valid' do
+            entry.compose!
+
+            expect(entry.value).to eq(
+              name: 'image:1.0'
+            )
           end
         end
       end

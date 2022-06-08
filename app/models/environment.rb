@@ -300,7 +300,7 @@ class Environment < ApplicationRecord
   end
 
   def wait_for_stop?
-    stop_actions.present? && Feature.enabled?(:env_stopped_on_stop_success, project)
+    stop_actions.present?
   end
 
   def stop_with_actions!(current_user)

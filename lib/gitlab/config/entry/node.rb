@@ -106,6 +106,10 @@ module Gitlab
           @config.is_a?(Hash)
         end
 
+        def array?
+          @config.is_a?(Array)
+        end
+
         def string?
           @config.is_a?(String)
         end

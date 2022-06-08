@@ -569,7 +569,7 @@ module Ci
     end
 
     def stop_action_successful?
-      Feature.disabled?(:env_stopped_on_stop_success, project) || success?
+      success?
     end
 
     ##

@@ -214,8 +214,7 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.merge-request-tabs-holder,
-.epic-tabs-holder {
+.merge-request-tabs-holder {
   top: $header-height;
   z-index: $tabs-holder-z-index;
   background-color: $body-bg;
@@ -248,14 +247,12 @@ $tabs-holder-z-index: 250;
 }
 
 .with-performance-bar {
-  .merge-request-tabs-holder,
-  .epic-tabs-holder {
+  .merge-request-tabs-holder {
     top: calc(#{$header-height} + #{$performance-bar-height});
   }
 }
 
-.merge-request-tabs,
-.epic-tabs {
+.merge-request-tabs {
   display: flex;
   flex-wrap: nowrap;
   margin-bottom: 0;
@@ -263,8 +260,7 @@ $tabs-holder-z-index: 250;
 }
 
 .limit-container-width {
-  .merge-request-tabs-container,
-  .epic-tabs-container {
+  .merge-request-tabs-container {
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
@@ -277,8 +273,7 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.merge-request-tabs-container,
-.epic-tabs-container {
+.merge-request-tabs-container {
   display: flex;
   justify-content: space-between;
 
@@ -308,16 +303,14 @@ $tabs-holder-z-index: 250;
 
 // Wrap MR tabs/buttons so you don't have to scroll on desktop
 @include media-breakpoint-down(md) {
-  .merge-request-tabs-container,
-  .epic-tabs-container {
+  .merge-request-tabs-container {
     flex-direction: column-reverse;
   }
 }
 
 @include media-breakpoint-down(lg) {
   .right-sidebar-expanded {
-    .merge-request-tabs-container,
-    .epic-tabs-container {
+    .merge-request-tabs-container {
       flex-direction: column-reverse;
       align-items: flex-start;
     }

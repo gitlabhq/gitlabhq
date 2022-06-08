@@ -1,7 +1,7 @@
 import { s__ } from '~/locale';
 
+export const CLOSE_TO_LIMIT_COUNT = 2;
 export const SEARCH_DELAY = 200;
-
 export const INVITE_MEMBERS_FOR_TASK = {
   minimum_access_level: 30,
   name: 'invite_members_for_task',
@@ -132,8 +132,15 @@ export const ON_SUBMIT_TRACK_LABEL = 'manage_members_clicked';
 export const WARNING_ALERT_TITLE = s__(
   'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
 );
+export const WARNING_ALERT_TITLE_PERSONAL_NAMESPACE = s__(
+  'InviteMembersModal|You only have space for %{count} more %{members} in your personal projects',
+);
 export const DANGER_ALERT_TITLE = s__(
   "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
+);
+
+export const DANGER_ALERT_TITLE_PERSONAL_NAMESPACE = s__(
+  "InviteMembersModal|You've reached your %{count} %{members} limit for your personal projects",
 );
 
 export const REACHED_LIMIT_MESSAGE = s__(
@@ -148,4 +155,7 @@ export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.co
 
 export const CLOSE_TO_LIMIT_MESSAGE = s__(
   'InviteMembersModal|To get more members an owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
+);
+export const CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE = s__(
+  'InviteMembersModal|To make more space, you can remove members who no longer need access.',
 );

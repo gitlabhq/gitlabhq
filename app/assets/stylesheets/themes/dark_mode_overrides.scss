@@ -41,6 +41,12 @@
   border-color: $gray-800;
 }
 
+.nav-sidebar,
+.toggle-sidebar-button,
+.close-nav-button {
+  background-color: darken($gray-50, 4%);
+}
+
 .nav-sidebar {
   li {
     a {
@@ -66,6 +72,11 @@
     box-shadow: none;
     border: 1px solid $border-color;
   }
+}
+
+aside.right-sidebar:not(.right-sidebar-merge-requests) {
+  background-color: $gray-10;
+  border-left-color: $gray-50;
 }
 
 body.gl-dark {

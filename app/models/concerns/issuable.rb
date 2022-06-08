@@ -106,23 +106,23 @@ module Issuable
     scope :closed, -> { with_state(:closed) }
 
     # rubocop:disable GitlabSecurity/SqlInjection
-    # The `to_ability_name` method is not an user input.
+    # The `assignee_association_name` method is not an user input.
     scope :assigned, -> do
-      where("EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE #{to_ability_name}_id = #{to_ability_name}s.id)")
+      where("EXISTS (SELECT TRUE FROM #{assignee_association_name}_assignees WHERE #{assignee_association_name}_id = #{assignee_association_name}s.id)")
     end
     scope :unassigned, -> do
-      where("NOT EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE #{to_ability_name}_id = #{to_ability_name}s.id)")
+      where("NOT EXISTS (SELECT TRUE FROM #{assignee_association_name}_assignees WHERE #{assignee_association_name}_id = #{assignee_association_name}s.id)")
     end
     scope :assigned_to, ->(users) do
-      assignees_class = self.reflect_on_association("#{to_ability_name}_assignees").klass
+      assignees_class = self.reflect_on_association("#{assignee_association_name}_assignees").klass
 
-      condition = assignees_class.where(user_id: users).where(Arel.sql("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      condition = assignees_class.where(user_id: users).where(Arel.sql("#{assignee_association_name}_id = #{assignee_association_name}s.id"))
       where(condition.arel.exists)
     end
     scope :not_assigned_to, ->(users) do
-      assignees_class = self.reflect_on_association("#{to_ability_name}_assignees").klass
+      assignees_class = self.reflect_on_association("#{assignee_association_name}_assignees").klass
 
-      condition = assignees_class.where(user_id: users).where(Arel.sql("#{to_ability_name}_id = #{to_ability_name}s.id"))
+      condition = assignees_class.where(user_id: users).where(Arel.sql("#{assignee_association_name}_id = #{assignee_association_name}s.id"))
       where(condition.arel.exists.not)
     end
     # rubocop:enable GitlabSecurity/SqlInjection
@@ -411,6 +411,10 @@ module Issuable
 
     def parent_class
       ::Project
+    end
+
+    def assignee_association_name
+      to_ability_name
     end
   end
 

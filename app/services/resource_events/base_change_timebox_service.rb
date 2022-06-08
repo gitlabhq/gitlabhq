@@ -22,7 +22,7 @@ module ResourceEvents
     end
 
     def build_resource_args
-      key = resource.class.name.foreign_key
+      key = resource.class.base_class.name.foreign_key
 
       {
         user_id: user.id,

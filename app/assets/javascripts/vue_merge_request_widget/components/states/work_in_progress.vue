@@ -126,6 +126,7 @@ export default {
           }) => {
             toast(__('Marked as ready. Merging is now allowed.'));
             $('.merge-request .detail-page-description .title').text(title);
+            eventHub.$emit('MRWidgetUpdateRequested');
           },
         )
         .catch(() =>

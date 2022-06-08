@@ -14,6 +14,7 @@ import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import {
+  CLOSE_TO_LIMIT_COUNT,
   USERS_FILTER_ALL,
   INVITE_MEMBERS_FOR_TASK,
   MEMBER_MODAL_LABELS,
@@ -150,6 +151,16 @@ export default {
     },
     isOnLearnGitlab() {
       return this.source === LEARN_GITLAB;
+    },
+    closeToLimit() {
+      if (this.usersLimitDataset.freeUsersLimit && this.usersLimitDataset.membersCount) {
+        return (
+          this.usersLimitDataset.membersCount >=
+          this.usersLimitDataset.freeUsersLimit - CLOSE_TO_LIMIT_COUNT
+        );
+      }
+
+      return false;
     },
     reachedLimit() {
       if (this.usersLimitDataset.freeUsersLimit && this.usersLimitDataset.membersCount) {
@@ -297,6 +308,7 @@ export default {
     :is-loading="isLoading"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
+    :close-to-limit="closeToLimit"
     :reached-limit="reachedLimit"
     :users-limit-dataset="usersLimitDataset"
     @reset="resetFields"
@@ -314,6 +326,7 @@ export default {
 
     <template #user-limit-notification>
       <user-limit-notification
+        :close-to-limit="closeToLimit"
         :reached-limit="reachedLimit"
         :users-limit-dataset="usersLimitDataset"
       />

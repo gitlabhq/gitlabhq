@@ -103,9 +103,9 @@ export default {
     },
     expandedIcon() {
       if (this.isUpstream) {
-        return this.expanded ? 'angle-right' : 'angle-left';
+        return this.expanded ? 'chevron-lg-right' : 'chevron-lg-left';
       }
-      return this.expanded ? 'angle-left' : 'angle-right';
+      return this.expanded ? 'chevron-lg-left' : 'chevron-lg-right';
     },
     expandBtnText() {
       return this.expanded ? __('Collapse jobs') : __('Expand jobs');

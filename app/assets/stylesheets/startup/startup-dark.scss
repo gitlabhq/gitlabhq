@@ -780,7 +780,7 @@ input {
   display: flex;
   align-items: center;
   padding: 2px 8px;
-  margin: 4px 2px 4px -12px;
+  margin: 4px 2px 4px -8px;
   border-radius: 4px;
 }
 .navbar-gitlab .header-content .title a:active {
@@ -1014,7 +1014,7 @@ input {
 }
 @media (min-width: 768px) {
   .page-with-contextual-sidebar {
-    padding-left: 48px;
+    padding-left: 56px;
   }
 }
 @media (min-width: 1200px) {
@@ -1024,7 +1024,7 @@ input {
 }
 @media (min-width: 768px) {
   .page-with-icon-sidebar {
-    padding-left: 48px;
+    padding-left: 56px;
   }
 }
 .nav-sidebar {
@@ -1034,11 +1034,12 @@ input {
   z-index: 600;
   width: 256px;
   top: var(--header-height, 48px);
-  background-color: #303030;
+  background-color: #1f1f1f;
+  border-right: 1px solid #303030;
   transform: translate3d(0, 0, 0);
 }
 .nav-sidebar.sidebar-collapsed-desktop {
-  width: 48px;
+  width: 56px;
 }
 .nav-sidebar.sidebar-collapsed-desktop .nav-sidebar-inner-scroll {
   overflow-x: hidden;
@@ -1091,7 +1092,7 @@ input {
   border-radius: 0.25rem;
   width: auto;
   line-height: 1rem;
-  margin: 1px 4px;
+  margin: 1px 8px;
 }
 .nav-sidebar li.active > a {
   font-weight: 600;
@@ -1227,7 +1228,7 @@ input {
 }
 @media (min-width: 768px) and (max-width: 1199px) {
   .nav-sidebar:not(.sidebar-expanded-mobile) {
-    width: 48px;
+    width: 56px;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .nav-sidebar-inner-scroll {
     overflow-x: hidden;
@@ -1262,7 +1263,7 @@ input {
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .context-header {
     height: 60px;
-    width: 48px;
+    width: 56px;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .context-header a {
     padding: 10px 4px;
@@ -1294,7 +1295,8 @@ input {
     margin-right: 0;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile) .toggle-sidebar-button {
-    width: 48px;
+    width: 55px;
+    padding: 0 21px;
   }
   .nav-sidebar:not(.sidebar-expanded-mobile)
     .toggle-sidebar-button
@@ -1327,10 +1329,10 @@ input {
   border-radius: 0.25rem;
   width: auto;
   line-height: 1rem;
-  margin: 1px 4px;
+  margin: 1px 8px;
   padding: 0.25rem;
   margin-bottom: 0.25rem;
-  margin-top: 0;
+  margin-top: 0.125rem;
 }
 .nav-sidebar-inner-scroll > div.context-header a .avatar-container {
   font-weight: 400;
@@ -1349,13 +1351,12 @@ input {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items {
-  margin-top: 0.25rem;
   margin-bottom: 60px;
 }
 .sidebar-top-level-items .context-header a {
   padding: 0.25rem;
   margin-bottom: 0.25rem;
-  margin-top: 0;
+  margin-top: 0.125rem;
 }
 .sidebar-top-level-items .context-header a .avatar-container {
   font-weight: 400;
@@ -1401,11 +1402,10 @@ input {
   color: #999;
   display: flex;
   align-items: center;
-  background-color: #303030;
-  border-top: 1px solid #404040;
+  background-color: #1f1f1f;
   position: fixed;
   bottom: 0;
-  width: 256px;
+  width: 255px;
 }
 .toggle-sidebar-button .collapse-text,
 .toggle-sidebar-button .icon-chevron-double-lg-left,
@@ -1419,7 +1419,7 @@ input {
 }
 .sidebar-collapsed-desktop .context-header {
   height: 60px;
-  width: 48px;
+  width: 56px;
 }
 .sidebar-collapsed-desktop .context-header a {
   padding: 10px 4px;
@@ -1451,7 +1451,8 @@ input {
   margin-right: 0;
 }
 .sidebar-collapsed-desktop .toggle-sidebar-button {
-  width: 48px;
+  width: 55px;
+  padding: 0 21px;
 }
 .sidebar-collapsed-desktop .toggle-sidebar-button .collapse-text {
   display: none;
@@ -1786,6 +1787,11 @@ body.gl-dark {
   --black: #fff;
   --svg-status-bg: #333;
   --nav-active-bg: rgba(255, 255, 255, 0.08);
+}
+.nav-sidebar,
+.toggle-sidebar-button,
+.close-nav-button {
+  background-color: #262626;
 }
 .nav-sidebar li a {
   color: var(--gray-600);

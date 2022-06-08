@@ -32,7 +32,7 @@ RSpec.describe ProjectPolicy do
     end
   end
 
-  it 'does not include the read_issue permission when the issue author is not a member of the private project' do
+  it 'does not include the read permissions when the issue author is not a member of the private project' do
     project = create(:project, :private)
     issue   = create(:issue, project: project, author: create(:user))
     user    = issue.author
@@ -40,6 +40,7 @@ RSpec.describe ProjectPolicy do
     expect(project.team.member?(issue.author)).to be false
 
     expect(Ability).not_to be_allowed(user, :read_issue, project)
+    expect(Ability).not_to be_allowed(user, :read_work_item, project)
   end
 
   it_behaves_like 'model with wiki policies' do
@@ -61,7 +62,7 @@ RSpec.describe ProjectPolicy do
       end
 
       it 'does not include the issues permissions' do
-        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task, :read_work_item
       end
 
       it 'disables boards and lists permissions' do
@@ -73,7 +74,7 @@ RSpec.describe ProjectPolicy do
         it 'does not include the issues permissions' do
           create(:jira_integration, project: project)
 
-          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task
+          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task, :read_work_item
         end
       end
     end
@@ -752,14 +753,14 @@ RSpec.describe ProjectPolicy do
         allow(project).to receive(:service_desk_enabled?).and_return(true)
       end
 
-      it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+      it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
 
       context 'when issues are protected members only' do
         before do
           project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
         end
 
-        it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+        it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
       end
     end
   end

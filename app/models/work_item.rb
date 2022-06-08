@@ -13,6 +13,10 @@ class WorkItem < Issue
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
+  def self.assignee_association_name
+    'issue'
+  end
+
   def noteable_target_type_name
     'issue'
   end

@@ -28,21 +28,9 @@ RSpec.describe BuildSuccessWorker do
           it 'does not stop the environment' do
             expect(environment).to be_available
 
-            stub_feature_flags(env_stopped_on_stop_success: true)
-
             subject
 
             expect(environment.reload).not_to be_stopped
-          end
-
-          it 'does stop the environment when feature flag is disabled' do
-            expect(environment).to be_available
-
-            stub_feature_flags(env_stopped_on_stop_success: false)
-
-            subject
-
-            expect(environment.reload).to be_stopped
           end
         end
       end

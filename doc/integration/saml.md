@@ -185,7 +185,7 @@ gitlab_rails['omniauth_providers'] = [
     name: 'saml_1',
     args: {
             name: 'saml_1', # This is mandatory and must match the provider name
-            strategy_class: 'OmniAuth::Strategies::SAML'
+            strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
           },
@@ -195,7 +195,7 @@ gitlab_rails['omniauth_providers'] = [
     name: 'saml_2',
     args: {
             name: 'saml_2', # This is mandatory and must match the provider name
-            strategy_class: 'OmniAuth::Strategies::SAML'
+            strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
           },

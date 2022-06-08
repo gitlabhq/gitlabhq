@@ -593,6 +593,14 @@
 }
 
 /**
+ * Links
+ *
+ */
+a:focus-visible {
+  @include gl-focus($outline: true, $outline-offset: $outline-width);
+}
+
+/**
  * Headers
  *
  */

@@ -587,22 +587,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
             expect(action.user).to eq(user)
           end
 
-          context 'env_stopped_on_stop_success feature flag' do
-            it 'environment is not stopped when flag is enabled' do
-              stub_feature_flags(env_stopped_on_stop_success: true)
+          it 'environment is not stopped' do
+            subject
 
-              subject
-
-              expect(environment).not_to be_stopped
-            end
-
-            it 'environment is stopped when flag is disabled' do
-              stub_feature_flags(env_stopped_on_stop_success: false)
-
-              subject
-
-              expect(environment).to be_stopped
-            end
+            expect(environment).not_to be_stopped
           end
         end
 

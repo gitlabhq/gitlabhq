@@ -3,47 +3,39 @@
     = form_errors(@user)
 
     %fieldset
-      %legend= _('Account')
+      %legend.gl-border-bottom-0= _('Account')
       .form-group.row
-        .col-sm-2.col-form-label
-          = f.label :name
-        .col-sm-10
+        .col-12
+          = f.label "#{:name} (required)"
           = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control gl-form-input'
-          %span.help-inline * #{_('required')}
       .form-group.row
-        .col-sm-2.col-form-label
-          = f.label :username
-        .col-sm-10
+        .col-12
+          = f.label "#{:username} (required)"
           = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control gl-form-input'
-          %span.help-inline * #{_('required')}
       .form-group.row
-        .col-sm-2.col-form-label
-          = f.label :email
-        .col-sm-10
+        .col-12
+          = f.label "#{:email} (required)"
           = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control gl-form-input'
-          %span.help-inline * #{_('required')}
 
     - if @user.new_record?
       %fieldset
-        %legend= _('Password')
+        %legend.gl-border-bottom-0= _('Password')
         .form-group.row
-          .col-sm-2.col-form-label
-            = f.label :password
-          .col-sm-10
+          .col-12
             %strong
               = _('Reset link will be generated and sent to the user. %{break} User will be forced to set the password on first sign in.').html_safe % { break: '<br />'.html_safe }
     - else
       %fieldset
-        %legend= _('Password')
+        %legend.gl-border-bottom-0= _('Password')
         .form-group.row
-          .col-sm-2.col-form-label
+          .col-12
             = f.label :password
-          .col-sm-10
+          .col-12
             = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
         .form-group.row
-          .col-sm-2.col-form-label
+          .col-12
             = f.label :password_confirmation
-          .col-sm-10
+          .col-12
             = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
 
     = render partial: 'access_levels', locals: { f: f }
@@ -53,37 +45,33 @@
     = render_if_exists 'admin/users/limits', f: f
 
     %fieldset
-      %legend= _('Profile')
+      %legend.gl-border-bottom-0= _('Profile')
       .form-group.row
-        .col-sm-2.col-form-label
+        .col-12
           = f.label :avatar
-        .col-sm-10
+        .col-12
           = f.file_field :avatar
 
       .form-group.row
-        .col-sm-2.col-form-label
+        .col-12
           = f.label :skype
-        .col-sm-10
           = f.text_field :skype, class: 'form-control gl-form-input'
       .form-group.row
-        .col-sm-2.col-form-label
+        .col-12
           = f.label :linkedin
-        .col-sm-10
           = f.text_field :linkedin, class: 'form-control gl-form-input'
       .form-group.row
-        .col-sm-2.col-form-label
+        .col-12
           = f.label :twitter
-        .col-sm-10
           = f.text_field :twitter, class: 'form-control gl-form-input'
       .form-group.row
-        .col-sm-2.col-form-label
+        .col-12
           = f.label :website_url
-        .col-sm-10
           = f.text_field :website_url, class: 'form-control gl-form-input'
 
     = render 'admin/users/admin_notes', f: f
 
-    .form-actions
+    %div
       - if @user.new_record?
         = f.submit _('Create user'), class: "btn gl-button btn-confirm"
         = link_to _('Cancel'), admin_users_path, class: "gl-button btn btn-default btn-cancel"

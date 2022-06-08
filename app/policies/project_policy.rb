@@ -669,6 +669,7 @@ class ProjectPolicy < BasePolicy
     enable :read_design
     enable :read_design_activity
     enable :read_issue_link
+    enable :read_work_item
   end
 
   rule { can?(:developer_access) }.policy do

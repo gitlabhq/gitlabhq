@@ -27,7 +27,8 @@
   }
 
   .toggle-sidebar-button {
-    width: $contextual-sidebar-collapsed-width;
+    width: #{$contextual-sidebar-collapsed-width - 1px};
+    padding: 0 21px;
 
     .collapse-text {
       display: none;
@@ -81,7 +82,7 @@
       @include gl-px-0;
       @include gl-pb-2;
       @include gl-pt-0;
-      background-color: $gray-10;
+      @include gl-bg-gray-10;
       box-shadow: 0 $gl-spacing-scale-2 $gl-spacing-scale-5 $t-gray-a-24, 0 0 $gl-spacing-scale-1 $t-gray-a-24;
       border-style: none;
       border-radius: $border-radius-default;
@@ -128,7 +129,7 @@
 
   @include gl-p-2;
   @include gl-mb-2;
-  @include gl-mt-0;
+  @include gl-mt-1;
 
   .avatar-container {
     @include gl-font-weight-normal;
@@ -246,7 +247,8 @@
   z-index: 600;
   width: $contextual-sidebar-width;
   top: $header-height;
-  background-color: $gray-50;
+  @include gl-bg-gray-10;
+  border-right: 1px solid $gray-50;
   transform: translate3d(0, 0, 0);
 
   &.sidebar-collapsed-desktop {
@@ -352,7 +354,6 @@
 }
 
 .sidebar-top-level-items {
-  @include gl-mt-2;
   margin-bottom: 60px;
 
   .context-header a {
@@ -410,11 +411,10 @@
 .toggle-sidebar-button,
 .close-nav-button {
   @include side-panel-toggle;
-  background-color: $gray-50;
-  border-top: 1px solid $border-color;
+  @include gl-bg-gray-10;
   position: fixed;
   bottom: 0;
-  width: $contextual-sidebar-width;
+  width: #{$contextual-sidebar-width - 1px};
 
   .collapse-text,
   .icon-chevron-double-lg-left,

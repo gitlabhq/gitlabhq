@@ -1,8 +1,0 @@
----
-name: env_stopped_on_stop_success
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86478
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/361473
-milestone: '15.0'
-type: development
-group: group::release
-default_enabled: false

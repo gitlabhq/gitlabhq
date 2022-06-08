@@ -216,7 +216,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [] })
+            expect(json_response['image']).to eq({ 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'pull_policy' => nil })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
                                                        'alias' => nil, 'command' => nil, 'ports' => [], 'variables' => nil },
                                                      { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
@@ -806,6 +806,45 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 'id' => job.id,
                 'image' => a_hash_including('name' => 'ruby'),
                 'services' => all(a_hash_including('name' => 'tomcat', 'ports' => [{ 'number' => 8081, 'protocol' => 'http', 'name' => 'custom_port' }])))
+            end
+          end
+        end
+
+        context 'when image has pull_policy' do
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
+
+          let(:options) do
+            {
+              image: {
+                name: 'ruby',
+                pull_policy: ['if-not-present']
+              }
+            }
+          end
+
+          it 'returns the image with pull policy' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              'id' => job.id,
+              'image' => { 'name' => 'ruby', 'pull_policy' => ['if-not-present'], 'entrypoint' => nil, 'ports' => [] }
+            )
+          end
+
+          context 'when the FF ci_docker_image_pull_policy is disabled' do
+            before do
+              stub_feature_flags(ci_docker_image_pull_policy: false)
+            end
+
+            it 'returns the image without pull policy' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response).to include(
+                'id' => job.id,
+                'image' => { 'name' => 'ruby', 'entrypoint' => nil, 'ports' => [] }
+              )
             end
           end
         end

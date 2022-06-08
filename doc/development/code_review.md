@@ -185,6 +185,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 ##### Observability instrumentation
 
 1. I have included enough instrumentation to facilitate debugging and proactive performance improvements through observability.
+   See [example](https://gitlab.com/gitlab-org/gitlab/-/issues/346124#expectations) of adding feature flags, logging, and instrumentation.
 
 ##### Documentation
 

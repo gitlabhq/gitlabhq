@@ -5,14 +5,6 @@
   line-height: 34px;
   display: flex;
 
-  a {
-    color: $gl-text-color;
-
-    &.link {
-      color: $blue-600;
-    }
-  }
-
   .author-link {
     white-space: nowrap;
   }
@@ -20,6 +12,15 @@
   @include media-breakpoint-down(xs) {
     display: block;
   }
+}
+
+.detail-page-header a {
+  color: $gl-text-color;
+}
+
+.detail-page-header a.link,
+.detail-page-header .title a {
+  color: $blue-600;
 }
 
 .detail-page-header-body {

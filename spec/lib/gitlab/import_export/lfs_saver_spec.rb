@@ -45,6 +45,18 @@ RSpec.describe Gitlab::ImportExport::LfsSaver do
         expect(File).to exist("#{shared.export_path}/lfs-objects/#{lfs_object.oid}")
       end
 
+      context 'when lfs object has file on disk missing' do
+        it 'does not attempt to copy non-existent file' do
+          FileUtils.rm(lfs_object.file.path)
+          expect(saver).not_to receive(:copy_files)
+
+          saver.save # rubocop:disable Rails/SaveBang
+
+          expect(shared.errors).to be_empty
+          expect(File).not_to exist("#{shared.export_path}/lfs-objects/#{lfs_object.oid}")
+        end
+      end
+
       describe 'saving a json file' do
         before do
           # Create two more LfsObjectProject records with different `repository_type`s

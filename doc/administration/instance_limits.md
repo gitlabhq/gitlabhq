@@ -554,6 +554,26 @@ Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
 
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
+### Limit the number of schedule rules defined for security policy project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335659) in GitLab 15.1.
+
+You can limit the total number of schedule rules per security policy project. This limit is
+checked each time policies with schedule rules are updated. If a new schedule rule would
+cause the total number of schedule rules to exceed the limit, the new schedule rule is
+not processed.
+
+By default, self-managed instances do not limit the number of processable schedule rules.
+
+To set this limit for a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100)
+```
+
+This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+
 ### Number of instance level variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216097) in GitLab 13.1.

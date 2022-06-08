@@ -215,6 +215,7 @@ RSpec.describe PlanLimits do
         web_hook_calls
         ci_daily_pipeline_schedule_triggers
         repository_size
+        security_policy_scan_execution_schedules
       ] + disabled_max_artifact_size_columns
     end
 

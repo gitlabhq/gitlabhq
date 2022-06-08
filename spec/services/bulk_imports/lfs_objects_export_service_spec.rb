@@ -53,6 +53,18 @@ RSpec.describe BulkImports::LfsObjectsExportService do
       )
     end
 
+    context 'when lfs object has file on disk missing' do
+      it 'does not attempt to copy non-existent file' do
+        FileUtils.rm(lfs_object.file.path)
+
+        expect(service).not_to receive(:copy_files)
+
+        service.execute
+
+        expect(File).not_to exist(File.join(export_path, lfs_object.oid))
+      end
+    end
+
     context 'when lfs object is remotely stored' do
       let(:lfs_object) { create(:lfs_object, :object_storage) }
 
