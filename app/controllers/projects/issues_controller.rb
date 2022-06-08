@@ -251,8 +251,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def service_desk
-    @issues = @issuables # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    @users.push(User.support_bot) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @issues = @issuables
+    @users.push(User.support_bot)
   end
 
   protected

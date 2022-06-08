@@ -36,7 +36,6 @@ module Projects
 
       private
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def builds
         @builds ||= pipeline.latest_builds.id_in(build_ids).presence || render_404
       end
@@ -56,7 +55,6 @@ module Projects
 
         suite
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

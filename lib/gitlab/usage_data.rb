@@ -794,9 +794,8 @@ module Gitlab
           # rubocop: enable UsageData/LargeTable:
 
           0.upto(series_amount - 1).map do |series|
-            # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
-            sent_count = sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
-            clicked_count = clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
+            sent_count = sent_in_product_marketing_email_count(sent_emails, track, series)
+            clicked_count = clicked_in_product_marketing_email_count(clicked_emails, track, series)
 
             result["in_product_marketing_email_#{track}_#{series}_sent"] = sent_count
             result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count unless track == 'experience'
@@ -804,6 +803,16 @@ module Gitlab
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def sent_in_product_marketing_email_count(sent_emails, track, series)
+        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
+        sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
+      end
+
+      def clicked_in_product_marketing_email_count(clicked_emails, track, series)
+        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
+        clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
+      end
 
       def unique_visit_service
         strong_memoize(:unique_visit_service) do

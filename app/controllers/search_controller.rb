@@ -72,7 +72,6 @@ class SearchController < ApplicationController
     render json: { count: count }
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def autocomplete
     term = params[:term]
 
@@ -81,7 +80,6 @@ class SearchController < ApplicationController
 
     render json: search_autocomplete_opts(term).to_json
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def opensearch
   end

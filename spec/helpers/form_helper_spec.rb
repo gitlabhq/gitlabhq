@@ -58,6 +58,43 @@ RSpec.describe FormHelper do
       end
     end
 
+    it 'renders help page links' do
+      stubbed_errors = ActiveModel::Errors.new(double).tap do |errors|
+        errors.add(:base, 'No text.', help_page_url: 'http://localhost/doc/user/index.html')
+        errors.add(
+          :base,
+          'With text.',
+          help_link_text: 'Documentation page title.',
+          help_page_url: 'http://localhost/doc/administration/index.html'
+        )
+        errors.add(
+          :base,
+          'With HTML text.',
+          help_link_text: '<foo>',
+          help_page_url: 'http://localhost/doc/security/index.html'
+        )
+      end
+
+      model = double(errors: stubbed_errors)
+
+      errors = helper.form_errors(model)
+
+      aggregate_failures do
+        expect(errors).to include(
+          '<li>No text. <a target="_blank" rel="noopener noreferrer" ' \
+          'href="http://localhost/doc/user/index.html">Learn more.</a></li>'
+        )
+        expect(errors).to include(
+          '<li>With text. <a target="_blank" rel="noopener noreferrer" ' \
+          'href="http://localhost/doc/administration/index.html">Documentation page title.</a></li>'
+        )
+        expect(errors).to include(
+          '<li>With HTML text. <a target="_blank" rel="noopener noreferrer" ' \
+          'href="http://localhost/doc/security/index.html">&lt;foo&gt;</a></li>'
+        )
+      end
+    end
+
     def errors_stub(*messages)
       ActiveModel::Errors.new(double).tap do |errors|
         messages.each { |msg| errors.add(:base, msg) }

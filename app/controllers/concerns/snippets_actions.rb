@@ -75,7 +75,6 @@ module SnippetsActions
 
   private
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob
     @blob ||= blobs.first
   end
@@ -87,7 +86,6 @@ module SnippetsActions
                  snippet.blobs
                end
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def convert_line_endings(content)
     params[:line_ending] == 'raw' ? content : content.gsub(/\r\n/, "\n")

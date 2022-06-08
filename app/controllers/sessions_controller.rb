@@ -183,7 +183,6 @@ class SessionsController < Devise::SessionsController
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
-  # rubocop: disable CodeReuse/ActiveRecord
   def check_initial_setup
     return unless User.limit(2).count == 1 # Count as much 2 to know if we have exactly one
 
@@ -198,7 +197,6 @@ class SessionsController < Devise::SessionsController
     redirect_to edit_user_password_path(reset_password_token: @token),
       notice: _("Please create a password for your new account.")
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def ensure_password_authentication_enabled!
     render_403 unless Gitlab::CurrentSettings.password_authentication_enabled_for_web?

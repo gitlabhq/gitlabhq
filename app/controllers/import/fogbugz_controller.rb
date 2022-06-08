@@ -44,7 +44,6 @@ class Import::FogbugzController < Import::BaseController
     redirect_to status_import_fogbugz_path
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def status
     unless client.valid?
       return redirect_to new_import_fogbugz_path
@@ -52,7 +51,6 @@ class Import::FogbugzController < Import::BaseController
 
     super
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def create
     credentials = { uri: session[:fogbugz_uri], token: session[:fogbugz_token] }

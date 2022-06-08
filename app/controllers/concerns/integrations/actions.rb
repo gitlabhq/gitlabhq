@@ -51,11 +51,9 @@ module Integrations::Actions
 
   private
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def integration
     @integration ||= find_or_initialize_non_project_specific_integration(params[:id])
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def success_message
     if integration.active?

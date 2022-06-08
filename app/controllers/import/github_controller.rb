@@ -76,12 +76,10 @@ class Import::GithubController < Import::BaseController
 
   protected
 
-  # rubocop: disable CodeReuse/ActiveRecord
   override :importable_repos
   def importable_repos
     client_repos.to_a
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   override :incompatible_repos
   def incompatible_repos

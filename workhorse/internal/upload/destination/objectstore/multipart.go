@@ -100,12 +100,12 @@ func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, pu
 	defer file.Close()
 
 	if err := os.Remove(file.Name()); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("remove temporary buffer file: %v", err)
 	}
 
 	n, err := io.Copy(file, src)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("copy to temporary buffer file: %v", err)
 	}
 	if n == 0 {
 		return nil, nil

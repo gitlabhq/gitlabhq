@@ -63,7 +63,7 @@ Alternately, you can use an [Amazon Elastic Container Registry (ECR)](https://aw
 
 You can also use an image from any third-party registry.
 
-## Deploy your application to the Amazon Elastic Container Service (ECS)
+## Deploy your application to ECS
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207962) in GitLab 12.9.
 > - The `Deploy-ECS.gitlab-ci.yml` template was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/220821) to `AWS/Deploy-ECS.gitlab-ci.yml` in GitLab 13.2.
@@ -133,47 +133,49 @@ used only with the main template. They may move or change unexpectedly. Also, th
 these templates may change. Do not override these job names in your own pipeline,
 because the override stops working when the name changes.
 
-## Deploy your application to Amazon EC2
+## Deploy your application to EC2
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
 
-You can use the `AWS/CF-Provision-and-Deploy-EC2` CI template to perform the
-following actions within the same pipeline:
+GitLab provides a template, called `AWS/CF-Provision-and-Deploy-EC2`,
+to assist you in deploying to Amazon EC2.
 
-1. **Create stack**: Provision your own infrastructure by leveraging the [AWS CloudFormation](https://aws.amazon.com/cloudformation/) API.
-1. **Push to S3**: Push your previously-built artifact to an [AWS S3](https://aws.amazon.com/s3/) bucket.
-1. **Deploy to EC2**: Deploy this pushed content onto an [AWS EC2](https://aws.amazon.com/ec2/) instance.
+When you configure related JSON objects and use the template, the pipeline:
+
+1. **Creates the stack**: Your infrastructure is provisioned by using
+   the [AWS CloudFormation](https://aws.amazon.com/cloudformation/) API.
+1. **Pushes to an S3 bucket**: When your build runs, it creates an artifact.
+   The artifact is pushed to an [AWS S3](https://aws.amazon.com/s3/) bucket.
+1. **Deploys to EC2**: The content is deployed on an [AWS EC2](https://aws.amazon.com/ec2/) instance.
 
 ![CF-Provision-and-Deploy-EC2 diagram](../img/cf_ec2_diagram_v13_5.png)
 
-### Run the `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template
+### Configure the template and JSON
 
-To run the `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml` template, you must
-pass three JSON input objects, based on existing templates:
+To deploy to EC2, complete the following steps.
 
-1. The AWS documentation provides templates for the _Create stack_ and _Deploy to EC2_ steps (links
-   below). We provide the template for the remaining step, _Push to S3_:
+1. Create JSON for your stack. Use the [AWS template](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html).
+1. Create JSON to push to S3. Include the following details.
 
-   - [Template for the _Create stack_ step on AWS](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html).
-   - Template for the _Push to S3_ step. Note that `source` is where a preceding `build` job built
-     your application, exporting the build through [`artifacts:paths`](../yaml/index.md#artifactspaths):
+   ```json
+   {
+     "applicationName": "string",
+     "source": "string",
+     "s3Location": "s3://your/bucket/project_built_file...]"
+   }
+   ```
 
-     ```json
-     {
-       "applicationName": "string",
-       "source": "string",
-       "s3Location": "s3://your/bucket/project_built_file...]"
-     }
-     ```
+   The `source` is the location where a `build` job built your application.
+   The build is saved to [`artifacts:paths`](../yaml/index.md#artifactspaths).
 
-   - [Template for the _Deploy to EC2_ step on AWS](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html).
+1. Create JSON to deploy to EC2. Use the [AWS template](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html).
+1. Make the JSON objects accessible to your pipeline:
+   - If you want these JSON objects saved in your repository, save the objects as three
+     separate files.
 
-1. After you have completed these three templates based on your requirements, you
-   have two ways to pass in these JSON objects:
-
-   - They can be three actual files located in your project. You must specify their path relative to
-     your project root in your `.gitlab-ci.yml` file, using the following CI/CD variables. For example, if
-     your files are in a `<project_root>/aws` folder:
+     In your `.gitlab-ci.yml` file, add [CI/CD variables](../variables/index.md)
+     that point to the file paths relative to the project root. For example,
+     if your JSON files are in a `<project_root>/aws` folder:
 
      ```yaml
      variables:
@@ -182,67 +184,65 @@ pass three JSON input objects, based on existing templates:
        CI_AWS_EC2_DEPLOYMENT_FILE: 'aws/create_deployment.json'
      ```
 
-   - Alternatively, you can provide these JSON objects as [file-typed CI/CD variables](../variables/index.md#cicd-variable-types).
-     In your project, go to **Settings > CI/CD > Variables** and add
-     the three variables listed above as file-typed CI/CD variables.
-     For each variable, set the value to its corresponding JSON object.
+   - If you do not want these JSON objects saved in your repository, add each object
+     as a separate [file type CI/CD variable](../variables/index.md#cicd-variable-types)
+     in the project settings. Use the same variable names as above.
 
-1. Provide the name of the stack you're creating and/or targeting, as a CI/CD variable:
+1. In your `.gitlab-ci.yml` file, create a CI/CD variable for the name of the stack. For example:
 
    ```yaml
    variables:
      CI_AWS_CF_STACK_NAME: 'YourStackName'
    ```
 
-1. Add this CI template to your `.gitlab-ci.yml`:
+1. In your `.gitlab-ci.yml` file, add the CI template:
 
    ```yaml
    include:
      - template: AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml
    ```
 
-When running your project pipeline at this point:
+1. Run the pipeline.
 
-- Your AWS CloudFormation stack is created based on the content of your
-  `CI_AWS_CF_CREATE_STACK_FILE` file/variable.
-  If your stack already exists, this step is skipped, but the `provision` job it belongs to still
-  runs.
-- Your built application is pushed to your S3 bucket then and deployed to your EC2 instance, based
-  on the related JSON object's content. The deployment job finishes whenever the deployment to EC2
-  is done or has failed.
+   - Your AWS CloudFormation stack is created based on the content of your
+     `CI_AWS_CF_CREATE_STACK_FILE` variable.
+     If your stack already exists, this step is skipped, but the `provision`
+     job it belongs to still runs.
+   - Your built application is pushed to your S3 bucket then and deployed to your EC2 instance, based
+     on the related JSON object's content. The deployment job finishes when the deployment to EC2
+     is done or has failed.
 
-### Custom build job for Auto DevOps
+## Use Auto DevOps to deploy to EC2
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6.
 
-To leverage [Auto DevOps](../../topics/autodevops/index.md) for your project when deploying to
-AWS EC2, first you must define [your AWS credentials as CI/CD variables](#authenticate-gitlab-with-aws).
+To use [Auto DevOps](../../topics/autodevops/index.md) to deploy to EC2:
 
-Next, define a job for the `build` stage. To do so, you must reference the
-`Auto-DevOps.gitlab-ci.yml` template and include a job named `build_artifact` in your
-`.gitlab-ci.yml` file. For example:
+1. Define [your AWS credentials as CI/CD variables](#authenticate-gitlab-with-aws).
+1. In your `.gitlab-ci.yml` file, reference the `Auto-Devops.gitlab-ci.yml` template.
+1. Define a job for the `build` stage named `build_artifact`. For example:
 
-```yaml
-# .gitlab-ci.yml
+   ```yaml
+   # .gitlab-ci.yml
 
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
+   include:
+     - template: Auto-DevOps.gitlab-ci.yml
 
-variables:
-  AUTO_DEVOPS_PLATFORM_TARGET: EC2
+   variables:
+     AUTO_DEVOPS_PLATFORM_TARGET: EC2
 
-build_artifact:
-  stage: build
-  script:
-    - <your build script goes here>
-  artifacts:
-    paths:
-      - <built artifact>
-```
+   build_artifact:
+     stage: build
+     script:
+       - <your build script goes here>
+     artifacts:
+       paths:
+         - <built artifact>
+   ```
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video walkthrough of this configuration process, see [Auto Deploy to EC2](https://www.youtube.com/watch?v=4B-qSwKnacA).
+For a video walkthrough of this process, view [Auto Deploy to EC2](https://www.youtube.com/watch?v=4B-qSwKnacA).
 
-### Deploy to Amazon EKS
+## Use Auto DevOps to deploy to EKS
 
 - [Deploy your application to a GitLab-managed Amazon EKS cluster with Auto DevOps](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/)

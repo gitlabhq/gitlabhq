@@ -570,8 +570,7 @@ RSpec.describe Gitlab::Regex do
       # nothing after colon in version number
       it { is_expected.not_to match('2:') }
       # revision number is empty
-      # Note: we are less strict here
-      # it { is_expected.not_to match('1.0-') }
+      it { is_expected.not_to match('1.0-') }
       # version number is empty
       it { is_expected.not_to match('-1') }
       it { is_expected.not_to match('2:-1') }
@@ -593,6 +592,9 @@ RSpec.describe Gitlab::Regex do
       it { is_expected.not_to match('1.0 ') }
       # dpkg accepts multiple colons
       it { is_expected.not_to match('1:2:3') }
+      # we limit the number of dashes
+      it { is_expected.to match('1-2-3-4-5-6-7-8-9-10-11-12-13-14-15') }
+      it { is_expected.not_to match('1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16') }
     end
   end
 

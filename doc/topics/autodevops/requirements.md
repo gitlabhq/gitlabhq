@@ -214,7 +214,7 @@ You can target [AWS EC2](../../ci/cloud_deployment/index.md)
 as a deployment platform instead of Kubernetes. To use Auto DevOps with AWS EC2, you must add a
 specific CI/CD variable.
 
-For more details, see [Custom build job for Auto DevOps](../../ci/cloud_deployment/index.md#custom-build-job-for-auto-devops)
+For more details, see [Custom build job for Auto DevOps](../../ci/cloud_deployment/index.md#use-auto-devops-to-deploy-to-ec2)
 for deployments to AWS EC2.
 
 ## Auto DevOps requirements for bare metal

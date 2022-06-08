@@ -45,7 +45,6 @@ Rails/FilePath:
     - 'ee/spec/requests/api/experiments_spec.rb'
     - 'ee/spec/services/ee/merge_requests/refresh_service_spec.rb'
     - 'ee/spec/support/factory_bot.rb'
-    - 'ee/spec/uploaders/every_gitlab_uploader_spec.rb'
     - 'ee/spec/validators/json_schema_validator_spec.rb'
     - 'lib/api/api.rb'
     - 'lib/error_tracking/collector/payload_validator.rb'

@@ -325,6 +325,28 @@ describe('MergeRequestTabs', () => {
       expect(window.scrollTo.mock.calls[0]).toEqual([0, 39]);
     });
 
+    it.each`
+      tab          | hides    | hidesText
+      ${'show'}    | ${false} | ${'shows'}
+      ${'diffs'}   | ${true}  | ${'hides'}
+      ${'commits'} | ${true}  | ${'hides'}
+    `('it $hidesText expand button on $tab tab', ({ tab, hides }) => {
+      const expandButton = document.createElement('div');
+      expandButton.classList.add('js-expand-sidebar');
+
+      const tabsContainer = document.createElement('div');
+      tabsContainer.innerHTML =
+        '<div class="tab-content"><div id="diff-notes-app"></div><div class="commits tab-pane"></div></div>';
+      tabsContainer.classList.add('merge-request-tabs-container');
+      tabsContainer.appendChild(expandButton);
+      document.body.appendChild(tabsContainer);
+
+      testContext.class = new MergeRequestTabs({ stubLocation });
+      testContext.class.tabShown(tab, 'foobar');
+
+      expect(testContext.class.expandSidebar.classList.contains('gl-display-none!')).toBe(hides);
+    });
+
     describe('when switching tabs', () => {
       const SCROLL_TOP = 100;
 

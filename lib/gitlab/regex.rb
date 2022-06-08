@@ -119,9 +119,9 @@ module Gitlab
         # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/parsehelp.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n205
         @debian_version_regex ||= %r{
           \A(?:
-            (?:([0-9]{1,9}):)?    (?# epoch)
-            ([0-9][0-9a-z\.+~-]*)  (?# version)
-            (?:(-[0-0a-z\.+~]+))?  (?# revision)
+            (?:([0-9]{1,9}):)?            (?# epoch)
+            ([0-9][0-9a-z\.+~]*-?){1,15}  (?# version-revision)
+            (?<!-)
             )\z}xi.freeze
       end
 
