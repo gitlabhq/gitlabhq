@@ -243,10 +243,17 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         end
 
         it 'expands multiple queue groups correctly' do
+          expected_workers =
+            if Gitlab.ee?
+              [%w[chat_notification], %w[project_export project_template_export]]
+            else
+              [%w[chat_notification], %w[project_export]]
+            end
+
           expect(Gitlab::SidekiqCluster)
             .to receive(:start)
-                  .with([['chat_notification'], ['project_export']], default_options)
-                  .and_return([])
+            .with(expected_workers, default_options)
+            .and_return([])
 
           cli.run(%w(--queue-selector feature_category=chatops&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
         end

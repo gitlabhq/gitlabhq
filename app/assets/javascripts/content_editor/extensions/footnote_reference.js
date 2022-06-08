@@ -1,6 +1,9 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
+const extractFootnoteIdentifier = (element) =>
+  /^fnref-(\w+)-\d+$/.exec(element.querySelector('a')?.getAttribute('id'))?.[1];
+
 export default Node.create({
   name: 'footnoteReference',
 
@@ -16,13 +19,13 @@ export default Node.create({
 
   addAttributes() {
     return {
-      footnoteId: {
+      identifier: {
         default: null,
-        parseHTML: (element) => element.querySelector('a').getAttribute('id'),
+        parseHTML: extractFootnoteIdentifier,
       },
-      footnoteNumber: {
+      label: {
         default: null,
-        parseHTML: (element) => element.textContent,
+        parseHTML: extractFootnoteIdentifier,
       },
     };
   },
@@ -31,7 +34,7 @@ export default Node.create({
     return [{ tag: 'sup.footnote-ref', priority: PARSE_HTML_PRIORITY_HIGHEST }];
   },
 
-  renderHTML({ HTMLAttributes: { footnoteNumber, footnoteId, ...HTMLAttributes } }) {
-    return ['sup', mergeAttributes(HTMLAttributes), footnoteNumber];
+  renderHTML({ HTMLAttributes: { label, ...HTMLAttributes } }) {
+    return ['sup', mergeAttributes(HTMLAttributes), label];
   },
 });

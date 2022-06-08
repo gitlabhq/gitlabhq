@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Settings Form Cadence matches snapshot 1`] = `
+exports[`Container Expiration Policy Settings Form Cadence matches snapshot 1`] = `
 <expiration-dropdown-stub
   class="gl-mr-7 gl-mb-0!"
   data-testid="cadence-dropdown"
@@ -11,7 +11,7 @@ exports[`Settings Form Cadence matches snapshot 1`] = `
 />
 `;
 
-exports[`Settings Form Enable matches snapshot 1`] = `
+exports[`Container Expiration Policy Settings Form Enable matches snapshot 1`] = `
 <expiration-toggle-stub
   class="gl-mb-0!"
   data-testid="enable-toggle"
@@ -19,7 +19,7 @@ exports[`Settings Form Enable matches snapshot 1`] = `
 />
 `;
 
-exports[`Settings Form Keep N matches snapshot 1`] = `
+exports[`Container Expiration Policy Settings Form Keep N matches snapshot 1`] = `
 <expiration-dropdown-stub
   data-testid="keep-n-dropdown"
   formoptions="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
@@ -29,7 +29,7 @@ exports[`Settings Form Keep N matches snapshot 1`] = `
 />
 `;
 
-exports[`Settings Form Keep Regex matches snapshot 1`] = `
+exports[`Container Expiration Policy Settings Form Keep Regex matches snapshot 1`] = `
 <expiration-input-stub
   data-testid="keep-regex-input"
   description="Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
@@ -41,7 +41,7 @@ exports[`Settings Form Keep Regex matches snapshot 1`] = `
 />
 `;
 
-exports[`Settings Form OlderThan matches snapshot 1`] = `
+exports[`Container Expiration Policy Settings Form OlderThan matches snapshot 1`] = `
 <expiration-dropdown-stub
   data-testid="older-than-dropdown"
   formoptions="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
@@ -51,7 +51,7 @@ exports[`Settings Form OlderThan matches snapshot 1`] = `
 />
 `;
 
-exports[`Settings Form Remove regex matches snapshot 1`] = `
+exports[`Container Expiration Policy Settings Form Remove regex matches snapshot 1`] = `
 <expiration-input-stub
   data-testid="remove-regex-input"
   description="Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"

@@ -30,13 +30,4 @@ export const PAGE_CONFIG = {
       label: 'Status',
     },
   },
-  THREAT_MONITORING: {
-    TITLE: 'THREAT_MONITORING',
-    STATUSES: {
-      TRIGGERED: s__('ThreatMonitoring|Unreviewed'),
-      ACKNOWLEDGED: s__('ThreatMonitoring|In review'),
-      RESOLVED: s__('ThreatMonitoring|Resolved'),
-      IGNORED: s__('ThreatMonitoring|Dismissed'),
-    },
-  },
 };

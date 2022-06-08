@@ -82,9 +82,6 @@ export default {
     alertId: {
       default: '',
     },
-    isThreatMonitoringPage: {
-      default: false,
-    },
     projectId: {
       default: '',
     },
@@ -223,9 +220,7 @@ export default {
         });
     },
     incidentPath(issueId) {
-      return this.isThreatMonitoringPage
-        ? joinPaths(this.projectIssuesPath, issueId)
-        : joinPaths(this.projectIssuesPath, 'incident', issueId);
+      return joinPaths(this.projectIssuesPath, 'incident', issueId);
     },
     trackPageViews() {
       const { category, action } = this.trackAlertsDetailsViewsOptions;
@@ -372,7 +367,6 @@ export default {
         </gl-tab>
 
         <metric-images-tab
-          v-if="!isThreatMonitoringPage"
           :data-testid="$options.tabsConfig[1].id"
           :title="$options.tabsConfig[1].title"
         />

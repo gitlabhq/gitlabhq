@@ -50,8 +50,8 @@ inside the Workload Identity Pool created in the previous step, using the follow
   such as `gitlab/gitlab`.
 - **Provider ID**: Unique ID in the pool for the Workload Identity Provider,
   such as `gitlab-gitlab`. This value is used to refer to the provider, and appears in URLs.
-- **Issuer (URL)**: The address of your GitLab instance, such as `https://gitlab.com` or
-  `https://gitlab.example.com`.
+- **Issuer (URL)**: The address of your GitLab instance, such as `https://gitlab.com/` or
+  `https://gitlab.example.com/`.
   - The address must use the `https://` protocol.
   - The address must end in a trailing slash.
 - **Audiences**: Manually set the allowed audiences list to the address of your

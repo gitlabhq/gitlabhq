@@ -546,6 +546,8 @@ class Namespace < ApplicationRecord
   end
 
   def storage_enforcement_date
+    return Date.current if Feature.enabled?(:namespace_storage_limit_bypass_date_check, self)
+
     # should return something like Date.new(2022, 02, 03)
     # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
     nil

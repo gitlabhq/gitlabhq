@@ -51,8 +51,16 @@
   - 1
 - - authorized_keys
   - 2
-- - authorized_project_update
+- - authorized_project_update:authorized_project_update_project_recalculate
   - 1
+- - authorized_project_update:authorized_project_update_project_recalculate_per_user
+  - 1
+- - authorized_project_update:authorized_project_update_user_refresh_from_replica
+  - 1
+- - authorized_project_update:authorized_project_update_user_refresh_over_user_range
+  - 1
+- - authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
+  - 2
 - - authorized_projects
   - 2
 - - auto_devops
@@ -420,7 +428,7 @@
 - - self_monitoring_project_delete
   - 2
 - - service_desk_email_receiver
-  - 1
+  - 2
 - - set_user_status_based_on_user_cap_setting
   - 1
 - - snippets_schedule_bulk_repository_shard_moves

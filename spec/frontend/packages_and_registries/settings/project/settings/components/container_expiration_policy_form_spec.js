@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlCard, GlLoadingIcon } from 'jest/packages_and_registries/shared/stubs';
-import component from '~/packages_and_registries/settings/project/components/settings_form.vue';
+import component from '~/packages_and_registries/settings/project/components/container_expiration_policy_form.vue';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -14,7 +14,7 @@ import expirationPolicyQuery from '~/packages_and_registries/settings/project/gr
 import Tracking from '~/tracking';
 import { expirationPolicyPayload, expirationPolicyMutationPayload } from '../mock_data';
 
-describe('Settings Form', () => {
+describe('Container Expiration Policy Settings Form', () => {
   let wrapper;
   let fakeApollo;
 

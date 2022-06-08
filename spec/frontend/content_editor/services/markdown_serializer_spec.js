@@ -13,7 +13,6 @@ import Figure from '~/content_editor/extensions/figure';
 import FigureCaption from '~/content_editor/extensions/figure_caption';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
-import FootnotesSection from '~/content_editor/extensions/footnotes_section';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
@@ -53,7 +52,6 @@ const tiptapEditor = createTestEditor({
     Emoji,
     FootnoteDefinition,
     FootnoteReference,
-    FootnotesSection,
     Figure,
     FigureCaption,
     HardBreak,
@@ -92,7 +90,6 @@ const {
     emoji,
     footnoteDefinition,
     footnoteReference,
-    footnotesSection,
     figure,
     figureCaption,
     heading,
@@ -131,7 +128,6 @@ const {
     figureCaption: { nodeType: FigureCaption.name },
     footnoteDefinition: { nodeType: FootnoteDefinition.name },
     footnoteReference: { nodeType: FootnoteReference.name },
-    footnotesSection: { nodeType: FootnotesSection.name },
     hardBreak: { nodeType: HardBreak.name },
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
@@ -1147,18 +1143,15 @@ there
   it('correctly serializes footnotes', () => {
     expect(
       serialize(
-        paragraph(
-          'Oranges are orange ',
-          footnoteReference({ footnoteId: '1', footnoteNumber: '1' }),
-        ),
-        footnotesSection(footnoteDefinition(paragraph('Oranges are fruits'))),
+        paragraph('Oranges are orange ', footnoteReference({ label: '1', identifier: '1' })),
+        footnoteDefinition({ label: '1', identifier: '1' }, 'Oranges are fruits'),
       ),
     ).toBe(
       `
 Oranges are orange [^1]
 
 [^1]: Oranges are fruits
-      `.trim(),
+`.trimLeft(),
     );
   });
 

@@ -34,8 +34,8 @@ To bring the former **primary** site up to date:
 
    NOTE:
    If you [disabled the **primary** site permanently](index.md#step-2-permanently-disable-the-primary-site),
-   you need to undo those steps now. For Debian/Ubuntu you just need to run
-   `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
+   you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
+   `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** site by
    following [Setup instructions](../setup/index.md). In this case, you don't need to follow the next step.
 

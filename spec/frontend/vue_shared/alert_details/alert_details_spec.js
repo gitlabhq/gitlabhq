@@ -201,28 +201,6 @@ describe('AlertDetails', () => {
       });
     });
 
-    describe('Threat Monitoring details', () => {
-      it('should not render the metrics tab', () => {
-        mountComponent({
-          data: { alert: mockAlert },
-          provide: { isThreatMonitoringPage: true },
-        });
-        expect(findMetricsTab().exists()).toBe(false);
-      });
-
-      it('should display "View incident" button that links the issues page when incident exists', () => {
-        const iid = '3';
-        mountComponent({
-          data: { alert: { ...mockAlert, issue: { iid } }, sidebarStatus: false },
-          provide: { isThreatMonitoringPage: true },
-        });
-
-        expect(findViewIncidentBtn().exists()).toBe(true);
-        expect(findViewIncidentBtn().attributes('href')).toBe(joinPaths(projectIssuesPath, iid));
-        expect(findCreateIncidentBtn().exists()).toBe(false);
-      });
-    });
-
     describe('Create incident from alert', () => {
       it('should display "View incident" button that links the incident page when incident exists', () => {
         const iid = '3';

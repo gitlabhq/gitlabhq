@@ -38,6 +38,6 @@
       = f.label :active, s_('PipelineSchedules|Activated'), class: 'label-bold'
       %div
         = f.gitlab_ui_checkbox_component :active, _('Active'), checkbox_options: { value: @schedule.active, required: false }
-  .footer-block.row-content-block
+  .footer-block
     = f.submit _('Save pipeline schedule'), class: 'btn gl-button btn-confirm'
     = link_to _('Cancel'), pipeline_schedules_path(@project), class: 'btn gl-button btn-default btn-cancel'

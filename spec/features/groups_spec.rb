@@ -498,7 +498,9 @@ RSpec.describe 'Group' do
     let_it_be(:group) { create(:group) }
     let_it_be_with_refind(:user) { create(:user) }
 
-    before_all do
+    before do
+      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
+
       group.add_owner(user)
       sign_in(user)
     end

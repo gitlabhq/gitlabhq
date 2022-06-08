@@ -104,7 +104,7 @@ export default {
       <span data-testid="description" class="gl-text-gray-400">
         <gl-sprintf :message="description">
           <template #link="{ content }">
-            <gl-link :href="tagsRegexHelpPagePath" target="_blank">{{ content }}</gl-link>
+            <gl-link :href="tagsRegexHelpPagePath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </span>

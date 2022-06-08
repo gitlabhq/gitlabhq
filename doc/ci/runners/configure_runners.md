@@ -718,6 +718,51 @@ variables:
 | `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
 
+### Staging directory
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
+
+If you do not want to archive cache and artifacts in the system's default temporary directory, you can specify a different directory.
+
+You might need to change the directory if your system's default temporary path has constraints.
+If you use a fast disk for the directory location, it can also improve performance.
+
+To change the directory, set `ARCHIVER_STAGING_DIR` as a variable in your CI job, or use a runner variable when you register the runner (`gitlab register --env ARCHIVER_STAGING_DIR=<dir>`).
+
+The directory you specify is used as the location for downloading artifacts prior to extraction. If the `fastzip` archiver is
+used, this location is also used as scratch space when archiving.
+
+### Configure `fastzip` to improve performance
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
+
+To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
+Then use any of the following environment variables.
+
+| Variable                        | Description                                            |
+|---------------------------------|--------------------------------------------------------|
+| `FASTZIP_ARCHIVER_CONCURRENCY`  | The number of files to be concurrently compressed. Default is the number of CPUs available. |
+| `FASTZIP_ARCHIVER_BUFFER_SIZE`  | The buffer size allocated per concurrency for each file. Data exceeding this number moves to scratch space. Default is 2 MiB.  |
+| `FASTZIP_EXTRACTOR_CONCURRENCY` | The number of files to be concurrency decompressed. Default is the number of CPUs available. |
+
+Files in a zip archive are appended sequentially. This makes concurrent compression challenging. `fastzip` works around
+this limitation by compressing files concurrently to disk first, and then copying the result back to zip archive
+sequentially.
+
+To avoid writing to disk and reading the contents back for smaller files, a small buffer per concurrency is used. This setting
+can be controlled with `FASTZIP_ARCHIVER_BUFFER_SIZE`. The default size for this buffer is 2 MiB, therefore, a
+concurrency of 16 will allocate 32 MiB. Data that exceeds the buffer size will be written to and read back from disk.
+Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
+
+`FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As mentioned above, this setting
+therefore can increase how much memory is being used, but also how much temporary data is written to the scratch space.
+The default is the number of CPUs available, but given the memory ramifications, this may not always be the best
+setting.
+
+`FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
+be read from concurrency, so no additional memory is allocated in additional to what the decompressor requires. This
+defaults to the number of CPUs available.
+
 ## Clean up stale runners
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `stale_runner_cleanup_for_namespace_development`. Disabled by default.

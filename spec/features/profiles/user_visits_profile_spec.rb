@@ -89,6 +89,10 @@ RSpec.describe 'User visits their profile' do
   end
 
   describe 'storage_enforcement_banner', :js do
+    before do
+      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
+    end
+
     context 'with storage_enforcement_date set' do
       let_it_be(:storage_enforcement_date) { Date.today + 30 }
 

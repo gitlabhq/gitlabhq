@@ -65,16 +65,12 @@ export default (selector) => {
 
   const opsProperties = {};
 
-  if (page === PAGE_CONFIG.OPERATIONS.TITLE) {
-    const { TRACK_ALERTS_DETAILS_VIEWS_OPTIONS, TRACK_ALERT_STATUS_UPDATE_OPTIONS } = PAGE_CONFIG[
-      page
-    ];
-    provide.trackAlertsDetailsViewsOptions = TRACK_ALERTS_DETAILS_VIEWS_OPTIONS;
-    provide.trackAlertStatusUpdateOptions = TRACK_ALERT_STATUS_UPDATE_OPTIONS;
-    opsProperties.store = createStore({}, service);
-  } else if (page === PAGE_CONFIG.THREAT_MONITORING.TITLE) {
-    provide.isThreatMonitoringPage = true;
-  }
+  const { TRACK_ALERTS_DETAILS_VIEWS_OPTIONS, TRACK_ALERT_STATUS_UPDATE_OPTIONS } = PAGE_CONFIG[
+    page
+  ];
+  provide.trackAlertsDetailsViewsOptions = TRACK_ALERTS_DETAILS_VIEWS_OPTIONS;
+  provide.trackAlertStatusUpdateOptions = TRACK_ALERT_STATUS_UPDATE_OPTIONS;
+  opsProperties.store = createStore({}, service);
 
   // eslint-disable-next-line no-new
   new Vue({

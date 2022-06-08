@@ -7966,9 +7966,6 @@ msgstr ""
 msgid "Clean up after running %{link_start}git filter-repo%{link_end} on the repository."
 msgstr ""
 
-msgid "Clean up image tags"
-msgstr ""
-
 msgid "Cleanup policies are executed by background workers. This setting defines the maximum number of workers that can run concurrently. Set it to 0 to remove all workers and not execute the cleanup policies."
 msgstr ""
 
@@ -9647,6 +9644,9 @@ msgstr ""
 msgid "ContainerRegistry|CLI Commands"
 msgstr ""
 
+msgid "ContainerRegistry|Clean up image tags"
+msgstr ""
+
 msgid "ContainerRegistry|Cleanup disabled"
 msgstr ""
 
@@ -9821,6 +9821,9 @@ msgid "ContainerRegistry|Root image"
 msgstr ""
 
 msgid "ContainerRegistry|Run cleanup:"
+msgstr ""
+
+msgid "ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Set up cleanup"
@@ -33245,9 +33248,6 @@ msgstr ""
 msgid "Save pipeline schedule"
 msgstr ""
 
-msgid "Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}"
-msgstr ""
-
 msgid "Saving"
 msgstr ""
 
@@ -35234,7 +35234,7 @@ msgstr ""
 msgid "Show whitespace changes"
 msgstr ""
 
-msgid "Showing %{conflict} between %{sourceBranch} and %{targetBranch}"
+msgid "Showing %{conflict}"
 msgstr ""
 
 msgid "Showing %{count} of %{total} projects"
@@ -39232,24 +39232,6 @@ msgid "This will remove the fork relationship between this project and other pro
 msgstr ""
 
 msgid "Thread to reply to cannot be found"
-msgstr ""
-
-msgid "ThreatMonitoring|Alert Details"
-msgstr ""
-
-msgid "ThreatMonitoring|Dismissed"
-msgstr ""
-
-msgid "ThreatMonitoring|In review"
-msgstr ""
-
-msgid "ThreatMonitoring|Resolved"
-msgstr ""
-
-msgid "ThreatMonitoring|Threat Monitoring"
-msgstr ""
-
-msgid "ThreatMonitoring|Unreviewed"
 msgstr ""
 
 msgid "Threshold in bytes at which to compress Sidekiq job arguments."

@@ -94,11 +94,13 @@ that can process jobs in the `background_migration` queue.
 
 ### Background migrations
 
+#### Pending migrations
+
 **For Omnibus installations:**
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
 ```
 
 **For installations from source:**
@@ -107,6 +109,38 @@ sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrati
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+```
+
+#### Failed migrations
+
+**For Omnibus installations:**
+
+For GitLab 14.0-14.9:
+
+```shell
+sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+```
+
+For GitLab 14.10 and later:
+
+```shell
+sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
+```
+
+**For installations from source:**
+
+For GitLab 14.0-14.9:
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+```
+
+For GitLab 14.10 and later:
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
 ### Batched background migrations
@@ -333,7 +367,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.9.0`](#1490) -> [`14.10.Z`](#1410) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.9.5`](#1490) -> [`14.10.Z`](#1410) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -341,8 +375,8 @@ Additional steps between the mentioned versions are possible. We list the minima
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.4` -> `14.10.3` -> `15.0.0` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
-| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.4` -> `14.10.3` -> `15.0.0`                                                        | Two intermediate versions are required: `14.9` and `14.10`, then `15.0.0`.                                                        |
+| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
+| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2`                                                        | Two intermediate versions are required: `14.9` and `14.10`, then `15.0.0`.                                                        |
 | `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.6.2`                                                     | Two intermediate versions are required: `13.12` and `14.0`, then `14.6.2`.                                                        |
 | `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
 | `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.15`.                                   |

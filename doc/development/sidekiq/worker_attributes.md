@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Sidekiq worker attributes
 
+Worker classes can define certain attributes to control their behavior and add metadata.
+
+Child classes inheriting from other workers also inherit these attributes, so you only
+have to redefine them if you want to override their values.
+
 ## Job urgency
 
 Jobs can have an `urgency` attribute set, which can be `:high`,

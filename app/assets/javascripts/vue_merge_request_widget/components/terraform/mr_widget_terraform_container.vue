@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlSprintf } from '@gitlab/ui';
+import { GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import { n__ } from '~/locale';
@@ -9,7 +9,7 @@ import TerraformPlan from './terraform_plan.vue';
 export default {
   name: 'MRWidgetTerraformContainer',
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     GlSprintf,
     MrWidgetExpanableSection,
     TerraformPlan,
@@ -100,7 +100,7 @@ export default {
 <template>
   <section class="mr-widget-section">
     <div v-if="loading" class="mr-widget-body">
-      <gl-skeleton-loading />
+      <gl-skeleton-loader />
     </div>
 
     <mr-widget-expanable-section v-else>

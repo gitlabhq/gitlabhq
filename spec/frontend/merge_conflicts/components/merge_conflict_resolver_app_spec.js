@@ -59,7 +59,7 @@ describe('Merge Conflict Resolver App', () => {
     const title = findConflictsCount();
 
     expect(title.exists()).toBe(true);
-    expect(title.text().trim()).toBe('Showing 3 conflicts between test-conflicts and main');
+    expect(title.text().trim()).toBe('Showing 3 conflicts');
   });
 
   it('shows a loading spinner while loading', () => {

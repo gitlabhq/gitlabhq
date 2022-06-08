@@ -2258,9 +2258,23 @@ RSpec.describe Namespace do
   describe 'storage_enforcement_date' do
     let_it_be(:namespace) { create(:group) }
 
+    before do
+      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
+    end
+
     # Date TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
-    it 'returns false' do
+    it 'returns nil' do
       expect(namespace.storage_enforcement_date).to be(nil)
+    end
+
+    context 'when :storage_banner_bypass_date_check is enabled' do
+      before do
+        stub_feature_flags(namespace_storage_limit_bypass_date_check: true)
+      end
+
+      it 'returns the current date', :freeze_time do
+        expect(namespace.storage_enforcement_date).to eq(Date.current)
+      end
     end
   end
 

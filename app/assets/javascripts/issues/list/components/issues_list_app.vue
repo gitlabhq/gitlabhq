@@ -866,7 +866,7 @@ export default {
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-          <new-issue-dropdown v-if="showNewIssueDropdown" />
+          <new-issue-dropdown v-if="showNewIssueDropdown" class="gl-align-self-center" />
         </template>
       </gl-empty-state>
       <hr />
