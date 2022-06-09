@@ -327,6 +327,11 @@ GitLab treats trailers case-sensitively. If you set the `trailer` field to
 `Example`, GitLab _won't_ include commits that use the trailer `example`,
 `eXaMpLE`, or anything else that isn't _exactly_ `Example`.
 
+WARNING:
+The allowed commits range between `from` and `to` is limited to 15000 commits. To disable
+this restriction, [turn off the feature flag](../administration/feature_flags.md)
+`changelog_commits_limitation`.
+
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last
 stable version that came before the version specified in the `version`
 attribute. This requires that Git tag names follow a specific format, allowing

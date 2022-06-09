@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::CleanupOrphanedRoutes do
-  let!(:namespaces) { table(:namespaces) }
-  let!(:projects) { table(:projects) }
-  let!(:routes) { table(:routes) }
+# this needs the schema to be before we introduce the not null constraint on routes#namespace_id
+RSpec.describe Gitlab::BackgroundMigration::CleanupOrphanedRoutes, schema: 20220606060825 do
+  let(:namespaces) { table(:namespaces) }
+  let(:projects) { table(:projects) }
+  let(:routes) { table(:routes) }
 
   let!(:namespace1) { namespaces.create!(name: 'batchtest1', type: 'Group', path: 'space1') }
   let!(:namespace2) { namespaces.create!(name: 'batchtest2', type: 'Group', parent_id: namespace1.id, path: 'space2') }

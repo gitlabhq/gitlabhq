@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
-RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceIdForProjectRoute do
+# this needs the schema to be before we introduce the not null constraint on routes#namespace_id
+RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceIdForProjectRoute, schema: 20220606060825 do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

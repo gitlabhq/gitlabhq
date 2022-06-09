@@ -22,13 +22,6 @@ RSpec.describe Route do
   end
 
   describe 'callbacks' do
-    context 'before validation' do
-      it 'calls #delete_conflicting_orphaned_routes' do
-        expect(route).to receive(:delete_conflicting_orphaned_routes)
-        route.valid?
-      end
-    end
-
     context 'after update' do
       it 'calls #create_redirect_for_old_path' do
         expect(route).to receive(:create_redirect_for_old_path)
@@ -44,7 +37,7 @@ RSpec.describe Route do
     context 'after create' do
       it 'calls #delete_conflicting_redirects' do
         route.destroy!
-        new_route = described_class.new(source: group, path: group.path)
+        new_route = described_class.new(source: group, path: group.path, namespace: group)
         expect(new_route).to receive(:delete_conflicting_redirects)
         new_route.save!
       end
@@ -275,7 +268,7 @@ RSpec.describe Route do
     end
   end
 
-  describe '#delete_conflicting_orphaned_routes' do
+  describe 'conflicting routes validation' do
     context 'when there is a conflicting route' do
       let!(:conflicting_group) { create(:group, path: 'foo') }
 
@@ -283,47 +276,31 @@ RSpec.describe Route do
         route.path = conflicting_group.route.path
       end
 
-      context 'when the route is orphaned' do
+      context 'when deleting the conflicting route' do
         let!(:offending_route) { conflicting_group.route }
 
-        before do
-          Group.delete(conflicting_group) # Orphan the route
-        end
+        it 'does not delete the original route' do
+          # before deleting the route, check its there
+          expect(Route.where(path: offending_route.path).count).to eq(1)
 
-        it 'deletes the orphaned route' do
           expect do
-            route.valid?
-          end.to change { described_class.count }.from(2).to(1)
-        end
+            Group.delete(conflicting_group) # delete group with conflicting route
+          end.to change { described_class.count }.by(-1)
 
-        it 'passes validation, as usual' do
+          # check the conflicting route is gone
+          expect(Route.where(path: offending_route.path).count).to eq(0)
+          expect(route.path).to eq(offending_route.path)
           expect(route.valid?).to be_truthy
         end
       end
 
-      context 'when the route is not orphaned' do
-        it 'does not delete the conflicting route' do
-          expect do
-            route.valid?
-          end.not_to change { described_class.count }
-        end
-
-        it 'fails validation, as usual' do
-          expect(route.valid?).to be_falsey
-        end
+      it 'fails validation' do
+        expect(route.valid?).to be_falsey
       end
     end
 
     context 'when there are no conflicting routes' do
-      it 'does not delete any routes' do
-        route
-
-        expect do
-          route.valid?
-        end.not_to change { described_class.count }
-      end
-
-      it 'passes validation, as usual' do
+      it 'passes validation' do
         expect(route.valid?).to be_truthy
       end
     end

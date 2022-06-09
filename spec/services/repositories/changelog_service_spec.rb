@@ -164,6 +164,28 @@ RSpec.describe Repositories::ChangelogService do
 
       expect { request.call(sha3) }.not_to exceed_query_limit(control.count)
     end
+
+    context 'when commit range exceeds the limit' do
+      let(:service) { described_class.new(project, creator, version: '1.0.0', from: sha1) }
+
+      before do
+        stub_const("#{described_class.name}::COMMITS_LIMIT", 2)
+      end
+
+      it 'raises an exception' do
+        expect { service.execute(commit_to_changelog: false) }.to raise_error(Gitlab::Changelog::Error)
+      end
+
+      context 'when feature flag is off' do
+        before do
+          stub_feature_flags(changelog_commits_limitation: false)
+        end
+
+        it 'returns the changelog' do
+          expect(service.execute(commit_to_changelog: false)).to include('Title 1', 'Title 2', 'Title 3')
+        end
+      end
+    end
   end
 
   describe '#start_of_commit_range' do

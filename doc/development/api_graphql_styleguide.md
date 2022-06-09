@@ -1848,35 +1848,59 @@ field :created_at, Types::TimeType, null: true, description: 'Timestamp of when 
 
 ## Testing
 
-### Writing unit tests
+For testing mutations and resolvers, consider the unit of
+test a full GraphQL request, not a call to a resolver. The reasons for this are
+that we want to avoid lots of coupling to the framework, since this makes
+upgrades to dependencies much more difficult.
+
+You should:
+
+- Prefer request specs (either using the full API endpoint or going through
+  `GitlabSchema.execute`) to unit specs for resolvers and mutations.
+- Prefer `GraphqlHelpers#execute_query` and `GraphqlHelpers#run_with_clean_state` to
+  `GraphqlHelpers#resolve` and `GraphqlHelpers#resolve_field`.
+
+For example:
+
+```ruby
+# Good:
+gql_query = %q(some query text...)
+post_graphql(gql_query, current_user: current_user)
+# or:
+GitlabSchema.execute(gql_query, context: { current_user: current_user })
+
+# Deprecated: avoid
+resolve(described_class, obj: project, ctx: { current_user: current_user })
+```
+
+### Writing unit tests (deprecated)
+
+WARNING:
+Avoid writing unit tests if the same thing can be tested with
+a full GraphQL request.
 
 Before creating unit tests, review the following examples:
 
 - [`spec/graphql/resolvers/users_resolver_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/resolvers/users_resolver_spec.rb)
 - [`spec/graphql/mutations/issues/create_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/mutations/issues/create_spec.rb)
 
-It's faster to test as much of the logic from your GraphQL queries and mutations
-with unit tests, which are stored in `spec/graphql`.
-
-Use unit tests to verify that:
-
-- Types have the expected fields.
-- Resolvers and mutations apply authorizations and return expected data.
-- Edge cases are handled correctly.
-
 ### Writing integration tests
 
 Integration tests check the full stack for a GraphQL query or mutation and are stored in
 `spec/requests/api/graphql`.
 
-For speed, you should test most logic in unit tests instead of integration tests.
-However, integration tests that check if data is returned verify the following
+For speed, consider calling `GitlabSchema.execute` directly, or making use
+of smaller test schemas that only contain the types under test.
+
+However, full request integration tests that check if data is returned verify the following
 additional items:
 
 - The mutation is actually queryable in the schema (was mounted in `MutationType`).
 - The data returned by a resolver or mutation correctly matches the
   [return types](https://graphql-ruby.org/fields/introduction.html#field-return-type) of
   the fields and resolves without errors.
+- The arguments coerce correctly on input, and the fields serialize correctly
+  on output.
 
 Integration tests can also verify the following items, because they invoke the
 full stack:
@@ -1928,6 +1952,33 @@ end
 ```
 
 ### Testing tips and tricks
+
+- Become familiar with the methods in the `GraphqlHelpers` support module.
+  Many of these methods make writing GraphQL tests easier.
+
+- Use traversal helpers like `GraphqlHelpers#graphql_data_at` and
+  `GraphqlHelpers#graphql_dig_at` to access result fields. For example:
+
+  ```ruby
+  result = GitlabSchema.execute(query)
+
+  mr_iid = graphql_dig_at(result.to_h, :data, :project, :merge_request, :iid)
+  ```
+
+- Use `GraphqlHelpers#a_graphql_entity_for` to match against results.
+  For example:
+
+  ```ruby
+  post_graphql(some_query)
+
+  # checks that it is a hash containing { id => global_id_of(issue) }
+  expect(graphql_data_at(:project, :issues, :nodes))
+    .to contain_exactly(a_graphql_entity_for(issue))
+
+  # Additional fields can be passed, either as names of methods, or with values
+  expect(graphql_data_at(:project, :issues, :nodes))
+    .to contain_exactly(a_graphql_entity_for(issue, :iid, :title, created_at: some_time))
+  ```
 
 - Avoid false positives:
 

@@ -1059,3 +1059,11 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 - Files must be smaller than 5 MB.
 - Projects cannot have more than 100 secure files.
+
+## Changelog API limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
+
+The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
+
+- The commit range between `from` and `to` cannot exceed 15000 commits.

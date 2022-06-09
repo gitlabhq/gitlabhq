@@ -375,13 +375,14 @@ job artifacts are deleted.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
 > - [Made optional with a CI/CD setting](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8.
 
-By default artifacts are always kept for the most recent successful pipeline for
+By default artifacts are always kept for successful pipelines for the most recent commit on
 each ref. This means that the latest artifacts do not immediately expire according
 to the `expire_in` specification.
 
-If a new pipeline for the same ref completes successfully, the previous pipeline's
+If a pipeline for a new commit on the same ref completes successfully, the previous pipeline's
 artifacts are deleted according to the `expire_in` configuration. The artifacts
-of the new pipeline are kept automatically.
+of the new pipeline are kept automatically. If multiple pipelines run for the most
+recent commit on the ref, all artifacts are kept.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in

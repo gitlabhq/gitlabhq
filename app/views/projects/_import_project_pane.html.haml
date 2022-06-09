@@ -74,7 +74,7 @@
 
       - if phabricator_import_enabled?
         %div
-          = link_to new_import_phabricator_path, class: 'gl-button btn-default btn import_phabricator js-import-project-btn', data: { platform: 'phabricator', track_label: "#{track_label}", track_action: "click_button", track_property: "phabricator" } do
+          = link_to new_import_phabricator_path(namespace_id: namespace_id), class: 'gl-button btn-default btn import_phabricator js-import-project-btn', data: { platform: 'phabricator', track_label: "#{track_label}", track_action: "click_button", track_property: "phabricator" } do
             .gl-button-icon
               = custom_icon('issues')
             = _("Phabricator Tasks")
