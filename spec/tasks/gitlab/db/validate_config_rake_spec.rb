@@ -205,6 +205,20 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
         it_behaves_like 'raises an error', /The 'ci' since it is using 'database_tasks: false' should share database with 'main:'/
       end
     end
+
+    context 'one of the databases is in read-only mode' do
+      let(:test_config) do
+        {
+          main: main_database_config
+        }
+      end
+
+      before do
+        expect(ActiveRecord::InternalMetadata).to receive(:upsert).at_least(:once).and_raise(PG::ReadOnlySqlTransaction, "READONLY")
+      end
+
+      it_behaves_like 'validates successfully'
+    end
   end
 
   %w[db:migrate db:schema:load db:schema:dump].each do |task|

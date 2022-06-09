@@ -236,7 +236,7 @@ you to common environment tasks:
 - **Monitoring** (**{chart}**) - Opens the metrics page where Prometheus collects data
   about the Kubernetes cluster and how the application
   affects it in terms of memory usage, CPU usage, and latency
-- **Deploy to** (**{play}** **{angle-down}**) - Displays a list of environments you can deploy to
+- **Deploy to** (**{play}** **{chevron-down}**) - Displays a list of environments you can deploy to
 - **Terminal** (**{terminal}**) - Opens a [web terminal](../../ci/environments/index.md#web-terminals-deprecated)
   session inside the container where the application is running
 - **Re-deploy to environment** (**{repeat}**) - For more information, see

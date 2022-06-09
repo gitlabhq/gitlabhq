@@ -92,7 +92,7 @@ The design you selected opens. You can then [zoom in](#zoom-in-on-a-design) on i
 
 When viewing a design, you can move to other designs. To do so, either:
 
-- In the top-right corner, select **Go to previous design** (**{angle-left}**) or **Go to next design** (**{angle-right}**).
+- In the top-right corner, select **Go to previous design** (**{chevron-left}**) or **Go to next design** (**{chevron-right}**).
 - Press <kbd>Left</kbd> or <kbd>Right</kbd> on your keyboard.
 
 To return to the issue view, either:

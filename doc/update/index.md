@@ -367,7 +367,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.9.5`](#1490) -> [`14.10.Z`](#1410) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#1410) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -377,7 +377,7 @@ Additional steps between the mentioned versions are possible. We list the minima
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
 | `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2`                                                        | Two intermediate versions are required: `14.9` and `14.10`, then `15.0.0`.                                                        |
-| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.6.2`                                                     | Two intermediate versions are required: `13.12` and `14.0`, then `14.6.2`.                                                        |
+| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.3.6` => `14.6.2`                                         | Three intermediate versions are required: `13.12` and `14.0`, `14.3`, then `14.6.2`.                                                        |
 | `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
 | `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.15`.                                   |
 | `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
@@ -704,6 +704,20 @@ for how to proceed.
 
   # For source installations
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
+  ```
+
+- After upgrading to 14.3, ensure that all the `MigrateMergeRequestDiffCommitUsers` background
+  migration jobs have completed before continuing with upgrading to GitLab 14.5 or later.
+  This is especially important if your GitLab instance has a large
+  `merge_request_diff_commits` table. Any pending
+  `MigrateMergeRequestDiffCommitUsers` background migration jobs are
+  foregrounded in GitLab 14.5, and may take a long time to complete.
+  You can check the count of pending jobs for
+  `MigrateMergeRequestDiffCommitUsers` by using the PostgreSQL console (or `sudo
+  gitlab-psql`):
+
+  ```sql
+  select count(*) from background_migration_jobs where class_name = 'MigrateMergeRequestDiffCommitUsers' and status = 0;
   ```
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).

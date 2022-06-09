@@ -24,6 +24,7 @@ We strive to run GitLab using the latest Rails releases to benefit from performa
 1. Run `bundle update --conservative activesupport` in the `qa` folder.
 1. Resolve any Bundler conflicts.
 1. Ensure that `@rails/ujs` and `@rails/actioncable` npm packages match the new rails version in [`package.json`](https://gitlab.com/gitlab-org/gitlab/blob/master/package.json).
+1. Run `yarn patch-package @rails/ujs` after updating this to ensure our local patch file version matches.
 1. Create an MR with the `pipeline:run-all-rspec` label and see if pipeline breaks.
 1. To resolve and debug spec failures use `git bisect` against the rails repository. See the [debugging section](#git-bisect-against-rails) below.
 1. Include links to the Gem diffs between the two versions in the merge request description. For example, this is the gem diff for [`activesupport` 6.1.3.2 to

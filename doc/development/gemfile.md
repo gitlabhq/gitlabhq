@@ -89,6 +89,7 @@ When upgrading the Rails gem and its dependencies, you also should update the fo
 You should also update npm packages that follow the current version of Rails:
 
 - `@rails/ujs`
+  - Run `yarn patch-package @rails/ujs` after updating this to ensure our local patch file version matches.
 - `@rails/actioncable`
 
 ## Upgrading dependencies because of vulnerabilities

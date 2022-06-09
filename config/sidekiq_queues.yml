@@ -415,8 +415,6 @@
   - 1
 - - security_findings_delete_by_job_id
   - 1
-- - security_generate_scan_finding_rules
-  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_scans
