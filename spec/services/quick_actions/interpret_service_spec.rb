@@ -321,28 +321,28 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'draft command' do
-      it 'returns wip_event: "wip" if content contains /draft' do
+      it 'returns wip_event: "draft" if content contains /draft' do
         _, updates, _ = service.execute(content, issuable)
 
-        expect(updates).to eq(wip_event: 'wip')
+        expect(updates).to eq(wip_event: 'draft')
       end
 
-      it 'returns the wip message' do
+      it 'returns the draft message' do
         _, _, message = service.execute(content, issuable)
 
         expect(message).to eq("Marked this #{issuable.to_ability_name.humanize(capitalize: false)} as a draft.")
       end
     end
 
-    shared_examples 'undraft command' do
-      it 'returns wip_event: "unwip" if content contains /draft' do
+    shared_examples 'ready command' do
+      it 'returns wip_event: "ready" if content contains /draft' do
         issuable.update!(title: issuable.draft_title)
         _, updates, _ = service.execute(content, issuable)
 
-        expect(updates).to eq(wip_event: 'unwip')
+        expect(updates).to eq(wip_event: 'ready')
       end
 
-      it 'returns the unwip message' do
+      it 'returns the ready message' do
         issuable.update!(title: issuable.draft_title)
         _, _, message = service.execute(content, issuable)
 
@@ -1367,7 +1367,7 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'undraft command' do
+    it_behaves_like 'ready command' do
       let(:content) { '/draft' }
       let(:issuable) { merge_request }
     end

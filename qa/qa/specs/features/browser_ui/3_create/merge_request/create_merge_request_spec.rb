@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/363807',
-    type: :stale
-  } do
+  RSpec.describe 'Create' do
     describe 'Create a new merge request' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

@@ -95,7 +95,7 @@ MergeRequest.prototype.initMRBtnListeners = function () {
           .then(({ data }) => {
             draftToggle.removeAttribute('disabled');
             eventHub.$emit('MRWidgetUpdateRequested');
-            MergeRequest.toggleDraftStatus(data.title, wipEvent === 'unwip');
+            MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready');
           })
           .catch(() => {
             createFlash({
@@ -168,7 +168,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
     draftToggles.forEach((el) => {
       const draftToggle = el;
       const url = setUrlParams(
-        { 'merge_request[wip_event]': isReady ? 'wip' : 'unwip' },
+        { 'merge_request[wip_event]': isReady ? 'draft' : 'ready' },
         draftToggle.href,
       );
 

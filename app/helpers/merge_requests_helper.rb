@@ -139,7 +139,7 @@ module MergeRequestsHelper
   end
 
   def toggle_draft_merge_request_path(issuable)
-    wip_event = issuable.draft? ? 'unwip' : 'wip'
+    wip_event = issuable.draft? ? 'ready' : 'draft'
 
     issuable_path(issuable, { merge_request: { wip_event: wip_event } })
   end

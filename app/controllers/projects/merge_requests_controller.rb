@@ -300,7 +300,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def remove_wip
     @merge_request = ::MergeRequests::UpdateService
-      .new(project: project, current_user: current_user, params: { wip_event: 'unwip' })
+      .new(project: project, current_user: current_user, params: { wip_event: 'ready' })
       .execute(@merge_request)
 
     render json: serialize_widget(@merge_request)

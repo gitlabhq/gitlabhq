@@ -51,9 +51,9 @@ export default {
 
 <template>
   <gl-form class="common-note-form gfm-form" @submit.stop.prevent>
-    <div data-testid="issuable-title" class="form-group row">
-      <label for="issuable-title" class="col-form-label col-sm-2">{{ __('Title') }}</label>
-      <div class="col-sm-10">
+    <div data-testid="issuable-title" class="row">
+      <label for="issuable-title" class="col-12 gl-mb-0">{{ __('Title') }}</label>
+      <div class="col-12">
         <gl-form-group :description="__('Maximum of 255 characters')">
           <gl-form-input
             id="issuable-title"
@@ -66,10 +66,8 @@ export default {
       </div>
     </div>
     <div data-testid="issuable-description" class="form-group row">
-      <label for="issuable-description" class="col-form-label col-sm-2">{{
-        __('Description')
-      }}</label>
-      <div class="col-sm-10">
+      <label for="issuable-description" class="col-12">{{ __('Description') }}</label>
+      <div class="col-12">
         <markdown-field
           :markdown-preview-path="descriptionPreviewPath"
           :markdown-docs-path="descriptionHelpPath"
@@ -91,37 +89,28 @@ export default {
         </markdown-field>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-6">
-        <div data-testid="issuable-labels" class="form-group row">
-          <label for="issuable-labels" class="col-form-label col-md-2 col-lg-4">{{
-            __('Labels')
-          }}</label>
-          <div class="col-md-8 col-sm-10">
-            <div class="issuable-form-select-holder">
-              <labels-select
-                :allow-label-edit="true"
-                :allow-label-create="true"
-                :allow-multiselect="true"
-                :allow-scoped-labels="true"
-                :labels-fetch-path="labelsFetchPath"
-                :labels-manage-path="labelsManagePath"
-                :selected-labels="selectedLabels"
-                :labels-list-title="__('Select label')"
-                :footer-create-label-title="__('Create project label')"
-                :footer-manage-label-title="__('Manage project labels')"
-                :variant="$options.LabelSelectVariant.Embedded"
-                @updateSelectedLabels="handleUpdateSelectedLabels"
-              />
-            </div>
-          </div>
+    <div data-testid="issuable-labels" class="form-group row">
+      <label for="issuable-labels" class="col-12">{{ __('Labels') }}</label>
+      <div class="col-12">
+        <div class="issuable-form-select-holder">
+          <labels-select
+            :allow-label-edit="true"
+            :allow-label-create="true"
+            :allow-multiselect="true"
+            :allow-scoped-labels="true"
+            :labels-fetch-path="labelsFetchPath"
+            :labels-manage-path="labelsManagePath"
+            :selected-labels="selectedLabels"
+            :labels-list-title="__('Select label')"
+            :footer-create-label-title="__('Create project label')"
+            :footer-manage-label-title="__('Manage project labels')"
+            :variant="$options.LabelSelectVariant.Embedded"
+            @updateSelectedLabels="handleUpdateSelectedLabels"
+          />
         </div>
       </div>
     </div>
-    <div
-      data-testid="issuable-create-actions"
-      class="footer-block row-content-block gl-display-flex"
-    >
+    <div data-testid="issuable-create-actions" class="footer-block gl-display-flex gl-mt-6">
       <slot
         name="actions"
         :issuable-title="issuableTitle"

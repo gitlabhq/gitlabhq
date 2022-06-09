@@ -114,7 +114,7 @@ module Gitlab
             (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
         end
         command :draft do
-          @updates[:wip_event] = quick_action_target.draft? ? 'unwip' : 'wip'
+          @updates[:wip_event] = quick_action_target.draft? ? 'ready' : 'draft'
         end
 
         desc _('Set target branch')

@@ -1,15 +1,22 @@
-# This is a template for a feature deprecation
-# A deprecation typically occurs when a feature or capability is planned to be removed in a future release.
-# Deprecations should be announced at least two releases prior to removal.  Any breaking changes should only be done in major releases.
+# This is a template for a feature deprecation.
 #
-# Below is an example of what a single entry should look like, it's required attributes,
-# and what types we expect those attribute values to be.
+# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# Deprecations must be announced at least three releases prior to removal.
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` on Slack and mention `@gitlab-com/support` in this MR.
+#
+# Breaking changes must happen in a major release.
 #
 # For more information please refer to the handbook documentation here:
 # https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations
 #
 # Please delete this line and above before submitting your merge request.
-
+#
+# REQUIRED FIELDS
+#
 - name: "Feature name"  # (required) The name of the feature to be deprecated
   announcement_milestone: "XX.YY"  # (required) The milestone when this feature was first announced as deprecated.
   announcement_date: "YYYY-MM-DD"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
@@ -27,7 +34,11 @@
     When ready, assign to your tech writer for review. When ready, they will run `bin/rake gitlab:docs:compile_deprecations` to update the deprecations doc, then merge.
 
     END OF BODY COMMENT -->
-# The following items are not published on the docs page, but may be used in the future.
+#
+# OPTIONAL FIELDS
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_date:  # (optional) The date of the milestone release when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url:  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature

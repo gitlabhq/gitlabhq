@@ -27,8 +27,8 @@ module Mutations
 
       private
 
-      def wip_event(wip)
-        wip ? 'wip' : 'unwip'
+      def wip_event(draft)
+        draft ? 'draft' : 'ready'
       end
     end
   end
