@@ -45,11 +45,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [with_index]))
       end
-
-      pipeline.run
     end
 
     it 'imports release into destination project' do
+      pipeline.run
+
       expect(project.releases.count).to eq(1)
 
       imported_release = project.releases.last
@@ -78,6 +78,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
       let(:attributes) {{ 'links' => [link] }}
 
       it 'restores release links' do
+        pipeline.run
+
         release_link = project.releases.last.links.first
 
         aggregate_failures do
@@ -105,6 +107,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
       let(:attributes) {{ 'milestone_releases' => [{ 'milestone' => milestone }] }}
 
       it 'restores release milestone' do
+        pipeline.run
+
         release_milestone = project.releases.last.milestone_releases.first.milestone
 
         aggregate_failures do
@@ -115,6 +119,34 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
           expect(release_milestone.due_date.to_s).to eq('2016-06-14')
           expect(release_milestone.created_at.to_s).to eq('2016-06-14 15:02:04 UTC')
           expect(release_milestone.updated_at.to_s).to eq('2016-06-14 15:02:04 UTC')
+        end
+      end
+    end
+
+    context 'evidences' do
+      it 'creates release evidence' do
+        expect(::Releases::CreateEvidenceWorker).to receive(:perform_async)
+
+        pipeline.run
+      end
+
+      context 'when release is historical' do
+        let(:attributes) {{ 'released_at' => '2018-12-26T10:17:14.621Z' }}
+
+        it 'does not create release evidence' do
+          expect(::Releases::CreateEvidenceWorker).not_to receive(:perform_async)
+
+          pipeline.run
+        end
+      end
+
+      context 'when release is upcoming' do
+        let(:attributes) {{ 'released_at' => Time.zone.now + 30.days }}
+
+        it 'does not create release evidence' do
+          expect(::Releases::CreateEvidenceWorker).not_to receive(:perform_async)
+
+          pipeline.run
         end
       end
     end

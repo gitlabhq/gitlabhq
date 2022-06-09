@@ -23,8 +23,7 @@ import JobItem from './job_item.vue';
 export default {
   i18n: {
     stage: __('Stage:'),
-    loadingTextLineOne: __('Loading, please wait.'),
-    loadingTextLineTwo: __('Cue dramatic background music...'),
+    loadingText: __('Loading, please wait.'),
   },
   dropdownPopperOpts: {
     placement: 'bottom',
@@ -138,14 +137,11 @@ export default {
     </template>
     <div
       v-if="isLoading"
-      class="gl-display-flex gl-justify-content-center gl-p-3"
+      class="gl-display-flex gl-justify-content-center gl-p-2"
       data-testid="pipeline-stage-loading-state"
     >
       <gl-loading-icon size="sm" class="gl-mr-3" />
-      <div>
-        <p class="gl-mb-0">{{ $options.i18n.loadingTextLineOne }}</p>
-        <p class="gl-mb-0">{{ $options.i18n.loadingTextLineTwo }}</p>
-      </div>
+      <p class="gl-mb-0">{{ $options.i18n.loadingText }}</p>
     </div>
     <ul
       v-else

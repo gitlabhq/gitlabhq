@@ -2,10 +2,6 @@
 import { GlButton, GlTable } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
-const defaultTableClasses = {
-  thClass: 'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!',
-};
-
 export default {
   i18n: {
     emptyText: s__('CI/CD|No projects have been added to the scope'),
@@ -15,14 +11,12 @@ export default {
       key: 'project',
       label: __('Projects that can be accessed'),
       tdClass: 'gl-p-5!',
-      ...defaultTableClasses,
       columnClass: 'gl-w-85p',
     },
     {
       key: 'actions',
       label: '',
       tdClass: 'gl-p-5! gl-text-right',
-      ...defaultTableClasses,
       columnClass: 'gl-w-15p',
     },
   ],

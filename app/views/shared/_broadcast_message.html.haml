@@ -13,8 +13,11 @@
         - else
           = yield
     - if dismissable && !preview
-      %button.btn.gl-close-btn-color-inherit.gl-broadcast-message-dismiss.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-dismiss-current-broadcast-notification{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id, expire_date: message.ends_at.iso8601 } }
-        = sprite_icon('close', size: 16, css_class: "gl-icon gl-mx-3! gl-text-white")
+      = render Pajamas::ButtonComponent.new(category: :tertiary,
+        icon: 'close',
+        size: :small,
+        button_options: { class: 'gl-close-btn-color-inherit gl-broadcast-message-dismiss js-dismiss-current-broadcast-notification', 'aria-label': _('Close'), data: { id: message.id, expire_date: message.ends_at.iso8601 } },
+        icon_classes: 'gl-mx-3! gl-text-white')
 - else
   - notification_class = "js-broadcast-notification-#{message.id}"
   - notification_class << ' preview' if preview
@@ -25,5 +28,8 @@
     - else
       = yield
     - if !preview
-      %button.js-dismiss-current-broadcast-notification.btn.btn-link.gl-button{ 'aria-label' => _('Close'), :type => 'button', data: { id: message.id, expire_date: message.ends_at.iso8601 } }
-        = sprite_icon('close', size: 16, css_class: "gl-icon gl-mx-3! gl-text-gray-700")
+      = render Pajamas::ButtonComponent.new(variant: :link,
+        icon: 'close',
+        size: :small,
+        button_options: { class: 'js-dismiss-current-broadcast-notification', 'aria-label': _('Close'), data: { id: message.id, expire_date: message.ends_at.iso8601 } },
+        icon_classes: 'gl-mx-3! gl-text-gray-700')

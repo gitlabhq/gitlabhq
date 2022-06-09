@@ -7,7 +7,8 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
   describe '#perform' do
     let_it_be(:dormant) { create(:user, last_activity_on: User::MINIMUM_INACTIVE_DAYS.days.ago.to_date) }
-    let_it_be(:inactive) { create(:user, last_activity_on: nil) }
+    let_it_be(:inactive) { create(:user, last_activity_on: nil, created_at: User::MINIMUM_DAYS_CREATED.days.ago.to_date) }
+    let_it_be(:inactive_recently_created) { create(:user, last_activity_on: nil, created_at: (User::MINIMUM_DAYS_CREATED - 1).days.ago.to_date) }
 
     subject(:worker) { described_class.new }
 
@@ -70,6 +71,12 @@ RSpec.describe Users::DeactivateDormantUsersWorker do
 
         expect(human_user.reload.state).to eq('blocked')
         expect(service_user.reload.state).to eq('blocked')
+      end
+
+      it 'does not deactivate recently created users' do
+        worker.perform
+
+        expect(inactive_recently_created.reload.state).to eq('active')
       end
     end
 

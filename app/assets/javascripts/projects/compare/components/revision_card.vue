@@ -1,5 +1,4 @@
 <script>
-import { GlCard } from '@gitlab/ui';
 import RepoDropdown from './repo_dropdown.vue';
 import RevisionDropdown from './revision_dropdown.vue';
 
@@ -7,7 +6,6 @@ export default {
   components: {
     RepoDropdown,
     RevisionDropdown,
-    GlCard,
   },
   props: {
     refsProjectPath: {
@@ -41,10 +39,10 @@ export default {
 </script>
 
 <template>
-  <gl-card header-class="gl-py-2 gl-px-3 gl-font-weight-bold" body-class="gl-px-3">
-    <template #header>
+  <div class="revision-card gl-flex-basis-half">
+    <h2 class="gl-font-size-h2">
       {{ s__(`CompareRevisions|${revisionText}`) }}
-    </template>
+    </h2>
     <div class="gl-sm-display-flex gl-align-items-center">
       <repo-dropdown
         class="gl-sm-w-half"
@@ -61,5 +59,5 @@ export default {
         v-on="$listeners"
       />
     </div>
-  </gl-card>
+  </div>
 </template>

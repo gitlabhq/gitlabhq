@@ -1,11 +1,5 @@
 <script>
-import {
-  GlFormGroup,
-  GlDropdown,
-  GlDropdownForm,
-  GlDropdownItem,
-  GlDropdownDivider,
-} from '@gitlab/ui';
+import { GlDropdown, GlDropdownForm, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
@@ -17,10 +11,8 @@ export default {
     showInstallationInstructions: s__(
       'Runners|Show runner installation and registration instructions',
     ),
-    registrationToken: s__('Runners|Registration token'),
   },
   components: {
-    GlFormGroup,
     GlDropdown,
     GlDropdownForm,
     GlDropdownItem,
@@ -92,9 +84,7 @@ export default {
     </gl-dropdown-item>
     <gl-dropdown-divider />
     <gl-dropdown-form class="gl-p-4!">
-      <gl-form-group class="gl-mb-0" :label="$options.i18n.registrationToken">
-        <registration-token :value="currentRegistrationToken" />
-      </gl-form-group>
+      <registration-token input-id="token-value" :value="currentRegistrationToken" />
     </gl-dropdown-form>
     <gl-dropdown-divider />
     <registration-token-reset-dropdown-item :type="type" @tokenReset="onTokenReset" />

@@ -52,7 +52,6 @@ qa:nightly-auto-quarantine-dequarantine:
     - bundle exec confiner -r .confiner/nightly.yml
   allow_failure: true
 
-
 qa:selectors-as-if-foss:
   extends:
     - qa:selectors
@@ -68,6 +67,30 @@ update-qa-cache:
   script:
     - echo "Cache has been updated and ready to be uploaded."
 
+populate-qa-tests-var:
+  extends:
+    - .qa:rules:package-and-qa
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
+  stage: prepare
+  script:
+    - tooling/bin/qa/check_if_qa_only_spec_changes ${CHANGES_FILE} ${ONLY_QA_CHANGES_FILE}
+    - '[ -f $ONLY_QA_CHANGES_FILE ] && export QA_TESTS="`cat $ONLY_QA_CHANGES_FILE`"'
+    - 'echo "QA_TESTS=$QA_TESTS" >> qa_tests_var.env'
+    - 'echo "QA_TESTS: $QA_TESTS"'
+  artifacts:
+    expire_in: 2d
+    reports:
+      dotenv: qa_tests_var.env
+    paths:
+      - ${CHANGES_FILE}
+      - ${ONLY_QA_CHANGES_FILE}
+      - qa_tests_var.env
+  variables:
+    CHANGES_FILE: tmp/changed_files.txt
+    ONLY_QA_CHANGES_FILE: tmp/qa_only_changed_files.txt
+  needs:
+    - detect-tests
+
 .package-and-qa-base:
   image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine
   stage: qa
@@ -77,8 +100,6 @@ update-qa-cache:
     - install_gitlab_gem
     - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
   script:
-    - tooling/bin/qa/check_if_qa_only_spec_changes ${CHANGES_FILE} ${ONLY_QA_CHANGES_FILE}
-    - '[ -f $ONLY_QA_CHANGES_FILE ] && export QA_TESTS="`cat $ONLY_QA_CHANGES_FILE`"'
     - 'echo "QA_TESTS: $QA_TESTS"'
     - exit_code=0 && tooling/bin/qa/package_and_qa_check ${CHANGES_DIFFS_DIR} || exit_code=$?
     - echo $exit_code
@@ -99,16 +120,13 @@ update-qa-cache:
       artifacts: false
     - job: build-assets-image
       artifacts: false
+    - job: populate-qa-tests-var
     - detect-tests
   artifacts:
     expire_in: 7d
     paths:
-      - ${CHANGES_FILE}
-      - ${ONLY_QA_CHANGES_FILE}
       - ${CHANGES_DIFFS_DIR}/*
   variables:
-    CHANGES_FILE: tmp/changed_files.txt
-    ONLY_QA_CHANGES_FILE: tmp/qa_only_changed_files.txt
     CHANGES_DIFFS_DIR: tmp/diffs
     ALLURE_JOB_NAME: $CI_JOB_NAME
 

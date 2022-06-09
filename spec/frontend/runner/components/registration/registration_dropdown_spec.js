@@ -34,7 +34,8 @@ describe('RegistrationDropdown', () => {
   const findRegistrationInstructionsDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
   const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
-  const findRegistrationTokenInput = () => wrapper.find('[name=token-value]');
+  const findRegistrationTokenInput = () =>
+    wrapper.findByLabelText(RegistrationToken.i18n.registrationToken);
   const findTokenResetDropdownItem = () =>
     wrapper.findComponent(RegistrationTokenResetDropdownItem);
   const findModal = () => wrapper.findComponent(GlModal);
@@ -172,10 +173,10 @@ describe('RegistrationDropdown', () => {
       await nextTick();
     };
 
-    it('Updates token in input', async () => {
+    it('Updates token input', async () => {
       createComponent({}, mount);
 
-      expect(findRegistrationTokenInput().props('value')).not.toBe(newToken);
+      expect(findRegistrationToken().props('value')).not.toBe(newToken);
 
       await resetToken();
 

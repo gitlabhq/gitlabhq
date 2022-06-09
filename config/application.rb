@@ -400,7 +400,7 @@ module Gitlab
           resource oauth_path,
             headers: %w(Authorization),
             credentials: false,
-            methods: %i(post)
+            methods: %i(post options)
         end
       end
 
@@ -411,7 +411,7 @@ module Gitlab
         resource '/oauth/userinfo',
           headers: %w(Authorization),
           credentials: false,
-          methods: %i(get head post)
+          methods: %i(get head post options)
       end
 
       %w(/oauth/discovery/keys /.well-known/openid-configuration /.well-known/webfinger).each do |openid_path|

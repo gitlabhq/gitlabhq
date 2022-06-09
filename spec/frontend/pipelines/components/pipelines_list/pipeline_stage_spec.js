@@ -78,10 +78,8 @@ describe('Pipelines stage component', () => {
     });
 
     it('displays loading state while jobs are being fetched', () => {
-      const expectedLoadingText = `${PipelineStage.i18n.loadingTextLineOne} ${PipelineStage.i18n.loadingTextLineTwo}`;
-
       expect(findLoadingState().exists()).toBe(true);
-      expect(findLoadingState().text()).toBe(expectedLoadingText);
+      expect(findLoadingState().text()).toBe(PipelineStage.i18n.loadingText);
     });
 
     it('does not display loading state after jobs have been fetched', async () => {

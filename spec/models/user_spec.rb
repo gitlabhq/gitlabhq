@@ -6637,8 +6637,10 @@ RSpec.describe User do
   describe '.with_no_activity' do
     it 'returns users with no activity' do
       freeze_time do
-        not_that_long_ago = (described_class::MINIMUM_INACTIVE_DAYS - 1).days.ago.to_date
-        too_long_ago = described_class::MINIMUM_INACTIVE_DAYS.days.ago.to_date
+        active_not_that_long_ago = (described_class::MINIMUM_INACTIVE_DAYS - 1).days.ago.to_date
+        active_too_long_ago = described_class::MINIMUM_INACTIVE_DAYS.days.ago.to_date
+        created_recently = (described_class::MINIMUM_DAYS_CREATED - 1).days.ago.to_date
+        created_not_recently = described_class::MINIMUM_DAYS_CREATED.days.ago.to_date
 
         create(:user, :deactivated, last_activity_on: nil)
 
@@ -6646,12 +6648,13 @@ RSpec.describe User do
           create(:user, state: :active, user_type: user_type, last_activity_on: nil)
         end
 
-        create(:user, last_activity_on: not_that_long_ago)
-        create(:user, last_activity_on: too_long_ago)
+        create(:user, last_activity_on: active_not_that_long_ago)
+        create(:user, last_activity_on: active_too_long_ago)
+        create(:user, last_activity_on: nil, created_at: created_recently)
 
-        user_with_no_activity = create(:user, last_activity_on: nil)
+        old_enough_user_with_no_activity = create(:user, last_activity_on: nil, created_at: created_not_recently)
 
-        expect(described_class.with_no_activity).to contain_exactly(user_with_no_activity)
+        expect(described_class.with_no_activity).to contain_exactly(old_enough_user_with_no_activity)
       end
     end
   end

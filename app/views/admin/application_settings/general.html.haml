@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Visibility and access controls')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
@@ -118,4 +118,4 @@
 = render 'admin/application_settings/eks'
 = render 'admin/application_settings/floc'
 = render_if_exists 'admin/application_settings/add_license'
-= render 'admin/application_settings/jira_connect_application_key' if Feature.enabled?(:jira_connect_oauth)
+= render 'admin/application_settings/jira_connect_application_key' if Feature.enabled?(:jira_connect_oauth, current_user)
