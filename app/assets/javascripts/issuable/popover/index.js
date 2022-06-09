@@ -9,7 +9,6 @@ const componentsByReferenceType = {
   merge_request: MRPopover,
 };
 
-let renderedPopover;
 let renderFn;
 
 const handleIssuablePopoverMouseOut = ({ target }) => {
@@ -18,11 +17,9 @@ const handleIssuablePopoverMouseOut = ({ target }) => {
   if (renderFn) {
     clearTimeout(renderFn);
   }
-  if (renderedPopover) {
-    renderedPopover.$destroy();
-    renderedPopover = null;
-  }
 };
+
+const popoverMountedAttr = 'data-popover-mounted';
 
 /**
  * Adds a MergeRequestPopover component to the body, hands over as much data as the target element has in data attributes.
@@ -34,13 +31,14 @@ const handleIssuablePopoverMount = ({
   title,
   iid,
   referenceType,
-}) => ({ target }) => {
+  target,
+}) => {
   // Add listener to actually remove it again
   target.addEventListener('mouseleave', handleIssuablePopoverMouseOut);
 
   renderFn = setTimeout(() => {
     const PopoverComponent = Vue.extend(componentsByReferenceType[referenceType]);
-    renderedPopover = new PopoverComponent({
+    new PopoverComponent({
       propsData: {
         target,
         projectPath,
@@ -48,9 +46,9 @@ const handleIssuablePopoverMount = ({
         cachedTitle: title,
       },
       apolloProvider,
-    });
+    }).$mount();
 
-    renderedPopover.$mount();
+    target.setAttribute(popoverMountedAttr, true);
   }, 200); // 200ms delay so not every mouseover triggers Popover + API Call
 };
 
@@ -68,10 +66,18 @@ export default (elements) => {
       const title = el.dataset.mrTitle || el.title;
 
       if (!el.getAttribute(listenerAddedAttr) && projectPath && title && iid && referenceType) {
-        el.addEventListener(
-          'mouseenter',
-          handleIssuablePopoverMount({ apolloProvider, projectPath, title, iid, referenceType }),
-        );
+        el.addEventListener('mouseenter', ({ target }) => {
+          if (!el.getAttribute(popoverMountedAttr)) {
+            handleIssuablePopoverMount({
+              apolloProvider,
+              projectPath,
+              title,
+              iid,
+              referenceType,
+              target,
+            });
+          }
+        });
         el.setAttribute(listenerAddedAttr, true);
       }
     });

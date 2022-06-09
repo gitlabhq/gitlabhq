@@ -54,7 +54,8 @@ module Gitlab
       end
 
       def match_content_type?(env)
-        env['CONTENT_TYPE'] == 'application/json' ||
+        env['CONTENT_TYPE'].nil? ||
+          env['CONTENT_TYPE'] == 'application/json' ||
           env['CONTENT_TYPE'] == 'application/x-sentry-envelope'
       end
 

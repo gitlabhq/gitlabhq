@@ -6,7 +6,7 @@
       .input-group-prepend.has-tooltip{ title: root_url }
         .input-group-text
           = root_url
-      = select_tag :group_id, namespaces_options(nil, display_path: true, groups_only: true), { class: 'select2 js-select-namespace' }
+      = select_tag :group_id, namespaces_options(params[:namespace_id], display_path: true, groups_only: true), { class: 'select2 js-select-namespace' }
     .form-text.text-muted
       = _('Choose the top-level group for your repository imports.')
 

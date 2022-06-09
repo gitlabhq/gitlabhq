@@ -8,11 +8,12 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
 
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
+  let(:content_type) { 'application/json' }
   let(:env) do
     {
       'HTTP_CONTENT_ENCODING' => 'gzip',
       'REQUEST_METHOD' => 'POST',
-      'CONTENT_TYPE' => 'application/json',
+      'CONTENT_TYPE' => content_type,
       'PATH_INFO' => path,
       'rack.input' => StringIO.new(input)
     }
@@ -35,6 +36,12 @@ RSpec.describe Gitlab::Middleware::CompressedJson do
       let(:path) { '/api/v4/error_tracking/collector/1/store'}
 
       it_behaves_like 'decompress middleware'
+
+      context 'with no Content-Type' do
+        let(:content_type) { nil }
+
+        it_behaves_like 'decompress middleware'
+      end
     end
 
     context 'with collector route under relative url' do

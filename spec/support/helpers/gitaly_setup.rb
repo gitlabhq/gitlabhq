@@ -151,6 +151,9 @@ module GitalySetup
     toml ||= config_path(service)
     args = service_cmd(service, toml)
 
+    # Ensure that tmp/run exists
+    FileUtils.mkdir_p(runtime_dir)
+
     # Ensure user configuration does not affect Git
     # Context: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58776#note_547613780
     env = self.env.merge('HOME' => nil, 'XDG_CONFIG_HOME' => nil)
