@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -26,13 +25,13 @@ func TestGenerate(t *testing.T) {
 }
 
 func verifyCorrectnessOf(t *testing.T, tmpDir, fileName string) {
-	file, err := ioutil.ReadFile(filepath.Join(tmpDir, fileName))
+	file, err := os.ReadFile(filepath.Join(tmpDir, fileName))
 	require.NoError(t, err)
 
 	var buf bytes.Buffer
 	require.NoError(t, json.Indent(&buf, file, "", "    "))
 
-	expected, err := ioutil.ReadFile(filepath.Join("testdata/expected/", fileName))
+	expected, err := os.ReadFile(filepath.Join("testdata/expected/", fileName))
 	require.NoError(t, err)
 
 	require.Equal(t, string(expected), buf.String())

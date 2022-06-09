@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -86,7 +86,7 @@ func testNewBackendRoundTripper(t *testing.T, ts *httptest.Server, tlsClientConf
 	require.NoError(t, err, "perform roundtrip")
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	require.NoError(t, err)
 
 	require.Equal(t, expectedResponseBody, string(body))

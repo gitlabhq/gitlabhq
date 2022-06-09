@@ -526,6 +526,7 @@ export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-foss"
 export CI_PROJECT_NAME="gitlab-foss"
 export CI_PROJECT_TITLE="GitLab FOSS"
+export CI_PROJECT_DESCRIPTION="GitLab FOSS is a read-only mirror of GitLab, with all proprietary code removed."
 export CI_PROJECT_NAMESPACE="gitlab-org"
 export CI_PROJECT_ROOT_NAMESPACE="gitlab-org"
 export CI_PROJECT_PATH="gitlab-org/gitlab-foss"
@@ -863,6 +864,8 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_PROJECT_NAME=ci-debug-trace
 ++ export CI_PROJECT_TITLE='GitLab FOSS'
 ++ CI_PROJECT_TITLE='GitLab FOSS'
+++ export CI_PROJECT_DESCRIPTION='GitLab FOSS is a read-only mirror of GitLab, with all proprietary code removed.'
+++ CI_PROJECT_DESCRIPTION='GitLab FOSS is a read-only mirror of GitLab, with all proprietary code removed.'
 ++ export CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
 ++ CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
 ++ export CI_PROJECT_PATH_SLUG=gitlab-examples-ci-debug-trace

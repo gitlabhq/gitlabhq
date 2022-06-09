@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"net"
 	"net/http"
@@ -651,7 +650,7 @@ func TestGetArchiveProxiedToGitalySuccessfully(t *testing.T) {
 			_, err := os.Stat(tc.archivePath)
 			require.True(t, os.IsNotExist(err), "expected 'does not exist', got: %v", err)
 		} else {
-			cachedArchive, err := ioutil.ReadFile(tc.archivePath)
+			cachedArchive, err := os.ReadFile(tc.archivePath)
 			require.NoError(t, err)
 			require.Equal(t, expectedBody, string(cachedArchive))
 		}

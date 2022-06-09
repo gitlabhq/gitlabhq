@@ -227,6 +227,9 @@ export default {
     setForkTarget(target) {
       this.forkTarget = target;
     },
+    onCopy() {
+      navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
+    },
   },
 };
 </script>
@@ -242,7 +245,9 @@ export default {
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         :show-path="false"
+        :override-copy="glFeatures.highlightJs"
         @viewer-changed="switchViewer"
+        @copy="onCopy"
       >
         <template #actions>
           <web-ide-link

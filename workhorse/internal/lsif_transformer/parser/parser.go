@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"gitlab.com/gitlab-org/labkit/log"
@@ -33,7 +32,7 @@ func NewParser(ctx context.Context, r io.Reader, config Config) (io.ReadCloser, 
 	}
 
 	// ZIP files need to be seekable. Don't hold it all in RAM, use a tempfile
-	tempFile, err := ioutil.TempFile(config.TempPath, Lsif)
+	tempFile, err := os.CreateTemp(config.TempPath, Lsif)
 	if err != nil {
 		return nil, err
 	}

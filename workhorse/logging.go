@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	goLog "log"
 	"os"
 
@@ -28,7 +27,7 @@ func startLogging(file string, format string) (io.Closer, error) {
 
 	switch format {
 	case noneLogType:
-		return logkit.Initialize(logkit.WithWriter(ioutil.Discard))
+		return logkit.Initialize(logkit.WithWriter(io.Discard))
 	case jsonLogFormat:
 		return logkit.Initialize(
 			logkit.WithOutputName(file),
@@ -53,7 +52,7 @@ func startLogging(file string, format string) (io.Closer, error) {
 // In text format, we use a separate logger for access logs
 func getAccessLogger(file string, format string) (*log.Logger, io.Closer, error) {
 	if format != "text" {
-		return log.StandardLogger(), ioutil.NopCloser(nil), nil
+		return log.StandardLogger(), io.NopCloser(nil), nil
 	}
 
 	if file == "" {

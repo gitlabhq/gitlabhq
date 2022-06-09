@@ -2,7 +2,7 @@ package upload
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -42,7 +42,7 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 
 		// Hijack body
 		body := data.Encode()
-		r.Body = ioutil.NopCloser(strings.NewReader(body))
+		r.Body = io.NopCloser(strings.NewReader(body))
 		r.ContentLength = int64(len(body))
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 

@@ -6,10 +6,11 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 
@@ -58,7 +59,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 	tempPath := t.TempDir()
 
 	archiveData, md5 := createTestZipArchive(t)
-	archiveFile, err := ioutil.TempFile(tempPath, "artifact.zip")
+	archiveFile, err := os.CreateTemp(tempPath, "artifact.zip")
 	require.NoError(t, err)
 	_, err = archiveFile.Write(archiveData)
 	require.NoError(t, err)
@@ -69,7 +70,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 	storeServerMux.HandleFunc("/url/put", func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "PUT", r.Method)
 
-		receivedData, err := ioutil.ReadAll(r.Body)
+		receivedData, err := io.ReadAll(r.Body)
 		require.NoError(t, err)
 		require.Equal(t, archiveData, receivedData)
 

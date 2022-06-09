@@ -348,7 +348,7 @@ to support CI/CD data partitioning.
 
 This strategy should reduce the risk of implementing CI/CD partitioning to
 acceptable levels. We are also focusing on implementing partitioning for
-reading only two partitions initially to make it possible to detach zero
+reading only from two partitions initially to make it possible to detach zero
 partitions in case of problems in our production environment. Every iteration
 phase, described below has a revert strategy and before shipping database
 changes we want to test them in our benchmarking environment.
@@ -356,6 +356,49 @@ changes we want to test them in our benchmarking environment.
 The main way of reducing risk in case of this effort is iteration and making
 things reversible. Shipping changes, described in this document, in a safe and
 reliable way is our priority.
+
+As we move forward with the implementation we will need to find even more ways
+to iterate on the design, support incremental rollouts and have better control
+over reverting changes in case of something going wrong. It is sometimes
+challenging to ship database schema changes iteratively, and even more
+difficult to support incremental rollouts to the production environment. This
+can, however, be done, it just sometimes requires additional creativity, that
+we will certainly need here. Some examples of how this could look like:
+
+### Incremental rollout of partitioned schema
+
+Once we introduce a first partitioned routing table (presumably
+`p_ci_pipelines`) and attach its zero partition (`ci_pipelines`), we will need
+to start interacting with the new routing table, instead of a concrete
+partition zero. Usually we would override the database table the `Ci::Pipeline`
+Rails model would use with something like `self.table_name = 'p_ci_pipelines'`.
+Unfortunately this approach might not support incremental rollout, because
+`self.table_name` will be read upon application boot up, and later we might be
+unable revert this change without restarting the application.
+
+One way of solving this might be introducing `Ci::Partitioned::Pipeline` model,
+that will inherit from `Ci::Pipeline`. In that model we would set
+`self.table_name` to `p_ci_pipeline` and return its meta class from
+`Ci::Pipeline.partitioned` as a scope. This will allow us to use feature flags
+to route reads from `ci_pipelines` to `p_ci_pipelines` with a simple revert
+strategy.
+
+### Incremental experimentation with partitioned reads
+
+Another example would be related to the time when we decide to attach another
+partition. The goal of Phase 1 will be have two partitions per partitioned
+schema / routing table, meaning that for `p_ci_pipelines` we will have
+`ci_pipelines` attached as partition zero, and a new `ci_pipelines_p1`
+partition created for new data. All reads from `p_ci_pipelines` will also need
+to read data from the `p1` partition and we should also iteratively experiment
+with reads targeting more than one partition, to evaluate performance and
+overhead of partitioning.
+
+We can do that by moving _old_ data to `ci_pipelines_m1` (minus 1) partition
+iteratively. Perhaps we will create `partition_id = 1` and move some really old
+pipelines there. We can then iteratively migrate data into `m1` partition to
+measure the impact, performance and increase our confidence before creating a
+new partition `p1` for _new_ (still not created) data.
 
 ## Iterations
 

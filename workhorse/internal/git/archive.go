@@ -7,7 +7,6 @@ package git
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -180,7 +179,7 @@ func prepareArchiveTempfile(dir string, prefix string) (*os.File, error) {
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return nil, err
 	}
-	return ioutil.TempFile(dir, prefix)
+	return os.CreateTemp(dir, prefix)
 }
 
 func finalizeCachedArchive(tempFile *os.File, archivePath string) error {

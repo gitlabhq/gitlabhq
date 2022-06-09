@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -72,7 +71,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 				return
 			}
 
-			_, err := ioutil.ReadFile(r.FormValue("file.path"))
+			_, err := os.ReadFile(r.FormValue("file.path"))
 			if err != nil {
 				t.Fatal("Expected file to be readable")
 				return
@@ -85,7 +84,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 		}
 
 		if r.FormValue("metadata.path") != "" {
-			metadata, err := ioutil.ReadFile(r.FormValue("metadata.path"))
+			metadata, err := os.ReadFile(r.FormValue("metadata.path"))
 			if err != nil {
 				t.Fatal("Expected metadata to be readable")
 				return
@@ -96,7 +95,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 				return
 			}
 			defer gz.Close()
-			metadata, err = ioutil.ReadAll(gz)
+			metadata, err = io.ReadAll(gz)
 			if err != nil {
 				t.Fatal("Expected metadata to be valid")
 				return

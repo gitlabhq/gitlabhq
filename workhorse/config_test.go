@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"io"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"testing"
@@ -24,7 +23,7 @@ func TestDefaultConfig(t *testing.T) {
 }
 
 func TestConfigFile(t *testing.T) {
-	f, err := ioutil.TempFile("", "workhorse-config-test")
+	f, err := os.CreateTemp("", "workhorse-config-test")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
 
@@ -119,7 +118,7 @@ key = "/path/to/private/key"
 }
 
 func TestTwoMetricsAddrsAreSpecifiedError(t *testing.T) {
-	f, err := ioutil.TempFile("", "workhorse-config-test")
+	f, err := os.CreateTemp("", "workhorse-config-test")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
 

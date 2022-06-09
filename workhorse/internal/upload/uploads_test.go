@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -55,7 +54,7 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "PATCH", r.Method, "method")
 
-		body, err := ioutil.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		require.NoError(t, err)
 		require.Equal(t, "REQUEST", string(body), "request body")
 
@@ -130,7 +129,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	httpRequest = httpRequest.WithContext(ctx)
-	httpRequest.Body = ioutil.NopCloser(&buffer)
+	httpRequest.Body = io.NopCloser(&buffer)
 	httpRequest.ContentLength = int64(buffer.Len())
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 	response := httptest.NewRecorder()
@@ -419,7 +418,7 @@ func TestContentDispositionRewrite(t *testing.T) {
 }
 
 func TestUploadHandlerRemovingExif(t *testing.T) {
-	content, err := ioutil.ReadFile("exif/testdata/sample_exif.jpg")
+	content, err := os.ReadFile("exif/testdata/sample_exif.jpg")
 	require.NoError(t, err)
 
 	runUploadTest(t, content, "sample_exif.jpg", 200, func(w http.ResponseWriter, r *http.Request) {
@@ -437,7 +436,7 @@ func TestUploadHandlerRemovingExif(t *testing.T) {
 }
 
 func TestUploadHandlerRemovingExifTiff(t *testing.T) {
-	content, err := ioutil.ReadFile("exif/testdata/sample_exif.tiff")
+	content, err := os.ReadFile("exif/testdata/sample_exif.tiff")
 	require.NoError(t, err)
 
 	runUploadTest(t, content, "sample_exif.tiff", 200, func(w http.ResponseWriter, r *http.Request) {
@@ -455,14 +454,14 @@ func TestUploadHandlerRemovingExifTiff(t *testing.T) {
 }
 
 func TestUploadHandlerRemovingExifInvalidContentType(t *testing.T) {
-	content, err := ioutil.ReadFile("exif/testdata/sample_exif_invalid.jpg")
+	content, err := os.ReadFile("exif/testdata/sample_exif_invalid.jpg")
 	require.NoError(t, err)
 
 	runUploadTest(t, content, "sample_exif_invalid.jpg", 200, func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
 		require.NoError(t, err)
 
-		output, err := ioutil.ReadFile(r.FormValue("file.path"))
+		output, err := os.ReadFile(r.FormValue("file.path"))
 		require.NoError(t, err)
 		require.Equal(t, content, output, "Expected the file to be same as before")
 
@@ -472,7 +471,7 @@ func TestUploadHandlerRemovingExifInvalidContentType(t *testing.T) {
 }
 
 func TestUploadHandlerRemovingExifCorruptedFile(t *testing.T) {
-	content, err := ioutil.ReadFile("exif/testdata/sample_exif_corrupted.jpg")
+	content, err := os.ReadFile("exif/testdata/sample_exif_corrupted.jpg")
 	require.NoError(t, err)
 
 	runUploadTest(t, content, "sample_exif_corrupted.jpg", 422, func(w http.ResponseWriter, r *http.Request) {

@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -66,7 +65,7 @@ func (m *Multipart) Upload(ctx context.Context, r io.Reader) error {
 		}
 	}
 
-	n, err := io.Copy(ioutil.Discard, r)
+	n, err := io.Copy(io.Discard, r)
 	if err != nil {
 		return fmt.Errorf("drain pipe: %v", err)
 	}
@@ -93,7 +92,7 @@ func (m *Multipart) Delete() {
 }
 
 func (m *Multipart) readAndUploadOnePart(ctx context.Context, partURL string, putHeaders map[string]string, src io.Reader, partNumber int) (*completeMultipartUploadPart, error) {
-	file, err := ioutil.TempFile("", "part-buffer")
+	file, err := os.CreateTemp("", "part-buffer")
 	if err != nil {
 		return nil, fmt.Errorf("create temporary buffer file: %v", err)
 	}

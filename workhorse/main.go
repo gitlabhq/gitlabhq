@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
@@ -137,7 +136,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 
 	tomlData := ""
 	if *configFile != "" {
-		buf, err := ioutil.ReadFile(*configFile)
+		buf, err := os.ReadFile(*configFile)
 		if err != nil {
 			return nil, nil, fmt.Errorf("configFile: %v", err)
 		}

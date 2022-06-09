@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime"
 	"mime/multipart"
 	"net/http"
@@ -165,7 +164,7 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 			return err
 		}
 	} else {
-		inputReader = ioutil.NopCloser(p)
+		inputReader = io.NopCloser(p)
 	}
 
 	defer inputReader.Close()
@@ -196,7 +195,7 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 }
 
 func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageType exif.FileType) (io.ReadCloser, error) {
-	tmpfile, err := ioutil.TempFile("", "exifremove")
+	tmpfile, err := os.CreateTemp("", "exifremove")
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +264,7 @@ func isTIFF(r io.Reader) bool {
 
 func isJPEG(r io.Reader) bool {
 	// Only the first 512 bytes are used to sniff the content type.
-	buf, err := ioutil.ReadAll(io.LimitReader(r, 512))
+	buf, err := io.ReadAll(io.LimitReader(r, 512))
 	if err != nil {
 		return false
 	}

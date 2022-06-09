@@ -1,9 +1,9 @@
 package staticpages
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -31,7 +31,7 @@ func TestIfDeployPageExist(t *testing.T) {
 	dir := t.TempDir()
 
 	deployPage := "DEPLOY"
-	ioutil.WriteFile(filepath.Join(dir, "index.html"), []byte(deployPage), 0600)
+	os.WriteFile(filepath.Join(dir, "index.html"), []byte(deployPage), 0600)
 
 	w := httptest.NewRecorder()
 

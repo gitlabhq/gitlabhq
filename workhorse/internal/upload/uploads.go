@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/http"
 
@@ -71,7 +71,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	writer.Close()
 
 	// Hijack the request
-	r.Body = ioutil.NopCloser(&body)
+	r.Body = io.NopCloser(&body)
 	r.ContentLength = int64(body.Len())
 	r.Header.Set("Content-Type", writer.FormDataContentType())
 

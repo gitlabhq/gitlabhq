@@ -3,7 +3,6 @@ package helper
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"sync"
 )
@@ -131,7 +130,7 @@ func (w *coupledWriter) tempfileWrite(data []byte) (int, error) {
 }
 
 func (*coupledWriter) newTempfile() (tempfile *os.File, err error) {
-	tempfile, err = ioutil.TempFile("", "gitlab-workhorse-coupledWriter")
+	tempfile, err = os.CreateTemp("", "gitlab-workhorse-coupledWriter")
 	if err != nil {
 		return nil, err
 	}

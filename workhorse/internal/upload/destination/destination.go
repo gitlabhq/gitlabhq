@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"time"
@@ -226,7 +225,7 @@ func (fh *FileHandler) newLocalFile(ctx context.Context, opts *UploadOpts) (cons
 		return nil, fmt.Errorf("newLocalFile: mkdir %q: %v", opts.LocalTempPath, err)
 	}
 
-	file, err := ioutil.TempFile(opts.LocalTempPath, "gitlab-workhorse-upload")
+	file, err := os.CreateTemp(opts.LocalTempPath, "gitlab-workhorse-upload")
 	if err != nil {
 		return nil, fmt.Errorf("newLocalFile: create file: %v", err)
 	}

@@ -3,7 +3,6 @@ package upload
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -32,7 +31,7 @@ func TestRequestBody(t *testing.T) {
 	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	uploadEcho, err := ioutil.ReadAll(resp.Body)
+	uploadEcho, err := io.ReadAll(resp.Body)
 
 	require.NoError(t, err, "Can't read response body")
 	require.Equal(t, fileContent, string(uploadEcho))
@@ -44,7 +43,7 @@ func TestRequestBodyCustomPreparer(t *testing.T) {
 	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	uploadEcho, err := ioutil.ReadAll(resp.Body)
+	uploadEcho, err := io.ReadAll(resp.Body)
 	require.NoError(t, err, "Can't read response body")
 	require.Equal(t, fileContent, string(uploadEcho))
 }

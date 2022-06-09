@@ -3,7 +3,6 @@ package httprs
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -49,7 +48,7 @@ type fakeRoundTripper struct {
 func (f *fakeRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	fw := &fakeResponseWriter{h: http.Header{}}
 	var err error
-	fw.tmp, err = ioutil.TempFile(os.TempDir(), "httprs")
+	fw.tmp, err = os.CreateTemp(os.TempDir(), "httprs")
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +78,7 @@ type RSFactory func() *HttpReadSeeker
 
 func newRSFactory(flags int) RSFactory {
 	return func() *HttpReadSeeker {
-		tmp, err := ioutil.TempFile(os.TempDir(), "httprs")
+		tmp, err := os.CreateTemp(os.TempDir(), "httprs")
 		if err != nil {
 			return nil
 		}
@@ -113,7 +112,7 @@ func TestHttpWebServer(t *testing.T) {
 	Convey("Scenario: testing WebServer", t, func() {
 		dir := t.TempDir()
 
-		err := ioutil.WriteFile(filepath.Join(dir, "file"), make([]byte, 10000), 0755)
+		err := os.WriteFile(filepath.Join(dir, "file"), make([]byte, 10000), 0755)
 		So(err, ShouldBeNil)
 
 		server := httptest.NewServer(http.FileServer(http.Dir(dir)))

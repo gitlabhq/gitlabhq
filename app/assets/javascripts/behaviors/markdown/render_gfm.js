@@ -3,7 +3,6 @@ import syntaxHighlight from '~/syntax_highlight';
 import highlightCurrentUser from './highlight_current_user';
 import { renderKroki } from './render_kroki';
 import renderMath from './render_math';
-import renderMermaid from './render_mermaid';
 import renderSandboxedMermaid from './render_sandboxed_mermaid';
 import renderMetrics from './render_metrics';
 
@@ -15,11 +14,8 @@ $.fn.renderGFM = function renderGFM() {
   syntaxHighlight(this.find('.js-syntax-highlight').get());
   renderKroki(this.find('.js-render-kroki[hidden]').get());
   renderMath(this.find('.js-render-math'));
-  if (gon.features?.sandboxedMermaid) {
-    renderSandboxedMermaid(this.find('.js-render-mermaid'));
-  } else {
-    renderMermaid(this.find('.js-render-mermaid'));
-  }
+  renderSandboxedMermaid(this.find('.js-render-mermaid'));
+
   highlightCurrentUser(this.find('.gfm-project_member').get());
 
   const issuablePopoverElements = this.find('.gfm-issue, .gfm-merge_request').get();

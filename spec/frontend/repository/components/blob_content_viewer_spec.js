@@ -163,6 +163,14 @@ describe('Blob content viewer component', () => {
       expect(findBlobHeader().props('blob')).toEqual(simpleViewerMock);
     });
 
+    it('copies blob text to clipboard', async () => {
+      jest.spyOn(navigator.clipboard, 'writeText');
+      await createComponent();
+
+      findBlobHeader().vm.$emit('copy');
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(simpleViewerMock.rawTextBlob);
+    });
+
     it('renders a BlobContent component', async () => {
       await createComponent();
 

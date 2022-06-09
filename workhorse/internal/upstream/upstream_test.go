@@ -3,7 +3,6 @@ package upstream
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -287,7 +286,7 @@ func runTestCases(t *testing.T, ws *httptest.Server, testCases []testCase) {
 			require.NoError(t, err)
 			defer resp.Body.Close()
 
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
 
 			require.Equal(t, 200, resp.StatusCode, "response code")

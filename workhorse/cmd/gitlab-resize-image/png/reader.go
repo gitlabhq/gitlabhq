@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 )
 
@@ -53,7 +52,7 @@ func (r *Reader) Read(p []byte) (int, error) {
 		chunkLen := int64(binary.BigEndian.Uint32(header[:4]))
 		if chunkType := string(header[4:]); chunkType == "iCCP" {
 			debug("!! iCCP chunk found; skipping")
-			if _, err := io.CopyN(ioutil.Discard, r.underlying, chunkLen+crcLen); err != nil {
+			if _, err := io.CopyN(io.Discard, r.underlying, chunkLen+crcLen); err != nil {
 				return 0, err
 			}
 			continue

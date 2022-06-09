@@ -2166,6 +2166,7 @@ class Project < ApplicationRecord
       .append(key: 'CI_PROJECT_ID', value: id.to_s)
       .append(key: 'CI_PROJECT_NAME', value: path)
       .append(key: 'CI_PROJECT_TITLE', value: title)
+      .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
       .append(key: 'CI_PROJECT_PATH', value: full_path)
       .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)

@@ -2,7 +2,7 @@ package badgateway
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
@@ -45,7 +45,7 @@ func TestErrorPage502(t *testing.T) {
 			require.NoError(t, err, "perform roundtrip")
 			defer response.Body.Close()
 
-			body, err := ioutil.ReadAll(response.Body)
+			body, err := io.ReadAll(response.Body)
 			require.NoError(t, err)
 
 			require.Equal(t, tc.contentType, response.Header.Get("content-type"), "content type")

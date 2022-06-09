@@ -10,7 +10,6 @@ RSpec.describe "User comments on issue", :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(sandboxed_mermaid: false)
     project.add_guest(user)
     sign_in(user)
 
@@ -40,17 +39,6 @@ RSpec.describe "User comments on issue", :js do
       add_note(comment)
 
       expect(page.find('pre code').text).to eq code_block_content
-    end
-
-    it "renders HTML content as text in Mermaid" do
-      html_content = "<img onerror=location=`javascript\\u003aalert\\u0028document.domain\\u0029` src=x>"
-      mermaid_content = "graph LR\n  B-->D(#{html_content});"
-      comment = "```mermaid\n#{mermaid_content}\n```"
-
-      add_note(comment)
-
-      expect(page.find('svg.mermaid')).not_to have_content 'javascript'
-      within('svg.mermaid') { expect(page).not_to have_selector('img') }
     end
 
     it 'opens autocomplete menu for quick actions and have `/label` first choice' do

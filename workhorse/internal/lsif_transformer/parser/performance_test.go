@@ -3,7 +3,6 @@ package parser
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"os"
 	"runtime"
 	"testing"
@@ -25,7 +24,7 @@ func BenchmarkGenerate(b *testing.B) {
 			parser, err := NewParser(context.Background(), file, Config{})
 			require.NoError(b, err)
 
-			_, err = io.Copy(ioutil.Discard, parser)
+			_, err = io.Copy(io.Discard, parser)
 			require.NoError(b, err)
 			require.NoError(b, parser.Close())
 		})

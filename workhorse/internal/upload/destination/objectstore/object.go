@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"gitlab.com/gitlab-org/labkit/mask"
@@ -53,7 +52,7 @@ func newObject(putURL, deleteURL string, putHeaders map[string]string, size int6
 
 func (o *Object) Upload(ctx context.Context, r io.Reader) error {
 	// we should prevent pr.Close() otherwise it may shadow error set with pr.CloseWithError(err)
-	req, err := http.NewRequest(http.MethodPut, o.putURL, ioutil.NopCloser(r))
+	req, err := http.NewRequest(http.MethodPut, o.putURL, io.NopCloser(r))
 
 	if err != nil {
 		return fmt.Errorf("PUT %q: %v", mask.URL(o.putURL), err)

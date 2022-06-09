@@ -100,26 +100,30 @@ class a {
 
 ## Converting Strings to Integers
 
-When converting strings to integers, `parseInt` has a slight performance advantage over `Number`, but `Number` is semantic and can be more readable. Prefer `parseInt`, but do not discourage `Number` if it significantly helps readability.
+When converting strings to integers, `Number` is semantic and can be more readable. Both are allowable, but `Number` has a slight maintainability advantage.
 
 **WARNING:** `parseInt` **must** include the [radix argument](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt).
 
 ```javascript
-// bad
+// bad (missing radix argument)
 parseInt('10');
 
-// bad
-things.map(parseInt)
-
-// ok
-Number("106")
+// good
+parseInt("106", 10);
 
 // good
-things.map(Number)
-
-// good
-parseInt("106", 10)
+Number("106");
 ```
+
+```javascript
+// bad (missing radix argument)
+things.map(parseInt);
+
+// good
+things.map(Number);
+```
+
+**PLEASE NOTE:** If the String could represent a non-integer (i.e., it includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
 
 ## CSS Selectors - Use `js-` prefix
 

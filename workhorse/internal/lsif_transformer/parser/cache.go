@@ -3,7 +3,6 @@ package parser
 import (
 	"encoding/binary"
 	"io"
-	"io/ioutil"
 	"os"
 )
 
@@ -16,7 +15,7 @@ type cache struct {
 }
 
 func newCache(tempDir, filename string, data interface{}) (*cache, error) {
-	f, err := ioutil.TempFile(tempDir, filename)
+	f, err := os.CreateTemp(tempDir, filename)
 	if err != nil {
 		return nil, err
 	}

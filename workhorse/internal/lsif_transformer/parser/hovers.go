@@ -2,7 +2,6 @@ package parser
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 )
 
@@ -39,7 +38,7 @@ type ResultSetRef struct {
 func NewHovers(config Config) (*Hovers, error) {
 	tempPath := config.TempPath
 
-	file, err := ioutil.TempFile(tempPath, "hovers")
+	file, err := os.CreateTemp(tempPath, "hovers")
 	if err != nil {
 		return nil, err
 	}

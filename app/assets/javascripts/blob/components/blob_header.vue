@@ -47,6 +47,11 @@ export default {
       required: false,
       default: true,
     },
+    overrideCopy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -106,6 +111,7 @@ export default {
         :environment-name="blob.environmentFormattedExternalUrl"
         :environment-path="blob.environmentExternalUrlForRouteMap"
         :is-empty="isEmpty"
+        :override-copy="overrideCopy"
         @copy="proxyCopyRequest"
       />
     </div>

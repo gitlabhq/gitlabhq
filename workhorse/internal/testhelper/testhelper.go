@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -121,7 +120,7 @@ func RootDir() string {
 
 func LoadFile(t *testing.T, filePath string) string {
 	t.Helper()
-	content, err := ioutil.ReadFile(path.Join(RootDir(), filePath))
+	content, err := os.ReadFile(path.Join(RootDir(), filePath))
 	require.NoError(t, err)
 	return string(content)
 }
@@ -129,7 +128,7 @@ func LoadFile(t *testing.T, filePath string) string {
 func ReadAll(t *testing.T, r io.Reader) []byte {
 	t.Helper()
 
-	b, err := ioutil.ReadAll(r)
+	b, err := io.ReadAll(r)
 	require.NoError(t, err)
 	return b
 }
@@ -176,7 +175,7 @@ func SetupStaticFileHelper(t *testing.T, fpath, content, directory string) strin
 	require.NoError(t, os.MkdirAll(path.Join(absDocumentRoot, path.Dir(fpath)), 0755), "create document root")
 
 	staticFile := path.Join(absDocumentRoot, fpath)
-	require.NoError(t, ioutil.WriteFile(staticFile, []byte(content), 0666), "write file content")
+	require.NoError(t, os.WriteFile(staticFile, []byte(content), 0666), "write file content")
 
 	return absDocumentRoot
 }

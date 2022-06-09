@@ -3,7 +3,6 @@ package upload
 import (
 	"context"
 	"fmt"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -53,9 +52,6 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 }
 
 func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler) (*destination.FileHandler, error) {
-	metaReader, metaWriter := io.Pipe()
-	defer metaWriter.Close()
-
 	metaOpts := &destination.UploadOpts{
 		LocalTempPath: os.TempDir(),
 	}
@@ -68,24 +64,22 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 	zipMd := exec.CommandContext(ctx, "gitlab-zip-metadata", fileName)
 	zipMd.Stderr = log.ContextLogger(ctx).Writer()
 	zipMd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-	zipMd.Stdout = metaWriter
+
+	zipMdOut, err := zipMd.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
+	defer zipMdOut.Close()
 
 	if err := zipMd.Start(); err != nil {
 		return nil, err
 	}
 	defer helper.CleanUpProcessGroup(zipMd)
 
-	type saveResult struct {
-		error
-		*destination.FileHandler
+	fh, err := destination.Upload(ctx, zipMdOut, -1, "metadata.gz", metaOpts)
+	if err != nil {
+		return nil, err
 	}
-	done := make(chan saveResult)
-	go func() {
-		var result saveResult
-		result.FileHandler, result.error = destination.Upload(ctx, metaReader, -1, "metadata.gz", metaOpts)
-
-		done <- result
-	}()
 
 	if err := zipMd.Wait(); err != nil {
 		st, ok := helper.ExitStatus(err)
@@ -105,9 +99,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 		}
 	}
 
-	metaWriter.Close()
-	result := <-done
-	return result.FileHandler, result.error
+	return fh, nil
 }
 
 func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error {

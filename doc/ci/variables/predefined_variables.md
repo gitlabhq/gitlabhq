@@ -96,6 +96,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_PROJECT_REPOSITORY_LANGUAGES`        | 12.3   | all    | A comma-separated, lowercase list of the languages used in the repository. For example `ruby,javascript,html,css`. |
 | `CI_PROJECT_ROOT_NAMESPACE`              | 13.2   | 0.5    | The root project namespace (username or group name) of the job. For example, if `CI_PROJECT_NAMESPACE` is `root-group/child-group/grandchild-group`, `CI_PROJECT_ROOT_NAMESPACE` is `root-group`. |
 | `CI_PROJECT_TITLE`                       | 12.4   | all    | The human-readable project name as displayed in the GitLab web interface. |
+| `CI_PROJECT_DESCRIPTION`                 | 15.1   | all    | The project description as displayed in the GitLab web interface. |
 | `CI_PROJECT_URL`                         | 8.10   | 0.5    | The HTTP(S) address of the project. |
 | `CI_PROJECT_VISIBILITY`                  | 10.3   | all    | The project visibility. Can be `internal`, `private`, or `public`. |
 | `CI_PROJECT_CLASSIFICATION_LABEL`        | 14.2   | all    | The project [external authorization classification label](../../user/admin_area/settings/external_authorization.md). |

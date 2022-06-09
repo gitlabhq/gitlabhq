@@ -3,7 +3,7 @@ package secret
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"sync"
 )
 
@@ -57,7 +57,7 @@ func setBytes() ([]byte, error) {
 		return theSecret.bytes, nil
 	}
 
-	base64Bytes, err := ioutil.ReadFile(theSecret.path)
+	base64Bytes, err := os.ReadFile(theSecret.path)
 	if err != nil {
 		return nil, fmt.Errorf("secret.setBytes: read %q: %v", theSecret.path, err)
 	}

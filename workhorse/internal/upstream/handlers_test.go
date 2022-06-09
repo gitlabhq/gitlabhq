@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -20,7 +20,7 @@ func TestGzipEncoding(t *testing.T) {
 	fmt.Fprint(w, "test")
 	w.Close()
 
-	body := ioutil.NopCloser(&b)
+	body := io.NopCloser(&b)
 
 	req, err := http.NewRequest("POST", "http://address/test", body)
 	require.NoError(t, err)
@@ -38,7 +38,7 @@ func TestNoEncoding(t *testing.T) {
 	resp := httptest.NewRecorder()
 
 	var b bytes.Buffer
-	body := ioutil.NopCloser(&b)
+	body := io.NopCloser(&b)
 
 	req, err := http.NewRequest("POST", "http://address/test", body)
 	require.NoError(t, err)

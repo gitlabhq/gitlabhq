@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -51,7 +51,7 @@ func TestProxyRequest(t *testing.T) {
 			"expect Gitlab-Workhorse-Proxy-Start to start with 1",
 		)
 
-		body, err := ioutil.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		require.NoError(t, err, "read body")
 		require.Equal(t, "REQUEST", string(body), "body contents")
 

@@ -401,4 +401,16 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
     margin-right: $gl-spacing-scale-10;
   }
 }
+
+.gl-lg-w-30p {
+  @include gl-media-breakpoint-up(lg) {
+    width: 30%;
+  }
+}
+
+.gl-lg-w-40p {
+  @include gl-media-breakpoint-up(lg) {
+    width: 40%;
+  }
+}
 /* END-#1825 */

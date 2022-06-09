@@ -2,7 +2,7 @@ package destination
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"strings"
 	"testing"
 	"testing/iotest"
@@ -19,7 +19,7 @@ func TestHardLimitReader(t *testing.T) {
 		},
 	)
 
-	out, err := ioutil.ReadAll(r)
+	out, err := io.ReadAll(r)
 	require.NoError(t, err)
 	require.Equal(t, text, string(out))
 }

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http/httptest"
 	"path/filepath"
@@ -56,7 +55,7 @@ func TestUploadPackTimesOut(t *testing.T) {
 			}
 			defer conn.Close()
 
-			_, _ = io.Copy(ioutil.Discard, conn)
+			_, _ = io.Copy(io.Discard, conn)
 			return &gitalypb.PostUploadPackWithSidechannelResponse{}, nil
 		},
 	})

@@ -292,12 +292,28 @@
           padding: 0;
 
           form {
-            position: sticky;
-            top: 100px;
-            height: calc(100vh - 100px);
-            overflow: auto;
+            --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
+            --top: var(--initial-top);
+
+            @include gl-sticky;
+            @include gl-overflow-auto;
+
+            top: var(--top);
+            height: calc(100vh - var(--top));
             padding: 0 15px;
-            margin-bottom: -100px;
+            margin-bottom: calc(var(--top) * -1);
+
+            .with-performance-bar & {
+              --top: calc(var(--initial-top) + #{$performance-bar-height});
+            }
+
+            .with-system-header & {
+              --top: calc(var(--initial-top) + #{$system-header-height});
+            }
+
+            .with-performance-bar.with-system-header & {
+              --top: calc(var(--initial-top) + #{$system-header-height} + #{$performance-bar-height});
+            }
           }
         }
       }

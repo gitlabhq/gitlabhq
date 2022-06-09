@@ -1,7 +1,6 @@
 package test
 
 import (
-	"io/ioutil"
 	"net/http/httptest"
 	"os"
 	"strings"
@@ -76,7 +75,7 @@ func S3ObjectExists(t *testing.T, sess *session.Session, config config.S3Config,
 		require.NoError(t, err)
 		require.Equal(t, int64(len(expectedBytes)), numBytes)
 
-		output, err := ioutil.ReadFile(tmpfile.Name())
+		output, err := os.ReadFile(tmpfile.Name())
 		require.NoError(t, err)
 
 		require.Equal(t, []byte(expectedBytes), output)
@@ -126,7 +125,7 @@ func S3ObjectDoesNotExist(t *testing.T, sess *session.Session, config config.S3C
 func downloadObject(t *testing.T, sess *session.Session, config config.S3Config, objectName string, handler func(tmpfile *os.File, numBytes int64, err error)) {
 	tmpDir := t.TempDir()
 
-	tmpfile, err := ioutil.TempFile(tmpDir, "s3-output")
+	tmpfile, err := os.CreateTemp(tmpDir, "s3-output")
 	require.NoError(t, err)
 
 	downloadSvc := s3manager.NewDownloader(sess)

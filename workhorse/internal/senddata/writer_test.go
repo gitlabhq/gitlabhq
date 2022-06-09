@@ -2,7 +2,6 @@ package senddata
 
 import (
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -47,7 +46,7 @@ func TestWriter(t *testing.T) {
 			recorder.Flush()
 
 			body := recorder.Result().Body
-			data, err := ioutil.ReadAll(body)
+			data, err := io.ReadAll(body)
 			require.NoError(t, err)
 			require.NoError(t, body.Close())
 

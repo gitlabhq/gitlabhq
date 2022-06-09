@@ -3,9 +3,9 @@ package staticpages
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -64,7 +64,7 @@ func TestServingTheActualFile(t *testing.T) {
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 
 	fileContent := "STATIC"
-	ioutil.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
+	os.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
 
 	w := httptest.NewRecorder()
 	st := &Static{DocumentRoot: dir}
@@ -127,8 +127,8 @@ func testServingThePregzippedFile(t *testing.T, enableGzip bool) {
 	fileGzip.Write([]byte(fileContent))
 	fileGzip.Close()
 
-	ioutil.WriteFile(filepath.Join(dir, "file.gz"), fileGzipContent.Bytes(), 0600)
-	ioutil.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
+	os.WriteFile(filepath.Join(dir, "file.gz"), fileGzipContent.Bytes(), 0600)
+	os.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
 
 	w := httptest.NewRecorder()
 	st := &Static{DocumentRoot: dir}

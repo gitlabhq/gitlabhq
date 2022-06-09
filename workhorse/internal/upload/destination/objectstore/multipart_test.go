@@ -2,7 +2,7 @@ package objectstore_test
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -22,7 +22,7 @@ func TestMultipartUploadWithUpcaseETags(t *testing.T) {
 	var putCnt, postCnt int
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := ioutil.ReadAll(r.Body)
+		_, err := io.ReadAll(r.Body)
 		require.NoError(t, err)
 		defer r.Body.Close()
 

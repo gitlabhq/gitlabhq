@@ -3,7 +3,6 @@ package exif
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -75,7 +74,7 @@ func TestNewCleanerWithValidFile(t *testing.T) {
 	cleaner, err := NewCleaner(ctx, input)
 	require.NoError(t, err, "Expected no error when creating cleaner command")
 
-	size, err := io.Copy(ioutil.Discard, cleaner)
+	size, err := io.Copy(io.Discard, cleaner)
 	require.NoError(t, err, "Expected no error when reading output")
 
 	sizeAfterStrip := int64(25399)
@@ -89,7 +88,7 @@ func TestNewCleanerWithInvalidFile(t *testing.T) {
 	cleaner, err := NewCleaner(ctx, strings.NewReader("invalid image"))
 	require.NoError(t, err, "Expected no error when creating cleaner command")
 
-	size, err := io.Copy(ioutil.Discard, cleaner)
+	size, err := io.Copy(io.Discard, cleaner)
 	require.Error(t, err, "Expected error when reading output")
 	require.Equal(t, int64(0), size, "Size of invalid image should be 0")
 }
@@ -103,7 +102,7 @@ func TestNewCleanerReadingAfterEOF(t *testing.T) {
 	cleaner, err := NewCleaner(ctx, input)
 	require.NoError(t, err, "Expected no error when creating cleaner command")
 
-	_, err = io.Copy(ioutil.Discard, cleaner)
+	_, err = io.Copy(io.Discard, cleaner)
 	require.NoError(t, err, "Expected no error when reading output")
 
 	buf := make([]byte, 1)

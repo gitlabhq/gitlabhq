@@ -15,13 +15,13 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	svg "github.com/h2non/go-is-svg"
 )
 
 func main() {
-	buf, err := ioutil.ReadFile("_example/example.svg")
+	buf, err := os.ReadFile("_example/example.svg")
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		return

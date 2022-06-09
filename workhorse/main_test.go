@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"image/png"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -307,7 +306,7 @@ func TestGzipAssets(t *testing.T) {
 		resp, err := http.DefaultTransport.RoundTrip(req)
 		require.NoError(t, err, desc)
 		defer resp.Body.Close()
-		b, err := ioutil.ReadAll(resp.Body)
+		b, err := io.ReadAll(resp.Body)
 		require.NoError(t, err, desc)
 
 		require.Equal(t, 200, resp.StatusCode, "%s: status code", desc)
@@ -366,7 +365,7 @@ func TestAltDocumentAssets(t *testing.T) {
 		resp, err := http.DefaultTransport.RoundTrip(req)
 		require.NoError(t, err)
 		defer resp.Body.Close()
-		b, err := ioutil.ReadAll(resp.Body)
+		b, err := io.ReadAll(resp.Body)
 		require.NoError(t, err)
 
 		if tc.content != "" {
@@ -412,7 +411,7 @@ func doSendDataRequest(path string, command, literalJSON string) (*http.Response
 	}
 	defer resp.Body.Close()
 
-	bodyData, err := ioutil.ReadAll(resp.Body)
+	bodyData, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return resp, nil, err
 	}
@@ -574,7 +573,7 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 			require.NoError(t, err, "%s %q", tc.method, tc.path)
 			defer resp.Body.Close()
 
-			respBody, err := ioutil.ReadAll(resp.Body)
+			respBody, err := io.ReadAll(resp.Body)
 			require.NoError(t, err, "%s %q: reading body", tc.method, tc.path)
 
 			require.Equal(t, 200, resp.StatusCode, "%s %q: status code", tc.method, tc.path)
@@ -833,7 +832,7 @@ func httpGet(t *testing.T, url string, headers map[string]string) (*http.Respons
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 
 	return resp, string(b)

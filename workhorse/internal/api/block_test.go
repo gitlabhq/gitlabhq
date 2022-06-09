@@ -1,7 +1,7 @@
 package api
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -46,7 +46,7 @@ func TestBlocker(t *testing.T) {
 			rw.Flush()
 
 			body := rw.Result().Body
-			data, err := ioutil.ReadAll(body)
+			data, err := io.ReadAll(body)
 			require.NoError(t, err)
 			require.NoError(t, body.Close())
 

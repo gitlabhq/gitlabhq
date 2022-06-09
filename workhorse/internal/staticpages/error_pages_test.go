@@ -2,9 +2,9 @@ package staticpages
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -17,7 +17,7 @@ func TestIfErrorPageIsPresented(t *testing.T) {
 	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	ioutil.WriteFile(filepath.Join(dir, "404.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "404.html"), []byte(errorPage), 0600)
 
 	w := httptest.NewRecorder()
 	h := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -57,7 +57,7 @@ func TestIfErrorPageIsIgnoredInDevelopment(t *testing.T) {
 	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	ioutil.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
 
 	w := httptest.NewRecorder()
 	serverError := "Interesting Server Error"
@@ -76,7 +76,7 @@ func TestIfErrorPageIsIgnoredIfCustomError(t *testing.T) {
 	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	ioutil.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
 
 	w := httptest.NewRecorder()
 	serverError := "Interesting Server Error"
@@ -107,7 +107,7 @@ func TestErrorPageInterceptedByContentType(t *testing.T) {
 		dir := t.TempDir()
 
 		errorPage := "ERROR"
-		ioutil.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+		os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
 
 		w := httptest.NewRecorder()
 		serverError := "Interesting Server Error"
