@@ -133,7 +133,7 @@ Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops
 | IP address                | `35.185.44.232`        | -                      |
 | Custom domains support    | **{check-circle}** Yes | **{dotted-circle}** No |
 | TLS certificates support  | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Maximum size](../../administration/pages/index.md#set-global-maximum-pages-size-per-project) (compressed) | 1 GB                   | 100 MB                 |
+| [Maximum size](../../administration/pages/index.md#set-global-maximum-size-of-each-gitlab-pages-site) (compressed) | 1 GB                   | 100 MB                 |
 
 The maximum size of your Pages site is also regulated by the artifacts maximum size,
 which is part of [GitLab CI/CD](#gitlab-cicd).

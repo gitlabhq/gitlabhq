@@ -46,14 +46,14 @@ export const findMonacoDiffEditor = () =>
 
 export const findAndSetEditorValue = async (value) => {
   const editor = await findMonacoEditor();
-  const uri = editor.getAttribute('data-uri');
+  const { uri } = editor.dataset;
 
   monacoEditor.getModel(uri).setValue(value);
 };
 
 export const getEditorValue = async () => {
   const editor = await findMonacoEditor();
-  const uri = editor.getAttribute('data-uri');
+  const { uri } = editor.dataset;
 
   return monacoEditor.getModel(uri).getValue();
 };

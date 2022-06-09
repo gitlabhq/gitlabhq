@@ -15,8 +15,8 @@ describe('initRecoveryCodes', () => {
   beforeEach(() => {
     el = document.createElement('div');
     el.setAttribute('class', 'js-2fa-recovery-codes');
-    el.setAttribute('data-codes', codesJsonString);
-    el.setAttribute('data-profile-account-path', profileAccountPath);
+    el.dataset.codes = codesJsonString;
+    el.dataset.profileAccountPath = profileAccountPath;
     document.body.appendChild(el);
 
     wrapper = createWrapper(initRecoveryCodes());

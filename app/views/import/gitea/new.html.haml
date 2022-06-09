@@ -11,6 +11,7 @@
   = _('To get started, please enter your Gitea Host URL and a %{link_to_personal_token}.').html_safe % { link_to_personal_token: link_to_personal_token }
 
 = form_tag personal_access_token_import_gitea_path do
+  = hidden_field_tag(:namespace_id, params[:namespace_id])
   .form-group.row
     = label_tag :gitea_host_url, _('Gitea Host URL'), class: 'col-form-label col-sm-2'
     .col-sm-4

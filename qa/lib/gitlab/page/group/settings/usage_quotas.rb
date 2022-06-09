@@ -6,10 +6,10 @@ module Gitlab
       module Settings
         class UsageQuotas < Chemlab::Page
           # TODO: Supplant with data-qa-selectors
-          link :pipeline_tab, id: 'pipelines-quota'
-          link :storage_tab, id: 'storage-quota'
-          link :buy_ci_minutes, text: 'Buy additional minutes'
-          link :buy_storage, text: /Buy storage/
+          link :pipelines_tab
+          link :storage_tab
+          link :buy_ci_minutes
+          link :buy_storage
           div :plan_ci_minutes
           div :additional_ci_minutes
           span :purchased_usage_total

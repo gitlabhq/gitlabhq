@@ -680,35 +680,44 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-## Set global maximum pages size per project **(FREE SELF)**
+## Set global maximum size of each GitLab Pages site **(FREE SELF)**
+
+Prerequisites:
+
+- Only GitLab administrators can edit this setting.
 
 To set the global maximum pages size for a project:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
-1. Edit the **Maximum size of pages**.
+1. Enter a value under **Maximum size of pages**.
 1. Select **Save changes**.
 
-## Override maximum pages size per project or group **(PREMIUM SELF)**
+## Set maximum size of each GitLab Pages site in a group **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16610) in GitLab 12.7.
+Prerequisites:
 
-NOTE:
-Only GitLab administrators are able to view and override the **Maximum size of Pages** setting.
+- You must have at least the Maintainer role for the group.
 
-To override the global maximum pages size for a specific project:
-
-1. On the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**.
-1. Enter a value under **Maximum size of pages** in MB.
-1. Select **Save changes**.
-
-To override the global maximum pages size for a specific group:
+To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Pages**.
+1. Enter a value under **Maximum size** in MB.
+1. Select **Save changes**.
+
+## Set maximum size of GitLab Pages site in a project **(PREMIUM SELF)**
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
 1. Enter a value under **Maximum size of pages** in MB.
 1. Select **Save changes**.
 

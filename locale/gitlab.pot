@@ -8987,6 +8987,18 @@ msgstr ""
 msgid "Collector hostname"
 msgstr ""
 
+msgid "ColorWidget|An error occurred while updating color."
+msgstr ""
+
+msgid "ColorWidget|Assign epic color"
+msgstr ""
+
+msgid "ColorWidget|Color"
+msgstr ""
+
+msgid "ColorWidget|Error fetching epic color."
+msgstr ""
+
 msgid "Colorize messages"
 msgstr ""
 
@@ -11253,6 +11265,9 @@ msgstr ""
 msgid "DORA4Metrics|Date"
 msgstr ""
 
+msgid "DORA4Metrics|Days for an open incident"
+msgstr ""
+
 msgid "DORA4Metrics|Days from merge to deploy"
 msgstr ""
 
@@ -11263,6 +11278,15 @@ msgid "DORA4Metrics|Lead time for changes"
 msgstr ""
 
 msgid "DORA4Metrics|Median (last %{days}d)"
+msgstr ""
+
+msgid "DORA4Metrics|Median time (last %{days}d)"
+msgstr ""
+
+msgid "DORA4Metrics|Median time an incident was open in a production environment over the given time period."
+msgstr ""
+
+msgid "DORA4Metrics|No incidents during this period"
 msgstr ""
 
 msgid "DORA4Metrics|No merge requests were deployed during this period"
@@ -11277,10 +11301,16 @@ msgstr ""
 msgid "DORA4Metrics|Something went wrong while getting lead time data."
 msgstr ""
 
+msgid "DORA4Metrics|Something went wrong while getting time to restore service data."
+msgstr ""
+
 msgid "DORA4Metrics|The chart displays the frequency of deployments to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
 msgstr ""
 
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
+msgstr ""
+
+msgid "DORA4Metrics|Time to restore service"
 msgstr ""
 
 msgid "DSN"
@@ -17256,6 +17286,9 @@ msgstr ""
 msgid "GitLabPages|Are you sure?"
 msgstr ""
 
+msgid "GitLabPages|Can be overridden per project. For no limit, enter 0. To inherit the value, leave empty."
+msgstr ""
+
 msgid "GitLabPages|Certificate: %{subject}"
 msgstr ""
 
@@ -17277,7 +17310,7 @@ msgstr ""
 msgid "GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project's %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} page."
 msgstr ""
 
-msgid "GitLabPages|Maximum size of pages (MB)"
+msgid "GitLabPages|Maximum size (MB)"
 msgstr ""
 
 msgid "GitLabPages|New Domain"
@@ -17311,9 +17344,6 @@ msgid "GitLabPages|Something went wrong while obtaining the Let's Encrypt certif
 msgstr ""
 
 msgid "GitLabPages|Support for domains and certificates is disabled. Ask your system's administrator to enable it."
-msgstr ""
-
-msgid "GitLabPages|The total size of deployed static content will be limited to this size. 0 for unlimited. Leave empty to inherit the global value."
 msgstr ""
 
 msgid "GitLabPages|Unverified"
@@ -18288,10 +18318,10 @@ msgstr ""
 msgid "GroupSettings|Select the project that contains your custom Insights file."
 msgstr ""
 
-msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
+msgid "GroupSettings|Set a size limit for all content in each Pages site in this group. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "GroupSettings|Set the maximum size of GitLab Pages for this group. %{link_start}Learn more.%{link_end}"
+msgid "GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group."
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
@@ -34068,6 +34098,15 @@ msgstr ""
 msgid "SecurityOrchestration|This group"
 msgstr ""
 
+msgid "SecurityOrchestration|This is a group-level policy"
+msgstr ""
+
+msgid "SecurityOrchestration|This is a project-level policy"
+msgstr ""
+
+msgid "SecurityOrchestration|This policy is inherited from %{namespace}"
+msgstr ""
+
 msgid "SecurityOrchestration|This policy is inherited from the %{linkStart}namespace%{linkEnd} and must be edited there"
 msgstr ""
 
@@ -36823,6 +36862,9 @@ msgstr ""
 msgid "SuggestedColors|Gray"
 msgstr ""
 
+msgid "SuggestedColors|Green"
+msgstr ""
+
 msgid "SuggestedColors|Green screen"
 msgstr ""
 
@@ -36839,6 +36881,9 @@ msgid "SuggestedColors|Medium sea green"
 msgstr ""
 
 msgid "SuggestedColors|Orange"
+msgstr ""
+
+msgid "SuggestedColors|Purple"
 msgstr ""
 
 msgid "SuggestedColors|Red"

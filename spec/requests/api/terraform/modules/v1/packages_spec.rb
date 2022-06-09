@@ -106,14 +106,14 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     context 'with valid namespace' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :shared_examples_name, :expected_status) do
         :public  | :developer  | true  | :personal_access_token | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access' | :not_found
+        :public  | :guest      | true  | :personal_access_token | true  | 'grants terraform module download'         | :success
         :public  | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
         :public  | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :personal_access_token | true  | 'rejects terraform module packages access' | :not_found
-        :public  | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access' | :not_found
+        :public  | :developer  | false | :personal_access_token | true  | 'grants terraform module download'         | :success
+        :public  | :guest      | false | :personal_access_token | true  | 'grants terraform module download'         | :success
         :public  | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
         :public  | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :anonymous  | false | :personal_access_token | true  | 'rejects terraform module packages access' | :not_found
+        :public  | :anonymous  | false | :anonymous | true | 'grants terraform module download' | :success
         :private | :developer  | true  | :personal_access_token | true  | 'grants terraform module download'         | :success
         :private | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
         :private | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
@@ -122,12 +122,12 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
         :private | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
         :private | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
         :private | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :anonymous  | false | :personal_access_token | true  | 'rejects terraform module packages access' | :unauthorized
+        :private | :anonymous  | false | :anonymous | true | 'rejects terraform module packages access' | :unauthorized
         :public  | :developer  | true  | :job_token             | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | true  | :job_token             | true  | 'rejects terraform module packages access' | :not_found
+        :public  | :guest      | true  | :job_token             | true  | 'grants terraform module download'         | :success
         :public  | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :job_token             | true  | 'rejects terraform module packages access' | :not_found
-        :public  | :guest      | false | :job_token             | true  | 'rejects terraform module packages access' | :not_found
+        :public  | :developer  | false | :job_token             | true  | 'grants terraform module download'         | :success
+        :public  | :guest      | false | :job_token             | true  | 'grants terraform module download'         | :success
         :public  | :developer  | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
         :public  | :guest      | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
         :private | :developer  | true  | :job_token             | true  | 'grants terraform module download'         | :success
@@ -146,6 +146,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
 
         before do
           group.update!(visibility: visibility.to_s)
+          project.update!(visibility: visibility.to_s)
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
@@ -158,7 +159,8 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     let(:tokens) do
       {
         personal_access_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = personal_access_token.id }.encoded,
-        job_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = job.token }.encoded
+        job_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = job.token }.encoded,
+        anonymous: ""
       }
     end
 
@@ -167,14 +169,14 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     context 'with valid namespace' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :shared_examples_name, :expected_status) do
         :public  | :developer  | true  | :personal_access_token | true  | 'grants terraform module package file access' | :success
-        :public  | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access'    | :not_found
+        :public  | :guest      | true  | :personal_access_token | true  | 'grants terraform module package file access' | :success
         :public  | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
         :public  | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :developer  | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :not_found
-        :public  | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :not_found
+        :public  | :developer  | false | :personal_access_token | true  | 'grants terraform module package file access'    | :success
+        :public  | :guest      | false | :personal_access_token | true  | 'grants terraform module package file access'    | :success
         :public  | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
         :public  | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :anonymous  | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :not_found
+        :public  | :anonymous  | false | :anonymous | true | 'grants terraform module package file access' | :success
         :private | :developer  | true  | :personal_access_token | true  | 'grants terraform module package file access' | :success
         :private | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access'    | :forbidden
         :private | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
@@ -183,12 +185,12 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
         :private | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :forbidden
         :private | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
         :private | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :anonymous  | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :forbidden
+        :private | :anonymous  | false | :anonymous | true | 'rejects terraform module packages access' | :unauthorized
         :public  | :developer  | true  | :job_token             | true  | 'grants terraform module package file access' | :success
-        :public  | :guest      | true  | :job_token             | true  | 'rejects terraform module packages access'    | :not_found
-        :public  | :guest      | true  | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :developer  | false | :job_token             | true  | 'rejects terraform module packages access'    | :not_found
-        :public  | :guest      | false | :job_token             | true  | 'rejects terraform module packages access'    | :not_found
+        :public  | :guest      | true  | :job_token             | true  | 'grants terraform module package file access' | :success
+        :public  | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :job_token             | true  | 'grants terraform module package file access'    | :success
+        :public  | :guest      | false | :job_token             | true  | 'grants terraform module package file access'    | :success
         :public  | :developer  | false | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
         :public  | :guest      | false | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
         :private | :developer  | true  | :job_token             | true  | 'grants terraform module package file access' | :success
@@ -203,10 +205,17 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
 
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
-        let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
+        let(:snowplow_gitlab_standard_context) do
+          {
+            project: project,
+            user: user_role == :anonymous ? nil : user,
+            namespace: project.namespace
+          }
+        end
 
         before do
           group.update!(visibility: visibility.to_s)
+          project.update!(visibility: visibility.to_s)
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]

@@ -43,6 +43,10 @@ module ContainerRegistry
       Feature.enabled?(:container_registry_migration_limit_gitlab_org)
     end
 
+    def self.delete_container_repository_worker_support?
+      Feature.enabled?(:container_registry_migration_phase2_delete_container_repository_worker_support)
+    end
+
     def self.enqueue_waiting_time
       return 0 if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_fast)
       return 165.minutes if Feature.enabled?(:container_registry_migration_phase2_enqueue_speed_slow)
@@ -72,6 +76,10 @@ module ContainerRegistry
 
     def self.all_plans?
       Feature.enabled?(:container_registry_migration_phase2_all_plans)
+    end
+
+    def self.dynamic_pre_import_timeout_for(repository)
+      (repository.tags_count * pre_import_tags_rate).seconds
     end
   end
 end

@@ -8,7 +8,6 @@ namespace :gitlab do
         # These aren't used by anything so we can ignore these https://gitlab.com/gitlab-org/gitlab/-/issues/362984
         EXCLUDED_SEQUENCES = %w[
           ci_job_artifact_states_job_artifact_id_seq
-          ci_pipelines_config_pipeline_id_seq
         ].freeze
 
         desc 'Bump all the CI tables sequences on the Main Database'

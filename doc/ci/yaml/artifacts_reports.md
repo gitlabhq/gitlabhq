@@ -209,6 +209,7 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
   self-managed instances is 150, and can be changed by changing the
   `dotenv_variables` [application limit](../../administration/instance_limits.md#limit-dotenv-variables).
 - Variable substitution in the `.env` file is not supported.
+- [Multiline values in the `.env` file](https://github.com/motdotla/dotenv#multiline-values) are not supported.
 - The `.env` file can't have empty lines or comments (starting with `#`).
 - Key values in the `env` file cannot have spaces or newline characters (`\n`), including when using single or double quotes.
 - Quote escaping during parsing (`key = 'value'` -> `{key: "value"}`) is not supported.

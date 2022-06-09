@@ -17,6 +17,7 @@ export default {
   piplelinesTabEvent: 'p_analytics_ci_cd_pipelines',
   deploymentFrequencyTabEvent: 'p_analytics_ci_cd_deployment_frequency',
   leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
+  timeToRestoreServiceTabEvent: 'p_analytics_ci_cd_time_to_restore_service',
   inject: {
     shouldRenderDoraCharts: {
       type: Boolean,
@@ -37,7 +38,7 @@ export default {
       const chartsToShow = ['pipelines'];
 
       if (this.shouldRenderDoraCharts) {
-        chartsToShow.push('deployment-frequency', 'lead-time');
+        chartsToShow.push('deployment-frequency', 'lead-time', 'time-to-restore-service');
       }
 
       if (this.shouldRenderQualitySummary) {

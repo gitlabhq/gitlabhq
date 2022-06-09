@@ -127,7 +127,7 @@ export default class LazyLoader {
 
     // Loading Images which are in the current viewport or close to them
     this.lazyImages = this.lazyImages.filter((selectedImage) => {
-      if (selectedImage.getAttribute('data-src')) {
+      if (selectedImage.dataset.src) {
         const imgBoundRect = selectedImage.getBoundingClientRect();
         const imgTop = scrollTop + imgBoundRect.top;
         const imgBound = imgTop + imgBoundRect.height;
@@ -156,16 +156,17 @@ export default class LazyLoader {
   }
 
   static loadImage(img) {
-    if (img.getAttribute('data-src')) {
+    if (img.dataset.src) {
       img.setAttribute('loading', 'lazy');
-      let imgUrl = img.getAttribute('data-src');
+      let imgUrl = img.dataset.src;
       // Only adding width + height for avatars for now
       if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
         const targetWidth = img.getAttribute('width') || img.width;
         imgUrl += `?width=${targetWidth}`;
       }
       img.setAttribute('src', imgUrl);
-      img.removeAttribute('data-src');
+      // eslint-disable-next-line no-param-reassign
+      delete img.dataset.src;
       img.classList.remove('lazy');
       img.classList.add('js-lazy-loaded');
       img.classList.add('qa-js-lazy-loaded');

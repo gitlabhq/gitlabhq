@@ -36,6 +36,19 @@ RSpec.shared_examples 'a GitHub-ish import controller: POST personal_access_toke
     expect(session[:"#{provider}_access_token"]).to eq(token)
     expect(controller).to redirect_to(status_import_url)
   end
+
+  it 'passes namespace_id param as query param if it was present' do
+    namespace_id = 5
+    status_import_url = public_send("status_import_#{provider}_url", { namespace_id: namespace_id })
+
+    allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+      allow(client).to receive(:user).and_return(true)
+    end
+
+    post :personal_access_token, params: { personal_access_token: 'some-token', namespace_id: 5 }
+
+    expect(controller).to redirect_to(status_import_url)
+  end
 end
 
 RSpec.shared_examples 'a GitHub-ish import controller: GET new' do

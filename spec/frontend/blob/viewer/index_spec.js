@@ -80,9 +80,9 @@ describe('Blob viewer', () => {
     return asyncClick()
       .then(() => asyncClick())
       .then(() => {
-        expect(
-          document.querySelector('.blob-viewer[data-type="simple"]').getAttribute('data-loaded'),
-        ).toBe('true');
+        expect(document.querySelector('.blob-viewer[data-type="simple"]').dataset.loaded).toBe(
+          'true',
+        );
       });
   });
 

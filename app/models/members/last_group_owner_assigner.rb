@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Optimization class to fix group member n+1 queries
 class LastGroupOwnerAssigner
   def initialize(group, members)
     @group = group
@@ -39,6 +40,6 @@ class LastGroupOwnerAssigner
   end
 
   def owners
-    @owners ||= group.members_with_parents.owners.load
+    @owners ||= group.all_owners_excluding_project_bots.load
   end
 end

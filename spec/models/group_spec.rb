@@ -991,6 +991,14 @@ RSpec.describe Group do
 
     it { expect(group.last_owner?(@members[:owner])).to be_truthy }
 
+    context 'there is also a project_bot owner' do
+      before do
+        group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+      end
+
+      it { expect(group.last_owner?(@members[:owner])).to be_truthy }
+    end
+
     context 'with two owners' do
       before do
         create(:group_member, :owner, group: group)
@@ -1116,35 +1124,58 @@ RSpec.describe Group do
     end
   end
 
-  describe '#single_owner?' do
+  describe '#all_owners_excluding_project_bots' do
     let_it_be(:user) { create(:user) }
 
     context 'when there is only one owner' do
-      before do
+      let!(:owner) do
         group.add_user(user, GroupMember::OWNER)
       end
 
-      it 'returns true' do
-        expect(group.single_owner?).to eq(true)
+      it 'returns the owner' do
+        expect(group.all_owners_excluding_project_bots).to contain_exactly(owner)
+      end
+
+      context 'and there is also a project_bot owner' do
+        before do
+          group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+        end
+
+        it 'returns only the human owner' do
+          expect(group.all_owners_excluding_project_bots).to contain_exactly(owner)
+        end
       end
     end
 
     context 'when there are multiple owners' do
       let_it_be(:user_2) { create(:user) }
 
-      before do
+      let!(:owner) do
         group.add_user(user, GroupMember::OWNER)
+      end
+
+      let!(:owner2) do
         group.add_user(user_2, GroupMember::OWNER)
       end
 
-      it 'returns true' do
-        expect(group.single_owner?).to eq(false)
+      it 'returns both owners' do
+        expect(group.all_owners_excluding_project_bots).to contain_exactly(owner, owner2)
+      end
+
+      context 'and there is also a project_bot owner' do
+        before do
+          group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+        end
+
+        it 'returns only the human owners' do
+          expect(group.all_owners_excluding_project_bots).to contain_exactly(owner, owner2)
+        end
       end
     end
 
     context 'when there are no owners' do
       it 'returns false' do
-        expect(group.single_owner?).to eq(false)
+        expect(group.all_owners_excluding_project_bots).to be_empty
       end
     end
   end

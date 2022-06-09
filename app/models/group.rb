@@ -432,8 +432,9 @@ class Group < Namespace
   end
 
   # Check if user is a last owner of the group.
+  # Excludes project_bots
   def last_owner?(user)
-    has_owner?(user) && single_owner?
+    has_owner?(user) && all_owners_excluding_project_bots.size == 1
   end
 
   def member_last_owner?(member)
@@ -442,8 +443,8 @@ class Group < Namespace
     last_owner?(member.user)
   end
 
-  def single_owner?
-    members_with_parents.owners.size == 1
+  def all_owners_excluding_project_bots
+    members_with_parents.owners.merge(User.without_project_bot)
   end
 
   def single_blocked_owner?

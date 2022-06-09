@@ -165,8 +165,8 @@ class DropDown {
     images.forEach((image) => {
       const img = image;
 
-      img.src = img.getAttribute('data-src');
-      img.removeAttribute('data-src');
+      img.src = img.dataset.src;
+      delete img.dataset.src;
     });
   }
 }

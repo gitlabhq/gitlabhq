@@ -26,7 +26,7 @@ module QA
       def purchase_ci_minutes(quantity: 1)
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
-          usage_quota.pipeline_tab
+          usage_quota.pipelines_tab
           usage_quota.buy_ci_minutes
         end
 

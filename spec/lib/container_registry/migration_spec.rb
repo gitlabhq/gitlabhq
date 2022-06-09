@@ -229,4 +229,31 @@ RSpec.describe ContainerRegistry::Migration do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.delete_container_repository_worker_support?' do
+    subject { described_class.delete_container_repository_worker_support? }
+
+    it { is_expected.to eq(true) }
+
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(container_registry_migration_phase2_delete_container_repository_worker_support: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '.dynamic_pre_import_timeout_for' do
+    let(:container_repository) { build(:container_repository) }
+
+    subject { described_class.dynamic_pre_import_timeout_for(container_repository) }
+
+    it 'returns the expected seconds' do
+      stub_application_setting(container_registry_pre_import_tags_rate: 0.6)
+      expect(container_repository).to receive(:tags_count).and_return(50)
+
+      expect(subject).to eq((0.6 * 50).seconds)
+    end
+  end
 end
