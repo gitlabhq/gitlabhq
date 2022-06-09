@@ -394,8 +394,7 @@ module API
     end
 
     def order_options_with_tie_breaker
-      order_by = if Feature.enabled?(:replace_order_by_created_at_with_id) &&
-                    params[:order_by] == 'created_at'
+      order_by = if params[:order_by] == 'created_at'
                    'id'
                  else
                    params[:order_by]

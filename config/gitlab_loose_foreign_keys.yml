@@ -179,6 +179,10 @@ dast_site_profiles_pipelines:
   - table: ci_pipelines
     column: ci_pipeline_id
     on_delete: async_delete
+deployments:
+  - table: clusters
+    column: cluster_id
+    on_delete: async_nullify
 external_pull_requests:
   - table: projects
     column: project_id

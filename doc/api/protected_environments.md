@@ -34,7 +34,7 @@ The following types are recognized:
 
 Gets a list of protected environments from a project:
 
-```shell
+```plaintext
 GET /projects/:id/protected_environments
 ```
 
@@ -70,7 +70,7 @@ Example response:
 
 Gets a single protected environment:
 
-```shell
+```plaintext
 GET /projects/:id/protected_environments/:name
 ```
 
@@ -105,7 +105,7 @@ Example response:
 
 Protects a single environment:
 
-```shell
+```plaintext
 POST /projects/:id/protected_environments
 ```
 
@@ -170,7 +170,7 @@ Example response:
 
 Unprotects the given protected environment:
 
-```shell
+```plaintext
 DELETE /projects/:id/protected_environments/:name
 ```
 

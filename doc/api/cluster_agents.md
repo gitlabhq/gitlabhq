@@ -95,7 +95,7 @@ Gets a single agent details.
 
 You must have at least the Developer role to use this endpoint.
 
-```shell
+```plaintext
 GET /projects/:id/cluster_agents/:agent_id
 ```
 
@@ -157,7 +157,7 @@ Registers an agent to the project.
 
 You must have at least the Maintainer role to use this endpoint.
 
-```shell
+```plaintext
 POST /projects/:id/cluster_agents
 ```
 
@@ -313,7 +313,7 @@ Gets a single agent token.
 
 You must have at least the Developer role to use this endpoint.
 
-```shell
+```plaintext
 GET /projects/:id/cluster_agents/:agent_id/tokens/:token_id
 ```
 
@@ -369,7 +369,7 @@ Creates a new token for an agent.
 
 You must have at least the Maintainer role to use this endpoint.
 
-```shell
+```plaintext
 POST /projects/:id/cluster_agents/:agent_id/tokens
 ```
 

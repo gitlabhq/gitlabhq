@@ -1419,4 +1419,11 @@ RSpec.describe Deployment do
       end
     end
   end
+
+  context 'loose foreign key on deployments.cluster_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:cluster) }
+      let!(:model) { create(:deployment, cluster: parent) }
+    end
+  end
 end

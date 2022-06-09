@@ -205,7 +205,7 @@ Example response:
 
 Delete a broadcast message.
 
-```shell
+```plaintext
 DELETE /broadcast_messages/:id
 ```
 

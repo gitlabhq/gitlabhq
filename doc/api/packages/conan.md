@@ -456,7 +456,7 @@ Download a recipe file to the package registry. You must use a download URL that
 [recipe download URLs endpoint](#recipe-download-urls)
 returned.
 
-```shell
+```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
@@ -489,7 +489,7 @@ Upload a recipe file to the package registry. You must use an upload URL that th
 [recipe upload URLs endpoint](#recipe-upload-urls)
 returned.
 
-```shell
+```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
@@ -518,7 +518,7 @@ Download a package file to the package registry. You must use a download URL tha
 [package download URLs endpoint](#package-download-urls)
 returned.
 
-```shell
+```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 
@@ -553,7 +553,7 @@ Upload a package file to the package registry. You must use an upload URL that t
 [package upload URLs endpoint](#package-upload-urls)
 returned.
 
-```shell
+```plaintext
 GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 

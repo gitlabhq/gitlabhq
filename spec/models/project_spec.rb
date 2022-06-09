@@ -4739,8 +4739,7 @@ RSpec.describe Project, factory_default: :keep do
     shared_examples 'filter respects visibility' do
       it 'respects visibility' do
         enable_admin_mode!(user) if admin_mode
-        project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
-        update_feature_access_level(project, feature_access_level)
+        update_feature_access_level(project, feature_access_level, visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
 
         expected_objects = expected_count == 1 ? [project] : []
 

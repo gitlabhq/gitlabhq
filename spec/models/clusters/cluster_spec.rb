@@ -50,6 +50,10 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to respond_to :project }
   it { is_expected.to be_namespace_per_environment }
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :cluster }
+  end
+
   describe 'applications have inverse_of: :cluster option' do
     let(:cluster) { create(:cluster) }
     let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }

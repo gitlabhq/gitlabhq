@@ -639,18 +639,6 @@ RSpec.describe API::Helpers do
       it 'converts to id' do
         is_expected.to eq({ 'id' => 'asc' })
       end
-
-      context 'when replace_order_by_created_at_with_id feature flag is disabled' do
-        before do
-          stub_feature_flags(replace_order_by_created_at_with_id: false)
-        end
-
-        include_examples '#order_options_with_tie_breaker'
-
-        it 'maintains created_at order' do
-          is_expected.to eq({ 'created_at' => 'asc', 'id' => 'asc' })
-        end
-      end
     end
   end
 
