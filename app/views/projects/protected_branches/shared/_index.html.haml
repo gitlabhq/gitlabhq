@@ -4,8 +4,8 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_("ProtectedBranch|Protected branches")
-    %button.btn.gl-button.btn-default.js-settings-toggle.qa-expand-protected-branches{ type: 'button' }
-      = expanded ? 'Collapse' : 'Expand'
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle qa-expand-protected-branches' }) do
+      = expanded ? _('Collapse') : _('Expand')
     %p
       = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
       = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/protected_branches")

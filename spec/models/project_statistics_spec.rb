@@ -358,20 +358,6 @@ RSpec.describe ProjectStatistics do
 
       expect(statistics.container_registry_size).to eq(0)
     end
-
-    context 'with container_registry_project_statistics FF disabled' do
-      before do
-        stub_feature_flags(container_registry_project_statistics: false)
-      end
-
-      it 'does not update the container_registry_size' do
-        expect(project).not_to receive(:container_repositories_size)
-
-        update_container_registry_size
-
-        expect(statistics.container_registry_size).to eq(0)
-      end
-    end
   end
 
   describe '#update_storage_size' do

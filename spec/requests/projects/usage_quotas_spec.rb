@@ -35,26 +35,5 @@ RSpec.describe 'Project Usage Quotas' do
 
       it_behaves_like 'response with 404 status'
     end
-
-    context 'container_registry_project_statistics feature flag' do
-      subject(:body) { response.body }
-
-      before do
-        stub_feature_flags(container_registry_project_statistics: container_registry_project_statistics_enabled)
-        get project_usage_quotas_path(project)
-      end
-
-      context 'when disabled' do
-        let(:container_registry_project_statistics_enabled) { false }
-
-        it { is_expected.to have_pushed_frontend_feature_flags(containerRegistryProjectStatistics: false)}
-      end
-
-      context 'when enabled' do
-        let(:container_registry_project_statistics_enabled) { true }
-
-        it { is_expected.to have_pushed_frontend_feature_flags(containerRegistryProjectStatistics: true)}
-      end
-    end
   end
 end

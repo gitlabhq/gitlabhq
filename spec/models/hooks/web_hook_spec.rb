@@ -24,6 +24,29 @@ RSpec.describe WebHook do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:url) }
 
+    describe 'url_variables' do
+      it { is_expected.to allow_value({}).for(:url_variables) }
+      it { is_expected.to allow_value({ 'foo' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'FOO' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'MY_TOKEN' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'foo2' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x' => 'y' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x' => ('a' * 100) }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'foo' => 'bar', 'bar' => 'baz' }).for(:url_variables) }
+      it { is_expected.to allow_value((1..20).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
+
+      it { is_expected.not_to allow_value([]).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => 1 }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'bar' => :baz }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'bar' => nil }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => '' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => ('a' * 101) }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'has spaces' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ '' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ '1foo' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value((1..21).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
+    end
+
     describe 'url' do
       it { is_expected.to allow_value('http://example.com').for(:url) }
       it { is_expected.to allow_value('https://example.com').for(:url) }
@@ -87,7 +110,7 @@ RSpec.describe WebHook do
   describe 'encrypted attributes' do
     subject { described_class.encrypted_attributes.keys }
 
-    it { is_expected.to contain_exactly(:token, :url) }
+    it { is_expected.to contain_exactly(:token, :url, :url_variables) }
   end
 
   describe 'execute' do
@@ -517,6 +540,24 @@ RSpec.describe WebHook do
       end
 
       it { is_expected.to eq :temporarily_disabled }
+    end
+  end
+
+  describe '#to_json' do
+    it 'does not error' do
+      expect { hook.to_json }.not_to raise_error
+    end
+
+    it 'does not error, when serializing unsafe attributes' do
+      expect { hook.to_json(unsafe_serialization_hash: true) }.not_to raise_error
+    end
+
+    it 'does not contain binary attributes' do
+      expect(hook.to_json).not_to include('encrypted_url_variables')
+    end
+
+    it 'does not contain binary attributes, even when serializing unsafe attributes' do
+      expect(hook.to_json(unsafe_serialization_hash: true)).not_to include('encrypted_url_variables')
     end
   end
 end

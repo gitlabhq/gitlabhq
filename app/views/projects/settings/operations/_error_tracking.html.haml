@@ -6,7 +6,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Error tracking')
-    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Expand')
     %p
       = _('Link Sentry to GitLab to discover and view the errors your application generates.')

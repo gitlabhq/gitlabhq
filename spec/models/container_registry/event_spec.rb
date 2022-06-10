@@ -60,14 +60,6 @@ RSpec.describe ContainerRegistry::Event do
       end
     end
 
-    context 'with :container_registry_project_statistics feature flag disabled' do
-      before do
-        stub_feature_flags(container_registry_project_statistics: false)
-      end
-
-      it_behaves_like 'event without project statistics update'
-    end
-
     context 'with no target tag' do
       let(:target) { super().without('tag') }
 

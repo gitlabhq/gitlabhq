@@ -64,6 +64,34 @@ Any Jira Server and Jira Data Center users will need to confirm they are not usi
 
 <div class="deprecation removal-160 breaking-change">
 
+### PipelineSecurityReportFinding name GraphQL field
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/335372) to include a new `title` field. This field is an alias for the current `name` field, making the less specific `name` field redundant. The `name` field will be removed from the PipelineSecurityReportFinding type in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### PipelineSecurityReportFinding projectFingerprint GraphQL field
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### REST API Runner maintainer_note
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
@@ -87,6 +115,20 @@ The ability to sort the Vulnerability Report by the `Tool` column (scan type) wa
 of the underlying data model. The feature flag has remained off by default as further refactoring will be required to ensure sorting
 by this value remains performant. Due to very low usage of the `Tool` column for sorting, the feature flag will instead be removed in
 GitLab 15.3 to simplify the codebase and prevent any unwanted performance degradation.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### project.pipeline.securityReportFindings GraphQL query
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+Previous work helped [align the vulnerabilities calls for pipeline security tabs](https://gitlab.com/gitlab-org/gitlab/-/issues/343469) to match the vulnerabilities calls for project-level and group-level vulnerability reports. This helped the frontend have a more consistent interface. The old `project.pipeline.securityReportFindings` query was formatted differently than other vulnerability data calls. Now that it has been replaced with the new `project.pipeline.vulnerabilities` field, the old `project.pipeline.securityReportFindings` is being deprecated and will be removed in GitLab 16.0.
 
 </div>
 </div>

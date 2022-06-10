@@ -3,7 +3,7 @@
 %section.settings.no-animate#cleanup{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Repository cleanup')
-    %button.btn.gl-button.btn-default.js-settings-toggle
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       - link_url = 'https://github.com/newren/git-filter-repo'

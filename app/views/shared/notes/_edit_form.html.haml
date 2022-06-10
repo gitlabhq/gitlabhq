@@ -10,5 +10,5 @@
       .settings-message.note-edit-warning.js-finish-edit-warning
         = _("Finish editing this message first!")
       = submit_tag _('Save comment'), class: 'gl-button btn btn-confirm js-comment-save-button', data: { qa_selector: 'save_comment_button' }
-      %button.btn.gl-button.btn-cancel.note-edit-cancel{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'note-edit-cancel' }) do
         = _("Cancel")

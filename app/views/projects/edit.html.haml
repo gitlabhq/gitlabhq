@@ -10,14 +10,16 @@
 %section.settings.general-settings.no-animate.expanded#js-general-settings
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }= _('Collapse')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = _('Collapse')
     %p= _('Update your project name, topics, description, and avatar.')
   .settings-content= render 'projects/settings/general'
 
 %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { qa_selector: 'visibility_features_permissions_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
     %p= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default award emoji.')
 
   .settings-content
@@ -29,7 +31,8 @@
 %section.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)], data: { qa_selector: 'merge_request_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
     = render_if_exists 'projects/merge_request_settings_description_text'
 
   .settings-content
@@ -47,7 +50,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('ProjectSettings|Badges')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('ProjectSettings|Customize this project\'s badges.')
@@ -64,7 +67,8 @@
 %section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
     %p= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
 
   .settings-content

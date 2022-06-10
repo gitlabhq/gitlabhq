@@ -4,8 +4,8 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_("ProtectedTag|Protected tags")
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? 'Collapse' : 'Expand'
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
     %p
       = s_("ProtectedTag|Limit access to creating and updating tags.")
       =  link_to s_("ProtectedTag|What are protected tags?"), help_page_path("user/project/protected_tags")

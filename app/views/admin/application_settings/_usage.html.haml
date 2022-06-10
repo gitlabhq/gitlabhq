@@ -21,7 +21,7 @@
         checkbox_options: { disabled: !can_be_configured, data: { qa_selector: 'enable_usage_data_checkbox' } }
       .form-text.gl-pl-6
         - if can_be_configured
-          %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
+          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger', data: { payload_selector: ".#{payload_class}" } }) do
             = gl_loading_icon(css_class: 'js-spinner gl-display-none gl-mr-2')
             .js-text.gl-display-inline= s_('AdminSettings|Preview payload')
           %pre.service-data-payload-container.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }

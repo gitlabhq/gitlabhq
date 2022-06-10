@@ -19,6 +19,15 @@ class WebHook < ApplicationRecord
                  algorithm: 'aes-256-gcm',
                  key:       Settings.attr_encrypted_db_key_base_32
 
+  attr_encrypted :url_variables,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_32,
+                 algorithm: 'aes-256-gcm',
+                 marshal: true,
+                 marshaler: ::Gitlab::Json,
+                 encode: false,
+                 encode_iv: false
+
   has_many :web_hook_logs
 
   validates :url, presence: true
@@ -26,6 +35,9 @@ class WebHook < ApplicationRecord
 
   validates :token, format: { without: /\n/ }
   validates :push_events_branch_filter, branch_filter: true
+  validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
+
+  after_initialize :initialize_url_variables
 
   scope :executable, -> do
     next all unless Feature.enabled?(:web_hooks_disable_failed)
@@ -150,9 +162,22 @@ class WebHook < ApplicationRecord
     end
   end
 
+  # Exclude binary columns by default - they have no sensible JSON encoding
+  def serializable_hash(options = nil)
+    options = options.try(:dup) || {}
+    options[:except] = Array(options[:except]).dup
+    options[:except].concat [:encrypted_url_variables, :encrypted_url_variables_iv]
+
+    super(options)
+  end
+
   private
 
   def web_hooks_disable_failed?
     Feature.enabled?(:web_hooks_disable_failed)
+  end
+
+  def initialize_url_variables
+    self.url_variables = {} if encrypted_url_variables.nil?
   end
 end

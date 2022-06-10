@@ -77,8 +77,6 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_container_registry_size
-    return unless Feature.enabled?(:container_registry_project_statistics, project)
-
     self.container_registry_size = project.container_repositories_size || 0
   end
 

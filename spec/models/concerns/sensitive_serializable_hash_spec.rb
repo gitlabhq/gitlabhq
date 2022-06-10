@@ -56,6 +56,9 @@ RSpec.describe SensitiveSerializableHash do
             attributes.each do |attribute|
               expect(model.attributes).to include(attribute) # double-check the attribute does exist
 
+              # Do not expect binary columns to appear in JSON
+              next if klass.columns_hash[attribute]&.type == :binary
+
               expect(model.serializable_hash(unsafe_serialization_hash: true)).to include(attribute)
               expect(model.to_json(unsafe_serialization_hash: true)).to include(attribute)
               expect(model.as_json(unsafe_serialization_hash: true)).to include(attribute)
@@ -65,8 +68,12 @@ RSpec.describe SensitiveSerializableHash do
       end
     end
 
-    it_behaves_like 'attr_encrypted attribute', WebHook, 'token' do
+    context 'for a web hook' do
       let_it_be(:model) { create(:system_hook) }
+
+      it_behaves_like 'attr_encrypted attribute', WebHook, 'token'
+      it_behaves_like 'attr_encrypted attribute', WebHook, 'url'
+      it_behaves_like 'attr_encrypted attribute', WebHook, 'url_variables'
     end
 
     it_behaves_like 'attr_encrypted attribute', Ci::InstanceVariable, 'value' do
