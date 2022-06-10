@@ -46,6 +46,9 @@ msgstr ""
 msgid " or %{emphasisStart}!merge request id%{emphasisEnd}"
 msgstr ""
 
+msgid " or %{emphasisStart}#id%{emphasisEnd}"
+msgstr ""
+
 msgid " or %{emphasisStart}#issue id%{emphasisEnd}"
 msgstr ""
 
@@ -27488,6 +27491,9 @@ msgstr ""
 msgid "Paste issue link"
 msgstr ""
 
+msgid "Paste link"
+msgstr ""
+
 msgid "Paste project path (i.e. gitlab-org/gitlab)"
 msgstr ""
 
@@ -31460,6 +31466,9 @@ msgid "Relate to %{issuable_type} %{add_related_issue_link}"
 msgstr ""
 
 msgid "Related feature flags"
+msgstr ""
+
+msgid "Related incidents or issues"
 msgstr ""
 
 msgid "Related issues"
@@ -37932,6 +37941,9 @@ msgid "The contents of this group, its subgroups and projects will be permanentl
 msgstr ""
 
 msgid "The current epic"
+msgstr ""
+
+msgid "The current incident"
 msgstr ""
 
 msgid "The current issue"
@@ -46083,6 +46095,9 @@ msgid "the correct format."
 msgstr ""
 
 msgid "the following epic(s)"
+msgstr ""
+
+msgid "the following incident(s) or issue(s)"
 msgstr ""
 
 msgid "the following issue(s)"

@@ -7,6 +7,8 @@ module Types
 
     authorize :read_release
 
+    present_using Releases::LinkPresenter
+
     field :external, GraphQL::Types::Boolean, null: true, method: :external?,
           description: 'Indicates the link points to an external resource.'
     field :id, GraphQL::Types::ID, null: false,
@@ -22,12 +24,5 @@ module Types
           description: 'Relative path for the direct asset link.'
     field :direct_asset_url, GraphQL::Types::String, null: true,
           description: 'Direct asset URL of the link.'
-
-    def direct_asset_url
-      return object.url unless object.filepath
-
-      release = object.release.present
-      release.download_url(object.filepath)
-    end
   end
 end

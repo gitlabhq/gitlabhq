@@ -19,7 +19,6 @@ import TaskList from '~/task_list';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import * as constants from '../constants';
-import eventHub from '../event_hub';
 import * as types from './mutation_types';
 import * as utils from './utils';
 
@@ -497,13 +496,6 @@ export const setFetchingState = ({ commit }, fetchingState) =>
 const pollSuccessCallBack = async (resp, commit, state, getters, dispatch) => {
   if (state.isResolvingDiscussion) {
     return null;
-  }
-
-  if (window.gon?.features?.paginatedNotes && !resp.more && state.isFetching) {
-    eventHub.$emit('fetchedNotesData');
-    dispatch('setFetchingState', false);
-    dispatch('setNotesFetchedState', true);
-    dispatch('setLoadingState', false);
   }
 
   if (resp.notes?.length) {

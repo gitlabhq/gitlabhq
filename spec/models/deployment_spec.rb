@@ -27,18 +27,8 @@ RSpec.describe Deployment do
   describe '#manual_actions' do
     let(:deployment) { create(:deployment) }
 
-    it 'delegates to environment_manual_actions when deployment_environment_manual_actions ff is enabled' do
-      stub_feature_flags(deployment_environment_manual_actions: true)
-
+    it 'delegates to environment_manual_actions' do
       expect(deployment.deployable).to receive(:environment_manual_actions).and_call_original
-
-      deployment.manual_actions
-    end
-
-    it 'delegates to other_manual_actions when deployment_environment_manual_actions ff is disabled' do
-      stub_feature_flags(deployment_environment_manual_actions: false)
-
-      expect(deployment.deployable).to receive(:other_manual_actions).and_call_original
 
       deployment.manual_actions
     end
@@ -47,18 +37,8 @@ RSpec.describe Deployment do
   describe '#scheduled_actions' do
     let(:deployment) { create(:deployment) }
 
-    it 'delegates to environment_scheduled_actions when deployment_environment_manual_actions ff is enabled' do
-      stub_feature_flags(deployment_environment_manual_actions: true)
-
+    it 'delegates to environment_scheduled_actions' do
       expect(deployment.deployable).to receive(:environment_scheduled_actions).and_call_original
-
-      deployment.scheduled_actions
-    end
-
-    it 'delegates to other_scheduled_actions when deployment_environment_manual_actions ff is disabled' do
-      stub_feature_flags(deployment_environment_manual_actions: false)
-
-      expect(deployment.deployable).to receive(:other_scheduled_actions).and_call_original
 
       deployment.scheduled_actions
     end

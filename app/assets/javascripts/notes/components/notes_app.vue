@@ -210,10 +210,6 @@ export default {
 
       this.setFetchingState(true);
 
-      if (this.glFeatures.paginatedNotes) {
-        return this.initPolling();
-      }
-
       return this.fetchDiscussions(this.getFetchDiscussionsConfig())
         .then(this.initPolling)
         .then(() => {

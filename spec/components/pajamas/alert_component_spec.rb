@@ -138,5 +138,35 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
         end
       end
     end
+
+    context 'with alert_options' do
+      let(:options) { { alert_options: { id: 'test_id', class: 'baz', data: { foo: 'bar' } } } }
+
+      before do
+        render_inline described_class.new(**options)
+      end
+
+      it 'renders the extra options' do
+        expect(rendered_component).to have_css "#test_id.gl-alert.baz[data-foo='bar']"
+      end
+
+      context 'with custom classes or data' do
+        let(:options) do
+          {
+            variant: :danger,
+            alert_class: 'custom',
+            alert_data: { foo: 'bar' },
+            alert_options: {
+              class: 'extra special',
+              data: { foo: 'conflict' }
+            }
+          }
+        end
+
+        it 'doesn\'t conflict with internal alert_class or alert_data' do
+          expect(rendered_component).to have_css ".extra.special.custom.gl-alert.gl-alert-danger[data-foo='bar']"
+        end
+      end
+    end
   end
 end

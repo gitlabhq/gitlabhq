@@ -6,8 +6,10 @@ FactoryBot.define do
 
     dast_profile_schedules { 50 }
 
-    trait :default_plan do
-      plan factory: :default_plan
+    Plan.all_plans.each do |plan|
+      trait :"#{plan}_plan" do
+        plan factory: :"#{plan}_plan"
+      end
     end
 
     trait :with_package_file_sizes do

@@ -37,7 +37,7 @@ export default {
       default: null,
     },
   },
-  emits: ['workItemDeleted', 'workItemUpdated', 'close'],
+  emits: ['workItemDeleted', 'close'],
   data() {
     return {
       error: undefined,
@@ -104,9 +104,9 @@ export default {
     </gl-alert>
 
     <work-item-detail
+      :work-item-parent-id="issueGid"
       :work-item-id="workItemId"
       @deleteWorkItem="deleteWorkItem"
-      @workItemUpdated="$emit('workItemUpdated')"
     />
   </gl-modal>
 </template>

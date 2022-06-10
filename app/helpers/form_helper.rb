@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [])
+  def form_errors(model, type: 'form', truncate: [], pajamas_alert: false)
     errors = model.errors
 
     return unless errors.any?
@@ -14,22 +14,38 @@ module FormHelper
 
     truncate = Array.wrap(truncate)
 
-    tag.div(class: 'alert alert-danger', id: 'error_explanation') do
-      tag.h4(headline) <<
-        tag.ul do
-          messages = errors.map do |error|
-            attribute = error.attribute
-            message = error.message
+    messages = errors.map do |error|
+      attribute = error.attribute
+      message = error.message
 
-            message = html_escape_once(errors.full_message(attribute, message)).html_safe
-            message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
-            message = append_help_page_link(message, error.options) if error.options[:help_page_url].present?
+      message = html_escape_once(errors.full_message(attribute, message)).html_safe
+      message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
+      message = append_help_page_link(message, error.options) if error.options[:help_page_url].present?
 
-            tag.li(message)
+      tag.li(message)
+    end.join.html_safe
+
+    if pajamas_alert
+      render Pajamas::AlertComponent.new(
+        variant: :danger,
+        title: headline,
+        dismissible: false,
+        alert_class: 'gl-mb-5',
+        alert_options: { id: 'error_explanation' }
+      ) do |c|
+        c.body do
+          tag.ul(class: 'gl-pl-5 gl-mb-0') do
+            messages
           end
-
-          messages.join.html_safe
         end
+      end
+    else
+      tag.div(class: 'alert alert-danger', id: 'error_explanation') do
+        tag.h4(headline) <<
+          tag.ul do
+            messages
+          end
+      end
     end
   end
 

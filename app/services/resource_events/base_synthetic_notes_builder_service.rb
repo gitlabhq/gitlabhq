@@ -25,8 +25,7 @@ module ResourceEvents
 
     def apply_common_filters(events)
       events = apply_pagination(events)
-      events = apply_last_fetched_at(events)
-      apply_fetch_until(events)
+      apply_last_fetched_at(events)
     end
 
     def apply_pagination(events)
@@ -42,12 +41,6 @@ module ResourceEvents
       last_fetched_at = params[:last_fetched_at] - NotesFinder::FETCH_OVERLAP
 
       events.created_after(last_fetched_at)
-    end
-
-    def apply_fetch_until(events)
-      return events unless params[:fetch_until].present?
-
-      events.created_on_or_before(params[:fetch_until])
     end
 
     def resource_parent

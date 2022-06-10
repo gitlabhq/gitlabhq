@@ -88,17 +88,11 @@ export const publishReview = ({ commit, dispatch, getters }) => {
 };
 
 export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGetters }) => {
-  if (window.gon?.features?.paginatedNotes) {
-    await dispatch('stopPolling', null, { root: true });
-    await dispatch('fetchData', null, { root: true });
-    await dispatch('restartPolling', null, { root: true });
-  } else {
-    await dispatch(
-      'fetchDiscussions',
-      { path: getters.getNotesData.discussionsPath },
-      { root: true },
-    );
-  }
+  await dispatch(
+    'fetchDiscussions',
+    { path: getters.getNotesData.discussionsPath },
+    { root: true },
+  );
 
   dispatch('diffs/assignDiscussionsToDiff', rootGetters.discussionsStructuredByLineCode, {
     root: true,

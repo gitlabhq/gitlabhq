@@ -1,7 +1,8 @@
 <script>
+import * as Sentry from '@sentry/browser';
 import Tracking from '~/tracking';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
-import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import { getUpdateWorkItemMutation } from './update_work_item';
 import ItemTitle from './item_title.vue';
 
 export default {
@@ -25,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    workItemParentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     tracking() {
@@ -41,21 +47,37 @@ export default {
         return;
       }
 
+      const input = {
+        id: this.workItemId,
+        title: updatedTitle,
+      };
+
+      this.updateInProgress = true;
+
       try {
-        await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItemId,
-              title: updatedTitle,
-            },
-          },
-        });
         this.track('updated_title');
-        this.$emit('updated');
-      } catch {
+
+        const { mutation, variables } = getUpdateWorkItemMutation({
+          workItemParentId: this.workItemParentId,
+          input,
+        });
+
+        const { data } = await this.$apollo.mutate({
+          mutation,
+          variables,
+        });
+
+        const errors = data.workItemUpdate?.errors;
+
+        if (errors?.length) {
+          throw new Error(errors[0]);
+        }
+      } catch (error) {
         this.$emit('error', i18n.updateError);
+        Sentry.captureException(error);
       }
+
+      this.updateInProgress = false;
     },
   },
 };

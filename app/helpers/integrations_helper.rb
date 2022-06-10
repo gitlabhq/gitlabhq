@@ -233,11 +233,11 @@ module IntegrationsHelper
   end
 
   def trigger_events_for_integration(integration)
-    ServiceEventSerializer.new(service: integration).represent(integration.configurable_events).to_json
+    Integrations::EventSerializer.new(integration: integration).represent(integration.configurable_events).to_json
   end
 
   def fields_for_integration(integration)
-    ServiceFieldSerializer.new(service: integration).represent(integration.global_fields).to_json
+    Integrations::FieldSerializer.new(integration: integration).represent(integration.global_fields).to_json
   end
 
   def integration_level(integration)

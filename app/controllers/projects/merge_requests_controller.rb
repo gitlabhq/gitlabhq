@@ -35,7 +35,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:file_identifier_hash)
     push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:paginated_notes, project)
     push_frontend_feature_flag(:confidential_notes, project)
     push_frontend_feature_flag(:restructured_mr_widget, project)
     push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)

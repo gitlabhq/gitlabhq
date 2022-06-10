@@ -1,6 +1,68 @@
 # frozen_string_literal: true
 
 module ExceedQueryLimitHelpers
+  class QueryDiff
+    def initialize(expected, actual, show_common_queries)
+      @expected = expected
+      @actual = actual
+      @show_common_queries = show_common_queries
+    end
+
+    def diff
+      return combined_counts if @show_common_queries
+
+      combined_counts
+        .transform_values { select_suffixes_with_diffs(_1) }
+        .reject { |_prefix, suffs| suffs.empty? }
+    end
+
+    private
+
+    def select_suffixes_with_diffs(suffs)
+      reject_groups_with_different_parameters(reject_suffixes_with_identical_counts(suffs))
+    end
+
+    def reject_suffixes_with_identical_counts(suffs)
+      suffs.reject { |_k, counts| counts.first == counts.second }
+    end
+
+    # Eliminates groups that differ only in parameters,
+    # to make it easier to debug the output.
+    #
+    # For example, if we have a group `SELECT * FROM users...`,
+    # with the following suffixes
+    #      `WHERE id = 1` (counts: N, 0)
+    #      `WHERE id = 2` (counts: 0, N)
+    def reject_groups_with_different_parameters(suffs)
+      return suffs if suffs.size != 2
+
+      counts_a, counts_b = suffs.values
+      return {} if counts_a == counts_b.reverse && counts_a.include?(0)
+
+      suffs
+    end
+
+    def expected_counts
+      @expected.transform_values do |suffixes|
+        suffixes.transform_values { |n| [n, 0] }
+      end
+    end
+
+    def recorded_counts
+      @actual.transform_values do |suffixes|
+        suffixes.transform_values { |n| [0, n] }
+      end
+    end
+
+    def combined_counts
+      expected_counts.merge(recorded_counts) do |_k, exp, got|
+        exp.merge(got) do |_k, exp_counts, got_counts|
+          exp_counts.zip(got_counts).map { |a, b| a + b }
+        end
+      end
+    end
+  end
+
   MARGINALIA_ANNOTATION_REGEX = %r{\s*\/\*.*\*\/}.freeze
 
   DB_QUERY_RE = Regexp.union([
@@ -108,40 +170,7 @@ module ExceedQueryLimitHelpers
   end
 
   def diff_query_counts(expected, actual)
-    expected_counts = expected.transform_values do |suffixes|
-      suffixes.transform_values { |n| [n, 0] }
-    end
-    recorded_counts = actual.transform_values do |suffixes|
-      suffixes.transform_values { |n| [0, n] }
-    end
-
-    combined_counts = expected_counts.merge(recorded_counts) do |_k, exp, got|
-      exp.merge(got) do |_k, exp_counts, got_counts|
-        exp_counts.zip(got_counts).map { |a, b| a + b }
-      end
-    end
-
-    reject_groups_with_matching_counts(combined_counts)
-  end
-
-  def reject_groups_with_matching_counts(combined_counts)
-    return combined_counts if @show_common_queries
-
-    combined_counts
-      .transform_values { select_suffixes_with_diffs(_1) }
-      .reject { |_prefix, suffs| suffs.empty? }
-  end
-
-  def select_suffixes_with_diffs(suffs)
-    # reject when count in LHS is the same as count in RHS
-    suffs = suffs.reject { |_k, counts| counts.first == counts.second }
-
-    # Reject common case of N queries on LHS and N on right, but with different parameters
-    # accepts as equivalent if a == [0, 1] and b == [1, 0], for example
-    keys = suffs.keys
-    return {} if keys.size == 2 && suffs[keys.first] == suffs[keys.second].reverse
-
-    suffs
+    QueryDiff.new(expected, actual, @show_common_queries).diff
   end
 
   def diff_query_group_message(query, suffixes)

@@ -288,7 +288,7 @@ class Deployment < ApplicationRecord
   end
 
   def manual_actions
-    Feature.enabled?(:deployment_environment_manual_actions) ? environment_manual_actions : other_manual_actions
+    environment_manual_actions
   end
 
   def other_manual_actions
@@ -300,7 +300,7 @@ class Deployment < ApplicationRecord
   end
 
   def scheduled_actions
-    Feature.enabled?(:deployment_environment_manual_actions) ? environment_scheduled_actions : other_scheduled_actions
+    environment_scheduled_actions
   end
 
   def environment_scheduled_actions

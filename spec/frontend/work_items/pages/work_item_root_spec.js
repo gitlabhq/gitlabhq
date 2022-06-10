@@ -52,6 +52,7 @@ describe('Work items root component', () => {
 
     expect(findWorkItemDetail().props()).toEqual({
       workItemId: 'gid://gitlab/WorkItem/1',
+      workItemParentId: null,
     });
   });
 

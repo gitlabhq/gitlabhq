@@ -10,11 +10,16 @@ RSpec.describe FormHelper do
       expect(helper.form_errors(model)).to be_nil
     end
 
-    it 'renders an alert div' do
+    it 'renders an appropriately styled alert div' do
       model = double(errors: errors_stub('Error 1'))
 
-      expect(helper.form_errors(model))
+      expect(helper.form_errors(model, pajamas_alert: false))
         .to include('<div class="alert alert-danger" id="error_explanation">')
+
+      expect(helper.form_errors(model, pajamas_alert: true))
+        .to include(
+          '<div class="gl-alert gl-alert-danger gl-alert-not-dismissible gl-mb-5" id="error_explanation" role="alert">'
+        )
     end
 
     it 'contains a summary message' do
@@ -22,9 +27,9 @@ RSpec.describe FormHelper do
       multi_errors = double(errors: errors_stub('A', 'B', 'C'))
 
       expect(helper.form_errors(single_error))
-        .to include('<h4>The form contains the following error:')
+        .to include('The form contains the following error:')
       expect(helper.form_errors(multi_errors))
-        .to include('<h4>The form contains the following errors:')
+        .to include('The form contains the following errors:')
     end
 
     it 'renders each message' do

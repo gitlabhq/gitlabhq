@@ -1,8 +1,0 @@
----
-name: deployment_environment_manual_actions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87138
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362824
-milestone: '15.1'
-type: development
-group: group::release
-default_enabled: false

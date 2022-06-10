@@ -157,8 +157,7 @@ module Gitlab
       def log_error(exception, command_name, extra = {})
         Gitlab::ErrorTracking.log_exception(
           exception,
-          command_name: command_name,
-          extra: extra.merge(instance_name: instance_name))
+          extra.merge(command_name: command_name, instance_name: instance_name))
       end
 
       private
@@ -285,12 +284,16 @@ module Gitlab
         @instance = nil
       end
 
+      def redis_store?(store)
+        store.is_a?(::Redis) || store.is_a?(::Redis::Namespace)
+      end
+
       def validate_stores!
         raise ArgumentError, 'primary_store is required' unless primary_store
         raise ArgumentError, 'secondary_store is required' unless secondary_store
         raise ArgumentError, 'instance_name is required' unless instance_name
-        raise ArgumentError, 'invalid primary_store' unless primary_store.is_a?(::Redis)
-        raise ArgumentError, 'invalid secondary_store' unless secondary_store.is_a?(::Redis)
+        raise ArgumentError, 'invalid primary_store' unless redis_store?(primary_store)
+        raise ArgumentError, 'invalid secondary_store' unless redis_store?(secondary_store)
       end
     end
   end

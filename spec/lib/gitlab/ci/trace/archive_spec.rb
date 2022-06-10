@@ -29,19 +29,50 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
         let(:stream) { StringIO.new(trace, 'rb') }
         let(:src_checksum) { Digest::MD5.hexdigest(trace) }
 
+        shared_examples 'valid' do
+          it 'does not count as invalid' do
+            subject.execute!(stream)
+
+            expect(metrics)
+            .not_to have_received(:increment_error_counter)
+            .with(error_reason: :archive_invalid_checksum)
+          end
+        end
+
+        shared_examples 'local checksum only' do
+          it 'generates only local checksum' do
+            subject.execute!(stream)
+
+            expect(trace_metadata.checksum).to eq(src_checksum)
+            expect(trace_metadata.remote_checksum).to be_nil
+          end
+        end
+
+        shared_examples 'skips validations' do
+          it_behaves_like 'valid'
+          it_behaves_like 'local checksum only'
+        end
+
+        shared_context 'with FIPS' do
+          context 'with FIPS enabled', :fips_mode do
+            it_behaves_like 'valid'
+
+            it 'does not generate md5 checksums' do
+              subject.execute!(stream)
+
+              expect(trace_metadata.checksum).to be_nil
+              expect(trace_metadata.remote_checksum).to be_nil
+            end
+          end
+        end
+
         context 'when the object store is disabled' do
           before do
             stub_artifacts_object_storage(enabled: false)
           end
 
-          it 'skips validation' do
-            subject.execute!(stream)
-            expect(trace_metadata.checksum).to eq(src_checksum)
-            expect(trace_metadata.remote_checksum).to be_nil
-            expect(metrics)
-              .not_to have_received(:increment_error_counter)
-              .with(error_reason: :archive_invalid_checksum)
-          end
+          it_behaves_like 'skips validations'
+          include_context 'with FIPS'
         end
 
         context 'with background_upload enabled' do
@@ -49,15 +80,8 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
             stub_artifacts_object_storage(background_upload: true)
           end
 
-          it 'skips validation' do
-            subject.execute!(stream)
-
-            expect(trace_metadata.checksum).to eq(src_checksum)
-            expect(trace_metadata.remote_checksum).to be_nil
-            expect(metrics)
-              .not_to have_received(:increment_error_counter)
-              .with(error_reason: :archive_invalid_checksum)
-          end
+          it_behaves_like 'skips validations'
+          include_context 'with FIPS'
         end
 
         context 'with direct_upload enabled' do
@@ -65,27 +89,26 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
             stub_artifacts_object_storage(direct_upload: true)
           end
 
-          it 'validates the archived trace' do
+          it_behaves_like 'valid'
+
+          it 'checksums match' do
             subject.execute!(stream)
 
             expect(trace_metadata.checksum).to eq(src_checksum)
             expect(trace_metadata.remote_checksum).to eq(src_checksum)
-            expect(metrics)
-              .not_to have_received(:increment_error_counter)
-              .with(error_reason: :archive_invalid_checksum)
           end
 
           context 'when the checksum does not match' do
             let(:invalid_remote_checksum) { SecureRandom.hex }
 
             before do
-              expect(::Gitlab::Ci::Trace::RemoteChecksum)
+              allow(::Gitlab::Ci::Trace::RemoteChecksum)
                 .to receive(:new)
                 .with(an_instance_of(Ci::JobArtifact))
                 .and_return(double(md5_checksum: invalid_remote_checksum))
             end
 
-            it 'validates the archived trace' do
+            it 'counts as invalid' do
               subject.execute!(stream)
 
               expect(trace_metadata.checksum).to eq(src_checksum)
@@ -94,7 +117,11 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
                 .to have_received(:increment_error_counter)
                 .with(error_reason: :archive_invalid_checksum)
             end
+
+            include_context 'with FIPS'
           end
+
+          include_context 'with FIPS'
         end
       end
     end

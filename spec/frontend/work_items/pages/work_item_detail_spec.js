@@ -141,20 +141,6 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('emits workItemUpdated event when fields updated', async () => {
-    createComponent();
-
-    await waitForPromises();
-
-    findWorkItemState().vm.$emit('updated');
-
-    expect(wrapper.emitted('workItemUpdated')).toEqual([[]]);
-
-    findWorkItemTitle().vm.$emit('updated');
-
-    expect(wrapper.emitted('workItemUpdated')).toEqual([[], []]);
-  });
-
   describe('when work_items_mvc_2 feature flag is enabled', () => {
     it('renders assignees component when assignees widget is returned from the API', async () => {
       createComponent({

@@ -20,3 +20,4 @@ Gitlab::Redis::TraceChunks.with { nil }
 Gitlab::Redis::RateLimiting.with { nil }
 Gitlab::Redis::Sessions.with { nil }
 Gitlab::Redis::DuplicateJobs.with { nil }
+Gitlab::Redis::SidekiqStatus.with { nil }

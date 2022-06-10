@@ -23,7 +23,9 @@ After you select and upload an image, select **Update appearance settings** at t
 of the page to activate it in the GitLab instance.
 
 NOTE:
-GitLab pipeline emails also display the custom logo.
+GitLab pipeline emails also display the custom logo, unless the logo is in SVG format. If the
+custom logo is in SVG format, the default logo is used instead because the SVG format is not
+supported by many email clients.
 
 ## Favicon
 

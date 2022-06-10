@@ -2,20 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe ServiceFieldEntity do
-  let(:request) { double('request') }
+RSpec.describe Integrations::FieldEntity do
+  let(:request) { EntityRequest.new(integration: integration) }
 
-  subject { described_class.new(field, request: request, service: integration).as_json }
+  subject { described_class.new(field, request: request, integration: integration).as_json }
 
   before do
-    allow(request).to receive(:service).and_return(integration)
+    allow(request).to receive(:integration).and_return(integration)
   end
 
   describe '#as_json' do
-    context 'Jira Service' do
+    context 'with Jira integration' do
       let(:integration) { create(:jira_integration) }
 
-      context 'field with type text' do
+      context 'with field with type text' do
         let(:field) { integration_field('username') }
 
         it 'exposes correct attributes' do
@@ -36,7 +36,7 @@ RSpec.describe ServiceFieldEntity do
         end
       end
 
-      context 'field with type password' do
+      context 'with field with type password' do
         let(:field) { integration_field('password') }
 
         it 'exposes correct attributes but hides password' do
@@ -58,10 +58,10 @@ RSpec.describe ServiceFieldEntity do
       end
     end
 
-    context 'EmailsOnPush Service' do
+    context 'with EmailsOnPush integration' do
       let(:integration) { create(:emails_on_push_integration, send_from_committer_email: '1') }
 
-      context 'field with type checkbox' do
+      context 'with field with type checkbox' do
         let(:field) { integration_field('send_from_committer_email') }
 
         it 'exposes correct attributes and casts value to Boolean' do
@@ -78,11 +78,14 @@ RSpec.describe ServiceFieldEntity do
           }
 
           is_expected.to include(expected_hash)
-          expect(subject[:help]).to include("Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance")
+          expect(subject[:help]).to include(
+            "Send notifications from the committer's email address if the domain " \
+            "matches the domain used by your GitLab instance"
+          )
         end
       end
 
-      context 'field with type select' do
+      context 'with field with type select' do
         let(:field) { integration_field('branches_to_be_notified') }
 
         it 'exposes correct attributes' do
@@ -93,7 +96,12 @@ RSpec.describe ServiceFieldEntity do
             title: 'Branches for which notifications are to be sent',
             placeholder: nil,
             required: nil,
-            choices: [['All branches', 'all'], ['Default branch', 'default'], ['Protected branches', 'protected'], ['Default branch and protected branches', 'default_and_protected']],
+            choices: [
+              ['All branches', 'all'],
+              ['Default branch', 'default'],
+              ['Protected branches', 'protected'],
+              ['Default branch and protected branches', 'default_and_protected']
+            ],
             help: nil,
             value: nil,
             checkbox_label: nil

@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe ServiceEventEntity do
-  let(:request) { double('request') }
+RSpec.describe Integrations::EventEntity do
+  let(:request) { EntityRequest.new(integration: integration) }
 
-  subject { described_class.new(event, request: request, service: integration).as_json }
+  subject { described_class.new(event, request: request, integration: integration).as_json }
 
   before do
-    allow(request).to receive(:service).and_return(integration)
+    allow(request).to receive(:integration).and_return(integration)
   end
 
   describe '#as_json' do
-    context 'integration without fields' do
+    context 'with integration without fields' do
       let(:integration) { create(:emails_on_push_integration, push_events: true) }
       let(:event) { 'push' }
 
@@ -24,7 +24,7 @@ RSpec.describe ServiceEventEntity do
       end
     end
 
-    context 'integration with fields' do
+    context 'with integration with fields' do
       let(:integration) { create(:integrations_slack, note_events: false, note_channel: 'note-channel') }
       let(:event) { 'note' }
 

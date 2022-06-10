@@ -12,17 +12,11 @@ RSpec.describe Gitlab::Redis::DuplicateJobs do
   include_examples "redis_shared_examples"
 
   describe '#pool' do
-    let(:config_new_format_host) { "spec/fixtures/config/redis_new_format_host.yml" }
-    let(:config_new_format_socket) { "spec/fixtures/config/redis_new_format_socket.yml" }
-
     subject { described_class.pool }
 
     before do
       redis_clear_raw_config!(Gitlab::Redis::SharedState)
       redis_clear_raw_config!(Gitlab::Redis::Queues)
-
-      allow(Gitlab::Redis::SharedState).to receive(:config_file_name).and_return(config_new_format_host)
-      allow(Gitlab::Redis::Queues).to receive(:config_file_name).and_return(config_new_format_socket)
     end
 
     after do
@@ -37,14 +31,46 @@ RSpec.describe Gitlab::Redis::DuplicateJobs do
       clear_pool
     end
 
-    it 'instantiates an instance of MultiStore' do
-      subject.with do |redis_instance|
-        expect(redis_instance).to be_instance_of(::Gitlab::Redis::MultiStore)
+    context 'store connection settings' do
+      let(:config_new_format_host) { "spec/fixtures/config/redis_new_format_host.yml" }
+      let(:config_new_format_socket) { "spec/fixtures/config/redis_new_format_socket.yml" }
 
-        expect(redis_instance.primary_store.connection[:id]).to eq("redis://test-host:6379/99")
-        expect(redis_instance.secondary_store.connection[:id]).to eq("redis:///path/to/redis.sock/0")
+      before do
+        allow(Gitlab::Redis::SharedState).to receive(:config_file_name).and_return(config_new_format_host)
+        allow(Gitlab::Redis::Queues).to receive(:config_file_name).and_return(config_new_format_socket)
+      end
 
-        expect(redis_instance.instance_name).to eq('DuplicateJobs')
+      it 'instantiates an instance of MultiStore' do
+        subject.with do |redis_instance|
+          expect(redis_instance).to be_instance_of(::Gitlab::Redis::MultiStore)
+
+          expect(redis_instance.primary_store.connection[:id]).to eq("redis://test-host:6379/99")
+          expect(redis_instance.primary_store.connection[:namespace]).to be_nil
+          expect(redis_instance.secondary_store.connection[:id]).to eq("redis:///path/to/redis.sock/0")
+          expect(redis_instance.secondary_store.connection[:namespace]).to eq("resque:gitlab")
+
+          expect(redis_instance.instance_name).to eq('DuplicateJobs')
+        end
+      end
+    end
+
+    # Make sure they current namespace is respected for the secondary store but omitted from the primary
+    context 'key namespaces' do
+      let(:key) { 'key' }
+      let(:value) { '123' }
+
+      it 'writes keys to SharedState with no prefix, and to Queues with the "resque:gitlab:" prefix' do
+        subject.with do |redis_instance|
+          redis_instance.set(key, value)
+        end
+
+        Gitlab::Redis::SharedState.with do |redis_instance|
+          expect(redis_instance.get(key)).to eq(value)
+        end
+
+        Gitlab::Redis::Queues.with do |redis_instance|
+          expect(redis_instance.get("resque:gitlab:#{key}")).to eq(value)
+        end
       end
     end
 

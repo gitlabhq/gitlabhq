@@ -13,13 +13,14 @@ module Pajamas
     # @param [Hash] close_button_data
     def initialize(
       title: nil, variant: :info, dismissible: true, show_icon: true,
-      alert_class: nil, alert_data: {}, close_button_class: nil, close_button_data: {})
+      alert_class: nil, alert_data: {}, alert_options: {}, close_button_class: nil, close_button_data: {})
       @title = title
       @variant = variant
       @dismissible = dismissible
       @show_icon = show_icon
       @alert_class = alert_class
       @alert_data = alert_data
+      @alert_options = alert_options
       @close_button_class = close_button_class
       @close_button_data = close_button_data
     end

@@ -9,6 +9,7 @@ import { IssueType } from '~/issues/constants';
 import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
+import initRelatedIssues from '~/related_issues';
 import {
   initHeaderActions,
   initIncidentApp,
@@ -58,6 +59,7 @@ export function initShow() {
   if (issueType === IssueType.Incident) {
     initIncidentApp(issuableData);
     initHeaderActions(store, IssueType.Incident);
+    initRelatedIssues(IssueType.Incident);
   } else {
     initIssueApp(issuableData, store);
     initHeaderActions(store);

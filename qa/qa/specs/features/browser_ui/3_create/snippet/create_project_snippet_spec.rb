@@ -9,7 +9,7 @@ module QA
           snippet.description = ' '
           snippet.visibility = 'Private'
           snippet.file_name = 'markdown_file.md'
-          snippet.file_content = "### Snippet heading\n\n[Gitlab link](https://gitlab.com/)"
+          snippet.file_content = "### Snippet heading\n\n[Example link](https://example.com/)"
         end
       end
 
@@ -30,9 +30,9 @@ module QA
           expect(snippet).to have_visibility_type(/private/i)
           expect(snippet).to have_file_name('markdown_file.md')
           expect(snippet).to have_file_content('Snippet heading')
-          expect(snippet).to have_file_content('Gitlab link')
+          expect(snippet).to have_file_content('Example link')
           expect(snippet).not_to have_file_content('###')
-          expect(snippet).not_to have_file_content('https://gitlab.com/')
+          expect(snippet).not_to have_file_content('https://example.com/')
         end
       end
     end

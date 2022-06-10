@@ -62,7 +62,7 @@ module EmailsHelper
   end
 
   def header_logo
-    if current_appearance&.header_logo?
+    if current_appearance&.header_logo? && !current_appearance.header_logo.filename.ends_with?('.svg')
       image_tag(
         current_appearance.header_logo_path,
         style: 'height: 50px'

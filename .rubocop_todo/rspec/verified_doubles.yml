@@ -146,7 +146,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/serializers/merge_request_poll_widget_entity_spec.rb
     - ee/spec/serializers/merge_request_sidebar_basic_entity_spec.rb
     - ee/spec/serializers/merge_request_widget_entity_spec.rb
-    - ee/spec/serializers/service_field_entity_spec.rb
     - ee/spec/serializers/test_reports_comparer_serializer_spec.rb
     - ee/spec/serializers/user_analytics_entity_spec.rb
     - ee/spec/serializers/vulnerabilities/feedback_entity_spec.rb
@@ -959,8 +958,6 @@ RSpec/VerifiedDoubles:
     - spec/serializers/prometheus_alert_entity_spec.rb
     - spec/serializers/review_app_setup_entity_spec.rb
     - spec/serializers/runner_entity_spec.rb
-    - spec/serializers/service_event_entity_spec.rb
-    - spec/serializers/service_field_entity_spec.rb
     - spec/serializers/stage_entity_spec.rb
     - spec/serializers/suggestion_entity_spec.rb
     - spec/serializers/test_reports_comparer_serializer_spec.rb

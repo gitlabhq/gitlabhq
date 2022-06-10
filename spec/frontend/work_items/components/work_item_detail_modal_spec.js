@@ -29,7 +29,7 @@ describe('WorkItemDetailModal component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findWorkItemDetail = () => wrapper.findComponent(WorkItemDetail);
 
-  const createComponent = ({ workItemId = '1', error = false } = {}) => {
+  const createComponent = ({ workItemId = '1', issueGid = '2', error = false } = {}) => {
     const apolloProvider = createMockApollo([
       [
         deleteWorkItemFromTaskMutation,
@@ -46,7 +46,7 @@ describe('WorkItemDetailModal component', () => {
 
     wrapper = shallowMount(WorkItemDetailModal, {
       apolloProvider,
-      propsData: { workItemId },
+      propsData: { workItemId, issueGid },
       data() {
         return {
           error,
@@ -67,6 +67,7 @@ describe('WorkItemDetailModal component', () => {
 
     expect(findWorkItemDetail().props()).toEqual({
       workItemId: '1',
+      workItemParentId: '2',
     });
   });
 
@@ -95,13 +96,6 @@ describe('WorkItemDetailModal component', () => {
     findModal().vm.$emit('hide');
 
     expect(wrapper.emitted('close')).toBeTruthy();
-  });
-
-  it('emits `workItemUpdated` event on updating work item', () => {
-    createComponent();
-    findWorkItemDetail().vm.$emit('workItemUpdated');
-
-    expect(wrapper.emitted('workItemUpdated')).toBeTruthy();
   });
 
   describe('delete work item', () => {

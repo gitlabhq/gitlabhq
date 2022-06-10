@@ -62,7 +62,7 @@ module LimitedCapacity
     end
 
     def with_redis(&block)
-      Gitlab::Redis::Queues.with(&block) # rubocop: disable CodeReuse/ActiveRecord
+      Gitlab::Redis::SharedState.with(&block) # rubocop: disable CodeReuse/ActiveRecord
     end
   end
 end

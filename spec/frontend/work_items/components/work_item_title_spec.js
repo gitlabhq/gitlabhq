@@ -8,6 +8,7 @@ import ItemTitle from '~/work_items/components/item_title.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { updateWorkItemMutationResponse, workItemQueryResponse } from '../mock_data';
 
 describe('WorkItemTitle component', () => {
@@ -19,14 +20,18 @@ describe('WorkItemTitle component', () => {
 
   const findItemTitle = () => wrapper.findComponent(ItemTitle);
 
-  const createComponent = ({ mutationHandler = mutationSuccessHandler } = {}) => {
+  const createComponent = ({ workItemParentId, mutationHandler = mutationSuccessHandler } = {}) => {
     const { id, title, workItemType } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemTitle, {
-      apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
+      apolloProvider: createMockApollo([
+        [updateWorkItemMutation, mutationHandler],
+        [updateWorkItemTaskMutation, mutationHandler],
+      ]),
       propsData: {
         workItemId: id,
         workItemTitle: title,
         workItemType: workItemType.name,
+        workItemParentId,
       },
     });
   };
@@ -57,13 +62,25 @@ describe('WorkItemTitle component', () => {
       });
     });
 
-    it('emits updated event', async () => {
-      createComponent();
+    it('calls WorkItemTaskUpdate if passed workItemParentId prop', () => {
+      const title = 'new title!';
+      const workItemParentId = '1234';
 
-      findItemTitle().vm.$emit('title-changed', 'new title');
-      await waitForPromises();
+      createComponent({
+        workItemParentId,
+      });
 
-      expect(wrapper.emitted('updated')).toEqual([[]]);
+      findItemTitle().vm.$emit('title-changed', title);
+
+      expect(mutationSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          id: workItemParentId,
+          taskData: {
+            id: workItemQueryResponse.data.workItem.id,
+            title,
+          },
+        },
+      });
     });
 
     it('does not call a mutation when the title has not changed', () => {

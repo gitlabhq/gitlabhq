@@ -82,15 +82,6 @@ describe('WorkItemState component', () => {
       });
     });
 
-    it('emits updated event', async () => {
-      createComponent();
-
-      findItemState().vm.$emit('changed', STATE_CLOSED);
-      await waitForPromises();
-
-      expect(wrapper.emitted('updated')).toEqual([[]]);
-    });
-
     it('emits an error message when the mutation was unsuccessful', async () => {
       createComponent({ mutationHandler: jest.fn().mockRejectedValue('Error!') });
 

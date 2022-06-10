@@ -1,4 +1,4 @@
-.gl-alert{ role: 'alert', class: [base_class, @alert_class], data: @alert_data }
+.gl-alert{ @alert_options, role: 'alert', class: [base_class, @alert_class], data: @alert_data }
   - if @show_icon
     = sprite_icon(icon, css_class: icon_classes)
   - if @dismissible

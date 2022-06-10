@@ -37,6 +37,11 @@ export default {
       required: false,
       default: null,
     },
+    workItemParentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -115,9 +120,9 @@ export default {
           :work-item-id="workItem.id"
           :work-item-title="workItem.title"
           :work-item-type="workItemType"
+          :work-item-parent-id="workItemParentId"
           class="gl-mr-5"
           @error="error = $event"
-          @updated="$emit('workItemUpdated')"
         />
         <work-item-actions
           :work-item-id="workItem.id"
@@ -133,8 +138,8 @@ export default {
       </template>
       <work-item-state
         :work-item="workItem"
+        :work-item-parent-id="workItemParentId"
         @error="error = $event"
-        @updated="$emit('workItemUpdated')"
       />
       <work-item-description
         v-if="workItemDescription"

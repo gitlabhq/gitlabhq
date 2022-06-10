@@ -15,7 +15,7 @@ module Gitlab
 
         def execute!(stream)
           clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
-            md5_checksum    = self.class.md5_hexdigest(clone_path)
+            md5_checksum    = self.class.md5_hexdigest(clone_path) unless Gitlab::FIPS.enabled?
             sha256_checksum = self.class.sha256_hexdigest(clone_path)
 
             job.transaction do
@@ -24,7 +24,7 @@ module Gitlab
             end
           end
 
-          validate_archived_trace
+          validate_archived_trace unless Gitlab::FIPS.enabled?
         end
 
         private

@@ -124,7 +124,6 @@ class Note < ApplicationRecord
   scope :common, -> { where(noteable_type: ["", nil]) }
   scope :fresh, -> { order_created_asc.with_order_id_asc }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
-  scope :with_updated_at, ->(time) { where(updated_at: time) }
   scope :with_discussion_ids, ->(discussion_ids) { where(discussion_id: discussion_ids) }
   scope :with_suggestions, -> { joins(:suggestions) }
   scope :inc_author, -> { includes(:author) }

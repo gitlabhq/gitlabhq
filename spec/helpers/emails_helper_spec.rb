@@ -227,12 +227,28 @@ RSpec.describe EmailsHelper do
 
   describe '#header_logo' do
     context 'there is a brand item with a logo' do
-      it 'returns the brand header logo' do
-        appearance = create :appearance, header_logo: fixture_file_upload('spec/fixtures/dk.png')
+      let_it_be(:appearance) { create(:appearance) }
 
+      let(:logo_path) { 'spec/fixtures/dk.png' }
+
+      before do
+        appearance.update!(header_logo: fixture_file_upload(logo_path))
+      end
+
+      it 'returns the brand header logo' do
         expect(header_logo).to eq(
           %{<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" />}
         )
+      end
+
+      context 'that is a SVG file' do
+        let(:logo_path) { 'spec/fixtures/logo_sample.svg' }
+
+        it 'returns the default header logo' do
+          expect(header_logo).to match(
+            %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
+          )
+        end
       end
     end
 

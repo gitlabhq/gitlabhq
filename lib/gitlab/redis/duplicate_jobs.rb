@@ -14,7 +14,13 @@ module Gitlab
 
         def redis
           primary_store = ::Redis.new(Gitlab::Redis::SharedState.params)
-          secondary_store = ::Redis.new(Gitlab::Redis::Queues.params)
+
+          # `Sidekiq.redis` is a namespaced redis connection. This means keys are actually being stored under
+          # "resque:gitlab:resque:gitlab:duplicate:". For backwards compatibility, we make the secondary store
+          # namespaced in the same way, but omit it from the primary so keys have proper format there.
+          secondary_store = ::Redis::Namespace.new(
+            Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE, redis: ::Redis.new(Gitlab::Redis::Queues.params)
+          )
 
           MultiStore.new(primary_store, secondary_store, name.demodulize)
         end

@@ -68,10 +68,6 @@ module Gitlab
         prometheus.counter(counter_name('total'), "Total number of measurements for #{name}")
       end
 
-      def counter_name(suffix)
-        :"#{COUNTER_PREFIX}:#{name}_#{self.class.name.demodulize.underscore}:#{suffix}"
-      end
-
       def prometheus
         Gitlab::Metrics
       end
@@ -84,6 +80,10 @@ module Gitlab
         end
 
         private
+
+        def counter_name(suffix)
+          :"#{COUNTER_PREFIX}:#{name}_apdex:#{suffix}"
+        end
 
         def numerator_counter
           prometheus.counter(counter_name('success_total'), "Number of successful measurements for #{name}")
@@ -98,6 +98,10 @@ module Gitlab
         end
 
         private
+
+        def counter_name(suffix)
+          :"#{COUNTER_PREFIX}:#{name}:#{suffix}"
+        end
 
         def numerator_counter
           prometheus.counter(counter_name('error_total'), "Number of error measurements for #{name}")

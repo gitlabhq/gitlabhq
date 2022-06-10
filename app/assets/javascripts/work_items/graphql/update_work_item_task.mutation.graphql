@@ -1,0 +1,8 @@
+mutation workItemUpdateTask($input: WorkItemUpdateTaskInput!) {
+  workItemUpdate: workItemUpdateTask(input: $input) {
+    workItem {
+      id
+      descriptionHtml
+    }
+  }
+}

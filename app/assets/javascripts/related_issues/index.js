@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedIssuesRoot from './components/related_issues_root.vue';
 
-export default function initRelatedIssues() {
+export default function initRelatedIssues(issueType = 'issue') {
   const relatedIssuesRootElement = document.querySelector('.js-related-issues-root');
   if (relatedIssuesRootElement) {
     // eslint-disable-next-line no-new
@@ -21,6 +21,7 @@ export default function initRelatedIssues() {
             showCategorizedIssues: parseBoolean(
               relatedIssuesRootElement.dataset.showCategorizedIssues,
             ),
+            issuableType: issueType,
             autoCompleteEpics: false,
           },
         }),

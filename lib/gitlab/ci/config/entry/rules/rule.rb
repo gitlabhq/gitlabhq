@@ -9,11 +9,13 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          CLAUSES        = %i[if changes exists].freeze
-          ALLOWED_KEYS   = %i[if changes exists when start_in allow_failure variables].freeze
-          ALLOWABLE_WHEN = %w[on_success on_failure always never manual delayed].freeze
+          ALLOWED_KEYS = %i[if changes exists when start_in allow_failure variables].freeze
+          ALLOWED_WHEN = %w[on_success on_failure always never manual delayed].freeze
 
-          attributes :if, :changes, :exists, :when, :start_in, :allow_failure
+          attributes :if, :exists, :when, :start_in, :allow_failure
+
+          entry :changes, Entry::Rules::Rule::Changes,
+            description: 'File change condition rule.'
 
           entry :variables, Entry::Variables,
             description: 'Environment variables to define for rule conditions.'
@@ -28,8 +30,8 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :if, expression: true
-              validates :changes, :exists, array_of_strings: true, length: { maximum: 50 }
-              validates :when, allowed_values: { in: ALLOWABLE_WHEN }
+              validates :exists, array_of_strings: true, length: { maximum: 50 }
+              validates :when, allowed_values: { in: ALLOWED_WHEN }
               validates :allow_failure, boolean: true
             end
 
@@ -39,6 +41,13 @@ module Gitlab
                 allow_nil: true,
                 in: opt(:allowed_when)
             end
+          end
+
+          def value
+            config.merge(
+              changes: (changes_value if changes_defined?),
+              variables: (variables_value if variables_defined?)
+            ).compact
           end
 
           def specifies_delay?

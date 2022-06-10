@@ -9,7 +9,7 @@ RSpec.describe Clusters::Applications::WaitForUninstallAppWorker, '#perform' do
 
   subject { described_class.new.perform(app_name, app_id) }
 
-  context 'app exists' do
+  context 'when app exists' do
     let(:service) { instance_double(Clusters::Applications::CheckUninstallProgressService) }
 
     it 'calls the check service' do
@@ -20,7 +20,7 @@ RSpec.describe Clusters::Applications::WaitForUninstallAppWorker, '#perform' do
     end
   end
 
-  context 'app does not exist' do
+  context 'when app does not exist' do
     let(:app_id) { 0 }
 
     it 'does not call the check service' do

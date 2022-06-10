@@ -11,7 +11,6 @@ class ResourceEvent < ApplicationRecord
   belongs_to :user
 
   scope :created_after, ->(time) { where('created_at > ?', time) }
-  scope :created_on_or_before, ->(time) { where('created_at <= ?', time) }
 
   def discussion_id
     strong_memoize(:discussion_id) do
