@@ -141,7 +141,9 @@ namespace :gitlab do
     rescue ActiveRecord::ConnectionNotEstablished, PG::ConnectionBad => err
       warn "WARNING: Could not establish database connection for #{db_config.name}: #{err.message}"
     rescue ActiveRecord::NoDatabaseError
-    rescue PG::ReadOnlySqlTransaction => err
+    rescue ActiveRecord::StatementInvalid => err
+      raise unless err.cause.is_a?(PG::ReadOnlySqlTransaction)
+
       warn "WARNING: Could not write to the database #{db_config.name}: #{err.message}"
     end
 

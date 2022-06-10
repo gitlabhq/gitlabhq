@@ -8752,6 +8752,29 @@ The connection type for [`Vulnerability`](#vulnerability).
 | <a id="vulnerabilityconnectionnodes"></a>`nodes` | [`[Vulnerability]`](#vulnerability) | A list of nodes. |
 | <a id="vulnerabilityconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+#### `VulnerabilityContainerImageConnection`
+
+The connection type for [`VulnerabilityContainerImage`](#vulnerabilitycontainerimage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitycontainerimageconnectionedges"></a>`edges` | [`[VulnerabilityContainerImageEdge]`](#vulnerabilitycontainerimageedge) | A list of edges. |
+| <a id="vulnerabilitycontainerimageconnectionnodes"></a>`nodes` | [`[VulnerabilityContainerImage]`](#vulnerabilitycontainerimage) | A list of nodes. |
+| <a id="vulnerabilitycontainerimageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `VulnerabilityContainerImageEdge`
+
+The edge type for [`VulnerabilityContainerImage`](#vulnerabilitycontainerimage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitycontainerimageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="vulnerabilitycontainerimageedgenode"></a>`node` | [`VulnerabilityContainerImage`](#vulnerabilitycontainerimage) | The item at the end of the edge. |
+
 #### `VulnerabilityEdge`
 
 The edge type for [`Vulnerability`](#vulnerability).
@@ -14754,6 +14777,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
+| <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 | <a id="projectwikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
@@ -17468,6 +17492,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="vulnerabilityissuelinkslinktype"></a>`linkType` | [`VulnerabilityIssueLinkType`](#vulnerabilityissuelinktype) | Filter issue links by link type. |
+
+### `VulnerabilityContainerImage`
+
+Represents a container image reported on the related vulnerability.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitycontainerimagename"></a>`name` | [`String`](#string) | Name of the container image. |
 
 ### `VulnerabilityDetailBase`
 

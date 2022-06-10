@@ -2916,6 +2916,10 @@ class Project < ApplicationRecord
     build_artifacts_size_refresh&.started?
   end
 
+  def security_training_available?
+    licensed_feature_available?(:security_training)
+  end
+
   private
 
   # overridden in EE

@@ -373,7 +373,7 @@ You can configure a project, group, or instance CI/CD variable to be available
 only to pipelines that run on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 
-[Merged results pipelines](../pipelines/merge_request_pipelines.md#types-of-merge-request-pipelines), which run on a
+[Merged results pipelines](../pipelines/merged_results_pipelines.md), which run on a
 temporary merge commit, not a branch or tag, do not have access to these variables.
 
 Pipelines that run directly on the merge request's source branch, with no added merge commit, can access

@@ -32,7 +32,7 @@ module QA
                   content: <<~YAML
                     test:
                       tags: ["#{runner_name}"]
-                      script: sleep 5
+                      script: sleep 15
                       only:
                         - merge_requests
                   YAML
@@ -62,8 +62,6 @@ module QA
               merge_request.description = Faker::Lorem.sentence
               merge_request.target_new_branch = false
               merge_request.source_branch = "mr-test-#{SecureRandom.hex(6)}-#{i + 1}"
-              merge_request.file_name = Faker::Lorem.word
-              merge_request.file_content = Faker::Lorem.sentence
             end
 
             # Load the page so that the browser is as prepared as possible to display the pipeline in progress when we
@@ -91,7 +89,7 @@ module QA
               end
 
               aggregate_failures do
-                expect { mr.merged? }.to eventually_be_truthy.within(max_duration: 60), "Expected content 'The changes were merged' but it did not appear."
+                expect { mr.merged? }.to eventually_be_truthy.within(max_duration: 120), "Expected content 'The changes were merged' but it did not appear."
                 expect(merge_request.reload!.merge_when_pipeline_succeeds).to be_truthy
                 expect(merge_request.state).to eq('merged')
                 expect(project.pipelines.last[:status]).to eq('success')

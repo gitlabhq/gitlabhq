@@ -502,12 +502,19 @@ In addition to the Rake tasks, there are some environment variables that can be 
 | `ID_TO`              | Integer   | Tells the indexer to only index projects less than or equal to the value.    |
 | `ID_FROM`            | Integer   | Tells the indexer to only index projects greater than or equal to the value. |
 
-### Indexing a specific project
+### Indexing a range of projects or a specific project
 
-Because the `ID_TO` and `ID_FROM` environment variables use the `or equal to` comparison, you can index only one project by using both these variables with the same project ID number:
+Using the `ID_FROM` and `ID_TO` environment variables, you can index a limited number of projects. This can be useful for staging indexing.
 
 ```shell
-root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_TO=5 ID_FROM=5
+root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=1 ID_TO=100
+```
+
+Because `ID_FROM` and `ID_TO` use the `or equal to` comparison, you can use them to index only one project
+by setting both to the same project ID:
+
+```shell
+root@git:~# sudo gitlab-rake gitlab:elastic:index_projects ID_FROM=5 ID_TO=5
 Indexing project repositories...I, [2019-03-04T21:27:03.083410 #3384]  INFO -- : Indexing GitLab User / test (ID=33)...
 I, [2019-03-04T21:27:05.215266 #3384]  INFO -- : Indexing GitLab User / test (ID=33) is done!
 ```
