@@ -40,6 +40,10 @@ module Gitlab
           # No-op, required by the partition manager
         end
 
+        def validate_and_fix
+          # No-op, required by the partition manager
+        end
+
         private
 
         def desired_partitions

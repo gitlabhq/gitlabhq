@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     icon() {
-      return this.visible ? 'angle-down' : 'angle-right';
+      return this.visible ? 'chevron-lg-down' : 'chevron-lg-right';
     },
     label() {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;

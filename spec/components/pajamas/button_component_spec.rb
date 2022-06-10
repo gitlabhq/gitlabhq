@@ -38,6 +38,14 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
           expect(rendered_component).to have_css '.gl-button.btn-danger.btn-danger-tertiary.custom-class'
         end
       end
+
+      context 'overriding base attributes' do
+        let(:options) { { button_options: { type: 'submit' } } }
+
+        it 'overrides type' do
+          expect(rendered_component).to have_css '[type="submit"]'
+        end
+      end
     end
 
     describe 'button_text_classes' do
@@ -207,6 +215,42 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
         it 'renders only a loading icon' do
           expect(rendered_component).not_to have_css "svg.gl-icon.gl-button-icon.custom-icon[data-testid='star-o-icon']"
           expect(rendered_component).to have_css ".gl-spinner[aria-label='Loading']"
+        end
+      end
+    end
+
+    describe 'type' do
+      context 'by default (without href)' do
+        it 'has type "button"' do
+          expect(rendered_component).to have_css "button[type='button']"
+        end
+      end
+
+      context 'when set to known type' do
+        where(:type) { [:button, :reset, :submit] }
+
+        let(:options) { { type: type } }
+
+        with_them do
+          it 'has the correct type' do
+            expect(rendered_component).to have_css "button[type='#{type}']"
+          end
+        end
+      end
+
+      context 'when set to unkown type' do
+        let(:options) { { type: :madeup } }
+
+        it 'has type "button"' do
+          expect(rendered_component).to have_css "button[type='button']"
+        end
+      end
+
+      context 'for links (with href)' do
+        let(:options) { { href: 'https://example.com', type: :reset } }
+
+        it 'ignores type' do
+          expect(rendered_component).not_to have_css "[type]"
         end
       end
     end

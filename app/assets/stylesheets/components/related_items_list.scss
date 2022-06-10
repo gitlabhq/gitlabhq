@@ -80,11 +80,6 @@ $item-remove-button-space: 42px;
   .health-label-short {
     max-width: 0;
   }
-
-  .bullet-separator {
-    font-size: 9px;
-    color: $gray-200;
-  }
 }
 
 .card-header {
@@ -198,7 +193,6 @@ $item-remove-button-space: 42px;
   }
 }
 
-.mr-status-wrapper,
 .mr-ci-status {
   line-height: 0;
 }

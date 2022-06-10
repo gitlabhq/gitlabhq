@@ -19,9 +19,6 @@ Configure Gitaly Cluster using either:
 
 Smaller GitLab installations may need only [Gitaly itself](index.md).
 
-To upgrade a Gitaly Cluster, follow the documentation for
-[zero downtime upgrades](../../update/zero_downtime.md#gitaly-cluster).
-
 ## Requirements
 
 The minimum recommended configuration for a Gitaly Cluster requires:

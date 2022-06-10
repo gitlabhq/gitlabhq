@@ -13,8 +13,7 @@ module Gitlab
       def consume_event(event)
         return unless condition_met?(event)
 
-        worker.perform_async(event.class.name, event.data)
-        # TODO: Log dispatching of events to subscriber
+        worker.perform_async(event.class.name, event.data.deep_stringify_keys)
 
         # We rescue and track any exceptions here because we don't want to
         # impact other subscribers if one is faulty.

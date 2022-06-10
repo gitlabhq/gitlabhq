@@ -21,8 +21,10 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
   end
 
   shared_examples 'Snowplow event' do
+    let(:label) { nil }
+
     it 'is not emitted if FF is disabled' do
-      stub_feature_flags(route_hll_to_snowplow: false)
+      stub_feature_flags(feature_flag_name => false)
 
       subject
 
@@ -30,15 +32,18 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
 
     it 'is emitted' do
+      params = {
+        category: category,
+        action: action,
+        namespace: namespace,
+        user: user,
+        project: project,
+        label: label
+      }.compact
+
       subject
 
-      expect_snowplow_event(
-        category: described_class.to_s,
-        action: 'action_active_users_project_repo',
-        namespace: project.namespace,
-        user: user,
-        project: project
-      )
+      expect_snowplow_event(**params)
     end
   end
 
@@ -74,7 +79,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
-  describe 'Merge Requests' do
+  describe 'Merge Requests', :snowplow do
     describe '#open_mr' do
       subject(:open_mr) { service.open_mr(merge_request, merge_request.author) }
 
@@ -88,6 +93,16 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
       it_behaves_like "it records the event in the event counter" do
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+      end
+
+      it_behaves_like 'Snowplow event' do
+        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
+        let(:label) { 'merge_requests_users' }
+        let(:action) { 'create' }
+        let(:namespace) { project.namespace }
+        let(:project) { merge_request.project }
+        let(:user) { merge_request.author }
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       end
     end
 
@@ -105,6 +120,16 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       it_behaves_like "it records the event in the event counter" do
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
+
+      it_behaves_like 'Snowplow event' do
+        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
+        let(:label) { 'merge_requests_users' }
+        let(:action) { 'close' }
+        let(:namespace) { project.namespace }
+        let(:project) { merge_request.project }
+        let(:user) { merge_request.author }
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+      end
     end
 
     describe '#merge_mr' do
@@ -120,6 +145,16 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
       it_behaves_like "it records the event in the event counter" do
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
+      end
+
+      it_behaves_like 'Snowplow event' do
+        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
+        let(:label) { 'merge_requests_users' }
+        let(:action) { 'merge' }
+        let(:namespace) { project.namespace }
+        let(:project) { merge_request.project }
+        let(:user) { merge_request.author }
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       end
     end
 
@@ -295,7 +330,12 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
 
-    it_behaves_like 'Snowplow event'
+    it_behaves_like 'Snowplow event' do
+      let(:category) { described_class.to_s }
+      let(:action) { 'action_active_users_project_repo' }
+      let(:namespace) { project.namespace }
+      let(:feature_flag_name) { :route_hll_to_snowplow }
+    end
   end
 
   describe '#bulk_push', :snowplow do
@@ -315,7 +355,12 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
 
-    it_behaves_like 'Snowplow event'
+    it_behaves_like 'Snowplow event' do
+      let(:category) { described_class.to_s }
+      let(:action) { 'action_active_users_project_repo' }
+      let(:namespace) { project.namespace }
+      let(:feature_flag_name) { :route_hll_to_snowplow }
+    end
   end
 
   describe 'Project' do
@@ -392,7 +437,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
-  describe '#leave_note' do
+  describe '#leave_note', :snowplow do
     subject(:leave_note) { service.leave_note(note, author) }
 
     let(:note) { create(:note) }
@@ -408,6 +453,17 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     context 'when it is a diff note' do
       it_behaves_like "it records the event in the event counter" do
         let(:note) { create(:diff_note_on_merge_request) }
+      end
+
+      it_behaves_like 'Snowplow event' do
+        let(:note) { create(:diff_note_on_merge_request) }
+        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
+        let(:label) { 'merge_requests_users' }
+        let(:action) { 'comment' }
+        let(:project) { note.project }
+        let(:namespace) { project.namespace }
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:user) { author }
       end
     end
 

@@ -21,7 +21,7 @@ If you meet all the requirements above, follow these instructions in order. Ther
 
 | Deployment type                                                 | Description                                       |
 | --------------------------------------------------------------- | ------------------------------------------------  |
-| [Gitaly Cluster](#gitaly-cluster)                               | GitLab CE/EE using HA architecture for Gitaly Cluster             |
+| [Gitaly or Gitaly Cluster](#gitaly-or-gitaly-cluster)           | GitLab CE/EE using HA architecture for Gitaly or Gitaly Cluster |
 | [Multi-node / PostgreSQL HA](#use-postgresql-ha)                | GitLab CE/EE using HA architecture for PostgreSQL |
 | [Multi-node / Redis HA](#use-redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
 | [Geo](#geo-deployment)                                          | GitLab EE with Geo enabled                        |
@@ -176,21 +176,19 @@ load balancer to latest GitLab version.
       sudo gitlab-rake db:migrate
       ```
 
-### Gitaly Cluster
+### Gitaly or Gitaly Cluster
 
-[Gitaly Cluster](../administration/gitaly/praefect.md) is built using
-Gitaly and the Praefect component. It has its own PostgreSQL database, independent of the rest of
-the application.
+Gitaly nodes can be located on their own server, either as part of a sharded setup, or as part of
+[Gitaly Cluster](../administration/gitaly/praefect.md).
 
-Before you update the main GitLab application you need to update the Gitaly nodes
-and then Praefect.
+Before you update the main GitLab application you must (in order):
 
-**Gitaly nodes**
+1. Upgrade the Gitaly nodes that reside on separate servers.
+1. Upgrade Praefect if using Gitaly Cluster.
 
-Upgrade the Gitaly nodes in your Gitaly cluster one at a time
-to ensure access to Git repositories is maintained.
+#### Upgrade Gitaly nodes
 
-Update the GitLab package:
+Upgrade the Gitaly nodes one at a time to ensure access to Git repositories is maintained:
 
 ```shell
 # Debian/Ubuntu
@@ -202,61 +200,60 @@ sudo yum install gitlab-ee
 
 If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
-**Praefect**
+#### Upgrade Praefect
 
-Out of your Praefect nodes, pick one to be your Praefect deploy node.
-This is where you install the new Omnibus package first and run
-database migrations.
+From the Praefect nodes, select one to be your Praefect deploy node. You install the new Omnibus package on the deploy
+node first and run database migrations.
 
-**Praefect deploy node**
+1. On the **Praefect deploy node**:
 
-- Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
+   1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`,
+      which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
-  ```shell
-  sudo touch /etc/gitlab/skip-auto-reconfigure
-  ```
+      ```shell
+      sudo touch /etc/gitlab/skip-auto-reconfigure
+      ```
 
-- Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb`
+   1. Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb`.
 
-**All Praefect nodes _excluding_ the Praefect deploy node**
+1. On all **remaining Praefect nodes**, ensure that `praefect['auto_migrate'] = false` is
+   set in `/etc/gitlab/gitlab.rb` to prevent `reconfigure` from automatically running database migrations.
 
-- To prevent `reconfigure` from automatically running database migrations, ensure that `praefect['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb`.
+1. On the **Praefect deploy node**:
 
-**Praefect deploy node**
+   1. Upgrade the GitLab package:
 
-- Update the GitLab package:
+      ```shell
+      # Debian/Ubuntu
+      sudo apt-get update && sudo apt-get install gitlab-ee
 
-  ```shell
-  # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ee
+      # Centos/RHEL
+      sudo yum install gitlab-ee
+      ```
 
-  # Centos/RHEL
-  sudo yum install gitlab-ee
-  ```
+      If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the command above.
 
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+   1. To apply the Praefect database migrations and restart Praefect, run:
 
-- To apply the Praefect database migrations and restart Praefect, run:
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
 
-  ```shell
-  sudo gitlab-ctl reconfigure
-  ```
+1. On all **remaining Praefect nodes**:
 
-**All Praefect nodes _excluding_ the Praefect deploy node**
+   1. Upgrade the GitLab package:
 
-- Update the GitLab package:
+      ```shell
+      sudo apt-get update && sudo apt-get install gitlab-ee
+      ```
 
-  ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ee
-  ```
+      If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the command above.
 
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+   1. Ensure nodes are running the latest code:
 
-- Ensure nodes are running the latest code:
-
-  ```shell
-  sudo gitlab-ctl reconfigure
-  ```
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
 
 ### Use PostgreSQL HA
 

@@ -5,6 +5,7 @@ module Pajamas
     # @param [Symbol] category
     # @param [Symbol] variant
     # @param [Symbol] size
+    # @param [Symbol] type
     # @param [Boolean] disabled
     # @param [Boolean] loading
     # @param [Boolean] block
@@ -19,6 +20,7 @@ module Pajamas
       category: :primary,
       variant: :default,
       size: :medium,
+      type: :button,
       disabled: false,
       loading: false,
       block: false,
@@ -33,6 +35,7 @@ module Pajamas
       @category = filter_attribute(category.to_sym, CATEGORY_OPTIONS)
       @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS)
       @size = filter_attribute(size.to_sym, SIZE_OPTIONS)
+      @type = filter_attribute(type.to_sym, TYPE_OPTIONS, default: :button)
       @disabled = disabled
       @loading = loading
       @block = block
@@ -70,6 +73,7 @@ module Pajamas
     CATEGORY_OPTIONS = [:primary, :secondary, :tertiary].freeze
     VARIANT_OPTIONS = [:default, :confirm, :danger, :dashed, :link, :reset].freeze
     SIZE_OPTIONS = [:small, :medium].freeze
+    TYPE_OPTIONS = [:button, :reset, :submit].freeze
     TARGET_OPTIONS = %w[_self _blank _parent _top].freeze
 
     CATEGORY_CLASSES = {
@@ -106,7 +110,7 @@ module Pajamas
 
       attributes['disabled'] = '' if @disabled || @loading
       attributes['aria-disabled'] = true if @disabled || @loading
-      attributes['type'] = 'button' unless @href
+      attributes['type'] = @type unless @href
 
       attributes
     end

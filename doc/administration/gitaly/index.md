@@ -518,6 +518,11 @@ For configuration information, see [Configure replication factor](praefect.md#co
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
 
+### Upgrade Gitaly Cluster
+
+To upgrade a Gitaly Cluster, follow the documentation for
+[zero downtime upgrades](../../update/zero_downtime.md#gitaly-or-gitaly-cluster).
+
 ## Migrating to Gitaly Cluster
 
 See the [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster) section before continuing. The basic process

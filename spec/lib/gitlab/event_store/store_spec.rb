@@ -134,6 +134,7 @@ RSpec.describe Gitlab::EventStore::Store do
 
   describe '#publish' do
     let(:data) { { name: 'Bob', id: 123 } }
+    let(:serialized_data) { data.deep_stringify_keys }
 
     context 'when event has a subscribed worker' do
       let(:store) do
@@ -144,8 +145,17 @@ RSpec.describe Gitlab::EventStore::Store do
       end
 
       it 'dispatches the event to the subscribed worker' do
-        expect(worker).to receive(:perform_async).with('TestEvent', data)
+        expect(worker).to receive(:perform_async).with('TestEvent', serialized_data)
         expect(another_worker).not_to receive(:perform_async)
+
+        store.publish(event)
+      end
+
+      it 'does not raise any Sidekiq warning' do
+        logger = double(:logger, info: nil)
+        allow(Sidekiq).to receive(:logger).and_return(logger)
+        expect(logger).not_to receive(:warn).with(/do not serialize to JSON safely/)
+        expect(worker).to receive(:perform_async).with('TestEvent', serialized_data).and_call_original
 
         store.publish(event)
       end
@@ -160,8 +170,8 @@ RSpec.describe Gitlab::EventStore::Store do
         end
 
         it 'dispatches the event to each subscribed worker' do
-          expect(worker).to receive(:perform_async).with('TestEvent', data)
-          expect(another_worker).to receive(:perform_async).with('TestEvent', data)
+          expect(worker).to receive(:perform_async).with('TestEvent', serialized_data)
+          expect(another_worker).to receive(:perform_async).with('TestEvent', serialized_data)
           expect(unrelated_worker).not_to receive(:perform_async)
 
           store.publish(event)
@@ -215,7 +225,7 @@ RSpec.describe Gitlab::EventStore::Store do
       let(:event) { event_klass.new(data: data) }
 
       it 'dispatches the event to the workers satisfying the condition' do
-        expect(worker).to receive(:perform_async).with('TestEvent', data)
+        expect(worker).to receive(:perform_async).with('TestEvent', serialized_data)
         expect(another_worker).not_to receive(:perform_async)
 
         store.publish(event)

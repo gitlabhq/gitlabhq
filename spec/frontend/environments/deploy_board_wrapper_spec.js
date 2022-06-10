@@ -57,7 +57,7 @@ describe('~/environments/components/deploy_board_wrapper.vue', () => {
 
     it('is collapsed by default', () => {
       expect(collapse.attributes('visible')).toBeUndefined();
-      expect(icon.props('name')).toBe('angle-right');
+      expect(icon.props('name')).toBe('chevron-lg-right');
     });
 
     it('opens on click', async () => {
@@ -65,7 +65,7 @@ describe('~/environments/components/deploy_board_wrapper.vue', () => {
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
       expect(collapse.attributes('visible')).toBe('visible');
-      expect(icon.props('name')).toBe('angle-down');
+      expect(icon.props('name')).toBe('chevron-lg-down');
 
       const deployBoard = findDeployBoard();
       expect(deployBoard.exists()).toBe(true);

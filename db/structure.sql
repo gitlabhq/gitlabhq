@@ -27860,6 +27860,8 @@ CREATE INDEX index_epics_on_start_date_sourcing_epic_id ON epics USING btree (st
 
 CREATE INDEX index_epics_on_start_date_sourcing_milestone_id ON epics USING btree (start_date_sourcing_milestone_id);
 
+CREATE INDEX index_error_tracking_client_for_enabled_check ON error_tracking_client_keys USING btree (project_id, public_key) WHERE (active = true);
+
 CREATE INDEX index_error_tracking_client_keys_on_project_id ON error_tracking_client_keys USING btree (project_id);
 
 CREATE INDEX index_error_tracking_error_events_on_error_id ON error_tracking_error_events USING btree (error_id);

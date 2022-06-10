@@ -48,9 +48,12 @@ module Gitlab
 
           default_value = current_default_value
           if extra.any? { |p| p.value == default_value }
-            Gitlab::AppLogger.error(message: "Inconsistent partition detected: partition with value #{current_default_value} should not be deleted because it's used as the default value.",
-                                   partition_number: current_default_value,
-                                   table_name: model.table_name)
+            Gitlab::AppLogger.error(
+              message: "Inconsistent partition detected: partition with value #{current_default_value} should " \
+                        "not be deleted because it's used as the default value.",
+              partition_number: current_default_value,
+              table_name: model.table_name
+            )
 
             extra = extra.reject { |p| p.value == default_value }
           end
@@ -71,6 +74,42 @@ module Gitlab
 
         def no_partitions_exist?
           current_partitions.empty?
+        end
+
+        def validate_and_fix
+          return unless Feature.enabled?(:fix_sliding_list_partitioning)
+          return if no_partitions_exist?
+
+          old_default_value = current_default_value
+          expected_default_value = active_partition.value
+
+          if old_default_value != expected_default_value
+            with_lock_retries do
+              model.connection.execute("LOCK TABLE #{model.table_name} IN ACCESS EXCLUSIVE MODE")
+
+              old_default_value = current_default_value
+              expected_default_value = active_partition.value
+
+              if old_default_value == expected_default_value
+                Gitlab::AppLogger.warn(
+                  message: "Table partitions or partition key default value have been changed by another process",
+                  table_name: table_name,
+                  default_value: expected_default_value
+                )
+                raise ActiveRecord::Rollback
+              end
+
+              model.connection.change_column_default(model.table_name, partitioning_key, expected_default_value)
+              Gitlab::AppLogger.warn(
+                message: "Fixed default value of sliding_list_strategy partitioning_key",
+                column: partitioning_key,
+                table_name: table_name,
+                connection_name: model.connection.pool.db_config.name,
+                old_value: old_default_value,
+                new_value: expected_default_value
+              )
+            end
+          end
         end
 
         private
@@ -94,6 +133,14 @@ module Gitlab
           unless model.ignored_columns.include?(partitioning_key.to_s)
             raise "Add #{partitioning_key} to #{model.name}.ignored_columns to use it with SlidingListStrategy"
           end
+        end
+
+        def with_lock_retries(&block)
+          Gitlab::Database::WithLockRetries.new(
+            klass: self.class,
+            logger: Gitlab::AppLogger,
+            connection: model.connection
+          ).run(&block)
         end
       end
     end

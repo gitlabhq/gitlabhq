@@ -23,7 +23,8 @@
         %strong= _('Oops, are you sure?')
         %p= s_("Profiles|Publicly visible private SSH keys can compromise your system.")
 
-      %button.btn.gl-button.btn-confirm.js-add-ssh-key-validation-confirm-submit= _("Yes, add it")
-
+      = render Pajamas::ButtonComponent.new(variant: :confirm,
+        button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
+        = _("Yes, add it")
     .gl-mt-3
       = f.submit s_('Profiles|Add key'), class: "gl-button btn btn-confirm js-add-ssh-key-validation-original-submit qa-add-key-button"

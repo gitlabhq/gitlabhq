@@ -37,9 +37,72 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
   describe '#current_partitions' do
     it 'detects both partitions' do
       expect(strategy.current_partitions).to eq([
-        Gitlab::Database::Partitioning::SingleNumericListPartition.new(table_name, 1, partition_name: '_test_partitioned_test_1'),
-        Gitlab::Database::Partitioning::SingleNumericListPartition.new(table_name, 2, partition_name: '_test_partitioned_test_2')
+        Gitlab::Database::Partitioning::SingleNumericListPartition.new(
+          table_name, 1, partition_name: '_test_partitioned_test_1'
+        ),
+        Gitlab::Database::Partitioning::SingleNumericListPartition.new(
+          table_name, 2, partition_name: '_test_partitioned_test_2'
+        )
       ])
+    end
+  end
+
+  describe '#validate_and_fix' do
+    context 'feature flag is disabled' do
+      before do
+        stub_feature_flags(fix_sliding_list_partitioning: false)
+      end
+
+      it 'does not try to fix the default partition value' do
+        connection.change_column_default(model.table_name, strategy.partitioning_key, 3)
+        expect(strategy.model.connection).not_to receive(:change_column_default)
+        strategy.validate_and_fix
+      end
+    end
+
+    context 'feature flag is enabled' do
+      before do
+        stub_feature_flags(fix_sliding_list_partitioning: true)
+      end
+
+      it 'does not call change_column_default if the partitioning in a valid state' do
+        expect(strategy.model.connection).not_to receive(:change_column_default)
+
+        strategy.validate_and_fix
+      end
+
+      it 'calls change_column_default on partition_key with the most default partition number' do
+        connection.change_column_default(model.table_name, strategy.partitioning_key, 1)
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Fixed default value of sliding_list_strategy partitioning_key',
+          connection_name: 'main',
+          old_value: 1,
+          new_value: 2,
+          table_name: table_name,
+          column: strategy.partitioning_key
+        )
+
+        expect(strategy.model.connection).to receive(:change_column_default).with(
+          model.table_name, strategy.partitioning_key, 2
+        ).and_call_original
+
+        strategy.validate_and_fix
+      end
+
+      it 'does not change the default column if it has been changed in the meanwhile by another process' do
+        expect(strategy).to receive(:current_default_value).and_return(1, 2)
+
+        expect(strategy.model.connection).not_to receive(:change_column_default)
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Table partitions or partition key default value have been changed by another process',
+          table_name: table_name,
+          default_value: 2
+        )
+
+        strategy.validate_and_fix
+      end
     end
   end
 
@@ -157,6 +220,7 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
       end.not_to raise_error
     end
   end
+
   context 'redirecting inserts as the active partition changes' do
     let(:model) do
       Class.new(ApplicationRecord) do
