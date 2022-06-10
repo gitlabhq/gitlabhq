@@ -110,6 +110,14 @@ RSpec.describe Gitlab::InstrumentationHelper do
       expect(payload).to include(:pid)
     end
 
+    it 'logs the worker ID' do
+      expect(Prometheus::PidProvider).to receive(:worker_id).and_return('puma_1')
+
+      subject
+
+      expect(payload).to include(worker_id: 'puma_1')
+    end
+
     context 'when logging memory allocations' do
       include MemoryInstrumentationHelper
 

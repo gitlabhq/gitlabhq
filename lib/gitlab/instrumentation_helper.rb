@@ -31,6 +31,7 @@ module Gitlab
       instrument_thread_memory_allocations(payload)
       instrument_load_balancing(payload)
       instrument_pid(payload)
+      instrument_worker_id(payload)
       instrument_uploads(payload)
       instrument_rate_limiting_gates(payload)
     end
@@ -104,6 +105,10 @@ module Gitlab
 
     def instrument_pid(payload)
       payload[:pid] = Process.pid
+    end
+
+    def instrument_worker_id(payload)
+      payload[:worker_id] = ::Prometheus::PidProvider.worker_id
     end
 
     def instrument_thread_memory_allocations(payload)

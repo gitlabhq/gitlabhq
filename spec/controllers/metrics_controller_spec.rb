@@ -94,8 +94,8 @@ RSpec.describe MetricsController, :request_store do
       end
 
       it 'renders system stats JSON' do
-        expect(Prometheus::PidProvider).to receive(:worker_id).and_return('worker-0')
-        expect(Gitlab::Metrics::System).to receive(:summary).and_return(summary)
+        allow(Prometheus::PidProvider).to receive(:worker_id).and_return('worker-0')
+        allow(Gitlab::Metrics::System).to receive(:summary).and_return(summary)
 
         get :system
 

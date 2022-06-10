@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -14,6 +14,7 @@ export default {
   components: {
     GlButton,
     GlIcon,
+    GlSkeletonLoader,
     DesignNavigation,
     DeleteButton,
   },
@@ -59,6 +60,10 @@ export default {
     },
     image: {
       type: String,
+      required: true,
+    },
+    isLoading: {
+      type: Boolean,
       required: true,
     },
   },
@@ -113,7 +118,8 @@ export default {
         <gl-icon name="close" />
       </router-link>
       <div class="gl-overflow-hidden gl-display-flex gl-align-items-center">
-        <h2 class="gl-m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
+        <gl-skeleton-loader v-if="isLoading" :lines="1" />
+        <h2 v-else class="gl-m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
         <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
       </div>
     </div>

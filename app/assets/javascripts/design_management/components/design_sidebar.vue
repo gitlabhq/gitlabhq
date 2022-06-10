@@ -1,5 +1,5 @@
 <script>
-import { GlCollapse, GlButton, GlPopover } from '@gitlab/ui';
+import { GlCollapse, GlButton, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
 import { getCookie, setCookie, parseBoolean, isLoggedIn } from '~/lib/utils/common_utils';
 
 import { s__ } from '~/locale';
@@ -20,6 +20,7 @@ export default {
     GlCollapse,
     GlButton,
     GlPopover,
+    GlSkeletonLoader,
     DesignTodoButton,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -50,6 +51,10 @@ export default {
       type: String,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -65,11 +70,11 @@ export default {
     issue() {
       return {
         ...this.design.issue,
-        webPath: this.design.issue.webPath.substr(1),
+        webPath: this.design.issue?.webPath.substr(1),
       };
     },
     discussionParticipants() {
-      return extractParticipants(this.issue.participants.nodes);
+      return extractParticipants(this.issue.participants?.nodes || []);
     },
     resolvedDiscussions() {
       return this.discussions.filter((discussion) => discussion.resolved);
@@ -142,91 +147,94 @@ export default {
       :show-participant-label="false"
       class="gl-mb-4"
     />
-    <h2
-      v-if="isLoggedIn && unresolvedDiscussions.length === 0"
-      class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
-      data-testid="new-discussion-disclaimer"
-    >
-      {{ s__("DesignManagement|Click the image where you'd like to start a new discussion") }}
-    </h2>
-    <design-note-signed-out
-      v-if="!isLoggedIn"
-      class="gl-mb-4"
-      :register-path="registerPath"
-      :sign-in-path="signInPath"
-      :is-add-discussion="true"
-    />
-    <design-discussion
-      v-for="discussion in unresolvedDiscussions"
-      :key="discussion.id"
-      :discussion="discussion"
-      :design-id="$route.params.id"
-      :noteable-id="design.id"
-      :markdown-preview-path="markdownPreviewPath"
-      :register-path="registerPath"
-      :sign-in-path="signInPath"
-      :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-      :discussion-with-open-form="discussionWithOpenForm"
-      data-testid="unresolved-discussion"
-      @create-note-error="$emit('onDesignDiscussionError', $event)"
-      @update-note-error="$emit('updateNoteError', $event)"
-      @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
-      @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
-      @open-form="updateDiscussionWithOpenForm"
-    />
-    <template v-if="resolvedDiscussions.length > 0">
-      <gl-button
-        id="resolved-comments"
-        ref="resolvedComments"
-        data-testid="resolved-comments"
-        :icon="resolvedCommentsToggleIcon"
-        variant="link"
-        class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-mb-4"
-        @click="$emit('toggleResolvedComments')"
-        >{{ $options.resolveCommentsToggleText }} ({{ resolvedDiscussions.length }})
-      </gl-button>
-      <gl-popover
-        v-if="!isResolvedCommentsPopoverHidden"
-        :show="!isResolvedCommentsPopoverHidden"
-        target="resolved-comments"
-        container="popovercontainer"
-        placement="top"
-        :title="s__('DesignManagement|Resolved Comments')"
+    <gl-skeleton-loader v-if="isLoading" />
+    <template v-else>
+      <h2
+        v-if="isLoggedIn && unresolvedDiscussions.length === 0"
+        class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
+        data-testid="new-discussion-disclaimer"
       >
-        <p>
-          {{
-            s__(
-              'DesignManagement|Comments you resolve can be viewed and unresolved by going to the "Resolved Comments" section below',
-            )
-          }}
-        </p>
-        <a
-          href="https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads"
-          rel="noopener noreferrer"
-          target="_blank"
-          >{{ s__('DesignManagement|Learn more about resolving comments') }}</a
+        {{ s__("DesignManagement|Click the image where you'd like to start a new discussion") }}
+      </h2>
+      <design-note-signed-out
+        v-if="!isLoggedIn"
+        class="gl-mb-4"
+        :register-path="registerPath"
+        :sign-in-path="signInPath"
+        :is-add-discussion="true"
+      />
+      <design-discussion
+        v-for="discussion in unresolvedDiscussions"
+        :key="discussion.id"
+        :discussion="discussion"
+        :design-id="$route.params.id"
+        :noteable-id="design.id"
+        :markdown-preview-path="markdownPreviewPath"
+        :register-path="registerPath"
+        :sign-in-path="signInPath"
+        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+        :discussion-with-open-form="discussionWithOpenForm"
+        data-testid="unresolved-discussion"
+        @create-note-error="$emit('onDesignDiscussionError', $event)"
+        @update-note-error="$emit('updateNoteError', $event)"
+        @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
+        @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
+        @open-form="updateDiscussionWithOpenForm"
+      />
+      <template v-if="resolvedDiscussions.length > 0">
+        <gl-button
+          id="resolved-comments"
+          ref="resolvedComments"
+          data-testid="resolved-comments"
+          :icon="resolvedCommentsToggleIcon"
+          variant="link"
+          class="link-inherit-color gl-text-body gl-text-decoration-none gl-font-weight-bold gl-mb-4"
+          @click="$emit('toggleResolvedComments')"
+          >{{ $options.resolveCommentsToggleText }} ({{ resolvedDiscussions.length }})
+        </gl-button>
+        <gl-popover
+          v-if="!isResolvedCommentsPopoverHidden"
+          :show="!isResolvedCommentsPopoverHidden"
+          target="resolved-comments"
+          container="popovercontainer"
+          placement="top"
+          :title="s__('DesignManagement|Resolved Comments')"
         >
-      </gl-popover>
-      <gl-collapse :visible="resolvedDiscussionsExpanded" class="gl-mt-3">
-        <design-discussion
-          v-for="discussion in resolvedDiscussions"
-          :key="discussion.id"
-          :discussion="discussion"
-          :design-id="$route.params.id"
-          :noteable-id="design.id"
-          :markdown-preview-path="markdownPreviewPath"
-          :register-path="registerPath"
-          :sign-in-path="signInPath"
-          :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-          :discussion-with-open-form="discussionWithOpenForm"
-          data-testid="resolved-discussion"
-          @error="$emit('onDesignDiscussionError', $event)"
-          @updateNoteError="$emit('updateNoteError', $event)"
-          @open-form="updateDiscussionWithOpenForm"
-          @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
-        />
-      </gl-collapse>
+          <p>
+            {{
+              s__(
+                'DesignManagement|Comments you resolve can be viewed and unresolved by going to the "Resolved Comments" section below',
+              )
+            }}
+          </p>
+          <a
+            href="https://docs.gitlab.com/ee/user/project/issues/design_management.html#resolve-design-threads"
+            rel="noopener noreferrer"
+            target="_blank"
+            >{{ s__('DesignManagement|Learn more about resolving comments') }}</a
+          >
+        </gl-popover>
+        <gl-collapse :visible="resolvedDiscussionsExpanded" class="gl-mt-3">
+          <design-discussion
+            v-for="discussion in resolvedDiscussions"
+            :key="discussion.id"
+            :discussion="discussion"
+            :design-id="$route.params.id"
+            :noteable-id="design.id"
+            :markdown-preview-path="markdownPreviewPath"
+            :register-path="registerPath"
+            :sign-in-path="signInPath"
+            :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+            :discussion-with-open-form="discussionWithOpenForm"
+            data-testid="resolved-discussion"
+            @error="$emit('onDesignDiscussionError', $event)"
+            @updateNoteError="$emit('updateNoteError', $event)"
+            @open-form="updateDiscussionWithOpenForm"
+            @click.native.stop="updateActiveDiscussion(discussion.notes[0].id)"
+          />
+        </gl-collapse>
+      </template>
+      <slot name="reply-form"></slot>
     </template>
-    <slot name="reply-form"></slot>
   </div>
 </template>

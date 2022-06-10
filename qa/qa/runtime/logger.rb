@@ -14,7 +14,7 @@ module QA
       # @return [ActiveSupport::Logger]
       def self.logger
         @logger ||= Gitlab::QA::TestLogger.logger(
-          level: Runtime::Env.debug? ? "DEBUG" : Gitlab::QA::Runtime::Env.log_level,
+          level: Gitlab::QA::Runtime::Env.log_level,
           source: 'QA Tests',
           path: File.expand_path('../../tmp', __dir__)
         )

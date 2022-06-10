@@ -36,6 +36,7 @@ describe('Design management design presentation component', () => {
         discussions,
         isAnnotating,
         resolvedDiscussionsExpanded,
+        isLoading: false,
       },
       stubs,
     });

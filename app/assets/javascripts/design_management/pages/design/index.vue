@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { isNull } from 'lodash';
 import Mousetrap from 'mousetrap';
 import { ApolloMutation } from 'vue-apollo';
@@ -56,7 +56,6 @@ export default {
     DesignScaler,
     DesignDestroyer,
     Toolbar,
-    GlLoadingIcon,
     GlAlert,
     DesignSidebar,
   },
@@ -118,10 +117,8 @@ export default {
     },
   },
   computed: {
-    isFirstLoading() {
-      // We only want to show spinner on initial design load (when opened from a deep link to design)
-      // If we already have cached a design, loading shouldn't be indicated to user
-      return this.$apollo.queries.design.loading && !this.design.filename;
+    isLoading() {
+      return this.$apollo.queries.design.loading;
     },
     discussions() {
       if (!this.design.discussions) {
@@ -343,88 +340,88 @@ export default {
   <div
     class="design-detail js-design-detail fixed-top gl-w-full gl-bottom-0 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
   >
-    <gl-loading-icon v-if="isFirstLoading" size="xl" class="gl-align-self-center" />
-    <template v-else>
-      <div
-        class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
+    <div
+      class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
+    >
+      <design-destroyer
+        :filenames="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+          design.filename,
+        ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        :project-path="projectPath"
+        :iid="issueIid"
+        @done="$router.push({ name: $options.DESIGNS_ROUTE_NAME })"
+        @error="onDesignDeleteError"
       >
-        <design-destroyer
-          :filenames="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
-            design.filename,
-          ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-          :project-path="projectPath"
-          :iid="issueIid"
-          @done="$router.push({ name: $options.DESIGNS_ROUTE_NAME })"
-          @error="onDesignDeleteError"
-        >
-          <template #default="{ mutate, loading }">
-            <toolbar
-              :id="id"
-              :is-deleting="loading"
-              :is-latest-version="isLatestVersion"
-              v-bind="design"
-              @delete="mutate"
-            />
-          </template>
-        </design-destroyer>
+        <template #default="{ mutate, loading }">
+          <toolbar
+            :id="id"
+            :is-deleting="loading"
+            :is-latest-version="isLatestVersion"
+            :is-loading="isLoading"
+            v-bind="design"
+            @delete="mutate"
+          />
+        </template>
+      </design-destroyer>
 
-        <div v-if="errorMessage" class="gl-p-5">
-          <gl-alert variant="danger" @dismiss="errorMessage = null">
-            {{ errorMessage }}
-          </gl-alert>
-        </div>
-        <design-presentation
-          :image="design.image"
-          :image-name="design.filename"
-          :discussions="discussions"
-          :is-annotating="isAnnotating"
-          :scale="scale"
-          :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-          @openCommentForm="openCommentForm"
-          @closeCommentForm="closeCommentForm"
-          @moveNote="onMoveNote"
-          @setMaxScale="setMaxScale"
-        />
-
-        <div
-          class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
-        >
-          <design-scaler :max-scale="maxScale" @scale="scale = $event" />
-        </div>
+      <div v-if="errorMessage" class="gl-p-5">
+        <gl-alert variant="danger" @dismiss="errorMessage = null">
+          {{ errorMessage }}
+        </gl-alert>
       </div>
-      <design-sidebar
-        :design="design"
+      <design-presentation
+        :image="design.image"
+        :image-name="design.filename"
+        :discussions="discussions"
+        :is-annotating="isAnnotating"
+        :scale="scale"
         :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-        :markdown-preview-path="markdownPreviewPath"
-        @onDesignDiscussionError="onDesignDiscussionError"
-        @onCreateImageDiffNoteError="onCreateImageDiffNoteError"
-        @updateNoteError="onUpdateNoteError"
-        @resolveDiscussionError="onResolveDiscussionError"
-        @toggleResolvedComments="toggleResolvedComments"
-        @todoError="onTodoError"
+        :is-loading="isLoading"
+        @openCommentForm="openCommentForm"
+        @closeCommentForm="closeCommentForm"
+        @moveNote="onMoveNote"
+        @setMaxScale="setMaxScale"
+      />
+
+      <div
+        class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
       >
-        <template #reply-form>
-          <apollo-mutation
-            v-if="isAnnotating"
-            #default="{ mutate, loading }"
-            :mutation="$options.createImageDiffNoteMutation"
-            :variables="{
-              input: mutationPayload,
-            }"
-            :update="addImageDiffNoteToStore"
-            @done="closeCommentForm"
-            @error="onCreateImageDiffNoteError"
-          >
-            <design-reply-form
-              ref="newDiscussionForm"
-              v-model="comment"
-              :is-saving="loading"
-              :markdown-preview-path="markdownPreviewPath"
-              @submit-form="mutate"
-              @cancel-form="closeCommentForm"
-            /> </apollo-mutation
-        ></template>
-      </design-sidebar>
-    </template>
+        <design-scaler :max-scale="maxScale" @scale="scale = $event" />
+      </div>
+    </div>
+    <design-sidebar
+      :design="design"
+      :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+      :markdown-preview-path="markdownPreviewPath"
+      :is-loading="isLoading"
+      @onDesignDiscussionError="onDesignDiscussionError"
+      @onCreateImageDiffNoteError="onCreateImageDiffNoteError"
+      @updateNoteError="onUpdateNoteError"
+      @resolveDiscussionError="onResolveDiscussionError"
+      @toggleResolvedComments="toggleResolvedComments"
+      @todoError="onTodoError"
+    >
+      <template #reply-form>
+        <apollo-mutation
+          v-if="isAnnotating"
+          #default="{ mutate, loading }"
+          :mutation="$options.createImageDiffNoteMutation"
+          :variables="{
+            input: mutationPayload,
+          }"
+          :update="addImageDiffNoteToStore"
+          @done="closeCommentForm"
+          @error="onCreateImageDiffNoteError"
+        >
+          <design-reply-form
+            ref="newDiscussionForm"
+            v-model="comment"
+            :is-saving="loading"
+            :markdown-preview-path="markdownPreviewPath"
+            @submit-form="mutate"
+            @cancel-form="closeCommentForm"
+          /> </apollo-mutation
+      ></template>
+    </design-sidebar>
   </div>
 </template>

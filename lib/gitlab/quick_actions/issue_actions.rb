@@ -306,7 +306,7 @@ module Gitlab
         types Issue
         condition do
           current_user.can?(:set_issue_crm_contacts, quick_action_target) &&
-            CustomerRelations::Contact.exists_for_group?(quick_action_target.project.root_ancestor)
+            quick_action_target.customer_relations_contacts.exists?
         end
         execution_message do
           _('One or more contacts were successfully removed.')

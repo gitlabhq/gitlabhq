@@ -180,13 +180,13 @@ could be merged sooner.
 
 ### Get your changes reviewed
 
-When your merge request is ready for reviews you must assign
-reviewers and then maintainers. Depending on the complexity of a change, you
-might want to involve the people that know the most about the codebase area you are
-changing. We do have many domain experts and maintainers in Verify and it is absolutely acceptable to
-ask them to review your code when you are not certain if a reviewer or
-maintainer assigned by the Reviewer Roulette has enough context about the
-change.
+When your merge request is ready for reviews you must assign reviewers and then
+maintainers. Depending on the complexity of a change, you might want to involve
+the people that know the most about the codebase area you are changing. We do
+have many domain experts and maintainers in Verify and it is absolutely
+acceptable to ask them to review your code when you are not certain if a
+reviewer or maintainer assigned by the Reviewer Roulette has enough context
+about the change.
 
 The reviewer roulette offers useful suggestions, but as assigning the right
 reviewers is important it should not be done automatically every time. It might
@@ -195,8 +195,18 @@ updating, because their feedback might be limited to code style and syntax.
 Depending on the complexity and impact of a change, assigning the right people
 to review your changes might be very important.
 
-If you don't know who to assign, consult `git blame` or ask in the `#verify`
+If you don't know who to assign, consult `git blame` or ask in the `#s_verify`
 Slack channel (GitLab team members only).
+
+There are two kinds of changes / merge requests that require additional
+attention from reviews and an additional reviewer:
+
+1. Merge requests changing code around pipelines / stages / builds statuses.
+1. Merge requests changing code around authentication / security features.
+
+In both cases engineers are expected to request a review from a maintainer and
+a domain expert. If maintainer is the domain expert, involving another person
+is recommended.
 
 ### Incremental rollouts
 

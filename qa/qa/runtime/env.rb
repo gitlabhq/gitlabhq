@@ -61,10 +61,6 @@ module QA
         ENV['CI_PROJECT_NAME']
       end
 
-      def debug?
-        enabled?(ENV['QA_DEBUG'], default: false)
-      end
-
       def generate_allure_report?
         enabled?(ENV['QA_GENERATE_ALLURE_REPORT'], default: false)
       end

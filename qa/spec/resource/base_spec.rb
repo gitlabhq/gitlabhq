@@ -119,8 +119,6 @@ RSpec.describe QA::Resource::Base do
       end
 
       it 'logs the resource and build method' do
-        stub_env('QA_DEBUG', 'true')
-
         subject.fabricate_via_api!('something', resource: resource, parents: [])
 
         expect(QA::Runtime::Logger).to have_received(:info) do |&msg|
@@ -159,8 +157,6 @@ RSpec.describe QA::Resource::Base do
       end
 
       it 'logs the resource and build method' do
-        stub_env('QA_DEBUG', 'true')
-
         subject.fabricate_via_browser_ui!('something', resource: resource, parents: [])
 
         expect(QA::Runtime::Logger).to have_received(:info) do |&msg|

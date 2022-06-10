@@ -17,9 +17,7 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type:
-- gmau
-- paid_gmau
+performance_indicator_type: []
 milestone: "<13.9"
 milestone_removed: "15.1"
 removed_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88485"

@@ -91,7 +91,12 @@ describe('Design management design index page', () => {
 
   function createComponent(
     { loading = false } = {},
-    { data = {}, intialRouteOptions = {}, provide = {} } = {},
+    {
+      data = {},
+      intialRouteOptions = {},
+      provide = {},
+      stubs = { ApolloMutation, DesignSidebar, DesignReplyForm },
+    } = {},
   ) {
     const $apollo = {
       queries: {
@@ -109,11 +114,7 @@ describe('Design management design index page', () => {
     wrapper = shallowMount(DesignIndex, {
       propsData: { id: '1' },
       mocks: { $apollo },
-      stubs: {
-        ApolloMutation,
-        DesignSidebar,
-        DesignReplyForm,
-      },
+      stubs,
       provide: {
         issueIid: '1',
         projectPath: 'project-path',
@@ -139,7 +140,7 @@ describe('Design management design index page', () => {
   describe('when navigating to component', () => {
     it('applies fullscreen layout class', () => {
       jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
-      createComponent({ loading: true });
+      createComponent({}, { stubs: {} });
 
       expect(mockPageLayoutElement.classList.add).toHaveBeenCalledTimes(1);
       expect(mockPageLayoutElement.classList.add).toHaveBeenCalledWith(
@@ -151,7 +152,7 @@ describe('Design management design index page', () => {
   describe('when navigating within the component', () => {
     it('`scale` prop of DesignPresentation component is 1', async () => {
       jest.spyOn(utils, 'getPageLayoutElement').mockReturnValue(mockPageLayoutElement);
-      createComponent({ loading: false }, { data: { design, scale: 2 } });
+      createComponent({}, { data: { design, scale: 2 } });
 
       await nextTick();
       expect(findDesignPresentation().props('scale')).toBe(2);
@@ -180,7 +181,8 @@ describe('Design management design index page', () => {
   it('sets loading state', () => {
     createComponent({ loading: true });
 
-    expect(wrapper.element).toMatchSnapshot();
+    expect(wrapper.find(DesignPresentation).props('isLoading')).toBe(true);
+    expect(wrapper.find(DesignSidebar).props('isLoading')).toBe(true);
   });
 
   it('renders design index', () => {
@@ -197,6 +199,7 @@ describe('Design management design index page', () => {
       design,
       markdownPreviewPath: '/project-path/preview_markdown?target_type=Issue',
       resolvedDiscussionsExpanded: false,
+      isLoading: false,
     });
   });
 

@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DesignOverlay from './design_overlay.vue';
@@ -10,6 +11,7 @@ export default {
   components: {
     DesignImage,
     DesignOverlay,
+    GlLoadingIcon,
   },
   props: {
     image: {
@@ -37,6 +39,10 @@ export default {
       default: 1,
     },
     resolvedDiscussionsExpanded: {
+      type: Boolean,
+      required: true,
+    },
+    isLoading: {
       type: Boolean,
       required: true,
     },
@@ -299,7 +305,12 @@ export default {
     @touchend="onPresentationMouseup"
     @touchcancel="onPresentationMouseup"
   >
-    <div class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative">
+    <gl-loading-icon
+      v-if="isLoading"
+      size="xl"
+      class="gl-display-flex gl-h-full gl-align-items-center"
+    />
+    <div v-else class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative">
       <design-image
         v-if="image"
         :image="image"

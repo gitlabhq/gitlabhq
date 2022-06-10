@@ -47,13 +47,6 @@ RSpec.describe QA::Runtime::Env do
       default: false
   end
 
-  describe '.debug?' do
-    it_behaves_like 'boolean method',
-      method: :debug?,
-      env_key: 'QA_DEBUG',
-      default: false
-  end
-
   describe '.webdriver_headless?' do
     it_behaves_like 'boolean method',
       method: :webdriver_headless?,

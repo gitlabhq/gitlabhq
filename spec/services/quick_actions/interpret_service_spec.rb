@@ -2866,12 +2866,6 @@ RSpec.describe QuickActions::InterpretService do
 
           expect(explanations).to be_empty
         end
-
-        it '/remove_contacts is not available' do
-          _, explanations = service.explain(remove_contacts, issue)
-
-          expect(explanations).to be_empty
-        end
       end
 
       context 'when group has contacts' do
@@ -2883,10 +2877,22 @@ RSpec.describe QuickActions::InterpretService do
           expect(explanations).to contain_exactly("Add customer relation contact(s).")
         end
 
-        it '/remove_contacts is available' do
-          _, explanations = service.explain(remove_contacts, issue)
+        context 'when issue has no contacts' do
+          it '/remove_contacts is not available' do
+            _, explanations = service.explain(remove_contacts, issue)
 
-          expect(explanations).to contain_exactly("Remove customer relation contact(s).")
+            expect(explanations).to be_empty
+          end
+        end
+
+        context 'when issue has contacts' do
+          let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+
+          it '/remove_contacts is available' do
+            _, explanations = service.explain(remove_contacts, issue)
+
+            expect(explanations).to contain_exactly("Remove customer relation contact(s).")
+          end
         end
       end
     end

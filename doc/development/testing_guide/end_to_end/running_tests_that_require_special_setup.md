@@ -274,7 +274,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 1. To run end-to-end tests from your local GDK, run the [`EE::Scenario::Test::Geo` scenario](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa/qa/ee/scenario/test/geo.rb) from the [`gitlab/qa/` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/f7272b77e80215c39d1ffeaed27794c220dbe03f/qa). Include `--without-setup` to skip the Geo configuration steps.
 
    ```shell
-   QA_DEBUG=true GITLAB_QA_ACCESS_TOKEN=[add token here] GITLAB_QA_ADMIN_ACCESS_TOKEN=[add token here] bundle exec bin/qa QA::EE::Scenario::Test::Geo \
+   QA_LOG_LEVEL=debug GITLAB_QA_ACCESS_TOKEN=[add token here] GITLAB_QA_ADMIN_ACCESS_TOKEN=[add token here] bundle exec bin/qa QA::EE::Scenario::Test::Geo \
    --primary-address http://gitlab-primary.geo \
    --secondary-address http://gitlab-secondary.geo \
    --without-setup
@@ -283,7 +283,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
    If the containers need to be configured first (for example, if you used the `--no-tests` option in the previous step), run the `QA::EE::Scenario::Test::Geo scenario` as shown below to first do the Geo configuration steps, and then run Geo end-to-end tests. Make sure that `EE_LICENSE` is (still) defined in your shell session.
 
    ```shell
-   QA_DEBUG=true bundle exec bin/qa QA::EE::Scenario::Test::Geo \
+   QA_LOG_LEVEL=debug bundle exec bin/qa QA::EE::Scenario::Test::Geo \
    --primary-address http://gitlab-primary.geo \
    --primary-name gitlab-primary \
    --secondary-address http://gitlab-secondary.geo \
@@ -354,7 +354,7 @@ To run the LDAP tests on your local with TLS enabled, follow these steps:
 1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
    ```shell
-   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All https://gitlab.test qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
+   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_LOG_LEVEL=debug WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All https://gitlab.test qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
    ```
 
 ### Running LDAP tests with TLS disabled
@@ -382,7 +382,7 @@ To run the LDAP tests on your local with TLS disabled, follow these steps:
 1. Run an LDAP test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
    ```shell
-   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_DEBUG=true WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
+   GITLAB_LDAP_USERNAME="tanuki" GITLAB_LDAP_PASSWORD="password" QA_LOG_LEVEL=debug WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/login/log_into_gitlab_via_ldap_spec.rb
    ```
 
 ## Guide to the mobile suite

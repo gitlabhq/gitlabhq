@@ -64,7 +64,8 @@ RSpec.shared_context 'structured_logger' do
       'duration_s' => 0.0,
       'completed_at' => timestamp.to_f,
       'cpu_s' => 1.111112,
-      'rate_limiting_gates' => []
+      'rate_limiting_gates' => [],
+      'worker_id' => "process_#{Process.pid}"
     )
   end
 
