@@ -17232,7 +17232,7 @@ msgstr ""
 msgid "GitLab is open source software to collaborate on code."
 msgstr ""
 
-msgid "GitLab is undergoing maintenance and is operating in read-only mode."
+msgid "GitLab is undergoing maintenance"
 msgstr ""
 
 msgid "GitLab logo"
@@ -19086,6 +19086,9 @@ msgid "IDE|Refresh preview"
 msgstr ""
 
 msgid "IDE|Review"
+msgstr ""
+
+msgid "IDE|Start a new merge request"
 msgstr ""
 
 msgid "IDE|Successful commit"
@@ -25756,9 +25759,6 @@ msgid "No repository"
 msgstr ""
 
 msgid "No runner executable"
-msgstr ""
-
-msgid "No runners found"
 msgstr ""
 
 msgid "No schedules"
@@ -32765,6 +32765,9 @@ msgstr[1] ""
 msgid "Runners|A capacity of 1 enables warm HA through Auto Scaling group re-spawn. A capacity of 2 enables hot HA because the service is available even when a node is lost. A capacity of 3 or more enables hot HA and manual scaling of runner fleet."
 msgstr ""
 
+msgid "Runners|A new version is available"
+msgstr ""
+
 msgid "Runners|A periodic background task deletes runners that haven't contacted GitLab in more than %{elapsedTime}. %{linkStart}Can I view how many runners were deleted?%{linkEnd}"
 msgstr ""
 
@@ -32866,6 +32869,9 @@ msgstr ""
 msgid "Runners|Download latest binary"
 msgstr ""
 
+msgid "Runners|Edit your search and try again"
+msgstr ""
+
 msgid "Runners|Enable stale runner cleanup"
 msgstr ""
 
@@ -32876,6 +32882,9 @@ msgid "Runners|Enter the number of seconds. This timeout takes precedence over l
 msgstr ""
 
 msgid "Runners|Executor"
+msgstr ""
+
+msgid "Runners|Get started with runners"
 msgstr ""
 
 msgid "Runners|Group"
@@ -32924,6 +32933,9 @@ msgid "Runners|New group runners view"
 msgstr ""
 
 msgid "Runners|New registration token generated!"
+msgstr ""
+
+msgid "Runners|No results found"
 msgstr ""
 
 msgid "Runners|No spot. Default choice for Windows Shell executor."
@@ -33069,6 +33081,9 @@ msgstr ""
 msgid "Runners|Runners"
 msgstr ""
 
+msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
+msgstr ""
+
 msgid "Runners|Runs untagged jobs"
 msgstr ""
 
@@ -33132,6 +33147,9 @@ msgid "Runners|This runner is associated with specific projects."
 msgstr ""
 
 msgid "Runners|This runner is available to all projects and subgroups in a group."
+msgstr ""
+
+msgid "Runners|This runner is outdated, an upgrade is recommended"
 msgstr ""
 
 msgid "Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation."
@@ -33201,6 +33219,12 @@ msgid "Runners|specific"
 msgstr ""
 
 msgid "Runners|stale"
+msgstr ""
+
+msgid "Runners|upgrade available"
+msgstr ""
+
+msgid "Runners|upgrade recommended"
 msgstr ""
 
 msgid "Running"
@@ -36268,9 +36292,6 @@ msgstr ""
 msgid "Start a new discussion…"
 msgstr ""
 
-msgid "Start a new merge request"
-msgstr ""
-
 msgid "Start a new merge request with these changes"
 msgstr ""
 
@@ -38746,9 +38767,6 @@ msgid "This GitLab instance does not provide any shared runners yet. Instance ad
 msgstr ""
 
 msgid "This GitLab instance is licensed at the %{insufficient_license} tier. Geo is only available for users who have at least a Premium license."
-msgstr ""
-
-msgid "This GitLab instance is undergoing maintenance and is operating in read-only mode."
 msgstr ""
 
 msgid "This PDF is too large to display. Please download to view."

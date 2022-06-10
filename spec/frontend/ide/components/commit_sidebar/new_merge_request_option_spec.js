@@ -1,193 +1,97 @@
-import Vue, { nextTick } from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
-import { projectData, branches } from 'jest/ide/mock_data';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { GlFormCheckbox } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
-import { PERMISSION_CREATE_MR } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
-import {
-  COMMIT_TO_CURRENT_BRANCH,
-  COMMIT_TO_NEW_BRANCH,
-} from '~/ide/stores/modules/commit/constants';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-describe('create new MR checkbox', () => {
+Vue.use(Vuex);
+
+describe('NewMergeRequestOption component', () => {
   let store;
-  let vm;
+  let wrapper;
 
-  const setMR = () => {
-    vm.$store.state.currentMergeRequestId = '1';
-    vm.$store.state.projects[store.state.currentProjectId].mergeRequests[
-      store.state.currentMergeRequestId
-    ] = { foo: 'bar' };
-  };
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findFieldset = () => wrapper.findByTestId('new-merge-request-fieldset');
+  const findTooltip = () => getBinding(findFieldset().element, 'gl-tooltip');
 
-  const setPermissions = (permissions) => {
-    store.state.projects[store.state.currentProjectId].userPermissions = permissions;
-  };
-
-  const createComponent = ({ currentBranchId = 'main', createNewBranch = false } = {}) => {
-    const Component = Vue.extend(NewMergeRequestOption);
-
-    vm = createComponentWithStore(Component, store);
-
-    vm.$store.state.commit.commitAction = createNewBranch
-      ? COMMIT_TO_NEW_BRANCH
-      : COMMIT_TO_CURRENT_BRANCH;
-
-    vm.$store.state.currentBranchId = currentBranchId;
-
-    store.state.projects.abcproject.branches[currentBranchId] = branches.find(
-      (branch) => branch.name === currentBranchId,
-    );
-
-    return vm.$mount();
-  };
-
-  const findInput = () => vm.$el.querySelector('input[type="checkbox"]');
-  const findLabel = () => vm.$el.querySelector('.js-ide-commit-new-mr');
-
-  beforeEach(() => {
+  const createComponent = ({
+    shouldHideNewMrOption = false,
+    shouldDisableNewMrOption = false,
+    shouldCreateMR = false,
+  } = {}) => {
     store = createStore();
 
-    store.state.currentProjectId = 'abcproject';
-
-    const proj = JSON.parse(JSON.stringify(projectData));
-    proj.userPermissions[PERMISSION_CREATE_MR] = true;
-    Vue.set(store.state.projects, 'abcproject', proj);
-  });
+    wrapper = shallowMountExtended(NewMergeRequestOption, {
+      store: {
+        ...store,
+        getters: {
+          'commit/shouldHideNewMrOption': shouldHideNewMrOption,
+          'commit/shouldDisableNewMrOption': shouldDisableNewMrOption,
+          'commit/shouldCreateMR': shouldCreateMR,
+        },
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  describe('for default branch', () => {
-    describe('is rendered when pushing to a new branch', () => {
-      beforeEach(() => {
-        createComponent({
-          currentBranchId: 'main',
-          createNewBranch: true,
-        });
-      });
-
-      it('has NO new MR', () => {
-        expect(vm.$el.textContent).not.toBe('');
-      });
-
-      it('has new MR', async () => {
-        setMR();
-
-        await nextTick();
-        expect(vm.$el.textContent).not.toBe('');
-      });
+  describe('when the `shouldHideNewMrOption` getter returns false', () => {
+    beforeEach(() => {
+      createComponent();
+      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
-    describe('is NOT rendered when pushing to the same branch', () => {
-      beforeEach(() => {
-        createComponent({
-          currentBranchId: 'main',
-          createNewBranch: false,
-        });
-      });
-
-      it('has NO new MR', () => {
-        expect(vm.$el.textContent).toBe('');
-      });
-
-      it('has new MR', async () => {
-        setMR();
-
-        await nextTick();
-        expect(vm.$el.textContent).toBe('');
-      });
-    });
-  });
-
-  describe('for protected branch', () => {
-    describe('when user does not have the write access', () => {
-      beforeEach(() => {
-        createComponent({
-          currentBranchId: 'protected/no-access',
-        });
-      });
-
-      it('is rendered if MR does not exists', () => {
-        expect(vm.$el.textContent).not.toBe('');
-      });
-
-      it('is rendered if MR exists', async () => {
-        setMR();
-
-        await nextTick();
-        expect(vm.$el.textContent).not.toBe('');
-      });
+    it('renders an enabled new MR checkbox', () => {
+      expect(findCheckbox().attributes('disabled')).toBeUndefined();
     });
 
-    describe('when user has the write access', () => {
+    it("doesn't add `is-disabled` class to the fieldset", () => {
+      expect(findFieldset().classes()).not.toContain('is-disabled');
+    });
+
+    it('dispatches toggleShouldCreateMR when clicking checkbox', () => {
+      findCheckbox().vm.$emit('change');
+
+      expect(store.dispatch).toHaveBeenCalledWith('commit/toggleShouldCreateMR', undefined);
+    });
+
+    describe('when user cannot create an MR', () => {
       beforeEach(() => {
         createComponent({
-          currentBranchId: 'protected/access',
+          shouldDisableNewMrOption: true,
         });
       });
 
-      it('is rendered if MR does not exist', () => {
-        expect(vm.$el.textContent).not.toBe('');
+      it('disables the new MR checkbox', () => {
+        expect(findCheckbox().attributes('disabled')).toBe('true');
       });
 
-      it('is hidden if MR exists', async () => {
-        setMR();
+      it('adds `is-disabled` class to the fieldset', () => {
+        expect(findFieldset().classes()).toContain('is-disabled');
+      });
 
-        await nextTick();
-        expect(vm.$el.textContent).toBe('');
+      it('shows a tooltip', () => {
+        expect(findTooltip().value).toBe(wrapper.vm.$options.i18n.tooltipText);
       });
     });
   });
 
-  describe('for regular branch', () => {
+  describe('when the `shouldHideNewMrOption` getter returns true', () => {
     beforeEach(() => {
       createComponent({
-        currentBranchId: 'regular',
+        shouldHideNewMrOption: true,
       });
     });
 
-    it('is rendered if no MR exists', () => {
-      expect(vm.$el.textContent).not.toBe('');
+    it("doesn't render the new MR checkbox", () => {
+      expect(findCheckbox().exists()).toBe(false);
     });
-
-    it('is hidden if MR exists', async () => {
-      setMR();
-
-      await nextTick();
-      expect(vm.$el.textContent).toBe('');
-    });
-
-    it('shows enablded checkbox', () => {
-      expect(findLabel().classList.contains('is-disabled')).toBe(false);
-      expect(findInput().disabled).toBe(false);
-    });
-  });
-
-  describe('when user cannot create MR', () => {
-    beforeEach(() => {
-      setPermissions({ [PERMISSION_CREATE_MR]: false });
-
-      createComponent({ currentBranchId: 'regular' });
-    });
-
-    it('disabled checkbox', () => {
-      expect(findLabel().classList.contains('is-disabled')).toBe(true);
-      expect(findInput().disabled).toBe(true);
-    });
-  });
-
-  it('dispatches toggleShouldCreateMR when clicking checkbox', () => {
-    createComponent({
-      currentBranchId: 'regular',
-    });
-    const el = vm.$el.querySelector('input[type="checkbox"]');
-    jest.spyOn(vm.$store, 'dispatch').mockImplementation(() => {});
-    el.dispatchEvent(new Event('change'));
-
-    expect(vm.$store.dispatch.mock.calls).toEqual(
-      expect.arrayContaining([['commit/toggleShouldCreateMR', expect.any(Object)]]),
-    );
   });
 });

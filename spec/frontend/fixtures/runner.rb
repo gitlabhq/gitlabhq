@@ -26,6 +26,12 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
     remove_repository(project)
   end
 
+  before do
+    allow(Gitlab::Ci::RunnerUpgradeCheck.instance)
+      .to receive(:check_runner_upgrade_status)
+      .and_return(:not_available)
+  end
+
   describe do
     before do
       sign_in(admin)

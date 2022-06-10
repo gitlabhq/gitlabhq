@@ -5071,6 +5071,18 @@ RSpec.describe Ci::Build do
 
         build.execute_hooks
       end
+
+      context 'with blocked users' do
+        before do
+          allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
+        end
+
+        it 'does not call project.execute_hooks' do
+          expect(build.project).not_to receive(:execute_hooks)
+
+          build.execute_hooks
+        end
+      end
     end
 
     context 'without project hooks' do

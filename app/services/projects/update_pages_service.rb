@@ -3,6 +3,7 @@
 module Projects
   class UpdatePagesService < BaseService
     InvalidStateError = Class.new(StandardError)
+    WrongUploadedDeploymentSizeError = Class.new(StandardError)
     BLOCK_SIZE = 32.kilobytes
     PUBLIC_DIR = 'public'
 
@@ -39,6 +40,9 @@ module Projects
       end
     rescue InvalidStateError => e
       error(e.message)
+    rescue WrongUploadedDeploymentSizeError => e
+      error("Uploading artifacts to pages storage failed")
+      raise e
     rescue StandardError => e
       error(e.message)
       raise e
@@ -79,6 +83,10 @@ module Projects
                                                        file_sha256: sha256,
                                                        ci_build_id: build.id
                                                       )
+
+        if deployment.size != file.size || deployment.file.size != file.size
+          raise(WrongUploadedDeploymentSizeError)
+        end
 
         validate_outdated_sha!
 

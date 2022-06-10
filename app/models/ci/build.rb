@@ -808,6 +808,7 @@ module Ci
 
     def execute_hooks
       return unless project
+      return if user&.blocked?
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)

@@ -1050,6 +1050,9 @@ Pipeline events are triggered when the status of a pipeline changes.
 In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53159)
 and later, the pipeline webhook returns only the latest jobs.
 
+In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
+and later, pipeline webhooks triggered by blocked users are not processed.
+
 Request header:
 
 ```plaintext
@@ -1309,6 +1312,9 @@ Payload example:
 Job events are triggered when the status of a job changes.
 
 The `commit.id` in the payload is the ID of the pipeline, not the ID of the commit.
+
+In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
+and later, job events triggered by blocked users are not processed.
 
 Request header:
 

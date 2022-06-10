@@ -33,7 +33,7 @@ RSpec.describe "Group Runners" do
         visit group_runners_path(group)
       end
 
-      it_behaves_like "shows no runners"
+      it_behaves_like 'shows no runners registered'
 
       it 'shows tabs with total counts equal to 0' do
         expect(page).to have_link('All 0')
@@ -68,6 +68,18 @@ RSpec.describe "Group Runners" do
       it 'can edit runner information' do
         within_runner_row(group_runner.id) do
           expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, group_runner))
+        end
+      end
+
+      context 'when description does not match' do
+        before do
+          input_filtered_search_keys('runner-baz')
+        end
+
+        it_behaves_like 'shows no runners found'
+
+        it 'shows no runner' do
+          expect(page).not_to have_content 'runner-foo'
         end
       end
     end

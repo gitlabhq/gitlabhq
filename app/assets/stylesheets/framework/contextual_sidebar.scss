@@ -247,8 +247,8 @@
   z-index: 600;
   width: $contextual-sidebar-width;
   top: $header-height;
-  @include gl-bg-gray-10;
-  border-right: 1px solid $gray-50;
+  background-color: $contextual-sidebar-bg-color;
+  border-right: 1px solid $contextual-sidebar-border-color;
   transform: translate3d(0, 0, 0);
 
   &.sidebar-collapsed-desktop {
@@ -411,7 +411,7 @@
 .toggle-sidebar-button,
 .close-nav-button {
   @include side-panel-toggle;
-  @include gl-bg-gray-10;
+  background-color: $contextual-sidebar-bg-color;
   position: fixed;
   bottom: 0;
   width: #{$contextual-sidebar-width - 1px};

@@ -24,6 +24,10 @@ when your platform does not support it.
  1. Ensure new sprite sheets generated for 1x and 2x
     - `app/assets/images/emoji.png`
     - `app/assets/images/emoji@2x.png`
+ 1. Update `fixtures/emojis/intents.json` with any new emoji that we would like to highlight as having positive or negative intent.
+    - Positive intent should be set to `0.5`.
+    - Neutral intent can be set to `1`. This is applied to all emoji automatically so there is no need to set this explicitly.
+    - Negative intent should be set to `1.5`.
  1. Ensure you see new individual images copied into `app/assets/images/emoji/`
  1. Ensure you can see the new emojis and their aliases in the GitLab Flavored Markdown (GLFM) Autocomplete
  1. Ensure you can see the new emojis and their aliases in the award emoji menu

@@ -45,6 +45,7 @@
 .toggle-sidebar-button,
 .close-nav-button {
   background-color: darken($gray-50, 4%);
+  border-right: 1px solid $gray-50;
 }
 
 .nav-sidebar {

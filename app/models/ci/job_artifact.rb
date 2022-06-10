@@ -124,10 +124,10 @@ module Ci
     # We will start using this column once we complete https://gitlab.com/gitlab-org/gitlab/-/issues/285597
     ignore_column :original_filename, remove_with: '14.7', remove_after: '2022-11-22'
 
-    mount_file_store_uploader JobArtifactUploader
+    mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
-    skip_callback :save, :after, :store_file!, if: :store_after_commit?
-    after_commit :store_file_after_commit!, on: [:create, :update], if: :store_after_commit?
+    after_save :store_file_in_transaction!, unless: :store_after_commit?
+    after_commit :store_file_after_transaction!, on: [:create, :update], if: :store_after_commit?
 
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
@@ -362,11 +362,24 @@ module Ci
 
     private
 
-    def store_file_after_commit!
-      return unless previous_changes.key?(:file)
+    def store_file_in_transaction!
+      store_file_now! if saved_change_to_file?
 
-      store_file!
-      update_file_store
+      file_stored_in_transaction_hooks
+    end
+
+    def store_file_after_transaction!
+      store_file_now! if previous_changes.key?(:file)
+
+      file_stored_after_transaction_hooks
+    end
+
+    # method overriden in EE
+    def file_stored_after_transaction_hooks
+    end
+
+    # method overriden in EE
+    def file_stored_in_transaction_hooks
     end
 
     def set_size

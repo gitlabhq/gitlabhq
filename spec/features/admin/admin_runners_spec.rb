@@ -115,13 +115,17 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content("runner-bar")
         end
 
-        it 'shows no runner when description does not match' do
-          input_filtered_search_keys('runner-baz')
+        context 'when description does not match' do
+          before do
+            input_filtered_search_keys('runner-baz')
+          end
 
-          expect(page).to have_link('All 0')
-          expect(page).to have_link('Instance 0')
+          it_behaves_like 'shows no runners found'
 
-          expect(page).to have_text 'No runners found'
+          it 'shows no runner' do
+            expect(page).to have_link('All 0')
+            expect(page).to have_link('Instance 0')
+          end
         end
       end
 
@@ -190,14 +194,6 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-never-contacted'
         end
 
-        it 'shows no runner when status does not match' do
-          input_filtered_search_filter_is_only('Status', 'Stale')
-
-          expect(page).to have_link('All 0')
-
-          expect(page).to have_text 'No runners found'
-        end
-
         it 'shows correct runner when status is selected and search term is entered' do
           input_filtered_search_filter_is_only('Status', 'Online')
           input_filtered_search_keys('runner-1')
@@ -223,6 +219,18 @@ RSpec.describe "Admin Runners" do
 
           within_runner_row(never_contacted.id) do
             expect(page).to have_selector '.badge', text: 'never contacted'
+          end
+        end
+
+        context 'when status does not match' do
+          before do
+            input_filtered_search_filter_is_only('Status', 'Stale')
+          end
+
+          it_behaves_like 'shows no runners found'
+
+          it 'shows no runner' do
+            expect(page).to have_link('All 0')
           end
         end
       end
@@ -273,21 +281,6 @@ RSpec.describe "Admin Runners" do
           end
         end
 
-        it 'shows no runner when type does not match' do
-          visit admin_runners_path
-
-          page.within('[data-testid="runner-type-tabs"]') do
-            click_on 'Instance'
-
-            expect(page).to have_link('Instance', class: 'active')
-          end
-
-          expect(page).not_to have_content 'runner-project'
-          expect(page).not_to have_content 'runner-group'
-
-          expect(page).to have_text 'No runners found'
-        end
-
         it 'shows correct runner when type is selected and search term is entered' do
           create(:ci_runner, :project, description: 'runner-2-project', projects: [project])
 
@@ -327,6 +320,24 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-group'
           expect(page).not_to have_content 'runner-paused-project'
         end
+
+        context 'when type does not match' do
+          before do
+            visit admin_runners_path
+            page.within('[data-testid="runner-type-tabs"]') do
+              click_on 'Instance'
+
+              expect(page).to have_link('Instance', class: 'active')
+            end
+          end
+
+          it_behaves_like 'shows no runners found'
+
+          it 'shows no runner' do
+            expect(page).not_to have_content 'runner-project'
+            expect(page).not_to have_content 'runner-group'
+          end
+        end
       end
 
       describe 'filter by tag' do
@@ -358,15 +369,6 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-red'
         end
 
-        it 'shows no runner when tag does not match' do
-          visit admin_runners_path
-
-          input_filtered_search_filter_is_only('Tags', 'green')
-
-          expect(page).not_to have_content 'runner-blue'
-          expect(page).to have_text 'No runners found'
-        end
-
         it 'shows correct runner when tag is selected and search term is entered' do
           create(:ci_runner, :instance, description: 'runner-2-blue', tag_list: ['blue'])
 
@@ -383,6 +385,19 @@ RSpec.describe "Admin Runners" do
           expect(page).to have_content 'runner-2-blue'
           expect(page).not_to have_content 'runner-blue'
           expect(page).not_to have_content 'runner-red'
+        end
+
+        context 'when tag does not match' do
+          before do
+            visit admin_runners_path
+            input_filtered_search_filter_is_only('Tags', 'green')
+          end
+
+          it_behaves_like 'shows no runners found'
+
+          it 'shows no runner' do
+            expect(page).not_to have_content 'runner-blue'
+          end
         end
       end
 
@@ -419,7 +434,7 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path
       end
 
-      it_behaves_like "shows no runners"
+      it_behaves_like 'shows no runners registered'
 
       it 'shows tabs with total counts equal to 0' do
         expect(page).to have_link('All 0')

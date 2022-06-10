@@ -11519,7 +11519,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
-| <a id="groupcontacts"></a>`contacts` | [`CustomerRelationsContactConnection`](#customerrelationscontactconnection) | Find contacts of this group. (see [Connections](#connections)) |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
@@ -11546,7 +11545,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
-| <a id="grouporganizations"></a>`organizations` | [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection) | Find organizations of this group. (see [Connections](#connections)) |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
@@ -11643,6 +11641,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupcomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
+
+##### `Group.contacts`
+
+Find contacts of this group.
+
+Returns [`CustomerRelationsContactConnection`](#customerrelationscontactconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcontactssearch"></a>`search` | [`String`](#string) | Search term to find contacts with. |
+| <a id="groupcontactsstate"></a>`state` | [`CustomerRelationsContactState`](#customerrelationscontactstate) | State of the contacts to search for. |
 
 ##### `Group.containerRepositories`
 
@@ -11982,6 +11997,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="groupmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
+
+##### `Group.organizations`
+
+Find organizations of this group.
+
+Returns [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouporganizationssearch"></a>`search` | [`String`](#string) | Search term used to find organizations with. |
+| <a id="grouporganizationsstate"></a>`state` | [`CustomerRelationsOrganizationState`](#customerrelationsorganizationstate) | State of the organization to search for. |
 
 ##### `Group.packages`
 
@@ -18491,6 +18523,20 @@ Values for sorting tags.
 | ----- | ----------- |
 | <a id="containerrepositorytagsortname_asc"></a>`NAME_ASC` | Ordered by name in ascending order. |
 | <a id="containerrepositorytagsortname_desc"></a>`NAME_DESC` | Ordered by name in descending order. |
+
+### `CustomerRelationsContactState`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="customerrelationscontactstateactive"></a>`active` | Active contact. |
+| <a id="customerrelationscontactstateinactive"></a>`inactive` | Inactive contact. |
+
+### `CustomerRelationsOrganizationState`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="customerrelationsorganizationstateactive"></a>`active` | Active organization. |
+| <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organization. |
 
 ### `DastProfileCadenceUnit`
 

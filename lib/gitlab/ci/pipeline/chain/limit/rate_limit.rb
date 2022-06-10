@@ -7,6 +7,7 @@ module Gitlab
         module Limit
           class RateLimit < Chain::Base
             include Chain::Helpers
+            include ::Gitlab::Utils::StrongMemoize
 
             def perform!
               # We exclude child-pipelines from the rate limit because they represent
@@ -41,7 +42,9 @@ module Gitlab
                 commit_sha: command.sha,
                 current_user_id: current_user.id,
                 subscription_plan: project.actual_plan_name,
-                message: 'Activated pipeline creation rate limit'
+                message: 'Activated pipeline creation rate limit',
+                throttled: enforce_throttle?,
+                throttle_override: throttle_override?
               )
             end
 
@@ -50,9 +53,16 @@ module Gitlab
             end
 
             def enforce_throttle?
-              ::Feature.enabled?(
-                :ci_enforce_throttle_pipelines_creation,
-                project)
+              strong_memoize(:enforce_throttle) do
+                ::Feature.enabled?(:ci_enforce_throttle_pipelines_creation, project) &&
+                  !throttle_override?
+              end
+            end
+
+            def throttle_override?
+              strong_memoize(:throttle_override) do
+                ::Feature.enabled?(:ci_enforce_throttle_pipelines_creation_override, project)
+              end
             end
           end
         end

@@ -66,5 +66,83 @@ RSpec.describe Crm::ContactsFinder do
         expect(subject).to be_empty
       end
     end
+
+    context 'with search informations' do
+      let_it_be(:search_test_group) { create(:group, :crm_enabled) }
+
+      let_it_be(:search_test_a) do
+        create(
+          :contact,
+          group: search_test_group,
+          first_name: "ABC",
+          last_name: "DEF",
+          email: "ghi@test.com",
+          description: "LMNO",
+          state: "inactive"
+        )
+      end
+
+      let_it_be(:search_test_b) do
+        create(
+          :contact,
+          group: search_test_group,
+          first_name: "PQR",
+          last_name: "STU",
+          email: "vwx@test.com",
+          description: "YZ",
+          state: "active"
+        )
+      end
+
+      before do
+        search_test_group.add_developer(user)
+      end
+
+      context 'when search term is empty' do
+        it 'returns all group contacts alphabetically ordered' do
+          finder = described_class.new(user, group: search_test_group, search: "")
+          expect(finder.execute).to eq([search_test_a, search_test_b])
+        end
+      end
+
+      context 'when search term is not empty' do
+        it 'searches for first name ignoring casing' do
+          finder = described_class.new(user, group: search_test_group, search: "aBc")
+          expect(finder.execute).to match_array([search_test_a])
+        end
+
+        it 'searches for last name ignoring casing' do
+          finder = described_class.new(user, group: search_test_group, search: "StU")
+          expect(finder.execute).to match_array([search_test_b])
+        end
+
+        it 'searches for email' do
+          finder = described_class.new(user, group: search_test_group, search: "ghi")
+          expect(finder.execute).to match_array([search_test_a])
+        end
+
+        it 'searches for description ignoring casing' do
+          finder = described_class.new(user, group: search_test_group, search: "Yz")
+          expect(finder.execute).to match_array([search_test_b])
+        end
+
+        it 'fuzzy searches for email and last name' do
+          finder = described_class.new(user, group: search_test_group, search: "s")
+          expect(finder.execute).to match_array([search_test_a, search_test_b])
+        end
+      end
+
+      context 'when searching for contacts state' do
+        it 'returns only inactive contacts' do
+          finder = described_class.new(user, group: search_test_group, state: :inactive)
+          expect(finder.execute).to match_array([search_test_a])
+        end
+
+        it 'returns only active contacts' do
+          finder = described_class.new(user, group: search_test_group, state: :active)
+          expect(finder.execute).to match_array([search_test_b])
+        end
+      end
+    end
   end
 end

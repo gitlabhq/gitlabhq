@@ -21,3 +21,6 @@ To enable pipeline status emails:
    **Notify only broken pipelines**.
 1. Select the branches to send notifications for.
 1. Select **Save changes**.
+
+In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
+and later, pipeline notifications triggered by blocked users are not delivered.

@@ -24,6 +24,7 @@ import isEmojiUnicodeSupported, {
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
 } from '~/emoji/support/is_emoji_unicode_supported';
+import { NEUTRAL_INTENT_MULTIPLIER } from '~/emoji/constants';
 
 const emptySupportMap = {
   personZwj: false,
@@ -436,14 +437,28 @@ describe('emoji', () => {
     it.each([undefined, null, ''])("should return all emoji when the input is '%s'", (input) => {
       const search = searchEmoji(input);
 
-      const expected = Object.keys(validEmoji).map((name) => {
-        return {
-          emoji: mockEmojiData[name],
-          field: 'd',
-          fieldValue: mockEmojiData[name].d,
-          score: 0,
-        };
-      });
+      const expected = Object.keys(validEmoji)
+        .map((name) => {
+          let score = NEUTRAL_INTENT_MULTIPLIER;
+
+          // Positive intent value retrieved from ~/emoji/intents.json
+          if (name === 'thumbsup') {
+            score = 0.5;
+          }
+
+          // Negative intent value retrieved from ~/emoji/intents.json
+          if (name === 'thumbsdown') {
+            score = 1.5;
+          }
+
+          return {
+            emoji: mockEmojiData[name],
+            field: 'd',
+            fieldValue: mockEmojiData[name].d,
+            score,
+          };
+        })
+        .sort(sortEmoji);
 
       expect(search).toEqual(expected);
     });
@@ -457,7 +472,7 @@ describe('emoji', () => {
             name: 'atom',
             field: 'e',
             fieldValue: 'atom',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
           },
         ],
       ],
@@ -469,7 +484,7 @@ describe('emoji', () => {
             name: 'atom',
             field: 'alias',
             fieldValue: 'atom_symbol',
-            score: 4,
+            score: 16,
           },
         ],
       ],
@@ -481,7 +496,7 @@ describe('emoji', () => {
             name: 'atom',
             field: 'alias',
             fieldValue: 'atom_symbol',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
           },
         ],
       ],
@@ -509,7 +524,7 @@ describe('emoji', () => {
           {
             name: 'atom',
             field: 'd',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
           },
         ],
       ],
@@ -521,7 +536,7 @@ describe('emoji', () => {
           {
             name: 'atom',
             field: 'd',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
           },
         ],
       ],
@@ -533,7 +548,7 @@ describe('emoji', () => {
           {
             name: 'grey_question',
             field: 'name',
-            score: 5,
+            score: 32,
           },
         ],
       ],
@@ -544,7 +559,7 @@ describe('emoji', () => {
           {
             name: 'grey_question',
             field: 'd',
-            score: 24,
+            score: 16777216,
           },
         ],
       ],
@@ -553,14 +568,14 @@ describe('emoji', () => {
         'heart',
         [
           {
-            name: 'black_heart',
-            field: 'd',
-            score: 6,
-          },
-          {
             name: 'heart',
             field: 'name',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
+          },
+          {
+            name: 'black_heart',
+            field: 'd',
+            score: 64,
           },
         ],
       ],
@@ -569,14 +584,14 @@ describe('emoji', () => {
         'HEART',
         [
           {
-            name: 'black_heart',
-            field: 'd',
-            score: 6,
-          },
-          {
             name: 'heart',
             field: 'name',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
+          },
+          {
+            name: 'black_heart',
+            field: 'd',
+            score: 64,
           },
         ],
       ],
@@ -585,14 +600,30 @@ describe('emoji', () => {
         'star',
         [
           {
-            name: 'custard',
-            field: 'd',
-            score: 2,
-          },
-          {
             name: 'star',
             field: 'name',
-            score: 0,
+            score: NEUTRAL_INTENT_MULTIPLIER,
+          },
+          {
+            name: 'custard',
+            field: 'd',
+            score: 4,
+          },
+        ],
+      ],
+      [
+        'searching for emoji with intentions assigned',
+        'thumbs',
+        [
+          {
+            name: 'thumbsup',
+            field: 'd',
+            score: 0.5,
+          },
+          {
+            name: 'thumbsdown',
+            field: 'd',
+            score: 1.5,
           },
         ],
       ],
@@ -619,10 +650,10 @@ describe('emoji', () => {
         [
           { score: 10, fieldValue: '', emoji: { name: 'a' } },
           { score: 5, fieldValue: '', emoji: { name: 'b' } },
-          { score: 0, fieldValue: '', emoji: { name: 'c' } },
+          { score: 1, fieldValue: '', emoji: { name: 'c' } },
         ],
         [
-          { score: 0, fieldValue: '', emoji: { name: 'c' } },
+          { score: 1, fieldValue: '', emoji: { name: 'c' } },
           { score: 5, fieldValue: '', emoji: { name: 'b' } },
           { score: 10, fieldValue: '', emoji: { name: 'a' } },
         ],
@@ -630,25 +661,25 @@ describe('emoji', () => {
       [
         'should correctly sort by fieldValue',
         [
-          { score: 0, fieldValue: 'y', emoji: { name: 'b' } },
-          { score: 0, fieldValue: 'x', emoji: { name: 'a' } },
-          { score: 0, fieldValue: 'z', emoji: { name: 'c' } },
+          { score: 1, fieldValue: 'y', emoji: { name: 'b' } },
+          { score: 1, fieldValue: 'x', emoji: { name: 'a' } },
+          { score: 1, fieldValue: 'z', emoji: { name: 'c' } },
         ],
         [
-          { score: 0, fieldValue: 'x', emoji: { name: 'a' } },
-          { score: 0, fieldValue: 'y', emoji: { name: 'b' } },
-          { score: 0, fieldValue: 'z', emoji: { name: 'c' } },
+          { score: 1, fieldValue: 'x', emoji: { name: 'a' } },
+          { score: 1, fieldValue: 'y', emoji: { name: 'b' } },
+          { score: 1, fieldValue: 'z', emoji: { name: 'c' } },
         ],
       ],
       [
         'should correctly sort by score and then by fieldValue (in order)',
         [
           { score: 5, fieldValue: 'y', emoji: { name: 'c' } },
-          { score: 0, fieldValue: 'z', emoji: { name: 'a' } },
+          { score: 1, fieldValue: 'z', emoji: { name: 'a' } },
           { score: 5, fieldValue: 'x', emoji: { name: 'b' } },
         ],
         [
-          { score: 0, fieldValue: 'z', emoji: { name: 'a' } },
+          { score: 1, fieldValue: 'z', emoji: { name: 'a' } },
           { score: 5, fieldValue: 'x', emoji: { name: 'b' } },
           { score: 5, fieldValue: 'y', emoji: { name: 'c' } },
         ],
@@ -656,7 +687,7 @@ describe('emoji', () => {
     ];
 
     it.each(testCases)('%s', (_, scoredItems, expected) => {
-      expect(sortEmoji(scoredItems)).toEqual(expected);
+      expect(scoredItems.sort(sortEmoji)).toEqual(expected);
     });
   });
 });

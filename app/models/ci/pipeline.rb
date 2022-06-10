@@ -240,7 +240,9 @@ module Ci
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(pipeline.id)
+          unless pipeline.user&.blocked?
+            PipelineHooksWorker.perform_async(pipeline.id)
+          end
 
           if pipeline.project.jira_subscription_exists?
             # Passing the seq-id ensures this is idempotent
@@ -297,7 +299,12 @@ module Ci
         ref_status = pipeline.ci_ref&.update_status_by!(pipeline)
 
         pipeline.run_after_commit do
-          PipelineNotificationWorker.perform_async(pipeline.id, ref_status: ref_status)
+          # We don't send notifications for a pipeline dropped due to the
+          # user been blocked.
+          unless pipeline.user&.blocked?
+            PipelineNotificationWorker
+              .perform_async(pipeline.id, ref_status: ref_status)
+          end
         end
       end
 

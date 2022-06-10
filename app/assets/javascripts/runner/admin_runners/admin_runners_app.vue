@@ -10,6 +10,7 @@ import RegistrationDropdown from '../components/registration/registration_dropdo
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerBulkDelete from '../components/runner_bulk_delete.vue';
 import RunnerList from '../components/runner_list.vue';
+import RunnerListEmptyState from '../components/runner_list_empty_state.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
@@ -35,6 +36,7 @@ import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
+  isSearchFiltered,
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
 
@@ -91,6 +93,7 @@ export default {
     RunnerFilteredSearchBar,
     RunnerBulkDelete,
     RunnerList,
+    RunnerListEmptyState,
     RunnerName,
     RunnerStats,
     RunnerPagination,
@@ -98,7 +101,7 @@ export default {
     RunnerActionsCell,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['localMutations'],
+  inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath', 'localMutations'],
   props: {
     registrationToken: {
       type: String,
@@ -189,6 +192,9 @@ export default {
       // Feature flag: admin_runners_bulk_delete
       // Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/353981
       return this.glFeatures.adminRunnersBulkDelete;
+    },
+    isSearchFiltered() {
+      return isSearchFiltered(this.search);
     },
   },
   watch: {
@@ -298,9 +304,13 @@ export default {
       :stale-runners-count="staleRunnersTotal"
     />
 
-    <div v-if="noRunnersFound" class="gl-text-center gl-p-5">
-      {{ __('No runners found') }}
-    </div>
+    <runner-list-empty-state
+      v-if="noRunnersFound"
+      :registration-token="registrationToken"
+      :is-search-filtered="isSearchFiltered"
+      :svg-path="emptyStateSvgPath"
+      :filtered-svg-path="emptyStateFilteredSvgPath"
+    />
     <template v-else>
       <runner-bulk-delete v-if="isBulkDeleteEnabled" />
       <runner-list

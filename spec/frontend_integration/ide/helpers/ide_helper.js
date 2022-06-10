@@ -207,10 +207,10 @@ export const commit = async ({ newBranch = false, newMR = false, newBranchName =
 
   if (!newBranch) {
     const option = await screen.findByLabelText(/Commit to .+ branch/);
-    option.click();
+    await option.click();
   } else {
     const option = await screen.findByLabelText('Create a new branch');
-    option.click();
+    await option.click();
 
     const branchNameInput = await screen.findByTestId('ide-new-branch-name');
     fireEvent.input(branchNameInput, { target: { value: newBranchName } });

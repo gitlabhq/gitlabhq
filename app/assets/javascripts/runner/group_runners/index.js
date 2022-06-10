@@ -22,6 +22,8 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
     groupRunnersLimitedCount,
     onlineContactTimeoutSecs,
     staleTimeoutSecs,
+    emptyStateSvgPath,
+    emptyStateFilteredSvgPath,
   } = el.dataset;
 
   const apolloProvider = new VueApollo({
@@ -36,6 +38,8 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
       groupId,
       onlineContactTimeoutSecs: parseInt(onlineContactTimeoutSecs, 10),
       staleTimeoutSecs: parseInt(staleTimeoutSecs, 10),
+      emptyStateSvgPath,
+      emptyStateFilteredSvgPath,
     },
     render(h) {
       return h(GroupRunnersApp, {

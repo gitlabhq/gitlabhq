@@ -230,7 +230,7 @@ include:
     file: '/templates/.gitlab-ci-template.yml'
 
   - project: 'my-group/my-project'
-    ref: v1.0.0
+    ref: v1.0.0  # Git Tag
     file: '/templates/.gitlab-ci-template.yml'
 
   - project: 'my-group/my-project'

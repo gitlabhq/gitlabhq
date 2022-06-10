@@ -62,7 +62,7 @@ RSpec.shared_examples 'shows and resets runner registration token' do
   end
 end
 
-RSpec.shared_examples 'shows no runners' do
+RSpec.shared_examples 'shows no runners registered' do
   it 'shows counts with 0' do
     expect(page).to have_text "Online runners 0"
     expect(page).to have_text "Offline runners 0"
@@ -70,13 +70,19 @@ RSpec.shared_examples 'shows no runners' do
   end
 
   it 'shows "no runners" message' do
-    expect(page).to have_text 'No runners found'
+    expect(page).to have_text s_('Runners|Get started with runners')
+  end
+end
+
+RSpec.shared_examples 'shows no runners found' do
+  it 'shows "no runners" message' do
+    expect(page).to have_text s_('Runners|No results found')
   end
 end
 
 RSpec.shared_examples 'shows runner in list' do
   it 'does not show empty state' do
-    expect(page).not_to have_content 'No runners found'
+    expect(page).not_to have_content s_('Runners|Get started with runners')
   end
 
   it 'shows runner row' do

@@ -65,7 +65,9 @@ module Ci
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
-        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
+        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
+        empty_state_filtered_svg_path: image_path('illustrations/magnifying-glass.svg')
       }
     end
 
@@ -87,7 +89,9 @@ module Ci
         group_full_path: group.full_path,
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
-        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
+        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
+        empty_state_filtered_svg_path: image_path('illustrations/magnifying-glass.svg')
       }
     end
 

@@ -84,12 +84,14 @@ RSpec.describe Ci::RunnersHelper do
     end
 
     it 'returns the data in format' do
-      expect(helper.admin_runners_data_attributes).to eq({
+      expect(helper.admin_runners_data_attributes).to include(
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: 7200,
-        stale_timeout_secs: 7889238
-      })
+        stale_timeout_secs: 7889238,
+        empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
+        empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+      )
     end
   end
 
@@ -130,14 +132,16 @@ RSpec.describe Ci::RunnersHelper do
     let(:group) { create(:group) }
 
     it 'returns group data to render a runner list' do
-      expect(helper.group_runners_data_attributes(group)).to eq({
+      expect(helper.group_runners_data_attributes(group)).to include(
         registration_token: group.runners_token,
         group_id: group.id,
         group_full_path: group.full_path,
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         online_contact_timeout_secs: 7200,
-        stale_timeout_secs: 7889238
-      })
+        stale_timeout_secs: 7889238,
+        empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
+        empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+      )
     end
   end
 

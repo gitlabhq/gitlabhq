@@ -11,6 +11,7 @@ RSpec.describe Ci::CreatePipelineService, :freeze_time, :clean_gitlab_redis_rate
     before do
       stub_ci_pipeline_yaml_file(gitlab_ci_yaml)
       stub_application_setting(pipeline_limit_per_project_user_sha: 1)
+      stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
     end
 
     context 'when user is under the limit' do

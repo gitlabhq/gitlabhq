@@ -201,11 +201,13 @@ module Types
 
     field :organizations, Types::CustomerRelations::OrganizationType.connection_type,
           null: true,
-          description: "Find organizations of this group."
+          description: "Find organizations of this group.",
+          resolver: Resolvers::Crm::OrganizationsResolver
 
     field :contacts, Types::CustomerRelations::ContactType.connection_type,
           null: true,
-          description: "Find contacts of this group."
+          description: "Find contacts of this group.",
+          resolver: Resolvers::Crm::ContactsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
           resolver: Resolvers::WorkItems::TypesResolver,

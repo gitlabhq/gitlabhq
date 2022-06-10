@@ -87,8 +87,6 @@ method selected, you can accept it **only if a fast-forward merge is possible**.
 
 ## Rebasing in (semi-)linear merge methods
 
-> Rebasing without running a CI/CD pipeline [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118825) in GitLab 14.7.
-
 In these merge methods, you can merge only when your source branch is up-to-date with the target branch:
 
 - Merge commit with semi-linear history.
@@ -96,11 +94,7 @@ In these merge methods, you can merge only when your source branch is up-to-date
 
 If a fast-forward merge is not possible but a conflict-free rebase is possible,
 GitLab offers you the [`/rebase` quick action](../../../../topics/git/git_rebase.md#rebase-from-the-gitlab-ui),
-and the ability to **Rebase** from the user interface:
-
-![Fast forward merge request](../img/ff_merge_rebase_v14_9.png)
-
-In [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/118825) and later, you can also rebase without running a CI/CD pipeline.
+and the ability to select **Rebase** from the user interface.
 
 If the target branch is ahead of the source branch and a conflict-free rebase is
 not possible, you must rebase the source branch locally before you can do a fast-forward merge.
@@ -109,6 +103,23 @@ not possible, you must rebase the source branch locally before you can do a fast
 
 Rebasing may be required before squashing, even though squashing can itself be
 considered equivalent to rebasing.
+
+### Rebase without CI/CD pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118825) in GitLab 14.7 [with a flag](../../../../administration/feature_flags.md) named `rebase_without_ci_ui`. Disabled by default.
+
+FLAG:
+On GitLab.com and self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `rebase_without_ci_ui`.
+The feature is not ready for production use.
+
+To rebase a merge request's branch without triggering a CI/CD pipeline, select 
+**Rebase without pipeline** from the merge request reports section.
+This option is available when fast-forward merge is not possible but a conflict-free
+rebase is possible.
+
+Rebasing without a CI/CD pipeline saves resources in projects with a semi-linear
+workflow that requires frequent rebases.
 
 ## Related topics
 

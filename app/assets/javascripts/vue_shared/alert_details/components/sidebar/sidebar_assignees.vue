@@ -302,9 +302,11 @@ export default {
       <span v-else class="gl-display-flex gl-align-items-center gl-line-height-normal">
         {{ __('None') }} -
         <gl-button
-          class="gl-ml-2"
+          class="gl-ml-2 gl-reset-color!"
           href="#"
+          category="tertiary"
           variant="link"
+          size="small"
           data-testid="unassigned-users"
           @click="updateAlertAssignees(currentUser)"
         >

@@ -41,3 +41,5 @@ class Groups::RunnersController < Groups::ApplicationController
     params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 end
+
+Groups::RunnersController.prepend_mod

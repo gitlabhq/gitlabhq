@@ -52,7 +52,10 @@ this inconsistency.
 Some places in the code refer to both the GitLab and GitHub specifications
 simultaneous in the same areas of logic. In these situations,
 _GitHub_ Flavored Markdown may be referred to with variable or constant names like
-`ghfm_` to avoid confusion.
+`ghfm_` to avoid confusion. For example, we use the `ghfm` acronym for the
+[`ghfm_spec_v_0.29.txt` GitHub Flavored Markdown specification file](#github-flavored-markdown-specification)
+which is committed to the `gitlab` repo and used as input to the
+[`update_specification.rb` script](#update-specificationrb-script).
 
 The original CommonMark specification is referred to as _CommonMark_ (no acronym).
 
@@ -434,7 +437,7 @@ subgraph script:
   A --> B{Backend Markdown API}
 end
 subgraph input:<br/>input specification files
-  C[gfm_spec_v_0.29.txt] --> A
+  C[ghfm_spec_v_0.29.txt] --> A
   D[glfm_intro.txt] --> A
   E[glfm_canonical_examples.txt] --> A
 end
@@ -572,11 +575,15 @@ updated, as in the case of all GFM files.
 
 ##### GitHub Flavored Markdown specification
 
-[`glfm_specification/input/github_flavored_markdown/gfm_spec_v_0.29.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/github_flavored_markdown/gfm_spec_v_0.29.txt)
+[`glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.txt)
 is the official latest [GFM `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
 
 - It is automatically downloaded and updated by `update-specification.rb` script.
 - When it is downloaded, the version number is added to the filename.
+
+NOTE:
+This file uses the `ghfm` acronym instead of `gfm`, as
+explained in the [Acronyms section](#acronyms-glfm-ghfm-gfm-commonmark).
 
 ##### `glfm_intro.txt`
 
@@ -900,12 +907,12 @@ Any exceptions or failures which occur when generating HTML are replaced with an
 
 ```yaml
 06_04_inlines_emphasis_and_strong_emphasis_1:
- canonical: |
-   <p><em>foo bar</em></p>
- static: |
-   <p data-sourcepos="1:1-1:9" dir="auto"><strong>foo bar</strong></p>
- wysiwyg: |
-   <p><strong>foo bar</strong></p>
+  canonical: |
+    <p><em>foo bar</em></p>
+  static: |
+    <p data-sourcepos="1:1-1:9" dir="auto"><strong>foo bar</strong></p>
+  wysiwyg: |
+    <p><strong>foo bar</strong></p>
 ```
 
 NOTE:

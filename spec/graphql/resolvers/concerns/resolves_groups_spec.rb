@@ -27,11 +27,9 @@ RSpec.describe ResolvesGroups do
 
   let_it_be(:lookahead_fields) do
     <<~FIELDS
-      contacts { nodes { id } }
       containerRepositoriesCount
       customEmoji { nodes { id } }
       fullPath
-      organizations { nodes { id } }
       path
       dependencyProxyBlobCount
       dependencyProxyBlobs { nodes { fileName } }

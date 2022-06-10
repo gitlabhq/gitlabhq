@@ -3056,7 +3056,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe 'hooks trigerring' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
 
     %i[
       enqueue
@@ -3076,7 +3076,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         it 'schedules a new PipelineHooksWorker job' do
           expect(PipelineHooksWorker).to receive(:perform_async).with(pipeline.id)
 
-          pipeline.reload.public_send(pipeline_action)
+          pipeline.public_send(pipeline_action)
+        end
+
+        context 'with blocked users' do
+          before do
+            allow(pipeline).to receive(:user) { build(:user, :blocked) }
+          end
+
+          it 'does not schedule a new PipelineHooksWorker job' do
+            expect(PipelineHooksWorker).not_to receive(:perform_async)
+
+            pipeline.public_send(pipeline_action)
+          end
         end
       end
     end
@@ -3636,6 +3648,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           pipeline.succeed!
         end
       end
+
+      context 'when the user is blocked' do
+        before do
+          pipeline.user.block!
+        end
+
+        it 'does not enqueue PipelineNotificationWorker' do
+          expect(PipelineNotificationWorker).not_to receive(:perform_async)
+
+          pipeline.succeed
+        end
+      end
     end
 
     context 'with failed pipeline' do
@@ -3655,6 +3679,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           .to receive(:perform_async).with(pipeline.id, ref_status: :failed)
 
         pipeline.drop
+      end
+
+      context 'when the user is blocked' do
+        before do
+          pipeline.user.block!
+        end
+
+        it 'does not enqueue PipelineNotificationWorker' do
+          expect(PipelineNotificationWorker).not_to receive(:perform_async)
+
+          pipeline.drop
+        end
       end
     end
 

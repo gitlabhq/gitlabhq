@@ -205,6 +205,25 @@ RSpec.describe Projects::UpdatePagesService do
           include_examples 'fails with outdated reference message'
         end
       end
+
+      context 'when uploaded deployment size is wrong' do
+        it 'raises an error' do
+          allow_next_instance_of(PagesDeployment) do |deployment|
+            allow(deployment)
+              .to receive(:size)
+              .and_return(file.size + 1)
+          end
+
+          expect do
+            expect(execute).not_to eq(:success)
+
+            expect(GenericCommitStatus.last.description).to eq("Error: The uploaded artifact size does not match the expected value.")
+            project.pages_metadatum.reload
+            expect(project.pages_metadatum).not_to be_deployed
+            expect(project.pages_metadatum.pages_deployment).to be_ni
+          end.to raise_error(Projects::UpdatePagesService::WrongUploadedDeploymentSizeError)
+        end
+      end
     end
   end
 
