@@ -21,7 +21,7 @@
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      .merge-request-tabs-container{ class: "#{'is-merge-request' if !fluid_layout}" }
+      .merge-request-tabs-container{ class: "#{'is-merge-request' if Feature.enabled?(:moved_mr_sidebar, @project) && !fluid_layout}" }
         %ul.merge-request-tabs.nav-tabs.nav.nav-links{ class: "#{'gl-w-full gl-lg-w-auto!' if Feature.enabled?(:moved_mr_sidebar, @project)}" }
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do

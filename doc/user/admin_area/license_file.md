@@ -49,6 +49,17 @@ WARNING:
 These methods only add a license at the time of installation. To renew or upgrade
 a license, add the license in the **Admin Area** in the web user interface.
 
+## Submit license usage data
+
+If you use a license file or key to activate your instance in an offline environment, you must submit your license
+usage data monthly.
+To submit the data, [export your license usage](../../subscriptions/self_managed/index.md#export-your-license-usage)
+and send it by email to the renewals service, `renewals-service@customers.gitlab.com`.
+
+If you don't submit your data each month after your subscription start date, a banner displays to remind you to
+submit your data. The banner displays in the **Admin Area** on the **Dashboard** and on the **Subscription**
+pages. You can only dismiss it until the following month after you submit your license usage data.
+
 ## What happens when your license expires
 
 Fifteen days before the license expires, a notification banner with the upcoming expiration

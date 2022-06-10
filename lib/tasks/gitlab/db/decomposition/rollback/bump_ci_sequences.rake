@@ -5,10 +5,6 @@ namespace :gitlab do
     namespace :decomposition do
       namespace :rollback do
         SEQUENCE_NAME_MATCHER = /nextval\('([a-z_]+)'::regclass\)/.freeze
-        # These aren't used by anything so we can ignore these https://gitlab.com/gitlab-org/gitlab/-/issues/362984
-        EXCLUDED_SEQUENCES = %w[
-          ci_job_artifact_states_job_artifact_id_seq
-        ].freeze
 
         desc 'Bump all the CI tables sequences on the Main Database'
         task :bump_ci_sequences, [:increase_by] => :environment do |_t, args|
@@ -20,8 +16,6 @@ namespace :gitlab do
           end
 
           sequences_by_gitlab_schema(ApplicationRecord, :gitlab_ci).each do |sequence_name|
-            next if EXCLUDED_SEQUENCES.include?(sequence_name)
-
             increment_sequence_by(ApplicationRecord.connection, sequence_name, increase_by)
           end
         end

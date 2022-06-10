@@ -71,7 +71,7 @@ export default {
           v-if="showBack"
           size="small"
           class="gl-mr-3 js-back-button"
-          icon="angle-left"
+          icon="chevron-lg-left"
           :aria-label="__('Go back')"
           @click="onBackClick"
         />

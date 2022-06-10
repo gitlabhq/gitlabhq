@@ -19,7 +19,6 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
 
   let(:main_sequence_name) { 'issues_id_seq' }
   let(:ci_sequence_name) { 'ci_build_needs_id_seq' }
-  let(:ignored_ci_sequence_name) { 'ci_job_artifact_states_job_artifact_id_seq' }
 
   # This is just to make sure that all of the sequences start with `is_called=True`
   # which means that the next call to nextval() is going to increment the sequence.
@@ -81,14 +80,6 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
       .and change {
         last_value_of_sequence(ApplicationRecord.connection, ci_sequence_name)
       }.by(11) # the +1 is because the sequence has is_called = true
-    end
-
-    it 'does not change the sequences on ci ignored sequences' do
-      expect do
-        run_rake_task('gitlab:db:decomposition:rollback:bump_ci_sequences', '20')
-      end.to change {
-        last_value_of_sequence(ApplicationRecord.connection, ignored_ci_sequence_name)
-      }.by(0)
     end
   end
 

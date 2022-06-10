@@ -88,4 +88,13 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       end
     end
   end
+
+  describe 'sign-up restrictions' do
+    it 'renders js-signup-form tag' do
+      render
+
+      expect(rendered).to match 'id="js-signup-form"'
+      expect(rendered).to match ' data-minimum-password-length='
+    end
+  end
 end

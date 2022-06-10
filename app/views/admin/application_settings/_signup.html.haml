@@ -1,21 +1,3 @@
 = form_errors(@application_setting)
 
-#js-signup-form{ data: { host: new_user_session_url(host: Gitlab.config.gitlab.host),
-  settings_path: general_admin_application_settings_path(anchor: 'js-signup-settings'),
-  signup_enabled: @application_setting[:signup_enabled].to_s,
-  require_admin_approval_after_user_signup: @application_setting[:require_admin_approval_after_user_signup].to_s,
-  send_user_confirmation_email: @application_setting[:send_user_confirmation_email].to_s,
-  minimum_password_length: @application_setting[:minimum_password_length],
-  minimum_password_length_min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH,
-  minimum_password_length_max: Devise.password_length.max,
-  minimum_password_length_help_link: 'https://about.gitlab.com/handbook/security/#gitlab-password-policy-guidelines',
-  domain_allowlist_raw: @application_setting.domain_allowlist_raw,
-  new_user_signups_cap: @application_setting[:new_user_signups_cap].to_s,
-  domain_denylist_enabled: @application_setting[:domain_denylist_enabled].to_s,
-  denylist_type_raw_selected: (@application_setting.domain_denylist.present? || @application_setting.domain_denylist.blank?).to_s,
-  domain_denylist_raw: @application_setting.domain_denylist_raw,
-  email_restrictions_enabled: @application_setting[:email_restrictions_enabled].to_s,
-  supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
-  email_restrictions: @application_setting.email_restrictions.to_s,
-  after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-  pending_user_count: pending_user_count } }
+#js-signup-form{ data: signup_form_data }
