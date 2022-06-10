@@ -10,8 +10,10 @@ import groupItemComponent from '~/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
+import EmptyState from '~/groups/components/empty_state.vue';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 import {
   mockEndpoint,
@@ -38,16 +40,22 @@ describe('AppComponent', () => {
   const store = new GroupsStore({ hideProjects: false });
   const service = new GroupsService(mockEndpoint);
 
-  const createShallowComponent = (hideProjects = false) => {
+  const createShallowComponent = ({ propsData = {}, provide = {} } = {}) => {
     store.state.pageInfo = mockPageInfo;
     wrapper = shallowMount(appComponent, {
       propsData: {
         store,
         service,
-        hideProjects,
+        hideProjects: false,
+        containerId: 'js-groups-tree',
+        ...propsData,
       },
       mocks: {
         $toast,
+      },
+      provide: {
+        renderEmptyState: false,
+        ...provide,
       },
     });
     vm = wrapper.vm;
@@ -63,6 +71,14 @@ describe('AppComponent', () => {
     mock.onGet('/dashboard/groups.json').reply(200, mockGroups);
     Vue.component('GroupFolder', groupFolderComponent);
     Vue.component('GroupItem', groupItemComponent);
+
+    document.body.innerHTML = `
+      <div id="js-groups-tree">
+        <div class="empty-state hidden" data-testid="legacy-empty-state">
+          <p>There are no projects shared with this group yet</p>
+        </div>
+      </div>
+    `;
 
     createShallowComponent();
     getGroupsSpy = jest.spyOn(vm.service, 'getGroups');
@@ -386,7 +402,10 @@ describe('AppComponent', () => {
         expect(vm.store.setSearchedGroups).toHaveBeenCalledWith(mockGroups);
       });
 
-      it('should set `isSearchEmpty` prop based on groups count', () => {
+      it('should set `isSearchEmpty` prop based on groups count and `filter` query param', () => {
+        setWindowLocation('?filter=foobar');
+        createShallowComponent();
+
         vm.updateGroups(mockGroups);
 
         expect(vm.isSearchEmpty).toBe(false);
@@ -394,6 +413,47 @@ describe('AppComponent', () => {
         vm.updateGroups([]);
 
         expect(vm.isSearchEmpty).toBe(true);
+      });
+
+      describe.each`
+        action                      | groups        | fromSearch | renderEmptyState | expected
+        ${'subgroups_and_projects'} | ${[]}         | ${false}   | ${true}          | ${true}
+        ${''}                       | ${[]}         | ${false}   | ${true}          | ${false}
+        ${'subgroups_and_projects'} | ${mockGroups} | ${false}   | ${true}          | ${false}
+        ${'subgroups_and_projects'} | ${[]}         | ${true}    | ${true}          | ${false}
+      `(
+        'when `action` is $action, `groups` is $groups, `fromSearch` is $fromSearch, and `renderEmptyState` is $renderEmptyState',
+        ({ action, groups, fromSearch, renderEmptyState, expected }) => {
+          it(expected ? 'renders empty state' : 'does not render empty state', async () => {
+            createShallowComponent({
+              propsData: { action },
+              provide: { renderEmptyState },
+            });
+
+            vm.updateGroups(groups, fromSearch);
+
+            await nextTick();
+
+            expect(wrapper.findComponent(EmptyState).exists()).toBe(expected);
+          });
+        },
+      );
+    });
+
+    describe('when `action` is subgroups_and_projects, `groups` is [], `fromSearch` is `false`, and `renderEmptyState` is `false`', () => {
+      it('renders legacy empty state', async () => {
+        createShallowComponent({
+          propsData: { action: 'subgroups_and_projects' },
+          provide: { renderEmptyState: false },
+        });
+
+        vm.updateGroups([], false);
+
+        await nextTick();
+
+        expect(
+          document.querySelector('[data-testid="legacy-empty-state"]').classList.contains('hidden'),
+        ).toBe(false);
       });
     });
   });
@@ -419,7 +479,7 @@ describe('AppComponent', () => {
     });
 
     it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', async () => {
-      createShallowComponent(true);
+      createShallowComponent({ propsData: { hideProjects: true } });
       await nextTick();
       expect(vm.searchEmptyMessage).toBe('No groups matched your search');
     });

@@ -446,4 +446,30 @@ RSpec.describe GroupsHelper do
       end
     end
   end
+
+  describe '#subgroups_and_projects_list_app_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
+      allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
+    end
+
+    it 'returns expected hash' do
+      expect(helper.subgroups_and_projects_list_app_data(group)).to match({
+        show_schema_markup: 'true',
+        new_subgroup_path: including("groups/new?parent_id=#{group.id}"),
+        new_project_path: including("/projects/new?namespace_id=#{group.id}"),
+        new_subgroup_illustration: including('illustrations/subgroup-create-new-sm'),
+        new_project_illustration: including('illustrations/project-create-new-sm'),
+        empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
+        render_empty_state: 'true',
+        can_create_subgroups: 'true',
+        can_create_projects: 'true'
+      })
+    end
+  end
 end

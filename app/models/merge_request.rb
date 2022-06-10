@@ -1963,6 +1963,10 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def target_default_branch?
+    target_branch == project.default_branch
+  end
+
   private
 
   attr_accessor :skip_fetch_ref

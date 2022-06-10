@@ -1,19 +1,26 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
+import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 
 import { COMMON_STR, CONTENT_LIST_CLASS } from '../constants';
 import eventHub from '../event_hub';
-import groupsComponent from './groups.vue';
+import GroupsComponent from './groups.vue';
+import EmptyState from './empty_state.vue';
 
 export default {
   components: {
-    groupsComponent,
+    GroupsComponent,
     GlModal,
     GlLoadingIcon,
+    EmptyState,
+  },
+  inject: {
+    renderEmptyState: {
+      default: false,
+    },
   },
   props: {
     action: {
@@ -47,6 +54,7 @@ export default {
       searchEmptyMessage: '',
       targetGroup: null,
       targetParentGroup: null,
+      showEmptyState: false,
     };
   },
   computed: {
@@ -74,6 +82,9 @@ export default {
     },
     pageInfo() {
       return this.store.getPaginationInfo();
+    },
+    filterGroupsBy() {
+      return getParameterByName('filter') || null;
     },
   },
   created() {
@@ -128,19 +139,18 @@ export default {
       const page = getParameterByName('page') || null;
       const sortBy = getParameterByName('sort') || null;
       const archived = getParameterByName('archived') || null;
-      const filterGroupsBy = getParameterByName('filter') || null;
 
       this.isLoading = true;
 
       return this.fetchGroups({
         page,
-        filterGroupsBy,
+        filterGroupsBy: this.filterGroupsBy,
         sortBy,
         archived,
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;
-        this.updateGroups(res, Boolean(filterGroupsBy));
+        this.updateGroups(res, Boolean(this.filterGroupsBy));
       });
     },
     fetchPage({ page, filterGroupsBy, sortBy, archived }) {
@@ -212,7 +222,7 @@ export default {
           this.targetGroup.isBeingRemoved = false;
         });
     },
-    showEmptyState() {
+    showLegacyEmptyState() {
       const { containerEl } = this;
       const contentListEl = containerEl.querySelector(CONTENT_LIST_CLASS);
       const emptyStateEl = containerEl.querySelector('.empty-state');
@@ -230,7 +240,12 @@ export default {
     },
     updateGroups(groups, fromSearch) {
       const hasGroups = groups && groups.length > 0;
-      this.isSearchEmpty = !hasGroups;
+
+      if (this.renderEmptyState) {
+        this.isSearchEmpty = this.filterGroupsBy !== null && !hasGroups;
+      } else {
+        this.isSearchEmpty = !hasGroups;
+      }
 
       if (fromSearch) {
         this.store.setSearchedGroups(groups);
@@ -239,7 +254,11 @@ export default {
       }
 
       if (this.action && !hasGroups && !fromSearch) {
-        this.showEmptyState();
+        if (this.renderEmptyState) {
+          this.showEmptyState = true;
+        } else {
+          this.showLegacyEmptyState();
+        }
       }
     },
   },
@@ -262,6 +281,7 @@ export default {
       :page-info="pageInfo"
       :action="action"
     />
+    <empty-state v-if="showEmptyState" />
     <gl-modal
       modal-id="leave-group-modal"
       :visible="isModalVisible"

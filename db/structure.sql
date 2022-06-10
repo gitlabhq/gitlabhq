@@ -11419,6 +11419,10 @@ CREATE TABLE approval_merge_request_rules (
     section text,
     modified_from_project_rule boolean DEFAULT false NOT NULL,
     orchestration_policy_idx smallint,
+    vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
+    scanners text[] DEFAULT '{}'::text[] NOT NULL,
+    severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
+    vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
     CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
 );
 

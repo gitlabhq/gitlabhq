@@ -419,8 +419,13 @@ A new token is generated.
 
 When you sign in to the main GitLab application, a `_gitlab_session` cookie is
 set. When you close your browser, the cookie is cleared client-side
-and it expires after "Application settings > Session duration (minutes)"/`session_expire_delay`
-(defaults to `10080` minutes = 7 days) of no activity.
+and it expires after a set duration. GitLab administrators can determine the duration:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
+
+The default is `10080`, which equals 7 days.
 
 When you sign in to the main GitLab application, you can also check the
 **Remember me** option. This sets the `remember_user_token`

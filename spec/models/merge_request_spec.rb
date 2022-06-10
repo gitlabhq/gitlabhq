@@ -5117,4 +5117,22 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
   end
+
+  describe '#target_default_branch?' do
+    let_it_be(:merge_request) { build(:merge_request, project: project) }
+
+    it 'returns false' do
+      expect(merge_request.target_default_branch?).to be false
+    end
+
+    context 'with target_branch equal project default branch' do
+      before do
+        merge_request.target_branch = "master"
+      end
+
+      it 'returns false' do
+        expect(merge_request.target_default_branch?).to be true
+      end
+    end
+  end
 end
