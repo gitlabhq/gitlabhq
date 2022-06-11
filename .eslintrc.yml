@@ -26,6 +26,12 @@ rules:
         - _links
   import/no-unresolved:
     - error
+    - ignore:
+      # In FOSS, these import paths are rewritten using
+      # NormalModuleReplacementPlugin, which import/no-unresolved doesn't
+      # consider. See
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89831.
+      - '^(ee|jh)_component/'
   # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
   no-else-return:
     - error
@@ -108,8 +114,6 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
-  unicorn/prefer-dom-node-dataset:
-    - error
 overrides:
   - files:
     - '{,ee/,jh/}spec/frontend*/**/*'

@@ -53,7 +53,7 @@ describe('Search autocomplete dropdown', () => {
   };
 
   const disableProjectIssues = () => {
-    document.querySelector('.js-search-project-options').dataset.issuesDisabled = true;
+    document.querySelector('.js-search-project-options').setAttribute('data-issues-disabled', true);
   };
 
   // Mock `gl` object in window for dashboard specific page. App code will need it.

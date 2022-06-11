@@ -41,7 +41,7 @@ export default {
     const dropdownToggle = this.$refs.glDropdown.$el.querySelector('.dropdown-toggle');
 
     if (dropdownToggle) {
-      dropdownToggle.dataset.qaSelector = 'access_level_dropdown';
+      dropdownToggle.setAttribute('data-qa-selector', 'access_level_dropdown');
     }
   },
   methods: {

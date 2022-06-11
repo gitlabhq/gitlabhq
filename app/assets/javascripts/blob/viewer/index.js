@@ -36,19 +36,19 @@ const loadRichBlobViewer = (type) => {
 
 const loadViewer = (viewerParam) => {
   const viewer = viewerParam;
-  const { url } = viewer.dataset;
+  const url = viewer.getAttribute('data-url');
 
-  if (!url || viewer.dataset.loaded || viewer.dataset.loading) {
+  if (!url || viewer.getAttribute('data-loaded') || viewer.getAttribute('data-loading')) {
     return Promise.resolve(viewer);
   }
 
-  viewer.dataset.loading = 'true';
+  viewer.setAttribute('data-loading', 'true');
 
   return axios.get(url).then(({ data }) => {
     viewer.innerHTML = data.html;
 
     window.requestIdleCallback(() => {
-      delete viewer.dataset.loading;
+      viewer.removeAttribute('data-loading');
     });
 
     return viewer;
@@ -108,7 +108,7 @@ export class BlobViewer {
 
   switchToInitialViewer() {
     const initialViewer = this.$fileHolder[0].querySelector('.blob-viewer:not(.hidden)');
-    let initialViewerName = initialViewer.dataset.type;
+    let initialViewerName = initialViewer.getAttribute('data-type');
 
     if (this.switcher && window.location.hash.indexOf('#L') === 0) {
       initialViewerName = 'simple';
@@ -138,12 +138,12 @@ export class BlobViewer {
 
     e.preventDefault();
 
-    this.switchToViewer(target.dataset.viewer);
+    this.switchToViewer(target.getAttribute('data-viewer'));
   }
 
   toggleCopyButtonState() {
     if (!this.copySourceBtn) return;
-    if (this.simpleViewer.dataset.loaded) {
+    if (this.simpleViewer.getAttribute('data-loaded')) {
       this.copySourceBtnTooltip.setAttribute('title', __('Copy file contents'));
       this.copySourceBtn.classList.remove('disabled');
     } else if (this.activeViewer === this.simpleViewer) {
@@ -199,8 +199,7 @@ export class BlobViewer {
           this.$fileHolder.trigger('highlight:line');
           handleLocationHash();
 
-          // eslint-disable-next-line no-param-reassign
-          viewer.dataset.loaded = 'true';
+          viewer.setAttribute('data-loaded', 'true');
           this.toggleCopyButtonState();
           eventHub.$emit('showBlobInteractionZones', viewer.dataset.path);
         });

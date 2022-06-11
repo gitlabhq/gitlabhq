@@ -39,7 +39,7 @@ export default () => {
       return createElement(TerraformList, {
         props: {
           emptyStateImage,
-          terraformAdmin: Object.hasOwn(el.dataset, 'terraformAdmin'),
+          terraformAdmin: el.hasAttribute('data-terraform-admin'),
         },
       });
     },

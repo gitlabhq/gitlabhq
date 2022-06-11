@@ -13,16 +13,16 @@ export default function initVueMRPage() {
   const diffsAppProjectPath = 'testproject';
   const mrEl = document.createElement('div');
   mrEl.className = 'merge-request fixture-mr';
-  mrEl.dataset.mrAction = 'diffs';
+  mrEl.setAttribute('data-mr-action', 'diffs');
   mrTestEl.appendChild(mrEl);
 
   const mrDiscussionsEl = document.createElement('div');
   mrDiscussionsEl.id = 'js-vue-mr-discussions';
-  mrDiscussionsEl.dataset.currentUserData = JSON.stringify(userDataMock);
-  mrDiscussionsEl.dataset.noteableData = JSON.stringify(noteableDataMock);
-  mrDiscussionsEl.dataset.notesData = JSON.stringify(notesDataMock);
-  mrDiscussionsEl.dataset.noteableType = 'merge-request';
-  mrDiscussionsEl.dataset.isLocked = 'false';
+  mrDiscussionsEl.setAttribute('data-current-user-data', JSON.stringify(userDataMock));
+  mrDiscussionsEl.setAttribute('data-noteable-data', JSON.stringify(noteableDataMock));
+  mrDiscussionsEl.setAttribute('data-notes-data', JSON.stringify(notesDataMock));
+  mrDiscussionsEl.setAttribute('data-noteable-type', 'merge-request');
+  mrDiscussionsEl.setAttribute('data-is-locked', 'false');
   mrTestEl.appendChild(mrDiscussionsEl);
 
   const discussionCounterEl = document.createElement('div');
@@ -31,9 +31,9 @@ export default function initVueMRPage() {
 
   const diffsAppEl = document.createElement('div');
   diffsAppEl.id = 'js-diffs-app';
-  diffsAppEl.dataset.endpoint = diffsAppEndpoint;
-  diffsAppEl.dataset.projectPath = diffsAppProjectPath;
-  diffsAppEl.dataset.currentUserData = JSON.stringify(userDataMock);
+  diffsAppEl.setAttribute('data-endpoint', diffsAppEndpoint);
+  diffsAppEl.setAttribute('data-project-path', diffsAppProjectPath);
+  diffsAppEl.setAttribute('data-current-user-data', JSON.stringify(userDataMock));
   mrTestEl.appendChild(diffsAppEl);
 
   const mock = new MockAdapter(axios);

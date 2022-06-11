@@ -25,11 +25,11 @@ describe('DeleteLabelModal', () => {
     buttons.forEach((x) => {
       const button = document.createElement('button');
       button.setAttribute('class', 'js-delete-label-modal-button');
-      button.dataset.labelName = x.labelName;
-      button.dataset.destroyPath = x.destroyPath;
+      button.setAttribute('data-label-name', x.labelName);
+      button.setAttribute('data-destroy-path', x.destroyPath);
 
       if (x.subjectName) {
-        button.dataset.subjectName = x.subjectName;
+        button.setAttribute('data-subject-name', x.subjectName);
       }
 
       button.innerHTML = 'Action';

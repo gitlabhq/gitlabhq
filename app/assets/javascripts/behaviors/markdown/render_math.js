@@ -112,7 +112,7 @@ class SafeMathRenderer {
 
       try {
         displayContainer.innerHTML = this.katex.renderToString(text, {
-          displayMode: el.dataset.mathStyle === 'display',
+          displayMode: el.getAttribute('data-math-style') === 'display',
           throwOnError: true,
           maxSize: 20,
           maxExpand: 20,
@@ -145,7 +145,7 @@ class SafeMathRenderer {
     this.elements.forEach((el) => {
       const placeholder = document.createElement('span');
       placeholder.style.display = 'none';
-      placeholder.dataset.mathStyle = el.dataset.mathStyle;
+      placeholder.setAttribute('data-math-style', el.getAttribute('data-math-style'));
       placeholder.textContent = el.textContent;
       el.parentNode.replaceChild(placeholder, el);
       this.queue.push(placeholder);

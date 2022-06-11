@@ -31,9 +31,9 @@ describe('ConfirmModal', () => {
     buttons.forEach((x) => {
       const button = document.createElement('button');
       button.setAttribute('class', 'js-confirm-modal-button');
-      button.dataset.path = x.path;
-      button.dataset.method = x.method;
-      button.dataset.modalAttributes = JSON.stringify(x.modalAttributes);
+      button.setAttribute('data-path', x.path);
+      button.setAttribute('data-method', x.method);
+      button.setAttribute('data-modal-attributes', JSON.stringify(x.modalAttributes));
       button.innerHTML = 'Action';
       buttonContainer.appendChild(button);
     });

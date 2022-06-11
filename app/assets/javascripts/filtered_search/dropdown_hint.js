@@ -25,9 +25,9 @@ export default class DropdownHint extends FilteredSearchDropdown {
     const { selected } = e.detail;
 
     if (selected.tagName === 'LI') {
-      if (Object.hasOwn(selected.dataset, 'value')) {
+      if (selected.hasAttribute('data-value')) {
         this.dismissDropdown();
-      } else if (selected.dataset.action === 'submit') {
+      } else if (selected.getAttribute('data-action') === 'submit') {
         this.dismissDropdown();
         this.dispatchFormSubmitEvent();
       } else {

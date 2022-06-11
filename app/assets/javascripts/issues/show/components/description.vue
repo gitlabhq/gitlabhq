@@ -378,7 +378,7 @@ export default {
     },
     setActiveTask(el) {
       const { parentElement } = el;
-      const lineNumbers = parentElement.dataset.sourcepos.match(/\b\d+(?=:)/g);
+      const lineNumbers = parentElement.getAttribute('data-sourcepos').match(/\b\d+(?=:)/g);
       this.activeTask = {
         title: parentElement.innerText,
         lineNumberStart: lineNumbers[0],
