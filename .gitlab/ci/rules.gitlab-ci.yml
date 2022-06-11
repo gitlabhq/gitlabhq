@@ -898,6 +898,20 @@
     - <<: *if-default-refs
       changes: *qa-patterns
 
+.qa:rules:determine-qa-tests:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-force-ci
+      allow_failure: true
+
 .qa:rules:package-and-qa:
   rules:
     - <<: *if-not-ee
