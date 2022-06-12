@@ -30,11 +30,11 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
             <svg
               aria-hidden="true"
               class="gl-icon s8"
-              data-testid="angle-right-icon"
+              data-testid="chevron-lg-right-icon"
               role="img"
             >
               <use
-                href="#angle-right"
+                href="#chevron-lg-right"
               />
             </svg>
           </span>
