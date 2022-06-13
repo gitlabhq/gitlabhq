@@ -108,7 +108,7 @@ export default {
       return this.discussion.notes.slice(0, 1)[0];
     },
     saveButtonTitle() {
-      return this.discussion.confidential ? __('Reply internally') : __('Comment');
+      return this.discussion.confidential ? __('Reply internally') : __('Reply');
     },
     shouldShowJumpToNextDiscussion() {
       return this.showJumpToNextDiscussion(this.discussionsByDiffOrder ? 'diff' : 'discussion');

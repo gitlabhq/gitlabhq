@@ -43,7 +43,7 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
       menuItem: {
         id: 'home',
         view: 'home',
-        icon: 'angle-left',
+        icon: 'chevron-lg-left',
       },
       iconOnly: true,
     });
@@ -60,7 +60,7 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
 
     it('emits menu-item-click', () => {
       expect(wrapper.emitted()).toEqual({
-        'menu-item-click': [[{ id: 'home', view: 'home', icon: 'angle-left' }]],
+        'menu-item-click': [[{ id: 'home', view: 'home', icon: 'chevron-lg-left' }]],
       });
     });
   });

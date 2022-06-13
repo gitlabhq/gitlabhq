@@ -104,7 +104,7 @@ export default {
         return {
           text: this.approvalText,
           category: this.isApproved ? 'secondary' : 'primary',
-          variant: 'info',
+          variant: 'confirm',
           action: () => this.approve(),
         };
       } else if (this.showUnapprove) {

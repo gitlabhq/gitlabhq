@@ -71,19 +71,6 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         expect(root_storage_statistics.storage_size).to eq(total_storage_size)
       end
 
-      it 'does not aggregate container_repositories_size when FF is disabled' do
-        stub_feature_flags(container_registry_namespace_statistics: false)
-
-        root_storage_statistics.recalculate!
-
-        root_storage_statistics.reload
-
-        total_storage_size = project_stat1.storage_size + project_stat2.storage_size
-
-        expect(root_storage_statistics.container_registry_size).to eq(0)
-        expect(root_storage_statistics.storage_size).to eq(total_storage_size)
-      end
-
       it 'works when there are no projects' do
         Project.delete_all
 

@@ -50,8 +50,6 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def attributes_for_container_registry_size
-    return {} unless Feature.enabled?(:container_registry_namespace_statistics, namespace)
-
     container_registry_size = namespace.container_repositories_size || 0
 
     {

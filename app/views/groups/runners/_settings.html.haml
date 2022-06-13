@@ -1,6 +1,6 @@
 .gl-mb-5
   #update-shared-runners-form{ data: group_shared_runners_settings_data(@group) }
-- if Feature.enabled?(:stale_runner_cleanup_for_namespace_development, @group) && @group.licensed_feature_available?(:stale_runner_cleanup_for_namespace)
+- if @group.licensed_feature_available?(:stale_runner_cleanup_for_namespace)
   .gl-mb-5
     #stale-runner-cleanup-form{ data: { group_full_path: @group.full_path, stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i } }
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-px-8 gl-py-6 gl-line-height-20' },

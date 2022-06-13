@@ -245,9 +245,7 @@ RSpec.describe EmailsHelper do
         let(:logo_path) { 'spec/fixtures/logo_sample.svg' }
 
         it 'returns the default header logo' do
-          expect(header_logo).to match(
-            %r{<img alt="GitLab" src="/images/mailers/gitlab_logo\.(?:gif|png)" width="\d+" height="\d+" />}
-          )
+          expect(header_logo).to match(default_header_logo)
         end
       end
     end

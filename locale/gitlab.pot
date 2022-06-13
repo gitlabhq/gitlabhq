@@ -31938,6 +31938,9 @@ msgstr ""
 msgid "Replication"
 msgstr ""
 
+msgid "Reply"
+msgstr ""
+
 msgid "Reply by email"
 msgstr ""
 

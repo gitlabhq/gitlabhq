@@ -87,9 +87,26 @@ describe('noteable_discussion component', () => {
 
       expect(noteFormProps.discussion).toBe(discussionMock);
       expect(noteFormProps.line).toBe(null);
-      expect(noteFormProps.saveButtonTitle).toBe('Comment');
       expect(noteFormProps.autosaveKey).toBe(`Note/Issue/${discussionMock.id}/Reply`);
     });
+
+    it.each`
+      noteType      | isNoteInternal | saveButtonTitle
+      ${'public'}   | ${false}       | ${'Reply'}
+      ${'internal'} | ${true}        | ${'Reply internally'}
+    `(
+      'reply button on form should have title "$saveButtonTitle" when note is $noteType',
+      async ({ isNoteInternal, saveButtonTitle }) => {
+        wrapper.setProps({ discussion: { ...discussionMock, confidential: isNoteInternal } });
+        await nextTick();
+
+        const replyPlaceholder = wrapper.find(ReplyPlaceholder);
+        replyPlaceholder.vm.$emit('focus');
+        await nextTick();
+
+        expect(wrapper.find(NoteForm).props('saveButtonTitle')).toBe(saveButtonTitle);
+      },
+    );
 
     it('should expand discussion', async () => {
       const discussion = { ...discussionMock, expanded: false };

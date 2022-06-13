@@ -765,11 +765,7 @@ defaults to the number of CPUs available.
 
 ## Clean up stale runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `stale_runner_cleanup_for_namespace_development`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `stale_runner_cleanup_for_namespace_development`.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1
 
 You can clean up group runners that have been inactive for more than three months.
 

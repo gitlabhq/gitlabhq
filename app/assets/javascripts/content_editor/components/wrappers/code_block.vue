@@ -28,10 +28,14 @@ export default {
   i18n: {
     frontmatter: __('frontmatter'),
   },
+  userColorScheme: gon.user_color_scheme,
 };
 </script>
 <template>
-  <node-view-wrapper class="content-editor-code-block gl-relative code highlight" as="pre">
+  <node-view-wrapper
+    :class="`content-editor-code-block gl-relative code highlight ${$options.userColorScheme}`"
+    as="pre"
+  >
     <span
       v-if="node.attrs.isFrontmatter"
       data-testid="frontmatter-label"

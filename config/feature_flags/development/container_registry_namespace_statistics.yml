@@ -1,8 +1,0 @@
----
-name: container_registry_namespace_statistics
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87080
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/361960
-milestone: '15.0'
-type: development
-group: group::utilization
-default_enabled: false

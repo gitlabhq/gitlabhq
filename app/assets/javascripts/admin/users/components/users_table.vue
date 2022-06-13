@@ -2,7 +2,7 @@
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
-import { thWidthClass } from '~/lib/utils/table_utility';
+import { thWidthPercent } from '~/lib/utils/table_utility';
 import { s__, __ } from '~/locale';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import getUsersGroupCountsQuery from '../graphql/queries/get_users_group_counts.query.graphql';
@@ -70,32 +70,32 @@ export default {
     {
       key: 'name',
       label: __('Name'),
-      thClass: thWidthClass(40),
+      thClass: thWidthPercent(40),
     },
     {
       key: 'projectsCount',
       label: __('Projects'),
-      thClass: thWidthClass(10),
+      thClass: thWidthPercent(10),
     },
     {
       key: 'groupCount',
       label: __('Groups'),
-      thClass: thWidthClass(10),
+      thClass: thWidthPercent(10),
     },
     {
       key: 'createdAt',
       label: __('Created on'),
-      thClass: thWidthClass(15),
+      thClass: thWidthPercent(15),
     },
     {
       key: 'lastActivityOn',
       label: __('Last activity'),
-      thClass: thWidthClass(15),
+      thClass: thWidthPercent(15),
     },
     {
       key: 'settings',
       label: '',
-      thClass: thWidthClass(10),
+      thClass: thWidthPercent(10),
     },
   ],
 };

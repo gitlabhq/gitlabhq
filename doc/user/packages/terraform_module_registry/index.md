@@ -111,16 +111,26 @@ To work with Terraform modules in [GitLab CI/CD](../../../ci/index.md), you can 
 For example:
 
 ```yaml
-image: curlimages/curl:latest
-
 stages:
   - upload
 
 upload:
   stage: upload
+  image: curlimages/curl:latest
+  variables:
+    TERRAFORM_MODULE_DIR: ${CI_PROJECT_DIR} # The path to your Terraform module
+    TERRAFORM_MODULE_NAME: ${CI_PROJECT_NAME} # The name of your Terraform module
+    TERRAFORM_MODULE_SYSTEM: local # The system or provider your Terraform module targets (ex. local, aws, google)
+    TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG} # The version of your Terraform module to be published to your project's registry
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.tgz "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/my-module/my-system/0.0.1/file"'
+    - tar -cvzf ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz -C ${TERRAFORM_MODULE_DIR} --exclude=./.git .
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file ${TERRAFORM_MODULE_NAME}-${TERRAFORM_MODULE_SYSTEM}-${TERRAFORM_MODULE_VERSION}.tgz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/terraform/modules/${TERRAFORM_MODULE_NAME}/${TERRAFORM_MODULE_SYSTEM}/${TERRAFORM_MODULE_VERSION}/file'
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
+
+To trigger this upload job, add a Git tag to your commit. The `rules:if: $CI_COMMIT_TAG` defines this so that not every commit to your repo triggers the upload.
+For other ways to control jobs in your CI/CD pipeline, refer to the [`.gitlab-ci.yml`](../../../ci/yaml/index.md) keyword reference.
 
 ## Example projects
 

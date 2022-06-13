@@ -21,6 +21,31 @@ RSpec.shared_examples 'edits content using the content editor' do
     end
   end
 
+  describe 'code block' do
+    before do
+      visit(profile_preferences_path)
+
+      find('.syntax-theme').choose('Dark')
+
+      wait_for_requests
+
+      page.go_back
+      refresh
+
+      click_button 'Edit rich text'
+    end
+
+    it 'applies theme classes to code blocks' do
+      expect(page).not_to have_css('.content-editor-code-block.code.highlight.dark')
+
+      find(content_editor_testid).send_keys [:enter, :enter]
+      find(content_editor_testid).send_keys '```js ' # trigger input rule
+      find(content_editor_testid).send_keys 'var a = 0'
+
+      expect(page).to have_css('.content-editor-code-block.code.highlight.dark')
+    end
+  end
+
   describe 'code block bubble menu' do
     it 'shows a code block bubble menu for a code block' do
       find(content_editor_testid).send_keys [:enter, :enter]

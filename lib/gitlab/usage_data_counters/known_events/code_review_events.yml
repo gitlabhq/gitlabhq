@@ -3,6 +3,10 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+- name: i_code_review_mr_with_invalid_approvers
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
 - name: i_code_review_user_single_file_diffs
   redis_slot: code_review
   category: code_review
