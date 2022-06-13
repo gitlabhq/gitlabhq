@@ -17,7 +17,7 @@
   .settings-header
     %h4
       = _('Account and limit')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan.')
@@ -28,7 +28,7 @@
   .settings-header
     %h4
       = _('Diff limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set size limits for displaying diffs in the browser.')
@@ -39,7 +39,7 @@
   .settings-header
     %h4
       = _('Sign-up restrictions')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure the way a user creates a new account.')
@@ -50,7 +50,7 @@
   .settings-header
     %h4
       = _('Sign-in restrictions')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set sign-in restrictions for all users.')
@@ -62,7 +62,7 @@
   .settings-header
     %h4
       = _('Terms of Service and Privacy Policy')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
@@ -76,7 +76,7 @@
   .settings-header
     %h4
       = _('Web terminal')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set the maximum session time for a web terminal.')
@@ -88,7 +88,7 @@
   .settings-header
     %h4
       = _('Web IDE')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Manage Web IDE features.')

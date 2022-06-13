@@ -68,7 +68,7 @@ describe('MrWidgetOptions', () => {
     gon.features = {};
   });
 
-  const createComponent = (mrData = mockData, options = {}) => {
+  const createComponent = (mrData = mockData, options = {}, glFeatures = {}) => {
     if (wrapper) {
       wrapper.destroy();
     }
@@ -76,6 +76,9 @@ describe('MrWidgetOptions', () => {
     wrapper = mount(MrWidgetOptions, {
       propsData: {
         mrData: { ...mrData },
+      },
+      provide: {
+        glFeatures,
       },
       ...options,
     });
@@ -622,7 +625,16 @@ describe('MrWidgetOptions', () => {
     });
 
     describe('code quality widget', () => {
-      it('renders the component', () => {
+      beforeEach(() => {
+        jest.spyOn(document, 'dispatchEvent');
+      });
+      it('renders the component when refactorCodeQualityExtension is false', () => {
+        createComponent(mockData, {}, { refactorCodeQualityExtension: false });
+        expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
+      });
+
+      it('does not render the component when refactorCodeQualityExtension is true', () => {
+        createComponent(mockData, {}, { refactorCodeQualityExtension: true });
         expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
       });
     });

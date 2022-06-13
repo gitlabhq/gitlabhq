@@ -87,7 +87,7 @@ export default {
         :disabled="!previousDesign"
         :title="$options.i18n.previousButton"
         :aria-label="$options.i18n.previousButton"
-        icon="angle-left"
+        icon="chevron-lg-left"
         class="js-previous-design"
         @click="navigateToDesign(previousDesign)"
       />
@@ -96,7 +96,7 @@ export default {
         :disabled="!nextDesign"
         :title="$options.i18n.nextButton"
         :aria-label="$options.i18n.nextButton"
-        icon="angle-right"
+        icon="chevron-lg-right"
         class="js-next-design"
         @click="navigateToDesign(nextDesign)"
       />

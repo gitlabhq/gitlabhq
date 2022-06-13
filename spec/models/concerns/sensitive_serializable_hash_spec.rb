@@ -4,11 +4,15 @@ require 'spec_helper'
 
 RSpec.describe SensitiveSerializableHash do
   describe '.prevent_from_serialization' do
-    let(:test_class) do
+    let(:base_class) do
       Class.new do
         include ActiveModel::Serialization
         include SensitiveSerializableHash
+      end
+    end
 
+    let(:test_class) do
+      Class.new(base_class) do
         attr_accessor :name, :super_secret
 
         prevent_from_serialization :super_secret
@@ -16,6 +20,12 @@ RSpec.describe SensitiveSerializableHash do
         def attributes
           { 'name' => nil, 'super_secret' => nil }
         end
+      end
+    end
+
+    let(:another_class) do
+      Class.new(base_class) do
+        prevent_from_serialization :sub_secret
       end
     end
 
@@ -29,6 +39,11 @@ RSpec.describe SensitiveSerializableHash do
       it 'includes the field in serializable_hash' do
         expect(model.serializable_hash(unsafe_serialization_hash: true)).to include('super_secret')
       end
+    end
+
+    it 'does not change parent class attributes_exempt_from_serializable_hash' do
+      expect(test_class.attributes_exempt_from_serializable_hash).to contain_exactly(:super_secret)
+      expect(another_class.attributes_exempt_from_serializable_hash).to contain_exactly(:sub_secret)
     end
   end
 

@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Email')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Various email settings.')
@@ -17,7 +17,7 @@
   .settings-header
     %h4
       = _("What's new")
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _("Configure %{italic_start}What's new%{italic_end} drawer and content.").html_safe % { italic_start: '<i>'.html_safe, italic_end: '</i>'.html_safe }
@@ -28,7 +28,7 @@
   .settings-header
     %h4
       = _('Sign-in and Help page')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Additional text for the sign-in and Help page.')
@@ -40,7 +40,7 @@
   .settings-header
     %h4
       = _('Pages')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = s_('AdminSettings|Size and domain settings for Pages static sites.')
@@ -51,7 +51,7 @@
   .settings-header
     %h4
       = _('Polling interval multiplier')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Adjust how frequently the GitLab UI polls for updates.')
@@ -63,7 +63,7 @@
   .settings-header
     %h4
       = _('Gitaly timeouts')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure Gitaly timeouts.')
@@ -76,7 +76,7 @@
   .settings-header
     %h4
       = _('Localization')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure the default first day of the week and time tracking units.')
@@ -87,7 +87,7 @@
   .settings-header
     %h4
       = _('Sidekiq job size limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Limit the size of Sidekiq jobs stored in Redis.')

@@ -594,7 +594,7 @@ export default {
       </div>
       <extensions-container :mr="mr" />
       <grouped-codequality-reports-app
-        v-if="shouldRenderCodeQuality && !shouldShowExtension"
+        v-if="shouldRenderCodeQuality && !shouldShowCodeQualityExtension"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"

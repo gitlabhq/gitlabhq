@@ -10,6 +10,7 @@ import { EVENT_SUCCESS, FIELDS, FORM_SELECTOR, INITIAL_PAGE, PAGE_SIZE } from '.
 
 export default {
   EVENT_SUCCESS,
+  FORM_SELECTOR,
   PAGE_SIZE,
   name: 'AccessTokenTableApp',
   components: {
@@ -55,9 +56,6 @@ export default {
     filteredFields() {
       return this.showRole ? FIELDS : FIELDS.filter((field) => field.key !== 'role');
     },
-    formSelector() {
-      return `#${FORM_SELECTOR}`;
-    },
     header() {
       return sprintf(this.$options.i18n.header, {
         accessTokenTypePlural: this.accessTokenTypePlural,
@@ -97,7 +95,7 @@ export default {
 </script>
 
 <template>
-  <dom-element-listener :selector="formSelector" @[$options.EVENT_SUCCESS]="onSuccess">
+  <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
     <div>
       <hr />
       <h5>{{ header }}</h5>

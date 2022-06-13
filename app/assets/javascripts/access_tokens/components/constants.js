@@ -2,7 +2,7 @@ import { __, s__ } from '~/locale';
 
 export const EVENT_ERROR = 'ajax:error';
 export const EVENT_SUCCESS = 'ajax:success';
-export const FORM_SELECTOR = 'js-new-access-token-form';
+export const FORM_SELECTOR = '#js-new-access-token-form';
 
 export const INITIAL_PAGE = 1;
 export const PAGE_SIZE = 100;

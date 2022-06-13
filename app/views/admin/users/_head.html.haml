@@ -32,7 +32,7 @@
         - if impersonation_enabled? && @user.can?(:log_in)
           = link_to _('Impersonate'), impersonate_admin_user_path(@user), method: :post, class: "btn btn-default gl-button", data: { qa_selector: 'impersonate_user_link' }
         - if can_force_email_confirmation?(@user)
-          %button.btn.gl-button.btn-confirm.js-confirm-modal-button{ data: confirm_user_data(@user) }
+          = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
             = _('Confirm user')
     .gl-p-2
       #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }

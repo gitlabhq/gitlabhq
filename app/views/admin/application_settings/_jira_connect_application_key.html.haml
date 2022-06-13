@@ -4,7 +4,7 @@
   .settings-header
     %h4
       = s_('JiraConnect|GitLab for Jira App')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('JiraConnect|Configure your Jira Connect Application ID.')

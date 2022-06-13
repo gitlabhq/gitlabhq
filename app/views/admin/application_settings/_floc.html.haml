@@ -4,7 +4,7 @@
   .settings-header
     %h4
       = s_('FloC|Federated Learning of Cohorts')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('FloC|Configure whether you want to participate in FloC.').html_safe

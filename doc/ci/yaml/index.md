@@ -2803,7 +2803,7 @@ This example creates a release:
 
 **Related topics**:
 
-- [CI/CD example of the `release` keyword](../../user/project/releases/index.md#cicd-example-of-the-release-keyword).
+- [CI/CD example of the `release` keyword](../../user/project/releases/index.md#creating-a-release-by-using-a-cicd-job).
 - [Create multiple releases in a single pipeline](../../user/project/releases/index.md#create-multiple-releases-in-a-single-pipeline).
 - [Use a custom SSL CA certificate authority](../../user/project/releases/index.md#use-a-custom-ssl-ca-certificate-authority).
 

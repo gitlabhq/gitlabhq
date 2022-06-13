@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Default branch')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = s_('AdminSettings|Set the initial name and protections for the default branch of new repositories created in the instance.')
@@ -17,7 +17,7 @@
   .settings-header
     %h4
       = _('Repository mirroring')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? 'Collapse' : 'Expand'
     %p
       = _('Configure repository mirroring.')
@@ -29,7 +29,7 @@
   .settings-header
     %h4
       = _('Repository storage')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure repository storage.')
@@ -41,7 +41,7 @@
   .settings-header
     %h4
       = _('Repository maintenance')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       - repository_checks_link_url = help_page_path('administration/repository_checks.md')
@@ -56,7 +56,7 @@
   .settings-header
     %h4
       = _('External storage for repository static objects')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Serve repository static objects (for example, archives and blobs) from external storage.')

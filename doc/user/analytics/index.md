@@ -97,6 +97,12 @@ in the given time period. This assumes:
 - Incidents and deployments have a strictly one-to-one relationship. An incident is related to only
 one production deployment, and any production deployment is related to no more than one incident).
 
+Time to restore service displays in several charts:
+
+- [Group-level value stream analytics](../group/value_stream_analytics/index.md)
+- [Project-level value stream analytics](value_stream_analytics.md)
+- [CI/CD analytics](ci_cd_analytics.md)
+
 To retrieve metrics for time to restore service, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
 ### Change failure rate

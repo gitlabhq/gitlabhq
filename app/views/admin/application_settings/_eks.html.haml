@@ -3,7 +3,7 @@
   .settings-header
     %h4
       = _('Amazon EKS')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')

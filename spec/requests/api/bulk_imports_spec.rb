@@ -62,7 +62,7 @@ RSpec.describe API::BulkImports do
         entities: [
           source_type: 'group_entity',
           source_full_path: 'full_path',
-          destination_name: 'destination_name',
+          destination_name: 'destination_slug',
           destination_namespace: 'destination_namespace'
         ]
       }
@@ -82,7 +82,7 @@ RSpec.describe API::BulkImports do
           entities: [
             source_type: 'group_entity',
             source_full_path: 'full_path',
-            destination_name: 'destination_name',
+            destination_name: 'destination_slug',
             destination_namespace: 'destination_namespace'
           ]
         }

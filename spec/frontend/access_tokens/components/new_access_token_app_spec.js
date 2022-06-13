@@ -34,7 +34,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
 
   beforeEach(() => {
     // NewAccessTokenApp observes a form element
-    setHTMLFixture(`<form id="${FORM_SELECTOR}"><input type="submit"/></form>`);
+    setHTMLFixture(`<form id="${FORM_SELECTOR.slice(1)}"><input type="submit"/></form>`);
 
     createComponent();
   });

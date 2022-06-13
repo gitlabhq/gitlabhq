@@ -12,6 +12,8 @@ export default {
     DeploymentFrequencyCharts: () =>
       import('ee_component/dora/components/deployment_frequency_charts.vue'),
     LeadTimeCharts: () => import('ee_component/dora/components/lead_time_charts.vue'),
+    TimeToRestoreServiceCharts: () =>
+      import('ee_component/dora/components/time_to_restore_service_charts.vue'),
     ProjectQualitySummary: () => import('ee_component/project_quality_summary/app.vue'),
   },
   piplelinesTabEvent: 'p_analytics_ci_cd_pipelines',
@@ -95,6 +97,13 @@ export default {
           @click="trackTabClick($options.leadTimeTabEvent)"
         >
           <lead-time-charts />
+        </gl-tab>
+        <gl-tab
+          :title="s__('DORA4Metrics|Time to restore service')"
+          data-testid="time-to-restore-service-tab"
+          @click="trackTabClick($options.timeToRestoreServiceTabEvent)"
+        >
+          <time-to-restore-service-charts />
         </gl-tab>
       </template>
       <gl-tab v-if="shouldRenderQualitySummary" :title="s__('QualitySummary|Project quality')">

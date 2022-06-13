@@ -16,8 +16,6 @@ You can also configure your agent so the vulnerabilities are displayed with othe
 Prerequisite:
 
 - You must have at least the Developer role.
-- [Cluster image scanning](../../application_security/cluster_image_scanning/index.md)
-  must be part of your build process.
 
 To view vulnerability information in GitLab:
 

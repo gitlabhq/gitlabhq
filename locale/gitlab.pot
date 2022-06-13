@@ -6909,6 +6909,9 @@ msgstr ""
 msgid "CICDAnalytics|Something went wrong while fetching release statistics"
 msgstr ""
 
+msgid "CICDAnalytics|Time to restore service"
+msgstr ""
+
 msgid "CICDAnalytics|What is shared runner duration?"
 msgstr ""
 
@@ -11695,6 +11698,9 @@ msgid "DastSiteValidation|Header validation"
 msgstr ""
 
 msgid "DastSiteValidation|Meta tag validation"
+msgstr ""
+
+msgid "DastSiteValidation|Not validated"
 msgstr ""
 
 msgid "DastSiteValidation|Retry validation"

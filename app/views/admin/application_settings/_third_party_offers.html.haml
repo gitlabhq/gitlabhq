@@ -3,7 +3,7 @@
   .settings-header
     %h4
       = _('Customer experience improvement and third-party offers')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Control whether to display customer experience improvement content and third-party offers in GitLab.')

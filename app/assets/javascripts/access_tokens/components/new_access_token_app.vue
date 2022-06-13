@@ -9,6 +9,7 @@ import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from './constants';
 export default {
   EVENT_ERROR,
   EVENT_SUCCESS,
+  FORM_SELECTOR,
   name: 'NewAccessTokenApp',
   components: { DomElementListener, GlAlert, InputCopyToggleVisibility },
   i18n: {
@@ -46,16 +47,13 @@ export default {
         name: this.$options.tokenInputId,
       };
     },
-    formSelector() {
-      return `#${FORM_SELECTOR}`;
-    },
     label() {
       return sprintf(this.$options.i18n.label, { accessTokenType: this.accessTokenType });
     },
   },
   mounted() {
     /** @type {HTMLFormElement} */
-    this.form = document.getElementById(FORM_SELECTOR);
+    this.form = document.querySelector(FORM_SELECTOR);
 
     /** @type {HTMLInputElement} */
     this.submitButton = this.form.querySelector('input[type=submit]');
@@ -92,7 +90,7 @@ export default {
 
 <template>
   <dom-element-listener
-    :selector="formSelector"
+    :selector="$options.FORM_SELECTOR"
     @[$options.EVENT_ERROR]="onError"
     @[$options.EVENT_SUCCESS]="onSuccess"
   >
