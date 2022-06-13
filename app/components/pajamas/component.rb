@@ -4,8 +4,6 @@ module Pajamas
   class Component < ViewComponent::Base
     private
 
-    # :nocov:
-
     # Filter a given a value against a list of allowed values
     # If no value is given or value is not allowed return default one
     #
@@ -18,6 +16,5 @@ module Pajamas
 
       default
     end
-    # :nocov:
   end
 end

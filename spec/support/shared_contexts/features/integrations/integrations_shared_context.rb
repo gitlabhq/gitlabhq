@@ -8,8 +8,36 @@ Integration.available_integration_names.each do |integration|
     let(:integration_method) { Project.integration_association_name(integration) }
     let(:integration_klass) { Integration.integration_name_to_model(integration) }
     let(:integration_instance) { integration_klass.new }
-    let(:integration_fields) { integration_instance.fields }
-    let(:integration_attrs_list) { integration_fields.inject([]) {|arr, hash| arr << hash[:name].to_sym } }
+
+    # Build a list of all attributes that an integration supports.
+    let(:integration_attrs_list) do
+      integration_fields + integration_events + custom_attributes.fetch(integration.to_sym, [])
+    end
+
+    # Attributes defined as fields.
+    let(:integration_fields) do
+      integration_instance.fields.map { _1[:name].to_sym }
+    end
+
+    # Attributes for configurable event triggers.
+    let(:integration_events) do
+      integration_instance.configurable_events.map { IntegrationsHelper.integration_event_field_name(_1).to_sym }
+    end
+
+    # Other special cases, this list might be incomplete.
+    #
+    # Some of these won't be needed anymore after we've converted them to use the field DSL
+    # in https://gitlab.com/gitlab-org/gitlab/-/issues/354899.
+    #
+    # Others like `comment_on_event_disabled` are actual columns on `integrations`, maybe we should migrate
+    # these to fields as well.
+    let(:custom_attributes) do
+      {
+        jira: %i[comment_on_event_enabled jira_issue_transition_automatic jira_issue_transition_id project_key
+                 issues_enabled vulnerabilities_enabled vulnerabilities_issuetype]
+      }
+    end
+
     let(:integration_attrs) do
       integration_attrs_list.inject({}) do |hash, k|
         if k =~ /^(token*|.*_token|.*_key)/
@@ -32,9 +60,11 @@ Integration.available_integration_names.each do |integration|
           hash.merge!(k => 1234)
         elsif integration == 'jira' && k == :jira_issue_transition_id
           hash.merge!(k => '1,2,3')
+        elsif integration == 'jira' && k == :jira_issue_transition_automatic
+          hash.merge!(k => true)
         elsif integration == 'emails_on_push' && k == :recipients
           hash.merge!(k => 'foo@bar.com')
-        elsif integration == 'slack' || integration == 'mattermost' && k == :labels_to_be_notified_behavior
+        elsif (integration == 'slack' || integration == 'mattermost') && k == :labels_to_be_notified_behavior
           hash.merge!(k => "match_any")
         else
           hash.merge!(k => "someword")

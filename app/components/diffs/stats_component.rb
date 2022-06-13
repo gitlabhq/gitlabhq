@@ -28,13 +28,6 @@ module Diffs
       Gitlab::Json.dump(diffs_map)
     end
 
-    # Disabled undercoverage reports for this method
-    # as it returns a false positive on the last line,
-    # which is covered in the tests
-    #
-    # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/357381
-    #
-    # :nocov:
     def diff_file_path_text(diff_file, max: 60)
       path = diff_file.new_path
 
@@ -42,7 +35,6 @@ module Diffs
 
       "...#{path[-(max - 3)..]}"
     end
-    # :nocov:
 
     private
 

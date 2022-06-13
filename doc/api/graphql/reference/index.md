@@ -15806,6 +15806,31 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectworkitemtypestaskable"></a>`taskable` | [`Boolean`](#boolean) | If `true`, only taskable work item types will be returned. Argument is experimental and can be removed in the future without notice. |
 
+##### `Project.workItems`
+
+Work items of the project.
+
+WARNING:
+**Deprecated** in 15.1.
+This feature is in Alpha, and can be removed or changed at any point.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
+| <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="projectworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by this criteria. |
+| <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this work item. |
+| <a id="projectworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
 ### `ProjectCiCdSetting`
 
 #### Fields
@@ -19886,6 +19911,23 @@ Weight ID wildcard values.
 | ----- | ----------- |
 | <a id="weightwildcardidany"></a>`ANY` | Weight is assigned. |
 | <a id="weightwildcardidnone"></a>`NONE` | No weight is assigned. |
+
+### `WorkItemSort`
+
+Values for sorting work items.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="workitemsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="workitemsorttitle_asc"></a>`TITLE_ASC` | Title by ascending order. |
+| <a id="workitemsorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
+| <a id="workitemsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="workitemsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="workitemsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="workitemsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="workitemsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="workitemsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `WorkItemState`
 

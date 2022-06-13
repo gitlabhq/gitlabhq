@@ -6,84 +6,84 @@ RSpec.describe Integrations::HasDataFields do
   let(:url) { 'http://url.com' }
   let(:username) { 'username_one' }
   let(:properties) do
-    { url: url, username: username }
+    { url: url, username: username, jira_issue_transition_automatic: false }
   end
 
   shared_examples 'data fields' do
     describe '#arg' do
-      it 'returns an argument correctly' do
-        expect(service.url).to eq(url)
+      it 'returns the expected values' do
+        expect(integration).to have_attributes(properties)
       end
     end
 
     describe '{arg}_changed?' do
       it 'returns false when the property has not been assigned a new value' do
-        service.username = 'new_username'
-        service.validate
-        expect(service.url_changed?).to be_falsy
+        integration.username = 'new_username'
+        integration.validate
+        expect(integration.url_changed?).to be_falsy
       end
 
       it 'returns true when the property has been assigned a different value' do
-        service.url = "http://example.com"
-        service.validate
-        expect(service.url_changed?).to be_truthy
+        integration.url = "http://example.com"
+        integration.validate
+        expect(integration.url_changed?).to be_truthy
       end
 
       it 'returns true when the property has been assigned a different value twice' do
-        service.url = "http://example.com"
-        service.url = "http://example.com"
-        service.validate
-        expect(service.url_changed?).to be_truthy
+        integration.url = "http://example.com"
+        integration.url = "http://example.com"
+        integration.validate
+        expect(integration.url_changed?).to be_truthy
       end
 
       it 'returns false when the property has been re-assigned the same value' do
-        service.url = 'http://url.com'
-        service.validate
-        expect(service.url_changed?).to be_falsy
+        integration.url = 'http://url.com'
+        integration.validate
+        expect(integration.url_changed?).to be_falsy
       end
     end
 
     describe '{arg}_touched?' do
       it 'returns false when the property has not been assigned a new value' do
-        service.username = 'new_username'
-        service.validate
-        expect(service.url_changed?).to be_falsy
+        integration.username = 'new_username'
+        integration.validate
+        expect(integration.url_changed?).to be_falsy
       end
 
       it 'returns true when the property has been assigned a different value' do
-        service.url = "http://example.com"
-        service.validate
-        expect(service.url_changed?).to be_truthy
+        integration.url = "http://example.com"
+        integration.validate
+        expect(integration.url_changed?).to be_truthy
       end
 
       it 'returns true when the property has been assigned a different value twice' do
-        service.url = "http://example.com"
-        service.url = "http://example.com"
-        service.validate
-        expect(service.url_changed?).to be_truthy
+        integration.url = "http://example.com"
+        integration.url = "http://example.com"
+        integration.validate
+        expect(integration.url_changed?).to be_truthy
       end
 
       it 'returns true when the property has been re-assigned the same value' do
-        service.url = 'http://url.com'
-        expect(service.url_touched?).to be_truthy
+        integration.url = 'http://url.com'
+        expect(integration.url_touched?).to be_truthy
       end
 
       it 'returns false when the property has been re-assigned the same value' do
-        service.url = 'http://url.com'
-        service.validate
-        expect(service.url_changed?).to be_falsy
+        integration.url = 'http://url.com'
+        integration.validate
+        expect(integration.url_changed?).to be_falsy
       end
     end
 
     describe 'data_fields_present?' do
-      it 'returns true from the issue tracker service' do
-        expect(service.data_fields_present?).to be true
+      it 'returns true from the issue tracker integration' do
+        expect(integration.data_fields_present?).to be true
       end
     end
   end
 
   context 'when data are stored in data_fields' do
-    let(:service) do
+    let(:integration) do
       create(:jira_integration, url: url, username: username)
     end
 
@@ -91,21 +91,21 @@ RSpec.describe Integrations::HasDataFields do
 
     describe '{arg}_was?' do
       it 'returns nil' do
-        service.url = 'http://example.com'
-        service.validate
-        expect(service.url_was).to be_nil
+        integration.url = 'http://example.com'
+        integration.validate
+        expect(integration.url_was).to be_nil
       end
     end
   end
 
-  context 'when service and data_fields are not persisted' do
-    let(:service) do
+  context 'when integration and data_fields are not persisted' do
+    let(:integration) do
       Integrations::Jira.new
     end
 
     describe 'data_fields_present?' do
       it 'returns true' do
-        expect(service.data_fields_present?).to be true
+        expect(integration.data_fields_present?).to be true
       end
     end
   end
@@ -113,9 +113,7 @@ RSpec.describe Integrations::HasDataFields do
   context 'when data are stored in properties' do
     let(:integration) { create(:jira_integration, :without_properties_callback, properties: properties) }
 
-    it_behaves_like 'data fields' do
-      let(:service) { integration }
-    end
+    it_behaves_like 'data fields'
 
     describe '{arg}_was?' do
       it 'returns nil when the property has not been assigned a new value' do
@@ -148,9 +146,7 @@ RSpec.describe Integrations::HasDataFields do
       end
     end
 
-    it_behaves_like 'data fields' do
-      let(:service) { integration }
-    end
+    it_behaves_like 'data fields'
 
     describe '{arg}_was?' do
       it 'returns nil' do

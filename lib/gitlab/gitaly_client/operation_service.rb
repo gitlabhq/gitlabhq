@@ -101,6 +101,16 @@ module Gitlab
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
+      rescue GRPC::BadStatus => e
+        detailed_error = decode_detailed_error(e)
+
+        case detailed_error&.error
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
+        else
+          raise
+        end
       end
 
       def user_merge_to_ref(user, source_sha:, branch:, target_ref:, message:, first_parent_ref:, allow_conflicts: false)
@@ -164,14 +174,8 @@ module Gitlab
           # These messages were returned from internal/allowed API calls
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
-          # Custom hooks may return messages via either stdout or stderr which have a specific prefix. If
-          # that prefix is present we'll want to print the hook's output, otherwise we'll want to print the
-          # Gitaly error as a fallback.
-          custom_hook_error = detailed_error.custom_hook
-          custom_hook_output = custom_hook_error.stderr.presence || custom_hook_error.stdout
-          error_message = EncodingHelper.encode!(custom_hook_output)
-
-          raise Gitlab::Git::PreReceiveError.new(error_message, fallback_message: e.details)
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
         when :reference_update
           # We simply ignore any reference update errors which are typically an
           # indicator of multiple RPC calls trying to update the same reference
@@ -307,10 +311,6 @@ module Gitlab
           request,
           timeout: GitalyClient.long_timeout
         )
-
-        if response.git_error.presence
-          raise Gitlab::Git::Repository::GitError, response.git_error
-        end
 
         response.squash_sha
       rescue GRPC::BadStatus => e
@@ -549,6 +549,14 @@ module Gitlab
       rescue NameError, NoMethodError
         # Error Class might not be known to ruby yet
         nil
+      end
+
+      def custom_hook_error_message(custom_hook_error)
+        # Custom hooks may return messages via either stdout or stderr which have a specific prefix. If
+        # that prefix is present we'll want to print the hook's output, otherwise we'll want to print the
+        # Gitaly error as a fallback.
+        custom_hook_output = custom_hook_error.stderr.presence || custom_hook_error.stdout
+        EncodingHelper.encode!(custom_hook_output)
       end
     end
   end

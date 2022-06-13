@@ -32,7 +32,6 @@ module Quality
         haml_lint
         helpers
         initializers
-        javascripts
         lib
         metrics_server
         models
@@ -55,7 +54,7 @@ module Quality
         views
         workers
         tooling
-        component
+        components
       ],
       integration: %w[
         commands
@@ -82,6 +81,10 @@ module Quality
       @regexps[level] ||= Regexp.new("#{prefixes_for_regex}spec/#{folders_regex(level)}").freeze
     end
 
+    def legacy_factories_regexp
+      @legacy_factories_regexp ||= %r{spec/factories_spec.rb}.freeze
+    end
+
     def level_for(file_path)
       case file_path
       # Detect migration first since some background migration tests are under
@@ -97,6 +100,8 @@ module Quality
         :integration
       when regexp(:system)
         :system
+      when legacy_factories_regexp
+        :unit
       else
         raise UnknownTestLevelError, "Test level for #{file_path} couldn't be set. Please rename the file properly or change the test level detection regexes in #{__FILE__}."
       end
@@ -149,11 +154,11 @@ module Quality
     def folders_regex(level)
       case level
       when :migration
-        "(#{migration_and_background_migration_folders.join('|')})"
+        "(#{migration_and_background_migration_folders.join('|')})/"
       when :all
         ''
       else
-        "(#{TEST_LEVEL_FOLDERS.fetch(level).join('|')})"
+        "(#{TEST_LEVEL_FOLDERS.fetch(level).join('|')})/"
       end
     end
   end

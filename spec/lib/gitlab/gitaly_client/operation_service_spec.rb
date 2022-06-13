@@ -170,6 +170,65 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
           Gitlab::Git::PreReceiveError, "something failed")
       end
     end
+
+    context 'with a custom hook error' do
+      let(:stdout) { nil }
+      let(:stderr) { nil }
+      let(:error_message) { "error_message" }
+      let(:custom_hook_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::PERMISSION_DENIED,
+          error_message,
+          Gitaly::UserDeleteBranchError.new(
+            custom_hook: Gitaly::CustomHookError.new(
+              stdout: stdout,
+              stderr: stderr,
+              hook_type: Gitaly::CustomHookError::HookType::HOOK_TYPE_PRERECEIVE
+            )))
+      end
+
+      shared_examples 'a failed branch deletion' do
+        it 'raises a PreRecieveError' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_delete_branch).with(request, kind_of(Hash))
+            .and_raise(custom_hook_error)
+
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq(expected_message)
+            expect(error.raw_message).to eq(expected_raw_message)
+          end
+        end
+      end
+
+      context 'when details contain stderr' do
+        let(:stderr) { "something" }
+        let(:stdout) { "GL-HOOK-ERR: stdout is overridden by stderr" }
+        let(:expected_message) { error_message }
+        let(:expected_raw_message) { stderr }
+
+        it_behaves_like 'a failed branch deletion'
+      end
+
+      context 'when details contain stdout' do
+        let(:stderr) { "      \n" }
+        let(:stdout) { "something" }
+        let(:expected_message) { error_message }
+        let(:expected_raw_message) { stdout }
+
+        it_behaves_like 'a failed branch deletion'
+      end
+    end
+
+    context 'with a non-detailed error' do
+      it 'raises a GRPC error' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_delete_branch).with(request, kind_of(Hash))
+          .and_raise(GRPC::Internal.new('non-detailed error'))
+
+        expect { subject }.to raise_error(GRPC::Internal)
+      end
+    end
   end
 
   describe '#user_merge_branch' do
@@ -633,21 +692,6 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         .and_return(response)
 
       expect(subject).to eq(squash_sha)
-    end
-
-    context "when git_error is present" do
-      let(:response) do
-        Gitaly::UserSquashResponse.new(git_error: "something failed")
-      end
-
-      it "raises a GitError exception" do
-        expect_any_instance_of(Gitaly::OperationService::Stub)
-          .to receive(:user_squash).with(request, kind_of(Hash))
-          .and_return(response)
-
-        expect { subject }.to raise_error(
-          Gitlab::Git::Repository::GitError, "something failed")
-      end
     end
 
     shared_examples '#user_squash with an error' do

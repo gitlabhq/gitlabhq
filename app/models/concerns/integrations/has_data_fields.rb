@@ -12,7 +12,8 @@ module Integrations
           self.class_eval <<-RUBY, __FILE__, __LINE__ + 1
             unless method_defined?(arg)
               def #{arg}
-                data_fields.send('#{arg}') || (properties && properties['#{arg}'])
+                value = data_fields.send('#{arg}')
+                value.nil? ? properties&.dig('#{arg}') : value
               end
             end
 

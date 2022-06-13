@@ -18,7 +18,7 @@ this feature, ask an administrator to [enable the feature flag](../../../adminis
 `bulk_import_projects`. On GitLab.com, migrating group resources is available but migrating project resources is not
 available.
 
-You can migrate your existing top-level groups to any of the following:
+Users with the Owner role on a top-level group can migrate it to:
 
 - Another top-level group.
 - The subgroup of any existing top-level group.

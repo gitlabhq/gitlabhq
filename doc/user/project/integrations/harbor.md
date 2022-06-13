@@ -39,7 +39,7 @@ GitLab supports integrating Harbor projects at the group or project level. Compl
 
 After the Harbor integration is activated:
 
-- The global variables `$HARBOR_USER`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
+- The global variables `$HARBOR_USERNAME`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
 - The project-level integration settings override the group-level integration settings.
 
 ## Secure your requests to the Harbor APIs

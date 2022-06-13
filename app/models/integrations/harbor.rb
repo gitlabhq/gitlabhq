@@ -81,7 +81,7 @@ module Integrations
       [
         { key: 'HARBOR_URL', value: url },
         { key: 'HARBOR_PROJECT', value: project_name },
-        { key: 'HARBOR_USERNAME', value: username },
+        { key: 'HARBOR_USERNAME', value: username.gsub(/^robot\$/, 'robot$$') },
         { key: 'HARBOR_PASSWORD', value: password, public: false, masked: true }
       ]
     end

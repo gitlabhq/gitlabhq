@@ -67,6 +67,16 @@ RSpec.describe Integrations::Harbor do
       harbor_integration.update!(active: false)
       expect(harbor_integration.ci_variables).to match_array([])
     end
+
+    context 'with robot username' do
+      it 'returns username variable with $$' do
+        harbor_integration.username = 'robot$project+user'
+
+        expect(harbor_integration.ci_variables).to include(
+          { key: 'HARBOR_USERNAME', value: 'robot$$project+user' }
+        )
+      end
+    end
   end
 
   describe 'before_validation :reset_username_and_password' do

@@ -144,6 +144,14 @@ module Types
           extras: [:lookahead],
           resolver: Resolvers::IssuesResolver
 
+    field :work_items,
+          Types::WorkItemType.connection_type,
+          null: true,
+          deprecated: { milestone: '15.1', reason: :alpha },
+          description: 'Work items of the project.',
+          extras: [:lookahead],
+          resolver: Resolvers::WorkItemsResolver
+
     field :issue_status_counts,
           Types::IssueStatusCountsType,
           null: true,

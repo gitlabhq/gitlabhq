@@ -113,8 +113,8 @@ the following table) as these were used for development and testing:
 |----------------|----------------------------|
 | 13.0           | 11                         |
 | 14.0           | 12.10                      |
-| 15.0           | 12.0                       |
-| 16.0 (planned) | 13.0                       |
+| 15.0           | 12.10                      |
+| 16.0 (planned) | 13.6                       |
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).
