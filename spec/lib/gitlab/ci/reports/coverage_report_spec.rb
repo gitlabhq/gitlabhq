@@ -7,6 +7,20 @@ RSpec.describe Gitlab::Ci::Reports::CoverageReport do
 
   it { expect(coverage_report.files).to eq({}) }
 
+  describe '#empty?' do
+    context 'when no file has been added' do
+      it { expect(coverage_report.empty?).to be(true) }
+    end
+
+    context 'when file has been added' do
+      before do
+        coverage_report.add_file('app.rb', { 1 => 0, 2 => 1 })
+      end
+
+      it { expect(coverage_report.empty?).to be(false) }
+    end
+  end
+
   describe '#pick' do
     before do
       coverage_report.add_file('app.rb', { 1 => 0, 2 => 1 })

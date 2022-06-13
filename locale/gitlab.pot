@@ -4804,7 +4804,7 @@ msgstr ""
 msgid "Archived projects"
 msgstr ""
 
-msgid "Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgid "Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Are you ABSOLUTELY SURE you wish to remove this group?"
@@ -8808,6 +8808,12 @@ msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the
 msgstr ""
 
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
+msgstr ""
+
+msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support."
+msgstr ""
+
+msgid "ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|The certificate-based method to connect clusters to GitLab was %{linkStart}deprecated%{linkEnd} in GitLab 14.5."
@@ -40528,7 +40534,7 @@ msgstr ""
 msgid "Unarchive project"
 msgstr ""
 
-msgid "Unarchiving the project will restore its members' ability to make changes to it. The repository can be committed to, and issues, comments, and other entities can be created. %{strong_start}Once active, this project shows up in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgid "Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Unassign from commenting user"
@@ -44217,9 +44223,6 @@ msgstr ""
 msgid "Your new comment"
 msgstr ""
 
-msgid "Your new personal access token has been created."
-msgstr ""
-
 msgid "Your password isn't required to view this page. If a password or any other personal details are requested, please contact your administrator to report abuse."
 msgstr ""
 
@@ -44607,10 +44610,10 @@ msgstr ""
 msgid "ciReport|%{sameNum} same"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected %{number} new potential %{vulnStr}"
+msgid "ciReport|%{scanner} detected %{strong_start}%{number}%{strong_end} new potential %{vulnStr}"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected no new %{vulnStr}"
+msgid "ciReport|%{scanner} detected no %{strong_start}new%{strong_end} %{vulnStr}"
 msgstr ""
 
 msgid "ciReport|: Loading resulted in an error"

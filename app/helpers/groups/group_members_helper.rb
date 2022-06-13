@@ -60,12 +60,8 @@ module Groups::GroupMembersHelper
   end
 
   def group_group_links_list_data(group, include_relations, search)
-    if ::Feature.enabled?(:group_member_inherited_group, group)
-      group_links = group_group_links(group, include_relations)
-      group_links = group_links.search(search) if search
-    else
-      group_links = group.shared_with_group_links
-    end
+    group_links = group_group_links(group, include_relations)
+    group_links = group_links.search(search) if search
 
     {
       members: group_group_links_serialized(group, group_links),

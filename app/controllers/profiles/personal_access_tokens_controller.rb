@@ -23,21 +23,11 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
     @personal_access_token = result.payload[:personal_access_token]
 
-    if Feature.enabled?(:access_token_ajax)
-      if result.success?
-        render json: { new_token: @personal_access_token.token,
-                       active_access_tokens: active_personal_access_tokens }, status: :ok
-      else
-        render json: { errors: result.errors }, status: :unprocessable_entity
-      end
+    if result.success?
+      render json: { new_token: @personal_access_token.token,
+                     active_access_tokens: active_personal_access_tokens }, status: :ok
     else
-      if result.success?
-        PersonalAccessToken.redis_store!(current_user.id, @personal_access_token.token)
-        redirect_to profile_personal_access_tokens_path, notice: _("Your new personal access token has been created.")
-      else
-        set_index_vars
-        render :index
-      end
+      render json: { errors: result.errors }, status: :unprocessable_entity
     end
   end
 
@@ -62,19 +52,10 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes_for(current_user)
     @active_personal_access_tokens = active_personal_access_tokens
-
-    if Feature.disabled?(:access_token_ajax)
-      @new_personal_access_token = PersonalAccessToken.redis_getdel(current_user.id)
-    end
   end
 
   def active_personal_access_tokens
     tokens = finder(state: 'active', sort: 'expires_at_asc').execute
-
-    if Feature.enabled?(:access_token_ajax)
-      ::API::Entities::PersonalAccessTokenWithDetails.represent(tokens)
-    else
-      tokens
-    end
+    ::API::Entities::PersonalAccessTokenWithDetails.represent(tokens)
   end
 end

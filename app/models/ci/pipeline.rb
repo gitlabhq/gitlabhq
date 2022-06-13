@@ -335,7 +335,7 @@ module Ci
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
-    scope :with_pipeline_source, -> (source) { where(source: source)}
+    scope :with_pipeline_source, -> (source) { where(source: source) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
@@ -1065,6 +1065,10 @@ module Ci
       latest_report_builds(Ci::JobArtifact.test_reports).preload(:project, :metadata)
     end
 
+    def latest_report_builds_in_self_and_descendants(reports_scope = ::Ci::JobArtifact.with_reports)
+      builds_in_self_and_descendants.with_reports(reports_scope)
+    end
+
     def builds_with_coverage
       builds.latest.with_coverage
     end
@@ -1079,10 +1083,6 @@ module Ci
 
     def has_coverage_reports?
       pipeline_artifacts&.report_exists?(:code_coverage)
-    end
-
-    def can_generate_coverage_reports?
-      has_reports?(Ci::JobArtifact.coverage_reports)
     end
 
     def has_codequality_mr_diff_report?
@@ -1111,14 +1111,6 @@ module Ci
       Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
         latest_report_builds(Ci::JobArtifact.accessibility_reports).each do |build|
           build.collect_accessibility_reports!(accessibility_reports)
-        end
-      end
-    end
-
-    def coverage_reports
-      Gitlab::Ci::Reports::CoverageReport.new.tap do |coverage_reports|
-        latest_report_builds(Ci::JobArtifact.coverage_reports).includes(:project).find_each do |build|
-          build.collect_coverage_reports!(coverage_reports)
         end
       end
     end

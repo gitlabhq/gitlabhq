@@ -78,6 +78,27 @@ The visualization cannot be displayed if the blocking manual job did not run.
 By default, the [pipeline artifact](../../../ci/pipelines/pipeline_artifacts.md#storage) used
 to draw the visualization on the merge request expires **one week** after creation.
 
+### Coverage report from child pipeline
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md). Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+If the test coverage is created in jobs that are in a child pipeline, the parent pipeline must use
+`strategy: depend`.
+
+```yaml
+child_test_pipeline:
+  trigger:
+    include:
+      - local: path/to/child_pipeline.yml
+      - template: Security/SAST.gitlab-ci.yml
+    strategy: depend
+```
+
 ### Automatic class path correction
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217664) in GitLab 13.8.

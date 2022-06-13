@@ -25,8 +25,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   urgency :low
 
   def index
-    push_frontend_feature_flag(:group_member_inherited_group, @group)
-
     @sort = params[:sort].presence || sort_value_name
     @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 

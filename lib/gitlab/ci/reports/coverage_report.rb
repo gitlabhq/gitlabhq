@@ -10,6 +10,10 @@ module Gitlab
           @files = {}
         end
 
+        def empty?
+          @files.empty?
+        end
+
         def pick(keys)
           coverage_files = files.select do |key|
             keys.include?(key)

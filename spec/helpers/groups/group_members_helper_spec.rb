@@ -135,24 +135,6 @@ RSpec.describe Groups::GroupMembersHelper do
             expect(subject[:group][:members].map { |link| link[:id] }).to match_array(result)
           end
         end
-
-        context 'when group_member_inherited_group disabled' do
-          before do
-            stub_feature_flags(group_member_inherited_group: false)
-          end
-
-          where(:include_relations, :result) do
-            [:inherited, :direct] | lazy { [sub_group_group_link.id] }
-            [:inherited]          | lazy { [sub_group_group_link.id] }
-            [:direct]             | lazy { [sub_group_group_link.id] }
-          end
-
-          with_them do
-            it 'always returns direct member links' do
-              expect(subject[:group][:members].map { |link| link[:id] }).to match_array(result)
-            end
-          end
-        end
       end
     end
 

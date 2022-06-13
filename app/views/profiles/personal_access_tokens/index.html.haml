@@ -1,4 +1,3 @@
-- ajax = Feature.enabled?(:access_token_ajax)
 - breadcrumb_title s_('AccessTokens|Access Tokens')
 - page_title s_('AccessTokens|Personal Access Tokens')
 - type = _('personal access token')
@@ -17,26 +16,15 @@
 
   .col-lg-8
     #js-new-access-token-app{ data: { access_token_type: type } }
-    - if @new_personal_access_token
-      = render 'shared/access_tokens/created_container',
-        type: type,
-        new_token_value: @new_personal_access_token
 
     = render 'shared/access_tokens/form',
-        ajax: ajax,
+        ajax: true,
         type: type,
         path: profile_personal_access_tokens_path,
         token: @personal_access_token,
         scopes: @scopes,
         help_path: help_page_path('user/profile/personal_access_tokens.md', anchor: 'personal-access-token-scopes')
 
-    - if ajax
-      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_personal_access_tokens.to_json } }
-    - else
-      = render 'shared/access_tokens/table',
-        type: type,
-        type_plural: type_plural,
-        active_tokens: @active_personal_access_tokens,
-        revoke_route_helper: ->(token) { revoke_profile_personal_access_token_path(token) }
+    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_personal_access_tokens.to_json } }
 
 #js-tokens-app{ data: { tokens_data: tokens_app_data } }

@@ -66,44 +66,4 @@ RSpec.describe Profiles::PersonalAccessTokensController do
       )
     end
   end
-
-  context 'access_token_ajax feature flag disabled' do
-    before do
-      stub_feature_flags(access_token_ajax: false)
-      PersonalAccessToken.redis_store!(user.id, token_value)
-      get :index
-    end
-
-    describe '#index' do
-      let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
-      let!(:inactive_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
-      let!(:impersonation_personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
-      let(:token_value) { 's3cr3t' }
-
-      it "retrieves active personal access tokens" do
-        expect(assigns(:active_personal_access_tokens)).to include(active_personal_access_token)
-      end
-
-      it "does not retrieve impersonation tokens or inactive personal access tokens" do
-        expect(assigns(:active_personal_access_tokens)).not_to include(impersonation_personal_access_token)
-        expect(assigns(:active_personal_access_tokens)).not_to include(inactive_personal_access_token)
-      end
-
-      it "retrieves newly created personal access token value" do
-        expect(assigns(:new_personal_access_token)).to eql(token_value)
-      end
-
-      it "sets PAT name and scopes" do
-        name = 'My PAT'
-        scopes = 'api,read_user'
-
-        get :index, params: { name: name, scopes: scopes }
-
-        expect(assigns(:personal_access_token)).to have_attributes(
-          name: eq(name),
-          scopes: contain_exactly(:api, :read_user)
-        )
-      end
-    end
-  end
 end

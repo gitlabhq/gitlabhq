@@ -1030,19 +1030,6 @@ module Ci
       accessibility_report
     end
 
-    def collect_coverage_reports!(coverage_report)
-      each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
-        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
-          blob,
-          coverage_report,
-          project_path: project.full_path,
-          worktree_paths: pipeline.all_worktree_paths
-        )
-      end
-
-      coverage_report
-    end
-
     def collect_codequality_reports!(codequality_report)
       each_report(Ci::JobArtifact::CODEQUALITY_REPORT_FILE_TYPES) do |file_type, blob|
         Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report)
@@ -1175,6 +1162,14 @@ module Ci
       Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
     end
 
+    def each_report(report_types)
+      job_artifacts_for_types(report_types).each do |report_artifact|
+        report_artifact.each_blob do |blob|
+          yield report_artifact.file_type, blob, report_artifact
+        end
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1223,14 +1218,6 @@ module Ci
         :last
       else
         :out_of_date
-      end
-    end
-
-    def each_report(report_types)
-      job_artifacts_for_types(report_types).each do |report_artifact|
-        report_artifact.each_blob do |blob|
-          yield report_artifact.file_type, blob, report_artifact
-        end
       end
     end
 

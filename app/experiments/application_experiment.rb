@@ -34,12 +34,14 @@ class ApplicationExperiment < Gitlab::Experiment
   #
   # @deprecated
   def key_for(source, seed = name)
+    # If FIPS is enabled, we simply call the method available in the gem, which
+    # uses SHA2.
+    return super if Gitlab::FIPS.enabled?
+
+    # If FIPS isn't enabled, we use the legacy MD5 logic to keep existing
+    # experiment events working.
     source = source.keys + source.values if source.is_a?(Hash)
-
-    ingredients = Array(source).map { |v| identify(v) }
-    ingredients.unshift(seed)
-
-    Digest::MD5.hexdigest(ingredients.join('|'))
+    Digest::MD5.hexdigest(Array(source).map { |v| identify(v) }.unshift(seed).join('|'))
   end
 
   def nest_experiment(other)

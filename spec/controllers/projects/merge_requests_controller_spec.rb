@@ -1094,7 +1094,7 @@ RSpec.describe Projects::MergeRequestsController do
       end
 
       context 'when processing coverage reports is completed' do
-        let(:report) { { status: :parsed, data: pipeline.coverage_reports } }
+        let(:report) { { status: :parsed, data: { 'files' => {} } } }
 
         it 'returns coverage reports' do
           subject

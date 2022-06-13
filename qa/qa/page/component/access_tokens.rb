@@ -30,19 +30,7 @@ module QA
             element :created_access_token
           end
 
-          # This element will be removed once `access_token_ajax` feature flag is removed
-          # and this work is completed: https://gitlab.com/gitlab-org/gitlab/-/issues/357848
-          base.view 'app/views/shared/access_tokens/_created_container.html.haml' do
-            element :created_access_token
-          end
-
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
-            element :revoke_button
-          end
-
-          # This element will be removed once `access_token_ajax` feature flag is removed
-          # and this work is completed: https://gitlab.com/gitlab-org/gitlab/-/issues/357848
-          base.view 'app/views/shared/access_tokens/_table.html.haml' do
             element :revoke_button
           end
         end

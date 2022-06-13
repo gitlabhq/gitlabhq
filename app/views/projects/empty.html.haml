@@ -6,6 +6,7 @@
 = render_if_exists 'projects/free_user_cap_alert', project: @project
 
 = render partial: 'flash_messages', locals: { project: @project }
+= render 'clusters_deprecation_alert'
 
 = render "home_panel"
 = render "archived_notice", project: @project

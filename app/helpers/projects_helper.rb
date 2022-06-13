@@ -444,6 +444,18 @@ module ProjectsHelper
     Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
   end
 
+  def show_clusters_alert?(project)
+    Gitlab.com? && can_admin_associated_clusters?(project)
+  end
+
+  def clusters_deprecation_alert_message
+    if has_active_license?
+      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.')
+    else
+      s_('ClusterIntegration|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.')
+    end
+  end
+
   private
 
   def configure_oauth_import_message(provider, help_url)
@@ -741,6 +753,18 @@ module ProjectsHelper
       ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
   end
+end
+
+def can_admin_associated_clusters?(project)
+  can_admin_project_clusters?(project) || can_admin_group_clusters?(project)
+end
+
+def can_admin_project_clusters?(project)
+  project.clusters.any? && can?(current_user, :admin_cluster, project)
+end
+
+def can_admin_group_clusters?(project)
+  project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
 end
 
 ProjectsHelper.prepend_mod_with('ProjectsHelper')
