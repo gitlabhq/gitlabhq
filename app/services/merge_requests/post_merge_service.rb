@@ -48,7 +48,7 @@ module MergeRequests
         # We are intentionally only closing Issues asynchronously (excluding ExternalIssues)
         # as the worker only supports finding an Issue. We are also only experiencing
         # SQL timeouts when closing an Issue.
-        if Feature.enabled?(:async_mr_close_issue, project) && issue.is_a?(Issue)
+        if issue.is_a?(Issue)
           MergeRequests::CloseIssueWorker.perform_async(
             project.id,
             current_user.id,

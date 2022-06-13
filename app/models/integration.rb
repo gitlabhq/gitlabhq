@@ -46,7 +46,9 @@ class Integration < ApplicationRecord
     Integrations::BaseSlashCommands
   ].freeze
 
+  SECTION_TYPE_CONFIGURATION = 'configuration'
   SECTION_TYPE_CONNECTION = 'connection'
+  SECTION_TYPE_TRIGGER = 'trigger'
 
   attr_encrypted :properties,
                  mode: :per_attribute_iv,

@@ -27,6 +27,7 @@ export const settingsTabTitle = __('Settings');
 export const overridesTabTitle = s__('Integrations|Projects using custom settings');
 
 export const integrationFormSections = {
+  CONFIGURATION: 'configuration',
   CONNECTION: 'connection',
   JIRA_TRIGGER: 'jira_trigger',
   JIRA_ISSUES: 'jira_issues',
@@ -34,6 +35,7 @@ export const integrationFormSections = {
 };
 
 export const integrationFormSectionComponents = {
+  [integrationFormSections.CONFIGURATION]: 'IntegrationSectionConfiguration',
   [integrationFormSections.CONNECTION]: 'IntegrationSectionConnection',
   [integrationFormSections.JIRA_TRIGGER]: 'IntegrationSectionJiraTrigger',
   [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',

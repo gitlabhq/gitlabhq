@@ -20,10 +20,18 @@ RSpec.shared_examples 'integration settings form' do
                             "#{integration.title} field #{field_name} not present"
           end
 
+          sections = integration.sections
           events = parse_json(trigger_events_for_integration(integration))
+
           events.each do |trigger|
-            expect(page).to have_field(trigger[:title], type: 'checkbox', wait: 0),
-                            "#{integration.title} field #{title} checkbox not present"
+            trigger_title = if sections.any? { |s| s[:type] == 'trigger' }
+                              trigger_event_title(trigger[:name])
+                            else
+                              trigger[:title]
+                            end
+
+            expect(page).to have_field(trigger_title, type: 'checkbox', wait: 0),
+                            "#{integration.title} field #{trigger_title} checkbox not present"
           end
         end
       end
@@ -34,5 +42,21 @@ RSpec.shared_examples 'integration settings form' do
 
   def parse_json(json)
     Gitlab::Json.parse(json, symbolize_names: true)
+  end
+
+  def trigger_event_title(name)
+    # Should match `integrationTriggerEventTitles` in app/assets/javascripts/integrations/constants.js
+    event_titles = {
+      push_events: s_('IntegrationEvents|A push is made to the repository'),
+      issues_events: s_('IntegrationEvents|IntegrationEvents|An issue is created, updated, or closed'),
+      confidential_issues_events: s_('IntegrationEvents|A confidential issue is created, updated, or closed'),
+      merge_requests_events: s_('IntegrationEvents|A merge request is created, updated, or merged'),
+      note_events: s_('IntegrationEvents|A comment is added on an issue'),
+      confidential_note_events: s_('IntegrationEvents|A comment is added on a confidential issue'),
+      tag_push_events: s_('IntegrationEvents|A tag is pushed to the repository'),
+      pipeline_events: s_('IntegrationEvents|A pipeline status changes'),
+      wiki_page_events: s_('IntegrationEvents|A wiki page is created or updated')
+    }.with_indifferent_access
+    event_titles[name]
   end
 end

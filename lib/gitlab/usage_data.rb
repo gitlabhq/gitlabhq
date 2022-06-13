@@ -155,7 +155,7 @@ module Gitlab
             notes: count(Note)
           }.merge(
             runners_usage,
-            services_usage,
+            integrations_usage,
             usage_counters,
             user_preferences_usage,
             container_expiration_policies_usage,
@@ -365,7 +365,7 @@ module Gitlab
         results
       end
 
-      def services_usage
+      def integrations_usage
         # rubocop: disable UsageData/LargeTable:
         Integration.available_integration_names(include_dev: false).each_with_object({}) do |name, response|
           type = Integration.integration_name_to_type(name)

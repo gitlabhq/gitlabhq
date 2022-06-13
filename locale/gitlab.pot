@@ -20563,6 +20563,9 @@ msgstr ""
 msgid "Integrations|An error occurred while loading projects using custom settings."
 msgstr ""
 
+msgid "Integrations|An event will be triggered when one of the following items happen."
+msgstr ""
+
 msgid "Integrations|Branches for which notifications are to be sent"
 msgstr ""
 
@@ -20573,6 +20576,9 @@ msgid "Integrations|Comment detail:"
 msgstr ""
 
 msgid "Integrations|Comment settings:"
+msgstr ""
+
+msgid "Integrations|Configure the scope of notifications."
 msgstr ""
 
 msgid "Integrations|Connection details"
@@ -20671,6 +20677,9 @@ msgstr ""
 msgid "Integrations|No linked namespaces"
 msgstr ""
 
+msgid "Integrations|Notification settings"
+msgstr ""
+
 msgid "Integrations|Projects using custom settings"
 msgstr ""
 
@@ -20729,6 +20738,9 @@ msgid "Integrations|This integration, and inheriting projects were reset."
 msgstr ""
 
 msgid "Integrations|To keep this project going, create a new issue."
+msgstr ""
+
+msgid "Integrations|Trigger"
 msgstr ""
 
 msgid "Integrations|Use custom settings"

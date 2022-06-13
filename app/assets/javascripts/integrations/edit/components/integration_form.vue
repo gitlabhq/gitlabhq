@@ -37,6 +37,10 @@ export default {
     DynamicField,
     ConfirmationModal,
     ResetConfirmationModal,
+    IntegrationSectionConfiguration: () =>
+      import(
+        /* webpackChunkName: 'integrationSectionConfiguration' */ '~/integrations/edit/components/sections/configuration.vue'
+      ),
     IntegrationSectionConnection: () =>
       import(
         /* webpackChunkName: 'integrationSectionConnection' */ '~/integrations/edit/components/sections/connection.vue'
@@ -197,7 +201,7 @@ export default {
   <gl-form
     ref="integrationForm"
     method="post"
-    class="gl-mb-3 gl-show-field-errors integration-settings-form"
+    class="gl-mt-6 gl-mb-3 gl-show-field-errors integration-settings-form"
     :action="propsSource.formPath"
     :novalidate="!integrationActive"
   >

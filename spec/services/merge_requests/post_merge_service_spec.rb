@@ -106,32 +106,6 @@ RSpec.describe MergeRequests::PostMergeService do
           expect(merge_request.reload).to be_merged
         end
       end
-
-      context 'when async_mr_close_issue feature flag is disabled' do
-        before do
-          stub_feature_flags(async_mr_close_issue: false)
-        end
-
-        it 'executes Issues::CloseService' do
-          expect_next_instance_of(Issues::CloseService) do |close_service|
-            expect(close_service).to receive(:execute).with(issue, commit: merge_request)
-          end
-
-          subject
-
-          expect(merge_request.reload).to be_merged
-        end
-
-        it 'marks MR as merged regardless of errors when closing issues' do
-          expect_next_instance_of(Issues::CloseService) do |close_service|
-            allow(close_service).to receive(:execute).with(issue, commit: merge_request).and_raise(RuntimeError)
-          end
-
-          expect { subject }.to raise_error(RuntimeError)
-
-          expect(merge_request.reload).to be_merged
-        end
-      end
     end
 
     context 'when the merge request has review apps' do
