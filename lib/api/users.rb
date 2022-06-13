@@ -346,6 +346,30 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Get the project-level Deploy keys that a specified user can access to.' do
+        success Entities::DeployKey
+      end
+      params do
+        requires :user_id, type: String, desc: 'The ID or username of the user'
+        use :pagination
+      end
+      get ':user_id/project_deploy_keys', requirements: API::USER_REQUIREMENTS, feature_category: :continuous_delivery do
+        user = find_user(params[:user_id])
+        not_found!('User') unless user && can?(current_user, :read_user, user)
+
+        project_ids = Project.visible_to_user_and_access_level(current_user, Gitlab::Access::MAINTAINER)
+
+        unless current_user == user
+          # Restrict to only common projects of both current_user and user.
+          project_ids = project_ids.visible_to_user_and_access_level(user, Gitlab::Access::MAINTAINER)
+        end
+
+        forbidden!('No common authorized project found') unless project_ids.present?
+
+        keys = DeployKey.in_projects(project_ids)
+        present paginate(keys), with: Entities::DeployKey
+      end
+
       desc 'Add an SSH key to a specified user. Available only for admins.' do
         success Entities::SSHKey
       end

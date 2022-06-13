@@ -158,7 +158,6 @@ RSpec/InstanceVariable:
     - spec/models/group_spec.rb
     - spec/models/integrations/assembla_spec.rb
     - spec/models/integrations/campfire_spec.rb
-    - spec/models/integrations/irker_spec.rb
     - spec/models/member_spec.rb
     - spec/models/members/project_member_spec.rb
     - spec/models/namespace_spec.rb

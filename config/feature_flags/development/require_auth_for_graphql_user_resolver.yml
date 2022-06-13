@@ -1,8 +1,0 @@
----
-name: require_auth_for_graphql_user_resolver
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88020
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362953
-milestone: '15.1'
-type: development
-group: group::authentication and authorization
-default_enabled: false

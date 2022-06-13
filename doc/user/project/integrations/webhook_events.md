@@ -1677,7 +1677,7 @@ Payload example:
 {
   "id": 1,
   "created_at": "2020-11-02 12:55:12 UTC",
-  "description": "v1.0 has been released",
+  "description": "v1.1 has been released",
   "name": "v1.1",
   "released_at": "2020-11-02 12:55:12 UTC",
   "tag": "v1.1",

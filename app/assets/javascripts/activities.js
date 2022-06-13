@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
@@ -31,7 +31,7 @@ export default class Activities {
       prepareData: (data) => data,
       successCallback: () => this.updateTooltips(),
       errorCallback: () =>
-        createFlash({
+        createAlert({
           message: s__(
             'Activity|An error occurred while retrieving activity. Reload the page to try again.',
           ),

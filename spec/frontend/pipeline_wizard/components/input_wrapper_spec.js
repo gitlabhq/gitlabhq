@@ -1,6 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { Document } from 'yaml';
-import InputWrapper from '~/pipeline_wizard/components/input.vue';
+import InputWrapper from '~/pipeline_wizard/components/input_wrapper.vue';
 import TextWidget from '~/pipeline_wizard/components/widgets/text.vue';
 
 describe('Pipeline Wizard -- Input Wrapper', () => {

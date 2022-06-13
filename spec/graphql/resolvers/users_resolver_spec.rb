@@ -76,22 +76,6 @@ RSpec.describe Resolvers::UsersResolver do
           resolve_users(args: { usernames: [user1.username] })
         end
       end
-
-      context 'require_auth_for_graphql_user_resolver feature flag is disabled' do
-        before do
-          stub_feature_flags(require_auth_for_graphql_user_resolver: false)
-        end
-
-        it 'prohibits search without usernames passed' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
-            resolve_users
-          end
-        end
-
-        it 'allows to search by username' do
-          expect(resolve_users(args: { usernames: [user1.username] })).to contain_exactly(user1)
-        end
-      end
     end
   end
 

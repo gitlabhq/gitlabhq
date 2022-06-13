@@ -45,8 +45,6 @@ module Resolvers
     end
 
     def authorize!
-      return unless Feature.enabled?(:require_auth_for_graphql_user_resolver)
-
       raise_resource_not_available_error! unless context[:current_user].present?
     end
   end

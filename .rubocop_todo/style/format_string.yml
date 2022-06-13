@@ -108,7 +108,6 @@ Style/FormatString:
     - 'app/models/integrations/external_wiki.rb'
     - 'app/models/integrations/flowdock.rb'
     - 'app/models/integrations/hangouts_chat.rb'
-    - 'app/models/integrations/irker.rb'
     - 'app/models/integrations/jenkins.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/mattermost.rb'

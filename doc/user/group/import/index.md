@@ -6,12 +6,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Migrating groups **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
+> - Group resources [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
-[disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`. On GitLab.com, this feature is
+On self-managed GitLab, by default [migrating group resources](#migrated-group-resources) is available. To hide the
+feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`.
+On self-managed GitLab, by default [migrating project resources](#migrated-project-resources) is not available. To show
+this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`bulk_import_projects`. On GitLab.com, migrating group resources is available but migrating project resources is not
 available.
 
 You can migrate your existing top-level groups to any of the following:
@@ -27,10 +31,12 @@ another GitLab instance. Migrating groups using the method documented here autom
 ## Import your groups into GitLab
 
 When you migrate a group, you connect to your GitLab instance and then choose
-groups to import. Not all the data is migrated. View the
-[Migrated resources](#migrated-resources) list for details.
+groups to import. Not all the data is migrated. See:
 
-Leave feedback about group migration in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
+- [Migrated group resources](#migrated-group-resources).
+- [Migrated project resources](#migrated-project-resources).
+
+Leave feedback about group migration in [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
 NOTE:
 You might need to reconfigure your firewall to prevent blocking the connection on the self-managed
@@ -73,66 +79,57 @@ Migration importer page. The remote groups you have the Owner role for are liste
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../../project/import/index.md#automate-group-and-project-import).
 
-## Migrated resources
+## Migrated group resources
 
 Only the following resources are migrated to the target instance. Any other items are **not**
 migrated:
 
-- Groups ([Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4374) in 13.7)
-  - description
-  - attributes
-  - subgroups
-  - avatar ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322904) in 14.0)
-- Group labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
-  - title
-  - description
-  - color
-  - created_at ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300007) in 13.10)
-  - updated_at ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300007) in 13.10)
+- Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
+- Board Lists
+- Boards 
+- Epics ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) in 13.7)
+- Finisher
+- Group Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
+- Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
 - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) in 13.9)
   Group members are associated with the imported group if:
   - The user already exists in the target GitLab instance and
   - The user has a public email in the source GitLab instance that matches a
     confirmed email in the target GitLab instance
-- Epics ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) in 13.7)
-  - title
-  - description
-  - state (open / closed)
-  - start date
-  - due date
-  - epic order on boards
-  - confidentiality
-  - labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297460) in 13.9)
-  - author ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298745) in 13.9)
-  - parent epic ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297459) in 13.9)
-  - emoji award ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297466) in 13.9)
-  - events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297465) in 13.10)
 - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) in 13.10)
-  - title
-  - description
-  - state (active / closed)
-  - start date
-  - due date
-  - created at
-  - updated at
-  - iid ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326157) in 13.11)
-- Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
-  - iid
-  - title
-  - description
-  - state (upcoming / started / closed)
-  - start date
-  - due date
-  - created at
-  - updated at
-- Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
-  - name
-  - link URL
-  - image URL
-- Boards
-- Board Lists
+- Namespace Settings
 - Releases
   - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
+- Sub-Groups
+- Uploads
+
+## Migrated project resources
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, migrating project resources are not available by default. To make them available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`. On GitLab.com, migrating project resources are not available.
+
+- Projects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
+  - Auto DevOps ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339410) in GitLab 14.6)
+  - Branches (including protected branches) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339414) in GitLab 14.7)
+  - CI Pipelines ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339407) in GitLab 14.6)
+  - Designs ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339421) in GitLab 15.1)
+  - Issues ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267946) in GitLab 14.4)
+  - Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339419) in GitLab 14.4)
+  - LFS Objects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339405) in GitLab 14.8)
+  - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341886) in GitLab 14.8)
+  - Merge Requests ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.5)
+  - Migrate Push Rules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.6)
+  - Pull Requests (including external pull requests) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339409) in GitLab 14.5)
+  - Pipeline History ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339412) in GitLab 14.6)
+  - Pipeline Schedules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339408) in GitLab 14.8)
+  - Releases ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.1)
+  - Release Evidences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360567) in GitLab 15.1)
+  - Repositories ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
+  - Snippets ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343438) in GitLab 14.6)
+  - Uploads ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339401) in GitLab 14.5)
+  - Wikis ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345923) in GitLab 14.6)
 
 ## Troubleshooting Group Migration
 

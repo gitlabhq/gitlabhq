@@ -1694,6 +1694,111 @@ RSpec.describe API::Users do
     end
   end
 
+  describe 'GET /users/:id/project_deploy_keys' do
+    let(:project) { create(:project) }
+
+    before do
+      project.add_maintainer(user)
+
+      deploy_key = create(:deploy_key, user: user)
+      create(:deploy_keys_project, project: project, deploy_key_id: deploy_key.id)
+    end
+
+    it 'returns 404 for non-existing user' do
+      get api("/users/#{non_existing_record_id}/project_deploy_keys")
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns array of project deploy keys with pagination' do
+      get api("/users/#{user.id}/project_deploy_keys", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(user.deploy_keys.first.title)
+    end
+
+    it 'forbids when a developer fetches maintainer keys' do
+      dev_user = create(:user)
+      project.add_developer(dev_user)
+
+      get api("/users/#{user.id}/project_deploy_keys", dev_user)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['message']).to eq('403 Forbidden - No common authorized project found')
+    end
+
+    context 'with multiple projects' do
+      let(:second_project) { create(:project) }
+      let(:second_user) { create(:user) }
+
+      before do
+        second_project.add_maintainer(second_user)
+
+        deploy_key = create(:deploy_key, user: second_user)
+        create(:deploy_keys_project, project: second_project, deploy_key_id: deploy_key.id)
+      end
+
+      context 'when no common projects for user and current_user' do
+        it 'forbids' do
+          get api("/users/#{user.id}/project_deploy_keys", second_user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - No common authorized project found')
+        end
+      end
+
+      context 'when there are common projects for user and current_user' do
+        before do
+          project.add_maintainer(second_user)
+        end
+
+        it 'lists only common project keys' do
+          expect(second_user.project_deploy_keys).to contain_exactly(
+            project.deploy_keys.first, second_project.deploy_keys.first)
+
+          get api("/users/#{second_user.id}/project_deploy_keys", user)
+
+          expect(json_response.count).to eq(1)
+          expect(json_response.first['key']).to eq(project.deploy_keys.first.key)
+        end
+
+        it 'lists only project_deploy_keys and not user deploy_keys' do
+          third_user = create(:user)
+
+          project.add_maintainer(third_user)
+          second_project.add_maintainer(third_user)
+
+          create(:deploy_key, user: second_user)
+          create(:deploy_key, user: third_user)
+
+          get api("/users/#{second_user.id}/project_deploy_keys", third_user)
+
+          expect(json_response.count).to eq(2)
+          expect([json_response.first['key'], json_response.second['key']]).to contain_exactly(
+            project.deploy_keys.first.key, second_project.deploy_keys.first.key)
+        end
+
+        it 'avoids N+1 queries' do
+          second_project.add_maintainer(user)
+
+          control_count = ActiveRecord::QueryRecorder.new do
+            get api("/users/#{second_user.id}/project_deploy_keys", user)
+          end.count
+
+          deploy_key = create(:deploy_key, user: second_user)
+          create(:deploy_keys_project, project: second_project, deploy_key_id: deploy_key.id)
+
+          expect do
+            get api("/users/#{second_user.id}/project_deploy_keys", user)
+          end.not_to exceed_query_limit(control_count)
+        end
+      end
+    end
+  end
+
   describe 'GET /user/:id/keys' do
     it 'returns 404 for non-existing user' do
       get api("/users/#{non_existing_record_id}/keys")

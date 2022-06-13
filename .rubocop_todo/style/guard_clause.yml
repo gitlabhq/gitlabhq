@@ -135,7 +135,6 @@ Style/GuardClause:
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/emails_on_push.rb'
     - 'app/models/integrations/harbor.rb'
-    - 'app/models/integrations/irker.rb'
     - 'app/models/integrations/jenkins.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/pipelines_email.rb'

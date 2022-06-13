@@ -26,18 +26,6 @@ RSpec.describe Resolvers::UserResolver do
             resolve_user(args)
           end
         end
-
-        context 'require_auth_for_graphql_user_resolver feature flag is disabled' do
-          before do
-            stub_feature_flags(require_auth_for_graphql_user_resolver: false)
-          end
-
-          it 'returns the correct user' do
-            expect(
-              resolve_user(args)
-            ).to eq(user)
-          end
-        end
       end
     end
 

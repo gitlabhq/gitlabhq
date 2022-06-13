@@ -177,10 +177,10 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    In most cases, the following addresses are used to configure GitLab
    Geo:
 
-   | Configuration                           | Address                                               |
-   |:----------------------------------------|:------------------------------------------------------|
-   | `postgresql['listen_address']`          | **Primary** node's public or VPC private address.     |
-   | `postgresql['md5_auth_cidr_addresses']` | **Secondary** node's public or VPC private addresses. |
+   | Configuration                           | Address                                                               |
+   |:----------------------------------------|:----------------------------------------------------------------------|
+   | `postgresql['listen_address']`          | **Primary** node's public or VPC private address.                     |
+   | `postgresql['md5_auth_cidr_addresses']` | **Primary** and **Secondary** nodes' public or VPC private addresses. |
 
    If you are using Google Cloud Platform, SoftLayer, or any other vendor that
    provides a virtual private cloud (VPC) you can use the **primary** and **secondary** nodes

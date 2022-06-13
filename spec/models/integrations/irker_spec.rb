@@ -25,9 +25,11 @@ RSpec.describe Integrations::Irker do
   end
 
   describe 'Execute' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+
     let(:irker) { described_class.new }
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let(:irker_server) { TCPServer.new('localhost', 0) }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
@@ -36,15 +38,13 @@ RSpec.describe Integrations::Irker do
     let(:colorize_messages) { '1' }
 
     before do
-      @irker_server = TCPServer.new 'localhost', 0
-
       allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
       allow(irker).to receive_messages(
         active: true,
         project: project,
         project_id: project.id,
-        server_host: @irker_server.addr[2],
-        server_port: @irker_server.addr[1],
+        server_host: irker_server.addr[2],
+        server_port: irker_server.addr[1],
         default_irc_uri: 'irc://chat.freenode.net/',
         recipients: recipients,
         colorize_messages: colorize_messages)
@@ -53,24 +53,42 @@ RSpec.describe Integrations::Irker do
     end
 
     after do
-      @irker_server.close
+      irker_server.close
     end
 
     it 'sends valid JSON messages to an Irker listener', :sidekiq_might_not_need_inline do
+      expect(Integrations::IrkerWorker).to receive(:perform_async)
+        .with(project.id, irker.channels, colorize_messages, sample_data, irker.settings)
+        .and_call_original
+
       irker.execute(sample_data)
 
-      conn = @irker_server.accept
+      conn = irker_server.accept
 
       Timeout.timeout(5) do
         conn.each_line do |line|
           msg = Gitlab::Json.parse(line.chomp("\n"))
-          expect(msg.keys).to match_array(%w(to privmsg))
+          expect(msg.keys).to match_array(%w[to privmsg])
           expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
                                             "irc://test.net/#test"])
         end
       end
     ensure
       conn.close if conn
+    end
+
+    context 'when the FF :rename_integrations_workers is disabled' do
+      before do
+        stub_feature_flags(rename_integrations_workers: false)
+      end
+
+      it 'queues a IrkerWorker' do
+        expect(::IrkerWorker).to receive(:perform_async)
+          .with(project.id, irker.channels, colorize_messages, sample_data, irker.settings)
+        expect(Integrations::IrkerWorker).not_to receive(:perform_async)
+
+        irker.execute(sample_data)
+      end
     end
   end
 end

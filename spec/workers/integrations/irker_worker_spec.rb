@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IrkerWorker, '#perform' do
+RSpec.describe Integrations::IrkerWorker, '#perform' do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
   let_it_be(:push_data) { HashWithIndifferentAccess.new(Gitlab::DataBuilder::Push.build_sample(project, user)) }
@@ -25,7 +25,7 @@ RSpec.describe IrkerWorker, '#perform' do
     ]
   end
 
-  let(:tcp_socket) { double('socket') }
+  let(:tcp_socket) { instance_double(TCPSocket) }
 
   subject(:worker) { described_class.new }
 
@@ -35,7 +35,7 @@ RSpec.describe IrkerWorker, '#perform' do
     allow(tcp_socket).to receive(:close).and_return(true)
   end
 
-  context 'local requests are not allowed' do
+  context 'when local requests are not allowed' do
     before do
       allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(false)
     end
@@ -43,7 +43,7 @@ RSpec.describe IrkerWorker, '#perform' do
     it { expect(worker.perform(*arguments)).to be_falsey }
   end
 
-  context 'connection fails' do
+  context 'when connection fails' do
     before do
       allow(TCPSocket).to receive(:new).and_raise(Errno::ECONNREFUSED.new('test'))
     end
@@ -51,7 +51,7 @@ RSpec.describe IrkerWorker, '#perform' do
     it { expect(subject.perform(*arguments)).to be_falsey }
   end
 
-  context 'connection successful' do
+  context 'when connection successful' do
     before do
       allow(Gitlab::CurrentSettings)
         .to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
@@ -59,7 +59,7 @@ RSpec.describe IrkerWorker, '#perform' do
 
     it { expect(subject.perform(*arguments)).to be_truthy }
 
-    context 'new branch' do
+    context 'with new branch' do
       it 'sends a correct message with branches url' do
         branches_url = Gitlab::Routing.url_helpers
           .project_branches_url(project)
@@ -74,7 +74,7 @@ RSpec.describe IrkerWorker, '#perform' do
       end
     end
 
-    context 'deleted branch' do
+    context 'with deleted branch' do
       it 'sends a correct message' do
         push_data['after'] = '0000000000000000000000000000000000000000'
 
@@ -86,7 +86,7 @@ RSpec.describe IrkerWorker, '#perform' do
       end
     end
 
-    context 'new commits to existing branch' do
+    context 'with new commits to existing branch' do
       it 'sends a correct message with a compare url' do
         compare_url = Gitlab::Routing.url_helpers
           .project_compare_url(project,
@@ -100,6 +100,12 @@ RSpec.describe IrkerWorker, '#perform' do
 
         subject.perform(*arguments)
       end
+    end
+
+    context 'when using the old worker class' do
+      let(:described_class) { ::IrkerWorker }
+
+      it { expect(subject.perform(*arguments)).to be_truthy }
     end
   end
 

@@ -784,7 +784,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/import_export_project_cleanup_worker.rb'
     - 'app/workers/import_issues_csv_worker.rb'
     - 'app/workers/invalid_gpg_signature_update_worker.rb'
-    - 'app/workers/irker_worker.rb'
     - 'app/workers/issuable_export_csv_worker.rb'
     - 'app/workers/issue_due_scheduler_worker.rb'
     - 'app/workers/issue_placement_worker.rb'

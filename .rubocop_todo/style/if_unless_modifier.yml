@@ -203,7 +203,6 @@ Style/IfUnlessModifier:
     - 'app/models/integrations/base_chat_notification.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/harbor.rb'
-    - 'app/models/integrations/irker.rb'
     - 'app/models/integrations/jenkins.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/pushover.rb'

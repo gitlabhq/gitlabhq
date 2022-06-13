@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { mount } from '@vue/test-utils';
 import { Document } from 'yaml';
-import InputWrapper from '~/pipeline_wizard/components/input.vue';
+import InputWrapper from '~/pipeline_wizard/components/input_wrapper.vue';
 
 describe('Test all widgets in ./widgets/* whether they provide a minimal api', () => {
   const createComponent = (props = {}, mountFunc = mount) => {
