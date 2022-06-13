@@ -83,7 +83,7 @@ export default {
   },
   computed: {
     icon() {
-      return this.visible ? 'angle-down' : 'angle-right';
+      return this.visible ? 'chevron-lg-down' : 'chevron-lg-right';
     },
     externalUrl() {
       return this.environment.externalUrl;

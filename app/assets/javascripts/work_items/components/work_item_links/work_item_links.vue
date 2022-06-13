@@ -33,7 +33,7 @@ export default {
       return this.children.length === 0;
     },
     toggleIcon() {
-      return this.isOpen ? 'angle-up' : 'angle-down';
+      return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
     },
     toggleLabel() {
       return this.isOpen

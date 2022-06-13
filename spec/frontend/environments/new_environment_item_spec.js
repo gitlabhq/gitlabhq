@@ -374,7 +374,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
     it('is collapsed by default', () => {
       expect(collapse.attributes('visible')).toBeUndefined();
-      expect(icon.props('name')).toEqual('angle-right');
+      expect(icon.props('name')).toEqual('chevron-lg-right');
       expect(environmentName.classes('gl-font-weight-bold')).toBe(false);
     });
 
@@ -385,7 +385,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
       expect(collapse.attributes('visible')).toBe('visible');
-      expect(icon.props('name')).toEqual('angle-down');
+      expect(icon.props('name')).toEqual('chevron-lg-down');
       expect(environmentName.classes('gl-font-weight-bold')).toBe(true);
       expect(findDeployment().isVisible()).toBe(true);
     });

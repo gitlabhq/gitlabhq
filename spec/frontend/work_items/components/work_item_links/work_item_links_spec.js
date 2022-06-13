@@ -24,7 +24,7 @@ describe('WorkItemLinks', () => {
   });
 
   it('is expanded by default', () => {
-    expect(findToggleButton().props('icon')).toBe('angle-up');
+    expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
     expect(findLinksBody().exists()).toBe(true);
   });
 
@@ -32,7 +32,7 @@ describe('WorkItemLinks', () => {
     findToggleButton().vm.$emit('click');
     await nextTick();
 
-    expect(findToggleButton().props('icon')).toBe('angle-down');
+    expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
     expect(findLinksBody().exists()).toBe(false);
   });
 

@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     iconName() {
-      return this.isClosed ? 'angle-right' : 'angle-down';
+      return this.isClosed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
   },
   methods: {

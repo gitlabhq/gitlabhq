@@ -14,7 +14,7 @@ export default {
     if (extensions.length === 0) return null;
 
     return h(
-      'div',
+      'section',
       {
         attrs: {
           role: 'region',
