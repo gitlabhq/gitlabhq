@@ -219,6 +219,36 @@ Environment variables set in `before_script` or `script` are not available for e
 in the same job. Read more about
 [potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
 
+#### Skip multiple pipelines when creating a release
+
+Creating a release using a CI/CD job could potentially trigger multiple pipelines if the associated tag does not exist already. To understand how this might happen, consider the following workflows:
+
+- Tag first, release second:
+  1. A tag is created via UI or pushed.
+  1. A tag pipeline is triggered, and runs `release` job.
+  1. A release is created.
+
+- Release first, tag second:
+  1. A pipeline is triggered when commits are pushed or merged to default branch. The pipeline runs `release` job.
+  1. A release is created.
+  1. A tag is created.
+  1. A tag pipeline is triggered. The pipeline also runs `release` job.
+
+In the second workflow, the `release` job runs in multiple pipelines. To prevent this, you can use the [`workflow:rules` keyword](../../../ci/yaml/index.md#workflowrules) to determine if a release job should run in a tag pipeline:
+
+```yaml
+release_job:
+  rules:
+    - if: $CI_COMMIT_TAG  
+      when: never                                  # Do not run this job in a tag pipeline
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
+  script:
+    - echo "Create release"
+  release:
+    name: 'My awesome release'
+    tag_name: '$CI_COMMIT_TAG'
+```
+
 ### Use a custom SSL CA certificate authority
 
 You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority,
