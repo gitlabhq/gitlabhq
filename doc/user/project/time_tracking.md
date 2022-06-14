@@ -102,7 +102,7 @@ type `/spend 1h 2021-01-31`.
 
 If you type a future date, no time is logged.
 
-### Remove time spent
+### Subtract time spent
 
 Prerequisites:
 
@@ -112,11 +112,10 @@ To subtract time, enter a negative value. For example, `/spend -3d` removes thre
 days from the total time spent. You can't go below 0 minutes of time spent,
 so if you remove more time than already entered, GitLab ignores the subtraction.
 
-To remove all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
-
 ### Delete time spent
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 14.10.
+> - Delete button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356796) in GitLab 15.1.
 
 A timelog is a single entry of time spent, either positive or negative.
 
@@ -124,7 +123,18 @@ Prerequisites:
 
 - You must be the author of the timelog or have at least the Maintainer role for the project.
 
-You can [delete timelogs](../../api/graphql/reference/index.md#mutationtimelogdelete) using the GraphQL API.
+To delete a timelog, either:
+
+- In the time tracking report, on the right of a timelog entry, select **Delete time spent** (**{remove}**).
+- Use the [GraphQL API](../../api/graphql/reference/index.md#mutationtimelogdelete).
+
+### Delete all the time spent
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To delete all the time spent at once, use the `/remove_time_spent` [quick action](quick_actions.md).
 
 ## View a time tracking report
 
@@ -137,7 +147,7 @@ To view a time tracking report:
 1. Go to an issue or a merge request.
 1. In the right sidebar, select **Time tracking report**.
 
-![Time tracking report](img/time_tracking_report_v13_12.png)
+![Time tracking report](img/time_tracking_report_v15_1.png)
 
 The breakdown of spent time is limited to a maximum of 100 entries.
 

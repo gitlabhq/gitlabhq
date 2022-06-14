@@ -19,8 +19,6 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import { DIFF_FILE_HEADER } from '../i18n';
@@ -33,7 +31,6 @@ export default {
   components: {
     ClipboardButton,
     GlIcon,
-    FileIcon,
     DiffStats,
     GlBadge,
     GlButton,
@@ -48,7 +45,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
-  mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.diffFile.file_hash })],
+  mixins: [IdState({ idProp: (vm) => vm.diffFile.file_hash })],
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: __('Compare submodule commit revisions'),
@@ -301,14 +298,6 @@ export default {
         :href="titleLink"
         @click="handleFileNameClick"
       >
-        <file-icon
-          v-if="!glFeatures.removeDiffHeaderIcons"
-          :file-name="filePath"
-          :size="16"
-          aria-hidden="true"
-          css-classes="gl-mr-2"
-          :submodule="diffFile.submodule"
-        />
         <span v-if="isFileRenamed">
           <strong
             v-gl-tooltip

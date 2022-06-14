@@ -1,0 +1,5 @@
+mutation deleteTimelog($input: TimelogDeleteInput!) {
+  timelogDelete(input: $input) {
+    errors
+  }
+}

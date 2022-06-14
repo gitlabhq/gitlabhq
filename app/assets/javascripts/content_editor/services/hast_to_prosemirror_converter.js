@@ -63,7 +63,7 @@ function maybeMerge(a, b) {
 function createSourceMapAttributes(hastNode, source) {
   const { position } = hastNode;
 
-  return position.end
+  return position && position.end
     ? {
         sourceMapKey: `${position.start.offset}:${position.end.offset}`,
         sourceMarkdown: source.substring(position.start.offset, position.end.offset),

@@ -313,6 +313,73 @@ describe('Client side Markdown processing', () => {
       ),
     },
     {
+      markdown: 'www.commonmark.org',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:18', 'www.commonmark.org'),
+          link(
+            {
+              ...sourceAttrs('0:18', 'www.commonmark.org'),
+              href: 'http://www.commonmark.org',
+            },
+            'www.commonmark.org',
+          ),
+        ),
+      ),
+    },
+    {
+      markdown: 'Visit www.commonmark.org/help for more information.',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:51', 'Visit www.commonmark.org/help for more information.'),
+          'Visit ',
+          link(
+            {
+              ...sourceAttrs('6:29', 'www.commonmark.org/help'),
+              href: 'http://www.commonmark.org/help',
+            },
+            'www.commonmark.org/help',
+          ),
+          ' for more information.',
+        ),
+      ),
+    },
+    {
+      markdown: 'hello@mail+xyz.example isn’t valid, but hello+xyz@mail.example is.',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:66', 'hello@mail+xyz.example isn’t valid, but hello+xyz@mail.example is.'),
+          'hello@mail+xyz.example isn’t valid, but ',
+          link(
+            {
+              ...sourceAttrs('40:62', 'hello+xyz@mail.example'),
+              href: 'mailto:hello+xyz@mail.example',
+            },
+            'hello+xyz@mail.example',
+          ),
+          ' is.',
+        ),
+      ),
+    },
+    {
+      only: true,
+      markdown: '[https://gitlab.com>',
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:20', '[https://gitlab.com>'),
+          '[',
+          link(
+            {
+              ...sourceAttrs(),
+              href: 'https://gitlab.com',
+            },
+            'https://gitlab.com',
+          ),
+          '>',
+        ),
+      ),
+    },
+    {
       markdown: `
 This is a paragraph with a\\
 hard line break`,

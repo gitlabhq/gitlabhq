@@ -307,7 +307,7 @@ export default {
     <actions-button
       :actions="actions"
       :selected-key="selection"
-      :variant="isBlob ? 'info' : 'default'"
+      :variant="isBlob ? 'confirm' : 'default'"
       :category="isBlob ? 'primary' : 'secondary'"
       @select="select"
     />

@@ -1,11 +1,13 @@
 <script>
-import { GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlLoadingIcon, GlTableLite, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { timelogQueries } from '~/sidebar/constants';
+import deleteTimelogMutation from './graphql/mutations/delete_timelog.mutation.graphql';
+import { removeTimelogFromStore } from './graphql/cache_update';
 
 const TIME_DATE_FORMAT = 'mmmm d, yyyy, HH:MM ("UTC:" o)';
 
@@ -13,6 +15,10 @@ export default {
   components: {
     GlLoadingIcon,
     GlTableLite,
+    GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['issuableType'],
   props: {
@@ -27,7 +33,7 @@ export default {
     },
   },
   data() {
-    return { report: [], isLoading: true };
+    return { report: [], isLoading: true, removingIds: [] };
   },
   apollo: {
     report: {
@@ -35,9 +41,7 @@ export default {
         return timelogQueries[this.issuableType].query;
       },
       variables() {
-        return {
-          id: convertToGraphQLId(this.getGraphQLEntityType(), this.issuableId),
-        };
+        return this.getQueryVariables();
       },
       update(data) {
         this.isLoading = false;
@@ -48,9 +52,22 @@ export default {
       },
     },
   },
+  computed: {
+    deleteButtonTooltip() {
+      return s__('TimeTracking|Delete time spent');
+    },
+  },
   methods: {
+    isDeletingTimelog(timelogId) {
+      return this.removingIds.includes(timelogId);
+    },
     isIssue() {
       return this.issuableType === 'issue';
+    },
+    getQueryVariables() {
+      return {
+        id: convertToGraphQLId(this.getGraphQLEntityType(), this.issuableId),
+      };
     },
     getGraphQLEntityType() {
       return this.isIssue() ? TYPE_ISSUE : TYPE_MERGE_REQUEST;
@@ -76,12 +93,44 @@ export default {
         stringifyTime(parseSeconds(seconds, { limitToHours: this.limitToHours }))
       );
     },
+    deleteTimelog(timelogId) {
+      this.removingIds.push(timelogId);
+      this.$apollo
+        .mutate({
+          mutation: deleteTimelogMutation,
+          variables: { input: { id: timelogId } },
+          update: (store) => {
+            removeTimelogFromStore(
+              store,
+              timelogId,
+              timelogQueries[this.issuableType].query,
+              this.getQueryVariables(),
+            );
+          },
+        })
+        .then(({ data }) => {
+          if (data.timelogDelete?.errors?.length) {
+            throw new Error(data.timelogDelete.errors[0]);
+          }
+        })
+        .catch((error) => {
+          createFlash({
+            message: s__('TimeTracking|An error occurred while removing the timelog.'),
+            captureError: true,
+            error,
+          });
+        })
+        .finally(() => {
+          this.removingIds.splice(this.removingIds.indexOf(timelogId), 1);
+        });
+    },
   },
   fields: [
-    { key: 'spentAt', label: __('Spent At'), sortable: true, tdClass: 'gl-w-quarter' },
+    { key: 'spentAt', label: __('Spent at'), sortable: true, tdClass: 'gl-w-quarter' },
     { key: 'user', label: __('User'), sortable: true },
-    { key: 'timeSpent', label: __('Time Spent'), sortable: true, tdClass: 'gl-w-15' },
-    { key: 'summary', label: __('Summary / Note'), sortable: true },
+    { key: 'timeSpent', label: __('Time spent'), sortable: true, tdClass: 'gl-w-15' },
+    { key: 'summary', label: __('Summary / note'), sortable: true },
+    { key: 'actions', label: '', tdClass: 'gl-w-10' },
   ],
 };
 </script>
@@ -110,7 +159,28 @@ export default {
       <template #cell(summary)="{ item: { summary, note } }">
         <div>{{ getSummary(summary, note) }}</div>
       </template>
-      <template #foot(note)>&nbsp;</template>
+      <template #foot(summary)>&nbsp;</template>
+
+      <template
+        #cell(actions)="{
+          item: {
+            id,
+            userPermissions: { adminTimelog },
+          },
+        }"
+      >
+        <div v-if="adminTimelog">
+          <gl-button
+            v-gl-tooltip="{ title: deleteButtonTooltip }"
+            category="secondary"
+            icon="remove"
+            data-testid="deleteButton"
+            :loading="isDeletingTimelog(id)"
+            @click="deleteTimelog(id)"
+          />
+        </div>
+      </template>
+      <template #foot(actions)>&nbsp;</template>
     </gl-table-lite>
   </div>
 </template>

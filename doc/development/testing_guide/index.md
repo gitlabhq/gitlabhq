@@ -70,4 +70,8 @@ Everything you should know about how to run end-to-end tests using
 
 Everything you should know about how to test migrations.
 
+## [Contract tests](contract/index.md)
+
+Introduction to contract testing, how to run the tests, and how to write them.
+
 [Return to Development documentation](../index.md)

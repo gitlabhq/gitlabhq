@@ -12,22 +12,6 @@ const ignoreAttrs = {
 
 const tableMap = new WeakMap();
 
-// Source taken from
-// prosemirror-markdown/src/to_markdown.js
-export function isPlainURL(link, parent, index, side) {
-  if (link.attrs.title || !/^\w+:/.test(link.attrs.href)) return false;
-  const content = parent.child(index + (side < 0 ? -1 : 0));
-  if (
-    !content.isText ||
-    content.text !== link.attrs.href ||
-    content.marks[content.marks.length - 1] !== link
-  )
-    return false;
-  if (index === (side < 0 ? 1 : parent.childCount - 1)) return true;
-  const next = parent.child(index + (side < 0 ? -2 : 1));
-  return !link.isInSet(next.marks);
-}
-
 function containsOnlyText(node) {
   if (node.childCount === 1) {
     const child = node.child(0);
@@ -498,10 +482,79 @@ const linkType = (sourceMarkdown) => {
   return LINK_HTML;
 };
 
+const removeUrlProtocol = (url) => url.replace(/^\w+:\/?\/?/, '');
+
+const normalizeUrl = (url) => decodeURIComponent(removeUrlProtocol(url));
+
+/**
+ * Validates that the provided URL is well-formed
+ *
+ * @param {String} url
+ * @returns Returns true when the browser’s URL constructor
+ * can successfully parse the URL string
+ */
+const isValidUrl = (url) => {
+  try {
+    return new URL(url) && true;
+  } catch {
+    return false;
+  }
+};
+
+const findChildWithMark = (mark, parent) => {
+  let child;
+  let offset;
+  let index;
+
+  parent.forEach((_child, _offset, _index) => {
+    if (mark.isInSet(_child.marks)) {
+      child = _child;
+      offset = _offset;
+      index = _index;
+    }
+  });
+
+  return child ? { child, offset, index } : null;
+};
+
+/**
+ * This function detects whether a link should be serialized
+ * as an autolink.
+ *
+ * See https://github.github.com/gfm/#autolinks-extension-
+ * to understand the parsing rules of autolinks.
+ * */
+const isAutoLink = (linkMark, parent) => {
+  const { title, href } = linkMark.attrs;
+
+  if (title || !/^\w+:/.test(href)) {
+    return false;
+  }
+
+  const { child } = findChildWithMark(linkMark, parent);
+
+  if (
+    !child ||
+    !child.isText ||
+    !isValidUrl(href) ||
+    normalizeUrl(child.text) !== normalizeUrl(href)
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
+ * Returns true if the user used brackets to the define
+ * the autolink in the original markdown source
+ */
+const isBracketAutoLink = (sourceMarkdown) => /^<.+?>$/.test(sourceMarkdown);
+
 export const link = {
-  open(state, mark, parent, index) {
-    if (isPlainURL(mark, parent, index, 1)) {
-      return '<';
+  open(state, mark, parent) {
+    if (isAutoLink(mark, parent)) {
+      return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '<' : '';
     }
 
     const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
@@ -518,9 +571,9 @@ export const link = {
 
     return openTag('a', attrs);
   },
-  close(state, mark, parent, index) {
-    if (isPlainURL(mark, parent, index, -1)) {
-      return '>';
+  close(state, mark, parent) {
+    if (isAutoLink(mark, parent)) {
+      return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
     const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;

@@ -36241,7 +36241,7 @@ msgstr ""
 msgid "Speed up your pipelines with Needs relationships"
 msgstr ""
 
-msgid "Spent At"
+msgid "Spent at"
 msgstr ""
 
 msgid "Squash commit message"
@@ -36994,7 +36994,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-msgid "Summary / Note"
+msgid "Summary / note"
 msgstr ""
 
 msgid "Sunday"
@@ -39378,9 +39378,6 @@ msgstr ""
 msgid "Time (in hours) that users are allowed to skip forced configuration of two-factor authentication."
 msgstr ""
 
-msgid "Time Spent"
-msgstr ""
-
 msgid "Time based: Yes"
 msgstr ""
 
@@ -39442,6 +39439,12 @@ msgid "TimeTrackingEstimated|Est"
 msgstr ""
 
 msgid "TimeTracking|%{spentStart}Spent: %{spentEnd}"
+msgstr ""
+
+msgid "TimeTracking|An error occurred while removing the timelog."
+msgstr ""
+
+msgid "TimeTracking|Delete time spent"
 msgstr ""
 
 msgid "TimeTracking|Estimated:"
