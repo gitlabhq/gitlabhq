@@ -1,42 +1,34 @@
-'use strict';
+import { request } from 'axios';
 
-const axios = require('axios');
+export function getMetadata(endpoint) {
+  const { url } = endpoint;
 
-exports.getMetadata = (endpoint) => {
-  const url = endpoint.url;
+  return request({
+    method: 'GET',
+    baseURL: url,
+    url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
+    headers: { Accept: '*/*' },
+  }).then((response) => response.data);
+}
 
-  return axios
-    .request({
-      method: 'GET',
-      baseURL: url,
-      url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
-      headers: { Accept: '*/*' },
-    })
-    .then((response) => response.data);
-};
+export function getDiscussions(endpoint) {
+  const { url } = endpoint;
 
-exports.getDiscussions = (endpoint) => {
-  const url = endpoint.url;
+  return request({
+    method: 'GET',
+    baseURL: url,
+    url: '/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json',
+    headers: { Accept: '*/*' },
+  }).then((response) => response.data);
+}
 
-  return axios
-    .request({
-      method: 'GET',
-      baseURL: url,
-      url: '/gitlab-org/gitlab-qa/-/merge_requests/1/discussions.json',
-      headers: { Accept: '*/*' },
-    })
-    .then((response) => response.data);
-};
+export function getDiffs(endpoint) {
+  const { url } = endpoint;
 
-exports.getDiffs = (endpoint) => {
-  const url = endpoint.url;
-
-  return axios
-    .request({
-      method: 'GET',
-      baseURL: url,
-      url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json?page=0',
-      headers: { Accept: '*/*' },
-    })
-    .then((response) => response.data);
-};
+  return request({
+    method: 'GET',
+    baseURL: url,
+    url: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_batch.json?page=0',
+    headers: { Accept: '*/*' },
+  }).then((response) => response.data);
+}

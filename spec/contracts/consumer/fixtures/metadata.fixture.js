@@ -1,6 +1,6 @@
-'use strict';
+/* eslint-disable @gitlab/require-i18n-strings */
 
-const { Matchers } = require('@pact-foundation/pact');
+import { Matchers } from '@pact-foundation/pact';
 
 const body = {
   real_size: Matchers.string('1'),
@@ -78,7 +78,7 @@ const Metadata = {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
     },
-    body: body,
+    body,
   },
 
   request: {
@@ -93,4 +93,5 @@ const Metadata = {
   },
 };
 
-exports.Metadata = Metadata;
+export { Metadata };
+/* eslint-enable @gitlab/require-i18n-strings */

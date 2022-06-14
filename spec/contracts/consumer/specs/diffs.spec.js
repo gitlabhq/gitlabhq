@@ -1,9 +1,9 @@
-'use strict';
+/* eslint-disable @gitlab/require-i18n-strings */
 
-const { pactWith } = require('jest-pact');
+import { pactWith } from 'jest-pact';
 
-const { Diffs } = require('../fixtures/diffs.fixture');
-const { getDiffs } = require('../endpoints/merge_requests');
+import { Diffs } from '../fixtures/diffs.fixture';
+import { getDiffs } from '../endpoints/merge_requests';
 
 pactWith(
   {
@@ -34,3 +34,4 @@ pactWith(
     });
   },
 );
+/* eslint-enable @gitlab/require-i18n-strings */

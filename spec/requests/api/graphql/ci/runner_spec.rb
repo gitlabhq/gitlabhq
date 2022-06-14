@@ -407,17 +407,32 @@ RSpec.describe 'Query.runner(id)' do
       <<~SINGLE
         runner(id: "#{runner.to_global_id}") {
           #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
+          groups {
+            nodes {
+              id
+            }
+          }
+          projects {
+            nodes {
+              id
+            }
+          }
         }
       SINGLE
     end
 
+    let(:active_project_runner2) { create(:ci_runner, :project) }
+    let(:active_group_runner2) { create(:ci_runner, :group) }
+
     # Currently excluding a known N+1 issue, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
-    let(:excluded_fields) { %w[jobCount] }
+    let(:excluded_fields) { %w[jobCount groups projects] }
 
     let(:single_query) do
       <<~QUERY
         {
-          active: #{runner_query(active_instance_runner)}
+          instance_runner1: #{runner_query(active_instance_runner)}
+          project_runner1: #{runner_query(active_project_runner)}
+          group_runner1: #{runner_query(active_group_runner)}
         }
       QUERY
     end
@@ -425,22 +440,49 @@ RSpec.describe 'Query.runner(id)' do
     let(:double_query) do
       <<~QUERY
         {
-          active: #{runner_query(active_instance_runner)}
-          inactive: #{runner_query(inactive_instance_runner)}
+          instance_runner1: #{runner_query(active_instance_runner)}
+          instance_runner2: #{runner_query(inactive_instance_runner)}
+          group_runner1: #{runner_query(active_group_runner)}
+          group_runner2: #{runner_query(active_group_runner2)}
+          project_runner1: #{runner_query(active_project_runner)}
+          project_runner2: #{runner_query(active_project_runner2)}
         }
       QUERY
     end
 
     it 'does not execute more queries per runner', :aggregate_failures do
       # warm-up license cache and so on:
-      post_graphql(single_query, current_user: user)
+      post_graphql(double_query, current_user: user)
 
       control = ActiveRecord::QueryRecorder.new { post_graphql(single_query, current_user: user) }
 
       expect { post_graphql(double_query, current_user: user) }
         .not_to exceed_query_limit(control)
-      expect(graphql_data_at(:active)).not_to be_nil
-      expect(graphql_data_at(:inactive)).not_to be_nil
+
+      expect(graphql_data.count).to eq 6
+      expect(graphql_data).to match(
+        a_hash_including(
+          'instance_runner1' => a_hash_including('id' => active_instance_runner.to_global_id.to_s),
+          'instance_runner2' => a_hash_including('id' => inactive_instance_runner.to_global_id.to_s),
+          'group_runner1' => a_hash_including(
+            'id' => active_group_runner.to_global_id.to_s,
+            'groups' => { 'nodes' => [a_hash_including('id' => group.to_global_id.to_s)] }
+          ),
+          'group_runner2' => a_hash_including(
+            'id' => active_group_runner2.to_global_id.to_s,
+            'groups' => { 'nodes' => [a_hash_including('id' => active_group_runner2.groups[0].to_global_id.to_s)] }
+          ),
+          'project_runner1' => a_hash_including(
+            'id' => active_project_runner.to_global_id.to_s,
+            'projects' => { 'nodes' => [a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)] }
+          ),
+          'project_runner2' => a_hash_including(
+            'id' => active_project_runner2.to_global_id.to_s,
+            'projects' => {
+              'nodes' => [a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)]
+            }
+          )
+        ))
     end
   end
 end

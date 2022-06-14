@@ -68,7 +68,7 @@ describe('IDE commit editor header', () => {
     it('calls discardFileChanges if dialog result is confirmed', () => {
       expect(store.dispatch).not.toHaveBeenCalled();
 
-      findDiscardModal().vm.$emit('ok');
+      findDiscardModal().vm.$emit('primary');
 
       expect(store.dispatch).toHaveBeenCalledWith('discardFileChanges', TEST_FILE_PATH);
     });

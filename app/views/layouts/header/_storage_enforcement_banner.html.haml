@@ -4,11 +4,11 @@
 - return unless banner_info.present?
 
 = render Pajamas::AlertComponent.new(variant: :warning,
-  alert_class: 'js-storage-enforcement-banner',
-  alert_data: { feature_id: banner_info[:callouts_feature_name],
-                dismiss_endpoint: banner_info[:callouts_path],
-                group_id: namespace.id,
-                defer_links: "true" }) do |c|
+  alert_options: { class: 'js-storage-enforcement-banner',
+                   data: { feature_id: banner_info[:callouts_feature_name],
+                           dismiss_endpoint: banner_info[:callouts_path],
+                           group_id: namespace.id,
+                           defer_links: "true" }}) do |c|
   = c.body do
     = banner_info[:text]
     = banner_info[:learn_more_link]

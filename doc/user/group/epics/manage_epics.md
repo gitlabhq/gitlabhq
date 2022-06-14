@@ -87,6 +87,26 @@ To edit an epic's start date, due date, or labels:
 1. Next to each section in the right sidebar, select **Edit**.
 1. Select the dates or labels for your epic.
 
+### Reorder list items in the epic description
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.1.
+
+When you view an epic that has a list in the description, you can also reorder the list items.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project, be the author of the epic, or be
+  assigned to the epic.
+- The epic's description must have an [ordered, unordered](../../markdown.md#lists), or
+  [task](../../markdown.md#task-lists) list.
+
+To reorder list items, when viewing an epic:
+
+1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
+1. Select and hold the drag icon.
+1. Drag the row to the new position in the list.
+1. Release the drag icon.
+
 ## Bulk edit epics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in GitLab 12.2.

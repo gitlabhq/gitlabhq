@@ -8,7 +8,7 @@
 - if @conflict
   = render Pajamas::AlertComponent.new(variant: :danger,
     dismissible: false,
-    alert_class: 'gl-mb-5') do |c|
+    alert_options: { class: 'gl-mb-5' }) do |c|
     = c.body do
       Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
       Please check out

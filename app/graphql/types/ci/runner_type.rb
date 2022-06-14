@@ -142,16 +142,22 @@ module Types
 
       # rubocop: disable CodeReuse/ActiveRecord
       def batched_owners(runner_assoc_type, assoc_type, key, column_name)
-        BatchLoader::GraphQL.for(runner.id).batch(key: key) do |runner_ids, loader, args|
-          runner_and_owner_ids = runner_assoc_type.where(runner_id: runner_ids).pluck(:runner_id, column_name)
+        BatchLoader::GraphQL.for(runner.id).batch(key: key) do |runner_ids, loader|
+          plucked_runner_and_owner_ids = runner_assoc_type
+            .select(:runner_id, column_name)
+            .where(runner_id: runner_ids)
+            .pluck(:runner_id, column_name)
+          # In plucked_runner_and_owner_ids, first() represents the runner ID, and second() the owner ID,
+          # so let's group the owner IDs by runner ID
+          runner_owner_ids_by_runner_id = plucked_runner_and_owner_ids
+            .group_by(&:first)
+            .transform_values { |runner_and_owner_id| runner_and_owner_id.map(&:second) }
 
-          owner_ids_by_runner_id = runner_and_owner_ids.group_by(&:first).transform_values { |v| v.pluck(1) }
-          owner_ids = runner_and_owner_ids.pluck(1).uniq
-
+          owner_ids = runner_owner_ids_by_runner_id.values.flatten.uniq
           owners = assoc_type.where(id: owner_ids).index_by(&:id)
 
           runner_ids.each do |runner_id|
-            loader.call(runner_id, owner_ids_by_runner_id[runner_id]&.map { |owner_id| owners[owner_id] } || [])
+            loader.call(runner_id, runner_owner_ids_by_runner_id[runner_id]&.map { |owner_id| owners[owner_id] } || [])
           end
         end
       end

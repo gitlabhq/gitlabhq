@@ -7,7 +7,7 @@
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
-    = render Pajamas::AlertComponent.new(alert_class: 'gl-mb-5',
+    = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5' },
       variant: :danger,
       dismissible: false) do |c|
       = c.body do

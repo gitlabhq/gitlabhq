@@ -310,7 +310,3 @@ export const TEMP_PROVIDER_URLS = {
   Kontra: 'https://application.security/',
   [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
 };
-
-export const LICENSE_ULTIMATE = 'ultimate';
-export const LICENSE_FREE = 'free';
-export const LICENSE_PREMIUM = 'premium';

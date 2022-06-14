@@ -2,10 +2,10 @@
 
 = render Pajamas::AlertComponent.new(title: _('Anyone can register for an account.'),
   variant: :warning,
-  alert_class: 'js-registration-enabled-callout',
-  alert_data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT,
-                dismiss_endpoint: callouts_path },
-  close_button_data: { testid: 'close-registration-enabled-callout' }) do |c|
+  alert_options: { class: 'js-registration-enabled-callout',
+                   data: { feature_id: Users::CalloutsHelper::REGISTRATION_ENABLED_CALLOUT,
+                           dismiss_endpoint: callouts_path }},
+  close_button_options: { data: { testid: 'close-registration-enabled-callout' }}) do |c|
   = c.body do
     = _('Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable.')
   = c.actions do

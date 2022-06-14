@@ -49,14 +49,14 @@ export default {
     },
     request() {
       const state = {
-        variant: 'default',
+        selected: false,
         icon: 'attention',
         direction: 'add',
       };
 
       if (this.user.attention_requested) {
         Object.assign(state, {
-          variant: 'warning',
+          selected: true,
           icon: 'attention-solid',
           direction: 'remove',
         });
@@ -92,7 +92,7 @@ export default {
     >
       <gl-button
         :loading="loading"
-        :variant="request.variant"
+        :selected="request.selected"
         :icon="request.icon"
         :aria-label="tooltipTitle"
         :class="{ 'gl-pointer-events-none': !user.can_update_merge_request }"

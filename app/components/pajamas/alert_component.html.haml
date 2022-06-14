@@ -1,11 +1,10 @@
-.gl-alert{ @alert_options, role: 'alert', class: [base_class, @alert_class], data: @alert_data }
+.gl-alert{ @alert_options, role: 'alert', class: base_class }
   - if @show_icon
     = sprite_icon(icon, css_class: icon_classes)
   - if @dismissible
-    %button.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-close{ type: 'button',
-      aria: { label: _('Dismiss') },
-      class: @close_button_class,
-      data: @close_button_data }
+    %button.btn.gl-dismiss-btn.btn-default.btn-sm.gl-button.btn-default-tertiary.btn-icon.js-close{ @close_button_options,
+      type: 'button',
+      aria: { label: _('Dismiss') } }
       = sprite_icon('close')
   .gl-alert-content{ role: 'alert' }
     - if @title

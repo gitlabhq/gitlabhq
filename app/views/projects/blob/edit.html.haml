@@ -4,7 +4,7 @@
   - webpack_preload_asset_tag('monaco')
 
 - if @conflict
-  = render Pajamas::AlertComponent.new(alert_class: 'gl-mb-5 gl-mt-5',
+  = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },
     variant: :danger,
     dismissible: false) do |c|
     - blob_url = project_blob_path(@project, @id)

@@ -51,7 +51,7 @@ developed and tested. We aim to be compatible with most external
    gitlab-ctl set-geo-primary-node
    ```
 
-   This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
+   This command uses your defined `external_url` in `/etc/gitlab/gitlab.rb`.
 
 ### Configure the external database to be replicated
 
@@ -64,7 +64,7 @@ To set up an external database, you can either:
 
 Given you have a primary node set up on AWS EC2 that uses RDS.
 You can now just create a read-only replica in a different region and the
-replication process will be managed by AWS. Make sure you've set Network ACL, Subnet, and
+replication process is managed by AWS. Make sure you've set Network ACL (Access Control List), Subnet, and
 Security Group according to your needs, so the secondary application node can access the database.
 
 The following instructions detail how to create a read-only replica for common

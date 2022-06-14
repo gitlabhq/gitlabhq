@@ -59,7 +59,7 @@ naming conventions:
   consume) events. It takes care of the communication between the
   primary site (where events are produced) and the secondary site
   (where events are consumed). The engineer who wants to incorporate
-  Geo in their feature will use the API of replicators to make this
+  Geo in their feature uses the API of replicators to make this
   happen.
 
 - **Geo Domain-Specific Language**:
@@ -99,7 +99,7 @@ end
 
 The class name should be unique. It also is tightly coupled to the
 table name for the registry, so for this example the registry table
-will be `package_file_registry`.
+is `package_file_registry`.
 
 For the different data types Geo supports there are different
 strategies to include. Pick one that fits your needs.

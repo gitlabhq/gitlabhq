@@ -41,18 +41,18 @@ describe('Attention require toggle', () => {
   );
 
   it.each`
-    attentionRequested | variant
-    ${true}            | ${'warning'}
-    ${false}           | ${'default'}
+    attentionRequested | selected
+    ${true}            | ${true}
+    ${false}           | ${false}
   `(
-    'renders button with variant $variant when attention_requested is $attentionRequested',
-    ({ attentionRequested, variant }) => {
+    'renders button with as selected when $selected when attention_requested is $attentionRequested',
+    ({ attentionRequested, selected }) => {
       factory({
         type: 'reviewer',
         user: { attention_requested: attentionRequested, can_update_merge_request: true },
       });
 
-      expect(findToggle().props('variant')).toBe(variant);
+      expect(findToggle().props('selected')).toBe(selected);
     },
   );
 

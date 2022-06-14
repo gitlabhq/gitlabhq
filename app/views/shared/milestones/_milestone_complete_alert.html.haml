@@ -2,7 +2,7 @@
 
 - if milestone.complete? && milestone.active?
   = render Pajamas::AlertComponent.new(variant: :success,
-    alert_data: { testid: 'all-issues-closed-alert' },
+    alert_options: { data: { testid: 'all-issues-closed-alert' }},
     dismissible: false) do |c|
     = c.body do
       = yield

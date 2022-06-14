@@ -1,6 +1,6 @@
-'use strict';
+/* eslint-disable @gitlab/require-i18n-strings */
 
-const { Matchers } = require('@pact-foundation/pact');
+import { Matchers } from '@pact-foundation/pact';
 
 const body = {
   diff_files: Matchers.eachLike({
@@ -48,9 +48,9 @@ const body = {
     context_lines_path: Matchers.string('/gitlab-qa-bot/...'),
     highlighted_diff_lines: Matchers.eachLike({
       // The following values can also be null which is not supported
-      //line_code: Matchers.string('de3150c01c3a946a6168173c4116741379fe3579_1_1'),
-      //old_line: Matchers.integer(1),
-      //new_line: Matchers.integer(1),
+      // line_code: Matchers.string('de3150c01c3a946a6168173c4116741379fe3579_1_1'),
+      // old_line: Matchers.integer(1),
+      // new_line: Matchers.integer(1),
       text: Matchers.string('source'),
       rich_text: Matchers.string('<span></span>'),
       can_receive_suggestion: Matchers.boolean(true),
@@ -70,7 +70,7 @@ const Diffs = {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
     },
-    body: body,
+    body,
   },
 
   request: {
@@ -86,4 +86,5 @@ const Diffs = {
   },
 };
 
-exports.Diffs = Diffs;
+export { Diffs };
+/* eslint-enable @gitlab/require-i18n-strings */

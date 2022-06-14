@@ -18,8 +18,8 @@ If you have any doubts about the consistency of the data on this site, we recomm
 
 ## Configure the former **primary** site to be a **secondary** site
 
-Since the former **primary** site will be out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
-repositories and uploads will not be replayed when bringing the former **primary** site back
+Since the former **primary** site is out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
+repositories and uploads is not replayed when bringing the former **primary** site back
 into sync, which may result in increased disk usage.
 Alternatively, you can [set up a new **secondary** GitLab instance](../setup/index.md) to avoid this.
 

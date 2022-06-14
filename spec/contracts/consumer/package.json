@@ -13,5 +13,14 @@
   },
   "scripts": {
     "test": "jest --runInBand"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "babel-jest": "^28.1.1"
   }
 }

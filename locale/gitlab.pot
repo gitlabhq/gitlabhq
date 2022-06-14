@@ -34527,9 +34527,6 @@ msgstr ""
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"
 msgstr ""
 
-msgid "SecurityReports|Unable to add %{invalidProjects}"
-msgstr ""
-
 msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
@@ -35921,9 +35918,6 @@ msgid "Something went wrong with your automatic subscription renewal."
 msgstr ""
 
 msgid "Something went wrong, unable to add %{project} to dashboard"
-msgstr ""
-
-msgid "Something went wrong, unable to add projects to dashboard"
 msgstr ""
 
 msgid "Something went wrong, unable to delete project"

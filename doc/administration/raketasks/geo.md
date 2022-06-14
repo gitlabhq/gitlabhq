@@ -33,7 +33,7 @@ sudo -u git -H bundle exec rake geo:git:housekeeping:incremental_repack RAILS_EN
 ### Full Repack
 
 This is equivalent of running `git repack -d -A --pack-kept-objects` on a
-_bare_ repository which will optionally, write a reachability bitmap index
+_bare_ repository which optionally, writes a reachability bitmap index
 when this is enabled in GitLab.
 
 **Omnibus Installation**

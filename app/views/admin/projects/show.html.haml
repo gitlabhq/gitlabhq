@@ -15,8 +15,8 @@
   .row
     .col-md-12
       = render Pajamas::AlertComponent.new(variant: :danger,
-        alert_class: 'gl-mb-5',
-        alert_data: { testid: 'last-repository-check-failed-alert' }) do |c|
+        alert_options: { class: 'gl-mb-5',
+                         data: { testid: 'last-repository-check-failed-alert' }}) do |c|
         = c.body do
           - last_check_message = _("Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages.")
           - last_check_message = last_check_message % { last_check_timestamp: time_ago_with_tooltip(@project.last_repository_check_at) }

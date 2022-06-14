@@ -398,7 +398,7 @@ where some queries never complete due to being canceled on every replication.
 These long-running queries are
 [planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
 but as a workaround, we recommend enabling
-[hot_standby_feedback](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
+[`hot_standby_feedback`](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
 This increases the likelihood of bloat on the **primary** node as it prevents
 `VACUUM` from removing recently-dead rows. However, it has been used
 successfully in production on GitLab.com.
@@ -767,7 +767,7 @@ The appropriate action sometimes depends on the cause. For example, you can remo
 
 In some cases, a file may be determined to be of low value, and so it may be worth deleting the record.
 
-Geo itself is an excellent mitigation for files missing on the primary. If a file disappears on the primary but it was already synced to the secondary, you can grab the secondary's file. In cases like this, the `File is not checksummable` error message will not occur on Geo secondary sites, and only the primary will log this error message.
+Geo itself is an excellent mitigation for files missing on the primary. If a file disappears on the primary but it was already synced to the secondary, you can grab the secondary's file. In cases like this, the `File is not checksummable` error message does not occur on Geo secondary sites, and only the primary logs this error message.
 
 This problem is more likely to show up in Geo secondary sites which were set up long after the original GitLab site. In this case, Geo is only surfacing an existing problem.
 
@@ -1104,9 +1104,9 @@ If using a load balancer, ensure that the load balancer's URL is set as the `ext
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-In GitLab 13.9 through GitLab 14.3, when [GitLab Maintenance Mode](../../maintenance_mode/index.md) is enabled, the status of Geo secondary sites will stop getting updated. After 10 minutes, the status changes to `Unhealthy`.
+In GitLab 13.9 through GitLab 14.3, when [GitLab Maintenance Mode](../../maintenance_mode/index.md) is enabled, the status of Geo secondary sites stops getting updated. After 10 minutes, the status changes to `Unhealthy`.
 
-Geo secondary sites will continue to replicate and verify data, and the secondary sites should still be usable. You can use the [Sync status Rake task](#sync-status-rake-task) to determine the actual status of a secondary site during Maintenance Mode.
+Geo secondary sites continue to replicate and verify data, and the secondary sites should still be usable. You can use the [Sync status Rake task](#sync-status-rake-task) to determine the actual status of a secondary site during Maintenance Mode.
 
 This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/292983).
 

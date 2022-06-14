@@ -32,7 +32,7 @@ export default {
 
   computed: {
     arrowIconName() {
-      return this.isCollapsed ? 'angle-right' : 'angle-down';
+      return this.isCollapsed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
     ariaLabel() {
       return this.isCollapsed ? __('Expand') : __('Collapse');

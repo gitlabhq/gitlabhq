@@ -174,9 +174,7 @@ export default {
 
         this.removeAllPointerEventListeners();
 
-        if (this.issuableType === IssuableType.Issue) {
-          this.renderSortableLists();
-        }
+        this.renderSortableLists();
 
         if (this.workItemsEnabled) {
           this.renderTaskActions();
@@ -184,7 +182,10 @@ export default {
       }
     },
     renderSortableLists() {
-      const lists = document.querySelectorAll('.description ul, .description ol');
+      // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
+      const lists = document.querySelectorAll(
+        '.description .md > ul:not(.section-nav), .description .md > ul:not(.section-nav) ul, .description ol',
+      );
       lists.forEach((list) => {
         if (list.children.length <= 1) {
           return;

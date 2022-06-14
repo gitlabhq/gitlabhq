@@ -7,22 +7,17 @@ module Pajamas
     # @param [Symbol] variant
     # @param [Boolean] dismissible
     # @param [Boolean] show_icon
-    # @param [String] alert_class
-    # @param [Hash] alert_data
-    # @param [String] close_button_class
-    # @param [Hash] close_button_data
+    # @param [Hash] alert_options
+    # @param [Hash] close_button_options
     def initialize(
       title: nil, variant: :info, dismissible: true, show_icon: true,
-      alert_class: nil, alert_data: {}, alert_options: {}, close_button_class: nil, close_button_data: {})
+      alert_options: {}, close_button_options: {})
       @title = title
       @variant = variant
       @dismissible = dismissible
       @show_icon = show_icon
-      @alert_class = alert_class
-      @alert_data = alert_data
       @alert_options = alert_options
-      @close_button_class = close_button_class
-      @close_button_data = close_button_data
+      @close_button_options = close_button_options
     end
 
     def base_class

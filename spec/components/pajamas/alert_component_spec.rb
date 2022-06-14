@@ -50,10 +50,12 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       before do
         render_inline described_class.new(
           title: '_title_',
-          alert_class: '_alert_class_',
-          alert_data: {
-            feature_id: '_feature_id_',
-            dismiss_endpoint: '_dismiss_endpoint_'
+          alert_options: {
+            class: '_alert_class_',
+            data: {
+              feature_id: '_feature_id_',
+              dismiss_endpoint: '_dismiss_endpoint_'
+            }
           }
         )
       end
@@ -106,9 +108,11 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     context 'with dismissible content' do
       before do
         render_inline described_class.new(
-          close_button_class: '_close_button_class_',
-          close_button_data: {
-            testid: '_close_button_testid_'
+          close_button_options: {
+            class: '_close_button_class_',
+            data: {
+              testid: '_close_button_testid_'
+            }
           }
         )
       end
@@ -135,36 +139,6 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
         it 'renders the variant' do
           expect(rendered_component).to have_selector(".gl-alert-#{variant}")
           expect(rendered_component).to have_selector("[data-testid='#{described_class::ICONS[variant]}-icon']")
-        end
-      end
-    end
-
-    context 'with alert_options' do
-      let(:options) { { alert_options: { id: 'test_id', class: 'baz', data: { foo: 'bar' } } } }
-
-      before do
-        render_inline described_class.new(**options)
-      end
-
-      it 'renders the extra options' do
-        expect(rendered_component).to have_css "#test_id.gl-alert.baz[data-foo='bar']"
-      end
-
-      context 'with custom classes or data' do
-        let(:options) do
-          {
-            variant: :danger,
-            alert_class: 'custom',
-            alert_data: { foo: 'bar' },
-            alert_options: {
-              class: 'extra special',
-              data: { foo: 'conflict' }
-            }
-          }
-        end
-
-        it 'doesn\'t conflict with internal alert_class or alert_data' do
-          expect(rendered_component).to have_css ".extra.special.custom.gl-alert.gl-alert-danger[data-foo='bar']"
         end
       end
     end

@@ -18,6 +18,20 @@ export default {
       required: true,
     },
   },
+  modal: {
+    actionPrimary: {
+      text: __('Discard changes'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   computed: {
     discardModalId() {
       return `discard-file-${this.activeFile.path}`;
@@ -66,12 +80,11 @@ export default {
     </div>
     <gl-modal
       ref="discardModal"
-      ok-variant="danger"
-      cancel-variant="light"
-      :ok-title="__('Discard changes')"
       :modal-id="discardModalId"
       :title="discardModalTitle"
-      @ok="discardChanges(activeFile.path)"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="discardChanges(activeFile.path)"
     >
       {{ __("You will lose all changes you've made to this file. This action cannot be undone.") }}
     </gl-modal>

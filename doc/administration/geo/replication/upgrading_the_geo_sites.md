@@ -22,7 +22,7 @@ Upgrading Geo sites involves performing:
 
 NOTE:
 These general upgrade steps are not intended for multi-site deployments,
-and will cause downtime. If you want to avoid downtime, consider using
+and cause downtime. If you want to avoid downtime, consider using
 [zero downtime upgrades](../../../update/zero_downtime.md#multi-node--ha-deployment-with-geo).
 
 To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**

@@ -143,7 +143,7 @@ If the **primary** site uses custom or self-signed TLS certificates to secure in
 
 ### Ensure Geo replication is up-to-date
 
-The maintenance window won't end until Geo replication and verification is
+The maintenance window does not end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
@@ -201,7 +201,7 @@ be disabled on the **primary** site:
 ## Finish replicating and verifying all data
 
 NOTE:
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses will appear to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses appears to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.

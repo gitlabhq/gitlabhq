@@ -44,7 +44,7 @@ Once GitLab has been uninstalled from each node on the **secondary** site, the r
    ```
 
    NOTE:
-   Using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
+   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
 
 1. Find the name of the relevant replication slot. This is the slot that is specified with `--slot-name` when running the replicate command: `gitlab-ctl replicate-geo-database`.
 

@@ -37,7 +37,7 @@
           data: { placeholder: _('Select branch'), endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
 
 - if source_level < target_level
-  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_class: 'gl-mb-4') do |c|
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
     = c.body do
       = visibilityMismatchString
       %br

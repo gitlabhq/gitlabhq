@@ -11,9 +11,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 After you set up the [database replication and configure the Geo nodes](../index.md#setup-instructions), use your closest GitLab site as you would do with the primary one.
 
 You can push directly to a **secondary** site (for both HTTP, SSH including
-Git LFS), and the request will be proxied to the primary site instead.
+Git LFS), and the request is proxied to the primary site instead.
 
-Example of the output you will see when pushing to a **secondary** site:
+Example of the output you see when pushing to a **secondary** site:
 
 ```shell
 $ git push
@@ -31,7 +31,7 @@ If you're using HTTPS instead of [SSH](../../../user/ssh.md) to push to the seco
 you can't store credentials in the URL like `user:password@URL`. Instead, you can use a
 [`.netrc` file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html)
 for Unix-like operating systems or `_netrc` for Windows. In that case, the credentials
-will be stored as a plain text. If you're looking for a more secure way to store credentials,
+are stored as a plain text. If you're looking for a more secure way to store credentials,
 you can use [Git Credential Storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 
 ## Fetch Go modules from Geo secondary sites

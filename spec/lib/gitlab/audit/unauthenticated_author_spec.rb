@@ -13,5 +13,11 @@ RSpec.describe Gitlab::Audit::UnauthenticatedAuthor do
       expect(described_class.new)
         .to have_attributes(id: -1, name: 'An unauthenticated user')
     end
+
+    describe '#impersonated?' do
+      it 'returns false' do
+        expect(described_class.new.impersonated?).to be(false)
+      end
+    end
   end
 end

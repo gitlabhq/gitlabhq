@@ -1,7 +1,7 @@
 - if show_no_ssh_key_message?
   = render Pajamas::AlertComponent.new(variant: :warning,
-    alert_class: 'js-no-ssh-message',
-    close_button_class: 'js-hide-no-ssh-message') do |c|
+    alert_options: { class: 'js-no-ssh-message' },
+    close_button_options: { class: 'js-hide-no-ssh-message'}) do |c|
     = c.body do
       = s_("MissingSSHKeyWarningLink|You can't push or pull repositories using SSH until you add an SSH key to your profile.")
     = c.actions do

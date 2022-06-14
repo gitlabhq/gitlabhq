@@ -29,6 +29,7 @@ module API
             params do
               use :pagination
             end
+            route_setting :authentication, job_token_allowed: true
             get 'links' do
               authorize! :read_release, release
 
@@ -45,6 +46,7 @@ module API
               optional :filepath, type: String, desc: 'The filepath of the link'
               optional :link_type, type: String, desc: 'The link type, one of: "runbook", "image", "package" or "other"'
             end
+            route_setting :authentication, job_token_allowed: true
             post 'links' do
               authorize! :create_release, release
 
@@ -65,6 +67,7 @@ module API
                 detail 'This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
               end
+              route_setting :authentication, job_token_allowed: true
               get do
                 authorize! :read_release, release
 
@@ -82,6 +85,7 @@ module API
                 optional :link_type, type: String, desc: 'The link type'
                 at_least_one_of :name, :url
               end
+              route_setting :authentication, job_token_allowed: true
               put do
                 authorize! :update_release, release
 
@@ -96,6 +100,7 @@ module API
                 detail 'This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
               end
+              route_setting :authentication, job_token_allowed: true
               delete do
                 authorize! :destroy_release, release
 

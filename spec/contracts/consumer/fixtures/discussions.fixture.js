@@ -1,6 +1,6 @@
-'use strict';
+/* eslint-disable @gitlab/require-i18n-strings */
 
-const { Matchers } = require('@pact-foundation/pact');
+import { Matchers } from '@pact-foundation/pact';
 
 const body = Matchers.eachLike({
   id: Matchers.string('fd73763cbcbf7b29eb8765d969a38f7d735e222a'),
@@ -67,7 +67,7 @@ const Discussions = {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
     },
-    body: body,
+    body,
   },
 
   request: {
@@ -82,4 +82,5 @@ const Discussions = {
   },
 };
 
-exports.Discussions = Discussions;
+export { Discussions };
+/* eslint-enable @gitlab/require-i18n-strings */

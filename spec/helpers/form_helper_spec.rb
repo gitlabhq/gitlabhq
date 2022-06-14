@@ -18,7 +18,7 @@ RSpec.describe FormHelper do
 
       expect(helper.form_errors(model, pajamas_alert: true))
         .to include(
-          '<div class="gl-alert gl-alert-danger gl-alert-not-dismissible gl-mb-5" id="error_explanation" role="alert">'
+          '<div class="gl-alert gl-mb-5 gl-alert-danger gl-alert-not-dismissible" id="error_explanation" role="alert">'
         )
     end
 

@@ -38,6 +38,20 @@ export default {
       default: __('No changes'),
     },
   },
+  modal: {
+    actionPrimary: {
+      text: __('Discard all changes'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   computed: {
     titleText() {
       if (!this.title) return __('Changes');
@@ -106,11 +120,11 @@ export default {
     <gl-modal
       v-if="!stagedList"
       ref="discardAllModal"
-      ok-variant="danger"
       modal-id="discard-all-changes"
-      :ok-title="__('Discard all changes')"
       :title="__('Discard all changes?')"
-      @ok="unstageAndDiscardAllChanges"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="unstageAndDiscardAllChanges"
     >
       {{ $options.discardModalText }}
     </gl-modal>

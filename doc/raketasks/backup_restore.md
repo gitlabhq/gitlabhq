@@ -1015,9 +1015,9 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup`: Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes`: Doesn't ask if the authorized_keys file should get regenerated,
+- `force=yes`: Doesn't ask if the `authorized_keys` file should get regenerated,
   and assumes 'yes' for warning about database tables being removed,
-  enabling the "Write to authorized_keys file" setting, and updating LDAP
+  enabling the `Write to authorized_keys file` setting, and updating LDAP
   providers.
 
 If you're restoring into directories that are mount points, you must ensure these directories are
@@ -1407,7 +1407,7 @@ There is an **experimental** script that attempts to automate this process in
 
 ## Back up and restore for installations using PgBouncer
 
-Do NOT back up or restore GitLab through a PgBouncer connection. These
+Do not back up or restore GitLab through a PgBouncer connection. These
 tasks must [bypass PgBouncer and connect directly to the PostgreSQL primary database node](#bypassing-pgbouncer),
 or they cause a GitLab outage.
 
@@ -1418,7 +1418,7 @@ following error message is shown:
 ActiveRecord::StatementInvalid: PG::UndefinedTable
 ```
 
-Each time the GitLab backup runs, GitLab will start generating 500 errors and errors about missing
+Each time the GitLab backup runs, GitLab starts generating 500 errors and errors about missing
 tables will [be logged by PostgreSQL](../administration/logs.md#postgresql-logs):
 
 ```plaintext
@@ -1480,7 +1480,7 @@ WARNING:
 Avoid uncoordinated data processing by both the new and old servers, where multiple
 servers could connect concurrently and process the same data. For example, when using
 [incoming email](../administration/incoming_email.md), if both GitLab instances are
-processing email at the same time, then both instances will end up missing some data.
+processing email at the same time, then both instances miss some data.
 This type of problem can occur with other services as well, such as a
 [non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
 a non-packaged Redis instance, or non-packaged Sidekiq.

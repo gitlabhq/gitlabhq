@@ -1,0 +1,7 @@
+---
+extends:
+  - 'plugin:@gitlab/jest'
+settings:
+  import/core-modules:
+    - '@pact-foundation/pact'
+    - jest-pact
