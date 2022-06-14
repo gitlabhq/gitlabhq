@@ -27,13 +27,13 @@ GET /search
 | `order_by`    | string   | no         | Allowed values are `created_at` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
 | `sort`    | string   | no         | Allowed values are `asc` or `desc` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
 
-Search the expression in the specified scope. These scopes are supported: projects, issues, merge_requests, milestones, snippet_titles, users.
+Search the expression in the specified scope. These scopes are supported: `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, `users`.
 
-If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
+If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
 
 The response depends on the requested scope.
 
-### Scope: projects
+### Scope: `projects`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=projects&search=flight"
@@ -65,7 +65,7 @@ Example response:
 ]
 ```
 
-### Scope: issues
+### Scope: `issues`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=issues&search=file"
@@ -131,7 +131,7 @@ Example response:
 NOTE:
 `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-### Scope: merge_requests
+### Scope: `merge_requests`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=merge_requests&search=file"
@@ -210,7 +210,7 @@ Example response:
 ]
 ```
 
-### Scope: milestones
+### Scope: `milestones`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=milestones&search=release"
@@ -235,7 +235,7 @@ Example response:
 ]
 ```
 
-### Scope: snippet_titles
+### Scope: `snippet_titles`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=snippet_titles&search=sample"
@@ -266,7 +266,7 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs **(PREMIUM)**
+### Scope: `wiki_blobs` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -450,13 +450,13 @@ GET /groups/:id/search
 | `order_by`    | string   | no         | Allowed values are `created_at` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
 | `sort`    | string   | no         | Allowed values are `asc` or `desc` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
 
-Search the expression in the specified scope. These scopes are supported: projects, issues, merge_requests, milestones, users.
+Search the expression in the specified scope. These scopes are supported: `projects`, `issues`, `merge_requests`, `milestones`, `users`.
 
-If Elasticsearch is enabled additional scopes available are blobs, wiki_blobs, notes, and commits. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
+If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
 
 The response depends on the requested scope.
 
-### Scope: projects
+### Scope: `projects`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=projects&search=flight"
@@ -488,7 +488,7 @@ Example response:
 ]
 ```
 
-### Scope: issues
+### Scope: `issues`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=issues&search=file"
@@ -554,7 +554,7 @@ Example response:
 NOTE:
 `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-### Scope: merge_requests
+### Scope: `merge_requests`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=merge_requests&search=file"
@@ -633,7 +633,7 @@ Example response:
 ]
 ```
 
-### Scope: milestones
+### Scope: `milestones`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=milestones&search=release"
@@ -658,7 +658,7 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs **(PREMIUM)**
+### Scope: `wiki_blobs` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -689,7 +689,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(PREMIUM)**
+### Scope: `commits` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -724,7 +724,7 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(PREMIUM)**
+### Scope: `blobs` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -765,7 +765,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: notes **(PREMIUM)**
+### Scope: `notes` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -801,7 +801,7 @@ Example response:
 ]
 ```
 
-### Scope: users
+### Scope: `users`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/search?scope=users&search=doe"
@@ -837,17 +837,17 @@ GET /projects/:id/search
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `scope`       | string   | yes        | The scope to search in                |
 | `search`      | string   | yes        | The search query  |
-| `ref`         | string   | no         | The name of a repository branch or tag to search on. The project's default branch is used by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.  |
+| `ref`         | string   | no         | The name of a repository branch or tag to search on. The project's default branch is used by default. This is only applicable for scopes: `commits`, `blobs`, and `wiki_blobs`.  |
 | `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
 | `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
 | `order_by`    | string   | no         | Allowed values are `created_at` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
 | `sort`    | string   | no         | Allowed values are `asc` or `desc` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
 
-Search the expression in the specified scope. These scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users.
+Search the expression in the specified scope. These scopes are supported: `issues`, `merge_requests`, `milestones`, `notes`, `wiki_blobs`, `commits`, `blobs`, `users`.
 
 The response depends on the requested scope.
 
-### Scope: issues
+### Scope: `issues`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/12/search?scope=issues&search=file"
@@ -913,7 +913,7 @@ Example response:
 NOTE:
 `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-### Scope: merge_requests
+### Scope: `merge_requests`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=merge_requests&search=file"
@@ -992,7 +992,7 @@ Example response:
 ]
 ```
 
-### Scope: milestones
+### Scope: `milestones`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/12/search?scope=milestones&search=release"
@@ -1017,7 +1017,7 @@ Example response:
 ]
 ```
 
-### Scope: notes **(PREMIUM)**
+### Scope: `notes` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1053,7 +1053,7 @@ Example response:
 ]
 ```
 
-### Scope: wiki_blobs **(PREMIUM)**
+### Scope: `wiki_blobs` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1101,7 +1101,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` are intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(PREMIUM)**
+### Scope: `commits` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1136,7 +1136,7 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(PREMIUM)**
+### Scope: `blobs` **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1183,7 +1183,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: users
+### Scope: `users`
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=users&search=doe"

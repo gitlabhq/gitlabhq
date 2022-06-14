@@ -33,49 +33,69 @@ on the instance. To alter which roles have permission to create projects:
    - Developers and Maintainers.
 1. Select **Save changes**.
 
-## Restrict project deletion to Administrators **(PREMIUM SELF)**
+## Restrict project deletion to administrators **(PREMIUM SELF)**
 
-Anyone with the **Owner** role, either at the project or group level, can
-delete a project. To allow only users with administrator access to delete projects:
+> User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
-1. Sign in to GitLab as a user with Administrator access level.
+By default both administrators and anyone with the **Owner** role can delete a project. To restrict project deletion to only administrators:
+
+1. Sign in to GitLab as a user with administrator access.
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. Scroll to **Default project deletion protection**, and select **Only admins can delete project**.
+1. Scroll to:
+   - (GitLab 15.1 and later) **Allowed to delete projects**, and select **Administrators**.
+   - (GitLab 15.0 and earlier) **Default project deletion projection** and select **Only admins can delete project**.
 1. Select **Save changes**.
 
-## Default delayed project deletion **(PREMIUM SELF)**
+## Deletion protection **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2 for groups created after August 12, 2021.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2 for groups created after August 12, 2021.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
 
-[Delayed project deletion](../../project/settings/index.md#delayed-project-deletion) allows projects in a group (not a personal namespace)
-to be deleted after a period of delay.
+Instance-level protection against accidental deletion of groups and projects.
 
-To enable delayed project deletion by default in new groups:
+### Retention period
 
-1. Check the **Default delayed project deletion** checkbox.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+
+Groups and projects will remain restorable within a defined retention period. By default this is 7 days but it can be changed.
+Setting the retention period to `0` means that groups and project are removed immediately and cannot be restored.
+
+In GitLab 15.1 and later, the retention period must be between `1` and `90`. If the retention period was `0` before the 15.1 update,
+then it will get automatically changed to `1` while also disabling deletion protection the next time any application setting is changed.
+
+### Delayed project deletion
+
+> User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+
+Administrators can enable [delayed project deletion](../../project/settings/index.md#delayed-project-deletion) by default for
+newly-created groups. Group owners can choose to disable this and existing groups will retain their existing setting. When enabled
+deleted groups will remain restorable within a retention period.
+
+To configure delayed project deletion:
+
+1. Sign in to GitLab as a user with administrator access.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Visibility and access controls** section.
+1. Scroll to:
+   - (GitLab 15.1 and later) **Deletion projection** and select keep deleted groups and projects, and select a retention period.
+   - (GitLab 15.0 and earlier) **Default delayed project projection** and select **Enable delayed project deletion by
+     default for newly-created groups.** Then set a retention period in **Default deletion delay**.
 1. Select **Save changes**.
 
-## Default deletion delay **(PREMIUM SELF)**
+Deletion protection is not available for projects only (without being also being enabled for groups).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
+In GitLab 15.1, and later this setting is enforced on groups when disabled and it cannot be overridden.
 
-By default, a project marked for deletion is permanently removed with immediate effect.
-See [delayed project deletion](../../project/settings/index.md#delayed-project-deletion) to learn more.
-By default, a group marked for deletion is permanently removed after seven days.
+### Delayed group deletion
 
-WARNING:
-The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
-[Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
-The default period is seven days, and can be changed. Setting this period to `0` enables immediate removal
-of projects or groups.
+Groups will remain restorable if the retention period is `1` or more days.
 
-To change this period:
-
-1. Select the desired option.
-1. Select **Save changes**.
+In GitLab 15.1 and later, delayed group deletion can be enabled by setting **Deletion projection** to **Keep deleted**.
 
 ### Override defaults and delete immediately
 

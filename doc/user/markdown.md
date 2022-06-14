@@ -790,11 +790,15 @@ do_this_and_do_that_and_another_thing
 but_emphasis is_desired _here_
 ```
 
+<!-- vale gitlab.Spelling = NO -->
+
 perform_complicated_task
 
 do_this_and_do_that_and_another_thing
 
 but_emphasis is_desired _here_
+
+<!-- vale gitlab.Spelling = YES -->
 
 ---
 

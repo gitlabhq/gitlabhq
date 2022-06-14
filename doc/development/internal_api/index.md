@@ -254,7 +254,7 @@ recovery codes based on their SSH key.
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
 | `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
-| `user_id` | integer | no | **Deprecated** User_id for which to generate new recovery codes |
+| `user_id` | integer | no | **Deprecated** User ID for which to generate new recovery codes |
 
 ```plaintext
 GET /internal/two_factor_recovery_codes
@@ -333,7 +333,7 @@ Example response:
 
 ## Authenticate Error Tracking requests
 
-This endpoint will be called by the error tracking GO REST API application to authenticate a project.
+This endpoint is called by the error tracking Go REST API application to authenticate a project.
 
 | Attribute    | Type    | Required | Description                                                        |
 |:-------------|:--------|:---------|:-------------------------------------------------------------------|

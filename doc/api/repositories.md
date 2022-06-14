@@ -17,7 +17,7 @@ This command provides essentially the same functionality as the `git ls-tree` co
 WARNING:
 This endpoint is changing to keyset-based pagination. Iterating pages of results
 with a number (`?page=2`) [is deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67509).
-Support for iterating with a number will become unsupported in GitLab 15.0. Use
+Support for iterating with a number became supported in GitLab 15.0. Use
 the new [keyset pagination system](index.md#keyset-based-pagination) instead.
 
 ```plaintext

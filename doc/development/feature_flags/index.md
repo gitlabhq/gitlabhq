@@ -141,7 +141,7 @@ push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
 
 An `experiment` feature flag should conform to the same standards as a `development` feature flag,
 although the interface has some differences. An experiment feature flag should have a rollout issue,
-created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/experiment_tracking_template.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
+created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
 ## Feature flag definition and validation
 

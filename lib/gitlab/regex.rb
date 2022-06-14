@@ -5,7 +5,7 @@ module Gitlab
     module Packages
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
-
+      PYPI_NORMALIZED_NAME_REGEX_STRING = '[-_.]+'
       API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
 
       def conan_package_reference_regex

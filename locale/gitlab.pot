@@ -2622,6 +2622,9 @@ msgstr ""
 msgid "AdminSettings|Delete project after"
 msgstr ""
 
+msgid "AdminSettings|Deletion protection"
+msgstr ""
+
 msgid "AdminSettings|Disable Elasticsearch until indexing completes."
 msgstr ""
 
@@ -2691,6 +2694,9 @@ msgstr ""
 msgid "AdminSettings|Inactive project deletion"
 msgstr ""
 
+msgid "AdminSettings|Keep deleted"
+msgstr ""
+
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -2736,6 +2742,9 @@ msgstr ""
 msgid "AdminSettings|No required pipeline"
 msgstr ""
 
+msgid "AdminSettings|None, delete immediately"
+msgstr ""
+
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
@@ -2764,6 +2773,9 @@ msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr ""
 
 msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Retention period that deleted groups and projects will remain restorable. Personal projects are always deleted immediately. Some groups can opt-out their projects."
 msgstr ""
 
 msgid "AdminSettings|Save %{name} limits"
@@ -3247,6 +3259,9 @@ msgid "AdminUsers|user cap"
 msgstr ""
 
 msgid "Administration"
+msgstr ""
+
+msgid "Administrators"
 msgstr ""
 
 msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
@@ -3817,6 +3832,9 @@ msgid "Allowed email domain restriction only permitted for top-level groups"
 msgstr ""
 
 msgid "Allowed to create:"
+msgstr ""
+
+msgid "Allowed to delete projects"
 msgstr ""
 
 msgid "Allowed to fail"
@@ -11906,12 +11924,6 @@ msgstr ""
 msgid "Default branch and protected branches"
 msgstr ""
 
-msgid "Default delayed project deletion"
-msgstr ""
-
-msgid "Default deletion delay"
-msgstr ""
-
 msgid "Default description template for issues"
 msgstr ""
 
@@ -11922,9 +11934,6 @@ msgid "Default first day of the week"
 msgstr ""
 
 msgid "Default first day of the week in calendars and date pickers."
-msgstr ""
-
-msgid "Default project deletion protection"
 msgstr ""
 
 msgid "Default projects limit"
@@ -13412,9 +13421,6 @@ msgstr ""
 msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
 msgstr ""
 
-msgid "Does not apply to projects in personal namespaces, which are deleted immediately on request."
-msgstr ""
-
 msgid "Does not delete the source branch."
 msgstr ""
 
@@ -14040,9 +14046,6 @@ msgid "Enable container expiration and retention policies for projects created e
 msgstr ""
 
 msgid "Enable container expiration caching."
-msgstr ""
-
-msgid "Enable delayed project deletion by default for newly-created groups."
 msgstr ""
 
 msgid "Enable email notification"
@@ -16800,9 +16803,6 @@ msgstr ""
 msgid "Geo|Primary site"
 msgstr ""
 
-msgid "Geo|Project"
-msgstr ""
-
 msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is safe to remove this entry, as this will not remove any data on disk."
 msgstr ""
 
@@ -16948,9 +16948,6 @@ msgid "Geo|Storage config"
 msgstr ""
 
 msgid "Geo|Synced"
-msgstr ""
-
-msgid "Geo|Synced at"
 msgstr ""
 
 msgid "Geo|Synchronization"
@@ -26667,9 +26664,6 @@ msgstr ""
 msgid "Only active projects show up in the search and on the dashboard."
 msgstr ""
 
-msgid "Only admins can delete project"
-msgstr ""
-
 msgid "Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable."
 msgstr ""
 
@@ -26908,6 +26902,9 @@ msgid "Owned by:"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Owners and administrators"
 msgstr ""
 
 msgid "Owners can modify this selection."
@@ -38226,9 +38223,6 @@ msgstr ""
 msgid "The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job"
 msgstr ""
 
-msgid "The number of days that must pass between marking an entity for deletion and actually removing it. The delay can be between 0 and 90 days."
-msgstr ""
-
 msgid "The number of merge requests merged by month."
 msgstr ""
 
@@ -44506,6 +44500,9 @@ msgstr ""
 msgid "can only have one escalation policy"
 msgstr ""
 
+msgid "can't be enabled when delayed group deletion is disabled"
+msgstr ""
+
 msgid "can't be nil"
 msgstr ""
 
@@ -45103,6 +45100,9 @@ msgstr ""
 msgid "following"
 msgstr ""
 
+msgid "for"
+msgstr ""
+
 msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"
 msgstr ""
 
@@ -45148,6 +45148,12 @@ msgid "group's CI/CD settings."
 msgstr ""
 
 msgid "groups"
+msgstr ""
+
+msgid "groups and projects"
+msgstr ""
+
+msgid "groups only"
 msgstr ""
 
 msgid "has already been linked to another vulnerability"

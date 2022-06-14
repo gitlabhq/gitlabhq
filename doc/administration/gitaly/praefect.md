@@ -61,6 +61,7 @@ allow the following for Gitaly Cluster to function properly:
 | GitLab                 | Praefect load balancer | `2305`       | `3305`   |
 | Praefect load balancer | Praefect               | `2305`       | `3305`   |
 | Praefect               | Gitaly                 | `8075`       | `9999`   |
+| Praefect               | GitLab (internal API)  | `80`         | `443`    |
 | Gitaly                 | GitLab (internal API)  | `80`         | `443`    |
 | Gitaly                 | Praefect load balancer | `2305`       | `3305`   |
 | Gitaly                 | Praefect               | `2305`       | `3305`   |

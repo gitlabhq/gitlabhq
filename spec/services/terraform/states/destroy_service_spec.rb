@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Terraform::States::DestroyService do
   let_it_be(:state) { create(:terraform_state, :with_version, :deletion_in_progress) }
-  let_it_be(:file) { double }
+
+  let(:file) { instance_double(Terraform::StateUploader, relative_path: 'path') }
 
   before do
     allow_next_found_instance_of(Terraform::StateVersion) do |version|

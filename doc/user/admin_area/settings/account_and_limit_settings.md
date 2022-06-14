@@ -192,7 +192,7 @@ To set a limit on how long these sessions are valid:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346753) in GitLab 14.6.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.7. [Feature flag ff_limit_ssh_key_lifetime](https://gitlab.com/gitlab-org/gitlab/-/issues/347408) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.7. [Feature flag `ff_limit_ssh_key_lifetime`](https://gitlab.com/gitlab-org/gitlab/-/issues/347408) removed.
 
 Users can optionally specify a lifetime for
 [SSH keys](../../ssh.md).

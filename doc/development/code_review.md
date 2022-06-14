@@ -15,34 +15,32 @@ code is effective, understandable, maintainable, and secure.
 
 ## Getting your merge request reviewed, approved, and merged
 
-You are strongly encouraged to get your code **reviewed** by a
-[reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) as soon as
-there is any code to review, to get a second opinion on the chosen solution and
-implementation, and an extra pair of eyes looking for bugs, logic problems, or
-uncovered edge cases.
+Before you begin:
 
-The default approach is to choose a reviewer from your group or team for the first review.
-This is only a recommendation and the reviewer may be from a different team.
-However, it is recommended to pick someone who is a [domain expert](#domain-experts).
-If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
+- Familiarize yourself with the [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).
+- If you need some guidance (for example, if it's your first merge request), feel free to ask
+  one of the [Merge request coaches](https://about.gitlab.com/company/team/?department=merge-request-coach).
 
-You can read more about the importance of involving reviewers in the section on the responsibility of the author below.
+As soon as you have code to review, have the code **reviewed** by a [reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer).
+This reviewer can be from your group or team, or a [domain expert](#domain-experts).
+The reviewer can:
 
-If you need some guidance (for example, it's your first merge request), feel free to ask
-one of the [Merge request coaches](https://about.gitlab.com/company/team/).
+- Give you a second opinion on the chosen solution and implementation.
+- Help look for bugs, logic problems, or uncovered edge cases.
 
-If you need assistance with security scans or comments, feel free to include the
-Application Security Team (`@gitlab-com/gl-security/appsec`) in the review.
+For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
+
+The reviewers use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
+Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#approve-a-merge-request).
 
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
-
-For approvals, we use the approval functionality found in the merge request
-widget. For reviewers, we use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
-Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#approve-a-merge-request).
+The **Approved** button is in the merge request widget.
 
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve merges it.
+
+Read more about [author responsibilities](#the-responsibility-of-the-merge-request-author) below.
 
 ### Domain experts
 
@@ -238,6 +236,8 @@ up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
+If your merge request touches more than one domain (for example, Dynamic Analysis and GraphQL), ask for reviews from an expert from each domain.
+
 If an author is unsure if a merge request needs a [domain expert's](#domain-experts) opinion,
 then that indicates it does. Without it, it's unlikely they have the required level of confidence in their
 solution.
@@ -270,7 +270,15 @@ This saves reviewers time and helps authors catch mistakes earlier.
 
 ### The responsibility of the reviewer
 
-[Review the merge request](#reviewing-a-merge-request) thoroughly. When you are confident
+[Review the merge request](#reviewing-a-merge-request) thoroughly.
+
+Verify that the merge request meets all [contribution acceptance criteria](contributing/merge_request_workflow.md#contribution-acceptance-criteria).
+
+If a merge request is too large, fixes more than one issue, or implements more
+than one feature, you should guide the author towards spltting the merge request
+into smaller merge requests.
+
+When you are confident
 that it meets all requirements, you should:
 
 - Select **Approve**.
@@ -291,6 +299,12 @@ consistency, and readability.
 Because a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve, and merge
 merge requests from any team and in any product area.
+
+If a merge request is too large, fixes more than one issue, or implements more
+than one feature, the maintainer can ask the author to make the merge request
+smaller. Request the previous reviewer, or a merge request coach to help guide
+the author on how to split the merge request, and to review the resulting
+changes.
 
 Maintainers do their best to also review the specifics of the chosen solution
 before merging, but as they are not necessarily [domain experts](#domain-experts), they may be poorly

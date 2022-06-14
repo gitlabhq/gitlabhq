@@ -458,7 +458,7 @@ in GitLab 12.6, and then to [immediate deletion](https://gitlab.com/gitlab-org/g
 Projects in a group (not a personal namespace) can be deleted after a delay period. Multiple settings can affect whether
 delayed project deletion is enabled for a particular project:
 
-- Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion).
+- Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
   You can enable delayed project deletion as the default setting for new groups, and configure the number of days for the
   delay. For GitLab.com, see the [GitLab.com settings](../../gitlab_com/index.md#delayed-project-deletion).
 - Group [settings](../../group/index.md#enable-delayed-project-deletion) to enabled delayed project deletion for all

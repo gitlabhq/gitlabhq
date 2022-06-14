@@ -103,7 +103,15 @@ class Packages::Package < ApplicationRecord
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
   scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
-  scope :with_normalized_pypi_name, ->(name) { where("LOWER(regexp_replace(name, '[-_.]+', '-', 'g')) = ?", name.downcase) }
+
+  scope :with_normalized_pypi_name, ->(name) do
+    where(
+      "LOWER(regexp_replace(name, ?, '-', 'g')) = ?",
+      Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING,
+      name.downcase
+    )
+  end
+
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
@@ -313,6 +321,13 @@ class Packages::Package < ApplicationRecord
     return unless pending_destruction?
 
     ::Packages::MarkPackageFilesForDestructionWorker.perform_async(id)
+  end
+
+  # As defined in PEP 503 https://peps.python.org/pep-0503/#normalized-names
+  def normalized_pypi_name
+    return name unless pypi?
+
+    name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/, '-').downcase
   end
 
   private

@@ -20,29 +20,51 @@ Before you can install the agent in your cluster, you need:
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/quickstart)
   - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/quickstart/)
-- On self-managed GitLab instances, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md). Then it will be available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
+- On self-managed GitLab instances, a GitLab administrator must set up the
+  [agent server](../../../../administration/clusters/kas.md).
+  Then it will be available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
   On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
 
 ## Installation steps
 
 To install the agent in your cluster:
 
-1. [Choose a name for the agent](#agent-naming-convention).
+1. Optional. [Create an agent configuration file](#create-an-agent-configuration-file).
 1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
 1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
 
-### Agent naming convention
+### Create an agent configuration file
 
-The agent name must follow the [DNS label standard from RFC 1123](https://tools.ietf.org/html/rfc1123).
-The name must:
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the agent configuration file can be added to multiple directories (or subdirectories) of the repository.
+> - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-- Be unique in the project.
-- Contain at most 63 characters.
-- Contain only lowercase alphanumeric characters or `-`.
-- Start with an alphanumeric character.
-- End with an alphanumeric character.
+The agent uses a YAML file for configuration settings. You must create this file if:
+
+- You use [a GitOps workflow](../gitops.md#gitops-workflow-steps).
+- You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#gitlab-cicd-workflow-steps) and want to authorize a different project to use the agent.
+
+To create an agent configuration file:
+
+1. Choose a name for your agent. The agent name follows the
+   [DNS label standard from RFC 1123](https://tools.ietf.org/html/rfc1123). The name must:
+
+   - Be unique in the project.
+   - Contain at most 63 characters.
+   - Contain only lowercase alphanumeric characters or `-`.
+   - Start with an alphanumeric character.
+   - End with an alphanumeric character.
+
+1. In the repository, create a directory in this location:
+
+   ```plaintext
+   .gitlab/agents/<agent-name>
+   ```
+
+1. In the directory, create a `config.yaml` file. Ensure the filename ends in `.yaml`, not `.yml`.
+
+You can leave the file blank for now, and [configure it](#configure-your-agent) later.
 
 ### Register the agent with GitLab
 
@@ -64,34 +86,13 @@ You must register an agent before you can install the agent in your cluster. To 
    it must be in this project. Your cluster manifest files should also be in this project.
 1. From the left sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
-   - If you want to create a configuration with CI/CD defaults, type a name that meets [the naming convention](#agent-naming-convention).
+   - If you want to create a configuration with CI/CD defaults, type a name.
    - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
 1. Select **Register an agent**.
-1. GitLab generates an access token for the agent. Securely store this token. You need it to install the agent in your cluster and to [update the agent](#update-the-agent-version) to another version.
-1. Copy the command under **Recommended installation method**. You need it when you use the one-liner installation method to install the agent in your cluster.
-
-### Create an agent configuration file
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the agent configuration file can be added to multiple directories (or subdirectories) of the repository.
-> - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
-
-The agent uses a YAML file for configuration settings. You need a configuration file if:
-
-- You want to use [a GitOps workflow](../gitops.md#gitops-configuration-reference).
-- You want to authorize a different project to use the agent for a [GitLab CI/CD workflow](../ci_cd_workflow.md#authorize-the-agent).
-
-To create an agent configuration file:
-
-1. In the repository, create a directory in this location. The `<agent-name>` must meet [the naming convention](#agent-naming-convention).
-
-   ```plaintext
-   .gitlab/agents/<agent-name>
-   ```
-
-1. In the directory, create a `config.yaml` file. Ensure the filename ends in `.yaml`, not `.yml`.
-1. Add content to the `config.yaml` file:
-   - For a GitOps workflow, view [the configuration reference](../gitops.md#gitops-configuration-reference) for details.
-   - For a GitLab CI/CD workflow, view [the configuration reference](../ci_cd_workflow.md) for details.
+1. GitLab generates an access token for the agent. Securely store this token. You need it to install the agent
+   in your cluster and to [update the agent](#update-the-agent-version) to another version.
+1. Copy the command under **Recommended installation method**. You need it when you use
+   the one-liner installation method to install the agent in your cluster.
 
 ### Install the agent in the cluster
 
@@ -128,9 +129,33 @@ By default, the Helm installation command generated by GitLab:
 
 To see the full list of customizations available, see the Helm chart's [default values file](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/blob/main/values.yaml).
 
+###### Use the agent behind an HTTP proxy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
+
+To configure an HTTP proxy when using the Helm chart, you can use the environment variables `HTTP_PROXY`, `HTTPS_PROXY`,
+and `NO_PROXY`. Upper and lowercase are both acceptable.
+
+You can set these variables by using the `extraEnv` value, as a list of objects with keys `name` and `value`.
+For example, to set only the environment variable `HTTPS_PROXY` to the value `https://example.com/proxy`, you can run:
+
+```shell
+helm upgrade --install gitlab-agent gitlab/gitlab-agent \
+  --set extraEnv[0].name=HTTPS_PROXY \
+  --set extraEnv[0].value=https://example.com/proxy \
+  ...
+```
+
 #### Advanced installation method
 
 GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent). This method provides greater flexibility, but is only recommended for advanced users.
+
+### Configure your agent
+
+To configure your agent, add content to the `config.yaml` file:
+
+- [View the configuration reference](../gitops.md#gitops-configuration-reference) for a GitOps workflow.
+- [View the configuration reference](../ci_cd_workflow.md) for a GitLab CI/CD workflow.
 
 ## Install multiple agents in your cluster
 

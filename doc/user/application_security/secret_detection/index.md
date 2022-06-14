@@ -221,7 +221,7 @@ simultaneously:
 
 - [Disabling predefined rules](index.md#disable-predefined-analyzer-rules).
 - [Overriding predefined rules](index.md#override-predefined-analyzer-rules).
-- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
+- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration).
 
 Customization allows replacing the default secret detection rules with rules that you define.
 

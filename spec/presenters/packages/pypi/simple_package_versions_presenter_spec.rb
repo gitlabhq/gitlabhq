@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Pypi::PackagePresenter do
+RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_failures do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group) }
@@ -11,14 +11,13 @@ RSpec.describe ::Packages::Pypi::PackagePresenter do
   let_it_be(:package1) { create(:pypi_package, project: project, name: package_name, version: '1.0.0') }
   let_it_be(:package2) { create(:pypi_package, project: project, name: package_name, version: '2.0.0') }
 
-  let(:packages) { [package1, package2] }
-
   let(:file) { package.package_files.first }
   let(:filename) { file.file_name }
-
-  subject(:presenter) { described_class.new(packages, project_or_group).body}
+  let(:packages) { project.packages }
 
   describe '#body' do
+    subject(:presenter) { described_class.new(packages, project_or_group).body }
+
     shared_examples_for "pypi package presenter" do
       where(:version, :expected_version, :with_package1) do
         '>=2.7'                        | '&gt;=2.7'                                        | true
@@ -32,29 +31,31 @@ RSpec.describe ::Packages::Pypi::PackagePresenter do
         let(:package) { with_package1 ? package1 : package2 }
 
         before do
-          package.pypi_metadatum.required_python = python_version
+          package.pypi_metadatum.update_column(:required_python, python_version)
         end
 
-        it { is_expected.to include expected_file }
+        it { is_expected.to include expected_link }
       end
     end
 
     context 'for project' do
       let(:project_or_group) { project }
-      let(:expected_file) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a><br>" }
+      let(:expected_link) { "<a href=\"http://localhost/api/v4/projects/#{project.id}/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a>" } # rubocop:disable Layout/LineLength
 
       it_behaves_like 'pypi package presenter'
     end
 
     context 'for group' do
       let(:project_or_group) { group }
-      let(:expected_file) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a><br>" }
+      let(:expected_link) { "<a href=\"http://localhost/api/v4/groups/#{group.id}/-/packages/pypi/files/#{file.file_sha256}/#{filename}#sha256=#{file.file_sha256}\" data-requires-python=\"#{expected_python_version}\">#{filename}</a>" } # rubocop:disable Layout/LineLength
 
       it_behaves_like 'pypi package presenter'
     end
 
     context 'with package files pending destruction' do
-      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: package1, file_name: "package_file_pending_destruction") }
+      let_it_be(:package_file_pending_destruction) do
+        create(:package_file, :pending_destruction, package: package1, file_name: "package_file_pending_destruction")
+      end
 
       let(:project_or_group) { project }
 

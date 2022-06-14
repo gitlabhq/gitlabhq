@@ -113,7 +113,7 @@ On GitLab.com and self-managed GitLab, by default this feature is not available.
 ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `rebase_without_ci_ui`.
 The feature is not ready for production use.
 
-To rebase a merge request's branch without triggering a CI/CD pipeline, select 
+To rebase a merge request's branch without triggering a CI/CD pipeline, select
 **Rebase without pipeline** from the merge request reports section.
 This option is available when fast-forward merge is not possible but a conflict-free
 rebase is possible.

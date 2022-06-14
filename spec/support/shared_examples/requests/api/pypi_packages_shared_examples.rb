@@ -124,6 +124,23 @@ RSpec.shared_examples 'PyPI package versions' do |user_type, status, add_member 
   end
 end
 
+RSpec.shared_examples 'PyPI package index' do |user_type, status, add_member = true|
+  context "for user type #{user_type}" do
+    before do
+      project.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+      group.send("add_#{user_type}", user) if add_member && user_type != :anonymous
+    end
+
+    it 'returns the package index' do
+      subject
+
+      expect(response.body).to match(package.name)
+    end
+
+    it_behaves_like 'returning response status', status
+  end
+end
+
 RSpec.shared_examples 'PyPI package download' do |user_type, status, add_member = true|
   context "for user type #{user_type}" do
     before do
@@ -255,6 +272,45 @@ RSpec.shared_examples 'pypi simple API endpoint' do
       end
 
       it_behaves_like params[:shared_examples_name], :reporter, params[:expected_status]
+    end
+  end
+end
+
+RSpec.shared_examples 'pypi simple index API endpoint' do
+  using RSpec::Parameterized::TableSyntax
+
+  context 'with valid project' do
+    where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
+      :public  | :developer  | true  | true  | 'PyPI package index' | :success
+      :public  | :guest      | true  | true  | 'PyPI package index' | :success
+      :public  | :developer  | true  | false | 'PyPI package index' | :success
+      :public  | :guest      | true  | false | 'PyPI package index' | :success
+      :public  | :developer  | false | true  | 'PyPI package index' | :success
+      :public  | :guest      | false | true  | 'PyPI package index' | :success
+      :public  | :developer  | false | false | 'PyPI package index' | :success
+      :public  | :guest      | false | false | 'PyPI package index' | :success
+      :public  | :anonymous  | false | true  | 'PyPI package index' | :success
+      :private | :developer  | true  | true  | 'PyPI package index' | :success
+      :private | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+      :private | :developer  | true  | false | 'process PyPI api request' | :unauthorized
+      :private | :guest      | true  | false | 'process PyPI api request' | :unauthorized
+      :private | :developer  | false | true  | 'process PyPI api request' | :not_found
+      :private | :guest      | false | true  | 'process PyPI api request' | :not_found
+      :private | :developer  | false | false | 'process PyPI api request' | :unauthorized
+      :private | :guest      | false | false | 'process PyPI api request' | :unauthorized
+      :private | :anonymous  | false | true  | 'process PyPI api request' | :unauthorized
+    end
+
+    with_them do
+      let(:token) { user_token ? personal_access_token.token : 'wrong' }
+      let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+        group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility_level.to_s))
+      end
+
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
     end
   end
 end

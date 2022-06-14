@@ -149,7 +149,7 @@ between your computer and GitLab.
 
 1. GitLab requests your username and password:
    - If you have 2FA enabled for your account, you must use a [Personal Access Token](../user/profile/personal_access_tokens.md)
-     with **read_repository** or **write_repository** permissions instead of your account's password.
+     with `read_repository` or `write_repository` permissions instead of your account's password.
    - If you don't have 2FA enabled, use your account's password.
 
 1. To view the files, go to the new directory:

@@ -219,7 +219,7 @@ The output from the last command is the key here. If it shows:
 
 If all the settings look correct and it is still not using Elasticsearch for the search function, it is best to escalate to GitLab support. This could be a bug/issue.
 
-Moving past that, it is best to attempt the same [search via the Rails console](../../integration/elasticsearch.md#i-indexed-all-the-repositories-but-i-cant-get-any-hits-for-my-search-term-in-the-ui)
+Moving past that, it is best to attempt the same [search via the Rails console](../../integration/advanced_search/elasticsearch_troubleshooting.md#i-indexed-all-the-repositories-but-i-cant-get-any-hits-for-my-search-term-in-the-ui)
 or the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html),
 and compare the results from what you see in GitLab.
 
@@ -257,7 +257,7 @@ during the indexing of projects. If errors do occur, they stem from either the i
 
 - On the GitLab side. You need to rectify those. If they are not
   something you are familiar with, contact GitLab support for guidance.
-- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/elasticsearch.md#troubleshooting). If not, speak with your Elasticsearch administrator.
+- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/advanced_search/elasticsearch_troubleshooting.md). If not, speak with your Elasticsearch administrator.
 
 If the indexing process does not present errors, check the status of the indexed projects. You can do this via the following Rake tasks:
 
@@ -375,7 +375,7 @@ If you still encounter issues after retrying the migration, reach out to GitLab 
 
 ## Common issues
 
-All common issues [should be documented](../../integration/elasticsearch.md#troubleshooting). If not,
+All common issues [should be documented](../../integration/advanced_search/elasticsearch_troubleshooting.md). If not,
 feel free to update that page with issues you encounter and solutions.
 
 ## Replication
