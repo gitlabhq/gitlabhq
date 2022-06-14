@@ -442,9 +442,9 @@ Consul is a tool for service discovery and configuration. Consul is distributed,
 
 - [Project page](https://github.com/elastic/elasticsearch/)
 - Configuration:
-  - [Omnibus](../integration/elasticsearch.md)
-  - [Charts](../integration/elasticsearch.md)
-  - [Source](../integration/elasticsearch.md)
+  - [Omnibus](../integration/advanced_search/elasticsearch.md)
+  - [Charts](../integration/advanced_search/elasticsearch.md)
+  - [Source](../integration/advanced_search/elasticsearch.md)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
 - Layer: Core Service (Data)
 - GitLab.com: [Get Advanced Search working on GitLab.com (Closed)](https://gitlab.com/groups/gitlab-org/-/epics/153) epic.

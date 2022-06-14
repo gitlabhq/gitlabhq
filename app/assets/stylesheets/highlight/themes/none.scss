@@ -15,6 +15,14 @@
 }
 
 .code.none {
+  // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
+  // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
+  &.blob-viewer {
+    [class^="hljs-"] {
+      color: $gl-text-color;
+    }
+  }
+
   // Line numbers
   .file-line-num {
     @include line-number-link($black-transparent);

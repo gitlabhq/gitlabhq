@@ -213,7 +213,7 @@ The following table lists project permissions available for each role:
    public and internal projects (not on private projects). [External users](#external-users)
    must be given explicit access even if the project is internal. For GitLab.com, see the
    [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
-2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
+2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
 5. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets).
@@ -358,7 +358,7 @@ Read through the documentation on [permissions for File Locking](project/file_lo
 ### Confidential Issues permissions
 
 [Confidential issues](project/issues/confidential_issues.md) can be accessed by users with reporter and higher permission levels,
-as well as by guest users that create a confidential issue. To learn more,
+as well as by guest users that create a confidential issue or are assigned to it. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
 ### Container Registry visibility permissions

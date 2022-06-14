@@ -45,7 +45,7 @@ Advanced Search can be useful in various scenarios:
 ## Configuring Advanced Search
 
 For self-managed GitLab instances, an administrator must
-[configure Advanced Search](../../integration/elasticsearch.md).
+[configure Advanced Search](../../integration/advanced_search/elasticsearch.md).
 
 On GitLab.com, Advanced Search is enabled.
 

@@ -57,11 +57,11 @@ There are a couple of ways to achieve that:
 
 We continuously make updates to our indexing strategies and aim to support
 newer versions of Elasticsearch. When indexing changes are made, it may
-be necessary for you to [reindex](../elasticsearch.md#zero-downtime-reindexing) after updating GitLab.
+be necessary for you to [reindex](elasticsearch.md#zero-downtime-reindexing) after updating GitLab.
 
 ## I indexed all the repositories but I can't get any hits for my search term in the UI
 
-Make sure you [indexed all the database data](../elasticsearch.md#enable-advanced-search).
+Make sure you [indexed all the database data](elasticsearch.md#enable-advanced-search).
 
 If there aren't any results (hits) in the UI search, check if you are seeing the same results via the rails console (`sudo gitlab-rails console`):
 
@@ -82,9 +82,9 @@ More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticse
 It is important to understand at which level the problem is manifesting (UI, Rails code, Elasticsearch side) to be able to [troubleshoot further](../../administration/troubleshooting/elasticsearch.md#search-results-workflow).
 
 NOTE:
-The above instructions are not to be used for scenarios that only index a [subset of namespaces](../elasticsearch.md#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
+The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
 
-See [Elasticsearch Index Scopes](../elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
+See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
 ## I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
 
@@ -133,7 +133,7 @@ see details in the [update guide](../../update/upgrading_from_source.md).
 
 ## `Elasticsearch::Transport::Transport::Errors::BadRequest`
 
-If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](../elasticsearch.md#system-requirements).
+If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](elasticsearch.md#system-requirements).
 There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
 ## `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
@@ -173,7 +173,7 @@ Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="he
 ```
 
 You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
-After you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](../elasticsearch.md#gitlab-advanced-search-rake-tasks)) and [reindex the content of your instance](../elasticsearch.md#enable-advanced-search).
+After you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](elasticsearch.md#gitlab-advanced-search-rake-tasks)) and [reindex the content of your instance](elasticsearch.md#enable-advanced-search).
 
 ## My Elasticsearch cluster has a plugin and the integration is not working
 
@@ -239,13 +239,13 @@ filtering out projects that a user does not have access to at search time.
 
 If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
 
-- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](../elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
-- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](../elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
+- To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
+- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/operations/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
 ## Indexing is very slow or fails with `rejected execution of coordinating operation` messages
 
 Bulk requests getting rejected by the Elasticsearch nodes are likely due to load and lack of available memory.
-Ensure that your Elasticsearch cluster meets the [system requirements](../elasticsearch.md#system-requirements) and has enough resources
+Ensure that your Elasticsearch cluster meets the [system requirements](elasticsearch.md#system-requirements) and has enough resources
 to perform bulk operations. See also the error ["429 (Too Many Requests)"](#indexing-fails-with-error-elastic-error-429-too-many-requests).
 
 ## Access requirements for the self-managed AWS OpenSearch Service

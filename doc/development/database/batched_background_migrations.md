@@ -261,7 +261,7 @@ background migration.
      end
 
      def down
-       delete_batched_background_migration(MIGRATION_NAME, :routes, :id, [])
+       delete_batched_background_migration(MIGRATION, :routes, :id, [])
      end
    end
    ```

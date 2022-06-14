@@ -36,7 +36,7 @@ The second way is to locate the **Confidentiality** section in the sidebar and s
 
 | Turn off confidentiality | Turn on confidentiality |
 | :-----------: | :----------: |
-| ![Turn off confidentiality](img/turn_off_confidentiality_v15_0.png) | ![Turn on confidentiality](img/turn_on_confidentiality_v15_0.png) |
+| ![Turn off confidentiality](img/turn_off_confidentiality_v15_1.png) | ![Turn on confidentiality](img/turn_on_confidentiality_v15_1.png) |
 
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the issue's comments.
@@ -84,6 +84,9 @@ There are two kinds of level access for confidential issues. The general rule
 is that confidential issues are visible only to members of a project with at
 least the Reporter role. However, a guest user can also create
 confidential issues, but can only view the ones that they created themselves.
+Users with the Guest role or non-members can also read the confidential issue if they are assigned to the issue.
+When a Guest user or non-member is unassigned from a confidential issue,
+they can no longer view it.
 
 Confidential issues are also hidden in search results for unprivileged users.
 For example, here's what a user with the Maintainer role and the Guest role

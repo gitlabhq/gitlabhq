@@ -177,7 +177,6 @@ API.
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `contacts_autocomplete`.
 On GitLab.com, this feature is available.
-This feature is not ready for production use.
 
 When you use the `/add_contacts` or `/remove_contacts` quick actions, follow them with `[contact:` and an autocomplete list appears:
 

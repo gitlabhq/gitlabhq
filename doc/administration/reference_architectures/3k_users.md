@@ -2172,13 +2172,13 @@ While sharing the job logs through NFS is supported, it's recommended to avoid t
 
 ## Configure Advanced Search
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, read how to
-[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+[choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

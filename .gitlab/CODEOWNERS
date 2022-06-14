@@ -604,6 +604,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/gitlab-basics/ @aqualls
 /doc/install/ @axil
 /doc/integration/ @kpaizee
+/doc/integration/advanced_search/ @sselhorn
 /doc/integration/elasticsearch.md @sselhorn
 /doc/integration/gitpod.md @aqualls
 /doc/integration/kerberos.md @eread

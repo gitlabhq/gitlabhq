@@ -99,6 +99,25 @@ $solarized-dark-il: #2aa198;
 }
 
 .code.solarized-dark {
+  // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
+  // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
+    @include hljs-override('string', $solarized-dark-s);
+    @include hljs-override('attr', $solarized-dark-na);
+    @include hljs-override('keyword', $solarized-dark-k);
+    @include hljs-override('variable', $solarized-dark-nv);
+    @include hljs-override('variable.language_', $solarized-dark-k);
+    @include hljs-override('title', $solarized-dark-nf);
+    @include hljs-override('name', $solarized-dark-k);
+    @include hljs-override('tag', $solarized-dark-nt);
+    @include hljs-override('type', $solarized-dark-nc);
+    @include hljs-override('number', $solarized-dark-mf);
+    @include hljs-override('literal', $solarized-dark-kc);
+    @include hljs-override('built_in', $solarized-dark-n);
+    @include hljs-override('section', $solarized-dark-gh);
+    @include hljs-override('bullet', $solarized-dark-n);
+    @include hljs-override('subst', $solarized-dark-p);
+    @include hljs-override('symbol', $solarized-dark-ni);
+    
   // Line numbers
   .file-line-num {
     @include line-number-link($solarized-dark-line-color);

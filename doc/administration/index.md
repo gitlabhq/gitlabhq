@@ -65,7 +65,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   requests diffs external storage.
 - [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages
   to GitLab users through the UI.
-- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to
+- [Elasticsearch](../integration/advanced_search/elasticsearch.md): Enable Elasticsearch to
   empower Advanced Search. Use when you deal with a huge amount of data.
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
 - [Add a license](../user/admin_area/license.md): Add a license to unlock

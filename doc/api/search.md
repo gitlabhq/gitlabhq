@@ -29,7 +29,7 @@ GET /search
 
 Search the expression in the specified scope. These scopes are supported: `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, `users`.
 
-If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
+If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/advanced_search/elasticsearch.md). **(PREMIUM)**
 
 The response depends on the requested scope.
 
@@ -270,7 +270,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye"
@@ -301,7 +301,7 @@ NOTE:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=commits&search=bye"
@@ -336,7 +336,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
 
@@ -377,7 +377,7 @@ NOTE:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
@@ -452,7 +452,7 @@ GET /groups/:id/search
 
 Search the expression in the specified scope. These scopes are supported: `projects`, `issues`, `merge_requests`, `milestones`, `users`.
 
-If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/elasticsearch.md). **(PREMIUM)**
+If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/advanced_search/elasticsearch.md). **(PREMIUM)**
 
 The response depends on the requested scope.
 
@@ -662,7 +662,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=wiki_blobs&search=bye"
@@ -693,7 +693,7 @@ NOTE:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/6/search?scope=commits&search=bye"
@@ -728,7 +728,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
 
@@ -769,7 +769,7 @@ NOTE:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
@@ -1021,7 +1021,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
@@ -1057,7 +1057,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
 
@@ -1105,7 +1105,7 @@ NOTE:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=commits&search=bye"
@@ -1140,7 +1140,7 @@ Example response:
 
 > Moved to GitLab Premium in 13.9.
 
-This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
+This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
 Filters are available for this scope:
 

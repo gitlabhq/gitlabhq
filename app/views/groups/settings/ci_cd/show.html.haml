@@ -11,7 +11,7 @@
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
         = _("General pipelines")
-      %button.btn.gl-button.js-settings-toggle{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
       %p
         = _("Customize your pipeline configuration.")
@@ -28,7 +28,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Runners')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: "button" }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
@@ -40,7 +40,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Auto DevOps')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: "button" }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       - auto_devops_url = help_page_path('topics/autodevops/index')

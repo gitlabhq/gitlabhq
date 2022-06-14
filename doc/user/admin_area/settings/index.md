@@ -79,7 +79,7 @@ The **Geo** setting contains:
 
 The **Integrations** settings contain:
 
-- [Elasticsearch](../../../integration/elasticsearch.md#enable-advanced-search) -
+- [Elasticsearch](../../../integration/advanced_search/elasticsearch.md#enable-advanced-search) -
   Elasticsearch integration. Elasticsearch AWS IAM.
 - [Kroki](../../../administration/integration/kroki.md#enable-kroki-in-gitlab) -
   Allow rendering of diagrams in AsciiDoc and Markdown documents using [kroki.io](https://kroki.io).

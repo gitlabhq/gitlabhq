@@ -13640,9 +13640,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-msgid "Edit %{issuable}"
-msgstr ""
-
 msgid "Edit %{name}"
 msgstr ""
 
@@ -18318,16 +18315,16 @@ msgstr ""
 msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings. Inherited by subgroups."
 msgstr ""
 
-msgid "GroupSettings|Select a project with the %{code_start}.gitlab/insights.yml%{code_end} file"
-msgstr ""
-
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
 msgstr ""
 
 msgid "GroupSettings|Select parent group"
 msgstr ""
 
-msgid "GroupSettings|Select the project that contains your custom Insights file."
+msgid "GroupSettings|Select the project containing the %{code_start}.gitlab/insights.yml%{code_end} file"
+msgstr ""
+
+msgid "GroupSettings|Select the project containing your custom Insights file. %{help_link_start}What is Insights?%{help_link_end}"
 msgstr ""
 
 msgid "GroupSettings|Set a size limit for all content in each Pages site in this group. %{link_start}Learn more.%{link_end}"
@@ -26643,7 +26640,7 @@ msgstr ""
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
 msgstr ""
 
-msgid "Only %{workspaceType} members with at least Reporter role can view or be notified about this %{issuableType}."
+msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."
 msgstr ""
 
 msgid "Only 'Reporter' roles and above on tiers Premium and above can see Value Stream Analytics."
@@ -26673,7 +26670,7 @@ msgstr ""
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
 msgstr ""
 
-msgid "Only group members with at least Reporter role can view or be notified about this epic."
+msgid "Only group members with at least the Reporter role can view or be notified about this epic"
 msgstr ""
 
 msgid "Only include features new to your current subscription tier."
@@ -43375,7 +43372,7 @@ msgstr ""
 msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}."
 msgstr ""
 
-msgid "You are going to turn on confidentiality. Only %{context} members with %{strongStart}at least Reporter role%{strongEnd} can view or be notified about this %{issuableType}."
+msgid "You are going to turn on confidentiality. Only %{context} members with %{strongStart}%{permissions}%{strongEnd} can view or be notified about this %{issuableType}."
 msgstr ""
 
 msgid "You are not allowed to %{action} a user"
@@ -44442,6 +44439,12 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "at"
+msgstr ""
+
+msgid "at least the Reporter role"
+msgstr ""
+
+msgid "at least the Reporter role, the author, and assignees"
 msgstr ""
 
 msgid "at risk"

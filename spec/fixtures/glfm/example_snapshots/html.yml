@@ -1909,7 +1909,18 @@
     ]]>
     <p>okay</p>
   static: |2-
+    &lt;![CDATA[
+    function matchwo(a,b)
+    {
+      if (a &lt; b &amp;&amp; a &lt; 0) then {
+        return 1;
 
+      } else {
+
+        return 0;
+      }
+    }
+    ]]&gt;
     <p data-sourcepos="13:1-13:4" dir="auto">okay</p>
   wysiwyg: |-
     Error - check implementation:
@@ -7233,7 +7244,7 @@
   canonical: |
     <p>foo <!ELEMENT br EMPTY></p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto">foo </p>
+    <p data-sourcepos="1:1-1:23" dir="auto">foo &lt;!ELEMENT br EMPTY&gt;</p>
   wysiwyg: |-
     Error - check implementation:
     Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
@@ -7241,7 +7252,7 @@
   canonical: |
     <p>foo <![CDATA[>&<]]></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto">foo &amp;</p>
+    <p data-sourcepos="1:1-1:19" dir="auto">foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
   wysiwyg: |-
     Error - check implementation:
     Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.

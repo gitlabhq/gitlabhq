@@ -29,8 +29,8 @@ describe('ConfidentialityBadge', () => {
 
   it.each`
     workspaceType            | issuableType          | expectedTooltip
-    ${WorkspaceType.project} | ${IssuableType.Issue} | ${'Only project members with at least Reporter role can view or be notified about this issue.'}
-    ${WorkspaceType.group}   | ${IssuableType.Epic}  | ${'Only group members with at least Reporter role can view or be notified about this epic.'}
+    ${WorkspaceType.project} | ${IssuableType.Issue} | ${'Only project members with at least the Reporter role, the author, and assignees can view or be notified about this issue.'}
+    ${WorkspaceType.group}   | ${IssuableType.Epic}  | ${'Only group members with at least the Reporter role can view or be notified about this epic.'}
   `(
     'should render gl-badge with correct tooltip when workspaceType is $workspaceType and issuableType is $issuableType',
     ({ workspaceType, issuableType, expectedTooltip }) => {

@@ -311,9 +311,9 @@ To address the above two scenarios, it is advised to do the following prior to u
 
 ## Checking for pending Advanced Search migrations **(PREMIUM SELF)**
 
-This section is only applicable if you have enabled the [Elasticsearch integration](../integration/elasticsearch.md) **(PREMIUM SELF)**.
+This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**.
 
-Major releases require all [Advanced Search migrations](../integration/elasticsearch.md#advanced-search-migrations)
+Major releases require all [Advanced Search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
 running the following command:
@@ -333,11 +333,11 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 ### What do I do if my Advanced Search migrations are stuck?
 
-See [how to retry a halted migration](../integration/elasticsearch.md#retry-a-halted-migration).
+See [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 ### What do I do for the error `Elasticsearch version not compatible`
 
-Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/elasticsearch.md#version-requirements).
+Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).
 
 ## Upgrading without downtime
 
@@ -360,7 +360,7 @@ A *major* upgrade requires the following steps:
 It's also important to ensure that any [background migrations have been fully completed](#checking-for-background-migrations-before-upgrading)
 before upgrading to a new major version.
 
-If you have enabled the [Elasticsearch integration](../integration/elasticsearch.md) **(PREMIUM SELF)**, then
+If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
 [ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version within
 your current version
 before proceeding with the major version upgrade.
@@ -466,7 +466,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.0.0
 
-- Elasticsearch 6.8 [is no longer supported](../integration/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../integration/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
+- Elasticsearch 6.8 [is no longer supported](../integration/advanced_search/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../integration/advanced_search/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
 - If you run external PostgreSQL, particularly AWS RDS,
   [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
   to avoid the database crashing.

@@ -3,7 +3,7 @@
 - page_title _("Service Desk")
 - add_page_specific_style 'page_bundles/issues_list'
 - content_for :breadcrumbs_extra do
-  = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
+  = render "projects/issues/service_desk/nav_btns", show_export_button: false, show_rss_button: false
 
 - support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(User.support_bot) }.to_json
 
@@ -11,12 +11,12 @@
   .top-area
     = render 'shared/issuable/nav', type: :issues
     .nav-controls.d-block.d-sm-none
-      = render "projects/issues/nav_btns", show_feed_buttons: false, show_import_button: false, show_export_button: false
+      = render "projects/issues/service_desk/nav_btns", show_feed_buttons: false, show_import_button: false, show_export_button: false
 
   - if @issues.present?
     = render 'shared/issuable/search_bar', type: :issues
     - if Gitlab::ServiceDesk.supported?
-      = render 'service_desk_info_content'
+      = render 'projects/issues/service_desk/service_desk_info_content'
 
   .issues-holder
-    = render 'projects/issues/issues', empty_state_path: 'service_desk_empty_state'
+    = render 'projects/issues/issues', empty_state_path: 'projects/issues/service_desk/service_desk_empty_state'

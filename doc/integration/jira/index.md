@@ -67,10 +67,13 @@ The authentication method in Jira depends on whether you host Jira on your own s
 
 ## Privacy considerations
 
-If you integrate a private GitLab project with Jira using the [**Jira integration**](#jira-integration),
-actions in GitLab issues and merge requests linked to a Jira issue leak information
-about the private project to non-administrator Jira users. If your installation uses Jira Cloud,
-you can use the [GitLab.com for Jira Cloud app](connect-app.md) to avoid this risk.
+All Jira integrations share data with Jira to make it visible outside of GitLab.
+If you integrate a private GitLab project with Jira, the private data is
+shared with users who have access to your Jira project.
+
+The [**Jira project integration**](#jira-integration) posts GitLab data in the form of comments in Jira issues.
+The GitLab.com for Jira Cloud app and Jira DVCS connector share this data through the [**Jira Development Panel**](development_panel.md).
+This method provides more fine-grained access control because access can be restricted to certain user groups or roles.
 
 ## Third-party Jira integrations
 

@@ -170,7 +170,7 @@ After updating GitLab, upgrade your runners to match
 #### Elasticsearch
 
 After updating GitLab, you may have to upgrade
-[Elasticsearch if the new version breaks compatibility](../integration/elasticsearch.md#version-requirements).
+[Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).
 Updating Elasticsearch is **out of scope for GitLab Support**.
 
 ## Troubleshooting

@@ -1076,10 +1076,8 @@
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
-      changes: *core-backend-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
-    - changes: ["config/**/*"]
+      changes: *backend-patterns
+    - changes: *core-backend-patterns
 
 .rails:rules:code-backstage-qa:
   rules:

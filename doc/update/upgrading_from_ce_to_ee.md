@@ -88,7 +88,7 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 
 ### 4. Install `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
 
-Please follow the [install instruction](../integration/elasticsearch.md#install-elasticsearch).
+Please follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 
 ### 5. Start application
 

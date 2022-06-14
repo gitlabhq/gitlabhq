@@ -126,3 +126,11 @@
     @include gl-display-inline-block;
   }
 }
+
+@mixin hljs-override($suffix, $color) {
+  &.blob-viewer {
+    .hljs-#{$suffix} {
+      color: $color;
+    }
+  }
+}

@@ -106,13 +106,13 @@ performance and reliability at an increased complexity cost.
 
 ## Configure Advanced Search **(PREMIUM SELF)**
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, read how to
-[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+[choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 ## Cloud Native Hybrid reference architecture with Helm Charts
 

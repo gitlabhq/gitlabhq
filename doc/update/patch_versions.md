@@ -107,7 +107,7 @@ sudo -u git -H make
 
 ### 8. Install/Update `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
 
-Please follow the [install instruction](../integration/elasticsearch.md#install-elasticsearch).
+Please follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 
 ### 9. Start application
 

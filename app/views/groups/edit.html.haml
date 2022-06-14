@@ -9,7 +9,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Naming, visibility')
-    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Collapse')
     %p
       = _('Update your group name, description, avatar, and visibility.')
@@ -21,7 +21,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Permissions and group features')
-    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings.')
@@ -35,7 +35,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = s_('GroupSettings|Badges')
-    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('GroupSettings|Customize this group\'s badges.')
@@ -51,7 +51,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Advanced')
-    %button.btn.gl-button.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Perform advanced options such as changing path, transferring, exporting, or removing the group.')

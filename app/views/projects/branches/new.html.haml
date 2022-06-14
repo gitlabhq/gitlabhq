@@ -26,7 +26,8 @@
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .form-text.text-muted Existing branch name, tag, or commit SHA
   .form-actions
-    = button_tag 'Create branch', class: 'gl-button btn btn-confirm'
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
+      = _('Create branch')
     = link_to _('Cancel'), project_branches_path(@project), class: 'gl-button btn btn-default btn-cancel'
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe
