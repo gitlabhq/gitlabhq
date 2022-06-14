@@ -33,10 +33,10 @@ module Gitlab
           l.strip.empty? || (!allow_only_quotes && l.start_with?('>'))
         end
 
-        encoded_body = body.force_encoding(encoding).encode("UTF-8")
+        encoded_body = force_utf8(body.force_encoding(encoding))
         return encoded_body unless @append_reply
 
-        [encoded_body, stripped_text.force_encoding(encoding).encode("UTF-8")]
+        [encoded_body, force_utf8(stripped_text.force_encoding(encoding))]
       end
 
       private
@@ -70,12 +70,28 @@ module Gitlab
         return if object.nil?
 
         if object.charset
-          object.body.decoded.force_encoding(object.charset.gsub(/utf8/i, "UTF-8")).encode("UTF-8").to_s
+          # A part of a multi-part may have a different encoding. Its encoding
+          # is denoted in its header. For example:
+          #
+          # ```
+          # ------=_Part_2192_32400445.1115745999735
+          # Content-Type: text/plain; charset=ISO-8859-1
+          # Content-Transfer-Encoding: 7bit
+          #
+          # Plain email.
+          # ```
+          # So, we had to force its part to corresponding encoding before able
+          # to convert it to UTF-8
+          force_utf8(object.body.decoded.force_encoding(object.charset.gsub(/utf8/i, "UTF-8")))
         else
           object.body.to_s
         end
       rescue StandardError
         nil
+      end
+
+      def force_utf8(str)
+        Gitlab::EncodingHelper.encode_utf8(str).to_s
       end
     end
   end

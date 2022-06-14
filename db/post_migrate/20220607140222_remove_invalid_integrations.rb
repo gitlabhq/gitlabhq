@@ -15,7 +15,7 @@ class RemoveInvalidIntegrations < Gitlab::Database::Migration[2.0]
   end
 
   # Isolated version of the Integration model
-  class Integration < ApplicationRecord
+  class Integration < MigrationRecord
     self.table_name = 'integrations'
     self.inheritance_column = :_type_disabled
   end

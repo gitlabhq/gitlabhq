@@ -268,5 +268,72 @@ RSpec.describe Gitlab::Email::ReplyParser do
       expect(test_parse_body(fixture_file("emails/valid_new_issue_with_quote.eml"), { append_reply: true }))
         .to contain_exactly(body, reply)
     end
+
+    context 'non-UTF-8 content' do
+      let(:charset) { '; charset=Shift_JIS' }
+      let(:raw_content) do
+        <<-BODY.strip_heredoc.chomp
+          From: Jake the Dog <alan@adventuretime.ooo>
+          To: incoming+email-test-project_id-issue-@appmail.adventuretime.ooo
+          Message-ID: <CAH_Wr+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com>
+          Subject: The message subject! @all
+          Content-Type: text/plain#{charset}
+          Content-Transfer-Encoding: 8bit
+
+          こんにちは。 この世界は素晴らしいです。
+        BODY
+      end
+
+      # Strip encoding to simulate the case when Ruby fallback to ASCII-8bit
+      # when it meets an unknown encoding
+      let(:encoded_content) { raw_content.encode("Shift_JIS").bytes.pack("c*") }
+
+      it "parses body under UTF-8 encoding" do
+        expect(test_parse_body(encoded_content))
+          .to eq(<<-BODY.strip_heredoc.chomp)
+            こんにちは。 この世界は素晴らしいです。
+          BODY
+      end
+
+      # This test would raise an exception if encoding is not handled properly
+      # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/364329
+      context 'charset is absent and reply trimming is disabled' do
+        let(:charset) { '' }
+
+        it "parses body under UTF-8 encoding" do
+          expect(test_parse_body(encoded_content, { trim_reply: false }))
+            .to eq(<<-BODY.strip_heredoc.chomp)
+              こんにちは。 この世界は素晴らしいです。
+            BODY
+        end
+      end
+
+      context 'multipart email' do
+        let(:raw_content) do
+          <<-BODY.strip_heredoc.chomp
+            From: Jake the Dog <alan@adventuretime.ooo>
+            To: incoming+email-test-project_id-issue-@appmail.adventuretime.ooo
+            Message-ID: <CAH_Wr+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com>
+            Subject: The message subject! @all
+            Content-Type: multipart/alternative;
+              boundary=Apple-Mail-B41C7F8E-3639-49B0-A5D5-440E125A7105
+            Content-Transfer-Encoding: 7bbit
+
+            --Apple-Mail-B41C7F8E-3639-49B0-A5D5-440E125A7105
+            Content-Type: text/plain
+            Content-Transfer-Encodng: 7bit
+
+            こんにちは。 この世界は素晴らしいです。
+          BODY
+        end
+
+        it "parses body under UTF-8 encoding" do
+          expect(test_parse_body(encoded_content, { trim_reply: false }))
+            .to eq(<<-BODY.strip_heredoc.chomp)
+              こんにちは。 この世界は素晴らしいです。
+            BODY
+        end
+      end
+    end
   end
 end
