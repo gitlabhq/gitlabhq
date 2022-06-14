@@ -32720,9 +32720,6 @@ ALTER TABLE ONLY snippet_user_mentions
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY deployment_clusters
-    ADD CONSTRAINT fk_rails_4e6243e120 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY geo_repository_renamed_events
     ADD CONSTRAINT fk_rails_4e6524febb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

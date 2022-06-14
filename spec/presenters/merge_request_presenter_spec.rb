@@ -4,8 +4,44 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestPresenter do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:resource) { create(:merge_request, source_project: project) }
+  let(:resource) { create(:merge_request, source_project: project) }
+
   let_it_be(:user) { create(:user) }
+
+  describe '#mergeable_discussions_state' do
+    subject { described_class.new(resource).mergeable_discussions_state }
+
+    let(:discussions_state) { double }
+
+    before do
+      allow(resource).to receive(:mergeable_discussions_state?).and_return(discussions_state)
+    end
+
+    context 'when change_response_code_merge_status is enabled' do
+      it 'returns the mergeable_discussions_state' do
+        is_expected.to eq(discussions_state)
+      end
+    end
+
+    context 'when change_response_code_merge_status is disabled' do
+      before do
+        stub_feature_flags(change_response_code_merge_status: false)
+      end
+
+      context 'when it is not mergeable' do
+        it 'returns false' do
+          resource.close!
+          is_expected.to eq(false)
+        end
+      end
+
+      context 'when it is mergeable' do
+        it 'returns the mergeable_discussions_state' do
+          is_expected.to eq(discussions_state)
+        end
+      end
+    end
+  end
 
   describe '#ci_status' do
     subject { described_class.new(resource).ci_status }

@@ -19,4 +19,11 @@ RSpec.describe DeploymentCluster do
       kubernetes_namespace: kubernetes_namespace
     )
   end
+
+  context 'loose foreign key on deployment_clusters.cluster_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:cluster) }
+      let!(:model) { create(:deployment_cluster, cluster: parent) }
+    end
+  end
 end

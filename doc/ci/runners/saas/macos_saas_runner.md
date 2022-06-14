@@ -4,9 +4,9 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on macOS (Beta) **(PREMIUM SAAS)**
+# SaaS runners on macOS (Limited Availability) **(PREMIUM SAAS)**
 
-SaaS runners on macOS are in [Beta](../../../policy/alpha-beta-support.md#beta-features) for approved open source programs and customers in Premium and Ultimate plans.
+SaaS runners on macOS are in [Beta](../../../policy/alpha-beta-support.md#limited-availability-la) for approved open source programs and customers in Premium and Ultimate plans.
 
 SaaS runners on macOS provide an on-demand macOS build environment integrated with
 GitLab SaaS [CI/CD](../../../ci/index.md).
@@ -17,6 +17,15 @@ build environment.
 CI/CD minutes used on GitLab SaaS macOS runners are included in your CI/CD minute consumption totals. CI jobs that run on macOS **will** consume CI minutes at a faster rate than CI jobs on the GitLab SaaS runners on Linux.
 
 Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the GitLab SaaS macOS runners.
+
+## Access request process
+
+While in limited availability, to run CI jobs on the macOS runners, GitLab SaaS customer namespaces must be explicitly added to the macOS `allow-list`. Customers who participated in the beta have already been added.
+
+After you have been added, you can use the macOS runners for any projects in your namespace.
+
+To request access, open a [limited availability access request](https://gitlab.com/gitlab-com/runner-saas-macos-limited-availability/-/issues/new).
+The expected turnaround for activation is two business days.
 
 ## Quickstart
 

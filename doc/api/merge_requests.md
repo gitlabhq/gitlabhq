@@ -1622,7 +1622,7 @@ This API returns specific HTTP status codes on failure:
 |:------------|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | `401`       | `Unauthorized`                             | This user does not have permission to accept this merge request.                                                                         |
 | `405`       | `Method Not Allowed`                       | The merge request cannot be accepted because it is `Draft`, `Closed`, `Pipeline Pending Completion`, or `Failed`. `Success` is required. |
-| `406`       | `Branch cannot be merged`                  | The branch has conflicts and cannot be merged.                                                                                           |
+| `406`       | `Branch cannot be merged`                  | The merge request can not be merged.                                                                                           |
 | `409`       | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source.                                                                      |
 
 For additional important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).

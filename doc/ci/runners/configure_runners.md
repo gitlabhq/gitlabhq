@@ -763,11 +763,13 @@ setting.
 be read from concurrency, so no additional memory is allocated in additional to what the decompressor requires. This
 defaults to the number of CPUs available.
 
-## Clean up stale runners
+## Clean up stale runners **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
 You can clean up group runners that have been inactive for more than three months.
+
+Group runners are those that were created at the group level.
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.

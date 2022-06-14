@@ -313,14 +313,7 @@ To access the **Runners** page:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Runners**.
 
-The **Runners** page features:
-
-- A description of runners and their possible states.
-- Instructions on installing a runner.
-- A list of all registered runners.
-
-Runners are listed in descending order by the date they were created, by default. You can change
-the sort order to *Last Contacted* from the dropdown beside the search field.
+#### Search and filter runners
 
 To search runners' descriptions:
 
@@ -336,20 +329,18 @@ You can also filter runners by status, type, and tag. To filter:
 
 ![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
 
+#### Runner attributes
+
 For each runner, the following attributes are listed:
 
 | Attribute    | Description |
 |--------------|-------------|
-| Type/State   | One or more of the following states: shared, group, specific, locked, or paused |
-| Runner token | Partial token used to identify the runner, and which the runner uses to communicate with the GitLab instance |
-| Runner ID    | Numerical ID of the runner |
-| Description  | Description given to the runner |
-| Version      | GitLab Runner version |
-| IP address   | IP address of the host on which the runner is registered |
-| Projects     | Number of projects to which the runner is assigned |
-| Jobs         | Total of jobs run by the runner |
-| Tags         | Tags associated with the runner |
-| Last contact | Timestamp indicating when the runner last contacted the GitLab instance |
+| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the **Ultimate** tier, the upgrade status is available. |
+| Runner details | Information about the runner, including partial token and details about the computer the runner was registered from. |
+| Version      | GitLab Runner version. |
+| Jobs         | Total number of jobs run by the runner. |
+| Tags         | Tags associated with the runner. |
+| Last contact | Timestamp indicating when the runner last contacted the GitLab instance. |
 
 You can also edit, pause, or remove each runner.
 

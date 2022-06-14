@@ -14773,7 +14773,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindinglocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.1. Use `title`. |
 | <a id="pipelinesecurityreportfindingproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability finding was found. |
-| <a id="pipelinesecurityreportfindingprojectfingerprint"></a>`projectFingerprint` | [`String`](#string) | Name of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindingprojectfingerprint"></a>`projectFingerprint` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.1. The `project_fingerprint` attribute is being deprecated. Use `uuid` to identify findings. |
 | <a id="pipelinesecurityreportfindingreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
