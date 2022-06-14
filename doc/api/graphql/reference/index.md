@@ -717,6 +717,27 @@ Input type: `ApiFuzzingCiConfigurationCreateInput`
 | <a id="mutationapifuzzingciconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
 
+### `Mutation.auditEventsStreamingHeadersCreate`
+
+Input type: `AuditEventsStreamingHeadersCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheaderscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreamingheaderscreatedestinationid"></a>`destinationId` | [`AuditEventsExternalAuditEventDestinationID!`](#auditeventsexternalauditeventdestinationid) | Destination to associate header with. |
+| <a id="mutationauditeventsstreamingheaderscreatekey"></a>`key` | [`String!`](#string) | Header key. |
+| <a id="mutationauditeventsstreamingheaderscreatevalue"></a>`value` | [`String!`](#string) | Header value. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheaderscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreamingheaderscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsstreamingheaderscreateheader"></a>`header` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | Created header. |
+
 ### `Mutation.awardEmojiAdd`
 
 Input type: `AwardEmojiAddInput`
@@ -5679,6 +5700,29 @@ The edge type for [`AlertManagementIntegration`](#alertmanagementintegration).
 | <a id="alertmanagementintegrationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="alertmanagementintegrationedgenode"></a>`node` | [`AlertManagementIntegration`](#alertmanagementintegration) | The item at the end of the edge. |
 
+#### `AuditEventStreamingHeaderConnection`
+
+The connection type for [`AuditEventStreamingHeader`](#auditeventstreamingheader).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreamingheaderconnectionedges"></a>`edges` | [`[AuditEventStreamingHeaderEdge]`](#auditeventstreamingheaderedge) | A list of edges. |
+| <a id="auditeventstreamingheaderconnectionnodes"></a>`nodes` | [`[AuditEventStreamingHeader]`](#auditeventstreamingheader) | A list of nodes. |
+| <a id="auditeventstreamingheaderconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AuditEventStreamingHeaderEdge`
+
+The edge type for [`AuditEventStreamingHeader`](#auditeventstreamingheader).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreamingheaderedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="auditeventstreamingheaderedgenode"></a>`node` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | The item at the end of the edge. |
+
 #### `AwardEmojiConnection`
 
 The connection type for [`AwardEmoji`](#awardemoji).
@@ -9137,6 +9181,18 @@ Represents a vulnerability asset type.
 | <a id="assettypetype"></a>`type` | [`String!`](#string) | Type of the asset. |
 | <a id="assettypeurl"></a>`url` | [`String!`](#string) | URL of the asset. |
 
+### `AuditEventStreamingHeader`
+
+Represents a HTTP header key/value that belongs to an audit streaming destination.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreamingheaderid"></a>`id` | [`ID!`](#id) | ID of the header. |
+| <a id="auditeventstreamingheaderkey"></a>`key` | [`String!`](#string) | Key of the header. |
+| <a id="auditeventstreamingheadervalue"></a>`value` | [`String!`](#string) | Value of the header. |
+
 ### `AwardEmoji`
 
 An emoji awarded by a user.
@@ -11293,6 +11349,7 @@ Represents an external resource to send audit events to.
 | ---- | ---- | ----------- |
 | <a id="externalauditeventdestinationdestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
 | <a id="externalauditeventdestinationgroup"></a>`group` | [`Group!`](#group) | Group the destination belongs to. |
+| <a id="externalauditeventdestinationheaders"></a>`headers` | [`AuditEventStreamingHeaderConnection!`](#auditeventstreamingheaderconnection) | List of additional HTTP headers sent with each event. Available only when feature flag `streaming_audit_event_headers` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="externalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="externalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 

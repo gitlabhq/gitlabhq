@@ -1,9 +1,10 @@
 .page-title-holder.d-flex.align-items-center
   %h1.page-title.gl-font-size-h-display= _('Projects')
 
-.top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  .fade-left= sprite_icon('chevron-lg-left', size: 12)
-  .fade-right= sprite_icon('chevron-lg-right', size: 12)
-  = render 'dashboard/projects_nav'
+.top-area
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+    .fade-left= sprite_icon('chevron-lg-left', size: 12)
+    .fade-right= sprite_icon('chevron-lg-right', size: 12)
+    = render 'dashboard/projects_nav'
   .nav-controls
     = render 'shared/topics/search_form'

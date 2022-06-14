@@ -11,7 +11,7 @@ module QA
 
       module_function
 
-      def shell(command, stdin_data: nil, fail_on_exception: true, stream_progress: true) # rubocop:disable Metrics/CyclomaticComplexity
+      def shell(command, stdin_data: nil, fail_on_exception: true, stream_progress: true, mask_secrets: []) # rubocop:disable Metrics/CyclomaticComplexity
         cmd_string = Array(command).join(' ')
 
         QA::Runtime::Logger.info("Executing: `#{cmd_string.cyan}`")
@@ -24,6 +24,8 @@ module QA
           cmd_output = ''
 
           out.each do |line|
+            line = mask_secrets_on_string(line, mask_secrets)
+
             cmd_output += line
             yield line if block_given?
 
@@ -36,7 +38,7 @@ module QA
 
           if wait.value.exited? && wait.value.exitstatus.nonzero? && fail_on_exception
             Runtime::Logger.error("Command output:\n#{cmd_output.strip}") unless cmd_output.empty?
-            raise CommandError, "Command: `#{cmd_string}` failed! ✘"
+            raise CommandError, "Command: `#{mask_secrets_on_string(cmd_string, mask_secrets)}` failed! ✘"
           end
 
           Runtime::Logger.debug("Command output:\n#{cmd_output.strip}") unless cmd_output.empty?
@@ -65,6 +67,10 @@ module QA
         wait_until_shell_command(cmd, stream_progress: false, **kwargs) do |line|
           line =~ regex
         end
+      end
+
+      def mask_secrets_on_string(str, secrets)
+        secrets.reduce(str) { |s, secret| s.gsub(secret, '****') }
       end
     end
   end

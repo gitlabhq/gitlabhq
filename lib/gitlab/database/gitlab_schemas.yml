@@ -39,6 +39,7 @@ ar_internal_metadata: :gitlab_shared
 atlassian_identities: :gitlab_main
 audit_events_external_audit_event_destinations: :gitlab_main
 audit_events: :gitlab_main
+audit_events_streaming_headers: :gitlab_main
 authentication_events: :gitlab_main
 award_emoji: :gitlab_main
 aws_roles: :gitlab_main

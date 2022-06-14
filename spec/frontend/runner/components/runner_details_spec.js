@@ -1,4 +1,4 @@
-import { GlSprintf, GlIntersperse, GlTab } from '@gitlab/ui';
+import { GlSprintf, GlIntersperse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { useFakeDate } from 'helpers/fake_date';
@@ -8,7 +8,6 @@ import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner
 import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerDetail from '~/runner/components/runner_detail.vue';
 import RunnerGroups from '~/runner/components/runner_groups.vue';
-import RunnersJobs from '~/runner/components/runner_jobs.vue';
 import RunnerTags from '~/runner/components/runner_tags.vue';
 import RunnerTag from '~/runner/components/runner_tag.vue';
 
@@ -25,10 +24,13 @@ describe('RunnerDetails', () => {
   useFakeDate(mockNow);
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
-  const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
-  const findJobCountBadge = () => wrapper.findByTestId('job-count-badge');
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended, stubs } = {}) => {
+  const createComponent = ({
+    props = {},
+    stubs,
+    mountFn = shallowMountExtended,
+    ...options
+  } = {}) => {
     wrapper = mountFn(RunnerDetails, {
       propsData: {
         ...props,
@@ -37,6 +39,7 @@ describe('RunnerDetails', () => {
         RunnerDetail,
         ...stubs,
       },
+      ...options,
     });
   };
 
@@ -139,40 +142,17 @@ describe('RunnerDetails', () => {
     });
   });
 
-  describe('Jobs tab', () => {
-    const stubs = { GlTab };
+  describe('Jobs tab slot', () => {
+    it('shows job tab slot', () => {
+      const JOBS_TAB = '<div>Jobs Tab</div>';
 
-    it('without a runner, shows no jobs', () => {
       createComponent({
-        props: { runner: null },
-        stubs,
-      });
-
-      expect(findJobCountBadge().exists()).toBe(false);
-      expect(findRunnersJobs().exists()).toBe(false);
-    });
-
-    it('without a job count, shows no jobs count', () => {
-      createComponent({
-        props: {
-          runner: { ...mockRunner, jobCount: undefined },
+        slots: {
+          'jobs-tab': JOBS_TAB,
         },
-        stubs,
       });
 
-      expect(findJobCountBadge().exists()).toBe(false);
-    });
-
-    it('with a job count, shows jobs count', () => {
-      const runner = { ...mockRunner, jobCount: 3 };
-
-      createComponent({
-        props: { runner },
-        stubs,
-      });
-
-      expect(findJobCountBadge().text()).toBe('3');
-      expect(findRunnersJobs().props('runner')).toBe(runner);
+      expect(wrapper.html()).toContain(JOBS_TAB);
     });
   });
 });

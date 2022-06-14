@@ -11655,6 +11655,26 @@ CREATE SEQUENCE audit_events_id_seq
 
 ALTER SEQUENCE audit_events_id_seq OWNED BY audit_events.id;
 
+CREATE TABLE audit_events_streaming_headers (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_audit_event_destination_id bigint NOT NULL,
+    key text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_53c3152034 CHECK ((char_length(key) <= 255)),
+    CONSTRAINT check_ac213cca22 CHECK ((char_length(value) <= 255))
+);
+
+CREATE SEQUENCE audit_events_streaming_headers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_headers_id_seq OWNED BY audit_events_streaming_headers.id;
+
 CREATE TABLE authentication_events (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22545,6 +22565,8 @@ ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_external_audit_event_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
+
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
 
 ALTER TABLE ONLY award_emoji ALTER COLUMN id SET DEFAULT nextval('award_emoji_id_seq'::regclass);
@@ -24165,6 +24187,9 @@ ALTER TABLE ONLY audit_events_external_audit_event_destinations
 
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
+
+ALTER TABLE ONLY audit_events_streaming_headers
+    ADD CONSTRAINT audit_events_streaming_headers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY authentication_events
     ADD CONSTRAINT authentication_events_pkey PRIMARY KEY (id);
@@ -26782,6 +26807,8 @@ CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON e
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
 
+CREATE UNIQUE INDEX idx_external_audit_event_destination_id_key_uniq ON audit_events_streaming_headers USING btree (key, external_audit_event_destination_id);
+
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON geo_container_repository_updated_events USING btree (container_repository_id);
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
@@ -26891,6 +26918,8 @@ CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans 
 CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan_type);
 
 CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knative ON serverless_domain_cluster USING btree (clusters_applications_knative_id);
+
+CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
 
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
 
@@ -32288,6 +32317,9 @@ ALTER TABLE ONLY vulnerability_exports
 
 ALTER TABLE ONLY prometheus_alert_events
     ADD CONSTRAINT fk_rails_106f901176 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_streaming_headers
+    ADD CONSTRAINT fk_rails_109fcf96e2 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_projects
     ADD CONSTRAINT fk_rails_10a1eb379a FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;

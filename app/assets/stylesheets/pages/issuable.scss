@@ -937,3 +937,58 @@
   margin-right: -7px;
   z-index: 1;
 }
+
+.issuable-discussion.incident-timeline-events {
+  .main-notes-list::before {
+    content: none;
+  }
+
+  .timeline-event-note {
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/**
+ * We have a very specific design proposal where we cannot
+ * use `vertical-line` mixin as it is and have to use
+ * custom styles, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81284#note_904867444
+ */
+.timeline-entry-vertical-line {
+  &::before,
+  &::after {
+    content: '';
+    border-left: 2px solid $gray-50;
+    position: absolute;
+    left: 39px;
+    height: 80%;
+  }
+
+  &:first-child::before,
+  &:last-child::after {
+    content: none;
+  }
+
+  &:first-child {
+    &::after {
+      top: 50%;
+    }
+  }
+
+  &:last-child {
+    &::before {
+      bottom: 50%;
+    }
+  }
+
+  &:not(:first-child):not(:last-child) {
+    &::before {
+      top: -10%;
+    }
+
+    &::after {
+      bottom: -10%;
+    }
+  }
+}

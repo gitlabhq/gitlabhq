@@ -479,7 +479,7 @@ gem 'sys-filesystem', '~> 1.4.3'
 gem 'net-ntp'
 
 # SSH keys support
-gem 'ssh_data', '~> 1.2'
+gem 'ssh_data', '~> 1.3'
 
 # Spamcheck GRPC protocol definitions
 gem 'spamcheck', '~> 0.1.0'
@@ -547,3 +547,5 @@ gem 'ipaddress', '~> 0.8.3'
 gem 'parslet', '~> 1.8'
 
 gem 'ipynbdiff', '0.4.7'
+
+gem 'ed25519', '~> 1.3.0'

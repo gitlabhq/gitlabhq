@@ -57,7 +57,7 @@ export function initShow() {
   const { issueType, ...issuableData } = parseIssuableData(el);
 
   if (issueType === IssueType.Incident) {
-    initIncidentApp(issuableData);
+    initIncidentApp({ ...issuableData, issuableId: el.dataset.issuableId });
     initHeaderActions(store, IssueType.Incident);
     initRelatedIssues(IssueType.Incident);
   } else {

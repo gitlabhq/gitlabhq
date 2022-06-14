@@ -6851,50 +6851,46 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#access_request_approvers_to_be_notified' do
+    shared_examples 'returns active, non_invited, non_requested owners/maintainers of the project' do
+      specify do
+        maintainer = create(:project_member, :maintainer, source: project)
+
+        create(:project_member, :developer, project: project)
+        create(:project_member, :maintainer, :invited, project: project)
+        create(:project_member, :maintainer, :access_request, project: project)
+        create(:project_member, :maintainer, :blocked, project: project)
+        create(:project_member, :owner, :blocked, project: project)
+
+        expect(project.access_request_approvers_to_be_notified.to_a).to match_array([maintainer, owner])
+      end
+    end
+
     context 'for a personal project' do
       let_it_be(:project) { create(:project) }
-      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:owner) { project.members.find_by(user_id: project.first_owner.id) }
 
-      let(:owner_membership) { project.members.owners.find_by(user_id: project.namespace.owner_id) }
-
-      it 'includes only the owner of the personal project' do
-        expect(project.access_request_approvers_to_be_notified.to_a).to eq([owner_membership])
-      end
-
-      it 'includes the maintainers of the personal project, if any' do
-        project.add_maintainer(maintainer)
-        maintainer_membership = project.members.maintainers.find_by(user_id: maintainer.id)
-
-        expect(project.access_request_approvers_to_be_notified.to_a).to match_array([owner_membership, maintainer_membership])
-      end
+      it_behaves_like 'returns active, non_invited, non_requested owners/maintainers of the project'
     end
 
-    let_it_be(:project) { create(:project, group: create(:group, :public)) }
+    context 'for a project in a group' do
+      let_it_be(:project) { create(:project, group: create(:group, :public)) }
+      let_it_be(:owner) { create(:project_member, :owner, source: project) }
 
-    it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do
-      limit = 2
-      stub_const("Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT", limit)
-      users = create_list(:user, limit + 1, :with_sign_ins)
-      active_maintainers = users.map do |user|
-        create(:project_member, :maintainer, user: user, project: project)
+      it 'returns a maximum of ten maintainers/owners of the project in recent_sign_in descending order' do
+        users = create_list(:user, 11, :with_sign_ins)
+
+        active_maintainers_and_owners = users.map do |user|
+          create(:project_member, [:maintainer, :owner].sample, user: user, project: project)
+        end
+
+        active_maintainers_and_owners_in_recent_sign_in_desc_order = project.members
+                                                                            .id_in(active_maintainers_and_owners)
+                                                                            .order_recent_sign_in.limit(10)
+
+        expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_and_owners_in_recent_sign_in_desc_order)
       end
 
-      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters
-                                                               .id_in(active_maintainers)
-                                                               .order_recent_sign_in.limit(limit)
-
-      expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_in_recent_sign_in_desc_order)
-    end
-
-    it 'returns active, non_invited, non_requested maintainers of the project' do
-      maintainer = create(:project_member, :maintainer, source: project)
-
-      create(:project_member, :developer, project: project)
-      create(:project_member, :maintainer, :invited, project: project)
-      create(:project_member, :maintainer, :access_request, project: project)
-      create(:project_member, :maintainer, :blocked, project: project)
-
-      expect(project.access_request_approvers_to_be_notified.to_a).to eq([maintainer])
+      it_behaves_like 'returns active, non_invited, non_requested owners/maintainers of the project'
     end
   end
 

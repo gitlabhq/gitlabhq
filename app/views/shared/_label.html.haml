@@ -14,8 +14,9 @@
         dom_id: dom_id(label), type: label.type } }
         %button.add-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
           = sprite_icon('star-o')
-        %button.remove-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip{ title: _('Remove priority'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Deprioritize label') }
-          = sprite_icon('star')
+        = render Pajamas::ButtonComponent.new(category: :tertiary,
+          icon: 'star',
+          button_options: { class: 'remove-priority has-tooltip', 'title': _('Remove priority'), 'aria_label': _('Deprioritize label'), data: { placement: 'bottom' } })
     - if can?(current_user, :admin_label, label)
       %li.gl-display-inline-block
         = link_to label.edit_path, class: 'btn gl-button btn-default-tertiary btn-sm edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
@@ -23,8 +24,9 @@
     - if can?(current_user, :admin_label, label)
       %li.gl-display-inline-block
         .dropdown
-          %button{ type: 'button', class: 'btn gl-button btn-default-tertiary btn-sm js-label-options-dropdown', data: { toggle: 'dropdown' }, aria_label: _('Label actions dropdown') }
-            = sprite_icon('ellipsis_v')
+          = render Pajamas::ButtonComponent.new(category: :tertiary,
+            icon: 'ellipsis_v',
+            button_options: { class: 'js-label-options-dropdown', 'aria_label': _('Label actions dropdown'), data: { toggle: 'dropdown' } })
           .dropdown-menu.dropdown-open-left
             %ul
               - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)

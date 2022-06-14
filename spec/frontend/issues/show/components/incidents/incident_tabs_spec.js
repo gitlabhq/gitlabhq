@@ -36,6 +36,7 @@ describe('Incident Tabs component', () => {
             fullPath: '',
             iid: '',
             projectId: '',
+            issuableId: '',
             uploadMetricsFeatureAvailable: true,
             glFeatures: { incidentTimeline: true },
           },
@@ -47,6 +48,9 @@ describe('Incident Tabs component', () => {
               queries: {
                 alert: {
                   loading: true,
+                },
+                timelineEvents: {
+                  loading: false,
                 },
               },
             },

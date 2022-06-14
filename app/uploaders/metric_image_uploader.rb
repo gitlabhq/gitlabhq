@@ -6,6 +6,10 @@ class MetricImageUploader < GitlabUploader # rubocop:disable Gitlab/NamespacedCl
   prepend ObjectStorage::Extension::RecordsUploads
   include UploaderHelper
 
+  def self.workhorse_local_upload_path
+    File.join(options.storage_path, 'uploads', TMP_UPLOAD_PATH)
+  end
+
   private
 
   def dynamic_segment

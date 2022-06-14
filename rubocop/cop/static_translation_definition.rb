@@ -2,63 +2,118 @@
 
 module RuboCop
   module Cop
+    # This cop flags translation definitions in static scopes because changing
+    # locales has no effect and won't translate this text again.
+    #
+    # See https://docs.gitlab.com/ee/development/i18n/externalization.html#keep-translations-dynamic
+    #
+    # @example
+    #
+    # # bad
+    # class MyExample
+    #   # Constant
+    #   Translation = _('A translation.')
+    #
+    #   # Class scope
+    #   field :foo, title: _('A title')
+    #
+    #   validates :title, :presence, message: _('is missing')
+    #
+    #   # Memoized
+    #   def self.translations
+    #     @cached ||= { text: _('A translation.') }
+    #   end
+    #
+    #   included do # or prepended or class_methods
+    #     self.error_message = _('Something went wrong.')
+    #   end
+    # end
+    #
+    # # good
+    # class MyExample
+    #   # Keep translations dynamic.
+    #   Translation = -> { _('A translation.') }
+    #   # OR
+    #   def translation
+    #     _('A translation.')
+    #   end
+    #
+    #   field :foo, title: -> { _('A title') }
+    #
+    #   validates :title, :presence, message: -> { _('is missing') }
+    #
+    #   def self.translations
+    #     { text: _('A translation.') }
+    #   end
+    #
+    #   included do # or prepended or class_methods
+    #     self.error_message = -> { _('Something went wrong.') }
+    #   end
+    # end
+    #
     class StaticTranslationDefinition < RuboCop::Cop::Cop
-      MSG = "The text you're translating will be already in the translated form when it's assigned to the constant. When a users changes the locale, these texts won't be translated again. Consider moving the translation logic to a method."
+      MSG = <<~TEXT.tr("\n", ' ')
+        Translation is defined in static scope.
+        Keep translations dynamic. See https://docs.gitlab.com/ee/development/i18n/externalization.html#keep-translations-dynamic
+      TEXT
 
-      TRANSLATION_METHODS = %i[_ s_ n_].freeze
+      RESTRICT_ON_SEND = %i[_ s_ n_].freeze
+
+      # List of method names which are not considered real method definitions.
+      # See https://api.rubyonrails.org/classes/ActiveSupport/Concern.html
+      NON_METHOD_DEFINITIONS = %i[class_methods included prepended].to_set.freeze
 
       def_node_matcher :translation_method?, <<~PATTERN
-        (send _ _ str*)
-      PATTERN
-
-      def_node_matcher :lambda_node?, <<~PATTERN
-        (send _ :lambda)
-      PATTERN
-
-      def_node_matcher :struct_constant_assignment?, <<~PATTERN
-        (casgn _ _ `(const _ :Struct))
+        (send _ {#{RESTRICT_ON_SEND.map(&:inspect).join(' ')}} str*)
       PATTERN
 
       def on_send(node)
         return unless translation_method?(node)
 
-        method_name = node.children[1]
-        return unless TRANSLATION_METHODS.include?(method_name)
-
-        translation_memoized = false
+        static = true
+        memoized = false
 
         node.each_ancestor do |ancestor|
-          receiver, _ = *ancestor
-          break if lambda_node?(receiver) # translations defined in lambda nodes should be allowed
+          memoized = true if memoized?(ancestor)
 
-          if constant_assignment?(ancestor) && !struct_constant_assignment?(ancestor)
-            add_offense(node, location: :expression)
-
-            break
-          end
-
-          translation_memoized = true if memoization?(ancestor)
-
-          if translation_memoized && class_method_definition?(ancestor)
-            add_offense(node, location: :expression)
-
+          if dynamic?(ancestor, memoized)
+            static = false
             break
           end
         end
+
+        add_offense(node) if static
       end
 
       private
 
-      def constant_assignment?(node)
-        node.type == :casgn
-      end
-
-      def memoization?(node)
+      def memoized?(node)
         node.type == :or_asgn
       end
 
-      def class_method_definition?(node)
-        node.type == :defs
+      def dynamic?(node, memoized)
+        lambda_or_proc?(node) ||
+          named_block?(node) ||
+          instance_method_definition?(node) ||
+          unmemoized_class_method_definition?(node, memoized)
+      end
+
+      def lambda_or_proc?(node)
+        node.lambda_or_proc?
+      end
+
+      def named_block?(node)
+        return unless node.block_type?
+
+        !NON_METHOD_DEFINITIONS.include?(node.method_name) # rubocop:disable Rails/NegateInclude
+      end
+
+      def instance_method_definition?(node)
+        node.type == :def
+      end
+
+      def unmemoized_class_method_definition?(node, memoized)
+        node.type == :defs && !memoized
       end
     end
   end

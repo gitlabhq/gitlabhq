@@ -162,7 +162,7 @@ export default {
               ref="viewDocumentationBtn"
               category="secondary"
               class="gl-xs-w-full gl-xs-mb-3"
-              variant="info"
+              variant="confirm"
               target="_blank"
               :href="addDashboardDocumentationPath"
             >

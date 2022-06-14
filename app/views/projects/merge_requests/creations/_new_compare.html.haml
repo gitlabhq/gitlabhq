@@ -12,24 +12,27 @@
         .clearfix
           .merge-request-select.dropdown
             = f.hidden_field :source_project_id
-            = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
+            = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted?, default_text: _("Select source project") }, { toggle_class: "js-compare-dropdown js-source-project" }
             .dropdown-menu.dropdown-menu-selectable.dropdown-source-project
-              = dropdown_title("Select source project")
-              = dropdown_filter("Search projects")
+              = dropdown_title(_("Select source project"))
+              = dropdown_filter(_("Search projects"))
               = dropdown_content do
                 = render 'projects/merge_requests/dropdowns/project',
                   projects: [@merge_request.source_project],
                   selected: f.object.source_project_id
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
-            = dropdown_toggle f.object.source_branch.presence || _("Select source branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[source_branch]", 'refs-url': refs_project_path(@source_project), selected: f.object.source_branch, qa_selector: "source_branch_dropdown" }, { toggle_class: "js-compare-dropdown js-source-branch monospace" }
+            = dropdown_toggle f.object.source_branch.presence || _("Select source branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[source_branch]", 'refs-url': refs_project_path(@source_project), selected: f.object.source_branch, default_text: _("Select target branch"), qa_selector: "source_branch_dropdown" }, { toggle_class: "js-compare-dropdown js-source-branch monospace" }
             .dropdown-menu.dropdown-menu-selectable.js-source-branch-dropdown.git-revision-dropdown
               = dropdown_title(_("Select source branch"))
               = dropdown_filter(_("Search branches"))
               = dropdown_content
               = dropdown_loading
         .gl-bg-gray-50.gl-rounded-base.gl-mx-2.gl-my-4
-          = gl_loading_icon(css_class: 'js-source-loading gl-my-3')
+          .compare-commit-empty.js-source-commit-empty.gl-display-flex.gl-align-items-center.gl-p-5{ style: 'display: none;' }
+            = sprite_icon('branch', size: 16, css_class: 'gl-mr-3')
+            = _('Select a branch to compare')
+          = gl_loading_icon(css_class: 'js-source-loading gl-py-3')
           %ul.list-unstyled.mr_source_commit
 
     .col-lg-6
@@ -40,24 +43,27 @@
           - projects = target_projects(@project)
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
-            = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
+            = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted?, default_text: _("Select target project") }, { toggle_class: "js-compare-dropdown js-target-project" }
             .dropdown-menu.dropdown-menu-selectable.dropdown-target-project
-              = dropdown_title("Select target project")
-              = dropdown_filter("Search projects")
+              = dropdown_title(_("Select target project"))
+              = dropdown_filter(_("Search projects"))
               = dropdown_content do
                 = render 'projects/merge_requests/dropdowns/project',
                   projects: projects,
                   selected: f.object.target_project_id
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
-            = dropdown_toggle f.object.target_branch.presence || _("Select target branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[target_branch]", 'refs-url': refs_project_path(f.object.target_project), selected: f.object.target_branch }, { toggle_class: "js-compare-dropdown js-target-branch monospace" }
+            = dropdown_toggle f.object.target_branch.presence || _("Select target branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[target_branch]", 'refs-url': refs_project_path(f.object.target_project), selected: f.object.target_branch, default_text: _("Select target branch") }, { toggle_class: "js-compare-dropdown js-target-branch monospace" }
             .dropdown-menu.dropdown-menu-selectable.js-target-branch-dropdown.git-revision-dropdown
               = dropdown_title(_("Select target branch"))
               = dropdown_filter(_("Search branches"))
               = dropdown_content
               = dropdown_loading
         .gl-bg-gray-50.gl-rounded-base.gl-mx-2.gl-my-4
-          = gl_loading_icon(css_class: 'js-target-loading gl-my-3')
+          .compare-commit-empty.js-target-commit-empty.gl-display-flex.gl-align-items-center.gl-p-5{ style: 'display: none;' }
+            = sprite_icon('branch', size: 16, css_class: 'gl-mr-3')
+            = _('Select a branch to compare')
+          = gl_loading_icon(css_class: 'js-target-loading gl-py-3')
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?

@@ -1,5 +1,6 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
+import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
@@ -14,11 +15,11 @@ export default {
   computed: {
     ...mapGetters(['isSidebarOpen']),
   },
-  mounted() {
-    this.performSearch();
+  created() {
+    window.addEventListener('popstate', refreshCurrentPage);
   },
-  methods: {
-    ...mapActions(['performSearch']),
+  destroyed() {
+    window.removeEventListener('popstate', refreshCurrentPage);
   },
 };
 </script>

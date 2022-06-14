@@ -77,7 +77,7 @@ describe('fetchBoard', () => {
     },
   };
 
-  it('should commit mutation RECEIVE_BOARD_SUCCESS and dispatch setBoardConfig on success', async () => {
+  it('should commit mutation REQUEST_CURRENT_BOARD and dispatch setBoard on success', async () => {
     jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
     await testAction({
@@ -87,12 +87,8 @@ describe('fetchBoard', () => {
         {
           type: types.REQUEST_CURRENT_BOARD,
         },
-        {
-          type: types.RECEIVE_BOARD_SUCCESS,
-          payload: mockBoard,
-        },
       ],
-      expectedActions: [{ type: 'setBoardConfig', payload: mockBoard }],
+      expectedActions: [{ type: 'setBoard', payload: mockBoard }],
     });
   });
 
@@ -979,10 +975,6 @@ describe('fetchItemsForList', () => {
       state,
       [
         {
-          type: types.RESET_ITEMS_FOR_LIST,
-          payload: listId,
-        },
-        {
           type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },
         },
@@ -1003,10 +995,6 @@ describe('fetchItemsForList', () => {
       { listId },
       state,
       [
-        {
-          type: types.RESET_ITEMS_FOR_LIST,
-          payload: listId,
-        },
         {
           type: types.REQUEST_ITEMS_FOR_LIST,
           payload: { listId, fetchNext: false },

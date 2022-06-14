@@ -47,7 +47,7 @@ describe('Alert integration settings form', () => {
       resetWebhookUrl.mockResolvedValueOnce({
         data: { pagerduty_webhook_url: newWebhookUrl },
       });
-      findModal().vm.$emit('ok');
+      findModal().vm.$emit('primary');
       await waitForPromises();
       expect(resetWebhookUrl).toHaveBeenCalled();
       expect(findWebhookInput().attributes('value')).toBe(newWebhookUrl);
@@ -56,7 +56,7 @@ describe('Alert integration settings form', () => {
 
     it('should show error message and NOT reset webhook url', async () => {
       resetWebhookUrl.mockRejectedValueOnce();
-      findModal().vm.$emit('ok');
+      findModal().vm.$emit('primary');
       await waitForPromises();
       expect(findAlert().attributes('variant')).toBe('danger');
     });

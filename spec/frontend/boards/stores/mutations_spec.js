@@ -300,24 +300,6 @@ describe('Board Store Mutations', () => {
     });
   });
 
-  describe('RESET_ITEMS_FOR_LIST', () => {
-    it('should remove issues from boardItemsByListId state', () => {
-      const listId = 'gid://gitlab/List/1';
-      const boardItemsByListId = {
-        [listId]: [mockIssue.id],
-      };
-
-      state = {
-        ...state,
-        boardItemsByListId,
-      };
-
-      mutations[types.RESET_ITEMS_FOR_LIST](state, listId);
-
-      expect(state.boardItemsByListId[listId]).toEqual([]);
-    });
-  });
-
   describe('REQUEST_ITEMS_FOR_LIST', () => {
     const listId = 'gid://gitlab/List/1';
     const boardItemsByListId = {

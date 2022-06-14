@@ -1,14 +1,18 @@
 - page_title _('Projects')
 - params[:visibility_level] ||= []
 
-.top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  = gl_tabs_nav({ class: 'gl-border-b-0 gl-overflow-x-auto gl-flex-grow-1 gl-flex-nowrap gl-webkit-scrollbar-display-none' }) do
-    = gl_tab_link_to _('All'), admin_projects_path(visibility_level: nil), { item_active: params[:visibility_level].empty? }
-    = gl_tab_link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-    = gl_tab_link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-    = gl_tab_link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+.top-area
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+    .fade-left= sprite_icon('chevron-lg-left', size: 12)
+    .fade-right= sprite_icon('chevron-lg-right', size: 12)
+    = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1 gl-w-full nav gl-tabs-nav nav gl-tabs-nav' }) do
+      = gl_tab_link_to _('All'), admin_projects_path(visibility_level: nil), { item_active: params[:visibility_level].empty? }
+      = gl_tab_link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      = gl_tab_link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      = gl_tab_link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-  .nav-controls
+
+  .nav-controls.gl-pl-2
     .search-holder
       = render 'shared/projects/search_form', autofocus: true, admin_view: true
       - current_namespace = _('Namespace')

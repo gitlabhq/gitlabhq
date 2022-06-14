@@ -3,7 +3,7 @@
 
 .issue-details.issuable-details.js-issue-details
   .detail-page-description.content-block.js-detail-page-description
-    #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json, full_path: @project.full_path } }
+    #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json, issuable_id: issuable.id, full_path: @project.full_path } }
       .title-container
         %h1.title.page-title.gl-font-size-h-display= markdown_field(issuable, :title)
       - if issuable.description.present?

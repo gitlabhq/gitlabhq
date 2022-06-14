@@ -19,6 +19,7 @@ const PRODUCT_INFO = {
     variant: 'SaaS',
   },
 };
+const EMPTY_NAMESPACE_ID_VALUE = 'not available';
 
 const generateProductInfo = (sku, quantity) => {
   const product = PRODUCT_INFO[sku];
@@ -200,6 +201,10 @@ export const trackCheckout = (selectedPlan, quantity) => {
   pushEnhancedEcommerceEvent('EECCheckout', eventData);
 };
 
+export const getNamespaceId = () => {
+  return window.gl.snowplowStandardContext?.data?.namespace_id || EMPTY_NAMESPACE_ID_VALUE;
+};
+
 export const trackTransaction = (transactionDetails) => {
   if (!isSupported()) {
     return;
@@ -208,6 +213,7 @@ export const trackTransaction = (transactionDetails) => {
   const transactionId = uuidv4();
   const { paymentOption, revenue, tax, selectedPlan, quantity } = transactionDetails;
   const product = generateProductInfo(selectedPlan, quantity);
+  const namespaceId = getNamespaceId();
 
   if (Object.keys(product).length === 0) {
     return;
@@ -224,7 +230,7 @@ export const trackTransaction = (transactionDetails) => {
           revenue: revenue.toString(),
           tax: tax.toString(),
         },
-        products: [product],
+        products: [{ ...product, dimension36: namespaceId }],
       },
     },
   };

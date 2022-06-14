@@ -3,6 +3,7 @@
  *
  */
 $tabs-holder-z-index: 250;
+$comparison-empty-state-height: 62px;
 
 .space-children {
   @include clearfix;
@@ -68,6 +69,10 @@ $tabs-holder-z-index: 250;
       background: none;
     }
   }
+}
+
+.compare-commit-empty {
+  min-height: $comparison-empty-state-height;
 }
 
 .commits-empty {

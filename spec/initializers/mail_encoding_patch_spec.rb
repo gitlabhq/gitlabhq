@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 # rubocop:disable RSpec/VariableDefinition, RSpec/VariableName
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'mail'
 require_relative '../../config/initializers/mail_encoding_patch'
 
 RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode characters' do
+  include FixtureHelpers
+
   shared_examples 'email encoding' do |email|
     it 'enclosing in a new object does not change the encoded original' do
       new_email = Mail.new(email)
@@ -201,6 +203,36 @@ RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode charac
 
         # Content cannot be recovered
         expect(email.parts.first.decoded).not_to eq(image)
+      end
+    end
+  end
+
+  context 'empty text mail with unsual body encoding' do
+    it 'decodes email successfully' do
+      email = Mail::Message.new(nil)
+
+      Mail::Encodings.get_all.each do |encoder|
+        email.body = nil
+        email.body.charset = 'utf-8'
+        email.body.encoding = encoder.to_s
+
+        expect { email.encoded }.not_to raise_error
+      end
+    end
+  end
+
+  context 'frozen email boy content with unsual body encoding' do
+    let(:content) { fixture_file("emails/ios_default.eml") }
+
+    it 'decodes email successfully' do
+      email = Mail::Message.new(content)
+
+      Mail::Encodings.get_all.each do |encoder|
+        email.body = content.freeze
+        email.body.charset = 'utf-8'
+        email.body.encoding = encoder.to_s
+
+        expect { email.encoded }.not_to raise_error
       end
     end
   end

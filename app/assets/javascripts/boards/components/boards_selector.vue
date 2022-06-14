@@ -14,6 +14,8 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isMetaKey } from '~/lib/utils/common_utils';
+import { updateHistory } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
 import eventHub from '../eventhub';
@@ -21,6 +23,7 @@ import groupBoardsQuery from '../graphql/group_boards.query.graphql';
 import projectBoardsQuery from '../graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '../graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '../graphql/project_recent_boards.query.graphql';
+import { fullBoardId } from '../boards_util';
 
 const MIN_BOARDS_TO_VIEW_RECENT = 10;
 
@@ -112,6 +115,9 @@ export default {
       this.scrollFadeInitialized = false;
       this.$nextTick(this.setScrollFade);
     },
+    board(newBoard) {
+      document.title = newBoard.name;
+    },
   },
   created() {
     eventHub.$on('showBoardModal', this.showPage);
@@ -120,7 +126,7 @@ export default {
     eventHub.$off('showBoardModal', this.showPage);
   },
   methods: {
-    ...mapActions(['setError', 'setBoardConfig']),
+    ...mapActions(['setError', 'fetchBoard', 'unsetActiveId']),
     showPage(page) {
       this.currentPage = page;
     },
@@ -196,6 +202,22 @@ export default {
 
       this.hasScrollFade = this.isScrolledUp();
     },
+    fetchCurrentBoard(boardId) {
+      this.fetchBoard({
+        fullPath: this.fullPath,
+        fullBoardId: fullBoardId(boardId),
+        boardType: this.boardType,
+      });
+    },
+    async switchBoard(boardId, e) {
+      if (isMetaKey(e)) {
+        window.open(`${this.boardBaseUrl}/${boardId}`, '_blank');
+      } else {
+        this.unsetActiveId();
+        this.fetchCurrentBoard(boardId);
+        updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
+      }
+    },
   },
   i18n: {
     errorFetchingBoard: s__('Board|An error occurred while fetching the board, please try again.'),
@@ -242,8 +264,8 @@ export default {
             <gl-dropdown-item
               v-for="recentBoard in recentBoards"
               :key="`recent-${recentBoard.id}`"
-              :href="`${boardBaseUrl}/${recentBoard.id}`"
               data-testid="dropdown-item"
+              @click.prevent="switchBoard(recentBoard.id, $event)"
             >
               {{ recentBoard.name }}
             </gl-dropdown-item>
@@ -258,8 +280,8 @@ export default {
           <gl-dropdown-item
             v-for="otherBoard in filteredBoards"
             :key="otherBoard.id"
-            :href="`${boardBaseUrl}/${otherBoard.id}`"
             data-testid="dropdown-item"
+            @click.prevent="switchBoard(otherBoard.id, $event)"
           >
             {{ otherBoard.name }}
           </gl-dropdown-item>

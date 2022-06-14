@@ -84,9 +84,9 @@ linters:
 
   RuboCop:
     enabled: true
-    # These cops are incredibly noisy when it comes to HAML templates, so we
-    # ignore them.
     ignored_cops:
+      # These cops are incredibly noisy when it comes to HAML templates, so we
+      # ignore them.
       - Layout/BlockAlignment
       - Layout/EndAlignment
       - Layout/LineLength
@@ -103,6 +103,7 @@ linters:
       - Style/Next
       - Style/TrailingWhitespace
       - Style/WhileUntilModifier
+      - Cop/StaticTranslationDefinition
 
       # These cops should eventually get enabled
       - Cop/LineBreakAfterGuardClauses

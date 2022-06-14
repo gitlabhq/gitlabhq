@@ -9,11 +9,7 @@ require_relative '../../../rubocop/cop/static_translation_definition'
 RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
   using RSpec::Parameterized::TableSyntax
 
-  let(:msg) do
-    "The text you're translating will be already in the translated form when it's assigned to the constant. " \
-    "When a users changes the locale, these texts won't be translated again. " \
-    "Consider moving the translation logic to a method."
-  end
+  let(:msg) { described_class::MSG }
 
   subject(:cop) { described_class.new }
 
@@ -62,7 +58,7 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
             }
           end
         CODE
-        <<~CODE
+        <<~CODE,
           class MyClass
             B = [
               [
@@ -70,6 +66,26 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
                 ^^^^^^^ #{msg}
               ]
             ]
+          end
+        CODE
+        <<~CODE,
+          class MyClass
+            field :foo, title: _('A title')
+                               ^^^^^^^^^^^^ #{msg}
+          end
+        CODE
+        <<~CODE
+          included do
+            _('a')
+            ^^^^^^ #{msg}
+          end
+          prepended do
+            self.var = _('a')
+                       ^^^^^^ #{msg}
+          end
+          class_methods do
+            _('a')
+            ^^^^^^ #{msg}
           end
         CODE
       ]
@@ -90,6 +106,13 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
           class MyClass
             def self.method
               @cache ||= { hello: -> { _("hello") } }
+            end
+          end
+        CODE
+        <<~CODE,
+          class MyClass
+            def self.method
+              @cache ||= { hello: proc { _("hello") } }
             end
           end
         CODE
@@ -128,10 +151,27 @@ RSpec.describe RuboCop::Cop::StaticTranslationDefinition do
             end
           end
         CODE
-        <<~CODE
+        <<~CODE,
           Struct.new('SomeClass') do
             def text
               _('Some translated text')
+            end
+          end
+        CODE
+        <<~CODE,
+          class MyClass
+            field :foo, title: -> { _('A title') }
+          end
+        CODE
+        <<~CODE
+          included do
+            put do
+              _('b')
+            end
+          end
+          class_methods do
+            expose do
+              _('b')
             end
           end
         CODE

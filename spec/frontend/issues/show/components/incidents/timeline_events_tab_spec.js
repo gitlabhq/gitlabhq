@@ -1,17 +1,43 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
+import Vue from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import TimelineEventsTab from '~/issues/show/components/incidents/timeline_events_tab.vue';
+import IncidentTimelineEventsList from '~/issues/show/components/incidents/timeline_events_list.vue';
+import timelineEventsQuery from '~/issues/show/components/incidents/graphql/queries/get_timeline_events.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { createAlert } from '~/flash';
+import { timelineEventsQueryListResponse, timelineEventsQueryEmptyResponse } from './mock_data';
 
-describe('TimlineEventsTab', () => {
+Vue.use(VueApollo);
+
+jest.mock('~/flash');
+
+const graphQLError = new Error('GraphQL error');
+const listResponse = jest.fn().mockResolvedValue(timelineEventsQueryListResponse);
+const emptyResponse = jest.fn().mockResolvedValue(timelineEventsQueryEmptyResponse);
+const errorResponse = jest.fn().mockRejectedValue(graphQLError);
+
+function createMockApolloProvider(response = listResponse) {
+  const requestHandlers = [[timelineEventsQuery, response]];
+  return createMockApollo(requestHandlers);
+}
+
+describe('TimelineEventsTab', () => {
   let wrapper;
 
-  const mountComponent = () => {
-    wrapper = shallowMount(TimelineEventsTab);
-  };
+  const mountComponent = (options = {}) => {
+    const { mockApollo, mountMethod = shallowMountExtended } = options;
 
-  beforeEach(() => {
-    mountComponent();
-  });
+    wrapper = mountMethod(TimelineEventsTab, {
+      provide: {
+        fullPath: 'group/project',
+        issuableId: '1',
+      },
+      apolloProvider: mockApollo,
+    });
+  };
 
   afterEach(() => {
     if (wrapper) {
@@ -19,27 +45,61 @@ describe('TimlineEventsTab', () => {
     }
   });
 
-  const findTimelineEventTab = () => wrapper.findComponent(TimelineEventsTab);
-  const findNoEventsLine = () => wrapper.find('p');
-  const findAddEventButton = () => wrapper.findComponent(GlButton);
+  const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findTimelineEventsList = () => wrapper.findComponent(IncidentTimelineEventsList);
 
-  describe('empty state', () => {
+  describe('Timeline events tab', () => {
+    describe('empty state', () => {
+      let mockApollo;
+
+      it('should show an empty list', async () => {
+        mockApollo = createMockApolloProvider(emptyResponse);
+        mountComponent({ mockApollo });
+        await waitForPromises();
+
+        expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+
+    describe('error state', () => {
+      let mockApollo;
+
+      it('should show an error state', async () => {
+        mockApollo = createMockApolloProvider(errorResponse);
+        mountComponent({ mockApollo });
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          captureError: true,
+          error: graphQLError,
+          message: 'Something went wrong while fetching incident timeline events.',
+        });
+      });
+    });
+  });
+
+  describe('timelineEventsQuery', () => {
+    let mockApollo;
+
     beforeEach(() => {
-      mountComponent();
+      mockApollo = createMockApolloProvider();
+      mountComponent({ mockApollo });
     });
 
-    it('renders the title', () => {
-      expect(findTimelineEventTab().attributes('title')).toBe('Timeline');
+    it('should request data', () => {
+      expect(listResponse).toHaveBeenCalled();
     });
 
-    it('renders the text', () => {
-      expect(findNoEventsLine().exists()).toBe(true);
-      expect(findNoEventsLine().text()).toBe('No timeline items have been added yet.');
+    it('should show the loading state', () => {
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findLoadingSpinner().exists()).toBe(true);
     });
 
-    it('renders the button', () => {
-      expect(findAddEventButton().exists()).toBe(true);
-      expect(findAddEventButton().text()).toBe('Add new timeline event');
+    it('should render the list', async () => {
+      await waitForPromises();
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findTimelineEventsList().props('timelineEvents')).toHaveLength(3);
     });
   });
 });

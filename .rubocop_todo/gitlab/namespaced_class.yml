@@ -1101,7 +1101,6 @@ Gitlab/NamespacedClass:
     - 'ee/lib/gitlab/items_collection.rb'
     - 'ee/lib/gitlab/manual_banner.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
-    - 'ee/lib/gitlab/manual_renewal_banner.rb'
     - 'ee/lib/gitlab/pagination_delegate.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/lib/gitlab/proxy.rb'

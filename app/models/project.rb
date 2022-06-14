@@ -2585,16 +2585,7 @@ class Project < ApplicationRecord
   end
 
   def access_request_approvers_to_be_notified
-    # For a personal project:
-    # The creator is added as a member with `Owner` access level, starting from GitLab 14.8
-    # The creator was added as a member with `Maintainer` access level, before GitLab 14.8
-    # So, to make sure access requests for all personal projects work as expected,
-    # we need to filter members with the scope `owners_and_maintainers`.
-    access_request_approvers = if personal?
-                                 members.owners_and_maintainers
-                               else
-                                 members.maintainers
-                               end
+    access_request_approvers = members.owners_and_maintainers
 
     access_request_approvers.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end

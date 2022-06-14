@@ -4,14 +4,17 @@
 - breadcrumb_title _("Jobs")
 - page_title _("Jobs")
 
-.top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  - build_path_proc = ->(scope) { admin_jobs_path(scope: scope) }
-  = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
+.top-area
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+    .fade-left= sprite_icon('chevron-lg-left', size: 12)
+    .fade-right= sprite_icon('chevron-lg-right', size: 12)
+    - build_path_proc = ->(scope) { admin_jobs_path(scope: scope) }
+    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
   - if @all_builds.running_or_pending.any?
     #js-stop-jobs-modal
     .nav-controls
-      %button#js-stop-jobs-button.btn.gl-button.btn-danger{ data: { url: cancel_all_admin_jobs_path } }
+      = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'js-stop-jobs-button', data: { url: cancel_all_admin_jobs_path } }) do
         = s_('AdminArea|Stop all jobs')
 
 .row-content-block.second-block

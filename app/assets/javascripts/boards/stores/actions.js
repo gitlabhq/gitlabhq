@@ -68,8 +68,7 @@ export default {
           commit(types.RECEIVE_BOARD_FAILURE);
         } else {
           const board = data.workspace?.board;
-          commit(types.RECEIVE_BOARD_SUCCESS, board);
-          dispatch('setBoardConfig', board);
+          dispatch('setBoard', board);
         }
       })
       .catch(() => commit(types.RECEIVE_BOARD_FAILURE));
@@ -420,9 +419,6 @@ export default {
   fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
     if (!listId) return null;
 
-    if (!fetchNext) {
-      commit(types.RESET_ITEMS_FOR_LIST, listId);
-    }
     commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
     const { fullPath, fullBoardId, boardType, filterParams } = state;
@@ -444,6 +440,7 @@ export default {
           isSingleRequest: true,
         },
         variables,
+        ...(!fetchNext ? { fetchPolicy: fetchPolicies.NO_CACHE } : {}),
       })
       .then(({ data }) => {
         const { lists } = data[boardType].board;

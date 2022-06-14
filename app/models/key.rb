@@ -28,6 +28,7 @@ class Key < ApplicationRecord
 
   validate :key_meets_restrictions
   validate :expiration, on: :create
+  validate :banned_key, if: :should_check_for_banned_key?
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -140,6 +141,27 @@ class Key < ApplicationRecord
     elsif public_key.bits < restriction
       errors.add(:key, "must be at least #{restriction} bits")
     end
+  end
+
+  def should_check_for_banned_key?
+    return false unless user
+
+    key_changed? && Feature.enabled?(:ssh_banned_key, user)
+  end
+
+  def banned_key
+    return unless public_key.banned?
+
+    help_page_url = Rails.application.routes.url_helpers.help_page_url(
+      'security/ssh_keys_restrictions',
+      anchor: 'block-banned-or-compromised-keys'
+    )
+
+    errors.add(
+      :key,
+      _('cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one.'),
+      help_page_url: help_page_url
+    )
   end
 
   def forbidden_key_type_message

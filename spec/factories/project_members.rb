@@ -6,10 +6,11 @@ FactoryBot.define do
     source { association(:project) }
     maintainer
 
-    trait(:guest)     { access_level { ProjectMember::GUEST } }
-    trait(:reporter)  { access_level { ProjectMember::REPORTER } }
+    trait(:guest) { access_level { ProjectMember::GUEST } }
+    trait(:reporter) { access_level { ProjectMember::REPORTER } }
     trait(:developer) { access_level { ProjectMember::DEVELOPER } }
     trait(:maintainer) { access_level { ProjectMember::MAINTAINER } }
+    trait(:owner) { access_level { ProjectMember::OWNER } }
     trait(:access_request) { requested_at { Time.now } }
 
     trait(:invited) do

@@ -1045,6 +1045,9 @@ msgstr ""
 msgid "%{timebox_type} must have a start and due date"
 msgstr ""
 
+msgid "%{time} UTC"
+msgstr ""
+
 msgid "%{title} %{operator} %{threshold}"
 msgstr ""
 
@@ -20261,9 +20264,6 @@ msgstr ""
 msgid "Incidents|Must start with http or https"
 msgstr ""
 
-msgid "Incident|Add new timeline event"
-msgstr ""
-
 msgid "Incident|Alert details"
 msgstr ""
 
@@ -20286,6 +20286,9 @@ msgid "Incident|Metrics"
 msgstr ""
 
 msgid "Incident|No timeline items have been added yet."
+msgstr ""
+
+msgid "Incident|Something went wrong while fetching incident timeline events."
 msgstr ""
 
 msgid "Incident|Summary"
@@ -34605,6 +34608,9 @@ msgstr ""
 msgid "Select a branch"
 msgstr ""
 
+msgid "Select a branch to compare"
+msgstr ""
+
 msgid "Select a compliance framework to apply to this project. %{linkStart}How are these added?%{linkEnd}"
 msgstr ""
 
@@ -34719,6 +34725,9 @@ msgstr ""
 msgid "Select source branch"
 msgstr ""
 
+msgid "Select source project"
+msgstr ""
+
 msgid "Select start date"
 msgstr ""
 
@@ -34738,6 +34747,9 @@ msgid "Select target branch"
 msgstr ""
 
 msgid "Select target branch or tag"
+msgstr ""
+
+msgid "Select target project"
 msgstr ""
 
 msgid "Select timezone"
@@ -39781,9 +39793,6 @@ msgstr ""
 msgid "To reactivate your account, sign in to GitLab at %{gitlab_url}."
 msgstr ""
 
-msgid "To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance."
-msgstr ""
-
 msgid "To resolve this, try to:"
 msgstr ""
 
@@ -43992,12 +44001,6 @@ msgstr ""
 msgid "Your %{host} account was signed in to from a new location"
 msgstr ""
 
-msgid "Your %{plan} subscription expired on %{expiry_date}"
-msgstr ""
-
-msgid "Your %{plan} subscription expires on %{expiry_date}"
-msgstr ""
-
 msgid "Your %{spammable_entity_type} has been recognized as spam and has been discarded."
 msgstr ""
 
@@ -44300,9 +44303,6 @@ msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Your subscription is now expired. To renew, export your license usage file and email it to %{renewal_service_email}. A new license will be emailed to the email address registered in the %{customers_dot}. You can add this license to your instance. To use Free tier, remove your current license."
-msgstr ""
-
 msgid "Your subscription will expire in %{remaining_days} day."
 msgid_plural "Your subscription will expire in %{remaining_days} days."
 msgstr[0] ""
@@ -44546,6 +44546,9 @@ msgid "cannot be enabled unless all domains have TLS certificates"
 msgstr ""
 
 msgid "cannot be enabled until a valid credit card is on file"
+msgstr ""
+
+msgid "cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one."
 msgstr ""
 
 msgid "cannot be used for user namespace"

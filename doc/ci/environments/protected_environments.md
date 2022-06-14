@@ -228,17 +228,23 @@ Having this configuration in place:
 
 ### Protect critical environments under a group
 
-To protect a group-level environment:
+To protect a group-level environment, make sure your environments have the correct
+[`deployment_tier`](index.md#deployment-tier-of-environments) defined in `.gitlab-ci.yml`.
 
-1. Make sure your environments have the correct
-   [`deployment_tier`](index.md#deployment-tier-of-environments) defined in
-   `.gitlab-ci.yml`.
-1. Configure the group-level protected environments by using the
-   [REST API](../../api/group_protected_environments.md).
+#### Using the UI
 
-NOTE:
-Configuration [with the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/325249)
-is scheduled for a later release.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1 with a flag named `group_level_protected_environment`. Disabled by default.
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Protected environments**.
+1. From the **Environment** list, select the [deployment tier of environments](index.md#deployment-tier-of-environments) you want to protect.
+1. In the **Allowed to deploy** list, select the [subgroups](../../user/group/subgroups/index.md) you want to give deploy access to.
+1. Select **Protect**.
+
+#### Using the API
+
+Configure the group-level protected environments by using the [REST API](../../api/group_protected_environments.md).
 
 ## Deployment approvals
 

@@ -1052,7 +1052,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/vulnerability_exports/export_service_spec.rb'
     - 'ee/spec/services/vulnerability_external_issue_links/create_service_spec.rb'
     - 'ee/spec/support/features/manual_quarterly_co_term_banner_examples.rb'
-    - 'ee/spec/support/features/manual_renewal_banner_examples.rb'
     - 'ee/spec/support/protected_tags/access_control_shared_examples.rb'
     - 'ee/spec/support/shared_contexts/audit_event_not_licensed_shared_context.rb'
     - 'ee/spec/support/shared_contexts/audit_event_queue_shared_context.rb'

@@ -273,12 +273,29 @@
     @include scrolling-links();
   }
 
+  .fade-left::after,
+  .fade-right::after {
+    content: '';
+    pointer-events: none;
+    z-index: -1;
+    display: block;
+    width: 16px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+  }
+
   .fade-right {
     @include fade(left, $gray-light);
     right: -5px;
 
     svg {
       right: -7px;
+    }
+
+    &::after {
+      right: 0;
+      background: linear-gradient(270deg, $white, transparent);
     }
   }
 
@@ -289,6 +306,11 @@
 
     svg {
       left: -7px;
+    }
+
+    &::after {
+      left: 0;
+      background: linear-gradient(90deg, $white, transparent);
     }
   }
 }
@@ -316,7 +338,6 @@
 
   .fade-right,
   .fade-left {
-    bottom: $gl-padding;
     top: auto;
   }
 

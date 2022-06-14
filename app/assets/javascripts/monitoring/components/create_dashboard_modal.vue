@@ -47,7 +47,7 @@ export default {
       <gl-button category="secondary" @click="cancelHandler">{{ s__('Metrics|Cancel') }}</gl-button>
       <gl-button
         category="secondary"
-        variant="info"
+        variant="confirm"
         target="_blank"
         :href="addDashboardDocumentationPath"
         data-testid="create-dashboard-modal-docs-button"

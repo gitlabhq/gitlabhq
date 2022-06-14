@@ -1,0 +1,9 @@
+---
+table_name: audit_events_streaming_headers
+classes:
+  - AuditEvents::Streaming::Header
+feature_categories:
+  - audit_events
+description: Represents a HTTP header sent with streaming audit events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88063
+milestone: '15.1'
