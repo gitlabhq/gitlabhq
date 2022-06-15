@@ -13,7 +13,6 @@ import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PIPELINE_GRAPHQL_TYPE } from '../../constants';
 import { reportToSentry } from '../../utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from './constants';
@@ -35,7 +34,6 @@ export default {
     flatLeftBorder: ['gl-rounded-bottom-left-none!', 'gl-rounded-top-left-none!'],
     flatRightBorder: ['gl-rounded-bottom-right-none!', 'gl-rounded-top-right-none!'],
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     columnTitle: {
       type: String,
@@ -67,7 +65,7 @@ export default {
   },
   computed: {
     action() {
-      if (this.glFeatures?.downstreamRetryAction && this.isDownstream) {
+      if (this.isDownstream) {
         if (this.isCancelable) {
           return {
             icon: 'cancel',

@@ -47,17 +47,12 @@ describe('Linked pipeline', () => {
   const findPipelineLink = () => wrapper.findByTestId('pipelineLink');
   const findRetryButton = () => wrapper.findByLabelText('Retry downstream pipeline');
 
-  const createWrapper = ({ propsData, downstreamRetryAction = false }) => {
+  const createWrapper = ({ propsData }) => {
     const mockApollo = createMockApollo();
 
     wrapper = extendedWrapper(
       mount(LinkedPipelineComponent, {
         propsData,
-        provide: {
-          glFeatures: {
-            downstreamRetryAction,
-          },
-        },
         apolloProvider: mockApollo,
       }),
     );
@@ -164,205 +159,188 @@ describe('Linked pipeline', () => {
     });
 
     describe('action button', () => {
-      describe('with the `downstream_retry_action` flag on', () => {
-        describe('with permissions', () => {
-          describe('on an upstream', () => {
-            describe('when retryable', () => {
-              beforeEach(() => {
-                const retryablePipeline = {
-                  ...upstreamProps,
-                  pipeline: { ...mockPipeline, retryable: true },
-                };
+      describe('with permissions', () => {
+        describe('on an upstream', () => {
+          describe('when retryable', () => {
+            beforeEach(() => {
+              const retryablePipeline = {
+                ...upstreamProps,
+                pipeline: { ...mockPipeline, retryable: true },
+              };
 
-                createWrapper({ propsData: retryablePipeline, downstreamRetryAction: true });
-              });
-
-              it('does not show the retry or cancel button', () => {
-                expect(findCancelButton().exists()).toBe(false);
-                expect(findRetryButton().exists()).toBe(false);
-              });
-            });
-          });
-
-          describe('on a downstream', () => {
-            describe('when retryable', () => {
-              beforeEach(() => {
-                const retryablePipeline = {
-                  ...downstreamProps,
-                  pipeline: { ...mockPipeline, retryable: true },
-                };
-
-                createWrapper({ propsData: retryablePipeline, downstreamRetryAction: true });
-              });
-
-              it('shows only the retry button', () => {
-                expect(findCancelButton().exists()).toBe(false);
-                expect(findRetryButton().exists()).toBe(true);
-              });
-
-              it.each`
-                findElement         | name
-                ${findRetryButton}  | ${'retry button'}
-                ${findExpandButton} | ${'expand button'}
-              `('hides the card tooltip when $name is hovered', async ({ findElement }) => {
-                expect(findCardTooltip().exists()).toBe(true);
-
-                await findElement().trigger('mouseover');
-
-                expect(findCardTooltip().exists()).toBe(false);
-              });
-
-              describe('and the retry button is clicked', () => {
-                describe('on success', () => {
-                  beforeEach(async () => {
-                    jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-                    jest.spyOn(wrapper.vm, '$emit');
-                    await findRetryButton().trigger('click');
-                  });
-
-                  it('calls the retry mutation ', () => {
-                    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-                    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-                      mutation: RetryPipelineMutation,
-                      variables: {
-                        id: convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, mockPipeline.id),
-                      },
-                    });
-                  });
-
-                  it('emits the refreshPipelineGraph event', () => {
-                    expect(wrapper.vm.$emit).toHaveBeenCalledWith('refreshPipelineGraph');
-                  });
-                });
-
-                describe('on failure', () => {
-                  beforeEach(async () => {
-                    jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({ errors: [] });
-                    jest.spyOn(wrapper.vm, '$emit');
-                    await findRetryButton().trigger('click');
-                  });
-
-                  it('emits an error event', () => {
-                    expect(wrapper.vm.$emit).toHaveBeenCalledWith('error', {
-                      type: ACTION_FAILURE,
-                    });
-                  });
-                });
-              });
+              createWrapper({ propsData: retryablePipeline });
             });
 
-            describe('when cancelable', () => {
-              beforeEach(() => {
-                const cancelablePipeline = {
-                  ...downstreamProps,
-                  pipeline: { ...mockPipeline, cancelable: true },
-                };
-
-                createWrapper({ propsData: cancelablePipeline, downstreamRetryAction: true });
-              });
-
-              it('shows only the cancel button ', () => {
-                expect(findCancelButton().exists()).toBe(true);
-                expect(findRetryButton().exists()).toBe(false);
-              });
-
-              it.each`
-                findElement         | name
-                ${findCancelButton} | ${'cancel button'}
-                ${findExpandButton} | ${'expand button'}
-              `('hides the card tooltip when $name is hovered', async ({ findElement }) => {
-                expect(findCardTooltip().exists()).toBe(true);
-
-                await findElement().trigger('mouseover');
-
-                expect(findCardTooltip().exists()).toBe(false);
-              });
-
-              describe('and the cancel button is clicked', () => {
-                describe('on success', () => {
-                  beforeEach(async () => {
-                    jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-                    jest.spyOn(wrapper.vm, '$emit');
-                    await findCancelButton().trigger('click');
-                  });
-
-                  it('calls the cancel mutation', () => {
-                    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-                    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-                      mutation: CancelPipelineMutation,
-                      variables: {
-                        id: convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, mockPipeline.id),
-                      },
-                    });
-                  });
-                  it('emits the refreshPipelineGraph event', () => {
-                    expect(wrapper.vm.$emit).toHaveBeenCalledWith('refreshPipelineGraph');
-                  });
-                });
-                describe('on failure', () => {
-                  beforeEach(async () => {
-                    jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({ errors: [] });
-                    jest.spyOn(wrapper.vm, '$emit');
-                    await findCancelButton().trigger('click');
-                  });
-                  it('emits an error event', () => {
-                    expect(wrapper.vm.$emit).toHaveBeenCalledWith('error', {
-                      type: ACTION_FAILURE,
-                    });
-                  });
-                });
-              });
-            });
-
-            describe('when both cancellable and retryable', () => {
-              beforeEach(() => {
-                const pipelineWithTwoActions = {
-                  ...downstreamProps,
-                  pipeline: { ...mockPipeline, cancelable: true, retryable: true },
-                };
-
-                createWrapper({ propsData: pipelineWithTwoActions, downstreamRetryAction: true });
-              });
-
-              it('only shows the cancel button', () => {
-                expect(findRetryButton().exists()).toBe(false);
-                expect(findCancelButton().exists()).toBe(true);
-              });
+            it('does not show the retry or cancel button', () => {
+              expect(findCancelButton().exists()).toBe(false);
+              expect(findRetryButton().exists()).toBe(false);
             });
           });
         });
 
-        describe('without permissions', () => {
-          beforeEach(() => {
-            const pipelineWithTwoActions = {
-              ...downstreamProps,
-              pipeline: {
-                ...mockPipeline,
-                cancelable: true,
-                retryable: true,
-                userPermissions: { updatePipeline: false },
-              },
-            };
+        describe('on a downstream', () => {
+          describe('when retryable', () => {
+            beforeEach(() => {
+              const retryablePipeline = {
+                ...downstreamProps,
+                pipeline: { ...mockPipeline, retryable: true },
+              };
 
-            createWrapper({ propsData: pipelineWithTwoActions });
+              createWrapper({ propsData: retryablePipeline });
+            });
+
+            it('shows only the retry button', () => {
+              expect(findCancelButton().exists()).toBe(false);
+              expect(findRetryButton().exists()).toBe(true);
+            });
+
+            it.each`
+              findElement         | name
+              ${findRetryButton}  | ${'retry button'}
+              ${findExpandButton} | ${'expand button'}
+            `('hides the card tooltip when $name is hovered', async ({ findElement }) => {
+              expect(findCardTooltip().exists()).toBe(true);
+
+              await findElement().trigger('mouseover');
+
+              expect(findCardTooltip().exists()).toBe(false);
+            });
+
+            describe('and the retry button is clicked', () => {
+              describe('on success', () => {
+                beforeEach(async () => {
+                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
+                  jest.spyOn(wrapper.vm, '$emit');
+                  await findRetryButton().trigger('click');
+                });
+
+                it('calls the retry mutation ', () => {
+                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+                    mutation: RetryPipelineMutation,
+                    variables: {
+                      id: convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, mockPipeline.id),
+                    },
+                  });
+                });
+
+                it('emits the refreshPipelineGraph event', () => {
+                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('refreshPipelineGraph');
+                });
+              });
+
+              describe('on failure', () => {
+                beforeEach(async () => {
+                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({ errors: [] });
+                  jest.spyOn(wrapper.vm, '$emit');
+                  await findRetryButton().trigger('click');
+                });
+
+                it('emits an error event', () => {
+                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('error', {
+                    type: ACTION_FAILURE,
+                  });
+                });
+              });
+            });
           });
 
-          it('does not show any action button', () => {
-            expect(findRetryButton().exists()).toBe(false);
-            expect(findCancelButton().exists()).toBe(false);
+          describe('when cancelable', () => {
+            beforeEach(() => {
+              const cancelablePipeline = {
+                ...downstreamProps,
+                pipeline: { ...mockPipeline, cancelable: true },
+              };
+
+              createWrapper({ propsData: cancelablePipeline });
+            });
+
+            it('shows only the cancel button ', () => {
+              expect(findCancelButton().exists()).toBe(true);
+              expect(findRetryButton().exists()).toBe(false);
+            });
+
+            it.each`
+              findElement         | name
+              ${findCancelButton} | ${'cancel button'}
+              ${findExpandButton} | ${'expand button'}
+            `('hides the card tooltip when $name is hovered', async ({ findElement }) => {
+              expect(findCardTooltip().exists()).toBe(true);
+
+              await findElement().trigger('mouseover');
+
+              expect(findCardTooltip().exists()).toBe(false);
+            });
+
+            describe('and the cancel button is clicked', () => {
+              describe('on success', () => {
+                beforeEach(async () => {
+                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
+                  jest.spyOn(wrapper.vm, '$emit');
+                  await findCancelButton().trigger('click');
+                });
+
+                it('calls the cancel mutation', () => {
+                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
+                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
+                    mutation: CancelPipelineMutation,
+                    variables: {
+                      id: convertToGraphQLId(PIPELINE_GRAPHQL_TYPE, mockPipeline.id),
+                    },
+                  });
+                });
+                it('emits the refreshPipelineGraph event', () => {
+                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('refreshPipelineGraph');
+                });
+              });
+              describe('on failure', () => {
+                beforeEach(async () => {
+                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({ errors: [] });
+                  jest.spyOn(wrapper.vm, '$emit');
+                  await findCancelButton().trigger('click');
+                });
+                it('emits an error event', () => {
+                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('error', {
+                    type: ACTION_FAILURE,
+                  });
+                });
+              });
+            });
+          });
+
+          describe('when both cancellable and retryable', () => {
+            beforeEach(() => {
+              const pipelineWithTwoActions = {
+                ...downstreamProps,
+                pipeline: { ...mockPipeline, cancelable: true, retryable: true },
+              };
+
+              createWrapper({ propsData: pipelineWithTwoActions });
+            });
+
+            it('only shows the cancel button', () => {
+              expect(findRetryButton().exists()).toBe(false);
+              expect(findCancelButton().exists()).toBe(true);
+            });
           });
         });
       });
 
-      describe('with the `downstream_retry_action` flag off', () => {
+      describe('without permissions', () => {
         beforeEach(() => {
           const pipelineWithTwoActions = {
             ...downstreamProps,
-            pipeline: { ...mockPipeline, cancelable: true, retryable: true },
+            pipeline: {
+              ...mockPipeline,
+              cancelable: true,
+              retryable: true,
+              userPermissions: { updatePipeline: false },
+            },
           };
 
           createWrapper({ propsData: pipelineWithTwoActions });
         });
+
         it('does not show any action button', () => {
           expect(findRetryButton().exists()).toBe(false);
           expect(findCancelButton().exists()).toBe(false);

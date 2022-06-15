@@ -1,14 +1,32 @@
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
+import remarkRehype, { all } from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 
 const createParser = () => {
   return unified()
     .use(remarkParse)
     .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(remarkRehype, {
+      allowDangerousHtml: true,
+      handlers: {
+        footnoteReference: (h, node) =>
+          h(
+            node.position,
+            'footnoteReference',
+            { identifier: node.identifier, label: node.label },
+            [],
+          ),
+        footnoteDefinition: (h, node) =>
+          h(
+            node.position,
+            'footnoteDefinition',
+            { identifier: node.identifier, label: node.label },
+            all(h, node),
+          ),
+      },
+    })
     .use(rehypeRaw);
 };
 

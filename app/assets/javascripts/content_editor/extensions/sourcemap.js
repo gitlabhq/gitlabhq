@@ -4,6 +4,8 @@ import Bold from './bold';
 import BulletList from './bullet_list';
 import Code from './code';
 import CodeBlockHighlight from './code_block_highlight';
+import FootnoteReference from './footnote_reference';
+import FootnoteDefinition from './footnote_definition';
 import Heading from './heading';
 import HardBreak from './hard_break';
 import HorizontalRule from './horizontal_rule';
@@ -31,6 +33,8 @@ export default Extension.create({
           BulletList.name,
           Code.name,
           CodeBlockHighlight.name,
+          FootnoteReference.name,
+          FootnoteDefinition.name,
           HardBreak.name,
           Heading.name,
           HorizontalRule.name,

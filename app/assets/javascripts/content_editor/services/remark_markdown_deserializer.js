@@ -113,6 +113,11 @@ const factorySpecs = {
     type: 'ignore',
     selector: (hastNode) => ['thead', 'tbody', 'tfoot'].includes(hastNode.tagName),
   },
+  footnoteDefinition: {
+    type: 'block',
+    selector: 'footnotedefinition',
+    getAttrs: (hastNode) => hastNode.properties,
+  },
   image: {
     type: 'inline',
     selector: 'img',
@@ -125,6 +130,11 @@ const factorySpecs = {
   hardBreak: {
     type: 'inline',
     selector: 'br',
+  },
+  footnoteReference: {
+    type: 'inline',
+    selector: 'footnotereference',
+    getAttrs: (hastNode) => hastNode.properties,
   },
   code: {
     type: 'mark',

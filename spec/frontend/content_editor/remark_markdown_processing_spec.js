@@ -3,6 +3,8 @@ import Blockquote from '~/content_editor/extensions/blockquote';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
+import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
@@ -32,6 +34,8 @@ const tiptapEditor = createTestEditor({
     BulletList,
     Code,
     CodeBlockHighlight,
+    FootnoteDefinition,
+    FootnoteReference,
     HardBreak,
     Heading,
     HorizontalRule,
@@ -60,6 +64,8 @@ const {
     bulletList,
     code,
     codeBlock,
+    footnoteDefinition,
+    footnoteReference,
     hardBreak,
     heading,
     horizontalRule,
@@ -84,6 +90,8 @@ const {
     bulletList: { nodeType: BulletList.name },
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
+    footnoteDefinition: { nodeType: FootnoteDefinition.name },
+    footnoteReference: { nodeType: FootnoteReference.name },
     hardBreak: { nodeType: HardBreak.name },
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
@@ -362,7 +370,6 @@ describe('Client side Markdown processing', () => {
       ),
     },
     {
-      only: true,
       markdown: '[https://gitlab.com>',
       expectedDoc: doc(
         paragraph(
@@ -956,6 +963,38 @@ const fn = () => 'GitLab';
             ),
           ),
         ),
+      ),
+    },
+    {
+      markdown: `
+This is a footnote [^footnote]
+
+Paragraph
+
+[^footnote]: Footnote definition
+
+Paragraph
+`,
+      expectedDoc: doc(
+        paragraph(
+          sourceAttrs('0:30', 'This is a footnote [^footnote]'),
+          'This is a footnote ',
+          footnoteReference({
+            ...sourceAttrs('19:30', '[^footnote]'),
+            identifier: 'footnote',
+            label: 'footnote',
+          }),
+        ),
+        paragraph(sourceAttrs('32:41', 'Paragraph'), 'Paragraph'),
+        footnoteDefinition(
+          {
+            ...sourceAttrs('43:75', '[^footnote]: Footnote definition'),
+            identifier: 'footnote',
+            label: 'footnote',
+          },
+          paragraph(sourceAttrs('56:75', 'Footnote definition'), 'Footnote definition'),
+        ),
+        paragraph(sourceAttrs('77:86', 'Paragraph'), 'Paragraph'),
       ),
     },
   ];

@@ -19,6 +19,8 @@ module Gitlab
               name_suggestion(column: column, relation: relation, prefix: 'estimate_distinct_count')
             when :sum
               name_suggestion(column: column, relation: relation, prefix: 'sum')
+            when :average
+              name_suggestion(column: column, relation: relation, prefix: 'average')
             when :redis
               REDIS_EVENT_METRIC_NAME
             when :alt

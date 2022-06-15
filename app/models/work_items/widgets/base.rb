@@ -7,6 +7,10 @@ module WorkItems
         name.demodulize.underscore.to_sym
       end
 
+      def self.api_symbol
+        "#{type}_widget".to_sym
+      end
+
       def type
         self.class.type
       end

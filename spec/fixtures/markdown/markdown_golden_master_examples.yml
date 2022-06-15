@@ -478,6 +478,7 @@
     This reference tag is a mix of letters and numbers. [^footnote]
 
     [^1]: This is the text inside a footnote.
+
     [^footnote]: This is another footnote.
   html: |-
     <p data-sourcepos="1:1-1:46" dir="auto">A footnote reference tag looks like this: <sup class="footnote-ref"><a href="#fn-1-2717" id="fnref-1-2717" data-footnote-ref="">1</a></sup></p>

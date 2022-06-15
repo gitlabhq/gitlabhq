@@ -15,13 +15,15 @@ import {
   MERGED_TAB,
   TAB_QUERY_PARAM,
   TABS_INDEX,
+  VALIDATE_TAB,
   VISUALIZE_TAB,
 } from '../constants';
 import getAppStatus from '../graphql/queries/client/app_status.query.graphql';
 import CiConfigMergedPreview from './editor/ci_config_merged_preview.vue';
 import CiEditorHeader from './editor/ci_editor_header.vue';
-import TextEditor from './editor/text_editor.vue';
 import CiLint from './lint/ci_lint.vue';
+import CiValidate from './validate/ci_validate.vue';
+import TextEditor from './editor/text_editor.vue';
 import EditorTab from './ui/editor_tab.vue';
 import WalkthroughPopover from './popovers/walkthrough_popover.vue';
 
@@ -31,6 +33,7 @@ export default {
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
     tabMergedYaml: s__('Pipelines|View merged YAML'),
+    tabValidate: s__('Pipelines|Validate'),
     empty: {
       visualization: s__(
         'PipelineEditor|The pipeline visualization is displayed when the CI/CD configuration file has valid syntax.',
@@ -53,12 +56,14 @@ export default {
     CREATE_TAB,
     LINT_TAB,
     MERGED_TAB,
+    VALIDATE_TAB,
     VISUALIZE_TAB,
   },
   components: {
     CiConfigMergedPreview,
     CiEditorHeader,
     CiLint,
+    CiValidate,
     EditorTab,
     GlAlert,
     GlLoadingIcon,
@@ -181,6 +186,17 @@ export default {
       <pipeline-graph v-else :pipeline-data="ciConfigData" />
     </editor-tab>
     <editor-tab
+      v-if="glFeatures.simulatePipeline"
+      class="gl-mb-3"
+      data-testid="validate-tab"
+      :title="$options.i18n.tabValidate"
+      @click="setCurrentTab($options.tabConstants.VALIDATE_TAB)"
+    >
+      <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
+      <ci-validate v-else />
+    </editor-tab>
+    <editor-tab
+      v-else
       class="gl-mb-3"
       :empty-message="$options.i18n.empty.lint"
       :is-empty="isEmpty"

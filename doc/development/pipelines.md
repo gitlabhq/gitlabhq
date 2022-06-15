@@ -97,6 +97,18 @@ label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
 
+## Faster feedback when reverting merge requests
+
+When you need to revert a merge request, to get accelerated feedback, you can add the `~pipeline:revert` label to your merge request.
+
+When this label is assigned, the following steps of the CI/CD pipeline are skipped:
+
+- The `package-and-qa` job.
+- The `rspec:undercoverage` job.
+- The entire [Review Apps process](testing_guide/review_apps.md).
+
+Apply the label to the merge request, and run a new pipeline for the MR.
+
 ## Fail-fast job in merge request pipelines
 
 To provide faster feedback when a merge request breaks existing tests, we are experimenting with a

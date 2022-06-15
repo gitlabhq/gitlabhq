@@ -7,8 +7,9 @@ const extractFootnoteIdentifier = (idAttribute) => /^fn-(\w+)-\d+$/.exec(idAttri
 
 export default Node.create({
   name: 'footnoteDefinition',
-  content: 'inline*',
+  content: 'paragraph',
   group: 'block',
+  isolating: true,
   addAttributes() {
     return {
       identifier: {

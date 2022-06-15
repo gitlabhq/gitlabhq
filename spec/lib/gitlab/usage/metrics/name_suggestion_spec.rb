@@ -71,6 +71,17 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
       end
     end
 
+    context 'for average metrics' do
+      it_behaves_like 'name suggestion' do
+        # corresponding metric is collected with average(Ci::Pipeline, :duration)
+        let(:key_path) { 'counts.ci_pipeline_duration' }
+        let(:operation) { :average }
+        let(:relation) { Ci::Pipeline }
+        let(:column) { :duration}
+        let(:name_suggestion) { /average_duration_from_ci_pipelines/ }
+      end
+    end
+
     context 'for redis metrics' do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }

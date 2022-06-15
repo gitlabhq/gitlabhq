@@ -414,16 +414,6 @@ RSpec.describe 'Pipeline', :js do
               expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
             end
 
-            context 'and the FF downstream_retry_action is disabled' do
-              before do
-                stub_feature_flags(downstream_retry_action: false)
-              end
-
-              it 'does not show the retry action' do
-                expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
-              end
-            end
-
             context 'when retrying' do
               before do
                 find('button[aria-label="Retry downstream pipeline"]').click

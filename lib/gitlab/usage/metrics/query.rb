@@ -13,6 +13,8 @@ module Gitlab
               distinct_count(relation, column)
             when :sum
               sum(relation, column)
+            when :average
+              average(relation, column)
             when :estimate_batch_distinct_count
               estimate_batch_distinct_count(relation, column)
             when :histogram
@@ -34,6 +36,10 @@ module Gitlab
 
           def sum(relation, column)
             raw_sum_sql(relation, column)
+          end
+
+          def average(relation, column)
+            raw_average_sql(relation, column)
           end
 
           def estimate_batch_distinct_count(relation, column = nil)
@@ -75,6 +81,14 @@ module Gitlab
             node = node_to_operate(relation, column)
 
             relation.unscope(:order).select(node.sum).to_sql
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
+
+          # rubocop: disable CodeReuse/ActiveRecord
+          def raw_average_sql(relation, column)
+            node = node_to_operate(relation, column)
+
+            relation.unscope(:order).select(node.average).to_sql
           end
           # rubocop: enable CodeReuse/ActiveRecord
 

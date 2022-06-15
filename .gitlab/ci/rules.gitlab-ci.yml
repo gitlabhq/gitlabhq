@@ -82,6 +82,9 @@
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
+.if-merge-request-labels-pipeline-revert: &if-merge-request-labels-pipeline-revert
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:revert/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -916,6 +919,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-pipeline-revert
+      when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
@@ -940,6 +945,8 @@
 .qa:rules:package-and-qa:feature-flags:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-revert
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
       changes: *feature-flag-development-config-patterns
@@ -1368,6 +1375,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-pipeline-revert
+      when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1571,6 +1580,8 @@
 .review:rules:start-review-app-pipeline:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-revert
       when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request

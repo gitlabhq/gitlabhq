@@ -143,6 +143,7 @@ module Types
     mount_mutation Mutations::WorkItems::Delete, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::WorkItems::DeleteTask, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::WorkItems::Update, deprecated: { milestone: '15.1', reason: :alpha }
+    mount_mutation Mutations::WorkItems::UpdateWidgets, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::WorkItems::UpdateTask, deprecated: { milestone: '15.1', reason: :alpha }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update

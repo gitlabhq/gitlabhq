@@ -32,13 +32,15 @@ export const PIPELINE_FAILURE = 'PIPELINE_FAILURE';
 export const CREATE_TAB = 'CREATE_TAB';
 export const LINT_TAB = 'LINT_TAB';
 export const MERGED_TAB = 'MERGED_TAB';
+export const VALIDATE_TAB = 'VALIDATE_TAB';
 export const VISUALIZE_TAB = 'VISUALIZE_TAB';
 
 export const TABS_INDEX = {
   [CREATE_TAB]: '0',
   [VISUALIZE_TAB]: '1',
   [LINT_TAB]: '2',
-  [MERGED_TAB]: '3',
+  [VALIDATE_TAB]: '3',
+  [MERGED_TAB]: '4',
 };
 export const TAB_QUERY_PARAM = 'tab';
 

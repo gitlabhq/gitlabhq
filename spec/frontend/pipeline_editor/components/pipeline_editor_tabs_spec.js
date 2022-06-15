@@ -3,8 +3,9 @@ import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
-import WalkthroughPopover from '~/pipeline_editor/components/popovers/walkthrough_popover.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
+import CiValidate from '~/pipeline_editor/components/validate/ci_validate.vue';
+import WalkthroughPopover from '~/pipeline_editor/components/popovers/walkthrough_popover.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 import {
@@ -58,10 +59,12 @@ describe('Pipeline editor tabs component', () => {
   const findEditorTab = () => wrapper.find('[data-testid="editor-tab"]');
   const findLintTab = () => wrapper.find('[data-testid="lint-tab"]');
   const findMergedTab = () => wrapper.find('[data-testid="merged-tab"]');
+  const findValidateTab = () => wrapper.find('[data-testid="validate-tab"]');
   const findVisualizationTab = () => wrapper.find('[data-testid="visualization-tab"]');
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCiLint = () => wrapper.findComponent(CiLint);
+  const findCiValidate = () => wrapper.findComponent(CiValidate);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineGraph = () => wrapper.findComponent(PipelineGraph);
@@ -109,6 +112,61 @@ describe('Pipeline editor tabs component', () => {
     });
   });
 
+  describe('validate tab', () => {
+    describe('with simulatePipeline feature flag ON', () => {
+      describe('while loading', () => {
+        beforeEach(() => {
+          createComponent({
+            appStatus: EDITOR_APP_STATUS_LOADING,
+            provide: {
+              glFeatures: {
+                simulatePipeline: true,
+              },
+            },
+          });
+        });
+
+        it('displays a loading icon if the lint query is loading', () => {
+          expect(findLoadingIcon().exists()).toBe(true);
+        });
+
+        it('does not display the validate component', () => {
+          expect(findCiValidate().exists()).toBe(false);
+        });
+      });
+
+      describe('after loading', () => {
+        beforeEach(() => {
+          createComponent({
+            provide: { glFeatures: { simulatePipeline: true } },
+          });
+        });
+
+        it('displays the tab and the validate component', () => {
+          expect(findValidateTab().exists()).toBe(true);
+          expect(findCiValidate().exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('with simulatePipeline feature flag OFF', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            glFeatures: {
+              simulatePipeline: false,
+            },
+          },
+        });
+      });
+
+      it('does not render the tab and the validate component', () => {
+        expect(findValidateTab().exists()).toBe(false);
+        expect(findCiValidate().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('lint tab', () => {
     describe('while loading', () => {
       beforeEach(() => {
@@ -123,6 +181,7 @@ describe('Pipeline editor tabs component', () => {
         expect(findCiLint().exists()).toBe(false);
       });
     });
+
     describe('after loading', () => {
       beforeEach(() => {
         createComponent();
@@ -133,8 +192,24 @@ describe('Pipeline editor tabs component', () => {
         expect(findCiLint().exists()).toBe(true);
       });
     });
-  });
 
+    describe('with simulatePipeline feature flag ON', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            glFeatures: {
+              simulatePipeline: true,
+            },
+          },
+        });
+      });
+
+      it('does not render the tab and the lint component', () => {
+        expect(findLintTab().exists()).toBe(false);
+        expect(findCiLint().exists()).toBe(false);
+      });
+    });
+  });
   describe('merged tab', () => {
     describe('while loading', () => {
       beforeEach(() => {
