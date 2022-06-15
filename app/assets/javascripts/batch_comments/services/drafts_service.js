@@ -19,8 +19,8 @@ export default {
   fetchDrafts(endpoint) {
     return axios.get(endpoint);
   },
-  publish(endpoint) {
-    return axios.post(endpoint);
+  publish(endpoint, noteData) {
+    return axios.post(endpoint, noteData);
   },
   discard(endpoint) {
     return axios.delete(endpoint);

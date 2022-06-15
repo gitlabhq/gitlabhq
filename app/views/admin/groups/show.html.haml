@@ -8,7 +8,7 @@
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 
   = link_to admin_group_edit_path(@group), class: "btn btn-default gl-button float-right", data: { qa_selector: 'edit_group_link' } do
-    = sprite_icon('pencil-square', css_class: 'gl-icon')
+    = sprite_icon('pencil', css_class: 'gl-icon gl-mr-2')
     = _('Edit')
 %hr
 .row

@@ -16151,6 +16151,9 @@ msgstr ""
 msgid "Finish editing this message first!"
 msgstr ""
 
+msgid "Finish review"
+msgstr ""
+
 msgid "Finish setting up your dedicated account for %{group_name}."
 msgstr ""
 
@@ -36998,6 +37001,9 @@ msgid "Summary"
 msgstr ""
 
 msgid "Summary / note"
+msgstr ""
+
+msgid "Summary comment (optional)"
 msgstr ""
 
 msgid "Sunday"

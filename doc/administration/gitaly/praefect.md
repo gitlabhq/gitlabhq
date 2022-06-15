@@ -543,7 +543,7 @@ Updates to example must be made at:
    WARNING:
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](index.md#migrating-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
    afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
@@ -1014,7 +1014,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data your Gitaly Cluster storage](index.md#migrating-to-gitaly-cluster)
+   you should [migrate the data your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
    first.
 
    ```ruby

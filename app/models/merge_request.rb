@@ -1657,9 +1657,9 @@ class MergeRequest < ApplicationRecord
   # TODO: consider renaming this as with exposed artifacts we generate reports,
   # not always compare
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
-  def compare_reports(service_class, current_user = nil, report_type = nil )
+  def compare_reports(service_class, current_user = nil, report_type = nil, additional_params = {} )
     with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
-      unless service_class.new(project, current_user, id: id, report_type: report_type)
+      unless service_class.new(project, current_user, id: id, report_type: report_type, additional_params: additional_params)
         .latest?(comparison_base_pipeline(service_class.name), actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end

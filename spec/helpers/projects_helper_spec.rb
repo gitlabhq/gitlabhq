@@ -355,6 +355,30 @@ RSpec.describe ProjectsHelper do
     end
   end
 
+  describe '#permissible_access_level_roles' do
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    before do
+      project.add_owner(owner)
+      project.add_maintainer(maintainer)
+    end
+
+    context 'when member can manage owners' do
+      it 'returns Gitlab::Access.options_with_owner' do
+        expect(helper.permissible_access_level_roles(owner, project)).to eq(Gitlab::Access.options_with_owner)
+      end
+    end
+
+    context 'when member cannot manage owners' do
+      it 'returns Gitlab::Access.options' do
+        expect(helper.permissible_access_level_roles(maintainer, project)).to eq(Gitlab::Access.options)
+      end
+    end
+  end
+
   describe 'default_clone_protocol' do
     context 'when user is not logged in and gitlab protocol is HTTP' do
       it 'returns HTTP' do

@@ -785,7 +785,7 @@ export const notesWithDescriptionChanges = [
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
-        system_note_icon_name: 'pencil-square',
+        system_note_icon_name: 'pencil',
         discussion_id: '7f1feda384083eb31763366e6392399fde6f3f31',
         emoji_awardable: false,
         report_abuse_path:
@@ -874,7 +874,7 @@ export const notesWithDescriptionChanges = [
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
-        system_note_icon_name: 'pencil-square',
+        system_note_icon_name: 'pencil',
         discussion_id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
         emoji_awardable: false,
         report_abuse_path:
@@ -918,7 +918,7 @@ export const notesWithDescriptionChanges = [
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
-        system_note_icon_name: 'pencil-square',
+        system_note_icon_name: 'pencil',
         discussion_id: '70411b08cdfc01f24187a06d77daa33464cb2620',
         emoji_awardable: false,
         report_abuse_path:
@@ -1105,7 +1105,7 @@ export const collapsedSystemNotes = [
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
-        system_note_icon_name: 'pencil-square',
+        system_note_icon_name: 'pencil',
         discussion_id: 'a21cf2e804acc3c60d07e37d75e395f5a9a4d044',
         emoji_awardable: false,
         report_abuse_path:
@@ -1149,7 +1149,7 @@ export const collapsedSystemNotes = [
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
-        system_note_icon_name: 'pencil-square',
+        system_note_icon_name: 'pencil',
         discussion_id: '70411b08cdfc01f24187a06d77daa33464cb2620',
         emoji_awardable: false,
         report_abuse_path:

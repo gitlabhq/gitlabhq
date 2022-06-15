@@ -6,13 +6,20 @@ export default {
   components: {
     GlBadge,
   },
+  props: {
+    variant: {
+      type: String,
+      required: false,
+      default: 'info',
+    },
+  },
   computed: {
     ...mapGetters('batchComments', ['draftsCount']),
   },
 };
 </script>
 <template>
-  <gl-badge size="sm" variant="info" class="gl-ml-2">
+  <gl-badge size="sm" :variant="variant" class="gl-ml-2">
     {{ draftsCount }}
     <span class="sr-only"> {{ n__('draft', 'drafts', draftsCount) }} </span>
   </gl-badge>

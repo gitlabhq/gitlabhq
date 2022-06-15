@@ -49,6 +49,10 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   def publish
     result = DraftNotes::PublishService.new(merge_request, current_user).execute(draft_note(allow_nil: true))
 
+    if Feature.enabled?(:mr_review_submit_comment, @project) && create_note_params[:note]
+      Notes::CreateService.new(@project, current_user, create_note_params).execute
+    end
+
     if result[:status] == :success
       head :ok
     else
@@ -99,6 +103,15 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       # That can result to having a note linked to a commit with 'undefined' ID
       # which is non-existent.
       h[:commit_id] = nil if h[:commit_id] == 'undefined'
+    end
+  end
+
+  def create_note_params
+    params.permit(
+      :note
+    ).tap do |create_params|
+      create_params[:noteable_type] = merge_request.class.name
+      create_params[:noteable_id] = merge_request.id
     end
   end
 

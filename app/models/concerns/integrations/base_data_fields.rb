@@ -14,8 +14,6 @@ module Integrations
       # https://gitlab.com/gitlab-org/gitlab/-/issues/331953
       belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: foreign_key_name
 
-      delegate :activated?, to: :integration, allow_nil: true
-
       validates :integration, presence: true
     end
 
@@ -38,6 +36,10 @@ module Integrations
 
         :integration_id
       end
+    end
+
+    def activated?
+      !!integration&.activated?
     end
 
     def to_database_hash

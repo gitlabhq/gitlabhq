@@ -67,7 +67,7 @@ module Gitlab
       # `extra`. Exceptions can use this mechanism to provide structured data
       # to sentry in addition to their message and back-trace.
       def track_and_raise_exception(exception, extra = {})
-        process_exception(exception, sentry: true, extra: extra)
+        process_exception(exception, extra: extra)
 
         raise exception
       end
@@ -87,7 +87,7 @@ module Gitlab
       # Provide an issue URL for follow up.
       # as `issue_url: 'http://gitlab.com/gitlab-org/gitlab/issues/111'`
       def track_and_raise_for_dev_exception(exception, extra = {})
-        process_exception(exception, sentry: true, extra: extra)
+        process_exception(exception, extra: extra)
 
         raise exception if should_raise_for_dev?
       end
@@ -99,7 +99,7 @@ module Gitlab
       # `extra`. Exceptions can use this mechanism to provide structured data
       # to sentry in addition to their message and back-trace.
       def track_exception(exception, extra = {})
-        process_exception(exception, sentry: true, extra: extra)
+        process_exception(exception, extra: extra)
       end
 
       # This should be used when you only want to log the exception,
@@ -110,7 +110,7 @@ module Gitlab
       # `extra`. Exceptions can use this mechanism to provide structured data
       # to sentry in addition to their message and back-trace.
       def log_exception(exception, extra = {})
-        process_exception(exception, extra: extra)
+        process_exception(exception, extra: extra, trackers: [Logger])
       end
 
       private
@@ -136,25 +136,22 @@ module Gitlab
         end
       end
 
-      def process_exception(exception, sentry: false, logging: true, extra:)
+      def process_exception(exception, extra:, trackers: default_trackers)
         context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra)
 
-        if sentry && Raven.configuration.server
-          Raven.capture_exception(exception, **context_payload)
+        trackers.each do |tracker|
+          tracker.capture_exception(exception, **context_payload)
         end
+      end
 
-        # There is a possibility that this method is called before Sentry is
-        # configured. Since Sentry 4.0, some methods of Sentry are forwarded to
-        # to `nil`, hence we have to check the client as well.
-        if sentry && ::Sentry.get_current_client && ::Sentry.configuration.dsn
-          ::Sentry.capture_exception(exception, **context_payload)
-        end
-
-        if logging
-          formatter = Gitlab::ErrorTracking::LogFormatter.new
-          log_hash = formatter.generate_log(exception, context_payload)
-
-          Gitlab::ErrorTracking::Logger.error(log_hash)
+      def default_trackers
+        [].tap do |destinations|
+          destinations << Raven if Raven.configuration.server
+          # There is a possibility that this method is called before Sentry is
+          # configured. Since Sentry 4.0, some methods of Sentry are forwarded to
+          # to `nil`, hence we have to check the client as well.
+          destinations << ::Sentry if ::Sentry.get_current_client && ::Sentry.configuration.dsn
+          destinations << Logger
         end
       end
 

@@ -523,10 +523,17 @@ For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluste
 To upgrade a Gitaly Cluster, follow the documentation for
 [zero downtime upgrades](../../update/zero_downtime.md#gitaly-or-gitaly-cluster).
 
-## Migrating to Gitaly Cluster
+## Migrate to Gitaly Cluster
 
-See the [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster) section before continuing. The basic process
-for migrating to Gitaly Cluster involves:
+WARNING:
+Some [known issues](#known-issues) exist in Gitaly Cluster. Review the following information before you continue.
+
+Before migrating to Gitaly Cluster:
+
+- Review [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster).
+- Upgrade to the latest possible version of GitLab, to take advantage of improvements and bug fixes.
+
+To migrate to Gitaly Cluster:
 
 1. Create the required storage. Refer to
    [repository storage recommendations](praefect.md#repository-storage-recommendations).
@@ -535,12 +542,7 @@ for migrating to Gitaly Cluster involves:
    Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
    automatic migration but the moves can be scheduled with the GitLab API.
 
-WARNING:
-Some [known database inconsistency issues](#known-issues) exist in Gitaly Cluster. We recommend you
-remain on your current service for now.
-
-NOTE:
-GitLab requires a `default` repository storage to be configured.
+Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
 ## Migrate off Gitaly Cluster

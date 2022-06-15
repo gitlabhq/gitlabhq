@@ -179,6 +179,16 @@ describe('Batch comments store actions', () => {
       });
     });
 
+    it('calls service with notes data', () => {
+      jest.spyOn(axios, 'post');
+
+      return actions
+        .publishReview({ dispatch, commit, getters, rootGetters }, { note: 'test' })
+        .then(() => {
+          expect(axios.post.mock.calls[0]).toEqual(['http://test.host', { note: 'test' }]);
+        });
+    });
+
     it('dispatches error commits', () => {
       mock.onAny().reply(500);
 
