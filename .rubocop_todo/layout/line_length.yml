@@ -4237,7 +4237,6 @@ Layout/LineLength:
     - 'spec/factories/project_members.rb'
     - 'spec/factories/projects.rb'
     - 'spec/factories/usage_data.rb'
-    - 'spec/factories_spec.rb'
     - 'spec/features/action_cable_logging_spec.rb'
     - 'spec/features/admin/admin_abuse_reports_spec.rb'
     - 'spec/features/admin/admin_mode/login_spec.rb'

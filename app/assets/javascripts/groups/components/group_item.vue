@@ -157,7 +157,9 @@ export default {
       </a>
       <div class="group-text-container d-flex flex-fill align-items-center">
         <div class="group-text flex-grow-1 flex-shrink-1">
-          <div class="d-flex align-items-center flex-wrap title namespace-title gl-mr-3">
+          <div
+            class="gl-display-flex gl-align-items-center gl-flex-wrap title namespace-title gl-font-weight-bold gl-mr-3"
+          >
             <a
               v-gl-tooltip.bottom
               data-testid="group-name"

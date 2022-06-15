@@ -83,24 +83,8 @@ RSpec.describe MergeRequests::BuildService do
     let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
     let(:project) { create(:project, :custom_repo, files: files ) }
 
-    context 'when mr_default_description_from_repo feature flag is enabled' do
-      before do
-        stub_feature_flags(mr_default_description_from_repo: project)
-      end
-
-      it 'the template description is preferred' do
-        expect(merge_request.description).to eq('Default template contents')
-      end
-    end
-
-    context 'when mr_default_description_from_repo feature flag is disabled' do
-      before do
-        stub_feature_flags(mr_default_description_from_repo: false)
-      end
-
-      it 'the template description is not preferred' do
-        expect(merge_request.description).not_to eq('Default template contents')
-      end
+    it 'the template description is preferred' do
+      expect(merge_request.description).to eq('Default template contents')
     end
   end
 
@@ -312,28 +296,10 @@ RSpec.describe MergeRequests::BuildService do
             let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
             let(:project) { create(:project, :custom_repo, files: files ) }
 
-            context 'when mr_default_description_from_repo feature flag is enabled' do
-              before do
-                stub_feature_flags(mr_default_description_from_repo: project)
-              end
+            it 'appends the closing description to a Default.md template' do
+              expected_description = ['Default template contents', closing_message].compact.join("\n\n")
 
-              it 'appends the closing description to a Default.md template' do
-                expected_description = ['Default template contents', closing_message].compact.join("\n\n")
-
-                expect(merge_request.description).to eq(expected_description)
-              end
-            end
-
-            context 'when mr_default_description_from_repo feature flag is disabled' do
-              before do
-                stub_feature_flags(mr_default_description_from_repo: false)
-              end
-
-              it 'appends the closing description to the commit description' do
-                expected_description = ['Create the app', closing_message].compact.join("\n\n")
-
-                expect(merge_request.description).to eq(expected_description)
-              end
+              expect(merge_request.description).to eq(expected_description)
             end
           end
         end
@@ -410,24 +376,8 @@ RSpec.describe MergeRequests::BuildService do
           let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
           let(:project) { create(:project, :custom_repo, files: files ) }
 
-          context 'when mr_default_description_from_repo feature flag is enabled' do
-            before do
-              stub_feature_flags(mr_default_description_from_repo: project)
-            end
-
-            it 'keeps the description from the initial params' do
-              expect(merge_request.description).to eq(description)
-            end
-          end
-
-          context 'when mr_default_description_from_repo feature flag is disabled' do
-            before do
-              stub_feature_flags(mr_default_description_from_repo: false)
-            end
-
-            it 'keeps the description from the initial params' do
-              expect(merge_request.description).to eq(description)
-            end
+          it 'keeps the description from the initial params' do
+            expect(merge_request.description).to eq(description)
           end
         end
       end
@@ -465,26 +415,10 @@ RSpec.describe MergeRequests::BuildService do
             let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
             let(:project) { create(:project, :custom_repo, files: files ) }
 
-            context 'when mr_default_description_from_repo feature flag is enabled' do
-              before do
-                stub_feature_flags(mr_default_description_from_repo: project)
-              end
+            it 'appends the closing description to a Default.md template' do
+              expected_description = ['Default template contents', closing_message].compact.join("\n\n")
 
-              it 'appends the closing description to a Default.md template' do
-                expected_description = ['Default template contents', closing_message].compact.join("\n\n")
-
-                expect(merge_request.description).to eq(expected_description)
-              end
-            end
-
-            context 'when mr_default_description_from_repo feature flag is disabled' do
-              before do
-                stub_feature_flags(mr_default_description_from_repo: false)
-              end
-
-              it 'sets the closing description' do
-                expect(merge_request.description).to eq(closing_message)
-              end
+              expect(merge_request.description).to eq(expected_description)
             end
           end
         end
@@ -542,28 +476,10 @@ RSpec.describe MergeRequests::BuildService do
             let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
             let(:project) { create(:project, :custom_repo, files: files ) }
 
-            context 'when mr_default_description_from_repo feature flag is enabled' do
-              before do
-                stub_feature_flags(mr_default_description_from_repo: project)
-              end
+            it 'appends the closing description to a Default.md template' do
+              expected_description = ['Default template contents', closing_message].compact.join("\n\n")
 
-              it 'appends the closing description to a Default.md template' do
-                expected_description = ['Default template contents', closing_message].compact.join("\n\n")
-
-                expect(merge_request.description).to eq(expected_description)
-              end
-            end
-
-            context 'when mr_default_description_from_repo feature flag is disabled' do
-              before do
-                stub_feature_flags(mr_default_description_from_repo: false)
-              end
-
-              it 'appends the closing description to the commit description' do
-                expected_description = ['Create the app', closing_message].compact.join("\n\n")
-
-                expect(merge_request.description).to eq(expected_description)
-              end
+              expect(merge_request.description).to eq(expected_description)
             end
           end
         end

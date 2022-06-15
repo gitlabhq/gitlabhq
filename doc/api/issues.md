@@ -170,7 +170,8 @@ Example response:
          "self":"http://gitlab.example.com/api/v4/projects/1/issues/76",
          "notes":"http://gitlab.example.com/api/v4/projects/1/issues/76/notes",
          "award_emoji":"http://gitlab.example.com/api/v4/projects/1/issues/76/award_emoji",
-         "project":"http://gitlab.example.com/api/v4/projects/1"
+         "project":"http://gitlab.example.com/api/v4/projects/1",
+         "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
       },
       "task_completion_status":{
          "count":0,
@@ -396,7 +397,8 @@ Example response:
          "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
          "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
          "award_emoji":"http://gitlab.example.com/api/v4/projects/4/issues/41/award_emoji",
-         "project":"http://gitlab.example.com/api/v4/projects/4"
+         "project":"http://gitlab.example.com/api/v4/projects/4",
+         "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
       },
       "task_completion_status":{
          "count":0,
@@ -605,7 +607,8 @@ Example response:
          "self":"http://gitlab.example.com/api/v4/projects/4/issues/41",
          "notes":"http://gitlab.example.com/api/v4/projects/4/issues/41/notes",
          "award_emoji":"http://gitlab.example.com/api/v4/projects/4/issues/41/award_emoji",
-         "project":"http://gitlab.example.com/api/v4/projects/4"
+         "project":"http://gitlab.example.com/api/v4/projects/4",
+         "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
       },
       "task_completion_status":{
          "count":0,
@@ -769,7 +772,8 @@ Example response:
     "self": "http://gitlab.example:3000/api/v4/projects/1/issues/1",
     "notes": "http://gitlab.example:3000/api/v4/projects/1/issues/1/notes",
     "award_emoji": "http://gitlab.example:3000/api/v4/projects/1/issues/1/award_emoji",
-    "project": "http://gitlab.example:3000/api/v4/projects/1"
+    "project": "http://gitlab.example:3000/api/v4/projects/1",
+    "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
   },
   "moved_to_id": null,
   "service_desk_reply_to": "service.desk@gitlab.com"
@@ -926,7 +930,8 @@ Example response:
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
       "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://gitlab.example.com/api/v4/projects/1"
+      "project": "http://gitlab.example.com/api/v4/projects/1",
+      "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
    },
    "task_completion_status":{
       "count":0,
@@ -1074,7 +1079,8 @@ Example response:
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
       "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://gitlab.example.com/api/v4/projects/1"
+      "project": "http://gitlab.example.com/api/v4/projects/1",
+      "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
    },
    "task_completion_status":{
       "count":0,
@@ -1249,7 +1255,9 @@ Example response:
       "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
       "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
       "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
-      "project": "http://gitlab.example.com/api/v4/projects/1"
+      "project": "http://gitlab.example.com/api/v4/projects/1",
+      "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
+
    },
    "task_completion_status":{
       "count":0,
@@ -1433,7 +1441,8 @@ Example response:
     "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
     "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
     "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
-    "project": "http://gitlab.example.com/api/v4/projects/1"
+    "project": "http://gitlab.example.com/api/v4/projects/1",
+    "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
   },
   "task_completion_status":{
      "count":0,
@@ -1586,7 +1595,8 @@ Example response:
     "self":"https://gitlab.example.com/api/v4/projects/143/issues/1",
     "notes":"https://gitlab.example.com/api/v4/projects/143/issues/1/notes",
     "award_emoji":"https://gitlab.example.com/api/v4/projects/143/issues/1/award_emoji",
-    "project":"https://gitlab.example.com/api/v4/projects/143"
+    "project":"https://gitlab.example.com/api/v4/projects/143",
+    "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
   },
   "references":{
     "short":"#1",
@@ -1683,7 +1693,8 @@ Example response:
     "self": "http://gitlab.example.com/api/v4/projects/1/issues/2",
     "notes": "http://gitlab.example.com/api/v4/projects/1/issues/2/notes",
     "award_emoji": "http://gitlab.example.com/api/v4/projects/1/issues/2/award_emoji",
-    "project": "http://gitlab.example.com/api/v4/projects/1"
+    "project": "http://gitlab.example.com/api/v4/projects/1",
+    "closed_as_duplicate_of": "http://gitlab.example.com/api/v4/projects/1/issues/75"
   },
   "task_completion_status":{
      "count":0,

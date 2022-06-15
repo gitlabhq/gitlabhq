@@ -51,7 +51,9 @@ RSpec.describe 'factories' do
       factory.definition.defined_traits.map(&:name).each do |trait_name|
         describe "linting :#{trait_name} trait" do
           it 'does not raise error when created' do
-            pending("Trait skipped linting due to legacy error") if skipped_traits.include?([factory.name, trait_name.to_sym])
+            if skipped_traits.include?([factory.name, trait_name.to_sym])
+              pending("Trait skipped linting due to legacy error")
+            end
 
             expect { create(factory.name, trait_name) }.not_to raise_error
           end

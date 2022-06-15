@@ -1176,7 +1176,6 @@ Style/IfUnlessModifier:
     - 'spec/factories/projects.rb'
     - 'spec/factories/protected_tags.rb'
     - 'spec/factories/users.rb'
-    - 'spec/factories_spec.rb'
     - 'spec/features/admin/admin_users_spec.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_sees_avatar_on_diff_notes_spec.rb'

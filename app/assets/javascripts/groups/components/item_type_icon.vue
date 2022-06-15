@@ -24,5 +24,7 @@ export default {
 </script>
 
 <template>
-  <span class="item-type-icon"> <gl-icon :name="iconClass" /> </span>
+  <span class="item-type-icon gl-display-inline-block gl-text-secondary">
+    <gl-icon :name="iconClass" />
+  </span>
 </template>

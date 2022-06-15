@@ -138,7 +138,8 @@ class Issue < ApplicationRecord
   scope :with_api_entity_associations, -> {
     preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       milestone: { project: [:route, { namespace: :route }] },
-      project: [:route, { namespace: :route }])
+      project: [:route, { namespace: :route }],
+      duplicated_to: { project: [:project_feature] })
   }
   scope :with_issue_type, ->(types) { where(issue_type: types) }
   scope :without_issue_type, ->(types) { where.not(issue_type: types) }

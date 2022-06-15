@@ -118,7 +118,7 @@ module QA
             MSG
           end
 
-          body[:id] = body.fetch(:id).split('/').last
+          body[:id] = body.fetch(:id).split('/').last if body.key?(:id)
 
           body.transform_keys { |key| key.to_s.underscore.to_sym }
         else

@@ -16,6 +16,8 @@ module Gitlab
       Technology.new(:ed25519_sk, SSHData::PublicKey::SKED25519, [256], %w(sk-ssh-ed25519@openssh.com))
     ].freeze
 
+    OPENSSL_DIGESTS = %i(SHA1 SHA256 SHA384 SHA512).freeze
+
     class << self
       # Returns whether we should be running in FIPS mode or not
       #
@@ -28,6 +30,21 @@ module Gitlab
         return true if ENV["FIPS_MODE"] == "true"
 
         false
+      end
+
+      # Swap Ruby's Digest::SHAx implementations for OpenSSL::Digest::SHAx.
+      def enable_fips_mode!
+        require 'digest'
+
+        use_openssl_digest(:SHA2, :SHA256)
+        OPENSSL_DIGESTS.each { |alg| use_openssl_digest(alg, alg) }
+      end
+
+      private
+
+      def use_openssl_digest(ruby_algorithm, openssl_algorithm)
+        Digest.send(:remove_const, ruby_algorithm) # rubocop:disable GitlabSecurity/PublicSend
+        Digest.const_set(ruby_algorithm, OpenSSL::Digest.const_get(openssl_algorithm, false))
       end
     end
   end

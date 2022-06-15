@@ -1,8 +1,0 @@
----
-name: mr_default_description_from_repo
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82398
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/361753
-milestone: '15.0'
-type: development
-group: group::code review
-default_enabled: false

@@ -139,8 +139,13 @@ variables:
 ### Override the default registry base address
 
 By default, GitLab security scanners use `registry.gitlab.com/security-products` as the
-base address for Docker images. You can override this globally by setting the CI/CD variable
+base address for Docker images. You can override this for most scanners by setting the CI/CD variable
 `SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
+
+The [Container Scanning](container_scanning/index.md) analyzer is an exception, and it
+does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
+the instructions for [Running container scanning in an offline
+environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
 ### Use security scanning tools with merge request pipelines
 

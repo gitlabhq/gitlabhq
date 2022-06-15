@@ -223,7 +223,7 @@ module MergeRequests
     #   more than one commit in the MR
     #
     def assign_title_and_description
-      assign_description_from_repository_template if Feature.enabled?(:mr_default_description_from_repo, target_project)
+      assign_description_from_repository_template
       assign_title_and_description_from_commits
       merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= source_branch.titleize.humanize

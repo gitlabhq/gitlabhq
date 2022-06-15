@@ -575,6 +575,26 @@ RSpec.describe API::Issues do
         end
       end
 
+      context 'with issues closed as duplicates' do
+        let_it_be(:dup_issue_1) { create(:issue, :closed_as_duplicate, project: project) }
+
+        it 'avoids N+1 queries' do
+          get api('/issues', user) # warm up
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api('/issues', user)
+          end
+
+          create(:issue, :closed_as_duplicate, project: project)
+
+          expect do
+            get api('/issues', user)
+          end.not_to exceed_query_limit(control)
+          # 2 pre-existed issues + 2 duplicated incidents (2 closed, 2 new)
+          expect(json_response.count).to eq(6)
+        end
+      end
+
       context 'filter by labels or label_name param' do
         context 'N+1' do
           let(:label_b) { create(:label, title: 'foo', project: project) }
@@ -1100,6 +1120,51 @@ RSpec.describe API::Issues do
       expect(json_response['references']['short']).to eq("##{issue.iid}")
       expect(json_response['references']['relative']).to eq("##{issue.iid}")
       expect(json_response['references']['full']).to eq("#{project.parent.path}/#{project.path}##{issue.iid}")
+    end
+
+    context 'when issue is closed as duplicate' do
+      let(:new_issue) { create(:issue) }
+      let!(:issue_closed_as_dup) { create(:issue, project: project, duplicated_to: new_issue) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context 'user does not have permission to view new issue' do
+        it 'does not return the issue as closed_as_duplicate_of' do
+          get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.dig('_links', 'closed_as_duplicate_of')).to eq(nil)
+        end
+      end
+
+      context 'when user has access to new issue' do
+        before do
+          new_issue.project.add_guest(user)
+        end
+
+        it 'returns the issue as closed_as_duplicate_of' do
+          get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expected_url = expose_url(api_v4_project_issue_path(id: new_issue.project_id, issue_iid: new_issue.iid))
+          expect(json_response.dig('_links', 'closed_as_duplicate_of')).to eq(expected_url)
+        end
+
+        context 'feature flag is disabled' do
+          before do
+            stub_feature_flags(closed_as_duplicate_of_issues_api: false)
+          end
+
+          it 'does not return the issue as closed_as_duplicate_of' do
+            get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.dig('_links', 'closed_as_duplicate_of')).to eq(nil)
+          end
+        end
+      end
     end
   end
 

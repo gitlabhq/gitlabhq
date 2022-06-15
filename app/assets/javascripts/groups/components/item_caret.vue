@@ -21,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <span class="folder-caret gl-mr-2">
+  <span class="folder-caret gl-display-inline-block gl-text-secondary gl-w-5 gl-mr-2">
     <gl-icon :size="12" :name="iconClass" />
   </span>
 </template>
