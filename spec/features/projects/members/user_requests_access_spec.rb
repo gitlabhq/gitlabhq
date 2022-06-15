@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Members > User requests access', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
@@ -13,7 +15,6 @@ RSpec.describe 'Projects > Members > User requests access', :js do
     sign_in(user)
     project.add_maintainer(maintainer)
     visit project_path(project)
-    stub_feature_flags(bootstrap_confirmation_modals: false)
   end
 
   it 'request access feature is disabled' do
@@ -67,7 +68,7 @@ RSpec.describe 'Projects > Members > User requests access', :js do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    accept_confirm { click_link 'Withdraw Access Request' }
+    accept_gl_confirm { click_link 'Withdraw Access Request' }
 
     expect(page).not_to have_content 'Withdraw Access Request'
     expect(page).to have_content 'Request Access'

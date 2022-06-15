@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile > Applications' do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:user) }
   let(:application) { create(:oauth_application, owner: user) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 
@@ -25,8 +26,10 @@ RSpec.describe 'Profile > Applications' do
 
       page.within('.oauth-applications') do
         expect(page).to have_content('Your applications (1)')
-        accept_confirm { click_button 'Destroy' }
+        click_button 'Destroy'
       end
+
+      accept_gl_confirm(button_text: 'Destroy')
 
       expect(page).to have_content('The application was deleted successfully')
       expect(page).to have_content('Your applications (0)')
@@ -39,8 +42,10 @@ RSpec.describe 'Profile > Applications' do
 
       page.within('.oauth-authorized-applications') do
         expect(page).to have_content('Authorized applications (1)')
-        accept_confirm { click_button 'Revoke' }
+        click_button 'Revoke'
       end
+
+      accept_gl_confirm(button_text: 'Revoke application')
 
       expect(page).to have_content('The application was revoked access.')
       expect(page).to have_content('Your applications (0)')

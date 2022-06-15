@@ -2154,6 +2154,9 @@ msgstr ""
 msgid "Add approvers"
 msgstr ""
 
+msgid "Add assignees"
+msgstr ""
+
 msgid "Add attention request"
 msgstr ""
 
@@ -5157,9 +5160,6 @@ msgid "At risk"
 msgstr ""
 
 msgid "Attach a file"
-msgstr ""
-
-msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr ""
 
 msgid "Attaching File - %{progress}"
@@ -30620,6 +30620,9 @@ msgstr ""
 msgid "Promotions|Buy GitLab Enterprise Edition"
 msgstr ""
 
+msgid "Promotions|Configure Service Desk"
+msgstr ""
+
 msgid "Promotions|Contact an owner of group %{namespace_name} to upgrade the plan."
 msgstr ""
 
@@ -30630,6 +30633,9 @@ msgid "Promotions|Contact your Administrator to upgrade your license."
 msgstr ""
 
 msgid "Promotions|Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+msgstr ""
+
+msgid "Promotions|Dismiss Service Desk promotion"
 msgstr ""
 
 msgid "Promotions|Dismiss burndown charts promotion"
@@ -31906,9 +31912,6 @@ msgid "Reopens this %{quick_action_target}."
 msgstr ""
 
 msgid "Replace"
-msgstr ""
-
-msgid "Replace %{blob_name}"
 msgstr ""
 
 msgid "Replace %{name}"
@@ -40850,9 +40853,6 @@ msgid "Upload new file"
 msgstr ""
 
 msgid "Upload object map"
-msgstr ""
-
-msgid "UploadLink|click to upload"
 msgstr ""
 
 msgid "Uploaded"

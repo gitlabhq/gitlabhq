@@ -19,7 +19,6 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
 
     project.add_developer(user)
     sign_in(user)
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     stub_const('Gitlab::QueryLimiting::Transaction::THRESHOLD', 104)
   end
 

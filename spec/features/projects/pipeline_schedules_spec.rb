@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Pipeline Schedules', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let!(:project) { create(:project, :repository) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
@@ -11,7 +13,6 @@ RSpec.describe 'Pipeline Schedules', :js do
 
   context 'logged in as the pipeline schedule owner' do
     before do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       project.add_developer(user)
       pipeline_schedule.update!(owner: user)
       gitlab_sign_in(user)
@@ -81,7 +82,6 @@ RSpec.describe 'Pipeline Schedules', :js do
 
   context 'logged in as a project maintainer' do
     before do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       project.add_maintainer(user)
       gitlab_sign_in(user)
     end
@@ -117,7 +117,9 @@ RSpec.describe 'Pipeline Schedules', :js do
         end
 
         it 'deletes the pipeline' do
-          accept_confirm { click_link 'Delete' }
+          click_link 'Delete'
+
+          accept_gl_confirm(button_text: 'Delete pipeline schedule')
 
           expect(page).not_to have_css(".pipeline-schedule-table-row")
         end

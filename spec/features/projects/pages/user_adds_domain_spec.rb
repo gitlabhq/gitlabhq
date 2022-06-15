@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe 'User adds pages domain', :js do
   include LetsEncryptHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:project) { create(:project, pages_https_only: false) }
 
@@ -14,8 +15,6 @@ RSpec.describe 'User adds pages domain', :js do
     project.add_maintainer(user)
 
     sign_in(user)
-
-    stub_feature_flags(bootstrap_confirmation_modals: false)
   end
 
   context 'when pages are exposed on external HTTP address', :http_pages_enabled do
@@ -168,7 +167,7 @@ RSpec.describe 'User adds pages domain', :js do
 
         within('#content-body') { click_link 'Edit' }
 
-        accept_confirm { click_link 'Remove' }
+        accept_gl_confirm(button_text: 'Remove certificate') { click_link 'Remove' }
 
         expect(page).to have_field('Certificate (PEM)', with: '')
         expect(page).to have_field('Key (PEM)', with: '')

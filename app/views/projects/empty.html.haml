@@ -76,6 +76,3 @@
           %span><
             git push -u origin --all
             git push -u origin --tags
-
-- if @project.upload_anchor_data.present?
-  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, default_branch_name), ref: default_branch_name, method: :post

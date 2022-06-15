@@ -22,4 +22,4 @@ workhorse:verify:
 
 workhorse:test using go 1.17:
   extends: .workhorse:test
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-2.7-golang-1.17-git-2.31
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-1.17-git-2.31

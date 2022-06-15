@@ -27,7 +27,7 @@ RSpec.describe 'Promotions', :js do
         visit edit_project_path(project)
 
         within('#promote_service_desk') do
-          find('.close').click
+          find('.js-close').click
         end
 
         wait_for_requests

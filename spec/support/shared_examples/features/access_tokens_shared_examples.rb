@@ -135,7 +135,7 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
 
   it 'allows revocation of an active token' do
     visit resource_settings_access_tokens_path
-    accept_confirm { click_on 'Revoke' }
+    accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
 
     expect(page).to have_selector('.settings-message')
     expect(no_resource_access_tokens_message).to have_text(no_active_tokens_text)
@@ -156,7 +156,7 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
 
     it 'allows revocation of an active token' do
       visit resource_settings_access_tokens_path
-      accept_confirm { click_on 'Revoke' }
+      accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
 
       expect(page).to have_selector('.settings-message')
       expect(no_resource_access_tokens_message).to have_text(no_active_tokens_text)

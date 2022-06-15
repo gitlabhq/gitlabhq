@@ -37,7 +37,7 @@ module API
             latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
             authorize_read_job_artifacts!(latest_build)
 
-            present_carrierwave_file!(latest_build.artifacts_file)
+            present_artifacts_file!(latest_build.artifacts_file)
           end
 
         desc 'Download a specific file from artifacts archive from a ref' do
@@ -78,7 +78,7 @@ module API
           build = find_build!(params[:job_id])
           authorize_read_job_artifacts!(build)
 
-          present_carrierwave_file!(build.artifacts_file)
+          present_artifacts_file!(build.artifacts_file)
         end
 
         desc 'Download a specific file from artifacts archive' do

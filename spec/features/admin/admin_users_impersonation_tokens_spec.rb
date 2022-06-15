@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 
@@ -74,10 +76,9 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
     let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
 
     it "allows revocation of an active impersonation token" do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      accept_confirm { click_on "Revoke" }
+      accept_gl_confirm(button_text: 'Revoke') { click_on "Revoke" }
 
       expect(page).to have_selector(".settings-message")
       expect(no_personal_access_tokens_message).to have_text("This user has no active impersonation tokens.")

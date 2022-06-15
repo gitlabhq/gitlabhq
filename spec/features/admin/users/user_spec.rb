@@ -10,7 +10,6 @@ RSpec.describe 'Admin::Users::User' do
   let_it_be(:current_user) { create(:admin) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(current_user)
     gitlab_enable_admin_mode_sign_in(current_user)
   end
@@ -354,7 +353,7 @@ RSpec.describe 'Admin::Users::User' do
 
         expect(page).to have_content("Secondary email: #{secondary_email.email}")
 
-        accept_confirm { find("#remove_email_#{secondary_email.id}").click }
+        accept_gl_confirm { find("#remove_email_#{secondary_email.id}").click }
 
         expect(page).not_to have_content(secondary_email.email)
       end

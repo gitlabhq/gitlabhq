@@ -395,15 +395,15 @@ db:migrate-from-previous-major-version:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
     PROJECT_TO_CHECKOUT: "gitlab-foss"
-    TAG_TO_CHECKOUT: "v13.12.9"
+    TAG_TO_CHECKOUT: "v14.10.2"
   before_script:
     - !reference [.default-before_script, before_script]
     - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
     - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
     - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
     - git checkout -f FETCH_HEAD
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
-    - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
+    - SETUP_DB=false USE_BUNDLE_INSTALL=true ENABLE_BOOTSNAP=false bash scripts/prepare_build.sh
+    - run_timed_command "ENABLE_BOOTSNAP=false bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
     - git checkout -f $CI_COMMIT_SHA
     - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
   script:
@@ -419,7 +419,7 @@ db:migrate-from-previous-major-version-single-db:
   extends:
     - .rails:rules:ee-mr-and-default-branch-only
   variables:
-    TAG_TO_CHECKOUT: "v14.4.0"
+    TAG_TO_CHECKOUT: "v14.7.0"  # this version updated grpc to 1.42.0, which supports Ruby 2 & 3
   script:
     - run_timed_command "scripts/db_tasks db:migrate"
     - scripts/schema_changed.sh
@@ -460,7 +460,7 @@ db:migrate-non-superuser:
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing
   stage: test
-  image: ruby:2.7-alpine
+  image: ruby:${RUBY_VERSION}-alpine
   needs: []
   allow_failure: true
   script:
@@ -976,7 +976,6 @@ rspec system pg13:
     - .rspec-base-pg13
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
-
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 

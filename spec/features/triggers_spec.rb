@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Triggers', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:trigger_title) { 'trigger desc' }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -74,7 +76,6 @@ RSpec.describe 'Triggers', :js do
 
     describe 'trigger "Revoke" workflow' do
       before do
-        stub_feature_flags(bootstrap_confirmation_modals: false)
         create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
         visit project_settings_ci_cd_path(@project)
       end
@@ -86,7 +87,7 @@ RSpec.describe 'Triggers', :js do
 
       it 'revoke trigger' do
         # See if "Revoke" on trigger works post trigger creation
-        page.accept_confirm do
+        accept_gl_confirm(button_text: 'Revoke') do
           find('[data-testid="trigger_revoke_button"]').send_keys(:return)
         end
 

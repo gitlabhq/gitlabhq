@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User browses a job', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
@@ -12,7 +14,6 @@ RSpec.describe 'User browses a job', :js do
   before do
     project.add_maintainer(user)
     project.enable_ci
-    stub_feature_flags(bootstrap_confirmation_modals: false)
 
     sign_in(user)
   end
@@ -26,7 +27,11 @@ RSpec.describe 'User browses a job', :js do
 
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"
-    accept_confirm { find('[data-testid="job-log-erase-link"]').click }
+    accept_gl_confirm(button_text: 'Erase job log') do
+      find('[data-testid="job-log-erase-link"]').click
+    end
+
+    wait_for_requests
 
     expect(page).to have_no_css('.artifacts')
     expect(build).not_to have_trace

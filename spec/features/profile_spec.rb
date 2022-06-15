@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile account page', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 
@@ -65,11 +66,17 @@ RSpec.describe 'Profile account page', :js do
   it 'allows resetting of feed token' do
     visit profile_personal_access_tokens_path
 
+    previous_token = ''
+
     within('[data-testid="feed-token-container"]') do
       previous_token = find_field('Feed token').value
 
-      accept_confirm { click_link('reset this token') }
+      click_link('reset this token')
+    end
 
+    accept_gl_confirm
+
+    within('[data-testid="feed-token-container"]') do
       click_button('Click to reveal')
 
       expect(find_field('Feed token').value).not_to eq(previous_token)
@@ -81,11 +88,17 @@ RSpec.describe 'Profile account page', :js do
 
     visit profile_personal_access_tokens_path
 
+    previous_token = ''
+
     within('[data-testid="incoming-email-token-container"]') do
       previous_token = find_field('Incoming email token').value
 
-      accept_confirm { click_link('reset this token') }
+      click_link('reset this token')
+    end
 
+    accept_gl_confirm
+
+    within('[data-testid="incoming-email-token-container"]') do
       click_button('Click to reveal')
 
       expect(find_field('Incoming email token').value).not_to eq(previous_token)

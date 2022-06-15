@@ -24,11 +24,8 @@ RSpec.describe Gitlab::UsageDataMetrics do
         expect(subject).to include(:hostname)
       end
 
-      it 'includes counts keys' do
+      it 'includes counts keys', :aggregate_failures do
         expect(subject[:counts]).to include(:boards)
-      end
-
-      it 'includes counts keys' do
         expect(subject[:counts]).to include(:issues)
       end
 

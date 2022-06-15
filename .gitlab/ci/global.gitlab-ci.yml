@@ -18,7 +18,7 @@
     - source scripts/prepare_build.sh
 
 .ruby-gems-cache: &ruby-gems-cache
-  key: "ruby-gems-${DEBIAN_VERSION}"
+  key: "ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - vendor/ruby/
   policy: pull
@@ -28,7 +28,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .gitaly-ruby-gems-cache: &gitaly-ruby-gems-cache
-  key: "gitaly-ruby-gems-${DEBIAN_VERSION}"
+  key: "gitaly-ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - vendor/gitaly-ruby/
   policy: pull
@@ -42,7 +42,7 @@
     files:
       - GITALY_SERVER_VERSION
       - lib/gitlab/setup_helper.rb
-    prefix: "gitaly-binaries-${DEBIAN-VERSION}"
+    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
     - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install/
@@ -79,7 +79,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-cache: &assets-cache
-  key: "assets-${DEBIAN_VERSION}-${NODE_ENV}"
+  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}"
   paths:
     - assets-hash.txt
     - public/assets/webpack/
@@ -103,7 +103,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .rubocop-cache: &rubocop-cache
-  key: "rubocop-${DEBIAN_VERSION}"
+  key: "rubocop-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - tmp/rubocop_cache/
   policy: pull
@@ -116,6 +116,7 @@
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
   key:
+    prefix: "qa-ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
     files:
       - qa/Gemfile.lock
   paths:

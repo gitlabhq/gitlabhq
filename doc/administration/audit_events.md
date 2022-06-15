@@ -117,6 +117,12 @@ From there, you can see the following actions:
 - Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 - [IP restrictions](../user/group/index.md#group-access-restriction-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
 - Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356152) in GitLab 15.1, changes to the following merge request approvals settings:
+  - Prevent approval by author.
+  - Prevent approvals by users who add commits.
+  - Prevent editing approval rules in projects and merge requests.
+  - Require user password to approve.
+  - Remove all approvals when commits are added to the source branch.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 

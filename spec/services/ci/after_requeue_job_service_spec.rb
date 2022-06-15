@@ -26,6 +26,11 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         script: exit 0
         needs: [a1]
 
+      a3:
+        stage: a
+        script: exit 0
+        needs: [a2]
+
       b1:
         stage: b
         script: exit 0
@@ -59,6 +64,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       check_jobs_statuses(
         a1: 'pending',
         a2: 'created',
+        a3: 'created',
         b1: 'pending',
         b2: 'created',
         c1: 'created',
@@ -69,6 +75,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       check_jobs_statuses(
         a1: 'pending',
         a2: 'created',
+        a3: 'created',
         b1: 'success',
         b2: 'created',
         c1: 'created',
@@ -79,6 +86,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       check_jobs_statuses(
         a1: 'failed',
         a2: 'skipped',
+        a3: 'skipped',
         b1: 'success',
         b2: 'skipped',
         c1: 'skipped',
@@ -90,6 +98,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       check_jobs_statuses(
         a1: 'pending',
         a2: 'skipped',
+        a3: 'skipped',
         b1: 'success',
         b2: 'skipped',
         c1: 'skipped',
@@ -103,11 +112,41 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       check_jobs_statuses(
         a1: 'pending',
         a2: 'created',
+        a3: 'skipped',
         b1: 'success',
         b2: 'created',
         c1: 'created',
         c2: 'created'
       )
+    end
+
+    context 'when executed by a different user than the original owner' do
+      let(:retryer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:service) { described_class.new(project, retryer) }
+
+      it 'reassigns jobs with updated statuses to the retryer' do
+        expect(jobs_name_status_owner_needs).to contain_exactly(
+          { 'name' => 'a1', 'status' => 'pending', 'user_id' => user.id, 'needs' => [] },
+          { 'name' => 'a2', 'status' => 'skipped', 'user_id' => user.id, 'needs' => ['a1'] },
+          { 'name' => 'a3', 'status' => 'skipped', 'user_id' => user.id, 'needs' => ['a2'] },
+          { 'name' => 'b1', 'status' => 'success', 'user_id' => user.id, 'needs' => [] },
+          { 'name' => 'b2', 'status' => 'skipped', 'user_id' => user.id, 'needs' => ['a2'] },
+          { 'name' => 'c1', 'status' => 'skipped', 'user_id' => user.id, 'needs' => ['b2'] },
+          { 'name' => 'c2', 'status' => 'skipped', 'user_id' => user.id, 'needs' => [] }
+        )
+
+        execute_after_requeue_service(a1)
+
+        expect(jobs_name_status_owner_needs).to contain_exactly(
+          { 'name' => 'a1', 'status' => 'pending', 'user_id' => user.id,    'needs' => [] },
+          { 'name' => 'a2', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['a1'] },
+          { 'name' => 'a3', 'status' => 'skipped', 'user_id' => user.id,    'needs' => ['a2'] },
+          { 'name' => 'b1', 'status' => 'success', 'user_id' => user.id,    'needs' => [] },
+          { 'name' => 'b2', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['a2'] },
+          { 'name' => 'c1', 'status' => 'created', 'user_id' => retryer.id, 'needs' => ['b2'] },
+          { 'name' => 'c2', 'status' => 'created', 'user_id' => retryer.id, 'needs' => [] }
+        )
+      end
     end
   end
 
@@ -210,6 +249,12 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
 
   def processables
     pipeline.processables.latest
+  end
+
+  def jobs_name_status_owner_needs
+    processables.reload.map do |job|
+      job.attributes.slice('name', 'status', 'user_id').merge('needs' => job.needs.map(&:name))
+    end
   end
 
   def execute_after_requeue_service(processable)

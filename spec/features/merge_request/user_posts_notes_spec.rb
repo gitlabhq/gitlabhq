@@ -18,7 +18,6 @@ RSpec.describe 'Merge request > User posts notes', :js do
   end
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     project.add_maintainer(user)
     sign_in(user)
 

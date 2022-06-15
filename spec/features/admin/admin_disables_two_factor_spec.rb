@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin disables 2FA for a user' do
+  include Spec::Support::Helpers::ModalHelpers
+
   it 'successfully', :js do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
@@ -12,8 +13,10 @@ RSpec.describe 'Admin disables 2FA for a user' do
 
     edit_user(user)
     page.within('.two-factor-status') do
-      accept_confirm { click_link 'Disable' }
+      click_link 'Disable'
     end
+
+    accept_gl_confirm(button_text: 'Disable')
 
     page.within('.two-factor-status') do
       expect(page).to have_content 'Disabled'

@@ -60,7 +60,7 @@ no-jh-check:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine3.13
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}-alpine3.13
   stage: test
   needs: []
   script:
@@ -96,7 +96,7 @@ generate-frontend-fixtures-mapping:
       - ${FRONTEND_FIXTURES_MAPPING_PATH}
 
 .detect-test-base:
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
   needs: []
   stage: prepare
   script:
@@ -160,7 +160,7 @@ detect-previous-failed-tests:
 
 add-jh-folder:
   extends: .setup:rules:add-jh-folder
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
   stage: prepare
   before_script:
     - source ./scripts/utils.sh

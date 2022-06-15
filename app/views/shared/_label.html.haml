@@ -12,11 +12,12 @@
     - if can?(current_user, :admin_label, @project)
       %li.gl-display-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
         dom_id: dom_id(label), type: label.type } }
-        %button.add-priority.btn.gl-button.btn-default-tertiary.btn-sm.has-tooltip{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
-          = sprite_icon('star-o')
         = render Pajamas::ButtonComponent.new(category: :tertiary,
           icon: 'star',
           button_options: { class: 'remove-priority has-tooltip', 'title': _('Remove priority'), 'aria_label': _('Deprioritize label'), data: { placement: 'bottom' } })
+        = render Pajamas::ButtonComponent.new(category: :tertiary,
+          icon: 'star-o',
+          button_options: { class: 'add-priority has-tooltip', title: _('Prioritize'), aria_label: _('Prioritize label'), data: { placement: 'bottom' } })
     - if can?(current_user, :admin_label, label)
       %li.gl-display-inline-block
         = render Pajamas::ButtonComponent.new(href: label.edit_path, category: :tertiary, icon: 'pencil', button_options: { class: 'edit has-tooltip', 'title': _('Edit'), 'aria_label': _('Edit'), data: { placement: 'bottom' } })

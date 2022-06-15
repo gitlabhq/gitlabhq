@@ -133,7 +133,11 @@ export default {
         />
       </div>
       <template v-if="workItemsMvc2Enabled">
-        <work-item-assignees v-if="workItemAssignees" :assignees="workItemAssignees.nodes" />
+        <work-item-assignees
+          v-if="workItemAssignees"
+          :work-item-id="workItem.id"
+          :assignees="workItemAssignees.nodes"
+        />
         <work-item-weight v-if="workItemWeight" :weight="workItemWeight.weight" />
       </template>
       <work-item-state

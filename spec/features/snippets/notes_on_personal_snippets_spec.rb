@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Comments on personal snippets', :js do
   include NoteInteractionHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:snippet) { create(:personal_snippet, :public) }
   let_it_be(:other_note) { create(:note_on_personal_snippet) }
@@ -18,7 +19,6 @@ RSpec.describe 'Comments on personal snippets', :js do
   end
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in user
     visit snippet_path(snippet)
 
@@ -142,8 +142,10 @@ RSpec.describe 'Comments on personal snippets', :js do
       open_more_actions_dropdown(snippet_notes[0])
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        accept_confirm { click_on 'Delete comment' }
+        click_on 'Delete comment'
       end
+
+      accept_gl_confirm(button_text: 'Delete comment')
 
       wait_for_requests
 

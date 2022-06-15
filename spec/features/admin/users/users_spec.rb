@@ -10,7 +10,6 @@ RSpec.describe 'Admin::Users' do
   let_it_be(:current_user) { create(:admin) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(current_user)
     gitlab_enable_admin_mode_sign_in(current_user)
   end
@@ -504,8 +503,11 @@ RSpec.describe 'Admin::Users' do
 
     it 'allows group membership to be revoked', :js do
       page.within(first('.group_member')) do
-        accept_confirm { find('.btn[data-testid="remove-user"]').click }
+        find('.btn[data-testid="remove-user"]').click
       end
+
+      accept_gl_confirm(button_text: 'Remove')
+
       wait_for_requests
 
       expect(page).not_to have_selector('.group_member')

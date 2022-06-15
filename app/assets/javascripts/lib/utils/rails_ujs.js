@@ -37,9 +37,7 @@ function monkeyPatchConfirmModal() {
   Rails.confirm = confirmViaModal;
 }
 
-if (gon?.features?.bootstrapConfirmationModals) {
-  monkeyPatchConfirmModal();
-}
+monkeyPatchConfirmModal();
 
 export const initRails = () => {
   // eslint-disable-next-line no-underscore-dangle

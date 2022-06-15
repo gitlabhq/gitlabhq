@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile > Personal Access Tokens', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:user) }
   let(:pat_create_service) { double('PersonalAccessTokens::CreateService', execute: ServiceResponse.error(message: 'error', payload: { personal_access_token: PersonalAccessToken.new })) }
 
@@ -19,7 +21,6 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
   end
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 
@@ -94,7 +95,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
 
     it "allows revocation of an active token" do
       visit profile_personal_access_tokens_path
-      accept_confirm { click_on "Revoke" }
+      accept_gl_confirm(button_text: 'Revoke') { click_on "Revoke" }
 
       expect(active_personal_access_tokens).to have_text("This user has no active personal access tokens.")
     end
@@ -113,7 +114,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
         end
         visit profile_personal_access_tokens_path
 
-        accept_confirm { click_on "Revoke" }
+        accept_gl_confirm(button_text: "Revoke") { click_on "Revoke" }
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)
       end
     end

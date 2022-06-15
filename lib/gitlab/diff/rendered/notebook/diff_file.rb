@@ -50,12 +50,14 @@ module Gitlab
           end
 
           def highlighted_diff_lines
-            @highlighted_diff_lines ||= begin
-              removal_line_maps, addition_line_maps = map_diff_block_to_source_line(
-                source_diff.highlighted_diff_lines, source_diff.new_file?, source_diff.deleted_file?)
-              Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight.map do |line|
-                mutate_line(line, addition_line_maps, removal_line_maps)
-              end
+            strong_memoize(:highlighted_diff_lines) do
+              lines = Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+              lines_in_source = lines_in_source_diff(
+                source_diff.highlighted_diff_lines, source_diff.deleted_file?, source_diff.new_file?
+              )
+
+              lines.zip(line_positions_at_source_diff(lines, transformed_blocks))
+                   .map { |line, positions| mutate_line(line, positions, lines_in_source)}
             end
           end
 
@@ -91,6 +93,10 @@ module Gitlab
             diff
           end
 
+          def transformed_blocks
+            { from: notebook_diff.from.blocks, to: notebook_diff.to.blocks }
+          end
+
           def rendered_timeout
             @rendered_timeout ||= Gitlab::Metrics.counter(
               :ipynb_semantic_diff_timeouts_total,
@@ -108,21 +114,13 @@ module Gitlab
             nil
           end
 
-          def compute_line_numbers(transformed_old_pos, transformed_new_pos, addition_line_maps, removal_line_maps)
-            new_pos = map_transformed_line_to_source(transformed_new_pos, notebook_diff.to.blocks)
-            old_pos = map_transformed_line_to_source(transformed_old_pos, notebook_diff.from.blocks)
-
-            old_pos = addition_line_maps[new_pos] if old_pos == 0 && new_pos != 0
-            new_pos = removal_line_maps[old_pos] if new_pos == 0 && old_pos != 0
-
-            [old_pos, new_pos]
-          end
-
-          def mutate_line(line, addition_line_maps, removal_line_maps)
-            line.old_pos, line.new_pos = compute_line_numbers(line.old_pos, line.new_pos, addition_line_maps, removal_line_maps)
+          def mutate_line(line, mapped_positions, source_diff_lines)
+            line.old_pos, line.new_pos = mapped_positions
 
             # Lines that do not appear on the original diff should not be commentable
-            line.type = "#{line.type || 'unchanged'}-nomappinginraw" unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
+            unless source_diff_lines[:to].include?(line.new_pos) || source_diff_lines[:from].include?(line.old_pos)
+              line.type = "#{line.type || 'unchanged'}-nomappinginraw"
+            end
 
             line.line_code = line_code(line)
 

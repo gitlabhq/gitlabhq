@@ -20,3 +20,17 @@ type LocalWorkItemWeight implements LocalWorkItemWidget {
 extend type WorkItem {
   mockWidgets: [LocalWorkItemWidget]
 }
+
+type LocalWorkItemAssigneesInput {
+  id: WorkItemID!
+  assigneeIds: [ID!]
+}
+
+type LocalWorkItemPayload {
+  workItem: WorkItem!
+  errors: [String!]
+}
+
+extend type Mutation {
+  localUpdateWorkItem(input: LocalWorkItemAssigneesInput!): LocalWorkItemPayload
+}

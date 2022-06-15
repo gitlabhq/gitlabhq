@@ -521,7 +521,6 @@ RSpec.describe 'Project issue boards', :js do
     let_it_be(:user_guest) { create(:user) }
 
     before do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       project.add_guest(user_guest)
       sign_in(user_guest)
       visit project_board_path(project, board)

@@ -28,7 +28,7 @@
           = render 'ci/variables/variable_row', form_field: 'schedule', variable: variable
         = render 'ci/variables/variable_row', form_field: 'schedule'
       - if @schedule.variables.size > 0
-        %button.gl-button.btn.btn-confirm-secondary.gl-mt-3.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" } }
+        = render Pajamas::ButtonComponent.new(category: :secondary, variant: :confirm, button_options: { class: 'gl-mt-3 js-secret-value-reveal-button', data: { secret_reveal_status: "#{@schedule.variables.size == 0}" }}) do
           - if @schedule.variables.size == 0
             = n_('Hide value', 'Hide values', @schedule.variables.size)
           - else

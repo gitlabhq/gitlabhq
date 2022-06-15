@@ -3,6 +3,8 @@
 require "spec_helper"
 
 RSpec.describe "User deletes branch", :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :repository) }
@@ -24,9 +26,7 @@ RSpec.describe "User deletes branch", :js do
       find('.js-delete-branch-button').click
     end
 
-    page.within '.modal-footer' do
-      click_button 'Yes, delete branch'
-    end
+    accept_gl_confirm(button_text: 'Yes, delete branch')
 
     wait_for_requests
 

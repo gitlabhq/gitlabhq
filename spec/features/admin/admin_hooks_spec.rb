@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin::Hooks' do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:admin) }
 
   before do
@@ -79,7 +81,6 @@ RSpec.describe 'Admin::Hooks' do
     let(:hook_url) { generate(:url) }
 
     before do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       create(:system_hook, url: hook_url)
     end
 
@@ -87,7 +88,7 @@ RSpec.describe 'Admin::Hooks' do
       it 'from hooks list page' do
         visit admin_hooks_path
 
-        accept_confirm { click_link 'Delete' }
+        accept_gl_confirm(button_text: 'Delete webhook') { click_link 'Delete' }
         expect(page).not_to have_content(hook_url)
       end
 
@@ -95,7 +96,7 @@ RSpec.describe 'Admin::Hooks' do
         visit admin_hooks_path
         click_link 'Edit'
 
-        accept_confirm { click_link 'Delete' }
+        accept_gl_confirm(button_text: 'Delete webhook') { click_link 'Delete' }
         expect(page).not_to have_content(hook_url)
       end
     end

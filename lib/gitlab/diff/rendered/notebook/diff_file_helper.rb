@@ -4,75 +4,94 @@ module Gitlab
     module Rendered
       module Notebook
         module DiffFileHelper
+          require 'set'
+
           EMBEDDED_IMAGE_PATTERN = '    ![](data:image'
 
           def strip_diff_frontmatter(diff_content)
             diff_content.scan(/.*\n/)[2..]&.join('') if diff_content.present?
           end
 
-          def map_transformed_line_to_source(transformed_line, transformed_blocks)
-            transformed_blocks.empty? ? 0 : ( transformed_blocks[transformed_line - 1][:source_line] || -1 ) + 1
+          # line_positions_at_source_diff: given the transformed lines,
+          # what are the correct values for old_pos and new_pos?
+          #
+          # Example:
+          #
+          # Original
+          # from | to
+          # A    | A
+          # B    | D
+          # C    | E
+          # F    | F
+          #
+          # Original Diff
+          #   A A
+          # - B
+          # - C
+          # +   D
+          # +   E
+          #   F F
+          #
+          # Transformed
+          # from | to
+          # A    | A
+          # C    | D
+          # B    | J
+          # L    | E
+          # K    | K
+          # F    | F
+          #
+          # Transformed diff | transf old, new | OG old_pos, new_pos |
+          #  A A             | 1, 1            | 1, 1                |
+          # -C               | 2, 2            | 3, 2                |
+          # -B               | 3, 2            | 2, 2                |
+          # -L               | 4, 2            | 0, 0                |
+          # +  D             | 5, 2            | 4, 2                |
+          # +  J             | 5, 3            | 0, 0                |
+          # +  E             | 5, 4            | 4, 3                |
+          #  K K             | 5, 5            | 0, 0                |
+          #  F F             | 6, 6            | 4, 4                |
+          def line_positions_at_source_diff(lines, blocks)
+            last_mapped_old_pos = 0
+            last_mapped_new_pos = 0
+
+            lines.reverse_each.map do |line|
+              old_pos = source_line_from_block(line.old_pos, blocks[:from])
+              new_pos = source_line_from_block(line.new_pos, blocks[:to])
+
+              old_has_no_mapping = old_pos == 0
+              new_has_no_mapping = new_pos == 0
+
+              next [0, 0] if old_has_no_mapping && (new_has_no_mapping || line.type == 'old')
+              next [0, 0] if new_has_no_mapping && line.type == 'new'
+
+              new_pos = last_mapped_new_pos if new_has_no_mapping && line.type == 'old'
+              old_pos = last_mapped_old_pos if old_has_no_mapping && line.type == 'new'
+
+              last_mapped_old_pos = old_pos
+              last_mapped_new_pos = new_pos
+
+              [old_pos, new_pos]
+            end.reverse
           end
 
-          # line_codes are used for assigning notes to diffs, and these depend on the line on the new version and the
-          # line that would have been that one in the previous version. However, since we do a transformation on the
-          # file, that mapping gets lost. To overcome this, we look at the original source lines and build two maps:
-          # - For additions, we look at the latest line change for that line and pick the old line for that id
-          # - For removals, we look at the first line in the old version, and pick the first line on the new version
-          #
-          # Note: ipynb files never change the first or last line (open and closure of the
-          # json object), unless the file is removed or deleted
-          #
-          # Example: Additions and removals
-          # Old:   New:
-          # A      A
-          # B      D
-          # C      E
-          # F      F
-          #
-          # Diff:
-          # 1  A A 1 | line code: 1_1
-          # 2 -B     | line code: 2_2 -> new line is what it is after been without the removal, 2
-          # 3 -C     | line code: 3_2
-          #   +  D 2 | line code: 4_2 -> old line is what would have been before the addition, 4
-          #   +  E 3 | line code: 4_3
-          # 4 F  F 4 | line code: 4_4
-          #
-          # Example: only additions
-          # Old:   New:
-          # A      A
-          # F      B
-          #        C
-          #        F
-          #
-          # Diff:
-          #  A A | line code: 1_1
-          # +  B | line code: 2_2 -> old line is the next after the additions, 2
-          # +  C | line code: 2_3
-          #  F F | line code: 2_4
-          #
-          # Example: only removals
-          # Old:   New:
-          # A      A
-          # B      F
-          # C
-          # F
-          #
-          # Diff:
-          #  A A | line code: 1_1
-          # -B   | line code: 2_2 -> new line is what it is after been without the removal, 2
-          # -C   | line code: 3_2
-          #  F F | line code: 4_2
-          def map_diff_block_to_source_line(lines, file_added, file_deleted)
-            removals = {}
-            additions = {}
+          def lines_in_source_diff(source_diff_lines, is_deleted_file, is_added_file)
+            {
+              from: is_added_file ? Set[] : source_diff_lines.map {|l| l.old_pos}.to_set,
+              to: is_deleted_file ? Set[] : source_diff_lines.map {|l| l.new_pos}.to_set
+            }
+          end
 
-            lines.each do |line|
-              removals[line.old_pos] = line.new_pos unless file_added
-              additions[line.new_pos] = line.old_pos unless file_deleted
-            end
+          def source_line_from_block(transformed_line, transformed_blocks)
+            # Blocks are the lines returned from the library and are a hash with {text:, source_line:}
+            # Blocks source_line are 0 indexed
+            return 0 if transformed_blocks.empty?
 
-            [removals, additions]
+            line_in_source = transformed_blocks[transformed_line - 1][:source_line]
+
+            return 0 unless line_in_source.present?
+
+            line_in_source + 1
           end
 
           def image_as_rich_text(line_text)

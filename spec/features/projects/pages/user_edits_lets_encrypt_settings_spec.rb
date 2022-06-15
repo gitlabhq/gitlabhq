@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
   include LetsEncryptHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project, pages_https_only: false) }
   let(:user) { create(:user) }
@@ -14,7 +15,6 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
     stub_lets_encrypt_settings
-    stub_feature_flags(bootstrap_confirmation_modals: false)
 
     project.add_role(user, role)
     sign_in(user)
@@ -139,7 +139,8 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
 
         expect(page).to have_selector '.card-header', text: 'Certificate'
         expect(page).to have_text domain.subject
-        within('.card') { accept_confirm { click_on 'Remove' } }
+        within('.card') { click_on 'Remove' }
+        accept_gl_confirm(button_text: 'Remove certificate')
         expect(page).to have_field 'Certificate (PEM)', with: ''
         expect(page).to have_field 'Key (PEM)', with: ''
       end

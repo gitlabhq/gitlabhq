@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Members > Member leaves project' do
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, :with_namespace_settings) }
@@ -11,7 +12,6 @@ RSpec.describe 'Projects > Members > Member leaves project' do
   before do
     project.add_developer(user)
     sign_in(user)
-    stub_feature_flags(bootstrap_confirmation_modals: false)
   end
 
   it 'user leaves project' do
@@ -26,7 +26,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
   it 'user leaves project by url param', :js do
     visit project_path(project, leave: 1)
 
-    page.accept_confirm
+    accept_gl_confirm(button_text: 'Leave project')
     wait_for_all_requests
 
     expect(page).to have_current_path(dashboard_projects_path, ignore_query: true)

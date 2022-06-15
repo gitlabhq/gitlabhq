@@ -2,6 +2,15 @@
 
 require 'fast_spec_helper'
 require 'rspec-parameterized'
+require 'set'
+
+MOCK_LINE = Struct.new(:text, :type, :index, :old_pos, :new_pos)
+
+def make_lines(old_lines, new_lines, texts = nil, types = nil)
+  old_lines.each_with_index.map do |old, i|
+    MOCK_LINE.new(texts ? texts[i] : '', types ? types[i] : nil, i, old, new_lines[i])
+  end
+end
 
 RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
   let(:dummy) { Class.new { include Gitlab::Diff::Rendered::Notebook::DiffFileHelper }.new }
@@ -25,7 +34,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
   describe '#map_transformed_line_to_source' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { dummy.map_transformed_line_to_source(1, transformed_blocks) }
+    subject { dummy.source_line_from_block(1, transformed_blocks) }
 
     where(:case, :transformed_blocks, :result) do
       'if transformed diff is empty' | [] | 0
@@ -35,71 +44,6 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
 
     with_them do
       it { is_expected.to eq(result) }
-    end
-  end
-
-  describe '#map_diff_block_to_source_line' do
-    let(:file_added) { false }
-    let(:file_deleted) { false }
-    let(:old_positions) { [1] }
-    let(:new_positions) { [1] }
-    let(:lines) { old_positions.zip(new_positions).map { |old, new| Gitlab::Diff::Line.new("", "", 0, old, new) } }
-
-    subject { dummy.map_diff_block_to_source_line(lines, file_added, file_deleted)}
-
-    context 'only additions' do
-      let(:old_positions) { [1, 2, 2, 2] }
-      let(:new_positions) { [1, 2, 3, 4] }
-
-      it 'computes the removals correctly' do
-        expect(subject[0]).to eq({ 1 => 1, 2 => 4 })
-      end
-
-      it 'computes the additions correctly' do
-        expect(subject[1]).to eq({ 1 => 1, 2 => 2, 3 => 2, 4 => 2 })
-      end
-    end
-
-    context 'only additions' do
-      let(:old_positions) { [1, 2, 3, 4] }
-      let(:new_positions) { [1, 2, 2, 2] }
-
-      it 'computes the removals correctly' do
-        expect(subject[0]).to eq({ 1 => 1, 2 => 2, 3 => 2, 4 => 2 })
-      end
-
-      it 'computes the additions correctly' do
-        expect(subject[1]).to eq({ 1 => 1, 2 => 4 })
-      end
-    end
-
-    context 'with additions and removals' do
-      let(:old_positions) { [1, 2, 3, 4, 4, 4] }
-      let(:new_positions) { [1, 2, 2, 2, 3, 4] }
-
-      it 'computes the removals correctly' do
-        expect(subject[0]).to eq({ 1 => 1, 2 => 2, 3 => 2, 4 => 4 })
-      end
-
-      it 'computes the additions correctly' do
-        expect(subject[1]).to eq({ 1 => 1, 2 => 4, 3 => 4, 4 => 4 })
-      end
-    end
-
-    context 'is new file' do
-      let(:file_added) { true }
-
-      it 'removals is empty' do
-        expect(subject[0]).to be_empty
-      end
-    end
-
-    context 'is deleted file' do
-      let(:file_deleted) { true }
-
-      it 'additions is empty' do
-        expect(subject[1]).to be_empty
-      end
     end
   end
 
@@ -129,6 +73,62 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
       it 'adds image to src' do
         expect(subject).to end_with('/div&gt;">')
       end
+    end
+  end
+
+  describe '#line_positions_at_source_diff' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:blocks) do
+      {
+        from: [0, 2, 1, nil, nil, 3].map { |i| { source_line: i } },
+        to: [0, 1, nil, 2, nil, 3].map { |i| { source_line: i } }
+      }
+    end
+
+    let(:lines) do
+      make_lines(
+        [1, 2, 3, 4, 5, 5, 5, 5, 6],
+        [1, 2, 2, 2, 2, 3, 4, 5, 6],
+        'ACBLDJEKF'.split(""),
+        [nil, 'old', 'old', 'old', 'new', 'new', 'new', nil, nil]
+      )
+    end
+
+    subject { dummy.line_positions_at_source_diff(lines, blocks)[index] }
+
+    where(:case, :index, :transformed_positions, :mapped_positions) do
+      "  A A" | 0 | [1, 1] | [1, 1] # No change, old_pos and new_pos have mappings
+      "- C  " | 1 | [2, 2] | [3, 2] # A removal, both old_pos and new_pos have valid mappings
+      "- B  " | 2 | [3, 2] | [2, 2] # A removal, both old_pos and new_pos have valid mappings
+      "- L  " | 3 | [4, 2] | [0, 0] # A removal, but old_pos has no mapping
+      "+   D" | 4 | [5, 2] | [4, 2] # An addition, new_pos has mapping but old_pos does not, so old_pos is remapped
+      "+   J" | 5 | [5, 3] | [0, 0] # An addition, but new_pos has no mapping, so neither are remapped
+      "+   E" | 6 | [5, 4] | [4, 3] # An addition, new_pos has mapping but old_pos does not, so old_pos is remapped
+      "  K K" | 7 | [5, 5] | [0, 0] # This has no mapping
+      "  F F" | 8 | [6, 6] | [4, 4] # No change, old_pos and new_pos have mappings
+    end
+
+    with_them do
+      it { is_expected.to eq(mapped_positions) }
+    end
+  end
+
+  describe '#lines_in_source_diff' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:lines) { make_lines(old_lines, new_lines) }
+
+    subject { dummy.lines_in_source_diff(lines, is_deleted, is_new) }
+
+    where(:old_lines, :new_lines, :is_deleted, :is_new, :existing_lines) do
+      [1, 2, 2] | [1, 1, 4] | false | false | { from: Set[1, 2], to: Set[1, 4] }
+      [1, 2, 2] | [1, 1, 4] | true | false | { from: Set[1, 2], to: Set[] }
+      [1, 2, 2] | [1, 1, 4] | false | true | { from: Set[], to: Set[1, 4] }
+    end
+
+    with_them do
+      it { is_expected.to eq(existing_lines) }
     end
   end
 end

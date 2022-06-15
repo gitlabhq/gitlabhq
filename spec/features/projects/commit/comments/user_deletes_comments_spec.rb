@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User deletes comments on a commit", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
+  include Spec::Support::Helpers::ModalHelpers
   include RepoHelpers
 
   let(:comment_text) { "XML attached" }
@@ -11,7 +12,6 @@ RSpec.describe "User deletes comments on a commit", :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
     project.add_developer(user)
 
@@ -32,8 +32,10 @@ RSpec.describe "User deletes comments on a commit", :js do
       find(".more-actions").click
       find(".more-actions .dropdown-menu li", match: :first)
 
-      accept_confirm { find(".js-note-delete").click }
+      find(".js-note-delete").click
     end
+
+    accept_gl_confirm(button_text: 'Delete comment')
 
     expect(page).not_to have_css(".note")
   end

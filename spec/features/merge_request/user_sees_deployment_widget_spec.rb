@@ -115,7 +115,6 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
       end
 
       before do
-        stub_feature_flags(bootstrap_confirmation_modals: false)
         build.success!
         deployment.update!(on_stop: manual.name)
         visit project_merge_request_path(project, merge_request)

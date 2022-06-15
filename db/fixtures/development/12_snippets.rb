@@ -35,6 +35,8 @@ Gitlab::Seeder.quiet do
       visibility_level: Gitlab::VisibilityLevel.values.sample,
       content: 'foo'
     }).tap do |snippet|
+      snippet.repository.expire_exists_cache
+
       unless snippet.repository_exists?
         Gitlab::Seeder::SnippetRepository.new(snippet).import
       end
@@ -48,4 +50,3 @@ Gitlab::Seeder.quiet do
 
   Gitlab::Seeder::SnippetRepository.cleanup
 end
-

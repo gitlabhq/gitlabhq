@@ -277,6 +277,12 @@ In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.
 
+## Ruby versions testing
+
+Our test suite runs against Ruby 2 in merge requests and default branch pipelines.
+
+We do run our test suite against Ruby 3 on 2-hourly scheduled pipelines, as GitLab.com will soon run on Ruby 3.
+
 ## PostgreSQL versions testing
 
 Our test suite runs against PG12 as GitLab.com runs on PG12 and

@@ -16,7 +16,6 @@ RSpec.describe 'User creates snippet', :js do
   let(:snippet_title_field) { 'snippet-title' }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
 
     visit new_snippet_path
