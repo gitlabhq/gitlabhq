@@ -38,7 +38,7 @@ module Gitlab
             strong_memoize(:serialized_records) do
               # When RecordsFetcher is used with query sourced from
               # InOperatorOptimization::QueryBuilder only columns
-              # used in ORDER BY statement would be selected by Arel.start operation
+              # used in ORDER BY statement would be selected by Arel.star operation
               selections = [stage_event_model.arel_table[Arel.star]]
               selections << duration_in_seconds.as('total_time') if params[:sort] != :duration # duration sorting already exposes this data
 
@@ -55,7 +55,9 @@ module Gitlab
                   project_path: project.path,
                   namespace_path: project.namespace.route.path,
                   author: issuable.author,
-                  total_time: record.total_time
+                  total_time: record.total_time,
+                  start_event_timestamp: record.start_event_timestamp,
+                  end_event_timestamp: record.end_event_timestamp
                 })
                 serializer.represent(attributes)
               end

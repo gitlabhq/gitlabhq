@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
 
@@ -7,7 +8,9 @@ export default {
   components: {
     GlLink,
     GlSprintf,
+    SignInOauthButton: () => import('./sign_in_oauth_button.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     usersPath: {
       default: '',
@@ -51,6 +54,9 @@ export default {
         ? this.$options.i18n.signedInAsUserText
         : this.$options.i18n.signedInText;
     },
+    isOauthEnabled() {
+      return this.glFeatures.jiraConnectOauth;
+    },
   },
   async created() {
     this.signInURL = await getGitlabSignInURL(this.usersPath);
@@ -72,13 +78,14 @@ export default {
       </template>
     </gl-sprintf>
 
-    <gl-link
-      v-else-if="hasSubscriptions"
-      data-testid="sign-in-link"
-      :href="signInURL"
-      target="_blank"
-    >
-      {{ $options.i18n.signInText }}
-    </gl-link>
+    <template v-else-if="hasSubscriptions">
+      <sign-in-oauth-button v-if="isOauthEnabled" category="tertiary">
+        {{ $options.i18n.signInText }}
+      </sign-in-oauth-button>
+
+      <gl-link v-else data-testid="sign-in-link" :href="signInURL" target="_blank">
+        {{ $options.i18n.signInText }}
+      </gl-link>
+    </template>
   </div>
 </template>

@@ -42,8 +42,6 @@ RSpec.describe 'Admin Groups' do
     end
 
     it 'creates new group' do
-      stub_feature_flags(group_name_path_vue: false)
-
       visit admin_groups_path
 
       page.within '#content-body' do
@@ -96,8 +94,6 @@ RSpec.describe 'Admin Groups' do
     end
 
     it 'when entering in group path, group name does not change anymore' do
-      stub_feature_flags(group_name_path_vue: false)
-
       visit admin_groups_path
       click_link "New group"
       group_path = 'my-gitlab-project'

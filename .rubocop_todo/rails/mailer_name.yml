@@ -1,5 +1,0 @@
----
-# Cop supports --auto-correct.
-Rails/MailerName:
-  Exclude:
-    - 'app/mailers/notify.rb'

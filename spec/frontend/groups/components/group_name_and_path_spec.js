@@ -1,9 +1,11 @@
 import { merge } from 'lodash';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { GlAlert } from '@gitlab/ui';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import GroupNameAndPath from '~/groups/components/group_name_and_path.vue';
 import { getGroupPathAvailability } from '~/rest_api';
 import { createAlert } from '~/flash';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 jest.mock('~/flash');
 jest.mock('~/rest_api', () => ({
@@ -37,9 +39,15 @@ describe('GroupNameAndPath', () => {
   const createComponent = ({ provide = {} } = {}) => {
     wrapper = mountExtended(GroupNameAndPath, { provide: merge({}, defaultProvide, provide) });
   };
+  const createComponentEditGroup = ({ path = mockGroupUrl } = {}) => {
+    createComponent({
+      provide: { fields: { groupId: { value: '1' }, path: { value: path } } },
+    });
+  };
 
   const findGroupNameField = () => wrapper.findByLabelText(GroupNameAndPath.i18n.inputs.name.label);
   const findGroupUrlField = () => wrapper.findByLabelText(GroupNameAndPath.i18n.inputs.path.label);
+  const findAlert = () => extendedWrapper(wrapper.findComponent(GlAlert));
 
   const apiMockAvailablePath = () => {
     getGroupPathAvailability.mockResolvedValue({
@@ -60,12 +68,45 @@ describe('GroupNameAndPath', () => {
   };
 
   describe('when user types in the `Group name` field', () => {
-    it('updates `Group URL` field as user types', async () => {
-      createComponent();
+    describe('when creating a new group', () => {
+      it('updates `Group URL` field as user types', async () => {
+        createComponent();
 
-      await findGroupNameField().setValue(mockGroupName);
+        await findGroupNameField().setValue(mockGroupName);
 
-      expect(findGroupUrlField().element.value).toBe(mockGroupUrl);
+        expect(findGroupUrlField().element.value).toBe(mockGroupUrl);
+      });
+    });
+
+    describe('when editing a group', () => {
+      it('does not update `Group URL` field and does not call API', async () => {
+        const groupUrl = 'foo-bar';
+
+        createComponentEditGroup({ path: groupUrl });
+
+        await findGroupNameField().setValue(mockGroupName);
+
+        expect(findGroupUrlField().element.value).toBe(groupUrl);
+        expect(getGroupPathAvailability).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when `Group URL` field has been manually entered', () => {
+      it('does not update `Group URL` field and does not call API', async () => {
+        apiMockAvailablePath();
+
+        createComponent();
+
+        await findGroupUrlField().setValue(mockGroupUrl);
+        await waitForPromises();
+
+        getGroupPathAvailability.mockClear();
+
+        await findGroupNameField().setValue('Foo bar');
+
+        expect(findGroupUrlField().element.value).toBe(mockGroupUrl);
+        expect(getGroupPathAvailability).not.toHaveBeenCalled();
+      });
     });
 
     it('shows loading message', async () => {
@@ -227,6 +268,30 @@ describe('GroupNameAndPath', () => {
         expect(findGroupUrlField().element.value).toBe(mockGroupUrlSuggested);
       });
     });
+
+    describe('when editing a group', () => {
+      it('calls API if `Group URL` does not equal the original `Group URL`', async () => {
+        const groupUrl = 'foo-bar';
+
+        apiMockAvailablePath();
+
+        createComponentEditGroup({ path: groupUrl });
+
+        await findGroupUrlField().setValue('foo-bar1');
+        await waitForPromises();
+
+        expect(getGroupPathAvailability).toHaveBeenCalled();
+        expect(wrapper.findByText(GroupNameAndPath.i18n.inputs.path.validFeedback).exists()).toBe(
+          true,
+        );
+
+        getGroupPathAvailability.mockClear();
+
+        await findGroupUrlField().setValue('foo-bar');
+
+        expect(getGroupPathAvailability).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when `Group URL` field is invalid', () => {
@@ -256,6 +321,27 @@ describe('GroupNameAndPath', () => {
       createComponent();
 
       expect(findGroupUrlField().attributes('data-bind-in')).toBeUndefined();
+    });
+  });
+
+  describe('when editing a group', () => {
+    it('shows warning alert with `Learn more` link', () => {
+      createComponentEditGroup();
+
+      expect(findAlert().exists()).toBe(true);
+      expect(findAlert().findByRole('link', { name: 'Learn more' }).attributes('href')).toBe(
+        helpPagePath('user/group/index', {
+          anchor: 'change-a-groups-path',
+        }),
+      );
+    });
+
+    it('shows `Group ID` field', () => {
+      createComponentEditGroup();
+
+      expect(
+        wrapper.findByLabelText(GroupNameAndPath.i18n.inputs.groupId.label).element.value,
+      ).toBe('1');
     });
   });
 });

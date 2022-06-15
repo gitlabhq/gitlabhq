@@ -8,15 +8,18 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
   end
 
   let(:params) { { from: 1.year.ago, current_user: user } }
+  let(:records_fetcher) do
+    Gitlab::Analytics::CycleAnalytics::DataCollector.new(
+      stage: stage,
+      params: params
+    ).records_fetcher
+  end
 
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:user) { create(:user) }
 
   subject do
-    Gitlab::Analytics::CycleAnalytics::DataCollector.new(
-      stage: stage,
-      params: params
-    ).records_fetcher.serialized_records
+    records_fetcher.serialized_records
   end
 
   describe '#serialized_records' do
@@ -27,6 +30,26 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
 
       it 'returns all records' do
         expect(subject.size).to eq(2)
+      end
+
+      it 'passes a hash with all expected attributes to the serializer' do
+        expected_attributes = [
+          'created_at',
+          'id',
+          'iid',
+          'title',
+          'end_event_timestamp',
+          'start_event_timestamp',
+          'total_time',
+          :author,
+          :namespace_path,
+          :project_path
+        ]
+        serializer = instance_double(records_fetcher.send(:serializer).class.name)
+        allow(records_fetcher).to receive(:serializer).and_return(serializer)
+        expect(serializer).to receive(:represent).twice.with(hash_including(*expected_attributes)).and_return({})
+
+        subject
       end
     end
 

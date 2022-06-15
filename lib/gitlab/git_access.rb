@@ -108,7 +108,7 @@ module Gitlab
       authentication_abilities.include?(:download_code) &&
         deploy_key? &&
         deploy_key.has_access_to?(container) &&
-        (project? && project&.repository_access_level != ::Featurable::DISABLED)
+        (project? && repository_access_level != ::Featurable::DISABLED)
     end
 
     def user_can_download?
@@ -532,6 +532,10 @@ module Gitlab
 
     # overriden in EE
     def check_additional_conditions!
+    end
+
+    def repository_access_level
+      project&.repository_access_level
     end
   end
 end

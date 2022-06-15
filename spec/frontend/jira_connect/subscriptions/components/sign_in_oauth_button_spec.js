@@ -35,7 +35,7 @@ describe('SignInOauthButton', () => {
   let mockAxios;
   let store;
 
-  const createComponent = ({ slots } = {}) => {
+  const createComponent = ({ slots, props } = {}) => {
     store = createStore();
     jest.spyOn(store, 'dispatch').mockImplementation();
     jest.spyOn(store, 'commit').mockImplementation();
@@ -46,6 +46,7 @@ describe('SignInOauthButton', () => {
       provide: {
         oauthMetadata: mockOauthMetadata,
       },
+      propsData: props,
     });
   };
 
@@ -65,6 +66,7 @@ describe('SignInOauthButton', () => {
 
     expect(findButton().exists()).toBe(true);
     expect(findButton().text()).toBe(I18N_DEFAULT_SIGN_IN_BUTTON_TEXT);
+    expect(findButton().props('category')).toBe('primary');
   });
 
   it.each`
@@ -206,6 +208,13 @@ describe('SignInOauthButton', () => {
           });
         });
       });
+    });
+  });
+
+  describe('when `category` prop is set', () => {
+    it('sets the `category` prop on the GlButton', () => {
+      createComponent({ props: { category: 'tertiary' } });
+      expect(findButton().props('category')).toBe('tertiary');
     });
   });
 });

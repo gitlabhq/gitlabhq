@@ -1,5 +1,7 @@
 import { GlSprintf } from '@gitlab/ui';
 import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
+import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
+
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -16,6 +18,7 @@ describe('UserLink', () => {
       provide,
       stubs: {
         GlSprintf,
+        SignInOauthButton,
       },
     });
   };
@@ -23,28 +26,48 @@ describe('UserLink', () => {
   const findSignInLink = () => wrapper.findByTestId('sign-in-link');
   const findGitlabUserLink = () => wrapper.findByTestId('gitlab-user-link');
   const findSprintf = () => wrapper.findComponent(GlSprintf);
+  const findOauthButton = () => wrapper.findComponent(SignInOauthButton);
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe.each`
-    userSignedIn | hasSubscriptions | expectGlSprintf | expectGlLink
-    ${true}      | ${false}         | ${true}         | ${false}
-    ${false}     | ${true}          | ${false}        | ${true}
-    ${true}      | ${true}          | ${true}         | ${false}
-    ${false}     | ${false}         | ${false}        | ${false}
+    userSignedIn | hasSubscriptions | expectGlSprintf | expectGlLink | expectOauthButton | jiraConnectOauthEnabled
+    ${true}      | ${false}         | ${true}         | ${false}     | ${false}          | ${false}
+    ${false}     | ${true}          | ${false}        | ${true}      | ${false}          | ${false}
+    ${true}      | ${true}          | ${true}         | ${false}     | ${false}          | ${false}
+    ${false}     | ${false}         | ${false}        | ${false}     | ${false}          | ${false}
+    ${false}     | ${true}          | ${false}        | ${false}     | ${true}           | ${true}
   `(
-    'when `userSignedIn` is $userSignedIn and `hasSubscriptions` is $hasSubscriptions',
-    ({ userSignedIn, hasSubscriptions, expectGlSprintf, expectGlLink }) => {
+    'when `userSignedIn` is $userSignedIn, `hasSubscriptions` is $hasSubscriptions, `jiraConnectOauthEnabled` is $jiraConnectOauthEnabled',
+    ({
+      userSignedIn,
+      hasSubscriptions,
+      expectGlSprintf,
+      expectGlLink,
+      expectOauthButton,
+      jiraConnectOauthEnabled,
+    }) => {
       it('renders template correctly', () => {
-        createComponent({
-          userSignedIn,
-          hasSubscriptions,
-        });
+        createComponent(
+          {
+            userSignedIn,
+            hasSubscriptions,
+          },
+          {
+            provide: {
+              glFeatures: {
+                jiraConnectOauth: jiraConnectOauthEnabled,
+              },
+              oauthMetadata: {},
+            },
+          },
+        );
 
         expect(findSprintf().exists()).toBe(expectGlSprintf);
         expect(findSignInLink().exists()).toBe(expectGlLink);
+        expect(findOauthButton().exists()).toBe(expectOauthButton);
       });
     },
   );

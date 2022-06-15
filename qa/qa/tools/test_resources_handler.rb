@@ -61,7 +61,10 @@ module QA
       #
       # E.g: staging/failed-test-resources-<randomhex>.json
       def upload(ci_project_name)
-        return puts "\nNothing to upload!" if files.empty?
+        if files.empty?
+          puts "\nNothing to upload!"
+          exit 0
+        end
 
         files.each do |file|
           file_name = "#{ci_project_name}/#{file.split('/').last}"
@@ -81,7 +84,10 @@ module QA
           arr << obj.name
         end
 
-        return puts "\nNothing to download!" if files_list.blank?
+        if files_list.blank?
+          puts "\nNothing to download!"
+          exit 0
+        end
 
         FileUtils.mkdir_p('tmp/')
 
@@ -103,9 +109,18 @@ module QA
       def files
         Runtime::Logger.info('Gathering JSON files...')
         files = Dir.glob(@file_pattern)
-        abort("There is no file with this pattern #{@file_pattern}") if files.empty?
+
+        if files.empty?
+          puts "There is no file with this pattern #{@file_pattern}"
+          exit 0
+        end
 
         files.reject! { |file| File.zero?(file) }
+
+        if files.empty?
+          puts "\nAll files were empty and rejected, nothing more to do!"
+          exit 0
+        end
 
         files
       end
@@ -132,7 +147,10 @@ module QA
       end
 
       def delete_resources(resources)
-        Runtime::Logger.info('Nothing to delete.') && return if resources.nil?
+        if resources.nil?
+          puts "\nNo resources left to delete after filtering!"
+          exit 0
+        end
 
         resources.each_with_object([]) do |(key, value), failures|
           value.each do |resource|

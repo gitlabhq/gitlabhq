@@ -39,6 +39,11 @@ module Gitlab
       super && deploy_token.can?(download_ability, container)
     end
 
+    override :repository_access_level
+    def repository_access_level
+      project&.wiki_access_level
+    end
+
     override :check_change_access!
     def check_change_access!
       raise ForbiddenError, write_to_wiki_message unless user_can_push?

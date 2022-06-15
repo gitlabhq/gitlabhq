@@ -112,7 +112,7 @@ export default {
 </script>
 <template>
   <gl-button
-    category="primary"
+    v-bind="$attrs"
     variant="info"
     :loading="loading"
     :disabled="!canUseCrypto"

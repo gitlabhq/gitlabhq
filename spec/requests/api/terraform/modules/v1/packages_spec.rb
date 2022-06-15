@@ -17,12 +17,14 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
 
   let(:headers) { {} }
+  let(:token) { tokens[token_type] }
 
   let(:tokens) do
     {
       personal_access_token: personal_access_token.token,
       deploy_token: deploy_token.token,
-      job_token: job.token
+      job_token: job.token,
+      invalid: 'invalid-token123'
     }
   end
 
@@ -48,44 +50,43 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     end
 
     context 'with valid namespace' do
-      where(:visibility, :user_role, :member, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-        :public  | :developer  | true  | :personal_access_token | true  | 'returns terraform module packages'        | :success
-        :public  | :guest      | true  | :personal_access_token | true  | 'returns terraform module packages'        | :success
-        :public  | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :personal_access_token | true  | 'returns no terraform module packages'     | :success
-        :public  | :guest      | false | :personal_access_token | true  | 'returns no terraform module packages'     | :success
-        :public  | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :anonymous  | false | :personal_access_token | true  | 'returns no terraform module packages'     | :success
-        :private | :developer  | true  | :personal_access_token | true  | 'returns terraform module packages'        | :success
-        :private | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | false | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :anonymous  | false | :personal_access_token | true  | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | true  | :job_token             | true  | 'returns terraform module packages'        | :success
-        :public  | :guest      | true  | :job_token             | true  | 'returns no terraform module packages'     | :success
-        :public  | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :job_token             | true  | 'returns no terraform module packages'     | :success
-        :public  | :guest      | false | :job_token             | true  | 'returns no terraform module packages'     | :success
-        :public  | :developer  | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | true  | :job_token             | true  | 'returns terraform module packages'        | :success
-        :private | :guest      | true  | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | false | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :guest      | false | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
+      where(:visibility, :user_role, :member, :token_type, :shared_examples_name, :expected_status) do
+        :public  | :developer  | true  | :personal_access_token | 'returns terraform module packages'        | :success
+        :public  | :guest      | true  | :personal_access_token | 'returns terraform module packages'        | :success
+        :public  | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :personal_access_token | 'returns no terraform module packages'     | :success
+        :public  | :guest      | false | :personal_access_token | 'returns no terraform module packages'     | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :anonymous  | false | nil | 'returns no terraform module packages' | :success
+        :private | :developer  | true  | :personal_access_token | 'returns terraform module packages'        | :success
+        :private | :guest      | true  | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :guest      | false | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :anonymous  | false | nil | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | :job_token | 'returns terraform module packages'        | :success
+        :public  | :guest      | true  | :job_token | 'returns no terraform module packages'     | :success
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :job_token | 'returns no terraform module packages'     | :success
+        :public  | :guest      | false | :job_token | 'returns no terraform module packages'     | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | :job_token | 'returns terraform module packages'        | :success
+        :private | :guest      | true  | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :guest      | false | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
       end
 
       with_them do
-        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
 
         before do
@@ -104,44 +105,43 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     subject { get(url, headers: headers) }
 
     context 'with valid namespace' do
-      where(:visibility, :user_role, :member, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-        :public  | :developer  | true  | :personal_access_token | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | true  | :personal_access_token | true  | 'grants terraform module download'         | :success
-        :public  | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :personal_access_token | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | false | :personal_access_token | true  | 'grants terraform module download'         | :success
-        :public  | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :anonymous  | false | :anonymous | true | 'grants terraform module download' | :success
-        :private | :developer  | true  | :personal_access_token | true  | 'grants terraform module download'         | :success
-        :private | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | false | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :anonymous  | false | :anonymous | true | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | true  | :job_token             | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | true  | :job_token             | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :job_token             | true  | 'grants terraform module download'         | :success
-        :public  | :guest      | false | :job_token             | true  | 'grants terraform module download'         | :success
-        :public  | :developer  | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | true  | :job_token             | true  | 'grants terraform module download'         | :success
-        :private | :guest      | true  | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | false | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :guest      | false | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | false | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
+      where(:visibility, :user_role, :member, :token_type, :shared_examples_name, :expected_status) do
+        :public  | :developer  | true  | :personal_access_token | 'grants terraform module download'         | :success
+        :public  | :guest      | true  | :personal_access_token | 'grants terraform module download'         | :success
+        :public  | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :personal_access_token | 'grants terraform module download'         | :success
+        :public  | :guest      | false | :personal_access_token | 'grants terraform module download'         | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :anonymous  | false | nil | 'grants terraform module download' | :success
+        :private | :developer  | true  | :personal_access_token | 'grants terraform module download'         | :success
+        :private | :guest      | true  | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :guest      | false | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :anonymous  | false | nil | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | :job_token | 'grants terraform module download'         | :success
+        :public  | :guest      | true  | :job_token | 'grants terraform module download'         | :success
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :job_token | 'grants terraform module download'         | :success
+        :public  | :guest      | false | :job_token | 'grants terraform module download'         | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | :job_token | 'grants terraform module download'         | :success
+        :private | :guest      | true  | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :guest      | false | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access' | :unauthorized
       end
 
       with_them do
-        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
 
         before do
@@ -160,51 +160,50 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
       {
         personal_access_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = personal_access_token.id }.encoded,
         job_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = job.token }.encoded,
-        anonymous: ""
+        invalid: 'invalid-token123'
       }
     end
 
     subject { get(url, headers: headers) }
 
     context 'with valid namespace' do
-      where(:visibility, :user_role, :member, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-        :public  | :developer  | true  | :personal_access_token | true  | 'grants terraform module package file access' | :success
-        :public  | :guest      | true  | :personal_access_token | true  | 'grants terraform module package file access' | :success
-        :public  | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :developer  | false | :personal_access_token | true  | 'grants terraform module package file access'    | :success
-        :public  | :guest      | false | :personal_access_token | true  | 'grants terraform module package file access'    | :success
-        :public  | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :anonymous  | false | :anonymous | true | 'grants terraform module package file access' | :success
-        :private | :developer  | true  | :personal_access_token | true  | 'grants terraform module package file access' | :success
-        :private | :guest      | true  | :personal_access_token | true  | 'rejects terraform module packages access'    | :forbidden
-        :private | :developer  | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :guest      | true  | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :developer  | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :forbidden
-        :private | :guest      | false | :personal_access_token | true  | 'rejects terraform module packages access'    | :forbidden
-        :private | :developer  | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :guest      | false | :personal_access_token | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :anonymous  | false | :anonymous | true | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | true  | :job_token             | true  | 'grants terraform module package file access' | :success
-        :public  | :guest      | true  | :job_token             | true  | 'grants terraform module package file access' | :success
-        :public  | :guest      | true  | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | :job_token             | true  | 'grants terraform module package file access'    | :success
-        :public  | :guest      | false | :job_token             | true  | 'grants terraform module package file access'    | :success
-        :public  | :developer  | false | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
-        :public  | :guest      | false | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :developer  | true  | :job_token             | true  | 'grants terraform module package file access' | :success
-        :private | :guest      | true  | :job_token             | true  | 'rejects terraform module packages access'    | :forbidden
-        :private | :developer  | true  | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :guest      | true  | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :developer  | false | :job_token             | true  | 'rejects terraform module packages access'    | :forbidden
-        :private | :guest      | false | :job_token             | true  | 'rejects terraform module packages access'    | :forbidden
-        :private | :developer  | false | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
-        :private | :guest      | false | :job_token             | false | 'rejects terraform module packages access'    | :unauthorized
+      where(:visibility, :user_role, :member, :token_type, :shared_examples_name, :expected_status) do
+        :public  | :developer  | true  | :personal_access_token | 'grants terraform module package file access' | :success
+        :public  | :guest      | true  | :personal_access_token | 'grants terraform module package file access' | :success
+        :public  | :developer  | true  | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :public  | :developer  | false | :personal_access_token | 'grants terraform module package file access'    | :success
+        :public  | :guest      | false | :personal_access_token | 'grants terraform module package file access'    | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :public  | :anonymous  | false | nil | 'grants terraform module package file access' | :success
+        :private | :developer  | true  | :personal_access_token | 'grants terraform module package file access' | :success
+        :private | :guest      | true  | :personal_access_token | 'rejects terraform module packages access'    | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :developer  | false | :personal_access_token | 'rejects terraform module packages access'    | :forbidden
+        :private | :guest      | false | :personal_access_token | 'rejects terraform module packages access'    | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :anonymous  | false | nil | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | :job_token            | 'grants terraform module package file access' | :success
+        :public  | :guest      | true  | :job_token            | 'grants terraform module package file access' | :success
+        :public  | :guest      | true  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | :job_token            | 'grants terraform module package file access'    | :success
+        :public  | :guest      | false | :job_token            | 'grants terraform module package file access'    | :success
+        :public  | :developer  | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :public  | :guest      | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :developer  | true  | :job_token            | 'grants terraform module package file access' | :success
+        :private | :guest      | true  | :job_token            | 'rejects terraform module packages access'    | :forbidden
+        :private | :developer  | true  | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :guest      | true  | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :developer  | false | :job_token            | 'rejects terraform module packages access'    | :forbidden
+        :private | :guest      | false | :job_token            | 'rejects terraform module packages access'    | :forbidden
+        :private | :developer  | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
+        :private | :guest      | false | :invalid | 'rejects terraform module packages access'    | :unauthorized
       end
 
       with_them do
-        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:snowplow_gitlab_standard_context) do
           {
             project: project,
@@ -253,49 +252,48 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     subject { put(url, headers: headers) }
 
     context 'with valid project' do
-      where(:visibility, :user_role, :member, :token_header, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'process terraform module workhorse authorization' | :success
-        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :forbidden
-        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :forbidden
-        :public  | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :forbidden
-        :public  | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :anonymous  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :unauthorized
-        :private | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'process terraform module workhorse authorization' | :success
-        :private | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :forbidden
-        :private | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :not_found
-        :private | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :not_found
-        :private | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :anonymous  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :developer  | true  | 'JOB-TOKEN'     | :job_token             | true  | 'process terraform module workhorse authorization' | :success
-        :public  | :guest      | true  | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access'         | :forbidden
-        :public  | :developer  | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :guest      | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :developer  | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access'         | :forbidden
-        :public  | :guest      | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access'         | :forbidden
-        :public  | :developer  | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :guest      | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :developer  | true  | 'JOB-TOKEN'     | :job_token             | true  | 'process terraform module workhorse authorization' | :success
-        :private | :guest      | true  | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access'         | :forbidden
-        :private | :developer  | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :guest      | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :developer  | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access'         | :not_found
-        :private | :guest      | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access'         | :not_found
-        :private | :developer  | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :guest      | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access'         | :unauthorized
-        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | true  | 'process terraform module workhorse authorization' | :success
-        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | false | 'rejects terraform module packages access'         | :unauthorized
-        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | true  | 'process terraform module workhorse authorization' | :success
-        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | false | 'rejects terraform module packages access'         | :unauthorized
+      where(:visibility, :user_role, :member, :token_header, :token_type, :shared_examples_name, :expected_status) do
+        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'process terraform module workhorse authorization' | :success
+        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access'         | :forbidden
+        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access'         | :forbidden
+        :public  | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access'         | :forbidden
+        :public  | :developer  | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :guest      | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :anonymous  | false | nil | nil | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'process terraform module workhorse authorization' | :success
+        :private | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access'         | :forbidden
+        :private | :developer  | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :guest      | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access'         | :not_found
+        :private | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access'         | :not_found
+        :private | :developer  | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :guest      | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :anonymous  | false | nil | nil | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | 'JOB-TOKEN'     | :job_token | 'process terraform module workhorse authorization' | :success
+        :public  | :guest      | true  | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access'         | :forbidden
+        :public  | :developer  | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :guest      | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :developer  | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access'         | :forbidden
+        :public  | :guest      | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access'         | :forbidden
+        :public  | :developer  | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :guest      | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :developer  | true  | 'JOB-TOKEN'     | :job_token | 'process terraform module workhorse authorization' | :success
+        :private | :guest      | true  | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access'         | :forbidden
+        :private | :developer  | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :guest      | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :developer  | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access'         | :not_found
+        :private | :guest      | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access'         | :not_found
+        :private | :developer  | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :private | :guest      | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access'         | :unauthorized
+        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token | 'process terraform module workhorse authorization' | :success
+        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token | 'process terraform module workhorse authorization' | :success
+        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :invalid | 'rejects terraform module packages access' | :unauthorized
       end
 
       with_them do
-        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:headers) { user_headers.merge(workhorse_headers) }
         let(:user_headers) { user_role == :anonymous ? {} : { token_header => token } }
 
@@ -331,49 +329,48 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
     end
 
     context 'with valid project' do
-      where(:visibility, :user_role, :member, :token_header, :token_type, :valid_token, :shared_examples_name, :expected_status) do
-        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'process terraform module upload'          | :created
-        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :public  | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :public  | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :anonymous  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'process terraform module upload'          | :created
-        :private | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :not_found
-        :private | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :not_found
-        :private | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :anonymous  | false | 'PRIVATE-TOKEN' | :personal_access_token | true  | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | true  | 'JOB-TOKEN'     | :job_token             | true  | 'process terraform module upload'          | :created
-        :public  | :guest      | true  | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :public  | :developer  | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :public  | :guest      | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :public  | :developer  | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :guest      | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | true  | 'JOB-TOKEN'     | :job_token             | true  | 'process terraform module upload'          | :created
-        :private | :guest      | true  | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access' | :forbidden
-        :private | :developer  | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | true  | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access' | :not_found
-        :private | :guest      | false | 'JOB-TOKEN'     | :job_token             | true  | 'rejects terraform module packages access' | :not_found
-        :private | :developer  | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :guest      | false | 'JOB-TOKEN'     | :job_token             | false | 'rejects terraform module packages access' | :unauthorized
-        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | true  | 'process terraform module upload'          | :created
-        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | false | 'rejects terraform module packages access' | :unauthorized
-        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | true  | 'process terraform module upload'          | :created
-        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token          | false | 'rejects terraform module packages access' | :unauthorized
+      where(:visibility, :user_role, :member, :token_header, :token_type, :shared_examples_name, :expected_status) do
+        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'process terraform module upload'          | :created
+        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :public  | :developer  | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :public  | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :public  | :developer  | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :anonymous  | false | nil | nil | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'process terraform module upload'          | :created
+        :private | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :not_found
+        :private | :guest      | false | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :not_found
+        :private | :developer  | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | 'PRIVATE-TOKEN' | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :anonymous  | false | nil | nil | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | 'JOB-TOKEN'     | :job_token | 'process terraform module upload'          | :created
+        :public  | :guest      | true  | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access' | :forbidden
+        :public  | :developer  | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access' | :forbidden
+        :public  | :guest      | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access' | :forbidden
+        :public  | :developer  | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :guest      | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | 'JOB-TOKEN'     | :job_token | 'process terraform module upload'          | :created
+        :private | :guest      | true  | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access' | :forbidden
+        :private | :developer  | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | true  | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access' | :not_found
+        :private | :guest      | false | 'JOB-TOKEN'     | :job_token | 'rejects terraform module packages access' | :not_found
+        :private | :developer  | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :guest      | false | 'JOB-TOKEN'     | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token | 'process terraform module upload' | :created
+        :public  | :developer  | true  | 'DEPLOY-TOKEN'  | :invalid | 'rejects terraform module packages access' | :unauthorized
+        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :deploy_token | 'process terraform module upload' | :created
+        :private | :developer  | true  | 'DEPLOY-TOKEN'  | :invalid | 'rejects terraform module packages access' | :unauthorized
       end
 
       with_them do
-        let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
         let(:user_headers) { user_role == :anonymous ? {} : { token_header => token } }
         let(:headers) { user_headers.merge(workhorse_headers) }
         let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: snowplow_user } }

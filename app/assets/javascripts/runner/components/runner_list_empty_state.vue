@@ -35,6 +35,7 @@ export default {
     },
   },
   modalId: 'runners-empty-state-instructions-modal',
+  svgHeight: 145,
 };
 </script>
 
@@ -43,9 +44,15 @@ export default {
     v-if="isSearchFiltered"
     :title="s__('Runners|No results found')"
     :svg-path="filteredSvgPath"
+    :svg-height="$options.svgHeight"
     :description="s__('Runners|Edit your search and try again')"
   />
-  <gl-empty-state v-else :title="s__('Runners|Get started with runners')" :svg-path="svgPath">
+  <gl-empty-state
+    v-else
+    :title="s__('Runners|Get started with runners')"
+    :svg-path="svgPath"
+    :svg-height="$options.svgHeight"
+  >
     <template #description>
       <gl-sprintf
         :message="

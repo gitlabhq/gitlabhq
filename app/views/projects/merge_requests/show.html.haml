@@ -43,8 +43,9 @@
               = gl_badge_tag @diffs_count, { size: :sm }
           - if Feature.enabled?(:moved_mr_sidebar, @project)
             .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.js-expand-sidebar{ class: "gl-lg-display-none!" }
-              %button.btn.btn-default.gl-button.btn-sm.js-sidebar-toggle{ type: 'button' }
-                = sprite_icon('angle-double-left', size: 12, css_class: 'gl-mr-2')
+              = render Pajamas::ButtonComponent.new(size: 'small',
+                icon: 'angle-double-left',
+                button_options: { class: 'js-sidebar-toggle' }) do
                 = _('Expand')
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }

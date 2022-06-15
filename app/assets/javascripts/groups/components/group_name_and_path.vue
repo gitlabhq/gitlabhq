@@ -1,5 +1,12 @@
 <script>
-import { GlFormGroup, GlFormInput, GlFormInputGroup, GlInputGroupText } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlFormInput,
+  GlFormInputGroup,
+  GlInputGroupText,
+  GlLink,
+  GlAlert,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
 
 import { s__, __ } from '~/locale';
@@ -33,23 +40,36 @@ export default {
         ),
         validFeedback: s__('Groups|Group path is available.'),
       },
+      groupId: {
+        label: s__('Groups|Group ID'),
+      },
     },
     apiLoadingMessage: s__('Groups|Checking group URL availability...'),
     apiErrorMessage: __(
       'An error occurred while checking group path. Please refresh and try again.',
     ),
+    changingUrlWarningMessage: s__('Groups|Changing group URL can have unintended side effects.'),
+    learnMore: s__('Groups|Learn more'),
   },
   nameInputSize: { md: 'lg' },
   changingGroupPathHelpPagePath: helpPagePath('user/group/index', {
     anchor: 'change-a-groups-path',
   }),
   mattermostDataBindName: 'create_chat_team',
-  components: { GlFormGroup, GlFormInput, GlFormInputGroup, GlInputGroupText },
+  components: {
+    GlFormGroup,
+    GlFormInput,
+    GlFormInputGroup,
+    GlInputGroupText,
+    GlLink,
+    GlAlert,
+  },
   inject: ['fields', 'basePath', 'mattermostEnabled'],
   data() {
     return {
       name: this.fields.name.value,
       path: this.fields.path.value,
+      hasPathBeenManuallySet: false,
       apiSuggestedPath: '',
       apiLoading: false,
       nameFeedbackState: null,
@@ -65,16 +85,23 @@ export default {
     pathDescription() {
       return this.apiLoading ? this.$options.i18n.apiLoadingMessage : '';
     },
+    isEditingGroup() {
+      return this.fields.groupId.value !== '';
+    },
   },
   watch: {
     name: [
       function updatePath(newName) {
+        if (this.isEditingGroup || this.hasPathBeenManuallySet) return;
+
         this.nameFeedbackState = null;
         this.pathFeedbackState = null;
         this.apiSuggestedPath = '';
         this.path = slugify(newName);
       },
       debounce(async function updatePathWithSuggestions() {
+        if (this.isEditingGroup || this.hasPathBeenManuallySet) return;
+
         try {
           const { suggests } = await this.checkPathAvailability();
 
@@ -134,10 +161,13 @@ export default {
     handlePathInput(value) {
       this.pathFeedbackState = null;
       this.apiSuggestedPath = '';
+      this.hasPathBeenManuallySet = true;
       this.path = value;
       this.debouncedValidatePath();
     },
     debouncedValidatePath: debounce(async function validatePath() {
+      if (this.isEditingGroup && this.path === this.fields.path.value) return;
+
       try {
         const {
           exists,
@@ -228,5 +258,22 @@ export default {
         />
       </gl-form-input-group>
     </gl-form-group>
+    <template v-if="isEditingGroup">
+      <gl-alert class="gl-mb-5" :dismissible="false" variant="warning">
+        {{ $options.i18n.changingUrlWarningMessage }}
+        <gl-link :href="$options.changingGroupPathHelpPagePath"
+          >{{ $options.i18n.learnMore }}
+        </gl-link>
+      </gl-alert>
+      <gl-form-group :label="$options.i18n.inputs.groupId.label" :label-for="fields.groupId.id">
+        <gl-form-input
+          :id="fields.groupId.id"
+          :value="fields.groupId.value"
+          :name="fields.groupId.name"
+          size="sm"
+          readonly
+        />
+      </gl-form-group>
+    </template>
   </div>
 </template>

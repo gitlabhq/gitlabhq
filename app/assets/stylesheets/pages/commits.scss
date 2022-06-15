@@ -95,6 +95,10 @@
   }
 }
 
+.commits-row + .commits-row {
+  border-top: 1px solid $white-normal;
+}
+
 .text-expander {
   display: inline-flex;
   background: $white;

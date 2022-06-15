@@ -33,9 +33,14 @@ module Analytics
           )
           duration_in_seconds = Arel::Nodes::Extract.new(duration, :epoch)
 
+          # start_event_timestamp and end_event_timestamp do not really influence the order,
+          # but are included so that they are part of the returned result, for example when
+          # using Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher
           keyset_order(
             :total_time => { order_expression: arel_order(duration_in_seconds, direction), distinct: false, sql_type: 'double precision' },
-            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true }
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: true },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: true }
           )
         end
       end
