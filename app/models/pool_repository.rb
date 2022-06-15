@@ -81,7 +81,9 @@ class PoolRepository < ApplicationRecord
     object_pool.link(repository.raw)
   end
 
-  def mark_obsolete_if_last(repository)
+  def unlink_repository(repository)
+    repository.disconnect_alternates
+
     if member_projects.where.not(id: repository.project.id).exists?
       true
     else

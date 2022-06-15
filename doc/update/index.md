@@ -289,6 +289,10 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 See [how to retry a halted migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
+### What do I do for the error `Elasticsearch version not compatible`
+
+Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/elasticsearch.md#version-requirements).
+
 ## Upgrading without downtime
 
 Read how to [upgrade without downtime](zero_downtime.md).

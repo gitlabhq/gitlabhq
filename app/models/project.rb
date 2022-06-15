@@ -2561,7 +2561,7 @@ class Project < ApplicationRecord
   end
 
   def leave_pool_repository
-    pool_repository&.mark_obsolete_if_last(repository) && update_column(:pool_repository_id, nil)
+    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
   end
 
   def link_pool_repository

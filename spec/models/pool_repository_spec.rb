@@ -24,23 +24,35 @@ RSpec.describe PoolRepository do
     end
   end
 
-  describe '#mark_obsolete_if_last' do
+  describe '#unlink_repository' do
     let(:pool) { create(:pool_repository, :ready) }
+    let(:repository_path) { File.join(TestEnv.repos_path, pool.source_project.repository.relative_path) }
+    let(:alternates_file) { File.join(repository_path, 'objects', 'info', 'alternates') }
+
+    before do
+      pool.link_repository(pool.source_project.repository)
+    end
 
     context 'when the last member leaves' do
       it 'schedules pool removal' do
         expect(::ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).and_call_original
 
-        pool.mark_obsolete_if_last(pool.source_project.repository)
+        pool.unlink_repository(pool.source_project.repository)
+
+        expect(File).not_to exist(alternates_file)
       end
     end
 
     context 'when the second member leaves' do
       it 'does not schedule pool removal' do
-        create(:project, :repository, pool_repository: pool)
+        other_project = create(:project, :repository, pool_repository: pool)
+        pool.link_repository(other_project.repository)
+
         expect(::ObjectPool::DestroyWorker).not_to receive(:perform_async).with(pool.id)
 
-        pool.mark_obsolete_if_last(pool.source_project.repository)
+        pool.unlink_repository(pool.source_project.repository)
+
+        expect(File).not_to exist(alternates_file)
       end
     end
   end

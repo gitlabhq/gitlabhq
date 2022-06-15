@@ -33,6 +33,7 @@ RSpec.describe Projects::ClusterAgentsHelper do
         empty_state_svg_path: kind_of(String),
         can_admin_vulnerability: "true",
         kas_address: Gitlab::Kas.external_url,
+        kas_version: Gitlab::Kas.version_info,
         can_admin_cluster: "false"
       })
     }

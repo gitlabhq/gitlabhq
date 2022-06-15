@@ -38,6 +38,8 @@ GitLab does not support:
 For updates, see [issue #327560](https://gitlab.com/gitlab-org/gitlab/-/issues/327560).
 - Elasticsearch 8.0. For updates, see [issue #350600](https://gitlab.com/gitlab-org/gitlab/-/issues/350600). Use Elasticsearch 7.17 instead.
 
+If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [unpause indexing](#unpause-indexing).
+
 ## System requirements
 
 Elasticsearch requires additional resources to those documented in the
@@ -300,6 +302,13 @@ To disable the Elasticsearch integration:
    # Installations from source
    bundle exec rake gitlab:elastic:delete_index RAILS_ENV=production
    ```
+
+## Unpause Indexing 
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Advanced Search**.
+1. Expand **Advanced Search**.
+1. Clear the **Pause Elasticsearch indexing** checkbox.
 
 ## Zero downtime reindexing
 
