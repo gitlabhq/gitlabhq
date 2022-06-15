@@ -2336,43 +2336,58 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 To need a job that sometimes does not exist in the pipeline, add `optional: true`
 to the `needs` configuration. If not defined, `optional: false` is the default.
 
-Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except), might
-not always exist in a pipeline. When the pipeline is created, GitLab checks the `needs`
-relationships before starting it. Without `optional: true`, needs relationships that
-point to a job that does not exist stops the pipeline from starting and causes a pipeline
-error similar to:
+Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except) might not always
+be added to a pipeline. GitLab checks the `needs` relationships before starting a
+pipeline:
 
-- `'job1' job needs 'job2' job, but it was not added to the pipeline`
+- If the needs entry has `optional: true` and the needed job is present in the pipeline,
+  the job waits for it to complete before starting.
+- If the needed job is not present, the job can start when all other needs requirements are met.
+- If the `needs` section contains only optional jobs, and none are added to the pipeline,
+  the job starts immediately (the same as an empty `needs` entry: `needs: []`).
+- If a needed job has `optional: false`, but it was not added to the pipeline, the
+  pipeline fails to start with an error similar to: `'job1' job needs 'job2' job, but it was not added to the pipeline`.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Possible inputs**:
-
-- `job`: The job to make optional.
-- `true` or `false` (default).
 
 **Example of `needs:optional`**:
 
 ```yaml
-build:
+build-job:
   stage: build
+
+test-job1:
+  stage: test
+
+test-job2:
+  stage: test
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-rspec:
-  stage: test
+deploy-job:
+  stage: deploy
   needs:
-    - job: build
+    - job: test-job2
+      optional: true
+    - job: test-job1
+
+review-job:
+  stage: deploy
+  needs:
+    - job: test-job2
       optional: true
 ```
 
 In this example:
 
-- When the branch is the default branch, the `build` job exists in the pipeline, and the `rspec`
-  job waits for it to complete before starting.
-- When the branch is not the default branch, the `build` job does not exist in the pipeline.
-  The `rspec` job runs immediately (similar to `needs: []`) because its `needs`
-  relationship to the `build` job is optional.
+- `build-job`, `test-job1`, and `test-job2` start in stage order.
+- When the branch is the default branch, `test-job2` is added to the pipeline, so:
+  - `deploy-job` waits for both `test-job1` and `test-job2` to complete.
+  - `review-job` waits for `test-job2` to complete.
+- When the branch is not the default branch, `test-job2` is not added to the pipeline, so:
+  - `deploy-job` waits for only `test-job1` to complete, and does not wait for the missing `test-job2`.
+  - `review-job` has no other needed jobs and starts immediately (at the same time as `build-job`),
+    like `needs: []`.
 
 #### `needs:pipeline`
 

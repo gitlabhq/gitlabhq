@@ -6,6 +6,12 @@ module MarkupHelper
   include ActionView::Helpers::TextHelper
   include ActionView::Context
 
+  # Let's increase the render timeout
+  # For a smaller one, a test that renders the blob content statically fails
+  # We can consider removing this custom timeout when refactor_blob_viewer FF is removed:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/324351
+  RENDER_TIMEOUT = 5.seconds
+
   def plain?(filename)
     Gitlab::MarkupHelper.plain?(filename)
   end
@@ -139,14 +145,22 @@ module MarkupHelper
   def markup_unsafe(file_name, text, context = {})
     return '' unless text.present?
 
-    if gitlab_markdown?(file_name)
-      markdown_unsafe(text, context)
-    elsif asciidoc?(file_name)
-      asciidoc_unsafe(text, context)
-    elsif plain?(file_name)
-      plain_unsafe(text)
+    markup = proc do
+      if gitlab_markdown?(file_name)
+        markdown_unsafe(text, context)
+      elsif asciidoc?(file_name)
+        asciidoc_unsafe(text, context)
+      elsif plain?(file_name)
+        plain_unsafe(text)
+      else
+        other_markup_unsafe(file_name, text, context)
+      end
+    end
+
+    if Feature.enabled?(:markup_rendering_timeout, @project)
+      Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT, &markup)
     else
-      other_markup_unsafe(file_name, text, context)
+      markup.call
     end
   rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, project_id: @project&.id, file_name: file_name)

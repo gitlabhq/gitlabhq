@@ -11,6 +11,7 @@ import deleteWorkItem from '~/work_items/graphql/delete_work_item.mutation.graph
 import { deleteWorkItemResponse, deleteWorkItemFailureResponse } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn(),
 }));
 

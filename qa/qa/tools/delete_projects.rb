@@ -39,8 +39,12 @@ module QA
       def delete_projects(project_ids)
         $stdout.puts "Deleting #{project_ids.length} projects..."
         project_ids.each do |project_id|
-          delete_response = delete Runtime::API::Request.new(@api_client, "/projects/#{project_id}").url
-          dot_or_f = delete_response.code.between?(200, 300) ? "\e[32m.\e[0m" : "\e[31mF\e[0m"
+          request_url = Runtime::API::Request.new(@api_client, "/projects/#{project_id}").url
+          path = parse_body(get(request_url))[:path_with_namespace]
+          $stdout.puts "\nDeleting project #{path}..."
+
+          delete_response = delete(request_url)
+          dot_or_f = delete_response.code.between?(200, 300) ? "\e[32m.\e[0m" : "\e[31mF - #{delete_response}\e[0m"
           print dot_or_f
         end
       end

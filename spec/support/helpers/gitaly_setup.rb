@@ -9,6 +9,7 @@
 require 'securerandom'
 require 'socket'
 require 'logger'
+require 'fileutils'
 require 'bundler'
 
 module GitalySetup

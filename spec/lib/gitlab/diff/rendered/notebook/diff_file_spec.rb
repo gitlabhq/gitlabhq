@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile do
 
     context 'timeout' do
       it 'utilizes timeout for web' do
-        expect(Timeout).to receive(:timeout).with(described_class::RENDERED_TIMEOUT_FOREGROUND).and_call_original
+        expect(Timeout).to receive(:timeout).with(Gitlab::RenderTimeout::FOREGROUND).and_call_original
 
         nb_file.diff
       end

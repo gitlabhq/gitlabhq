@@ -60,6 +60,7 @@ module Banzai
 
         highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code"><pre #{sourcepos_attr} class="#{css_classes}"
                              lang="#{language}"
+                             #{lang != language ? "data-canonical-lang=\"#{escape_once(lang)}\"" : ""}
                              #{lang_params}
                              v-pre="true"><code>#{code}</code></pre><copy-code></copy-code></div>)
 

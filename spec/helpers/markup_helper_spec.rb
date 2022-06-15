@@ -467,6 +467,33 @@ FooBar
       end
     end
 
+    context 'when rendering takes too long' do
+      before do
+        stub_const("MarkupHelper::RENDER_TIMEOUT", 0.1)
+        allow(Gitlab::OtherMarkup).to receive(:render) { sleep(0.2) }
+      end
+
+      it 'times out' do
+        expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(Timeout::Error),
+          project_id: project.id, file_name: file_name
+        )
+
+        subject
+      end
+
+      context 'when markup_rendering_timeout is disabled' do
+        it 'waits until the execution completes' do
+          stub_feature_flags(markup_rendering_timeout: false)
+
+          expect(Gitlab::RenderTimeout).not_to receive(:timeout)
+
+          subject
+        end
+      end
+    end
+
     context 'when file is a markdown file' do
       let(:file_name) { 'foo.md' }
 

@@ -737,11 +737,12 @@ To disable group mentions:
 > - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
 > - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
 > - [Instance setting is inherited and enforced when disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+> - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
 [deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) is enabled for either groups only or groups and projects.
 When enabled on groups, projects in the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored.
-The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#retention-period).
 
 On self-managed GitLab, projects are deleted immediately by default.
 In GitLab 14.2 and later, an administrator can
@@ -755,8 +756,10 @@ To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Check **Enable delayed project deletion**.
-1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
+1. Scroll to:
+   - (GitLab 15.1 and later) **Deletion protection** and select **Keep deleted projects**.
+   - (GitLab 15.0 and earlier) **Enable delayed project deletion** and tick the checkbox.
+1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**. Renamed to **Enforce deletion protection for all subgroups** in GitLab 15.1.
 1. Select **Save changes**.
 
 NOTE:

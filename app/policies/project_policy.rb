@@ -29,11 +29,7 @@ class ProjectPolicy < BasePolicy
     owner_of_personal_namespace = project.owner.present? && project.owner == @user
 
     unless owner_of_personal_namespace
-      group_or_project_owner = if Feature.enabled?(:faster_owner_access)
-                                 team_access_level >= Gitlab::Access::OWNER
-                               else
-                                 project.group&.has_owner?(@user)
-                               end
+      group_or_project_owner = team_access_level >= Gitlab::Access::OWNER
     end
 
     owner_of_personal_namespace || group_or_project_owner

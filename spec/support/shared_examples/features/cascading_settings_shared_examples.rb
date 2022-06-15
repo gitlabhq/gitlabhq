@@ -6,7 +6,8 @@ RSpec.shared_examples 'a cascading setting' do
       visit group_path
 
       page.within form_group_selector do
-        find(setting_field_selector).check
+        enable_setting.call
+
         find('[data-testid="enforce-for-all-subgroups-checkbox"]').check
       end
 

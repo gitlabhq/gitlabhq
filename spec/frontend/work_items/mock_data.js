@@ -53,6 +53,47 @@ export const updateWorkItemMutationResponse = {
   },
 };
 
+export const workItemResponseFactory = ({ canUpdate } = {}) => ({
+  data: {
+    workItem: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/1',
+      title: 'Updated title',
+      state: 'OPEN',
+      description: 'description',
+      workItemType: {
+        __typename: 'WorkItemType',
+        id: 'gid://gitlab/WorkItems::Type/5',
+        name: 'Task',
+      },
+      userPermissions: {
+        deleteWorkItem: false,
+        updateWorkItem: canUpdate,
+      },
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetDescription',
+          type: 'DESCRIPTION',
+          description: 'some **great** text',
+          descriptionHtml:
+            '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+        },
+      ],
+    },
+  },
+});
+
+export const updateWorkItemWidgetsResponse = {
+  data: {
+    workItemUpdateWidgets: {
+      workItem: {
+        id: 1234,
+      },
+      errors: [],
+    },
+  },
+};
+
 export const projectWorkItemTypesQueryResponse = {
   data: {
     workspace: {

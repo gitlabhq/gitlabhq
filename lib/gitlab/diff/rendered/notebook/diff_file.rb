@@ -8,7 +8,6 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           RENDERED_TIMEOUT_BACKGROUND = 10.seconds
-          RENDERED_TIMEOUT_FOREGROUND = 1.5.seconds
           BACKGROUND_EXECUTION = 'background'
           FOREGROUND_EXECUTION = 'foreground'
           LOG_IPYNBDIFF_GENERATED = 'IPYNB_DIFF_GENERATED'
@@ -70,7 +69,7 @@ module Gitlab
                 next
               end
 
-              Timeout.timeout(timeout_time) do
+              Gitlab::RenderTimeout.timeout(background: RENDERED_TIMEOUT_BACKGROUND) do
                 IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
                                raise_if_invalid_nb: true,
                                diffy_opts: { include_diff_info: true })&.tap do
@@ -102,10 +101,6 @@ module Gitlab
               :ipynb_semantic_diff_timeouts_total,
               'Counts the times notebook diff rendering timed out'
             )
-          end
-
-          def timeout_time
-            Gitlab::Runtime.sidekiq? ? RENDERED_TIMEOUT_BACKGROUND : RENDERED_TIMEOUT_FOREGROUND
           end
 
           def log_event(message, error = nil)

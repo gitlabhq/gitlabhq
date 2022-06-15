@@ -2628,9 +2628,6 @@ msgstr ""
 msgid "AdminSettings|Delete project after"
 msgstr ""
 
-msgid "AdminSettings|Deletion protection"
-msgstr ""
-
 msgid "AdminSettings|Disable Elasticsearch until indexing completes."
 msgstr ""
 
@@ -2700,9 +2697,6 @@ msgstr ""
 msgid "AdminSettings|Inactive project deletion"
 msgstr ""
 
-msgid "AdminSettings|Keep deleted"
-msgstr ""
-
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
 msgstr ""
 
@@ -2748,9 +2742,6 @@ msgstr ""
 msgid "AdminSettings|No required pipeline"
 msgstr ""
 
-msgid "AdminSettings|None, delete immediately"
-msgstr ""
-
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
@@ -2779,9 +2770,6 @@ msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
 msgstr ""
 
 msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
-msgstr ""
-
-msgid "AdminSettings|Retention period that deleted groups and projects will remain restorable. Personal projects are always deleted immediately. Some groups can opt-out their projects."
 msgstr ""
 
 msgid "AdminSettings|Save %{name} limits"
@@ -7261,6 +7249,9 @@ msgid "Card holder name"
 msgstr ""
 
 msgid "Card number:"
+msgstr ""
+
+msgid "CascadingSettings|Enforce deletion protection for all subgroups"
 msgstr ""
 
 msgid "CascadingSettings|Enforce for all subgroups"
@@ -12192,6 +12183,33 @@ msgid "Deleting the project will delete its repository and all related resources
 msgstr ""
 
 msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
+msgstr ""
+
+msgid "DeletionSettings|All projects are deleted immediately."
+msgstr ""
+
+msgid "DeletionSettings|Deletion protection"
+msgstr ""
+
+msgid "DeletionSettings|Keep deleted"
+msgstr ""
+
+msgid "DeletionSettings|Keep deleted projects for %{number} days"
+msgstr ""
+
+msgid "DeletionSettings|Keep deleted projects for 1 day"
+msgstr ""
+
+msgid "DeletionSettings|None, delete immediately"
+msgstr ""
+
+msgid "DeletionSettings|Only administrators can delete projects."
+msgstr ""
+
+msgid "DeletionSettings|Owners and administrators can delete projects."
+msgstr ""
+
+msgid "DeletionSettings|Retention period that deleted groups and projects will remain restorable. Personal projects are always deleted immediately. Some groups can opt-out their projects."
 msgstr ""
 
 msgid "Denied"
@@ -18279,9 +18297,6 @@ msgstr ""
 msgid "GroupSettings|Enable customer relations"
 msgstr ""
 
-msgid "GroupSettings|Enable delayed project deletion"
-msgstr ""
-
 msgid "GroupSettings|Export group"
 msgstr ""
 
@@ -18313,12 +18328,6 @@ msgid "GroupSettings|Prevent sharing a project within %{group} with other groups
 msgstr ""
 
 msgid "GroupSettings|Prevents group members from being notified if the group is mentioned."
-msgstr ""
-
-msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. Inherited by subgroups."
-msgstr ""
-
-msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings. Inherited by subgroups."
 msgstr ""
 
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
@@ -33072,9 +33081,6 @@ msgstr ""
 msgid "Runners|Revision"
 msgstr ""
 
-msgid "Runners|Rocket launch illustration"
-msgstr ""
-
 msgid "Runners|Runner"
 msgstr ""
 
@@ -43221,6 +43227,9 @@ msgid "WorkItem|Add"
 msgstr ""
 
 msgid "WorkItem|Add a child"
+msgstr ""
+
+msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to delete the work item? This action cannot be reversed."

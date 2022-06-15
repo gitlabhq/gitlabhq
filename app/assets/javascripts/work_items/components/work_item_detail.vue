@@ -86,11 +86,11 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
-    workItemDescription() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
-    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
+    },
+    hasDescriptionWidget() {
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
     },
     workItemAssignees() {
       return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEE);
@@ -146,11 +146,9 @@ export default {
         @error="error = $event"
       />
       <work-item-description
-        v-if="workItemDescription"
-        :work-item="workItem"
-        :work-item-description="workItemDescription"
+        v-if="hasDescriptionWidget"
+        :work-item-id="workItem.id"
         @error="error = $event"
-        @updated="$emit('workItemUpdated')"
       />
       <work-item-links v-if="glFeatures.workItemsHierarchy" :work-item-id="workItem.id" />
     </template>

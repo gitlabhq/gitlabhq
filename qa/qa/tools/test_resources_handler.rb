@@ -162,7 +162,7 @@ module QA
             if delete_response.code == 202 || delete_response.code == 204
               Runtime::Logger.info("Deleting #{resource_info}... SUCCESS")
             else
-              Runtime::Logger.info("Deleting #{resource_info}... FAILED")
+              Runtime::Logger.info("Deleting #{resource_info}... FAILED - #{delete_response}")
               failures << resource_info
             end
           end

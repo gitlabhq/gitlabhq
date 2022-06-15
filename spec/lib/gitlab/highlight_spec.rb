@@ -124,24 +124,11 @@ RSpec.describe Gitlab::Highlight do
     context 'timeout' do
       subject(:highlight) { described_class.new('file.rb', 'begin', language: 'ruby').highlight('Content') }
 
-      it 'utilizes timeout for web' do
-        expect(Timeout).to receive(:timeout).with(described_class::TIMEOUT_FOREGROUND).and_call_original
-
-        highlight
-      end
-
       it 'falls back to plaintext on timeout' do
         allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-        expect(Timeout).to receive(:timeout).and_raise(Timeout::Error)
+        expect(Gitlab::RenderTimeout).to receive(:timeout).and_raise(Timeout::Error)
 
         expect(Rouge::Lexers::PlainText).to receive(:lex).and_call_original
-
-        highlight
-      end
-
-      it 'utilizes longer timeout for sidekiq' do
-        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
-        expect(Timeout).to receive(:timeout).with(described_class::TIMEOUT_BACKGROUND).and_call_original
 
         highlight
       end

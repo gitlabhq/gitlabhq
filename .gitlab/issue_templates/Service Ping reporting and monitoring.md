@@ -18,7 +18,7 @@ Broken metrics issues are marked with the ~"broken metric" label.
 
 ## Prerequisites
 
-1. Make sure the SSH key is added to the local SSH agent: `ssh-add`.
+1. Add your SSH key to the local SSH agent: `ssh-add`. Your SSH key is required to connect to a Rails console from the bastion host.
 
 ## Triggering
 
@@ -96,6 +96,13 @@ Trigger some events from the User Interface.
 ```ruby
 Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: 'event_name', start_date: 28.days.ago, end_date: Date.current)
 ```
+
+# Troubleshooting
+
+## Connecting to a Rails console host fails with `Permission denied (publickey).`.
+
+Make sure you add the SSH key to the local SSH agent with: `ssh-add`. If you don't add your SSH key, your key won't be forwarded
+when you run `ssh -A`, and you will not be able to connect to a Rails console host.
 
 # What to do if you get mentioned
 

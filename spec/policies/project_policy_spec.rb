@@ -469,21 +469,42 @@ RSpec.describe ProjectPolicy do
     let!(:owner_of_different_thing) { create(:user) }
     let(:stranger) { create(:user) }
 
-    shared_examples 'owner access for personal and group projects' do
+    context 'personal project' do
+      let!(:project) { create(:project) }
+      let!(:project2) { create(:project) }
+
       before do
-        stub_feature_flags(faster_owner_access: faster_owner_access_enabled)
+        project.add_guest(guest)
+        project.add_reporter(reporter)
+        project.add_developer(developer)
+        project.add_maintainer(maintainer)
+        project2.add_owner(owner_of_different_thing)
       end
 
-      context 'personal project' do
-        let!(:project) { create(:project) }
-        let!(:project2) { create(:project) }
+      it 'allows owner access', :aggregate_failures do
+        expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(maintainer, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(project.owner, project)).to be_allowed(:owner_access)
+      end
+    end
 
+    context 'group project' do
+      let(:group) { create(:group) }
+      let!(:group2) { create(:group) }
+      let!(:project) { create(:project, group: group) }
+
+      context 'group members' do
         before do
-          project.add_guest(guest)
-          project.add_reporter(reporter)
-          project.add_developer(developer)
-          project.add_maintainer(maintainer)
-          project2.add_owner(owner_of_different_thing)
+          group.add_guest(guest)
+          group.add_reporter(reporter)
+          group.add_developer(developer)
+          group.add_maintainer(maintainer)
+          group.add_owner(owner_user)
+          group2.add_owner(owner_of_different_thing)
         end
 
         it 'allows owner access', :aggregate_failures do
@@ -493,48 +514,9 @@ RSpec.describe ProjectPolicy do
           expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
           expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
           expect(described_class.new(maintainer, project)).to be_disallowed(:owner_access)
-          expect(described_class.new(project.owner, project)).to be_allowed(:owner_access)
+          expect(described_class.new(owner_user, project)).to be_allowed(:owner_access)
         end
       end
-
-      context 'group project' do
-        let(:group) { create(:group) }
-        let!(:group2) { create(:group) }
-        let!(:project) { create(:project, group: group) }
-
-        context 'group members' do
-          before do
-            group.add_guest(guest)
-            group.add_reporter(reporter)
-            group.add_developer(developer)
-            group.add_maintainer(maintainer)
-            group.add_owner(owner_user)
-            group2.add_owner(owner_of_different_thing)
-          end
-
-          it 'allows owner access', :aggregate_failures do
-            expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
-            expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
-            expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
-            expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
-            expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
-            expect(described_class.new(maintainer, project)).to be_disallowed(:owner_access)
-            expect(described_class.new(owner_user, project)).to be_allowed(:owner_access)
-          end
-        end
-      end
-    end
-
-    context 'when faster_owner_access feature is enabled' do
-      let(:faster_owner_access_enabled) { true }
-
-      it_behaves_like 'owner access for personal and group projects'
-    end
-
-    context 'when faster_owner_access feature is not enabled' do
-      let(:faster_owner_access_enabled) { false }
-
-      it_behaves_like 'owner access for personal and group projects'
     end
   end
 
