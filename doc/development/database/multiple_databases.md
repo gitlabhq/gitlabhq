@@ -23,7 +23,8 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 - `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
 - `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
-- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`).
+- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
+- `gitlab_internal`: describe all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
 - `...`: more schemas to be introduced with additional decomposed databases
 
 The usage of schema enforces the base class to be used:
@@ -44,10 +45,8 @@ This is used as a primary source of classification for:
 
 ### The special purpose of `gitlab_shared`
 
-`gitlab_shared` is a special case describing tables or views that by design contain data across
-all decomposed databases. This does describe application-defined tables (like `loose_foreign_keys_deleted_records`),
-Rails-defined tables (like `schema_migrations` or `ar_internal_metadata` as well as internal PostgreSQL tables
-(for example, `pg_attribute`).
+`gitlab_shared` is a special case that describes tables or views that, by design, contain data across
+all decomposed databases. This classification describes application-defined tables (like `loose_foreign_keys_deleted_records`).
 
 **Be careful** to use `gitlab_shared` as it requires special handling while accessing data.
 Since `gitlab_shared` shares not only structure but also data, the application needs to be written in a way
@@ -61,6 +60,11 @@ end
 
 As such, migrations modifying data of `gitlab_shared` tables are expected to run across
 all decomposed databases.
+
+### The special purpose of `gitlab_internal`
+
+`gitlab_internal` describes Rails-defined tables (like `schema_migrations` or `ar_internal_metadata`), as well as internal PostgreSQL tables (for example, `pg_attribute`). Its primary purpose is to [support other databases](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85842#note_943453682), like Geo, that
+might be missing some of those application-defined `gitlab_shared` tables (like `loose_foreign_keys_deleted_records`), but are valid Rails databases.
 
 ## Migrations
 

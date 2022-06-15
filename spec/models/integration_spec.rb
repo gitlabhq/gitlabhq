@@ -812,14 +812,14 @@ RSpec.describe Integration do
         Class.new(Integration) do
           def fields
             [
-              { name: 'token' },
-              { name: 'api_token' },
-              { name: 'token_api' },
-              { name: 'safe_token' },
-              { name: 'key' },
-              { name: 'api_key' },
-              { name: 'password' },
-              { name: 'password_field' },
+              { name: 'token', type: 'password' },
+              { name: 'api_token', type: 'password' },
+              { name: 'token_api', type: 'password' },
+              { name: 'safe_token', type: 'password' },
+              { name: 'key', type: 'password' },
+              { name: 'api_key', type: 'password' },
+              { name: 'password', type: 'password' },
+              { name: 'password_field', type: 'password' },
               { name: 'some_safe_field' },
               { name: 'safe_field' },
               { name: 'url' },
@@ -837,15 +837,14 @@ RSpec.describe Integration do
     context 'when the class uses the field DSL' do
       let(:fake_integration) do
         Class.new(described_class) do
-          field :token
-          field :token
-          field :api_token
-          field :token_api
-          field :safe_token
-          field :key
-          field :api_key
-          field :password
-          field :password_field
+          field :token, type: 'password'
+          field :api_token, type: 'password'
+          field :token_api, type: 'password'
+          field :safe_token, type: 'password'
+          field :key, type: 'password'
+          field :api_key, type: 'password'
+          field :password, type: 'password'
+          field :password_field, type: 'password'
           field :some_safe_field
           field :safe_field
           field :url

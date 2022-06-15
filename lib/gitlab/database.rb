@@ -68,7 +68,8 @@ module Gitlab
       @schemas_to_base_models ||= {
         gitlab_main: [self.database_base_models.fetch(:main)],
         gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
-        gitlab_shared: self.database_base_models.values # all models
+        gitlab_shared: self.database_base_models.values, # all models
+        gitlab_internal: self.database_base_models.values # all models
       }.with_indifferent_access.freeze
     end
 

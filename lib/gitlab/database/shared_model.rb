@@ -20,6 +20,15 @@ module Gitlab
               "to '#{Gitlab::Database.db_config_name(connection)}'"
           end
 
+          # connection might not be yet adopted (returning nil, and no gitlab_schemas)
+          # in such cases it is fine to ignore such connections
+          gitlab_schemas = Gitlab::Database.gitlab_schemas_for_connection(connection)
+
+          unless gitlab_schemas.nil? || gitlab_schemas.include?(:gitlab_shared)
+            raise "Cannot set `SharedModel` to connection from `#{Gitlab::Database.db_config_name(connection)}` " \
+              "since this connection does not include `:gitlab_shared` schema."
+          end
+
           self.overriding_connection = connection
 
           yield

@@ -27,6 +27,19 @@ RSpec.describe Gitlab::Database::SharedModel do
       end
     end
 
+    it 'raises an error if the connection does not include `:gitlab_shared` schema' do
+      allow(Gitlab::Database)
+        .to receive(:gitlab_schemas_for_connection)
+        .with(new_connection)
+        .and_return([:gitlab_main])
+
+      expect_original_connection_around do
+        expect do
+          described_class.using_connection(new_connection) {}
+        end.to raise_error(/Cannot set `SharedModel` to connection/)
+      end
+    end
+
     context 'when multiple connection overrides are nested', :aggregate_failures do
       let(:second_connection) { double('connection') }
 

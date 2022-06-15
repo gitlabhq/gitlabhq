@@ -9,7 +9,7 @@ module Gitlab
         DMLNotAllowedError = Class.new(UnsupportedSchemaError)
         DMLAccessDeniedError = Class.new(UnsupportedSchemaError)
 
-        IGNORED_SCHEMAS = %i[gitlab_shared].freeze
+        IGNORED_SCHEMAS = %i[gitlab_shared gitlab_internal].freeze
 
         class << self
           def enabled?

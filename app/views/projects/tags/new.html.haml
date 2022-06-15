@@ -50,7 +50,9 @@
         = render 'shared/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description, qa_selector: 'release_notes_field'
         = render 'shared/notes/hints'
   .form-actions.gl-display-flex
-    = button_tag s_('TagsPage|Create tag'), class: 'gl-button btn btn-confirm gl-mr-3', data: { qa_selector: "create_tag_button" }
-    = link_to s_('TagsPage|Cancel'), project_tags_path(@project), class: 'gl-button btn btn-default btn-cancel'
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3', data: { qa_selector: "create_tag_button" }, type: 'submit' }) do
+      = s_('TagsPage|Create tag')
+    = render Pajamas::ButtonComponent.new(href: project_tags_path(@project)) do
+      = s_('TagsPage|Cancel')
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

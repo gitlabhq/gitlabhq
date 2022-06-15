@@ -348,7 +348,13 @@ namespace :gitlab do
       Rake::Task['db:drop'].invoke
       Rake::Task['db:create'].invoke
       ActiveRecord::Base.configurations.configs_for(env_name: ActiveRecord::Tasks::DatabaseTasks.env).each do |db_config|
-        ActiveRecord::Base.establish_connection(db_config.configuration_hash.merge(username: username)) # rubocop: disable Database/EstablishConnection
+        config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          db_config.env_name,
+          db_config.name,
+          db_config.configuration_hash.merge(username: username)
+        )
+
+        ActiveRecord::Base.establish_connection(config) # rubocop: disable Database/EstablishConnection
         Gitlab::Database.check_for_non_superuser
         Rake::Task['db:migrate'].invoke
       end

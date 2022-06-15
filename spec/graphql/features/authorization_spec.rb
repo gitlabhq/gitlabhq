@@ -17,10 +17,7 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
   let(:permission_object_two) { authorizing_object }
 
   let(:query_string) { '{ item { name } }' }
-  let(:result) do
-    schema = empty_schema
-    execute_query(query_type, schema: schema)
-  end
+  let(:result) { execute_query(query_type) }
 
   subject { result.dig('data', 'item') }
 

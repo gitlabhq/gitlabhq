@@ -42,7 +42,7 @@ RSpec.describe Admin::BatchedJobsController, :enable_admin_mode do
     end
 
     context 'when multiple database is enabled', :add_ci_connection do
-      let(:base_models) { { 'fake_db' => default_model, 'ci' => ci_model } }
+      let(:base_models) { { 'main' => default_model, 'ci' => ci_model }.with_indifferent_access }
       let(:ci_model) { Ci::ApplicationRecord }
 
       before do

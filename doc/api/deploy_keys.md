@@ -69,7 +69,7 @@ Example response:
 ]
 ```
 
-## List project deploy keys
+## List deploy keys for project
 
 Get a list of a project's deploy keys.
 
@@ -102,6 +102,62 @@ Example response:
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
     "created_at": "2013-10-02T11:12:29Z",
     "can_push": false
+  }
+]
+```
+
+## List project deploy keys for user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
+
+Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
+
+```plaintext
+GET /users/:id_or_username/project_deploy_keys
+```
+
+Parameters:
+
+| Attribute          | Type   | Required | Description                                                        |
+|------------------- |--------|----------|------------------------------------------------------------------- |
+| `id_or_username`   | string | yes      | The ID or username of the user to get the project deploy keys for. |
+
+```json
+[
+    {
+        "id": 1,
+        "title": "Key A",
+        "created_at": "2022-05-30T12:28:27.855Z",
+        "expires_at": null,
+        "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTEVaAtU5wiVducsOa01InRFf7QSTxoAm6Xy0PGv/k48M6xCALa9nY+BzlOv47jUT57 Key",
+        "fingerprint": "60:8e:10:f0:6a:82:c8:29:5f:bf:c0:38:72:00:6f:8f"
+    },
+    {
+        "id": 2,
+        "title": "Key B",
+        "created_at": "2022-05-30T13:34:56.219Z",
+        "expires_at": null,
+        "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+        "fingerprint": "75:33:44:7e:55:84:dd:70:29:a3:8e:a3:c0:b9:8b:65"
+    }
+]
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/20/project_deploy_keys"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Key A",
+    "created_at": "2022-05-30T12:28:27.855Z",
+    "expires_at": "2022-10-30T12:28:27.855Z",
+    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTEVaAtU5wiVducsOa01InRFf7QSTxoAm6Xy0PGv/k48M6xCALa9nY+BzlOv47jUT57 Key",
+    "fingerprint": "60:8e:10:f0:6a:82:c8:29:5f:bf:c0:38:72:00:6f:8f"
   }
 ]
 ```

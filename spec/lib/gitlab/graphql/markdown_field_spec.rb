@@ -27,8 +27,7 @@ RSpec.describe Gitlab::Graphql::MarkdownField do
     context 'resolving markdown' do
       let_it_be(:note) { build(:note, note: '# Markdown!') }
       let_it_be(:expected_markdown) { '<h1 data-sourcepos="1:1-1:11" dir="auto">Markdown!</h1>' }
-      let_it_be(:schema) { empty_schema }
-      let_it_be(:query) { GraphQL::Query.new(schema, document: nil, context: {}, variables: {}) }
+      let_it_be(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
       let_it_be(:context) { GraphQL::Query::Context.new(query: query, values: {}, object: nil) }
 
       let(:type_class) { class_with_markdown_field(:note_html, null: false) }

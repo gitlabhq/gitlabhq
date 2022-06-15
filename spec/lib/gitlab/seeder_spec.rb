@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Seeder do
   describe '.quiet' do
     let(:database_base_models) do
       {
-        main: ApplicationRecord,
+        main: ActiveRecord::Base,
         ci: Ci::ApplicationRecord
       }
     end

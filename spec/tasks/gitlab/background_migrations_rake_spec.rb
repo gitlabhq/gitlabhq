@@ -112,7 +112,7 @@ RSpec.describe 'gitlab:background_migrations namespace rake tasks' do
     let(:main_database_name) { Gitlab::Database::MAIN_DATABASE_NAME }
     let(:model) { Gitlab::Database.database_base_models[main_database_name] }
     let(:connection) { double(:connection) }
-    let(:base_models) { { 'main' => model } }
+    let(:base_models) { { 'main' => model }.with_indifferent_access }
 
     around do |example|
       Gitlab::Database::SharedModel.using_connection(model.connection) do

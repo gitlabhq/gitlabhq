@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # SaaS runners on macOS (Limited Availability) **(PREMIUM SAAS)**
 
-SaaS runners on macOS are in [Beta](../../../policy/alpha-beta-support.md#limited-availability-la) for approved open source programs and customers in Premium and Ultimate plans.
+SaaS runners on macOS are in [Limited Availability](../../../policy/alpha-beta-support.md#limited-availability-la) for approved open source programs and customers in Premium and Ultimate plans.
 
 SaaS runners on macOS provide an on-demand macOS build environment integrated with
 GitLab SaaS [CI/CD](../../../ci/index.md).

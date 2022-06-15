@@ -425,7 +425,7 @@ module GraphqlHelpers
     end
   end
 
-  def query_double(schema:)
+  def query_double(schema: empty_schema)
     double('query', schema: schema, warden: GraphQL::Schema::Warden::PassThruWarden)
   end
 
