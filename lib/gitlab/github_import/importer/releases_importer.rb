@@ -27,7 +27,7 @@ module Gitlab
         def build(release)
           existing_tags.add(release.tag_name)
 
-          {
+          build_hash = {
             name: release.name,
             tag: release.tag_name,
             description: description_for(release),
@@ -37,6 +37,12 @@ module Gitlab
             released_at: release.published_at || Time.current,
             project_id: project.id
           }
+
+          if Feature.enabled?(:import_release_authors_from_github, project)
+            build_hash[:author_id] = fetch_author_id(release)
+          end
+
+          build_hash
         end
 
         def each_release
@@ -49,6 +55,18 @@ module Gitlab
 
         def object_type
           :release
+        end
+
+        private
+
+        def fetch_author_id(release)
+          author_id, _author_found = user_finder.author_id_for(release)
+
+          author_id
+        end
+
+        def user_finder
+          @user_finder ||= GithubImport::UserFinder.new(project, client)
         end
       end
     end

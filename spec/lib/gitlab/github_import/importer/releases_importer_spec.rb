@@ -9,6 +9,12 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
   let(:github_release_name) { 'Initial Release' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
+  let(:author) do
+    double(
+      login: 'User A',
+      id: 1
+    )
+  end
 
   let(:github_release) do
     double(
@@ -17,11 +23,23 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
       name: github_release_name,
       body: 'This is my release',
       created_at: created_at,
-      published_at: released_at
+      published_at: released_at,
+      author: author
     )
   end
 
+  def stub_email_for_github_username(user_name = 'User A', user_email = 'user@example.com')
+    allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |instance|
+      allow(instance).to receive(:email_for_github_username)
+        .with(user_name).and_return(user_email)
+    end
+  end
+
   describe '#execute' do
+    before do
+      stub_email_for_github_username
+    end
+
     it 'imports the releases in bulk' do
       release_hash = {
         tag_name: '1.0',
@@ -45,7 +63,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
         description: 'This is my release',
         created_at: created_at,
         updated_at: created_at,
-        published_at: nil
+        published_at: nil,
+        author: author
       )
 
       expect(importer).to receive(:each_release).and_return([release_double])
@@ -61,6 +80,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
   end
 
   describe '#build_releases' do
+    before do
+      stub_email_for_github_username
+    end
+
     it 'returns an Array containing release rows' do
       expect(importer).to receive(:each_release).and_return([github_release])
 
@@ -108,11 +131,15 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
   describe '#build' do
     let(:release_hash) { importer.build(github_release) }
 
-    it 'returns the attributes of the release as a Hash' do
-      expect(release_hash).to be_an_instance_of(Hash)
-    end
-
     context 'the returned Hash' do
+      before do
+        stub_email_for_github_username
+      end
+
+      it 'returns the attributes of the release as a Hash' do
+        expect(release_hash).to be_an_instance_of(Hash)
+      end
+
       it 'includes the tag name' do
         expect(release_hash[:tag]).to eq('1.0')
       end
@@ -135,6 +162,39 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
 
       it 'includes the release name' do
         expect(release_hash[:name]).to eq(github_release_name)
+      end
+    end
+
+    context 'author_id attribute' do
+      it 'returns the Gitlab user_id when Github release author is found' do
+        # Stub user email which matches a Gitlab user.
+        stub_email_for_github_username('User A', project.users.first.email)
+
+        # Disable cache read as the redis cache key can be set by other specs.
+        # https://gitlab.com/gitlab-org/gitlab/-/blob/88bffda004e0aca9c4b9f2de86bdbcc0b49f2bc7/lib/gitlab/github_import/user_finder.rb#L75
+        # Above line can return different user when read from cache.
+        allow(Gitlab::Cache::Import::Caching).to receive(:read).and_return(nil)
+
+        expect(release_hash[:author_id]).to eq(project.users.first.id)
+      end
+
+      it 'returns ghost user when author is empty in Github release' do
+        allow(github_release).to receive(:author).and_return(nil)
+
+        expect(release_hash[:author_id]).to eq(Gitlab::GithubImport.ghost_user_id)
+      end
+
+      context 'when Github author is not found in Gitlab' do
+        let(:author) { double(login: 'octocat', id: 1 ) }
+
+        before do
+          # Stub user email which does not match a Gitlab user.
+          stub_email_for_github_username('octocat', 'octocat@example.com')
+        end
+
+        it 'returns project creator as author' do
+          expect(release_hash[:author_id]).to eq(project.creator_id)
+        end
       end
     end
   end

@@ -63,6 +63,10 @@ module Gitlab
 
         # Gitea doesn't have a Release API yet
         # See https://github.com/go-gitea/gitea/issues/330
+        # On re-enabling care should be taken to include releases `author_id` field and enable corresponding tests.
+        # See:
+        # 1) https://gitlab.com/gitlab-org/gitlab/-/issues/343448#note_985979730
+        # 2) https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89694/diffs#dfc4a8141aa296465ea3c50b095a30292fb6ebc4_180_182
         unless project.gitea_import?
           import_releases
         end

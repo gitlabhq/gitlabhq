@@ -12,8 +12,8 @@ variables:
   # Which branch we want to run full fledged long running fuzzing jobs.
   # All others will run fuzzing regression
   COVFUZZ_BRANCH: "$CI_DEFAULT_BRANCH"
-  # This is using semantic version and will always download latest v2 gitlab-cov-fuzz release
-  COVFUZZ_VERSION: v2
+  # This is using semantic version and will always download latest v3 gitlab-cov-fuzz release
+  COVFUZZ_VERSION: v3
   # This is for users who have an offline environment and will have to replicate gitlab-cov-fuzz release binaries
   # to their own servers
   COVFUZZ_URL_PREFIX: "https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw"

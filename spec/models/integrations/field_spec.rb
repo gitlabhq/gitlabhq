@@ -5,7 +5,14 @@ require 'spec_helper'
 RSpec.describe ::Integrations::Field do
   subject(:field) { described_class.new(**attrs) }
 
-  let(:attrs) { { name: nil } }
+  let(:attrs) { { name: nil, integration_class: test_integration } }
+  let(:test_integration) do
+    Class.new(Integration) do
+      def self.default_placeholder
+        'my placeholder'
+      end
+    end
+  end
 
   describe '#name' do
     before do
@@ -68,17 +75,21 @@ RSpec.describe ::Integrations::Field do
       end
 
       context 'when set to a dynamic value' do
-        before do
-          attrs[name] = -> { Time.current }
-        end
-
         it 'is computed' do
+          attrs[name] = -> { Time.current }
           start = Time.current
 
           travel_to(start + 1.minute) do
             expect(field[name]).to be_after(start)
             expect(field.send(name)).to be_after(start)
           end
+        end
+
+        it 'is executed in the class scope' do
+          attrs[name] = -> { default_placeholder }
+
+          expect(field[name]).to eq('my placeholder')
+          expect(field.send(name)).to eq('my placeholder')
         end
       end
     end

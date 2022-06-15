@@ -144,7 +144,7 @@ class Integration < ApplicationRecord
 
   # :nocov: Tested on subclasses.
   def self.field(name, storage: field_storage, **attrs)
-    fields << ::Integrations::Field.new(name: name, **attrs)
+    fields << ::Integrations::Field.new(name: name, integration_class: self, **attrs)
 
     case storage
     when :properties
