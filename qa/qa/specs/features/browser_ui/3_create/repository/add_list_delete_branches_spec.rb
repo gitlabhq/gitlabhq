@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_flag: {
-    name: 'bootstrap_confirmation_modals',
-    scope: :global
-  } do
+  RSpec.describe 'Create' do
     describe 'Create, list, and delete branches via web', :requires_admin do
       master_branch = nil
       second_branch = 'second-branch'
@@ -19,8 +16,6 @@ module QA
       commit_message_of_third_branch = "Add #{file_third_branch}"
 
       before do
-        Runtime::Feature.enable(:bootstrap_confirmation_modals)
-
         Flow::Login.sign_in
 
         project = Resource::Project.fabricate_via_api! do |proj|

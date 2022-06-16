@@ -13,10 +13,6 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
 
   def payload
     [
-      # We keep openid_connect_signing_key so that we can seamlessly
-      # replace it with ci_jwt_signing_key and remove it on the next release.
-      # TODO: Remove openid_connect_signing_key in 13.7
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/221031
       Rails.application.secrets.openid_connect_signing_key,
       Gitlab::CurrentSettings.ci_jwt_signing_key
     ].compact.map do |key_data|

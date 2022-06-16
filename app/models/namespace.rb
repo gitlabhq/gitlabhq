@@ -557,6 +557,14 @@ class Namespace < ApplicationRecord
     cluster_enabled_granted? || certificate_based_clusters_enabled_ff?
   end
 
+  def enabled_git_access_protocol
+    # If the instance-level setting is enabled, we defer to that
+    return ::Gitlab::CurrentSettings.enabled_git_access_protocol unless ::Gitlab::CurrentSettings.enabled_git_access_protocol.blank?
+
+    # Otherwise we use the stored setting on the group
+    namespace_settings&.enabled_git_access_protocol
+  end
+
   private
 
   def cluster_enabled_granted?

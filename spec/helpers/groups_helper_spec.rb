@@ -472,4 +472,36 @@ RSpec.describe GroupsHelper do
       })
     end
   end
+
+  describe "#enabled_git_access_protocol_options_for_group" do
+    subject { helper.enabled_git_access_protocol_options_for_group }
+
+    before do
+      expect(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
+    end
+
+    context "instance setting is nil" do
+      let(:instance_setting) { nil }
+
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+    end
+
+    context "instance setting is blank" do
+      let(:instance_setting) { nil }
+
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+    end
+
+    context "instance setting is ssh" do
+      let(:instance_setting) { "ssh" }
+
+      it { is_expected.to contain_exactly([_("Only SSH"), "ssh"]) }
+    end
+
+    context "instance setting is http" do
+      let(:instance_setting) { "http" }
+
+      it { is_expected.to contain_exactly([_("Only HTTP(S)"), "http"]) }
+    end
+  end
 end

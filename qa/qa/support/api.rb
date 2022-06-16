@@ -141,30 +141,17 @@ module QA
                        get(url).tap { |resp| not_ok_error.call(resp) if resp.code != HTTP_STATUS_OK }
                      end
 
-          page, pages = response.headers.values_at(:x_page, :x_total_pages)
+          page, pages, next_page = response.headers.values_at(:x_page, :x_total_pages, :x_next_page)
           api_endpoint = url.match(%r{v4/(\S+)\?})[1]
 
           QA::Runtime::Logger.debug("Fetching page (#{page}/#{pages}) for '#{api_endpoint}' ...") unless pages.to_i <= 1
 
           yield parse_body(response)
 
-          next_link = pagination_links(response).find { |link| link[:rel] == 'next' }
-          break unless next_link
+          break if next_page.empty?
 
-          url = next_link[:url]
+          url = url.match?(/&page=\d+/) ? url.gsub(/&page=\d+/, "&page=#{next_page}") : "#{url}&page=#{next_page}"
         end
-      end
-
-      def pagination_links(response)
-        link = response.headers[:link]
-        return unless link
-
-        link.split(',').map do |link|
-          match = link.match(/<(?<url>.*)>; rel="(?<rel>\w+)"/)
-          break nil unless match
-
-          { url: match[:url], rel: match[:rel] }
-        end.compact
       end
     end
   end

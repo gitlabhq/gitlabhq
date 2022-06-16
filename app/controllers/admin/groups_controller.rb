@@ -108,6 +108,7 @@ class Admin::GroupsController < Admin::ApplicationController
       :visibility_level,
       :require_two_factor_authentication,
       :two_factor_grace_period,
+      :enabled_git_access_protocol,
       :project_creation_level,
       :subgroup_creation_level,
       admin_note_attributes: [

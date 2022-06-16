@@ -9,13 +9,16 @@ class NamespaceSetting < ApplicationRecord
 
   belongs_to :namespace, inverse_of: :namespace_settings
 
+  enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
+  enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
+
+  validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
+
   validate :default_branch_name_content
   validate :allow_mfa_for_group
   validate :allow_resource_access_token_creation_for_group
 
   before_validation :normalize_default_branch_name
-
-  enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval
@@ -24,7 +27,7 @@ class NamespaceSetting < ApplicationRecord
   NAMESPACE_SETTINGS_PARAMS = [:default_branch_name, :delayed_project_removal,
                                :lock_delayed_project_removal, :resource_access_token_creation_allowed,
                                :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap,
-                               :setup_for_company, :jobs_to_be_done, :runner_token_expiration_interval,
+                               :setup_for_company, :jobs_to_be_done, :runner_token_expiration_interval, :enabled_git_access_protocol,
                                :subgroup_runner_token_expiration_interval, :project_runner_token_expiration_interval].freeze
 
   self.primary_key = :namespace_id

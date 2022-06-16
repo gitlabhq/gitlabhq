@@ -6481,6 +6481,9 @@ msgstr ""
 msgid "Bold text"
 msgstr ""
 
+msgid "Both SSH and HTTP(S)"
+msgstr ""
+
 msgid "Both project and dashboard_path are required"
 msgstr ""
 
@@ -26700,6 +26703,9 @@ msgstr ""
 msgid "Only 1 appearances row can exist"
 msgstr ""
 
+msgid "Only HTTP(S)"
+msgstr ""
+
 msgid "Only Issue ID or merge request ID is required"
 msgstr ""
 
@@ -26707,6 +26713,9 @@ msgid "Only Issue can be parent of Task."
 msgstr ""
 
 msgid "Only Project Members"
+msgstr ""
+
+msgid "Only SSH"
 msgstr ""
 
 msgid "Only Task can be assigned as a child in hierarchy."
@@ -39385,6 +39394,9 @@ msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
 msgid "This setting can be overridden in each project."
+msgstr ""
+
+msgid "This setting has been configured at the instance level and cannot be overridden per group"
 msgstr ""
 
 msgid "This setting is allowed for forked projects only"

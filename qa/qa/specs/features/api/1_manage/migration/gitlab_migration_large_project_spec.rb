@@ -73,7 +73,7 @@ module QA
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:source_milestones) { source_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:source_pipelines) { source_project.pipelines.map { |pp| pp.except(:id, :web_url, :project_id) } }
+      let(:source_pipelines) { source_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:source_mrs) { fetch_mrs(source_project, source_api_client) }
       let(:source_issues) { fetch_issues(source_project, source_api_client) }
 
@@ -259,7 +259,7 @@ module QA
         missing_comments = verify_comments(type, actual, expected)
 
         {
-          "#{type}s": (expected.keys - actual.keys).map { |it| actual[it].slice(:title, :url) },
+          "#{type}s": (expected.keys - actual.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
           "#{type}_comments": missing_comments
         }
       end

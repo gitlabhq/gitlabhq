@@ -1,7 +1,7 @@
 - page_title _('Contributors')
 
-.sub-header-block.bg-gray-light.gl-p-5
-  .tree-ref-holder.inline.vertical-align-middle
+.sub-header-block.gl-bg-gray-10.gl-p-5
+  .tree-ref-holder.gl-display-inline-block.gl-vertical-align-middle.gl-mr-3>
     = render 'shared/ref_switcher', destination: 'graphs'
   = link_to s_('Commits|History'), project_commits_path(@project, current_ref), class: 'btn gl-button btn-default'
 

@@ -1,0 +1,23 @@
+---
+key_path: counts_monthly.unique_active_users
+name:
+description: Users that have a last_activity_on date within the past 28 days
+product_category:
+product_section: dev
+product_stage: manage
+product_group: group::manage
+value_type: number
+status: active
+milestone: "15.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88631
+time_frame: 28d
+data_source: database
+data_category: optional
+instrumentation_class: UniqueActiveUsersMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

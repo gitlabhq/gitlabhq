@@ -37,6 +37,7 @@
     - if @group.licensed_feature_available?(:group_wikis)
       = render_if_exists 'groups/settings/wiki', f: f, group: @group
     = render 'groups/settings/lfs', f: f
+    = render 'groups/settings/git_access_protocols', f: f, group: @group
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group

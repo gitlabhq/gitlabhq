@@ -285,6 +285,7 @@ class GroupsController < Groups::ApplicationController
       :chat_team_name,
       :require_two_factor_authentication,
       :two_factor_grace_period,
+      :enabled_git_access_protocol,
       :project_creation_level,
       :subgroup_creation_level,
       :default_branch_protection,

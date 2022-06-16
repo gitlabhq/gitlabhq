@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable, feature_flag: {
-    name: 'bootstrap_confirmation_modals',
-    scope: :global
-  } do
+  RSpec.describe 'Create', :reliable do
     describe 'Multiple file snippet' do
       let(:first_file_content) { 'First file content' }
       let(:second_file_content) { 'Second file content' }
@@ -38,23 +35,22 @@ module QA
 
       let(:files) do
         [
-            {
-                number: 1,
-                content: first_file_content
-            },
-            {
-                number: 2,
-                content: second_file_content
-            },
-            {
-                number: 3,
-                content: third_file_content
-            }
+          {
+            number: 1,
+            content: first_file_content
+          },
+          {
+            number: 2,
+            content: second_file_content
+          },
+          {
+            number: 3,
+            content: third_file_content
+          }
         ]
       end
 
       before do
-        Runtime::Feature.enable(:bootstrap_confirmation_modals)
         Flow::Login.sign_in
       end
 

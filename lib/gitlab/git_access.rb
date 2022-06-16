@@ -133,7 +133,7 @@ module Gitlab
     end
 
     def protocol_allowed?
-      Gitlab::ProtocolAccess.allowed?(protocol)
+      Gitlab::ProtocolAccess.allowed?(protocol, project: project)
     end
 
     private

@@ -167,6 +167,17 @@ module GroupsHelper
     }
   end
 
+  def enabled_git_access_protocol_options_for_group
+    case ::Gitlab::CurrentSettings.enabled_git_access_protocol
+    when nil, ""
+      [[_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]]
+    when "ssh"
+      [[_("Only SSH"), "ssh"]]
+    when "http"
+      [[_("Only HTTP(S)"), "http"]]
+    end
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

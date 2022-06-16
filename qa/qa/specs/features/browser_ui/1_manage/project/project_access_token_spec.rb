@@ -2,15 +2,8 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project access tokens', :reliable, feature_flag: {
-      name: 'bootstrap_confirmation_modals',
-      scope: :global
-    } do
+    describe 'Project access tokens', :reliable do
       let(:project_access_token) { QA::Resource::ProjectAccessToken.fabricate_via_browser_ui! }
-
-      before do
-        Runtime::Feature.enable(:bootstrap_confirmation_modals)
-      end
 
       it(
         'can be created and revoked via the UI',
