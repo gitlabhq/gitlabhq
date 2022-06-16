@@ -8,7 +8,7 @@ module Gitlab
 
       included do
         # Issue only quick actions definition
-        desc _('Set due date')
+        desc { _('Set due date') }
         explanation do |due_date|
           _("Sets the due date to %{due_date}.") % { due_date: due_date.strftime('%b %-d, %Y') } if due_date
         end
@@ -32,9 +32,9 @@ module Gitlab
           end
         end
 
-        desc _('Remove due date')
-        explanation _('Removes the due date.')
-        execution_message _('Removed the due date.')
+        desc { _('Remove due date') }
+        explanation { _('Removes the due date.') }
+        execution_message { _('Removed the due date.') }
         types Issue
         condition do
           quick_action_target.persisted? &&
@@ -46,7 +46,7 @@ module Gitlab
           @updates[:due_date] = nil
         end
 
-        desc _('Move issue from one column of the board to another')
+        desc { _('Move issue from one column of the board to another') }
         explanation do |target_list_name|
           label = find_label_references(target_list_name).first
           _("Moves issue to %{label} column in the board.") % { label: label } if label
@@ -78,7 +78,7 @@ module Gitlab
           @execution_message[:board_move] = message
         end
 
-        desc _('Mark this issue as a duplicate of another issue')
+        desc { _('Mark this issue as a duplicate of another issue') }
         explanation do |duplicate_reference|
           _("Marks this issue as a duplicate of %{duplicate_reference}.") % { duplicate_reference: duplicate_reference }
         end
@@ -102,7 +102,7 @@ module Gitlab
           @execution_message[:duplicate] = message
         end
 
-        desc _('Clone this issue')
+        desc { _('Clone this issue') }
         explanation do |project = quick_action_target.project.full_path|
           _("Clones this issue, without comments, to %{project}.") % { project: project }
         end
@@ -137,7 +137,7 @@ module Gitlab
           @execution_message[:clone] = message
         end
 
-        desc _('Move this issue to another project.')
+        desc { _('Move this issue to another project.') }
         explanation do |path_to_project|
           _("Moves this issue to %{path_to_project}.") % { path_to_project: path_to_project }
         end
@@ -161,7 +161,7 @@ module Gitlab
           @execution_message[:move] = message
         end
 
-        desc _('Make issue confidential')
+        desc { _('Make issue confidential') }
         explanation do
           _('Makes this issue confidential.')
         end
@@ -178,7 +178,7 @@ module Gitlab
           @updates[:confidential] = true
         end
 
-        desc _('Create a merge request')
+        desc { _('Create a merge request') }
         explanation do |branch_name = nil|
           if branch_name
             _("Creates branch '%{branch_name}' and a merge request to resolve this issue.") % { branch_name: branch_name }
@@ -205,8 +205,8 @@ module Gitlab
           }
         end
 
-        desc _('Add Zoom meeting')
-        explanation _('Adds a Zoom meeting.')
+        desc { _('Add Zoom meeting') }
+        explanation { _('Adds a Zoom meeting.') }
         params '<Zoom URL>'
         types Issue
         condition do
@@ -222,9 +222,9 @@ module Gitlab
           @updates.merge!(result.payload) if result.payload
         end
 
-        desc _('Remove Zoom meeting')
-        explanation _('Remove Zoom meeting.')
-        execution_message _('Zoom meeting removed')
+        desc { _('Remove Zoom meeting') }
+        explanation { _('Remove Zoom meeting.') }
+        execution_message { _('Zoom meeting removed') }
         types Issue
         condition do
           @zoom_service = zoom_link_service
@@ -235,8 +235,8 @@ module Gitlab
           @execution_message[:remove_zoom] = result.message
         end
 
-        desc _('Add email participant(s)')
-        explanation _('Adds email participant(s).')
+        desc { _('Add email participant(s)') }
+        explanation { _('Adds email participant(s).') }
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -264,8 +264,8 @@ module Gitlab
           end
         end
 
-        desc _('Promote issue to incident')
-        explanation _('Promotes issue to incident')
+        desc { _('Promote issue to incident') }
+        explanation { _('Promotes issue to incident') }
         types Issue
         condition do
           quick_action_target.persisted? &&
@@ -285,8 +285,8 @@ module Gitlab
             end
         end
 
-        desc _('Add customer relation contacts')
-        explanation _('Add customer relation contact(s).')
+        desc { _('Add customer relation contacts') }
+        explanation { _('Add customer relation contact(s).') }
         params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do
@@ -300,8 +300,8 @@ module Gitlab
           @updates[:add_contacts] = contact_emails.split(' ')
         end
 
-        desc _('Remove customer relation contacts')
-        explanation _('Remove customer relation contact(s).')
+        desc { _('Remove customer relation contacts') }
+        explanation { _('Remove customer relation contact(s).') }
         params '[contact:contact@example.com] [contact:person@example.org]'
         types Issue
         condition do

@@ -117,7 +117,7 @@ module Gitlab
           @updates[:wip_event] = quick_action_target.draft? ? 'ready' : 'draft'
         end
 
-        desc _('Set target branch')
+        desc { _('Set target branch') }
         explanation do |branch_name|
           _('Sets target branch to %{branch_name}.') % { branch_name: branch_name }
         end
@@ -138,8 +138,8 @@ module Gitlab
           @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
         end
 
-        desc _('Submit a review')
-        explanation _('Submit the current review.')
+        desc { _('Submit a review') }
+        explanation { _('Submit the current review.') }
         types MergeRequest
         condition do
           quick_action_target.persisted?
@@ -155,8 +155,8 @@ module Gitlab
                                                end
         end
 
-        desc _('Approve a merge request')
-        explanation _('Approve the current merge request.')
+        desc { _('Approve a merge request') }
+        explanation { _('Approve the current merge request.') }
         types MergeRequest
         condition do
           quick_action_target.persisted? && quick_action_target.can_be_approved_by?(current_user)
@@ -169,8 +169,8 @@ module Gitlab
           @execution_message[:approve] = _('Approved the current merge request.')
         end
 
-        desc _('Unapprove a merge request')
-        explanation _('Unapprove the current merge request.')
+        desc { _('Unapprove a merge request') }
+        explanation { _('Unapprove the current merge request.') }
         types MergeRequest
         condition do
           quick_action_target.persisted? && quick_action_target.can_be_unapproved_by?(current_user)

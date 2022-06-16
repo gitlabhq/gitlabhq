@@ -55,7 +55,7 @@ module Gitlab
           @updates[:state_event] = 'reopen'
         end
 
-        desc _('Change title')
+        desc { _('Change title') }
         explanation do |title_param|
           _('Changes the title to "%{title_param}".') % { title_param: title_param }
         end
@@ -72,7 +72,7 @@ module Gitlab
           @updates[:title] = title_param
         end
 
-        desc _('Add label(s)')
+        desc { _('Add label(s)') }
         explanation do |labels_param|
           labels = find_label_references(labels_param)
 
@@ -91,7 +91,7 @@ module Gitlab
           run_label_command(labels: find_labels(labels_param), command: :label, updates_key: :add_label_ids)
         end
 
-        desc _('Remove all or specific label(s)')
+        desc { _('Remove all or specific label(s)') }
         explanation do |labels_param = nil|
           label_references = labels_param.present? ? find_label_references(labels_param) : []
           if label_references.any?
@@ -128,7 +128,7 @@ module Gitlab
           @execution_message[:unlabel] = remove_label_message(label_references)
         end
 
-        desc _('Replace all label(s)')
+        desc { _('Replace all label(s)') }
         explanation do |labels_param|
           labels = find_label_references(labels_param)
           "Replaces all labels with #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
@@ -144,9 +144,9 @@ module Gitlab
           run_label_command(labels: find_labels(labels_param), command: :relabel, updates_key: :label_ids)
         end
 
-        desc _('Add a to do')
-        explanation _('Adds a to do.')
-        execution_message _('Added a to do.')
+        desc { _('Add a to do') }
+        explanation { _('Adds a to do.') }
+        execution_message { _('Added a to do.') }
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -156,9 +156,9 @@ module Gitlab
           @updates[:todo_event] = 'add'
         end
 
-        desc _('Mark to do as done')
-        explanation _('Marks to do as done.')
-        execution_message _('Marked to do as done.')
+        desc { _('Mark to do as done') }
+        explanation { _('Marks to do as done.') }
+        execution_message { _('Marked to do as done.') }
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -168,7 +168,7 @@ module Gitlab
           @updates[:todo_event] = 'done'
         end
 
-        desc _('Subscribe')
+        desc { _('Subscribe') }
         explanation do
           _('Subscribes to this %{quick_action_target}.') %
             { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
@@ -186,7 +186,7 @@ module Gitlab
           @updates[:subscription_event] = 'subscribe'
         end
 
-        desc _('Unsubscribe')
+        desc { _('Unsubscribe') }
         explanation do
           _('Unsubscribes from this %{quick_action_target}.') %
             { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
@@ -204,7 +204,7 @@ module Gitlab
           @updates[:subscription_event] = 'unsubscribe'
         end
 
-        desc _('Toggle emoji award')
+        desc { _('Toggle emoji award') }
         explanation do |name|
           _("Toggles :%{name}: emoji award.") % { name: name } if name
         end
@@ -226,22 +226,22 @@ module Gitlab
           end
         end
 
-        desc _("Append the comment with %{shrug}") % { shrug: SHRUG }
+        desc { _("Append the comment with %{shrug}") % { shrug: SHRUG } }
         params '<Comment>'
         types Issuable
         substitution :shrug do |comment|
           "#{comment} #{SHRUG}"
         end
 
-        desc _("Append the comment with %{tableflip}") % { tableflip: TABLEFLIP }
+        desc { _("Append the comment with %{tableflip}") % { tableflip: TABLEFLIP } }
         params '<Comment>'
         types Issuable
         substitution :tableflip do |comment|
           "#{comment} #{TABLEFLIP}"
         end
 
-        desc _('Set severity')
-        explanation _('Sets the severity')
+        desc { _('Set severity') }
+        explanation { _('Sets the severity') }
         params '1 / S1 / Critical'
         types Issue
         condition do

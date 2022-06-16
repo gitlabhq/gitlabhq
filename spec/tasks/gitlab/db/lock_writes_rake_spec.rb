@@ -106,6 +106,31 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
           main_connection.execute("truncate ci_build_needs")
         end.to raise_error(ActiveRecord::StatementInvalid, /Table: "ci_build_needs" is write protected/)
       end
+
+      it 'retries again if it receives a statement_timeout a few number of times' do
+        error_message = "PG::QueryCanceled: ERROR: canceling statement due to statement timeout"
+        call_count = 0
+        allow(main_connection).to receive(:execute) do |statement|
+          if statement.include?("CREATE TRIGGER")
+            call_count += 1
+            raise(ActiveRecord::QueryCanceled, error_message) if call_count.even?
+          end
+        end
+        run_rake_task('gitlab:db:lock_writes')
+      end
+
+      it 'raises the exception if it happened many times' do
+        error_message = "PG::QueryCanceled: ERROR: canceling statement due to statement timeout"
+        allow(main_connection).to receive(:execute) do |statement|
+          if statement.include?("CREATE TRIGGER")
+            raise(ActiveRecord::QueryCanceled, error_message)
+          end
+        end
+
+        expect do
+          run_rake_task('gitlab:db:lock_writes')
+        end.to raise_error(ActiveRecord::QueryCanceled)
+      end
     end
 
     context 'when unlocking writes' do

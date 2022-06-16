@@ -7,7 +7,7 @@ module Gitlab
       include ::Gitlab::QuickActions::Dsl
 
       included do
-        desc _('Mark this issue as related to another issue')
+        desc { _('Mark this issue as related to another issue') }
         explanation do |related_reference|
           _('Marks this issue as related to %{issue_ref}.') % { issue_ref: related_reference }
         end
