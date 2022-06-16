@@ -1,3 +1,3 @@
-mutation addDataToTerraformState($terraformState: State!) {
+mutation addDataToTerraformState($terraformState: LocalTerraformStateInput!) {
   addDataToTerraformState(terraformState: $terraformState) @client
 }

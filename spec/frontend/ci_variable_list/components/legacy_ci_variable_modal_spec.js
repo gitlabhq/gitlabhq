@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { mockTracking } from 'helpers/tracking_helper';
 import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
-import CiVariableModal from '~/ci_variable_list/components/ci_variable_modal.vue';
+import LegacyCiVariableModal from '~/ci_variable_list/components/legacy_ci_variable_modal.vue';
 import {
   AWS_ACCESS_KEY_ID,
   EVENT_LABEL,
@@ -30,7 +30,7 @@ describe('Ci variable modal', () => {
       isGroup: options.isGroup,
       environmentScopeLink: '/help/environments',
     });
-    wrapper = method(CiVariableModal, {
+    wrapper = method(LegacyCiVariableModal, {
       attachTo: document.body,
       stubs: {
         GlModal: ModalStub,

@@ -77,6 +77,7 @@ RSpec.describe Gitlab::DatabaseImporters::InstanceAdministrators::CreateGroup do
         create(:user)
 
         expect(result[:status]).to eq(:success)
+        group.reset
         expect(group.members.collect(&:user)).to contain_exactly(user, admin1, admin2)
         expect(group.members.collect(&:access_level)).to contain_exactly(
           Gitlab::Access::OWNER,

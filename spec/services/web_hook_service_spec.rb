@@ -521,7 +521,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
 
     def expect_to_rate_limit(hook, threshold:, throttled: false)
       expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-        .with(:web_hook_calls, scope: [hook], threshold: threshold)
+        .with(:web_hook_calls, scope: [hook.parent.root_namespace], threshold: threshold)
         .and_return(throttled)
     end
 
@@ -570,13 +570,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
         end
       end
 
-      context 'when the hook is throttled (via Redis)', :clean_gitlab_redis_rate_limiting do
+      context 'when the hook is throttled (via Redis)', :clean_gitlab_redis_rate_limiting, :freeze_time do
         before do
-          # Set a high interval to avoid intermittent failures in CI
-          allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits).and_return(
-            web_hook_calls: { interval: 1.day }
-          )
-
           expect_to_perform_worker(project_hook).exactly(threshold).times
 
           threshold.times { service_instance.async_execute }

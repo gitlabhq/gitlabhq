@@ -1,0 +1,10 @@
+type LogTreeCommit {
+  sha: String
+  message: String
+  titleHtml: String
+  committedDate: Time
+  commitPath: String
+  fileName: String
+  filePath: String
+  type: String
+}

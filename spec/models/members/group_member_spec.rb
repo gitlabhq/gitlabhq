@@ -47,6 +47,16 @@ RSpec.describe GroupMember do
     end
   end
 
+  describe '#permissible_access_level_roles' do
+    let_it_be(:group) { create(:group) }
+
+    it 'returns Gitlab::Access.options_with_owner' do
+      result = described_class.permissible_access_level_roles(group.first_owner, group)
+
+      expect(result).to eq(Gitlab::Access.options_with_owner)
+    end
+  end
+
   it_behaves_like 'members notifications', :group
 
   describe '#namespace_id' do

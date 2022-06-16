@@ -29,6 +29,12 @@ class GroupMember < Member
 
   attr_accessor :last_owner, :last_blocked_owner
 
+  # For those who get to see a modal with a role dropdown, here are the options presented
+  def self.permissible_access_level_roles(_, _)
+    # This method is a stopgap in preparation for https://gitlab.com/gitlab-org/gitlab/-/issues/364087
+    access_level_roles
+  end
+
   def self.access_level_roles
     Gitlab::Access.options_with_owner
   end

@@ -407,6 +407,10 @@ The requirements are the same as the previous settings:
   } }
 ```
 
+## Group Sync
+
+For information on automatically managing GitLab group membership, see [SAML Group Sync](../user/group/saml_sso/group_sync.md).
+
 ## Bypass two factor authentication
 
 If you want some SAML authentication methods to count as 2FA on a per session

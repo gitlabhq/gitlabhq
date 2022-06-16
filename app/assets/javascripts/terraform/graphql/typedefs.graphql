@@ -1,0 +1,22 @@
+extend type TerraformState {
+  _showDetails: Boolean
+  errorMessages: [String]
+  loadingLock: Boolean
+  loadingRemove: Boolean
+}
+
+input LocalTerraformStateInput {
+  _showDetails: Boolean
+  errorMessages: [String]
+  loadingLock: Boolean
+  loadingRemove: Boolean
+  id: ID!
+  name: String!
+  lockedAt: Time
+  updatedAt: Time!
+  deletedAt: Time
+}
+
+extend type Mutation {
+  addDataToTerraformState(terraformState: LocalTerraformStateInput!): Boolean
+}

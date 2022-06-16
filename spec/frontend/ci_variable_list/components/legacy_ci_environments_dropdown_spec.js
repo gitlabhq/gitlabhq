@@ -2,7 +2,7 @@ import { GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import CiEnvironmentsDropdown from '~/ci_variable_list/components/ci_environments_dropdown.vue';
+import LegacyCiEnvironmentsDropdown from '~/ci_variable_list/components/legacy_ci_environments_dropdown.vue';
 
 Vue.use(Vuex);
 
@@ -20,7 +20,7 @@ describe('Ci environments dropdown', () => {
       },
     });
 
-    wrapper = mount(CiEnvironmentsDropdown, {
+    wrapper = mount(LegacyCiEnvironmentsDropdown, {
       store,
       propsData: {
         value: term,

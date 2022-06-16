@@ -4,20 +4,21 @@
   .card
     .card-header
       Domains (#{@domains.size})
-    %ul.list-group.list-group-flush.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
+    %ul.list-group.list-group-flush
       - @domains.each do |domain|
-        %li.pages-domain-list-item.list-group-item.d-flex.justify-content-between
-          - if verification_enabled
-            - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
-            .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
-              = sprite_icon("status_#{status}" )
-          .domain-name
-            = external_link(domain.url, domain.url)
-            - if domain.certificate
-              %div
-                = gl_badge_tag(s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject })
-                - if domain.expired?
-                  = gl_badge_tag s_('GitLabPages|Expired'), variant: :danger
+        %li.list-group-item.gl-display-flex.gl-justify-content-space-between.gl-align-items-center
+          .gl-display-flex.gl-align-items-center
+            - if verification_enabled
+              - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
+              .domain-status.ci-status-icon.has-tooltip{ class: "gl-mr-5 ci-status-icon-#{status}", title: tooltip }
+                = sprite_icon("status_#{status}" )
+            .domain-name
+              = external_link(domain.url, domain.url)
+              - if domain.certificate
+                %div
+                  = gl_badge_tag(s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject })
+                  - if domain.expired?
+                    = gl_badge_tag s_('GitLabPages|Expired'), variant: :danger
           %div
             = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn gl-button btn-sm btn-grouped btn-confirm btn-inverted"
             = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, "aria-label": s_("GitLabPages|Remove domain"), method: :delete, class: "btn gl-button btn-danger btn-sm btn-grouped"

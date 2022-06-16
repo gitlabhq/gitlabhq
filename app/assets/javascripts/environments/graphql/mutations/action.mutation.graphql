@@ -1,4 +1,4 @@
-mutation action($action: LocalAction) {
+mutation action($action: LocalActionInput) {
   action(action: $action) @client {
     errors
   }

@@ -164,8 +164,8 @@ overrides:
       #'@graphql-eslint/unique-fragment-name': error
       # TODO: Uncomment these rules when then `schema` is available
       #'@graphql-eslint/fragments-on-composite-type': error
-      #'@graphql-eslint/known-argument-names': error
-      #'@graphql-eslint/known-type-names': error
+      '@graphql-eslint/known-argument-names': error
+      '@graphql-eslint/known-type-names': error
       '@graphql-eslint/no-anonymous-operations': error
       '@graphql-eslint/unique-operation-name': error
       '@graphql-eslint/require-id-when-available': error

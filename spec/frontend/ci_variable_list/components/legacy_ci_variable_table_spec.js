@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
+import LegacyCiVariableTable from '~/ci_variable_list/components/legacy_ci_variable_table.vue';
 import createStore from '~/ci_variable_list/store';
 import mockData from '../services/mock_data';
 
@@ -14,7 +14,7 @@ describe('Ci variable table', () => {
   const createComponent = () => {
     store = createStore();
     jest.spyOn(store, 'dispatch').mockImplementation();
-    wrapper = mountExtended(CiVariableTable, {
+    wrapper = mountExtended(LegacyCiVariableTable, {
       attachTo: document.body,
       store,
     });

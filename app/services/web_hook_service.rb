@@ -104,7 +104,7 @@ class WebHookService
 
   def async_execute
     Gitlab::ApplicationContext.with_context(hook.application_context) do
-      break log_rate_limited if rate_limited?
+      break log_rate_limited if rate_limit!
       break log_recursion_blocked if recursion_blocked?
 
       params = {
@@ -215,22 +215,14 @@ class WebHookService
     string_size_limit(response_body, RESPONSE_BODY_SIZE_LIMIT)
   end
 
-  def rate_limited?
-    return false if rate_limit.nil?
-
-    Gitlab::ApplicationRateLimiter.throttled?(
-      :web_hook_calls,
-      scope: [hook],
-      threshold: rate_limit
-    )
+  # Increments rate-limit counter.
+  # Returns true if hook should be rate-limited.
+  def rate_limit!
+    Gitlab::WebHooks::RateLimiter.new(hook).rate_limit!
   end
 
   def recursion_blocked?
     Gitlab::WebHooks::RecursionDetection.block?(hook)
-  end
-
-  def rate_limit
-    @rate_limit ||= hook.rate_limit
   end
 
   def log_rate_limited

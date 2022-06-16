@@ -233,7 +233,7 @@ To protect a group-level environment, make sure your environments have the corre
 
 #### Using the UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1 with a flag named `group_level_protected_environment`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.

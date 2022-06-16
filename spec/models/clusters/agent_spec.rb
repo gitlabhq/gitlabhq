@@ -40,6 +40,39 @@ RSpec.describe Clusters::Agent do
 
       it { is_expected.to contain_exactly(matching_name) }
     end
+
+    describe '.has_vulnerabilities' do
+      let_it_be(:without_vulnerabilities) { create(:cluster_agent, has_vulnerabilities: false) }
+      let_it_be(:with_vulnerabilities) { create(:cluster_agent, has_vulnerabilities: true) }
+
+      context 'when value is not provided' do
+        subject { described_class.has_vulnerabilities }
+
+        it 'returns agents which have vulnerabilities' do
+          is_expected.to contain_exactly(with_vulnerabilities)
+        end
+      end
+
+      context 'when value is provided' do
+        subject { described_class.has_vulnerabilities(value) }
+
+        context 'as true' do
+          let(:value) { true }
+
+          it 'returns agents which have vulnerabilities' do
+            is_expected.to contain_exactly(with_vulnerabilities)
+          end
+        end
+
+        context 'as false' do
+          let(:value) { false }
+
+          it 'returns agents which do not have vulnerabilities' do
+            is_expected.to contain_exactly(without_vulnerabilities)
+          end
+        end
+      end
+    end
   end
 
   describe 'validation' do

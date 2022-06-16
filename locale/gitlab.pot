@@ -21742,7 +21742,13 @@ msgstr ""
 msgid "Jira-GitLab user mapping template"
 msgstr ""
 
+msgid "JiraConnect|Cannot find namespace. Make sure you have sufficient permissions."
+msgstr ""
+
 msgid "JiraConnect|Configure your Jira Connect Application ID."
+msgstr ""
+
+msgid "JiraConnect|Could not fetch user information from Jira. Check the permissions in Jira and try again."
 msgstr ""
 
 msgid "JiraConnect|Create branch for Jira issue %{jiraIssue}"
@@ -21761,6 +21767,9 @@ msgid "JiraConnect|Jira Connect Application ID"
 msgstr ""
 
 msgid "JiraConnect|New branch was successfully created."
+msgstr ""
+
+msgid "JiraConnect|The Jira user is not a site administrator. Check the permissions in Jira and try again."
 msgstr ""
 
 msgid "JiraConnect|You can now close this window and return to Jira."

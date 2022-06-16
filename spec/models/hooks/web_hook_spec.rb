@@ -493,31 +493,30 @@ RSpec.describe WebHook do
   end
 
   describe '#rate_limited?' do
-    context 'when there are rate limits' do
-      before do
-        allow(hook).to receive(:rate_limit).and_return(3)
+    it 'is false when hook has not been rate limited' do
+      expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
+        expect(rate_limiter).to receive(:rate_limited?).and_return(false)
       end
 
-      it 'is false when hook has not been rate limited' do
-        expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
-        expect(hook).not_to be_rate_limited
-      end
-
-      it 'is true when hook has been rate limited' do
-        expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(true)
-        expect(hook).to be_rate_limited
-      end
+      expect(hook).not_to be_rate_limited
     end
 
-    context 'when there are no rate limits' do
-      before do
-        allow(hook).to receive(:rate_limit).and_return(nil)
+    it 'is true when hook has been rate limited' do
+      expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
+        expect(rate_limiter).to receive(:rate_limited?).and_return(true)
       end
 
-      it 'does not call Gitlab::ApplicationRateLimiter, and is false' do
-        expect(Gitlab::ApplicationRateLimiter).not_to receive(:peek)
-        expect(hook).not_to be_rate_limited
+      expect(hook).to be_rate_limited
+    end
+  end
+
+  describe '#rate_limit' do
+    it 'returns the hook rate limit' do
+      expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
+        expect(rate_limiter).to receive(:limit).and_return(10)
       end
+
+      expect(hook.rate_limit).to eq(10)
     end
   end
 

@@ -32,6 +32,8 @@ module Gitlab
           group_testing_hook:           { threshold: 5, interval: 1.minute },
           profile_add_new_email:        { threshold: 5, interval: 1.minute },
           web_hook_calls:               { interval: 1.minute },
+          web_hook_calls_mid:           { interval: 1.minute },
+          web_hook_calls_low:           { interval: 1.minute },
           users_get_by_id:              { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists:              { threshold: 20, interval: 1.minute },
           user_sign_up:                 { threshold: 20, interval: 1.minute },

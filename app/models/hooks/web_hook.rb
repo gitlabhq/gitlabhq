@@ -127,19 +127,12 @@ class WebHook < ApplicationRecord
 
   # @return [Boolean] Whether or not the WebHook is currently throttled.
   def rate_limited?
-    return false unless rate_limit
-
-    Gitlab::ApplicationRateLimiter.peek(
-      :web_hook_calls,
-      scope: [self],
-      threshold: rate_limit
-    )
+    rate_limiter.rate_limited?
   end
 
-  # Threshold for the rate-limit.
-  # Overridden in ProjectHook and GroupHook, other WebHooks are not rate-limited.
+  # @return [Integer] The rate limit for the WebHook. `0` for no limit.
   def rate_limit
-    nil
+    rate_limiter.limit
   end
 
   # Returns the associated Project or Group for the WebHook if one exists.
@@ -179,5 +172,9 @@ class WebHook < ApplicationRecord
 
   def initialize_url_variables
     self.url_variables = {} if encrypted_url_variables.nil?
+  end
+
+  def rate_limiter
+    @rate_limiter ||= Gitlab::WebHooks::RateLimiter.new(self)
   end
 end

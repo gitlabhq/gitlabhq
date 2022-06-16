@@ -589,7 +589,6 @@ Layout/LineLength:
     - 'app/services/compare_service.rb'
     - 'app/services/concerns/base_service_utility.rb'
     - 'app/services/concerns/exclusive_lease_guard.rb'
-    - 'app/services/concerns/members/bulk_create_users.rb'
     - 'app/services/concerns/merge_requests/assigns_merge_params.rb'
     - 'app/services/concerns/rate_limited_service.rb'
     - 'app/services/concerns/schedule_bulk_repository_shard_moves_methods.rb'

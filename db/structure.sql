@@ -13346,6 +13346,7 @@ CREATE TABLE cluster_agents (
     project_id bigint NOT NULL,
     name text NOT NULL,
     created_by_user_id bigint,
+    has_vulnerabilities boolean DEFAULT false NOT NULL,
     CONSTRAINT check_3498369510 CHECK ((char_length(name) <= 255))
 );
 
@@ -13795,6 +13796,8 @@ CREATE TABLE compliance_management_frameworks (
     color text NOT NULL,
     namespace_id integer NOT NULL,
     pipeline_configuration_full_path text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
     CONSTRAINT check_08cd34b2c2 CHECK ((char_length(color) <= 10)),
     CONSTRAINT check_1617e0b87e CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ab00bc2193 CHECK ((char_length(name) <= 255)),
@@ -18780,7 +18783,9 @@ CREATE TABLE plan_limits (
     pipeline_triggers integer DEFAULT 25000 NOT NULL,
     project_ci_secure_files integer DEFAULT 100 NOT NULL,
     repository_size bigint DEFAULT 0 NOT NULL,
-    security_policy_scan_execution_schedules integer DEFAULT 0 NOT NULL
+    security_policy_scan_execution_schedules integer DEFAULT 0 NOT NULL,
+    web_hook_calls_mid integer DEFAULT 0 NOT NULL,
+    web_hook_calls_low integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -26767,6 +26772,8 @@ CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONL
 
 CREATE UNIQUE INDEX i_ci_job_token_project_scope_links_on_source_and_target_project ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id);
 
+CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
+
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
 CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time) WHERE (recorded_at >= end_time);
@@ -27542,6 +27549,8 @@ CREATE INDEX index_cluster_agent_tokens_on_created_by_user_id ON cluster_agent_t
 CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_agent_tokens USING btree (token_encrypted);
 
 CREATE INDEX index_cluster_agents_on_created_by_user_id ON cluster_agents USING btree (created_by_user_id);
+
+CREATE INDEX index_cluster_agents_on_project_id_and_has_vulnerabilities ON cluster_agents USING btree (project_id, has_vulnerabilities);
 
 CREATE UNIQUE INDEX index_cluster_agents_on_project_id_and_name ON cluster_agents USING btree (project_id, name);
 

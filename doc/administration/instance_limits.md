@@ -133,8 +133,9 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61151) in GitLab 13.12.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/330133) in GitLab 14.1.
+> - [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
 
-Limit the number of times any given webhook can be called per minute.
+Limit the number of times a webhook can be called per minute, per top-level namespace.
 This only applies to project and group webhooks.
 
 Calls over the rate limit are logged into `auth.log`.

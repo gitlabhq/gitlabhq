@@ -234,7 +234,7 @@ The following limits apply for [webhooks](../project/integrations/webhooks.md):
 
 | Setting              | Default for GitLab.com  |
 |----------------------|-------------------------|
-| Webhook rate limit   | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate |
+| Webhook rate limit   | `500` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate. Webhook rate limits are applied per top-level namespace. |
 | Number of webhooks   | `100` per project, `50` per group |
 | Maximum payload size | 25 MB                   |
 

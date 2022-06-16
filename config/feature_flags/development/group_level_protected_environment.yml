@@ -1,8 +1,0 @@
----
-name: group_level_protected_environment
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88506
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363450
-milestone: '15.1'
-type: development
-group: group::release
-default_enabled: false

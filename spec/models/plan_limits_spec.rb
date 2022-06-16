@@ -213,6 +213,8 @@ RSpec.describe PlanLimits do
         storage_size_limit
         daily_invites
         web_hook_calls
+        web_hook_calls_mid
+        web_hook_calls_low
         ci_daily_pipeline_schedule_triggers
         repository_size
         security_policy_scan_execution_schedules

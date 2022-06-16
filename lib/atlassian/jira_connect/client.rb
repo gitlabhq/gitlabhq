@@ -30,6 +30,8 @@ module Atlassian
         responses.compact
       end
 
+      # Fetch user information for the given account.
+      # https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-users/#api-rest-api-3-user-get
       def user_info(account_id)
         r = get('/rest/api/3/user', { accountId: account_id, expand: 'groups' })
 

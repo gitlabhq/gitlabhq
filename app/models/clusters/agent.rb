@@ -22,6 +22,7 @@ module Clusters
 
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, -> (name) { where(name: name) }
+    scope :has_vulnerabilities, -> (value = true) { where(has_vulnerabilities: value) }
 
     validates :name,
       presence: true,

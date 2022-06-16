@@ -52,5 +52,4 @@
   .settings-content
     = render 'groups/settings/ci_cd/auto_devops_form', group: @group
 
-- if ::Feature.enabled?(:group_level_protected_environment, @group)
-  = render_if_exists 'groups/settings/ci_cd/protected_environments', expanded: expanded
+= render_if_exists 'groups/settings/ci_cd/protected_environments', expanded: expanded

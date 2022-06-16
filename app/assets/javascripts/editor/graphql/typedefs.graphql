@@ -8,6 +8,16 @@ type Item {
   selectedLabel: String
 }
 
+input ItemInput {
+  id: ID!
+  label: String!
+  icon: String
+  selected: Boolean
+  group: Int!
+  category: String
+  selectedLabel: String
+}
+
 type Items {
   nodes: [Item]!
 }
@@ -17,7 +27,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  updateToolbarItem(id: ID!, propsToUpdate: Item!): LocalErrors
+  updateToolbarItem(id: ID!, propsToUpdate: ItemInput!): LocalErrors
   removeToolbarItems(ids: [ID!]): LocalErrors
-  addToolbarItems(items: [Item]): LocalErrors
+  addToolbarItems(items: [ItemInput]): LocalErrors
 }

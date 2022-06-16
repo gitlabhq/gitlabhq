@@ -14,7 +14,7 @@ module QA
             element :ci_variable_delete_button
           end
 
-          view 'app/assets/javascripts/ci_variable_list/components/ci_variable_table.vue' do
+          view 'app/assets/javascripts/ci_variable_list/components/legacy_ci_variable_table.vue' do
             element :ci_variable_table_content
             element :add_ci_variable_button
             element :edit_ci_variable_button

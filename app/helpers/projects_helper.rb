@@ -52,12 +52,6 @@ module ProjectsHelper
     content_tag(:span, username, name_tag_options)
   end
 
-  def permissible_access_level_roles(current_user, project)
-    # Access level roles that the current user is able to grant others.
-    # This method is a stopgap in preparation for https://gitlab.com/gitlab-org/gitlab/-/issues/364087
-    current_user.can?(:manage_owners, project) ? Gitlab::Access.options_with_owner : Gitlab::Access.options
-  end
-
   def link_to_member(project, author, opts = {}, &block)
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
