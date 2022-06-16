@@ -171,7 +171,7 @@ export default {
         <issue-assignees
           v-if="assignees.length !== 0"
           :assignees="assignees"
-          class="item-assignees d-flex align-items-center align-self-end flex-shrink-0 d-md-none ml-2"
+          class="item-assignees d-flex align-items-center align-self-end flex-shrink-0 d-md-none gl-ml-3"
         />
       </div>
     </div>

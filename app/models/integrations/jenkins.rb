@@ -8,24 +8,24 @@ module Integrations
     extend Gitlab::Utils::Override
 
     field :jenkins_url,
-      title: s_('ProjectService|Jenkins server URL'),
+      title: -> { s_('ProjectService|Jenkins server URL') },
       required: true,
       placeholder: 'http://jenkins.example.com',
-      help: s_('The URL of the Jenkins server.')
+      help: -> { s_('The URL of the Jenkins server.') }
 
     field :project_name,
       required: true,
       placeholder: 'my_project_name',
-      help: s_('The name of the Jenkins project. Copy the name from the end of the URL to the project.')
+      help: -> { s_('The name of the Jenkins project. Copy the name from the end of the URL to the project.') }
 
     field :username,
-      help: s_('The username for the Jenkins server.')
+      help: -> { s_('The username for the Jenkins server.') }
 
     field :password,
       type: 'password',
-      help: s_('The password for the Jenkins server.'),
-      non_empty_password_title: s_('ProjectService|Enter new password.'),
-      non_empty_password_help: s_('ProjectService|Leave blank to use your current password.')
+      help: -> { s_('The password for the Jenkins server.') },
+      non_empty_password_title: -> { s_('ProjectService|Enter new password.') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password.') }
 
     before_validation :reset_password
 

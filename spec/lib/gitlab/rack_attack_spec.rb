@@ -27,7 +27,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
     end
 
     before do
-      allow(fake_rack_attack).to receive(:throttled_response=)
+      allow(fake_rack_attack).to receive(:throttled_responder=)
       allow(fake_rack_attack).to receive(:throttle)
       allow(fake_rack_attack).to receive(:track)
       allow(fake_rack_attack).to receive(:safelist)
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures do
     it 'configures the throttle response' do
       described_class.configure(fake_rack_attack)
 
-      expect(fake_rack_attack).to have_received(:throttled_response=).with(an_instance_of(Proc))
+      expect(fake_rack_attack).to have_received(:throttled_responder=).with(an_instance_of(Proc))
     end
 
     it 'configures the safelist' do

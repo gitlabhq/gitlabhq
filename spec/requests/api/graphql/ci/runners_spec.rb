@@ -18,7 +18,10 @@ RSpec.describe 'Query.runners' do
     let(:fields) do
       <<~QUERY
         nodes {
-          #{all_graphql_fields_for('CiRunner')}
+          #{all_graphql_fields_for('CiRunner', excluded: %w[ownerProject])}
+          ownerProject {
+            id
+          }
         }
       QUERY
     end

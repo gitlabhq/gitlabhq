@@ -23,8 +23,8 @@ module Gitlab
         Theme.new(8, s_('NavigationTheme|Light Green'), 'ui-light-green', 'theme_light_green', '#156b39'),
         Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', 'theme_red', '#691a16'),
         Theme.new(10, s_('NavigationTheme|Light Red'), 'ui-light-red', 'theme_light_red', '#a62e21'),
-        Theme.new(2, s_('NavigationTheme|Dark'), 'ui-dark', 'theme_dark', '#303030'),
-        Theme.new(3, s_('NavigationTheme|Light'), 'ui-light', 'theme_light', '#666'),
+        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', 'theme_gray', '#303030'),
+        Theme.new(3, s_('NavigationTheme|Light Gray'), 'ui-light-gray', 'theme_light_gray', '#666'),
         Theme.new(11, s_('NavigationTheme|Dark Mode (alpha)'), 'gl-dark', nil, '#303030')
       ]
     end

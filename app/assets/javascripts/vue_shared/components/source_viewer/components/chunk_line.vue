@@ -72,7 +72,7 @@ export default {
     </div>
 
     <pre
-      class="gl-p-0! gl-w-full gl-overflow-visible! gl-ml-11! gl-border-none! code highlight"
+      class="gl-p-0! gl-w-full gl-overflow-visible! gl-ml-11! gl-border-none! code highlight gl-line-height-normal"
       :class="firstLineClass"
     ><code><span :id="`LC${number}`" v-safe-html="formattedContent" :lang="language" class="line" data-testid="content"></span></code></pre>
   </div>

@@ -85,6 +85,9 @@ module Types
             method: :token_expires_at
       field :version, GraphQL::Types::String, null: true,
             description: 'Version of the runner.'
+      field :owner_project, ::Types::ProjectType, null: true,
+            description: 'Project that owns the runner. For project runners only.',
+            resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
 
       markdown_field :maintenance_note_html, null: true
 

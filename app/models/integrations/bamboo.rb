@@ -6,25 +6,25 @@ module Integrations
     prepend EnableSslVerification
 
     field :bamboo_url,
-      title: s_('BambooService|Bamboo URL'),
-      placeholder: s_('https://bamboo.example.com'),
-      help: s_('BambooService|Bamboo service root URL.'),
+      title: -> { s_('BambooService|Bamboo URL') },
+      placeholder: -> { s_('https://bamboo.example.com') },
+      help: -> { s_('BambooService|Bamboo service root URL.') },
       required: true
 
     field :build_key,
-      help: s_('BambooService|Bamboo build plan key.'),
-      non_empty_password_title: s_('BambooService|Enter new build key'),
-      non_empty_password_help: s_('BambooService|Leave blank to use your current build key.'),
-      placeholder: s_('KEY'),
+      help: -> { s_('BambooService|Bamboo build plan key.') },
+      non_empty_password_title: -> { s_('BambooService|Enter new build key') },
+      non_empty_password_help: -> { s_('BambooService|Leave blank to use your current build key.') },
+      placeholder: -> { s_('KEY') },
       required: true
 
     field :username,
-      help: s_('BambooService|The user with API access to the Bamboo server.')
+      help: -> { s_('BambooService|The user with API access to the Bamboo server.') }
 
     field :password,
       type: 'password',
-      non_empty_password_title: s_('ProjectService|Enter new password'),
-      non_empty_password_help: s_('ProjectService|Leave blank to use your current password')
+      non_empty_password_title: -> { s_('ProjectService|Enter new password') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') }
 
     validates :bamboo_url, presence: true, public_url: true, if: :activated?
     validates :build_key, presence: true, if: :activated?

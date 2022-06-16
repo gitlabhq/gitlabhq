@@ -1,7 +1,7 @@
 @import './theme_helper';
 
 body {
-  &.ui-dark {
+  &.ui-gray {
     @include gitlab-theme(
       $gray-200,
       $gray-300,

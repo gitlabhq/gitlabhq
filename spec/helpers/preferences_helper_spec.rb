@@ -75,7 +75,7 @@ RSpec.describe PreferencesHelper do
       it "returns user's theme's css_class" do
         stub_user(theme_id: 3)
 
-        expect(helper.user_application_theme).to eq 'ui-light'
+        expect(helper.user_application_theme).to eq 'ui-light-gray'
       end
 
       it 'returns the default when id is invalid' do

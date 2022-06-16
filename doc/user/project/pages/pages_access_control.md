@@ -10,9 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/index.md#access-control)
-on your GitLab instance. When enabled, only
+on your GitLab instance. When enabled, only authenticated
 [members of your project](../../permissions.md#project-members-permissions)
-(at least Guest) can access your website:
+(at least Guest) can access your website, by default:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).

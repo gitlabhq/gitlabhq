@@ -152,34 +152,72 @@ RSpec.describe 'Query.runner(id)' do
   end
 
   describe 'for project runner' do
-    using RSpec::Parameterized::TableSyntax
+    describe 'locked' do
+      using RSpec::Parameterized::TableSyntax
 
-    where(is_locked: [true, false])
+      where(is_locked: [true, false])
 
-    with_them do
-      let(:project_runner) do
-        create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
-               version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+      with_them do
+        let(:project_runner) do
+          create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
+                 version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+        end
+
+        let(:query) do
+          wrap_fields(query_graphql_path(query_path, 'id locked'))
+        end
+
+        let(:query_path) do
+          [
+            [:runner, { id: project_runner.to_global_id.to_s }]
+          ]
+        end
+
+        it 'retrieves correct locked value' do
+          post_graphql(query, current_user: user)
+
+          runner_data = graphql_data_at(:runner)
+
+          expect(runner_data).to match a_hash_including(
+            'id' => project_runner.to_global_id.to_s,
+            'locked' => is_locked
+          )
+        end
       end
+    end
 
+    describe 'ownerProject' do
+      let_it_be(:project1) { create(:project) }
+      let_it_be(:project2) { create(:project) }
+      let_it_be(:runner1) { create(:ci_runner, :project, projects: [project2, project1]) }
+      let_it_be(:runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
+
+      let(:runner_query_fragment) { 'id ownerProject { id }' }
       let(:query) do
-        wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
+        %(
+          query {
+            runner1: runner(id: "#{runner1.to_global_id}") { #{runner_query_fragment} }
+            runner2: runner(id: "#{runner2.to_global_id}") { #{runner_query_fragment} }
+          }
+        )
       end
 
-      let(:query_path) do
-        [
-          [:runner, { id: project_runner.to_global_id.to_s }]
-        ]
-      end
-
-      it 'retrieves correct locked value' do
+      it 'retrieves correct ownerProject.id values' do
         post_graphql(query, current_user: user)
 
-        runner_data = graphql_data_at(:runner)
-
-        expect(runner_data).to match a_hash_including(
-          'id' => project_runner.to_global_id.to_s,
-          'locked' => is_locked
+        expect(graphql_data).to match a_hash_including(
+          'runner1' => {
+            'id' => runner1.to_global_id.to_s,
+            'ownerProject' => {
+              'id' => project2.to_global_id.to_s
+            }
+          },
+          'runner2' => {
+            'id' => runner2.to_global_id.to_s,
+            'ownerProject' => {
+              'id' => project1.to_global_id.to_s
+            }
+          }
         )
       end
     end
@@ -417,6 +455,9 @@ RSpec.describe 'Query.runner(id)' do
               id
             }
           }
+          ownerProject {
+            id
+          }
         }
       SINGLE
     end
@@ -424,8 +465,8 @@ RSpec.describe 'Query.runner(id)' do
     let(:active_project_runner2) { create(:ci_runner, :project) }
     let(:active_group_runner2) { create(:ci_runner, :group) }
 
-    # Currently excluding a known N+1 issue, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
-    let(:excluded_fields) { %w[jobCount groups projects] }
+    # Currently excluding known N+1 issues, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
+    let(:excluded_fields) { %w[jobCount groups projects ownerProject] }
 
     let(:single_query) do
       <<~QUERY
@@ -474,13 +515,15 @@ RSpec.describe 'Query.runner(id)' do
           ),
           'project_runner1' => a_hash_including(
             'id' => active_project_runner.to_global_id.to_s,
-            'projects' => { 'nodes' => [a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)] }
+            'projects' => { 'nodes' => [a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)] },
+            'ownerProject' => a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)
           ),
           'project_runner2' => a_hash_including(
             'id' => active_project_runner2.to_global_id.to_s,
             'projects' => {
               'nodes' => [a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)]
-            }
+            },
+            'ownerProject' => a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)
           )
         ))
     end

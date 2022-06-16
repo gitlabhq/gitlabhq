@@ -117,6 +117,14 @@ module LoginHelpers
     click_button "oauth-login-#{provider}"
   end
 
+  def register_via(provider, uid, email, additional_info: {})
+    mock_auth_hash(provider, uid, email, additional_info: additional_info)
+    visit new_user_registration_path
+    expect(page).to have_content('Create an account using')
+
+    click_link_or_button "oauth-login-#{provider}"
+  end
+
   def fake_successful_u2f_authentication
     allow(U2fRegistration).to receive(:authenticate).and_return(true)
     FakeU2fDevice.new(page, nil).fake_u2f_authentication

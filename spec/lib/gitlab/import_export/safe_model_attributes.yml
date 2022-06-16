@@ -859,6 +859,10 @@ Epic:
   - external_key
   - confidential
   - color
+  - total_opened_issue_weight
+  - total_closed_issue_weight
+  - total_opened_issue_count
+  - total_closed_issue_count
 EpicIssue:
   - id
   - relative_position

@@ -991,11 +991,11 @@ GEM
     rack (2.2.3.1)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-attack (6.3.0)
+    rack-attack (6.6.1)
       rack (>= 1.0, < 3)
-    rack-cors (1.0.6)
-      rack (>= 1.6.0)
-    rack-oauth2 (1.16.0)
+    rack-cors (1.1.1)
+      rack (>= 2.0.0)
+    rack-oauth2 (1.19.0)
       activesupport
       attr_required
       httpclient
@@ -1441,7 +1441,7 @@ GEM
       nokogiri (~> 1.8)
     yajl-ruby (1.4.1)
     yard (0.9.26)
-    zeitwerk (2.5.4)
+    zeitwerk (2.6.0)
 
 PLATFORMS
   ruby
@@ -1642,10 +1642,10 @@ DEPENDENCIES
   pry-shell (~> 0.5.0)
   puma (~> 5.6.2)
   puma_worker_killer (~> 0.3.1)
-  rack (~> 2.2.3)
-  rack-attack (~> 6.3.0)
-  rack-cors (~> 1.0.6)
-  rack-oauth2 (~> 1.16.0)
+  rack (~> 2.2.3.0)
+  rack-attack (~> 6.6.0)
+  rack-cors (~> 1.1.0)
+  rack-oauth2 (~> 1.19.0)
   rack-proxy (~> 0.7.2)
   rack-timeout (~> 0.6.0)
   rails (~> 6.1.4.7)

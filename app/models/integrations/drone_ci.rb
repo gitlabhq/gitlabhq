@@ -11,15 +11,15 @@ module Integrations
     DRONE_SAAS_HOSTNAME = 'cloud.drone.io'
 
     field :drone_url,
-      title: s_('ProjectService|Drone server URL'),
+      title: -> { s_('ProjectService|Drone server URL') },
       placeholder: 'http://drone.example.com',
       required: true
 
     field :token,
       type: 'password',
-      help: s_('ProjectService|Token for the Drone project.'),
-      non_empty_password_title: s_('ProjectService|Enter new token'),
-      non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
+      help: -> { s_('ProjectService|Token for the Drone project.') },
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       required: true
 
     validates :drone_url, presence: true, public_url: true, if: :activated?

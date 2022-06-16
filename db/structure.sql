@@ -14882,6 +14882,10 @@ CREATE TABLE epics (
     confidential boolean DEFAULT false NOT NULL,
     external_key character varying(255),
     color text DEFAULT '#1068bf'::text,
+    total_opened_issue_weight integer DEFAULT 0 NOT NULL,
+    total_closed_issue_weight integer DEFAULT 0 NOT NULL,
+    total_opened_issue_count integer DEFAULT 0 NOT NULL,
+    total_closed_issue_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );

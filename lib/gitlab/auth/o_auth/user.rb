@@ -217,7 +217,11 @@ module Gitlab
 
         def build_new_user(skip_confirmation: true)
           user_params = user_attributes.merge(skip_confirmation: skip_confirmation)
-          Users::AuthorizedBuildService.new(nil, user_params).execute
+          new_user = Users::AuthorizedBuildService.new(nil, user_params).execute
+
+          persist_accepted_terms_if_required(new_user)
+
+          new_user
         end
 
         def user_attributes
@@ -243,6 +247,15 @@ module Gitlab
             password_confirmation:      auth_hash.password,
             password_automatically_set: true
           }
+        end
+
+        def persist_accepted_terms_if_required(new_user)
+          if Feature.enabled?(:update_oauth_registration_flow) &&
+            Gitlab::CurrentSettings.current_application_settings.enforce_terms?
+
+            terms = ApplicationSetting::Term.latest
+            Users::RespondToTermsService.new(new_user, terms).execute(accepted: true)
+          end
         end
 
         def sync_profile_from_provider?

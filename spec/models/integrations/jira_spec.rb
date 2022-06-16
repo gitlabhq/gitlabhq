@@ -31,6 +31,61 @@ RSpec.describe Integrations::Jira do
     let(:integration) { jira_integration }
   end
 
+  describe 'validations' do
+    subject { jira_integration }
+
+    context 'when integration is active' do
+      before do
+        jira_integration.active = true
+
+        # Don't auto-fill URLs from gitlab.yml
+        stub_config(issues_tracker: {})
+      end
+
+      it { is_expected.to be_valid }
+      it { is_expected.to validate_presence_of(:url) }
+      it { is_expected.to validate_presence_of(:username) }
+      it { is_expected.to validate_presence_of(:password) }
+
+      it_behaves_like 'issue tracker integration URL attribute', :url
+      it_behaves_like 'issue tracker integration URL attribute', :api_url
+    end
+
+    context 'when integration is inactive' do
+      before do
+        jira_integration.active = false
+      end
+
+      it { is_expected.to be_valid }
+      it { is_expected.not_to validate_presence_of(:url) }
+      it { is_expected.not_to validate_presence_of(:username) }
+      it { is_expected.not_to validate_presence_of(:password) }
+    end
+
+    describe 'jira_issue_transition_id' do
+      it 'accepts a blank value' do
+        jira_integration.jira_issue_transition_id = ' '
+
+        expect(jira_integration).to be_valid
+      end
+
+      it 'accepts any string containing numbers' do
+        jira_integration.jira_issue_transition_id = 'foo 23 bar'
+
+        expect(jira_integration).to be_valid
+      end
+
+      it 'does not accept a string without numbers' do
+        jira_integration.jira_issue_transition_id = 'foo bar'
+
+        expect(jira_integration).not_to be_valid
+        expect(jira_integration.errors.full_messages).to eq([
+          'Jira issue transition IDs must be a list of numbers that can be split with , or ;'
+        ])
+      end
+    end
+  end
+
   describe '#options' do
     let(:options) do
       {

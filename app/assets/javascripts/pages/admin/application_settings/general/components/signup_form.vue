@@ -12,7 +12,6 @@ import {
 import { toSafeInteger } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 import { __, n__, s__, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SignupCheckbox from './signup_checkbox.vue';
 
 const DENYLIST_TYPE_RAW = 'raw';
@@ -32,12 +31,7 @@ export default {
     GlLink,
     SignupCheckbox,
     GlModal,
-    PasswordComplexityCheckboxGroup: () =>
-      import(
-        'ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'
-      ),
   },
-  mixins: [glFeatureFlagMixin()],
   inject: [
     'host',
     'settingsPath',
@@ -184,9 +178,6 @@ export default {
 
       this.submitForm();
     },
-    setPasswordComplexity({ name, value }) {
-      this.$set(this.form, name, value);
-    },
     submitForm() {
       this.$refs.form.submit();
     },
@@ -300,7 +291,9 @@ export default {
         <template #description>
           <gl-sprintf
             :message="
-              s__('ApplicationSettings|See %{linkStart}password policy guidelines%{linkEnd}.')
+              s__(
+                'ApplicationSettings|See GitLab\'s %{linkStart}Password Policy Guidelines%{linkEnd}.',
+              )
             "
           >
             <template #link="{ content }">
@@ -312,10 +305,6 @@ export default {
         </template>
       </gl-form-group>
 
-      <password-complexity-checkbox-group
-        v-if="glFeatures.passwordComplexity"
-        @set-password-complexity="setPasswordComplexity"
-      />
       <gl-form-group
         :description="$options.i18n.domainAllowListDescription"
         :label="$options.i18n.domainAllowListLabel"

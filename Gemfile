@@ -55,7 +55,7 @@ gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'gitlab-omniauth-openid-connect', '~> 0.9.0', require: 'omniauth_openid_connect'
 gem 'omniauth-salesforce', '~> 1.0.5'
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0'
-gem 'rack-oauth2', '~> 1.16.0'
+gem 'rack-oauth2', '~> 1.19.0'
 gem 'jwt', '~> 2.1.0'
 
 # Kerberos authentication. EE-only
@@ -97,7 +97,7 @@ gem 'net-ldap', '~> 0.16.3'
 # API
 gem 'grape', '~> 1.5.2'
 gem 'grape-entity', '~> 0.10.0'
-gem 'rack-cors', '~> 1.0.6', require: 'rack/cors'
+gem 'rack-cors', '~> 1.1.0', require: 'rack/cors'
 
 # GraphQL API
 gem 'graphql', '~> 1.13.12'
@@ -181,7 +181,7 @@ gem 'diffy', '~> 3.3'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.2.3'
+gem 'rack', '~> 2.2.3.0'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.0', require: 'rack/timeout/base'
 
@@ -301,7 +301,7 @@ gem 'base32', '~> 0.3.0'
 gem 'gitlab-license', '~> 2.1.0'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 6.3.0'
+gem 'rack-attack', '~> 6.6.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1'

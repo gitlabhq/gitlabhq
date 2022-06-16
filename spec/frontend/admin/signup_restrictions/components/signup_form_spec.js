@@ -16,9 +16,6 @@ describe('Signup Form', () => {
     wrapper = extendedWrapper(
       mountFn(SignupForm, {
         provide: {
-          glFeatures: {
-            passwordComplexity: true,
-          },
           ...mockData,
           ...injectedProps,
         },
@@ -61,10 +58,6 @@ describe('Signup Form', () => {
       ${'minimumPasswordLength'}               | ${mockData.minimumPasswordLength}               | ${'[name="application_setting[minimum_password_length]"]'}                  | ${'attribute'}            | ${'value'}     | ${mockData.minimumPasswordLength}
       ${'minimumPasswordLengthMin'}            | ${mockData.minimumPasswordLengthMin}            | ${'[name="application_setting[minimum_password_length]"]'}                  | ${'attribute'}            | ${'min'}       | ${mockData.minimumPasswordLengthMin}
       ${'minimumPasswordLengthMax'}            | ${mockData.minimumPasswordLengthMax}            | ${'[name="application_setting[minimum_password_length]"]'}                  | ${'attribute'}            | ${'max'}       | ${mockData.minimumPasswordLengthMax}
-      ${'passwordNumberRequired'}              | ${mockData.passwordNumberRequired}              | ${'[name="application_setting[password_number_required]"]'}                 | ${'prop'}                 | ${'value'}     | ${mockData.passwordNumberRequired}
-      ${'passwordLowercaseRequired'}           | ${mockData.passwordLowercaseRequired}           | ${'[name="application_setting[password_lowercase_required]"]'}              | ${'prop'}                 | ${'value'}     | ${mockData.passwordLowercaseRequired}
-      ${'passwordUppercaseRequired'}           | ${mockData.passwordUppercaseRequired}           | ${'[name="application_setting[password_uppercase_required]"]'}              | ${'prop'}                 | ${'value'}     | ${mockData.passwordUppercaseRequired}
-      ${'passwordSymbolRequired'}              | ${mockData.passwordSymbolRequired}              | ${'[name="application_setting[password_symbol_required]"]'}                 | ${'prop'}                 | ${'value'}     | ${mockData.passwordSymbolRequired}
       ${'domainAllowlistRaw'}                  | ${mockData.domainAllowlistRaw}                  | ${'[name="application_setting[domain_allowlist_raw]"]'}                     | ${'value'}                | ${'value'}     | ${mockData.domainAllowlistRaw}
       ${'domainDenylistEnabled'}               | ${mockData.domainDenylistEnabled}               | ${'[name="application_setting[domain_denylist_enabled]"]'}                  | ${'prop'}                 | ${'value'}     | ${mockData.domainDenylistEnabled}
       ${'denylistTypeRawSelected'}             | ${mockData.denylistTypeRawSelected}             | ${'[name="denylist_type"]'}                                                 | ${'attribute'}            | ${'checked'}   | ${'raw'}
