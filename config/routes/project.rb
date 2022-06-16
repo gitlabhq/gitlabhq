@@ -241,7 +241,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :releases, only: [:index, :new, :show, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
+        get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
+
+        resources :releases, only: [:index, :new, :show, :edit], param: :tag, constraints: { tag: %r{[^\\]+} } do
           member do
             get :downloads, path: 'downloads/*filepath', format: false
             scope module: :releases do
@@ -249,8 +251,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
-
-        get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
 
         resources :logs, only: [:index] do
           collection do

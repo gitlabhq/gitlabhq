@@ -16,5 +16,14 @@ module Pajamas
 
       default
     end
+
+    # Add CSS classes and additional options to an existing options hash
+    #
+    # @param [Hash] options
+    # @param [Array] css_classes
+    # @param [Hash] additional_option
+    def format_options(options:, css_classes: [], additional_options: {})
+      options.merge({ class: [*css_classes, options[:class]].flatten.compact }, additional_options)
+    end
   end
 end

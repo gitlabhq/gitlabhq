@@ -1,13 +1,13 @@
 {
   "consumer": {
-    "name": "Merge Request Page"
+    "name": "MergeRequest#show"
   },
   "provider": {
-    "name": "Merge Request Metadata Endpoint"
+    "name": "Merge Request Diffs Metadata Endpoint"
   },
   "interactions": [
     {
-      "description": "a request for Metadata",
+      "description": "a request for Diffs Metadata",
       "providerState": "a merge request exists",
       "request": {
         "method": "GET",

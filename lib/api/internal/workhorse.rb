@@ -10,11 +10,22 @@ module API
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
       end
 
+      helpers do
+        def request_authenticated?
+          authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
+          return true if authenticator.find_authenticated_requester([:api])
+
+          # Look up user from warden, ignoring the absence of a CSRF token. For
+          # web users the CSRF token can be in the POST form data but Workhorse
+          # does not propagate the form data to us.
+          !!request.env['warden']&.authenticate
+        end
+      end
+
       namespace 'internal' do
         namespace 'workhorse' do
           post 'authorize_upload' do
-            authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
-            unauthorized! unless authenticator.find_authenticated_requester([:api])
+            unauthorized! unless request_authenticated?
 
             status 200
             { TempPath: File.join(::Gitlab.config.uploads.storage_path, 'uploads/tmp') }

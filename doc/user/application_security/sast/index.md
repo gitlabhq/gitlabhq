@@ -697,6 +697,10 @@ rules:
 
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
+False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- Ruby, in the Brakeman-based analyzer
+
 ### Advanced vulnerability tracking **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
@@ -715,7 +719,7 @@ Advanced vulnerability tracking is available in a subset of the [supported langu
 - Java, in the Semgrep-based analyzer only
 - JavaScript, in the Semgrep-based analyzer only
 - Python, in the Semgrep-based analyzer only
-- Ruby, in the Brakeman-based analyzers
+- Ruby, in the Brakeman-based analyzer
 
 Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 

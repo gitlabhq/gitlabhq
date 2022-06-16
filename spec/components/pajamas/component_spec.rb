@@ -23,4 +23,21 @@ RSpec.describe Pajamas::Component do
       expect(value).to eq('something')
     end
   end
+
+  describe '#format_options' do
+    it 'merges CSS classes and additional options' do
+      expect(
+        subject.send(
+          :format_options,
+          options: { foo: 'bar', class: 'gl-display-flex gl-py-5' },
+          css_classes: %w(gl-px-5 gl-mt-5),
+          additional_options: { baz: 'bax' }
+        )
+      ).to match({
+        foo: 'bar',
+        baz: 'bax',
+        class: ['gl-px-5', 'gl-mt-5', 'gl-display-flex gl-py-5']
+      })
+    end
+  end
 end

@@ -1,6 +1,6 @@
 {
   "consumer": {
-    "name": "Merge Request Page"
+    "name": "MergeRequest#show"
   },
   "provider": {
     "name": "Merge Request Discussions Endpoint"

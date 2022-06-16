@@ -227,6 +227,7 @@ RSpec.describe API::Releases do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response[0]['tag_path']).to include('%2F') # properly escape the slash
       end
     end
 

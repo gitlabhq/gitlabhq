@@ -95,11 +95,9 @@ can still view the groups and their entities (like epics).
 Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
 
-WARNING:
-Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespace do not show owner (`50`) permission in
-`project_authorizations` table. Note however that [`user.owned_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/0d63823b122b11abd2492bca47cc26858eee713d/app/models/user.rb#L906-916)
-is calculated properly.
+NOTE:
+In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have a maximum role of Owner.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8 and earlier, projects in personal namespaces have a maximum role of Maintainer.
 
 ### Confidential issues
 

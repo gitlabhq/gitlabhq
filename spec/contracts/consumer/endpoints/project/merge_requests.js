@@ -1,6 +1,6 @@
 import { request } from 'axios';
 
-export function getMetadata(endpoint) {
+export function getDiffsMetadata(endpoint) {
   const { url } = endpoint;
 
   return request({
@@ -22,7 +22,7 @@ export function getDiscussions(endpoint) {
   }).then((response) => response.data);
 }
 
-export function getDiffs(endpoint) {
+export function getDiffsBatch(endpoint) {
   const { url } = endpoint;
 
   return request({

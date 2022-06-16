@@ -1,9 +1,9 @@
 {
   "consumer": {
-    "name": "Merge Request Page"
+    "name": "MergeRequest#show"
   },
   "provider": {
-    "name": "Merge Request Diffs Endpoint"
+    "name": "Merge Request Diffs Batch Endpoint"
   },
   "interactions": [
     {

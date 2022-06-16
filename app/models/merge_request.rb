@@ -1153,6 +1153,19 @@ class MergeRequest < ApplicationRecord
     can_be_merged? && !should_be_rebased?
   end
 
+  def mergeability_checks
+    # We want to have the cheapest checks first in the list, that way we can
+    #   fail fast before running the more expensive ones.
+    #
+    [
+      ::MergeRequests::Mergeability::CheckOpenStatusService,
+      ::MergeRequests::Mergeability::CheckDraftStatusService,
+      ::MergeRequests::Mergeability::CheckBrokenStatusService,
+      ::MergeRequests::Mergeability::CheckDiscussionsStatusService,
+      ::MergeRequests::Mergeability::CheckCiStatusService
+    ]
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     if Feature.enabled?(:improved_mergeability_checks, self.project)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Workhorse do
+RSpec.describe API::Internal::Workhorse, :allow_forgery_protection do
   include WorkhorseHelpers
 
   context '/authorize_upload' do

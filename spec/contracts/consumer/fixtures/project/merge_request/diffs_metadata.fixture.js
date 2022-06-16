@@ -70,7 +70,7 @@ const body = {
   project_name: Matchers.string('contract-testing'),
 };
 
-const Metadata = {
+const DiffsMetadata = {
   body: Matchers.extractPayload(body),
 
   success: {
@@ -82,7 +82,7 @@ const Metadata = {
   },
 
   request: {
-    uponReceiving: 'a request for Metadata',
+    uponReceiving: 'a request for Diffs Metadata',
     withRequest: {
       method: 'GET',
       path: '/gitlab-org/gitlab-qa/-/merge_requests/1/diffs_metadata.json',
@@ -93,5 +93,6 @@ const Metadata = {
   },
 };
 
-export { Metadata };
+export { DiffsMetadata };
+
 /* eslint-enable @gitlab/require-i18n-strings */

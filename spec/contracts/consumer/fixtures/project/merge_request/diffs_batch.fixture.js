@@ -62,7 +62,7 @@ const body = {
   },
 };
 
-const Diffs = {
+const DiffsBatch = {
   body: Matchers.extractPayload(body),
 
   success: {
@@ -86,5 +86,6 @@ const Diffs = {
   },
 };
 
-export { Diffs };
+export { DiffsBatch };
+
 /* eslint-enable @gitlab/require-i18n-strings */

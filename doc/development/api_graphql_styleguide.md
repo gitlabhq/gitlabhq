@@ -94,10 +94,15 @@ discussed in [Nullable fields](#nullable-fields).
 - Lowering the global limits for query complexity and depth.
 - Anything else that can result in queries hitting a limit that previously was allowed.
 
-Fields that use the [`feature_flag` property](#feature_flag-property) and the flag is disabled by default are exempt
-from the deprecation process, and can be removed at any time without notice.
-
 See the [deprecating schema items](#deprecating-schema-items) section for how to deprecate items.
+
+### Breaking change exemptions
+
+Two scenarios exist where schema items are exempt from the deprecation process,
+and can be removed or changed at any time without notice. These are schema items that either:
+
+- Use the [`feature_flag` property](#feature_flag-property) _and_ the flag is disabled by default.
+- Are [marked as alpha](#marking-schema-items-as-alpha).
 
 ## Global IDs
 
@@ -717,6 +722,28 @@ This is because we are deprecating using a bespoke method outside of the
 aware of the support.
 
 The documentation will mention that the old Global ID style is now deprecated.
+
+## Marking schema items as Alpha
+
+Fields, arguments, enum values, and mutations can be marked as being in
+[alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+
+An item marked as "alpha" is exempt from the deprecation process and can be removed
+at any time without notice.
+
+This leverages GraphQL deprecations to cause the schema item to appear as deprecated,
+and will be described as being in "alpha" in our generated docs and its GraphQL description.
+
+To mark a schema item as being in "alpha", use the `deprecated:` keyword with `reason: :alpha`.
+You must provide the `milestone:` that introduced the alpha item.
+
+For example:
+
+```ruby
+field :token, GraphQL::Types::String, null: true,
+      deprecated: { reason: :alpha, milestone: '10.0' },
+      description: 'Token for login.'
+```
 
 ## Enums
 

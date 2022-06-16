@@ -2,12 +2,12 @@
   .col-sm-2.col-form-label.pt-0
     = f.label :lfs_enabled, _('Large File Storage')
   .col-sm-10
-    - label = _('Allow projects within this group to use Git LFS')
-    - help_link = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index'), class: 'gl-ml-2'
-    = f.gitlab_ui_checkbox_component :lfs_enabled,
-      '%{label}%{help_link}'.html_safe % { label: label, help_link: help_link },
-      help_text: _('This setting can be overridden in each project.'),
-      checkbox_options: { checked: @group.lfs_enabled? }
+    = f.gitlab_ui_checkbox_component :lfs_enabled, checkbox_options: { checked: @group.lfs_enabled? } do |c|
+      = c.label do
+        = _('Allow projects within this group to use Git LFS')
+        = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index'), class: 'gl-ml-2'
+      = c.help_text do
+        = _('This setting can be overridden in each project.')
 .form-group.row
   .col-sm-2.col-form-label
     = f.label s_('ProjectCreationLevel|Allowed to create projects')

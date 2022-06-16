@@ -54,7 +54,7 @@ class Release < ApplicationRecord
   MAX_NUMBER_TO_DISPLAY = 3
 
   def to_param
-    CGI.escape(tag)
+    tag
   end
 
   def commit

@@ -148,19 +148,19 @@ RSpec.describe Projects::ReleasesController do
     end
 
     let(:release) { create(:release, project: project) }
-    let(:tag) { CGI.escape(release.tag) }
+    let(:tag) { release.tag }
 
     it_behaves_like 'successful request'
 
     context 'when tag name contains slash' do
       let(:release) { create(:release, project: project, tag: 'awesome/v1.0') }
-      let(:tag) { CGI.escape(release.tag) }
+      let(:tag) { release.tag }
 
       it_behaves_like 'successful request'
 
       it 'is accesible at a URL encoded path' do
         expect(edit_project_release_path(project, release))
-          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%252Fv1.0/edit")
+          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%2Fv1.0/edit")
       end
     end
 
@@ -187,19 +187,19 @@ RSpec.describe Projects::ReleasesController do
     end
 
     let(:release) { create(:release, project: project) }
-    let(:tag) { CGI.escape(release.tag) }
+    let(:tag) { release.tag }
 
     it_behaves_like 'successful request'
 
     context 'when tag name contains slash' do
       let(:release) { create(:release, project: project, tag: 'awesome/v1.0') }
-      let(:tag) { CGI.escape(release.tag) }
+      let(:tag) { release.tag }
 
       it_behaves_like 'successful request'
 
       it 'is accesible at a URL encoded path' do
         expect(project_release_path(project, release))
-          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%252Fv1.0")
+          .to eq("/#{project.namespace.path}/#{project.name}/-/releases/awesome%2Fv1.0")
       end
     end
 
@@ -239,7 +239,7 @@ RSpec.describe Projects::ReleasesController do
     end
 
     let(:release) { create(:release, project: project) }
-    let(:tag) { CGI.escape(release.tag) }
+    let(:tag) { release.tag }
 
     context 'when user is a guest' do
       let(:project) { private_project }

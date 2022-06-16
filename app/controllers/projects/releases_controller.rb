@@ -52,19 +52,11 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def release
-    @release ||= project.releases.find_by_tag!(sanitized_tag_name)
+    @release ||= project.releases.find_by_tag!(params[:tag])
   end
 
   def link
-    release.links.find_by_filepath!(sanitized_filepath)
-  end
-
-  def sanitized_filepath
-    "/#{CGI.unescape(params[:filepath])}"
-  end
-
-  def sanitized_tag_name
-    CGI.unescape(params[:tag])
+    release.links.find_by_filepath!("/#{params[:filepath]}")
   end
 
   # Default order_by is 'released_at', which is set in ReleasesFinder.

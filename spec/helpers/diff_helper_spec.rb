@@ -468,4 +468,25 @@ RSpec.describe DiffHelper do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#conflicts' do
+    let(:merge_request) { instance_double(MergeRequest) }
+
+    before do
+      allow(helper).to receive(:merge_request).and_return(merge_request)
+      allow(helper).to receive(:options).and_return(merge_ref_head_diff: true)
+    end
+
+    context 'when Gitlab::Git::Conflict::Resolver::ConflictSideMissing exception is raised' do
+      before do
+        allow_next_instance_of(MergeRequests::Conflicts::ListService, merge_request, allow_tree_conflicts: true) do |svc|
+          allow(svc).to receive_message_chain(:conflicts, :files).and_raise(Gitlab::Git::Conflict::Resolver::ConflictSideMissing)
+        end
+      end
+
+      it 'returns an empty hash' do
+        expect(helper.conflicts(allow_tree_conflicts: true)).to eq({})
+      end
+    end
+  end
 end

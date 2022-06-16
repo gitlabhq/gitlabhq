@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Pact.provider_states_for "Merge Request Page" do
+Pact.provider_states_for "MergeRequest#show" do
   provider_state "a merge request with discussions exists" do
     set_up do
       user = User.find_by(name: Provider::UsersHelper::CONTRACT_USER_NAME)

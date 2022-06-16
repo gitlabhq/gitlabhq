@@ -83,4 +83,5 @@ const Discussions = {
 };
 
 export { Discussions };
+
 /* eslint-enable @gitlab/require-i18n-strings */

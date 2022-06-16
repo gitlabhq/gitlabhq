@@ -559,8 +559,8 @@ Returns [`Vulnerability`](#vulnerability).
 Find a work item. Returns `null` if `work_items` feature flag is disabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Returns [`WorkItem`](#workitem).
 
@@ -5413,8 +5413,8 @@ Input type: `VulnerabilityRevertToDetectedInput`
 Creates a work item. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemCreateInput`
 
@@ -5441,8 +5441,8 @@ Input type: `WorkItemCreateInput`
 Creates a work item from a task in another work item's description. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemCreateFromTaskInput`
 
@@ -5468,8 +5468,8 @@ Input type: `WorkItemCreateFromTaskInput`
 Deletes a work item. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemDeleteInput`
 
@@ -5493,8 +5493,8 @@ Input type: `WorkItemDeleteInput`
 Deletes a task in a work item's description. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemDeleteTaskInput`
 
@@ -5520,8 +5520,8 @@ Input type: `WorkItemDeleteTaskInput`
 Updates a work item by Global ID. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemUpdateInput`
 
@@ -5547,8 +5547,8 @@ Input type: `WorkItemUpdateInput`
 Updates a work item's task by Global ID. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemUpdateTaskInput`
 
@@ -5574,8 +5574,8 @@ Input type: `WorkItemUpdateTaskInput`
 Updates the attributes of a work item's widgets by global ID. Available only when feature flag `work_items` is enabled.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Input type: `WorkItemUpdateWidgetsInput`
 
@@ -9806,7 +9806,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
-| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | **Deprecated** in 14.10. This feature is in Alpha, and can be removed or changed at any point. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatusType`](#cirunnerupgradestatustype) | **Introduced** in 14.10. This feature is in Alpha. It can be changed or removed at any time. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
@@ -15894,8 +15894,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 Work items of the project.
 
 WARNING:
-**Deprecated** in 15.1.
-This feature is in Alpha, and can be removed or changed at any point.
+**Introduced** in 15.1.
+This feature is in Alpha. It can be changed or removed at any time.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
