@@ -9,11 +9,6 @@ type LocalEnvironment {
   autoStopPath: String
 }
 
-input LocalActionInput {
-  name: String!
-  playPath: String
-}
-
 input LocalEnvironmentInput {
   id: Int!
   globalId: ID!
@@ -69,7 +64,7 @@ type LocalPageInfo {
 
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
-  folder(environment: NestedLocalEnvironmentInput, scope: String): LocalEnvironmentFolder
+  folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
   environmentToDelete: LocalEnvironment
   pageInfo: LocalPageInfo
   environmentToRollback: LocalEnvironment
@@ -87,5 +82,5 @@ extend type Mutation {
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToStop(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToChangeCanary(environment: LocalEnvironmentInput, weight: Int): LocalErrors
-  action(action: LocalActionInput): LocalErrors
+  action(environment: LocalEnvironmentInput): LocalErrors
 }

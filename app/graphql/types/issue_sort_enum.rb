@@ -16,6 +16,8 @@ module Types
     value 'POPULARITY_DESC', 'Number of upvotes (awarded "thumbs up" emoji) by descending order.', value: :popularity_desc
     value 'ESCALATION_STATUS_ASC', 'Status from triggered to resolved.', value: :escalation_status_asc
     value 'ESCALATION_STATUS_DESC', 'Status from resolved to triggered.', value: :escalation_status_desc
+    value 'CLOSED_AT_ASC', 'Closed time by ascending order.', value: :closed_at_asc
+    value 'CLOSED_AT_DESC', 'Closed time by descending order.', value: :closed_at_desc
   end
 end
 

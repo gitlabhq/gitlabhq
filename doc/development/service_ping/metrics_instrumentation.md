@@ -38,7 +38,7 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 
 ## Database metrics
 
-- `operation`: Operations for the given `relation`, one of `count`, `distinct_count`, `sum`.
+- `operation`: Operations for the given `relation`, one of `count`, `distinct_count`, `sum`, and `average`.
 - `relation`: `ActiveRecord::Relation` for the objects we want to perform the `operation`.
 - `start`: Specifies the start value of the batch counting, by default is `relation.minimum(:id)`.
 - `finish`: Specifies the end value of the batch counting, by default is `relation.maximum(:id)`.
@@ -120,6 +120,26 @@ module Gitlab
           operation :sum, column: :imported_issues_count
 
           relation { JiraImportState.finished }
+        end
+      end
+    end
+  end
+end
+```
+
+### Average Example
+
+```ruby
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class CountIssuesWeightAverageMetric < DatabaseMetric
+          operation :average, column: :weight
+
+          relation { Issue }
         end
       end
     end
@@ -288,7 +308,7 @@ end
 
 There is support for:
 
-- `count`, `distinct_count`, `estimate_batch_distinct_count`, `sum` for [database metrics](#database-metrics).
+- `count`, `distinct_count`, `estimate_batch_distinct_count`, `sum`, and `average` for [database metrics](#database-metrics).
 - [Redis metrics](#redis-metrics).
 - [Redis HLL metrics](#redis-hyperloglog-metrics).
 - `add` for [numbers metrics](#numbers-metrics).
@@ -308,7 +328,7 @@ The generator takes the class name as an argument and the following options:
 
 - `--type=TYPE` Required. Indicates the metric type. It must be one of: `database`, `generic`, `redis`, `numbers`.
 - `--operation` Required for `database` & `numebers` type.
-  - For `database` it must be one of: `count`, `distinct_count`, `estimate_batch_distinct_count`, `sum`.
+  - For `database` it must be one of: `count`, `distinct_count`, `estimate_batch_distinct_count`, `sum`, `average`.
   - For `numbers` it must be: `add`.
 - `--ee` Indicates if the metric is for EE.
 

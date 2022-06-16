@@ -122,12 +122,13 @@ class Issue < ApplicationRecord
   scope :order_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
   scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
-  scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
   scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
   scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].asc.nulls_last).references(:incident_management_issuable_escalation_status) }
   scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
+  scope :order_closed_at_asc, -> { reorder(arel_table[:closed_at].asc.nulls_last) }
+  scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
@@ -331,6 +332,8 @@ class Issue < ApplicationRecord
     when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
     when 'escalation_status_asc'                          then order_escalation_status_asc.with_order_id_desc
     when 'escalation_status_desc'                         then order_escalation_status_desc.with_order_id_desc
+    when 'closed_at_asc'                                  then order_closed_at_asc
+    when 'closed_at_desc'                                 then order_closed_at_desc
     else
       super
     end

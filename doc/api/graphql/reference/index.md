@@ -18989,6 +18989,8 @@ Values for sorting issues.
 | ----- | ----------- |
 | <a id="issuesortblocking_issues_asc"></a>`BLOCKING_ISSUES_ASC` | Blocking issues count by ascending order. |
 | <a id="issuesortblocking_issues_desc"></a>`BLOCKING_ISSUES_DESC` | Blocking issues count by descending order. |
+| <a id="issuesortclosed_at_asc"></a>`CLOSED_AT_ASC` | Closed time by ascending order. |
+| <a id="issuesortclosed_at_desc"></a>`CLOSED_AT_DESC` | Closed time by descending order. |
 | <a id="issuesortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="issuesortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="issuesortdue_date_asc"></a>`DUE_DATE_ASC` | Due date by ascending order. |

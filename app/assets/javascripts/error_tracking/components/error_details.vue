@@ -381,7 +381,7 @@ export default {
           <h2 class="text-truncate">{{ error.title }}</h2>
         </tooltip-on-truncate>
         <template v-if="error.tags">
-          <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="mr-2">
+          <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="gl-mr-3">
             {{ errorLevel }}
           </gl-badge>
           <gl-badge v-if="error.tags.logger" variant="muted">{{ error.tags.logger }} </gl-badge>

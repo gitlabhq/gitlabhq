@@ -46,7 +46,7 @@ boards: add_metric('CountBoardsMetric', time_frame: 'all'),
 
 There are several types of counters for metrics:
 
-- **[Batch counters](#batch-counters)**: Used for counts and sums.
+- **[Batch counters](#batch-counters)**: Used for counts, sums, and averages.
 - **[Redis counters](#redis-counters):** Used for in-memory counts.
 - **[Alternative counters](#alternative-counters):** Used for settings and configurations.
 
@@ -111,9 +111,23 @@ Method:
 add_metric('JiraImportsTotalImportedIssuesCountMetric')
 ```
 
+#### Average batch operation
+
+Average the values of a given `ActiveRecord_Relation` on given column and handles errors.
+
+Method:
+
+```ruby
+add_metric('CountIssuesWeightAverageMetric')
+```
+
+Examples:
+
+Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
+
 #### Grouping and batch operations
 
-The `count`, `distinct_count`, and `sum` batch counters can accept an `ActiveRecord::Relation`
+The `count`, `distinct_count`, `sum`, and `average` batch counters can accept an `ActiveRecord::Relation`
 object, which groups by a specified column. With a grouped relation, the methods do batch counting,
 handle errors, and returns a hash table of key-value pairs.
 
@@ -128,6 +142,9 @@ distinct_count(Project.group(:visibility_level), :creator_id)
 
 sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
+
+average(Issue.group(:state_id), :weight))
+# returns => {1=>3.5, 2=>2.5}
 ```
 
 #### Add operation

@@ -428,6 +428,22 @@ RSpec.describe Resolvers::IssuesResolver do
           end
         end
 
+        context 'when sorting by closed at' do
+          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:closed_issue1) { create(:issue, project: project, closed_at: 3.days.from_now) }
+          let_it_be(:closed_issue2) { create(:issue, project: project, closed_at: nil) }
+          let_it_be(:closed_issue3) { create(:issue, project: project, closed_at: 2.days.ago) }
+          let_it_be(:closed_issue4) { create(:issue, project: project, closed_at: nil) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :closed_at_asc).to_a).to eq [closed_issue3, closed_issue1, closed_issue4, closed_issue2]
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :closed_at_desc).to_a).to eq [closed_issue1, closed_issue3, closed_issue4, closed_issue2]
+          end
+        end
+
         context 'when sorting by due date' do
           let_it_be(:project) { create(:project, :public) }
           let_it_be(:due_issue1) { create(:issue, project: project, due_date: 3.days.from_now) }

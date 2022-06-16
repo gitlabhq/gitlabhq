@@ -590,6 +590,39 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
      --data '{ "uuids": ["102e8a0a-fe29-59bd-b46c-57c3e9bc6411", "5eb12985-0ed5-51f4-b545-fd8871dc2870"] }'
 ```
 
+### Scan Execution Policies
+
+Called from GitLab agent server (`kas`) to retrieve `scan_execution_policies`
+configured for the project belonging to the agent token. GitLab `kas` uses
+this to configure the agent to scan images in the Kubernetes cluster based on the policy.
+
+```plaintext
+GET /internal/kubernetes/modules/starboard_vulnerability/scan_execution_policies
+```
+
+Example Request:
+
+```shell
+curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
+     --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/modules/starboard_vulnerability/scan_execution_policies"
+```
+
+Example response:
+
+```json
+{
+  "policies": [
+    {
+      "name": "Policy",
+      "description": "Policy description",
+      "enabled": true,
+      "yaml": "---\nname: Policy\ndescription: 'Policy description'\nenabled: true\nactions:\n- scan: container_scanning\nrules:\n- type: pipeline\n  branches:\n  - main\n",
+      "updated_at": "2022-06-02T05:36:26+00:00"
+    }
+  ]
+}
+```
+
 ## Subscriptions
 
 The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)

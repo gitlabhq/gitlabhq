@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -11,9 +11,11 @@ import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
 import MrWidgetContainer from '../mr_widget_container.vue';
 import MrWidgetIcon from '../mr_widget_icon.vue';
+import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
 import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
 import { FETCH_LOADING, FETCH_ERROR, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
+import { humanizeInvalidApproversRules } from './humanized_text';
 
 export default {
   name: 'MRWidgetApprovals',
@@ -23,6 +25,8 @@ export default {
     ApprovalsSummary,
     ApprovalsSummaryOptional,
     GlButton,
+    GlSprintf,
+    GlLink,
   },
   mixins: [approvalsMixin, glFeatureFlagsMixin()],
   props: {
@@ -78,6 +82,15 @@ export default {
     approvals() {
       return this.mr.approvals || {};
     },
+    invalidRules() {
+      return this.approvals.invalid_approvers_rules || [];
+    },
+    hasInvalidRules() {
+      return this.approvals.merge_request_approvers_available && this.invalidRules.length;
+    },
+    invalidRulesText() {
+      return humanizeInvalidApproversRules(this.invalidRules);
+    },
     approvedBy() {
       return this.approvals.approved_by ? this.approvals.approved_by.map((x) => x.user) : [];
     },
@@ -116,6 +129,11 @@ export default {
       }
 
       return null;
+    },
+    pluralizedRuleText() {
+      return this.invalidRules.length > 1
+        ? this.$options.i18n.invalidRulesPlural
+        : this.$options.i18n.invalidRuleSingular;
     },
   },
   created() {
@@ -193,6 +211,16 @@ export default {
     },
   },
   FETCH_LOADING,
+  linkToInvalidRules: INVALID_RULES_DOCS_PATH,
+  i18n: {
+    invalidRuleSingular: s__(
+      'mrWidget|Approval rule %{rules} is invalid. GitLab has approved this rule automatically to unblock the merge request. %{link}',
+    ),
+    invalidRulesPlural: s__(
+      'mrWidget|Approval rules %{rules} are invalid. GitLab has approved these rules automatically to unblock the merge request. %{link}',
+    ),
+    learnMore: __('Learn more.'),
+  },
 };
 </script>
 <template>
@@ -201,29 +229,45 @@ export default {
       <mr-widget-icon name="approval" />
       <div v-if="fetchingApprovals">{{ $options.FETCH_LOADING }}</div>
       <template v-else>
-        <gl-button
-          v-if="action"
-          :variant="action.variant"
-          :category="action.category"
-          :loading="isApproving"
-          class="mr-3"
-          data-qa-selector="approve_button"
-          @click="action.action"
-        >
-          {{ action.text }}
-        </gl-button>
-        <approvals-summary-optional
-          v-if="isOptional"
-          :can-approve="hasAction"
-          :help-path="mr.approvalsHelpPath"
-        />
-        <approvals-summary
-          v-else
-          :approved="isApproved"
-          :approvals-left="approvals.approvals_left || 0"
-          :rules-left="approvals.approvalRuleNamesLeft"
-          :approvers="approvedBy"
-        />
+        <div class="gl-display-flex gl-flex-direction-column">
+          <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
+            <gl-button
+              v-if="action"
+              :variant="action.variant"
+              :category="action.category"
+              :loading="isApproving"
+              class="gl-mr-5"
+              data-qa-selector="approve_button"
+              @click="action.action"
+            >
+              {{ action.text }}
+            </gl-button>
+            <approvals-summary-optional
+              v-if="isOptional"
+              :can-approve="hasAction"
+              :help-path="mr.approvalsHelpPath"
+            />
+            <approvals-summary
+              v-else
+              :approved="isApproved"
+              :approvals-left="approvals.approvals_left || 0"
+              :rules-left="approvals.approvalRuleNamesLeft"
+              :approvers="approvedBy"
+            />
+          </div>
+          <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">
+            <gl-sprintf :message="pluralizedRuleText">
+              <template #rules>
+                {{ invalidRulesText }}
+              </template>
+              <template #link>
+                <gl-link :href="$options.linkToInvalidRules" target="_blank">
+                  {{ $options.i18n.learnMore }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </div>
+        </div>
         <slot
           :is-approving="isApproving"
           :approve-with-auth="approveWithAuth"

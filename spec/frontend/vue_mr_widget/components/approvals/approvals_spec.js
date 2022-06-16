@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createFlash from '~/flash';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
@@ -15,6 +15,7 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 
 jest.mock('~/flash');
 
+const RULE_NAME = 'first_rule';
 const TEST_HELP_PATH = 'help/path';
 const testApprovedBy = () => [1, 7, 10].map((id) => ({ id }));
 const testApprovals = () => ({
@@ -26,6 +27,7 @@ const testApprovals = () => ({
   user_can_approve: true,
   user_has_approved: true,
   require_password_to_approve: false,
+  invalid_approvers_rules: [],
 });
 const testApprovalRulesResponse = () => ({ rules: [{ id: 2 }] });
 
@@ -40,6 +42,9 @@ describe('MRWidget approvals', () => {
         mr,
         service,
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -58,6 +63,7 @@ describe('MRWidget approvals', () => {
   };
   const findSummary = () => wrapper.find(ApprovalsSummary);
   const findOptionalSummary = () => wrapper.find(ApprovalsSummaryOptional);
+  const findInvalidRules = () => wrapper.find('[data-testid="invalid-rules"]');
 
   beforeEach(() => {
     service = {
@@ -380,6 +386,38 @@ describe('MRWidget approvals', () => {
         approvalsLeft: expected.approvals_left,
         rulesLeft: expected.approval_rules_left,
         approvers: testApprovedBy(),
+      });
+    });
+  });
+
+  describe('invalid rules', () => {
+    beforeEach(() => {
+      mr.approvals.merge_request_approvers_available = true;
+      createComponent();
+    });
+
+    it('does not render related components', () => {
+      expect(findInvalidRules().exists()).toBe(false);
+    });
+
+    describe('when invalid rules are present', () => {
+      beforeEach(() => {
+        mr.approvals.invalid_approvers_rules = [{ name: RULE_NAME }];
+        createComponent();
+      });
+
+      it('renders related components', () => {
+        const invalidRules = findInvalidRules();
+
+        expect(invalidRules.exists()).toBe(true);
+
+        const invalidRulesText = invalidRules.text();
+
+        expect(invalidRulesText).toContain(RULE_NAME);
+        expect(invalidRulesText).toContain(
+          'GitLab has approved this rule automatically to unblock the merge request.',
+        );
+        expect(invalidRulesText).toContain('Learn more.');
       });
     });
   });

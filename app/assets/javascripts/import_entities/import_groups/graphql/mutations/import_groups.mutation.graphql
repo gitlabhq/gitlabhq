@@ -1,4 +1,4 @@
-mutation importGroups($importRequests: [ImportRequestInput!]!) {
+mutation importGroups($importRequests: [ImportGroupInput!]!) {
   importGroups(importRequests: $importRequests) @client {
     id
     lastImportTarget {

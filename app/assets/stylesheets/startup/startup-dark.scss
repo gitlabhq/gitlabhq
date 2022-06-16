@@ -40,7 +40,7 @@ body {
   line-height: 1.5;
   color: #fafafa;
   text-align: left;
-  background-color: #333;
+  background-color: #1f1f1f;
 }
 ul {
   margin-top: 0;
@@ -430,7 +430,7 @@ a.gl-badge.badge-warning:active {
 .gl-form-input:not(.form-control-plaintext):not([type="color"]):read-only,
 .gl-form-input.form-control:disabled,
 .gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
-  background-color: #333;
+  background-color: #1f1f1f;
   box-shadow: inset 0 0 0 1px #404040;
 }
 .gl-form-input:disabled,
@@ -1034,7 +1034,7 @@ input {
   z-index: 600;
   width: 256px;
   top: var(--header-height, 48px);
-  background-color: #333;
+  background-color: #f5f5f5;
   border-right: 1px solid #e9e9e9;
   transform: translate3d(0, 0, 0);
 }
@@ -1402,7 +1402,7 @@ input {
   color: #999;
   display: flex;
   align-items: center;
-  background-color: #333;
+  background-color: #f5f5f5;
   position: fixed;
   bottom: 0;
   width: 255px;
@@ -1698,7 +1698,7 @@ svg.s16 {
   border-radius: 4px;
 }
 body.gl-dark {
-  --gray-10: #333;
+  --gray-10: #1f1f1f;
   --gray-50: #303030;
   --gray-100: #404040;
   --gray-200: #525252;
@@ -1939,7 +1939,7 @@ body.gl-dark .navbar-gitlab .search form .search-input {
 }
 
 body.gl-dark {
-  --gray-10: #333;
+  --gray-10: #1f1f1f;
   --gray-50: #303030;
   --gray-100: #404040;
   --gray-200: #525252;

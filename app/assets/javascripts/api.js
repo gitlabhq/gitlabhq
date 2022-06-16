@@ -444,7 +444,7 @@ const Api = {
   },
 
   // Return group projects list. Filtered by query
-  groupProjects(groupId, query, options, callback = () => {}, useCustomErrorHandler = false) {
+  groupProjects(groupId, query, options, callback = () => {}) {
     const url = Api.buildUrl(Api.groupProjectsPath).replace(':id', groupId);
     const defaults = {
       search: query,
@@ -456,19 +456,7 @@ const Api = {
       })
       .then(({ data, headers }) => {
         callback(data);
-
         return { data, headers };
-      })
-      .catch((error) => {
-        if (useCustomErrorHandler) {
-          throw error;
-        }
-
-        createAlert({
-          message: __('Something went wrong while fetching projects'),
-        });
-
-        callback();
       });
   },
 

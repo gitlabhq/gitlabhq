@@ -22,7 +22,20 @@ If you set up a device, also set up a TOTP so you can still access your account 
 ## Use personal access tokens with two-factor authentication
 
 When 2FA is enabled, you can't use your password to authenticate with Git over HTTPS or the [GitLab API](../../../api/index.md).
-You must use a [personal access token](../personal_access_tokens.md) instead.
+You can use a [personal access token](../personal_access_tokens.md) instead.
+
+## Git Credential Manager
+
+For Git over HTTPS, [Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) offers an alternative to personal access tokens. By default, GCM
+authenticates using OAuth, opening GitLab in your web browser. The first time you authenticate, GitLab asks you to authorize the app. If you remain signed in to GitLab, subsequent
+authentication requires no interaction.
+
+So you don't need to reauthenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
+
+GCM supports GitLab.com out the box. To use with self-managed GitLab, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md)
+documentation.
+
+Git Credential Manager is developed primarily by GitHub, Inc. It is an open-source project and is supported by the community.
 
 ## Enable two-factor authentication
 

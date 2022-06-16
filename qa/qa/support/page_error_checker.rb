@@ -3,6 +3,8 @@
 module QA
   module Support
     class PageErrorChecker
+      PageError = Class.new(StandardError)
+
       class << self
         def report!(page, error_code)
           request_id_string = ''
@@ -17,10 +19,13 @@ module QA
                      status_code_report(error_code)
                    end
 
-          raise "Error Code #{error_code}\n\n"\
-            "#{report}\n\n"\
-            "Path: #{page.current_path}"\
-            "#{request_id_string}"
+          raise(PageError, <<~MSG)
+            Error Code: #{error_code}
+
+            #{report}
+
+            Path: #{page.current_path}#{request_id_string}
+          MSG
         end
 
         def parse_five_c_page_request_id(page)
@@ -43,6 +48,8 @@ module QA
 
         # rubocop:disable Rails/Pluck
         def check_page_for_error_code(page)
+          QA::Runtime::Logger.debug "Performing page error check!"
+
           # Test for 404 img alt
           return report!(page, 404) if page_html(page).xpath("//img").map { |t| t[:alt] }.first.eql?('404')
 
@@ -56,9 +63,9 @@ module QA
           # GDK shows backtrace rather than error page
           report!(page, 500) if page_html(page).xpath("//body//section").map { |t| t[:class] }.first.eql?('backtrace')
         rescue StandardError => e
-          # There are instances where page check can raise errors like: WebDriver::Error::UnexpectedAlertOpenError
-          # Log error but do not fail the test itself
-          Runtime::Logger.error("Page error check raised error: #{e}")
+          raise e if e.is_a?(PageError)
+
+          QA::Runtime::Logger.error("Page error check raised error `#{e.class}`: #{e.message}")
         end
         # rubocop:enable Rails/Pluck
 
@@ -68,7 +75,7 @@ module QA
         # using QA::Runtime::Logger
         # @param [Capybara::Session] page
         def log_request_errors(page)
-          return if QA::Runtime::Browser.blank_page?
+          return if !QA::Runtime::Env.can_intercept? || QA::Runtime::Browser.blank_page?
 
           url = page.driver.browser.current_url
           QA::Runtime::Logger.debug "Fetching API error cache for #{url}"

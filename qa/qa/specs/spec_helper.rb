@@ -48,6 +48,15 @@ RSpec.configure do |config|
     QA::Git::Repository.new.delete_netrc
   end
 
+  config.prepend_after do |example|
+    if example.exception
+      page = Capybara.page
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+      QA::Support::PageErrorChecker.check_page_for_error_code(page)
+    end
+  end
+
   # Add fabrication time to spec metadata
   config.append_after do |example|
     example.metadata[:api_fabrication] = Thread.current[:api_fabrication]

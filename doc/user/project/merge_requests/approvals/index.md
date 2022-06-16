@@ -106,6 +106,17 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 - Users on GitLab Ultimate can also [require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
   before merging code that could introduce a vulnerability.
 
+## Invalid rules
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
+
+Whenever an approval rule cannot be satisfied, the rule will be displayed as `Invalid`. This applies to the following conditions:
+
+- The only eligible approver is the author of the merge request.
+- No eligible approvers (either groups or users) have been assigned to the approval rule.
+
+These rules will be automatically approved to unblock their respective merge requests.
+
 ## Related topics
 
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)

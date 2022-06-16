@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-  <div class="circle-icon-container gl-mr-3 align-self-start align-self-lg-center">
+  <div class="circle-icon-container gl-mr-3 align-self-start">
     <gl-icon :name="name" :size="24" />
   </div>
 </template>
