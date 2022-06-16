@@ -15,7 +15,7 @@ const createComponent = ({ title = 'Sample title', disabled = false } = {}) =>
 describe('ItemTitle', () => {
   let wrapper;
   const mockUpdatedTitle = 'Updated title';
-  const findInputEl = () => wrapper.find('span#item-title');
+  const findInputEl = () => wrapper.find('[aria-label="Title"]');
 
   beforeEach(() => {
     wrapper = createComponent();

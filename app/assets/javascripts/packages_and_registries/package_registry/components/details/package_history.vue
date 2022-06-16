@@ -1,7 +1,7 @@
 <script>
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { first } from 'lodash';
-import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, n__ } from '~/locale';
@@ -27,8 +27,10 @@ export default {
     combinedUpdateText: s__(
       'PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}',
     ),
+    fetchPackagePipelinesErrorMessage: FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE,
   },
   components: {
+    GlAlert,
     GlLink,
     GlSprintf,
     HistoryItem,
@@ -54,15 +56,16 @@ export default {
       update(data) {
         return data.package?.pipelines?.nodes || [];
       },
-      error() {
-        createFlash({ message: FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE });
+      error(error) {
+        this.fetchPackagePipelinesError = true;
+        Sentry.captureException(error);
       },
     },
   },
   data() {
     return {
       pipelines: [],
-      showDescription: false,
+      fetchPackagePipelinesError: false,
     };
   },
   computed: {
@@ -109,6 +112,13 @@ export default {
 <template>
   <div class="issuable-discussion">
     <h3 class="gl-font-lg" data-testid="title">{{ __('History') }}</h3>
+    <gl-alert
+      v-if="fetchPackagePipelinesError"
+      variant="danger"
+      @dismiss="fetchPackagePipelinesError = false"
+    >
+      {{ $options.i18n.fetchPackagePipelinesErrorMessage }}
+    </gl-alert>
     <package-history-loader v-if="isLoading" />
     <ul v-else class="timeline main-notes-list notes gl-mb-4" data-testid="timeline">
       <history-item icon="clock" data-testid="created-on">

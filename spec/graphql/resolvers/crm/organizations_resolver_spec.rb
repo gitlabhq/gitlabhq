@@ -35,7 +35,7 @@ RSpec.describe Resolvers::Crm::OrganizationsResolver do
     end
 
     context 'with authorized user' do
-      it 'does not rise an error and returns all organizations' do
+      it 'does not rise an error and returns all organizations in the correct order' do
         group.add_reporter(user)
 
         expect { resolve_organizations(group) }.not_to raise_error
@@ -55,20 +55,28 @@ RSpec.describe Resolvers::Crm::OrganizationsResolver do
       end
 
       context 'when no filter is provided' do
-        it 'returns all the organizations' do
-          expect(resolve_organizations(group)).to match_array([organization_a, organization_b])
+        it 'returns all the organizations in the correct order' do
+          expect(resolve_organizations(group)).to eq([organization_a, organization_b])
         end
       end
 
       context 'when search term is provided' do
         it 'returns the correct organizations' do
-          expect(resolve_organizations(group, { search: "def" })).to match_array([organization_b])
+          expect(resolve_organizations(group, { search: "def" })).to contain_exactly(organization_b)
         end
       end
 
       context 'when state is provided' do
         it 'returns the correct organizations' do
-          expect(resolve_organizations(group, { state: :inactive })).to match_array([organization_a])
+          expect(resolve_organizations(group, { state: :inactive })).to contain_exactly(organization_a)
+        end
+      end
+
+      context 'when ids are provided' do
+        it 'returns the correct organizations' do
+          expect(resolve_organizations(group, {
+            ids: [organization_b.to_global_id]
+          })).to contain_exactly(organization_b)
         end
       end
     end

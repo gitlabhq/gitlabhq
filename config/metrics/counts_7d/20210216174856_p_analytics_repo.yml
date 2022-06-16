@@ -1,15 +1,19 @@
 ---
 data_category: optional
-key_path: analytics_unique_visits.i_analytics_cohorts
-description: Unique visitors to /-/instance_statistics/cohorts
+key_path: analytics_unique_visits.p_analytics_repo
+description: Unique visitors to /:group/:project/-/graphs/master/charts
 product_section: dev
 product_stage: manage
 product_group: group::optimize
 product_category:
 value_type: number
 status: active
-time_frame: all
+time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - p_analytics_repo
 distribution:
 - ce
 - ee

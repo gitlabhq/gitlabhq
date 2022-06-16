@@ -8,8 +8,12 @@ product_group: group::optimize
 product_category:
 value_type: number
 status: removed
-time_frame: all
+time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - g_analytics_merge_request
 distribution:
 - ce
 - ee

@@ -13,7 +13,7 @@ export default {
     GlSprintf,
   },
   props: {
-    packageEntity: {
+    packageMetadata: {
       type: Object,
       required: true,
     },
@@ -26,7 +26,7 @@ export default {
     <details-row icon="information-o" padding="gl-p-4" data-testid="pypi-required-python">
       <gl-sprintf :message="$options.i18n.requiredPython">
         <template #pythonVersion>
-          <strong>{{ packageEntity.metadata.requiredPython }}</strong>
+          <strong>{{ packageMetadata.requiredPython }}</strong>
         </template>
       </gl-sprintf>
     </details-row>

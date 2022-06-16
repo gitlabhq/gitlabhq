@@ -274,7 +274,7 @@ export default {
     <template #collapsed>
       <div v-gl-tooltip.viewport.left :title="dateLabel" class="sidebar-collapsed-icon">
         <gl-icon :size="16" name="calendar" />
-        <span class="collapse-truncated-title">{{ formattedDate }}</span>
+        <span class="gl-pt-2 gl-px-3 gl-font-sm">{{ formattedDate }}</span>
       </div>
       <sidebar-inherit-date
         v-if="canInherit && !initialLoading"

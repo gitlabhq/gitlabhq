@@ -35,7 +35,6 @@ Style/RedundantRegexpEscape:
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/gitlab/return_to_location.rb'
     - 'ee/spec/features/read_only_spec.rb'
-    - 'ee/spec/helpers/seats_count_alert_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/usage_data_counters/hll_redis_counter_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'

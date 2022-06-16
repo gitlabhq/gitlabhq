@@ -58,7 +58,7 @@ export default {
       } else if (this.showEstimateOnlyState || this.showSpentOnlyState) {
         return 'bold';
       } else if (this.showNoTimeTrackingState) {
-        return 'no-value';
+        return 'no-value collapse-truncated-title gl-pt-2 gl-px-3 gl-font-sm';
       }
 
       return '';

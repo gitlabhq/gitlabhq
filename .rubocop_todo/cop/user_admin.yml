@@ -26,7 +26,6 @@ Cop/UserAdmin:
   - app/models/protected_branch.rb
   - app/models/user.rb
   - app/policies/note_policy.rb
-  - app/serializers/deploy_key_entity.rb
   - app/services/auth/container_registry_authentication_service.rb
   - app/services/emails/create_service.rb
   - app/services/projects/enable_deploy_key_service.rb

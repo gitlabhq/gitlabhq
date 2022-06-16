@@ -50,6 +50,7 @@ module Projects
 
     scope :stale, -> { with_state(:running).where('updated_at < ?', STALE_WINDOW.ago) }
     scope :remaining, -> { with_state(:created, :pending).or(stale) }
+    scope :processing_queue, -> { remaining.order(state: :desc) }
 
     def self.enqueue_refresh(projects)
       now = Time.zone.now
@@ -65,8 +66,7 @@ module Projects
       next_refresh = nil
 
       transaction do
-        next_refresh = remaining
-          .order(:state, :updated_at)
+        next_refresh = processing_queue
           .lock('FOR UPDATE SKIP LOCKED')
           .take
 

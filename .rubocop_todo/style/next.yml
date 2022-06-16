@@ -5,7 +5,6 @@ Style/Next:
   # Temporarily disabled due to too many offenses
   Enabled: false
   Exclude:
-    - 'app/finders/projects/serverless/functions_finder.rb'
     - 'app/models/preloaders/environments/deployment_preloader.rb'
     - 'app/models/route.rb'
     - 'app/services/authorized_project_update/find_records_due_for_refresh_service.rb'

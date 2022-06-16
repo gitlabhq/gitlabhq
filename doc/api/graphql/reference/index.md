@@ -11739,6 +11739,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupcontactsids"></a>`ids` | [`[CustomerRelationsContactID!]`](#customerrelationscontactid) | Filter contacts by IDs. |
 | <a id="groupcontactssearch"></a>`search` | [`String`](#string) | Search term to find contacts with. |
 | <a id="groupcontactsstate"></a>`state` | [`CustomerRelationsContactState`](#customerrelationscontactstate) | State of the contacts to search for. |
 
@@ -12095,6 +12096,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouporganizationsids"></a>`ids` | [`[CustomerRelationsOrganizationID!]`](#customerrelationsorganizationid) | Filter organizations by IDs. |
 | <a id="grouporganizationssearch"></a>`search` | [`String`](#string) | Search term used to find organizations with. |
 | <a id="grouporganizationsstate"></a>`state` | [`CustomerRelationsOrganizationState`](#customerrelationsorganizationstate) | State of the organization to search for. |
 

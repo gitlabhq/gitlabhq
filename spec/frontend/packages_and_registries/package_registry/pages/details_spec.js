@@ -23,6 +23,10 @@ import {
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
   PACKAGE_TYPE_NUGET,
+  PACKAGE_TYPE_MAVEN,
+  PACKAGE_TYPE_CONAN,
+  PACKAGE_TYPE_PYPI,
+  PACKAGE_TYPE_NPM,
 } from '~/packages_and_registries/package_registry/constants';
 
 import destroyPackageFileMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_file.mutation.graphql';
@@ -160,15 +164,38 @@ describe('PackagesApp', () => {
     });
   });
 
-  it('renders additional metadata and has the right props', async () => {
-    createComponent();
+  describe('additional metadata', () => {
+    it.each`
+      packageType              | visible
+      ${PACKAGE_TYPE_MAVEN}    | ${true}
+      ${PACKAGE_TYPE_CONAN}    | ${true}
+      ${PACKAGE_TYPE_NUGET}    | ${true}
+      ${PACKAGE_TYPE_COMPOSER} | ${true}
+      ${PACKAGE_TYPE_PYPI}     | ${true}
+      ${PACKAGE_TYPE_NPM}      | ${false}
+    `(
+      `It is $visible that the component is visible when the package is $packageType`,
+      async ({ packageType, visible }) => {
+        createComponent({
+          resolver: jest.fn().mockResolvedValue(
+            packageDetailsQuery({
+              packageType,
+            }),
+          ),
+        });
 
-    await waitForPromises();
+        await waitForPromises();
 
-    expect(findAdditionalMetadata().exists()).toBe(true);
-    expect(findAdditionalMetadata().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageWithoutTypename),
-    });
+        expect(findAdditionalMetadata().exists()).toBe(visible);
+
+        if (visible) {
+          expect(findAdditionalMetadata().props()).toMatchObject({
+            packageId: packageWithoutTypename.id,
+            packageType,
+          });
+        }
+      },
+    );
   });
 
   it('renders installation commands and has the right props', async () => {

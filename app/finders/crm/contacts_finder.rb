@@ -8,6 +8,7 @@
 #     group: Group, required
 #     search: String, optional
 #     state: CustomerRelations::ContactStateEnum, optional
+#     ids: int[], optional
 module Crm
   class ContactsFinder
     include Gitlab::Allowable
@@ -24,6 +25,7 @@ module Crm
       return CustomerRelations::Contact.none unless root_group
 
       contacts = root_group.contacts
+      contacts = by_ids(contacts)
       contacts = by_state(contacts)
       contacts = by_search(contacts)
       contacts.sort_by_name
@@ -53,12 +55,22 @@ module Crm
       contacts.search_by_state(params[:state])
     end
 
+    def by_ids(contacts)
+      return contacts unless ids?
+
+      contacts.id_in(params[:ids])
+    end
+
     def search?
       params[:search].present?
     end
 
     def state?
       params[:state].present?
+    end
+
+    def ids?
+      params[:ids].present?
     end
   end
 end

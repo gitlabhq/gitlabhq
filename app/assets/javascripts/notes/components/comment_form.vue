@@ -416,7 +416,7 @@ export default {
                 <gl-form-checkbox
                   v-if="internalNotesEnabled && canSetInternalNote"
                   v-model="noteIsInternal"
-                  class="gl-mb-6"
+                  class="gl-mb-2"
                   data-testid="internal-note-checkbox"
                 >
                   {{ $options.i18n.internal }}

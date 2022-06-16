@@ -76,4 +76,49 @@ RSpec.shared_examples 'edits content using the content editor' do
       expect(find('[data-testid="code-block-bubble-menu"]')).to have_text('Custom (nomnoml)')
     end
   end
+
+  describe 'mermaid diagram' do
+    before do
+      find(content_editor_testid).send_keys [:enter, :enter]
+
+      find(content_editor_testid).send_keys '```mermaid '
+      find(content_editor_testid).send_keys ['graph TD;', :enter, '  JohnDoe12 --> HelloWorld34']
+    end
+
+    it 'renders and updates the diagram correctly in a sandboxed iframe' do
+      iframe = find(content_editor_testid).find('iframe')
+      expect(iframe['src']).to include('/-/sandbox/mermaid')
+
+      within_frame(iframe) do
+        expect(find('svg').text).to include('JohnDoe12')
+        expect(find('svg').text).to include('HelloWorld34')
+      end
+
+      expect(iframe['height'].to_i).to be > 100
+
+      find(content_editor_testid).send_keys [:enter, '  JaneDoe34 --> HelloWorld56']
+
+      within_frame(iframe) do
+        page.has_content?('JaneDoe34')
+
+        expect(find('svg').text).to include('JaneDoe34')
+        expect(find('svg').text).to include('HelloWorld56')
+      end
+    end
+
+    it 'toggles the diagram when preview button is clicked' do
+      find('[data-testid="preview-diagram"]').click
+
+      expect(find(content_editor_testid)).not_to have_selector('iframe')
+
+      find('[data-testid="preview-diagram"]').click
+
+      iframe = find(content_editor_testid).find('iframe')
+
+      within_frame(iframe) do
+        expect(find('svg').text).to include('JohnDoe12')
+        expect(find('svg').text).to include('HelloWorld34')
+      end
+    end
+  end
 end

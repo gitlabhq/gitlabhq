@@ -1,12 +1,9 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { packageData, pypiMetadata } from 'jest/packages_and_registries/package_registry/mock_data';
+import { pypiMetadata } from 'jest/packages_and_registries/package_registry/mock_data';
 import component from '~/packages_and_registries/package_registry/components/details/metadata/pypi.vue';
-import { PACKAGE_TYPE_PYPI } from '~/packages_and_registries/package_registry/constants';
 
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
-
-const pypiPackage = { packageType: PACKAGE_TYPE_PYPI, metadata: pypiMetadata() };
 
 describe('Package Additional Metadata', () => {
   let wrapper;
@@ -14,9 +11,7 @@ describe('Package Additional Metadata', () => {
   const mountComponent = () => {
     wrapper = shallowMountExtended(component, {
       propsData: {
-        packageEntity: {
-          ...packageData(pypiPackage),
-        },
+        packageMetadata: pypiMetadata(),
       },
       stubs: {
         DetailsRow,

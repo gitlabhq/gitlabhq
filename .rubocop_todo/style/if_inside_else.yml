@@ -14,7 +14,6 @@ Style/IfInsideElse:
     - 'app/models/ci/build.rb'
     - 'app/models/namespace.rb'
     - 'app/presenters/project_presenter.rb'
-    - 'app/services/service_ping/build_payload_service.rb'
     - 'app/services/system_notes/commit_service.rb'
     - 'app/services/task_list_toggle_service.rb'
     - 'app/services/user_project_access_changed_service.rb'

@@ -30,6 +30,12 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         expect(described_class.remaining).to match_array([refresh_1, refresh_3, refresh_4])
       end
     end
+
+    describe 'processing_queue' do
+      it 'prioritizes pending -> stale -> created' do
+        expect(described_class.processing_queue).to eq([refresh_3, refresh_1, refresh_4])
+      end
+    end
   end
 
   describe 'state machine', :clean_gitlab_redis_shared_state do
@@ -165,15 +171,13 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe '.process_next_refresh!' do
-    let!(:refresh_running) { create(:project_build_artifacts_size_refresh, :running) }
     let!(:refresh_created) { create(:project_build_artifacts_size_refresh, :created) }
-    let!(:refresh_stale) { create(:project_build_artifacts_size_refresh, :stale) }
     let!(:refresh_pending) { create(:project_build_artifacts_size_refresh, :pending) }
 
     subject(:processed_refresh) { described_class.process_next_refresh! }
 
     it 'picks the first record from the remaining work' do
-      expect(processed_refresh).to eq(refresh_created)
+      expect(processed_refresh).to eq(refresh_pending)
       expect(processed_refresh.reload).to be_running
     end
   end

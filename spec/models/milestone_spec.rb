@@ -82,14 +82,16 @@ RSpec.describe Milestone do
       context 'when it is tied to a release for another project' do
         it 'creates a validation error' do
           other_project = create(:project)
-          milestone.releases << build(:release, project: other_project)
+          milestone.releases << build(:release,
+            project: other_project, author_id: other_project.members.first.user_id)
           expect(milestone).not_to be_valid
         end
       end
 
       context 'when it is tied to a release for the same project' do
         it 'is valid' do
-          milestone.releases << build(:release, project: project)
+          milestone.releases << build(:release,
+            project: project, author_id: project.members.first.user_id)
           expect(milestone).to be_valid
         end
       end

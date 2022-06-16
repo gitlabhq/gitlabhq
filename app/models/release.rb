@@ -31,6 +31,7 @@ class Release < ApplicationRecord
   validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }, if: :description_changed?
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
+  validates :author_id, presence: true, on: :create, if: :validate_release_with_author?
 
   scope :sorted, -> { order(released_at: :desc) }
   scope :preloaded, -> {
@@ -115,6 +116,10 @@ class Release < ApplicationRecord
     strong_memoize(:actual_tag) do
       repository.find_tag(tag)
     end
+  end
+
+  def validate_release_with_author?
+    Feature.enabled?(:validate_release_with_author, self.project)
   end
 
   def set_released_at

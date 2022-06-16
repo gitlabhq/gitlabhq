@@ -53,7 +53,7 @@ RSpec.describe 'Creating an incident timeline event' do
       },
       'note' => note,
       'action' => 'comment',
-      'editable' => false,
+      'editable' => true,
       'occurredAt' => event_occurred_at.iso8601
     )
   end

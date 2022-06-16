@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
@@ -464,7 +464,7 @@ const Api = {
           throw error;
         }
 
-        createFlash({
+        createAlert({
           message: __('Something went wrong while fetching projects'),
         });
 
@@ -654,7 +654,7 @@ const Api = {
       })
       .then(({ data }) => callback(data))
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Something went wrong while fetching projects'),
         }),
       );

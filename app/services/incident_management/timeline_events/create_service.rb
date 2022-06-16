@@ -3,6 +3,7 @@
 module IncidentManagement
   module TimelineEvents
     DEFAULT_ACTION = 'comment'
+    DEFAULT_EDITABLE = false
 
     class CreateService < TimelineEvents::BaseService
       def initialize(incident, user, params)
@@ -23,7 +24,8 @@ module IncidentManagement
           action: params.fetch(:action, DEFAULT_ACTION),
           note_html: params[:note_html].presence || params[:note],
           occurred_at: params[:occurred_at],
-          promoted_from_note: params[:promoted_from_note]
+          promoted_from_note: params[:promoted_from_note],
+          editable: params.fetch(:editable, DEFAULT_EDITABLE)
         }
 
         timeline_event = IncidentManagement::TimelineEvent.new(timeline_event_params)

@@ -32,7 +32,8 @@ const MAX_CHAR_LIMIT = 2000;
 const MAX_MERMAID_BLOCK_LIMIT = 50;
 // Max # of `&` allowed in Chaining of links syntax
 const MAX_CHAINING_OF_LINKS_LIMIT = 30;
-const BUFFER_IFRAME_HEIGHT = 10;
+export const BUFFER_IFRAME_HEIGHT = 10;
+export const SANDBOX_ATTRIBUTES = 'allow-scripts allow-popups';
 // Keep a map of mermaid blocks we've already rendered.
 const elsProcessingMap = new WeakMap();
 let renderedMermaidBlocks = 0;
@@ -56,7 +57,7 @@ function fixElementSource(el) {
   return { source };
 }
 
-function getSandboxFrameSrc() {
+export function getSandboxFrameSrc() {
   const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
   if (!darkModeEnabled()) {
     return path;
@@ -69,7 +70,7 @@ function renderMermaidEl(el, source) {
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src: getSandboxFrameSrc(),
-    sandbox: 'allow-scripts allow-popups',
+    sandbox: SANDBOX_ATTRIBUTES,
     frameBorder: 0,
     scrolling: 'no',
     width: '100%',

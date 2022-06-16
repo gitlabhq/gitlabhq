@@ -115,7 +115,7 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
-      <div class="gl-display-flex">
+      <div class="gl-display-flex gl-align-items-start">
         <work-item-title
           :work-item-id="workItem.id"
           :work-item-title="workItem.title"
@@ -127,7 +127,7 @@ export default {
         <work-item-actions
           :work-item-id="workItem.id"
           :can-delete="canDelete"
-          class="gl-ml-auto gl-mt-5"
+          class="gl-ml-auto gl-mt-6"
           @deleteWorkItem="$emit('deleteWorkItem')"
           @error="error = $event"
         />

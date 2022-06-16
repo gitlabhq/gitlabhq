@@ -121,7 +121,7 @@ export default {
         <div class="d-flex float-left align-items-center align-self-start">
           <input
             v-if="isSelectable"
-            class="mr-2"
+            class="gl-mr-3"
             type="checkbox"
             :checked="checked"
             @change="$emit('handleCheckboxChange', $event.target.checked)"

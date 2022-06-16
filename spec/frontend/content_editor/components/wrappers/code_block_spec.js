@@ -1,8 +1,14 @@
 import { nextTick } from 'vue';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
-import { shallowMount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
+import eventHubFactory from '~/helpers/event_hub_factory';
+import SandboxedMermaid from '~/behaviors/components/sandboxed_mermaid.vue';
+import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Diagram from '~/content_editor/extensions/diagram';
 import CodeBlockWrapper from '~/content_editor/components/wrappers/code_block.vue';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
+import { emitEditorEvent, createTestEditor } from '../../test_utils';
 
 jest.mock('~/content_editor/services/code_block_language_loader');
 
@@ -10,21 +16,42 @@ describe('content/components/wrappers/code_block', () => {
   const language = 'yaml';
   let wrapper;
   let updateAttributesFn;
+  let tiptapEditor;
+  let contentEditor;
+  let eventHub;
+
+  const buildEditor = () => {
+    tiptapEditor = createTestEditor({ extensions: [CodeBlockHighlight, Diagram] });
+    contentEditor = { renderDiagram: jest.fn().mockResolvedValue('url/to/some/diagram') };
+    eventHub = eventHubFactory();
+  };
 
   const createWrapper = async (nodeAttrs = { language }) => {
     updateAttributesFn = jest.fn();
 
-    wrapper = shallowMount(CodeBlockWrapper, {
+    wrapper = mountExtended(CodeBlockWrapper, {
       propsData: {
+        editor: tiptapEditor,
         node: {
           attrs: nodeAttrs,
         },
         updateAttributes: updateAttributesFn,
       },
+      stubs: {
+        NodeViewContent: stubComponent(NodeViewContent),
+        NodeViewWrapper: stubComponent(NodeViewWrapper),
+      },
+      provide: {
+        contentEditor,
+        tiptapEditor,
+        eventHub,
+      },
     });
   };
 
   beforeEach(() => {
+    buildEditor();
+
     codeBlockLanguageLoader.findOrCreateLanguageBySyntax.mockReturnValue({ syntax: language });
   });
 
@@ -67,5 +94,57 @@ describe('content/components/wrappers/code_block', () => {
     await nextTick();
 
     expect(updateAttributesFn).toHaveBeenCalledWith({ language });
+  });
+
+  describe('diagrams', () => {
+    beforeEach(() => {
+      jest.spyOn(tiptapEditor, 'isActive').mockReturnValue(true);
+    });
+
+    it('does not render a preview if showPreview: false', async () => {
+      createWrapper({ language: 'plantuml', isDiagram: true, showPreview: false });
+
+      expect(wrapper.find({ ref: 'diagramContainer' }).exists()).toBe(false);
+    });
+
+    it('does not update preview when diagram is not active', async () => {
+      createWrapper({ language: 'plantuml', isDiagram: true, showPreview: true });
+
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      await nextTick();
+
+      expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+
+      jest.spyOn(tiptapEditor, 'isActive').mockReturnValue(false);
+
+      const alternateUrl = 'url/to/another/diagram';
+
+      contentEditor.renderDiagram.mockResolvedValue(alternateUrl);
+
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      await nextTick();
+
+      expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+    });
+
+    it('renders an image with preview for a plantuml/kroki diagram', async () => {
+      createWrapper({ language: 'plantuml', isDiagram: true, showPreview: true });
+
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      await nextTick();
+
+      expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+      expect(wrapper.find(SandboxedMermaid).exists()).toBe(false);
+    });
+
+    it('renders an iframe with preview for a mermaid diagram', async () => {
+      createWrapper({ language: 'mermaid', isDiagram: true, showPreview: true });
+
+      await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      await nextTick();
+
+      expect(wrapper.find(SandboxedMermaid).props('source')).toBe('');
+      expect(wrapper.find('img').exists()).toBe(false);
+    });
   });
 });

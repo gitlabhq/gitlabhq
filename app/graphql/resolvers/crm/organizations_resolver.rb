@@ -4,6 +4,7 @@ module Resolvers
   module Crm
     class OrganizationsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
+      include ResolvesIds
 
       authorize :read_crm_organization
 
@@ -17,7 +18,13 @@ module Resolvers
                required: false,
                description: 'State of the organization to search for.'
 
+      argument :ids, [Types::GlobalIDType[CustomerRelations::Organization]],
+               required: false,
+               description: 'Filter organizations by IDs.'
+
       def resolve(**args)
+        args[:ids] = resolve_ids(args.delete(:ids))
+
         ::Crm::OrganizationsFinder.new(current_user, { group: group }.merge(args)).execute
       end
 

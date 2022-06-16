@@ -36,16 +36,19 @@ export default {
   directives: {
     GlTooltip,
   },
-  inject: ['tiptapEditor'],
+  inject: ['tiptapEditor', 'contentEditor'],
   data() {
     return {
       codeBlockType: undefined,
-      selectedLanguage: {},
       filterTerm: '',
       filteredLanguages: [],
 
       showCustomLanguageInput: false,
       customLanguageType: '',
+
+      selectedLanguage: {},
+      isDiagram: false,
+      showPreview: false,
     };
   },
   watch: {
@@ -61,21 +64,36 @@ export default {
       return CODE_BLOCK_NODE_TYPES.some((type) => editor.isActive(type));
     },
 
-    updateSelectedLanguage() {
+    async updateCodeBlockInfoToState() {
       this.codeBlockType = CODE_BLOCK_NODE_TYPES.find((type) => this.tiptapEditor.isActive(type));
 
-      if (this.codeBlockType) {
-        const { language } = this.tiptapEditor.getAttributes(this.codeBlockType);
-        this.selectedLanguage = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(language);
-      }
+      if (!this.codeBlockType) return;
+
+      const { language, isDiagram, showPreview } = this.tiptapEditor.getAttributes(
+        this.codeBlockType,
+      );
+      this.selectedLanguage = codeBlockLanguageLoader.findOrCreateLanguageBySyntax(
+        language,
+        isDiagram,
+      );
+      this.isDiagram = isDiagram;
+      this.showPreview = showPreview;
     },
 
-    copyCodeBlockText() {
+    getCodeBlockText() {
       const { view } = this.tiptapEditor;
       const { from } = this.tiptapEditor.state.selection;
       const node = getParentByTagName(view.domAtPos(from).node, 'pre');
+      return node?.textContent || '';
+    },
 
-      navigator.clipboard.writeText(node?.textContent || '');
+    copyCodeBlockText() {
+      navigator.clipboard.writeText(this.getCodeBlockText());
+    },
+
+    togglePreview() {
+      this.showPreview = !this.showPreview;
+      this.tiptapEditor.commands.updateAttributes(Diagram.name, { showPreview: this.showPreview });
     },
 
     async applyLanguage(language) {
@@ -125,7 +143,7 @@ export default {
       getReferenceClientRect,
     } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
   >
-    <editor-state-observer @transaction="updateSelectedLanguage">
+    <editor-state-observer @transaction="updateCodeBlockInfoToState">
       <gl-button-group>
         <gl-dropdown
           category="tertiary"
@@ -226,6 +244,19 @@ export default {
           :title="__('Copy code')"
           icon="copy-to-clipboard"
           @click="copyCodeBlockText"
+        />
+        <gl-button
+          v-if="isDiagram"
+          v-gl-tooltip
+          variant="default"
+          category="tertiary"
+          size="medium"
+          :class="{ active: showPreview }"
+          data-testid="preview-diagram"
+          :aria-label="__('Preview diagram')"
+          :title="__('Preview diagram')"
+          icon="eye"
+          @click="togglePreview"
         />
         <gl-button
           v-gl-tooltip

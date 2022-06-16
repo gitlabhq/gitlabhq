@@ -99,7 +99,9 @@ export default {
     >
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />
-      <span v-else data-testid="collapsed-count"> {{ participantCount }} </span>
+      <span v-else data-testid="collapsed-count" class="gl-pt-2 gl-px-3 gl-font-sm">
+        {{ participantCount }}
+      </span>
     </div>
     <div
       v-if="showParticipantLabel"

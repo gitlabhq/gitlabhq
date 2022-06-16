@@ -148,6 +148,8 @@ export const conanMetadata = () => ({
   recipePath: 'package-8/1.0.0/gitlab-org+gitlab-test/stable',
 });
 
+const conanMetadataQuery = () => ({ ...conanMetadata(), __typename: 'ConanMetadata' });
+
 export const composerMetadata = () => ({
   targetSha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
   composerJson: {
@@ -156,22 +158,44 @@ export const composerMetadata = () => ({
   },
 });
 
+const composerMetadataQuery = () => ({
+  ...composerMetadata(),
+  __typename: 'ComposerMetadata',
+});
+
 export const pypiMetadata = () => ({
+  id: 'pypi-1',
   requiredPython: '1.0.0',
 });
 
+const pypiMetadataQuery = () => ({ ...pypiMetadata(), __typename: 'PypiMetadata' });
+
 export const mavenMetadata = () => ({
+  id: 'maven-1',
   appName: 'appName',
   appGroup: 'appGroup',
   appVersion: 'appVersion',
   path: 'path',
 });
 
+const mavenMetadataQuery = () => ({ ...mavenMetadata(), __typename: 'MavenMetadata' });
+
 export const nugetMetadata = () => ({
+  id: 'nuget-1',
   iconUrl: 'iconUrl',
   licenseUrl: 'licenseUrl',
   projectUrl: 'projectUrl',
 });
+
+const nugetMetadataQuery = () => ({ ...nugetMetadata(), __typename: 'NugetMetadata' });
+
+const packageTypeMetadataQueryMapping = {
+  CONAN: conanMetadataQuery,
+  COMPOSER: composerMetadataQuery,
+  PYPI: pypiMetadataQuery,
+  MAVEN: mavenMetadataQuery,
+  NUGET: nugetMetadataQuery,
+};
 
 export const pagination = (extend) => ({
   endCursor: 'eyJpZCI6IjIwNSIsIm5hbWUiOiJteS9jb21wYW55L2FwcC9teS1hcHAifQ',
@@ -201,6 +225,10 @@ export const packageDetailsQuery = (extendPackage) => ({
       tags: {
         nodes: packageTags(),
         __typename: 'PackageTagConnection',
+      },
+      pipelines: {
+        nodes: packagePipelines(),
+        __typename: 'PipelineConnection',
       },
       packageFiles: {
         nodes: packageFiles(),
@@ -239,6 +267,21 @@ export const emptyPackageDetailsQuery = () => ({
     },
   },
 });
+
+export const packageMetadataQuery = (packageType) => {
+  return {
+    data: {
+      package: {
+        id: 'gid://gitlab/Packages::Package/111',
+        packageType,
+        metadata: {
+          ...(packageTypeMetadataQueryMapping[packageType]?.() ?? {}),
+        },
+        __typename: 'PackageDetailsType',
+      },
+    },
+  };
+};
 
 export const packageDestroyMutation = () => ({
   data: {

@@ -91,7 +91,7 @@ gemnasium-python-dependency_scanning:
 
 yarn-audit-dependency_scanning:
   extends: .ds-analyzer
-  image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/analyzers/npm-audit:1.4.1"
+  image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/analyzers/npm-audit:1"
   variables:
     TOOL: yarn
   rules: !reference [".reports:rules:yarn-audit-dependency_scanning", rules]

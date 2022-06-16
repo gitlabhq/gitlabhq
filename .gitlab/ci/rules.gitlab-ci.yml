@@ -184,6 +184,17 @@
   - "*.yml"
   - "**/*.yml"
 
+.lint-pipeline-yaml-patterns: &lint-pipeline-yaml-patterns
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*.yml"
+  - "lib/gitlab/ci/templates/**/*.yml"
+  - "data/deprecations/**/*.yml"
+  - "data/removals/**/*.yml"
+  - "data/whats_new/**/*.yml"
+
+.lint-metrics-yaml-patterns: &lint-metrics-yaml-patterns
+  - "config/metrics/**/*.yml"
+
 .docs-patterns: &docs-patterns
   - ".gitlab/route-map.yml"
   - "doc/**/*"
@@ -1801,3 +1812,13 @@
   rules:
     - <<: *if-default-refs
       changes: *yaml-lint-patterns
+
+.lint-pipeline-yaml:rules:
+  rules:
+    - <<: *if-default-refs
+      changes: *lint-pipeline-yaml-patterns
+
+.lint-metrics-yaml:rules:
+  rules:
+    - <<: *if-default-refs
+      changes: *lint-metrics-yaml-patterns

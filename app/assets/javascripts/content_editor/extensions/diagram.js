@@ -1,5 +1,9 @@
+import { textblockTypeInputRule } from '@tiptap/core';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
+import languageLoader from '../services/code_block_language_loader';
 import CodeBlockHighlight from './code_block_highlight';
+
+const backtickInputRegex = /^```(mermaid|plantuml)[\s\n]$/;
 
 export default CodeBlockHighlight.extend({
   name: 'diagram',
@@ -17,11 +21,19 @@ export default CodeBlockHighlight.extend({
       isDiagram: {
         default: true,
       },
+      showPreview: {
+        default: true,
+      },
     };
   },
 
   parseHTML() {
     return [
+      {
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
+        tag: 'pre[lang="mermaid"]',
+        getAttrs: () => ({ language: 'mermaid' }),
+      },
       {
         priority: PARSE_HTML_PRIORITY_HIGHEST,
         tag: '[data-diagram]',
@@ -54,6 +66,14 @@ export default CodeBlockHighlight.extend({
   },
 
   addInputRules() {
-    return [];
+    const getAttributes = (match) => languageLoader?.loadLanguageFromInputRule(match) || {};
+
+    return [
+      textblockTypeInputRule({
+        find: backtickInputRegex,
+        type: this.type,
+        getAttributes,
+      }),
+    ];
   },
 });

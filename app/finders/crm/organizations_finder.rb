@@ -8,6 +8,7 @@
 #     group: Group, required
 #     search: String, optional
 #     state: CustomerRelations::OrganizationStateEnum, optional
+#     ids: int[], optional
 module Crm
   class OrganizationsFinder
     include Gitlab::Allowable
@@ -24,6 +25,7 @@ module Crm
       return CustomerRelations::Organization.none unless root_group
 
       organizations = root_group.organizations
+      organizations = by_ids(organizations)
       organizations = by_search(organizations)
       organizations = by_state(organizations)
       organizations.sort_by_name
@@ -53,12 +55,22 @@ module Crm
       organizations.search_by_state(params[:state])
     end
 
+    def by_ids(organizations)
+      return organizations unless ids?
+
+      organizations.id_in(params[:ids])
+    end
+
     def search?
       params[:search].present?
     end
 
     def state?
       params[:state].present?
+    end
+
+    def ids?
+      params[:ids].present?
     end
   end
 end

@@ -31,7 +31,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
       'created_at' => '2019-12-26T10:17:14.621Z',
       'updated_at' => '2019-12-26T10:17:14.621Z',
       'released_at' => '2019-12-26T10:17:14.615Z',
-      'sha' => '901de3a8bd5573f4a049b1457d28bc1592ba6bf9'
+      'sha' => '901de3a8bd5573f4a049b1457d28bc1592ba6bf9',
+      'author_id' => user.id
     }.merge(attributes)
   end
 
@@ -62,6 +63,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline do
         expect(imported_release.updated_at.to_s).to eq('2019-12-26 10:17:14 UTC')
         expect(imported_release.released_at.to_s).to eq('2019-12-26 10:17:14 UTC')
         expect(imported_release.sha).to eq(release['sha'])
+        expect(imported_release.author_id).to eq(release['author_id'])
       end
     end
 

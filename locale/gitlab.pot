@@ -2103,9 +2103,6 @@ msgstr ""
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
-msgid "Add a horizontal rule"
-msgstr ""
-
 msgid "Add a new issue"
 msgstr ""
 
@@ -2356,9 +2353,6 @@ msgid "Added in this version"
 msgstr ""
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
-msgstr ""
-
-msgid "Additional Metadata"
 msgstr ""
 
 msgid "Additional minutes"
@@ -4527,13 +4521,25 @@ msgstr ""
 msgid "ApplicationSettings|Require admin approval for new sign-ups"
 msgstr ""
 
+msgid "ApplicationSettings|Require lowercase letters"
+msgstr ""
+
+msgid "ApplicationSettings|Require numbers"
+msgstr ""
+
+msgid "ApplicationSettings|Require symbols"
+msgstr ""
+
+msgid "ApplicationSettings|Require uppercase letters"
+msgstr ""
+
 msgid "ApplicationSettings|Restricts sign-ups for email addresses that match the given regex. %{linkStart}What is the supported syntax?%{linkEnd}"
 msgstr ""
 
 msgid "ApplicationSettings|Save changes"
 msgstr ""
 
-msgid "ApplicationSettings|See GitLab's %{linkStart}Password Policy Guidelines%{linkEnd}."
+msgid "ApplicationSettings|See %{linkStart}password policy guidelines%{linkEnd}."
 msgstr ""
 
 msgid "ApplicationSettings|Send confirmation email on sign-up"
@@ -4558,6 +4564,18 @@ msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s
 msgstr ""
 
 msgid "ApplicationSettings|Users with e-mail addresses that match these domain(s) cannot sign up. Wildcards allowed. Use separate lines or commas for multiple entries."
+msgstr ""
+
+msgid "ApplicationSettings|When enabled, new passwords must contain at least one lowercase letter (a-z)."
+msgstr ""
+
+msgid "ApplicationSettings|When enabled, new passwords must contain at least one number (0-9)."
+msgstr ""
+
+msgid "ApplicationSettings|When enabled, new passwords must contain at least one symbol (!@#$%%^&())."
+msgstr ""
+
+msgid "ApplicationSettings|When enabled, new passwords must contain at least one uppercase letter (A-Z)."
 msgstr ""
 
 msgid "ApplicationSettings|domain.com"
@@ -13173,6 +13191,9 @@ msgstr ""
 msgid "DevopsReport|Your usage"
 msgstr ""
 
+msgid "Diagram (%{language})"
+msgstr ""
+
 msgid "Did not delete the source branch."
 msgstr ""
 
@@ -18992,6 +19013,9 @@ msgstr ""
 msgid "Hook was successfully updated."
 msgstr ""
 
+msgid "Horizontal rule"
+msgstr ""
+
 msgid "Hostname"
 msgstr ""
 
@@ -24301,6 +24325,9 @@ msgstr ""
 msgid "Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{docsLinkStart}documentation%{docsLinkEnd} for more information."
 msgstr ""
 
+msgid "Mermaid diagram"
+msgstr ""
+
 msgid "Message"
 msgstr ""
 
@@ -27039,6 +27066,9 @@ msgstr ""
 msgid "PackageRegistry|Add composer registry"
 msgstr ""
 
+msgid "PackageRegistry|Additional metadata"
+msgstr ""
+
 msgid "PackageRegistry|Allow duplicates"
 msgstr ""
 
@@ -27303,6 +27333,9 @@ msgid "PackageRegistry|Something went wrong while deleting the package."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while fetching the package history."
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while fetching the package metadata."
 msgstr ""
 
 msgid "PackageRegistry|Sorry, your filter produced no results"
@@ -28520,6 +28553,9 @@ msgstr ""
 msgid "PlantUML URL"
 msgstr ""
 
+msgid "PlantUML diagram"
+msgstr ""
+
 msgid "Play"
 msgstr ""
 
@@ -28941,6 +28977,9 @@ msgid "Preview Markdown"
 msgstr ""
 
 msgid "Preview changes"
+msgstr ""
+
+msgid "Preview diagram"
 msgstr ""
 
 msgid "Preview payload"
@@ -43265,9 +43304,6 @@ msgstr ""
 msgid "WorkItem|Expand child items"
 msgstr ""
 
-msgid "WorkItem|New Task"
-msgstr ""
-
 msgid "WorkItem|No child items are currently assigned. Use child items to prioritize tasks that your team should complete in order to accomplish your goals!"
 msgstr ""
 
@@ -43670,6 +43706,9 @@ msgid "You cannot change the start date after the cadence has started. Please cr
 msgstr ""
 
 msgid "You cannot combine replace_ids with add_ids or remove_ids"
+msgstr ""
+
+msgid "You cannot edit this timeline event."
 msgstr ""
 
 msgid "You cannot impersonate a blocked user"

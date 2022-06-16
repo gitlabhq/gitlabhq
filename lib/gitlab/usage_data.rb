@@ -643,16 +643,6 @@ module Gitlab
         }
       end
 
-      def analytics_unique_visits_data
-        results = ::Gitlab::Analytics::UniqueVisits.analytics_events.each_with_object({}) do |target, hash|
-          hash[target] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target) }
-        end
-        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
-        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics, **monthly_time_range) }
-
-        { analytics_unique_visits: results }
-      end
-
       def compliance_unique_visits_data
         results = ::Gitlab::Analytics::UniqueVisits.compliance_events.each_with_object({}) do |target, hash|
           hash[target] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target) }
@@ -710,7 +700,6 @@ module Gitlab
           .merge(topology_usage_data)
           .merge(usage_activity_by_stage)
           .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
-          .merge(analytics_unique_visits_data)
           .merge(compliance_unique_visits_data)
           .merge(redis_hll_counters)
           .deep_merge(aggregated_metrics_data)

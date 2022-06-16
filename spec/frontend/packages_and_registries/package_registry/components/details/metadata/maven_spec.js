@@ -1,14 +1,8 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import {
-  mavenMetadata,
-  packageData,
-} from 'jest/packages_and_registries/package_registry/mock_data';
+import { mavenMetadata } from 'jest/packages_and_registries/package_registry/mock_data';
 import component from '~/packages_and_registries/package_registry/components/details/metadata/maven.vue';
-import { PACKAGE_TYPE_MAVEN } from '~/packages_and_registries/package_registry/constants';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
-
-const mavenPackage = { packageType: PACKAGE_TYPE_MAVEN, metadata: mavenMetadata() };
 
 describe('Maven Metadata', () => {
   let wrapper;
@@ -16,9 +10,7 @@ describe('Maven Metadata', () => {
   const mountComponent = () => {
     wrapper = shallowMountExtended(component, {
       propsData: {
-        packageEntity: {
-          ...packageData(mavenPackage),
-        },
+        packageMetadata: mavenMetadata(),
       },
       stubs: {
         DetailsRow,

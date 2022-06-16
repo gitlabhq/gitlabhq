@@ -10,8 +10,12 @@ product_category:
 value_type: number
 status: active
 milestone: "13.12"
-time_frame: all
+time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - users_viewing_analytics_group_devops_adoption
 distribution:
 - ce
 - ee

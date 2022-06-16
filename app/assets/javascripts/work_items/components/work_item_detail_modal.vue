@@ -98,7 +98,15 @@ export default {
 </script>
 
 <template>
-  <gl-modal ref="modal" hide-footer size="lg" modal-id="work-item-detail-modal" @hide="closeModal">
+  <gl-modal
+    ref="modal"
+    hide-footer
+    size="lg"
+    modal-id="work-item-detail-modal"
+    header-class="gl-p-0 gl-pb-2!"
+    body-class="gl-pb-6!"
+    @hide="closeModal"
+  >
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">
       {{ error }}
     </gl-alert>
@@ -106,6 +114,7 @@ export default {
     <work-item-detail
       :work-item-parent-id="issueGid"
       :work-item-id="workItemId"
+      class="gl-p-5 gl-mt-n3"
       @deleteWorkItem="deleteWorkItem"
     />
   </gl-modal>
@@ -114,7 +123,7 @@ export default {
 <style>
 /* hide the existing modal header
  */
-#work-item-detail-modal .modal-header {
+#work-item-detail-modal .modal-header * {
   display: none;
 }
 </style>

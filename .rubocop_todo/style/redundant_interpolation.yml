@@ -77,7 +77,6 @@ Style/RedundantInterpolation:
     - 'qa/qa/resource/events/base.rb'
     - 'qa/qa/service/praefect_manager.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/pipeline/include_multiple_files_from_a_project_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/4_verify/pipeline/parent_child_pipelines_dependent_relationship_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/container_registry/container_registry_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/1_manage/project/project_templates_spec.rb'
     - 'qa/qa/tools/generate_perf_testdata.rb'

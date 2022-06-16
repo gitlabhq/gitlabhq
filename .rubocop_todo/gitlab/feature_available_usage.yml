@@ -25,7 +25,6 @@ Gitlab/FeatureAvailableUsage:
   - ee/app/controllers/projects/subscriptions_controller.rb
   - ee/app/finders/autocomplete/vulnerabilities_autocomplete_finder.rb
   - ee/app/finders/clusters/agents_finder.rb
-  - ee/app/finders/ee/alert_management/alerts_finder.rb
   - ee/app/finders/ee/alert_management/http_integrations_finder.rb
   - ee/app/graphql/ee/types/group_type.rb
   - ee/app/graphql/mutations/dast/profiles/create.rb

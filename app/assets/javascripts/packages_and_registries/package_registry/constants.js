@@ -75,6 +75,9 @@ export const FETCH_PACKAGE_DETAILS_ERROR_MESSAGE = s__(
 export const FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while fetching the package history.',
 );
+export const FETCH_PACKAGE_METADATA_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while fetching the package metadata.',
+);
 
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
 export const PACKAGE_REGISTRY_TITLE = __('Package Registry');

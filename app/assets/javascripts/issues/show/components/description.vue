@@ -453,13 +453,7 @@ export default {
     >
     </textarea>
 
-    <gl-modal
-      ref="modal"
-      modal-id="create-task-modal"
-      :title="s__('WorkItem|New Task')"
-      hide-footer
-      body-class="gl-p-0!"
-    >
+    <gl-modal ref="modal" size="lg" modal-id="create-task-modal" hide-footer body-class="gl-p-0!">
       <create-work-item
         is-modal
         :initial-title="activeTask.title"

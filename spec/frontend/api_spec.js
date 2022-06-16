@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 
 jest.mock('~/flash');
 
@@ -622,8 +622,8 @@ describe('Api', () => {
       const query = 'dummy query';
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
       const flashCallback = (callCount) => {
-        expect(createFlash).toHaveBeenCalledTimes(callCount);
-        createFlash.mockClear();
+        expect(createAlert).toHaveBeenCalledTimes(callCount);
+        createAlert.mockClear();
       };
 
       mock.onGet(expectedUrl).reply(500, null);

@@ -94,7 +94,7 @@ RSpec.describe 'getting incident timeline events' do
         'id' => promoted_from_note.to_global_id.to_s,
         'body' => promoted_from_note.note
       },
-      'editable' => false,
+      'editable' => true,
       'action' => timeline_event.action,
       'occurredAt' => timeline_event.occurred_at.iso8601,
       'createdAt' => timeline_event.created_at.iso8601,

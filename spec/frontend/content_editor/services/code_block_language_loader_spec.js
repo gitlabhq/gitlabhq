@@ -35,6 +35,13 @@ describe('content_editor/services/code_block_language_loader', () => {
       });
     });
 
+    it('returns Diagram (syntax) if the language does not exist, and isDiagram = true', () => {
+      expect(languageLoader.findOrCreateLanguageBySyntax('foobar', true)).toMatchObject({
+        syntax: 'foobar',
+        label: 'Diagram (foobar)',
+      });
+    });
+
     it('returns plaintext if no syntax is passed', () => {
       expect(languageLoader.findOrCreateLanguageBySyntax('')).toMatchObject({
         syntax: 'plaintext',

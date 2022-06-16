@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.0.3 (2022-06-16)
+
+### Fixed (2 changes)
+
+- [Disconnect alternates when unlinking from a repository pool](gitlab-org/gitlab@a6f4b701af0d5850a10d77feeb4842b1fe017047) ([merge request](gitlab-org/gitlab!90269))
+- [Add GitLab agent image tag to install command](gitlab-org/gitlab@09decb04e391f095139412ed623164cab8023a7c) ([merge request](gitlab-org/gitlab!90269))
+
 ## 15.0.2 (2022-06-06)
 
 ### Added (1 change)

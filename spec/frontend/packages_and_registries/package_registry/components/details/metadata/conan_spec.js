@@ -1,14 +1,8 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import {
-  conanMetadata,
-  packageData,
-} from 'jest/packages_and_registries/package_registry/mock_data';
+import { conanMetadata } from 'jest/packages_and_registries/package_registry/mock_data';
 import component from '~/packages_and_registries/package_registry/components/details/metadata/conan.vue';
-import { PACKAGE_TYPE_CONAN } from '~/packages_and_registries/package_registry/constants';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
-
-const conanPackage = { packageType: PACKAGE_TYPE_CONAN, metadata: conanMetadata() };
 
 describe('Conan Metadata', () => {
   let wrapper;
@@ -16,7 +10,7 @@ describe('Conan Metadata', () => {
   const mountComponent = () => {
     wrapper = shallowMountExtended(component, {
       propsData: {
-        packageEntity: packageData(conanPackage),
+        packageMetadata: conanMetadata(),
       },
       stubs: {
         DetailsRow,

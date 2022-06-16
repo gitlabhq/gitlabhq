@@ -41,7 +41,7 @@ RSpec.describe Resolvers::Crm::ContactsResolver do
     end
 
     context 'with authorized user' do
-      it 'does not rise an error and returns all contacts' do
+      it 'does not rise an error and returns all contacts in the correct order' do
         group.add_reporter(user)
 
         expect { resolve_contacts(group) }.not_to raise_error
@@ -61,20 +61,26 @@ RSpec.describe Resolvers::Crm::ContactsResolver do
       end
 
       context 'when no filter is provided' do
-        it 'returns all the contacts' do
-          expect(resolve_contacts(group)).to match_array([contact_a, contact_b])
+        it 'returns all the contacts in the correct order' do
+          expect(resolve_contacts(group)).to eq([contact_a, contact_b])
         end
       end
 
       context 'when search term is provided' do
         it 'returns the correct contacts' do
-          expect(resolve_contacts(group, { search: "x@test.com" })).to match_array([contact_b])
+          expect(resolve_contacts(group, { search: "x@test.com" })).to contain_exactly(contact_b)
         end
       end
 
       context 'when state is provided' do
         it 'returns the correct contacts' do
-          expect(resolve_contacts(group, { state: :inactive })).to match_array([contact_a])
+          expect(resolve_contacts(group, { state: :inactive })).to contain_exactly(contact_a)
+        end
+      end
+
+      context 'when ids are provided' do
+        it 'returns the correct contacts' do
+          expect(resolve_contacts(group, { ids: [contact_a.to_global_id] })).to contain_exactly(contact_a)
         end
       end
     end

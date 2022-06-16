@@ -13,7 +13,7 @@ export default {
     GlSprintf,
   },
   props: {
-    packageEntity: {
+    packageMetadata: {
       type: Object,
       required: true,
     },
@@ -25,7 +25,7 @@ export default {
   <div>
     <details-row icon="information-o" padding="gl-p-4" data-testid="conan-recipe">
       <gl-sprintf :message="$options.i18n.recipeText">
-        <template #recipe>{{ packageEntity.metadata.recipe }}</template>
+        <template #recipe>{{ packageMetadata.recipe }}</template>
       </gl-sprintf>
     </details-row>
   </div>

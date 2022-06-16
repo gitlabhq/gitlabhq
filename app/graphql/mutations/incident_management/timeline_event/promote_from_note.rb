@@ -21,7 +21,8 @@ module Mutations
             current_user,
             promoted_from_note: note,
             note: note.note,
-            occurred_at: note.created_at
+            occurred_at: note.created_at,
+            editable: true
           ).execute
         end
 

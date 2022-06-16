@@ -10,5 +10,14 @@ FactoryBot.define do
     note { 'timeline created' }
     note_html { '<strong>timeline created</strong>' }
     action { 'comment' }
+    editable
+  end
+
+  trait :editable do
+    editable { true }
+  end
+
+  trait :non_editable do
+    editable { false }
   end
 end

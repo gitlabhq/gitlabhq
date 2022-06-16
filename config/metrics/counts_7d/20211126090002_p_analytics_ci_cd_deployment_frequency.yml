@@ -1,7 +1,7 @@
 ---
 data_category: optional
-key_path: analytics_unique_visits.p_analytics_ci_cd_pipelines
-description: Count of unique visits to the project level CI CD Analytics pipelines tab
+key_path: analytics_unique_visits.p_analytics_ci_cd_deployment_frequency
+description: Count of unique visits to the project level CI CD Analytics deployment frequency tab
 product_section: dev
 product_stage: manage
 product_group: group::optimize
@@ -10,8 +10,12 @@ value_type: number
 status: active
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75187
-time_frame: all
+time_frame: 7d
 data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - p_analytics_ci_cd_deployment_frequency
 distribution:
   - ce
   - ee

@@ -18,6 +18,10 @@ export default function initSignupRestrictions(elementSelector = '#js-signup-for
       'domainDenylistEnabled',
       'denylistTypeRawSelected',
       'emailRestrictionsEnabled',
+      'passwordNumberRequired',
+      'passwordLowercaseRequired',
+      'passwordUppercaseRequired',
+      'passwordSymbolRequired',
     ],
   });
 

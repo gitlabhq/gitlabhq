@@ -1204,46 +1204,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe '.analytics_unique_visits_data' do
-    subject { described_class.analytics_unique_visits_data }
-
-    it 'returns the number of unique visits to pages with analytics features' do
-      ::Gitlab::Analytics::UniqueVisits.analytics_events.each do |target|
-        expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: target).and_return(123)
-      end
-
-      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics).and_return(543)
-      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
-
-      expect(subject).to eq({
-        analytics_unique_visits: {
-          'g_analytics_contribution' => 123,
-          'g_analytics_insights' => 123,
-          'g_analytics_issues' => 123,
-          'g_analytics_productivity' => 123,
-          'g_analytics_valuestream' => 123,
-          'p_analytics_pipelines' => 123,
-          'p_analytics_code_reviews' => 123,
-          'p_analytics_valuestream' => 123,
-          'p_analytics_insights' => 123,
-          'p_analytics_issues' => 123,
-          'p_analytics_repo' => 123,
-          'i_analytics_cohorts' => 123,
-          'i_analytics_dev_ops_score' => 123,
-          'i_analytics_instance_statistics' => 123,
-          'p_analytics_ci_cd_deployment_frequency' => 123,
-          'p_analytics_ci_cd_lead_time' => 123,
-          'p_analytics_ci_cd_pipelines' => 123,
-          'p_analytics_merge_request' => 123,
-          'i_analytics_dev_ops_adoption' => 123,
-          'users_viewing_analytics_group_devops_adoption' => 123,
-          'analytics_unique_visits_for_any_target' => 543,
-          'analytics_unique_visits_for_any_target_monthly' => 987
-        }
-      })
-    end
-  end
-
   describe '.compliance_unique_visits_data' do
     subject { described_class.compliance_unique_visits_data }
 

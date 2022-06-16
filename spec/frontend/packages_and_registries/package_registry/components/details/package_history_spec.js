@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLink, GlSprintf } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,7 +11,6 @@ import {
   packagePipelinesQuery,
 } from 'jest/packages_and_registries/package_registry/mock_data';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
-import { FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE } from '~/packages_and_registries/package_registry/constants';
 import component from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageHistoryLoader from '~/packages_and_registries/package_registry/components/details/package_history_loader.vue';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
@@ -19,7 +18,8 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPackagePipelines from '~/packages_and_registries/package_registry/graphql/queries/get_package_pipelines.query.graphql';
 
-jest.mock('~/flash');
+Vue.use(VueApollo);
+
 describe('Package History', () => {
   let wrapper;
   let apolloProvider;
@@ -34,12 +34,10 @@ describe('Package History', () => {
   const createPipelines = (amount) =>
     [...Array(amount)].map((x, index) => packagePipelines({ id: index + 1 })[0]);
 
-  const mountComponent = (
-    props,
+  const mountComponent = ({
+    props = {},
     resolver = jest.fn().mockResolvedValue(packagePipelinesQuery()),
-  ) => {
-    Vue.use(VueApollo);
-
+  } = {}) => {
     const requestHandlers = [[getPackagePipelines, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
@@ -55,14 +53,20 @@ describe('Package History', () => {
     });
   };
 
+  beforeEach(() => {
+    jest.spyOn(Sentry, 'captureException').mockImplementation();
+  });
+
   afterEach(() => {
     wrapper.destroy();
+    wrapper = null;
   });
 
   const findPackageHistoryLoader = () => wrapper.findComponent(PackageHistoryLoader);
   const findHistoryElement = (testId) => wrapper.findByTestId(testId);
   const findElementLink = (container) => container.findComponent(GlLink);
   const findElementTimeAgo = (container) => container.findComponent(TimeAgoTooltip);
+  const findPackageHistoryAlert = () => wrapper.findComponent(GlAlert);
   const findTitle = () => wrapper.findByTestId('title');
   const findTimeline = () => wrapper.findByTestId('timeline');
 
@@ -77,6 +81,7 @@ describe('Package History', () => {
     await waitForPromises();
 
     expect(findPackageHistoryLoader().exists()).toBe(false);
+    expect(Sentry.captureException).not.toHaveBeenCalled();
   });
 
   it('has the correct title', async () => {
@@ -101,16 +106,22 @@ describe('Package History', () => {
     );
   });
 
-  it('calls createFlash function if load fails', async () => {
-    mountComponent({}, jest.fn().mockRejectedValue());
+  it('does not render gl-alert', () => {
+    mountComponent();
+
+    expect(findPackageHistoryAlert().exists()).toBe(false);
+  });
+
+  it('renders gl-alert if load fails', async () => {
+    mountComponent({ resolver: jest.fn().mockRejectedValue() });
 
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE,
-      }),
+    expect(findPackageHistoryAlert().exists()).toBe(true);
+    expect(findPackageHistoryAlert().text()).toEqual(
+      'Something went wrong while fetching the package history.',
     );
+    expect(Sentry.captureException).toHaveBeenCalled();
   });
 
   describe.each`
@@ -132,13 +143,16 @@ describe('Package History', () => {
         const pipelinesResolver = jest
           .fn()
           .mockResolvedValue(packagePipelinesQuery(createPipelines(amount)));
-        mountComponent(
-          {
+
+        mountComponent({
+          props: {
             packageEntity,
           },
-          pipelinesResolver,
-        );
+          resolver: pipelinesResolver,
+        });
+
         await waitForPromises();
+
         element = findHistoryElement(name);
       });
 

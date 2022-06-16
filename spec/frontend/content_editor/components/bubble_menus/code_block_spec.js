@@ -12,6 +12,7 @@ import { stubComponent } from 'helpers/stub_component';
 import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Diagram from '~/content_editor/extensions/diagram';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
 import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
@@ -20,11 +21,13 @@ const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jes
 describe('content_editor/components/bubble_menus/code_block', () => {
   let wrapper;
   let tiptapEditor;
+  let contentEditor;
   let bubbleMenu;
   let eventHub;
 
   const buildEditor = () => {
-    tiptapEditor = createTestEditor({ extensions: [CodeBlockHighlight] });
+    tiptapEditor = createTestEditor({ extensions: [CodeBlockHighlight, Diagram] });
+    contentEditor = { renderDiagram: jest.fn() };
     eventHub = eventHubFactory();
   };
 
@@ -32,6 +35,7 @@ describe('content_editor/components/bubble_menus/code_block', () => {
     wrapper = mountExtended(CodeBlockBubbleMenu, {
       provide: {
         tiptapEditor,
+        contentEditor,
         eventHub,
       },
       stubs: {
@@ -85,6 +89,15 @@ describe('content_editor/components/bubble_menus/code_block', () => {
     expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Javascript');
   });
 
+  it('selects diagram sytnax for mermaid', async () => {
+    tiptapEditor.commands.insertContent('<pre lang="mermaid">test</pre>');
+    bubbleMenu = wrapper.findComponent(BubbleMenu);
+
+    await emitEditorEvent({ event: 'transaction', tiptapEditor });
+
+    expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Diagram (mermaid)');
+  });
+
   it("selects Custom (syntax) if the language doesn't exist in the list", async () => {
     tiptapEditor.commands.insertContent('<pre lang="nomnoml">test</pre>');
     bubbleMenu = wrapper.findComponent(BubbleMenu);
@@ -113,6 +126,39 @@ describe('content_editor/components/bubble_menus/code_block', () => {
       await wrapper.findByTestId('delete-code-block').vm.$emit('click');
 
       expect(tiptapEditor.getText()).toBe('');
+    });
+  });
+
+  describe('preview button', () => {
+    it('does not appear for a regular code block', async () => {
+      tiptapEditor.commands.insertContent('<pre lang="javascript">var a = 2;</pre>');
+
+      expect(wrapper.findByTestId('preview-diagram').exists()).toBe(false);
+    });
+
+    it.each`
+      diagramType  | diagramCode
+      ${'mermaid'} | ${'<pre lang="mermaid">graph TD;\n    A-->B;</pre>'}
+      ${'nomnoml'} | ${'<img data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,WzxmcmFtZT5EZWNvcmF0b3IgcGF0dGVybl0=">'}
+    `('toggles preview for a $diagramType diagram', async ({ diagramType, diagramCode }) => {
+      tiptapEditor.commands.insertContent(diagramCode);
+
+      await nextTick();
+      await wrapper.findByTestId('preview-diagram').vm.$emit('click');
+
+      expect(tiptapEditor.getAttributes(Diagram.name)).toEqual({
+        isDiagram: true,
+        language: diagramType,
+        showPreview: false,
+      });
+
+      await wrapper.findByTestId('preview-diagram').vm.$emit('click');
+
+      expect(tiptapEditor.getAttributes(Diagram.name)).toEqual({
+        isDiagram: true,
+        language: diagramType,
+        showPreview: true,
+      });
     });
   });
 

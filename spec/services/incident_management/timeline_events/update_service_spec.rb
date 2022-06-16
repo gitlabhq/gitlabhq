@@ -135,6 +135,14 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
           execute
         end
       end
+
+      context 'when timeline event is non-editable' do
+        let!(:timeline_event) do
+          create(:incident_management_timeline_event, :non_editable, project: project, incident: incident)
+        end
+
+        it_behaves_like 'error response', 'You cannot edit this timeline event.'
+      end
     end
 
     context 'when user does not have permissions' do

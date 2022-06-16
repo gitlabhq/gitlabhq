@@ -126,7 +126,7 @@ export default {
         <div class="gl-display-flex gl-align-items-center">
           <span
             :style="{ backgroundColor: label.color }"
-            class="gl-display-inline-block mr-2 p-2"
+            class="gl-display-inline-block gl-mr-3 gl-p-3"
           ></span>
           <div>{{ getLabelName(label) }}</div>
         </div>

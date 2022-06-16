@@ -27,6 +27,9 @@ import DeletePackage from '~/packages_and_registries/package_registry/components
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
+  PACKAGE_TYPE_CONAN,
+  PACKAGE_TYPE_MAVEN,
+  PACKAGE_TYPE_PYPI,
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
@@ -122,6 +125,9 @@ export default {
     packageFiles() {
       return this.packageEntity.packageFiles?.nodes;
     },
+    packageType() {
+      return this.packageEntity.packageType;
+    },
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
@@ -130,7 +136,7 @@ export default {
     },
     tracking() {
       return {
-        category: packageTypeToTrackCategory(this.packageEntity.packageType),
+        category: packageTypeToTrackCategory(this.packageType),
       };
     },
     hasVersions() {
@@ -140,10 +146,19 @@ export default {
       return this.packageEntity.dependencyLinks?.nodes || [];
     },
     showDependencies() {
-      return this.packageEntity.packageType === PACKAGE_TYPE_NUGET;
+      return this.packageType === PACKAGE_TYPE_NUGET;
     },
     showFiles() {
-      return this.packageEntity.packageType !== PACKAGE_TYPE_COMPOSER;
+      return this.packageType !== PACKAGE_TYPE_COMPOSER;
+    },
+    showMetadata() {
+      return [
+        PACKAGE_TYPE_COMPOSER,
+        PACKAGE_TYPE_CONAN,
+        PACKAGE_TYPE_MAVEN,
+        PACKAGE_TYPE_NUGET,
+        PACKAGE_TYPE_PYPI,
+      ].includes(this.packageType);
     },
   },
   methods: {
@@ -262,7 +277,11 @@ export default {
 
           <installation-commands :package-entity="packageEntity" />
 
-          <additional-metadata :package-entity="packageEntity" />
+          <additional-metadata
+            v-if="showMetadata"
+            :package-id="packageEntity.id"
+            :package-type="packageType"
+          />
         </div>
 
         <package-files

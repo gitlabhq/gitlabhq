@@ -27,7 +27,8 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::PromoteFromNote do
           occurred_at: comment.created_at.to_s,
           incident: incident,
           author: current_user,
-          promoted_from_note: comment
+          promoted_from_note: comment,
+          editable: true
         )
       end
 

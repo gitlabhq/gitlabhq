@@ -129,6 +129,14 @@ RSpec.describe Crm::OrganizationsFinder do
           expect(finder.execute).to match_array([search_test_b])
         end
       end
+
+      context 'when searching for organizations ids' do
+        it 'returns the expected organizations' do
+          finder = described_class.new(user, group: search_test_group, ids: [search_test_a.id])
+
+          expect(finder.execute).to match_array([search_test_a])
+        end
+      end
     end
   end
 end
