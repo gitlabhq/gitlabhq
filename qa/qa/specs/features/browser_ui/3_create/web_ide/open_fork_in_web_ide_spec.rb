@@ -3,9 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Open a fork in Web IDE',
-      # TODO: remove limitation to only run on main when the test is fixed
-      only: { pipeline: :main },
-      quarantine: {
+      skip: {
         issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/351696",
         type: :flaky
       } do

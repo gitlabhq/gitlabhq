@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class UnlockDelayedProjectRemoval < Gitlab::Database::Migration[2.0]
-  disable_ddl_transaction!
-
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   class ApplicationSetting < MigrationRecord
