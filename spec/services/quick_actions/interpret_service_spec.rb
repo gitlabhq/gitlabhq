@@ -2394,24 +2394,6 @@ RSpec.describe QuickActions::InterpretService do
         create(:issue_customer_relations_contact, issue: issue, contact: existing_contact)
       end
 
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(customer_relations: false)
-        end
-
-        it 'add_contacts command does not add the contact' do
-          _, updates, _ = add_command
-
-          expect(updates).to be_empty
-        end
-
-        it 'remove_contacts command does not remove the contact' do
-          _, updates, _ = remove_command
-
-          expect(updates).to be_empty
-        end
-      end
-
       it 'add_contacts command adds the contact' do
         _, updates, message = add_command
 

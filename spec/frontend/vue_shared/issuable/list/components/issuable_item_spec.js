@@ -5,9 +5,10 @@ import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_hel
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
-import { mockIssuable, mockRegularLabel, mockScopedLabel } from '../mock_data';
+import { mockIssuable, mockRegularLabel } from '../mock_data';
 
 const createComponent = ({
+  hasScopedLabelsFeature = false,
   issuableSymbol = '#',
   issuable = mockIssuable,
   showCheckbox = true,
@@ -15,6 +16,7 @@ const createComponent = ({
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
+      hasScopedLabelsFeature,
       issuableSymbol,
       issuable,
       showDiscussions: true,
@@ -182,21 +184,6 @@ describe('IssuableItem', () => {
   });
 
   describe('methods', () => {
-    describe('scopedLabel', () => {
-      it.each`
-        label               | labelType    | returnValue
-        ${mockRegularLabel} | ${'regular'} | ${false}
-        ${mockScopedLabel}  | ${'scoped'}  | ${true}
-      `(
-        'return $returnValue when provided label param is a $labelType label',
-        ({ label, returnValue }) => {
-          wrapper = createComponent();
-
-          expect(wrapper.vm.scopedLabel(label)).toBe(returnValue);
-        },
-      );
-    });
-
     describe('labelTitle', () => {
       it.each`
         label               | propWithTitle | returnValue
@@ -498,6 +485,22 @@ describe('IssuableItem', () => {
         wrapper = createComponent({ issuable: { ...mockIssuable, createdAt: '2020-12-09' } });
 
         expect(wrapper.classes()).not.toContain('today');
+      });
+    });
+
+    describe('scoped labels', () => {
+      describe.each`
+        description                                                         | labelPosition | hasScopedLabelsFeature | scoped
+        ${'when label is not scoped and there is no scoped_labels feature'} | ${0}          | ${false}               | ${false}
+        ${'when label is scoped and there is no scoped_labels feature'}     | ${1}          | ${false}               | ${false}
+        ${'when label is not scoped and there is scoped_labels feature'}    | ${0}          | ${true}                | ${false}
+        ${'when label is scoped and there is scoped_labels feature'}        | ${1}          | ${true}                | ${true}
+      `('$description', ({ hasScopedLabelsFeature, labelPosition, scoped }) => {
+        it(`${scoped ? 'renders' : 'does not render'} as scoped label`, () => {
+          wrapper = createComponent({ hasScopedLabelsFeature });
+
+          expect(wrapper.findAllComponents(GlLabel).at(labelPosition).props('scoped')).toBe(scoped);
+        });
       });
     });
   });

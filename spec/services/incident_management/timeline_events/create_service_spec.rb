@@ -33,6 +33,8 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         expect(execute).to be_error
         expect(execute.message).to eq(message)
       end
+
+      it_behaves_like 'does not track incident management event', :incident_management_timeline_event_created
     end
 
     shared_examples 'success response' do
@@ -48,6 +50,8 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         expect(result.promoted_from_note).to eq(comment)
         expect(result.editable).to eq(editable)
       end
+
+      it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
     end
 
     subject(:execute) { service.execute }

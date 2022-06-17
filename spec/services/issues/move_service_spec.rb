@@ -194,20 +194,6 @@ RSpec.describe Issues::MoveService do
             expect(new_issue.customer_relations_contacts).to be_empty
           end
         end
-
-        context 'when customer_relations feature is disabled' do
-          let(:another_project) { create(:project, namespace: create(:group)) }
-
-          before do
-            stub_feature_flags(customer_relations: false)
-          end
-
-          it 'does not preserve contacts' do
-            new_issue = move_service.execute(old_issue, new_project)
-
-            expect(new_issue.customer_relations_contacts).to be_empty
-          end
-        end
       end
 
       context 'moving to same project' do

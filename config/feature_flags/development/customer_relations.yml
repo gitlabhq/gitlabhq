@@ -1,8 +1,0 @@
----
-name: customer_relations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69472
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/346082
-milestone: '14.3'
-type: development
-group: group::product planning
-default_enabled: true

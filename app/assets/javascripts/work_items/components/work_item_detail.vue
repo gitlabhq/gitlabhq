@@ -13,7 +13,6 @@ import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
-import WorkItemLinks from './work_item_links/work_item_links.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemWeight from './work_item_weight.vue';
 
@@ -27,7 +26,6 @@ export default {
     WorkItemDescription,
     WorkItemTitle,
     WorkItemState,
-    WorkItemLinks,
     WorkItemWeight,
   },
   mixins: [glFeatureFlagMixin()],
@@ -150,7 +148,6 @@ export default {
         :work-item-id="workItem.id"
         @error="error = $event"
       />
-      <work-item-links v-if="glFeatures.workItemsHierarchy" :work-item-id="workItem.id" />
     </template>
   </section>
 </template>

@@ -188,8 +188,8 @@ export default {
       <div class="row">
         <div class="col-md-12">
           <h4>{{ s__('FeatureFlags|Strategies') }}</h4>
-          <div class="flex align-items-baseline justify-content-between">
-            <p class="mr-3">{{ $options.translations.newHelpText }}</p>
+          <div class="gl-display-flex gl-align-items-baseline gl-justify-content-space-between">
+            <p class="gl-mr-5">{{ $options.translations.newHelpText }}</p>
             <gl-button variant="confirm" category="secondary" @click="addStrategy">
               {{ s__('FeatureFlags|Add strategy') }}
             </gl-button>
@@ -206,7 +206,7 @@ export default {
           @delete="deleteStrategy(strategy)"
         />
       </div>
-      <div v-else class="flex justify-content-center border-top py-4 w-100">
+      <div v-else class="gl-display-flex gl-justify-content-center gl-border-t gl-py-6 w-100">
         <span>{{ $options.translations.noStrategiesText }}</span>
       </div>
     </fieldset>

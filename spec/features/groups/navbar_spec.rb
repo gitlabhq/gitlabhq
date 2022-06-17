@@ -15,7 +15,6 @@ RSpec.describe 'Group navbar' do
   before do
     insert_package_nav(_('Kubernetes'))
 
-    stub_feature_flags(customer_relations: false)
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
     stub_feature_flags(harbor_registry_integration: false)
@@ -42,12 +41,10 @@ RSpec.describe 'Group navbar' do
     it_behaves_like 'verified navigation bar'
   end
 
-  context 'when customer_relations feature and flag is enabled' do
+  context 'when customer_relations feature is enabled' do
     let(:group) { create(:group, :crm_enabled) }
 
     before do
-      stub_feature_flags(customer_relations: true)
-
       if Gitlab.ee?
         insert_customer_relations_nav(_('Analytics'))
       else
@@ -60,12 +57,10 @@ RSpec.describe 'Group navbar' do
     it_behaves_like 'verified navigation bar'
   end
 
-  context 'when customer_relations feature and flag is enabled but subgroup' do
+  context 'when customer_relations feature is enabled but subgroup' do
     let(:group) { create(:group, :crm_enabled, parent: create(:group)) }
 
     before do
-      stub_feature_flags(customer_relations: true)
-
       visit group_path(group)
     end
 

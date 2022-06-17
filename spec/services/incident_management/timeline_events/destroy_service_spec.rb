@@ -24,6 +24,8 @@ RSpec.describe IncidentManagement::TimelineEvents::DestroyService do
         expect(execute).to be_error
         expect(execute.message).to eq(message)
       end
+
+      it_behaves_like 'does not track incident management event', :incident_management_timeline_event_deleted
     end
 
     subject(:execute) { service.execute }
@@ -49,12 +51,16 @@ RSpec.describe IncidentManagement::TimelineEvents::DestroyService do
       it_behaves_like 'error response', 'Note cannot be removed'
     end
 
-    it 'successfully returns the timeline event', :aggregate_failures do
-      expect(execute).to be_success
+    context 'success response' do
+      it 'successfully returns the timeline event', :aggregate_failures do
+        expect(execute).to be_success
 
-      result = execute.payload[:timeline_event]
-      expect(result).to be_a(::IncidentManagement::TimelineEvent)
-      expect(result.id).to eq(timeline_event.id)
+        result = execute.payload[:timeline_event]
+        expect(result).to be_a(::IncidentManagement::TimelineEvent)
+        expect(result.id).to eq(timeline_event.id)
+      end
+
+      it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_deleted
     end
 
     context 'when incident_timeline feature flag is enabled' do

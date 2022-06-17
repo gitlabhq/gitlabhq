@@ -23,6 +23,11 @@ export default {
   },
   mixins: [timeagoMixin],
   props: {
+    hasScopedLabelsFeature: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     issuableSymbol: {
       type: String,
       required: true,
@@ -132,7 +137,7 @@ export default {
       return Boolean(this.$slots[slotName]);
     },
     scopedLabel(label) {
-      return isScopedLabel(label);
+      return this.hasScopedLabelsFeature && isScopedLabel(label);
     },
     labelTitle(label) {
       return label.title || label.name;

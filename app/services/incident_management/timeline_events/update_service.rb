@@ -23,6 +23,7 @@ module IncidentManagement
         if timeline_event.update(update_params)
           add_system_note(timeline_event)
 
+          track_usage_event(:incident_management_timeline_event_edited, user.id)
           success(timeline_event)
         else
           error_in_save(timeline_event)

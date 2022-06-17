@@ -80,6 +80,7 @@ describe('CE IssuesListApp component', () => {
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
     hasMultipleIssueAssigneesFeature: true,
+    hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
     isAnonymousSearchDisabled: false,

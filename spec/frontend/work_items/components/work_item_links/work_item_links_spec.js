@@ -1,12 +1,27 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { GlBadge } from '@gitlab/ui';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
+import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
+import { workItemHierarchyResponse, workItemHierarchyEmptyResponse } from '../../mock_data';
+
+Vue.use(VueApollo);
 
 describe('WorkItemLinks', () => {
   let wrapper;
 
-  const createComponent = () => {
-    wrapper = shallowMountExtended(WorkItemLinks, { propsData: { workItemId: '123' } });
+  const createComponent = async ({ response = workItemHierarchyResponse } = {}) => {
+    wrapper = shallowMountExtended(WorkItemLinks, {
+      apolloProvider: createMockApollo([
+        [getWorkItemLinksQuery, jest.fn().mockResolvedValue(response)],
+      ]),
+      propsData: { issuableId: 1 },
+    });
+
+    await waitForPromises();
   };
 
   const findToggleButton = () => wrapper.findByTestId('toggle-links');
@@ -15,8 +30,8 @@ describe('WorkItemLinks', () => {
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
 
-  beforeEach(() => {
-    createComponent();
+  beforeEach(async () => {
+    await createComponent();
   });
 
   afterEach(() => {
@@ -36,24 +51,38 @@ describe('WorkItemLinks', () => {
     expect(findLinksBody().exists()).toBe(false);
   });
 
-  it('displays empty state if there are no links', () => {
-    expect(findEmptyState().exists()).toBe(true);
-    expect(findToggleAddFormButton().exists()).toBe(true);
+  describe('when no child links', () => {
+    beforeEach(async () => {
+      await createComponent({ response: workItemHierarchyEmptyResponse });
+    });
+
+    it('displays empty state if there are no children', () => {
+      expect(findEmptyState().exists()).toBe(true);
+    });
+
+    describe('add link form', () => {
+      it('displays form on click add button and hides form on cancel', async () => {
+        expect(findEmptyState().exists()).toBe(true);
+
+        findToggleAddFormButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findAddLinksForm().exists()).toBe(true);
+
+        findAddLinksForm().vm.$emit('cancel');
+        await nextTick();
+
+        expect(findAddLinksForm().exists()).toBe(false);
+      });
+    });
   });
 
-  describe('add link form', () => {
-    it('displays form on click add button and hides form on cancel', async () => {
-      expect(findEmptyState().exists()).toBe(true);
+  it('renders all hierarchy widget children', () => {
+    expect(findLinksBody().exists()).toBe(true);
 
-      findToggleAddFormButton().vm.$emit('click');
-      await nextTick();
+    const children = wrapper.findAll('[data-testid="links-child"]');
 
-      expect(findAddLinksForm().exists()).toBe(true);
-
-      findAddLinksForm().vm.$emit('cancel');
-      await nextTick();
-
-      expect(findAddLinksForm().exists()).toBe(false);
-    });
+    expect(children).toHaveLength(4);
+    expect(children.at(0).findComponent(GlBadge).text()).toBe('Open');
   });
 });

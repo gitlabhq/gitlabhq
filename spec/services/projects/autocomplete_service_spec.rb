@@ -158,7 +158,6 @@ RSpec.describe Projects::AutocompleteService do
     subject { described_class.new(project, user).contacts.as_json }
 
     before do
-      stub_feature_flags(customer_relations: true)
       group.add_developer(user)
     end
 

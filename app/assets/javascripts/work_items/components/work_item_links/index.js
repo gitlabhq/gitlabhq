@@ -1,5 +1,13 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import WorkItemLinks from './work_item_links.vue';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export default function initWorkItemLinks() {
   if (!window.gon.features.workItemsHierarchy) {
@@ -15,6 +23,7 @@ export default function initWorkItemLinks() {
   new Vue({
     el: workItemLinksRoot,
     name: 'WorkItemLinksRoot',
+    apolloProvider,
     components: {
       workItemLinks: WorkItemLinks,
     },

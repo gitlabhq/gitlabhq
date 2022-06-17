@@ -176,3 +176,102 @@ export const workItemTitleSubscriptionResponse = {
     },
   },
 };
+
+export const workItemHierarchyEmptyResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          children: {
+            nodes: [],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+
+export const workItemHierarchyResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          children: {
+            nodes: [
+              {
+                id: 'gid://gitlab/WorkItem/2',
+                workItemType: {
+                  id: 'gid://gitlab/WorkItems::Type/5',
+                  __typename: 'WorkItemType',
+                },
+                title: 'xyz',
+                state: 'OPEN',
+                __typename: 'WorkItem',
+              },
+              {
+                id: 'gid://gitlab/WorkItem/3',
+                workItemType: {
+                  id: 'gid://gitlab/WorkItems::Type/5',
+                  __typename: 'WorkItemType',
+                },
+                title: 'abc',
+                state: 'CLOSED',
+                __typename: 'WorkItem',
+              },
+              {
+                id: 'gid://gitlab/WorkItem/4',
+                workItemType: {
+                  id: 'gid://gitlab/WorkItems::Type/5',
+                  __typename: 'WorkItemType',
+                },
+                title: 'bar',
+                state: 'OPEN',
+                __typename: 'WorkItem',
+              },
+              {
+                id: 'gid://gitlab/WorkItem/5',
+                workItemType: {
+                  id: 'gid://gitlab/WorkItems::Type/5',
+                  __typename: 'WorkItemType',
+                },
+                title: 'foobar',
+                state: 'OPEN',
+                __typename: 'WorkItem',
+              },
+            ],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};

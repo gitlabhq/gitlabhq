@@ -229,7 +229,7 @@ export default {
 };
 </script>
 <template>
-  <div class="flex flex-column mt-2">
+  <div class="gl-display-flex gl-flex-direction-column gl-mt-3">
     <div class="gl-align-self-end gl-mb-3">
       <releases-sort :value="sort" class="gl-mr-2" @input="onSortChanged" />
 

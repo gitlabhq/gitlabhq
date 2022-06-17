@@ -10,6 +10,7 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
   let!(:timeline_event) { create(:incident_management_timeline_event, project: project, incident: incident) }
   let(:occurred_at) { 1.minute.ago }
   let(:params) { { note: 'Updated note', occurred_at: occurred_at } }
+  let(:current_user) { user }
 
   before do
     stub_feature_flags(incident_timeline: project)
@@ -21,6 +22,8 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
         expect(execute).to be_success
         expect(execute.payload).to eq(timeline_event: timeline_event.reload)
       end
+
+      it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_edited
     end
 
     shared_examples 'error response' do |message|
@@ -28,6 +31,8 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
         expect(execute).to be_error
         expect(execute.message).to eq(message)
       end
+
+      it_behaves_like 'does not track incident management event', :incident_management_timeline_event_edited
     end
 
     shared_examples 'passing the correct was_changed value' do |was_changed|

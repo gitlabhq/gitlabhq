@@ -18,3 +18,15 @@ export const DEFAULT_MODAL_TYPE = 'Task';
 export const WIDGET_TYPE_ASSIGNEE = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
+export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
+
+export const WIDGET_TYPE_TASK_ICON = 'task-done';
+
+export const WIDGET_ICONS = {
+  TASK: 'task-done',
+};
+
+export const WORK_ITEM_STATUS_TEXT = {
+  CLOSED: s__('WorkItem|Closed'),
+  OPEN: s__('WorkItem|Open'),
+};

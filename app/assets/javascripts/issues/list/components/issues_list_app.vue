@@ -133,6 +133,7 @@ export default {
     'hasBlockedIssuesFeature',
     'hasIssueWeightsFeature',
     'hasMultipleIssueAssigneesFeature',
+    'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
     'isAnonymousSearchDisabled',
@@ -716,6 +717,7 @@ export default {
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
+      :has-scoped-labels-feature="hasScopedLabelsFeature"
       :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"

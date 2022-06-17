@@ -48,7 +48,7 @@ module Mutations
       private
 
       def feature_enabled?(project)
-        Feature.enabled?(:customer_relations, project.group) && project.group&.crm_enabled?
+        project.group&.crm_enabled?
       end
     end
   end

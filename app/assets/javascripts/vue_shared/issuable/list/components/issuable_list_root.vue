@@ -133,6 +133,11 @@ export default {
       required: false,
       default: 2,
     },
+    hasScopedLabelsFeature: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     labelFilterParam: {
       type: String,
       required: false,
@@ -320,6 +325,7 @@ export default {
           :class="{ 'gl-cursor-grab': isManualOrdering }"
           data-qa-selector="issuable_container"
           :data-qa-issuable-title="issuable.title"
+          :has-scoped-labels-feature="hasScopedLabelsFeature"
           :issuable-symbol="issuableSymbol"
           :issuable="issuable"
           :label-filter-param="labelFilterParam"
