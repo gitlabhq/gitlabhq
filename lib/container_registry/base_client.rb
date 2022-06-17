@@ -8,11 +8,12 @@ module ContainerRegistry
   class BaseClient
     DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE = 'application/vnd.docker.distribution.manifest.v2+json'
     DOCKER_DISTRIBUTION_MANIFEST_LIST_V2_TYPE = 'application/vnd.docker.distribution.manifest.list.v2+json'
+    OCI_DISTRIBUTION_INDEX_TYPE = 'application/vnd.oci.image.index.v1+json'
     OCI_MANIFEST_V1_TYPE = 'application/vnd.oci.image.manifest.v1+json'
     CONTAINER_IMAGE_V1_TYPE = 'application/vnd.docker.container.image.v1+json'
 
     ACCEPTED_TYPES = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE].freeze
-    ACCEPTED_TYPES_RAW = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE, DOCKER_DISTRIBUTION_MANIFEST_LIST_V2_TYPE].freeze
+    ACCEPTED_TYPES_RAW = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE, DOCKER_DISTRIBUTION_MANIFEST_LIST_V2_TYPE, OCI_DISTRIBUTION_INDEX_TYPE].freeze
 
     RETRY_EXCEPTIONS = [Faraday::Request::Retry::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed].flatten.freeze
     RETRY_OPTIONS = {
@@ -107,6 +108,7 @@ module ContainerRegistry
       conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+json'
       conn.response :json, content_type: DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE
       conn.response :json, content_type: OCI_MANIFEST_V1_TYPE
+      conn.response :json, content_type: OCI_DISTRIBUTION_INDEX_TYPE
     end
 
     def delete_if_exists(path)

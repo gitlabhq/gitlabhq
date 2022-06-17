@@ -9,7 +9,7 @@ module Namespaces
 
     data_consistency :always
 
-    feature_category :sharding
+    feature_category :pods
     urgency :high
 
     idempotent!

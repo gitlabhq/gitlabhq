@@ -84,7 +84,6 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
 
     context 'for redis metrics' do
       it_behaves_like 'name suggestion' do
-        # corresponding metric is collected with redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
         let(:operation) { :redis }
         let(:column) { nil }
         let(:relation) { nil }

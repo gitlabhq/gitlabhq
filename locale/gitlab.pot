@@ -1008,6 +1008,9 @@ msgstr[1] ""
 msgid "%{strong_start}%{human_size}%{strong_end} Project Storage"
 msgstr ""
 
+msgid "%{strong_start}%{project_name}%{strong_end} is a personal project, so you can’t upgrade to a paid plan or start a free trial to lift these limits. We recommend %{move_to_group_link}moving this project to a group%{end_link} to unlock these options. You can %{manage_members_link}manage the members of this project%{end_link}, but don’t forget that all unique members in your personal namespace %{strong_start}%{namespace_name}%{strong_end} count towards total seats in use."
+msgstr ""
+
 msgid "%{strong_start}%{release_count}%{strong_end} Release"
 msgid_plural "%{strong_start}%{release_count}%{strong_end} Releases"
 msgstr[0] ""
@@ -11364,13 +11367,13 @@ msgstr ""
 msgid "DastConfig|Customize DAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{docsLinkStart}GitLab DAST documentation%{docsLinkEnd}."
 msgstr ""
 
-msgid "DastConfig|DAST Settings"
+msgid "DastConfig|DAST CI/CD configuration"
+msgstr ""
+
+msgid "DastConfig|Enable DAST to automatically test for vulnerabilities in your project's running application, website, or API, in the CI/CD pipeline. Configuration changes must be applied to your .gitlab-ci.yml file to take effect. For details of all configuration options, see the %{linkStart}GitLab DAST documentation%{linkEnd}."
 msgstr ""
 
 msgid "DastConfig|Generate code snippet"
-msgstr ""
-
-msgid "DastConfig|Scan Configuration"
 msgstr ""
 
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
@@ -25525,9 +25528,6 @@ msgid "New users set to external"
 msgstr ""
 
 msgid "New! Suggest changes directly"
-msgstr ""
-
-msgid "New..."
 msgstr ""
 
 msgid "Newest first"
@@ -44323,6 +44323,9 @@ msgid "Your primary email is used for avatar detection. You can change it in you
 msgstr ""
 
 msgid "Your profile"
+msgstr ""
+
+msgid "Your project has limited quotas and features"
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"

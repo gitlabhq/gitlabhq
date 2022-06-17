@@ -43,6 +43,8 @@ configured for personal access tokens.
 
 ## Create a project access token
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89114) in GitLab 15.1, Owners can select Owner role for project access tokens.
+
 To create a project access token:
 
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -102,8 +104,6 @@ These bot users do not count as licensed seats.
 The bot users for projects have [permissions](../../permissions.md#project-members-permissions) that correspond with the
 selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
 
-**Note** Project maintainers cannot select Owner role for bot users.
-
 - The name is set to the name of the token.
 - The username is set to `project_{project_id}_bot` for the first access token. For example, `project_123_bot`.
 - The email is set to `project{project_id}_bot@noreply.{Gitlab.config.gitlab.host}`. For example, `project123_bot@noreply.example.com`.
@@ -118,6 +118,8 @@ Bot users for projects:
 
 - Are included in a project's member list but cannot be modified.
 - Cannot be added to any other project.
+- Can have a maximum role of Owner for a project. For more information, see
+  [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
 
 When the project access token is [revoked](#revoke-a-project-access-token):
 

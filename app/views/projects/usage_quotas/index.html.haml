@@ -1,5 +1,13 @@
 - page_title s_("UsageQuota|Usage")
 
+- presenter_class = Namespaces::FreeUserCap::Projects::UsageQuotaLimitationsBannerPresenter
+- usage_quota_limits_banner_presenter = presenter_class.new(@project, current_user: current_user)
+
+- if usage_quota_limits_banner_presenter.visible?
+  = render Pajamas::AlertComponent.new(**usage_quota_limits_banner_presenter.alert_component_attributes) do |c|
+    - c.body do
+      = usage_quota_limits_banner_presenter.body_text
+
 = render Pajamas::AlertComponent.new(title: _('Repository usage recalculation started'),
   variant: :info,
   alert_options: { class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 gl-display-none' }) do |c|

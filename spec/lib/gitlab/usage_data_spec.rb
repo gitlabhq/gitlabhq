@@ -1204,36 +1204,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe '.compliance_unique_visits_data' do
-    subject { described_class.compliance_unique_visits_data }
-
-    before do
-      allow_next_instance_of(::Gitlab::Analytics::UniqueVisits) do |instance|
-        ::Gitlab::Analytics::UniqueVisits.compliance_events.each do |target|
-          allow(instance).to receive(:unique_visits_for).with(targets: target).and_return(123)
-        end
-
-        allow(instance).to receive(:unique_visits_for).with(targets: :compliance).and_return(543)
-
-        allow(instance).to receive(:unique_visits_for).with(targets: :compliance, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
-      end
-    end
-
-    it 'returns the number of unique visits to pages with compliance features' do
-      expect(subject).to eq({
-        compliance_unique_visits: {
-          'g_compliance_dashboard' => 123,
-          'g_compliance_audit_events' => 123,
-          'i_compliance_credential_inventory' => 123,
-          'i_compliance_audit_events' => 123,
-          'a_compliance_audit_events_api' => 123,
-          'compliance_unique_visits_for_any_target' => 543,
-          'compliance_unique_visits_for_any_target_monthly' => 987
-        }
-      })
-    end
-  end
-
   describe 'redis_hll_counters' do
     subject { described_class.redis_hll_counters }
 
@@ -1420,6 +1390,22 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           .to receive(:new).with(2, kind_of(Float))
 
         described_class.with_duration { 1 + 1 }
+      end
+    end
+  end
+
+  context 'on Gitlab.com' do
+    before do
+      allow(Gitlab).to receive(:com?).and_return(true)
+    end
+
+    describe '.system_usage_data' do
+      subject { described_class.system_usage_data }
+
+      it 'returns fallback value for disabled metrics' do
+        expect(subject[:counts][:ci_internal_pipelines]).to eq(Gitlab::Utils::UsageData::FALLBACK)
+        expect(subject[:counts][:issues_created_gitlab_alerts]).to eq(Gitlab::Utils::UsageData::FALLBACK)
+        expect(subject[:counts][:issues_created_manually_from_alerts]).to eq(Gitlab::Utils::UsageData::FALLBACK)
       end
     end
   end

@@ -19,6 +19,9 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
         session.delete(:user_return_to)
         render "doorkeeper/authorizations/redirect", locals: { redirect_uri: parsed_redirect_uri }, layout: false
       else
+        redirect_uri = URI(authorization.authorize.redirect_uri)
+        allow_redirect_uri_form_action(redirect_uri.scheme)
+
         render "doorkeeper/authorizations/new"
       end
     else
@@ -27,6 +30,20 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   private
+
+  # Chrome blocks redirections if the form-action CSP directive is present
+  # and the redirect location's scheme isn't allow-listed
+  # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/form-action
+  # https://github.com/w3c/webappsec-csp/issues/8
+  def allow_redirect_uri_form_action(redirect_uri_scheme)
+    return unless content_security_policy?
+
+    form_action = request.content_security_policy.form_action
+    return unless form_action
+
+    form_action.push("#{redirect_uri_scheme}:")
+    request.content_security_policy.form_action(*form_action)
+  end
 
   def pre_auth_params
     # Cannot be achieved with a before_action hook, due to the execution order.

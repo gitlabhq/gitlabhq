@@ -15,6 +15,16 @@ To configure GitLab for this, see
 
 This functionality is based on the [doorkeeper Ruby gem](https://github.com/doorkeeper-gem/doorkeeper).
 
+## CORS preflight requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
+
+The following endpoints support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS):
+
+- `/oauth/revoke`
+- `/oauth/token`
+- `/oauth/userinfo`
+
 ## Supported OAuth 2.0 flows
 
 GitLab supports the following authorization flows:

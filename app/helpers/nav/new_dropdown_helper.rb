@@ -16,7 +16,7 @@ module Nav
       menu_sections.push(general_menu_section)
 
       {
-        title: _("New..."),
+        title: _("Create new"),
         menu_sections: menu_sections.select { |x| x.fetch(:menu_items).any? }
       }
     end

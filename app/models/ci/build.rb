@@ -137,8 +137,8 @@ module Ci
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end
 
-    scope :with_reports, ->(reports_scope) do
-      with_existing_job_artifacts(reports_scope)
+    scope :with_artifacts, ->(artifact_scope) do
+      with_existing_job_artifacts(artifact_scope)
         .eager_load_job_artifacts
     end
 
@@ -1047,7 +1047,7 @@ module Ci
     end
 
     def report_artifacts
-      job_artifacts.with_reports
+      job_artifacts.all_reports
     end
 
     # Virtual deployment status depending on the environment status.

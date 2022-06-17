@@ -342,7 +342,7 @@ module Ci
     end
 
     scope :with_reports, -> (reports_scope) do
-      where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
+      where('EXISTS (?)', ::Ci::Build.latest.with_artifacts(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
     end
 
     scope :with_only_interruptible_builds, -> do
@@ -696,7 +696,7 @@ module Ci
     def latest_report_artifacts
       ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
-          id: job_artifacts.with_reports
+          id: job_artifacts.all_reports
             .select('max(ci_job_artifacts.id) as id')
             .group(:file_type)
         )
@@ -1057,16 +1057,16 @@ module Ci
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_not_expired.to_a
     end
 
-    def latest_report_builds(reports_scope = ::Ci::JobArtifact.with_reports)
-      builds.latest.with_reports(reports_scope)
+    def latest_report_builds(reports_scope = ::Ci::JobArtifact.all_reports)
+      builds.latest.with_artifacts(reports_scope)
     end
 
     def latest_test_report_builds
       latest_report_builds(Ci::JobArtifact.test_reports).preload(:project, :metadata)
     end
 
-    def latest_report_builds_in_self_and_descendants(reports_scope = ::Ci::JobArtifact.with_reports)
-      builds_in_self_and_descendants.with_reports(reports_scope)
+    def latest_report_builds_in_self_and_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
+      builds_in_self_and_descendants.with_artifacts(reports_scope)
     end
 
     def builds_with_coverage

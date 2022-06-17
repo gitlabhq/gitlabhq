@@ -320,7 +320,7 @@
   :tags: []
 - :name: cronjob:database_ci_namespace_mirrors_consistency_check
   :worker_name: Database::CiNamespaceMirrorsConsistencyCheckWorker
-  :feature_category: :sharding
+  :feature_category: :pods
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -329,7 +329,7 @@
   :tags: []
 - :name: cronjob:database_ci_project_mirrors_consistency_check
   :worker_name: Database::CiProjectMirrorsConsistencyCheckWorker
-  :feature_category: :sharding
+  :feature_category: :pods
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -455,7 +455,7 @@
   :tags: []
 - :name: cronjob:loose_foreign_keys_cleanup
   :worker_name: LooseForeignKeys::CleanupWorker
-  :feature_category: :sharding
+  :feature_category: :pods
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2625,7 +2625,7 @@
   :tags: []
 - :name: namespaces_process_sync_events
   :worker_name: Namespaces::ProcessSyncEventsWorker
-  :feature_category: :sharding
+  :feature_category: :pods
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -2814,7 +2814,7 @@
   :tags: []
 - :name: projects_process_sync_events
   :worker_name: Projects::ProcessSyncEventsWorker
-  :feature_category: :sharding
+  :feature_category: :pods
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

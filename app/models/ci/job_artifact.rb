@@ -152,7 +152,7 @@ module Ci
       where(file_type: types)
     end
 
-    scope :with_reports, -> do
+    scope :all_reports, -> do
       with_file_types(REPORT_TYPES.keys.map(&:to_s))
     end
 

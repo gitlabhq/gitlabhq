@@ -19849,6 +19849,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumminute_limit_banner"></a>`MINUTE_LIMIT_BANNER` | Callout feature name for minute_limit_banner. |
 | <a id="usercalloutfeaturenameenumnew_user_signups_cap_reached"></a>`NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
+| <a id="usercalloutfeaturenameenumpersonal_project_limitations_banner"></a>`PERSONAL_PROJECT_LIMITATIONS_BANNER` | Callout feature name for personal_project_limitations_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
 | <a id="usercalloutfeaturenameenumpreview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |

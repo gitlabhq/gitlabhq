@@ -87,19 +87,25 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 Create a [project access token](../user/project/settings/project_access_tokens.md).
 
-**NOTE:** Project Maintainers cannot create project access tokens with Owner (50) access level.
+When you create a project access token, the maximum role (access level) you set depends on if you have the Owner or Maintainer role for the group. For example, the maximum
+role that can be set is:
+
+- Owner (`50`), if you have the Owner role for the project.
+- Maintainer (`40`), if you have the Maintainer role on the project.
+
+In GitLab 14.8 and earlier, project access tokens have a maximum role of Maintainer.
 
 ```plaintext
 POST projects/:id/access_tokens
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) |
-| `name` | String | yes | Name of the project access token  |
-| `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token) |
-| `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
-| `expires_at` | Date | no | Token expires at midnight UTC on that date |
+| Attribute | Type    | required | Description                                                                                                                           |
+|-----------|---------|----------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `id` | integer or string | yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding)                                                            |
+| `name` | String | yes | Name of the project access token                                                                                                               |
+| `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
+| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
+| `expires_at` | Date | no | Token expires at midnight UTC on that date                                                                                                  |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

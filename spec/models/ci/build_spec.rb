@@ -294,31 +294,28 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '.with_reports' do
-    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+  describe '.with_artifacts' do
+    subject(:builds) { described_class.with_artifacts(artifact_scope) }
 
-    context 'when build has a test report' do
-      let!(:build) { create(:ci_build, :success, :test_reports) }
+    let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
 
-      it 'selects the build' do
-        is_expected.to eq([build])
-      end
+    let!(:build_1) { create(:ci_build, :artifacts) }
+    let!(:build_2) { create(:ci_build, :codequality_reports) }
+    let!(:build_3) { create(:ci_build, :test_reports) }
+    let!(:build_4) { create(:ci_build, :artifacts) }
+
+    it 'returns artifacts matching the given scope' do
+      expect(builds).to contain_exactly(build_1, build_4)
     end
 
-    context 'when build does not have test reports' do
-      let!(:build) { create(:ci_build, :success, :trace_artifact) }
-
-      it 'does not select the build' do
-        is_expected.to be_empty
+    context 'when there are multiple builds containing artifacts' do
+      before do
+        create_list(:ci_build, 5, :success, :test_reports)
       end
-    end
-
-    context 'when there are multiple builds with test reports' do
-      let!(:builds) { create_list(:ci_build, 5, :success, :test_reports) }
 
       it 'does not execute a query for selecting job artifact one by one' do
         recorded = ActiveRecord::QueryRecorder.new do
-          subject.each do |build|
+          builds.each do |build|
             build.job_artifacts.map { |a| a.file.exists? }
           end
         end

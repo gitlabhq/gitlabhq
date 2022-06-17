@@ -3484,7 +3484,7 @@ to the image specified in the [`image`](#image) keyword.
 - `<image-name>:<tag>`
 - `<image-name>@<digest>`
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), but [not for `alias`](https://gitlab.com/gitlab-org/gitlab/-/issues/19561).
 
 **Example of `services`**:
 

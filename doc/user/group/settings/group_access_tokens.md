@@ -147,9 +147,12 @@ Even when creation is disabled, you can still use and revoke existing group acce
 
 ## Bot users for groups
 
-Each time you create a group access token, a bot user is created and added to the group.
-These bot users are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects),
-except they are added to groups instead of projects.
-These bot users do not count as licensed seats.
+Each time you create a group access token, a bot user is created and added to the group. These bot users are similar to
+[bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added
+to groups instead of projects. Bot users for groups:
+
+- Do not count as licensed seats.
+- Can have a maximum role of Owner for a group. For more information, see
+  [Create a group access token](../../../api/group_access_tokens.md#create-a-group-access-token).
 
 For more information, see [Bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).

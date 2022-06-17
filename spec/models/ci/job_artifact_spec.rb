@@ -33,10 +33,10 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '.with_reports' do
+  describe '.all_reports' do
     let!(:artifact) { create(:ci_job_artifact, :archive) }
 
-    subject { described_class.with_reports }
+    subject { described_class.all_reports }
 
     it { is_expected.to be_empty }
 

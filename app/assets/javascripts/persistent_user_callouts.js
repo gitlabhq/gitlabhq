@@ -15,6 +15,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-user-over-limit-free-plan-alert',
   '.js-minute-limit-banner',
   '.js-submit-license-usage-data-banner',
+  '.js-project-usage-limitations-callout',
 ];
 
 const initCallouts = () => {
