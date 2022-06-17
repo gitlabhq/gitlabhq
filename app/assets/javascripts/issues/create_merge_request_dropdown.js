@@ -82,10 +82,7 @@ export default class CreateMergeRequestDropdown {
     this.init();
 
     if (isConfidentialIssue()) {
-      this.createMergeRequestButton.setAttribute(
-        'data-dropdown-trigger',
-        '#create-merge-request-dropdown',
-      );
+      this.createMergeRequestButton.dataset.dropdownTrigger = '#create-merge-request-dropdown';
       initConfidentialMergeRequest();
     }
   }

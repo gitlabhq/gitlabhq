@@ -27,7 +27,7 @@ sometimes referred to as GLEX, to run our experiments. The gem exists in a separ
 so it can be shared across any GitLab property that uses Ruby. You should feel comfortable reading
 the documentation on that project if you want to dig into more advanced topics or open issues. Be
 aware that the documentation there reflects what's in the main branch and may not be the same as
-the version being used within GitLab.
+the version being used in GitLab.
 
 ## Glossary of terms
 
@@ -43,7 +43,7 @@ when communicating about experiments:
 
 ## Implementing an experiment
 
-[`GLEX`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
+[GLEX](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
 
 For more information, see [Implementing an A/B/n experiment using GLEX](implementing_experiments.md).
 

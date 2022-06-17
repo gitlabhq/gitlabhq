@@ -6,13 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tasks **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/339664) in GitLab 15.1.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `work_items`.
+On GitLab.com, this feature is available.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
 

@@ -31,11 +31,11 @@ export default class DropdownUser extends DropdownAjaxFilter {
   }
 
   getGroupId() {
-    return this.input.getAttribute('data-group-id');
+    return this.input.dataset.groupId;
   }
 
   getProjectId() {
-    return this.input.getAttribute('data-project-id');
+    return this.input.dataset.projectId;
   }
 
   projectOrGroupId() {

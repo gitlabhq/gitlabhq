@@ -59,9 +59,10 @@ describe('waitForCSSLoaded', () => {
         <link href="two.css" data-startupcss="loading">
       `);
       const events = waitForCSSLoaded(mockedCallback);
-      document
-        .querySelectorAll('[data-startupcss="loading"]')
-        .forEach((elem) => elem.setAttribute('data-startupcss', 'loaded'));
+      document.querySelectorAll('[data-startupcss="loading"]').forEach((elem) => {
+        // eslint-disable-next-line no-param-reassign
+        elem.dataset.startupcss = 'loaded';
+      });
       document.dispatchEvent(new CustomEvent('CSSStartupLinkLoaded'));
       await events;
 

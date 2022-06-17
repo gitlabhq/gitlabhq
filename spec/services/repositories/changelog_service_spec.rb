@@ -165,6 +165,14 @@ RSpec.describe Repositories::ChangelogService do
       expect { request.call(sha3) }.not_to exceed_query_limit(control.count)
     end
 
+    context 'when one of commits does not exist' do
+      let(:service) { described_class.new(project, creator, version: '1.0.0', from: 'master', to: '54321') }
+
+      it 'raises an exception' do
+        expect { service.execute(commit_to_changelog: false) }.to raise_error(Gitlab::Changelog::Error)
+      end
+    end
+
     context 'when commit range exceeds the limit' do
       let(:service) { described_class.new(project, creator, version: '1.0.0', from: sha1) }
 

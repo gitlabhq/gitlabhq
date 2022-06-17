@@ -25,11 +25,11 @@
     %label.label-bold= _('Personal Access Token')
     = hidden_field_tag(:namespace_id, params[:namespace_id])
     = text_field_tag :personal_access_token, '', class: 'form-control gl-form-input', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { qa_selector: 'personal_access_token_field' }
-    %span.form-text.text-muted
+    %span.form-text.gl-text-gray-600
       = import_github_personal_access_token_message
 
   = render_if_exists 'import/github/ci_cd_only'
 
-  .form-actions.d-flex.justify-content-end
+  .form-actions.gl-display-flex.gl-justify-content-end
     = link_to _('Cancel'), new_project_path, class: 'gl-button btn btn-default'
-    = submit_tag _('Authenticate'), class: 'gl-button btn btn-confirm ml-2', data: { qa_selector: 'authenticate_button' }
+    = submit_tag _('Authenticate'), class: 'gl-button btn btn-confirm gl-ml-3', data: { qa_selector: 'authenticate_button' }

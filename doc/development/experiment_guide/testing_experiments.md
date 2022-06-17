@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Testing experiments with RSpec
 
-In the course of working with experiments, you'll probably want to use the RSpec
+In the course of working with experiments, you might want to use the RSpec
 tooling that's built in. This happens automatically for files in `spec/experiments`, but
 for other files and specs you want to include it in, you can specify the `:experiment` type:
 
@@ -84,7 +84,7 @@ expect(subject).to track(:my_event)
 subject.track(:my_event)
 ```
 
-You can use the `on_next_instance` chain method to specify that it will happen
+You can use the `on_next_instance` chain method to specify that it happens
 on the next instance of the experiment. This helps you if you're calling
 `experiment(:example).track` downstream:
 
@@ -127,7 +127,7 @@ describe('when my_experiment is enabled', () => {
 ```
 
 NOTE:
-This method of stubbing in Jest specs will not automatically un-stub itself at the end of the test. We merge our stubbed experiment in with all the other global data in `window.gl`. If you need to remove the stubbed experiments after your test or ensure a clean global object before your test, you'll need to manage the global object directly yourself:
+This method of stubbing in Jest specs does not automatically un-stub itself at the end of the test. We merge our stubbed experiment in with all the other global data in `window.gl`. If you must remove the stubbed experiments after your test or ensure a clean global object before your test, you must manage the global object directly yourself:
 
 ```javascript
 describe('tests that care about global state', () => {

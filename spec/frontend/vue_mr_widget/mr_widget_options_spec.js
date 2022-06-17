@@ -427,7 +427,7 @@ describe('MrWidgetOptions', () => {
         beforeEach(() => {
           const favicon = document.createElement('link');
           favicon.setAttribute('id', 'favicon');
-          favicon.setAttribute('data-original-href', faviconDataUrl);
+          favicon.dataset.originalHref = faviconDataUrl;
           document.body.appendChild(favicon);
 
           faviconElement = document.getElementById('favicon');

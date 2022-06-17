@@ -139,6 +139,10 @@ module Repositories
     def verify_commit_range!(from, to)
       return unless Feature.enabled?(:changelog_commits_limitation, @project)
 
+      commits = @project.repository.commits_by(oids: [from, to])
+
+      raise Gitlab::Changelog::Error, "Invalid or not found commit value in the given range" unless commits.count == 2
+
       _, commits_count = @project.repository.diverging_commit_count(from, to)
 
       if commits_count > COMMITS_LIMIT

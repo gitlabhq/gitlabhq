@@ -45,7 +45,7 @@ frequency to the `production` environment. The environment must be part of the
 for its deployment information to appear on the graphs.
 
   Deployment frequency is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
-  
+
 The deployment frequency chart is available for groups and projects.
 
 To view the deployment frequency chart:
@@ -78,7 +78,7 @@ To view the lead time for changes chart:
 
 ![Lead time](img/lead_time_chart_v13_11.png)
 
-## View time to restore service chart **(ULTIMATE)**
+## View time to restore service chart **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1
 

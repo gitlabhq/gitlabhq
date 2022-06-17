@@ -9,10 +9,11 @@ const updateLineNumbersOnBlobPermalinks = (linksToUpdate) => {
 
     [].concat(Array.prototype.slice.call(linksToUpdate)).forEach((permalinkButton) => {
       const baseHref =
-        permalinkButton.getAttribute('data-original-href') ||
+        permalinkButton.dataset.originalHref ||
         (() => {
           const href = permalinkButton.getAttribute('href');
-          permalinkButton.setAttribute('data-original-href', href);
+          // eslint-disable-next-line no-param-reassign
+          permalinkButton.dataset.originalHref = href;
           return href;
         })();
       permalinkButton.setAttribute('href', `${baseHref}${hashUrlString}`);

@@ -56,7 +56,7 @@ export function confirmAction(
 export function confirmViaGlModal(message, element) {
   const primaryBtnConfig = {};
 
-  const confirmBtnVariant = element.getAttribute('data-confirm-btn-variant');
+  const { confirmBtnVariant } = element.dataset;
 
   if (confirmBtnVariant) {
     primaryBtnConfig.primaryBtnVariant = confirmBtnVariant;

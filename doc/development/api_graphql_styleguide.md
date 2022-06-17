@@ -2007,6 +2007,28 @@ end
     .to contain_exactly(a_graphql_entity_for(issue, :iid, :title, created_at: some_time))
   ```
 
+- Use `GraphqlHelpers#empty_schema` to create an empty schema, rather than creating 
+  one by hand. For example:
+  
+  ```ruby
+  # good
+  let(:schema) { empty_schema }
+  
+  # bad
+  let(:query_type) { GraphQL::ObjectType.new }
+  let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
+  ```
+
+- Use `GraphqlHelpers#query_double(schema: nil)` of `double('query', schema: nil)`. For example:
+
+  ```ruby
+  # good
+  let(:query) { query_double(schema: GitlabSchema) }
+  
+  # bad
+  let(:query) { double('Query', schema: GitlabSchema) }
+  ```
+
 - Avoid false positives:
 
   Authenticating a user with the `current_user:` argument for `post_graphql`
@@ -2061,6 +2083,122 @@ end
   `spec/requests/api/graphql/ci/pipeline_spec.rb` regardless of the query being
   used to fetch the pipeline data.
 
+- There can be possible cyclic dependencies within our GraphQL types.
+  See [Adding field with resolver on a Type causes "Can't determine the return type " error on a different Type](https://github.com/rmosolgo/graphql-ruby/issues/3974#issuecomment-1084444214)
+  and [Fix unresolved name due to cyclic definition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84202/diffs#diff-content-32d14251082fd45412e1fdbf5820e62d157e70d2).
+
+  In particular, this can happen with `connection_type`. Normally we might use the following in a resolver:
+
+  ```ruby
+  type Types::IssueType.connection_type, null: true
+  ```
+  
+  However this might cause a cyclic definition, which can result in errors like:
+  
+  ```ruby
+  NameError: uninitialized constant Resolvers::GroupIssuesResolver
+  ```
+
+  To fix this, we must create a new file that encapsulates the connection type,
+  and then reference it using double quotes. This gives a delayed resolution,
+  and the proper connection type. For example:
+
+  ```ruby
+  module Types
+    # rubocop: disable Graphql/AuthorizeTypes
+    class IssueConnectionType < CountableConnectionType
+    end
+  end
+  
+  Types::IssueConnectionType.prepend_mod_with('Types::IssueConnectionType')
+  ```
+
+  in [types/issue_connection_type.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/issue_connection_type.rb)
+  defines a new `Types::IssueConnectionType`, and is then referenced in
+  [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+
+  ```ruby
+  type "Types::IssueConnection", null: true
+  ```
+  
+  Only use this style if you are having spec failures. This is not intended to be a new
+  pattern that we use. This issue may disappear after we've upgraded to `2.x`.
+
+- There can be instances where a spec fails because the class is not loaded correctly. 
+  It relates to the 
+  [circular dependencies problem](https://github.com/rmosolgo/graphql-ruby/issues/1929) and
+  [Adding field with resolver on a Type causes "Can't determine the return type " error on a different Type](https://github.com/rmosolgo/graphql-ruby/issues/3974).
+
+  Unfortunately, the errors generated don't really indicate what the problem is. For example,
+  remove the quotes from the `Rspec.descrbe` in 
+  [ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb).
+  Then run `rspec ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb`.
+  
+  This generates errors with the expectations. For example:
+  
+  ```ruby
+  1) Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver#resolve user is authorized filtering the results when given an array of project IDs finds the filtered compliance violations
+  Failure/Error: expect(subject).to contain_exactly(compliance_violation)
+
+     expected collection contained:  [#<MergeRequests::ComplianceViolation id: 4, violating_user_id: 26, merge_request_id: 4, reason: "approved_by_committer", severity_level: "low">]
+     actual collection contained:    [#<MergeRequests::ComplianceViolation id: 4, violating_user_id: 26, merge_request_id: 4, reason: "app...er_id: 27, merge_request_id: 5, reason: "approved_by_merge_request_author", severity_level: "high">]
+     the extra elements were:        [#<MergeRequests::ComplianceViolation id: 5, violating_user_id: 27, merge_request_id: 5, reason: "approved_by_merge_request_author", severity_level: "high">]
+  # ./ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb:55:in `block (6 levels) in <top (required)>'
+  ```
+  
+  However, this is not a case of the wrong result being generated, it's because of the loading order
+  of the `ComplianceViolationResolver` class.
+  
+  The only way we've found to fix this is by quoting the class name in the spec. For example, changing
+
+  ```ruby
+  RSpec.describe Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver do
+  ```
+
+  into:
+
+  ```ruby
+  RSpec.describe 'Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver' do
+  ```
+
+  See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87295#note_946174036) for some discussion.
+
+  Only use this style if you are having spec failures. This is not intended to be a new
+  pattern that we use. This issue may disappear after we've upgraded to `2.x`.
+
+- When testing resolvers using `GraphqlHelpers#resolve`, arguments for the resolver can be handled two ways.
+
+  1. 95% of the resolver specs use arguments that are Ruby objects, as opposed to when using the GraphQL API
+     only strings and integers are used. This works fine in most cases.
+  1. If your resolver takes arguments that use a `prepare` proc, such as a resolver that accepts timeframe
+     arguments (`TimeFrameArguments`), you must pass the `arg_style: :internal_prepared` parameter into
+     the `resolve` method. This tells the code to convert the arguments into strings and integers and pass
+     them through regular argument handling, ensuring that the `prepare` proc is called correctly.
+     For example in [`iterations_resolver_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/graphql/resolvers/iterations_resolver_spec.rb):
+
+     ```ruby
+     def resolve_group_iterations(args = {}, obj = group, context = { current_user: current_user })
+       resolve(described_class, obj: obj, args: args, ctx: context, arg_style: :internal_prepared)
+     end
+     ```
+
+     One additional caveat is that if you are passing enums as a resolver argument, you must use the
+     external representation of the enum, rather than the internal. For example:
+
+     ```ruby
+     # good
+     resolve_group_iterations({ search: search, in: ['CADENCE_TITLE'] })
+
+     # bad
+     resolve_group_iterations({ search: search, in: [:cadence_title] })
+     ```
+
+  The use of `:internal_prepared` was added as a bridge for the
+  [GraphQL gem](https://graphql-ruby.org) upgrade. Testing resolvers directly will be
+  [removed eventually](https://gitlab.com/gitlab-org/gitlab/-/issues/363121),
+  and writing unit tests for resolvers/mutations is
+  [already deprecated](#writing-unit-tests-deprecated)
+  
 ## Notes about Query flow and GraphQL infrastructure
 
 The GitLab GraphQL infrastructure can be found in `lib/gitlab/graphql`.

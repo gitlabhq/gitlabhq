@@ -1,6 +1,6 @@
 export const STORAGE_KEY = 'display-whats-new-notification';
 
-export const getVersionDigest = (appEl) => appEl.getAttribute('data-version-digest');
+export const getVersionDigest = (appEl) => appEl.dataset.versionDigest;
 
 export const setNotification = (appEl) => {
   const versionDigest = getVersionDigest(appEl);

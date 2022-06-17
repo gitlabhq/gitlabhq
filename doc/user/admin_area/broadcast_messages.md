@@ -78,7 +78,7 @@ list of broadcast messages.
 
 ## Edit a broadcast message
 
-If you need to make changes to a broadcast message, you can edit it.
+If you must make changes to a broadcast message, you can edit it.
 
 To edit a broadcast message:
 

@@ -2882,6 +2882,28 @@ Input type: `HttpIntegrationUpdateInput`
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
+### `Mutation.issuableResourceLinkCreate`
+
+Input type: `IssuableResourceLinkCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuableresourcelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuableresourcelinkcreateid"></a>`id` | [`IssueID!`](#issueid) | Incident id to associate the resource link with. |
+| <a id="mutationissuableresourcelinkcreatelink"></a>`link` | [`String!`](#string) | Link of the resource. |
+| <a id="mutationissuableresourcelinkcreatelinktext"></a>`linkText` | [`String`](#string) | Link text of the resource. |
+| <a id="mutationissuableresourcelinkcreatelinktype"></a>`linkType` | [`IssuableResourceLinkType`](#issuableresourcelinktype) | Link type of the resource. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuableresourcelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuableresourcelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationissuableresourcelinkcreateissuableresourcelink"></a>`issuableResourceLink` | [`IssuableResourceLink`](#issuableresourcelink) | Issuable resource link. |
+
 ### `Mutation.issueMove`
 
 Input type: `IssueMoveInput`
@@ -12572,6 +12594,20 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
 
+### `IssuableResourceLink`
+
+Describes an issuable resource link for incident issues.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issuableresourcelinkid"></a>`id` | [`IncidentManagementIssuableResourceLinkID!`](#incidentmanagementissuableresourcelinkid) | ID of the Issuable resource link. |
+| <a id="issuableresourcelinkissue"></a>`issue` | [`Issue!`](#issue) | Incident of the resource link. |
+| <a id="issuableresourcelinklink"></a>`link` | [`String!`](#string) | Web Link to the resource. |
+| <a id="issuableresourcelinklinktext"></a>`linkText` | [`String`](#string) | Optional text for the link. |
+| <a id="issuableresourcelinklinktype"></a>`linkType` | [`IssuableResourceLinkType!`](#issuableresourcelinktype) | Type of the resource link. |
+
 ### `Issue`
 
 #### Fields
@@ -18980,6 +19016,16 @@ Health status of an issue or epic.
 | <a id="healthstatusneedsattention"></a>`needsAttention` | Needs attention. |
 | <a id="healthstatusontrack"></a>`onTrack` | On track. |
 
+### `IssuableResourceLinkType`
+
+Issuable resource link type enum.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="issuableresourcelinktypegeneral"></a>`general` | General link type. |
+| <a id="issuableresourcelinktypeslack"></a>`slack` | Slack link type. |
+| <a id="issuableresourcelinktypezoom"></a>`zoom` | Zoom link type. |
+
 ### `IssuableSearchableField`
 
 Fields to perform the search in.
@@ -20384,6 +20430,12 @@ An example `IncidentManagementEscalationPolicyID` is: `"gid://gitlab/IncidentMan
 A `IncidentManagementEscalationRuleID` is a global ID. It is encoded as a string.
 
 An example `IncidentManagementEscalationRuleID` is: `"gid://gitlab/IncidentManagement::EscalationRule/1"`.
+
+### `IncidentManagementIssuableResourceLinkID`
+
+A `IncidentManagementIssuableResourceLinkID` is a global ID. It is encoded as a string.
+
+An example `IncidentManagementIssuableResourceLinkID` is: `"gid://gitlab/IncidentManagement::IssuableResourceLink/1"`.
 
 ### `IncidentManagementOncallParticipantID`
 

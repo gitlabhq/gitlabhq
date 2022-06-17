@@ -17,6 +17,11 @@ there are the following requirements:
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
 - You have set up a multi-node GitLab instance. Single-node instances do not support zero-downtime upgrades.
 
+If you want to upgrade multiple releases or do not meet the other requirements:
+
+- [Upgrade a single node with downtime](package/index.md).
+- [Upgrade a multi-node instance with downtime](with_downtime.md).
+
 If you meet all the requirements above, follow these instructions in order. There are three sets of steps, depending on your deployment type:
 
 | Deployment type                                                 | Description                                       |
@@ -308,7 +313,7 @@ node throughout the process.
 
 - If you're using PgBouncer:
 
-  You need to bypass PgBouncer and connect directly to the database master
+  You need to bypass PgBouncer and connect directly to the database leader
   before running migrations.
 
   Rails uses an advisory lock when attempting to run a migration to prevent
@@ -317,7 +322,7 @@ node throughout the process.
   and other issues when running database migrations using PgBouncer in transaction
   pooling mode.
 
-  To find the master node, run the following on a database node:
+  To find the leader node, run the following on a database node:
 
   ```shell
   sudo gitlab-ctl patroni members
@@ -325,7 +330,7 @@ node throughout the process.
 
   Then, in your `gitlab.rb` file on the deploy node, update
   `gitlab_rails['db_host']` and `gitlab_rails['db_port']` with the database
-  master's host and port.
+  leader's host and port.
 
 - To get the regular database migrations and latest code in place, run
 
@@ -691,7 +696,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 1. If you're using PgBouncer:
 
-   You need to bypass PgBouncer and connect directly to the database master
+   You need to bypass PgBouncer and connect directly to the database leader
    before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent
@@ -700,7 +705,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
    and other issues when running database migrations using PgBouncer in transaction
    pooling mode.
 
-   To find the master node, run the following on a database node:
+   To find the leader node, run the following on a database node:
 
    ```shell
    sudo gitlab-ctl patroni members
@@ -708,7 +713,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
    Then, in your `gitlab.rb` file on the deploy node, update
    `gitlab_rails['db_host']` and `gitlab_rails['db_port']` with the database
-   master's host and port.
+   leader's host and port.
 
 1. To get the regular database migrations and latest code in place, run
 
