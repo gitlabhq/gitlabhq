@@ -253,3 +253,23 @@ There are much more likely scenarios that
 can have disastrous consequences. GitLab CI/CD is being used by companies
 building medical, aviation, and automotive software. Continuous Integration is
 a mission critical part of software engineering.
+
+### Definition of Done
+
+In Verify, we follow our Development team's [Definition of Done](../merge_request_workflow.md#definition-of-done).
+We also want to keep things efficient and [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) when we answer questions
+and solve problems for our users.
+
+For any issue that is resolved because the solution is supported with existing `.gitlab-ci.yml` syntax,
+create a project in the [`ci-sample-projects`](https://gitlab.com/gitlab-org/ci-sample-projects) group
+that demonstrates the solution.
+
+The project must have:
+
+- A simple title.
+- A clear description.
+- A `README.md` with:
+  - A link to the resolved issue. You should also direct users to collaborate in the
+    resolved issue if any questions arise.
+  - A link to any relevant documentation.
+  - A detailed explanation of what the example is doing.

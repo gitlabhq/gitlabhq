@@ -1,14 +1,13 @@
 - if current_user
   - if note.emoji_awardable?
     .note-actions-item
-      = link_to '#', title: _('Add reaction'), class: "note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip btn gl-button btn-icon btn-default-tertiary", data: { position: 'right' } do
+      = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { title: _('Add reaction'), class: 'btn-icon note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip' }) do
         = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral gl-button-icon gl-icon')
         = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-button-icon gl-icon gl-left-3!')
         = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-button-icon gl-icon gl-left-3! ')
 
   - if note_editable
     .note-actions-item.gl-ml-0
-      = button_tag title: _('Edit comment'), class: 'note-action-button js-note-edit has-tooltip gl-button btn btn-default-tertiary btn-icon', data: { container: 'body', qa_selector: 'edit_comment_button' } do
-        = sprite_icon('pencil')
+      = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'pencil', button_options: { title: _('Edit comment'), class: 'note-action-button js-note-edit has-tooltip', data: { container: 'body', qa_selector: 'edit_comment_button' } })
 
   = render 'projects/notes/more_actions_dropdown', note: note, note_editable: note_editable

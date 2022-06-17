@@ -85,5 +85,13 @@ RSpec.describe MergeRequestDiffFile do
 
       expect { subject.utf8_diff }.not_to raise_error
     end
+
+    it 'calls #diff once' do
+      allow(subject).to receive(:diff).and_return('test')
+
+      expect(subject).to receive(:diff).once
+
+      subject.utf8_diff
+    end
   end
 end

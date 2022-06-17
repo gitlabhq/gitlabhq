@@ -37,7 +37,7 @@ module QA
           $stdout.puts "\nDeleting subgroup #{path}..."
 
           delete_response = delete(request_url)
-          dot_or_f = delete_response.code == 404 ? "\e[32m.\e[0m" : "\e[31mF - #{delete_response}\e[0m"
+          dot_or_f = delete_response.code == 202 ? "\e[32m.\e[0m" : "\e[31mF - #{delete_response}\e[0m"
           print dot_or_f
         end
       end

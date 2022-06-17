@@ -49,7 +49,7 @@ module QA
         it 'reads as enabled after the flag is enabled' do
           QA::Runtime::Feature.enable(flag)
 
-          expect(QA::Runtime::Feature.enabled?(flag)).to be true
+          expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_truthy
         end
       end
 
@@ -63,7 +63,7 @@ module QA
         it 'reads as disabled after the flag is disabled' do
           QA::Runtime::Feature.disable(flag)
 
-          expect(QA::Runtime::Feature.enabled?(flag)).to be false
+          expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_falsey
         end
       end
     end

@@ -1637,6 +1637,10 @@
   rules:
     - when: on_success
 
+.review:rules:review-qa-sanity:
+  rules:
+    - when: on_success
+
 .review:rules:review-qa-smoke:
   rules:
     - when: on_success

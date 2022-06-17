@@ -759,7 +759,9 @@ To enable delayed deletion of projects in a group:
 1. Scroll to:
    - (GitLab 15.1 and later) **Deletion protection** and select **Keep deleted projects**.
    - (GitLab 15.0 and earlier) **Enable delayed project deletion** and tick the checkbox.
-1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**. Renamed to **Enforce deletion protection for all subgroups** in GitLab 15.1.
+1. Optional. To prevent subgroups from changing this setting, select:
+   - (GitLab 15.1 and later), **Enforce deletion protection for all subgroups**
+   - (GitLab 15.0 and earlier), **Enforce for all subgroups**.
 1. Select **Save changes**.
 
 NOTE:

@@ -31,7 +31,26 @@ to work items and adding custom work item types, visit
 [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or
 [Plan direction page](https://about.gitlab.com/direction/plan/).
 
-## View a task
+## Create a task
 
-The only way to view a task is to open it with a deep link,
-for example: `/<group_name>/<project_name>/-/work_item/1`.
+To create a task:
+
+1. In an issue description, create a [task list](markdown.md#task-lists).
+1. Hover over a task item and select **Convert to work item** (**{doc-new}**).
+1. Confirm or edit the title, and select **Create work item**.
+
+## Edit a task
+
+To edit a task:
+
+1. In the issue description, view the task links.
+1. Select a link. The task is displayed.
+   - To edit the description, select **Edit**, then select **Save**.
+   - To edit the title or state, make your changes, then click outside the field. The changes are saved automatically.
+
+## Delete a task
+
+To delete a task:
+
+1. In the issue description, select the task.
+1. From the options menu (**{ellipsis_v}**), select **Delete work item**.
