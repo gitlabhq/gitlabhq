@@ -166,6 +166,18 @@ mutation {
 }
 ```
 
+### Delete with the API
+
+Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation.
+
+```graphql
+mutation {
+  auditEventsStreamingHeadersDestroy(input: { headerId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/24601" }) {
+    errors
+  }
+}
+```
+
 The header is created if the returned `errors` object is empty.
 
 ## Verify event authenticity

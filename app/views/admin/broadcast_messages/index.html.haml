@@ -43,7 +43,7 @@
               = message.target_path
             %td
               = message.broadcast_type.capitalize
-            %td.gl-white-space-nowrap
+            %td.gl-white-space-nowrap<
               = link_to sprite_icon('pencil', css_class: 'gl-icon'), edit_admin_broadcast_message_path(message), title: _('Edit'), class: 'btn btn-icon gl-button'
-              = link_to sprite_icon('remove', css_class: 'gl-icon'), admin_broadcast_message_path(message), method: :delete, remote: true, title: _('Remove'), class: 'js-remove-tr btn btn-icon gl-button btn-danger ml-2'
+              = link_to sprite_icon('remove', css_class: 'gl-icon'), admin_broadcast_message_path(message), method: :delete, remote: true, title: _('Remove'), class: 'js-remove-tr btn btn-icon gl-button btn-danger gl-ml-3'
     = paginate @broadcast_messages, theme: 'gitlab'

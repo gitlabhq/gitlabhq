@@ -75,25 +75,25 @@ export default {
     <span class="gl-font-weight-bold gl-w-15 gl-pt-2" data-testid="assignees-title">{{
       __('Assignee(s)')
     }}</span>
-    <!-- TODO: Remove this div when https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2872 is merged -->
-    <div
-      v-if="assigneeListEmpty && !isEditing"
-      class="add-assignees gl-min-w-fit-content gl-absolute gl-display-flex gl-align-items-center gl-text-gray-300 gl-pr-4 gl-top-2 gl-z-index-0"
-      data-testid="empty-state"
-    >
-      <gl-icon name="profile" />
-      <span class="gl-ml-2">{{ __('Add assignees') }}</span>
-    </div>
     <gl-token-selector
       ref="tokenSelector"
       v-model="localAssignees"
       hide-dropdown-with-no-items
       :container-class="containerClass"
-      class="gl-w-full gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base gl-z-index-1 gl-bg-transparent!"
+      class="gl-w-full gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base"
       @token-remove="focusTokenSelector"
       @focus="isEditing = true"
       @blur="setAssignees"
     >
+      <template #empty-placeholder>
+        <div
+          class="add-assignees gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-300 gl-pr-4 gl-top-2"
+          data-testid="empty-state"
+        >
+          <gl-icon name="profile" />
+          <span class="gl-ml-2">{{ __('Add assignees') }}</span>
+        </div>
+      </template>
       <template #token-content="{ token }">
         <gl-link
           :href="token.webUrl"
@@ -109,10 +109,3 @@ export default {
     </gl-token-selector>
   </div>
 </template>
-
-<style lang="scss">
-/* TODO: Remove style block when https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2872 is merged */
-.work-item-assignees .add-assignees {
-  left: 7.5rem;
-}
-</style>

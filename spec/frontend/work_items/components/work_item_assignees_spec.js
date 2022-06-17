@@ -60,30 +60,9 @@ describe('WorkItemAssignees component', () => {
     expect(findAssigneeLinks().at(0).attributes('data-user-id')).toBe('1');
   });
 
-  describe('when there are no assignees', () => {
-    beforeEach(() => {
-      createComponent({ assignees: [] });
-    });
-
-    it('should render empty state placeholder', () => {
-      expect(findEmptyState().exists()).toBe(true);
-    });
-
-    it('should hide empty state placeholder on focusing token selector', async () => {
-      findTokenSelector().vm.$emit('focus');
-      await nextTick();
-
-      expect(findEmptyState().exists()).toBe(false);
-    });
-  });
-
   describe('when there are assignees', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('should not render empty state placeholder', () => {
-      expect(findEmptyState().exists()).toBe(false);
     });
 
     it('should focus token selector on token removal', async () => {

@@ -7,7 +7,7 @@ module Types
     class JobType < BaseObject
       graphql_name 'CiJob'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class(Types::LimitedCountableConnectionType)
 
       expose_permissions Types::PermissionTypes::Ci::Job
 

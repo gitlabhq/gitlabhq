@@ -124,6 +124,10 @@ Finally, your AWS ECS service is updated with the new revision of the
 task definition, making the cluster pull the newest version of your
 application.
 
+NOTE:
+ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
+set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
+
 WARNING:
 The [`AWS/Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
 template includes two templates: [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)

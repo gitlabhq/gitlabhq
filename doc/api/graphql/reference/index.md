@@ -738,6 +738,24 @@ Input type: `AuditEventsStreamingHeadersCreateInput`
 | <a id="mutationauditeventsstreamingheaderscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsstreamingheaderscreateheader"></a>`header` | [`AuditEventStreamingHeader`](#auditeventstreamingheader) | Created header. |
 
+### `Mutation.auditEventsStreamingHeadersDestroy`
+
+Input type: `AuditEventsStreamingHeadersDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheadersdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreamingheadersdestroyheaderid"></a>`headerId` | [`AuditEventsStreamingHeaderID!`](#auditeventsstreamingheaderid) | Header to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreamingheadersdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreamingheadersdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.awardEmojiAdd`
 
 Input type: `AwardEmojiAddInput`
@@ -6033,10 +6051,23 @@ The connection type for [`CiJob`](#cijob).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="cijobconnectionedges"></a>`edges` | [`[CiJobEdge]`](#cijobedge) | A list of edges. |
 | <a id="cijobconnectionnodes"></a>`nodes` | [`[CiJob]`](#cijob) | A list of nodes. |
 | <a id="cijobconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiJobConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `CiJobEdge`
 
@@ -20078,6 +20109,12 @@ An example `AppSecFuzzingCoverageCorpusID` is: `"gid://gitlab/AppSec::Fuzzing::C
 A `AuditEventsExternalAuditEventDestinationID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsExternalAuditEventDestinationID` is: `"gid://gitlab/AuditEvents::ExternalAuditEventDestination/1"`.
+
+### `AuditEventsStreamingHeaderID`
+
+A `AuditEventsStreamingHeaderID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsStreamingHeaderID` is: `"gid://gitlab/AuditEvents::Streaming::Header/1"`.
 
 ### `AwardableID`
 

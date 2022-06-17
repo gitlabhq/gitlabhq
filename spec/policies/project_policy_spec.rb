@@ -1369,6 +1369,68 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'view_package_registry_project_settings' do
+    context 'with registry enabled' do
+      before do
+        stub_config(registry: { enabled: true })
+      end
+
+      context 'with an admin user' do
+        let(:current_user) { admin }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+        end
+
+        context 'when admin mode disabled' do
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+
+      %i[owner maintainer].each do |role|
+        context "with #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+        end
+      end
+
+      %i[developer reporter guest non_member anonymous].each do |role|
+        context "with #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+    end
+
+    context 'with registry disabled' do
+      before do
+        stub_config(registry: { enabled: false })
+      end
+
+      context 'with admin user' do
+        let(:current_user) { admin }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+
+        context 'when admin mode disabled' do
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+
+      %i[owner maintainer developer reporter guest non_member anonymous].each do |role|
+        context "with #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+    end
+  end
+
   describe 'read_feature_flag' do
     subject { described_class.new(current_user, project) }
 

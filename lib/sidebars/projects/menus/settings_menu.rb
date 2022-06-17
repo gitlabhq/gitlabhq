@@ -104,8 +104,7 @@ module Sidebars
         end
 
         def packages_and_registries_menu_item
-          if !Gitlab.config.registry.enabled ||
-            !can?(context.current_user, :destroy_container_image, context.project)
+          unless can?(context.current_user, :view_package_registry_project_settings, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :packages_and_registries)
           end
 

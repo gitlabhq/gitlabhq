@@ -258,4 +258,81 @@ RSpec.describe 'Query.project.pipeline' do
       end
     end
   end
+
+  describe '.jobs.count' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:successful_job) { create(:ci_build, :success, pipeline: pipeline) }
+    let_it_be(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
+    let_it_be(:failed_job) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              jobs {
+                count
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      post_graphql(query, current_user: user)
+    end
+
+    it 'returns the number of jobs' do
+      expect(graphql_data_at(:project, :pipeline, :jobs, :count)).to eq(3)
+    end
+
+    context 'with limit value' do
+      let(:limit) { 1 }
+
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              pipeline(iid: "#{pipeline.iid}") {
+                jobs {
+                  count(limit: #{limit})
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it 'returns a limited number of jobs' do
+        expect(graphql_data_at(:project, :pipeline, :jobs, :count)).to eq(2)
+      end
+
+      context 'with invalid value' do
+        let(:limit) { 1500 }
+
+        it 'returns a validation error' do
+          expect(graphql_errors).to include(a_hash_including('message' => 'limit must be less than or equal to 1000'))
+        end
+      end
+    end
+
+    context 'with jobs filter' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              jobs(statuses: FAILED) {
+                count
+              }
+            }
+          }
+        )
+      end
+
+      it 'returns the number of failed jobs' do
+        expect(graphql_data_at(:project, :jobs, :count)).to eq(1)
+      end
+    end
+  end
 end

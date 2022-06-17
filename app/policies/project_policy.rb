@@ -203,6 +203,10 @@ class ProjectPolicy < BasePolicy
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
   end
 
+  condition :registry_enabled do
+    Gitlab.config.registry.enabled
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -758,6 +762,10 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:admin_project_member) }.policy do
     enable :import_project_members_from_another_project
+  end
+
+  rule { registry_enabled & can?(:admin_container_image) }.policy do
+    enable :view_package_registry_project_settings
   end
 
   private
