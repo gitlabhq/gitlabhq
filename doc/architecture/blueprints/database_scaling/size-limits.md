@@ -7,12 +7,12 @@ description: 'Database Scalability / Limit table sizes'
 
 # Database Scalability: Limit on-disk table size to < 100 GB for GitLab.com
 
-This document is a proposal to work towards reducing and limiting table sizes on GitLab.com. We establish a **measurable target** by limiting table size to a certain threshold. This will be used as an indicator to drive database focus and decision making. With GitLab.com growing, we continuously re-evaluate which tables need to be worked on to prevent or otherwise fix violations.
+This document is a proposal to work towards reducing and limiting table sizes on GitLab.com. We establish a **measurable target** by limiting table size to a certain threshold. This is used as an indicator to drive database focus and decision making. With GitLab.com growing, we continuously re-evaluate which tables need to be worked on to prevent or otherwise fix violations.
 
 This is not meant to be a hard rule but rather a strong indication that work needs to be done to break a table apart or otherwise reduce its size.
 
 This is meant to be read in context with the [Database Sharding blueprint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64115),
-which paints the bigger picture. This proposal here is thought to be part of the "debloating step" below, as we aim to reduce storage requirements and improve data modeling. Partitioning is part of the standard tool-belt: where possible, we can already use partitioning as a solution to cut physical table sizes significantly. Both will help to prepare efforts like decomposition (database usage is already optimized) and sharding (database is already partitioned along an identified data access dimension).
+which paints the bigger picture. This proposal here is thought to be part of the "debloating step" below, as we aim to reduce storage requirements and improve data modeling. Partitioning is part of the standard tool-belt: where possible, we can already use partitioning as a solution to cut physical table sizes significantly. Both help to prepare efforts like decomposition (database usage is already optimized) and sharding (database is already partitioned along an identified data access dimension).
 
 ```mermaid
 graph LR
@@ -125,11 +125,11 @@ In order to maintain and improve operational stability and lessen development bu
 1. Indexes are smaller, can be maintained more efficiently and fit better into memory
 1. Data migrations are easier to reason about, take less time to implement and execute
 
-This target is *pragmatic*: We understand table sizes depend on feature usage, code changes and other factors - which all change over time. We may not always find solutions where we can tightly limit the size of physical tables once and for all. That is acceptable though and we primarily aim to keep the situation on GitLab.com under control. We adapt our efforts to the situation present on GitLab.com and will re-evaluate frequently.
+This target is *pragmatic*: We understand table sizes depend on feature usage, code changes and other factors - which all change over time. We may not always find solutions where we can tightly limit the size of physical tables once and for all. That is acceptable though and we primarily aim to keep the situation on GitLab.com under control. We adapt our efforts to the situation present on GitLab.com and re-evaluate frequently.
 
-While there are changes we can make that lead to a constant maximum physical table size over time, this doesn't need to be the case necessarily. Consider for example hash partitioning, which breaks a table down into a static number of partitions. With data growth over time, individual partitions will also grow in size and may eventually reach the threshold size again. We strive to get constant table sizes, but it is acceptable to ship easier solutions that don't have this characteristic but improve the situation for a considerable amount of time.
+While there are changes we can make that lead to a constant maximum physical table size over time, this doesn't need to be the case necessarily. Consider for example hash partitioning, which breaks a table down into a static number of partitions. With data growth over time, individual partitions also grow in size and may eventually reach the threshold size again. We strive to get constant table sizes, but it is acceptable to ship easier solutions that don't have this characteristic but improve the situation for a considerable amount of time.
 
-As such, the target size of a physical table after refactoring depends on the situation and there is no hard rule for it. We suggest to consider historic data growth and forecast when physical tables will reach the threshold of 100 GB again. This allows us to understand how long a particular solution is expected to last until the model has to be revisited.
+As such, the target size of a physical table after refactoring depends on the situation and there is no hard rule for it. We suggest to consider historic data growth and forecast when physical tables reach the threshold of 100 GB again. This allows us to understand how long a particular solution is expected to last until the model has to be revisited.
 
 ## Solutions
 
@@ -154,10 +154,10 @@ For solutions like normalization, this is a trade-off: Denormalized models can s
 A few examples can be found below, many more are organized under the epic [Database efficiency](https://gitlab.com/groups/gitlab-org/-/epics/5585).
 
 1. [Reduce number of indexes on `ci_builds`](https://gitlab.com/groups/gitlab-org/-/epics/6203)
-1. [Normalize and de-duplicate committer and author details in merge_request_diff_commits](https://gitlab.com/gitlab-org/gitlab/-/issues/331823)
+1. [Normalize and de-duplicate committer and author details in `merge_request_diff_commits`](https://gitlab.com/gitlab-org/gitlab/-/issues/331823)
 1. [Retention strategy for `ci_build_trace_sections`](https://gitlab.com/gitlab-org/gitlab/-/issues/32565#note_603138100)
 1. [Implement worker that hard-deletes old CI jobs metadata](https://gitlab.com/gitlab-org/gitlab/-/issues/215646)
-1. [merge_request_diff_files violates < 100 GB target](https://gitlab.com/groups/gitlab-org/-/epics/6215) (epic)
+1. [`merge_request_diff_files` violates < 100 GB target](https://gitlab.com/groups/gitlab-org/-/epics/6215) (epic)
 
 ## Goal
 

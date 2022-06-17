@@ -24,18 +24,6 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
       create(:merge_request, source_branch: 'feature', target_branch: "v1.1.0", source_project: project)
     end
 
-    context 'when related merge request is already merged' do
-      let!(:merged_merge_request) do
-        create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project, state: 'merged')
-      end
-
-      it 'does not schedule update head pipeline job' do
-        expect(UpdateHeadPipelineForMergeRequestWorker).not_to receive(:perform_async).with(merged_merge_request.id)
-
-        subject
-      end
-    end
-
     context 'when the head pipeline sha equals merge request sha' do
       let(:ref) { 'feature' }
 
@@ -51,6 +39,22 @@ RSpec.describe MergeRequests::UpdateHeadPipelineWorker do
 
         expect(merge_request_1.reload.head_pipeline).to eq(pipeline)
         expect(merge_request_2.reload.head_pipeline).to eq(pipeline)
+      end
+
+      context 'when the merge request is not open' do
+        before do
+          merge_request_1.close!
+        end
+
+        it 'only updates the open merge requests' do
+          merge_request_1
+          merge_request_2
+
+          subject
+
+          expect(merge_request_1.reload.head_pipeline).not_to eq(pipeline)
+          expect(merge_request_2.reload.head_pipeline).to eq(pipeline)
+        end
       end
     end
 

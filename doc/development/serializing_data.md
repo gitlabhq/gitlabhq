@@ -20,7 +20,7 @@ end
 ```
 
 While it may be tempting to store serialized data in the database there are many
-problems with this. This document will outline these problems and provide an
+problems with this. This document outlines these problems and provide an
 alternative.
 
 ## Serialized Data Is Less Powerful
@@ -34,13 +34,13 @@ turn there's no way to query the data at all.
 
 ## Waste Of Space
 
-Storing serialized data such as JSON or YAML will end up wasting a lot of space.
+Storing serialized data such as JSON or YAML ends up wasting a lot of space.
 This is because these formats often include additional characters (for example, double
 quotes or newlines) besides the data that you are storing.
 
 ## Difficult To Manage
 
-There comes a time where you will need to add a new field to the serialized
+There comes a time where you must add a new field to the serialized
 data, or change an existing one. Using serialized data this becomes difficult
 and very time consuming as the only way of doing so is to re-write all the
 stored values. To do so you would have to:
@@ -51,8 +51,7 @@ stored values. To do so you would have to:
 1. Serialize it back to a String
 1. Store it in the database
 
-On the other hand, if one were to use regular columns adding a column would be
-as easy as this:
+On the other hand, if one were to use regular columns adding a column would be:
 
 ```sql
 ALTER TABLE table_name ADD COLUMN column_name type;
@@ -62,9 +61,9 @@ Such a query would take very little to no time and would immediately apply to
 all rows, without having to re-write large JSON or YAML structures.
 
 Finally, there comes a time when the JSON or YAML structure is no longer
-sufficient and you need to migrate away from it. When storing only a few rows
+sufficient and you must migrate away from it. When storing only a few rows
 this may not be a problem, but when storing millions of rows such a migration
-can easily take hours or even days to complete.
+can take hours or even days to complete.
 
 ## Relational Databases Are Not Document Stores
 
@@ -85,7 +84,7 @@ you don't need.
 
 ## The Solution
 
-The solution is very simple: just use separate columns and/or separate tables.
-This will allow you to use all the features provided by your database, it will
-make it easier to manage and migrate the data, you'll conserve space, you can
+The solution is to use separate columns and/or separate tables.
+This allows you to use all the features provided by your database, it
+makes it easier to manage and migrate the data, you conserve space, you can
 index the data efficiently and so forth.

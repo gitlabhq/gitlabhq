@@ -37,13 +37,13 @@ before attempting to leverage this feature.
 While partitioning can be very useful when properly applied, it's
 imperative to identify if the data and workload of a table naturally fit a
 partitioning scheme. There are a few details you have to understand
-in order to decide if partitioning is a good fit for your particular
+to decide if partitioning is a good fit for your particular
 problem.
 
 First, a table is partitioned on a partition key, which is a column or
 set of columns which determine how the data is split across the
 partitions. The partition key is used by the database when reading or
-writing data, to decide which partitions need to be accessed. The
+writing data, to decide which partitions must be accessed. The
 partition key should be a column that would be included in a `WHERE`
 clause on almost all queries accessing that table.
 
@@ -51,8 +51,8 @@ Second, it's necessary to understand the strategy the database uses
 to split the data across the partitions. The scheme supported by the
 GitLab migration helpers is date-range partitioning, where each partition
 in the table contains data for a single month. In this case, the partitioning
-key would need to be a timestamp or date column. In order for this type of
-partitioning to work well, most queries would need to access data within a
+key must be a timestamp or date column. In order for this type of
+partitioning to work well, most queries must access data in a
 certain date range.
 
 For a more concrete example, the `audit_events` table can be used, which
@@ -73,7 +73,7 @@ CREATE TABLE audit_events (
   created_at timestamptz NOT NULL);
 ```
 
-Now imagine typical queries in the UI would display the data within a
+Now imagine typical queries in the UI would display the data in a
 certain date range, like a single week:
 
 ```sql
@@ -136,11 +136,11 @@ LIMIT 100
 In this example, the database can't prune any partitions from the search,
 because matching data could exist in any of them. As a result, it has to
 query each partition individually, and aggregate the rows into a single result
-set. Since `author_id` would be indexed, the performance impact could
+set. Because `author_id` would be indexed, the performance impact could
 likely be acceptable, but on more complex queries the overhead can be
 substantial. Partitioning should only be leveraged if the access patterns
-of the data support the partitioning strategy, otherwise performance will
-suffer.
+of the data support the partitioning strategy, otherwise performance
+suffers.
 
 ## Partitioning a table
 
@@ -158,7 +158,7 @@ migration to copy data into the new table. Changes to the original table
 schema can be made in parallel with the partitioning migration, but they
 must take care to not break the underlying mechanism that makes the migration
 work. For example, if a column is added to the table that is being
-partitioned, both the partitioned table and the trigger definition need to
+partitioned, both the partitioned table and the trigger definition must
 be updated to match.
 
 ### Step 1: Creating the partitioned copy (Release N)
@@ -252,7 +252,7 @@ original table guarantees that the data remains in sync going forward.
 
 ### Step 4: Swap the partitioned and non-partitioned tables (Release N+1)
 
-The final step of the migration will make the partitioned table ready
+The final step of the migration makes the partitioned table ready
 for use by the application. This section will be updated when the
 migration helper is ready, for now development can be followed in the
 [Tracking Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241267).

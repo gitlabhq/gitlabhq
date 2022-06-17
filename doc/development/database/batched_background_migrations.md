@@ -190,7 +190,7 @@ data to be in the new format.
 
 The `routes` table has a `source_type` field that's used for a polymorphic relationship.
 As part of a database redesign, we're removing the polymorphic relationship. One step of
-the work will be migrating data from the `source_id` column into a new singular foreign key.
+the work is migrating data from the `source_id` column into a new singular foreign key.
 Because we intend to delete old rows later, there's no need to update them as part of the
 background migration.
 
@@ -219,9 +219,9 @@ background migration.
    NOTE:
    Job classes must be subclasses of `BatchedMigrationJob` to be
    correctly handled by the batched migration framework. Any subclass of
-   `BatchedMigrationJob` will be initialized with necessary arguments to
+   `BatchedMigrationJob` is initialized with necessary arguments to
    execute the batch, as well as a connection to the tracking database.
-   Additional `job_arguments` set on the migration will be passed to the
+   Additional `job_arguments` set on the migration are passed to the
    job's `perform` method.
 
 1. Add a new trigger to the database to update newly created and updated routes,

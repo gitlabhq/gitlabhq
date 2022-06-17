@@ -16,6 +16,7 @@ export const registerExtension = (extension) => {
         required: true,
       },
     },
+    telemetry: extension.telemetry,
     i18n: extension.i18n,
     expandEvent: extension.expandEvent,
     enablePolling: extension.enablePolling,

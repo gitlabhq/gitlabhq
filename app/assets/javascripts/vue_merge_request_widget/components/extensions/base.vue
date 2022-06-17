@@ -6,10 +6,8 @@ import {
   GlTooltipDirective,
   GlIntersectionObserver,
 } from '@gitlab/ui';
-import { once } from 'lodash';
 import * as Sentry from '@sentry/browser';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
-import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
@@ -17,6 +15,7 @@ import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
 import ChildContent from './child_content.vue';
+import { createTelemetryHub } from './telemetry';
 import { generateText } from './utils';
 
 export const LOADING_STATES = {
@@ -27,6 +26,7 @@ export const LOADING_STATES = {
 };
 
 export default {
+  telemetry: true,
   components: {
     GlButton,
     GlLoadingIcon,
@@ -50,6 +50,7 @@ export default {
       showFade: false,
       modalData: undefined,
       modalName: undefined,
+      telemetry: null,
     };
   },
   computed: {
@@ -132,20 +133,24 @@ export default {
       }
     },
   },
+  created() {
+    if (this.$options.telemetry) {
+      this.telemetry = createTelemetryHub(this.$options.name);
+    }
+  },
   mounted() {
     this.loadCollapsedData();
+
+    this.telemetry?.viewed();
   },
   methods: {
-    triggerRedisTracking: once(function triggerRedisTracking() {
-      if (this.$options.expandEvent) {
-        api.trackRedisHllUserEvent(this.$options.expandEvent);
-      }
-    }),
     toggleCollapsed(e) {
       if (this.isCollapsible && !e?.target?.closest('.btn:not(.btn-icon),a')) {
-        this.isCollapsed = !this.isCollapsed;
+        if (this.isCollapsed) {
+          this.telemetry?.expanded({ type: this.statusIconName });
+        }
 
-        this.triggerRedisTracking();
+        this.isCollapsed = !this.isCollapsed;
       }
     },
     initExtensionMultiPolling() {
@@ -263,6 +268,11 @@ export default {
         this.toggleCollapsed(e);
       }
     },
+    onClickedAction(action) {
+      if (action.fullReport) {
+        this.telemetry?.fullReportClicked();
+      }
+    },
     generateText,
   },
   EXTENSION_ICON_CLASS,
@@ -300,6 +310,7 @@ export default {
         <actions
           :widget="$options.label || $options.name"
           :tertiary-buttons="tertiaryActionsButtons"
+          @clickedAction="onClickedAction"
         />
         <div
           v-if="isCollapsible"
@@ -356,6 +367,7 @@ export default {
                   :widget-label="widgetLabel"
                   :modal-id="modalId"
                   :level="2"
+                  @clickedAction="onClickedAction"
                 />
               </gl-intersection-observer>
             </div>

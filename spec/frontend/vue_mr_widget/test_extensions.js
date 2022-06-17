@@ -109,6 +109,28 @@ export const pollingExtension = {
   enablePolling: true,
 };
 
+export const fullReportExtension = {
+  ...workingExtension(),
+  computed: {
+    ...workingExtension().computed,
+    tertiaryButtons() {
+      return [
+        {
+          text: 'test',
+          href: `testref`,
+          target: '_blank',
+          fullReport: true,
+        },
+      ];
+    },
+  },
+};
+
+export const noTelemetryExtension = {
+  ...fullReportExtension,
+  telemetry: false,
+};
+
 export const multiPollingExtension = (endpointsToBePolled) => ({
   name: 'WidgetTestMultiPollingExtension',
   props: [],

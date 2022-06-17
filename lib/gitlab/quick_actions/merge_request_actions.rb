@@ -88,11 +88,11 @@ module Gitlab
           @execution_message[:rebase] = _('Scheduled a rebase of branch %{branch}.') % { branch: branch }
         end
 
-        desc 'Toggle the Draft status'
+        desc { _('Toggle the Draft status') }
         explanation do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
           if quick_action_target.draft?
-            _("Unmarks this %{noun} as a draft.")
+            _("Marks this %{noun} as ready.")
           else
             _("Marks this %{noun} as a draft.")
           end % { noun: noun }
@@ -100,7 +100,7 @@ module Gitlab
         execution_message do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
           if quick_action_target.draft?
-            _("Unmarked this %{noun} as a draft.")
+            _("Marked this %{noun} as ready.")
           else
             _("Marked this %{noun} as a draft.")
           end % { noun: noun }
@@ -115,6 +115,35 @@ module Gitlab
         end
         command :draft do
           @updates[:wip_event] = quick_action_target.draft? ? 'ready' : 'draft'
+        end
+
+        desc { _('Set the Ready status') }
+        explanation do
+          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
+          if quick_action_target.draft?
+            _("Marks this %{noun} as ready.")
+          else
+            _("No change to this %{noun}'s draft status.")
+          end % { noun: noun }
+        end
+        execution_message do
+          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
+          if quick_action_target.draft?
+            _("Marked this %{noun} as ready.")
+          else
+            _("No change to this %{noun}'s draft status.")
+          end % { noun: noun }
+        end
+
+        types MergeRequest
+        condition do
+          # Allow it to mark as draft on MR creation page or through MR notes
+          #
+          quick_action_target.respond_to?(:draft?) &&
+            (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
+        end
+        command :ready do
+          @updates[:wip_event] = 'ready' if quick_action_target.draft?
         end
 
         desc { _('Set target branch') }

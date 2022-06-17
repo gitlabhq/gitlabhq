@@ -1537,11 +1537,12 @@ RSpec.describe Ci::CreatePipelineService do
               expect(pipeline.target_sha).to be_nil
             end
 
-            it 'schedules update for the head pipeline of the merge request', :sidekiq_inline do
-              expect(UpdateHeadPipelineForMergeRequestWorker)
-                .to receive(:perform_async).with(merge_request.id)
+            it 'schedules update for the head pipeline of the merge request' do
+              allow(MergeRequests::UpdateHeadPipelineWorker).to receive(:perform_async)
 
               pipeline
+
+              expect(MergeRequests::UpdateHeadPipelineWorker).to have_received(:perform_async).with('Ci::PipelineCreatedEvent', { 'pipeline_id' => pipeline.id })
             end
 
             it 'schedules a namespace onboarding create action worker' do

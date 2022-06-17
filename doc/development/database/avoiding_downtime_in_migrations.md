@@ -170,7 +170,7 @@ class RenameUsersUpdatedAtToUpdatedAtTimestamp < Gitlab::Database::Migration[1.0
 end
 ```
 
-This will take care of renaming the column, ensuring data stays in sync, and
+This takes care of renaming the column, ensuring data stays in sync, and
 copying over indexes and foreign keys.
 
 If a column contains one or more indexes that don't contain the name of the
@@ -270,7 +270,7 @@ And that's it, we're done!
 
 Some type changes require casting data to a new type. For example when changing from `text` to `jsonb`.
 In this case, use the `type_cast_function` option.
-Make sure there is no bad data and the cast will always succeed. You can also provide a custom function that handles
+Make sure there is no bad data and the cast always succeeds. You can also provide a custom function that handles
 casting errors.
 
 Example migration:

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Database Review Guidelines
 
-This page is specific to database reviews. Please refer to our
+This page is specific to database reviews. Refer to our
 [code review guide](code_review.md) for broader advice and best
 practices for code review in general.
 
@@ -47,7 +47,7 @@ If new migrations are introduced, in the MR **you are required to provide**:
 
 - The output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations.
 
-Note that we have automated tooling for
+We have automated tooling for
 [GitLab](https://gitlab.com/gitlab-org/gitlab) (provided by the
 [`db:check-migrations`](database/dbcheck-migrations-job.md) pipeline job) that provides this output for migrations on
 ~database merge requests. You do not need to provide this information manually
@@ -88,7 +88,7 @@ A database **maintainer**'s role is to:
   database reviewer and the MR author.
 - Finally approve the MR and relabel the MR with ~"database::approved"
 - Merge the MR if no other approvals are pending or pass it on to
-  other maintainers as required (frontend, backend, docs).
+  other maintainers as required (frontend, backend, documentation).
   - If not merging, remove yourself as a reviewer.
 
 ### Distributing review workload
@@ -106,7 +106,7 @@ make sure you have applied the ~database label and rerun the
 
 ### How to prepare the merge request for a database review
 
-In order to make reviewing easier and therefore faster, please take
+To make reviewing easier and therefore faster, take
 the following preparations into account.
 
 #### Preparation when adding migrations
@@ -139,7 +139,7 @@ of error that would result in corruption or loss of production data.
 
 Include in the MR description:
 
-- If the migration itself is not reversible, details of how data changes could be reverted in the event of an incident. For example, in the case of a migration that deletes records (an operation that most of the times is not automatically revertable), how _could_ the deleted records be recovered.
+- If the migration itself is not reversible, details of how data changes could be reverted in the event of an incident. For example, in the case of a migration that deletes records (an operation that most of the times is not automatically reversible), how _could_ the deleted records be recovered.
 - If the migration deletes data, apply the label `~data-deletion`.
 - Concise descriptions of possible user experience impact of an error; for example, "Issues would unexpectedly go missing from Epics".
 - Relevant data from the [query plans](#query-plans) that indicate the query works as expected; such as the approximate number of records that are modified or deleted.
@@ -157,7 +157,7 @@ Include in the MR description:
 - In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
 
   For example, a finder for issues that may take as a parameter an optional filter on projects,
-  should include both the version of the simple query over issues and the one that joins issues
+  should include both the version of the query over issues and the one that joins issues
   and projects and applies the filter.
 
   There are finders or other methods that can generate a very large amount of permutations.
@@ -167,7 +167,7 @@ Include in the MR description:
   For example, if joins or a group by clause are optional, the versions without the group by clause
   and with less joins should be also included, while keeping the appropriate filters for the remaining tables.
 
-- If a query is going to be always used with a limit and an offset, those should always be
+- If a query is always used with a limit and an offset, those should always be
   included with the maximum allowed limit used and a non 0 offset.
 
 ##### Query Plans
@@ -175,7 +175,7 @@ Include in the MR description:
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - Provide a public link to the plan from either:
   - [postgres.ai](https://postgres.ai/): Follow the link in `#database-lab` and generate a shareable, public link
-    by clicking the **Share** button in the upper right corner.
+    by clicking **Share** in the upper right corner.
   - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,
@@ -204,11 +204,11 @@ Include in the MR description:
 - Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently
-  difficult to scale. To identify these risky patterns in advance, we need to document expectations for
+  difficult to scale. To identify these risky patterns in advance, we must document expectations for
   access and size. Include in the MR description answers to these questions:
   - What is the anticipated growth for the new table over the next 3 months, 6 months, 1 year? What assumptions are these based on?
   - How many reads and writes per hour would you expect this table to have in 3 months, 6 months, 1 year? Under what circumstances are rows updated? What assumptions are these based on?
-  - Based on the anticipated data volume and access patterns, does the new table pose an availability risk to GitLab.com or self-managed instances? Will the proposed design scale to support the needs of GitLab.com and self-managed customers?
+  - Based on the anticipated data volume and access patterns, does the new table pose an availability risk to GitLab.com or self-managed instances? Does the proposed design scale to support the needs of GitLab.com and self-managed customers?
 
 #### Preparation when removing columns, tables, indexes, or other structures
 
@@ -235,7 +235,7 @@ Include in the MR description:
   - Check consistency with `db/structure.sql` and that migrations are [reversible](migration_style_guide.md#reversibility)
   - Check that the relevant version files under `db/schema_migrations` were added or removed.
   - Check queries timing (If any): In a single transaction, cumulative query time executed in a migration
-    needs to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
+    needs to fit comfortably in `15s` - preferably much less than that - on GitLab.com.
   - For column removals, make sure the column has been [ignored in a previous release](database/avoiding_downtime_in_migrations.md#dropping-columns)
 - Check [background migrations](database/background_migrations.md):
   - Establish a time estimate for execution on GitLab.com. For historical purposes,
@@ -266,7 +266,7 @@ Include in the MR description:
 - Query performance
   - Check for any overly complex queries and queries the author specifically
     points out for review (if any)
-  - If not present yet, ask the author to provide SQL queries and query plans
+  - If not present, ask the author to provide SQL queries and query plans
     (for example, by using [ChatOps](understanding_explain_plans.md#chatops) or direct
     database access)
   - For given queries, review parameters regarding data distribution

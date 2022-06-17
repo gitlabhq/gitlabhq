@@ -607,20 +607,20 @@ SELECT TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table;
 The partition "sliding" process is controlled by two, regularly executed callbacks. These
 callbacks are defined within the `LooseForeignKeys::DeletedRecord` model.
 
-The `next_partition_if` callback controls when to create a new partition. A new partition will
-be created when the current partition has at least one record older than 24 hours. A new partition
+The `next_partition_if` callback controls when to create a new partition. A new partition is
+created when the current partition has at least one record older than 24 hours. A new partition
 is added by the [`PartitionManager`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/partitioning/partition_manager.rb)
 using the following steps:
 
 1. Create a new partition, where the `VALUE` for the partition is `CURRENT_PARTITION + 1`.
 1. Update the default value of the `partition` column to `CURRENT_PARTITION + 1`.
 
-With these steps, new `INSERT`-s via the triggers will end up in the new partition. At this point,
+With these steps, all new `INSERT` queries via the triggers end up in the new partition. At this point,
 the database table has two partitions.
 
 The `detach_partition_if` callback determines if the old partitions can be detached from the table.
 A partition is detachable if there are no pending (unprocessed) records in the partition
-(`status = 1`). The detached partitions will be available for some time, you can see the list
+(`status = 1`). The detached partitions are available for some time, you can see the list
 detached partitions in the `detached_partitions` table:
 
 ```sql
@@ -663,7 +663,7 @@ WHERE ("merge_requests"."id") IN
 These queries are batched, which means that in many cases, several invocations are needed to clean
 up all associated child records.
 
-The batching is implemented with loops, the processing will stop when all associated child records
+The batching is implemented with loops, the processing stops when all associated child records
 are cleaned up or the limit is reached.
 
 ```ruby
@@ -682,14 +682,14 @@ end
 
 The loop-based batch processing is preferred over `EachBatch` for the following reasons:
 
-- The records in the batch are modified, so the next batch will contain different records.
+- The records in the batch are modified, so the next batch contains different records.
 - There is always an index on the foreign key column however, the column is usually not unique.
 `EachBatch` requires a unique column for the iteration.
 - The record order doesn't matter for the cleanup.
 
-Notice that we have two loops. The initial loop will process records with the `SKIP LOCKED` clause.
-The query will skip rows that are locked by other application processes. This will ensure that the
-cleanup worker will less likely to become blocked. The second loop will execute the database
+Notice that we have two loops. The initial loop processes records with the `SKIP LOCKED` clause.
+The query skips rows that are locked by other application processes. This ensures that the
+cleanup worker is less likely to become blocked. The second loop executes the database
 queries without `SKIP LOCKED` to ensure that all records have been processed.
 
 #### Processing limits
@@ -713,7 +713,7 @@ immediately. After some time, the next scheduled worker continues the cleanup pr
 
 #### Performance characteristics
 
-The database trigger on the parent tables will **decrease** the record deletion speed. Each
+The database trigger on the parent tables **decreases** the record deletion speed. Each
 statement that removes rows from the parent table invokes the trigger to insert records
 into the `loose_foreign_keys_deleted_records` table.
 
@@ -721,7 +721,7 @@ The queries within the cleanup worker are fairly efficient index scans, with lim
 they're unlikely to affect other parts of the application.
 
 The database queries are not running in transaction, when an error happens for example a statement
-timeout or a worker crash, the next job will continue the processing.
+timeout or a worker crash, the next job continues the processing.
 
 ## Troubleshooting
 
@@ -730,13 +730,13 @@ timeout or a worker crash, the next job will continue the processing.
 There can be cases where the workers need to process an unusually large amount of data. This can
 happen under normal usage, for example when a large project or group is deleted. In this scenario,
 there can be several million rows to be deleted or nullified. Due to the limits enforced by the
-worker, processing this data will take some time.
+worker, processing this data takes some time.
 
 When cleaning up "heavy-hitters", the feature ensures fair processing by rescheduling larger
 batches for later. This gives time for other deleted records to be processed.
 
 For example, a project with millions of `ci_builds` records is deleted. The `ci_builds` records
-will be deleted by the loose foreign keys feature.
+is deleted by the loose foreign keys feature.
 
 1. The cleanup worker is scheduled and picks up a batch of deleted `projects` records. The large
 project is part of the batch.
@@ -746,7 +746,7 @@ project is part of the batch.
 1. Go to step 1. The next cleanup worker continues the cleanup.
 1. When the `cleanup_attempts` reaches 3, the batch is re-scheduled 10 minutes later by updating
 the `consume_after` column.
-1. The next cleanup worker will process a different batch.
+1. The next cleanup worker processes a different batch.
 
 We have Prometheus metrics in place to monitor the deleted record cleanup:
 
@@ -812,7 +812,7 @@ runtime.
 LooseForeignKeys::CleanupWorker.new.perform
 ```
 
-When the cleanup is done, the older partitions will be automatically detached by the
+When the cleanup is done, the older partitions are automatically detached by the
 `PartitionManager`.
 
 ### PartitionManager bug

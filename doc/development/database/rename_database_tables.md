@@ -135,4 +135,4 @@ database, ActiveRecord fetches the column information again. At this time, our p
 marked table (`TABLES_TO_BE_RENAMED`) instructs ActiveRecord to use the new database table name
 when fetching the database table information.
 
-The new version of the application will use the new database table.
+The new version of the application uses the new database table.

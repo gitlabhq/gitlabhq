@@ -23532,6 +23532,9 @@ msgstr ""
 msgid "Marked this %{noun} as a draft."
 msgstr ""
 
+msgid "Marked this %{noun} as ready."
+msgstr ""
+
 msgid "Marked this issue as a duplicate of %{duplicate_param}."
 msgstr ""
 
@@ -23542,6 +23545,9 @@ msgid "Marked to do as done."
 msgstr ""
 
 msgid "Marks this %{noun} as a draft."
+msgstr ""
+
+msgid "Marks this %{noun} as ready."
 msgstr ""
 
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
@@ -25612,6 +25618,9 @@ msgid "No available branches"
 msgstr ""
 
 msgid "No branches found"
+msgstr ""
+
+msgid "No change to this %{noun}'s draft status."
 msgstr ""
 
 msgid "No changes"
@@ -35115,6 +35124,9 @@ msgstr ""
 msgid "Set target branch to %{branch_name}."
 msgstr ""
 
+msgid "Set the Ready status"
+msgstr ""
+
 msgid "Set the default branch for this project. All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
@@ -40021,6 +40033,9 @@ msgstr ""
 msgid "Toggle sidebar"
 msgstr ""
 
+msgid "Toggle the Draft status"
+msgstr ""
+
 msgid "Toggle the Performance Bar"
 msgstr ""
 
@@ -40730,12 +40745,6 @@ msgid "Unlocked the discussion."
 msgstr ""
 
 msgid "Unlocks the discussion."
-msgstr ""
-
-msgid "Unmarked this %{noun} as a draft."
-msgstr ""
-
-msgid "Unmarks this %{noun} as a draft."
 msgstr ""
 
 msgid "Unreachable"

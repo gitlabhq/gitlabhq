@@ -29,6 +29,8 @@ import {
   workingExtension,
   collapsedDataErrorExtension,
   fullDataErrorExtension,
+  fullReportExtension,
+  noTelemetryExtension,
   pollingExtension,
   pollingErrorExtension,
   multiPollingExtension,
@@ -49,6 +51,8 @@ describe('MrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
   const findExtensionToggleButton = () =>
     wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
+  const findExtensionLink = (linkHref) =>
+    wrapper.find(`[data-testid="widget-extension"] [href="${linkHref}"]`);
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };
@@ -924,18 +928,6 @@ describe('MrWidgetOptions', () => {
       expect(wrapper.text()).toContain('Test extension summary count: 1');
     });
 
-    it('triggers trackRedisHllUserEvent API call', async () => {
-      await waitForPromises();
-
-      wrapper
-        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
-        .trigger('click');
-
-      await nextTick();
-
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_expand_event');
-    });
-
     it('renders full data', async () => {
       await waitForPromises();
 
@@ -1157,6 +1149,121 @@ describe('MrWidgetOptions', () => {
       await waitForPromises();
 
       itHandlesTheException();
+    });
+  });
+
+  describe('telemetry', () => {
+    afterEach(() => {
+      registeredExtensions.extensions = [];
+    });
+
+    it('triggers view events when mounted', () => {
+      registerExtension(workingExtension());
+      createComponent();
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_view',
+      );
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_count_view',
+      );
+    });
+
+    describe('expand button', () => {
+      it('triggers expand events when clicked', async () => {
+        registerExtension(workingExtension());
+        createComponent();
+
+        await waitForPromises();
+
+        api.trackRedisHllUserEvent.mockClear();
+        api.trackRedisCounterEvent.mockClear();
+
+        findExtensionToggleButton().trigger('click');
+
+        // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_expand',
+        );
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_expand_warning',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_count_expand',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_count_expand_warning',
+        );
+      });
+
+      it.each`
+        widgetName             | nonStandardEvent
+        ${'WidgetCodeQuality'} | ${'i_testing_code_quality_widget_total'}
+        ${'WidgetTerraform'}   | ${'i_testing_terraform_widget_total'}
+        ${'WidgetIssues'}      | ${'i_testing_load_performance_widget_total'}
+        ${'WidgetTestReport'}  | ${'i_testing_summary_widget_total'}
+      `(
+        "sends non-standard events for the '$widgetName' widget",
+        async ({ widgetName, nonStandardEvent }) => {
+          const definition = {
+            ...workingExtension(),
+            name: widgetName,
+          };
+
+          registerExtension(definition);
+          createComponent();
+
+          await waitForPromises();
+
+          api.trackRedisHllUserEvent.mockClear();
+
+          findExtensionToggleButton().trigger('click');
+
+          expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(nonStandardEvent);
+        },
+      );
+    });
+
+    it('triggers the "full report clicked" events when the appropriate button is clicked', () => {
+      registerExtension(fullReportExtension);
+      createComponent();
+
+      api.trackRedisHllUserEvent.mockClear();
+      api.trackRedisCounterEvent.mockClear();
+
+      findExtensionLink('testref').trigger('click');
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_click_full_report',
+      );
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_count_click_full_report',
+      );
+    });
+
+    describe('when disabled', () => {
+      afterEach(() => {
+        registeredExtensions.extensions = [];
+      });
+
+      it("doesn't emit any telemetry events", async () => {
+        registerExtension(noTelemetryExtension);
+        createComponent();
+
+        await waitForPromises();
+
+        findExtensionToggleButton().trigger('click');
+        findExtensionLink('testref').trigger('click'); // The "full report" link
+
+        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
+        expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
+      });
     });
   });
 });

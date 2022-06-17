@@ -32,14 +32,14 @@ data and are slower to update compared to B-tree indexes.
 Because of all this one should not blindly add a new index for every column used
 to filter data by. Instead one should ask themselves the following questions:
 
-1. Can I write my query in such a way that it re-uses as many existing indexes
+1. Can you write your query in such a way that it re-uses as many existing indexes
    as possible?
-1. Is the data going to be large enough that using an index will actually be
+1. Is the data large enough that using an index is actually
    faster than just iterating over the rows in the table?
 1. Is the overhead of maintaining the index worth the reduction in query
    timings?
 
-We'll explore every question in detail below.
+We explore every question in detail below.
 
 ## Re-using Queries
 
@@ -54,7 +54,7 @@ AND state = 'open';
 ```
 
 Now imagine we already have an index on the `user_id` column but not on the
-`state` column. One may think this query will perform badly due to `state` being
+`state` column. One may think this query performs badly due to `state` being
 unindexed. In reality the query may perform just fine given the index on
 `user_id` can filter out enough rows.
 
@@ -85,8 +85,8 @@ enough rows you may _not_ want to add a new index.
 ## Maintenance Overhead
 
 Indexes have to be updated on every table write. In case of PostgreSQL _all_
-existing indexes will be updated whenever data is written to a table. As a
-result of this having many indexes on the same table will slow down writes.
+existing indexes are updated whenever data is written to a table. As a
+result of this having many indexes on the same table slows down writes.
 
 Because of this one should ask themselves: is the reduction in query performance
 worth the overhead of maintaining an extra index?
@@ -184,8 +184,8 @@ def up
 end
 ```
 
-The call to `index_exists?` will return true if **any** index exists on
-`:my_table` and `:my_column`, and index creation will be bypassed.
+The call to `index_exists?` returns true if **any** index exists on
+`:my_table` and `:my_column`, and index creation is bypassed.
 
 The `add_concurrent_index` helper is a requirement for creating indexes
 on populated tables. Since it cannot be used inside a transactional

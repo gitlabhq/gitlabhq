@@ -30,7 +30,7 @@ There are several ways to flag a merge request as a draft:
 - **Commenting in an existing merge request**: Add the `/draft`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment. This quick action is a toggle, and can be repeated to change the status
-  again. This quick action discards any other text in the comment.
+  back to Ready.
 - **Creating a commit**: Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the
   beginning of a commit message targeting the merge request's source branch. This
   is not a toggle, and adding this text again in a later commit doesn't mark the
@@ -49,10 +49,9 @@ When a merge request is ready to be merged, you can remove the `Draft` flag in s
 - **Editing an existing merge request**: Remove `[Draft]`, `Draft:` or `(Draft)`
   from the beginning of the title, or select **Remove the Draft: prefix from the title**
   below the **Title** field.
-- **Commenting in an existing merge request**: Add the `/draft`
+- **Commenting in an existing merge request**: Add the `/ready`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
-  in a comment in the merge request. This quick action is a toggle, and can be repeated
-  to change the status back. This quick action discards any other text in the comment.
+  in a comment in the merge request.
 
 In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/15332),
 when you mark a merge request as ready, notifications are triggered to

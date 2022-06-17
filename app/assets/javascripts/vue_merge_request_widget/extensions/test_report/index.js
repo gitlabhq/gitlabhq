@@ -16,7 +16,6 @@ export default {
   name: 'WidgetTestSummary',
   enablePolling: true,
   i18n,
-  expandEvent: 'i_testing_summary_widget_total',
   props: ['testResultsPath', 'headBlobPath', 'pipeline'],
   modalComponent: TestCaseDetails,
   computed: {
@@ -50,6 +49,7 @@ export default {
           text: this.$options.i18n.fullReport,
           href: `${this.pipeline.path}/test_report`,
           target: '_blank',
+          fullReport: true,
         },
       ];
     },

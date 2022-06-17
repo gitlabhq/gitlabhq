@@ -65,7 +65,7 @@ and idempotent.
 See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
 for more details.
 
-Make sure that in case that your migration job is going to be retried data
+Make sure that in case that your migration job is retried, data
 integrity is guaranteed.
 
 ## Background migrations for EE-only features
@@ -77,7 +77,7 @@ as explained in the [guidelines for implementing Enterprise Edition features](..
 ## How It Works
 
 Background migrations are simple classes that define a `perform` method. A
-Sidekiq worker will then execute such a class, passing any arguments to it. All
+Sidekiq worker then executes such a class, passing any arguments to it. All
 migration classes must be defined in the namespace
 `Gitlab::BackgroundMigration`, the files should be placed in the directory
 `lib/gitlab/background_migration/`.
@@ -106,7 +106,7 @@ queue_background_migration_jobs_by_range_at_intervals(
   )
 ```
 
-You'll also need to make sure that newly created data is either migrated, or
+You also need to make sure that newly created data is either migrated, or
 saved in both the old and new version upon creation. For complex and time
 consuming migrations it's best to schedule a background job using an
 `after_create` hook so this doesn't affect response timings. The same applies to
@@ -142,7 +142,7 @@ or minor release, you _must not_ do this in a patch release.
 Because background migrations can take a long time you can't immediately clean
 things up after scheduling them. For example, you can't drop a column that's
 used in the migration process as this would cause jobs to fail. This means that
-you'll need to add a separate _post deployment_ migration in a future release
+you need to add a separate _post deployment_ migration in a future release
 that finishes any remaining jobs before cleaning things up (for example, removing a
 column).
 
@@ -189,7 +189,7 @@ extract the `url` key from this JSON object and store it in the `integrations.ur
 column. There are millions of integrations and parsing JSON is slow, thus you can't
 do this in a regular migration.
 
-To do this using a background migration we'll start with defining our migration
+To do this using a background migration we start with defining our migration
 class:
 
 ```ruby
@@ -213,7 +213,7 @@ class Gitlab::BackgroundMigration::ExtractIntegrationsUrl
 end
 ```
 
-Next we'll need to adjust our code so we schedule the above migration for newly
+Next we need to adjust our code so we schedule the above migration for newly
 created and updated integrations. We can do this using something along the lines of
 the following:
 
@@ -232,7 +232,7 @@ We're using `after_commit` here to ensure the Sidekiq job is not scheduled
 before the transaction completes as doing so can lead to race conditions where
 the changes are not yet visible to the worker.
 
-Next we'll need a post-deployment migration that schedules the migration for
+Next we need a post-deployment migration that schedules the migration for
 existing data.
 
 ```ruby
@@ -254,11 +254,11 @@ class ScheduleExtractIntegrationsUrl < Gitlab::Database::Migration[1.0]
 end
 ```
 
-Once deployed our application will continue using the data as before but at the
-same time will ensure that both existing and new data is migrated.
+After deployed our application continues using the data as before, but at the
+same time ensures that both existing and new data is migrated.
 
 In the next release we can remove the `after_commit` hooks and related code. We
-will also need to add a post-deployment migration that consumes any remaining
+also need to add a post-deployment migration that consumes any remaining
 jobs and manually run on any un-migrated rows. Such a migration would look like
 this:
 
@@ -292,7 +292,7 @@ If the application does not depend on the data being 100% migrated (for
 instance, the data is advisory, and not mission-critical), then this final step
 can be skipped.
 
-This migration will then process any jobs for the ExtractIntegrationsUrl migration
+This migration then processes any jobs for the `ExtractIntegrationsUrl` migration
 and continue once all jobs have been processed. Once done you can safely remove
 the `integrations.properties` column.
 
@@ -325,13 +325,13 @@ for more details.
 1. Make sure that tests you write are not false positives.
 1. Make sure that if the data being migrated is critical and cannot be lost, the
    clean-up migration also checks the final state of the data before completing.
-1. When migrating many columns, make sure it won't generate too many
+1. When migrating many columns, make sure it does not generate too many
    dead tuples in the process (you may need to directly query the number of dead tuples
    and adjust the scheduling according to this piece of data).
 1. Make sure to discuss the numbers with a database specialist, the migration may add
    more pressure on DB than you expect (measure on staging,
    or ask someone to measure on production).
-1. Make sure to know how much time it'll take to run all scheduled migrations.
+1. Make sure to know how much time it takes to run all scheduled migrations.
 1. Provide an estimation section in the description, estimating both the total migration
    run time and the query times for each background migration job. Explain plans for each query
    should also be provided.

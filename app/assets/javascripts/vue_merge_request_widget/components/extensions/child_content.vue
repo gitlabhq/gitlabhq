@@ -39,6 +39,9 @@ export default {
     isArray(arr) {
       return Array.isArray(arr);
     },
+    onClickedAction(action) {
+      this.$emit('clickedAction', action);
+    },
     generateText,
   },
 };
@@ -85,6 +88,7 @@ export default {
             :widget="widgetLabel"
             :tertiary-buttons="data.actions"
             class="gl-ml-auto gl-pl-3"
+            @clickedAction="onClickedAction"
           />
         </div>
         <p
@@ -105,6 +109,7 @@ export default {
             :modal-id="modalId"
             :level="3"
             data-testid="child-content"
+            @clickedAction="onClickedAction"
           />
         </li>
       </ul>

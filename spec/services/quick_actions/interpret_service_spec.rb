@@ -321,7 +321,7 @@ RSpec.describe QuickActions::InterpretService do
     end
 
     shared_examples 'draft command' do
-      it 'returns wip_event: "draft" if content contains /draft' do
+      it 'returns wip_event: "draft"' do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(wip_event: 'draft')
@@ -334,8 +334,16 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'draft/ready command no action' do
+      it 'returns the no action message if there is no change to the status' do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to eq("No change to this #{issuable.to_ability_name.humanize(capitalize: false)}'s draft status.")
+      end
+    end
+
     shared_examples 'ready command' do
-      it 'returns wip_event: "ready" if content contains /draft' do
+      it 'returns wip_event: "ready"' do
         issuable.update!(title: issuable.draft_title)
         _, updates, _ = service.execute(content, issuable)
 
@@ -346,7 +354,7 @@ RSpec.describe QuickActions::InterpretService do
         issuable.update!(title: issuable.draft_title)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Unmarked this #{issuable.to_ability_name.humanize(capitalize: false)} as a draft.")
+        expect(message).to eq("Marked this #{issuable.to_ability_name.humanize(capitalize: false)} as ready.")
       end
     end
 
@@ -1369,6 +1377,16 @@ RSpec.describe QuickActions::InterpretService do
 
     it_behaves_like 'ready command' do
       let(:content) { '/draft' }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'draft/ready command no action' do
+      let(:content) { '/ready' }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'ready command' do
+      let(:content) { '/ready' }
       let(:issuable) { merge_request }
     end
 
@@ -2687,7 +2705,24 @@ RSpec.describe QuickActions::InterpretService do
       it 'includes the new status' do
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Marks this merge request as a draft.'])
+        expect(explanations).to match_array(['Marks this merge request as a draft.'])
+      end
+    end
+
+    describe 'ready command' do
+      let(:content) { '/ready' }
+
+      it 'includes the new status' do
+        merge_request.update!(title: merge_request.draft_title)
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to match_array(['Marks this merge request as ready.'])
+      end
+
+      it 'includes the no change message when status unchanged' do
+        _, explanations = service.explain(content, merge_request)
+
+        expect(explanations).to match_array(["No change to this merge request's draft status."])
       end
     end
 

@@ -1031,7 +1031,7 @@ Optimized `IN` query:
 | issue lookup query       | 519                     | 20                       | 10 000                |
 
 The group and project queries are not using sorting, the necessary columns are read from database
-indexes. These values are accessed frequently so it's very likely that most of the data will be
+indexes. These values are accessed frequently so it's very likely that most of the data is
 in the PostgreSQL's buffer cache.
 
 The optimized `IN` query reads maximum 519 entries (cursor values) from the index:
