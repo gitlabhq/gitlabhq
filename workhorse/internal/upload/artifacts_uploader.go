@@ -3,6 +3,7 @@ package upload
 import (
 	"context"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
@@ -34,8 +36,9 @@ var zipSubcommandsErrorsCounter = promauto.NewCounterVec(
 	}, []string{"error"})
 
 type artifactsUploadProcessor struct {
-	opts   *destination.UploadOpts
-	format string
+	format      string
+	processLSIF bool
+	tempDir     string
 
 	SavedFileTracker
 }
@@ -43,16 +46,11 @@ type artifactsUploadProcessor struct {
 // Artifacts is like a Multipart but specific for artifacts upload.
 func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
-		opts, err := p.Prepare(a)
-		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("UploadArtifacts: error preparing file storage options"))
-			return
-		}
-
 		format := r.URL.Query().Get(ArtifactFormatKey)
 		mg := &artifactsUploadProcessor{
-			opts:             opts,
 			format:           format,
+			processLSIF:      a.ProcessLsif,
+			tempDir:          a.TempPath,
 			SavedFileTracker: SavedFileTracker{Request: r},
 		}
 		interceptMultipartFiles(w, r, h, mg, &eagerAuthorizer{a}, p)
@@ -61,7 +59,7 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 
 func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler) (*destination.FileHandler, error) {
 	metaOpts := &destination.UploadOpts{
-		LocalTempPath: a.opts.LocalTempPath,
+		LocalTempPath: a.tempDir,
 	}
 	if metaOpts.LocalTempPath == "" {
 		metaOpts.LocalTempPath = os.TempDir()
@@ -115,10 +113,10 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 
 func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error {
 	//  ProcessFile for artifacts requires file form-data field name to eq `file`
-
 	if formName != "file" {
 		return fmt.Errorf("invalid form field: %q", formName)
 	}
+
 	if a.Count() > 0 {
 		return fmt.Errorf("artifacts request contains more than one file")
 	}
@@ -134,7 +132,6 @@ func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName str
 		return nil
 	}
 
-	// TODO: can we rely on disk for shipping metadata? Not if we split workhorse and rails in 2 different PODs
 	metadata, err := a.generateMetadataFromZip(ctx, file)
 	if err != nil {
 		return err
@@ -156,6 +153,12 @@ func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName str
 	return nil
 }
 
-func (a *artifactsUploadProcessor) Name() string {
-	return "artifacts"
+func (a *artifactsUploadProcessor) Name() string { return "artifacts" }
+
+func (a *artifactsUploadProcessor) TransformContents(ctx context.Context, filename string, r io.Reader) (io.ReadCloser, error) {
+	if a.processLSIF {
+		return parser.NewParser(ctx, r)
+	}
+
+	return a.SavedFileTracker.TransformContents(ctx, filename, r)
 }

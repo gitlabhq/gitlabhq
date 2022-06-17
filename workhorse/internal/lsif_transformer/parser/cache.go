@@ -14,8 +14,8 @@ type cache struct {
 	chunkSize int64
 }
 
-func newCache(tempDir, filename string, data interface{}) (*cache, error) {
-	f, err := os.CreateTemp(tempDir, filename)
+func newCache(filename string, data interface{}) (*cache, error) {
+	f, err := os.CreateTemp("", filename)
 	if err != nil {
 		return nil, err
 	}

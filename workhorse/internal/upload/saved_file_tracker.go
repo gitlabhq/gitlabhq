@@ -3,11 +3,13 @@ package upload
 import (
 	"context"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 )
 
 type SavedFileTracker struct {
@@ -54,6 +56,12 @@ func (s *SavedFileTracker) Finalize(_ context.Context) error {
 	return nil
 }
 
-func (s *SavedFileTracker) Name() string {
-	return "accelerate"
+func (s *SavedFileTracker) Name() string { return "accelerate" }
+
+func (*SavedFileTracker) TransformContents(ctx context.Context, filename string, r io.Reader) (io.ReadCloser, error) {
+	if imageType := exif.FileTypeFromSuffix(filename); imageType != exif.TypeUnknown {
+		return handleExifUpload(ctx, r, filename, imageType)
+	}
+
+	return io.NopCloser(r), nil
 }

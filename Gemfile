@@ -407,7 +407,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 3.3.0', require: false
+  gem 'gitlab-dangerfiles', '~> 3.4.0', require: false
 end
 
 group :development, :test, :coverage do

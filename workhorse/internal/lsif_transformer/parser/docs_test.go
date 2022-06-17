@@ -14,7 +14,7 @@ func createLine(id, label, uri string) []byte {
 }
 
 func TestParse(t *testing.T) {
-	d, err := NewDocs(Config{})
+	d, err := NewDocs()
 	require.NoError(t, err)
 	defer d.Close()
 
@@ -31,7 +31,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestParseContainsLine(t *testing.T) {
-	d, err := NewDocs(Config{})
+	d, err := NewDocs()
 	require.NoError(t, err)
 	defer d.Close()
 
@@ -44,7 +44,7 @@ func TestParseContainsLine(t *testing.T) {
 }
 
 func TestParsingVeryLongLine(t *testing.T) {
-	d, err := NewDocs(Config{})
+	d, err := NewDocs()
 	require.NoError(t, err)
 	defer d.Close()
 

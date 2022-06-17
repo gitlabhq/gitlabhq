@@ -50,18 +50,18 @@ type SerializedRange struct {
 	References     []SerializedReference `json:"references,omitempty"`
 }
 
-func NewRanges(config Config) (*Ranges, error) {
-	hovers, err := NewHovers(config)
+func NewRanges() (*Ranges, error) {
+	hovers, err := NewHovers()
 	if err != nil {
 		return nil, err
 	}
 
-	references, err := NewReferences(config)
+	references, err := NewReferences()
 	if err != nil {
 		return nil, err
 	}
 
-	cache, err := newCache(config.TempPath, "ranges", Range{})
+	cache, err := newCache("ranges", Range{})
 	if err != nil {
 		return nil, err
 	}

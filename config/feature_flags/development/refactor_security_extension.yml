@@ -1,7 +1,7 @@
 ---
 name: refactor_security_extension
 introduced_by_url:
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365320
 milestone: '14.10'
 type: development
 group: group::threat insights

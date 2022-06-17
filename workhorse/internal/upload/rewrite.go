@@ -9,18 +9,15 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
-	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"golang.org/x/image/tiff"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 )
@@ -151,22 +148,11 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 		return err
 	}
 
-	var inputReader io.ReadCloser
 	ctx := r.Context()
-	if imageType := exif.FileTypeFromSuffix(filename); imageType != exif.TypeUnknown {
-		inputReader, err = handleExifUpload(ctx, p, filename, imageType)
-		if err != nil {
-			return err
-		}
-	} else if apiResponse.ProcessLsif {
-		inputReader, err = handleLsifUpload(ctx, p, opts.LocalTempPath, filename)
-		if err != nil {
-			return err
-		}
-	} else {
-		inputReader = io.NopCloser(p)
+	inputReader, err := rew.filter.TransformContents(ctx, filename, p)
+	if err != nil {
+		return err
 	}
-
 	defer inputReader.Close()
 
 	fh, err := destination.Upload(ctx, inputReader, -1, filename, opts)
@@ -192,92 +178,6 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 	multipartFileUploadBytes.WithLabelValues(rew.filter.Name()).Add(float64(fh.Size))
 
 	return rew.filter.ProcessFile(ctx, name, fh, rew.writer)
-}
-
-func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageType exif.FileType) (io.ReadCloser, error) {
-	tmpfile, err := os.CreateTemp("", "exifremove")
-	if err != nil {
-		return nil, err
-	}
-	go func() {
-		<-ctx.Done()
-		tmpfile.Close()
-	}()
-	if err := os.Remove(tmpfile.Name()); err != nil {
-		return nil, err
-	}
-
-	_, err = io.Copy(tmpfile, r)
-	if err != nil {
-		return nil, err
-	}
-
-	if _, err := tmpfile.Seek(0, io.SeekStart); err != nil {
-		return nil, err
-	}
-
-	isValidType := false
-	switch imageType {
-	case exif.TypeJPEG:
-		isValidType = isJPEG(tmpfile)
-	case exif.TypeTIFF:
-		isValidType = isTIFF(tmpfile)
-	}
-
-	if _, err := tmpfile.Seek(0, io.SeekStart); err != nil {
-		return nil, err
-	}
-
-	if !isValidType {
-		log.WithContextFields(ctx, log.Fields{
-			"filename":  filename,
-			"imageType": imageType,
-		}).Info("invalid content type, not running exiftool")
-
-		return tmpfile, nil
-	}
-
-	log.WithContextFields(ctx, log.Fields{
-		"filename": filename,
-	}).Info("running exiftool to remove any metadata")
-
-	cleaner, err := exif.NewCleaner(ctx, tmpfile)
-	if err != nil {
-		return nil, err
-	}
-
-	return cleaner, nil
-}
-
-func isTIFF(r io.Reader) bool {
-	_, err := tiff.DecodeConfig(r)
-	if err == nil {
-		return true
-	}
-
-	if _, unsupported := err.(tiff.UnsupportedError); unsupported {
-		return true
-	}
-
-	return false
-}
-
-func isJPEG(r io.Reader) bool {
-	// Only the first 512 bytes are used to sniff the content type.
-	buf, err := io.ReadAll(io.LimitReader(r, 512))
-	if err != nil {
-		return false
-	}
-
-	return http.DetectContentType(buf) == "image/jpeg"
-}
-
-func handleLsifUpload(ctx context.Context, reader io.Reader, tempPath, filename string) (io.ReadCloser, error) {
-	parserConfig := parser.Config{
-		TempPath: tempPath,
-	}
-
-	return parser.NewParser(ctx, reader, parserConfig)
 }
 
 func (rew *rewriter) copyPart(ctx context.Context, name string, p *multipart.Part) error {

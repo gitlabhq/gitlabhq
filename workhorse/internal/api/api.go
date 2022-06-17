@@ -156,8 +156,6 @@ type Response struct {
 	ShowAllRefs bool
 	// Detects whether an artifact is used for code intelligence
 	ProcessLsif bool
-	// Detects whether LSIF artifact will be parsed with references
-	ProcessLsifReferences bool
 	// The maximum accepted size in bytes of the upload
 	MaximumSize int64
 }

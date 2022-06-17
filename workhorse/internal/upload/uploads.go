@@ -36,6 +36,7 @@ type MultipartFormProcessor interface {
 	Finalize(ctx context.Context) error
 	Name() string
 	Count() int
+	TransformContents(ctx context.Context, filename string, r io.Reader) (io.ReadCloser, error)
 }
 
 // interceptMultipartFiles is the core of the implementation of

@@ -718,6 +718,91 @@ variables:
 | `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
 
+## Artifact attestation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
+
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{JOB_ID}-artifacts-metadata.json`.
+
+### Attestation format
+
+The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://in-toto.io/Statement/v0.1). The following fields are populated by default:
+
+| Field  | Value  |
+| ------ | ------ |
+| `_type` | `https://in-toto.io/Statement/v0.1` |
+| `subject.name` | The filename of the artifact. |
+| `subject.digest.sha256` | The artifact's `sha256` checksum. |
+| `predicateType` | `https://slsa.dev/provenance/v0.2` |
+| `predicate.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example v15.0.0 |
+| `predicate.builder.id` | A URI pointing to the runner details page, for example `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
+| `predicate.invocation.configSource.uri` | ``https://gitlab.example.com/.../{PROJECT_NAME}`` |
+| `predicate.invocation.configSource.digest.sha256` | The repository's `sha256` checksum. |
+| `predicate.invocation.configSource.entryPoint` | The name of the CI job that triggered the build. |
+| `predicate.invocation.environment.name` | The name of the runner. |
+| `predicate.invocation.environment.executor` | The runner executor. |
+| `predicate.invocation.environment.architecture` | The architecture on which the CI job is run. |
+| `predicate.invocation.parameters` | The names of any CI/CD or environment variables that were present when the build command was run. The value is always represented as an empty string to avoid leaking any secrets. |
+| `metadata.buildStartedOn` | The time when the build was started. `RFC3339` formatted. |
+| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time will be slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
+| `metadata.reproducible` | Whether the build is reproducible by gathering all the generated metadata. Always `false`. |
+| `metadata.completeness.parameters` | Whether the parameters are supplied. Always `true`. |
+| `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
+| `metadata.completeness.materials` | Whether the build materials are reported. Always `false`. |
+
+An example of an attestation that the GitLab Runner might generate is as follows:
+
+```yaml
+{
+    "_type": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v15.1.0/PROVENANCE.md",
+    "subject": [
+        {
+            "name": "script.sh",
+            "digest": {
+                "sha256": "f5ae5ced234922eebe6461d32228ba8ab9c3d0c0f3983a3bef707e6e1a1ab52a"
+            }
+        }
+    ],
+    "predicateType": "https://slsa.dev/provenance/v0.2",
+    "predicate": {
+        "buildType": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v15.1.0/PROVENANCE.md",
+        "builder": {
+            "id": "https://gitlab.com/ggeorgiev_gitlab/playground/-/runners/14811533"
+        },
+        "invocation": {
+            "configSource": {
+                "uri": "https://gitlab.com/ggeorgiev_gitlab/playground",
+                "digest": {
+                    "sha256": "f0582e2c9a16b5cc2cde90e8be8f1b50fd67c631"
+                },
+                "entryPoint": "whoami shell"
+            },
+            "environment": {
+                "name": "local",
+                "executor": "shell",
+                "architecture": "amd64"
+            },
+            "parameters": {
+                "CI_PIPELINE_ID": "",
+                "CI_PIPELINE_URL": "",
+                // All other CI variable names are listed here. Values are always represented as empty strings to avoid leaking secrets.
+            }
+        },
+        "metadata": {
+            "buildStartedOn": "2022-06-17T00:47:27+03:00",
+            "buildFinishedOn": "2022-06-17T00:47:28+03:00",
+            "completeness": {
+                "parameters": true,
+                "environment": true,
+                "materials": false
+            },
+            "reproducible": false
+        },
+        "materials": []
+    }
+}
+```
+
 ### Staging directory
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.

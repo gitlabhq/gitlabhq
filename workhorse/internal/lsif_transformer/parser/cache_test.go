@@ -13,7 +13,7 @@ type chunk struct {
 }
 
 func TestCache(t *testing.T) {
-	cache, err := newCache("", "test-chunks", chunk{})
+	cache, err := newCache("test-chunks", chunk{})
 	require.NoError(t, err)
 	defer cache.Close()
 

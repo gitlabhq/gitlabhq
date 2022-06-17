@@ -21,7 +21,7 @@ func BenchmarkGenerate(b *testing.B) {
 			file, err := os.Open(filePath)
 			require.NoError(b, err)
 
-			parser, err := NewParser(context.Background(), file, Config{})
+			parser, err := NewParser(context.Background(), file)
 			require.NoError(b, err)
 
 			_, err = io.Copy(io.Discard, parser)

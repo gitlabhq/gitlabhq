@@ -42,7 +42,7 @@ func createFiles(t *testing.T, filePath, tmpDir string) {
 	file, err := os.Open(filePath)
 	require.NoError(t, err)
 
-	parser, err := NewParser(context.Background(), file, Config{})
+	parser, err := NewParser(context.Background(), file)
 	require.NoError(t, err)
 
 	zipFileName := tmpDir + ".zip"

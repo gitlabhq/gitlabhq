@@ -42,7 +42,7 @@ func TestSerialize(t *testing.T) {
 }
 
 func setup(t *testing.T) (*Ranges, func()) {
-	r, err := NewRanges(Config{})
+	r, err := NewRanges()
 	require.NoError(t, err)
 
 	require.NoError(t, r.Read("range", []byte(`{"id":1,"label":"range","start":{"line":1,"character":2}}`)))

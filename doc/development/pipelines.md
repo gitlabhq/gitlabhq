@@ -289,6 +289,18 @@ In the event of an emergency, or false positive from this job, add the
 `pipeline:skip-undercoverage` label to the merge request to allow this job to
 fail.
 
+### Troubleshooting `rspec:undercoverage` failures
+
+The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
+that can cause false positive failures. You can locally test coverage locally to determine if it's
+safe to apply `~"pipeline:skip-undercoverage"`. For example, using `<spec>` as the name of the
+test causing the failure:
+
+1. Run `SIMPLECOV=1 bundle exec rspec <spec>`.
+1. Run `scripts/undercoverage`.
+
+If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `~"pipeline:skip-undercoverage"` to bypass pipeline failures. 
+
 ## Ruby versions testing
 
 Our test suite runs against Ruby 2 in merge requests and default branch pipelines.
