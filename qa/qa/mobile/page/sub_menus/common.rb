@@ -6,10 +6,10 @@ module QA
       module SubMenus
         module Common
           def open_mobile_nav_sidebar
-            if has_element?(:project_sidebar, visible: false)
+            unless has_css?('.sidebar-expanded-mobile')
               Support::Retrier.retry_until do
                 click_element(:toggle_mobile_nav_button)
-                has_element?(:project_sidebar, visible: true)
+                has_css?('.sidebar-expanded-mobile')
               end
             end
           end

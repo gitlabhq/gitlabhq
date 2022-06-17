@@ -14,17 +14,16 @@ To prepare the deployment:
 
 1. Define the [deployment strategy](#auto-devops-deployment-strategy).
 1. Prepare the [base domain](#auto-devops-base-domain).
-1. Define where you want to deploy it to:
+1. Define where you want to deploy it:
 
    1. [Kubernetes](#auto-devops-requirements-for-kubernetes).
-   1. [Amazon Elastic Container Service (ECS)](#auto-devops-requirements-for-amazon-ecs).
-   1. [Amazon EC2](#auto-devops-requirements-for-amazon-ec2).
+   1. [Amazon Elastic Container Service (ECS)](cloud_deployments/auto_devops_with_ecs.md).
+   1. [Amazon Elastic Kubernetes Service (EKS)](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/).
+   1. [Amazon EC2](cloud_deployments/auto_devops_with_ec2.md).
+   1. [Google Kubernetes Engine](cloud_deployments/auto_devops_with_gke.md).
    1. [Bare metal](#auto-devops-requirements-for-bare-metal).
 
-When done:
-
 1. [Enable Auto DevOps](index.md#enable-or-disable-auto-devops).
-1. See the [quick start](quick_start_guide.md) process.
 
 ## Auto DevOps deployment strategy
 
@@ -172,50 +171,6 @@ If you don't have Kubernetes or Prometheus configured, then
 are skipped.
 
 After all requirements are met, you can [enable Auto DevOps](index.md#enable-or-disable-auto-devops).
-
-## Auto DevOps requirements for Amazon ECS
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208132) in GitLab 13.0.
-
-You can choose to target [AWS ECS](../../ci/cloud_deployment/index.md) as a deployment platform instead of using Kubernetes.
-
-To get started on Auto DevOps to AWS ECS, you must add a specific CI/CD variable.
-To do so, follow these steps:
-
-1. In GitLab, on the top bar, select **Menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Auto DevOps**.
-1. Specify which AWS platform to target during the Auto DevOps deployment
-   by adding the `AUTO_DEVOPS_PLATFORM_TARGET` variable with one of the following values:
-   - `FARGATE` if the service you're targeting must be of launch type FARGATE.
-   - `ECS` if you're not enforcing any launch type check when deploying to ECS.
-
-When you trigger a pipeline, if you have Auto DevOps enabled and if you have correctly
-[entered AWS credentials as variables](../../ci/cloud_deployment/index.md#authenticate-gitlab-with-aws),
-your application is deployed to AWS ECS.
-
-If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,
-only the deployment to Kubernetes runs.
-
-WARNING:
-Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
-defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
-However, it's not recommended to [include](../../ci/yaml/index.md#includetemplate)
-it on its own. This template is designed to be used with Auto DevOps only. It may change
-unexpectedly causing your pipeline to fail if included on its own. Also, the job
-names within this template may also change. Do not override these jobs' names in your
-own pipeline, as the override stops working when the name changes.
-
-## Auto DevOps requirements for Amazon EC2
-
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6.
-
-You can target [AWS EC2](../../ci/cloud_deployment/index.md)
-as a deployment platform instead of Kubernetes. To use Auto DevOps with AWS EC2, you must add a
-specific CI/CD variable.
-
-For more details, see [Custom build job for Auto DevOps](../../ci/cloud_deployment/index.md#use-auto-devops-to-deploy-to-ec2)
-for deployments to AWS EC2.
 
 ## Auto DevOps requirements for bare metal
 

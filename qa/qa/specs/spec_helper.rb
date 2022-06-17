@@ -38,6 +38,8 @@ RSpec.configure do |config|
     QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
     QA::Runtime::Example.current = example
 
+    visit(QA::Runtime::Scenario.gitlab_address) if QA::Runtime::Env.remote_mobile_device_name
+
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
     Thread.current[:browser_ui_fabrication] = 0

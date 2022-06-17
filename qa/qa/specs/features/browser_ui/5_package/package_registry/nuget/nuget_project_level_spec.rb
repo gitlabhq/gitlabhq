@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, quarantine: {
-    type: :flaky,
-    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/361704"
-  } do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
     describe 'NuGet project level endpoint' do
       include Support::Helpers::MaskToken
 
@@ -16,13 +13,7 @@ module QA
         end
       end
 
-      let(:personal_access_token) do
-        unless Page::Main::Menu.perform(&:signed_in?)
-          Flow::Login.sign_in
-        end
-
-        Resource::PersonalAccessToken.fabricate!
-      end
+      let(:personal_access_token) { Resource::PersonalAccessToken.fabricate! }
 
       let(:project_deploy_token) do
         Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
@@ -113,19 +104,34 @@ module QA
                     {
                         file_path: '.gitlab-ci.yml',
                         content: <<~YAML
-                          deploy-and-install:
-                            image: mcr.microsoft.com/dotnet/sdk:5.0
-                            script:
-                              - dotnet restore -p:Configuration=Release
-                              - dotnet build -c Release
-                              - dotnet pack -c Release -p:PackageID=#{package.name}
-                              - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
-                              - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
-                              - "dotnet add dotnetcore.csproj package #{package.name} --version 1.0.0"
-                            rules:
-                              - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
-                            tags:
-                              - "runner-for-#{project.name}"
+                        stages:
+                          - deploy
+                          - install
+
+                        deploy:
+                          stage: deploy
+                          image: mcr.microsoft.com/dotnet/sdk:5.0
+                          script:
+                            - dotnet restore -p:Configuration=Release
+                            - dotnet build -c Release
+                            - dotnet pack -c Release -p:PackageID=#{package.name}
+                            - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
+                            - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
+                          rules:
+                            - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
+                          tags:
+                            - "runner-for-#{project.name}"
+
+                        install:
+                          stage: install
+                          image: mcr.microsoft.com/dotnet/sdk:5.0
+                          script:
+                            - dotnet nuget add source "$CI_SERVER_URL/api/v4/projects/$CI_PROJECT_ID/packages/nuget/index.json" --name gitlab --username #{auth_token_username} --password #{auth_token_password} --store-password-in-clear-text
+                            - "dotnet add dotnetcore.csproj package #{package.name} --version 1.0.0"
+                          rules:
+                            - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
+                          tags:
+                            - "runner-for-#{project.name}"
                         YAML
                     },
                     {
@@ -150,7 +156,17 @@ module QA
           Flow::Pipeline.visit_latest_pipeline
 
           Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy-and-install')
+            pipeline.click_job('deploy')
+          end
+
+          Page::Project::Job::Show.perform do |job|
+            expect(job).to be_successful(timeout: 800)
+          end
+
+          page.go_back
+
+          Page::Project::Pipeline::Show.perform do |pipeline|
+            pipeline.click_job('install')
           end
 
           Page::Project::Job::Show.perform do |job|

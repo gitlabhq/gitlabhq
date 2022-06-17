@@ -30,7 +30,7 @@ For more information, see the links shown on this page for each external provide
 | **User Provisioning**                           | SCIM<br>Just-In-Time (JIT) Provisioning | LDAP Sync                          |
 | **User Detail Updating** (not group management) | Not Available                           | LDAP Sync                          |
 | **Authentication**                              | SAML at top-level group (1 provider)    | LDAP (multiple providers)<br>Generic OAuth2<br>SAML (only 1 permitted per unique provider)<br>Kerberos<br>JWT<br>Smartcard<br>OmniAuth Providers (only 1 permitted per unique provider) |
-| **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync                    |
+| **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync<br>SAML Group Sync ([GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/285150) and later) |
 | **User Removal**                                | SCIM (remove user from top-level group) | LDAP (Blocking User from Instance) |
 
 ## Change apps or configuration

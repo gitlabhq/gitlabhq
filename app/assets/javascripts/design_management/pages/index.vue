@@ -374,7 +374,7 @@ export default {
         >
           <gl-button
             v-if="isLatestVersion"
-            variant="link"
+            category="tertiary"
             size="small"
             class="gl-mr-3"
             data-testid="select-all-designs-button"
