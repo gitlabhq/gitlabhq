@@ -13126,7 +13126,6 @@ CREATE TABLE ci_secure_files (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     file_store smallint DEFAULT 1 NOT NULL,
-    permissions smallint DEFAULT 0 NOT NULL,
     name text NOT NULL,
     file text NOT NULL,
     checksum bytea NOT NULL,

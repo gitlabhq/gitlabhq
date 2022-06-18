@@ -23,28 +23,7 @@ module Gitlab
       #
       # @return [Boolean]
       def enabled?
-        # Attempt to auto-detect FIPS mode from OpenSSL
-        return true if OpenSSL.fips_mode
-
-        # Otherwise allow it to be set manually via the env vars
-        return true if ENV["FIPS_MODE"] == "true"
-
-        false
-      end
-
-      # Swap Ruby's Digest::SHAx implementations for OpenSSL::Digest::SHAx.
-      def enable_fips_mode!
-        require 'digest'
-
-        use_openssl_digest(:SHA2, :SHA256)
-        OPENSSL_DIGESTS.each { |alg| use_openssl_digest(alg, alg) }
-      end
-
-      private
-
-      def use_openssl_digest(ruby_algorithm, openssl_algorithm)
-        Digest.send(:remove_const, ruby_algorithm) # rubocop:disable GitlabSecurity/PublicSend
-        Digest.const_set(ruby_algorithm, OpenSSL::Digest.const_get(openssl_algorithm, false))
+        ::Labkit::FIPS.enabled?
       end
     end
   end
