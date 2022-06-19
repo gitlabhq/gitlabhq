@@ -152,6 +152,6 @@ RSpec.describe Resolvers::NamespaceProjectsResolver do
   end
 
   def resolve_projects(args = { include_subgroups: false, sort: nil, search: nil, ids: nil }, context = { current_user: current_user })
-    resolve(described_class, obj: namespace, args: args, ctx: context)
+    resolve(described_class, obj: namespace, args: args, ctx: context, arg_style: :internal)
   end
 end

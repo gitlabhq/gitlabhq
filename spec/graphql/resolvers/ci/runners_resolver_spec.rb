@@ -9,7 +9,10 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
     let(:obj) { nil }
     let(:args) { {} }
 
-    subject { resolve(described_class, obj: obj, ctx: { current_user: user }, args: args) }
+    subject do
+      resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
+              arg_style: :internal)
+    end
 
     include_context 'runners resolver setup'
 

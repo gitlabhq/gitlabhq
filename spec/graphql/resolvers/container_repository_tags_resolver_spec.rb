@@ -12,7 +12,10 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver do
   let(:args) { { sort: nil } }
 
   describe '#resolve' do
-    let(:resolver) { resolve(described_class, ctx: { current_user: user }, obj: repository, args: args) }
+    let(:resolver) do
+      resolve(described_class, ctx: { current_user: user }, obj: repository, args: args,
+              arg_style: :internal)
+    end
 
     before do
       stub_container_registry_config(enabled: true)

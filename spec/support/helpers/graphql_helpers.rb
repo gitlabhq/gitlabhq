@@ -72,7 +72,7 @@ module GraphqlHelpers
     schema: GitlabSchema, # [GraphQL::Schema] Schema to use during execution.
     parent: :not_given, # A GraphQL query node to be passed as the `:parent` extra.
     lookahead: :not_given, # A GraphQL lookahead object to be passed as the `:lookahead` extra.
-    arg_style: :internal # Args are in internal format, rather than client/external format
+    arg_style: :internal_prepared # Args are in internal format, but should use more rigorous processing
   )
     # All resolution goes through fields, so we need to create one here that
     # uses our resolver. Thankfully, apart from the field name, resolvers
@@ -130,7 +130,7 @@ module GraphqlHelpers
     current_user: :not_given,     # The current user (specified explicitly, overrides ctx[:current_user])
     schema: GitlabSchema,         # A specific schema instance
     object_type: described_class, # The `BaseObject` type this field belongs to
-    arg_style: :internal          # Args are in internal format, rather than client/external format
+    arg_style: :internal_prepared # Args are in internal format, but should use more rigorous processing
   )
     field = to_base_field(field, object_type)
     ctx[:current_user] = current_user unless current_user == :not_given
@@ -142,9 +142,6 @@ module GraphqlHelpers
 
     parent = object_type.authorized_new(object, query_ctx)
     raise UnauthorizedObject unless parent
-
-    # mutations already working with :internal_prepared
-    arg_style = :internal_prepared if args[:input] && arg_style == :internal
 
     # we enable the request store so we can track gitaly calls.
     ::Gitlab::WithRequestStore.with_request_store do
@@ -165,7 +162,7 @@ module GraphqlHelpers
   # rubocop:enable Metrics/ParameterLists
 
   # Pros:
-  #   - Most arguments we use in specs, which are already in an "internal" state, work
+  #   - Original way we handled arguments
   #
   # Cons:
   #   - the `prepare` method of a type is not called.  Whether as a proc or as a method
@@ -178,8 +175,8 @@ module GraphqlHelpers
 
   # Pros:
   #   - Allows the use of ruby types, without having to pass in strings
-  #   - All args are converted into strings just like if it was called from a client,
-  #     so stronger arg verification
+  #   - All args are converted into strings just like if it was called from a client
+  #   - Much stronger argument verification
   #
   # Cons:
   #   - Some values, such as enums, would need to be changed in the specs to use the

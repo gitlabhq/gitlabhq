@@ -185,6 +185,6 @@ RSpec.describe Resolvers::WorkItemsResolver do
   end
 
   def resolve_items(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, args: args, ctx: context)
+    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
   end
 end

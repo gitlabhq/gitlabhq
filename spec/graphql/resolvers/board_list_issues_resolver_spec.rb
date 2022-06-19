@@ -128,6 +128,6 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
   end
 
   def resolve_board_list_issues(args: {}, current_user: user)
-    resolve(described_class, obj: list, args: args, ctx: { current_user: current_user })
+    resolve(described_class, obj: list, args: args, ctx: { current_user: current_user }, arg_style: :internal)
   end
 end

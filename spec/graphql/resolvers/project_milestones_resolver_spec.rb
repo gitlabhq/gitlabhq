@@ -2,12 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectMilestonesResolver do
+RSpec.describe 'Resolvers::ProjectMilestonesResolver' do
   include GraphqlHelpers
 
   describe '#resolve' do
+    let_it_be(:described_class) { Resolvers::ProjectMilestonesResolver }
     let_it_be(:project) { create(:project, :private) }
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:now) { Time.now }
+    let_it_be(:now_date) { now.to_date }
 
     before_all do
       project.add_developer(current_user)
@@ -25,7 +28,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
 
     it 'calls MilestonesFinder to retrieve all milestones' do
       expect(MilestonesFinder).to receive(:new)
-        .with(args(project_ids: project.id, state: 'all'))
+        .with(args(project_ids: project.id, state: 'all', sort: :due_date_asc))
         .and_call_original
 
       resolve_project_milestones
@@ -42,7 +45,8 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
 
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(args(project_ids: project.id, group_ids: contain_exactly(group, parent_group), state: 'all'))
+          .with(args(project_ids: project.id, group_ids: contain_exactly(group, parent_group),
+                     state: 'all', sort: :due_date_asc))
           .and_call_original
 
         resolve_project_milestones(include_ancestors: true)
@@ -54,7 +58,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
         milestone = create(:milestone, project: project)
 
         expect(MilestonesFinder).to receive(:new)
-          .with(args(ids: [milestone.id.to_s], project_ids: project.id, state: 'all'))
+          .with(args(ids: [milestone.id.to_s], project_ids: project.id, state: 'all', sort: :due_date_asc))
           .and_call_original
 
         resolve_project_milestones(ids: [milestone.to_global_id])
@@ -64,7 +68,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     context 'by state' do
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(args(project_ids: project.id, state: 'closed'))
+          .with(args(project_ids: project.id, state: 'closed', sort: :due_date_asc))
           .and_call_original
 
         resolve_project_milestones(state: 'closed')
@@ -74,13 +78,13 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     context 'by sort' do
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(args(project_ids: project.id, state: 'all', sort: :due_date_desc))
+          .with(args(project_ids: project.id, state: 'all', sort: :due_date_asc))
           .and_call_original
 
-        resolve_project_milestones(sort: :due_date_desc)
+        resolve_project_milestones(sort: 'DUE_DATE_ASC')
       end
 
-      %i[expired_last_due_date_asc expired_last_due_date_desc].each do |sort_by|
+      %w[EXPIRED_LAST_DUE_DATE_ASC EXPIRED_LAST_DUE_DATE_DESC].each do |sort_by|
         it "uses offset-pagination when sorting by #{sort_by}" do
           resolved = resolve_project_milestones(sort: sort_by)
 
@@ -92,11 +96,12 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     context 'by timeframe' do
       context 'when start_date and end_date are present' do
         it 'calls MilestonesFinder with correct parameters' do
-          start_date = Time.now
-          end_date = Time.now + 5.days
+          start_date = now
+          end_date = now + 5.days
 
           expect(MilestonesFinder).to receive(:new)
-            .with(args(project_ids: project.id, state: 'all', start_date: start_date, end_date: end_date))
+            .with(args(project_ids: project.id, state: 'all',
+                       start_date: start_date, end_date: end_date, sort: :due_date_asc))
             .and_call_original
 
           resolve_project_milestones(start_date: start_date, end_date: end_date)
@@ -105,7 +110,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
         context 'when start date is after end_date' do
           it 'generates an error' do
             expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'startDate is after endDate') do
-              resolve_project_milestones(start_date: Time.now, end_date: Time.now - 2.days)
+              resolve_project_milestones(start_date: now, end_date: now - 2.days)
             end
           end
         end
@@ -114,7 +119,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
       context 'when only start_date is present' do
         it 'generates an error' do
           expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
-            resolve_project_milestones(start_date: Time.now)
+            resolve_project_milestones(start_date: now)
           end
         end
       end
@@ -122,18 +127,19 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
       context 'when only end_date is present' do
         it 'generates an error' do
           expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, /Both startDate and endDate/) do
-            resolve_project_milestones(end_date: Time.now)
+            resolve_project_milestones(end_date: now)
           end
         end
       end
 
       context 'when passing a timeframe' do
         it 'calls MilestonesFinder with correct parameters' do
-          start_date = Time.now
-          end_date = Time.now + 5.days
+          start_date = now_date
+          end_date = now_date + 5.days
 
           expect(MilestonesFinder).to receive(:new)
-            .with(args(project_ids: project.id, state: 'all', start_date: start_date, end_date: end_date))
+            .with(args(project_ids: project.id, state: 'all',
+                       sort: :due_date_asc, start_date: start_date, end_date: end_date))
             .and_call_original
 
           resolve_project_milestones(timeframe: { start: start_date, end: end_date })
@@ -144,7 +150,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     context 'when title is present' do
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(args(title: '13.5', state: 'all', project_ids: project.id))
+          .with(args(title: '13.5', state: 'all', sort: :due_date_asc, project_ids: project.id))
           .and_call_original
 
         resolve_project_milestones(title: '13.5')
@@ -154,7 +160,7 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
     context 'when search_title is present' do
       it 'calls MilestonesFinder with correct parameters' do
         expect(MilestonesFinder).to receive(:new)
-          .with(args(search_title: '13', state: 'all', project_ids: project.id))
+          .with(args(search_title: '13', state: 'all', sort: :due_date_asc, project_ids: project.id))
           .and_call_original
 
         resolve_project_milestones(search_title: '13')
@@ -163,10 +169,10 @@ RSpec.describe Resolvers::ProjectMilestonesResolver do
 
     context 'when containing date is present' do
       it 'calls MilestonesFinder with correct parameters' do
-        t = Time.now
+        t = now
 
         expect(MilestonesFinder).to receive(:new)
-          .with(args(containing_date: t, state: 'all', project_ids: project.id))
+          .with(args(containing_date: t, state: 'all', sort: :due_date_asc, project_ids: project.id))
           .and_call_original
 
         resolve_project_milestones(containing_date: t)

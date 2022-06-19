@@ -15,7 +15,10 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
   describe '#resolve' do
     let(:object) { project }
 
-    subject { resolve(described_class, ctx: { current_user: user }, args: args, obj: object) }
+    subject do
+      resolve(described_class, ctx: { current_user: user }, args: args, obj: object,
+              arg_style: :internal)
+    end
 
     shared_examples 'returning container repositories' do
       it { is_expected.to contain_exactly(container_repositories) }

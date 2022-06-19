@@ -39,7 +39,8 @@ RSpec.shared_examples 'querying members with a group' do
   let(:base_args) { { relations: described_class.arguments['relations'].default_value } }
 
   subject do
-    resolve(described_class, obj: resource, args: base_args.merge(args), ctx: { current_user: user_4 })
+    resolve(described_class, obj: resource, args: base_args.merge(args),
+            ctx: { current_user: user_4 }, arg_style: :internal)
   end
 
   describe '#resolve' do
@@ -73,7 +74,8 @@ RSpec.shared_examples 'querying members with a group' do
       let_it_be(:other_user) { create(:user) }
 
       subject do
-        resolve(described_class, obj: resource, args: base_args.merge(args), ctx: { current_user: other_user })
+        resolve(described_class, obj: resource, args: base_args.merge(args),
+                ctx: { current_user: other_user }, arg_style: :internal)
       end
 
       it 'generates an error' do

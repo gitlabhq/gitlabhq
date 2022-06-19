@@ -27,7 +27,7 @@ RSpec.describe Types::Ci::StatusActionType do
 
       expected_id = "#{stage.class.name}-#{status.id}"
 
-      expect(resolve_field('id', status, extras: { parent: status })).to eq(expected_id)
+      expect(resolve_field('id', status, extras: { parent: status }, arg_style: :internal)).to eq(expected_id)
     end
   end
 end

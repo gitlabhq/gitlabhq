@@ -93,6 +93,6 @@ RSpec.describe Resolvers::Users::GroupsResolver do
   end
 
   def resolve_groups(args:, current_user:, obj:)
-    resolve(described_class, args: args, ctx: { current_user: current_user }, obj: obj)&.items
+    resolve(described_class, args: args, ctx: { current_user: current_user }, obj: obj, arg_style: :internal)&.items
   end
 end

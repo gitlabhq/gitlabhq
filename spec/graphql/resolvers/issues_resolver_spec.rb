@@ -701,6 +701,6 @@ RSpec.describe Resolvers::IssuesResolver do
   end
 
   def resolve_issues(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, args: args, ctx: context)
+    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
   end
 end

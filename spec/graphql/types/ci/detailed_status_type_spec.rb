@@ -20,7 +20,7 @@ RSpec.describe Types::Ci::DetailedStatusType do
       status = stage.detailed_status(stage.pipeline.user)
       expected_id = "#{status.id}-#{stage.id}"
 
-      expect(resolve_field('id', status, extras: { parent: stage })).to eq(expected_id)
+      expect(resolve_field('id', status, extras: { parent: stage }, arg_style: :internal)).to eq(expected_id)
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe Types::Ci::DetailedStatusType do
           title: status.action_title
         }
 
-      expect(resolve_field('action', status)).to eq(expected_status)
+      expect(resolve_field('action', status, arg_style: :internal)).to eq(expected_status)
     end
   end
 end

@@ -66,6 +66,6 @@ RSpec.describe 'Resolvers::IncidentManagement::TimelineEventsResolver' do
   private
 
   def resolve_timeline_events(args = {}, context = { current_user: current_user })
-    resolve(resolver, obj: incident, args: args, ctx: context, arg_style: :internal_prepared)
+    resolve(resolver, obj: incident, args: args, ctx: context)
   end
 end

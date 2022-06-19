@@ -10,7 +10,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver do
     let_it_be(:current_user) { create(:user) }
 
     def resolve_group_milestones(args = {}, context = { current_user: current_user })
-      resolve(described_class, obj: group, args: args, ctx: context)
+      resolve(described_class, obj: group, args: args, ctx: context, arg_style: :internal)
     end
 
     let_it_be(:now) { Time.now }

@@ -6,7 +6,7 @@ RSpec.describe Resolvers::PackagesBaseResolver do
   include GraphqlHelpers
 
   describe '#resolve' do
-    subject { resolve(described_class) }
+    subject { resolve(described_class, arg_style: :internal) }
 
     it 'throws an error' do
       expect { subject }.to raise_error(NotImplementedError)
