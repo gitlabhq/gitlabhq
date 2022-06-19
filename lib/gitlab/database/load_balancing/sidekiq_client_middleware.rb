@@ -39,17 +39,30 @@ module Gitlab
           end
 
           job['wal_locations'] = locations
+          job['wal_location_source'] = wal_location_source
+        end
+
+        def wal_location_source
+          if ::Gitlab::Database::LoadBalancing.primary_only? || uses_primary?
+            ::Gitlab::Database::LoadBalancing::ROLE_PRIMARY
+          else
+            ::Gitlab::Database::LoadBalancing::ROLE_REPLICA
+          end
         end
 
         def wal_location_for(load_balancer)
           # When only using the primary there's no need for any WAL queries.
           return if load_balancer.primary_only?
 
-          if ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
+          if uses_primary?
             load_balancer.primary_write_location
           else
             load_balancer.host.database_replica_location
           end
+        end
+
+        def uses_primary?
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary?
         end
       end
     end

@@ -51,21 +51,22 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
         end
       end
 
-      context 'with Gitlab::VERSION set to 14.0.123' do
+      context 'with Gitlab::VERSION set to 14.0.1' do
         before do
-          stub_version('14.0.123', 'deadbeef')
+          stub_version('14.0.1', 'deadbeef')
 
           described_class.instance.reset!
         end
 
         context 'with valid params' do
           where(:runner_version, :expected_result) do
-            'v14.1.0-rc3'                  | :not_available # not available since the GitLab instance is still on 14.0.x
-            'v14.1.0~beta.1574.gf6ea9389'  | :not_available # suffixes are correctly handled
-            'v14.1.0/1.1.0'                | :not_available # suffixes are correctly handled
-            'v14.1.0'                      | :not_available # not available since the GitLab instance is still on 14.0.x
+            'v15.0.0'                      | :not_available # not available since the GitLab instance is still on 14.x and a major version might be incompatible
+            'v14.1.0-rc3'                  | :recommended   # recommended since even though the GitLab instance is still on 14.0.x, there is a patch release (14.1.1) available which might contain security fixes
+            'v14.1.0~beta.1574.gf6ea9389'  | :recommended   # suffixes are correctly handled
+            'v14.1.0/1.1.0'                | :recommended   # suffixes are correctly handled
+            'v14.1.0'                      | :recommended   # recommended since even though the GitLab instance is still on 14.0.x, there is a patch release (14.1.1) available which might contain security fixes
             'v14.0.1'                      | :recommended   # recommended upgrade since 14.0.2 is available
-            'v14.0.2'                      | :not_available # not available since 14.0.2 is the latest 14.0.x release available
+            'v14.0.2'                      | :not_available # not available since 14.0.2 is the latest 14.0.x release available within the instance's major.minor version
             'v13.10.1'                     | :available     # available upgrade: 14.1.1
             'v13.10.1~beta.1574.gf6ea9389' | :available     # suffixes are correctly handled
             'v13.10.1/1.1.0'               | :available     # suffixes are correctly handled

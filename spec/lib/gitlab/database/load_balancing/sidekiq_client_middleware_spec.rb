@@ -57,6 +57,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
         run_middleware
 
         expect(job['wal_locations']).to be_nil
+        expect(job['wal_location_source']).to be_nil
       end
 
       include_examples 'job data consistency'
@@ -96,6 +97,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
           run_middleware
 
           expect(job['wal_locations']).to eq(expected_location)
+          expect(job['wal_location_source']).to eq(:replica)
         end
 
         include_examples 'job data consistency'
@@ -120,6 +122,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
           run_middleware
 
           expect(job['wal_locations']).to eq(expected_location)
+          expect(job['wal_location_source']).to eq(:primary)
         end
 
         include_examples 'job data consistency'
@@ -162,6 +165,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
           run_middleware
 
           expect(job['wal_locations']).to eq(wal_locations)
+          expect(job['wal_location_source']).to be_nil
         end
       end
 
