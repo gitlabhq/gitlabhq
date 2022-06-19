@@ -13,14 +13,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Start by generating a feature flag using the `bin/feature-flag` command as you
 normally would for a development feature flag, making sure to use `experiment` for
 the type. For the sake of documentation let's name our feature flag (and experiment)
-"pill_color".
+`pill_color`.
 
 ```shell
 bin/feature-flag pill_color -t experiment
 ```
 
 After you generate the desired feature flag, you can immediately implement an
-experiment in code. An experiment implementation can be as simple as:
+experiment in code. A basic experiment implementation can be:
 
 ```ruby
 experiment(:pill_color, actor: current_user) do |e|
@@ -30,8 +30,8 @@ experiment(:pill_color, actor: current_user) do |e|
 end
 ```
 
-When this code executes, the experiment is run, a variant is assigned, and (if within a
-controller or view) a `window.gl.experiments.pill_color` object will be available in the
+When this code executes, the experiment is run, a variant is assigned, and (if in a
+controller or view) a `window.gl.experiments.pill_color` object is available in the
 client layer, with details like:
 
 - The assigned variant.
@@ -102,7 +102,7 @@ contexts to simplify reporting:
 
 - `{ actor: current_user }`: Assigns a variant and is "sticky" to each user
   (or "client" if `current_user` is nil) who enters the experiment.
-- `{ project: project }`: Assigns a variant and is "sticky" to the project currently
+- `{ project: project }`: Assigns a variant and is "sticky" to the project
   being viewed. If running your experiment is more useful when viewing a project,
   rather than when a specific user is viewing any project, consider this approach.
 - `{ group: group }`: Similar to the project example, but applies to a wider
@@ -151,7 +151,7 @@ wouldn't be resolvable.
 
 There are two ways to implement an experiment:
 
-1. The simple experiment style described previously.
+1. The basic experiment style described previously.
 1. A more advanced style where an experiment class is provided.
 
 The advanced style is handled by naming convention, and works similar to what you
@@ -224,8 +224,8 @@ end
 When an experiment runs, the segmentation rules are executed in the order they're
 defined. The first segmentation rule to produce a truthy result assigns the variant.
 
-In our example, any user named `'Richard'`, regardless of account age, will always
-be assigned the _red_ variant. If you want the opposite logic, flip the order.
+In our example, any user named `'Richard'`, regardless of account age, is always
+assigned the _red_ variant. If you want the opposite logic, flip the order.
 
 NOTE:
 Keep in mind when defining segmentation rules: after a truthy result, the remaining
@@ -275,7 +275,7 @@ end
 One of the most important aspects of experiments is gathering data and reporting on
 it. You can use the `track` method to track events across an experimental implementation.
 You can track events consistently to an experiment if you provide the same context between
-calls to your experiment. If you do not yet understand context, you should read
+calls to your experiment. If you do not understand context, you should read
 about contexts now.
 
 We can assume we run the experiment in one or a few places, but
@@ -295,7 +295,7 @@ experiment have a special
 added to the event. This can be used - typically by the data team - to create a connection
 between the events on a given experiment.
 
-If our current user hasn't encountered the experiment yet (meaning where the experiment
+If our user hasn't encountered the experiment (meaning where the experiment
 is run), and we track an event for them, they are assigned a variant and see
 that variant if they ever encountered the experiment later, when an `:assignment`
 event would be tracked at that time for them.
@@ -316,9 +316,9 @@ so it can be used when resolving experimentation in the client layer.
 
 Given that we've defined a class for our experiment, and have defined the variants for it, we can publish that experiment in a couple ways.
 
-The first way is simply by running the experiment. Assuming the experiment has been run, it will surface in the client layer without having to do anything special.
+The first way is by running the experiment. Assuming the experiment has been run, it surfaces in the client layer without having to do anything special.
 
-The second way doesn't run the experiment and is intended to be used if the experiment only needs to surface in the client layer. To accomplish this we can simply `.publish` the experiment. This won't run any logic, but does surface the experiment details in the client layer so they can be utilized there.
+The second way doesn't run the experiment and is intended to be used if the experiment must only surface in the client layer. To accomplish this we can `.publish` the experiment. This does not run any logic, but does surface the experiment details in the client layer so they can be utilized there.
 
 An example might be to publish an experiment in a `before_action` in a controller. Assuming we've defined the `PillColorExperiment` class, like we have above, we can surface it to the client by publishing it instead of running it:
 
@@ -366,4 +366,4 @@ export default {
 ```
 
 NOTE:
-When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot will be used, if it exists.
+When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot is used, if it exists.

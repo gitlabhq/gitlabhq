@@ -21,7 +21,7 @@ feature list, the feature list is tailored to your subscription type:
 
 ## Self-managed installations
 
-Due to our release post process, the content for **What's new** is not yet finalized
+Due to our release post process, the content for **What's new** is not finalized
 when a new version (`.0` release) is cut. The updated **What's new** is included
 in the first patch release, such as `13.10.1`.
 
