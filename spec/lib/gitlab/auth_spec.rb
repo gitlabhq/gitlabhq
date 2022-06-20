@@ -481,6 +481,17 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
             end
 
             it_behaves_like 'with an invalid access token'
+
+            context 'when the token belongs to a group via project share' do
+              let_it_be(:invited_group) { create(:group) }
+
+              before do
+                invited_group.add_maintainer(project_bot_user)
+                create(:project_group_link, group: invited_group, project: project)
+              end
+
+              it_behaves_like 'with a valid access token'
+            end
           end
         end
       end

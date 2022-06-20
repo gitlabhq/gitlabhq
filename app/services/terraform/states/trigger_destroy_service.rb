@@ -12,9 +12,11 @@ module Terraform
         return unauthorized_response unless can_destroy_state?
         return state_locked_response if state.locked?
 
-        state.update!(deleted_at: Time.current)
+        state.run_after_commit do
+          Terraform::States::DestroyWorker.perform_async(id)
+        end
 
-        Terraform::States::DestroyWorker.perform_async(state.id)
+        state.update!(deleted_at: Time.current)
 
         ServiceResponse.success
       end

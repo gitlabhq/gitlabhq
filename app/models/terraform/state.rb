@@ -3,6 +3,7 @@
 module Terraform
   class State < ApplicationRecord
     include UsageStatistics
+    include AfterCommitQueue
 
     HEX_REGEXP = %r{\A\h+\z}.freeze
     UUID_LENGTH = 32
