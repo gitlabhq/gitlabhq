@@ -34110,6 +34110,9 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Failed to load cluster agents."
+msgstr ""
+
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
 msgstr ""
 
@@ -34399,6 +34402,9 @@ msgid "SecurityReports|Change status"
 msgstr ""
 
 msgid "SecurityReports|Check the messages generated while parsing the following security reports, as they may prevent the results from being ingested by GitLab. Ensure the security report conforms to a supported %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
+msgstr ""
+
+msgid "SecurityReports|Cluster"
 msgstr ""
 
 msgid "SecurityReports|Comment added to '%{vulnerabilityName}'"
@@ -44749,6 +44755,9 @@ msgid "ciReport|API Fuzzing"
 msgstr ""
 
 msgid "ciReport|API fuzzing"
+msgstr ""
+
+msgid "ciReport|All clusters"
 msgstr ""
 
 msgid "ciReport|All projects"

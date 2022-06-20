@@ -133,18 +133,6 @@
   }
 }
 
-.commit-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex-grow: 1;
-  min-width: 0;
-
-  .project-namespace {
-    color: $gl-text-color-tertiary;
-  }
-}
-
 .commit-content {
   padding-right: 10px;
   white-space: normal;

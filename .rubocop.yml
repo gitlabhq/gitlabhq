@@ -779,3 +779,6 @@ Migration/BackgroundMigrationBaseClass:
 
 Style/ClassAndModuleChildren:
   Enabled: true
+
+Fips/OpenSSL:
+  Enabled: false
