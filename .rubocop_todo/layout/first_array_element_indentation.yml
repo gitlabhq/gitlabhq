@@ -90,7 +90,7 @@ Layout/FirstArrayElementIndentation:
     - 'ee/spec/lib/gitlab/ci/templates/Jobs/load_performance_testing_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/epic_node_spec.rb'
-    - 'ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_block_aggregate_spec.rb'
+    - 'ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_links_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/loaders/bulk_epic_aggregate_loader_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/count_ci_builds_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/count_users_creating_ci_builds_metric_spec.rb'

@@ -442,42 +442,33 @@ describe('App component', () => {
   });
 
   describe('Vulnerability management', () => {
-    it('does not show tab if security training is disabled', () => {
+    const props = { securityTrainingEnabled: true };
+
+    beforeEach(async () => {
       createComponent({
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
-        securityTrainingEnabled: false,
+        ...props,
       });
-
-      expect(findVulnerabilityManagementTab().exists()).toBe(false);
     });
 
-    describe('security training enabled', () => {
-      beforeEach(async () => {
-        createComponent({
-          augmentedSecurityFeatures: securityFeaturesMock,
-          augmentedComplianceFeatures: complianceFeaturesMock,
-        });
-      });
+    it('shows the tab', () => {
+      expect(findVulnerabilityManagementTab().exists()).toBe(true);
+    });
 
-      it('shows the tab if security training is enabled', () => {
-        expect(findVulnerabilityManagementTab().exists()).toBe(true);
-      });
+    it('renders TrainingProviderList component', () => {
+      expect(findTrainingProviderList().props()).toMatchObject(props);
+    });
 
-      it('renders TrainingProviderList component', () => {
-        expect(findTrainingProviderList().exists()).toBe(true);
-      });
+    it('renders security training description', () => {
+      expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
+    });
 
-      it('renders security training description', () => {
-        expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
-      });
+    it('renders link to help docs', () => {
+      const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
 
-      it('renders link to help docs', () => {
-        const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
-
-        expect(trainingLink.text()).toBe('Learn more about vulnerability training');
-        expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
-      });
+      expect(trainingLink.text()).toBe('Learn more about vulnerability training');
+      expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
     });
   });
 });

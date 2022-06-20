@@ -1275,11 +1275,16 @@ project = Project.find_by_full_path('<group/project>')
 Geo::RepositorySyncService.new(project).execute
 ```
 
-### Blob types newer than uploads/artifacts/LFS
+### Blob types
 
-- `Packages::PackageFile`
-- `Terraform::StateVersion`
+- `Ci::JobArtifact`
+- `Ci::PipelineArtifact`
+- `LfsObject`
 - `MergeRequestDiff`
+- `Packages::PackageFile`
+- `PagesDeployment`
+- `Terraform::StateVersion`
+- `Upload`
 
 `Packages::PackageFile` is used in the following examples, but things generally work the same for the other Blob types.
 

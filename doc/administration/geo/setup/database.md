@@ -52,8 +52,9 @@ The following guide assumes that:
   which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
 - You have a **primary** node already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and
-  you have a new **secondary** server set up with the same versions of the OS,
-  PostgreSQL, and GitLab on all nodes.
+  you have a new **secondary** server set up with the same
+  [versions of PostgreSQL](../index.md#requirements-for-running-geo),
+  OS, and GitLab on all nodes.
 
 WARNING:
 Geo works with streaming replication. Logical replication is not supported at this time.
@@ -478,7 +479,7 @@ data before running `pg_basebackup`.
    ```shell
    gitlab-ctl replicate-geo-database \
       --slot-name=<secondary_node_name> \
-      --host=<primary_node_ip>
+      --host=<primary_node_ip> \
       --sslmode=verify-ca
    ```
 

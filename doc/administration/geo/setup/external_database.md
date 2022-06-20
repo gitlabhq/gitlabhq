@@ -10,6 +10,11 @@ This document is relevant if you are using a PostgreSQL instance that is *not
 managed by Omnibus*. This includes cloud-managed instances like Amazon RDS, or
 manually installed and configured PostgreSQL instances.
 
+Ensure that you are using one of the PostgreSQL versions that
+[Omnibus ships with](../../package_information/postgresql_versions.md)
+to [avoid version mismatches](../index.md#requirements-for-running-geo)
+in case a Geo site has to be rebuilt.
+
 NOTE:
 We strongly recommend running Omnibus-managed instances as they are actively
 developed and tested. We aim to be compatible with most external

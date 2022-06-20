@@ -110,8 +110,7 @@ https://gitlab.domain.tld/api/v4/jobs/request: Post https://gitlab.domain.tld/ap
 x509: certificate signed by unknown authority
 ```
 
-If you encounter a similar problem, add your certificate to `/etc/gitlab-runner/certs`,
-and the restart the runner by running `gitlab-runner restart`.
+Follow the details in [Self-signed certificates or custom Certification Authorities for GitLab Runner](https://docs.gitlab.com/runner/configuration/tls-self-signed.html).
 
 ## Mirroring a remote GitLab repository that uses a self-signed SSL certificate
 

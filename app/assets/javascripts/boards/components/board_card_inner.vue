@@ -243,6 +243,7 @@ export default {
           :description="label.description"
           size="sm"
           :scoped="showScopedLabel(label)"
+          target="#"
           @click="filterByLabel(label)"
         />
       </template>

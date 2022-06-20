@@ -716,7 +716,7 @@ Style/IfUnlessModifier:
     - 'ee/lib/gitlab/geo/replication/blob_downloader.rb'
     - 'ee/lib/gitlab/geo/replicator.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate.rb'
-    - 'ee/lib/gitlab/graphql/aggregations/issues/lazy_block_aggregate.rb'
+    - 'ee/lib/gitlab/graphql/aggregations/issues/lazy_links_aggregate.rb'
     - 'ee/lib/gitlab/graphql/aggregations/security_orchestration_policies/lazy_dast_profile_aggregate.rb'
     - 'ee/lib/gitlab/graphql/aggregations/vulnerabilities/lazy_user_notes_count_aggregate.rb'
     - 'ee/lib/gitlab/graphql/aggregations/vulnerability_statistics/lazy_aggregate.rb'

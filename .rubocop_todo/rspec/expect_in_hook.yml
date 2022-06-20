@@ -46,7 +46,7 @@ RSpec/ExpectInHook:
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/lib/gitlab/git_access_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'
-    - 'ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_block_aggregate_spec.rb'
+    - 'ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_links_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/mirror_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/generator_spec.rb'
     - 'ee/spec/lib/gitlab/subscription_portal/clients/graphql_spec.rb'

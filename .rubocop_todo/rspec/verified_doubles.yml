@@ -82,7 +82,7 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/gitlab/geo/replicator_spec.rb
     - ee/spec/lib/gitlab/geo_spec.rb
     - ee/spec/lib/gitlab/git_access_spec.rb
-    - ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_block_aggregate_spec.rb
+    - ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_links_aggregate_spec.rb
     - ee/spec/lib/gitlab/import_export/group/relation_factory_spec.rb
     - ee/spec/lib/gitlab/middleware/ip_restrictor_spec.rb
     - ee/spec/lib/gitlab/patch/legacy_database_config_spec.rb

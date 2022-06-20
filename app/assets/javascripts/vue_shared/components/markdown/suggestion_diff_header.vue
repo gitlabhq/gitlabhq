@@ -139,8 +139,8 @@ export default {
 </script>
 
 <template>
-  <div class="md-suggestion-header border-bottom-0 mt-2">
-    <div class="js-suggestion-diff-header font-weight-bold">
+  <div class="md-suggestion-header border-bottom-0 gl-mt-3">
+    <div class="js-suggestion-diff-header gl-font-weight-bold">
       {{ __('Suggested change') }}
       <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
         <gl-icon name="question-o" css-classes="link-highlight" />
@@ -151,13 +151,13 @@ export default {
     </gl-badge>
     <div
       v-else-if="isApplying"
-      class="d-flex align-items-center text-secondary"
+      class="gl-display-flex gl-align-items-center text-secondary"
       data-qa-selector="applying_badge"
     >
-      <gl-loading-icon size="sm" class="d-flex-center mr-2" />
+      <gl-loading-icon size="sm" class="gl-align-items-center gl-justify-content-center gl-mr-3" />
       <span>{{ applyingSuggestionsMessage }}</span>
     </div>
-    <div v-else-if="isLoggedIn" class="d-flex align-items-center">
+    <div v-else-if="isLoggedIn" class="gl-display-flex gl-align-items-center">
       <div v-if="isBatched">
         <gl-button
           class="btn-inverted js-remove-from-batch-btn btn-grouped"

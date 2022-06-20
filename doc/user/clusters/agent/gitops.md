@@ -57,7 +57,7 @@ Any time you commit updates to your Kubernetes manifests, the agent updates the 
 
 ## GitOps configuration reference
 
-The following snippet shows an example of the possible keys and values for the GitOps section of an agent configuration file.
+The following snippet shows an example of the possible keys and values for the GitOps section of an [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 
 ```yaml
 gitops:

@@ -501,7 +501,7 @@ RSpec/ContextWording:
     - 'ee/spec/lib/gitlab/gl_repository/repo_type_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/epic_node_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'
-    - 'ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_block_aggregate_spec.rb'
+    - 'ee/spec/lib/gitlab/graphql/aggregations/issues/lazy_links_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/lazy_dast_profile_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/vulnerabilities/lazy_user_notes_count_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/aggregations/vulnerability_statistics/lazy_aggregate_spec.rb'

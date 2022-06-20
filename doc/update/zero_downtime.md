@@ -427,6 +427,8 @@ following command to get address of current Redis primary
 
 #### In the Redis secondary nodes
 
+1. Set `gitlab_rails['rake_cache_clear'] = false` in `gitlab.rb` if you haven't already. If not, you might receive the error `Redis::CommandError: READONLY You can't write against a read only replica.` during the reconfigure post installation of new package.
+
 1. Install package for new version.
 
 1. Run `sudo gitlab-ctl reconfigure`, if a reconfigure is not run as part of

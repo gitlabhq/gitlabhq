@@ -26158,6 +26158,9 @@ msgstr ""
 msgid "Notify|Author: %{author_name}"
 msgstr ""
 
+msgid "Notify|If you no longer wish to use this domain with GitLab Pages, please remove it from your GitLab project and delete any related DNS records."
+msgstr ""
+
 msgid "Notify|Issue was %{issue_status} by %{updated_by}"
 msgstr ""
 
@@ -26183,6 +26186,9 @@ msgid "Notify|New issue: %{project_issue_url}"
 msgstr ""
 
 msgid "Notify|This issue is due on: %{issue_due_date}"
+msgstr ""
+
+msgid "Notify|Unless you verify your domain by %{time_start}%{time}%{time_end} it will be removed from your GitLab project."
 msgstr ""
 
 msgid "Notify|You don't have access to the project."
