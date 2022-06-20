@@ -15,7 +15,7 @@ module Types
 
     field :notification_email,
           resolver: Resolvers::GroupMembers::NotificationEmailResolver,
-          description: "Group notification email for User. Only availble for admins."
+          description: "Group notification email for User. Only available for admins."
 
     def group
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, object.source_id).find

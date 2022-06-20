@@ -57,8 +57,35 @@ RSpec.describe 'New project', :js do
       expect(page).to have_link('GitHub')
       expect(page).to have_link('Bitbucket')
       expect(page).to have_link('GitLab.com')
-      expect(page).to have_button('Repo by URL')
+      expect(page).to have_button('Repository by URL')
       expect(page).to have_link('GitLab export')
+    end
+
+    describe 'github import option' do
+      context 'with user namespace' do
+        before do
+          visit new_project_path
+          click_link 'Import project'
+        end
+
+        it 'renders link to github importer' do
+          expect(page).to have_link(href: new_import_github_path)
+        end
+      end
+
+      context 'with group namespace' do
+        let(:group) { create(:group, :private) }
+
+        before do
+          group.add_owner(user)
+          visit new_project_path(namespace_id: group.id)
+          click_link 'Import project'
+        end
+
+        it 'renders link to github importer including namespace id' do
+          expect(page).to have_link(href: new_import_github_path(namespace_id: group.id))
+        end
+      end
     end
 
     describe 'manifest import option' do
@@ -175,7 +202,7 @@ RSpec.describe 'New project', :js do
       it 'does not show the initialize with Readme checkbox on "Import project" tab' do
         visit new_project_path
         click_link 'Import project'
-        click_button 'Repo by URL'
+        click_button 'Repository by URL'
 
         page.within '#import-project-pane' do
           expect(page).not_to have_css('input#project_initialize_with_readme')
@@ -277,7 +304,7 @@ RSpec.describe 'New project', :js do
         click_link 'Import project'
       end
 
-      context 'from git repository url, "Repo by URL"' do
+      context 'from git repository url, "Repository by URL"' do
         before do
           first('.js-import-git-toggle-button').click
         end

@@ -6,12 +6,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # CI/CD analytics **(FREE)**
 
-## Pipeline success and duration charts
+Use the CI/CD analytics page to view pipeline success rates and duration, and the history of [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) over time.
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/38318) to CI/CD Analytics in GitLab 12.8.
+## Pipeline success and duration charts
 
 CI/CD analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
 ran.
+
+Pipeline statistics are gathered by collecting all available pipelines for the
+project, regardless of status. The data available for each individual day is based
+on when the pipeline was created.
+
+The total pipeline calculation includes child
+pipelines and pipelines that failed with an invalid YAML. To filter pipelines based on other attributes, use the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
 
 View successful pipelines:
 
@@ -20,12 +27,6 @@ View successful pipelines:
 View pipeline duration history:
 
 ![Pipeline duration](img/pipelines_duration_chart.png)
-
-Pipeline statistics are gathered by collecting all available pipelines for the
-project regardless of status. The data available for each individual day is based
-on when the pipeline was created. The total pipeline calculation includes child
-pipelines and pipelines that failed with invalid YAML. If you are interested in
-filtering pipelines based on other attributes, consider using the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
 
 ## View CI/CD analytics
 
@@ -42,6 +43,8 @@ The deployment frequency charts show information about the deployment
 frequency to the `production` environment. The environment must be part of the
 [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
 for its deployment information to appear on the graphs.
+
+  Deployment frequency is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
 
 The deployment frequency chart is available for groups and projects.
 
@@ -65,6 +68,8 @@ merge requests to be deployed to a production environment. This chart is availab
 - For time periods in which no merge requests were deployed, the charts render a
   red, dashed line.
 
+  lead time for changes is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
+
 To view the lead time for changes chart:
 
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -72,3 +77,19 @@ To view the lead time for changes chart:
 1. Select the **Lead time** tab.
 
 ![Lead time](img/lead_time_chart_v13_11.png)
+
+## View time to restore service chart **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1
+
+The time to restore service chart shows information about the median time an incident was open in a production environment. This chart is available for groups and projects.
+
+Time to restore service is one of the four [DORA metrics](index.md#devops-research-and-assessment-dora-key-metrics) that DevOps teams use for measuring excellence in software delivery.
+
+To view the time to restore service chart:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > CI/CD Analytics**.
+1. Select the **Time to restore service** tab.
+
+![Lead time](img/time_to_restore_service_charts_v15_1.png)

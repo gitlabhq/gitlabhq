@@ -26,7 +26,8 @@ export default class Diff {
       FilesCommentButton.init($diffFile);
 
     const firstFile = $('.files').first().get(0);
-    const canCreateNote = firstFile && firstFile.hasAttribute('data-can-create-note');
+    const canCreateNote =
+      firstFile && Object.prototype.hasOwnProperty.call(firstFile.dataset, 'canCreateNote');
     $diffFile.each((index, file) => initImageDiffHelper.initImageDiff(file, canCreateNote));
 
     if (!isBound) {

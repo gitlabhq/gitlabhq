@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Terraform::State do
+RSpec.describe API::Terraform::State, :snowplow do
   include HttpBasicAuthHelpers
 
   let_it_be(:project) { create(:project) }
@@ -25,10 +25,16 @@ RSpec.describe API::Terraform::State do
     context 'without authentication' do
       let(:auth_header) { basic_auth_header('bad', 'token') }
 
-      it 'does not track unique event' do
+      it 'does not track unique hll event' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
 
         request
+      end
+
+      it 'does not track Snowplow event' do
+        request
+
+        expect_no_snowplow_event
       end
     end
 
@@ -39,6 +45,41 @@ RSpec.describe API::Terraform::State do
         let(:target_event) { 'p_terraform_state_api_unique_users' }
         let(:expected_value) { instance_of(Integer) }
       end
+
+      it 'tracks Snowplow event' do
+        request
+
+        expect_snowplow_event(
+          category: described_class.to_s,
+          action: 'p_terraform_state_api_unique_users',
+          namespace: project.namespace.reload,
+          user: current_user
+        )
+      end
+
+      context 'when route_hll_to_snowplow_phase2 FF is disabled' do
+        before do
+          stub_feature_flags(route_hll_to_snowplow_phase2: false)
+        end
+
+        it 'does not track Snowplow event' do
+          request
+
+          expect_no_snowplow_event
+        end
+      end
+    end
+  end
+
+  shared_context 'cannot access a state that is scheduled for deletion' do
+    before do
+      state.update!(deleted_at: Time.current)
+    end
+
+    it 'returns unprocessable entity' do
+      request
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
   end
 
@@ -77,6 +118,8 @@ RSpec.describe API::Terraform::State do
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
+
+        it_behaves_like 'cannot access a state that is scheduled for deletion'
       end
 
       context 'with developer permissions' do
@@ -162,6 +205,8 @@ RSpec.describe API::Terraform::State do
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
         end
+
+        it_behaves_like 'cannot access a state that is scheduled for deletion'
       end
 
       context 'without body' do
@@ -240,13 +285,19 @@ RSpec.describe API::Terraform::State do
 
     context 'with maintainer permissions' do
       let(:current_user) { maintainer }
+      let(:deletion_service) { instance_double(Terraform::States::TriggerDestroyService) }
 
-      it 'deletes the state and returns empty body' do
-        expect { request }.to change { Terraform::State.count }.by(-1)
+      it 'schedules the state for deletion and returns empty body' do
+        expect(Terraform::States::TriggerDestroyService).to receive(:new).and_return(deletion_service)
+        expect(deletion_service).to receive(:execute).once
+
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)).to be_empty
       end
+
+      it_behaves_like 'cannot access a state that is scheduled for deletion'
     end
 
     context 'with developer permissions' do
@@ -276,6 +327,7 @@ RSpec.describe API::Terraform::State do
     subject(:request) { post api("#{state_path}/lock"), headers: auth_header, params: params }
 
     it_behaves_like 'endpoint with unique user tracking'
+    it_behaves_like 'cannot access a state that is scheduled for deletion'
 
     it 'locks the terraform state' do
       request
@@ -327,6 +379,10 @@ RSpec.describe API::Terraform::State do
     subject(:request) { delete api("#{state_path}/lock"), headers: auth_header, params: params }
 
     it_behaves_like 'endpoint with unique user tracking' do
+      let(:lock_id) { 'irrelevant to this test, just needs to be present' }
+    end
+
+    it_behaves_like 'cannot access a state that is scheduled for deletion' do
       let(:lock_id) { 'irrelevant to this test, just needs to be present' }
     end
 

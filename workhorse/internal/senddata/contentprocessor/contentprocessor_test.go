@@ -2,7 +2,6 @@ package contentprocessor
 
 import (
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -306,7 +305,7 @@ func makeRequest(t *testing.T, handler http.HandlerFunc, body string, dispositio
 	SetContentHeaders(handler).ServeHTTP(rw, req)
 
 	resp := rw.Result()
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 
 	require.Equal(t, body, string(respBody))

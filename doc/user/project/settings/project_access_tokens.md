@@ -36,12 +36,14 @@ You can use project access tokens:
   - Consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to
     lower potential abuse.
 
-You cannot use project access tokens to create other access tokens.
+You cannot use project access tokens to create other group, project, or personal access tokens.
 
 Project access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
 
 ## Create a project access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89114) in GitLab 15.1, Owners can select Owner role for project access tokens.
 
 To create a project access token:
 
@@ -116,6 +118,8 @@ Bot users for projects:
 
 - Are included in a project's member list but cannot be modified.
 - Cannot be added to any other project.
+- Can have a maximum role of Owner for a project. For more information, see
+  [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
 
 When the project access token is [revoked](#revoke-a-project-access-token):
 

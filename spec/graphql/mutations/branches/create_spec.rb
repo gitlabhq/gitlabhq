@@ -3,13 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Branches::Create do
+  include GraphqlHelpers
+
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:context) do
+
+  let(:context) do
     GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: nil),
+      query: query_double(schema: nil),
       values: { current_user: user },
       object: nil
     )

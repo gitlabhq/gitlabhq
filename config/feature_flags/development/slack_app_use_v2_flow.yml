@@ -1,8 +1,0 @@
----
-name: slack_app_use_v2_flow
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85726
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360680
-milestone: '15.0'
-type: development
-group: group::integrations
-default_enabled: false

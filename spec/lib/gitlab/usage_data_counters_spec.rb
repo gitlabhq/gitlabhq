@@ -13,10 +13,10 @@ RSpec.describe Gitlab::UsageDataCounters do
   describe '.count' do
     subject { described_class.count(event_name) }
 
-    let(:event_name) { 'static_site_editor_views' }
+    let(:event_name) { 'web_ide_views' }
 
     it 'increases a view counter' do
-      expect(Gitlab::UsageDataCounters::StaticSiteEditorCounter).to receive(:count).with('views')
+      expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:count).with('views')
 
       subject
     end

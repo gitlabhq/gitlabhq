@@ -63,12 +63,12 @@ module Projects
 
     # rubocop: disable CodeReuse/ActiveRecord
     def self.query(projects, public_only: true)
-      issues_filtered_by_type = Issue.opened.with_issue_type(Issue::TYPES_FOR_LIST)
+      open_issues = Issue.opened
 
       if public_only
-        issues_filtered_by_type.public_only.where(project: projects)
+        open_issues.public_only.where(project: projects)
       else
-        issues_filtered_by_type.where(project: projects)
+        open_issues.where(project: projects)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

@@ -29,7 +29,7 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
   - On self-managed instances, a GitLab administrator must
     [enable LFS globally](../../../administration/lfs/index.md).
   - On both GitLab.com and self-managed instances, LFS must be
-    [enabled for the project itself](../settings/index.md#sharing-and-permissions).
+    [enabled for the project itself](../settings/index.md#configure-project-visibility-features-and-permissions).
     If enabled globally, LFS is enabled by default for all projects. If you have
     disabled it for your project, you must enable it again.
 
@@ -92,7 +92,7 @@ The design you selected opens. You can then [zoom in](#zoom-in-on-a-design) on i
 
 When viewing a design, you can move to other designs. To do so, either:
 
-- In the top-right corner, select **Go to previous design** (**{angle-left}**) or **Go to next design** (**{angle-right}**).
+- In the top-right corner, select **Go to previous design** (**{chevron-lg-left}**) or **Go to next design** (**{chevron-lg-right}**).
 - Press <kbd>Left</kbd> or <kbd>Right</kbd> on your keyboard.
 
 To return to the issue view, either:

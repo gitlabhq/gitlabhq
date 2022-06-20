@@ -135,11 +135,13 @@
 
   blockquote,
   .blockquote {
-    color: $gl-grayish-blue;
     font-size: inherit;
-    padding: 8px 24px;
-    margin: 16px 0;
-    border-left: 3px solid $white-dark;
+    @include gl-text-gray-700;
+    @include gl-py-3;
+    @include gl-pl-6;
+    @include gl-my-3;
+    @include gl-mx-0;
+    @include gl-inset-border-l-4-gray-100;
 
     &:dir(rtl) {
       border-left: 0;
@@ -147,9 +149,8 @@
     }
 
     p {
-      color: $gl-grayish-blue !important;
-      font-size: inherit;
       line-height: 1.5;
+      @include gl-reset-color;
 
       &:last-child {
         margin: 0;
@@ -592,6 +593,14 @@
 }
 
 /**
+ * Links
+ *
+ */
+a:focus-visible {
+  @include gl-focus($outline: true, $outline-offset: $outline-width);
+}
+
+/**
  * Headers
  *
  */
@@ -602,8 +611,6 @@ body {
 .page-title {
   margin: #{2 * $grid-size} 0;
   line-height: 1.3;
-  font-size: 1.25em;
-  font-weight: $gl-font-weight-bold;
 
   &.with-button {
     line-height: 34px;

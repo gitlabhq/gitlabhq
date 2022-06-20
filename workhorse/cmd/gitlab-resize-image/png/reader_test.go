@@ -5,7 +5,6 @@ import (
 	"hash/crc64"
 	"image"
 	"io"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -85,9 +84,9 @@ func requireValidImage(t *testing.T, r io.Reader, expected string) {
 }
 
 func requireStreamUnchanged(t *testing.T, actual io.Reader, expected io.Reader) {
-	actualBytes, err := ioutil.ReadAll(actual)
+	actualBytes, err := io.ReadAll(actual)
 	require.NoError(t, err)
-	expectedBytes, err := ioutil.ReadAll(expected)
+	expectedBytes, err := io.ReadAll(expected)
 	require.NoError(t, err)
 
 	table := crc64.MakeTable(crc64.ISO)

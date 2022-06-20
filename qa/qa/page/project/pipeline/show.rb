@@ -24,6 +24,7 @@ module QA
           view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
             element :expand_linked_pipeline_button
             element :linked_pipeline_container
+            element :downstream_title_content
           end
 
           view 'app/assets/javascripts/reports/components/report_section.vue' do
@@ -73,6 +74,18 @@ module QA
             end
           end
 
+          def linked_pipelines
+            all_elements(:linked_pipeline_container, minimum: 1)
+          end
+
+          def find_linked_pipeline_by_title(title)
+            linked_pipelines.find do |pipeline|
+              within(pipeline) do
+                find_element(:downstream_title_content).text.include?(title)
+              end
+            end
+          end
+
           def has_linked_pipeline?(title: nil)
             # If the pipeline page has loaded linked pipelines should appear, but it can take a little while,
             # especially on busier environments.
@@ -88,21 +101,6 @@ module QA
           end
 
           alias_method :has_no_child_pipeline?, :has_no_linked_pipeline?
-
-          def click_job(job_name)
-            # Retry due to transient bug https://gitlab.com/gitlab-org/gitlab/-/issues/347126
-            QA::Support::Retrier.retry_on_exception do
-              click_element(:job_link, Project::Job::Show, text: job_name)
-            end
-          end
-
-          def linked_pipelines
-            all_elements(:linked_pipeline_container, minimum: 1)
-          end
-
-          def find_linked_pipeline_by_title(title)
-            linked_pipelines.find { |pipeline| pipeline[:title].include?(title) }
-          end
 
           def expand_linked_pipeline(title: nil)
             linked_pipeline = title ? find_linked_pipeline_by_title(title) : linked_pipelines.first
@@ -122,6 +120,13 @@ module QA
 
           def click_on_first_job
             first('.js-pipeline-graph-job-link', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME).click
+          end
+
+          def click_job(job_name)
+            # Retry due to transient bug https://gitlab.com/gitlab-org/gitlab/-/issues/347126
+            QA::Support::Retrier.retry_on_exception do
+              click_element(:job_link, Project::Job::Show, text: job_name)
+            end
           end
 
           def click_job_action(job_name)

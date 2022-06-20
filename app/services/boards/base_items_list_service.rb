@@ -78,12 +78,15 @@ module Boards
     end
 
     def list
-      return unless params.key?(:id)
+      return unless params.key?(:id) || params.key?(:list)
 
       strong_memoize(:list) do
         id = params[:id]
+        list = params[:list]
 
-        if board.lists.loaded?
+        if list.present?
+          list
+        elsif board.lists.loaded?
           board.lists.find { |l| l.id == id }
         else
           board.lists.find(id)

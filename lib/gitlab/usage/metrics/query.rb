@@ -13,6 +13,8 @@ module Gitlab
               distinct_count(relation, column)
             when :sum
               sum(relation, column)
+            when :average
+              average(relation, column)
             when :estimate_batch_distinct_count
               estimate_batch_distinct_count(relation, column)
             when :histogram
@@ -25,19 +27,23 @@ module Gitlab
           private
 
           def count(relation, column = nil)
-            raw_sql(relation, column)
+            raw_count_sql(relation, column)
           end
 
           def distinct_count(relation, column = nil)
-            raw_sql(relation, column, true)
+            raw_count_sql(relation, column, true)
           end
 
           def sum(relation, column)
-            relation.select(relation.all.table[column].sum).to_sql
+            raw_sum_sql(relation, column)
+          end
+
+          def average(relation, column)
+            raw_average_sql(relation, column)
           end
 
           def estimate_batch_distinct_count(relation, column = nil)
-            raw_sql(relation, column, true)
+            raw_count_sql(relation, column, true)
           end
 
           # rubocop: disable CodeReuse/ActiveRecord
@@ -62,15 +68,31 @@ module Gitlab
           # rubocop: enable CodeReuse/ActiveRecord
 
           # rubocop: disable CodeReuse/ActiveRecord
-          def raw_sql(relation, column, distinct = false)
+          def raw_count_sql(relation, column, distinct = false)
             column ||= relation.primary_key
-            node = node_to_count(relation, column)
+            node = node_to_operate(relation, column)
 
             relation.unscope(:order).select(node.count(distinct)).to_sql
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
-          def node_to_count(relation, column)
+          # rubocop: disable CodeReuse/ActiveRecord
+          def raw_sum_sql(relation, column)
+            node = node_to_operate(relation, column)
+
+            relation.unscope(:order).select(node.sum).to_sql
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
+
+          # rubocop: disable CodeReuse/ActiveRecord
+          def raw_average_sql(relation, column)
+            node = node_to_operate(relation, column)
+
+            relation.unscope(:order).select(node.average).to_sql
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
+
+          def node_to_operate(relation, column)
             if join_relation?(relation) && joined_column?(column)
               table_name, column_name = column.split(".")
               Arel::Table.new(table_name)[column_name]

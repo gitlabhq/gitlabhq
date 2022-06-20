@@ -18,6 +18,7 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
     }
   end
 
+  let(:editable) { false }
   let(:current_user) { user_with_permissions }
   let(:service) { described_class.new(incident, current_user, args) }
 
@@ -32,6 +33,8 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         expect(execute).to be_error
         expect(execute.message).to eq(message)
       end
+
+      it_behaves_like 'does not track incident management event', :incident_management_timeline_event_created
     end
 
     shared_examples 'success response' do
@@ -45,7 +48,10 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         expect(result.project).to eq(project)
         expect(result.note).to eq(args[:note])
         expect(result.promoted_from_note).to eq(comment)
+        expect(result.editable).to eq(editable)
       end
+
+      it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
     end
 
     subject(:execute) { service.execute }
@@ -87,6 +93,30 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         result = execute.payload[:timeline_event]
 
         expect(result.action).to eq(args[:action])
+      end
+    end
+
+    context 'with editable param' do
+      let(:args) do
+        {
+          note: 'note',
+          occurred_at: Time.current,
+          action: 'new comment',
+          promoted_from_note: comment,
+          editable: editable
+        }
+      end
+
+      context 'when editable is true' do
+        let(:editable) { true }
+
+        it_behaves_like 'success response'
+      end
+
+      context 'when editable is false' do
+        let(:editable) { false }
+
+        it_behaves_like 'success response'
       end
     end
 

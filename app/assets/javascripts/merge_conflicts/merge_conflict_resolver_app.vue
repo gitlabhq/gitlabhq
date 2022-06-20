@@ -31,7 +31,7 @@ export default {
   },
   inject: ['mergeRequestPath', 'sourceBranchPath', 'resolveConflictsPath'],
   i18n: {
-    commitStatSummary: __('Showing %{conflict} between %{sourceBranch} and %{targetBranch}'),
+    commitStatSummary: __('Showing %{conflict}'),
     resolveInfo: __(
       'You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}',
     ),
@@ -73,7 +73,7 @@ export default {
 </script>
 <template>
   <div id="conflicts">
-    <gl-loading-icon v-if="isLoading" size="md" data-testid="loading-spinner" />
+    <gl-loading-icon v-if="isLoading" size="lg" data-testid="loading-spinner" />
     <div v-if="hasError" class="nothing-here-block">
       {{ conflictsData.errorMessage }}
     </div>

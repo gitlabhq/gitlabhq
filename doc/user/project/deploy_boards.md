@@ -69,7 +69,7 @@ specific environment, there are a lot of use cases. To name a few:
 
 - You want to promote what's running in staging, to production. You go to the
   environments list, verify that what's running in staging is what you think is
-  running, then click on the [manual job](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) to deploy to production.
+  running, then select the [manual job](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) to deploy to production.
 - You trigger a deploy, and you have many containers to upgrade so you know
   this takes a while (you've also throttled your deploy to only take down X
   containers at a time). But you need to tell someone when it's deployed, so you
@@ -80,7 +80,7 @@ specific environment, there are a lot of use cases. To name a few:
   stuck or failed.
 - You've got an MR that looks good, but you want to run it on staging because
   staging is set up in some way closer to production. You go to the environment
-  list, find the [Review App](../../ci/review_apps/index.md) you're interested in, and click the
+  list, find the [Review App](../../ci/review_apps/index.md) you're interested in, and select the
   manual action to deploy it to staging.
 
 ## Enabling deploy boards
@@ -129,7 +129,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Deployments > Environments**.
 
-Deploy boards are visible by default. You can explicitly click
+Deploy boards are visible by default. You can explicitly select
 the triangle next to their respective environment name in order to hide them.
 
 ### Example manifest file

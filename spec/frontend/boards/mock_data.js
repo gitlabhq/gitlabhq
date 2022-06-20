@@ -144,30 +144,6 @@ export const mockProjectRecentBoardsResponse = {
   },
 };
 
-export const mockGroupBoardResponse = {
-  data: {
-    workspace: {
-      board: {
-        id: 'gid://gitlab/Board/1',
-        name: 'Development',
-      },
-      __typename: 'Group',
-    },
-  },
-};
-
-export const mockProjectBoardResponse = {
-  data: {
-    workspace: {
-      board: {
-        id: 'gid://gitlab/Board/2',
-        name: 'Development',
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
 export const mockAssigneesList = [
   {
     id: 2,
@@ -799,6 +775,18 @@ export const boardListQueryResponse = (issuesCount = 20) => ({
       id: 'gid://gitlab/BoardList/5',
       totalWeight: 5,
       issuesCount,
+    },
+  },
+});
+
+export const epicBoardListQueryResponse = (totalWeight = 5) => ({
+  data: {
+    epicBoardList: {
+      __typename: 'EpicList',
+      id: 'gid://gitlab/Boards::EpicList/3',
+      metadata: {
+        totalWeight,
+      },
     },
   },
 });

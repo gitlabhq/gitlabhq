@@ -23,6 +23,7 @@ module Gitlab
           insert
           update
           update_all
+          exec_insert_all
         ).freeze
 
         NON_STICKY_READS = %i(

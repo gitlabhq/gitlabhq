@@ -62,7 +62,7 @@ RSpec.describe Projects::MattermostsController do
         subject
         integration = project.integrations.last
 
-        expect(subject).to redirect_to(edit_project_integration_path(project, integration))
+        expect(subject).to redirect_to(edit_project_settings_integration_path(project, integration))
       end
     end
   end

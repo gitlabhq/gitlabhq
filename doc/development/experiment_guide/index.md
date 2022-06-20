@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Experiment Guide
 
-Experiments can be conducted by any GitLab team, most often the teams from the 
-[Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/). 
+Experiments can be conducted by any GitLab team, most often the teams from the
+[Growth Sub-department](https://about.gitlab.com/handbook/engineering/development/growth/).
 Experiments are not tied to releases because they primarily target GitLab.com.
 
 Experiments are run as an A/B/n test, and are behind an [experiment feature flag](../feature_flags/#experiment-type)
@@ -27,7 +27,7 @@ sometimes referred to as GLEX, to run our experiments. The gem exists in a separ
 so it can be shared across any GitLab property that uses Ruby. You should feel comfortable reading
 the documentation on that project if you want to dig into more advanced topics or open issues. Be
 aware that the documentation there reflects what's in the main branch and may not be the same as
-the version being used within GitLab.
+the version being used in GitLab.
 
 ## Glossary of terms
 
@@ -43,7 +43,7 @@ when communicating about experiments:
 
 ## Implementing an experiment
 
-[`GLEX`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
+[GLEX](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
 
 For more information, see [Implementing an A/B/n experiment using GLEX](implementing_experiments.md).
 

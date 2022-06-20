@@ -5,6 +5,7 @@ module QA
     module Group
       class Show < Page::Base
         include Page::Component::GroupsFilter
+        include QA::Page::Component::ConfirmModal
 
         view 'app/views/groups/_home_panel.html.haml' do
           element :new_project_button
@@ -46,9 +47,8 @@ module QA
         end
 
         def leave_group
-          accept_alert do
-            click_element :leave_group_link
-          end
+          click_element :leave_group_link
+          click_confirmation_ok_button
         end
       end
     end

@@ -58,7 +58,7 @@ module Projects
       end
 
       def as_json
-        serializer = DeployKeySerializer.new # rubocop: disable CodeReuse/Serializer
+        serializer = DeployKeys::DeployKeySerializer.new # rubocop: disable CodeReuse/Serializer
         opts = { user: current_user, project: project, readable_project_ids: readable_project_ids }
 
         {

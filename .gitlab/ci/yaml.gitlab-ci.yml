@@ -1,4 +1,5 @@
-# Yamllint of CI-related yaml.
+# Yamllint of yaml files.
+
 # This uses rules from project root `.yamllint`.
 lint-yaml:
   extends:
@@ -7,15 +8,29 @@ lint-yaml:
   image: pipelinecomponents/yamllint:latest
   stage: lint
   needs: []
+  script:
+    - yamllint --strict -f colored .
+
+# The jobs below will not use the configuration present in `.yamllint` (it's because of the -d option)
+#
+# Docs: https://yamllint.readthedocs.io/en/stable/configuration.html#custom-configuration-without-a-config-file
+
+lint-pipeline-yaml:
+  extends:
+    - .default-retry
+    - .lint-pipeline-yaml:rules
+  image: pipelinecomponents/yamllint:latest
+  stage: lint
+  needs: []
   variables:
     LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates data/deprecations data/removals data/whats_new
   script:
-    - yamllint --strict -f colored $LINT_PATHS
+    - 'yamllint -d "{extends: default, rules: {line-length: disable, document-start: disable}}" $LINT_PATHS'
 
 lint-metrics-yaml:
   extends:
     - .default-retry
-    - .yaml-lint:rules
+    - .lint-metrics-yaml:rules
   image: pipelinecomponents/yamllint:latest
   stage: lint
   needs: []

@@ -20,7 +20,7 @@ module Boards
       private
 
       def order(items)
-        return items.order_closed_date_desc if list&.closed?
+        return items.order_closed_at_desc if list&.closed?
 
         items.order_by_relative_position
       end

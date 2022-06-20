@@ -13,6 +13,7 @@ class Repository
   REF_KEEP_AROUND = 'keep-around'
   REF_ENVIRONMENTS = 'environments'
   REF_PIPELINES = 'pipelines'
+  REF_TMP = 'tmp'
 
   ARCHIVE_CACHE_TIME = 60 # Cache archives referred to by a (mutable) ref for 1 minute
   ARCHIVE_CACHE_TIME_IMMUTABLE = 3600 # Cache archives referred to by an immutable reference for 1 hour
@@ -175,8 +176,8 @@ class Repository
   end
 
   # Returns a list of commits that are not present in any reference
-  def new_commits(newrev, allow_quarantine: false)
-    commits = raw.new_commits(newrev, allow_quarantine: allow_quarantine)
+  def new_commits(newrev)
+    commits = raw.new_commits(newrev)
 
     ::Commit.decorate(commits, container)
   end

@@ -32,7 +32,7 @@ RSpec.describe Gitlab::SlashCommands::Deploy do
     context 'with environment' do
       let!(:staging) { create(:environment, name: 'staging', project: project) }
       let!(:pipeline) { create(:ci_pipeline, project: project) }
-      let!(:build) { create(:ci_build, pipeline: pipeline) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, environment: 'production') }
       let!(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
 
       context 'without actions' do

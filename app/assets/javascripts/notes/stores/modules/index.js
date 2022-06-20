@@ -14,6 +14,7 @@ export default () => ({
     currentDiscussionId: null,
     batchSuggestionsInfo: [],
     currentlyFetchingDiscussions: false,
+    doneFetchingBatchDiscussions: false,
     /**
      * selectedCommentPosition & selectedCommentPositionHover structures are the same as `position.line_range`:
      * {

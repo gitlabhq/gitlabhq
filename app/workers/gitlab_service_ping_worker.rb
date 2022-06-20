@@ -25,7 +25,25 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
       # Splay the request over a minute to avoid thundering herd problems.
       sleep(rand(0.0..60.0).round(3))
 
-      ServicePing::SubmitService.new.execute
+      ServicePing::SubmitService.new(payload: usage_data).execute
     end
+  end
+
+  def usage_data
+    return unless Feature.enabled?(:prerecord_service_ping_data)
+
+    ServicePing::BuildPayload.new.execute.tap do |payload|
+      record = {
+        recorded_at: payload[:recorded_at],
+        payload: payload,
+        created_at: Time.current,
+        updated_at: Time.current
+      }
+
+      RawUsageData.upsert(record, unique_by: :recorded_at)
+    end
+  rescue StandardError => err
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
+    nil
   end
 end

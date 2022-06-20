@@ -20,8 +20,6 @@ describe('Board Column Component', () => {
   };
 
   const createComponent = ({ listType = ListType.backlog, collapsed = false } = {}) => {
-    const boardId = '1';
-
     const listMock = {
       ...listObj,
       listType,
@@ -38,9 +36,6 @@ describe('Board Column Component', () => {
       propsData: {
         disabled: false,
         list: listMock,
-      },
-      provide: {
-        boardId,
       },
     });
   };

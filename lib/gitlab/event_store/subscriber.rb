@@ -23,6 +23,7 @@ module Gitlab
         include ApplicationWorker
 
         loggable_arguments 0, 1
+        idempotent!
       end
 
       def perform(event_type, data)

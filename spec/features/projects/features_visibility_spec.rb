@@ -189,7 +189,7 @@ RSpec.describe 'Edit Project Settings' do
         click_button "Save changes"
       end
 
-      expect(find(".sharing-permissions")).to have_selector(".gl-toggle.is-disabled", minimum: 4)
+      expect(find(".sharing-permissions")).to have_selector(".gl-toggle.is-disabled", minimum: 3)
     end
 
     it "shows empty features project homepage" do

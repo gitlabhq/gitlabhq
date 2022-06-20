@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::GitlabSchema do
 
     it 'all tables have assigned a known gitlab_schema' do
       is_expected.to all(
-        match([be_a(String), be_in([:gitlab_shared, :gitlab_main, :gitlab_ci])])
+        match([be_a(String), be_in([:gitlab_internal, :gitlab_shared, :gitlab_main, :gitlab_ci])])
       )
     end
 
@@ -42,12 +42,12 @@ RSpec.describe Gitlab::Database::GitlabSchema do
     where(:name, :classification) do
       'ci_builds'                       | :gitlab_ci
       'my_schema.ci_builds'             | :gitlab_ci
-      'information_schema.columns'      | :gitlab_shared
+      'information_schema.columns'      | :gitlab_internal
       'audit_events_part_5fc467ac26'    | :gitlab_main
       '_test_gitlab_main_table'         | :gitlab_main
       '_test_gitlab_ci_table'           | :gitlab_ci
       '_test_my_table'                  | :gitlab_shared
-      'pg_attribute'                    | :gitlab_shared
+      'pg_attribute'                    | :gitlab_internal
       'my_other_table'                  | :undefined_my_other_table
     end
 

@@ -38,6 +38,7 @@ const ajv = new Ajv({
   strictTuples: false,
   allowMatchingProperties: true,
 });
+ajv.addKeyword('markdownDescription');
 
 AjvFormats(ajv);
 const schema = ajv.compile(CiSchema);

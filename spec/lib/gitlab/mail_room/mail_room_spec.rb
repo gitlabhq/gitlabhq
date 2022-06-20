@@ -303,6 +303,7 @@ RSpec.describe Gitlab::MailRoom do
             delivery_method: 'postback',
             delivery_options: {
               delivery_url: "http://gitlab.example/api/v4/internal/mail_room/incoming_email",
+              content_type: "text/plain",
               jwt_auth_header: Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER,
               jwt_issuer: Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER,
               jwt_algorithm: 'HS256',
@@ -316,6 +317,7 @@ RSpec.describe Gitlab::MailRoom do
             delivery_method: 'postback',
             delivery_options: {
               delivery_url: "http://gitlab.example/api/v4/internal/mail_room/service_desk_email",
+              content_type: "text/plain",
               jwt_auth_header: Gitlab::MailRoom::INTERNAL_API_REQUEST_HEADER,
               jwt_issuer: Gitlab::MailRoom::INTERNAL_API_REQUEST_JWT_ISSUER,
               jwt_algorithm: 'HS256',

@@ -1,20 +1,5 @@
+#import "./list_item_shared.fragment.graphql"
+
 fragment ListItem on CiRunner {
-  __typename
-  id
-  description
-  runnerType
-  shortSha
-  version
-  revision
-  ipAddress
-  active
-  locked
-  jobCount
-  tagList
-  contactedAt
-  status(legacyMode: null)
-  userPermissions {
-    updateRunner
-    deleteRunner
-  }
+  ...ListItemShared
 }

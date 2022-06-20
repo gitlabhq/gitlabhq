@@ -4,8 +4,6 @@ module Pajamas
   class Component < ViewComponent::Base
     private
 
-    # :nocov:
-
     # Filter a given a value against a list of allowed values
     # If no value is given or value is not allowed return default one
     #
@@ -18,6 +16,14 @@ module Pajamas
 
       default
     end
-    # :nocov:
+
+    # Add CSS classes and additional options to an existing options hash
+    #
+    # @param [Hash] options
+    # @param [Array] css_classes
+    # @param [Hash] additional_option
+    def format_options(options:, css_classes: [], additional_options: {})
+      options.merge({ class: [*css_classes, options[:class]].flatten.compact }, additional_options)
+    end
   end
 end

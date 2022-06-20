@@ -15,6 +15,7 @@ module Projects
       urgency :low, [:show, :create_deploy_token]
 
       def show
+        push_frontend_feature_flag(:branch_rules, @project)
         render_show
       end
 

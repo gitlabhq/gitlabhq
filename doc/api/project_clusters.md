@@ -88,7 +88,7 @@ Example response:
 
 Gets a single project cluster.
 
-```shell
+```plaintext
 GET /projects/:id/clusters/:cluster_id
 ```
 
@@ -182,7 +182,7 @@ Example response:
 
 Adds an existing Kubernetes cluster to the project.
 
-```shell
+```plaintext
 POST /projects/:id/clusters/user
 ```
 
@@ -279,7 +279,7 @@ Example response:
 
 Updates an existing project cluster.
 
-```shell
+```plaintext
 PUT /projects/:id/clusters/:cluster_id
 ```
 

@@ -55,7 +55,8 @@ RSpec.describe 'Dashboard Todos' do
       expect(link).not_to be_nil
       expect(link['data-iid']).to eq(referenced_mr.iid.to_s)
       expect(link['data-project-path']).to eq(referenced_mr.project.full_path)
-      expect(link['data-mr-title']).to eq(referenced_mr.title)
+      expect(link['title']).to eq(referenced_mr.title)
+      expect(link['data-reference-type']).to eq('merge_request')
     end
   end
 

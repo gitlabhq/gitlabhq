@@ -201,7 +201,7 @@ end-to-end-tests:
       alias: firefox
     - name: registry.gitlab.com/organization/private-api:latest
       alias: backend-api
-    - postgres:9.6.19
+    - postgres:14.3
   variables:
     FF_NETWORK_PER_BUILD: 1
     POSTGRES_PASSWORD: supersecretpassword

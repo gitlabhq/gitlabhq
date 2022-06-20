@@ -91,7 +91,7 @@ RSpec.describe 'Destroying a container repository tags' do
       it 'returns too many tags error' do
         expect { subject }.not_to change { ::Packages::Event.count }
 
-        explanation = graphql_errors.dig(0, 'extensions', 'problems', 0, 'explanation')
+        explanation = graphql_errors.dig(0, 'message')
         expect(explanation).to eq(Mutations::ContainerRepositories::DestroyTags::TOO_MANY_TAGS_ERROR_MESSAGE)
       end
     end

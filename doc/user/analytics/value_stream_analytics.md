@@ -43,9 +43,8 @@ To view value stream analytics for your project:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 1. Optional. Sort results by ascending or descending:
-      - To sort by most recent or oldest workflow item, select the **Merge requests** or **Issues**
-      header. The header name differs based on the stage you select.
-      - To sort by most or least amount of time spent in each stage, select the **Time** header.
+      - To sort by most recent or oldest workflow item, select the **Last event** header.
+      - To sort by most or least amount of time spent in each stage, select the **Duration** header.
 
 The table shows a list of related workflow items for the selected stage. Based on the stage you choose, this can be:
 
@@ -119,7 +118,7 @@ The **Lead Time for Changes** metrics display below the **Filter results** text 
 To view deployment metrics, you must have a
 [production environment configured](../../ci/environments/index.md#deployment-tier-of-environments).
 
-Value stream analytics shows the following deployment metrics for your project:  
+Value stream analytics shows the following deployment metrics for your project:
 
 - Deploys: The number of successful deployments in the date range.
 - Deployment Frequency: The average number of successful deployments per day in the date range.

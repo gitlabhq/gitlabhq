@@ -225,8 +225,6 @@ When you're creating a new issue, you can complete the following fields:
 
 ## Edit an issue
 
-> Reordering list items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
-
 You can edit an issue's title and description.
 
 Prerequisites:
@@ -239,11 +237,23 @@ To edit an issue:
 1. Edit the available fields.
 1. Select **Save changes**.
 
-You can also reorder list items, which include bullet, numerical, and task list items.
-To reorder list items:
+### Reorder list items in the issue description
 
-1. Hover over the list item row to make the drag icon visible.
-1. Click and hold the drag icon.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
+
+When you view an issue that has a list in the description, you can also reorder the list items.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project, be the author of the issue, or be
+  assigned to the issue.
+- The issue's description must have an [ordered, unordered](../../markdown.md#lists), or
+  [task](../../markdown.md#task-lists) list.
+
+To reorder list items, when viewing an issue:
+
+1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
+1. Select and hold the drag icon.
 1. Drag the row to the new position in the list.
 1. Release the drag icon.
 
@@ -471,7 +481,7 @@ Referenced issues are still displayed, but are not closed automatically.
 
 The automatic issue closing is disabled by default in a project if the project has the issue tracker
 disabled. If you want to enable automatic issue closing, make sure to
-[enable GitLab Issues](../settings/index.md#sharing-and-permissions).
+[enable GitLab Issues](../settings/index.md#configure-project-visibility-features-and-permissions).
 
 Changing this setting applies only to new merge requests or commits. Already
 closed issues remain as they are.
@@ -553,6 +563,52 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 1. Select any area outside the dropdown list.
 
 Alternatively, you can use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
+
+## View all issues assigned to you
+
+To view all issues assigned to you:
+
+1. On the top bar, put your cursor in the **Search** box.
+1. From the dropdown list, select **Issues assigned to me**.
+
+Or:
+
+- To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
+- On the top bar, on the top right, select **{issues}** **Issues**.
+
+## Filter the list of issues
+
+> - Filtering by iterations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6.
+> - Filtering by iterations was moved from GitLab Ultimate to GitLab Premium in 13.9.
+> - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+> - Filtering by type was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
+> - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
+
+To filter the list of issues:
+
+1. Above the list of issues, select **Search or filter results...**.
+1. In the dropdown list that appears, select the attribute you want to filter by.
+1. Select or type the operator to use for filtering the attribute. The following operators are
+   available:
+   - `=`: Is
+   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+1. Enter the text to filter the attribute by.
+   You can filter some attributes by **None** or **Any**.
+1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
+   `AND`.
+
+GitLab displays the results on-screen, but you can also
+[retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
+
+### Filter issues by ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > List**.
+1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
+
+![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
 
 ## Copy issue reference
 

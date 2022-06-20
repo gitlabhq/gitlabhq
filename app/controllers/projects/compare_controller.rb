@@ -102,7 +102,11 @@ class Projects::CompareController < Projects::ApplicationController
 
   # source == head_ref == to
   def source_project
-    project
+    strong_memoize(:source_project) do
+      # Eager load project's avatar url to prevent batch loading
+      # for all forked projects
+      project&.tap(&:avatar_url)
+    end
   end
 
   def compare
@@ -112,17 +116,24 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def start_ref
-    @start_ref ||= Addressable::URI.unescape(compare_params[:from])
+    @start_ref ||= Addressable::URI.unescape(compare_params[:from]).presence
   end
 
   def head_ref
     return @ref if defined?(@ref)
 
-    @ref = @head_ref = Addressable::URI.unescape(compare_params[:to])
+    @ref = @head_ref = Addressable::URI.unescape(compare_params[:to]).presence
   end
 
   def define_commits
-    @commits = compare.present? ? set_commits_for_rendering(@compare.commits) : []
+    strong_memoize(:commits) do
+      if compare.present?
+        commits = compare.commits.with_markdown_cache.with_latest_pipeline(head_ref)
+        set_commits_for_rendering(commits)
+      else
+        []
+      end
+    end
   end
 
   def define_diffs

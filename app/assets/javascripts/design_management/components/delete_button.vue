@@ -26,7 +26,7 @@ export default {
     buttonVariant: {
       type: String,
       required: false,
-      default: 'info',
+      default: 'default',
     },
     buttonCategory: {
       type: String,

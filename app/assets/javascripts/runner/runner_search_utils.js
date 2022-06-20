@@ -236,3 +236,17 @@ export const fromSearchToVariables = ({
     ...paginationVariables,
   };
 };
+
+/**
+ * Decides whether or not a search object is the "default" or empty.
+ *
+ * A search is filtered if the user has entered filtering criteria.
+ *
+ * @param {Object} search
+ * @returns true if this search is filtered, false otherwise
+ */
+export const isSearchFiltered = ({ runnerType = null, filters = [], pagination = {} } = {}) => {
+  return Boolean(
+    runnerType !== null || filters?.length !== 0 || (pagination && pagination?.page !== 1),
+  );
+};

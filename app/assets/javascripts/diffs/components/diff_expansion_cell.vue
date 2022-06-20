@@ -3,7 +3,6 @@ import { GlTooltipDirective, GlSafeHtmlDirective, GlIcon, GlLoadingIcon } from '
 import { mapActions } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { UNFOLD_COUNT, INLINE_DIFF_LINES_KEY } from '../constants';
 import * as utils from '../store/utils';
 
@@ -24,7 +23,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     file: {
       type: Object,
@@ -93,25 +91,16 @@ export default {
       nextLineNumbers = {},
     ) {
       this.loadMoreLines({ endpoint, params, lineNumbers, fileHash, isExpandDown, nextLineNumbers })
-        .then(() => {
-          this.isRequesting = false;
-        })
         .catch(() => {
           createFlash({
             message: s__('Diffs|Something went wrong while fetching diff lines.'),
           });
-          this.isRequesting = false;
         })
         .finally(() => {
           this.loading = { up: false, down: false, all: false };
         });
     },
     handleExpandLines(type = EXPAND_ALL) {
-      if (this.isRequesting) {
-        return;
-      }
-
-      this.isRequesting = true;
       const endpoint = this.file.context_lines_path;
       const oldLineNumber = this.line.meta_data.old_pos || 0;
       const newLineNumber = this.line.meta_data.new_pos || 0;
@@ -228,10 +217,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="glFeatures.updatedDiffExpansionButtons"
-    class="diff-grid-row diff-grid-row-full diff-tr line_holder match expansion"
-  >
+  <div class="diff-grid-row diff-grid-row-full diff-tr line_holder match expansion">
     <div :class="{ parallel: !inline }" class="diff-grid-left diff-grid-2-col left-side">
       <div
         class="diff-td diff-line-num gl-text-center! gl-p-0! gl-w-full! gl-display-flex gl-flex-direction-column"
@@ -240,6 +226,7 @@ export default {
           v-if="showExpandDown"
           v-gl-tooltip.left
           :title="s__('Diffs|Next 20 lines')"
+          :disabled="loading.down"
           type="button"
           class="js-unfold-down gl-rounded-0 gl-border-0 diff-line-expand-button"
           @click="handleExpandLines($options.EXPAND_DOWN)"
@@ -251,6 +238,7 @@ export default {
           v-if="lineCountBetween !== -1 && lineCountBetween < 20"
           v-gl-tooltip.left
           :title="s__('Diffs|Expand all lines')"
+          :disabled="loading.all"
           type="button"
           class="js-unfold-all gl-rounded-0 gl-border-0 diff-line-expand-button"
           @click="handleExpandLines()"
@@ -262,6 +250,7 @@ export default {
           v-if="showExpandUp"
           v-gl-tooltip.left
           :title="s__('Diffs|Previous 20 lines')"
+          :disabled="loading.up"
           type="button"
           class="js-unfold gl-rounded-0 gl-border-0 diff-line-expand-button"
           @click="handleExpandLines($options.EXPAND_UP)"
@@ -275,33 +264,5 @@ export default {
         class="gl-display-flex! gl-flex-direction-column gl-justify-content-center diff-td line_content left-side gl-white-space-normal!"
       ></div>
     </div>
-  </div>
-  <div v-else class="content js-line-expansion-content">
-    <button
-      type="button"
-      :disabled="!canExpandDown"
-      class="js-unfold-down gl-mx-2 gl-py-4 gl-cursor-pointer"
-      @click="handleExpandLines($options.EXPAND_DOWN)"
-    >
-      <gl-icon :size="12" name="expand-down" />
-      <span>{{ $options.i18n.showMore }}</span>
-    </button>
-    <button
-      type="button"
-      class="js-unfold-all gl-mx-2 gl-py-4 gl-cursor-pointer"
-      @click="handleExpandLines()"
-    >
-      <gl-icon :size="12" name="expand" />
-      <span>{{ $options.i18n.showAll }}</span>
-    </button>
-    <button
-      type="button"
-      :disabled="!canExpandUp"
-      class="js-unfold gl-mx-2 gl-py-4 gl-cursor-pointer"
-      @click="handleExpandLines($options.EXPAND_UP)"
-    >
-      <gl-icon :size="12" name="expand-up" />
-      <span>{{ $options.i18n.showMore }}</span>
-    </button>
   </div>
 </template>

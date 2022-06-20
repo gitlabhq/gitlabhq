@@ -18,7 +18,7 @@ export const fetchGroups = ({ commit }, search) => {
     });
 };
 
-export const fetchProjects = ({ commit, state }, search, emptyCallback = () => {}) => {
+export const fetchProjects = ({ commit, state }, search) => {
   commit(types.REQUEST_PROJECTS);
   const groupId = state.query?.group_id;
 
@@ -31,17 +31,11 @@ export const fetchProjects = ({ commit, state }, search, emptyCallback = () => {
   };
 
   if (groupId) {
-    Api.groupProjects(
-      groupId,
-      search,
-      {
-        order_by: 'similarity',
-        with_shared: false,
-        include_subgroups: true,
-      },
-      emptyCallback,
-      true,
-    )
+    Api.groupProjects(groupId, search, {
+      order_by: 'similarity',
+      with_shared: false,
+      include_subgroups: true,
+    })
       .then(handleSuccess)
       .catch(handleCatch);
   } else {

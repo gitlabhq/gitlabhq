@@ -6,6 +6,19 @@ module Repositories
     DEFAULT_TRAILER = 'Changelog'
     DEFAULT_FILE = 'CHANGELOG.md'
 
+    # The maximum number of commits allowed to fetch in `from` and `to` range.
+    #
+    # This value is arbitrarily chosen. Increasing it means more Gitaly calls
+    # and more presure on Gitaly services.
+    #
+    # This number is 3x of the average number of commits per GitLab releases.
+    # Some examples for GitLab's own releases:
+    #
+    # * 13.6.0: 4636 commits
+    # * 13.5.0: 5912 commits
+    # * 13.4.0: 5541 commits
+    COMMITS_LIMIT = 15_000
+
     # The `project` specifies the `Project` to generate the changelog section
     # for.
     #
@@ -75,12 +88,17 @@ module Repositories
       commits =
         ChangelogCommitsFinder.new(project: @project, from: from, to: @to)
 
+      verify_commit_range!(from, @to)
+
       commits.each_page(@trailer) do |page|
         mrs = mrs_finder.execute(page)
 
         # Preload the authors. This ensures we only need a single SQL query per
         # batch of commits, instead of needing a query for every commit.
         page.each(&:lazy_author)
+
+        # Preload author permissions
+        @project.team.max_member_access_for_user_ids(page.map(&:author).compact.map(&:id))
 
         page.each do |commit|
           release.add_entry(
@@ -116,6 +134,20 @@ module Repositories
         'The commit start range is unspecified, and no previous tag ' \
           'could be found to use instead'
       )
+    end
+
+    def verify_commit_range!(from, to)
+      return unless Feature.enabled?(:changelog_commits_limitation, @project)
+
+      commits = @project.repository.commits_by(oids: [from, to])
+
+      raise Gitlab::Changelog::Error, "Invalid or not found commit value in the given range" unless commits.count == 2
+
+      _, commits_count = @project.repository.diverging_commit_count(from, to)
+
+      if commits_count > COMMITS_LIMIT
+        raise Gitlab::Changelog::Error, "The commits range exceeds #{COMMITS_LIMIT} elements."
+      end
     end
   end
 end

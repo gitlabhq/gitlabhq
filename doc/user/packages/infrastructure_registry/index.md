@@ -15,18 +15,12 @@ projects.
 
 ## View packages
 
-To view packages within your project or group:
+To view packages within your project:
 
-1. Go to the project or group.
+1. Go to the project.
 1. Go to **Packages & Registries > Infrastructure Registry**.
 
 You can search, sort, and filter packages on this page.
-
-When you view packages in a group:
-
-- All packages published to the group and its projects are displayed.
-- Only the projects you can access are displayed.
-- If a project is private, or you are not a member of the project, it is not displayed.
 
 For information on how to create and upload a package, view the GitLab
 documentation for your package type:
@@ -68,7 +62,7 @@ To delete a package, you must have suitable [permissions](../../permissions.md).
 
 You can delete packages by using [the API](../../../api/packages.md#delete-a-project-package) or the UI.
 
-To delete a package in the UI, from your group or project:
+To delete a package in the UI, from your project:
 
 1. Go to **Packages & Registries > Infrastructure Registry**.
 1. Find the name of the package you want to delete.

@@ -72,7 +72,7 @@ module Gitlab
           {
             host: host.host,
             port: host.port,
-            class: load_balancer.configuration.primary_connection_specification_name,
+            class: load_balancer.configuration.connection_specification_name,
             db_config_name: Gitlab::Database.db_config_name(host.connection)
           }
         end

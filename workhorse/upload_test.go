@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -68,7 +67,7 @@ func expectSignedRequest(t *testing.T, r *http.Request) {
 
 func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/authorize") {
+		if strings.HasSuffix(r.URL.Path, "/authorize") || r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
 			expectSignedRequest(t, r)
 
 			w.Header().Set("Content-Type", api.ResponseContentType)
@@ -154,6 +153,10 @@ func TestAcceleratedUpload(t *testing.T) {
 		t.Run(tt.resource, func(t *testing.T) {
 			ts := uploadTestServer(t,
 				func(r *http.Request) {
+					if r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
+						// Nothing to validate: this is a hard coded URL
+						return
+					}
 					resource := strings.TrimRight(tt.resource, "/")
 					// Validate %2F characters haven't been unescaped
 					require.Equal(t, resource+"/authorize", r.URL.String())
@@ -270,24 +273,23 @@ func TestUnacceleratedUploads(t *testing.T) {
 
 func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 	canary := "untrusted header passed by user"
+	multiPartBody, multiPartContentType, err := multipartBodyWithFile()
+	require.NoError(t, err)
+
 	testCases := []struct {
 		desc        string
 		contentType string
 		body        io.Reader
 		present     bool
 	}{
-		{"multipart with file", "", nil, true}, // placeholder
+		{"multipart with file", multiPartContentType, multiPartBody, true},
 		{"no multipart", "text/plain", nil, false},
 	}
-
-	var err error
-	testCases[0].body, testCases[0].contentType, err = multipartBodyWithFile()
-	require.NoError(t, err)
 
 	for _, tc := range testCases {
 		ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 			key := upload.RewrittenFieldsHeader
-			if tc.present {
+			if tc.present && r.URL.Path != "/api/v4/internal/workhorse/authorize_upload" {
 				require.Contains(t, r.Header, key)
 			} else {
 				require.NotContains(t, r.Header, key)
@@ -342,7 +344,7 @@ func TestLfsUpload(t *testing.T) {
 			require.Equal(t, oid, r.Form.Get("file.sha256"), "Invalid SHA256 populated")
 			require.Equal(t, strconv.Itoa(len(reqBody)), r.Form.Get("file.size"), "Invalid size populated")
 
-			tempfile, err := ioutil.ReadFile(r.Form.Get("file.path"))
+			tempfile, err := os.ReadFile(r.Form.Get("file.path"))
 			require.NoError(t, err)
 			require.Equal(t, reqBody, string(tempfile), "Temporary file has the wrong body")
 
@@ -366,7 +368,7 @@ func TestLfsUpload(t *testing.T) {
 	require.NoError(t, err)
 
 	defer resp.Body.Close()
-	rspData, err := ioutil.ReadAll(resp.Body)
+	rspData, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 
 	// Expect the (eventual) response to be proxied through, untouched
@@ -428,7 +430,7 @@ func TestLfsUploadRouting(t *testing.T) {
 			require.NoError(t, err)
 			defer resp.Body.Close()
 
-			rspData, err := ioutil.ReadAll(resp.Body)
+			rspData, err := io.ReadAll(resp.Body)
 			require.NoError(t, err)
 
 			if tc.match {
@@ -467,7 +469,7 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 			require.Equal(t, len, r.Form.Get("file.size"), "Invalid size populated")
 
 			tmpFilePath := r.Form.Get("file.path")
-			fileData, err := ioutil.ReadFile(tmpFilePath)
+			fileData, err := os.ReadFile(tmpFilePath)
 			defer os.Remove(tmpFilePath)
 
 			require.NoError(t, err)
@@ -496,7 +498,7 @@ func testPackageFileUpload(t *testing.T, method string, resource string) {
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 
-	respData, err := ioutil.ReadAll(resp.Body)
+	respData, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	require.Equal(t, rspBody, string(respData), "Temporary file has the wrong body")
 	defer resp.Body.Close()

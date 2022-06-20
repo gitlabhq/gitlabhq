@@ -12,6 +12,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
   $('.js-compare-dropdown').each(function () {
     const $dropdown = $(this);
     const selected = $dropdown.data('selected');
+    const defaultText = $dropdown.data('defaultText').trim();
     const $dropdownContainer = $dropdown.closest('.dropdown');
     const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
@@ -63,7 +64,11 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
         return $el.attr('data-ref');
       },
       toggleLabel(obj, $el) {
-        return $el.text().trim();
+        if ($el.hasClass('is-active')) {
+          return $el.text().trim();
+        }
+
+        return defaultText;
       },
       clicked: () => clickHandler($dropdown),
     });

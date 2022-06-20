@@ -227,6 +227,7 @@ RSpec.describe API::Releases do
         get api("/projects/#{project.id}/releases", maintainer)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response[0]['tag_path']).to include('%2F') # properly escape the slash
       end
     end
 
@@ -926,6 +927,22 @@ RSpec.describe API::Releases do
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq('Tag name invalid')
+        end
+      end
+
+      context 'when tag_message is provided' do
+        let(:tag_message) { 'Annotated tag message created by Release API' }
+
+        before do
+          params.merge!(tag_message: tag_message)
+        end
+
+        it 'creates an annotated tag with the tag message' do
+          expect do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+          end.to change { Project.find_by_id(project.id).repository.tag_count }.by(1)
+
+          expect(project.repository.find_tag(tag_name).message).to eq(tag_message)
         end
       end
     end

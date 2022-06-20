@@ -4,6 +4,6 @@ classes:
 - MilestoneRelease
 feature_categories:
 - release_orchestration
-description: TODO
+description: https://docs.gitlab.com/ee/user/project/releases/#associate-milestones-with-a-release
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a43ab8d6a430014e875deb3bff3fd8d8da256747
 milestone: '12.3'

@@ -11,4 +11,7 @@ fragment TimelogFragment on Timelog {
     body
   }
   summary
+  userPermissions {
+    adminTimelog
+  }
 }

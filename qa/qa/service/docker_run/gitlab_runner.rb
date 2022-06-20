@@ -26,13 +26,13 @@ module QA
         end
 
         def config
-          @config ||= <<~END
+          @config ||= <<~CONFIG
             concurrent = 1
             check_interval = 0
 
             [session_server]
               session_timeout = 1800
-          END
+          CONFIG
         end
 
         def register!
@@ -40,15 +40,14 @@ module QA
             docker run -d --rm --network #{runner_network} --name #{@name}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
-            #{@image}  #{add_gitlab_tls_cert if @address.include? "https"} && docker exec --detach #{@name} sh -c "#{register_command}"
+            #{@image}  #{add_gitlab_tls_cert if @address.include? 'https'}
+            && docker exec --detach #{@name} sh -c "#{register_command}"
           CMD
 
           wait_until_running_and_configured
 
           # Prove airgappedness
-          if runner_network == 'airgapped'
-            shell("docker exec #{@name} sh -c '#{prove_airgap}'")
-          end
+          shell("docker exec #{@name} sh -c '#{prove_airgap}'") if runner_network == 'airgapped'
         end
 
         def tags=(tags)
@@ -66,7 +65,7 @@ module QA
           args << "--registration-token #{@token}"
 
           args << if run_untagged
-                    raise CONFLICTING_VARIABLES_MESSAGE % [:tags=, :run_untagged, run_untagged] if @tags&.any?
+                    raise format(CONFLICTING_VARIABLES_MESSAGE, :tags=, :run_untagged, run_untagged) if @tags&.any?
 
                     '--run-untagged=true'
                   else
@@ -86,7 +85,7 @@ module QA
           end
 
           <<~CMD.strip
-            printf '#{config.chomp.gsub(/\n/, "\\n").gsub('"', '\"')}' > /etc/gitlab-runner/config.toml &&
+            printf '#{config.chomp.gsub(/\n/, '\\n').gsub('"', '\"')}' > /etc/gitlab-runner/config.toml &&
             gitlab-runner register \
               #{args.join(' ')} &&
             gitlab-runner run

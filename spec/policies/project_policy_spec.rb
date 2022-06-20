@@ -32,7 +32,7 @@ RSpec.describe ProjectPolicy do
     end
   end
 
-  it 'does not include the read_issue permission when the issue author is not a member of the private project' do
+  it 'does not include the read permissions when the issue author is not a member of the private project' do
     project = create(:project, :private)
     issue   = create(:issue, project: project, author: create(:user))
     user    = issue.author
@@ -40,6 +40,7 @@ RSpec.describe ProjectPolicy do
     expect(project.team.member?(issue.author)).to be false
 
     expect(Ability).not_to be_allowed(user, :read_issue, project)
+    expect(Ability).not_to be_allowed(user, :read_work_item, project)
   end
 
   it_behaves_like 'model with wiki policies' do
@@ -61,7 +62,7 @@ RSpec.describe ProjectPolicy do
       end
 
       it 'does not include the issues permissions' do
-        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task, :read_work_item
       end
 
       it 'disables boards and lists permissions' do
@@ -73,7 +74,7 @@ RSpec.describe ProjectPolicy do
         it 'does not include the issues permissions' do
           create(:jira_integration, project: project)
 
-          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task
+          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue, :create_incident, :create_work_item, :create_task, :read_work_item
         end
       end
     end
@@ -463,6 +464,62 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'owner access' do
+    let!(:owner_user) { create(:user) }
+    let!(:owner_of_different_thing) { create(:user) }
+    let(:stranger) { create(:user) }
+
+    context 'personal project' do
+      let!(:project) { create(:project) }
+      let!(:project2) { create(:project) }
+
+      before do
+        project.add_guest(guest)
+        project.add_reporter(reporter)
+        project.add_developer(developer)
+        project.add_maintainer(maintainer)
+        project2.add_owner(owner_of_different_thing)
+      end
+
+      it 'allows owner access', :aggregate_failures do
+        expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(maintainer, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(project.owner, project)).to be_allowed(:owner_access)
+      end
+    end
+
+    context 'group project' do
+      let(:group) { create(:group) }
+      let!(:group2) { create(:group) }
+      let!(:project) { create(:project, group: group) }
+
+      context 'group members' do
+        before do
+          group.add_guest(guest)
+          group.add_reporter(reporter)
+          group.add_developer(developer)
+          group.add_maintainer(maintainer)
+          group.add_owner(owner_user)
+          group2.add_owner(owner_of_different_thing)
+        end
+
+        it 'allows owner access', :aggregate_failures do
+          expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(maintainer, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(owner_user, project)).to be_allowed(:owner_access)
+        end
+      end
+    end
+  end
+
   context 'reading a project' do
     it 'allows access when a user has read access to the repo' do
       expect(described_class.new(owner, project)).to be_allowed(:read_project)
@@ -678,14 +735,14 @@ RSpec.describe ProjectPolicy do
         allow(project).to receive(:service_desk_enabled?).and_return(true)
       end
 
-      it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+      it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
 
       context 'when issues are protected members only' do
         before do
           project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
         end
 
-        it { expect_allowed(:reporter_access, :create_note, :read_issue) }
+        it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
       end
     end
   end
@@ -1279,6 +1336,98 @@ RSpec.describe ProjectPolicy do
       let(:current_user) { anonymous }
 
       it { is_expected.to be_allowed(:read_package) }
+    end
+  end
+
+  describe 'admin_package' do
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:admin_package) }
+      end
+
+      context 'when admin mode disabled' do
+        it { is_expected.to be_disallowed(:admin_package) }
+      end
+    end
+
+    %i[owner maintainer].each do |role|
+      context "with #{role}" do
+        let(:current_user) { public_send(role) }
+
+        it { is_expected.to be_allowed(:admin_package) }
+      end
+    end
+
+    %i[developer reporter guest non_member anonymous].each do |role|
+      context "with #{role}" do
+        let(:current_user) { public_send(role) }
+
+        it { is_expected.to be_disallowed(:admin_package) }
+      end
+    end
+  end
+
+  describe 'view_package_registry_project_settings' do
+    context 'with registry enabled' do
+      before do
+        stub_config(registry: { enabled: true })
+      end
+
+      context 'with an admin user' do
+        let(:current_user) { admin }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+        end
+
+        context 'when admin mode disabled' do
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+
+      %i[owner maintainer].each do |role|
+        context "with #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_allowed(:view_package_registry_project_settings) }
+        end
+      end
+
+      %i[developer reporter guest non_member anonymous].each do |role|
+        context "with #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+    end
+
+    context 'with registry disabled' do
+      before do
+        stub_config(registry: { enabled: false })
+      end
+
+      context 'with admin user' do
+        let(:current_user) { admin }
+
+        context 'when admin mode enabled', :enable_admin_mode do
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+
+        context 'when admin mode disabled' do
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
+
+      %i[owner maintainer developer reporter guest non_member anonymous].each do |role|
+        context "with #{role}" do
+          let(:current_user) { public_send(role) }
+
+          it { is_expected.to be_disallowed(:view_package_registry_project_settings) }
+        end
+      end
     end
   end
 

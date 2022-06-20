@@ -124,10 +124,10 @@ module Ci
     # We will start using this column once we complete https://gitlab.com/gitlab-org/gitlab/-/issues/285597
     ignore_column :original_filename, remove_with: '14.7', remove_after: '2022-11-22'
 
-    mount_file_store_uploader JobArtifactUploader
+    mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
-    skip_callback :save, :after, :store_file!, if: :store_after_commit?
-    after_commit :store_file_after_commit!, on: [:create, :update], if: :store_after_commit?
+    after_save :store_file_in_transaction!, unless: :store_after_commit?
+    after_commit :store_file_after_transaction!, on: [:create, :update], if: :store_after_commit?
 
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
@@ -139,6 +139,10 @@ module Ci
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
     scope :for_job_ids, ->(job_ids) { where(job_id: job_ids) }
     scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
+    scope :created_at_before, ->(time) { where(arel_table[:created_at].lteq(time)) }
+    scope :id_before, ->(id) { where(arel_table[:id].lteq(id)) }
+    scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
+    scope :ordered_by_id, -> { order(:id) }
 
     scope :with_job, -> { joins(:job).includes(:job) }
 
@@ -148,7 +152,7 @@ module Ci
       where(file_type: types)
     end
 
-    scope :with_reports, -> do
+    scope :all_reports, -> do
       with_file_types(REPORT_TYPES.keys.map(&:to_s))
     end
 
@@ -187,7 +191,7 @@ module Ci
     scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
     scope :order_expired_asc, -> { order(expire_at: :asc) }
-    scope :with_destroy_preloads, -> { includes(project: [:route, :statistics]) }
+    scope :with_destroy_preloads, -> { includes(project: [:route, :statistics, :build_artifacts_size_refresh]) }
 
     scope :for_project, ->(project) { where(project_id: project) }
     scope :created_in_time_range, ->(from: nil, to: nil) { where(created_at: from..to) }
@@ -358,11 +362,24 @@ module Ci
 
     private
 
-    def store_file_after_commit!
-      return unless previous_changes.key?(:file)
+    def store_file_in_transaction!
+      store_file_now! if saved_change_to_file?
 
-      store_file!
-      update_file_store
+      file_stored_in_transaction_hooks
+    end
+
+    def store_file_after_transaction!
+      store_file_now! if previous_changes.key?(:file)
+
+      file_stored_after_transaction_hooks
+    end
+
+    # method overriden in EE
+    def file_stored_after_transaction_hooks
+    end
+
+    # method overriden in EE
+    def file_stored_in_transaction_hooks
     end
 
     def set_size

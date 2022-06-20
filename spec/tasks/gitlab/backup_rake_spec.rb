@@ -465,7 +465,7 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
         expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything, storages: [])
+          .with(anything, strategy: anything, storages: [], paths: [])
           .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(anything, max_parallelism: 5, storage_parallelism: 2, incremental: false).and_call_original
 

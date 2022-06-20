@@ -250,6 +250,10 @@ For more information about this validation error, read
 You can use [scan result policies](../../../application_security/policies/scan-result-policies.md#scan-result-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
 Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.
 
+The security approval rules are applied to all merge requests until the pipeline is complete. The application of the
+security approval rules prevents users from merging in code before the security scans run. Once the pipeline is
+complete, the security approval rules are checked to determine if the security approvals are still required.
+
 ![Security Approvals](img/security_approvals_v15_0.png)
 
 These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).

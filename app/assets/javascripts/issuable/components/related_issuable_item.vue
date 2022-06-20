@@ -71,8 +71,9 @@ export default {
     :class="{
       'issuable-info-container': !canReorder,
       'card-body': canReorder,
+      'gl-pr-2': canRemove,
     }"
-    class="item-body d-flex align-items-center py-2 px-3"
+    class="item-body d-flex align-items-center gl-py-3 gl-px-5"
   >
     <div
       class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap gl-flex-grow-1 flex-xl-nowrap gl-min-h-7"
@@ -170,7 +171,7 @@ export default {
         <issue-assignees
           v-if="assignees.length !== 0"
           :assignees="assignees"
-          class="item-assignees d-flex align-items-center align-self-end flex-shrink-0 d-md-none ml-2"
+          class="item-assignees d-flex align-items-center align-self-end flex-shrink-0 d-md-none gl-ml-3"
         />
       </div>
     </div>

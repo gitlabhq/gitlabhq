@@ -79,8 +79,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/gitlab/geo/log_cursor/lease_spec.rb
     - ee/spec/lib/gitlab/geo/oauth/logout_token_spec.rb
     - ee/spec/lib/gitlab/geo/oauth/session_spec.rb
-    - ee/spec/lib/gitlab/geo/replication/job_artifact_retriever_spec.rb
-    - ee/spec/lib/gitlab/geo/replication/job_artifact_transfer_spec.rb
     - ee/spec/lib/gitlab/geo/replicator_spec.rb
     - ee/spec/lib/gitlab/geo_spec.rb
     - ee/spec/lib/gitlab/git_access_spec.rb
@@ -91,7 +89,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/lib/gitlab/prometheus/queries/cluster_query_spec.rb
     - ee/spec/lib/gitlab/subscription_portal/clients/rest_spec.rb
     - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
-    - ee/spec/lib/system_check/app/elasticsearch_check_spec.rb
     - ee/spec/lib/system_check/geo/geo_database_configured_check_spec.rb
     - ee/spec/models/app_sec/fuzzing/api/ci_configuration_spec.rb
     - ee/spec/models/approvable_spec.rb
@@ -111,7 +108,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/presenters/group_member_presenter_spec.rb
     - ee/spec/presenters/merge_request_approver_presenter_spec.rb
     - ee/spec/presenters/project_member_presenter_spec.rb
-    - ee/spec/requests/api/alert_management_alerts_spec.rb
     - ee/spec/requests/api/geo_spec.rb
     - ee/spec/requests/api/graphql/mutations/dast_site_profiles/delete_spec.rb
     - ee/spec/requests/api/internal/base_spec.rb
@@ -142,11 +138,9 @@ RSpec/VerifiedDoubles:
     - ee/spec/serializers/issuable_sidebar_extras_entity_spec.rb
     - ee/spec/serializers/issues/linked_issue_feature_flag_entity_spec.rb
     - ee/spec/serializers/linked_feature_flag_issue_entity_spec.rb
-    - ee/spec/serializers/merge_request_compliance_entity_spec.rb
     - ee/spec/serializers/merge_request_poll_widget_entity_spec.rb
     - ee/spec/serializers/merge_request_sidebar_basic_entity_spec.rb
     - ee/spec/serializers/merge_request_widget_entity_spec.rb
-    - ee/spec/serializers/service_field_entity_spec.rb
     - ee/spec/serializers/test_reports_comparer_serializer_spec.rb
     - ee/spec/serializers/user_analytics_entity_spec.rb
     - ee/spec/serializers/vulnerabilities/feedback_entity_spec.rb
@@ -174,9 +168,6 @@ RSpec/VerifiedDoubles:
     - ee/spec/services/ee/merge_requests/refresh_service_spec.rb
     - ee/spec/services/ee/notification_service_spec.rb
     - ee/spec/services/ee/post_receive_service_spec.rb
-    - ee/spec/services/ee/service_ping/build_payload_service_spec.rb
-    - ee/spec/services/ee/service_ping/permit_data_categories_service_spec.rb
-    - ee/spec/services/ee/service_ping/service_ping_settings_spec.rb
     - ee/spec/services/geo/blob_download_service_spec.rb
     - ee/spec/services/geo/graphql_request_service_spec.rb
     - ee/spec/services/geo/node_status_request_service_spec.rb
@@ -382,7 +373,6 @@ RSpec/VerifiedDoubles:
     - spec/lib/api/helpers/graphql_helpers_spec.rb
     - spec/lib/api/helpers/pagination_spec.rb
     - spec/lib/api/helpers/pagination_strategies_spec.rb
-    - spec/lib/api/helpers/sse_helpers_spec.rb
     - spec/lib/api/helpers/variables_helpers_spec.rb
     - spec/lib/api/helpers_spec.rb
     - spec/lib/atlassian/jira_connect/client_spec.rb
@@ -832,7 +822,6 @@ RSpec/VerifiedDoubles:
     - spec/models/application_record_spec.rb
     - spec/models/badge_spec.rb
     - spec/models/badges/project_badge_spec.rb
-    - spec/models/bulk_imports/export_status_spec.rb
     - spec/models/ci/build_spec.rb
     - spec/models/ci/build_trace_chunk_spec.rb
     - spec/models/ci/commit_with_pipeline_spec.rb
@@ -961,8 +950,6 @@ RSpec/VerifiedDoubles:
     - spec/serializers/prometheus_alert_entity_spec.rb
     - spec/serializers/review_app_setup_entity_spec.rb
     - spec/serializers/runner_entity_spec.rb
-    - spec/serializers/service_event_entity_spec.rb
-    - spec/serializers/service_field_entity_spec.rb
     - spec/serializers/stage_entity_spec.rb
     - spec/serializers/suggestion_entity_spec.rb
     - spec/serializers/test_reports_comparer_serializer_spec.rb
@@ -1045,8 +1032,6 @@ RSpec/VerifiedDoubles:
     - spec/services/repositories/changelog_service_spec.rb
     - spec/services/search_service_spec.rb
     - spec/services/service_ping/build_payload_service_spec.rb
-    - spec/services/service_ping/permit_data_categories_service_spec.rb
-    - spec/services/service_ping/service_ping_settings_spec.rb
     - spec/services/service_ping/submit_service_ping_service_spec.rb
     - spec/services/snippets/update_repository_storage_service_spec.rb
     - spec/services/spam/akismet_mark_as_spam_service_spec.rb
@@ -1054,7 +1039,6 @@ RSpec/VerifiedDoubles:
     - spec/services/spam/ham_service_spec.rb
     - spec/services/spam/spam_action_service_spec.rb
     - spec/services/spam/spam_params_spec.rb
-    - spec/services/static_site_editor/config_service_spec.rb
     - spec/services/system_note_service_spec.rb
     - spec/services/system_notes/commit_service_spec.rb
     - spec/services/system_notes/issuables_service_spec.rb
@@ -1130,7 +1114,6 @@ RSpec/VerifiedDoubles:
     - spec/views/shared/milestones/_issuables.html.haml_spec.rb
     - spec/views/shared/wikis/_sidebar.html.haml_spec.rb
     - spec/workers/bulk_imports/export_request_worker_spec.rb
-    - spec/workers/bulk_imports/pipeline_worker_spec.rb
     - spec/workers/chat_notification_worker_spec.rb
     - spec/workers/ci/build_prepare_worker_spec.rb
     - spec/workers/ci/create_cross_project_pipeline_worker_spec.rb
@@ -1162,8 +1145,6 @@ RSpec/VerifiedDoubles:
     - spec/workers/gitlab/github_import/stage/import_repository_worker_spec.rb
     - spec/workers/gitlab_performance_bar_stats_worker_spec.rb
     - spec/workers/invalid_gpg_signature_update_worker_spec.rb
-    - spec/workers/irker_worker_spec.rb
-    - spec/workers/issue_rebalancing_worker_spec.rb
     - spec/workers/issues/rebalancing_worker_spec.rb
     - spec/workers/merge_request_mergeability_check_worker_spec.rb
     - spec/workers/new_issue_worker_spec.rb

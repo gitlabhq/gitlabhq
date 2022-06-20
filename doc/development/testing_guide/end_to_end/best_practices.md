@@ -189,9 +189,9 @@ Attach the `:aggregate_failures` metadata to the example if multiple expectation
 it 'searches', :aggregate_failures do
   Page::Search::Results.perform do |search|
     expect(search).to have_file_in_project(template[:file_name], project.name)
-    
+
     search.switch_to_code
-    
+
     expect(search).to have_file_with_content(template[:file_name], content[0..33])
   end
 end
@@ -205,6 +205,54 @@ it 'searches' do
 
     expect(search).to have_file_with_content(template[:file_name], content[0..33])
   end
+end
+```
+
+## Avoid multiple actions in `expect do ... raise_error` blocks
+
+When you wrap multiple actions in a single `expect do ... end.not_to raise_error` or `expect do ... end.to raise_error` block,
+it can be hard to debug the actual cause of the failure, because of how the logs are printed. Important information can be truncated
+or missing altogether.
+
+For example, if you encapsulate some actions and expectations in a private method in the test, like `expect_owner_permissions_allow_delete_issue`:
+
+```ruby
+it "has Owner role with Owner permissions" do
+  Page::Dashboard::Projects.perform do |projects|
+    projects.filter_by_name(project.name)
+    
+    expect(projects).to have_project_with_access_role(project.name, 'Owner')
+  end
+
+  expect_owner_permissions_allow_delete_issue
+end
+```
+
+Then, in the method itself:
+
+```ruby
+#=> Good
+def expect_owner_permissions_allow_delete_issue
+  issue.visit!
+
+  Page::Project::Issue::Show.perform(&:delete_issue)
+
+  Page::Project::Issue::Index.perform do |index|
+    expect(index).not_to have_issue(issue)
+  end
+end
+
+#=> Bad
+def expect_owner_permissions_allow_delete_issue
+  expect do
+    issue.visit!
+
+    Page::Project::Issue::Show.perform(&:delete_issue)
+
+    Page::Project::Issue::Index.perform do |index|
+      expect(index).not_to have_issue(issue)
+    end
+  end.not_to raise_error
 end
 ```
 

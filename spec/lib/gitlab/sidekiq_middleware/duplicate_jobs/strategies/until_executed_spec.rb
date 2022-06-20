@@ -23,8 +23,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
         end
       end
 
+      it 'deletes the lock even if an error occurs' do
+        expect(fake_duplicate_job).not_to receive(:scheduled?)
+        expect(fake_duplicate_job).to receive(:delete!).once
+
+        perform_strategy_with_error
+      end
+
       it 'does not reschedule the job even if deduplication happened' do
-        expect(fake_duplicate_job).to receive(:delete!)
+        expect(fake_duplicate_job).to receive(:delete!).once
         expect(fake_duplicate_job).not_to receive(:reschedule)
 
         strategy.perform({}) do
@@ -33,16 +40,33 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
       end
 
       context 'when job is reschedulable' do
-        it 'reschedules the job if deduplication happened' do
+        before do
           allow(fake_duplicate_job).to receive(:should_reschedule?) { true }
+        end
 
-          expect(fake_duplicate_job).to receive(:delete!)
+        it 'reschedules the job if deduplication happened' do
+          expect(fake_duplicate_job).to receive(:delete!).once
           expect(fake_duplicate_job).to receive(:reschedule).once
 
           strategy.perform({}) do
             proc.call
           end
         end
+
+        it 'does not reschedule the job if an error occurs' do
+          expect(fake_duplicate_job).to receive(:delete!).once
+          expect(fake_duplicate_job).not_to receive(:reschedule)
+
+          perform_strategy_with_error
+        end
+      end
+
+      def perform_strategy_with_error
+        expect do
+          strategy.perform({}) do
+            raise 'expected error'
+          end
+        end.to raise_error(RuntimeError, 'expected error')
       end
     end
   end

@@ -114,8 +114,8 @@ up your builds and reduce the amount of data transferred. For more information, 
 
 ## Check automation frequency
 
-We often create automation scripts bundled into container images to perform regular tasks on specific intervals. 
-You can reduce the frequency of those intervals in cases where the automation is pulling container images from 
+We often create automation scripts bundled into container images to perform regular tasks on specific intervals.
+You can reduce the frequency of those intervals in cases where the automation is pulling container images from
 the GitLab Registry to a service outside of GitLab.com.
 
 ## Move to GitLab Premium or Ultimate

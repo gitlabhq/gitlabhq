@@ -15,9 +15,11 @@ class MergeRequestDiffFile < ApplicationRecord
   end
 
   def utf8_diff
-    return '' if diff.blank?
+    fetched_diff = diff
 
-    encode_utf8(diff) if diff.respond_to?(:encoding)
+    return '' if fetched_diff.blank?
+
+    encode_utf8(fetched_diff) if fetched_diff.respond_to?(:encoding)
   end
 
   def diff

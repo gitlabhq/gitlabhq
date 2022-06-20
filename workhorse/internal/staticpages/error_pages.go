@@ -3,8 +3,8 @@ package staticpages
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -97,7 +97,7 @@ func (s *errorPageResponseWriter) writeHTML() (string, []byte) {
 		errorPageFile := filepath.Join(s.path, fmt.Sprintf("%d.html", s.status))
 
 		// check if custom error page exists, serve this page instead
-		if data, err := ioutil.ReadFile(errorPageFile); err == nil {
+		if data, err := os.ReadFile(errorPageFile); err == nil {
 			return "text/html; charset=utf-8", data
 		}
 	}

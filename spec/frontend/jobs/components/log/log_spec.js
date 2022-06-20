@@ -68,7 +68,9 @@ describe('Job Log', () => {
     });
 
     it('renders an icon with the open state', () => {
-      expect(findCollapsibleLine().find('[data-testid="angle-down-icon"]').exists()).toBe(true);
+      expect(findCollapsibleLine().find('[data-testid="chevron-lg-down-icon"]').exists()).toBe(
+        true,
+      );
     });
 
     describe('on click header section', () => {
@@ -146,7 +148,9 @@ describe('Job Log, infinitelyCollapsibleSections feature flag enabled', () => {
     });
 
     it('renders an icon with the open state', () => {
-      expect(findCollapsibleLine().find('[data-testid="angle-down-icon"]').exists()).toBe(true);
+      expect(findCollapsibleLine().find('[data-testid="chevron-lg-down-icon"]').exists()).toBe(
+        true,
+      );
     });
 
     describe('on click header section', () => {

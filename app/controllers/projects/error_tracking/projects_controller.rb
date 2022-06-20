@@ -8,6 +8,7 @@ module Projects
       before_action :authorize_read_sentry_issue!
 
       feature_category :error_tracking
+      urgency :low
 
       def index
         service = ::ErrorTracking::ListProjectsService.new(

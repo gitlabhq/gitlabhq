@@ -250,45 +250,6 @@ RSpec.describe BlobPresenter do
         presenter.highlight
       end
     end
-
-    context 'when blob is ipynb' do
-      let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
-      let(:git_blob) { blob.__getobj__ }
-
-      before do
-        allow(Gitlab::Diff::CustomDiff).to receive(:transformed_for_diff?).and_return(true)
-      end
-
-      it 'uses md as the transformed language' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', anything, plain: nil, language: 'md')
-
-        presenter.highlight
-      end
-
-      it 'transforms the blob' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', include("%%"), plain: nil, language: 'md')
-
-        presenter.highlight
-      end
-    end
-
-    context 'when blob is other file type' do
-      let(:git_blob) { blob.__getobj__ }
-
-      before do
-        allow(git_blob)
-          .to receive(:data)
-                .and_return("line one\nline two\nline 3")
-
-        allow(blob).to receive(:language_from_gitattributes).and_return('ruby')
-      end
-
-      it 'does not transform the file' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
-
-        presenter.highlight
-      end
-    end
   end
 
   describe '#blob_language' do
@@ -302,16 +263,6 @@ RSpec.describe BlobPresenter do
       end
 
       it { is_expected.to eq('cpp') }
-    end
-
-    context 'when blob is ipynb' do
-      let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
-
-      before do
-        allow(Gitlab::Diff::CustomDiff).to receive(:transformed_for_diff?).and_return(true)
-      end
-
-      it { is_expected.to eq('md') }
     end
 
     context 'when blob is binary' do

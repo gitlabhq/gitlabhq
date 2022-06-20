@@ -6,8 +6,7 @@ module NotesActions
   extend ActiveSupport::Concern
 
   # last_fetched_at is an integer number of microseconds, which is the same
-  # precision as PostgreSQL "timestamp" fields. It's important for them to have
-  # identical precision for accurate pagination
+  # precision as PostgreSQL "timestamp" fields.
   MICROSECOND = 1_000_000
 
   included do
@@ -23,7 +22,7 @@ module NotesActions
   end
 
   def index
-    notes, meta = gather_notes
+    notes, meta = gather_all_notes
     notes = prepare_notes_for_rendering(notes)
     notes = notes.select { |n| n.readable_by?(current_user) }
     notes =
@@ -33,11 +32,7 @@ module NotesActions
         notes.map { |note| note_json(note) }
       end
 
-    # We know there's more data, so tell the frontend to poll again after 1ms
-    set_polling_interval_header(interval: 1) if meta[:more]
-
-    # Only present an ETag for the empty response to ensure pagination works
-    # as expected
+    # Only present an ETag for the empty response
     ::Gitlab::EtagCaching::Middleware.skip!(response) if notes.present?
 
     render json: meta.merge(notes: notes)
@@ -105,17 +100,6 @@ module NotesActions
 
   private
 
-  # Lower bound (last_fetched_at as specified in the request) is already set in
-  # the finder. Here, we select between returning all notes since then, or a
-  # page's worth of notes.
-  def gather_notes
-    if Feature.enabled?(:paginated_notes, noteable.try(:resource_parent))
-      gather_some_notes
-    else
-      gather_all_notes
-    end
-  end
-
   def gather_all_notes
     now = Time.current
     notes = merge_resource_events(notes_finder.execute.inc_relations_for_view)
@@ -123,27 +107,11 @@ module NotesActions
     [notes, { last_fetched_at: (now.to_i * MICROSECOND) + now.usec }]
   end
 
-  def gather_some_notes
-    paginator = ::Gitlab::UpdatedNotesPaginator.new(
-      notes_finder.execute.inc_relations_for_view,
-      last_fetched_at: last_fetched_at
-    )
-
-    notes = paginator.notes
-
-    # Fetch all the synthetic notes in the same time range as the real notes.
-    # Although we don't limit the number, their text is under our control so
-    # should be fairly cheap to process.
-    notes = merge_resource_events(notes, fetch_until: paginator.next_fetched_at)
-
-    [notes, paginator.metadata]
-  end
-
-  def merge_resource_events(notes, fetch_until: nil)
+  def merge_resource_events(notes)
     return notes if notes_filter == UserPreference::NOTES_FILTERS[:only_comments]
 
     ResourceEvents::MergeIntoNotesService
-      .new(noteable, current_user, last_fetched_at: last_fetched_at, fetch_until: fetch_until)
+      .new(noteable, current_user, last_fetched_at: last_fetched_at)
       .execute(notes)
   end
 

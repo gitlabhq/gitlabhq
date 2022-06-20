@@ -8,34 +8,31 @@ import { getPipelineDefaultTab, reportToSentry } from './utils';
 
 Vue.use(VueApollo);
 
-const createPipelineTabs = (selector, apolloProvider) => {
+export const createAppOptions = (selector, apolloProvider) => {
   const el = document.querySelector(selector);
 
-  if (!el) return;
+  if (!el) return null;
 
-  const { dataset } = document.querySelector(selector);
+  const { dataset } = el;
   const {
     canGenerateCodequalityReports,
     codequalityReportDownloadPath,
     downloadablePathForReportType,
     exposeSecurityDashboard,
     exposeLicenseScanningData,
+    failedJobsCount,
+    failedJobsSummary,
+    fullPath,
     graphqlResourceEtag,
     pipelineIid,
     pipelineProjectPath,
+    totalJobCount,
   } = dataset;
 
   const defaultTabValue = getPipelineDefaultTab(window.location.href);
 
-  updateHistory({
-    url: removeParams([TAB_QUERY_PARAM]),
-    title: document.title,
-    replace: true,
-  });
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: selector,
+  return {
+    el,
     components: {
       PipelineTabs,
     },
@@ -47,9 +44,13 @@ const createPipelineTabs = (selector, apolloProvider) => {
       downloadablePathForReportType,
       exposeSecurityDashboard: parseBoolean(exposeSecurityDashboard),
       exposeLicenseScanningData: parseBoolean(exposeLicenseScanningData),
+      failedJobsCount,
+      failedJobsSummary: JSON.parse(failedJobsSummary),
+      fullPath,
       graphqlResourceEtag,
       pipelineIid,
       pipelineProjectPath,
+      totalJobCount,
     },
     errorCaptured(err, _vm, info) {
       reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);
@@ -57,7 +58,18 @@ const createPipelineTabs = (selector, apolloProvider) => {
     render(createElement) {
       return createElement(PipelineTabs);
     },
-  });
+  };
 };
 
-export { createPipelineTabs };
+export const createPipelineTabs = (options) => {
+  if (!options) return;
+
+  updateHistory({
+    url: removeParams([TAB_QUERY_PARAM]),
+    title: document.title,
+    replace: true,
+  });
+
+  // eslint-disable-next-line no-new
+  new Vue(options);
+};

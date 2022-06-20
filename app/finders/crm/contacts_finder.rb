@@ -6,6 +6,9 @@
 #   current_user - user performing the action. Must have the correct permission level for the group.
 #   params:
 #     group: Group, required
+#     search: String, optional
+#     state: CustomerRelations::ContactStateEnum, optional
+#     ids: int[], optional
 module Crm
   class ContactsFinder
     include Gitlab::Allowable
@@ -21,7 +24,11 @@ module Crm
     def execute
       return CustomerRelations::Contact.none unless root_group
 
-      root_group.contacts
+      contacts = root_group.contacts
+      contacts = by_ids(contacts)
+      contacts = by_state(contacts)
+      contacts = by_search(contacts)
+      contacts.sort_by_name
     end
 
     private
@@ -34,6 +41,36 @@ module Crm
 
         group
       end
+    end
+
+    def by_search(contacts)
+      return contacts unless search?
+
+      contacts.search(params[:search])
+    end
+
+    def by_state(contacts)
+      return contacts unless state?
+
+      contacts.search_by_state(params[:state])
+    end
+
+    def by_ids(contacts)
+      return contacts unless ids?
+
+      contacts.id_in(params[:ids])
+    end
+
+    def search?
+      params[:search].present?
+    end
+
+    def state?
+      params[:state].present?
+    end
+
+    def ids?
+      params[:ids].present?
     end
   end
 end

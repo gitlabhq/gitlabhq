@@ -127,7 +127,7 @@ module Nav
           href: dashboard_milestones_path,
           active: active_nav_link?(controller: 'dashboard/milestones'),
           icon: 'clock',
-          data: { qa_selector: 'milestones_link' },
+          data: { qa_selector: 'milestones_link', **menu_data_tracking_attrs('milestones') },
           shortcut_class: 'dashboard-shortcuts-milestones'
         )
       end
@@ -135,7 +135,7 @@ module Nav
       if dashboard_nav_link?(:snippets)
         builder.add_primary_menu_item_with_shortcut(
           active: active_nav_link?(controller: 'dashboard/snippets'),
-          data: { qa_selector: 'snippets_link' },
+          data: { qa_selector: 'snippets_link', **menu_data_tracking_attrs('snippets') },
           href: dashboard_snippets_path,
           **snippets_menu_item_attrs
         )
@@ -148,7 +148,7 @@ module Nav
           href: activity_dashboard_path,
           active: active_nav_link?(path: 'dashboard#activity'),
           icon: 'history',
-          data: { qa_selector: 'activity_link' },
+          data: { qa_selector: 'activity_link', **menu_data_tracking_attrs('activity') },
           shortcut_class: 'dashboard-shortcuts-activity'
         )
       end
@@ -158,13 +158,16 @@ module Nav
       # we should be good.
       # rubocop: disable Cop/UserAdmin
       if current_user&.admin?
+        title = _('Admin')
+
         builder.add_secondary_menu_item(
           id: 'admin',
-          title: _('Admin'),
+          title: title,
           active: active_nav_link?(controller: 'admin/dashboard'),
           icon: 'admin',
           css_class: 'qa-admin-area-link',
-          href: admin_root_path
+          href: admin_root_path,
+          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
         )
       end
 
@@ -176,15 +179,18 @@ module Nav
             active: active_nav_link?(controller: 'admin/sessions'),
             icon: 'lock-open',
             href: destroy_admin_session_path,
-            data: { method: 'post' }
+            data: { method: 'post', **menu_data_tracking_attrs('leave_admin_mode') }
           )
         elsif current_user.admin?
+          title = _('Enter Admin Mode')
+
           builder.add_secondary_menu_item(
             id: 'enter_admin_mode',
-            title: _('Enter Admin Mode'),
+            title: title,
             active: active_nav_link?(controller: 'admin/sessions'),
             icon: 'lock',
-            href: new_admin_session_path
+            href: new_admin_session_path,
+            data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
           )
         end
       end
@@ -216,6 +222,14 @@ module Nav
         icon: 'snippet',
         shortcut_class: 'dashboard-shortcuts-snippets'
       }
+    end
+
+    def menu_data_tracking_attrs(label)
+      tracking_attrs(
+        "menu_#{label.underscore.parameterize(separator: '_')}",
+        'click_dropdown',
+        'navigation'
+      )[:data] || {}
     end
 
     def container_view_props(namespace:, current_item:, submenu:)
@@ -260,21 +274,51 @@ module Nav
 
     def projects_submenu_items(builder:)
       # These project links come from `app/views/layouts/nav/projects_dropdown/_show.html.haml`
-      builder.add_primary_menu_item(id: 'your', title: _('Your projects'), href: dashboard_projects_path)
-      builder.add_primary_menu_item(id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path)
-      builder.add_primary_menu_item(id: 'explore', title: _('Explore projects'), href: explore_root_path)
-      builder.add_primary_menu_item(id: 'topics', title: _('Explore topics'), href: topics_explore_projects_path)
-      builder.add_secondary_menu_item(id: 'create', title: _('Create new project'), href: new_project_path)
+      [
+        { id: 'your', title: _('Your projects'), href: dashboard_projects_path },
+        { id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path },
+        { id: 'explore', title: _('Explore projects'), href: explore_root_path },
+        { id: 'topics', title: _('Explore topics'), href: topics_explore_projects_path }
+      ].each do |item|
+        builder.add_primary_menu_item(
+          **item,
+          data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
+        )
+      end
+
+      title = _('Create new project')
+
+      builder.add_secondary_menu_item(
+        id: 'create',
+        title: title,
+        href: new_project_path,
+        data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+      )
     end
 
     def groups_submenu
       # These group links come from `app/views/layouts/nav/groups_dropdown/_show.html.haml`
       builder = ::Gitlab::Nav::TopNavMenuBuilder.new
-      builder.add_primary_menu_item(id: 'your', title: _('Your groups'), href: dashboard_groups_path)
-      builder.add_primary_menu_item(id: 'explore', title: _('Explore groups'), href: explore_groups_path)
+
+      [
+        { id: 'your', title: _('Your groups'), href: dashboard_groups_path },
+        { id: 'explore', title: _('Explore groups'), href: explore_groups_path }
+      ].each do |item|
+        builder.add_primary_menu_item(
+          **item,
+          data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
+        )
+      end
 
       if current_user.can_create_group?
-        builder.add_secondary_menu_item(id: 'create', title: _('Create group'), href: new_group_path)
+        title = _('Create group')
+
+        builder.add_secondary_menu_item(
+          id: 'create',
+          title: title,
+          href: new_group_path,
+          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+        )
       end
 
       builder.build

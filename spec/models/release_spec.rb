@@ -66,6 +66,32 @@ RSpec.describe Release do
         expect { release.milestones << milestone }.to change { MilestoneRelease.count }.by(1)
       end
     end
+
+    context 'when creating new release' do
+      subject { build(:release, project: project, name: 'Release 1.0') }
+
+      it { is_expected.to validate_presence_of(:author_id) }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(validate_release_with_author: false)
+        end
+
+        it { is_expected.not_to validate_presence_of(:author_id) }
+      end
+    end
+
+    # Mimic releases created before 11.7
+    # See: https://gitlab.com/gitlab-org/gitlab/-/blob/8e5a110b01f842d8b6a702197928757a40ce9009/app/models/release.rb#L14
+    context 'when updating existing release without author' do
+      let(:release) { create(:release, :legacy) }
+
+      it 'updates successfully' do
+        release.description += 'Update'
+
+        expect { release.save! }.not_to raise_error
+      end
+    end
   end
 
   describe '#assets_count' do

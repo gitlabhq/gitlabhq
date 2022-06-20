@@ -24,14 +24,23 @@ module Integrations
     end
 
     def self.supported_events
-      %w(push)
+      %w[push]
     end
 
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      IrkerWorker.perform_async(project_id, channels,
-                                colorize_messages, data, settings)
+      if Feature.enabled?(:rename_integrations_workers)
+        Integrations::IrkerWorker.perform_async(
+          project_id, channels,
+          colorize_messages, data, settings
+        )
+      else
+        ::IrkerWorker.perform_async(
+          project_id, channels,
+          colorize_messages, data, settings
+        )
+      end
     end
 
     def settings
@@ -42,7 +51,15 @@ module Integrations
     end
 
     def fields
-      recipients_docs_link = ActionController::Base.helpers.link_to s_('IrkerService|How to enter channels or users?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'enter-irker-recipients'), target: '_blank', rel: 'noopener noreferrer'
+      recipients_docs_link = ActionController::Base.helpers.link_to(
+        s_('IrkerService|How to enter channels or users?'),
+        Rails.application.routes.url_helpers.help_page_url(
+          'user/project/integrations/irker',
+          anchor: 'enter-irker-recipients'
+        ),
+        target: '_blank', rel: 'noopener noreferrer'
+      )
+
       [
         { type: 'text', name: 'server_host', placeholder: 'localhost', title: s_('IrkerService|Server host (optional)'),
           help: s_('IrkerService|irker daemon hostname (defaults to localhost).') },
@@ -53,14 +70,29 @@ module Integrations
           placeholder: 'irc://irc.network.net:6697/' },
         { type: 'textarea', name: 'recipients', title: s_('IrkerService|Recipients'),
           placeholder: 'irc[s]://irc.network.net[:port]/#channel', required: true,
-          help: s_('IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}').html_safe % { recipients_docs_link: recipients_docs_link.html_safe } },
+          help: format(
+            s_('IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}').html_safe,
+            recipients_docs_link: recipients_docs_link.html_safe
+          ) },
         { type: 'checkbox', name: 'colorize_messages', title: _('Colorize messages') }
       ]
     end
 
     def help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/irker', anchor: 'set-up-an-irker-daemon'), target: '_blank', rel: 'noopener noreferrer'
-      s_('IrkerService|Send update messages to an irker server. Before you can use this, you need to set up the irker daemon. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+      docs_link = ActionController::Base.helpers.link_to(
+        _('Learn more.'),
+        Rails.application.routes.url_helpers.help_page_url(
+          'user/project/integrations/irker',
+          anchor: 'set-up-an-irker-daemon'
+        ),
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      )
+
+      format(s_(
+        'IrkerService|Send update messages to an irker server. ' \
+        'Before you can use this, you need to set up the irker daemon. %{docs_link}'
+      ).html_safe, docs_link: docs_link.html_safe)
     end
 
     private
@@ -104,12 +136,11 @@ module Integrations
     end
 
     def consider_uri(uri)
-      return if uri.scheme.nil?
-
+      return unless uri.is_a?(URI) && uri.scheme.present?
       # Authorize both irc://domain.com/#chan and irc://domain.com/chan
-      if uri.is_a?(URI) && uri.scheme[/^ircs?\z/] && !uri.path.nil?
-        uri.to_s
-      end
+      return unless uri.scheme =~ /\Aircs?\z/ && !uri.path.nil?
+
+      uri.to_s
     end
   end
 end

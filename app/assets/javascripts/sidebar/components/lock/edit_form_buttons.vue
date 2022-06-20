@@ -74,7 +74,7 @@ export default {
     <gl-button
       data-testid="lock-toggle"
       category="secondary"
-      variant="warning"
+      variant="confirm"
       :disabled="isLoading"
       :loading="isLoading"
       @click.prevent="submitForm"

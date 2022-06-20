@@ -4,7 +4,8 @@ import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import initCompareAutocomplete from './compare_autocomplete';
 import initTargetProjectDropdown from './target_project_dropdown';
 
-const updateCommitList = (url, $loadingIndicator, $commitList, params) => {
+const updateCommitList = (url, $emptyState, $loadingIndicator, $commitList, params) => {
+  $emptyState.hide();
   $loadingIndicator.show();
   $commitList.empty();
 
@@ -16,6 +17,10 @@ const updateCommitList = (url, $loadingIndicator, $commitList, params) => {
       $loadingIndicator.hide();
       $commitList.html(data);
       localTimeAgo($commitList.get(0).querySelectorAll('.js-timeago'));
+
+      if (!data) {
+        $emptyState.show();
+      }
     });
 };
 
@@ -26,6 +31,7 @@ export default (mrNewCompareNode) => {
   const updateSourceBranchCommitList = () =>
     updateCommitList(
       sourceBranchUrl,
+      $(mrNewCompareNode).find('.js-source-commit-empty'),
       $(mrNewCompareNode).find('.js-source-loading'),
       $(mrNewCompareNode).find('.mr_source_commit'),
       {
@@ -35,6 +41,7 @@ export default (mrNewCompareNode) => {
   const updateTargetBranchCommitList = () =>
     updateCommitList(
       targetBranchUrl,
+      $(mrNewCompareNode).find('.js-target-commit-empty'),
       $(mrNewCompareNode).find('.js-target-loading'),
       $(mrNewCompareNode).find('.mr_target_commit'),
       {

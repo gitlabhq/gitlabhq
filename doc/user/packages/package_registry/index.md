@@ -65,7 +65,7 @@ For most package types, the following credential types are valid:
   [GitLab-#333444](https://gitlab.com/gitlab-org/gitlab/-/issues/333444),
   which prevents you from using a job token with internal projects. This bug only impacts self-managed
   GitLab instances.
-  
+
 ## Use GitLab CI/CD to build packages
 
 You can use [GitLab CI/CD](../../../ci/index.md) to build packages.
@@ -110,7 +110,7 @@ You can also remove the Package Registry for your project specifically:
 1. In your project, go to **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section and disable the
    **Packages** feature.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 The **Packages & Registries > Package Registry** entry is removed from the sidebar.
 
@@ -125,7 +125,7 @@ to **Only Project Members**, the Package Registry is then public. However, disab
 Registry disables all Package Registry operations.
 
 [GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253)
-proposes adding the ability to control Package Registry visibility from the UI.  
+proposes adding the ability to control Package Registry visibility from the UI.
 
 |                      |                       | Anonymous<br/>(everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
 | -------------------- | --------------------- | --------- | ----- | ------------------------------------------ |
@@ -167,7 +167,7 @@ You can also use the [API](../../../api/packages.md) to administer the Package R
 ## Accepting contributions
 
 This table lists unsupported package manager formats that we are accepting contributions for.
-Consider contributing to GitLab. This [development documentation](../../../development/packages.md)
+Consider contributing to GitLab. This [development documentation](../../../development/packages/index.md)
 guides you through the process.
 
 <!-- vale gitlab.Spelling = NO -->

@@ -9,6 +9,8 @@ module QA
       AuthorizationError = Class.new(RuntimeError)
       UnknownScopeError = Class.new(RuntimeError)
       UnknownStateError = Class.new(RuntimeError)
+      UnknownFeatureFlagError = Class.new(RuntimeError)
+      DefinitionFileError = Class.new(RuntimeError)
 
       class << self
         # Documentation: https://docs.gitlab.com/ee/api/features.html
@@ -52,7 +54,21 @@ module QA
 
         def enabled?(key, **scopes)
           feature = JSON.parse(get_features).find { |flag| flag['name'] == key.to_s }
-          feature && (feature['state'] == 'on' || feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes))
+          if feature
+            feature['state'] == 'on' ||
+              feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes)
+          else
+            # The feature wasn't found via the API so we check for a default value.
+            file = Pathname.new('../config/feature_flags')
+              .expand_path(Runtime::Path.qa_root)
+              .glob("**/#{key}.yml")
+              .first
+
+            raise UnknownFeatureFlagError, "No feature flag found named '#{key}'" unless file
+
+            definition = YAML.safe_load(File.read(file))
+            definition['default_enabled'].to_s.casecmp('true') == 0
+          end
         end
 
         private

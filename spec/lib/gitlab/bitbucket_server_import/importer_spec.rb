@@ -12,7 +12,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
   let(:project) { create(:project, :repository, import_url: import_url, creator: project_creator) }
   let(:now) { Time.now.utc.change(usec: 0) }
   let(:project_key) { 'TEST' }
-  let(:repo_slug) { 'rouge' }
+  let(:repo_slug) { 'rouge-repo' }
   let(:sample) { RepoHelpers.sample_compare }
 
   subject { described_class.new(project, recover_missing_commits: true) }

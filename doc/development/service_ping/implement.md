@@ -46,7 +46,7 @@ boards: add_metric('CountBoardsMetric', time_frame: 'all'),
 
 There are several types of counters for metrics:
 
-- **[Batch counters](#batch-counters)**: Used for counts and sums.
+- **[Batch counters](#batch-counters)**: Used for counts, sums, and averages.
 - **[Redis counters](#redis-counters):** Used for in-memory counts.
 - **[Alternative counters](#alternative-counters):** Used for settings and configurations.
 
@@ -102,34 +102,32 @@ Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recomme
 
 #### Sum batch operation
 
-There is no support for `sum` for database metrics.
-
 Sum the values of a given ActiveRecord_Relation on given column and handles errors.
 Handles the `ActiveRecord::StatementInvalid` error
 
 Method:
 
 ```ruby
-sum(relation, column, batch_size: nil, start: nil, finish: nil)
+add_metric('JiraImportsTotalImportedIssuesCountMetric')
 ```
 
-Arguments:
+#### Average batch operation
 
-- `relation`: the ActiveRecord_Relation to perform the operation
-- `column`: the column to sum on
-- `batch_size`: if none set it uses default value 1000 from `Gitlab::Database::BatchCounter`
-- `start`: custom start of the batch counting to avoid complex min calculations
-- `end`: custom end of the batch counting to avoid complex min calculations
+Average the values of a given `ActiveRecord_Relation` on given column and handles errors.
+
+Method:
+
+```ruby
+add_metric('CountIssuesWeightAverageMetric')
+```
 
 Examples:
 
-```ruby
-sum(JiraImportState.finished, :imported_issues_count)
-```
+Examples using `usage_data.rb` have been [deprecated](usage_data.md). We recommend to use [instrumentation classes](metrics_instrumentation.md).
 
 #### Grouping and batch operations
 
-The `count`, `distinct_count`, and `sum` batch counters can accept an `ActiveRecord::Relation`
+The `count`, `distinct_count`, `sum`, and `average` batch counters can accept an `ActiveRecord::Relation`
 object, which groups by a specified column. With a grouped relation, the methods do batch counting,
 handle errors, and returns a hash table of key-value pairs.
 
@@ -144,6 +142,9 @@ distinct_count(Project.group(:visibility_level), :creator_id)
 
 sum(Issue.group(:state_id), :weight))
 # returns => {1=>3542, 2=>6820}
+
+average(Issue.group(:state_id), :weight))
+# returns => {1=>3.5, 2=>2.5}
 ```
 
 #### Add operation
@@ -286,7 +287,7 @@ Enabled by default in GitLab 13.7 and later.
    Increment event count using an ordinary Redis counter, for a given event name.
 
    API requests are protected by checking for a valid CSRF token.
-   
+
    ```plaintext
    POST /usage_data/increment_counter
    ```
@@ -652,9 +653,10 @@ We return fallback values in these cases:
 
 | Case                        | Value |
 |-----------------------------|-------|
-| Deprecated Metric           | -1000 |
+| Deprecated Metric ([Removed with version 14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/335894)) | -1000 |
 | Timeouts, general failures  | -1    |
 | Standard errors in counters | -2    |
+| Histogram metrics failure   | { '-1' => -1 } |
 
 ## Test counters manually using your Rails console
 

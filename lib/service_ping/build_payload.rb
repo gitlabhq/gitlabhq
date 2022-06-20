@@ -3,8 +3,6 @@
 module ServicePing
   class BuildPayload
     def execute
-      return {} unless ServicePingSettings.product_intelligence_enabled?
-
       filtered_usage_data
     end
 

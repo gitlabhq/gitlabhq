@@ -169,7 +169,7 @@ These configuration settings are available:
 | `host`             | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. | **{check-circle}** Yes | `'ldap.mydomain.com'` |
 | `port`             | The port to connect with on your LDAP server. Always an integer, not a string. Ignored when `hosts` is defined. | **{check-circle}** Yes | `389` or `636` (for SSL) |
 | `hosts` (GitLab 14.7 and later) | An array of host and port pairs to open connections. | **{dotted-circle}** No | `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
-| `uid`              | LDAP attribute for username. Should be the attribute, not the value that maps to the `uid`. | **{check-circle}** Yes | `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
+| `uid`              | The LDAP attribute that maps to the username that users use to sign in. Should be the attribute, not the value that maps to the `uid`. Does not affect the GitLab username (see [attributes section](#attribute-configuration-settings)). | **{check-circle}** Yes | `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
 | `bind_dn`          | The full DN of the user you bind with. | **{dotted-circle}** No | `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
 | `password`         | The password of the bind user. | **{dotted-circle}** No | `'your_great_password'` |
 | `encryption`       | Encryption method. The `method` key is deprecated in favor of `encryption`. | **{check-circle}** Yes | `'start_tls'` or `'simple_tls'` or `'plain'` |

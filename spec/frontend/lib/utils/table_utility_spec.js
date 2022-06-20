@@ -9,6 +9,13 @@ describe('table_utility', () => {
     });
   });
 
+  describe('thWidthPercent', () => {
+    it('returns the width class including default table header classes', () => {
+      const width = 50;
+      expect(tableUtils.thWidthPercent(width)).toBe(`gl-w-${width}p`);
+    });
+  });
+
   describe('sortObjectToString', () => {
     it('returns the expected sorting string ending in "DESC" when sortDesc is true', () => {
       expect(tableUtils.sortObjectToString({ sortBy: 'mergedAt', sortDesc: true })).toBe(

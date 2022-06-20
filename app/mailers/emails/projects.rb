@@ -75,11 +75,9 @@ module Emails
       subject_text = "Action required: Project #{project.name} is scheduled to be deleted on " \
       "#{deletion_date} due to inactivity"
 
-      mail(to: user.notification_email_for(project.group),
-           subject: subject(subject_text)) do |format|
-        format.html { render layout: 'mailer' }
-        format.text { render layout: 'mailer' }
-      end
+      email_with_layout(
+        to: user.notification_email_for(project.group),
+        subject: subject(subject_text))
     end
 
     private

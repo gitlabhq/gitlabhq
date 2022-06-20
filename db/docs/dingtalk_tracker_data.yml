@@ -1,0 +1,8 @@
+---
+table_name: dingtalk_tracker_data
+classes:
+- Integrations::DingtalkTrackerData
+feature_categories:
+- integrations
+description: Data related to the Dingtalk integration (JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417).
+milestone: '15.0'

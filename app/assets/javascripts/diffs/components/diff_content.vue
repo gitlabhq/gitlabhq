@@ -120,7 +120,7 @@ export default {
           :help-page-path="helpPagePath"
           :inline="isInlineView"
         />
-        <gl-loading-icon v-if="diffFile.renderingLines" size="md" class="mt-3" />
+        <gl-loading-icon v-if="diffFile.renderingLines" size="lg" class="mt-3" />
       </template>
       <not-diffable-viewer v-else-if="notDiffable" />
       <no-preview-viewer v-else-if="noPreview" />

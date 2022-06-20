@@ -9,6 +9,7 @@ module Groups
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action :define_variables, only: [:show]
       before_action :push_licensed_features, only: [:show]
+      before_action :assign_variables_to_gon, only: [:show]
 
       feature_category :continuous_integration
       urgency :low
@@ -80,6 +81,10 @@ module Groups
 
       # Overridden in EE
       def push_licensed_features
+      end
+
+      # Overridden in EE
+      def assign_variables_to_gon
       end
     end
   end

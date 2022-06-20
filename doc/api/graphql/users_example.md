@@ -73,7 +73,7 @@ explorer. GraphiQL explorer is available for:
 
 1. Open the [GraphiQL explorer tool](https://gitlab.com/-/graphql-explorer).
 1. Paste the `query` listed above into the left window of your GraphiQL explorer tool.
-1. Click Play to get the result shown here:
+1. Select **Play** to get the result shown here:
 
 ![GraphiQL explorer search for boards](img/users_query_example_v13_8.png)
 

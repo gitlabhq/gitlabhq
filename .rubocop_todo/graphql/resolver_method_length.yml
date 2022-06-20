@@ -4,4 +4,3 @@ GraphQL/ResolverMethodLength:
   - app/graphql/types/ci/detailed_status_type.rb
   - app/graphql/types/ci/runner_type.rb
   - app/graphql/types/ci/stage_type.rb
-  - app/graphql/types/packages/package_type.rb

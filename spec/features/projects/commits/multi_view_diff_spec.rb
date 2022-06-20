@@ -18,71 +18,77 @@ RSpec.describe 'Multiple view Diffs', :js do
   let(:feature_flag_on) { false }
 
   before do
-    stub_feature_flags(rendered_diffs_viewer: feature_flag_on ? project : false)
-
     visit path
 
     wait_for_all_requests
   end
 
-  context 'when :rendered_diffs_viewer is off' do
-    context 'and diff does not have ipynb' do
-      it_behaves_like "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
+  context 'diff does not include ipynb' do
+    it_behaves_like "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
+
+    context 'and in inline diff' do
+      let(:ref) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+
+      it 'does not change display for non-ipynb' do
+        expect(page).to have_selector line_with_content('new', 1)
+      end
     end
 
-    context 'and diff has ipynb' do
-      it_behaves_like "no multiple viewers", '5d6ed1503801ca9dc28e95eeb85a7cf863527aee'
+    context 'and in parallel diff' do
+      let(:ref) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+
+      it 'does not change display for non-ipynb' do
+        page.find('#parallel-diff-btn').click
+
+        expect(page).to have_selector line_with_content('new', 1)
+      end
     end
   end
 
-  context 'when :rendered_diffs_viewer is on' do
-    let(:feature_flag_on) { true }
+  context 'opening a diff with ipynb' do
+    it 'loads the rendered diff as hidden' do
+      diff = page.find('.diff-file, .file-holder', match: :first)
 
-    context 'and diff does not include ipynb' do
-      it_behaves_like "no multiple viewers", 'ddd0f15ae83993f5cb66a927a28673882e99100b'
+      expect(diff).not_to have_selector '[data-diff-toggle-entity="toHide"]'
+      expect(diff).to have_selector '[data-diff-toggle-entity="toShow"]'
 
-      context 'and in inline diff' do
-        let(:ref) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+      expect(classes_for_element(diff, 'toHide', visible: false)).to include('hidden')
+      expect(classes_for_element(diff, 'toShow')).not_to include('hidden')
 
-        it 'does not change display for non-ipynb' do
-          expect(page).to have_selector line_with_content('new', 1)
-        end
-      end
-
-      context 'and in parallel diff' do
-        let(:ref) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
-
-        it 'does not change display for non-ipynb' do
-          page.find('#parallel-diff-btn').click
-
-          expect(page).to have_selector line_with_content('new', 1)
-        end
-      end
+      expect(classes_for_element(diff, 'toShowBtn')).to include('selected')
+      expect(classes_for_element(diff, 'toHideBtn')).not_to include('selected')
     end
 
-    context 'and opening a diff with ipynb' do
-      it 'loads the rendered diff as hidden' do
-        diff = page.find('.diff-file, .file-holder', match: :first)
+    it 'displays the rendered diff and hides after selection changes' do
+      diff = page.find('.diff-file, .file-holder', match: :first)
+      diff.find('[data-diff-toggle-entity="toShowBtn"]').click
 
-        expect(diff).not_to have_selector '[data-diff-toggle-entity="toHide"]'
-        expect(diff).to have_selector '[data-diff-toggle-entity="toShow"]'
+      expect(diff).to have_selector '[data-diff-toggle-entity="toShow"]'
+      expect(diff).not_to have_selector '[data-diff-toggle-entity="toHide"]'
 
-        expect(classes_for_element(diff, 'toHide', visible: false)).to include('hidden')
-        expect(classes_for_element(diff, 'toShow')).not_to include('hidden')
+      expect(classes_for_element(diff, 'toHideBtn')).not_to include('selected')
+      expect(classes_for_element(diff, 'toShowBtn')).to include('selected')
+    end
 
-        expect(classes_for_element(diff, 'toShowBtn')).to include('selected')
-        expect(classes_for_element(diff, 'toHideBtn')).not_to include('selected')
+    it 'transforms the diff' do
+      diff = page.find('.diff-file, .file-holder', match: :first)
+
+      expect(diff['innerHTML']).to include('%% Cell type:markdown id:0aac5da7-745c-4eda-847a-3d0d07a1bb9b tags:')
+    end
+
+    context 'on parallel view' do
+      before do
+        page.find('#parallel-diff-btn').click
       end
 
-      it 'displays the rendered diff and hides after selection changes' do
-        diff = page.find('.diff-file, .file-holder', match: :first)
-        diff.find('[data-diff-toggle-entity="toShowBtn"]').click
+      it 'lines without mapping cannot receive comments' do
+        expect(page).not_to have_selector('td.line_content.nomappinginraw ~ td.diff-line-num > .add-diff-note')
+        expect(page).to have_selector('td.line_content:not(.nomappinginraw) ~ td.diff-line-num > .add-diff-note')
+      end
 
-        expect(diff).to have_selector '[data-diff-toggle-entity="toShow"]'
-        expect(diff).not_to have_selector '[data-diff-toggle-entity="toHide"]'
-
-        expect(classes_for_element(diff, 'toHideBtn')).not_to include('selected')
-        expect(classes_for_element(diff, 'toShowBtn')).to include('selected')
+      it 'lines numbers without mapping are empty' do
+        expect(page).not_to have_selector('td.nomappinginraw + td.diff-line-num')
+        expect(page).to have_selector('td.nomappinginraw + td.diff-line-num', visible: false)
       end
 
       it 'transforms the diff' do
@@ -90,40 +96,18 @@ RSpec.describe 'Multiple view Diffs', :js do
 
         expect(diff['innerHTML']).to include('%% Cell type:markdown id:0aac5da7-745c-4eda-847a-3d0d07a1bb9b tags:')
       end
+    end
 
-      context 'on parallel view' do
-        before do
-          page.find('#parallel-diff-btn').click
-        end
-
-        it 'lines without mapping cannot receive comments' do
-          expect(page).not_to have_selector('td.line_content.nomappinginraw ~ td.diff-line-num > .add-diff-note')
-          expect(page).to have_selector('td.line_content:not(.nomappinginraw) ~ td.diff-line-num > .add-diff-note')
-        end
-
-        it 'lines numbers without mapping are empty' do
-          expect(page).not_to have_selector('td.nomappinginraw + td.diff-line-num')
-          expect(page).to have_selector('td.nomappinginraw + td.diff-line-num', visible: false)
-        end
-
-        it 'transforms the diff' do
-          diff = page.find('.diff-file, .file-holder', match: :first)
-
-          expect(diff['innerHTML']).to include('%% Cell type:markdown id:0aac5da7-745c-4eda-847a-3d0d07a1bb9b tags:')
-        end
+    context 'on inline view' do
+      it 'lines without mapping cannot receive comments' do
+        expect(page).not_to have_selector('tr.line_holder[class$="nomappinginraw"] > td.diff-line-num > .add-diff-note')
+        expect(page).to have_selector('tr.line_holder:not([class$="nomappinginraw"]) > td.diff-line-num > .add-diff-note')
       end
 
-      context 'on inline view' do
-        it 'lines without mapping cannot receive comments' do
-          expect(page).not_to have_selector('tr.line_holder[class$="nomappinginraw"] > td.diff-line-num > .add-diff-note')
-          expect(page).to have_selector('tr.line_holder:not([class$="nomappinginraw"]) > td.diff-line-num > .add-diff-note')
-        end
+      it 'lines numbers without mapping are empty' do
+        elements = page.all('tr.line_holder[class$="nomappinginraw"] > td.diff-line-num').map { |e| e.text(:all) }
 
-        it 'lines numbers without mapping are empty' do
-          elements = page.all('tr.line_holder[class$="nomappinginraw"] > td.diff-line-num').map { |e| e.text(:all) }
-
-          expect(elements).to all(be == "")
-        end
+        expect(elements).to all(be == "")
       end
     end
   end

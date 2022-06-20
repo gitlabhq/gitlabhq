@@ -19,8 +19,7 @@ RSpec.shared_examples 'rejecting tags destruction for an importing repository on
     expect(find('.modal .modal-title')).to have_content _('Remove tag')
     find('.modal .modal-footer .btn-danger').click
 
-    alert_body = find('.gl-alert-body')
-    expect(alert_body).to have_content('Tags temporarily cannot be marked for deletion. Please try again in a few minutes.')
-    expect(alert_body).to have_link('More details', href: help_page_path('user/packages/container_registry/index', anchor: 'tags-temporarily-cannot-be-marked-for-deletion'))
+    expect(page).to have_content('Tags temporarily cannot be marked for deletion. Please try again in a few minutes.')
+    expect(page).to have_link('More details', href: help_page_path('user/packages/container_registry/index', anchor: 'tags-temporarily-cannot-be-marked-for-deletion'))
   end
 end

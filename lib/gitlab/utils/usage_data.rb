@@ -104,6 +104,15 @@ module Gitlab
         end
       end
 
+      def average(relation, column, batch_size: nil, start: nil, finish: nil)
+        with_duration do
+          Gitlab::Database::BatchCount.batch_average(relation, column, batch_size: batch_size, start: start, finish: finish)
+        rescue ActiveRecord::StatementInvalid => error
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
+          FALLBACK
+        end
+      end
+
       # We don't support batching with histograms.
       # Please avoid using this method on large tables.
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/323949.

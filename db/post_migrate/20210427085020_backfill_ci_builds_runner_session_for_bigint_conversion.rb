@@ -3,6 +3,8 @@
 class BackfillCiBuildsRunnerSessionForBigintConversion < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   TABLE = :ci_builds_runner_session
   COLUMNS = %i(build_id)
 

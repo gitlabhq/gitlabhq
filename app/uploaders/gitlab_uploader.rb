@@ -31,6 +31,14 @@ class GitlabUploader < CarrierWave::Uploader::Base
     def absolute_path(upload_record)
       File.join(root, upload_record.path)
     end
+
+    def version(*args, **kwargs, &block)
+      # CarrierWave uploaded file "versions" are not tracked in the uploads
+      # table. Because of this they won't get replicated to Geo secondaries.
+      # If we ever want to use versions, we need to fix that first. Also see
+      # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1757.
+      raise "using CarrierWave alternate file version is not supported"
+    end
   end
 
   storage_options Gitlab.config.uploads

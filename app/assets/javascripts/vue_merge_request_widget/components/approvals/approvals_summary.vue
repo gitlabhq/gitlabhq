@@ -98,10 +98,10 @@ export default {
 
 <template>
   <div data-qa-selector="approvals_summary_content">
-    <strong>{{ approvalLeftMessage }}</strong>
+    <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>
-      <strong v-else>{{ message }}</strong>
+      <span v-else class="gl-font-weight-bold">{{ message }}</span>
       <user-avatar-list
         class="gl-display-inline-block gl-vertical-align-middle"
         :img-size="24"

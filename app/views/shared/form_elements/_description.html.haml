@@ -6,23 +6,22 @@
 - supports_quick_actions = true
 - preview_url = preview_markdown_path(project, target_type: model.class.name)
 
-.form-group.row.detail-page-description
-  = form.label :description, _('Description'), class: 'col-form-label col-sm-2'
-  .col-sm-10
-    - if model.is_a?(MergeRequest)
-      = hidden_field_tag :merge_request_diff_head_sha, model.diff_head_sha
+.form-group
+  = form.label :description, _('Description'), class: 'gl-display-block'
+  - if model.is_a?(MergeRequest)
+    = hidden_field_tag :merge_request_diff_head_sha, model.diff_head_sha
 
-    - if model.is_a?(Issuable)
-      = render 'shared/issuable/form/template_selector', issuable: model
+  - if model.is_a?(Issuable)
+    = render 'shared/issuable/form/template_selector', issuable: model
 
-    = render 'shared/form_elements/apply_template_warning', issuable: model
+  = render 'shared/form_elements/apply_template_warning', issuable: model
 
-    = render layout: 'shared/md_preview', locals: { url: preview_url, referenced_users: true } do
-      = render 'shared/zen', f: form, attr: :description,
-                               classes: 'note-textarea rspec-issuable-form-description',
-                               placeholder: placeholder,
-                               supports_quick_actions: supports_quick_actions,
-                               qa_selector: 'issuable_form_description'
-      = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
-      .clearfix
-      .error-alert
+  = render layout: 'shared/md_preview', locals: { url: preview_url, referenced_users: true } do
+    = render 'shared/zen', f: form, attr: :description,
+                              classes: 'note-textarea rspec-issuable-form-description',
+                              placeholder: placeholder,
+                              supports_quick_actions: supports_quick_actions,
+                              qa_selector: 'issuable_form_description'
+    = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
+    .clearfix
+    .error-alert

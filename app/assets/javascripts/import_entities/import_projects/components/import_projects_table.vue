@@ -181,7 +181,7 @@ export default {
       :key="pagePaginationStateKey"
       @appear="fetchRepos"
     />
-    <gl-loading-icon v-if="isLoading" class="gl-mt-7" size="md" />
+    <gl-loading-icon v-if="isLoading" class="gl-mt-7" size="lg" />
 
     <div v-if="!isLoading && repositories.length === 0" class="gl-text-center">
       <strong>{{ emptyStateText }}</strong>

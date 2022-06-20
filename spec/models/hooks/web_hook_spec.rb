@@ -24,6 +24,29 @@ RSpec.describe WebHook do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:url) }
 
+    describe 'url_variables' do
+      it { is_expected.to allow_value({}).for(:url_variables) }
+      it { is_expected.to allow_value({ 'foo' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'FOO' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'MY_TOKEN' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'foo2' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x' => 'y' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x' => ('a' * 100) }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'foo' => 'bar', 'bar' => 'baz' }).for(:url_variables) }
+      it { is_expected.to allow_value((1..20).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
+
+      it { is_expected.not_to allow_value([]).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => 1 }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'bar' => :baz }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'bar' => nil }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => '' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => ('a' * 101) }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'has spaces' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ '' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ '1foo' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value((1..21).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
+    end
+
     describe 'url' do
       it { is_expected.to allow_value('http://example.com').for(:url) }
       it { is_expected.to allow_value('https://example.com').for(:url) }
@@ -87,7 +110,7 @@ RSpec.describe WebHook do
   describe 'encrypted attributes' do
     subject { described_class.encrypted_attributes.keys }
 
-    it { is_expected.to contain_exactly(:token, :url) }
+    it { is_expected.to contain_exactly(:token, :url, :url_variables) }
   end
 
   describe 'execute' do
@@ -130,11 +153,11 @@ RSpec.describe WebHook do
   end
 
   describe '#destroy' do
-    it 'cascades to web_hook_logs' do
+    it 'does not cascade to web_hook_logs' do
       web_hook = create(:project_hook)
       create_list(:web_hook_log, 3, web_hook: web_hook)
 
-      expect { web_hook.destroy! }.to change(web_hook.web_hook_logs, :count).by(-3)
+      expect { web_hook.destroy! }.not_to change(web_hook.web_hook_logs, :count)
     end
   end
 
@@ -470,31 +493,70 @@ RSpec.describe WebHook do
   end
 
   describe '#rate_limited?' do
-    context 'when there are rate limits' do
-      before do
-        allow(hook).to receive(:rate_limit).and_return(3)
+    it 'is false when hook has not been rate limited' do
+      expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
+        expect(rate_limiter).to receive(:rate_limited?).and_return(false)
       end
 
-      it 'is false when hook has not been rate limited' do
-        expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(false)
-        expect(hook).not_to be_rate_limited
-      end
-
-      it 'is true when hook has been rate limited' do
-        expect(Gitlab::ApplicationRateLimiter).to receive(:peek).and_return(true)
-        expect(hook).to be_rate_limited
-      end
+      expect(hook).not_to be_rate_limited
     end
 
-    context 'when there are no rate limits' do
-      before do
-        allow(hook).to receive(:rate_limit).and_return(nil)
+    it 'is true when hook has been rate limited' do
+      expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
+        expect(rate_limiter).to receive(:rate_limited?).and_return(true)
       end
 
-      it 'does not call Gitlab::ApplicationRateLimiter, and is false' do
-        expect(Gitlab::ApplicationRateLimiter).not_to receive(:peek)
-        expect(hook).not_to be_rate_limited
+      expect(hook).to be_rate_limited
+    end
+  end
+
+  describe '#rate_limit' do
+    it 'returns the hook rate limit' do
+      expect_next_instance_of(Gitlab::WebHooks::RateLimiter) do |rate_limiter|
+        expect(rate_limiter).to receive(:limit).and_return(10)
       end
+
+      expect(hook.rate_limit).to eq(10)
+    end
+  end
+
+  describe '#alert_status' do
+    subject(:status) { hook.alert_status }
+
+    it { is_expected.to eq :executable }
+
+    context 'when hook has been disabled' do
+      before do
+        hook.disable!
+      end
+
+      it { is_expected.to eq :disabled }
+    end
+
+    context 'when hook has been backed off' do
+      before do
+        hook.disabled_until = 1.hour.from_now
+      end
+
+      it { is_expected.to eq :temporarily_disabled }
+    end
+  end
+
+  describe '#to_json' do
+    it 'does not error' do
+      expect { hook.to_json }.not_to raise_error
+    end
+
+    it 'does not error, when serializing unsafe attributes' do
+      expect { hook.to_json(unsafe_serialization_hash: true) }.not_to raise_error
+    end
+
+    it 'does not contain binary attributes' do
+      expect(hook.to_json).not_to include('encrypted_url_variables')
+    end
+
+    it 'does not contain binary attributes, even when serializing unsafe attributes' do
+      expect(hook.to_json(unsafe_serialization_hash: true)).not_to include('encrypted_url_variables')
     end
   end
 end

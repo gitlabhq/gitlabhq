@@ -88,4 +88,4 @@ Twitter. Twitter generates a client ID and secret key for you to use.
 1. [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect if you
    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page there should now be a Twitter icon below the regular sign in form. Click the icon to begin the authentication process. Twitter asks the user to sign in and authorize the GitLab application. If everything goes well the user is returned to GitLab and signed in.
+On the sign in page there should now be a Twitter icon below the regular sign in form. Select the icon to begin the authentication process. Twitter asks the user to sign in and authorize the GitLab application. If everything goes well the user is returned to GitLab and signed in.

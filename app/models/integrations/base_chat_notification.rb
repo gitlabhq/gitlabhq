@@ -249,7 +249,7 @@ module Integrations
 
       ref = data[:ref] || data.dig(:object_attributes, :ref)
       return true if ref.blank? # No need to check protected branches when there is no ref
-      return true if Gitlab::Git.tag_ref?(ref) # Skip protected branch check because it doesn't support tags
+      return true if Gitlab::Git.tag_ref?(project.repository.expand_ref(ref) || ref) # Skip protected branch check because it doesn't support tags
 
       notify_for_branch?(data)
     end

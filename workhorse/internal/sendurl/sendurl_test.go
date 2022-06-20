@@ -3,7 +3,6 @@ package sendurl
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -40,7 +39,7 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 	serveFile := func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "GET", r.Method)
 
-		tempFile, err := ioutil.TempFile("", "download_file")
+		tempFile, err := os.CreateTemp("", "download_file")
 		require.NoError(t, err)
 		require.NoError(t, os.Remove(tempFile.Name()))
 		defer tempFile.Close()

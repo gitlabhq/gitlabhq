@@ -58,7 +58,7 @@ module IntegrationsHelper
 
   def scoped_integration_path(integration, project: nil, group: nil)
     if project.present?
-      project_integration_path(project, integration)
+      project_settings_integration_path(project, integration)
     elsif group.present?
       group_settings_integration_path(group, integration)
     else
@@ -68,7 +68,7 @@ module IntegrationsHelper
 
   def scoped_edit_integration_path(integration, project: nil, group: nil)
     if project.present?
-      edit_project_integration_path(project, integration)
+      edit_project_settings_integration_path(project, integration)
     elsif group.present?
       edit_group_settings_integration_path(group, integration)
     else
@@ -82,7 +82,7 @@ module IntegrationsHelper
 
   def scoped_test_integration_path(integration, project: nil, group: nil)
     if project.present?
-      test_project_integration_path(project, integration)
+      test_project_settings_integration_path(project, integration)
     elsif group.present?
       test_group_settings_integration_path(group, integration)
     else
@@ -233,11 +233,11 @@ module IntegrationsHelper
   end
 
   def trigger_events_for_integration(integration)
-    ServiceEventSerializer.new(service: integration).represent(integration.configurable_events).to_json
+    Integrations::EventSerializer.new(integration: integration).represent(integration.configurable_events).to_json
   end
 
   def fields_for_integration(integration)
-    ServiceFieldSerializer.new(service: integration).represent(integration.global_fields).to_json
+    Integrations::FieldSerializer.new(integration: integration).represent(integration.global_fields).to_json
   end
 
   def integration_level(integration)

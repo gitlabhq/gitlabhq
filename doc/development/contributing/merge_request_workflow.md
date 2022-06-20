@@ -281,7 +281,7 @@ requirements.
 1. The change is tested in a review app where possible and if appropriate.
 1. The new feature does not degrade the user experience of the product.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
-1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/).  
+1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/).
 1. Merged by a project maintainer.
 
 ### Production use
@@ -292,7 +292,7 @@ requirements.
 1. If there is a performance risk in the change, I have analyzed the performance of the system before and after the change.
 1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*
    - Confirmed to be working on GitLab projects.
-   - Confirmed to be working at each stage for all projects added.  
+   - Confirmed to be working at each stage for all projects added.
 1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
    if relevant.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.
@@ -322,7 +322,7 @@ issue) that are incremental improvements, such as:
 1. Unprioritized bug fixes (for example, [Banner alerting of project move is
 showing up everywhere](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18985))
 1. Documentation improvements
-1. Rubocop or Code Quality improvements
+1. RuboCop or Code Quality improvements
 
 Tag a merge request with ~"Stuff that should Just Work" to track work in
 this area.

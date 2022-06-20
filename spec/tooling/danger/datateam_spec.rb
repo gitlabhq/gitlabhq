@@ -86,6 +86,20 @@ RSpec.describe Tooling::Danger::Datateam do
           mr_labels: ['type::maintenance', 'Data Warehouse::Impacted'],
           impacted: false,
           impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+        },
+        'with metric status removed' => {
+          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          changed_lines: ['+status: removed'],
+          mr_labels: ['type::maintenance'],
+          impacted: true,
+          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
+        },
+        'with metric status active' => {
+          modified_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml app/models/user.rb),
+          changed_lines: ['+status: active'],
+          mr_labels: ['type::maintenance'],
+          impacted: false,
+          impacted_files: %w(config/metrics/20210216182127_user_secret_detection_jobs.yml)
         }
       }
     end

@@ -418,7 +418,7 @@ This action removes the group. It also adds a background job to delete all proje
 
 Specifically:
 
-- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
 deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
@@ -599,7 +599,7 @@ You can export a list of members in a group or subgroup as a CSV.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
-## Restrict group access by IP address **(PREMIUM)**
+## Group access restriction by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
@@ -611,24 +611,26 @@ applies to:
 - The GitLab UI, including subgroups, projects, and issues.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
 
-You should consider these security implications before configuring IP address restrictions:
+### Security implications
 
-- **SSH requests, including `git` operations will fail from all IP addresses**: While you can restrict HTTP traffic on GitLab.com with IP address restrictions,
-  they cause SSH requests, including Git operations over SSH, to fail. For more information,
-  read [issue 271673](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
-- **Administrators and group owners can access group settings from any IP address**: Users with these permission levels can always
-  access the group settings, regardless of IP restriction, but they cannot access projects
-  belonging to the group when accessing from a disallowed IP address.
-- **Some GitLab API endpoints will remain accessible from any IP**: Only the [group](../../api/groups.md) (including all
-  [group resources](../../api/api_resources.md#group-resources)) APIs and [project](../../api/api_resources.md#project-resources)
-  (including all [project resources](../../api/api_resources.md#project-resources)) APIs are protected by IP address restrictions.
-- **Activities performed by GitLab Runners are not bound by IP restrictions**: 
-  When you register a runner, it is not bound by the IP restrictions. When the runner
-  requests a new job or an update to a job's state, it is also not bound by
-  the IP restrictions. But when the running CI/CD job sends Git requests from a
+You should consider some security implications before configuring IP address restrictions.
+
+- Restricting HTTP traffic on GitLab.com with IP address restrictions causes SSH requests (including Git operations over
+  SSH) to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
+- Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
+  - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
+  - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
+    Access to projects includes cloning code from them.
+  - Users can still see group and project names and hierarchies. Only the following are restricted:
+    - [Groups](../../api/groups.md), including all [group resources](../../api/api_resources.md#group-resources).
+    - [Project](../../api/projects.md), including all [project resources](../../api/api_resources.md#project-resources).
+- When you register a runner, it is not bound by the IP restrictions. When the runner requests a new job or an update to
+  a job's state, it is also not bound by the IP restrictions. But when the running CI/CD job sends Git requests from a
   restricted IP address, the IP restriction prevents code from being cloned.
-- **User dashboard activity**: Users may still see some events from the IP restricted groups and projects
-  on their dashboard. Activity may include push, merge, issue, or comment events.
+- Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
+  push, merge, issue, or comment events.
+
+### Restrict group access by IP address
 
 To restrict group access by IP address:
 
@@ -637,7 +639,9 @@ To restrict group access by IP address:
 1. In the **Allow access to the following IP addresses** field, enter IPv4 or IPv6 address ranges in CIDR notation.
 1. Select **Save changes**.
 
-   ![Domain restriction by IP address](img/restrict-by-ip.gif)
+In self-managed installations of GitLab 15.1 and later, you can also configure
+[globally-allowed IP address ranges](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
+at the group level.
 
 ## Restrict group access by domain **(PREMIUM)**
 
@@ -653,8 +657,6 @@ To restrict group access by domain:
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
 1. Select **Save changes**.
-
-![Domain restriction by email](img/restrict-by-email.gif)
 
 Any time you attempt to add a new user, the user's [primary email](../profile/index.md#change-your-primary-email) is compared against this list.
 Only users with a [primary email](../profile/index.md#change-your-primary-email) that matches any of the configured email domain restrictions
@@ -734,14 +736,17 @@ To disable group mentions:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 > - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
 > - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
+> - [Instance setting is inherited and enforced when disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+> - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
 
-[Delayed project deletion](../project/settings/index.md#delayed-project-deletion) can be enabled for groups. When enabled, projects in
-the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored. The default
-period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+[Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
+[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) is enabled for either groups only or groups and projects.
+When enabled on groups, projects in the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored.
+The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#retention-period).
 
 On self-managed GitLab, projects are deleted immediately by default.
 In GitLab 14.2 and later, an administrator can
-[change the default setting](../admin_area/settings/visibility_and_access_controls.md#default-delayed-project-deletion)
+[change the default setting](../admin_area/settings/visibility_and_access_controls.md#deletion-protection)
 for projects in newly-created groups.
 
 On GitLab.com, see the [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
@@ -751,8 +756,12 @@ To enable delayed deletion of projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions and group features** section.
-1. Check **Enable delayed project deletion**.
-1. Optional. To prevent subgroups from changing this setting, select **Enforce for all subgroups**.
+1. Scroll to:
+   - (GitLab 15.1 and later) **Deletion protection** and select **Keep deleted projects**.
+   - (GitLab 15.0 and earlier) **Enable delayed project deletion** and tick the checkbox.
+1. Optional. To prevent subgroups from changing this setting, select:
+   - (GitLab 15.1 and later), **Enforce deletion protection for all subgroups**
+   - (GitLab 15.0 and earlier), **Enforce for all subgroups**.
 1. Select **Save changes**.
 
 NOTE:
@@ -766,8 +775,6 @@ By default, projects in a group can be forked.
 Optionally, on [GitLab Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-Previously, this setting was available only for groups enforcing a
-[Group Managed Account](saml_sso/group_managed_accounts.md) in SAML.
 This setting will be removed from the SAML setting page, and migrated to the
 group settings page. In the interim period, both of these settings are taken into consideration.
 If even one is set to `true`, then the group does not allow outside forks.
@@ -800,7 +807,7 @@ The group's new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
-## Group approval settings **(PREMIUM)**
+## Group merge request approval settings **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -844,6 +851,7 @@ Support for group-level settings for merge request approval rules is tracked in 
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
 - Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md).
+- [Control access and visibility](../admin_area/settings/visibility_and_access_controls.md).
 
 ## Troubleshooting
 
@@ -855,7 +863,7 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 - `json.allowed`: `false`
 
 In viewing the log entries, compare the `remote.ip` with the list of
-[allowed IPs](#restrict-group-access-by-ip-address) for the group.
+[allowed IPs](#group-access-restriction-by-ip-address) for the group.
 
 ### Validation errors on namespaces and groups
 

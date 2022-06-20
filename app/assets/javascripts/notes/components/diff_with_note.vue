@@ -1,8 +1,5 @@
 <script>
-import {
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlSkeletonLoader, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
@@ -16,7 +13,7 @@ const FIRST_CHAR_REGEX = /^(\+|-| )/;
 export default {
   components: {
     DiffFileHeader,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     DiffViewer,
     ImageDiffOverlay,
   },
@@ -107,7 +104,7 @@ export default {
           <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
             {{ __('Unable to load the diff') }}
             <button
-              class="btn-link btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button"
+              class="gl-button btn-link btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button gl-reset-font-size!"
               @click="fetchDiff"
             >
               {{ __('Try again') }}
@@ -115,7 +112,7 @@ export default {
           </td>
           <td v-else class="line_content js-success-lazy-load">
             <span></span>
-            <gl-skeleton-loading />
+            <gl-skeleton-loader />
             <span></span>
           </td>
         </tr>

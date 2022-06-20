@@ -64,9 +64,10 @@ export default {
         v-if="isActive"
         name="arrow-right"
         class="icon-arrow-right gl-absolute gl-display-block"
+        :size="14"
       />
 
-      <ci-icon :status="job.status" />
+      <ci-icon :status="job.status" class="gl-mr-2" :size="14" />
 
       <span class="gl-text-truncate gl-w-full">{{ jobName }}</span>
 

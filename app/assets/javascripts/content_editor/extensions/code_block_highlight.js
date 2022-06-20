@@ -4,7 +4,8 @@ import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import languageLoader from '../services/code_block_language_loader';
 import CodeBlockWrapper from '../components/wrappers/code_block.vue';
 
-const extractLanguage = (element) => element.getAttribute('lang');
+const extractLanguage = (element) => element.dataset.canonicalLang ?? element.getAttribute('lang');
+
 export const backtickInputRegex = /^```([a-z]+)?[\s\n]$/;
 export const tildeInputRegex = /^~~~([a-z]+)?[\s\n]$/;
 

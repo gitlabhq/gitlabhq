@@ -4,9 +4,9 @@ class NoteSummary
   attr_reader :note
   attr_reader :metadata
 
-  def initialize(noteable, project, author, body, action: nil, commit_count: nil)
+  def initialize(noteable, project, author, body, action: nil, commit_count: nil, created_at: nil)
     @note = { noteable: noteable,
-              created_at: noteable.system_note_timestamp,
+              created_at: created_at || noteable.system_note_timestamp,
               project: project, author: author, note: body }
     @metadata = { action: action, commit_count: commit_count }.compact
 

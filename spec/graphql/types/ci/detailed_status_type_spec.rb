@@ -17,12 +17,10 @@ RSpec.describe Types::Ci::DetailedStatusType do
 
   describe 'id field' do
     it 'correctly renders the field' do
-      parent_object = double(:parent_object, object: stage)
-      parent = double(:parent, object: parent_object)
       status = stage.detailed_status(stage.pipeline.user)
       expected_id = "#{status.id}-#{stage.id}"
 
-      expect(resolve_field('id', status, extras: { parent: parent })).to eq(expected_id)
+      expect(resolve_field('id', status, extras: { parent: stage }, arg_style: :internal)).to eq(expected_id)
     end
   end
 
@@ -38,7 +36,7 @@ RSpec.describe Types::Ci::DetailedStatusType do
           title: status.action_title
         }
 
-      expect(resolve_field('action', status)).to eq(expected_status)
+      expect(resolve_field('action', status, arg_style: :internal)).to eq(expected_status)
     end
   end
 end

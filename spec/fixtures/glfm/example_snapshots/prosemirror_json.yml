@@ -1,5 +1,5 @@
 ---
-02_01__preliminaries__tabs__01: |-
+02_01__preliminaries__tabs__001: |-
   {
     "type": "doc",
     "content": [
@@ -18,7 +18,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__02: |-
+02_01__preliminaries__tabs__002: |-
   {
     "type": "doc",
     "content": [
@@ -37,7 +37,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__03: |-
+02_01__preliminaries__tabs__003: |-
   {
     "type": "doc",
     "content": [
@@ -56,7 +56,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__04: |-
+02_01__preliminaries__tabs__004: |-
   {
     "type": "doc",
     "content": [
@@ -93,7 +93,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__05: |-
+02_01__preliminaries__tabs__005: |-
   {
     "type": "doc",
     "content": [
@@ -134,7 +134,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__06: |-
+02_01__preliminaries__tabs__006: |-
   {
     "type": "doc",
     "content": [
@@ -161,7 +161,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__07: |-
+02_01__preliminaries__tabs__007: |-
   {
     "type": "doc",
     "content": [
@@ -196,7 +196,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__08: |-
+02_01__preliminaries__tabs__008: |-
   {
     "type": "doc",
     "content": [
@@ -215,7 +215,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__09: |-
+02_01__preliminaries__tabs__009: |-
   {
     "type": "doc",
     "content": [
@@ -233,7 +233,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -251,7 +251,7 @@
                         "content": [
                           {
                             "type": "text",
-                            "text": "bar\n"
+                            "text": "bar"
                           }
                         ]
                       },
@@ -287,7 +287,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__10: |-
+02_01__preliminaries__tabs__010: |-
   {
     "type": "doc",
     "content": [
@@ -305,7 +305,7 @@
       }
     ]
   }
-02_01__preliminaries__tabs__11: |-
+02_01__preliminaries__tabs__011: |-
   {
     "type": "doc",
     "content": [
@@ -314,7 +314,7 @@
       }
     ]
   }
-03_01__blocks_and_inlines__precedence__01: |-
+03_01__blocks_and_inlines__precedence__001: |-
   {
     "type": "doc",
     "content": [
@@ -356,7 +356,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__01: |-
+04_01__leaf_blocks__thematic_breaks__001: |-
   {
     "type": "doc",
     "content": [
@@ -371,7 +371,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__02: |-
+04_01__leaf_blocks__thematic_breaks__002: |-
   {
     "type": "doc",
     "content": [
@@ -386,7 +386,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__03: |-
+04_01__leaf_blocks__thematic_breaks__003: |-
   {
     "type": "doc",
     "content": [
@@ -401,7 +401,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__04: |-
+04_01__leaf_blocks__thematic_breaks__004: |-
   {
     "type": "doc",
     "content": [
@@ -416,7 +416,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__05: |-
+04_01__leaf_blocks__thematic_breaks__005: |-
   {
     "type": "doc",
     "content": [
@@ -431,7 +431,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__06: |-
+04_01__leaf_blocks__thematic_breaks__006: |-
   {
     "type": "doc",
     "content": [
@@ -450,7 +450,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__07: |-
+04_01__leaf_blocks__thematic_breaks__007: |-
   {
     "type": "doc",
     "content": [
@@ -465,7 +465,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__08: |-
+04_01__leaf_blocks__thematic_breaks__008: |-
   {
     "type": "doc",
     "content": [
@@ -474,7 +474,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__09: |-
+04_01__leaf_blocks__thematic_breaks__009: |-
   {
     "type": "doc",
     "content": [
@@ -483,7 +483,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__10: |-
+04_01__leaf_blocks__thematic_breaks__010: |-
   {
     "type": "doc",
     "content": [
@@ -492,7 +492,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__11: |-
+04_01__leaf_blocks__thematic_breaks__011: |-
   {
     "type": "doc",
     "content": [
@@ -501,7 +501,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__12: |-
+04_01__leaf_blocks__thematic_breaks__012: |-
   {
     "type": "doc",
     "content": [
@@ -510,7 +510,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__13: |-
+04_01__leaf_blocks__thematic_breaks__013: |-
   {
     "type": "doc",
     "content": [
@@ -543,7 +543,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__14: |-
+04_01__leaf_blocks__thematic_breaks__014: |-
   {
     "type": "doc",
     "content": [
@@ -563,7 +563,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__15: |-
+04_01__leaf_blocks__thematic_breaks__015: |-
   {
     "type": "doc",
     "content": [
@@ -616,7 +616,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__16: |-
+04_01__leaf_blocks__thematic_breaks__016: |-
   {
     "type": "doc",
     "content": [
@@ -643,7 +643,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__17: |-
+04_01__leaf_blocks__thematic_breaks__017: |-
   {
     "type": "doc",
     "content": [
@@ -670,7 +670,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__18: |-
+04_01__leaf_blocks__thematic_breaks__018: |-
   {
     "type": "doc",
     "content": [
@@ -723,7 +723,7 @@
       }
     ]
   }
-04_01__leaf_blocks__thematic_breaks__19: |-
+04_01__leaf_blocks__thematic_breaks__019: |-
   {
     "type": "doc",
     "content": [
@@ -762,7 +762,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__01: |-
+04_02__leaf_blocks__atx_headings__001: |-
   {
     "type": "doc",
     "content": [
@@ -840,7 +840,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__02: |-
+04_02__leaf_blocks__atx_headings__002: |-
   {
     "type": "doc",
     "content": [
@@ -855,7 +855,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__03: |-
+04_02__leaf_blocks__atx_headings__003: |-
   {
     "type": "doc",
     "content": [
@@ -879,7 +879,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__04: |-
+04_02__leaf_blocks__atx_headings__004: |-
   {
     "type": "doc",
     "content": [
@@ -894,7 +894,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__05: |-
+04_02__leaf_blocks__atx_headings__005: |-
   {
     "type": "doc",
     "content": [
@@ -925,7 +925,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__06: |-
+04_02__leaf_blocks__atx_headings__006: |-
   {
     "type": "doc",
     "content": [
@@ -943,7 +943,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__07: |-
+04_02__leaf_blocks__atx_headings__007: |-
   {
     "type": "doc",
     "content": [
@@ -985,7 +985,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__08: |-
+04_02__leaf_blocks__atx_headings__008: |-
   {
     "type": "doc",
     "content": [
@@ -1004,7 +1004,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__09: |-
+04_02__leaf_blocks__atx_headings__009: |-
   {
     "type": "doc",
     "content": [
@@ -1019,7 +1019,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__10: |-
+04_02__leaf_blocks__atx_headings__010: |-
   {
     "type": "doc",
     "content": [
@@ -1049,7 +1049,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__11: |-
+04_02__leaf_blocks__atx_headings__011: |-
   {
     "type": "doc",
     "content": [
@@ -1079,7 +1079,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__12: |-
+04_02__leaf_blocks__atx_headings__012: |-
   {
     "type": "doc",
     "content": [
@@ -1097,7 +1097,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__13: |-
+04_02__leaf_blocks__atx_headings__013: |-
   {
     "type": "doc",
     "content": [
@@ -1115,7 +1115,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__14: |-
+04_02__leaf_blocks__atx_headings__014: |-
   {
     "type": "doc",
     "content": [
@@ -1133,7 +1133,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__15: |-
+04_02__leaf_blocks__atx_headings__015: |-
   {
     "type": "doc",
     "content": [
@@ -1175,7 +1175,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__16: |-
+04_02__leaf_blocks__atx_headings__016: |-
   {
     "type": "doc",
     "content": [
@@ -1199,7 +1199,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__17: |-
+04_02__leaf_blocks__atx_headings__017: |-
   {
     "type": "doc",
     "content": [
@@ -1235,7 +1235,7 @@
       }
     ]
   }
-04_02__leaf_blocks__atx_headings__18: |-
+04_02__leaf_blocks__atx_headings__018: |-
   {
     "type": "doc",
     "content": [
@@ -1259,7 +1259,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__01: |-
+04_03__leaf_blocks__setext_headings__001: |-
   {
     "type": "doc",
     "content": [
@@ -1307,7 +1307,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__02: |-
+04_03__leaf_blocks__setext_headings__002: |-
   {
     "type": "doc",
     "content": [
@@ -1334,7 +1334,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__03: |-
+04_03__leaf_blocks__setext_headings__003: |-
   {
     "type": "doc",
     "content": [
@@ -1361,7 +1361,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__04: |-
+04_03__leaf_blocks__setext_headings__004: |-
   {
     "type": "doc",
     "content": [
@@ -1391,7 +1391,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__05: |-
+04_03__leaf_blocks__setext_headings__005: |-
   {
     "type": "doc",
     "content": [
@@ -1433,7 +1433,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__06: |-
+04_03__leaf_blocks__setext_headings__006: |-
   {
     "type": "doc",
     "content": [
@@ -1455,7 +1455,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__07: |-
+04_03__leaf_blocks__setext_headings__007: |-
   {
     "type": "doc",
     "content": [
@@ -1473,7 +1473,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__08: |-
+04_03__leaf_blocks__setext_headings__008: |-
   {
     "type": "doc",
     "content": [
@@ -1488,7 +1488,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__09: |-
+04_03__leaf_blocks__setext_headings__009: |-
   {
     "type": "doc",
     "content": [
@@ -1515,7 +1515,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__10: |-
+04_03__leaf_blocks__setext_headings__010: |-
   {
     "type": "doc",
     "content": [
@@ -1533,7 +1533,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__11: |-
+04_03__leaf_blocks__setext_headings__011: |-
   {
     "type": "doc",
     "content": [
@@ -1551,7 +1551,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__12: |-
+04_03__leaf_blocks__setext_headings__012: |-
   {
     "type": "doc",
     "content": [
@@ -1599,7 +1599,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__13: |-
+04_03__leaf_blocks__setext_headings__013: |-
   {
     "type": "doc",
     "content": [
@@ -1625,7 +1625,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__14: |-
+04_03__leaf_blocks__setext_headings__014: |-
   {
     "type": "doc",
     "content": [
@@ -1648,7 +1648,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__15: |-
+04_03__leaf_blocks__setext_headings__015: |-
   {
     "type": "doc",
     "content": [
@@ -1679,7 +1679,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__16: |-
+04_03__leaf_blocks__setext_headings__016: |-
   {
     "type": "doc",
     "content": [
@@ -1697,7 +1697,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__17: |-
+04_03__leaf_blocks__setext_headings__017: |-
   {
     "type": "doc",
     "content": [
@@ -1739,7 +1739,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__18: |-
+04_03__leaf_blocks__setext_headings__018: |-
   {
     "type": "doc",
     "content": [
@@ -1754,7 +1754,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__19: |-
+04_03__leaf_blocks__setext_headings__019: |-
   {
     "type": "doc",
     "content": [
@@ -1766,7 +1766,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__20: |-
+04_03__leaf_blocks__setext_headings__020: |-
   {
     "type": "doc",
     "content": [
@@ -1797,7 +1797,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__21: |-
+04_03__leaf_blocks__setext_headings__021: |-
   {
     "type": "doc",
     "content": [
@@ -1819,7 +1819,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__22: |-
+04_03__leaf_blocks__setext_headings__022: |-
   {
     "type": "doc",
     "content": [
@@ -1845,7 +1845,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__23: |-
+04_03__leaf_blocks__setext_headings__023: |-
   {
     "type": "doc",
     "content": [
@@ -1863,7 +1863,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__24: |-
+04_03__leaf_blocks__setext_headings__024: |-
   {
     "type": "doc",
     "content": [
@@ -1899,7 +1899,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__25: |-
+04_03__leaf_blocks__setext_headings__025: |-
   {
     "type": "doc",
     "content": [
@@ -1926,7 +1926,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__26: |-
+04_03__leaf_blocks__setext_headings__026: |-
   {
     "type": "doc",
     "content": [
@@ -1953,7 +1953,7 @@
       }
     ]
   }
-04_03__leaf_blocks__setext_headings__27: |-
+04_03__leaf_blocks__setext_headings__027: |-
   {
     "type": "doc",
     "content": [
@@ -1968,7 +1968,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__01: |-
+04_04__leaf_blocks__indented_code_blocks__001: |-
   {
     "type": "doc",
     "content": [
@@ -1987,7 +1987,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__02: |-
+04_04__leaf_blocks__indented_code_blocks__002: |-
   {
     "type": "doc",
     "content": [
@@ -2024,7 +2024,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__03: |-
+04_04__leaf_blocks__indented_code_blocks__003: |-
   {
     "type": "doc",
     "content": [
@@ -2075,7 +2075,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__04: |-
+04_04__leaf_blocks__indented_code_blocks__004: |-
   {
     "type": "doc",
     "content": [
@@ -2094,7 +2094,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__05: |-
+04_04__leaf_blocks__indented_code_blocks__005: |-
   {
     "type": "doc",
     "content": [
@@ -2113,7 +2113,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__06: |-
+04_04__leaf_blocks__indented_code_blocks__006: |-
   {
     "type": "doc",
     "content": [
@@ -2132,7 +2132,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__07: |-
+04_04__leaf_blocks__indented_code_blocks__007: |-
   {
     "type": "doc",
     "content": [
@@ -2147,7 +2147,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__08: |-
+04_04__leaf_blocks__indented_code_blocks__008: |-
   {
     "type": "doc",
     "content": [
@@ -2175,7 +2175,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__09: |-
+04_04__leaf_blocks__indented_code_blocks__009: |-
   {
     "type": "doc",
     "content": [
@@ -2234,7 +2234,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__10: |-
+04_04__leaf_blocks__indented_code_blocks__010: |-
   {
     "type": "doc",
     "content": [
@@ -2253,7 +2253,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__11: |-
+04_04__leaf_blocks__indented_code_blocks__011: |-
   {
     "type": "doc",
     "content": [
@@ -2272,7 +2272,7 @@
       }
     ]
   }
-04_04__leaf_blocks__indented_code_blocks__12: |-
+04_04__leaf_blocks__indented_code_blocks__012: |-
   {
     "type": "doc",
     "content": [
@@ -2291,7 +2291,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__01: |-
+04_05__leaf_blocks__fenced_code_blocks__001: |-
   {
     "type": "doc",
     "content": [
@@ -2310,7 +2310,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__02: |-
+04_05__leaf_blocks__fenced_code_blocks__002: |-
   {
     "type": "doc",
     "content": [
@@ -2329,7 +2329,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__03: |-
+04_05__leaf_blocks__fenced_code_blocks__003: |-
   {
     "type": "doc",
     "content": [
@@ -2349,7 +2349,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__04: |-
+04_05__leaf_blocks__fenced_code_blocks__004: |-
   {
     "type": "doc",
     "content": [
@@ -2368,7 +2368,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__05: |-
+04_05__leaf_blocks__fenced_code_blocks__005: |-
   {
     "type": "doc",
     "content": [
@@ -2387,7 +2387,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__06: |-
+04_05__leaf_blocks__fenced_code_blocks__006: |-
   {
     "type": "doc",
     "content": [
@@ -2406,7 +2406,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__07: |-
+04_05__leaf_blocks__fenced_code_blocks__007: |-
   {
     "type": "doc",
     "content": [
@@ -2425,7 +2425,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__08: |-
+04_05__leaf_blocks__fenced_code_blocks__008: |-
   {
     "type": "doc",
     "content": [
@@ -2438,7 +2438,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__09: |-
+04_05__leaf_blocks__fenced_code_blocks__009: |-
   {
     "type": "doc",
     "content": [
@@ -2457,7 +2457,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__10: |-
+04_05__leaf_blocks__fenced_code_blocks__010: |-
   {
     "type": "doc",
     "content": [
@@ -2493,7 +2493,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__11: |-
+04_05__leaf_blocks__fenced_code_blocks__011: |-
   {
     "type": "doc",
     "content": [
@@ -2512,7 +2512,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__12: |-
+04_05__leaf_blocks__fenced_code_blocks__012: |-
   {
     "type": "doc",
     "content": [
@@ -2525,7 +2525,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__13: |-
+04_05__leaf_blocks__fenced_code_blocks__013: |-
   {
     "type": "doc",
     "content": [
@@ -2544,7 +2544,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__14: |-
+04_05__leaf_blocks__fenced_code_blocks__014: |-
   {
     "type": "doc",
     "content": [
@@ -2563,7 +2563,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__15: |-
+04_05__leaf_blocks__fenced_code_blocks__015: |-
   {
     "type": "doc",
     "content": [
@@ -2582,7 +2582,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__16: |-
+04_05__leaf_blocks__fenced_code_blocks__016: |-
   {
     "type": "doc",
     "content": [
@@ -2601,7 +2601,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__17: |-
+04_05__leaf_blocks__fenced_code_blocks__017: |-
   {
     "type": "doc",
     "content": [
@@ -2620,7 +2620,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__18: |-
+04_05__leaf_blocks__fenced_code_blocks__018: |-
   {
     "type": "doc",
     "content": [
@@ -2639,7 +2639,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__19: |-
+04_05__leaf_blocks__fenced_code_blocks__019: |-
   {
     "type": "doc",
     "content": [
@@ -2658,7 +2658,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__20: |-
+04_05__leaf_blocks__fenced_code_blocks__020: |-
   {
     "type": "doc",
     "content": [
@@ -2678,7 +2678,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__21: |-
+04_05__leaf_blocks__fenced_code_blocks__021: |-
   {
     "type": "doc",
     "content": [
@@ -2697,7 +2697,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__22: |-
+04_05__leaf_blocks__fenced_code_blocks__022: |-
   {
     "type": "doc",
     "content": [
@@ -2734,7 +2734,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__23: |-
+04_05__leaf_blocks__fenced_code_blocks__023: |-
   {
     "type": "doc",
     "content": [
@@ -2777,7 +2777,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__24: |-
+04_05__leaf_blocks__fenced_code_blocks__024: |-
   {
     "type": "doc",
     "content": [
@@ -2796,7 +2796,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__25: |-
+04_05__leaf_blocks__fenced_code_blocks__025: |-
   {
     "type": "doc",
     "content": [
@@ -2815,7 +2815,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__26: |-
+04_05__leaf_blocks__fenced_code_blocks__026: |-
   {
     "type": "doc",
     "content": [
@@ -2828,7 +2828,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__27: |-
+04_05__leaf_blocks__fenced_code_blocks__027: |-
   {
     "type": "doc",
     "content": [
@@ -2852,7 +2852,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__28: |-
+04_05__leaf_blocks__fenced_code_blocks__028: |-
   {
     "type": "doc",
     "content": [
@@ -2871,7 +2871,7 @@
       }
     ]
   }
-04_05__leaf_blocks__fenced_code_blocks__29: |-
+04_05__leaf_blocks__fenced_code_blocks__029: |-
   {
     "type": "doc",
     "content": [
@@ -2890,31 +2890,43 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__01: |-
+04_06__leaf_blocks__html_blocks__001: |-
   Error - check implementation:
   Hast node of type "table" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__02: |-
+04_06__leaf_blocks__html_blocks__002: |-
   Error - check implementation:
   Hast node of type "table" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__03: |-
+04_06__leaf_blocks__html_blocks__003: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__04: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
-04_06__leaf_blocks__html_blocks__05: |-
+04_06__leaf_blocks__html_blocks__004: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "\n*foo*"
+          }
+        ]
+      }
+    ]
+  }
+04_06__leaf_blocks__html_blocks__005: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__06: |-
+04_06__leaf_blocks__html_blocks__006: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__07: |-
+04_06__leaf_blocks__html_blocks__007: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__08: |-
+04_06__leaf_blocks__html_blocks__008: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__09: |-
+04_06__leaf_blocks__html_blocks__009: |-
   {
     "type": "doc",
     "content": [
@@ -2923,7 +2935,7 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__10: |-
+04_06__leaf_blocks__html_blocks__010: |-
   {
     "type": "doc",
     "content": [
@@ -2932,7 +2944,7 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__11: |-
+04_06__leaf_blocks__html_blocks__011: |-
   {
     "type": "doc",
     "content": [
@@ -2941,37 +2953,127 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__12: |-
+04_06__leaf_blocks__html_blocks__012: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__13: |-
+04_06__leaf_blocks__html_blocks__013: |-
   Error - check implementation:
   Hast node of type "table" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__14: |-
+04_06__leaf_blocks__html_blocks__014: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__15: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
-04_06__leaf_blocks__html_blocks__16: |-
+04_06__leaf_blocks__html_blocks__015: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "foo",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "\n*bar*\n"
+          }
+        ]
+      }
+    ]
+  }
+04_06__leaf_blocks__html_blocks__016: |-
   Error - check implementation:
   Hast node of type "warning" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__17: |-
+04_06__leaf_blocks__html_blocks__017: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "\n*bar*\n"
+          }
+        ]
+      }
+    ]
+  }
+04_06__leaf_blocks__html_blocks__018: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "\n*bar*"
+          }
+        ]
+      }
+    ]
+  }
+04_06__leaf_blocks__html_blocks__019: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "\n*foo*\n"
+          }
+        ]
+      }
+    ]
+  }
+04_06__leaf_blocks__html_blocks__020: |-
   Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
-04_06__leaf_blocks__html_blocks__18: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
-04_06__leaf_blocks__html_blocks__19: |-
-  Error - check implementation:
-  Hast node of type "del" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__20: |-
-  Error - check implementation:
-  Hast node of type "del" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__21: |-
-  Error - check implementation:
-  Hast node of type "del" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__22: |-
+  Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
+04_06__leaf_blocks__html_blocks__021: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              },
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "foo"
+          }
+        ]
+      }
+    ]
+  }
+04_06__leaf_blocks__html_blocks__022: |-
   {
     "type": "doc",
     "content": [
@@ -2999,37 +3101,37 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__23: |-
+04_06__leaf_blocks__html_blocks__023: |-
   Error - check implementation:
   Hast node of type "script" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__24: |-
+04_06__leaf_blocks__html_blocks__024: |-
   Error - check implementation:
   Hast node of type "style" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__25: |-
+04_06__leaf_blocks__html_blocks__025: |-
   Error - check implementation:
   Hast node of type "style" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__26: |-
+04_06__leaf_blocks__html_blocks__026: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__27: |-
+04_06__leaf_blocks__html_blocks__027: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__28: |-
+04_06__leaf_blocks__html_blocks__028: |-
   Error - check implementation:
   Hast node of type "style" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__29: |-
+04_06__leaf_blocks__html_blocks__029: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__30: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+04_06__leaf_blocks__html_blocks__030: |-
   Error - check implementation:
   Hast node of type "script" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__31: |-
+04_06__leaf_blocks__html_blocks__031: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__32: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+04_06__leaf_blocks__html_blocks__032: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__33: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+04_06__leaf_blocks__html_blocks__033: |-
   {
     "type": "doc",
     "content": [
@@ -3038,22 +3140,22 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__34: |-
+04_06__leaf_blocks__html_blocks__034: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__35: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+04_06__leaf_blocks__html_blocks__035: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__36: |-
-  Error - check implementation:
-  Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__37: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+04_06__leaf_blocks__html_blocks__036: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__38: |-
+04_06__leaf_blocks__html_blocks__037: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__39: |-
+04_06__leaf_blocks__html_blocks__038: |-
+  Error - check implementation:
+  Hast node of type "div" not supported by this converter. Please, provide an specification.
+04_06__leaf_blocks__html_blocks__039: |-
   {
     "type": "doc",
     "content": [
@@ -3072,6 +3174,7 @@
                 "attrs": {
                   "href": "bar",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3083,19 +3186,19 @@
       }
     ]
   }
-04_06__leaf_blocks__html_blocks__40: |-
+04_06__leaf_blocks__html_blocks__040: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__41: |-
+04_06__leaf_blocks__html_blocks__041: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__42: |-
+04_06__leaf_blocks__html_blocks__042: |-
   Error - check implementation:
   Hast node of type "table" not supported by this converter. Please, provide an specification.
-04_06__leaf_blocks__html_blocks__43: |-
+04_06__leaf_blocks__html_blocks__043: |-
   Error - check implementation:
   Hast node of type "table" not supported by this converter. Please, provide an specification.
-04_07__leaf_blocks__link_reference_definitions__01: |-
+04_07__leaf_blocks__link_reference_definitions__001: |-
   {
     "type": "doc",
     "content": [
@@ -3110,6 +3213,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -3121,7 +3225,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__02: |-
+04_07__leaf_blocks__link_reference_definitions__002: |-
   {
     "type": "doc",
     "content": [
@@ -3136,6 +3240,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "the title",
                   "canonicalSrc": null
                 }
@@ -3147,7 +3252,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__03: |-
+04_07__leaf_blocks__link_reference_definitions__003: |-
   {
     "type": "doc",
     "content": [
@@ -3162,6 +3267,7 @@
                 "attrs": {
                   "href": "my_(url)",
                   "target": "_blank",
+                  "class": null,
                   "title": "title (with parens)",
                   "canonicalSrc": null
                 }
@@ -3173,7 +3279,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__04: |-
+04_07__leaf_blocks__link_reference_definitions__004: |-
   {
     "type": "doc",
     "content": [
@@ -3188,6 +3294,7 @@
                 "attrs": {
                   "href": "my%20url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -3199,7 +3306,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__05: |-
+04_07__leaf_blocks__link_reference_definitions__005: |-
   {
     "type": "doc",
     "content": [
@@ -3214,6 +3321,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "\ntitle\nline1\nline2\n",
                   "canonicalSrc": null
                 }
@@ -3225,7 +3333,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__06: |-
+04_07__leaf_blocks__link_reference_definitions__006: |-
   {
     "type": "doc",
     "content": [
@@ -3258,7 +3366,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__07: |-
+04_07__leaf_blocks__link_reference_definitions__007: |-
   {
     "type": "doc",
     "content": [
@@ -3273,6 +3381,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3284,7 +3393,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__08: |-
+04_07__leaf_blocks__link_reference_definitions__008: |-
   {
     "type": "doc",
     "content": [
@@ -3308,7 +3417,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__09: |-
+04_07__leaf_blocks__link_reference_definitions__009: |-
   {
     "type": "doc",
     "content": [
@@ -3323,6 +3432,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3334,10 +3444,10 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__10: |-
+04_07__leaf_blocks__link_reference_definitions__010: |-
   Error - check implementation:
   Hast node of type "bar" not supported by this converter. Please, provide an specification.
-04_07__leaf_blocks__link_reference_definitions__11: |-
+04_07__leaf_blocks__link_reference_definitions__011: |-
   {
     "type": "doc",
     "content": [
@@ -3352,6 +3462,7 @@
                 "attrs": {
                   "href": "/url%5Cbar*baz",
                   "target": "_blank",
+                  "class": null,
                   "title": "foo\"bar\\baz",
                   "canonicalSrc": null
                 }
@@ -3363,7 +3474,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__12: |-
+04_07__leaf_blocks__link_reference_definitions__012: |-
   {
     "type": "doc",
     "content": [
@@ -3378,6 +3489,7 @@
                 "attrs": {
                   "href": "url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3389,7 +3501,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__13: |-
+04_07__leaf_blocks__link_reference_definitions__013: |-
   {
     "type": "doc",
     "content": [
@@ -3404,6 +3516,7 @@
                 "attrs": {
                   "href": "first",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3415,7 +3528,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__14: |-
+04_07__leaf_blocks__link_reference_definitions__014: |-
   {
     "type": "doc",
     "content": [
@@ -3430,6 +3543,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3441,7 +3555,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__15: |-
+04_07__leaf_blocks__link_reference_definitions__015: |-
   {
     "type": "doc",
     "content": [
@@ -3456,6 +3570,7 @@
                 "attrs": {
                   "href": "/%CF%86%CE%BF%CF%85",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3467,7 +3582,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__16: |-
+04_07__leaf_blocks__link_reference_definitions__016: |-
   {
     "type": "doc",
     "content": [
@@ -3476,7 +3591,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__17: |-
+04_07__leaf_blocks__link_reference_definitions__017: |-
   {
     "type": "doc",
     "content": [
@@ -3491,7 +3606,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__18: |-
+04_07__leaf_blocks__link_reference_definitions__018: |-
   {
     "type": "doc",
     "content": [
@@ -3506,7 +3621,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__19: |-
+04_07__leaf_blocks__link_reference_definitions__019: |-
   {
     "type": "doc",
     "content": [
@@ -3521,7 +3636,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__20: |-
+04_07__leaf_blocks__link_reference_definitions__020: |-
   {
     "type": "doc",
     "content": [
@@ -3549,7 +3664,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__21: |-
+04_07__leaf_blocks__link_reference_definitions__021: |-
   {
     "type": "doc",
     "content": [
@@ -3577,7 +3692,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__22: |-
+04_07__leaf_blocks__link_reference_definitions__022: |-
   {
     "type": "doc",
     "content": [
@@ -3601,7 +3716,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__23: |-
+04_07__leaf_blocks__link_reference_definitions__023: |-
   {
     "type": "doc",
     "content": [
@@ -3619,6 +3734,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3647,7 +3763,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__24: |-
+04_07__leaf_blocks__link_reference_definitions__024: |-
   {
     "type": "doc",
     "content": [
@@ -3674,6 +3790,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3685,7 +3802,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__25: |-
+04_07__leaf_blocks__link_reference_definitions__025: |-
   {
     "type": "doc",
     "content": [
@@ -3704,6 +3821,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3715,7 +3833,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__26: |-
+04_07__leaf_blocks__link_reference_definitions__026: |-
   {
     "type": "doc",
     "content": [
@@ -3730,6 +3848,7 @@
                 "attrs": {
                   "href": "/foo-url",
                   "target": "_blank",
+                  "class": null,
                   "title": "foo",
                   "canonicalSrc": null
                 }
@@ -3749,6 +3868,7 @@
                 "attrs": {
                   "href": "/bar-url",
                   "target": "_blank",
+                  "class": null,
                   "title": "bar",
                   "canonicalSrc": null
                 }
@@ -3768,6 +3888,7 @@
                 "attrs": {
                   "href": "/baz-url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3779,7 +3900,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__27: |-
+04_07__leaf_blocks__link_reference_definitions__027: |-
   {
     "type": "doc",
     "content": [
@@ -3794,6 +3915,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -3816,7 +3938,7 @@
       }
     ]
   }
-04_07__leaf_blocks__link_reference_definitions__28: |-
+04_07__leaf_blocks__link_reference_definitions__028: |-
   {
     "type": "doc",
     "content": [
@@ -3825,7 +3947,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__01: |-
+04_08__leaf_blocks__paragraphs__001: |-
   {
     "type": "doc",
     "content": [
@@ -3849,7 +3971,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__02: |-
+04_08__leaf_blocks__paragraphs__002: |-
   {
     "type": "doc",
     "content": [
@@ -3873,7 +3995,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__03: |-
+04_08__leaf_blocks__paragraphs__003: |-
   {
     "type": "doc",
     "content": [
@@ -3897,7 +4019,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__04: |-
+04_08__leaf_blocks__paragraphs__004: |-
   {
     "type": "doc",
     "content": [
@@ -3912,7 +4034,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__05: |-
+04_08__leaf_blocks__paragraphs__005: |-
   {
     "type": "doc",
     "content": [
@@ -3927,7 +4049,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__06: |-
+04_08__leaf_blocks__paragraphs__006: |-
   {
     "type": "doc",
     "content": [
@@ -3942,7 +4064,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__07: |-
+04_08__leaf_blocks__paragraphs__007: |-
   {
     "type": "doc",
     "content": [
@@ -3970,7 +4092,7 @@
       }
     ]
   }
-04_08__leaf_blocks__paragraphs__08: |-
+04_08__leaf_blocks__paragraphs__008: |-
   {
     "type": "doc",
     "content": [
@@ -3992,7 +4114,7 @@
       }
     ]
   }
-04_09__leaf_blocks__blank_lines__01: |-
+04_09__leaf_blocks__blank_lines__001: |-
   {
     "type": "doc",
     "content": [
@@ -4019,134 +4141,22 @@
       }
     ]
   }
-04_10__leaf_blocks__tables_extension__01: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| foo | bar |\n| --- | --- |\n| baz | bim |"
-          }
-        ]
-      }
-    ]
-  }
-04_10__leaf_blocks__tables_extension__02: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | defghi |\n:-: | -----------:\nbar | baz"
-          }
-        ]
-      }
-    ]
-  }
-04_10__leaf_blocks__tables_extension__03: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| f|oo  |\n| ------ |\n| b "
-          },
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "code"
-              }
-            ],
-            "text": "\\|"
-          },
-          {
-            "type": "text",
-            "text": " az |\n| b "
-          },
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "bold"
-              }
-            ],
-            "text": "|"
-          },
-          {
-            "type": "text",
-            "text": " im |"
-          }
-        ]
-      }
-    ]
-  }
-04_10__leaf_blocks__tables_extension__04: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |\n| bar | baz |"
-          }
-        ]
-      },
-      {
-        "type": "blockquote",
-        "attrs": {
-          "multiline": false
-        },
-        "content": [
-          {
-            "type": "paragraph",
-            "content": [
-              {
-                "type": "text",
-                "text": "bar"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-04_10__leaf_blocks__tables_extension__05: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |\n| bar | baz |\nbar"
-          }
-        ]
-      },
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "bar"
-          }
-        ]
-      }
-    ]
-  }
-04_10__leaf_blocks__tables_extension__06: |-
+04_10__leaf_blocks__tables_extension__001: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+04_10__leaf_blocks__tables_extension__002: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+04_10__leaf_blocks__tables_extension__003: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+04_10__leaf_blocks__tables_extension__004: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+04_10__leaf_blocks__tables_extension__005: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+04_10__leaf_blocks__tables_extension__006: |-
   {
     "type": "doc",
     "content": [
@@ -4161,37 +4171,13 @@
       }
     ]
   }
-04_10__leaf_blocks__tables_extension__07: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |\n| bar |\n| bar | baz | boo |"
-          }
-        ]
-      }
-    ]
-  }
-04_10__leaf_blocks__tables_extension__08: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "| abc | def |\n| --- | --- |"
-          }
-        ]
-      }
-    ]
-  }
-05_01__container_blocks__block_quotes__01: |-
+04_10__leaf_blocks__tables_extension__007: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+04_10__leaf_blocks__tables_extension__008: |-
+  Error - check implementation:
+  Hast node of type "table" not supported by this converter. Please, provide an specification.
+05_01__container_blocks__block_quotes__001: |-
   {
     "type": "doc",
     "content": [
@@ -4226,7 +4212,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__02: |-
+05_01__container_blocks__block_quotes__002: |-
   {
     "type": "doc",
     "content": [
@@ -4261,7 +4247,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__03: |-
+05_01__container_blocks__block_quotes__003: |-
   {
     "type": "doc",
     "content": [
@@ -4296,7 +4282,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__04: |-
+05_01__container_blocks__block_quotes__004: |-
   {
     "type": "doc",
     "content": [
@@ -4315,7 +4301,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__05: |-
+05_01__container_blocks__block_quotes__005: |-
   {
     "type": "doc",
     "content": [
@@ -4350,7 +4336,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__06: |-
+05_01__container_blocks__block_quotes__006: |-
   {
     "type": "doc",
     "content": [
@@ -4373,7 +4359,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__07: |-
+05_01__container_blocks__block_quotes__007: |-
   {
     "type": "doc",
     "content": [
@@ -4399,7 +4385,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__08: |-
+05_01__container_blocks__block_quotes__008: |-
   {
     "type": "doc",
     "content": [
@@ -4457,7 +4443,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__09: |-
+05_01__container_blocks__block_quotes__009: |-
   {
     "type": "doc",
     "content": [
@@ -4497,7 +4483,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__10: |-
+05_01__container_blocks__block_quotes__010: |-
   {
     "type": "doc",
     "content": [
@@ -4534,7 +4520,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__11: |-
+05_01__container_blocks__block_quotes__011: |-
   {
     "type": "doc",
     "content": [
@@ -4557,7 +4543,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__12: |-
+05_01__container_blocks__block_quotes__012: |-
   {
     "type": "doc",
     "content": [
@@ -4574,7 +4560,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__13: |-
+05_01__container_blocks__block_quotes__013: |-
   {
     "type": "doc",
     "content": [
@@ -4591,7 +4577,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__14: |-
+05_01__container_blocks__block_quotes__014: |-
   {
     "type": "doc",
     "content": [
@@ -4614,7 +4600,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__15: |-
+05_01__container_blocks__block_quotes__015: |-
   {
     "type": "doc",
     "content": [
@@ -4654,7 +4640,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__16: |-
+05_01__container_blocks__block_quotes__016: |-
   {
     "type": "doc",
     "content": [
@@ -4677,7 +4663,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__17: |-
+05_01__container_blocks__block_quotes__017: |-
   {
     "type": "doc",
     "content": [
@@ -4709,7 +4695,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__18: |-
+05_01__container_blocks__block_quotes__018: |-
   {
     "type": "doc",
     "content": [
@@ -4741,7 +4727,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__19: |-
+05_01__container_blocks__block_quotes__019: |-
   {
     "type": "doc",
     "content": [
@@ -4784,7 +4770,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__20: |-
+05_01__container_blocks__block_quotes__020: |-
   {
     "type": "doc",
     "content": [
@@ -4807,7 +4793,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__21: |-
+05_01__container_blocks__block_quotes__021: |-
   {
     "type": "doc",
     "content": [
@@ -4839,7 +4825,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__22: |-
+05_01__container_blocks__block_quotes__022: |-
   {
     "type": "doc",
     "content": [
@@ -4871,7 +4857,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__23: |-
+05_01__container_blocks__block_quotes__023: |-
   {
     "type": "doc",
     "content": [
@@ -4910,7 +4896,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__24: |-
+05_01__container_blocks__block_quotes__024: |-
   {
     "type": "doc",
     "content": [
@@ -4949,7 +4935,7 @@
       }
     ]
   }
-05_01__container_blocks__block_quotes__25: |-
+05_01__container_blocks__block_quotes__025: |-
   {
     "type": "doc",
     "content": [
@@ -4993,7 +4979,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__01: |-
+05_02__container_blocks__list_items__001: |-
   {
     "type": "doc",
     "content": [
@@ -5038,7 +5024,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__02: |-
+05_02__container_blocks__list_items__002: |-
   {
     "type": "doc",
     "content": [
@@ -5097,7 +5083,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__03: |-
+05_02__container_blocks__list_items__003: |-
   {
     "type": "doc",
     "content": [
@@ -5134,7 +5120,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__04: |-
+05_02__container_blocks__list_items__004: |-
   {
     "type": "doc",
     "content": [
@@ -5171,7 +5157,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__05: |-
+05_02__container_blocks__list_items__005: |-
   {
     "type": "doc",
     "content": [
@@ -5212,7 +5198,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__06: |-
+05_02__container_blocks__list_items__006: |-
   {
     "type": "doc",
     "content": [
@@ -5249,7 +5235,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__07: |-
+05_02__container_blocks__list_items__007: |-
   {
     "type": "doc",
     "content": [
@@ -5303,7 +5289,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__08: |-
+05_02__container_blocks__list_items__008: |-
   {
     "type": "doc",
     "content": [
@@ -5356,7 +5342,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__09: |-
+05_02__container_blocks__list_items__009: |-
   {
     "type": "doc",
     "content": [
@@ -5380,7 +5366,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__10: |-
+05_02__container_blocks__list_items__010: |-
   {
     "type": "doc",
     "content": [
@@ -5417,7 +5403,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__11: |-
+05_02__container_blocks__list_items__011: |-
   {
     "type": "doc",
     "content": [
@@ -5485,7 +5471,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__12: |-
+05_02__container_blocks__list_items__012: |-
   {
     "type": "doc",
     "content": [
@@ -5526,7 +5512,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__13: |-
+05_02__container_blocks__list_items__013: |-
   {
     "type": "doc",
     "content": [
@@ -5555,7 +5541,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__14: |-
+05_02__container_blocks__list_items__014: |-
   {
     "type": "doc",
     "content": [
@@ -5570,7 +5556,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__15: |-
+05_02__container_blocks__list_items__015: |-
   {
     "type": "doc",
     "content": [
@@ -5599,7 +5585,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__16: |-
+05_02__container_blocks__list_items__016: |-
   {
     "type": "doc",
     "content": [
@@ -5628,7 +5614,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__17: |-
+05_02__container_blocks__list_items__017: |-
   {
     "type": "doc",
     "content": [
@@ -5643,7 +5629,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__18: |-
+05_02__container_blocks__list_items__018: |-
   {
     "type": "doc",
     "content": [
@@ -5684,7 +5670,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__19: |-
+05_02__container_blocks__list_items__019: |-
   {
     "type": "doc",
     "content": [
@@ -5726,7 +5712,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__20: |-
+05_02__container_blocks__list_items__020: |-
   {
     "type": "doc",
     "content": [
@@ -5767,7 +5753,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__21: |-
+05_02__container_blocks__list_items__021: |-
   {
     "type": "doc",
     "content": [
@@ -5825,7 +5811,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__22: |-
+05_02__container_blocks__list_items__022: |-
   {
     "type": "doc",
     "content": [
@@ -5883,7 +5869,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__23: |-
+05_02__container_blocks__list_items__023: |-
   {
     "type": "doc",
     "content": [
@@ -5907,7 +5893,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__24: |-
+05_02__container_blocks__list_items__024: |-
   {
     "type": "doc",
     "content": [
@@ -5944,7 +5930,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__25: |-
+05_02__container_blocks__list_items__025: |-
   {
     "type": "doc",
     "content": [
@@ -5981,7 +5967,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__26: |-
+05_02__container_blocks__list_items__026: |-
   {
     "type": "doc",
     "content": [
@@ -6051,7 +6037,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__27: |-
+05_02__container_blocks__list_items__027: |-
   {
     "type": "doc",
     "content": [
@@ -6079,7 +6065,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__28: |-
+05_02__container_blocks__list_items__028: |-
   {
     "type": "doc",
     "content": [
@@ -6110,7 +6096,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__29: |-
+05_02__container_blocks__list_items__029: |-
   {
     "type": "doc",
     "content": [
@@ -6160,7 +6146,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__30: |-
+05_02__container_blocks__list_items__030: |-
   {
     "type": "doc",
     "content": [
@@ -6210,7 +6196,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__31: |-
+05_02__container_blocks__list_items__031: |-
   {
     "type": "doc",
     "content": [
@@ -6261,7 +6247,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__32: |-
+05_02__container_blocks__list_items__032: |-
   {
     "type": "doc",
     "content": [
@@ -6283,7 +6269,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__33: |-
+05_02__container_blocks__list_items__033: |-
   {
     "type": "doc",
     "content": [
@@ -6307,7 +6293,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__34: |-
+05_02__container_blocks__list_items__034: |-
   {
     "type": "doc",
     "content": [
@@ -6366,7 +6352,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__35: |-
+05_02__container_blocks__list_items__035: |-
   {
     "type": "doc",
     "content": [
@@ -6425,7 +6411,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__36: |-
+05_02__container_blocks__list_items__036: |-
   {
     "type": "doc",
     "content": [
@@ -6484,7 +6470,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__37: |-
+05_02__container_blocks__list_items__037: |-
   {
     "type": "doc",
     "content": [
@@ -6503,7 +6489,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__38: |-
+05_02__container_blocks__list_items__038: |-
   {
     "type": "doc",
     "content": [
@@ -6562,7 +6548,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__39: |-
+05_02__container_blocks__list_items__039: |-
   {
     "type": "doc",
     "content": [
@@ -6591,7 +6577,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__40: |-
+05_02__container_blocks__list_items__040: |-
   {
     "type": "doc",
     "content": [
@@ -6639,7 +6625,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__41: |-
+05_02__container_blocks__list_items__041: |-
   {
     "type": "doc",
     "content": [
@@ -6687,7 +6673,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__42: |-
+05_02__container_blocks__list_items__042: |-
   {
     "type": "doc",
     "content": [
@@ -6705,7 +6691,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -6723,7 +6709,7 @@
                         "content": [
                           {
                             "type": "text",
-                            "text": "bar\n"
+                            "text": "bar"
                           }
                         ]
                       },
@@ -6741,7 +6727,7 @@
                                 "content": [
                                   {
                                     "type": "text",
-                                    "text": "baz\n"
+                                    "text": "baz"
                                   }
                                 ]
                               },
@@ -6781,7 +6767,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__43: |-
+05_02__container_blocks__list_items__043: |-
   {
     "type": "doc",
     "content": [
@@ -6851,7 +6837,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__44: |-
+05_02__container_blocks__list_items__044: |-
   {
     "type": "doc",
     "content": [
@@ -6870,7 +6856,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -6902,7 +6888,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__45: |-
+05_02__container_blocks__list_items__045: |-
   {
     "type": "doc",
     "content": [
@@ -6953,7 +6939,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__46: |-
+05_02__container_blocks__list_items__046: |-
   {
     "type": "doc",
     "content": [
@@ -6997,7 +6983,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__47: |-
+05_02__container_blocks__list_items__047: |-
   {
     "type": "doc",
     "content": [
@@ -7059,7 +7045,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__48: |-
+05_02__container_blocks__list_items__048: |-
   {
     "type": "doc",
     "content": [
@@ -7113,138 +7099,10 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__49: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__049: |-
   {
     "type": "doc",
     "content": [
-      {
-        "type": "bulletList",
-        "attrs": {
-          "bullet": "*"
-        },
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[ ] foo"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[x] bar"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[x] foo\n"
-                  }
-                ]
-              },
-              {
-                "type": "bulletList",
-                "attrs": {
-                  "bullet": "*"
-                },
-                "content": [
-                  {
-                    "type": "listItem",
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "[ ] bar"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "listItem",
-                    "content": [
-                      {
-                        "type": "paragraph",
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "[x] baz"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "[ ] bim"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "foo"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "bar"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
       {
         "type": "bulletList",
         "attrs": {
@@ -7269,7 +7127,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__50: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__050: |-
   {
     "type": "doc",
     "content": [
@@ -7335,7 +7193,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__51: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__051: |-
   {
     "type": "doc",
     "content": [
@@ -7386,7 +7244,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__52: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__052: |-
   {
     "type": "doc",
     "content": [
@@ -7401,7 +7259,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__53: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__053: |-
   {
     "type": "doc",
     "content": [
@@ -7439,7 +7297,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__54: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__054: |-
   {
     "type": "doc",
     "content": [
@@ -7495,7 +7353,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__55: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__055: |-
   {
     "type": "doc",
     "content": [
@@ -7513,7 +7371,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "foo\n"
+                    "text": "foo"
                   }
                 ]
               },
@@ -7531,7 +7389,7 @@
                         "content": [
                           {
                             "type": "text",
-                            "text": "bar\n"
+                            "text": "bar"
                           }
                         ]
                       },
@@ -7576,13 +7434,13 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__56: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__056: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__57: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__057: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__58: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__058: |-
   {
     "type": "doc",
     "content": [
@@ -7694,7 +7552,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__59: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__059: |-
   {
     "type": "doc",
     "content": [
@@ -7751,7 +7609,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__60: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__060: |-
   {
     "type": "doc",
     "content": [
@@ -7821,7 +7679,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__61: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__061: |-
   {
     "type": "doc",
     "content": [
@@ -7877,7 +7735,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__62: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__062: |-
   {
     "type": "doc",
     "content": [
@@ -7933,7 +7791,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__63: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__063: |-
   {
     "type": "doc",
     "content": [
@@ -7983,7 +7841,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__64: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__064: |-
   {
     "type": "doc",
     "content": [
@@ -8048,7 +7906,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__65: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__065: |-
   {
     "type": "doc",
     "content": [
@@ -8104,7 +7962,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__66: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__066: |-
   {
     "type": "doc",
     "content": [
@@ -8167,7 +8025,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__67: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__067: |-
   {
     "type": "doc",
     "content": [
@@ -8185,7 +8043,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8240,7 +8098,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__68: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__068: |-
   {
     "type": "doc",
     "content": [
@@ -8258,7 +8116,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8299,7 +8157,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__69: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__069: |-
   {
     "type": "doc",
     "content": [
@@ -8317,7 +8175,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8371,7 +8229,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__70: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__070: |-
   {
     "type": "doc",
     "content": [
@@ -8399,7 +8257,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__71: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__071: |-
   {
     "type": "doc",
     "content": [
@@ -8417,7 +8275,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "a\n"
+                    "text": "a"
                   }
                 ]
               },
@@ -8449,7 +8307,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__72: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__072: |-
   {
     "type": "doc",
     "content": [
@@ -8494,7 +8352,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__73: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__073: |-
   {
     "type": "doc",
     "content": [
@@ -8553,7 +8411,7 @@
       }
     ]
   }
-05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__74: |-
+05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__074: |-
   {
     "type": "doc",
     "content": [
@@ -8667,7 +8525,7 @@
       }
     ]
   }
-06_01__inlines__01: |-
+06_01__inlines__001: |-
   {
     "type": "doc",
     "content": [
@@ -8691,7 +8549,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__01: |-
+06_02__inlines__backslash_escapes__001: |-
   {
     "type": "doc",
     "content": [
@@ -8706,7 +8564,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__02: |-
+06_02__inlines__backslash_escapes__002: |-
   {
     "type": "doc",
     "content": [
@@ -8721,7 +8579,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__03: |-
+06_02__inlines__backslash_escapes__003: |-
   {
     "type": "doc",
     "content": [
@@ -8736,7 +8594,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__04: |-
+06_02__inlines__backslash_escapes__004: |-
   {
     "type": "doc",
     "content": [
@@ -8760,7 +8618,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__05: |-
+06_02__inlines__backslash_escapes__005: |-
   {
     "type": "doc",
     "content": [
@@ -8782,7 +8640,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__06: |-
+06_02__inlines__backslash_escapes__006: |-
   {
     "type": "doc",
     "content": [
@@ -8802,7 +8660,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__07: |-
+06_02__inlines__backslash_escapes__007: |-
   {
     "type": "doc",
     "content": [
@@ -8821,7 +8679,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__08: |-
+06_02__inlines__backslash_escapes__008: |-
   {
     "type": "doc",
     "content": [
@@ -8840,7 +8698,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__09: |-
+06_02__inlines__backslash_escapes__009: |-
   {
     "type": "doc",
     "content": [
@@ -8855,6 +8713,7 @@
                 "attrs": {
                   "href": "http://example.com?find=%5C*",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -8866,7 +8725,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__10: |-
+06_02__inlines__backslash_escapes__010: |-
   {
     "type": "doc",
     "content": [
@@ -8875,7 +8734,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__11: |-
+06_02__inlines__backslash_escapes__011: |-
   {
     "type": "doc",
     "content": [
@@ -8890,6 +8749,7 @@
                 "attrs": {
                   "href": "/bar*",
                   "target": "_blank",
+                  "class": null,
                   "title": "ti*tle",
                   "canonicalSrc": null
                 }
@@ -8901,7 +8761,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__12: |-
+06_02__inlines__backslash_escapes__012: |-
   {
     "type": "doc",
     "content": [
@@ -8916,6 +8776,7 @@
                 "attrs": {
                   "href": "/bar*",
                   "target": "_blank",
+                  "class": null,
                   "title": "ti*tle",
                   "canonicalSrc": null
                 }
@@ -8927,7 +8788,7 @@
       }
     ]
   }
-06_02__inlines__backslash_escapes__13: |-
+06_02__inlines__backslash_escapes__013: |-
   {
     "type": "doc",
     "content": [
@@ -8946,7 +8807,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__01: |-
+06_03__inlines__entity_and_numeric_character_references__001: |-
   {
     "type": "doc",
     "content": [
@@ -8961,7 +8822,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__02: |-
+06_03__inlines__entity_and_numeric_character_references__002: |-
   {
     "type": "doc",
     "content": [
@@ -8976,7 +8837,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__03: |-
+06_03__inlines__entity_and_numeric_character_references__003: |-
   {
     "type": "doc",
     "content": [
@@ -8991,7 +8852,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__04: |-
+06_03__inlines__entity_and_numeric_character_references__004: |-
   {
     "type": "doc",
     "content": [
@@ -9006,7 +8867,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__05: |-
+06_03__inlines__entity_and_numeric_character_references__005: |-
   {
     "type": "doc",
     "content": [
@@ -9021,7 +8882,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__06: |-
+06_03__inlines__entity_and_numeric_character_references__006: |-
   {
     "type": "doc",
     "content": [
@@ -9036,7 +8897,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__07: |-
+06_03__inlines__entity_and_numeric_character_references__007: |-
   {
     "type": "doc",
     "content": [
@@ -9045,7 +8906,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__08: |-
+06_03__inlines__entity_and_numeric_character_references__008: |-
   {
     "type": "doc",
     "content": [
@@ -9060,6 +8921,7 @@
                 "attrs": {
                   "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
+                  "class": null,
                   "title": "föö",
                   "canonicalSrc": null
                 }
@@ -9071,7 +8933,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__09: |-
+06_03__inlines__entity_and_numeric_character_references__009: |-
   {
     "type": "doc",
     "content": [
@@ -9086,6 +8948,7 @@
                 "attrs": {
                   "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
+                  "class": null,
                   "title": "föö",
                   "canonicalSrc": null
                 }
@@ -9097,7 +8960,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__10: |-
+06_03__inlines__entity_and_numeric_character_references__010: |-
   {
     "type": "doc",
     "content": [
@@ -9116,7 +8979,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__11: |-
+06_03__inlines__entity_and_numeric_character_references__011: |-
   {
     "type": "doc",
     "content": [
@@ -9136,7 +8999,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__12: |-
+06_03__inlines__entity_and_numeric_character_references__012: |-
   {
     "type": "doc",
     "content": [
@@ -9155,7 +9018,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__13: |-
+06_03__inlines__entity_and_numeric_character_references__013: |-
   {
     "type": "doc",
     "content": [
@@ -9179,7 +9042,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__14: |-
+06_03__inlines__entity_and_numeric_character_references__014: |-
   {
     "type": "doc",
     "content": [
@@ -9216,7 +9079,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__15: |-
+06_03__inlines__entity_and_numeric_character_references__015: |-
   {
     "type": "doc",
     "content": [
@@ -9231,7 +9094,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__16: |-
+06_03__inlines__entity_and_numeric_character_references__016: |-
   {
     "type": "doc",
     "content": [
@@ -9246,7 +9109,7 @@
       }
     ]
   }
-06_03__inlines__entity_and_numeric_character_references__17: |-
+06_03__inlines__entity_and_numeric_character_references__017: |-
   {
     "type": "doc",
     "content": [
@@ -9261,7 +9124,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__01: |-
+06_04__inlines__code_spans__001: |-
   {
     "type": "doc",
     "content": [
@@ -9281,7 +9144,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__02: |-
+06_04__inlines__code_spans__002: |-
   {
     "type": "doc",
     "content": [
@@ -9301,7 +9164,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__03: |-
+06_04__inlines__code_spans__003: |-
   {
     "type": "doc",
     "content": [
@@ -9321,7 +9184,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__04: |-
+06_04__inlines__code_spans__004: |-
   {
     "type": "doc",
     "content": [
@@ -9341,7 +9204,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__05: |-
+06_04__inlines__code_spans__005: |-
   {
     "type": "doc",
     "content": [
@@ -9361,7 +9224,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__06: |-
+06_04__inlines__code_spans__006: |-
   {
     "type": "doc",
     "content": [
@@ -9381,7 +9244,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__07: |-
+06_04__inlines__code_spans__007: |-
   {
     "type": "doc",
     "content": [
@@ -9390,7 +9253,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__08: |-
+06_04__inlines__code_spans__008: |-
   {
     "type": "doc",
     "content": [
@@ -9410,7 +9273,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__09: |-
+06_04__inlines__code_spans__009: |-
   {
     "type": "doc",
     "content": [
@@ -9430,7 +9293,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__10: |-
+06_04__inlines__code_spans__010: |-
   {
     "type": "doc",
     "content": [
@@ -9450,7 +9313,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__11: |-
+06_04__inlines__code_spans__011: |-
   {
     "type": "doc",
     "content": [
@@ -9474,7 +9337,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__12: |-
+06_04__inlines__code_spans__012: |-
   {
     "type": "doc",
     "content": [
@@ -9494,7 +9357,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__13: |-
+06_04__inlines__code_spans__013: |-
   {
     "type": "doc",
     "content": [
@@ -9514,7 +9377,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__14: |-
+06_04__inlines__code_spans__014: |-
   {
     "type": "doc",
     "content": [
@@ -9538,7 +9401,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__15: |-
+06_04__inlines__code_spans__015: |-
   {
     "type": "doc",
     "content": [
@@ -9566,7 +9429,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__16: |-
+06_04__inlines__code_spans__016: |-
   {
     "type": "doc",
     "content": [
@@ -9590,7 +9453,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__17: |-
+06_04__inlines__code_spans__017: |-
   {
     "type": "doc",
     "content": [
@@ -9605,6 +9468,7 @@
                 "attrs": {
                   "href": "`",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -9616,7 +9480,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__18: |-
+06_04__inlines__code_spans__018: |-
   {
     "type": "doc",
     "content": [
@@ -9640,7 +9504,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__19: |-
+06_04__inlines__code_spans__019: |-
   {
     "type": "doc",
     "content": [
@@ -9655,6 +9519,7 @@
                 "attrs": {
                   "href": "http://foo.bar.%60baz",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -9670,7 +9535,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__20: |-
+06_04__inlines__code_spans__020: |-
   {
     "type": "doc",
     "content": [
@@ -9685,7 +9550,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__21: |-
+06_04__inlines__code_spans__021: |-
   {
     "type": "doc",
     "content": [
@@ -9700,7 +9565,7 @@
       }
     ]
   }
-06_04__inlines__code_spans__22: |-
+06_04__inlines__code_spans__022: |-
   {
     "type": "doc",
     "content": [
@@ -9724,7 +9589,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__01: |-
+06_05__inlines__emphasis_and_strong_emphasis__001: |-
   {
     "type": "doc",
     "content": [
@@ -9744,7 +9609,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__02: |-
+06_05__inlines__emphasis_and_strong_emphasis__002: |-
   {
     "type": "doc",
     "content": [
@@ -9759,7 +9624,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__03: |-
+06_05__inlines__emphasis_and_strong_emphasis__003: |-
   {
     "type": "doc",
     "content": [
@@ -9774,7 +9639,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__04: |-
+06_05__inlines__emphasis_and_strong_emphasis__004: |-
   {
     "type": "doc",
     "content": [
@@ -9789,7 +9654,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__05: |-
+06_05__inlines__emphasis_and_strong_emphasis__005: |-
   {
     "type": "doc",
     "content": [
@@ -9813,7 +9678,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__06: |-
+06_05__inlines__emphasis_and_strong_emphasis__006: |-
   {
     "type": "doc",
     "content": [
@@ -9841,7 +9706,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__07: |-
+06_05__inlines__emphasis_and_strong_emphasis__007: |-
   {
     "type": "doc",
     "content": [
@@ -9861,7 +9726,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__08: |-
+06_05__inlines__emphasis_and_strong_emphasis__008: |-
   {
     "type": "doc",
     "content": [
@@ -9876,7 +9741,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__09: |-
+06_05__inlines__emphasis_and_strong_emphasis__009: |-
   {
     "type": "doc",
     "content": [
@@ -9891,7 +9756,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__10: |-
+06_05__inlines__emphasis_and_strong_emphasis__010: |-
   {
     "type": "doc",
     "content": [
@@ -9906,7 +9771,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__11: |-
+06_05__inlines__emphasis_and_strong_emphasis__011: |-
   {
     "type": "doc",
     "content": [
@@ -9921,7 +9786,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__12: |-
+06_05__inlines__emphasis_and_strong_emphasis__012: |-
   {
     "type": "doc",
     "content": [
@@ -9936,7 +9801,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__13: |-
+06_05__inlines__emphasis_and_strong_emphasis__013: |-
   {
     "type": "doc",
     "content": [
@@ -9951,7 +9816,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__14: |-
+06_05__inlines__emphasis_and_strong_emphasis__014: |-
   {
     "type": "doc",
     "content": [
@@ -9975,7 +9840,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__15: |-
+06_05__inlines__emphasis_and_strong_emphasis__015: |-
   {
     "type": "doc",
     "content": [
@@ -9990,7 +9855,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__16: |-
+06_05__inlines__emphasis_and_strong_emphasis__016: |-
   {
     "type": "doc",
     "content": [
@@ -10005,7 +9870,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__17: |-
+06_05__inlines__emphasis_and_strong_emphasis__017: |-
   {
     "type": "doc",
     "content": [
@@ -10020,7 +9885,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__18: |-
+06_05__inlines__emphasis_and_strong_emphasis__018: |-
   {
     "type": "doc",
     "content": [
@@ -10035,7 +9900,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__19: |-
+06_05__inlines__emphasis_and_strong_emphasis__019: |-
   {
     "type": "doc",
     "content": [
@@ -10059,7 +9924,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__20: |-
+06_05__inlines__emphasis_and_strong_emphasis__020: |-
   {
     "type": "doc",
     "content": [
@@ -10083,7 +9948,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__21: |-
+06_05__inlines__emphasis_and_strong_emphasis__021: |-
   {
     "type": "doc",
     "content": [
@@ -10098,7 +9963,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__22: |-
+06_05__inlines__emphasis_and_strong_emphasis__022: |-
   {
     "type": "doc",
     "content": [
@@ -10113,7 +9978,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__23: |-
+06_05__inlines__emphasis_and_strong_emphasis__023: |-
   {
     "type": "doc",
     "content": [
@@ -10137,7 +10002,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__24: |-
+06_05__inlines__emphasis_and_strong_emphasis__024: |-
   {
     "type": "doc",
     "content": [
@@ -10152,7 +10017,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__25: |-
+06_05__inlines__emphasis_and_strong_emphasis__025: |-
   {
     "type": "doc",
     "content": [
@@ -10167,7 +10032,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__26: |-
+06_05__inlines__emphasis_and_strong_emphasis__026: |-
   {
     "type": "doc",
     "content": [
@@ -10187,7 +10052,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__27: |-
+06_05__inlines__emphasis_and_strong_emphasis__027: |-
   {
     "type": "doc",
     "content": [
@@ -10211,7 +10076,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__28: |-
+06_05__inlines__emphasis_and_strong_emphasis__028: |-
   {
     "type": "doc",
     "content": [
@@ -10231,7 +10096,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__29: |-
+06_05__inlines__emphasis_and_strong_emphasis__029: |-
   {
     "type": "doc",
     "content": [
@@ -10246,7 +10111,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__30: |-
+06_05__inlines__emphasis_and_strong_emphasis__030: |-
   {
     "type": "doc",
     "content": [
@@ -10261,7 +10126,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__31: |-
+06_05__inlines__emphasis_and_strong_emphasis__031: |-
   {
     "type": "doc",
     "content": [
@@ -10285,7 +10150,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__32: |-
+06_05__inlines__emphasis_and_strong_emphasis__032: |-
   {
     "type": "doc",
     "content": [
@@ -10305,7 +10170,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__33: |-
+06_05__inlines__emphasis_and_strong_emphasis__033: |-
   {
     "type": "doc",
     "content": [
@@ -10320,7 +10185,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__34: |-
+06_05__inlines__emphasis_and_strong_emphasis__034: |-
   {
     "type": "doc",
     "content": [
@@ -10335,7 +10200,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__35: |-
+06_05__inlines__emphasis_and_strong_emphasis__035: |-
   {
     "type": "doc",
     "content": [
@@ -10350,7 +10215,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__36: |-
+06_05__inlines__emphasis_and_strong_emphasis__036: |-
   {
     "type": "doc",
     "content": [
@@ -10365,7 +10230,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__37: |-
+06_05__inlines__emphasis_and_strong_emphasis__037: |-
   {
     "type": "doc",
     "content": [
@@ -10380,7 +10245,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__38: |-
+06_05__inlines__emphasis_and_strong_emphasis__038: |-
   {
     "type": "doc",
     "content": [
@@ -10395,7 +10260,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__39: |-
+06_05__inlines__emphasis_and_strong_emphasis__039: |-
   {
     "type": "doc",
     "content": [
@@ -10419,7 +10284,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__40: |-
+06_05__inlines__emphasis_and_strong_emphasis__040: |-
   {
     "type": "doc",
     "content": [
@@ -10443,7 +10308,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__41: |-
+06_05__inlines__emphasis_and_strong_emphasis__041: |-
   {
     "type": "doc",
     "content": [
@@ -10458,7 +10323,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__42: |-
+06_05__inlines__emphasis_and_strong_emphasis__042: |-
   {
     "type": "doc",
     "content": [
@@ -10473,7 +10338,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__43: |-
+06_05__inlines__emphasis_and_strong_emphasis__043: |-
   {
     "type": "doc",
     "content": [
@@ -10506,7 +10371,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__44: |-
+06_05__inlines__emphasis_and_strong_emphasis__044: |-
   {
     "type": "doc",
     "content": [
@@ -10552,7 +10417,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__45: |-
+06_05__inlines__emphasis_and_strong_emphasis__045: |-
   {
     "type": "doc",
     "content": [
@@ -10585,7 +10450,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__46: |-
+06_05__inlines__emphasis_and_strong_emphasis__046: |-
   {
     "type": "doc",
     "content": [
@@ -10609,7 +10474,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__47: |-
+06_05__inlines__emphasis_and_strong_emphasis__047: |-
   {
     "type": "doc",
     "content": [
@@ -10624,7 +10489,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__48: |-
+06_05__inlines__emphasis_and_strong_emphasis__048: |-
   {
     "type": "doc",
     "content": [
@@ -10639,7 +10504,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__49: |-
+06_05__inlines__emphasis_and_strong_emphasis__049: |-
   {
     "type": "doc",
     "content": [
@@ -10672,7 +10537,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__50: |-
+06_05__inlines__emphasis_and_strong_emphasis__050: |-
   {
     "type": "doc",
     "content": [
@@ -10687,7 +10552,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__51: |-
+06_05__inlines__emphasis_and_strong_emphasis__051: |-
   {
     "type": "doc",
     "content": [
@@ -10702,7 +10567,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__52: |-
+06_05__inlines__emphasis_and_strong_emphasis__052: |-
   {
     "type": "doc",
     "content": [
@@ -10722,7 +10587,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__53: |-
+06_05__inlines__emphasis_and_strong_emphasis__053: |-
   {
     "type": "doc",
     "content": [
@@ -10746,7 +10611,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__54: |-
+06_05__inlines__emphasis_and_strong_emphasis__054: |-
   {
     "type": "doc",
     "content": [
@@ -10770,6 +10635,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -10781,7 +10647,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__55: |-
+06_05__inlines__emphasis_and_strong_emphasis__055: |-
   {
     "type": "doc",
     "content": [
@@ -10801,7 +10667,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__56: |-
+06_05__inlines__emphasis_and_strong_emphasis__056: |-
   {
     "type": "doc",
     "content": [
@@ -10834,7 +10700,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__57: |-
+06_05__inlines__emphasis_and_strong_emphasis__057: |-
   {
     "type": "doc",
     "content": [
@@ -10858,7 +10724,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__58: |-
+06_05__inlines__emphasis_and_strong_emphasis__058: |-
   {
     "type": "doc",
     "content": [
@@ -10882,7 +10748,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__59: |-
+06_05__inlines__emphasis_and_strong_emphasis__059: |-
   {
     "type": "doc",
     "content": [
@@ -10902,7 +10768,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__60: |-
+06_05__inlines__emphasis_and_strong_emphasis__060: |-
   {
     "type": "doc",
     "content": [
@@ -10935,7 +10801,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__61: |-
+06_05__inlines__emphasis_and_strong_emphasis__061: |-
   {
     "type": "doc",
     "content": [
@@ -10968,7 +10834,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__62: |-
+06_05__inlines__emphasis_and_strong_emphasis__062: |-
   {
     "type": "doc",
     "content": [
@@ -10988,7 +10854,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__63: |-
+06_05__inlines__emphasis_and_strong_emphasis__063: |-
   {
     "type": "doc",
     "content": [
@@ -11015,7 +10881,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__64: |-
+06_05__inlines__emphasis_and_strong_emphasis__064: |-
   {
     "type": "doc",
     "content": [
@@ -11044,7 +10910,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__65: |-
+06_05__inlines__emphasis_and_strong_emphasis__065: |-
   {
     "type": "doc",
     "content": [
@@ -11073,7 +10939,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__66: |-
+06_05__inlines__emphasis_and_strong_emphasis__066: |-
   {
     "type": "doc",
     "content": [
@@ -11104,7 +10970,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__67: |-
+06_05__inlines__emphasis_and_strong_emphasis__067: |-
   {
     "type": "doc",
     "content": [
@@ -11132,7 +10998,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__68: |-
+06_05__inlines__emphasis_and_strong_emphasis__068: |-
   {
     "type": "doc",
     "content": [
@@ -11174,7 +11040,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__69: |-
+06_05__inlines__emphasis_and_strong_emphasis__069: |-
   {
     "type": "doc",
     "content": [
@@ -11198,6 +11064,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -11212,7 +11079,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__70: |-
+06_05__inlines__emphasis_and_strong_emphasis__070: |-
   {
     "type": "doc",
     "content": [
@@ -11227,7 +11094,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__71: |-
+06_05__inlines__emphasis_and_strong_emphasis__071: |-
   {
     "type": "doc",
     "content": [
@@ -11242,7 +11109,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__72: |-
+06_05__inlines__emphasis_and_strong_emphasis__072: |-
   {
     "type": "doc",
     "content": [
@@ -11266,6 +11133,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -11277,7 +11145,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__73: |-
+06_05__inlines__emphasis_and_strong_emphasis__073: |-
   {
     "type": "doc",
     "content": [
@@ -11297,7 +11165,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__74: |-
+06_05__inlines__emphasis_and_strong_emphasis__074: |-
   {
     "type": "doc",
     "content": [
@@ -11330,7 +11198,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__75: |-
+06_05__inlines__emphasis_and_strong_emphasis__075: |-
   {
     "type": "doc",
     "content": [
@@ -11354,7 +11222,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__76: |-
+06_05__inlines__emphasis_and_strong_emphasis__076: |-
   {
     "type": "doc",
     "content": [
@@ -11378,7 +11246,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__77: |-
+06_05__inlines__emphasis_and_strong_emphasis__077: |-
   {
     "type": "doc",
     "content": [
@@ -11398,7 +11266,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__78: |-
+06_05__inlines__emphasis_and_strong_emphasis__078: |-
   {
     "type": "doc",
     "content": [
@@ -11431,7 +11299,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__79: |-
+06_05__inlines__emphasis_and_strong_emphasis__079: |-
   {
     "type": "doc",
     "content": [
@@ -11464,7 +11332,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__80: |-
+06_05__inlines__emphasis_and_strong_emphasis__080: |-
   {
     "type": "doc",
     "content": [
@@ -11491,7 +11359,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__81: |-
+06_05__inlines__emphasis_and_strong_emphasis__081: |-
   {
     "type": "doc",
     "content": [
@@ -11520,7 +11388,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__82: |-
+06_05__inlines__emphasis_and_strong_emphasis__082: |-
   {
     "type": "doc",
     "content": [
@@ -11562,7 +11430,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__83: |-
+06_05__inlines__emphasis_and_strong_emphasis__083: |-
   {
     "type": "doc",
     "content": [
@@ -11586,6 +11454,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -11600,7 +11469,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__84: |-
+06_05__inlines__emphasis_and_strong_emphasis__084: |-
   {
     "type": "doc",
     "content": [
@@ -11615,7 +11484,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__85: |-
+06_05__inlines__emphasis_and_strong_emphasis__085: |-
   {
     "type": "doc",
     "content": [
@@ -11630,7 +11499,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__86: |-
+06_05__inlines__emphasis_and_strong_emphasis__086: |-
   {
     "type": "doc",
     "content": [
@@ -11645,7 +11514,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__87: |-
+06_05__inlines__emphasis_and_strong_emphasis__087: |-
   {
     "type": "doc",
     "content": [
@@ -11669,7 +11538,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__88: |-
+06_05__inlines__emphasis_and_strong_emphasis__088: |-
   {
     "type": "doc",
     "content": [
@@ -11693,7 +11562,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__89: |-
+06_05__inlines__emphasis_and_strong_emphasis__089: |-
   {
     "type": "doc",
     "content": [
@@ -11708,7 +11577,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__90: |-
+06_05__inlines__emphasis_and_strong_emphasis__090: |-
   {
     "type": "doc",
     "content": [
@@ -11732,7 +11601,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__91: |-
+06_05__inlines__emphasis_and_strong_emphasis__091: |-
   {
     "type": "doc",
     "content": [
@@ -11756,7 +11625,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__92: |-
+06_05__inlines__emphasis_and_strong_emphasis__092: |-
   {
     "type": "doc",
     "content": [
@@ -11780,7 +11649,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__93: |-
+06_05__inlines__emphasis_and_strong_emphasis__093: |-
   {
     "type": "doc",
     "content": [
@@ -11804,7 +11673,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__94: |-
+06_05__inlines__emphasis_and_strong_emphasis__094: |-
   {
     "type": "doc",
     "content": [
@@ -11828,7 +11697,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__95: |-
+06_05__inlines__emphasis_and_strong_emphasis__095: |-
   {
     "type": "doc",
     "content": [
@@ -11852,7 +11721,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__96: |-
+06_05__inlines__emphasis_and_strong_emphasis__096: |-
   {
     "type": "doc",
     "content": [
@@ -11876,7 +11745,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__97: |-
+06_05__inlines__emphasis_and_strong_emphasis__097: |-
   {
     "type": "doc",
     "content": [
@@ -11900,7 +11769,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__98: |-
+06_05__inlines__emphasis_and_strong_emphasis__098: |-
   {
     "type": "doc",
     "content": [
@@ -11915,7 +11784,7 @@
       }
     ]
   }
-06_05__inlines__emphasis_and_strong_emphasis__99: |-
+06_05__inlines__emphasis_and_strong_emphasis__099: |-
   {
     "type": "doc",
     "content": [
@@ -12480,6 +12349,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12510,6 +12380,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12653,6 +12524,7 @@
                 "attrs": {
                   "href": "http://foo.bar/?q=**",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12683,6 +12555,7 @@
                 "attrs": {
                   "href": "http://foo.bar/?q=__",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12694,7 +12567,7 @@
       }
     ]
   }
-06_06__inlines__strikethrough_extension__01: |-
+06_06__inlines__strikethrough_extension__001: |-
   {
     "type": "doc",
     "content": [
@@ -12703,13 +12576,22 @@
         "content": [
           {
             "type": "text",
-            "text": "~~Hi~~ Hello, world!"
+            "marks": [
+              {
+                "type": "strike"
+              }
+            ],
+            "text": "Hi"
+          },
+          {
+            "type": "text",
+            "text": " Hello, world!"
           }
         ]
       }
     ]
   }
-06_06__inlines__strikethrough_extension__02: |-
+06_06__inlines__strikethrough_extension__002: |-
   {
     "type": "doc",
     "content": [
@@ -12733,7 +12615,7 @@
       }
     ]
   }
-06_07__inlines__links__01: |-
+06_07__inlines__links__001: |-
   {
     "type": "doc",
     "content": [
@@ -12748,6 +12630,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -12759,7 +12642,7 @@
       }
     ]
   }
-06_07__inlines__links__02: |-
+06_07__inlines__links__002: |-
   {
     "type": "doc",
     "content": [
@@ -12774,6 +12657,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12785,7 +12669,7 @@
       }
     ]
   }
-06_07__inlines__links__03: |-
+06_07__inlines__links__003: |-
   {
     "type": "doc",
     "content": [
@@ -12800,6 +12684,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12811,7 +12696,7 @@
       }
     ]
   }
-06_07__inlines__links__04: |-
+06_07__inlines__links__004: |-
   {
     "type": "doc",
     "content": [
@@ -12826,6 +12711,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12837,7 +12723,7 @@
       }
     ]
   }
-06_07__inlines__links__05: |-
+06_07__inlines__links__005: |-
   {
     "type": "doc",
     "content": [
@@ -12852,7 +12738,7 @@
       }
     ]
   }
-06_07__inlines__links__06: |-
+06_07__inlines__links__006: |-
   {
     "type": "doc",
     "content": [
@@ -12867,6 +12753,7 @@
                 "attrs": {
                   "href": "/my%20uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12878,7 +12765,7 @@
       }
     ]
   }
-06_07__inlines__links__07: |-
+06_07__inlines__links__007: |-
   {
     "type": "doc",
     "content": [
@@ -12893,10 +12780,10 @@
       }
     ]
   }
-06_07__inlines__links__08: |-
+06_07__inlines__links__008: |-
   Error - check implementation:
   Hast node of type "foo" not supported by this converter. Please, provide an specification.
-06_07__inlines__links__09: |-
+06_07__inlines__links__009: |-
   {
     "type": "doc",
     "content": [
@@ -12911,6 +12798,7 @@
                 "attrs": {
                   "href": "b)c",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12922,7 +12810,7 @@
       }
     ]
   }
-06_07__inlines__links__10: |-
+06_07__inlines__links__010: |-
   {
     "type": "doc",
     "content": [
@@ -12937,7 +12825,7 @@
       }
     ]
   }
-06_07__inlines__links__11: |-
+06_07__inlines__links__011: |-
   {
     "type": "doc",
     "content": [
@@ -12961,7 +12849,7 @@
       }
     ]
   }
-06_07__inlines__links__12: |-
+06_07__inlines__links__012: |-
   {
     "type": "doc",
     "content": [
@@ -12976,6 +12864,7 @@
                 "attrs": {
                   "href": "(foo)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -12987,7 +12876,7 @@
       }
     ]
   }
-06_07__inlines__links__13: |-
+06_07__inlines__links__013: |-
   {
     "type": "doc",
     "content": [
@@ -13002,6 +12891,7 @@
                 "attrs": {
                   "href": "foo(and(bar))",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13013,7 +12903,7 @@
       }
     ]
   }
-06_07__inlines__links__14: |-
+06_07__inlines__links__014: |-
   {
     "type": "doc",
     "content": [
@@ -13028,6 +12918,7 @@
                 "attrs": {
                   "href": "foo(and(bar)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13039,7 +12930,7 @@
       }
     ]
   }
-06_07__inlines__links__15: |-
+06_07__inlines__links__015: |-
   {
     "type": "doc",
     "content": [
@@ -13054,6 +12945,7 @@
                 "attrs": {
                   "href": "foo(and(bar)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13065,7 +12957,7 @@
       }
     ]
   }
-06_07__inlines__links__16: |-
+06_07__inlines__links__016: |-
   {
     "type": "doc",
     "content": [
@@ -13080,6 +12972,7 @@
                 "attrs": {
                   "href": "foo):",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13091,7 +12984,7 @@
       }
     ]
   }
-06_07__inlines__links__17: |-
+06_07__inlines__links__017: |-
   {
     "type": "doc",
     "content": [
@@ -13106,6 +12999,7 @@
                 "attrs": {
                   "href": "#fragment",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13126,6 +13020,7 @@
                 "attrs": {
                   "href": "http://example.com#fragment",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13146,6 +13041,7 @@
                 "attrs": {
                   "href": "http://example.com?foo=3#frag",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13157,7 +13053,7 @@
       }
     ]
   }
-06_07__inlines__links__18: |-
+06_07__inlines__links__018: |-
   {
     "type": "doc",
     "content": [
@@ -13172,6 +13068,7 @@
                 "attrs": {
                   "href": "foo%5Cbar",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13183,7 +13080,7 @@
       }
     ]
   }
-06_07__inlines__links__19: |-
+06_07__inlines__links__019: |-
   {
     "type": "doc",
     "content": [
@@ -13198,6 +13095,7 @@
                 "attrs": {
                   "href": "foo%20b%C3%A4",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13209,7 +13107,7 @@
       }
     ]
   }
-06_07__inlines__links__20: |-
+06_07__inlines__links__020: |-
   {
     "type": "doc",
     "content": [
@@ -13224,6 +13122,7 @@
                 "attrs": {
                   "href": "%22title%22",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13235,7 +13134,7 @@
       }
     ]
   }
-06_07__inlines__links__21: |-
+06_07__inlines__links__021: |-
   {
     "type": "doc",
     "content": [
@@ -13250,6 +13149,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -13261,7 +13161,7 @@
       }
     ]
   }
-06_07__inlines__links__22: |-
+06_07__inlines__links__022: |-
   {
     "type": "doc",
     "content": [
@@ -13276,6 +13176,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title \"\"",
                   "canonicalSrc": null
                 }
@@ -13287,7 +13188,7 @@
       }
     ]
   }
-06_07__inlines__links__23: |-
+06_07__inlines__links__023: |-
   {
     "type": "doc",
     "content": [
@@ -13302,6 +13203,7 @@
                 "attrs": {
                   "href": "/url%C2%A0%22title%22",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13313,7 +13215,7 @@
       }
     ]
   }
-06_07__inlines__links__24: |-
+06_07__inlines__links__024: |-
   {
     "type": "doc",
     "content": [
@@ -13328,7 +13230,7 @@
       }
     ]
   }
-06_07__inlines__links__25: |-
+06_07__inlines__links__025: |-
   {
     "type": "doc",
     "content": [
@@ -13343,6 +13245,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title \"and\" title",
                   "canonicalSrc": null
                 }
@@ -13354,7 +13257,7 @@
       }
     ]
   }
-06_07__inlines__links__26: |-
+06_07__inlines__links__026: |-
   {
     "type": "doc",
     "content": [
@@ -13369,6 +13272,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -13380,7 +13284,7 @@
       }
     ]
   }
-06_07__inlines__links__27: |-
+06_07__inlines__links__027: |-
   {
     "type": "doc",
     "content": [
@@ -13395,7 +13299,7 @@
       }
     ]
   }
-06_07__inlines__links__28: |-
+06_07__inlines__links__028: |-
   {
     "type": "doc",
     "content": [
@@ -13410,6 +13314,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13421,7 +13326,7 @@
       }
     ]
   }
-06_07__inlines__links__29: |-
+06_07__inlines__links__029: |-
   {
     "type": "doc",
     "content": [
@@ -13436,7 +13341,7 @@
       }
     ]
   }
-06_07__inlines__links__30: |-
+06_07__inlines__links__030: |-
   {
     "type": "doc",
     "content": [
@@ -13455,6 +13360,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13466,7 +13372,7 @@
       }
     ]
   }
-06_07__inlines__links__31: |-
+06_07__inlines__links__031: |-
   {
     "type": "doc",
     "content": [
@@ -13481,6 +13387,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13492,7 +13399,7 @@
       }
     ]
   }
-06_07__inlines__links__32: |-
+06_07__inlines__links__032: |-
   {
     "type": "doc",
     "content": [
@@ -13507,6 +13414,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13545,10 +13453,10 @@
       }
     ]
   }
-06_07__inlines__links__33: |-
+06_07__inlines__links__033: |-
   Error - check implementation:
   Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
-06_07__inlines__links__34: |-
+06_07__inlines__links__034: |-
   {
     "type": "doc",
     "content": [
@@ -13567,6 +13475,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13582,7 +13491,7 @@
       }
     ]
   }
-06_07__inlines__links__35: |-
+06_07__inlines__links__035: |-
   {
     "type": "doc",
     "content": [
@@ -13610,6 +13519,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13625,7 +13535,7 @@
       }
     ]
   }
-06_07__inlines__links__36: |-
+06_07__inlines__links__036: |-
   {
     "type": "doc",
     "content": [
@@ -13646,7 +13556,7 @@
       }
     ]
   }
-06_07__inlines__links__37: |-
+06_07__inlines__links__037: |-
   {
     "type": "doc",
     "content": [
@@ -13665,6 +13575,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13676,7 +13587,7 @@
       }
     ]
   }
-06_07__inlines__links__38: |-
+06_07__inlines__links__038: |-
   {
     "type": "doc",
     "content": [
@@ -13691,6 +13602,7 @@
                 "attrs": {
                   "href": "baz*",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13702,7 +13614,7 @@
       }
     ]
   }
-06_07__inlines__links__39: |-
+06_07__inlines__links__039: |-
   {
     "type": "doc",
     "content": [
@@ -13726,10 +13638,10 @@
       }
     ]
   }
-06_07__inlines__links__40: |-
+06_07__inlines__links__040: |-
   Error - check implementation:
   Hast node of type "bar" not supported by this converter. Please, provide an specification.
-06_07__inlines__links__41: |-
+06_07__inlines__links__041: |-
   {
     "type": "doc",
     "content": [
@@ -13753,7 +13665,7 @@
       }
     ]
   }
-06_07__inlines__links__42: |-
+06_07__inlines__links__042: |-
   {
     "type": "doc",
     "content": [
@@ -13772,6 +13684,7 @@
                 "attrs": {
                   "href": "http://example.com/?search=%5D(uri)",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13783,7 +13696,7 @@
       }
     ]
   }
-06_07__inlines__links__43: |-
+06_07__inlines__links__043: |-
   {
     "type": "doc",
     "content": [
@@ -13798,6 +13711,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -13809,7 +13723,7 @@
       }
     ]
   }
-06_07__inlines__links__44: |-
+06_07__inlines__links__044: |-
   {
     "type": "doc",
     "content": [
@@ -13824,6 +13738,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13835,7 +13750,7 @@
       }
     ]
   }
-06_07__inlines__links__45: |-
+06_07__inlines__links__045: |-
   {
     "type": "doc",
     "content": [
@@ -13850,6 +13765,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13861,7 +13777,7 @@
       }
     ]
   }
-06_07__inlines__links__46: |-
+06_07__inlines__links__046: |-
   {
     "type": "doc",
     "content": [
@@ -13876,6 +13792,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13914,10 +13831,10 @@
       }
     ]
   }
-06_07__inlines__links__47: |-
+06_07__inlines__links__047: |-
   Error - check implementation:
   Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
-06_07__inlines__links__48: |-
+06_07__inlines__links__048: |-
   {
     "type": "doc",
     "content": [
@@ -13936,6 +13853,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13955,6 +13873,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -13966,7 +13885,7 @@
       }
     ]
   }
-06_07__inlines__links__49: |-
+06_07__inlines__links__049: |-
   {
     "type": "doc",
     "content": [
@@ -13994,6 +13913,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14013,6 +13933,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14024,7 +13945,7 @@
       }
     ]
   }
-06_07__inlines__links__50: |-
+06_07__inlines__links__050: |-
   {
     "type": "doc",
     "content": [
@@ -14043,6 +13964,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14054,7 +13976,7 @@
       }
     ]
   }
-06_07__inlines__links__51: |-
+06_07__inlines__links__051: |-
   {
     "type": "doc",
     "content": [
@@ -14069,6 +13991,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14080,10 +14003,10 @@
       }
     ]
   }
-06_07__inlines__links__52: |-
+06_07__inlines__links__052: |-
   Error - check implementation:
   Hast node of type "bar" not supported by this converter. Please, provide an specification.
-06_07__inlines__links__53: |-
+06_07__inlines__links__053: |-
   {
     "type": "doc",
     "content": [
@@ -14107,7 +14030,7 @@
       }
     ]
   }
-06_07__inlines__links__54: |-
+06_07__inlines__links__054: |-
   {
     "type": "doc",
     "content": [
@@ -14126,6 +14049,7 @@
                 "attrs": {
                   "href": "http://example.com/?search=%5D%5Bref%5D",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14137,7 +14061,7 @@
       }
     ]
   }
-06_07__inlines__links__55: |-
+06_07__inlines__links__055: |-
   {
     "type": "doc",
     "content": [
@@ -14152,6 +14076,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14163,7 +14088,7 @@
       }
     ]
   }
-06_07__inlines__links__56: |-
+06_07__inlines__links__056: |-
   {
     "type": "doc",
     "content": [
@@ -14178,6 +14103,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14193,7 +14119,7 @@
       }
     ]
   }
-06_07__inlines__links__57: |-
+06_07__inlines__links__057: |-
   {
     "type": "doc",
     "content": [
@@ -14208,6 +14134,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14219,7 +14146,7 @@
       }
     ]
   }
-06_07__inlines__links__58: |-
+06_07__inlines__links__058: |-
   {
     "type": "doc",
     "content": [
@@ -14238,6 +14165,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14249,7 +14177,7 @@
       }
     ]
   }
-06_07__inlines__links__59: |-
+06_07__inlines__links__059: |-
   {
     "type": "doc",
     "content": [
@@ -14268,6 +14196,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14279,7 +14208,7 @@
       }
     ]
   }
-06_07__inlines__links__60: |-
+06_07__inlines__links__060: |-
   {
     "type": "doc",
     "content": [
@@ -14294,6 +14223,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14305,7 +14235,7 @@
       }
     ]
   }
-06_07__inlines__links__61: |-
+06_07__inlines__links__061: |-
   {
     "type": "doc",
     "content": [
@@ -14320,7 +14250,7 @@
       }
     ]
   }
-06_07__inlines__links__62: |-
+06_07__inlines__links__062: |-
   {
     "type": "doc",
     "content": [
@@ -14344,7 +14274,7 @@
       }
     ]
   }
-06_07__inlines__links__63: |-
+06_07__inlines__links__063: |-
   {
     "type": "doc",
     "content": [
@@ -14368,7 +14298,7 @@
       }
     ]
   }
-06_07__inlines__links__64: |-
+06_07__inlines__links__064: |-
   {
     "type": "doc",
     "content": [
@@ -14392,7 +14322,7 @@
       }
     ]
   }
-06_07__inlines__links__65: |-
+06_07__inlines__links__065: |-
   {
     "type": "doc",
     "content": [
@@ -14407,6 +14337,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14418,7 +14349,7 @@
       }
     ]
   }
-06_07__inlines__links__66: |-
+06_07__inlines__links__066: |-
   {
     "type": "doc",
     "content": [
@@ -14433,6 +14364,7 @@
                 "attrs": {
                   "href": "/uri",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14444,7 +14376,7 @@
       }
     ]
   }
-06_07__inlines__links__67: |-
+06_07__inlines__links__067: |-
   {
     "type": "doc",
     "content": [
@@ -14468,7 +14400,7 @@
       }
     ]
   }
-06_07__inlines__links__68: |-
+06_07__inlines__links__068: |-
   {
     "type": "doc",
     "content": [
@@ -14492,7 +14424,7 @@
       }
     ]
   }
-06_07__inlines__links__69: |-
+06_07__inlines__links__069: |-
   {
     "type": "doc",
     "content": [
@@ -14507,6 +14439,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14518,7 +14451,7 @@
       }
     ]
   }
-06_07__inlines__links__70: |-
+06_07__inlines__links__070: |-
   {
     "type": "doc",
     "content": [
@@ -14533,6 +14466,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14551,7 +14485,7 @@
       }
     ]
   }
-06_07__inlines__links__71: |-
+06_07__inlines__links__071: |-
   {
     "type": "doc",
     "content": [
@@ -14566,6 +14500,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14577,7 +14512,7 @@
       }
     ]
   }
-06_07__inlines__links__72: |-
+06_07__inlines__links__072: |-
   {
     "type": "doc",
     "content": [
@@ -14592,6 +14527,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14607,7 +14543,7 @@
       }
     ]
   }
-06_07__inlines__links__73: |-
+06_07__inlines__links__073: |-
   {
     "type": "doc",
     "content": [
@@ -14622,6 +14558,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14633,7 +14570,7 @@
       }
     ]
   }
-06_07__inlines__links__74: |-
+06_07__inlines__links__074: |-
   {
     "type": "doc",
     "content": [
@@ -14648,6 +14585,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14666,7 +14604,7 @@
       }
     ]
   }
-06_07__inlines__links__75: |-
+06_07__inlines__links__075: |-
   {
     "type": "doc",
     "content": [
@@ -14685,6 +14623,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14703,7 +14642,7 @@
       }
     ]
   }
-06_07__inlines__links__76: |-
+06_07__inlines__links__076: |-
   {
     "type": "doc",
     "content": [
@@ -14722,6 +14661,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14733,7 +14673,7 @@
       }
     ]
   }
-06_07__inlines__links__77: |-
+06_07__inlines__links__077: |-
   {
     "type": "doc",
     "content": [
@@ -14748,6 +14688,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -14759,7 +14700,7 @@
       }
     ]
   }
-06_07__inlines__links__78: |-
+06_07__inlines__links__078: |-
   {
     "type": "doc",
     "content": [
@@ -14774,6 +14715,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14789,7 +14731,7 @@
       }
     ]
   }
-06_07__inlines__links__79: |-
+06_07__inlines__links__079: |-
   {
     "type": "doc",
     "content": [
@@ -14804,7 +14746,7 @@
       }
     ]
   }
-06_07__inlines__links__80: |-
+06_07__inlines__links__080: |-
   {
     "type": "doc",
     "content": [
@@ -14823,6 +14765,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14834,7 +14777,7 @@
       }
     ]
   }
-06_07__inlines__links__81: |-
+06_07__inlines__links__081: |-
   {
     "type": "doc",
     "content": [
@@ -14849,6 +14792,7 @@
                 "attrs": {
                   "href": "/url2",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14860,7 +14804,7 @@
       }
     ]
   }
-06_07__inlines__links__82: |-
+06_07__inlines__links__082: |-
   {
     "type": "doc",
     "content": [
@@ -14875,6 +14819,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14886,7 +14831,7 @@
       }
     ]
   }
-06_07__inlines__links__83: |-
+06_07__inlines__links__083: |-
   {
     "type": "doc",
     "content": [
@@ -14901,6 +14846,7 @@
                 "attrs": {
                   "href": "",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14912,7 +14858,7 @@
       }
     ]
   }
-06_07__inlines__links__84: |-
+06_07__inlines__links__084: |-
   {
     "type": "doc",
     "content": [
@@ -14927,6 +14873,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14942,7 +14889,7 @@
       }
     ]
   }
-06_07__inlines__links__85: |-
+06_07__inlines__links__085: |-
   {
     "type": "doc",
     "content": [
@@ -14961,6 +14908,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -14972,7 +14920,7 @@
       }
     ]
   }
-06_07__inlines__links__86: |-
+06_07__inlines__links__086: |-
   {
     "type": "doc",
     "content": [
@@ -14987,6 +14935,7 @@
                 "attrs": {
                   "href": "/url2",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15002,6 +14951,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15013,7 +14963,7 @@
       }
     ]
   }
-06_07__inlines__links__87: |-
+06_07__inlines__links__087: |-
   {
     "type": "doc",
     "content": [
@@ -15032,6 +14982,7 @@
                 "attrs": {
                   "href": "/url1",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15043,7 +14994,7 @@
       }
     ]
   }
-06_08__inlines__images__01: |-
+06_08__inlines__images__001: |-
   {
     "type": "doc",
     "content": [
@@ -15064,7 +15015,7 @@
       }
     ]
   }
-06_08__inlines__images__02: |-
+06_08__inlines__images__002: |-
   {
     "type": "doc",
     "content": [
@@ -15085,7 +15036,7 @@
       }
     ]
   }
-06_08__inlines__images__03: |-
+06_08__inlines__images__003: |-
   {
     "type": "doc",
     "content": [
@@ -15106,7 +15057,7 @@
       }
     ]
   }
-06_08__inlines__images__04: |-
+06_08__inlines__images__004: |-
   {
     "type": "doc",
     "content": [
@@ -15127,7 +15078,7 @@
       }
     ]
   }
-06_08__inlines__images__05: |-
+06_08__inlines__images__005: |-
   {
     "type": "doc",
     "content": [
@@ -15148,7 +15099,7 @@
       }
     ]
   }
-06_08__inlines__images__06: |-
+06_08__inlines__images__006: |-
   {
     "type": "doc",
     "content": [
@@ -15169,7 +15120,7 @@
       }
     ]
   }
-06_08__inlines__images__07: |-
+06_08__inlines__images__007: |-
   {
     "type": "doc",
     "content": [
@@ -15190,7 +15141,7 @@
       }
     ]
   }
-06_08__inlines__images__08: |-
+06_08__inlines__images__008: |-
   {
     "type": "doc",
     "content": [
@@ -15215,7 +15166,7 @@
       }
     ]
   }
-06_08__inlines__images__09: |-
+06_08__inlines__images__009: |-
   {
     "type": "doc",
     "content": [
@@ -15236,7 +15187,7 @@
       }
     ]
   }
-06_08__inlines__images__10: |-
+06_08__inlines__images__010: |-
   {
     "type": "doc",
     "content": [
@@ -15257,7 +15208,7 @@
       }
     ]
   }
-06_08__inlines__images__11: |-
+06_08__inlines__images__011: |-
   {
     "type": "doc",
     "content": [
@@ -15278,7 +15229,7 @@
       }
     ]
   }
-06_08__inlines__images__12: |-
+06_08__inlines__images__012: |-
   {
     "type": "doc",
     "content": [
@@ -15299,7 +15250,7 @@
       }
     ]
   }
-06_08__inlines__images__13: |-
+06_08__inlines__images__013: |-
   {
     "type": "doc",
     "content": [
@@ -15320,7 +15271,7 @@
       }
     ]
   }
-06_08__inlines__images__14: |-
+06_08__inlines__images__014: |-
   {
     "type": "doc",
     "content": [
@@ -15341,7 +15292,7 @@
       }
     ]
   }
-06_08__inlines__images__15: |-
+06_08__inlines__images__015: |-
   {
     "type": "doc",
     "content": [
@@ -15362,7 +15313,7 @@
       }
     ]
   }
-06_08__inlines__images__16: |-
+06_08__inlines__images__016: |-
   {
     "type": "doc",
     "content": [
@@ -15387,7 +15338,7 @@
       }
     ]
   }
-06_08__inlines__images__17: |-
+06_08__inlines__images__017: |-
   {
     "type": "doc",
     "content": [
@@ -15408,7 +15359,7 @@
       }
     ]
   }
-06_08__inlines__images__18: |-
+06_08__inlines__images__018: |-
   {
     "type": "doc",
     "content": [
@@ -15429,7 +15380,7 @@
       }
     ]
   }
-06_08__inlines__images__19: |-
+06_08__inlines__images__019: |-
   {
     "type": "doc",
     "content": [
@@ -15453,7 +15404,7 @@
       }
     ]
   }
-06_08__inlines__images__20: |-
+06_08__inlines__images__020: |-
   {
     "type": "doc",
     "content": [
@@ -15474,7 +15425,7 @@
       }
     ]
   }
-06_08__inlines__images__21: |-
+06_08__inlines__images__021: |-
   {
     "type": "doc",
     "content": [
@@ -15489,7 +15440,7 @@
       }
     ]
   }
-06_08__inlines__images__22: |-
+06_08__inlines__images__022: |-
   {
     "type": "doc",
     "content": [
@@ -15508,6 +15459,7 @@
                 "attrs": {
                   "href": "/url",
                   "target": "_blank",
+                  "class": null,
                   "title": "title",
                   "canonicalSrc": null
                 }
@@ -15519,7 +15471,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__01: |-
+06_09__inlines__autolinks__001: |-
   {
     "type": "doc",
     "content": [
@@ -15534,6 +15486,7 @@
                 "attrs": {
                   "href": "http://foo.bar.baz",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15545,7 +15498,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__02: |-
+06_09__inlines__autolinks__002: |-
   {
     "type": "doc",
     "content": [
@@ -15560,6 +15513,7 @@
                 "attrs": {
                   "href": "http://foo.bar.baz/test?q=hello&id=22&boolean",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15571,7 +15525,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__03: |-
+06_09__inlines__autolinks__003: |-
   {
     "type": "doc",
     "content": [
@@ -15586,6 +15540,7 @@
                 "attrs": {
                   "href": "irc://foo.bar:2233/baz",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15597,7 +15552,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__04: |-
+06_09__inlines__autolinks__004: |-
   {
     "type": "doc",
     "content": [
@@ -15612,6 +15567,7 @@
                 "attrs": {
                   "href": "MAILTO:FOO@BAR.BAZ",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15623,7 +15579,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__05: |-
+06_09__inlines__autolinks__005: |-
   {
     "type": "doc",
     "content": [
@@ -15638,6 +15594,7 @@
                 "attrs": {
                   "href": "a+b+c:d",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15649,7 +15606,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__06: |-
+06_09__inlines__autolinks__006: |-
   {
     "type": "doc",
     "content": [
@@ -15664,6 +15621,7 @@
                 "attrs": {
                   "href": "made-up-scheme://foo,bar",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15675,7 +15633,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__07: |-
+06_09__inlines__autolinks__007: |-
   {
     "type": "doc",
     "content": [
@@ -15690,6 +15648,7 @@
                 "attrs": {
                   "href": "http://../",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15701,7 +15660,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__08: |-
+06_09__inlines__autolinks__008: |-
   {
     "type": "doc",
     "content": [
@@ -15716,6 +15675,7 @@
                 "attrs": {
                   "href": "localhost:5001/foo",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15727,7 +15687,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__09: |-
+06_09__inlines__autolinks__009: |-
   {
     "type": "doc",
     "content": [
@@ -15736,13 +15696,33 @@
         "content": [
           {
             "type": "text",
-            "text": "<http://foo.bar/baz bim>"
+            "text": "<"
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://foo.bar/baz",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "http://foo.bar/baz"
+          },
+          {
+            "type": "text",
+            "text": " bim>"
           }
         ]
       }
     ]
   }
-06_09__inlines__autolinks__10: |-
+06_09__inlines__autolinks__010: |-
   {
     "type": "doc",
     "content": [
@@ -15757,6 +15737,7 @@
                 "attrs": {
                   "href": "http://example.com/%5C%5B%5C",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15768,7 +15749,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__11: |-
+06_09__inlines__autolinks__011: |-
   {
     "type": "doc",
     "content": [
@@ -15783,6 +15764,7 @@
                 "attrs": {
                   "href": "mailto:foo@bar.example.com",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15794,7 +15776,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__12: |-
+06_09__inlines__autolinks__012: |-
   {
     "type": "doc",
     "content": [
@@ -15809,6 +15791,7 @@
                 "attrs": {
                   "href": "mailto:foo+special@Bar.baz-bar0.com",
                   "target": "_blank",
+                  "class": null,
                   "title": null,
                   "canonicalSrc": null
                 }
@@ -15820,22 +15803,10 @@
       }
     ]
   }
-06_09__inlines__autolinks__13: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "text": "<foo+@bar.example.com>"
-          }
-        ]
-      }
-    ]
-  }
-06_09__inlines__autolinks__14: |-
+06_09__inlines__autolinks__013: |-
+  Error - check implementation:
+  Cannot read properties of undefined (reading 'end')
+06_09__inlines__autolinks__014: |-
   {
     "type": "doc",
     "content": [
@@ -15850,7 +15821,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__15: |-
+06_09__inlines__autolinks__015: |-
   {
     "type": "doc",
     "content": [
@@ -15859,13 +15830,33 @@
         "content": [
           {
             "type": "text",
-            "text": "< http://foo.bar >"
+            "text": "< "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://foo.bar",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "http://foo.bar"
+          },
+          {
+            "type": "text",
+            "text": " >"
           }
         ]
       }
     ]
   }
-06_09__inlines__autolinks__16: |-
+06_09__inlines__autolinks__016: |-
   {
     "type": "doc",
     "content": [
@@ -15880,7 +15871,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__17: |-
+06_09__inlines__autolinks__017: |-
   {
     "type": "doc",
     "content": [
@@ -15895,7 +15886,7 @@
       }
     ]
   }
-06_09__inlines__autolinks__18: |-
+06_09__inlines__autolinks__018: |-
   {
     "type": "doc",
     "content": [
@@ -15904,13 +15895,25 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://example.com",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "http://example.com"
           }
         ]
       }
     ]
   }
-06_09__inlines__autolinks__19: |-
+06_09__inlines__autolinks__019: |-
   {
     "type": "doc",
     "content": [
@@ -15919,13 +15922,25 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:foo@bar.example.com",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "foo@bar.example.com"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__01: |-
+06_10__inlines__autolinks_extension__001: |-
   {
     "type": "doc",
     "content": [
@@ -15934,13 +15949,25 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.commonmark.org"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__02: |-
+06_10__inlines__autolinks_extension__002: |-
   {
     "type": "doc",
     "content": [
@@ -15949,13 +15976,33 @@
         "content": [
           {
             "type": "text",
-            "text": "Visit www.commonmark.org/help for more information."
+            "text": "Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org/help",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org/help"
+          },
+          {
+            "type": "text",
+            "text": " for more information."
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__03: |-
+06_10__inlines__autolinks_extension__003: |-
   {
     "type": "doc",
     "content": [
@@ -15964,7 +16011,27 @@
         "content": [
           {
             "type": "text",
-            "text": "Visit www.commonmark.org."
+            "text": "Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org"
+          },
+          {
+            "type": "text",
+            "text": "."
           }
         ]
       },
@@ -15973,13 +16040,33 @@
         "content": [
           {
             "type": "text",
-            "text": "Visit www.commonmark.org/a.b."
+            "text": "Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org/a.b",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org/a.b"
+          },
+          {
+            "type": "text",
+            "text": "."
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__04: |-
+06_10__inlines__autolinks_extension__004: |-
   {
     "type": "doc",
     "content": [
@@ -15988,6 +16075,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.google.com/search?q=Markup+(business)"
           }
         ]
@@ -15997,7 +16096,23 @@
         "content": [
           {
             "type": "text",
-            "text": "www.google.com/search?q=Markup+(business)))"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=Markup+(business)"
+          },
+          {
+            "type": "text",
+            "text": "))"
           }
         ]
       },
@@ -16006,7 +16121,27 @@
         "content": [
           {
             "type": "text",
-            "text": "(www.google.com/search?q=Markup+(business))"
+            "text": "("
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=Markup+(business)"
+          },
+          {
+            "type": "text",
+            "text": ")"
           }
         ]
       },
@@ -16015,13 +16150,29 @@
         "content": [
           {
             "type": "text",
-            "text": "(www.google.com/search?q=Markup+(business)"
+            "text": "("
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=Markup+(business)"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__05: |-
+06_10__inlines__autolinks_extension__005: |-
   {
     "type": "doc",
     "content": [
@@ -16030,13 +16181,25 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=(business))+ok",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.google.com/search?q=(business))+ok"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__06: |-
+06_10__inlines__autolinks_extension__006: |-
   {
     "type": "doc",
     "content": [
@@ -16045,6 +16208,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=commonmark&hl=en",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "www.google.com/search?q=commonmark&hl=en"
           }
         ]
@@ -16054,13 +16229,29 @@
         "content": [
           {
             "type": "text",
-            "text": "www.google.com/search?q=commonmark&hl;"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.google.com/search?q=commonmark",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.google.com/search?q=commonmark"
+          },
+          {
+            "type": "text",
+            "text": "&hl;"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__07: |-
+06_10__inlines__autolinks_extension__007: |-
   {
     "type": "doc",
     "content": [
@@ -16069,13 +16260,29 @@
         "content": [
           {
             "type": "text",
-            "text": "www.commonmark.org/he<lp"
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://www.commonmark.org/he",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "www.commonmark.org/he"
+          },
+          {
+            "type": "text",
+            "text": "<lp"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__08: |-
+06_10__inlines__autolinks_extension__008: |-
   {
     "type": "doc",
     "content": [
@@ -16084,6 +16291,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "http://commonmark.org",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "http://commonmark.org"
           }
         ]
@@ -16093,7 +16312,27 @@
         "content": [
           {
             "type": "text",
-            "text": "(Visit https://encrypted.google.com/search?q=Markup+(business))"
+            "text": "(Visit "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "https://encrypted.google.com/search?q=Markup+(business)",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "https://encrypted.google.com/search?q=Markup+(business)"
+          },
+          {
+            "type": "text",
+            "text": ")"
           }
         ]
       },
@@ -16108,7 +16347,7 @@
       }
     ]
   }
-06_10__inlines__autolinks_extension__09: |-
+06_10__inlines__autolinks_extension__009: |-
   {
     "type": "doc",
     "content": [
@@ -16117,13 +16356,25 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:foo@bar.baz",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "foo@bar.baz"
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__10: |-
+06_10__inlines__autolinks_extension__010: |-
   {
     "type": "doc",
     "content": [
@@ -16132,13 +16383,33 @@
         "content": [
           {
             "type": "text",
-            "text": "hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is."
+            "text": "hello@mail+xyz.example isn't valid, but "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:hello+xyz@mail.example",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "hello+xyz@mail.example"
+          },
+          {
+            "type": "text",
+            "text": " is."
           }
         ]
       }
     ]
   }
-06_10__inlines__autolinks_extension__11: |-
+06_10__inlines__autolinks_extension__011: |-
   {
     "type": "doc",
     "content": [
@@ -16147,6 +16418,18 @@
         "content": [
           {
             "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:a.b-c_d@a.b",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
             "text": "a.b-c_d@a.b"
           }
         ]
@@ -16156,7 +16439,23 @@
         "content": [
           {
             "type": "text",
-            "text": "a.b-c_d@a.b."
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:a.b-c_d@a.b",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "a.b-c_d@a.b"
+          },
+          {
+            "type": "text",
+            "text": "."
           }
         ]
       },
@@ -16180,16 +16479,16 @@
       }
     ]
   }
-06_11__inlines__raw_html__01: |-
+06_11__inlines__raw_html__001: |-
   Error - check implementation:
   Hast node of type "bab" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__02: |-
+06_11__inlines__raw_html__002: |-
   Error - check implementation:
   Hast node of type "b2" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__03: |-
+06_11__inlines__raw_html__003: |-
   Error - check implementation:
   Hast node of type "b2" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__04: |-
+06_11__inlines__raw_html__004: |-
   {
     "type": "doc",
     "content": [
@@ -16198,10 +16497,10 @@
       }
     ]
   }
-06_11__inlines__raw_html__05: |-
+06_11__inlines__raw_html__005: |-
   Error - check implementation:
   Hast node of type "responsive-image" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__06: |-
+06_11__inlines__raw_html__006: |-
   {
     "type": "doc",
     "content": [
@@ -16216,7 +16515,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__07: |-
+06_11__inlines__raw_html__007: |-
   {
     "type": "doc",
     "content": [
@@ -16231,7 +16530,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__08: |-
+06_11__inlines__raw_html__008: |-
   {
     "type": "doc",
     "content": [
@@ -16246,7 +16545,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__09: |-
+06_11__inlines__raw_html__009: |-
   {
     "type": "doc",
     "content": [
@@ -16261,7 +16560,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__10: |-
+06_11__inlines__raw_html__010: |-
   {
     "type": "doc",
     "content": [
@@ -16276,7 +16575,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__11: |-
+06_11__inlines__raw_html__011: |-
   {
     "type": "doc",
     "content": [
@@ -16285,7 +16584,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__12: |-
+06_11__inlines__raw_html__012: |-
   {
     "type": "doc",
     "content": [
@@ -16300,10 +16599,10 @@
       }
     ]
   }
-06_11__inlines__raw_html__13: |-
+06_11__inlines__raw_html__013: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__14: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+06_11__inlines__raw_html__014: |-
   {
     "type": "doc",
     "content": [
@@ -16318,7 +16617,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__15: |-
+06_11__inlines__raw_html__015: |-
   {
     "type": "doc",
     "content": [
@@ -16342,16 +16641,16 @@
       }
     ]
   }
-06_11__inlines__raw_html__16: |-
+06_11__inlines__raw_html__016: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__17: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+06_11__inlines__raw_html__017: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__18: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+06_11__inlines__raw_html__018: |-
   Error - check implementation:
-  Hast node of type "comment" not supported by this converter. Please, provide an specification.
-06_11__inlines__raw_html__19: |-
+  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+06_11__inlines__raw_html__019: |-
   {
     "type": "doc",
     "content": [
@@ -16366,7 +16665,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__20: |-
+06_11__inlines__raw_html__020: |-
   {
     "type": "doc",
     "content": [
@@ -16381,7 +16680,7 @@
       }
     ]
   }
-06_11__inlines__raw_html__21: |-
+06_11__inlines__raw_html__021: |-
   {
     "type": "doc",
     "content": [
@@ -16396,10 +16695,10 @@
       }
     ]
   }
-06_12__inlines__disallowed_raw_html_extension__01: |-
+06_12__inlines__disallowed_raw_html_extension__001: |-
   Error - check implementation:
   Hast node of type "title" not supported by this converter. Please, provide an specification.
-06_13__inlines__hard_line_breaks__01: |-
+06_13__inlines__hard_line_breaks__001: |-
   {
     "type": "doc",
     "content": [
@@ -16421,7 +16720,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__02: |-
+06_13__inlines__hard_line_breaks__002: |-
   {
     "type": "doc",
     "content": [
@@ -16443,7 +16742,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__03: |-
+06_13__inlines__hard_line_breaks__003: |-
   {
     "type": "doc",
     "content": [
@@ -16465,7 +16764,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__04: |-
+06_13__inlines__hard_line_breaks__004: |-
   {
     "type": "doc",
     "content": [
@@ -16487,7 +16786,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__05: |-
+06_13__inlines__hard_line_breaks__005: |-
   {
     "type": "doc",
     "content": [
@@ -16509,13 +16808,13 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__06: |-
+06_13__inlines__hard_line_breaks__006: |-
   Error - check implementation:
   Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
-06_13__inlines__hard_line_breaks__07: |-
+06_13__inlines__hard_line_breaks__007: |-
   Error - check implementation:
   Cannot destructure property 'type' of 'this.stack.pop(...)' as it is undefined.
-06_13__inlines__hard_line_breaks__08: |-
+06_13__inlines__hard_line_breaks__008: |-
   {
     "type": "doc",
     "content": [
@@ -16535,7 +16834,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__09: |-
+06_13__inlines__hard_line_breaks__009: |-
   {
     "type": "doc",
     "content": [
@@ -16555,7 +16854,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__10: |-
+06_13__inlines__hard_line_breaks__010: |-
   {
     "type": "doc",
     "content": [
@@ -16564,7 +16863,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__11: |-
+06_13__inlines__hard_line_breaks__011: |-
   {
     "type": "doc",
     "content": [
@@ -16573,7 +16872,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__12: |-
+06_13__inlines__hard_line_breaks__012: |-
   {
     "type": "doc",
     "content": [
@@ -16588,7 +16887,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__13: |-
+06_13__inlines__hard_line_breaks__013: |-
   {
     "type": "doc",
     "content": [
@@ -16603,7 +16902,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__14: |-
+06_13__inlines__hard_line_breaks__014: |-
   {
     "type": "doc",
     "content": [
@@ -16621,7 +16920,7 @@
       }
     ]
   }
-06_13__inlines__hard_line_breaks__15: |-
+06_13__inlines__hard_line_breaks__015: |-
   {
     "type": "doc",
     "content": [
@@ -16639,7 +16938,7 @@
       }
     ]
   }
-06_14__inlines__soft_line_breaks__01: |-
+06_14__inlines__soft_line_breaks__001: |-
   {
     "type": "doc",
     "content": [
@@ -16654,7 +16953,7 @@
       }
     ]
   }
-06_14__inlines__soft_line_breaks__02: |-
+06_14__inlines__soft_line_breaks__002: |-
   {
     "type": "doc",
     "content": [
@@ -16669,7 +16968,7 @@
       }
     ]
   }
-06_15__inlines__textual_content__01: |-
+06_15__inlines__textual_content__001: |-
   {
     "type": "doc",
     "content": [
@@ -16684,7 +16983,7 @@
       }
     ]
   }
-06_15__inlines__textual_content__02: |-
+06_15__inlines__textual_content__002: |-
   {
     "type": "doc",
     "content": [
@@ -16699,7 +16998,7 @@
       }
     ]
   }
-06_15__inlines__textual_content__03: |-
+06_15__inlines__textual_content__003: |-
   {
     "type": "doc",
     "content": [
@@ -16714,26 +17013,6 @@
       }
     ]
   }
-07_01__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__01: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "text",
-            "marks": [
-              {
-                "type": "bold"
-              }
-            ],
-            "text": "bold"
-          }
-        ]
-      }
-    ]
-  }
-08_01__second_gitlab_specific_section_with_examples__strong_but_with_html__01: |-
+07_01__gitlab_specific_markdown__footnotes__001: |-
   Error - check implementation:
-  Cannot read properties of undefined (reading 'wrapTextInParagraph')
+  Hast node of type "sup" not supported by this converter. Please, provide an specification.

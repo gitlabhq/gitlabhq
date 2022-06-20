@@ -3,7 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::IssueTrackerData do
-  describe 'associations' do
-    it { is_expected.to belong_to :integration }
+  it_behaves_like Integrations::BaseDataFields
+
+  describe 'encrypted attributes' do
+    subject { described_class.encrypted_attributes.keys }
+
+    it { is_expected.to contain_exactly(:issues_url, :new_issue_url, :project_url) }
   end
 end

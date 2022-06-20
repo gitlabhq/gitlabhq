@@ -22,7 +22,7 @@ RSpec.shared_context 'reconfigures connection stack' do |db_config_name|
     end
   end
 
-  def validate_connections!
+  def validate_connections_stack!
     model_connections = Gitlab::Database.database_base_models.to_h do |db_config_name, model_class|
       [model_class, Gitlab::Database.db_config_name(model_class.connection)]
     end

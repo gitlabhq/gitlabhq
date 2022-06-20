@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -94,11 +94,13 @@ that can process jobs in the `background_migration` queue.
 
 ### Background migrations
 
+#### Pending migrations
+
 **For Omnibus installations:**
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
 ```
 
 **For installations from source:**
@@ -106,7 +108,39 @@ sudo gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigrati
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigrationJob.pending.count'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'
+```
+
+#### Failed migrations
+
+**For Omnibus installations:**
+
+For GitLab 14.0-14.9:
+
+```shell
+sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+```
+
+For GitLab 14.10 and later:
+
+```shell
+sudo gitlab-rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
+```
+
+**For installations from source:**
+
+For GitLab 14.0-14.9:
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.failed.count'
+```
+
+For GitLab 14.10 and later:
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'Gitlab::Database::BackgroundMigration::BatchedMigration.with_status(:failed).count'
 ```
 
 ### Batched background migrations
@@ -250,24 +284,36 @@ See [troubleshooting batched background migrations](../user/admin_area/monitorin
 
 ## Dealing with running CI/CD pipelines and jobs
 
-If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates fail. When GitLab is back online, the trace updates should self-heal. However, depending on the error, the GitLab Runner either retries or eventually terminates job handling.
+If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates fail. When GitLab is back online, the trace updates should self-heal. However, depending on the error, the GitLab Runner either retries, or eventually terminates, job handling.
 
 As for the artifacts, the GitLab Runner attempts to upload them three times, after which the job eventually fails.
 
-To address the above two scenario's, it is advised to do the following prior to upgrading:
+To address the above two scenarios, it is advised to do the following prior to upgrading:
 
 1. Plan your maintenance.
-1. Pause your runners.
+1. Pause your runners or block new jobs from starting by adding following to your `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+   ```
+
+   And reconfigure GitLab with:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
 1. Wait until all jobs are finished.
 1. Upgrade GitLab.
 1. [Update GitLab Runner](https://docs.gitlab.com/runner/install/index.html) to the same version
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
+1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 
 ## Checking for pending Advanced Search migrations **(PREMIUM SELF)**
 
-This section is only applicable if you have enabled the [Elasticsearch integration](../integration/elasticsearch.md) **(PREMIUM SELF)**.
+This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**.
 
-Major releases require all [Advanced Search migrations](../integration/elasticsearch.md#advanced-search-migrations)
+Major releases require all [Advanced Search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
 running the following command:
@@ -287,11 +333,11 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 ### What do I do if my Advanced Search migrations are stuck?
 
-See [how to retry a halted migration](../integration/elasticsearch.md#retry-a-halted-migration).
+See [how to retry a halted migration](../integration/advanced_search/elasticsearch.md#retry-a-halted-migration).
 
 ### What do I do for the error `Elasticsearch version not compatible`
 
-Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/elasticsearch.md#version-requirements).
+Confirm that your version of Elasticsearch or OpenSearch is [compatible with your version of GitLab](../integration/advanced_search/elasticsearch.md#version-requirements).
 
 ## Upgrading without downtime
 
@@ -314,7 +360,7 @@ A *major* upgrade requires the following steps:
 It's also important to ensure that any [background migrations have been fully completed](#checking-for-background-migrations-before-upgrading)
 before upgrading to a new major version.
 
-If you have enabled the [Elasticsearch integration](../integration/elasticsearch.md) **(PREMIUM SELF)**, then
+If you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**, then
 [ensure all Advanced Search migrations are completed](#checking-for-pending-advanced-search-migrations) in the last minor version within
 your current version
 before proceeding with the major version upgrade.
@@ -333,7 +379,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.9.0`](#1490) -> [latest `14.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> [`12.10.14`](#12100) -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](#13120) -> [`14.0.12`](#1400) -> [`14.3.6`](#1430) -> [`14.9.5`](#1490) -> [`14.10.Z`](#1410) -> [`15.0.Z`](#1500) -> [latest `15.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -341,7 +387,9 @@ Additional steps between the mentioned versions are possible. We list the minima
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.6.2`                                                     | Two intermediate versions are required: `13.12` and `14.0`, then `14.6.2`.                                                      |
+| `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
+| `15.0.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.4` -> `15.0.2`                                                        | Two intermediate versions are required: `14.9` and `14.10`, then `15.0.0`.                                                        |
+| `14.6.2`       | `13.10.2`    | `13.10.2` -> `13.12.15` -> `14.0.12` -> `14.3.6` => `14.6.2`                                         | Three intermediate versions are required: `13.12` and `14.0`, `14.3`, then `14.6.2`.                                                        |
 | `14.1.8`       | `13.9.2`     | `13.9.2` -> `13.12.15` -> `14.0.12` -> `14.1.8`                                                      | Two intermediate versions are required: `13.12` and `14.0`, then `14.1.8`.                                                        |
 | `13.12.15`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.15`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.15`.                                   |
 | `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
@@ -383,7 +431,7 @@ possible.
 
 ## Version-specific upgrading instructions
 
-Each month, major, minor or patch releases of GitLab are published along with a
+Each month, major, minor, or patch releases of GitLab are published along with a
 [release post](https://about.gitlab.com/releases/categories/releases/).
 You should read the release posts for all versions you're passing over.
 At the end of major and minor release posts, there are three sections to look for specifically:
@@ -396,7 +444,7 @@ These include:
 
 - Steps you need to perform as part of an upgrade.
   For example [8.12](https://about.gitlab.com/releases/2016/09/22/gitlab-8-12-released/#upgrade-barometer)
-  required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or higher would require this.
+  required the Elasticsearch index to be recreated. Any older version of GitLab upgrading to 8.12 or later would require this.
 - Changes to the versions of software we support such as
   [ceasing support for IE11 in GitLab 13](https://about.gitlab.com/releases/2020/03/22/gitlab-12-9-released/#ending-support-for-internet-explorer-11).
 
@@ -410,43 +458,68 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.1.0
+
+- If you run external PostgreSQL, particularly AWS RDS,
+  [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
+  to avoid the database crashing.
+
 ### 15.0.0
 
-- Elasticsearch 6.8 [is no longer supported](../integration/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../integration/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
+- Elasticsearch 6.8 [is no longer supported](../integration/advanced_search/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../integration/advanced_search/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
+- If you run external PostgreSQL, particularly AWS RDS,
+  [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
+  to avoid the database crashing.
 
 ### 14.10.0
 
-- Before upgrading to GitLab 14.10, you need to already have the latest 14.9.Z installed on your instance.
+- Before upgrading to GitLab 14.10, you must already have the latest 14.9.Z installed on your instance.
   The upgrade to GitLab 14.10 executes a [concurrent index drop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84308) of unneeded
   entries from the `ci_job_artifacts` database table. This could potentially run for multiple minutes, especially if the table has a lot of
   traffic and the migration is unable to acquire a lock. It is advised to let this process finish as restarting may result in data loss.
 
+- If you run external PostgreSQL, particularly AWS RDS,
+  [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
+  to avoid the database crashing.
+
+- Upgrading to patch level 14.10.3 or later might encounter a one-hour timeout due to a long running database data change,
+  if it was not completed while running GitLab 14.9.
+
+  ```plaintext
+  FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
+  (gitlab::database_migrations line 51) had an error:
+  [..]
+  Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+  ```
+
+  A workaround exists to [complete the data change and the upgrade manually](package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+
 ### 14.9.0
 
-- Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances. 
+- Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances.
   These [batched background migrations](#batched-background-migrations) update whole database tables to ensure corresponding
   records in `namespaces` table for each record in `projects` table.
 
   After you update to 14.9.0 or a later 14.9 patch version,
-  [batched background migrations need to finish](#batched-background-migrations)
+  [batched background migrations must finish](#batched-background-migrations)
   before you update to a later version.
 
   If the migrations are not finished and you try to update to a later version,
-  you'll see an error like:
+  you see errors like:
 
   ```plaintext
   Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
   ```
-  
+
   Or
 
   ```plaintext
   Error executing action `run` on resource 'bash[migrate gitlab-rails database]'
   ================================================================================
-  
+
   Mixlib::ShellOut::ShellCommandFailed
   ------------------------------------
-  Command execution failed. STDOUT/STDERR suppressed for sensitive resource 
+  Command execution failed. STDOUT/STDERR suppressed for sensitive resource
   ```
 
 - GitLab 14.9.0 includes a
@@ -461,10 +534,14 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   end
   ```
 
+- If you run external PostgreSQL, particularly AWS RDS,
+  [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
+  to avoid the database crashing.
+
 ### 14.8.0
 
-- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
-  Updating to 14.8.2 or later will reset runner registration tokens for your groups and projects.
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.8.2 or later resets runner registration tokens for your groups and projects.
 - The agent server for Kubernetes [is enabled by default](https://about.gitlab.com/releases/2022/02/22/gitlab-14-8-released/#the-agent-server-for-kubernetes-is-enabled-by-default)
   on Omnibus installations. If you run GitLab at scale,
   such as [the reference architectures](../administration/reference_architectures/index.md),
@@ -503,12 +580,15 @@ that may remain stuck permanently in a **pending** state.
   [batched migration](../user/admin_area/monitoring/background_migrations.md) named
   `BackfillNamespaceIdForNamespaceRoute`. You can [ignore](https://gitlab.com/gitlab-org/gitlab/-/issues/357822)
   this. Retry it after you upgrade to version 14.9.x.
+- If you run external PostgreSQL, particularly AWS RDS,
+  [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
+  to avoid the database crashing.
 
 ### 14.7.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
-- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
-  Updating to 14.7.4 or later will reset runner registration tokens for your groups and projects.
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.7.4 or later resets runner registration tokens for your groups and projects.
 - GitLab 14.7 introduced a change where Gitaly expects persistent files in the `/tmp` directory.
   When using the `noatime` mount option on `/tmp` in a node running Gitaly, most Linux distributions
   run into [an issue with Git server hooks getting deleted](https://gitlab.com/gitlab-org/gitaly/-/issues/4113).
@@ -521,12 +601,15 @@ that may remain stuck permanently in a **pending** state.
   sudo printf "x /tmp/gitaly-%s-*\n" hooks git-exec-path >/etc/tmpfiles.d/gitaly-workaround.conf
   ```
 
+  This issue is fixed in GitLab 14.10 and later when using the [Gitaly runtime directory](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html#gitaly-runtime-directory)
+  to specify a location to store persistent files.
+
 ### 14.6.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
-- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, please review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
-  Updating to 14.6.5 or later will reset runner registration tokens for your groups and projects.
-  
+- If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
+  Updating to 14.6.5 or later resets runner registration tokens for your groups and projects.
+
 ### 14.5.0
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
@@ -535,17 +618,17 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
 - Connections between Workhorse and Gitaly use the Gitaly `backchannel` protocol by default. If you deployed a gRPC proxy between Workhorse and Gitaly,
   Workhorse can no longer connect. As a workaround, [disable the temporary `workhorse_use_sidechannel`](../administration/feature_flags.md#enable-or-disable-the-feature)
-  feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy. If you have feedback about this change, please go to [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1301).
+  feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy. If you have feedback about this change, go to [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1301).
 
-- In 14.1 we introduced a background migration that changes how we store merge request diff commits
-  in order to significantly reduce the amount of storage needed.
+- In 14.1 we introduced a background migration that changes how we store merge request diff commits,
+  to significantly reduce the amount of storage needed.
   In 14.5 we introduce a set of migrations that wrap up this process by making sure
   that all remaining jobs over the `merge_request_diff_commits` table are completed.
-  These jobs will have already been processed in most cases so that no extra time is necessary during an upgrade to 14.5.
+  These jobs have already been processed in most cases so that no extra time is necessary during an upgrade to 14.5.
   However, if there are remaining jobs or you haven't already upgraded to 14.1,
   the deployment may take multiple hours to complete.
 
-  All merge request diff commits will automatically incorporate these changes, and there are no
+  All merge request diff commits automatically incorporate these changes, and there are no
   additional requirements to perform the upgrade.
   Existing data in the `merge_request_diff_commits` table remains unpacked until you run `VACUUM FULL merge_request_diff_commits`.
   But note that the `VACUUM FULL` operation locks and rewrites the entire `merge_request_diff_commits` table,
@@ -567,10 +650,22 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
         end
     ```
 
+- Upgrading to 14.5 (or later) [might encounter a one hour timeout](https://gitlab.com/gitlab-org/gitlab/-/issues/354211)
+  owing to a long running database data change.
+
+  ```plaintext
+  FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
+  (gitlab::database_migrations line 51) had an error:
+  [..]
+  Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+  ```
+
+  [There is a workaround to complete the data change and the upgrade manually](package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+
 ### 14.4.4
 
-- For [zero-downtime upgrades](zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you need to enable the `paginated_tree_graphql_query` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) _before_ upgrading GitLab Web nodes to 14.4.
-  This is because we [enabled `paginated_tree_graphql_query` by default in 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70913/diffs), so if GitLab UI is on 14.4 and its API is on 14.3, the frontend will have this feature enabled but the backend will have it disabled. This will result in the following error:
+- For [zero-downtime upgrades](zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you must enable the `paginated_tree_graphql_query` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) _before_ upgrading GitLab Web nodes to 14.4.
+  This is because we [enabled `paginated_tree_graphql_query` by default in 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70913/diffs), so if GitLab UI is on 14.4 and its API is on 14.3, the frontend has this feature enabled but the backend has it disabled. This results in the following error:
 
   ```shell
   bundle.esm.js:63 Uncaught (in promise) Error: GraphQL error: Field 'paginatedTree' doesn't exist on type 'Repository'
@@ -623,6 +718,20 @@ for how to proceed.
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
   ```
 
+- After upgrading to 14.3, ensure that all the `MigrateMergeRequestDiffCommitUsers` background
+  migration jobs have completed before continuing with upgrading to GitLab 14.5 or later.
+  This is especially important if your GitLab instance has a large
+  `merge_request_diff_commits` table. Any pending
+  `MigrateMergeRequestDiffCommitUsers` background migration jobs are
+  foregrounded in GitLab 14.5, and may take a long time to complete.
+  You can check the count of pending jobs for
+  `MigrateMergeRequestDiffCommitUsers` by using the PostgreSQL console (or `sudo
+  gitlab-psql`):
+
+  ```sql
+  select count(*) from background_migration_jobs where class_name = 'MigrateMergeRequestDiffCommitUsers' and status = 0;
+  ```
+
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.2.0
@@ -669,7 +778,7 @@ for how to proceed.
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases)
   but can upgrade to 14.1.Z.
 
-  It is not required for instances already running 14.0.5 (or higher) to stop at 14.1.Z.
+  It is not required for instances already running 14.0.5 (or later) to stop at 14.1.Z.
   14.1 is included on the upgrade path for the broadest compatibility
   with self-managed installations, and ensure 14.0.0-14.0.4 installations do not
   encounter issues with [batched background migrations](#batched-background-migrations).
@@ -694,18 +803,18 @@ Prerequisites:
 Long running batched background database migrations:
 
 - Database changes made by the upgrade to GitLab 14.0 can take hours or days to complete on larger GitLab instances.
-  These [batched background migrations](#batched-background-migrations) update whole database tables to mitigate primary key overflow and must be finished before upgrading to GitLab 14.2 or higher.
+  These [batched background migrations](#batched-background-migrations) update whole database tables to mitigate primary key overflow and must be finished before upgrading to GitLab 14.2 or later.
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
   that requires an update to at least 14.0.5. The fix was also released in [14.1.0](#1410).
 
   After you update to 14.0.5 or a later 14.0 patch version,
-  [batched background migrations need to finish](#batched-background-migrations)
+  [batched background migrations must finish](#batched-background-migrations)
   before you update to a later version.
 
   If the migrations are not finished and you try to update to a later version,
-  you'll see an error like:
+  you see an error like:
 
   ```plaintext
   Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
@@ -730,7 +839,7 @@ Other issues:
   1. Upgrade first to either:
      - 14.0.5 or a later 14.0.Z patch release.
      - 14.1.0 or a later 14.1.Z patch release.
-  1. [Batched background migrations need to finish](#batched-background-migrations)
+  1. [Batched background migrations must finish](#batched-background-migrations)
      before you update to a later version [and may take longer than usual](#1400).
 
 ### 13.12.0
@@ -738,7 +847,7 @@ Other issues:
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 - Check the GitLab database [has no references to legacy storage](../administration/raketasks/storage.md#on-legacy-storage).
-  The GitLab 14.0 pre-install check will cause the package update to fail if there is unmigrated data:
+  The GitLab 14.0 pre-install check causes the package update to fail if unmigrated data exists:
 
   ```plaintext
   Checking for unmigrated data on legacy storage
@@ -752,6 +861,15 @@ Other issues:
   [Git version provided by Gitaly](../install/installation.md#git).
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
+- GitLab 13.11 includes a faulty background migration ([`RescheduleArtifactExpiryBackfillAgain`](https://gitlab.com/gitlab-org/gitlab/-/blob/ccc70031b843ff8cff1185988c2e472a521c2701/db/post_migrate/20210413132500_reschedule_artifact_expiry_backfill_again.rb))
+  that incorrectly sets the `expire_at` column in the `ci_job_artifacts` database table.
+  Incorrect `expire_at` values can potentially cause data loss.
+
+  To prevent this risk of data loss, you must remove the content of the `RescheduleArtifactExpiryBackfillAgain`
+  migration, which makes it a no-op migration. You can repeat the changes from the
+  [commit that makes the migration no-op in 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/blob/42c3dfc5a1c8181767bbb5c76e7c5fa6fefbbc2b/db/post_migrate/20210413132500_reschedule_artifact_expiry_backfill_again.rb).
+  For more information, see [how to disable a data migration](../development/database/deleting_migrations.md#how-to-disable-a-data-migration).
 
 ### 13.10.0
 
@@ -837,7 +955,7 @@ DETAIL:  Key (project_id, type)=(NNN, ServiceName) is duplicated.
 
 Ruby 2.7.2 is required. GitLab does not start with Ruby 2.6.6 or older versions.
 
-The required Git version is Git v2.29 or higher.
+The required Git version is Git v2.29 or later.
 
 GitLab 13.6 includes a
 [background migration `BackfillJiraTrackerDeploymentType2`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46368)
@@ -854,7 +972,7 @@ end
 
 ### 13.4.0
 
-GitLab 13.4.0 includes a background migration to [move all remaining repositories in legacy storage to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage). There are [known issues with this migration](https://gitlab.com/gitlab-org/gitlab/-/issues/259605) which are fixed in GitLab 13.5.4 and later. If possible, skip 13.4.0 and upgrade to 13.5.4 or higher instead. Note that the migration can take quite a while to run, depending on how many repositories must be moved. Be sure to check that all background migrations have completed before upgrading further.
+GitLab 13.4.0 includes a background migration to [move all remaining repositories in legacy storage to hashed storage](../administration/raketasks/storage.md#migrate-to-hashed-storage). There are [known issues with this migration](https://gitlab.com/gitlab-org/gitlab/-/issues/259605) which are fixed in GitLab 13.5.4 and later. If possible, skip 13.4.0 and upgrade to 13.5.4 or later instead. The migration can take quite a while to run, depending on how many repositories must be moved. Be sure to check that all background migrations have completed before upgrading further.
 
 ### 13.3.0
 
@@ -929,7 +1047,7 @@ If you persist your own Rack Attack initializers between upgrades, you might
 - [GitLab 13.0 requires PostgreSQL 11](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab).
 
   - 12.10 is the final release that shipped with PostgreSQL 9.6, 10, and 11.
-  - You should make sure that your database is PostgreSQL 11 on GitLab 12.10 before upgrading to 13.0. This will require downtime.
+  - You should make sure that your database is PostgreSQL 11 on GitLab 12.10 before upgrading to 13.0. This upgrade requires downtime.
 
 ### 12.2.0
 
@@ -969,7 +1087,7 @@ for more information.
 
 When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
 
-Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
+Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
 
 [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
@@ -978,6 +1096,20 @@ Users who were signed in before Maintenance mode was enabled will continue to be
 When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
 
 [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
+
+### PostgreSQL segmentation fault issue
+
+If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL
+to patch levels to a minimum of 12.10 or 13.3 before upgrading to GitLab 14.8 or later.
+
+[In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
+for GitLab Enterprise Edition and [in 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
+for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
+
+After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
+by a database engine bug that causes a segmentation fault.
+
+Read more [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
 ## Miscellaneous
 

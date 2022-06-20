@@ -7,6 +7,8 @@ class WebHookLog < ApplicationRecord
   include CreatedAtFilterable
   include PartitionedTable
 
+  OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
+
   self.primary_key = :id
 
   partitioned_by :created_at, strategy: :monthly, retain_for: 3.months
@@ -26,12 +28,23 @@ class WebHookLog < ApplicationRecord
       .order(created_at: :desc)
   end
 
+  # Delete a batch of log records. Returns true if there may be more remaining.
+  def self.delete_batch_for(web_hook, batch_size:)
+    raise ArgumentError, 'batch_size is too small' if batch_size < 1
+
+    where(web_hook: web_hook).limit(batch_size).delete_all == batch_size
+  end
+
   def success?
     response_status =~ /^2/
   end
 
   def internal_error?
     response_status == WebHookService::InternalErrorResponse::ERROR_MESSAGE
+  end
+
+  def oversize?
+    request_data == OVERSIZE_REQUEST_DATA
   end
 
   private

@@ -1,3 +1,14 @@
+.status-box {
+  padding: 0 $gl-btn-padding;
+  border-radius: $border-radius-default;
+  display: block;
+  float: left;
+  margin-right: $gl-padding-8;
+  color: $white;
+  font-size: $gl-font-size;
+  line-height: $gl-line-height-24;
+}
+
 .issuable-warning-icon {
   background-color: $orange-50;
   border-radius: $border-radius-default;
@@ -134,8 +145,9 @@
   }
 
   &.right-sidebar-merge-requests {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(md) {
       @include right-sidebar;
+      z-index: 251;
     }
   }
 
@@ -186,7 +198,7 @@
     }
 
     .block {
-      @include media-breakpoint-up(md) {
+      @include media-breakpoint-up(lg) {
         padding: $gl-spacing-scale-5 0;
       }
     }
@@ -263,10 +275,6 @@
     }
   }
 
-  &.affix-top .issuable-sidebar {
-    height: 100%;
-  }
-
   &.right-sidebar-expanded {
     &:not(.right-sidebar-merge-requests) {
       width: $gutter-width;
@@ -280,8 +288,33 @@
       padding: 0 20px;
 
       &.is-merge-request {
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-up(lg) {
           padding: 0;
+
+          form {
+            --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
+            --top: var(--initial-top);
+
+            @include gl-sticky;
+            @include gl-overflow-auto;
+
+            top: var(--top);
+            height: calc(100vh - var(--top));
+            padding: 0 15px;
+            margin-bottom: calc(var(--top) * -1);
+
+            .with-performance-bar & {
+              --top: calc(var(--initial-top) + #{$performance-bar-height});
+            }
+
+            .with-system-header & {
+              --top: calc(var(--initial-top) + #{$system-header-height});
+            }
+
+            .with-performance-bar.with-system-header & {
+              --top: calc(var(--initial-top) + #{$system-header-height} + #{$performance-bar-height});
+            }
+          }
         }
       }
     }
@@ -334,7 +367,7 @@
     }
 
     &.right-sidebar-merge-requests {
-      @include media-breakpoint-up(md) {
+      @include media-breakpoint-up(lg) {
         display: block;
       }
     }
@@ -614,21 +647,6 @@
 
   .btn-link:focus {
     text-decoration: none;
-  }
-}
-
-.issuable-status-box {
-  align-self: stretch;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0;
-  padding: 0 $gl-padding-8;
-
-  @include media-breakpoint-up(sm) {
-    display: inline-block;
-    height: auto;
-    align-self: center;
   }
 }
 
@@ -918,4 +936,59 @@
     drop-shadow(-1px 0 0.5px #fff);
   margin-right: -7px;
   z-index: 1;
+}
+
+.issuable-discussion.incident-timeline-events {
+  .main-notes-list::before {
+    content: none;
+  }
+
+  .timeline-event-note {
+    p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/**
+ * We have a very specific design proposal where we cannot
+ * use `vertical-line` mixin as it is and have to use
+ * custom styles, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81284#note_904867444
+ */
+.timeline-entry-vertical-line {
+  &::before,
+  &::after {
+    content: '';
+    border-left: 2px solid $gray-50;
+    position: absolute;
+    left: 39px;
+    height: 80%;
+  }
+
+  &:first-child::before,
+  &:last-child::after {
+    content: none;
+  }
+
+  &:first-child {
+    &::after {
+      top: 50%;
+    }
+  }
+
+  &:last-child {
+    &::before {
+      bottom: 50%;
+    }
+  }
+
+  &:not(:first-child):not(:last-child) {
+    &::before {
+      top: -10%;
+    }
+
+    &::after {
+      bottom: -10%;
+    }
+  }
 }

@@ -13,6 +13,7 @@ import {
   trackCheckout,
   trackTransaction,
   trackAddToCartUsageTab,
+  getNamespaceId,
 } from '~/google_tag_manager';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { logError } from '~/lib/logger';
@@ -401,6 +402,7 @@ describe('~/google_tag_manager/index', () => {
                     {
                       brand: 'GitLab',
                       category: 'DevOps',
+                      dimension36: 'not available',
                       id,
                       name,
                       price: revenue.toString(),
@@ -476,6 +478,28 @@ describe('~/google_tag_manager/index', () => {
       );
 
       resetHTMLFixture();
+    });
+  });
+
+  describe('when getting the namespace_id from Snowplow standard context', () => {
+    describe('when window.gl.snowplowStandardContext.data.namespace_id has a value', () => {
+      beforeEach(() => {
+        window.gl = { snowplowStandardContext: { data: { namespace_id: '321' } } };
+      });
+
+      it('returns the value', () => {
+        expect(getNamespaceId()).toBe('321');
+      });
+    });
+
+    describe('when window.gl.snowplowStandardContext.data.namespace_id is undefined', () => {
+      beforeEach(() => {
+        window.gl = {};
+      });
+
+      it('returns a placeholder value', () => {
+        expect(getNamespaceId()).toBe('not available');
+      });
     });
   });
 });

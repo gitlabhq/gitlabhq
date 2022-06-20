@@ -59,7 +59,7 @@ Some example of well implemented access controls and tests:
 1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
 1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
 
-**NB:** any input from development team is welcome, for example, about Rubocop rules.
+**NB:** any input from development team is welcome, for example, about RuboCop rules.
 
 ## Regular Expressions guidelines
 
@@ -637,14 +637,11 @@ We recommend using the ciphers that Mozilla is providing in their [recommended S
 - `ECDHE-RSA-AES128-GCM-SHA256`
 - `ECDHE-ECDSA-AES256-GCM-SHA384`
 - `ECDHE-RSA-AES256-GCM-SHA384`
-- `ECDHE-ECDSA-CHACHA20-POLY1305`
-- `ECDHE-RSA-CHACHA20-POLY1305`
 
 And the following cipher suites (according to the [RFC 8446](https://datatracker.ietf.org/doc/html/rfc8446#appendix-B.4)) for TLS 1.3:
 
 - `TLS_AES_128_GCM_SHA256`
 - `TLS_AES_256_GCM_SHA384`
-- `TLS_CHACHA20_POLY1305_SHA256`
 
 *Note*: **Golang** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
 
@@ -665,7 +662,7 @@ For **Ruby**, you can use [`HTTParty`](https://github.com/jnunemaker/httparty) a
 Whenever possible this example should be **avoided** for security purposes:
 
 ```ruby
-response = HTTParty.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384', 'TLS_CHACHA20_POLY1305_SHA256'])
+response = HTTParty.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])
 ```
 
 When using [`GitLab::HTTP`](#gitlab-http-library), the code looks like:
@@ -673,7 +670,7 @@ When using [`GitLab::HTTP`](#gitlab-http-library), the code looks like:
 This is the **recommended** implementation to avoid security issues such as SSRF:
 
 ```ruby
-response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384', 'TLS_CHACHA20_POLY1305_SHA256'])
+response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384'])
 ```
 
 ##### TLS 1.2
@@ -687,8 +684,6 @@ func secureCipherSuites() []uint16 {
     tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
     tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
     tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-    tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-    tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
   }
 ```
 
@@ -703,12 +698,12 @@ tls.Config{
 }
 ```
 
-This example was taken [here](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
+This example was taken [from the GitLab Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
 
 For **Ruby**, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
 
 ```ruby
-response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305', 'ECDHE-RSA-CHACHA20-POLY1305'])
+response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384'])
 ```
 
 ## GitLab Internal Authorization

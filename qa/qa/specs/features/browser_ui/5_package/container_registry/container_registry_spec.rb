@@ -83,7 +83,8 @@ module QA
           expect(registry).to have_tag('master')
 
           registry.click_delete
-          expect(registry).not_to have_tag('master')
+          expect { registry.has_no_tag?('master') }
+            .to eventually_be_truthy.within(max_duration: 60, reload_page: page)
         end
       end
     end

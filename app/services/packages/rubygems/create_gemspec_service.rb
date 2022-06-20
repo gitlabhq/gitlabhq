@@ -24,12 +24,14 @@ module Packages
           file.write(content)
           file.flush
 
+          md5 = Gitlab::FIPS.enabled? ? nil : Digest::MD5.hexdigest(content)
+
           package.package_files.create!(
             file: file,
             size: file.size,
             file_name: "#{gemspec.name}.gemspec",
             file_sha1: Digest::SHA1.hexdigest(content),
-            file_md5: Digest::MD5.hexdigest(content),
+            file_md5: md5,
             file_sha256: Digest::SHA256.hexdigest(content)
           )
         ensure

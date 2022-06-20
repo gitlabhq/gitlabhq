@@ -12,7 +12,7 @@ import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
 
 const defaultFields = [
-  tableField({ key: 'status', label: s__('Runners|Status') }),
+  tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner'), thClasses: ['gl-lg-w-25p'] }),
   tableField({ key: 'version', label: __('Version') }),
   tableField({ key: 'jobCount', label: __('Jobs') }),

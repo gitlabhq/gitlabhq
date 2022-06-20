@@ -37,6 +37,7 @@
     - if @group.licensed_feature_available?(:group_wikis)
       = render_if_exists 'groups/settings/wiki', f: f, group: @group
     = render 'groups/settings/lfs', f: f
+    = render 'groups/settings/git_access_protocols', f: f, group: @group
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group
@@ -44,12 +45,11 @@
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
 
-    - if crm_feature_available?(@group)
-      %h5= _('Customer relations')
-      .form-group.gl-mb-3
-        = f.gitlab_ui_checkbox_component :crm_enabled,
-            s_('GroupSettings|Enable customer relations'),
-            checkbox_options: { checked: @group.crm_enabled? },
-            help_text: s_('GroupSettings|Allows creating organizations and contacts and associating them with issues.')
+    %h5= _('Customer relations')
+    .form-group.gl-mb-3
+      = f.gitlab_ui_checkbox_component :crm_enabled,
+          s_('GroupSettings|Enable customer relations'),
+          checkbox_options: { checked: @group.crm_enabled? },
+          help_text: s_('GroupSettings|Allows creating organizations and contacts and associating them with issues.')
 
   = f.submit _('Save changes'), class: 'btn gl-button btn-confirm gl-mt-3 js-dirty-submit', data: { qa_selector: 'save_permissions_changes_button' }

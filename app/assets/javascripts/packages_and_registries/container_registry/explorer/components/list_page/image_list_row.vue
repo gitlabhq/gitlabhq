@@ -14,6 +14,7 @@ import {
   IMAGE_FAILED_DELETED_STATUS,
   IMAGE_MIGRATING_STATE,
   ROOT_IMAGE_TEXT,
+  COPY_IMAGE_PATH_TITLE,
 } from '../../constants/index';
 import DeleteButton from '../delete_button.vue';
 import CleanupStatus from './cleanup_status.vue';
@@ -52,6 +53,7 @@ export default {
   i18n: {
     REMOVE_REPOSITORY_LABEL,
     ROW_SCHEDULED_FOR_DELETION,
+    COPY_IMAGE_PATH_TITLE,
   },
   computed: {
     disabledDelete() {
@@ -115,7 +117,7 @@ export default {
         v-if="item.location"
         :disabled="deleting"
         :text="item.location"
-        :title="item.location"
+        :title="$options.i18n.COPY_IMAGE_PATH_TITLE"
         category="tertiary"
       />
     </template>

@@ -259,25 +259,16 @@ RSpec.describe Ci::Bridge do
     context 'forward variables' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:yaml_variables, :pipeline_variables, :ff, :variables) do
-        nil   | nil   | true  | %w[BRIDGE]
-        nil   | false | true  | %w[BRIDGE]
-        nil   | true  | true  | %w[BRIDGE PVAR1]
-        false | nil   | true  | %w[]
-        false | false | true  | %w[]
-        false | true  | true  | %w[PVAR1]
-        true  | nil   | true  | %w[BRIDGE]
-        true  | false | true  | %w[BRIDGE]
-        true  | true  | true  | %w[BRIDGE PVAR1]
-        nil   | nil   | false | %w[BRIDGE]
-        nil   | false | false | %w[BRIDGE]
-        nil   | true  | false | %w[BRIDGE]
-        false | nil   | false | %w[BRIDGE]
-        false | false | false | %w[BRIDGE]
-        false | true  | false | %w[BRIDGE]
-        true  | nil   | false | %w[BRIDGE]
-        true  | false | false | %w[BRIDGE]
-        true  | true  | false | %w[BRIDGE]
+      where(:yaml_variables, :pipeline_variables, :variables) do
+        nil   | nil   | %w[BRIDGE]
+        nil   | false | %w[BRIDGE]
+        nil   | true  | %w[BRIDGE PVAR1]
+        false | nil   | %w[]
+        false | false | %w[]
+        false | true  | %w[PVAR1]
+        true  | nil   | %w[BRIDGE]
+        true  | false | %w[BRIDGE]
+        true  | true  | %w[BRIDGE PVAR1]
       end
 
       with_them do
@@ -290,10 +281,6 @@ RSpec.describe Ci::Bridge do
                          pipeline_variables: pipeline_variables }.compact
             }
           }
-        end
-
-        before do
-          stub_feature_flags(ci_trigger_forward_variables: ff)
         end
 
         it 'returns variables according to the forward value' do

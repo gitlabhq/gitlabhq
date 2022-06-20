@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CustomerRelations::Organization < ApplicationRecord
+  include Gitlab::SQL::Pattern
+  include Sortable
   include StripAttribute
 
   self.table_name = "customer_relations_organizations"
@@ -20,6 +22,25 @@ class CustomerRelations::Organization < ApplicationRecord
   validates :name, length: { maximum: 255 }
   validates :description, length: { maximum: 1024 }
   validate :validate_root_group
+
+  # Searches for organizations with a matching name or description.
+  #
+  # This method uses ILIKE on PostgreSQL
+  #
+  # query - The search query as a String
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.search(query)
+    fuzzy_search(query, [:name, :description], use_minimum_char_limit: false)
+  end
+
+  def self.search_by_state(state)
+    where(state: state)
+  end
+
+  def self.sort_by_name
+    order(name: :asc)
+  end
 
   def self.find_by_name(group_id, name)
     where(group: group_id)

@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
@@ -384,7 +384,7 @@ when:
 
 ## Upgrading Geo
 
-See the [updating the Geo sites document](updating_the_geo_sites.md).
+See the [upgrading the Geo sites document](upgrading_the_geo_sites.md).
 
 ## Troubleshooting
 

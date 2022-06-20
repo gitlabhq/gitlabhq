@@ -191,7 +191,7 @@ export default {
 
       <div class="col-md-12 col-lg-6">
         <div class="gl-display-flex gl-flex-wrap gl-justify-content-end">
-          <gl-button v-if="admin" class="gl-mt-3" variant="info" @click="loadFileSelctor">
+          <gl-button v-if="admin" class="gl-mt-3" variant="confirm" @click="loadFileSelctor">
             <span v-if="uploading">
               <gl-loading-icon size="sm" class="gl-my-5" inline />
               {{ $options.i18n.uploadingLabel }}

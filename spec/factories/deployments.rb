@@ -15,7 +15,7 @@ FactoryBot.define do
       deployment.user ||= deployment.project.creator
 
       unless deployment.project.repository_exists?
-        allow(deployment.project.repository).to receive(:create_ref)
+        stub_method(deployment.project.repository, :create_ref) { nil }
       end
 
       if deployment.cluster && deployment.cluster.project_type? && deployment.cluster.project.nil?

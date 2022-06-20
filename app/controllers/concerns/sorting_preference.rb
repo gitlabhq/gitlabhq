@@ -5,10 +5,12 @@ module SortingPreference
   include CookiesHelper
 
   def set_sort_order(field = sorting_field, default_order = default_sort_order)
-    set_sort_order_from_user_preference(field) ||
-      set_sort_order_from_cookie(field) ||
-      params[:sort] ||
-      default_order
+    sort_order = set_sort_order_from_user_preference(field) || set_sort_order_from_cookie(field) || params[:sort]
+
+    # some types of sorting might not be available on the dashboard
+    return default_order unless valid_sort_order?(sort_order)
+
+    sort_order
   end
 
   # Implement sorting_field method on controllers
@@ -84,5 +86,12 @@ module SortingPreference
     when 'downvotes_desc'     then sort_value_popularity
     else value
     end
+  end
+
+  def valid_sort_order?(sort_order)
+    return false unless sort_order
+    return can_sort_by_issue_weight?(action_name == 'issues') if sort_order.include?('weight')
+
+    true
   end
 end

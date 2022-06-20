@@ -21,7 +21,7 @@ From left to right, the performance bar displays:
 
 - **Current Host**: the current host serving the page.
 - **Database queries**: the time taken (in milliseconds) and the total number
-  of database queries, displayed in the format `00ms / 00 (00 cached) pg`. Click to display
+  of database queries, displayed in the format `00ms / 00 (00 cached) pg`. Select to display
   a modal window with more details. You can use this to see the following
   details for each query:
   - **In a transaction**: shows up below the query if it was executed in
@@ -35,21 +35,21 @@ From left to right, the performance bar displays:
     GitLab features. The name shown is the same name used to configure database
     connections in GitLab.
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
-  [Gitaly](../../gitaly/index.md) calls. Click to display a modal window with more
+  [Gitaly](../../gitaly/index.md) calls. Select to display a modal window with more
   details.
 - **Rugged calls**: the time taken (in milliseconds) and the total number of
   [Rugged](../../nfs.md#improving-nfs-performance-with-gitlab) calls.
-  Click to display a modal window with more details.
+  Select to display a modal window with more details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
-  Redis calls. Click to display a modal window with more details.
+  Redis calls. Select to display a modal window with more details.
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of
-  Elasticsearch calls. Click to display a modal window with more details.
+  Elasticsearch calls. Select to display a modal window with more details.
 - **External HTTP calls**: the time taken (in milliseconds) and the total
-  number of external calls to other systems. Click to display a modal window
+  number of external calls to other systems. Select to display a modal window
   with more details.
 - **Load timings** of the page: if your browser supports load timings, several
   values in milliseconds, separated by slashes.
-  Click to display a modal window with more details. The values, from left to right:
+  Select to display a modal window with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
   - [**First Contentful Paint**](https://web.dev/first-contentful-paint/):
     Time until something was visible to the user. Displays `NaN` if your browser does not
@@ -112,7 +112,7 @@ for a given group:
 1. On the left sidebar, select **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand
    **Profiling - Performance bar**.
-1. Click **Allow non-administrators access to the performance bar**.
+1. Select **Allow non-administrators access to the performance bar**.
 1. In the **Allow access to members of the following group** field, provide the full path of the
    group allowed to access the performance.
-1. Click **Save changes**.
+1. Select **Save changes**.

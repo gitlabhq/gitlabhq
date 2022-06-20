@@ -23,14 +23,14 @@ Navigate to the browser-based editor of your choice:
 - In the **Repository view**:
 
   1. Navigate to **{doc-text}** **Repository > Files**.
-  1. Click **{plus}** **Add to tree** and select **New file**,
-     then click **Select a template type** to see a list of available templates:
+  1. Select **{plus}** **Add to tree** and select **New file**,
+     then select **Select a template type** to see a list of available templates:
      ![Metrics dashboard template selection](img/metrics_dashboard_template_selection_v13_3.png)
 
 - In the **[Web IDE](../../../user/project/web_ide/index.md)**:
 
-  1. Click **Web IDE** when viewing your repository.
-  1. Click **{doc-new}** **New file**, then click **Choose a template** to see a list of available templates:
+  1. Select **Web IDE** when viewing your repository.
+  1. Select **{doc-new}** **New file**, then select **Choose a template** to see a list of available templates:
      ![Metrics dashboard template selection WebIDE](img/metrics_dashboard_template_selection_web_ide_v13_3.png)
 
 ## Custom dashboard templates **(PREMIUM SELF)**

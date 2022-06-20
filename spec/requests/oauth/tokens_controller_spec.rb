@@ -6,11 +6,12 @@ RSpec.describe Oauth::TokensController do
   let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
   let(:other_headers) { {} }
   let(:headers) { cors_request_headers.merge(other_headers)}
+  let(:allowed_methods) { 'POST, OPTIONS' }
 
   shared_examples 'cross-origin POST request' do
     it 'allows cross-origin requests' do
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
-      expect(response.headers['Access-Control-Allow-Methods']).to eq 'POST'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq allowed_methods
       expect(response.headers['Access-Control-Allow-Headers']).to be_nil
       expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end
@@ -23,7 +24,7 @@ RSpec.describe Oauth::TokensController do
 
     it 'allows cross-origin requests' do
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
-      expect(response.headers['Access-Control-Allow-Methods']).to eq 'POST'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq allowed_methods
       expect(response.headers['Access-Control-Allow-Headers']).to eq 'Authorization'
       expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end

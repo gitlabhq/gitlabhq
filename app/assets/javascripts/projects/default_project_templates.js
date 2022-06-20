@@ -41,6 +41,10 @@ export default {
     text: s__('ProjectTemplates|Pages/Hugo'),
     icon: '.template-option .icon-hugo',
   },
+  pelican: {
+    text: s__('ProjectTemplates|Pages/Pelican'),
+    icon: '.template-option .icon-pelican',
+  },
   jekyll: {
     text: s__('ProjectTemplates|Pages/Jekyll'),
     icon: '.template-option .icon-jekyll',
@@ -103,6 +107,10 @@ export default {
   },
   kotlin_native_linux: {
     text: s__('ProjectTemplates|Kotlin Native for Linux'),
+    icon: '.template-option .icon-gitlab_logo',
+  },
+  jsonnet: {
+    text: s__('ProjectTemplates|Jsonnet for Dynamic Child Pipelines'),
     icon: '.template-option .icon-gitlab_logo',
   },
 };

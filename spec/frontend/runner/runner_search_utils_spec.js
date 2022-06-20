@@ -5,6 +5,7 @@ import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
+  isSearchFiltered,
 } from '~/runner/runner_search_utils';
 
 describe('search_params.js', () => {
@@ -14,6 +15,7 @@ describe('search_params.js', () => {
       urlQuery: '',
       search: { runnerType: null, filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' },
       graphqlVariables: { sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+      isDefault: true,
     },
     {
       name: 'a single status',
@@ -268,7 +270,7 @@ describe('search_params.js', () => {
   describe('fromSearchToUrl', () => {
     examples.forEach(({ name, urlQuery, search }) => {
       it(`Converts ${name} to a url`, () => {
-        expect(fromSearchToUrl(search)).toEqual(`http://test.host/${urlQuery}`);
+        expect(fromSearchToUrl(search)).toBe(`http://test.host/${urlQuery}`);
       });
     });
 
@@ -280,7 +282,7 @@ describe('search_params.js', () => {
       const search = { filters: [], sort: 'CREATED_DESC' };
       const expectedUrl = `http://test.host/`;
 
-      expect(fromSearchToUrl(search, initalUrl)).toEqual(expectedUrl);
+      expect(fromSearchToUrl(search, initalUrl)).toBe(expectedUrl);
     });
 
     it('When unrelated search parameter is present, it does not get removed', () => {
@@ -288,7 +290,7 @@ describe('search_params.js', () => {
       const search = { filters: [], sort: 'CREATED_DESC' };
       const expectedUrl = `http://test.host/?unrelated=UNRELATED`;
 
-      expect(fromSearchToUrl(search, initialUrl)).toEqual(expectedUrl);
+      expect(fromSearchToUrl(search, initialUrl)).toBe(expectedUrl);
     });
   });
 
@@ -329,6 +331,18 @@ describe('search_params.js', () => {
       ).toMatchObject({
         search: 'something',
       });
+    });
+  });
+
+  describe('isSearchFiltered', () => {
+    examples.forEach(({ name, search, isDefault }) => {
+      it(`Given ${name}, evaluates to ${isDefault ? 'not ' : ''}filtered`, () => {
+        expect(isSearchFiltered(search)).toBe(!isDefault);
+      });
+    });
+
+    it('given a missing pagination, evaluates as not filtered', () => {
+      expect(isSearchFiltered({ pagination: null })).toBe(false);
     });
   });
 });

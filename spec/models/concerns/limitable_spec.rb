@@ -31,7 +31,7 @@ RSpec.describe Limitable do
     it 'triggers scoped validations' do
       instance = MinimalTestClass.new
 
-      expect(instance).to receive(:validate_scoped_plan_limit_not_exceeded)
+      expect(instance).to receive(:scoped_plan_limits)
 
       instance.valid?(:create)
     end
@@ -94,7 +94,7 @@ RSpec.describe Limitable do
     it 'triggers scoped validations' do
       instance = MinimalTestClass.new
 
-      expect(instance).to receive(:validate_global_plan_limit_not_exceeded)
+      expect(instance).to receive(:global_plan_limits)
 
       instance.valid?(:create)
     end

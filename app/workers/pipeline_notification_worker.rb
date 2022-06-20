@@ -23,6 +23,7 @@ class PipelineNotificationWorker # rubocop:disable Scalability/IdempotentWorker
 
     pipeline = Ci::Pipeline.find_by_id(pipeline_id)
     return unless pipeline
+    return if pipeline.user&.blocked?
 
     NotificationService.new.pipeline_finished(pipeline, ref_status: ref_status, recipients: recipients)
   end

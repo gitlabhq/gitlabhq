@@ -108,6 +108,11 @@ label {
       width: $input-short-md-width;
     }
   }
+
+  &:focus {
+    border-color: $gray-400;
+    @include gl-focus;
+  }
 }
 
 .select-control {

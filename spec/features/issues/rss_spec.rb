@@ -13,10 +13,6 @@ RSpec.describe 'Project Issues RSS', :js do
     group.add_developer(user)
   end
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   context 'when signed in' do
     let_it_be(:user) { create(:user) }
 

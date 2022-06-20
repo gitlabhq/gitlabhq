@@ -64,6 +64,33 @@ RSpec.describe SnippetsHelper do
     end
   end
 
+  describe '#embedded_snippet_copy_button' do
+    let(:blob) { snippet.blobs.first }
+    let(:ref) { blob.repository.root_ref }
+
+    subject { embedded_copy_snippet_button(blob) }
+
+    context 'for Personal Snippets' do
+      let(:snippet) { public_personal_snippet }
+
+      it 'returns copy button of embedded snippets' do
+        expect(subject).to eq(copy_button("#{blob.id}"))
+      end
+    end
+
+    context 'for Project Snippets' do
+      let(:snippet) { public_project_snippet }
+
+      it 'returns copy button of embedded snippets' do
+        expect(subject).to eq(copy_button("#{blob.id}"))
+      end
+    end
+
+    def copy_button(blob_id)
+      "<button class=\"gl-button btn btn-default copy-to-clipboard-btn\" title=\"Copy snippet contents\" onclick=\"copyToClipboard(&#39;.blob-content[data-blob-id=&quot;#{blob_id}&quot;] &gt; pre&#39;)\">#{external_snippet_icon('copy-to-clipboard')}</button>"
+    end
+  end
+
   describe '#snippet_badge' do
     let(:snippet) { build(:personal_snippet, visibility) }
 

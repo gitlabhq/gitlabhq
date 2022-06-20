@@ -9,6 +9,7 @@ import { IssueType } from '~/issues/constants';
 import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover } from '~/issues/new';
 import { initRelatedMergeRequests } from '~/issues/related_merge_requests';
+import initRelatedIssues from '~/related_issues';
 import {
   initHeaderActions,
   initIncidentApp,
@@ -56,8 +57,9 @@ export function initShow() {
   const { issueType, ...issuableData } = parseIssuableData(el);
 
   if (issueType === IssueType.Incident) {
-    initIncidentApp(issuableData);
+    initIncidentApp({ ...issuableData, issuableId: el.dataset.issuableId });
     initHeaderActions(store, IssueType.Incident);
+    initRelatedIssues(IssueType.Incident);
   } else {
     initIssueApp(issuableData, store);
     initHeaderActions(store);

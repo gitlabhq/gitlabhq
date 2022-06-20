@@ -25,20 +25,22 @@ module StorageHelper
   end
 
   def storage_enforcement_banner_info(namespace)
-    return unless can?(current_user, :admin_namespace, namespace)
-    return if namespace.paid?
-    return unless namespace.storage_enforcement_date && namespace.storage_enforcement_date >= Date.today
-    return if user_dismissed_storage_enforcement_banner?(namespace)
+    root_ancestor = namespace.root_ancestor
+
+    return unless can?(current_user, :admin_namespace, root_ancestor)
+    return if root_ancestor.paid?
+    return unless future_enforcement_date?(root_ancestor)
+    return if user_dismissed_storage_enforcement_banner?(root_ancestor)
 
     {
       text: html_escape_once(s_("UsageQuota|From %{storage_enforcement_date} storage limits will apply to this namespace. " \
             "You are currently using %{used_storage} of namespace storage. " \
             "View and manage your usage from %{strong_start}%{namespace_type} settings &gt; Usage quotas%{strong_end}.")).html_safe %
-            { storage_enforcement_date: namespace.storage_enforcement_date, used_storage: storage_counter(namespace.root_storage_statistics&.storage_size || 0), strong_start: "<strong>".html_safe, strong_end: "</strong>".html_safe, namespace_type: namespace.type },
+            { storage_enforcement_date: root_ancestor.storage_enforcement_date, used_storage: storage_counter(root_ancestor.root_storage_statistics&.storage_size || 0), strong_start: "<strong>".html_safe, strong_end: "</strong>".html_safe, namespace_type: root_ancestor.type },
       variant: 'warning',
-      callouts_path: namespace.user_namespace? ? callouts_path : group_callouts_path,
-      callouts_feature_name: storage_enforcement_banner_user_callouts_feature_name(namespace),
-      learn_more_link: link_to(_('Learn more.'), help_page_path('/'), rel: 'noopener noreferrer', target: '_blank') # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
+      callouts_path: root_ancestor.user_namespace? ? callouts_path : group_callouts_path,
+      callouts_feature_name: storage_enforcement_banner_user_callouts_feature_name(root_ancestor),
+      learn_more_link: link_to(_('Learn more.'), help_page_path('/'), rel: 'noopener noreferrer', target: '_blank')
     }
   end
 
@@ -63,8 +65,16 @@ module StorageHelper
     if namespace.user_namespace?
       current_user.dismissed_callout?(feature_name: storage_enforcement_banner_user_callouts_feature_name(namespace))
     else
-      current_user.dismissed_callout_for_group?(feature_name: storage_enforcement_banner_user_callouts_feature_name(namespace),
-                                                group: namespace)
+      current_user.dismissed_callout_for_group?(
+        feature_name: storage_enforcement_banner_user_callouts_feature_name(namespace),
+        group: namespace
+      )
     end
+  end
+
+  def future_enforcement_date?(namespace)
+    return true if ::Feature.enabled?(:namespace_storage_limit_bypass_date_check, namespace)
+
+    namespace.storage_enforcement_date.present? && namespace.storage_enforcement_date >= Date.today
   end
 end

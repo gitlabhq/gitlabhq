@@ -1,5 +1,5 @@
 - return unless can_admin_project_member?(project)
 
 .js-invite-members-modal{ data: { is_project: 'true',
-  access_levels: ProjectMember.access_level_roles.to_json,
+  access_levels: ProjectMember.permissible_access_level_roles(current_user, project).to_json,
   help_link: help_page_url('user/permissions') }.merge(common_invite_modal_dataset(project)).merge(users_filter_data(project.group)) }

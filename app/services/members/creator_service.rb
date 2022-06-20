@@ -12,6 +12,105 @@ module Members
       def access_levels
         Gitlab::Access.sym_options_with_owner
       end
+
+      def add_users( # rubocop:disable Metrics/ParameterLists
+        source,
+        users,
+        access_level,
+        current_user: nil,
+        expires_at: nil,
+        tasks_to_be_done: [],
+        tasks_project_id: nil,
+        ldap: nil,
+        blocking_refresh: nil
+      )
+        return [] unless users.present?
+
+        # If this user is attempting to manage Owner members and doesn't have permission, do not allow
+        return [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
+
+        emails, users, existing_members = parse_users_list(source, users)
+
+        Member.transaction do
+          (emails + users).map! do |user|
+            new(source,
+                user,
+                access_level,
+                existing_members: existing_members,
+                current_user: current_user,
+                expires_at: expires_at,
+                tasks_to_be_done: tasks_to_be_done,
+                tasks_project_id: tasks_project_id,
+                ldap: ldap,
+                blocking_refresh: blocking_refresh)
+              .execute
+          end
+        end
+      end
+
+      def add_user( # rubocop:disable Metrics/ParameterLists
+        source,
+        user,
+        access_level,
+        current_user: nil,
+        expires_at: nil,
+        ldap: nil,
+        blocking_refresh: nil
+      )
+        add_users(source,
+                  [user],
+                  access_level,
+                  current_user: current_user,
+                  expires_at: expires_at,
+                  ldap: ldap,
+                  blocking_refresh: blocking_refresh).first
+      end
+
+      private
+
+      def managing_owners?(current_user, access_level)
+        current_user && Gitlab::Access.sym_options_with_owner[access_level] == Gitlab::Access::OWNER
+      end
+
+      def parse_users_list(source, list)
+        emails = []
+        user_ids = []
+        users = []
+        existing_members = {}
+
+        list.each do |item|
+          case item
+          when User
+            users << item
+          when Integer
+            user_ids << item
+          when /\A\d+\Z/
+            user_ids << item.to_i
+          when Devise.email_regexp
+            emails << item
+          end
+        end
+
+        # the below will automatically discard invalid user_ids
+        users.concat(User.id_in(user_ids)) if user_ids.present?
+        # de-duplicate just in case as there is no controlling if user records and ids are sent multiple times
+        users.uniq!
+
+        users_by_emails = source.users_by_emails(emails) # preloads our request store for all emails
+        # in case emails belong to a user that is being invited by user or user_id, remove them from
+        # emails and let users/user_ids handle it.
+        parsed_emails = emails.select do |email|
+          user = users_by_emails[email]
+          !user || (users.exclude?(user) && user_ids.exclude?(user.id))
+        end
+
+        if users.present? || users_by_emails.present?
+          # helps not have to perform another query per user id to see if the member exists later on when fetching
+          existing_members = source.members_and_requesters.with_user(users + users_by_emails.values).index_by(&:user_id)
+        end
+
+        [parsed_emails, users, existing_members]
+      end
     end
 
     def initialize(source, user, access_level, **args)
@@ -21,10 +120,12 @@ module Members
       @args = args
     end
 
+    private_class_method :new
+
     def execute
       find_or_build_member
       commit_member
-      create_member_task
+      after_commit_tasks
 
       member
     end
@@ -90,6 +191,10 @@ module Members
         # for details.
         member.save if member.changed?
       end
+    end
+
+    def after_commit_tasks
+      create_member_task
     end
 
     def create_member_task
@@ -163,14 +268,18 @@ module Members
     end
 
     def find_or_initialize_member_by_user
-      # have to use members and requesters here since project/group limits on requested_at being nil for members and
-      # wouldn't be found in `source.members` if it already existed
-      # this of course will not treat active invites the same since we aren't searching on email
-      source.members_and_requesters.find_or_initialize_by(user_id: user.id) # rubocop:disable CodeReuse/ActiveRecord
+      # We have to use `members_and_requesters` here since the given `members` is modified in the models
+      # to act more like a scope(removing the requested_at members) and therefore ActiveRecord has issues with that
+      # on build and refreshing that relation.
+      existing_members[user.id] || source.members_and_requesters.build(user_id: user.id) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def ldap
       args[:ldap] || false
+    end
+
+    def existing_members
+      args[:existing_members] || {}
     end
   end
 end

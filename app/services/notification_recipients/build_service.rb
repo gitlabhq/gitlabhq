@@ -29,10 +29,6 @@ module NotificationRecipients
       ::NotificationRecipients::Builder::ProjectMaintainers.new(target, **args).notification_recipients
     end
 
-    def self.build_new_release_recipients(*args)
-      ::NotificationRecipients::Builder::NewRelease.new(*args).notification_recipients
-    end
-
     def self.build_new_review_recipients(*args)
       ::NotificationRecipients::Builder::NewReview.new(*args).notification_recipients
     end

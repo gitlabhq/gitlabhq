@@ -13,6 +13,7 @@ module Projects
     before_action :authorize_update_environment!
 
     feature_category :tracing
+    urgency :low
 
     def show
       render_404 unless Feature.enabled?(:monitor_tracing, @project)

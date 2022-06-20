@@ -121,6 +121,8 @@ class Project < ApplicationRecord
   before_save :ensure_runners_token
   before_validation :ensure_project_namespace_in_sync
 
+  before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
+
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
@@ -418,6 +420,8 @@ class Project < ApplicationRecord
   has_one :ci_project_mirror, class_name: 'Ci::ProjectMirror'
   has_many :sync_events, class_name: 'Projects::SyncEvent'
 
+  has_one :build_artifacts_size_refresh, class_name: 'Projects::BuildArtifactsSizeRefresh'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :project_setting, update_only: true
@@ -443,7 +447,7 @@ class Project < ApplicationRecord
     :pages_enabled?, :analytics_enabled?, :snippets_enabled?, :public_pages?, :private_pages?,
     :merge_requests_access_level, :forking_access_level, :issues_access_level,
     :wiki_access_level, :snippets_access_level, :builds_access_level,
-    :repository_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level,
+    :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level,
     :operations_enabled?, :operations_access_level, :security_and_compliance_access_level,
     :container_registry_access_level, :container_registry_enabled?,
     to: :project_feature, allow_nil: true
@@ -598,6 +602,7 @@ class Project < ApplicationRecord
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
+  scope :with_group, -> { includes(:group) }
   scope :with_import_state, -> { includes(:import_state) }
   scope :include_project_feature, -> { includes(:project_feature) }
   scope :include_integration, -> (integration_association_name) { includes(integration_association_name) }
@@ -1167,7 +1172,7 @@ class Project < ApplicationRecord
     job_type = type.to_s.capitalize
 
     if job_id
-      Gitlab::AppLogger.info("#{job_type} job scheduled for #{full_path} with job ID #{job_id}.")
+      Gitlab::AppLogger.info("#{job_type} job scheduled for #{full_path} with job ID #{job_id} (primary: #{::Gitlab::Database::LoadBalancing::Session.current.use_primary?}).")
     else
       Gitlab::AppLogger.error("#{job_type} job failed to create for #{full_path}.")
     end
@@ -2161,6 +2166,7 @@ class Project < ApplicationRecord
       .append(key: 'CI_PROJECT_ID', value: id.to_s)
       .append(key: 'CI_PROJECT_NAME', value: path)
       .append(key: 'CI_PROJECT_TITLE', value: title)
+      .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
       .append(key: 'CI_PROJECT_PATH', value: full_path)
       .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
@@ -2504,7 +2510,13 @@ class Project < ApplicationRecord
   end
 
   def gitlab_deploy_token
-    @gitlab_deploy_token ||= deploy_tokens.gitlab_deploy_token
+    strong_memoize(:gitlab_deploy_token) do
+      if Feature.enabled?(:ci_variable_for_group_gitlab_deploy_token, self)
+        deploy_tokens.gitlab_deploy_token || group&.gitlab_deploy_token
+      else
+        deploy_tokens.gitlab_deploy_token
+      end
+    end
   end
 
   def any_lfs_file_locks?
@@ -2573,16 +2585,7 @@ class Project < ApplicationRecord
   end
 
   def access_request_approvers_to_be_notified
-    # For a personal project:
-    # The creator is added as a member with `Owner` access level, starting from GitLab 14.8
-    # The creator was added as a member with `Maintainer` access level, before GitLab 14.8
-    # So, to make sure access requests for all personal projects work as expected,
-    # we need to filter members with the scope `owners_and_maintainers`.
-    access_request_approvers = if personal?
-                                 members.owners_and_maintainers
-                               else
-                                 members.maintainers
-                               end
+    access_request_approvers = members.owners_and_maintainers
 
     access_request_approvers.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
@@ -2900,6 +2903,14 @@ class Project < ApplicationRecord
       last_activity_at < ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
   end
 
+  def refreshing_build_artifacts_size?
+    build_artifacts_size_refresh&.started?
+  end
+
+  def security_training_available?
+    licensed_feature_available?(:security_training)
+  end
+
   private
 
   # overridden in EE
@@ -3098,7 +3109,6 @@ class Project < ApplicationRecord
     # create project_namespace when project is created
     build_project_namespace if project_namespace_creation_enabled?
 
-    # we need to keep project and project namespace in sync if there is one
     sync_attributes(project_namespace) if sync_project_namespace?
   end
 
@@ -3111,11 +3121,24 @@ class Project < ApplicationRecord
   end
 
   def sync_attributes(project_namespace)
-    project_namespace.name = name
-    project_namespace.path = path
-    project_namespace.parent = namespace
-    project_namespace.shared_runners_enabled = shared_runners_enabled
-    project_namespace.visibility_level = visibility_level
+    attributes_to_sync = changes.slice(*%w(name path namespace_id namespace visibility_level shared_runners_enabled))
+                           .transform_values { |val| val[1] }
+
+    # if visibility_level is not set explicitly for project, it defaults to 0,
+    # but for namespace visibility_level defaults to 20,
+    # so it gets out of sync right away if we do not set it explicitly when creating the project namespace
+    attributes_to_sync['visibility_level'] ||= visibility_level if new_record?
+
+    # when a project is associated with a group while the group is created we need to ensure we associate the new
+    # group with the project namespace as well.
+    # E.g.
+    # project = create(:project) <- project is saved
+    # create(:group, projects: [project]) <- associate project with a group that is not yet created.
+    if attributes_to_sync.has_key?('namespace_id') && attributes_to_sync['namespace_id'].blank? && namespace.present?
+      attributes_to_sync['parent'] = namespace
+    end
+
+    project_namespace.assign_attributes(attributes_to_sync)
   end
 
   # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)
@@ -3130,6 +3153,23 @@ class Project < ApplicationRecord
 
     if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
       raise ExportLimitExceeded, _('The project size exceeds the export limit.')
+    end
+  end
+
+  def set_package_registry_access_level
+    return if !project_feature || project_feature.package_registry_access_level_changed?
+
+    self.project_feature.package_registry_access_level = packages_enabled ? enabled_package_registry_access_level_by_project_visibility : ProjectFeature::DISABLED
+  end
+
+  def enabled_package_registry_access_level_by_project_visibility
+    case visibility_level
+    when PUBLIC
+      ProjectFeature::PUBLIC
+    when INTERNAL
+      ProjectFeature::ENABLED
+    else
+      ProjectFeature::PRIVATE
     end
   end
 end

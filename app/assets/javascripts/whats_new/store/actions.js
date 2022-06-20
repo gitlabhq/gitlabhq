@@ -1,5 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { STORAGE_KEY } from '../utils/notification';
 import * as types from './mutation_types';
 
@@ -23,7 +24,7 @@ export default {
 
     const v = versionDigest;
     return axios
-      .get('/-/whats_new', {
+      .get(joinPaths('/', gon.relative_url_root || '', '/-/whats_new'), {
         params: {
           page,
           v,

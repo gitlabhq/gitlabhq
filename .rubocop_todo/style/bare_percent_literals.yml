@@ -10,7 +10,6 @@ Style/BarePercentLiterals:
     - 'app/models/integrations/datadog.rb'
     - 'app/services/feature_flags/base_service.rb'
     - 'app/services/repositories/base_service.rb'
-    - 'app/services/repositories/destroy_rollback_service.rb'
     - 'app/services/repositories/destroy_service.rb'
     - 'ee/app/services/jira/jql_builder_service.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/file_size_check.rb'

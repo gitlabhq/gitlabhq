@@ -2,7 +2,10 @@
 
 require 'fast_spec_helper'
 
+require 're2'
+
 require_relative '../../app/services/service_response'
+require_relative '../../lib/gitlab/error_tracking'
 
 RSpec.describe ServiceResponse do
   describe '.success' do
@@ -92,6 +95,78 @@ RSpec.describe ServiceResponse do
 
     it 'returns an array with a correct message for an error response' do
       expect(described_class.error(message: 'error message').errors).to eq(['error message'])
+    end
+  end
+
+  describe '#track_and_raise_exception' do
+    context 'when successful' do
+      let(:response) { described_class.success }
+
+      it 'returns self' do
+        expect(response.track_and_raise_exception).to be response
+      end
+    end
+
+    context 'when an error' do
+      let(:response) { described_class.error(message: 'bang') }
+
+      it 'tracks and raises' do
+        expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_exception)
+          .with(StandardError.new('bang'), {})
+
+        response.track_and_raise_exception
+      end
+
+      it 'allows specification of error class' do
+        error = Class.new(StandardError)
+        expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_exception)
+          .with(error.new('bang'), {})
+
+        response.track_and_raise_exception(as: error)
+      end
+
+      it 'allows extra data for tracking' do
+        expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_exception)
+          .with(StandardError.new('bang'), { foo: 1, bar: 2 })
+
+        response.track_and_raise_exception(foo: 1, bar: 2)
+      end
+    end
+  end
+
+  describe '#track_exception' do
+    context 'when successful' do
+      let(:response) { described_class.success }
+
+      it 'returns self' do
+        expect(response.track_exception).to be response
+      end
+    end
+
+    context 'when an error' do
+      let(:response) { described_class.error(message: 'bang') }
+
+      it 'tracks' do
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(StandardError.new('bang'), {})
+
+        expect(response.track_exception).to be response
+      end
+
+      it 'allows specification of error class' do
+        error = Class.new(StandardError)
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(error.new('bang'), {})
+
+        expect(response.track_exception(as: error)).to be response
+      end
+
+      it 'allows extra data for tracking' do
+        expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(StandardError.new('bang'), { foo: 1, bar: 2 })
+
+        expect(response.track_exception(foo: 1, bar: 2)).to be response
+      end
     end
   end
 end

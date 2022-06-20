@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::JiraTrackerData do
-  describe 'associations' do
-    it { is_expected.to belong_to(:integration) }
-  end
+  it_behaves_like Integrations::BaseDataFields
 
   describe 'deployment_type' do
-    it { is_expected.to define_enum_for(:deployment_type).with_values([:unknown, :server, :cloud]).with_prefix(:deployment) }
+    specify do
+      is_expected.to define_enum_for(:deployment_type).with_values([:unknown, :server, :cloud]).with_prefix(:deployment)
+    end
   end
 
   describe 'encrypted attributes' do

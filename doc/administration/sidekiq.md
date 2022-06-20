@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -233,7 +233,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
    gitlab_rails['ldap_servers'] = {
    'main' => {
    'label' => 'LDAP',
-   'host' =>  'ldap.mydomain.com',
+   'host' => 'ldap.mydomain.com',
    'port' => 389,
    'uid' => 'sAMAccountName',
    'encryption' => 'simple_tls',
@@ -269,7 +269,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
    'external_groups' => [],
    'sync_ssh_keys' => false
    }
-   } 
+   }
    gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
    ```
 

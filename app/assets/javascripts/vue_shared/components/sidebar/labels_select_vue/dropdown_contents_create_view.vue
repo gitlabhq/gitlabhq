@@ -2,6 +2,9 @@
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue` instead.
 export default {
   components: {
     GlButton,
@@ -51,10 +54,10 @@ export default {
 
 <template>
   <div class="labels-select-contents-create js-labels-create">
-    <div class="dropdown-title d-flex align-items-center pt-0 pb-2">
+    <div class="dropdown-title d-flex align-items-center pt-0 pb-2 gl-mb-0">
       <gl-button
         :aria-label="__('Go back')"
-        variant="link"
+        category="tertiary"
         size="small"
         class="js-btn-back dropdown-header-button p-0"
         icon="arrow-left"
@@ -63,7 +66,7 @@ export default {
       <span class="flex-grow-1">{{ labelsCreateTitle }}</span>
       <gl-button
         :aria-label="__('Close')"
-        variant="link"
+        category="tertiary"
         size="small"
         class="dropdown-header-button p-0"
         icon="close"
@@ -95,7 +98,7 @@ export default {
         ></span>
         <gl-form-input
           v-model.trim="selectedColor"
-          class="gl-rounded-top-left-none gl-rounded-bottom-left-none"
+          class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
           :placeholder="__('Use custom color #FF0000')"
         />
       </div>

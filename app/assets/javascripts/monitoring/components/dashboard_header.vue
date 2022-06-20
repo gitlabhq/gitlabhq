@@ -257,7 +257,7 @@ export default {
       >
         <gl-button
           class="flex-grow-1 js-external-dashboard-link"
-          variant="info"
+          variant="confirm"
           category="primary"
           :href="externalDashboardUrl"
           target="_blank"

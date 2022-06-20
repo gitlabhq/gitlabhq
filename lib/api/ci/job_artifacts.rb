@@ -3,6 +3,8 @@
 module API
   module Ci
     class JobArtifacts < ::API::Base
+      helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
+
       before { authenticate_non_get! }
 
       feature_category :build_artifacts
@@ -35,7 +37,7 @@ module API
             latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
             authorize_read_job_artifacts!(latest_build)
 
-            present_carrierwave_file!(latest_build.artifacts_file)
+            present_artifacts_file!(latest_build.artifacts_file)
           end
 
         desc 'Download a specific file from artifacts archive from a ref' do
@@ -76,7 +78,7 @@ module API
           build = find_build!(params[:job_id])
           authorize_read_job_artifacts!(build)
 
-          present_carrierwave_file!(build.artifacts_file)
+          present_artifacts_file!(build.artifacts_file)
         end
 
         desc 'Download a specific file from artifacts archive' do
@@ -137,6 +139,8 @@ module API
           build = find_build!(params[:job_id])
           authorize!(:destroy_artifacts, build)
 
+          reject_if_build_artifacts_size_refreshing!(build.project)
+
           build.erase_erasable_artifacts!
 
           status :no_content
@@ -145,6 +149,8 @@ module API
         desc 'Expire the artifacts files from a project'
         delete ':id/artifacts' do
           authorize_destroy_artifacts!
+
+          reject_if_build_artifacts_size_refreshing!(user_project)
 
           ::Ci::JobArtifacts::DeleteProjectArtifactsService.new(project: user_project).execute
 

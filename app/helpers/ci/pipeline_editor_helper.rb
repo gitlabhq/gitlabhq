@@ -33,6 +33,7 @@ module Ci
         "project-namespace" => project.namespace.full_path,
         "runner-help-page-path" => help_page_path('ci/runners/index'),
         "total-branches" => total_branches,
+        "validate-tab-illustration-path" => image_path('illustrations/project-run-CICD-pipelines-sm.svg'),
         "yml-help-page-path" => help_page_path('ci/yaml/index')
       }
     end

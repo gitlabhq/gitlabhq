@@ -8,6 +8,7 @@ module Projects
     before_action :ensure_deployments, only: %i(k8s elasticsearch)
 
     feature_category :logging
+    urgency :low
 
     def index
       return render_404 unless Feature.enabled?(:monitor_logging, project)

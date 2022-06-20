@@ -89,6 +89,7 @@ When upgrading the Rails gem and its dependencies, you also should update the fo
 You should also update npm packages that follow the current version of Rails:
 
 - `@rails/ujs`
+  - Run `yarn patch-package @rails/ujs` after updating this to ensure our local patch file version matches.
 - `@rails/actioncable`
 
 ## Upgrading dependencies because of vulnerabilities
@@ -138,8 +139,8 @@ To avoid upgrading indirect dependencies, we can use [`bundle update
 
 When submitting a merge request including a dependency update,
 include a link to the Gem diff between the 2 versions in the merge request
-description. You can find this link on `rubygems.org` under
-**Review Changes**. When you click it, RubyGems generates a comparison
+description. You can find this link on `rubygems.org`, select
+**Review Changes** to generate a comparison
 between the versions on `diffend.io`. For example, this is the gem
 diff for [`thor` 1.0.0 vs
 1.0.1](https://my.diffend.io/gems/thor/1.0.0/1.0.1). Use the

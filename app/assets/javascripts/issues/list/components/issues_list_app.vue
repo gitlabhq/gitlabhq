@@ -13,8 +13,6 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import getIssuesWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_without_crm.query.graphql';
-import getIssuesCountsWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_counts_without_crm.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -23,6 +21,7 @@ import CsvImportExportButtons from '~/issuable/components/csv_import_export_butt
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import { IssuableStatus } from '~/issues/constants';
 import axios from '~/lib/utils/axios_utils';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
@@ -31,20 +30,28 @@ import {
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_CONTACT,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import {
+  IssuableListTabs,
+  IssuableStates,
+  IssuableTypes,
+} from '~/vue_shared/issuable/list/constants';
 import {
   CREATED_DESC,
   i18n,
   ISSUE_REFERENCE,
   MAX_LIST_SIZE,
   PAGE_SIZE,
+  PARAM_FIRST_PAGE_SIZE,
+  PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
   PARAM_PAGE_BEFORE,
   PARAM_SORT,
@@ -53,9 +60,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   UPDATED_DESC,
@@ -93,6 +102,7 @@ const ReleaseToken = () =>
 export default {
   i18n,
   IssuableListTabs,
+  IssuableTypes: [IssuableTypes.Issue, IssuableTypes.Incident, IssuableTypes.TestCase],
   components: {
     CsvImportExportButtons,
     GlButton,
@@ -112,6 +122,9 @@ export default {
     'autocompleteAwardEmojisPath',
     'calendarPath',
     'canBulkUpdate',
+    'canCreateProjects',
+    'canReadCrmContact',
+    'canReadCrmOrganization',
     'emptyStateSvgPath',
     'exportCsvPath',
     'fullPath',
@@ -120,6 +133,7 @@ export default {
     'hasBlockedIssuesFeature',
     'hasIssueWeightsFeature',
     'hasMultipleIssueAssigneesFeature',
+    'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
     'isAnonymousSearchDisabled',
@@ -129,6 +143,7 @@ export default {
     'isSignedIn',
     'jiraIntegrationPath',
     'newIssuePath',
+    'newProjectPath',
     'releasesPath',
     'rssPath',
     'showNewIssueLink',
@@ -157,11 +172,11 @@ export default {
   },
   apollo: {
     issues: {
-      query() {
-        return this.hasCrmParameter ? getIssuesQuery : getIssuesWithoutCrmQuery;
-      },
+      query: getIssuesQuery,
       variables() {
-        return this.queryVariables;
+        const { types } = this.queryVariables;
+
+        return { ...this.queryVariables, types: types ? [types] : this.$options.IssuableTypes };
       },
       update(data) {
         return data[this.namespace]?.issues.nodes ?? [];
@@ -183,11 +198,11 @@ export default {
       debounce: 200,
     },
     issuesCounts: {
-      query() {
-        return this.hasCrmParameter ? getIssuesCountsQuery : getIssuesCountsWithoutCrmQuery;
-      },
+      query: getIssuesCountsQuery,
       variables() {
-        return this.queryVariables;
+        const { types } = this.queryVariables;
+
+        return { ...this.queryVariables, types: types ? [types] : this.$options.IssuableTypes };
       },
       update(data) {
         return data[this.namespace] ?? {};
@@ -363,6 +378,28 @@ export default {
         });
       }
 
+      if (this.canReadCrmContact) {
+        tokens.push({
+          type: TOKEN_TYPE_CONTACT,
+          title: TOKEN_TITLE_CONTACT,
+          icon: 'user',
+          token: GlFilteredSearchToken,
+          operators: OPERATOR_IS_ONLY,
+          unique: true,
+        });
+      }
+
+      if (this.canReadCrmOrganization) {
+        tokens.push({
+          type: TOKEN_TYPE_ORGANIZATION,
+          title: TOKEN_TITLE_ORGANIZATION,
+          icon: 'users',
+          token: GlFilteredSearchToken,
+          operators: OPERATOR_IS_ONLY,
+          unique: true,
+        });
+      }
+
       if (this.eeSearchTokens.length) {
         tokens.push(...this.eeSearchTokens);
       }
@@ -390,19 +427,15 @@ export default {
     },
     urlParams() {
       return {
-        page_after: this.pageParams.afterCursor,
-        page_before: this.pageParams.beforeCursor,
         search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,
         ...this.urlFilterParams,
+        first_page_size: this.pageParams.firstPageSize,
+        last_page_size: this.pageParams.lastPageSize,
+        page_after: this.pageParams.afterCursor,
+        page_before: this.pageParams.beforeCursor,
       };
-    },
-    hasCrmParameter() {
-      return (
-        window.location.search.includes('crm_contact_id=') ||
-        window.location.search.includes('crm_organization_id=')
-      );
     },
   },
   watch: {
@@ -632,6 +665,8 @@ export default {
       this.showBulkEditSidebar = showBulkEditSidebar;
     },
     updateData(sortValue) {
+      const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
+      const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const pageAfter = getParameterByName(PARAM_PAGE_AFTER);
       const pageBefore = getParameterByName(PARAM_PAGE_BEFORE);
       const state = getParameterByName(PARAM_STATE);
@@ -660,7 +695,13 @@ export default {
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.filterTokens = isSearchDisabled ? [] : getFilterTokens(window.location.search);
-      this.pageParams = getInitialPageParams(sortKey, pageAfter, pageBefore);
+      this.pageParams = getInitialPageParams(
+        sortKey,
+        isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
+        isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
+        pageAfter,
+        pageBefore,
+      );
       this.sortKey = sortKey;
       this.state = state || IssuableStates.Opened;
     },
@@ -676,6 +717,7 @@ export default {
       recent-searches-storage-key="issues"
       :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
+      :has-scoped-labels-feature="hasScopedLabelsFeature"
       :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
@@ -815,12 +857,17 @@ export default {
     </issuable-list>
 
     <template v-else-if="isSignedIn">
-      <gl-empty-state
-        :description="$options.i18n.noIssuesSignedInDescription"
-        :title="$options.i18n.noIssuesSignedInTitle"
-        :svg-path="emptyStateSvgPath"
-      >
+      <gl-empty-state :title="$options.i18n.noIssuesSignedInTitle" :svg-path="emptyStateSvgPath">
+        <template #description>
+          <p>{{ $options.i18n.noIssuesSignedInDescription }}</p>
+          <p v-if="canCreateProjects">
+            <strong>{{ $options.i18n.noGroupIssuesSignedInDescription }}</strong>
+          </p>
+        </template>
         <template #actions>
+          <gl-button v-if="canCreateProjects" :href="newProjectPath" variant="confirm">
+            {{ $options.i18n.newProjectLabel }}
+          </gl-button>
           <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
             {{ $options.i18n.newIssueLabel }}
           </gl-button>
@@ -830,7 +877,7 @@ export default {
             :export-csv-path="exportCsvPathWithQuery"
             :issuable-count="currentTabCount"
           />
-          <new-issue-dropdown v-if="showNewIssueDropdown" />
+          <new-issue-dropdown v-if="showNewIssueDropdown" class="gl-align-self-center" />
         </template>
       </gl-empty-state>
       <hr />

@@ -7,16 +7,11 @@ module API
         expose :id
         expose :name
         expose :url
-        expose :direct_asset_url
+        expose :direct_asset_url do |link|
+          ::Releases::LinkPresenter.new(link).direct_asset_url
+        end
         expose :external?, as: :external
         expose :link_type
-
-        def direct_asset_url
-          return object.url unless object.filepath
-
-          release = object.release.present
-          release.download_url(object.filepath)
-        end
       end
     end
   end

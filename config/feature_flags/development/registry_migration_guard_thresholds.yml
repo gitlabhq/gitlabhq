@@ -1,8 +1,0 @@
----
-name: registry_migration_guard_thresholds
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360790
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350543
-milestone: '15.0'
-type: development
-group: group::package
-default_enabled: false

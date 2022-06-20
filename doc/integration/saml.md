@@ -160,7 +160,7 @@ At a minimum the IdP *must* provide a claim containing the user's email address 
 See [the assertions list](#assertions) for other available claims.
 
 On the sign in page there should now be a SAML button below the regular sign in form.
-Click the icon to begin the authentication process. If everything goes well the user
+Select the icon to begin the authentication process. If everything goes well the user
 is returned to GitLab and signed in.
 
 ### Use multiple SAML identity providers
@@ -185,7 +185,7 @@ gitlab_rails['omniauth_providers'] = [
     name: 'saml_1',
     args: {
             name: 'saml_1', # This is mandatory and must match the provider name
-            strategy_class: 'OmniAuth::Strategies::SAML'
+            strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
           },
@@ -195,7 +195,7 @@ gitlab_rails['omniauth_providers'] = [
     name: 'saml_2',
     args: {
             name: 'saml_2', # This is mandatory and must match the provider name
-            strategy_class: 'OmniAuth::Strategies::SAML'
+            strategy_class: 'OmniAuth::Strategies::SAML',
             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
             ... # Put here all the required arguments similar to a single provider
           },
@@ -407,6 +407,10 @@ The requirements are the same as the previous settings:
   } }
 ```
 
+## Group Sync
+
+For information on automatically managing GitLab group membership, see [SAML Group Sync](../user/group/saml_sso/group_sync.md).
+
 ## Bypass two factor authentication
 
 If you want some SAML authentication methods to count as 2FA on a per session
@@ -486,7 +490,7 @@ In addition to the changes in GitLab, make sure that your IdP is returning the
 ### `auto_sign_in_with_provider`
 
 You can add this setting to your GitLab configuration to automatically redirect you
-to your SAML server for authentication. This removes the requirement to click a button
+to your SAML server for authentication. This removes the requirement to select a button
 before actually signing in.
 
 For Omnibus package:
@@ -791,7 +795,6 @@ Examples:
 
 - [ADFS (Active Directory Federation Services)](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
 - [Auth0](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-identity-provider)
-- [PingOne by Ping Identity](http://docs.pingidentity.com/bundle/pingoneforenterprise/page/xsh1564020480660-1.html)
 
 GitLab provides the following setup notes for guidance only.
 If you have any questions on configuring the SAML app, please contact your provider's support.
@@ -812,7 +815,7 @@ The following guidance is based on this Okta article, on adding a [SAML Applicat
 1. The last part of the configuration is the feedback section where you can
    just say you're a customer and creating an app for internal use.
 1. When you have your app you can see a few tabs on the top of the app's
-   profile. Click on the SAML 2.0 configuration instructions button.
+   profile. Select the SAML 2.0 configuration instructions button.
 1. On the screen that comes up take note of the
    **Identity Provider Single Sign-On URL** which you can use for the
    `idp_sso_target_url` on your GitLab configuration file.

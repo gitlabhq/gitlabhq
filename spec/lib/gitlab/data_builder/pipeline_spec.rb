@@ -8,11 +8,11 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
 
   let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline,
-          project: project,
-          status: 'success',
-          sha: project.commit.sha,
-          ref: project.default_branch,
-          user: user)
+      project: project,
+      status: 'success',
+      sha: project.commit.sha,
+      ref: project.default_branch,
+      user: user)
   end
 
   let!(:build) { create(:ci_build, pipeline: pipeline) }
@@ -48,6 +48,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
         avatar_url: user.avatar_url(only_path: false),
         email: user.public_email
         })
+      expect(data[:source_pipeline]).to be_nil
     end
 
     context 'build with runner' do
@@ -129,6 +130,34 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
         expect(build_environment_data[:name]).to eq(build.expanded_environment_name)
         expect(build_environment_data[:action]).to eq(build.environment_action)
         expect(build_environment_data[:deployment_tier]).to eq(build.persisted_environment.try(:tier))
+      end
+    end
+
+    context 'when the pipeline has an upstream' do
+      let(:source_pipeline_attrs) { data[:source_pipeline] }
+
+      shared_examples 'source pipeline attributes' do
+        it 'has source pipeline attributes', :aggregate_failures do
+          expect(source_pipeline_attrs[:pipeline_id]).to eq upstream_pipeline.id
+          expect(source_pipeline_attrs[:job_id]).to eq pipeline.source_bridge.id
+          expect(source_pipeline_attrs[:project][:id]).to eq upstream_pipeline.project.id
+          expect(source_pipeline_attrs[:project][:web_url]).to eq upstream_pipeline.project.web_url
+          expect(source_pipeline_attrs[:project][:path_with_namespace]).to eq upstream_pipeline.project.full_path
+        end
+      end
+
+      context 'in same project' do
+        let!(:upstream_pipeline) { create(:ci_pipeline, upstream_of: pipeline, project: project) }
+
+        it_behaves_like 'source pipeline attributes'
+      end
+
+      context 'in different project' do
+        let!(:upstream_pipeline) { create(:ci_pipeline, upstream_of: pipeline) }
+
+        it_behaves_like 'source pipeline attributes'
+
+        it { expect(source_pipeline_attrs[:project][:id]).not_to eq pipeline.project.id }
       end
     end
 

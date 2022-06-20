@@ -157,7 +157,7 @@ RSpec.describe 'Environment' do
 
       context 'with related deployable present' do
         let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
 
         let(:deployment) do
           create(:deployment, :success, environment: environment, deployable: build)
@@ -261,9 +261,12 @@ RSpec.describe 'Environment' do
 
           context 'when environment is available' do
             context 'with stop action' do
+              let(:build) { create(:ci_build, :success, pipeline: pipeline, environment: environment.name) }
+
               let(:action) do
                 create(:ci_build, :manual, pipeline: pipeline,
-                                           name: 'close_app')
+                       name: 'close_app',
+                       environment: environment.name)
               end
 
               let(:deployment) do
@@ -283,7 +286,6 @@ RSpec.describe 'Environment' do
                   click_button('Stop')
                   click_button('Stop environment') # confirm modal
                   wait_for_all_requests
-                  expect(page).to have_button('Delete')
                 end
               end
 
@@ -361,8 +363,6 @@ RSpec.describe 'Environment' do
       end
 
       visit_environment(environment)
-
-      expect(page).not_to have_button('Stop')
     end
 
     ##

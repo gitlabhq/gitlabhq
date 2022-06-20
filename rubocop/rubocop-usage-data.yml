@@ -123,3 +123,4 @@ UsageData/InstrumentationSuperclass:
     - :GenericMetric
     - :RedisHLLMetric
     - :RedisMetric
+    - :NumbersMetric

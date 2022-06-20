@@ -411,6 +411,7 @@ RSpec.describe AutocompleteController do
         expect(json_response.count).to eq(1)
         expect(json_response.first['title']).to eq(deploy_key.title)
         expect(json_response.first['owner']['id']).to eq(deploy_key.user.id)
+        expect(json_response.first['deploy_keys_projects']).to be_nil
       end
 
       context 'with an unknown project' do
@@ -433,6 +434,7 @@ RSpec.describe AutocompleteController do
           expect(json_response.count).to eq(1)
           expect(json_response.first['title']).to eq(deploy_key.title)
           expect(json_response.first['owner']).to be_nil
+          expect(json_response.first['deploy_keys_projects']).to be_nil
         end
       end
     end

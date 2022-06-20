@@ -450,5 +450,26 @@ test-vars-2:
     - printenv
 ```
 
-You can't reuse a section that already includes a `!reference` tag. Only one level
-of nesting is supported.
+### Nest `!reference` tags in `script`, `before_script`, and `after_script`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74792) in GitLab 14.8.
+
+You can nest `!reference` tags up to 10 levels deep in `script`, `before_script`, and `after_script` sections. Use nested tags to define reusable sections when building more complex scripts. For example:
+
+```yaml
+.snippets:
+  one:
+    - echo "ONE!"
+  two:
+    - !reference [.snippets, one]
+    - echo "TWO!"
+  three:
+    - !reference [.snippets, two]
+    - echo "THREE!"
+
+nested-references:
+  script:
+    - !reference [.snippets, three]
+```
+
+In this example, the `nested-references` job runs all three `echo` commands.

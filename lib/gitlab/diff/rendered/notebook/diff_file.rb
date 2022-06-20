@@ -3,11 +3,11 @@ module Gitlab
   module Diff
     module Rendered
       module Notebook
-        include Gitlab::Utils::StrongMemoize
-
         class DiffFile < Gitlab::Diff::File
+          include Gitlab::Diff::Rendered::Notebook::DiffFileHelper
+          include Gitlab::Utils::StrongMemoize
+
           RENDERED_TIMEOUT_BACKGROUND = 10.seconds
-          RENDERED_TIMEOUT_FOREGROUND = 1.5.seconds
           BACKGROUND_EXECUTION = 'background'
           FOREGROUND_EXECUTION = 'foreground'
           LOG_IPYNBDIFF_GENERATED = 'IPYNB_DIFF_GENERATED'
@@ -49,11 +49,14 @@ module Gitlab
           end
 
           def highlighted_diff_lines
-            @highlighted_diff_lines ||= begin
-              removal_line_maps, addition_line_maps = compute_end_start_map
-              Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight.map do |line|
-                mutate_line(line, addition_line_maps, removal_line_maps)
-              end
+            strong_memoize(:highlighted_diff_lines) do
+              lines = Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+              lines_in_source = lines_in_source_diff(
+                source_diff.highlighted_diff_lines, source_diff.deleted_file?, source_diff.new_file?
+              )
+
+              lines.zip(line_positions_at_source_diff(lines, transformed_blocks))
+                   .map { |line, positions| mutate_line(line, positions, lines_in_source)}
             end
           end
 
@@ -66,10 +69,9 @@ module Gitlab
                 next
               end
 
-              Timeout.timeout(timeout_time) do
+              Gitlab::RenderTimeout.timeout(background: RENDERED_TIMEOUT_BACKGROUND) do
                 IpynbDiff.diff(source_diff.old_blob&.data, source_diff.new_blob&.data,
                                raise_if_invalid_nb: true,
-                               hide_images: true,
                                diffy_opts: { include_diff_info: true })&.tap do
                   log_event(LOG_IPYNBDIFF_GENERATED)
                 end
@@ -90,50 +92,8 @@ module Gitlab
             diff
           end
 
-          def strip_diff_frontmatter(diff_content)
-            diff_content.scan(/.*\n/)[2..]&.join('') if diff_content.present?
-          end
-
-          def transformed_line_to_source(transformed_line, transformed_blocks)
-            transformed_blocks.empty? ? 0 : ( transformed_blocks[transformed_line - 1][:source_line] || -1 ) + 1
-          end
-
-          def mutate_line(line, addition_line_maps, removal_line_maps)
-            line.new_pos = transformed_line_to_source(line.new_pos, notebook_diff.to.blocks)
-            line.old_pos = transformed_line_to_source(line.old_pos, notebook_diff.from.blocks)
-
-            line.old_pos = addition_line_maps[line.new_pos] if line.old_pos == 0 && line.new_pos != 0
-            line.new_pos = removal_line_maps[line.old_pos] if line.new_pos == 0 && line.old_pos != 0
-
-            # Lines that do not appear on the original diff should not be commentable
-            line.type = "#{line.type || 'unchanged'}-nomappinginraw" unless addition_line_maps[line.new_pos] || removal_line_maps[line.old_pos]
-
-            line.line_code = line_code(line)
-            line
-          end
-
-          def compute_end_start_map
-            # line_codes are used for assigning notes to diffs, and these depend on the line on the new version and the
-            # line that would have been that one in the previous version. However, since we do a transformation on the
-            # file, that map gets lost. To overcome this, we look at the original source lines and build two maps:
-            # - For additions, we look at the latest line change for that line and pick the old line for that id
-            # - For removals, we look at the first line in the old version, and pick the first line on the new version
-            #
-            #
-            # The caveat here is that we can't have notes on lines that are not a translation of a line in the source
-            # diff
-            #
-            # (gitlab/diff/file.rb:75)
-
-            removals = {}
-            additions = {}
-
-            source_diff.highlighted_diff_lines.each do |line|
-              removals[line.old_pos] = line.new_pos unless source_diff.new_file?
-              additions[line.new_pos] = line.old_pos unless source_diff.deleted_file?
-            end
-
-            [removals, additions]
+          def transformed_blocks
+            { from: notebook_diff.from.blocks, to: notebook_diff.to.blocks }
           end
 
           def rendered_timeout
@@ -143,14 +103,25 @@ module Gitlab
             )
           end
 
-          def timeout_time
-            Gitlab::Runtime.sidekiq? ? RENDERED_TIMEOUT_BACKGROUND : RENDERED_TIMEOUT_FOREGROUND
-          end
-
           def log_event(message, error = nil)
             Gitlab::AppLogger.info({ message: message })
             Gitlab::ErrorTracking.log_exception(error) if error
             nil
+          end
+
+          def mutate_line(line, mapped_positions, source_diff_lines)
+            line.old_pos, line.new_pos = mapped_positions
+
+            # Lines that do not appear on the original diff should not be commentable
+            unless source_diff_lines[:to].include?(line.new_pos) || source_diff_lines[:from].include?(line.old_pos)
+              line.type = "#{line.type || 'unchanged'}-nomappinginraw"
+            end
+
+            line.line_code = line_code(line)
+
+            line.rich_text = image_as_rich_text(line.text) || line.rich_text
+
+            line
           end
         end
       end

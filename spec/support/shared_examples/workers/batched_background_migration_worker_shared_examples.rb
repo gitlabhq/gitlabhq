@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database, feature_flag:|
+RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database|
   include ExclusiveLeaseHelpers
 
   describe 'defining the job attributes' do
@@ -40,12 +40,16 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
   end
 
   describe '.enabled?' do
-    it 'does not raise an error' do
-      expect { described_class.enabled? }.not_to raise_error
+    it 'returns true when execute_batched_migrations_on_schedule feature flag is enabled' do
+      stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
+      expect(described_class.enabled?).to be_truthy
     end
 
-    it 'returns true' do
-      expect(described_class.enabled?).to be_truthy
+    it 'returns false when execute_batched_migrations_on_schedule feature flag is disabled' do
+      stub_feature_flags(execute_batched_migrations_on_schedule: false)
+
+      expect(described_class.enabled?).to be_falsey
     end
   end
 
@@ -86,7 +90,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
       context 'when the feature flag is disabled' do
         before do
-          stub_feature_flags(feature_flag => false)
+          stub_feature_flags(execute_batched_migrations_on_schedule: false)
         end
 
         it 'does nothing' do
@@ -98,10 +102,26 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       end
 
       context 'when the feature flag is enabled' do
-        before do
-          stub_feature_flags(feature_flag => true)
+        let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
 
-          allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration).and_return(nil)
+        before do
+          stub_feature_flags(execute_batched_migrations_on_schedule: true)
+
+          allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
+            .with(connection: base_model.connection)
+            .and_return(nil)
+        end
+
+        context 'when database config is shared' do
+          it 'does nothing' do
+            expect(Gitlab::Database).to receive(:db_config_share_with)
+              .with(base_model.connection_db_config).and_return('main')
+
+            expect(worker).not_to receive(:active_migration)
+            expect(worker).not_to receive(:run_active_migration)
+
+            worker.perform
+          end
         end
 
         context 'when no active migrations exist' do
@@ -121,6 +141,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
           before do
             allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
+              .with(connection: base_model.connection)
               .and_return(migration)
 
             allow(migration).to receive(:interval_elapsed?).with(variance: interval_variance).and_return(true)
@@ -222,6 +243,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       end
     end
 
+    let(:gitlab_schema) { "gitlab_#{tracking_database}" }
     let!(:migration) do
       create(
         :batched_background_migration,
@@ -232,10 +254,12 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         batch_size: batch_size,
         sub_batch_size: sub_batch_size,
         job_class_name: 'ExampleDataMigration',
-        job_arguments: [1]
+        job_arguments: [1],
+        gitlab_schema: gitlab_schema
       )
     end
 
+    let(:base_model) { Gitlab::Database.database_base_models[tracking_database] }
     let(:table_name) { 'example_data' }
     let(:batch_size) { 5 }
     let(:sub_batch_size) { 2 }

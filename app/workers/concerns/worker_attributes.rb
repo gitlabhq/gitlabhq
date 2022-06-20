@@ -67,7 +67,7 @@ module WorkerAttributes
     end
 
     def get_urgency
-      class_attributes[:urgency] || :low
+      get_class_attribute(:urgency) || :low
     end
 
     # Allows configuring worker's data_consistency.
@@ -98,13 +98,13 @@ module WorkerAttributes
     end
 
     def get_data_consistency
-      class_attributes[:data_consistency] || DEFAULT_DATA_CONSISTENCY
+      get_class_attribute(:data_consistency) || DEFAULT_DATA_CONSISTENCY
     end
 
     def get_data_consistency_feature_flag_enabled?
-      return true unless class_attributes[:data_consistency_feature_flag]
+      return true unless get_class_attribute(:data_consistency_feature_flag)
 
-      Feature.enabled?(class_attributes[:data_consistency_feature_flag])
+      Feature.enabled?(get_class_attribute(:data_consistency_feature_flag))
     end
 
     # Set this attribute on a job when it will call to services outside of the
@@ -115,11 +115,11 @@ module WorkerAttributes
       set_class_attribute(:external_dependencies, true)
     end
 
-    # Returns a truthy value if the worker has external dependencies.
+    # Returns true if the worker has external dependencies.
     # See doc/development/sidekiq_style_guide.md#jobs-with-external-dependencies
     # for details
     def worker_has_external_dependencies?
-      class_attributes[:external_dependencies]
+      !!get_class_attribute(:external_dependencies)
     end
 
     def worker_resource_boundary(boundary)
@@ -129,7 +129,7 @@ module WorkerAttributes
     end
 
     def get_worker_resource_boundary
-      class_attributes[:resource_boundary] || :unknown
+      get_class_attribute(:resource_boundary) || :unknown
     end
 
     def idempotent!
@@ -137,7 +137,7 @@ module WorkerAttributes
     end
 
     def idempotent?
-      class_attributes[:idempotent]
+      !!get_class_attribute(:idempotent)
     end
 
     def weight(value)
@@ -145,7 +145,7 @@ module WorkerAttributes
     end
 
     def get_weight
-      class_attributes[:weight] ||
+      get_class_attribute(:weight) ||
         NAMESPACE_WEIGHTS[queue_namespace] ||
         1
     end
@@ -155,7 +155,7 @@ module WorkerAttributes
     end
 
     def get_tags
-      Array(class_attributes[:tags])
+      Array(get_class_attribute(:tags))
     end
 
     def deduplicate(strategy, options = {})
@@ -164,12 +164,12 @@ module WorkerAttributes
     end
 
     def get_deduplicate_strategy
-      class_attributes[:deduplication_strategy] ||
+      get_class_attribute(:deduplication_strategy) ||
         Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DEFAULT_STRATEGY
     end
 
     def get_deduplication_options
-      class_attributes[:deduplication_options] || {}
+      get_class_attribute(:deduplication_options) || {}
     end
 
     def deduplication_enabled?
@@ -183,7 +183,7 @@ module WorkerAttributes
     end
 
     def big_payload?
-      class_attributes[:big_payload]
+      !!get_class_attribute(:big_payload)
     end
   end
 end

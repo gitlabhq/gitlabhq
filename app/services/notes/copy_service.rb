@@ -38,17 +38,16 @@ module Notes
 
     def params_from_note(note, new_note)
       new_discussion_ids[note.discussion_id] ||= Discussion.discussion_id(new_note)
-      rewritten_note = MarkdownContentRewriterService.new(current_user, note.note, from_project, to_noteable.resource_parent).execute
 
-      new_params = {
+      new_params = sanitized_note_params(note)
+
+      new_params.merge!(
         project: to_noteable.project,
         noteable: to_noteable,
         discussion_id: new_discussion_ids[note.discussion_id],
-        note: rewritten_note,
-        note_html: nil,
         created_at: note.created_at,
         updated_at: note.updated_at
-      }
+      )
 
       if note.system_note_metadata
         new_params[:system_note_metadata] = note.system_note_metadata.dup
@@ -59,6 +58,14 @@ module Notes
       end
 
       new_params
+    end
+
+    # Skip copying cached markdown HTML if text
+    # does not contain references or uploads.
+    def sanitized_note_params(note)
+      MarkdownContentRewriterService
+        .new(current_user, note, :note, from_project, to_noteable.resource_parent)
+        .execute
     end
 
     def copy_award_emoji(from_note, to_note)

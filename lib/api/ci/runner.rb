@@ -330,7 +330,7 @@ module API
             authenticate_job!(require_running: false)
           end
 
-          present_carrierwave_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
+          present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
         end
       end
     end

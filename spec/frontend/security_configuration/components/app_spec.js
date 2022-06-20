@@ -2,7 +2,6 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlTab, GlTabs, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
@@ -20,22 +19,14 @@ import {
   LICENSE_COMPLIANCE_DESCRIPTION,
   LICENSE_COMPLIANCE_HELP_PATH,
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
-  LICENSE_ULTIMATE,
-  LICENSE_PREMIUM,
-  LICENSE_FREE,
 } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import currentLicenseQuery from '~/security_configuration/graphql/current_license.query.graphql';
-import waitForPromises from 'helpers/wait_for_promises';
-
 import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
 import {
   REPORT_TYPE_LICENSE_COMPLIANCE,
   REPORT_TYPE_SAST,
 } from '~/vue_shared/security_reports/constants';
-import { getCurrentLicensePlanResponse } from '../mock_data';
 
 const upgradePath = '/upgrade';
 const autoDevopsHelpPagePath = '/autoDevopsHelpPagePath';
@@ -50,31 +41,16 @@ Vue.use(VueApollo);
 describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
-  let mockApollo;
 
-  const createComponent = ({
-    shouldShowCallout = true,
-    licenseQueryResponse = LICENSE_ULTIMATE,
-    ...propsData
-  }) => {
+  const createComponent = ({ shouldShowCallout = true, ...propsData }) => {
     userCalloutDismissSpy = jest.fn();
-
-    mockApollo = createMockApollo([
-      [
-        currentLicenseQuery,
-        jest
-          .fn()
-          .mockResolvedValue(
-            licenseQueryResponse instanceof Error
-              ? licenseQueryResponse
-              : getCurrentLicensePlanResponse(licenseQueryResponse),
-          ),
-      ],
-    ]);
 
     wrapper = extendedWrapper(
       mount(SecurityConfigurationApp, {
-        propsData,
+        propsData: {
+          securityTrainingEnabled: true,
+          ...propsData,
+        },
         provide: {
           upgradePath,
           autoDevopsHelpPagePath,
@@ -82,7 +58,6 @@ describe('App component', () => {
           projectFullPath,
           vulnerabilityTrainingDocsPath,
         },
-        apolloProvider: mockApollo,
         stubs: {
           ...stubChildren(SecurityConfigurationApp),
           GlLink: false,
@@ -157,7 +132,6 @@ describe('App component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    mockApollo = null;
   });
 
   describe('basic structure', () => {
@@ -166,7 +140,6 @@ describe('App component', () => {
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
       });
-      await waitForPromises();
     });
 
     it('renders main-heading with correct text', () => {
@@ -469,47 +442,42 @@ describe('App component', () => {
   });
 
   describe('Vulnerability management', () => {
-    beforeEach(async () => {
+    it('does not show tab if security training is disabled', () => {
       createComponent({
         augmentedSecurityFeatures: securityFeaturesMock,
         augmentedComplianceFeatures: complianceFeaturesMock,
+        securityTrainingEnabled: false,
       });
-      await waitForPromises();
+
+      expect(findVulnerabilityManagementTab().exists()).toBe(false);
     });
 
-    it('renders TrainingProviderList component', () => {
-      expect(findTrainingProviderList().exists()).toBe(true);
-    });
-
-    it('renders security training description', () => {
-      expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
-    });
-
-    it('renders link to help docs', () => {
-      const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
-
-      expect(trainingLink.text()).toBe('Learn more about vulnerability training');
-      expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
-    });
-
-    it.each`
-      licenseQueryResponse | display
-      ${LICENSE_ULTIMATE}  | ${true}
-      ${LICENSE_PREMIUM}   | ${false}
-      ${LICENSE_FREE}      | ${false}
-      ${null}              | ${true}
-      ${new Error()}       | ${true}
-    `(
-      'displays $display for license $licenseQueryResponse',
-      async ({ licenseQueryResponse, display }) => {
+    describe('security training enabled', () => {
+      beforeEach(async () => {
         createComponent({
-          licenseQueryResponse,
           augmentedSecurityFeatures: securityFeaturesMock,
           augmentedComplianceFeatures: complianceFeaturesMock,
         });
-        await waitForPromises();
-        expect(findVulnerabilityManagementTab().exists()).toBe(display);
-      },
-    );
+      });
+
+      it('shows the tab if security training is enabled', () => {
+        expect(findVulnerabilityManagementTab().exists()).toBe(true);
+      });
+
+      it('renders TrainingProviderList component', () => {
+        expect(findTrainingProviderList().exists()).toBe(true);
+      });
+
+      it('renders security training description', () => {
+        expect(findVulnerabilityManagementTab().text()).toContain(i18n.securityTrainingDescription);
+      });
+
+      it('renders link to help docs', () => {
+        const trainingLink = findVulnerabilityManagementTab().findComponent(GlLink);
+
+        expect(trainingLink.text()).toBe('Learn more about vulnerability training');
+        expect(trainingLink.attributes('href')).toBe(vulnerabilityTrainingDocsPath);
+      });
+    });
   });
 });

@@ -23,7 +23,6 @@ describe('Pipeline editor file nav', () => {
   const createComponent = ({
     appStatus = EDITOR_APP_STATUS_VALID,
     isNewCiConfigFile = false,
-    pipelineEditorFileTree = false,
   } = {}) => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: getAppStatus,
@@ -38,11 +37,6 @@ describe('Pipeline editor file nav', () => {
     wrapper = extendedWrapper(
       shallowMount(PipelineEditorFileNav, {
         apolloProvider: mockApollo,
-        provide: {
-          glFeatures: {
-            pipelineEditorFileTree,
-          },
-        },
         propsData: {
           isNewCiConfigFile,
         },
@@ -66,24 +60,12 @@ describe('Pipeline editor file nav', () => {
     it('renders the branch switcher', () => {
       expect(findBranchSwitcher().exists()).toBe(true);
     });
-
-    it('does not render the file tree button', () => {
-      expect(findFileTreeBtn().exists()).toBe(false);
-    });
-
-    it('does not render the file tree popover', () => {
-      expect(findPopoverContainer().exists()).toBe(false);
-    });
   });
 
-  describe('with pipelineEditorFileTree feature flag ON', () => {
+  describe('file tree', () => {
     describe('when editor is in the empty state', () => {
       beforeEach(() => {
-        createComponent({
-          appStatus: EDITOR_APP_STATUS_EMPTY,
-          isNewCiConfigFile: false,
-          pipelineEditorFileTree: true,
-        });
+        createComponent({ appStatus: EDITOR_APP_STATUS_EMPTY, isNewCiConfigFile: false });
       });
 
       it('does not render the file tree button', () => {
@@ -97,11 +79,7 @@ describe('Pipeline editor file nav', () => {
 
     describe('when user is about to create their config file for the first time', () => {
       beforeEach(() => {
-        createComponent({
-          appStatus: EDITOR_APP_STATUS_VALID,
-          isNewCiConfigFile: true,
-          pipelineEditorFileTree: true,
-        });
+        createComponent({ appStatus: EDITOR_APP_STATUS_VALID, isNewCiConfigFile: true });
       });
 
       it('does not render the file tree button', () => {
@@ -115,11 +93,7 @@ describe('Pipeline editor file nav', () => {
 
     describe('when app is in a global loading state', () => {
       it('renders the file tree button with a loading icon', () => {
-        createComponent({
-          appStatus: EDITOR_APP_STATUS_LOADING,
-          isNewCiConfigFile: false,
-          pipelineEditorFileTree: true,
-        });
+        createComponent({ appStatus: EDITOR_APP_STATUS_LOADING, isNewCiConfigFile: false });
 
         expect(findFileTreeBtn().exists()).toBe(true);
         expect(findFileTreeBtn().attributes('loading')).toBe('true');
@@ -128,11 +102,7 @@ describe('Pipeline editor file nav', () => {
 
     describe('when editor has a non-empty config file open', () => {
       beforeEach(() => {
-        createComponent({
-          appStatus: EDITOR_APP_STATUS_VALID,
-          isNewCiConfigFile: false,
-          pipelineEditorFileTree: true,
-        });
+        createComponent({ appStatus: EDITOR_APP_STATUS_VALID, isNewCiConfigFile: false });
       });
 
       it('renders the file tree button', () => {

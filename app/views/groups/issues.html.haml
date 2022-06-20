@@ -1,28 +1,8 @@
-- @can_bulk_update = can?(current_user, :admin_issue, @group) && @group.licensed_feature_available?(:group_bulk_edit)
-
-- page_title _("Issues")
+- page_title _('Issues')
 - add_page_specific_style 'page_bundles/issues_list'
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
 
-- if Feature.enabled?(:vue_issues_list, @group)
-  .js-issues-list{ data: group_issues_list_data(@group, current_user) }
-  - if @can_bulk_update
-    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
-- else
-  .top-area
-    = render 'shared/issuable/nav', type: :issues
-    .nav-controls
-      = render 'shared/issuable/feed_buttons'
-
-      - if @can_bulk_update
-        = render_if_exists 'shared/issuable/bulk_update_button', type: :issues
-
-      = render 'shared/new_project_item_select', path: 'issues/new', label: _("issue"), type: :issues, with_feature_enabled: 'issues', with_shared: false, include_projects_in_subgroups: true
-
-  = render 'shared/issuable/search_bar', type: :issues
-
-  - if @can_bulk_update
-    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues
-
-  = render 'shared/issues', project_select_button: true
+.js-issues-list{ data: group_issues_list_data(@group, current_user) }
+- if can?(current_user, :admin_issue, @group) && @group.licensed_feature_available?(:group_bulk_edit)
+  = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :issues

@@ -26,6 +26,9 @@ For custom push rules use [server hooks](../../../administration/server_hooks.md
 
 You can create push rules for all new projects to inherit, but they can be overridden
 at the project level or the [group level](../../group/index.md#group-push-rules).
+All projects created after you configure global push rules inherit this
+configuration. However, each existing project must be updated manually, using the
+process described in [Override global push rules per project](#override-global-push-rules-per-project).
 
 Prerequisite:
 
@@ -42,7 +45,8 @@ To create global push rules:
 ## Override global push rules per project
 
 The push rule of an individual project overrides the global push rule.
-To override global push rules for a specific project:
+To override global push rules for a specific project, or to update the rules
+for an existing project to match new global push rules:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
@@ -77,10 +81,12 @@ Use these rules for your commit messages.
 ## Validate branch names
 
 To validate your branch names, enter a regular expression for **Branch name**.
-To allow any branch name, leave empty. Your
-[default branch](branches/default.md) is always allowed.
+To allow any branch name, leave empty. Your [default branch](branches/default.md)
+is always allowed. Certain formats of branch names are restricted by default for
+security purposes. Names with 40 hexadecimal characters, similar to Git commit hashes,
+are prohibited.
 
-Examples:
+Some validation examples:
 
 - Branches must start with `JIRA-`.
 
@@ -100,11 +106,6 @@ Examples:
   ```plaintext
   `^[a-z0-9\\-]{4,15}$`
   ```
-
-NOTE:
-In GitLab 12.10 and later, certain formats of branch names are restricted by
-default for security purposes. 40-character hexadecimal names, similar to Git
-commit hashes, are prohibited.
 
 ## Prevent unintended consequences
 
@@ -134,6 +135,8 @@ Never commit secrets, such as credential files and SSH private keys, to a versio
 system. In GitLab, you can use a predefined list of files to block those files from a
 repository. Merge requests that contain a file that matches the list are blocked.
 This push rule does not restrict files already committed to the repository.
+You must update the configuration of existing projects to use the rule, using the
+process described in [Override global push rules per project](#override-global-push-rules-per-project).
 
 Files blocked by this rule are listed below. For a complete list of criteria, refer to
 [`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml).

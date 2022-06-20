@@ -5,7 +5,7 @@ module QA
     describe 'Project transfer between groups', :reliable do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
-          group.path = 'source-group'
+          group.path = "source-group-#{SecureRandom.hex(8)}"
         end
       end
 

@@ -90,13 +90,14 @@ module Gitlab
       super
     end
 
-    override :check_download_access!
-    def check_download_access!
-      passed = guest_can_download_code? || user_can_download_code?
+    override :can_download?
+    def can_download?
+      guest_can_download? || user_can_download?
+    end
 
-      unless passed
-        raise ForbiddenError, error_message(:read_snippet)
-      end
+    override :download_forbidden_message
+    def download_forbidden_message
+      error_message(:read_snippet)
     end
 
     override :check_change_access!

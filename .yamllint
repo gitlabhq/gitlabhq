@@ -2,6 +2,44 @@
 
 extends: default
 
+# Ideally, we should have nothing in this ignore section.
+#
+# Please consider removing entries below by fixing them.
+ignore: |
+  #### Files ####
+
+  # Contains ruby code
+  config/mail_room.yml
+  generator_templates/snowplow_event_definition/event_definition.yml
+  generator_templates/usage_metric_definition/metric_definition.yml
+
+  # Has some special indentation
+  doc/user/project/integrations/samples/cloudwatch.yml
+
+  # Broken on purpose (for testing)
+  spec/fixtures/lib/gitlab/metrics/dashboard/broken_yml_syntax.yml
+
+  #### Folders ####
+  node_modules/
+  tmp/
+
+# Why disabling all of those rules?
+#
+# For the scope of https://gitlab.com/gitlab-org/gitlab/-/issues/359968,
+# we would like to catch syntax errors as soon as possible.
+# Style "errors" are not as important right now, but they should ideally be added later on.
+#
+# Please consider enabling a rule, and fixing the issues you'll see in an MR.
 rules:
-  line-length: disable
+  braces: disable
+  colons: disable
+  comments-indentation: disable
+  comments: disable
   document-start: disable
+  empty-lines: disable
+  indentation: disable
+  key-duplicates: disable
+  line-length: disable
+  new-line-at-end-of-file: disable
+  trailing-spaces: disable
+  truthy: disable

@@ -38,7 +38,7 @@ For example, this is a configuration for a project named `gitlab-ci`:
 
 You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
 Learn more about the steps and consequences of disabling GitLab issues in
-[Sharing and permissions](../settings/index.md#sharing-and-permissions).
+[Sharing and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
 
 ## Reference Redmine issues in GitLab
 

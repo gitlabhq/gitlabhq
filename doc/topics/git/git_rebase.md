@@ -180,7 +180,7 @@ the operation you want to perform in each commit. To do so, edit
 the commits in your terminal's text editor.
 
 For example, with [Vim](https://www.vim.org/) as the text editor in
-a macOS's `ZSH` shell, you can `squash` or `fixup` (combine) all three commits:
+a macOS's Zsh shell, you can `squash` or `fixup` (combine) all three commits:
 
 <!-- vale gitlab.FirstPerson = NO -->
 

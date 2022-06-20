@@ -5,6 +5,7 @@ export * from './api/markdown_api';
 export * from './api/bulk_imports_api';
 export * from './api/namespaces_api';
 export * from './api/tags_api';
+export * from './api/alert_management_alerts_api';
 
 // Note: It's not possible to spy on methods imported from this file in
 // Jest tests.

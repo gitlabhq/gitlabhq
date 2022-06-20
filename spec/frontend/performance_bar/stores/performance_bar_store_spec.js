@@ -1,9 +1,9 @@
 import PerformanceBarStore from '~/performance_bar/stores/performance_bar_store';
 
 describe('PerformanceBarStore', () => {
-  describe('truncateUrl', () => {
+  describe('displayName', () => {
     let store;
-    const findUrl = (id) => store.findRequest(id).truncatedUrl;
+    const findUrl = (id) => store.findRequest(id).displayName;
 
     beforeEach(() => {
       store = new PerformanceBarStore();
@@ -40,6 +40,11 @@ describe('PerformanceBarStore', () => {
     it('ignores fragments', () => {
       store.addRequest('id', 'http://localhost:3001/h5bp/html5-boilerplate/#frag/ment');
       expect(findUrl('id')).toEqual('html5-boilerplate');
+    });
+
+    it('appends the GraphQL operation name', () => {
+      store.addRequest('id', 'http://localhost:3001/api/graphql', 'someOperation');
+      expect(findUrl('id')).toBe('graphql (someOperation)');
     });
   });
 

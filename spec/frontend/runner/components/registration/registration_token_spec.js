@@ -29,6 +29,7 @@ describe('RegistrationToken', () => {
     wrapper = mountFn(RegistrationToken, {
       propsData: {
         value: mockToken,
+        inputId: 'token-value',
         ...props,
       },
       localVue,

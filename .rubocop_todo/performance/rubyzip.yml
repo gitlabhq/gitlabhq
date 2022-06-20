@@ -1,5 +1,5 @@
 ---
 Performance/Rubyzip:
   Exclude:
-  - app/services/packages/nuget/metadata_extraction_service.rb
-  - lib/gitlab/ci/artifact_file_reader.rb
+    - 'app/services/packages/nuget/metadata_extraction_service.rb'
+    - 'lib/gitlab/ci/artifact_file_reader.rb'

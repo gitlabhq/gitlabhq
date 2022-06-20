@@ -107,9 +107,10 @@ module API
       end
       params do
         requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
+        optional :tag_message, type: String, desc: 'Message to use if creating a new annotated tag'
         optional :name,        type: String, desc: 'The name of the release'
         optional :description, type: String, desc: 'The release notes'
-        optional :ref,         type: String, desc: 'The commit sha or branch name'
+        optional :ref,         type: String, desc: 'Commit SHA or branch name to use if creating a new tag'
         optional :assets, type: Hash do
           optional :links, type: Array do
             requires :name, type: String, desc: 'The name of the link'

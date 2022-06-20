@@ -24,11 +24,10 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
     @personal_access_token = result.payload[:personal_access_token]
 
     if result.success?
-      PersonalAccessToken.redis_store!(current_user.id, @personal_access_token.token)
-      redirect_to profile_personal_access_tokens_path, notice: _("Your new personal access token has been created.")
+      render json: { new_token: @personal_access_token.token,
+                     active_access_tokens: active_personal_access_tokens }, status: :ok
     else
-      set_index_vars
-      render :index
+      render json: { errors: result.errors }, status: :unprocessable_entity
     end
   end
 
@@ -52,14 +51,11 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes_for(current_user)
-
-    @inactive_personal_access_tokens = finder(state: 'inactive').execute
     @active_personal_access_tokens = active_personal_access_tokens
-
-    @new_personal_access_token = PersonalAccessToken.redis_getdel(current_user.id)
   end
 
   def active_personal_access_tokens
-    finder(state: 'active', sort: 'expires_at_asc').execute
+    tokens = finder(state: 'active', sort: 'expires_at_asc').execute
+    ::API::Entities::PersonalAccessTokenWithDetails.represent(tokens)
   end
 end

@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import { mount, shallowMount } from '@vue/test-utils';
+import { GlTab, GlTabs } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
@@ -11,6 +12,7 @@ import RunnerHeader from '~/runner/components/runner_header.vue';
 import RunnerPauseButton from '~/runner/components/runner_pause_button.vue';
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/runner/components/runner_edit_button.vue';
+import RunnersJobs from '~/runner/components/runner_jobs.vue';
 import runnerQuery from '~/runner/graphql/show/runner.query.graphql';
 import AdminRunnerShowApp from '~/runner/admin_runner_show/admin_runner_show_app.vue';
 import { captureException } from '~/runner/sentry_utils';
@@ -38,6 +40,8 @@ describe('AdminRunnerShowApp', () => {
   const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
   const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
+  const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
+  const findJobCountBadge = () => wrapper.findByTestId('job-count-badge');
 
   const mockRunnerQueryResult = (runner = {}) => {
     mockRunnerQuery = jest.fn().mockResolvedValue({
@@ -47,7 +51,7 @@ describe('AdminRunnerShowApp', () => {
     });
   };
 
-  const createComponent = ({ props = {}, mountFn = shallowMount } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(AdminRunnerShowApp, {
       apolloProvider: createMockApollo([[runnerQuery, mockRunnerQuery]]),
       propsData: {
@@ -55,6 +59,7 @@ describe('AdminRunnerShowApp', () => {
         runnersPath: mockRunnersPath,
         ...props,
       },
+      ...options,
     });
 
     return waitForPromises();
@@ -69,7 +74,7 @@ describe('AdminRunnerShowApp', () => {
     beforeEach(async () => {
       mockRunnerQueryResult();
 
-      await createComponent({ mountFn: mount });
+      await createComponent({ mountFn: mountExtended });
     });
 
     it('expect GraphQL ID to be requested', async () => {
@@ -110,7 +115,7 @@ describe('AdminRunnerShowApp', () => {
         });
 
         await createComponent({
-          mountFn: mount,
+          mountFn: mountExtended,
         });
       });
 
@@ -129,7 +134,7 @@ describe('AdminRunnerShowApp', () => {
         });
 
         await createComponent({
-          mountFn: mount,
+          mountFn: mountExtended,
         });
       });
 
@@ -141,7 +146,7 @@ describe('AdminRunnerShowApp', () => {
     describe('when runner is deleted', () => {
       beforeEach(async () => {
         await createComponent({
-          mountFn: mount,
+          mountFn: mountExtended,
         });
       });
 
@@ -163,7 +168,7 @@ describe('AdminRunnerShowApp', () => {
         });
 
         await createComponent({
-          mountFn: mount,
+          mountFn: mountExtended,
         });
       });
 
@@ -189,6 +194,51 @@ describe('AdminRunnerShowApp', () => {
 
     it('error is shown to the user', () => {
       expect(createAlert).toHaveBeenCalled();
+    });
+  });
+
+  describe('Jobs tab', () => {
+    const stubs = {
+      GlTab,
+      GlTabs,
+      RunnerDetails: {
+        template: `
+          <div>
+            <slot name="jobs-tab"></slot>
+          </div>
+        `,
+      },
+    };
+
+    it('without a runner, shows no jobs', () => {
+      mockRunnerQuery = jest.fn().mockResolvedValue({
+        data: {
+          runner: null,
+        },
+      });
+
+      createComponent({ stubs });
+
+      expect(findJobCountBadge().exists()).toBe(false);
+      expect(findRunnersJobs().exists()).toBe(false);
+    });
+
+    it('without a job count, shows no jobs count', async () => {
+      mockRunnerQueryResult({ jobCount: null });
+
+      await createComponent({ stubs });
+
+      expect(findJobCountBadge().exists()).toBe(false);
+    });
+
+    it('with a job count, shows jobs count', async () => {
+      const runner = { jobCount: 3 };
+      mockRunnerQueryResult(runner);
+
+      await createComponent({ stubs });
+
+      expect(findJobCountBadge().text()).toBe('3');
+      expect(findRunnersJobs().props('runner')).toEqual({ ...mockRunner, ...runner });
     });
   });
 });

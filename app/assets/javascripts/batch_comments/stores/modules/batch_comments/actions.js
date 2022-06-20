@@ -77,28 +77,22 @@ export const publishSingleDraft = ({ commit, dispatch, getters }, draftId) => {
     .catch(() => commit(types.RECEIVE_PUBLISH_DRAFT_ERROR, draftId));
 };
 
-export const publishReview = ({ commit, dispatch, getters }) => {
+export const publishReview = ({ commit, dispatch, getters }, noteData = {}) => {
   commit(types.REQUEST_PUBLISH_REVIEW);
 
   return service
-    .publish(getters.getNotesData.draftsPublishPath)
+    .publish(getters.getNotesData.draftsPublishPath, noteData)
     .then(() => dispatch('updateDiscussionsAfterPublish'))
     .then(() => commit(types.RECEIVE_PUBLISH_REVIEW_SUCCESS))
     .catch(() => commit(types.RECEIVE_PUBLISH_REVIEW_ERROR));
 };
 
 export const updateDiscussionsAfterPublish = async ({ dispatch, getters, rootGetters }) => {
-  if (window.gon?.features?.paginatedNotes) {
-    await dispatch('stopPolling', null, { root: true });
-    await dispatch('fetchData', null, { root: true });
-    await dispatch('restartPolling', null, { root: true });
-  } else {
-    await dispatch(
-      'fetchDiscussions',
-      { path: getters.getNotesData.discussionsPath },
-      { root: true },
-    );
-  }
+  await dispatch(
+    'fetchDiscussions',
+    { path: getters.getNotesData.discussionsPath },
+    { root: true },
+  );
 
   dispatch('diffs/assignDiscussionsToDiff', rootGetters.discussionsStructuredByLineCode, {
     root: true,

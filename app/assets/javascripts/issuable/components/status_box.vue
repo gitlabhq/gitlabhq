@@ -63,6 +63,8 @@ export default {
     },
   },
   data() {
+    if (!this.iid) return { state: this.initialState };
+
     if (this.initialState) {
       badgeState.state = this.initialState;
     }
@@ -74,8 +76,7 @@ export default {
       return [
         CLASSES[this.state],
         {
-          'gl-vertical-align-bottom':
-            this.issuableType === IssuableType.MergeRequest && this.glFeatures.updatedMrHeader,
+          'gl-vertical-align-bottom': this.issuableType === IssuableType.MergeRequest,
         },
       ];
     },

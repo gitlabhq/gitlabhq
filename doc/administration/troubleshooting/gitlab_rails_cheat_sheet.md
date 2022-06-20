@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -294,18 +294,6 @@ p = Project.find_by_full_path('<project_path>')
 namespace = Namespace.find_by_full_path("<new_namespace>")
 
 ::Projects::TransferService.new(p, current_user).execute(namespace)
-```
-
-### For Removing webhooks that is getting timeout due to large webhook logs
-
-```ruby
-# ID is the webhook_id
-hook=WebHook.find(ID)
-
-WebHooks::DestroyService.new(current_user).execute(hook)
-
-#In case the service gets timeout consider removing webhook_logs
-hook.web_hook_logs.limit(BATCH_SIZE).delete_all
 ```
 
 ### Bulk update service integration password for _all_ projects
@@ -760,7 +748,7 @@ parent.members_with_descendants.count
 # This section lists all the groups which are pending deletion
 #
 Group.all.each do |g|
- if g.marked_for_deletion? 
+ if g.marked_for_deletion?
     puts "Group ID: #{g.id}"
     puts "Group name: #{g.name}"
     puts "Group path: #{g.full_path}"
@@ -1458,7 +1446,7 @@ Open the rails console (`gitlab rails c`) and run the following command to see a
 ApplicationSetting.last.attributes
 ```
 
-Among other attributes, the output contains all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), such as `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, and `elasticsearch_pause_indexing`.
+Among other attributes, the output contains all the settings available in the [Elasticsearch Integration page](../../integration/advanced_search/elasticsearch.md), such as `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, and `elasticsearch_pause_indexing`.
 
 #### Setting attributes
 
@@ -1474,7 +1462,7 @@ ApplicationSetting.last.update(elasticsearch_indexing: false)
 
 #### Getting attributes
 
-You can then check if the settings have been set in the [Elasticsearch Integration page](../../integration/elasticsearch.md) or in the rails console by issuing:
+You can then check if the settings have been set in the [Elasticsearch Integration page](../../integration/advanced_search/elasticsearch.md) or in the rails console by issuing:
 
 ```ruby
 Gitlab::CurrentSettings.elasticsearch_url

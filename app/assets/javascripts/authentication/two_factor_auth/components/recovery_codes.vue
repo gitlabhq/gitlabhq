@@ -101,9 +101,9 @@ export default {
 
 <template>
   <div>
-    <h3 class="page-title">
+    <h1 class="page-title gl-font-size-h-display">
       {{ $options.i18n.pageTitle }}
-    </h3>
+    </h1>
     <hr />
     <gl-alert variant="info" :dismissible="false">
       {{ $options.i18n.alertTitle }}

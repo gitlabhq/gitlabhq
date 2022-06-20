@@ -4,6 +4,6 @@ classes:
 - Clusters::Agent
 feature_categories:
 - kubernetes_management
-description: TODO
+description: Represents a GitLab Agent for Kubernetes installed in a Kubernetes cluster
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33228
 milestone: '13.3'

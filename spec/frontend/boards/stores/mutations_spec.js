@@ -34,6 +34,14 @@ describe('Board Store Mutations', () => {
     state = defaultState();
   });
 
+  describe('REQUEST_CURRENT_BOARD', () => {
+    it('Should set isBoardLoading state to true', () => {
+      mutations[types.REQUEST_CURRENT_BOARD](state);
+
+      expect(state.isBoardLoading).toBe(true);
+    });
+  });
+
   describe('RECEIVE_BOARD_SUCCESS', () => {
     it('Should set board to state', () => {
       mutations[types.RECEIVE_BOARD_SUCCESS](state, mockBoard);
@@ -289,24 +297,6 @@ describe('Board Store Mutations', () => {
       mutations[types.RESET_ISSUES](state);
 
       expect(state.boardItemsByListId).toEqual({ 'gid://gitlab/List/1': [] });
-    });
-  });
-
-  describe('RESET_ITEMS_FOR_LIST', () => {
-    it('should remove issues from boardItemsByListId state', () => {
-      const listId = 'gid://gitlab/List/1';
-      const boardItemsByListId = {
-        [listId]: [mockIssue.id],
-      };
-
-      state = {
-        ...state,
-        boardItemsByListId,
-      };
-
-      mutations[types.RESET_ITEMS_FOR_LIST](state, listId);
-
-      expect(state.boardItemsByListId[listId]).toEqual([]);
     });
   });
 

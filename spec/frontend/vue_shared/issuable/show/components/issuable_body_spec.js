@@ -159,7 +159,6 @@ describe('IssuableBody', () => {
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.props()).toMatchObject({
         issuable: issuableBodyProps.issuable,
-        statusBadgeClass: issuableBodyProps.statusBadgeClass,
         statusIcon: issuableBodyProps.statusIcon,
         enableEdit: issuableBodyProps.enableEdit,
       });

@@ -22,15 +22,13 @@ module Gitlab
             connection_name: @connection_name
           )
 
-          # Double-checking before getting the lease:
-          # The prevailing situation is no missing partitions and no extra partitions
-          return if missing_partitions.empty? && extra_partitions.empty?
-
           only_with_exclusive_lease(model, lease_key: MANAGEMENT_LEASE_KEY) do
-            partitions_to_create = missing_partitions
-            create(partitions_to_create) unless partitions_to_create.empty?
+            model.partitioning_strategy.validate_and_fix
 
+            partitions_to_create = missing_partitions
             partitions_to_detach = extra_partitions
+
+            create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
           end
         rescue StandardError => e
@@ -119,7 +117,8 @@ module Gitlab
           parent_table_identifier = "#{connection.current_schema}.#{partition.table}"
 
           if (example_fk = PostgresForeignKey.by_referenced_table_identifier(parent_table_identifier).first)
-            raise UnsafeToDetachPartitionError, "Cannot detach #{partition.partition_name}, it would block while checking foreign key #{example_fk.name} on #{example_fk.constrained_table_identifier}"
+            raise UnsafeToDetachPartitionError, "Cannot detach #{partition.partition_name}, it would block while " \
+              "checking foreign key #{example_fk.name} on #{example_fk.constrained_table_identifier}"
           end
         end
 

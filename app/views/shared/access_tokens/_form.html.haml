@@ -1,3 +1,4 @@
+- ajax = local_assigns.fetch(:ajax, false)
 - title = local_assigns.fetch(:title, _('Add a %{type}') % { type: type })
 - prefix = local_assigns.fetch(:prefix, :personal_access_token)
 - help_path = local_assigns.fetch(:help_path)
@@ -10,9 +11,9 @@
 %p.profile-settings-content
   = _("Enter the name of your application, and we'll return a unique %{type}.") % { type: type }
 
-= gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
+= gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
 
-  = form_errors(token)
+  = form_errors(token, pajamas_alert: true)
 
   .row
     .form-group.col

@@ -13,6 +13,10 @@ require_relative 'parse_examples'
 # for details on the implementation and usage of this script. This developers guide
 # contains diagrams and documentation of this script,
 # including explanations and examples of all files it reads and writes.
+#
+# Also note that this script is intentionally written in a pure-functional (not OO) style,
+# with no dependencies on Rails or the GitLab libraries. These choices are intended to make
+# it faster and easier to test and debug.
 module Glfm
   class UpdateExampleSnapshots
     include Constants
@@ -27,27 +31,19 @@ module Glfm
 
       output('(Skipping static HTML generation)') if skip_static_and_wysiwyg
 
-      glfm_spec_txt_lines, _glfm_examples_status_lines = read_input_files
+      output("Reading #{GLFM_SPEC_TXT_PATH}...")
+      glfm_spec_txt_lines = File.open(GLFM_SPEC_TXT_PATH).readlines
 
       # Parse all the examples from `spec.txt`, using a Ruby port of the Python `get_tests`
       # function the from original CommonMark/GFM `spec_test.py` script.
       all_examples = parse_examples(glfm_spec_txt_lines)
 
       add_example_names(all_examples)
+
       write_snapshot_example_files(all_examples, skip_static_and_wysiwyg: skip_static_and_wysiwyg)
     end
 
     private
-
-    def read_input_files
-      [
-        GLFM_SPEC_TXT_PATH,
-        GLFM_EXAMPLE_STATUS_YML_PATH
-      ].map do |path|
-        output("Reading #{path}...")
-        File.open(path).readlines
-      end
-    end
 
     def add_example_names(all_examples)
       # NOTE: This method assumes:
@@ -83,7 +79,7 @@ module Glfm
         formatted_headers_text = headers.join('__').tr('-', '_').tr(' ', '_').downcase
 
         hierarchy_level = "#{h1_count.to_s.rjust(2, '0')}_#{h2_count.to_s.rjust(2, '0')}"
-        position_within_section = index_within_h2.to_s.rjust(2, '0')
+        position_within_section = index_within_h2.to_s.rjust(3, '0')
         name = "#{hierarchy_level}__#{formatted_headers_text}__#{position_within_section}"
         converted_name = name.tr('(', '').tr(')', '') # remove any parens from the name
         example[:name] = converted_name
@@ -91,6 +87,10 @@ module Glfm
     end
 
     def write_snapshot_example_files(all_examples, skip_static_and_wysiwyg:)
+      output("Reading #{GLFM_EXAMPLE_STATUS_YML_PATH}...")
+      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH))
+      validate_glfm_example_status_yml(glfm_examples_statuses)
+
       write_examples_index_yml(all_examples)
 
       write_markdown_yml(all_examples)
@@ -104,9 +104,20 @@ module Glfm
       static_html_hash = generate_static_html(markdown_yml_tempfile_path)
       wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json(markdown_yml_tempfile_path)
 
-      write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash)
+      write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
 
-      write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash)
+      write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash, glfm_examples_statuses)
+    end
+
+    def validate_glfm_example_status_yml(glfm_examples_statuses)
+      glfm_examples_statuses.each do |example_name, statuses|
+        next unless statuses &&
+          statuses['skip_update_example_snapshots'] &&
+          statuses.any? { |key, value| key.include?('skip_update_example_snapshot_') && !!value }
+
+        raise "Error: '#{example_name}' must not have any 'skip_update_example_snapshot_*' values specified " \
+                "if 'skip_update_example_snapshots' is truthy"
+      end
     end
 
     def write_examples_index_yml(all_examples)
@@ -186,27 +197,77 @@ module Glfm
       YAML.load_file(wysiwyg_html_and_json_tempfile_path)
     end
 
-    def write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash)
-      generate_and_write_for_all_examples(all_examples, ES_HTML_YML_PATH) do |example, hash|
-        hash[example.fetch(:name)] = {
+    def write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
+      generate_and_write_for_all_examples(
+        all_examples, ES_HTML_YML_PATH, glfm_examples_statuses
+      ) do |example, hash, existing_hash|
+        name = example.fetch(:name)
+        example_statuses = glfm_examples_statuses[name] || {}
+
+        static = if example_statuses['skip_update_example_snapshot_html_static']
+                   existing_hash.dig(name, 'static')
+                 else
+                   static_html_hash[name]
+                 end
+
+        wysiwyg = if example_statuses['skip_update_example_snapshot_html_wysiwyg']
+                    existing_hash.dig(name, 'wysiwyg')
+                  else
+                    wysiwyg_html_and_json_hash.dig(name, 'html')
+                  end
+
+        hash[name] = {
           'canonical' => example.fetch(:html),
-          'static' => static_html_hash.fetch(example.fetch(:name)),
-          'wysiwyg' => wysiwyg_html_and_json_hash.fetch(example.fetch(:name)).fetch('html')
-        }
+          'static' => static,
+          'wysiwyg' => wysiwyg
+        }.compact # Do not assign nil values
       end
     end
 
-    def write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash)
-      generate_and_write_for_all_examples(all_examples, ES_PROSEMIRROR_JSON_YML_PATH) do |example, hash|
-        hash[example.fetch(:name)] = wysiwyg_html_and_json_hash.fetch(example.fetch(:name)).fetch('json')
+    def write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash, glfm_examples_statuses)
+      generate_and_write_for_all_examples(
+        all_examples, ES_PROSEMIRROR_JSON_YML_PATH, glfm_examples_statuses
+      ) do |example, hash, existing_hash|
+        name = example.fetch(:name)
+
+        json = if glfm_examples_statuses.dig(name, 'skip_update_example_snapshot_prosemirror_json')
+                 existing_hash.dig(name)
+               else
+                 wysiwyg_html_and_json_hash.dig(name, 'json')
+               end
+
+        # Do not assign nil values
+        hash[name] = json if json
       end
     end
 
-    def generate_and_write_for_all_examples(all_examples, output_file_path, literal_scalars: true, &generator_block)
-      output("Writing #{output_file_path}...")
-      generated_examples_hash = all_examples.each_with_object({}, &generator_block)
+    def generate_and_write_for_all_examples(
+      all_examples, output_file_path, glfm_examples_statuses = {}, literal_scalars: true
+    )
+      preserve_existing = !glfm_examples_statuses.empty?
+      output("#{preserve_existing ? 'Creating/Updating' : 'Creating/Overwriting'} #{output_file_path}...")
+      existing_hash = preserve_existing ? YAML.safe_load(File.open(output_file_path)) : {}
 
-      yaml_string = dump_yaml_with_formatting(generated_examples_hash, literal_scalars: literal_scalars)
+      output_hash = all_examples.each_with_object({}) do |example, hash|
+        name = example.fetch(:name)
+        if (reason = glfm_examples_statuses.dig(name, 'skip_update_example_snapshots'))
+          # Output the reason for skipping the example, but only once, not multiple times for each file
+          output("Skipping '#{name}'. Reason: #{reason}") unless glfm_examples_statuses.dig(name, :already_printed)
+          # We just store the `:already_printed` flag in the hash entry itself. Then we
+          # don't need an instance variable to keep the state, and this can remain a pure function ;)
+          glfm_examples_statuses[name][:already_printed] = true
+
+          # Copy over the existing example only if it exists and preserve_existing is true, otherwise omit this example
+          # noinspection RubyScope
+          hash[name] = existing_hash[name] if existing_hash[name]
+
+          next
+        end
+
+        yield(example, hash, existing_hash)
+      end
+
+      yaml_string = dump_yaml_with_formatting(output_hash, literal_scalars: literal_scalars)
       write_file(output_file_path, yaml_string)
     end
 

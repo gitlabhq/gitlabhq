@@ -58,6 +58,8 @@ module QA
           click_element :issuable_label
 
           click_link label.title
+
+          click_element :issuable_label # So that the dropdown goes away(click away action)
         end
 
         def assign_to_me

@@ -32,8 +32,7 @@ To get started, choose the template that best suits your needs:
 
 All templates:
 
-- Use the [GitLab-managed Terraform state](#gitlab-managed-terraform-state) as
-  the Terraform state storage backend.
+- Use the [GitLab-managed Terraform state](terraform_state.md) as the Terraform state storage backend.
 - Trigger four pipeline stages: `test`, `validate`, `build`, and `deploy`.
 - Run Terraform commands: `test`, `validate`, `plan`, and `plan-json`. It also runs the `apply` only on the default branch.
 - Run the [Terraform SAST scanner](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually).
@@ -57,6 +56,9 @@ to use one of these templates:
 
 - [The stable template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml) with an skeleton that you can built on top of.
 - [The advanced template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) to fully customize your setup.
+
+NOTE:
+In each GitLab major release (for example, 15.0), the latest templates replace the older ones. This process can introduce breaking changes. You can [use an older version of the template](troubleshooting.md#use-an-older-version-of-the-template) if you need to.
 
 ### Use a Terraform template
 
@@ -86,37 +88,19 @@ To use a Terraform template:
     # TF_ROOT: terraform/production
    ```
 
-1. (Optional) Override in your `.gitlab-ci.yml` file the attributes present
+1. Optional. Override in your `.gitlab-ci.yml` file the attributes present
 in the template you fetched to customize your configuration.
-
-## GitLab-managed Terraform state
-
-Use the [GitLab-managed Terraform state](terraform_state.md) to store state
-files in local storage or in a remote store of your choice.
-
-## Terraform module registry
-
-Use GitLab as a [Terraform module registry](../../packages/terraform_module_registry/index.md)
-to create and publish Terraform modules to a private registry.
-
-## Terraform integration in merge requests
-
-Use the [Terraform integration in merge requests](mr_integration.md)
-to collaborate on Terraform code changes and Infrastructure-as-Code
-workflows.
-
-## The GitLab Terraform provider
-
-The [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab) is a Terraform plugin to facilitate
-managing of GitLab resources such as users, groups, and projects. It is released separately from GitLab
-and its documentation is available on [Terraform](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
-
-## Create a new cluster through IaC
-
-- Learn how to [create a new cluster on Amazon Elastic Kubernetes Service (EKS)](../clusters/connect/new_eks_cluster.md).
-- Learn how to [create a new cluster on Google Kubernetes Engine (GKE)](../clusters/connect/new_gke_cluster.md).
 
 ## Related topics
 
-- [Terraform images](https://gitlab.com/gitlab-org/terraform-images).
-- [Troubleshooting](troubleshooting.md) issues with GitLab and Terraform.
+- View [the images that contain the `gitlab-terraform` shell script](https://gitlab.com/gitlab-org/terraform-images).
+- Use GitLab as a [Terraform module registry](../../packages/terraform_module_registry/index.md).
+- To store state files in local storage or in a remote store, use the [GitLab-managed Terraform state](terraform_state.md).
+- To collaborate on Terraform code changes and Infrastructure-as-Code workflows, use the
+  [Terraform integration in merge requests](mr_integration.md).
+- To manage GitLab resources like users, groups, and projects, use the
+  [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab). It is released separately from GitLab
+  and its documentation is available on [the Terraform docs site](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
+- [Create a new cluster on Amazon Elastic Kubernetes Service (EKS)](../clusters/connect/new_eks_cluster.md).
+- [Create a new cluster on Google Kubernetes Engine (GKE)](../clusters/connect/new_gke_cluster.md).
+- [Troubleshoot](troubleshooting.md) issues with GitLab and Terraform.

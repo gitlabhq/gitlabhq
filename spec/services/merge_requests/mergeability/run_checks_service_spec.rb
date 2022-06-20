@@ -7,12 +7,6 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
 
   let_it_be(:merge_request) { create(:merge_request) }
 
-  describe '#CHECKS' do
-    it 'contains every subclass of the base checks service', :eager_load do
-      expect(described_class::CHECKS).to contain_exactly(*MergeRequests::Mergeability::CheckBaseService.subclasses)
-    end
-  end
-
   describe '#execute' do
     subject(:execute) { run_checks.execute }
 
@@ -22,8 +16,8 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
     context 'when every check is skipped', :eager_load do
       before do
         MergeRequests::Mergeability::CheckBaseService.subclasses.each do |subclass|
-          expect_next_instance_of(subclass) do |service|
-            expect(service).to receive(:skip?).and_return(true)
+          allow_next_instance_of(subclass) do |service|
+            allow(service).to receive(:skip?).and_return(true)
           end
         end
       end
@@ -35,7 +29,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
 
     context 'when a check is skipped' do
       it 'does not execute the check' do
-        described_class::CHECKS.each do |check|
+        merge_request.mergeability_checks.each do |check|
           allow_next_instance_of(check) do |service|
             allow(service).to receive(:skip?).and_return(false)
             allow(service).to receive(:execute).and_return(success_result)
@@ -47,7 +41,13 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
           expect(service).not_to receive(:execute)
         end
 
-        expect(execute).to match_array([success_result, success_result, success_result, success_result])
+        # Since we're only marking one check to be skipped, we expect to receive
+        #   `# of checks - 1` success result objects in return
+        #
+        check_count = merge_request.mergeability_checks.count - 1
+        success_array = (1..check_count).each_with_object([]) { |_, array| array << success_result }
+
+        expect(execute).to match_array(success_array)
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
       let(:merge_check) { instance_double(MergeRequests::Mergeability::CheckCiStatusService) }
 
       before do
-        described_class::CHECKS.each do |check|
+        merge_request.mergeability_checks.each do |check|
           allow_next_instance_of(check) do |service|
             allow(service).to receive(:skip?).and_return(true)
           end

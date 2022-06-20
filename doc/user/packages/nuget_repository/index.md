@@ -171,7 +171,7 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet en
 
    ![Visual Studio Adding a NuGet source](img/visual_studio_adding_nuget_source.png)
 
-1. Click **Save**.
+1. Select **Save**.
 
 The source is displayed in your list.
 
@@ -200,7 +200,7 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endp
 
    ![Visual Studio Adding a NuGet source](img/visual_studio_adding_nuget_source.png)
 
-1. Click **Save**.
+1. Select **Save**.
 
 The source is displayed in your list.
 

@@ -56,8 +56,7 @@ class DiffFileEntity < DiffFileBaseEntity
 
   # Used for inline diffs
   expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, options) { inline_diff_view?(options) && diff_file.text? } do |diff_file|
-    file = conflict_file(options, diff_file) || diff_file
-    file.diff_lines_for_serializer
+    highlighted_diff_lines_for(diff_file, options)
   end
 
   expose :is_fully_expanded do |diff_file|
@@ -88,6 +87,15 @@ class DiffFileEntity < DiffFileBaseEntity
   def diff_view(options)
     # If nothing is present, inline will be the default.
     options.fetch(:diff_view, :inline).to_sym
+  end
+
+  def highlighted_diff_lines_for(diff_file, options)
+    file = conflict_file(options, diff_file) || diff_file
+
+    file.diff_lines_for_serializer
+  rescue Gitlab::Git::Conflict::Parser::UnmergeableFile
+    # Fallback to diff_file as it means that conflict lines can't be parsed due to limit
+    diff_file.diff_lines_for_serializer
   end
 end
 

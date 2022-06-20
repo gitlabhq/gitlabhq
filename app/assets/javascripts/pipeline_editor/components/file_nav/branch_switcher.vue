@@ -246,7 +246,7 @@ export default {
       </template>
       <template #default>
         <gl-dropdown-item v-if="isBranchesLoading" key="loading">
-          <gl-loading-icon size="md" />
+          <gl-loading-icon size="lg" />
         </gl-dropdown-item>
       </template>
     </gl-infinite-scroll>

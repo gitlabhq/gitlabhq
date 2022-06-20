@@ -4,12 +4,6 @@ class ProjectPolicy < BasePolicy
   include CrudPolicyHelpers
   include ReadonlyAbilities
 
-  desc "User is a project owner"
-  condition :owner do
-    (project.owner.present? && project.owner == @user) ||
-      project.group&.has_owner?(@user)
-  end
-
   desc "Project has public builds enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
@@ -29,6 +23,17 @@ class ProjectPolicy < BasePolicy
 
   desc "User has maintainer access"
   condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
+
+  desc "User has owner access"
+  condition :owner do
+    owner_of_personal_namespace = project.owner.present? && project.owner == @user
+
+    unless owner_of_personal_namespace
+      group_or_project_owner = team_access_level >= Gitlab::Access::OWNER
+    end
+
+    owner_of_personal_namespace || group_or_project_owner
+  end
 
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && team_member? }
@@ -198,6 +203,10 @@ class ProjectPolicy < BasePolicy
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
   end
 
+  condition :registry_enabled do
+    Gitlab.config.registry.enabled
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin }.enable :read_project_for_iids
@@ -236,6 +245,7 @@ class ProjectPolicy < BasePolicy
     enable :set_warn_about_potentially_unwanted_characters
 
     enable :register_project_runners
+    enable :manage_owners
   end
 
   rule { can?(:guest_access) }.policy do
@@ -423,6 +433,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:maintainer_access) }.policy do
     enable :destroy_package
+    enable :admin_package
     enable :admin_issue_board
     enable :push_to_delete_protected_branch
     enable :update_snippet
@@ -658,6 +669,7 @@ class ProjectPolicy < BasePolicy
     enable :read_design
     enable :read_design_activity
     enable :read_issue_link
+    enable :read_work_item
   end
 
   rule { can?(:developer_access) }.policy do
@@ -750,6 +762,10 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:admin_project_member) }.policy do
     enable :import_project_members_from_another_project
+  end
+
+  rule { registry_enabled & can?(:admin_container_image) }.policy do
+    enable :view_package_registry_project_settings
   end
 
   private

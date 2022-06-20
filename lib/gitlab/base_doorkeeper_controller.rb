@@ -6,6 +6,9 @@ module Gitlab
   class BaseDoorkeeperController < ActionController::Base
     include Gitlab::Allowable
     include EnforcesTwoFactorAuthentication
+    include SessionsHelper
+
+    before_action :limit_session_time, if: -> { !current_user }
 
     helper_method :can?
   end

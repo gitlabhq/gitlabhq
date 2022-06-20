@@ -30,6 +30,12 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         expect(described_class.remaining).to match_array([refresh_1, refresh_3, refresh_4])
       end
     end
+
+    describe 'processing_queue' do
+      it 'prioritizes pending -> stale -> created' do
+        expect(described_class.processing_queue).to eq([refresh_3, refresh_1, refresh_4])
+      end
+    end
   end
 
   describe 'state machine', :clean_gitlab_redis_shared_state do
@@ -49,7 +55,7 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
 
     describe '#process!' do
       context 'when refresh state is created' do
-        let!(:refresh) do
+        let_it_be_with_reload(:refresh) do
           create(
             :project_build_artifacts_size_refresh,
             :created,
@@ -59,25 +65,31 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
           )
         end
 
+        let!(:last_job_artifact_id_on_refresh_start) { create(:ci_job_artifact, project: refresh.project) }
+
         before do
           stats = create(:project_statistics, project: refresh.project, build_artifacts_size: 120)
           stats.increment_counter(:build_artifacts_size, 30)
         end
 
         it 'transitions the state to running' do
-          expect { refresh.process! }.to change { refresh.reload.state }.to(described_class::STATES[:running])
+          expect { refresh.process! }.to change { refresh.state }.to(described_class::STATES[:running])
         end
 
         it 'sets the refresh_started_at' do
-          expect { refresh.process! }.to change { refresh.reload.refresh_started_at.to_i }.to(now.to_i)
+          expect { refresh.process! }.to change { refresh.refresh_started_at.to_i }.to(now.to_i)
+        end
+
+        it 'sets last_job_artifact_id_on_refresh_start' do
+          expect { refresh.process! }.to change { refresh.last_job_artifact_id_on_refresh_start.to_i }.to(last_job_artifact_id_on_refresh_start.id)
         end
 
         it 'bumps the updated_at' do
-          expect { refresh.process! }.to change { refresh.reload.updated_at.to_i }.to(now.to_i)
+          expect { refresh.process! }.to change { refresh.updated_at.to_i }.to(now.to_i)
         end
 
         it 'resets the build artifacts size stats' do
-          expect { refresh.process! }.to change { refresh.project.statistics.reload.build_artifacts_size }.to(0)
+          expect { refresh.process! }.to change { refresh.project.statistics.build_artifacts_size }.to(0)
         end
 
         it 'resets the counter attribute to zero' do
@@ -159,15 +171,13 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
   end
 
   describe '.process_next_refresh!' do
-    let!(:refresh_running) { create(:project_build_artifacts_size_refresh, :running) }
     let!(:refresh_created) { create(:project_build_artifacts_size_refresh, :created) }
-    let!(:refresh_stale) { create(:project_build_artifacts_size_refresh, :stale) }
     let!(:refresh_pending) { create(:project_build_artifacts_size_refresh, :pending) }
 
     subject(:processed_refresh) { described_class.process_next_refresh! }
 
     it 'picks the first record from the remaining work' do
-      expect(processed_refresh).to eq(refresh_created)
+      expect(processed_refresh).to eq(refresh_pending)
       expect(processed_refresh.reload).to be_running
     end
   end
@@ -214,7 +224,8 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
         project: project,
         updated_at: 2.days.ago,
         refresh_started_at: 10.days.ago,
-        last_job_artifact_id: artifact_1.id
+        last_job_artifact_id: artifact_1.id,
+        last_job_artifact_id_on_refresh_start: artifact_3.id
       )
     end
 
@@ -222,6 +233,36 @@ RSpec.describe Projects::BuildArtifactsSizeRefresh, type: :model do
 
     it 'returns the job artifact records that were created not later than the refresh_started_at and IDs greater than the last_job_artifact_id' do
       expect(batch).to eq([artifact_2, artifact_3])
+    end
+
+    context 'when created_at is set before artifact id is persisted' do
+      it 'returns ordered job artifacts' do
+        artifact_3.update!(created_at: artifact_2.created_at)
+
+        expect(batch).to eq([artifact_2, artifact_3])
+      end
+    end
+  end
+
+  describe '#started?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project) { create(:project) }
+
+    subject { refresh.started? }
+
+    where(:refresh_state, :result) do
+      :created | false
+      :pending | true
+      :running | true
+    end
+
+    with_them do
+      let(:refresh) do
+        create(:project_build_artifacts_size_refresh, refresh_state, project: project)
+      end
+
+      it { is_expected.to eq(result) }
     end
   end
 end

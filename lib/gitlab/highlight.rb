@@ -2,9 +2,6 @@
 
 module Gitlab
   class Highlight
-    TIMEOUT_BACKGROUND = 30.seconds
-    TIMEOUT_FOREGROUND = 1.5.seconds
-
     def self.highlight(blob_name, blob_content, language: nil, plain: false)
       new(blob_name, blob_content, language: language)
         .highlight(blob_content, continue: false, plain: plain)
@@ -72,16 +69,12 @@ module Gitlab
     def highlight_rich(text, continue: true)
       tag = lexer.tag
       tokens = lexer.lex(text, continue: continue)
-      Timeout.timeout(timeout_time) { @formatter.format(tokens, **context, tag: tag).html_safe }
+      Gitlab::RenderTimeout.timeout { @formatter.format(tokens, **context, tag: tag).html_safe }
     rescue Timeout::Error => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
       highlight_plain(text)
     rescue StandardError
       highlight_plain(text)
-    end
-
-    def timeout_time
-      Gitlab::Runtime.sidekiq? ? TIMEOUT_BACKGROUND : TIMEOUT_FOREGROUND
     end
 
     def link_dependencies(text, highlighted_text)

@@ -107,7 +107,7 @@ export default {
       <metadata-item
         v-if="!hideExpirationPolicyData"
         data-testid="expiration-policy"
-        icon="expire"
+        icon="clock"
         :text="expirationPolicyText"
         size="xl"
       />

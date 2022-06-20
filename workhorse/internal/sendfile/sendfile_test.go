@@ -1,9 +1,10 @@
 package sendfile
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -15,7 +16,7 @@ func TestResponseWriter(t *testing.T) {
 	upstreamResponse := "hello world"
 
 	fixturePath := "testdata/sent-file.txt"
-	fixtureContent, err := ioutil.ReadFile(fixturePath)
+	fixtureContent, err := os.ReadFile(fixturePath)
 	require.NoError(t, err)
 
 	testCases := []struct {
@@ -52,7 +53,7 @@ func TestResponseWriter(t *testing.T) {
 			rw.Flush()
 
 			body := rw.Result().Body
-			data, err := ioutil.ReadAll(body)
+			data, err := io.ReadAll(body)
 			require.NoError(t, err)
 			require.NoError(t, body.Close())
 
@@ -90,7 +91,7 @@ func TestSuccessOverrideContentHeadersFeatureEnabled(t *testing.T) {
 func TestSuccessOverrideContentHeadersRangeRequestFeatureEnabled(t *testing.T) {
 	fixturePath := "../../testdata/forgedfile.png"
 
-	fixtureContent, err := ioutil.ReadFile(fixturePath)
+	fixtureContent, err := os.ReadFile(fixturePath)
 	require.NoError(t, err)
 
 	r, err := http.NewRequest("GET", "/foo", nil)
@@ -113,7 +114,7 @@ func TestSuccessOverrideContentHeadersRangeRequestFeatureEnabled(t *testing.T) {
 
 	resp := rw.Result()
 	body := resp.Body
-	data, err := ioutil.ReadAll(body)
+	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 	require.NoError(t, body.Close())
 
@@ -138,7 +139,7 @@ func TestSuccessInlineWhitelistedTypesFeatureEnabled(t *testing.T) {
 }
 
 func makeRequest(t *testing.T, fixturePath string, httpHeaders map[string]string) *http.Response {
-	fixtureContent, err := ioutil.ReadFile(fixturePath)
+	fixtureContent, err := os.ReadFile(fixturePath)
 	require.NoError(t, err)
 
 	r, err := http.NewRequest("GET", "/foo", nil)
@@ -161,7 +162,7 @@ func makeRequest(t *testing.T, fixturePath string, httpHeaders map[string]string
 
 	resp := rw.Result()
 	body := resp.Body
-	data, err := ioutil.ReadAll(body)
+	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 	require.NoError(t, body.Close())
 

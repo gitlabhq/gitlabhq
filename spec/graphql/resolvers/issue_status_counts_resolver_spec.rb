@@ -70,7 +70,7 @@ RSpec.describe Resolvers::IssueStatusCountsResolver do
     end
 
     context 'when both assignee_username and assignee_usernames are provided' do
-      it 'generates a mutually exclusive filter error' do
+      it 'returns a mutually exclusive filter error' do
         expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.') do
           resolve_issue_status_counts(assignee_usernames: [current_user.username], assignee_username: current_user.username)
         end

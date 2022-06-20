@@ -385,6 +385,38 @@ RSpec.describe Projects::MergeRequests::DraftsController do
         expect(discussion.resolved?).to eq(false)
       end
     end
+
+    context 'publish with note' do
+      before do
+        create(:draft_note, merge_request: merge_request, author: user)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(mr_review_submit_comment: false)
+        end
+
+        it 'does not create note' do
+          post :publish, params: params.merge!(note: 'Hello world')
+
+          expect(merge_request.notes.reload.size).to be(1)
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        it 'creates note' do
+          post :publish, params: params.merge!(note: 'Hello world')
+
+          expect(merge_request.notes.reload.size).to be(2)
+        end
+
+        it 'does not create note when note param is empty' do
+          post :publish, params: params.merge!(note: '')
+
+          expect(merge_request.notes.reload.size).to be(1)
+        end
+      end
+    end
   end
 
   describe 'DELETE #destroy' do

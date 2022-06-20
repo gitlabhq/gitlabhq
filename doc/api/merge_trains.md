@@ -26,7 +26,7 @@ Read more on [pagination](index.md#pagination).
 
 Get all Merge Trains of the requested project:
 
-```shell
+```plaintext
 GET /projects/:id/merge_trains
 GET /projects/:id/merge_trains?scope=complete
 ```

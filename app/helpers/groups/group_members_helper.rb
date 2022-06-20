@@ -20,6 +20,13 @@ module Groups::GroupMembersHelper
     }
   end
 
+  def group_member_header_subtext(group)
+    html_escape(_('You can invite a new member to ' \
+                  '%{strong_start}%{group_name}%{strong_end}.')) % { group_name: group.name,
+                                                                     strong_start: '<strong>'.html_safe,
+                                                                     strong_end: '</strong>'.html_safe }
+  end
+
   private
 
   def group_members_serialized(group, members)
@@ -53,12 +60,8 @@ module Groups::GroupMembersHelper
   end
 
   def group_group_links_list_data(group, include_relations, search)
-    if ::Feature.enabled?(:group_member_inherited_group, group)
-      group_links = group_group_links(group, include_relations)
-      group_links = group_links.search(search) if search
-    else
-      group_links = group.shared_with_group_links
-    end
+    group_links = group_group_links(group, include_relations)
+    group_links = group_links.search(search) if search
 
     {
       members: group_group_links_serialized(group, group_links),

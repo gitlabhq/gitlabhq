@@ -29,8 +29,11 @@ import {
   workingExtension,
   collapsedDataErrorExtension,
   fullDataErrorExtension,
+  fullReportExtension,
+  noTelemetryExtension,
   pollingExtension,
   pollingErrorExtension,
+  multiPollingExtension,
 } from './test_extensions';
 
 jest.mock('~/api.js');
@@ -48,6 +51,8 @@ describe('MrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
   const findExtensionToggleButton = () =>
     wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
+  const findExtensionLink = (linkHref) =>
+    wrapper.find(`[data-testid="widget-extension"] [href="${linkHref}"]`);
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };
@@ -67,7 +72,7 @@ describe('MrWidgetOptions', () => {
     gon.features = {};
   });
 
-  const createComponent = (mrData = mockData, options = {}) => {
+  const createComponent = (mrData = mockData, options = {}, glFeatures = {}) => {
     if (wrapper) {
       wrapper.destroy();
     }
@@ -75,6 +80,9 @@ describe('MrWidgetOptions', () => {
     wrapper = mount(MrWidgetOptions, {
       propsData: {
         mrData: { ...mrData },
+      },
+      provide: {
+        glFeatures,
       },
       ...options,
     });
@@ -423,7 +431,7 @@ describe('MrWidgetOptions', () => {
         beforeEach(() => {
           const favicon = document.createElement('link');
           favicon.setAttribute('id', 'favicon');
-          favicon.setAttribute('data-original-href', faviconDataUrl);
+          favicon.dataset.originalHref = faviconDataUrl;
           document.body.appendChild(favicon);
 
           faviconElement = document.getElementById('favicon');
@@ -621,7 +629,16 @@ describe('MrWidgetOptions', () => {
     });
 
     describe('code quality widget', () => {
-      it('renders the component', () => {
+      beforeEach(() => {
+        jest.spyOn(document, 'dispatchEvent');
+      });
+      it('renders the component when refactorCodeQualityExtension is false', () => {
+        createComponent(mockData, {}, { refactorCodeQualityExtension: false });
+        expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
+      });
+
+      it('does not render the component when refactorCodeQualityExtension is true', () => {
+        createComponent(mockData, {}, { refactorCodeQualityExtension: true });
         expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
       });
     });
@@ -911,18 +928,6 @@ describe('MrWidgetOptions', () => {
       expect(wrapper.text()).toContain('Test extension summary count: 1');
     });
 
-    it('triggers trackRedisHllUserEvent API call', async () => {
-      await waitForPromises();
-
-      wrapper
-        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
-        .trigger('click');
-
-      await nextTick();
-
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_expand_event');
-    });
-
     it('renders full data', async () => {
       await waitForPromises();
 
@@ -982,31 +987,98 @@ describe('MrWidgetOptions', () => {
 
   describe('mock polling extension', () => {
     let pollRequest;
-    let pollStop;
+
+    const findWidgetTestExtension = () => wrapper.find('[data-testid="widget-extension"]');
 
     beforeEach(() => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
-      pollStop = jest.spyOn(Poll.prototype, 'stop');
-    });
-
-    afterEach(() => {
-      pollRequest.mockRestore();
-      pollStop.mockRestore();
 
       registeredExtensions.extensions = [];
     });
 
-    describe('success', () => {
-      beforeEach(() => {
-        registerExtension(pollingExtension);
+    afterEach(() => {
+      pollRequest.mockRestore();
 
-        createComponent();
+      registeredExtensions.extensions = [];
+
+      // Clear all left-over timeouts that may be registered in the poll class
+      let id = window.setTimeout(() => {}, 0);
+
+      while (id > 0) {
+        window.clearTimeout(id);
+        id -= 1;
+      }
+    });
+
+    describe('success - multi polling', () => {
+      it('sets data when polling is complete', async () => {
+        registerExtension(
+          multiPollingExtension([
+            () =>
+              Promise.resolve({
+                headers: { 'poll-interval': 0 },
+                status: 200,
+                data: { reports: 'parsed' },
+              }),
+            () =>
+              Promise.resolve({
+                status: 200,
+                data: { reports: 'parsed' },
+              }),
+          ]),
+        );
+
+        await createComponent();
+        expect(findWidgetTestExtension().html()).toContain(
+          'Multi polling test extension reports: parsed, count: 2',
+        );
       });
 
-      it('does not make additional requests after poll is successful', () => {
+      it('shows loading state until polling is complete', async () => {
+        registerExtension(
+          multiPollingExtension([
+            () =>
+              Promise.resolve({
+                headers: { 'poll-interval': 1 },
+                status: 204,
+              }),
+            () =>
+              Promise.resolve({
+                status: 200,
+                data: { reports: 'parsed' },
+              }),
+          ]),
+        );
+
+        await createComponent();
+        expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
+      });
+    });
+
+    describe('success', () => {
+      it('does not make additional requests after poll is successful', async () => {
+        registerExtension(pollingExtension);
+        await createComponent();
         // called two times due to parent component polling (mount) and extension polling
         expect(pollRequest).toHaveBeenCalledTimes(2);
-        expect(pollStop).toHaveBeenCalledTimes(1);
+      });
+
+      it('keeps polling when poll-interval header is provided', async () => {
+        registerExtension({
+          ...pollingExtension,
+          methods: {
+            ...pollingExtension.methods,
+            fetchCollapsedData() {
+              return Promise.resolve({
+                data: {},
+                headers: { 'poll-interval': 1 },
+                status: 204,
+              });
+            },
+          },
+        });
+        await createComponent();
+        expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
       });
     });
 
@@ -1024,7 +1096,6 @@ describe('MrWidgetOptions', () => {
       it('does not make additional requests after poll has failed', () => {
         // called two times due to parent component polling (mount) and extension polling
         expect(pollRequest).toHaveBeenCalledTimes(2);
-        expect(pollStop).toHaveBeenCalledTimes(1);
       });
 
       it('captures sentry error and displays error when poll has failed', () => {
@@ -1078,6 +1149,121 @@ describe('MrWidgetOptions', () => {
       await waitForPromises();
 
       itHandlesTheException();
+    });
+  });
+
+  describe('telemetry', () => {
+    afterEach(() => {
+      registeredExtensions.extensions = [];
+    });
+
+    it('triggers view events when mounted', () => {
+      registerExtension(workingExtension());
+      createComponent();
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_view',
+      );
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_count_view',
+      );
+    });
+
+    describe('expand button', () => {
+      it('triggers expand events when clicked', async () => {
+        registerExtension(workingExtension());
+        createComponent();
+
+        await waitForPromises();
+
+        api.trackRedisHllUserEvent.mockClear();
+        api.trackRedisCounterEvent.mockClear();
+
+        findExtensionToggleButton().trigger('click');
+
+        // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_expand',
+        );
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_expand_warning',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_count_expand',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_count_expand_warning',
+        );
+      });
+
+      it.each`
+        widgetName             | nonStandardEvent
+        ${'WidgetCodeQuality'} | ${'i_testing_code_quality_widget_total'}
+        ${'WidgetTerraform'}   | ${'i_testing_terraform_widget_total'}
+        ${'WidgetIssues'}      | ${'i_testing_load_performance_widget_total'}
+        ${'WidgetTestReport'}  | ${'i_testing_summary_widget_total'}
+      `(
+        "sends non-standard events for the '$widgetName' widget",
+        async ({ widgetName, nonStandardEvent }) => {
+          const definition = {
+            ...workingExtension(),
+            name: widgetName,
+          };
+
+          registerExtension(definition);
+          createComponent();
+
+          await waitForPromises();
+
+          api.trackRedisHllUserEvent.mockClear();
+
+          findExtensionToggleButton().trigger('click');
+
+          expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(nonStandardEvent);
+        },
+      );
+    });
+
+    it('triggers the "full report clicked" events when the appropriate button is clicked', () => {
+      registerExtension(fullReportExtension);
+      createComponent();
+
+      api.trackRedisHllUserEvent.mockClear();
+      api.trackRedisCounterEvent.mockClear();
+
+      findExtensionLink('testref').trigger('click');
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_click_full_report',
+      );
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_test_extension_count_click_full_report',
+      );
+    });
+
+    describe('when disabled', () => {
+      afterEach(() => {
+        registeredExtensions.extensions = [];
+      });
+
+      it("doesn't emit any telemetry events", async () => {
+        registerExtension(noTelemetryExtension);
+        createComponent();
+
+        await waitForPromises();
+
+        findExtensionToggleButton().trigger('click');
+        findExtensionLink('testref').trigger('click'); // The "full report" link
+
+        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
+        expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
+      });
     });
   });
 });

@@ -6,11 +6,25 @@ export default {
   components: {
     InputCopyToggleVisibility,
   },
+  i18n: {
+    registrationToken: s__('Runners|Registration token'),
+  },
   props: {
+    inputId: {
+      type: String,
+      required: true,
+    },
     value: {
       type: String,
       required: false,
       default: '',
+    },
+  },
+  computed: {
+    formInputGroupProps() {
+      return {
+        id: this.inputId,
+      };
     },
   },
   methods: {
@@ -26,8 +40,10 @@ export default {
   <input-copy-toggle-visibility
     class="gl-m-0"
     :value="value"
-    data-testid="token-value"
+    :label="$options.i18n.registrationToken"
+    :label-for="inputId"
     :copy-button-title="$options.I18N_COPY_BUTTON_TITLE"
+    :form-input-group-props="formInputGroupProps"
     @copy="onCopy"
   />
 </template>

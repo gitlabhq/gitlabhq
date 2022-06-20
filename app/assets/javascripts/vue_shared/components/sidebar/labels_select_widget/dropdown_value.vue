@@ -92,7 +92,9 @@ export default {
       @click="handleCollapsedClick"
     >
       <gl-icon name="labels" />
-      <span class="gl-font-base gl-line-height-24">{{ selectedLabels.length }}</span>
+      <span class="collapse-truncated-title gl-pt-2 gl-px-3 gl-font-sm">{{
+        selectedLabels.length
+      }}</span>
     </div>
     <span
       v-if="!selectedLabels.length"

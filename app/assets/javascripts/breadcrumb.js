@@ -5,7 +5,7 @@ export const addTooltipToEl = (el) => {
 
   if (textEl && textEl.scrollWidth > textEl.offsetWidth) {
     el.setAttribute('title', el.textContent);
-    el.setAttribute('data-container', 'body');
+    el.dataset.container = 'body';
     el.classList.add('has-tooltip');
   }
 };

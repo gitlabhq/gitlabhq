@@ -54,6 +54,7 @@ describe('Editor Extension', () => {
       ${helpers.SEClassExtension} | ${['shared', 'classExtMethod']}
       ${helpers.SEFnExtension}    | ${['fnExtMethod']}
       ${helpers.SEConstExt}       | ${['constExtMethod']}
+      ${helpers.SEExtWithoutAPI}  | ${[]}
     `('correctly returns API for $definition', ({ definition, expectedKeys }) => {
       const extension = new EditorExtension({ definition });
       const expectedApi = Object.fromEntries(

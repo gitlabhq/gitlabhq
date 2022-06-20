@@ -410,7 +410,7 @@ RSpec.describe Git::BranchPushService, services: true do
     end
 
     context "for jira issue tracker" do
-      include JiraServiceHelper
+      include JiraIntegrationHelpers
 
       let(:jira_tracker) { project.create_jira_integration if project.jira_integration.nil? }
 

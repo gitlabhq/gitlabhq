@@ -35,6 +35,21 @@ RSpec.describe Compare do
     end
   end
 
+  describe '#commits' do
+    subject { compare.commits }
+
+    it 'returns a CommitCollection' do
+      is_expected.to be_kind_of(CommitCollection)
+    end
+
+    it 'returns a list of commits' do
+      commit_ids = subject.map(&:id)
+
+      expect(commit_ids).to include(head_commit.id)
+      expect(commit_ids.length).to eq(6)
+    end
+  end
+
   describe '#commit' do
     it 'returns raw compare head commit' do
       expect(subject.commit.id).to eq(head_commit.id)

@@ -247,11 +247,11 @@ GraphQL mutations can be detected as spam. If a mutation is detected as spam and
 - Use the `captchaSiteKey` to obtain a CAPTCHA response value using the appropriate CAPTCHA API.
   Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
 - Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
-  
+
 NOTE:
 The GitLab GraphiQL implementation doesn't permit passing of headers, so we must write
 this as a cURL query. `--data-binary` is used to properly handle escaped double quotes
-in the JSON-embedded query.  
+in the JSON-embedded query.
 
 ```shell
 export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"

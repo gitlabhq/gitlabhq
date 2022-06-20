@@ -10,7 +10,7 @@ const initVitalsLog = () => {
   console.log(
     `${String.fromCodePoint(
       0x1f4d1,
-    )} To get the final web vital numbers reported you maybe need to switch away and back to the tab`,
+    )} To get the final web vital numbers report you may need to switch away and back to the tab`,
   );
   getCLS(reportVital);
   getFID(reportVital);

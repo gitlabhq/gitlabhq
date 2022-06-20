@@ -11,7 +11,7 @@
 #
 # --------------------
 #
-# Documentation: https://docs.gitlab.com/ee/ci/cloud_deployment/#deploy-your-application-to-the-aws-elastic-container-service-ecs
+# Documentation: https://docs.gitlab.com/ee/ci/cloud_deployment/#deploy-your-application-to-ecs
 
 stages:
   - build
@@ -23,5 +23,5 @@ stages:
 "error: Template has moved":
   stage: deploy
   script:
-    - echo "Deploy-ECS.gitlab-ci.yml has been moved to AWS/Deploy-ECS.gitlab-ci.yml, see https://docs.gitlab.com/ee/ci/cloud_deployment/#deploy-your-application-to-the-aws-elastic-container-service-ecs for more details."
+    - echo "Deploy-ECS.gitlab-ci.yml has been moved to AWS/Deploy-ECS.gitlab-ci.yml, see https://docs.gitlab.com/ee/ci/cloud_deployment/#deploy-your-application-to-ecs for more details."
     - exit 1

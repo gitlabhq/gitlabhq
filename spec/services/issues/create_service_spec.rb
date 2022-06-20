@@ -66,6 +66,7 @@ RSpec.describe Issues::CreateService do
         expect(issue.milestone).to eq(milestone)
         expect(issue.due_date).to eq(Date.tomorrow)
         expect(issue.work_item_type.base_type).to eq('issue')
+        expect(issue.issue_customer_relations_contacts).to be_empty
       end
 
       context 'when a build_service is provided' do
@@ -442,6 +443,50 @@ RSpec.describe Issues::CreateService do
           expect(issue.assignees).to eq([assignee])
           expect(issue.milestone).to eq(milestone)
           expect(issue.issue_customer_relations_contacts.last.contact).to eq(contact)
+        end
+      end
+
+      context 'with external_author' do
+        let_it_be(:contact) { create(:contact, group: group) }
+
+        context 'when CRM contact exists with matching e-mail' do
+          let(:opts) do
+            {
+              title: 'Title',
+              external_author: contact.email
+            }
+          end
+
+          context 'with permission' do
+            it 'assigns contact to issue' do
+              group.add_reporter(user)
+              expect(issue).to be_persisted
+              expect(issue.issue_customer_relations_contacts.last.contact).to eq(contact)
+            end
+          end
+
+          context 'without permission' do
+            it 'does not assign contact to issue' do
+              group.add_guest(user)
+              expect(issue).to be_persisted
+              expect(issue.issue_customer_relations_contacts).to be_empty
+            end
+          end
+        end
+
+        context 'when no CRM contact exists with matching e-mail' do
+          let(:opts) do
+            {
+              title: 'Title',
+              external_author: 'example@gitlab.com'
+            }
+          end
+
+          it 'does not assign contact to issue' do
+            group.add_reporter(user)
+            expect(issue).to be_persisted
+            expect(issue.issue_customer_relations_contacts).to be_empty
+          end
         end
       end
     end

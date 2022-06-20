@@ -41,8 +41,6 @@ module Gitlab
             end
           end
 
-          config.reuse_primary_connection!
-
           config
         end
 
@@ -61,44 +59,17 @@ module Gitlab
             disconnect_timeout: 120,
             use_tcp: false
           }
-
-          # Temporary model for GITLAB_LOAD_BALANCING_REUSE_PRIMARY_
-          # To be removed with FF
-          @primary_model = nil
         end
 
         def db_config_name
           @model.connection_db_config.name.to_sym
         end
 
-        # With connection re-use the primary connection can be overwritten
-        # to be used from different model
-        def primary_connection_specification_name
-          primary_model_or_model_if_enabled.connection_specification_name
+        def connection_specification_name
+          @model.connection_specification_name
         end
 
-        def primary_model_or_model_if_enabled
-          if use_dedicated_connection?
-            @model
-          else
-            @primary_model || @model
-          end
-        end
-
-        def use_dedicated_connection?
-          return true unless @primary_model # We can only use dedicated connection, if re-use of connections is disabled
-          return false unless ::Gitlab::SafeRequestStore.active?
-
-          ::Gitlab::SafeRequestStore.fetch(:force_no_sharing_primary_model) do
-            ::Feature::FlipperFeature.table_exists? && ::Feature.enabled?(:force_no_sharing_primary_model)
-          end
-        end
-
-        def primary_db_config
-          primary_model_or_model_if_enabled.connection_db_config
-        end
-
-        def replica_db_config
+        def db_config
           @model.connection_db_config
         end
 
@@ -130,30 +101,6 @@ module Gitlab
           return false if Gitlab::Runtime.rake?
 
           service_discovery[:record].present?
-        end
-
-        # TODO: This is temporary code to allow re-use of primary connection
-        # if the two connections are pointing to the same host. This is needed
-        # to properly support transaction visibility.
-        #
-        # This behavior is required to support [Phase 3](https://gitlab.com/groups/gitlab-org/-/epics/6160#progress).
-        # This method is meant to be removed as soon as it is finished.
-        #
-        # The remapping is done as-is:
-        #   export GITLAB_LOAD_BALANCING_REUSE_PRIMARY_<name-of-connection>=<new-name-of-connection>
-        #
-        # Ex.:
-        #   export GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main
-        #
-        def reuse_primary_connection!
-          new_connection = ENV["GITLAB_LOAD_BALANCING_REUSE_PRIMARY_#{db_config_name}"]
-          return unless new_connection.present?
-
-          @primary_model = Gitlab::Database.database_base_models[new_connection.to_sym]
-
-          unless @primary_model
-            raise "Invalid value for 'GITLAB_LOAD_BALANCING_REUSE_PRIMARY_#{db_config_name}=#{new_connection}'"
-          end
         end
       end
     end

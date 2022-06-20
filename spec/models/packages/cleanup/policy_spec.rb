@@ -13,7 +13,7 @@ RSpec.describe Packages::Cleanup::Policy, type: :model do
       is_expected
         .to validate_inclusion_of(:keep_n_duplicated_package_files)
               .in_array(described_class::KEEP_N_DUPLICATED_PACKAGE_FILES_VALUES)
-              .with_message('keep_n_duplicated_package_files is invalid')
+              .with_message('is invalid')
     end
   end
 

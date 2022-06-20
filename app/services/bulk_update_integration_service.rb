@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BulkUpdateIntegrationService
+  include Integrations::BulkOperationHashes
+
   def initialize(integration, batch)
     @integration = integration
     @batch = batch
@@ -9,10 +11,13 @@ class BulkUpdateIntegrationService
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
     Integration.transaction do
-      Integration.where(id: batch_ids).update_all(integration_hash)
+      Integration.where(id: batch_ids).update_all(integration_hash(:update))
 
       if integration.data_fields_present?
-        integration.data_fields.class.where(data_fields_foreign_key => batch_ids).update_all(data_fields_hash)
+        integration.data_fields.class.where(data_fields_foreign_key => batch_ids)
+          .update_all(
+            data_fields_hash(:update)
+          )
       end
     end
   end
@@ -25,14 +30,6 @@ class BulkUpdateIntegrationService
   # service_id or integration_id
   def data_fields_foreign_key
     integration.data_fields.class.reflections['integration'].foreign_key
-  end
-
-  def integration_hash
-    integration.to_integration_hash.tap { |json| json['inherit_from_id'] = integration.inherit_from_id || integration.id }
-  end
-
-  def data_fields_hash
-    integration.to_data_fields_hash
   end
 
   def batch_ids

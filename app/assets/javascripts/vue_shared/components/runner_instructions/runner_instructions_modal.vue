@@ -17,7 +17,6 @@ import { __, s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import {
   INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES,
-  PLATFORMS_WITHOUT_ARCHITECTURES,
   REGISTRATION_TOKEN_PLACEHOLDER,
 } from './constants';
 import getRunnerPlatformsQuery from './graphql/queries/get_runner_platforms.query.graphql';
@@ -59,21 +58,25 @@ export default {
   apollo: {
     platforms: {
       query: getRunnerPlatformsQuery,
+      skip() {
+        // Only load instructions once the modal is shown
+        return !this.shown;
+      },
       update(data) {
-        return data?.runnerPlatforms?.nodes.map(({ name, humanReadableName, architectures }) => {
-          return {
-            name,
-            humanReadableName,
-            architectures: architectures?.nodes || [],
-          };
-        });
+        return (
+          data?.runnerPlatforms?.nodes.map(({ name, humanReadableName, architectures }) => {
+            return {
+              name,
+              humanReadableName,
+              architectures: architectures?.nodes || [],
+            };
+          }) ?? []
+        );
       },
       result() {
-        if (this.platforms.length) {
-          // If it is set and available, select the defaultSelectedPlatform.
-          // Otherwise, select the first available platform
-          this.selectPlatform(this.defaultPlatform() || this.platforms[0]);
-        }
+        // If it is set and available, select the defaultSelectedPlatform.
+        // Otherwise, select the first available platform
+        this.selectPlatform(this.defaultPlatformName || this.platforms?.[0].name);
       },
       error() {
         this.toggleAlert(true);
@@ -82,12 +85,12 @@ export default {
     instructions: {
       query: getRunnerSetupInstructionsQuery,
       skip() {
-        return !this.selectedPlatform;
+        return !this.shown || !this.selectedPlatform;
       },
       variables() {
         return {
-          platform: this.selectedPlatformName,
-          architecture: this.selectedArchitectureName || '',
+          platform: this.selectedPlatform,
+          architecture: this.selectedArchitecture || '',
         };
       },
       update(data) {
@@ -100,6 +103,7 @@ export default {
   },
   data() {
     return {
+      shown: false,
       platforms: [],
       selectedPlatform: null,
       selectedArchitecture: null,
@@ -109,55 +113,63 @@ export default {
     };
   },
   computed: {
-    platformsEmpty() {
-      return isEmpty(this.platforms);
-    },
     instructionsEmpty() {
       return isEmpty(this.instructions);
     },
-    selectedPlatformName() {
-      return this.selectedPlatform?.name;
+    architectures() {
+      return this.platforms.find(({ name }) => name === this.selectedPlatform)?.architectures || [];
     },
-    selectedArchitectureName() {
-      return this.selectedArchitecture?.name;
-    },
-    hasArchitecureList() {
-      return !PLATFORMS_WITHOUT_ARCHITECTURES.includes(this.selectedPlatformName);
+    binaryUrl() {
+      return this.architectures.find(({ name }) => name === this.selectedArchitecture)
+        ?.downloadLocation;
     },
     instructionsWithoutArchitecture() {
-      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatformName]?.instructions;
+      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatform]?.instructions;
     },
     runnerInstallationLink() {
-      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatformName]?.link;
+      return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatform]?.link;
     },
     registerInstructionsWithToken() {
       const { registerInstructions } = this.instructions || {};
 
       if (this.registrationToken) {
-        return registerInstructions.replace(REGISTRATION_TOKEN_PLACEHOLDER, this.registrationToken);
+        return registerInstructions?.replace(
+          REGISTRATION_TOKEN_PLACEHOLDER,
+          this.registrationToken,
+        );
       }
-
       return registerInstructions;
     },
+  },
+  updated() {
+    // Refocus on dom changes, after loading data
+    this.refocusSelectedPlatformButton();
   },
   methods: {
     show() {
       this.$refs.modal.show();
     },
-    focusSelected() {
-      // By default the first platform always gets the focus, but when the `defaultPlatformName`
-      // property is present, any other platform might actually be selected.
-      this.$refs[this.selectedPlatformName]?.[0].$el.focus();
+    onShown() {
+      this.shown = true;
+      this.refocusSelectedPlatformButton();
     },
-    defaultPlatform() {
-      return this.platforms.find((platform) => platform.name === this.defaultPlatformName);
+    refocusSelectedPlatformButton() {
+      // On modal opening, the first focusable element is auto-focused by bootstrap-vue
+      // This can be confusing for users, because the wrong platform button can
+      // get focused when setting a `defaultPlatformName`.
+      // This method refocuses the expected button.
+      // See more about this auto-focus: https://bootstrap-vue.org/docs/components/modal#auto-focus-on-open
+      this.$refs[this.selectedPlatform]?.[0].$el.focus();
     },
-    selectPlatform(platform) {
-      this.selectedPlatform = platform;
+    selectPlatform(platformName) {
+      this.selectedPlatform = platformName;
 
-      if (!platform.architectures?.some(({ name }) => name === this.selectedArchitectureName)) {
-        // Select first architecture when current value is not available
-        this.selectArchitecture(platform.architectures[0]);
+      // Update architecture when platform changes
+      const arch = this.architectures.find(({ name }) => name === this.selectedArchitecture);
+      if (arch) {
+        this.selectArchitecture(arch.name);
+      } else {
+        this.selectArchitecture(this.architectures[0]?.name);
       }
     },
     selectArchitecture(architecture) {
@@ -175,6 +187,7 @@ export default {
     },
   },
   i18n: {
+    environment: __('Environment'),
     installARunner: s__('Runners|Install a runner'),
     architecture: s__('Runners|Architecture'),
     downloadInstallBinary: s__('Runners|Download and install binary'),
@@ -182,6 +195,7 @@ export default {
     registerRunnerCommand: s__('Runners|Command to register runner'),
     fetchError: s__('Runners|An error has occurred fetching instructions'),
     copyInstructions: s__('Runners|Copy instructions'),
+    viewInstallationInstructions: s__('Runners|View installation instructions'),
   },
   closeButton: {
     text: __('Close'),
@@ -197,17 +211,17 @@ export default {
     :action-secondary="$options.closeButton"
     v-bind="$attrs"
     v-on="$listeners"
-    @shown="focusSelected"
+    @shown="onShown"
   >
     <gl-alert v-if="showAlert" variant="danger" @dismiss="toggleAlert(false)">
       {{ $options.i18n.fetchError }}
     </gl-alert>
 
-    <gl-skeleton-loader v-if="platformsEmpty && $apollo.loading" />
+    <gl-skeleton-loader v-if="!platforms.length && $apollo.loading" />
 
-    <template v-if="!platformsEmpty">
+    <template v-if="platforms.length">
       <h5>
-        {{ __('Environment') }}
+        {{ $options.i18n.environment }}
       </h5>
       <div v-gl-resize-observer="onPlatformsButtonResize">
         <gl-button-group
@@ -220,29 +234,29 @@ export default {
             v-for="platform in platforms"
             :key="platform.name"
             :ref="platform.name"
-            :selected="selectedPlatform && selectedPlatform.name === platform.name"
-            @click="selectPlatform(platform)"
+            :selected="selectedPlatform === platform.name"
+            @click="selectPlatform(platform.name)"
           >
             {{ platform.humanReadableName }}
           </gl-button>
         </gl-button-group>
       </div>
     </template>
-    <template v-if="hasArchitecureList">
+    <template v-if="architectures.length">
       <template v-if="selectedPlatform">
         <h5>
           {{ $options.i18n.architecture }}
           <gl-loading-icon v-if="$apollo.loading" size="sm" inline />
         </h5>
 
-        <gl-dropdown class="gl-mb-3" :text="selectedArchitectureName">
+        <gl-dropdown class="gl-mb-3" :text="selectedArchitecture">
           <gl-dropdown-item
-            v-for="architecture in selectedPlatform.architectures"
+            v-for="architecture in architectures"
             :key="architecture.name"
             :is-check-item="true"
-            :is-checked="selectedArchitectureName === architecture.name"
+            :is-checked="selectedArchitecture === architecture.name"
             data-testid="architecture-dropdown-item"
-            @click="selectArchitecture(architecture)"
+            @click="selectArchitecture(architecture.name)"
           >
             {{ architecture.name }}
           </gl-dropdown-item>
@@ -250,8 +264,9 @@ export default {
         <div class="gl-sm-display-flex gl-align-items-center gl-mb-3">
           <h5>{{ $options.i18n.downloadInstallBinary }}</h5>
           <gl-button
+            v-if="binaryUrl"
             class="gl-ml-auto"
-            :href="selectedArchitecture.downloadLocation"
+            :href="binaryUrl"
             download
             icon="download"
             data-testid="binary-download-button"
@@ -298,7 +313,7 @@ export default {
         <p>{{ instructionsWithoutArchitecture }}</p>
         <gl-button :href="runnerInstallationLink">
           <gl-icon name="external-link" />
-          {{ s__('Runners|View installation instructions') }}
+          {{ $options.i18n.viewInstallationInstructions }}
         </gl-button>
       </div>
     </template>

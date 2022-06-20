@@ -24,15 +24,11 @@
       &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
         padding-right: $gutter-collapsed-width;
       }
-
-      .merge-request-tabs-holder.affix {
-        right: $gutter-collapsed-width;
-      }
     }
   }
 
   &.is-merge-request {
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       .content-wrapper {
         padding-right: $gutter-collapsed-width;
       }
@@ -60,7 +56,7 @@
   z-index: $zindex-dropdown-menu;
 
   &.right-sidebar-merge-requests {
-    width: 270px;
+    width: 300px;
 
     @include media-breakpoint-up(md) {
       z-index: auto;
@@ -77,17 +73,11 @@
     }
   }
 
-  @include media-breakpoint-up(md) {
-    .content-wrapper {
-      padding-right: $gutter-width;
-    }
-
-    &:not(.with-overlay) .merge-request-tabs-holder.affix {
-      right: $gutter-width;
-    }
-
-    &.with-overlay .merge-request-tabs-holder.affix {
-      right: $gutter-collapsed-width;
+  &:not(.is-merge-request) {
+    @include media-breakpoint-up(md) {
+      .content-wrapper {
+        padding-right: $gutter-width;
+      }
     }
   }
 }
@@ -96,7 +86,7 @@
   border-left: 1px solid $gray-100;
 
   &.right-sidebar-merge-requests {
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(lg) {
       border-left: 0;
     }
   }
@@ -108,10 +98,6 @@
       width: calc(100% + 100px);
     }
   }
-}
-
-.with-performance-bar .right-sidebar.affix {
-  top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 @mixin maintain-sidebar-dimensions {
@@ -284,6 +270,10 @@
 .reviewer-grid {
   [data-css-area='attention'] {
     grid-area: attention;
+
+    button.selected svg {
+      fill: $orange-500;
+    }
   }
 
   [data-css-area='user'] {

@@ -157,10 +157,10 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
 
   describe 'multi-database support' do
     where(:current_minute, :configured_base_models, :expected_connection_model) do
-      2 | { main: 'ApplicationRecord', ci: 'Ci::ApplicationRecord' } | 'ApplicationRecord'
-      3 | { main: 'ApplicationRecord', ci: 'Ci::ApplicationRecord' } | 'Ci::ApplicationRecord'
-      2 | { main: 'ApplicationRecord' } | 'ApplicationRecord'
-      3 | { main: 'ApplicationRecord' } | 'ApplicationRecord'
+      2 | { main: 'ActiveRecord::Base', ci: 'Ci::ApplicationRecord' } | 'ActiveRecord::Base'
+      3 | { main: 'ActiveRecord::Base', ci: 'Ci::ApplicationRecord' } | 'Ci::ApplicationRecord'
+      2 | { main: 'ActiveRecord::Base' } | 'ActiveRecord::Base'
+      3 | { main: 'ActiveRecord::Base' } | 'ActiveRecord::Base'
     end
 
     with_them do

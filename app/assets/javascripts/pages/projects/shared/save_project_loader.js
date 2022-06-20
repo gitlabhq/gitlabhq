@@ -1,12 +1,14 @@
-import $ from 'jquery';
-
 export default function initProjectLoadingSpinner() {
-  const $formContainer = $('.project-edit-container');
-  const $loadingSpinner = $('.save-project-loader');
+  const formContainer = document.querySelector('.project-edit-container');
+  if (formContainer == null) {
+    return;
+  }
+
+  const loadingSpinner = document.querySelector('.save-project-loader');
 
   // show loading spinner when saving
-  $formContainer.on('ajax:before', () => {
-    $formContainer.hide();
-    $loadingSpinner.show();
+  formContainer.addEventListener('ajax:before', () => {
+    formContainer.style.display = 'none';
+    loadingSpinner.style.display = 'block';
   });
 }

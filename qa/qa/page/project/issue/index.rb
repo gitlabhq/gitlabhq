@@ -79,12 +79,6 @@ module QA
           def has_no_issue?(issue)
             has_no_element? :issuable_container, issuable_title: issue.title
           end
-
-          def wait_for_vue_issues_list_ff
-            Support::Retrier.retry_until(max_duration: 60, reload_page: page, retry_on_exception: true, sleep_interval: 5) do
-              find_element(:closed_issuables_tab)
-            end
-          end
         end
       end
     end

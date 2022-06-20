@@ -90,6 +90,7 @@
 - permissions
 - pipeline_authoring
 - planning_analytics
+- pods
 - portfolio_management
 - privacy_control_center
 - product_analytics
@@ -114,7 +115,6 @@
 - security_orchestration
 - service_desk
 - service_ping
-- sharding
 - snippets
 - source_code_management
 - static_application_security_testing

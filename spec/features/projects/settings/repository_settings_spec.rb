@@ -39,6 +39,22 @@ RSpec.describe 'Projects > Settings > Repository settings' do
       end
     end
 
+    context 'Branch rules', :js do
+      it 'renders branch rules settings' do
+        visit project_settings_repository_path(project)
+        expect(page).to have_content('Branch rules')
+      end
+
+      context 'branch_rules feature flag disabled', :js do
+        it 'does not render branch rules settings' do
+          stub_feature_flags(branch_rules: false)
+          visit project_settings_repository_path(project)
+
+          expect(page).not_to have_content('Branch rules')
+        end
+      end
+    end
+
     context 'Deploy Keys', :js do
       let_it_be(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
       let_it_be(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }

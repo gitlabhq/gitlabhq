@@ -3,9 +3,9 @@
 module Gitlab
   module Database
     class ConsistencyChecker
-      BATCH_SIZE = 1000
-      MAX_BATCHES = 25
-      MAX_RUNTIME = 30.seconds # must be less than the scheduling frequency of the ConsistencyCheck jobs
+      BATCH_SIZE = 500
+      MAX_BATCHES = 20
+      MAX_RUNTIME = 5.seconds # must be less than the scheduling frequency of the ConsistencyCheck jobs
 
       delegate :monotonic_time, to: :'Gitlab::Metrics::System'
 

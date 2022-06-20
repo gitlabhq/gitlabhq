@@ -148,12 +148,12 @@ This sync job runs daily around 3AM UTC. If the job fails, it is retried up to 1
 
 The daily job provides **only** the following information to the Customers Portal:
 
-- Company name
-- Licensee name
-- Licensee email
 - Date
 - Timestamp
 - License key
+  - Company name (encrypted within license key)
+  - Licensee name (encrypted within license key)
+  - Licensee email (encrypted within license key)
 - Historical maximum user count
 - Billable users count
 - GitLab version
@@ -273,7 +273,7 @@ If you are an administrator, you can export your license usage into a CSV:
 1. On the left sidebar, select **Subscription**.
 1. In the top right, select **Export license usage file**.
 
-This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or air-gapped, you must provide GitLab with this information.
+This file contains the information GitLab uses to manually process quarterly reconciliations or renewals. If your instance is firewalled or in an offline environment, you must provide GitLab with this information.
 
 The **License Usage** CSV includes the following details:
 
@@ -355,10 +355,12 @@ To add seats to a subscription:
 1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the system and a credit for what you've already paid. You are only be charged for the net change.
 1. Select **Confirm Upgrade**.
 
-The following items are emailed to you:
+A payment receipt is emailed to you, which you can also access in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
 
-- A payment receipt. You can also access this information in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
-- An activation code. [Add this code](../../user/admin_area/license.md) to your instance to use it.
+If your subscription was activated with an activation code, the additional seats are reflected in
+your instance immediately. If you're using a license file, you receive an updated file.
+To add the seats, [add the license file](../../user/admin_area/license_file.md)
+to your instance.
 
 ### Renew a subscription
 
@@ -427,6 +429,10 @@ before this occurs.
 
 - To resume functionality, activate a new license.
 - To fall back to Free features, delete the expired license.
+
+## Activate a license file or key
+
+If you have a license file or key, you can activate it [in the Admin Area](../../user/admin_area/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 ## Contact Support
 

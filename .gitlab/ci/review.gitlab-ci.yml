@@ -5,7 +5,7 @@ review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-helm3-kubectl1.14
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-helm3.5-kubectl1.17
   stage: prepare
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
@@ -28,8 +28,6 @@ start-review-app-pipeline:
   stage: review
   needs:
     - job: build-assets-image
-      artifacts: false
-    - job: build-qa-image
       artifacts: false
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.
@@ -72,5 +70,6 @@ danger-review-local:
 reviewers-recommender:
   extends:
     - .default-retry
+    - .review:rules:reviewers-recommender
   stage: test
   needs: []

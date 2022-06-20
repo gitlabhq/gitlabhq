@@ -18,6 +18,24 @@ class ServiceResponse
     self.http_status = http_status
   end
 
+  def track_exception(as: StandardError, **extra_data)
+    if error?
+      e = as.new(message)
+      Gitlab::ErrorTracking.track_exception(e, extra_data)
+    end
+
+    self
+  end
+
+  def track_and_raise_exception(as: StandardError, **extra_data)
+    if error?
+      e = as.new(message)
+      Gitlab::ErrorTracking.track_and_raise_exception(e, extra_data)
+    end
+
+    self
+  end
+
   def [](key)
     to_h[key]
   end

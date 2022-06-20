@@ -130,13 +130,25 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
 
-          resource :integrations, only: [:show]
+          resources :integrations, constraints: { id: %r{[^/]+} }, only: [:index, :edit, :update] do
+            member do
+              put :test
+            end
+
+            resources :hook_logs, only: [:show], controller: :integration_hook_logs do
+              member do
+                post :retry
+              end
+            end
+          end
 
           resource :repository, only: [:show], controller: :repository do
             # TODO: Removed this "create_deploy_token" route after change was made in app/helpers/ci_variables_helper.rb:14
             # See MR comment for more detail: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27059#note_311585356
             post :create_deploy_token, path: 'deploy_token/create'
             post :cleanup
+
+            resources :branch_rules, only: [:index]
           end
 
           resources :access_tokens, only: [:index, :create] do
@@ -209,12 +221,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :integrations, controller: :services, constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
+        # Legacy routes for `/-/integrations` which are now in `/-/settings/integrations`.
+        # Can be removed in 15.2, see https://gitlab.com/gitlab-org/gitlab/-/issues/334846
+        resources :integrations, controller: 'settings/integrations', constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
           member do
             put :test
           end
 
-          resources :hook_logs, only: [:show], controller: :service_hook_logs do
+          resources :hook_logs, only: [:show], controller: 'settings/integration_hook_logs' do
             member do
               post :retry
             end
@@ -227,7 +241,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :releases, only: [:index, :new, :show, :edit], param: :tag, constraints: { tag: %r{[^/]+} } do
+        get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
+
+        resources :releases, only: [:index, :new, :show, :edit], param: :tag, constraints: { tag: %r{[^\\]+} } do
           member do
             get :downloads, path: 'downloads/*filepath', format: false
             scope module: :releases do
@@ -235,8 +251,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
-
-        get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
 
         resources :logs, only: [:index] do
           collection do
@@ -508,7 +522,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :prometheus do
-        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :show] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+        resources :alerts, constraints: { id: /\d+/ }, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
           member do
             get :metrics_dashboard # rubocop:todo Cop/PutProjectRoutesUnderScope

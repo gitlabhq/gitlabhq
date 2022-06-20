@@ -122,123 +122,68 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
   context 'uses correct base models', :reestablished_active_record_base do
     using RSpec::Parameterized::TableSyntax
 
-    where do
+    let(:ci_class) do
+      Class.new(ActiveRecord::Base) do
+        def self.name
+          'Ci::ApplicationRecordTemporary'
+        end
+
+        establish_connection ActiveRecord::DatabaseConfigurations::HashConfig.new(
+          Rails.env,
+          'ci',
+          ActiveRecord::Base.connection_db_config.configuration_hash
+        )
+      end
+    end
+
+    let(:models) do
       {
-        "it picks a dedicated CI connection" => {
-          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
-          request_store_active: false,
-          ff_force_no_sharing_primary_model: false,
-          expectations: {
-            main: { read: 'main_replica', write: 'main' },
-            ci: { read: 'ci_replica', write: 'ci' }
-          }
-        },
-        "with re-use of primary connection it uses CI connection for reads" => {
-          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
-          request_store_active: false,
-          ff_force_no_sharing_primary_model: false,
-          expectations: {
-            main: { read: 'main_replica', write: 'main' },
-            ci: { read: 'ci_replica', write: 'main' }
-          }
-        },
-        "with re-use and FF force_no_sharing_primary_model enabled with RequestStore it sticks FF and uses CI connection for reads and writes" => {
-          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
-          request_store_active: true,
-          ff_force_no_sharing_primary_model: true,
-          expectations: {
-            main: { read: 'main_replica', write: 'main' },
-            ci: { read: 'ci_replica', write: 'ci' }
-          }
-        },
-        "with re-use and FF force_no_sharing_primary_model enabled without RequestStore it doesn't use FF and uses CI connection for reads only" => {
-          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
-          request_store_active: true,
-          ff_force_no_sharing_primary_model: false,
-          expectations: {
-            main: { read: 'main_replica', write: 'main' },
-            ci: { read: 'ci_replica', write: 'main' }
-          }
-        }
+        main: ActiveRecord::Base,
+        ci: ci_class
       }
     end
 
-    with_them do
-      let(:ci_class) do
-        Class.new(ActiveRecord::Base) do
-          def self.name
-            'Ci::ApplicationRecordTemporary'
-          end
+    before do
+      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
 
-          establish_connection ActiveRecord::DatabaseConfigurations::HashConfig.new(
-            Rails.env,
-            'ci',
-            ActiveRecord::Base.connection_db_config.configuration_hash
-          )
+      # Rewrite `class_attribute` to use rspec mocking and prevent modifying the objects
+      allow_next_instance_of(described_class) do |setup|
+        allow(setup).to receive(:configure_connection)
+
+        allow(setup).to receive(:setup_class_attribute) do |attribute, value|
+          allow(setup.model).to receive(attribute) { value }
         end
       end
 
-      let(:models) do
+      # Make load balancer to force init with a dedicated replicas connections
+      models.each do |_, model|
+        described_class.new(model).tap do |subject|
+          subject.configuration.hosts = [subject.configuration.db_config.host]
+          subject.setup
+        end
+      end
+    end
+
+    it 'results match expectations' do
+      result = models.transform_values do |model|
+        load_balancer = model.connection.instance_variable_get(:@load_balancer)
+
         {
-          main: ActiveRecord::Base,
-          ci: ci_class
+          read: load_balancer.read { |connection| connection.pool.db_config.name },
+          write: load_balancer.read_write { |connection| connection.pool.db_config.name }
         }
       end
 
-      around do |example|
-        if request_store_active
-          Gitlab::WithRequestStore.with_request_store do
-            stub_feature_flags(force_no_sharing_primary_model: ff_force_no_sharing_primary_model)
-            RequestStore.clear!
+      expect(result).to eq({
+        main: { read: 'main_replica', write: 'main' },
+        ci: { read: 'ci_replica', write: 'ci' }
+      })
+    end
 
-            example.run
-          end
-        else
-          example.run
-        end
-      end
-
-      before do
-        allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-
-        # Rewrite `class_attribute` to use rspec mocking and prevent modifying the objects
-        allow_next_instance_of(described_class) do |setup|
-          allow(setup).to receive(:configure_connection)
-
-          allow(setup).to receive(:setup_class_attribute) do |attribute, value|
-            allow(setup.model).to receive(attribute) { value }
-          end
-        end
-
-        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci)
-
-        # Make load balancer to force init with a dedicated replicas connections
-        models.each do |_, model|
-          described_class.new(model).tap do |subject|
-            subject.configuration.hosts = [subject.configuration.replica_db_config.host]
-            subject.setup
-          end
-        end
-      end
-
-      it 'results match expectations' do
-        result = models.transform_values do |model|
-          load_balancer = model.connection.instance_variable_get(:@load_balancer)
-
-          {
-            read: load_balancer.read { |connection| connection.pool.db_config.name },
-            write: load_balancer.read_write { |connection| connection.pool.db_config.name }
-          }
-        end
-
-        expect(result).to eq(expectations)
-      end
-
-      it 'does return load_balancer assigned to a given connection' do
-        models.each do |name, model|
-          expect(model.load_balancer.name).to eq(name)
-          expect(model.sticking.instance_variable_get(:@load_balancer)).to eq(model.load_balancer)
-        end
+    it 'does return load_balancer assigned to a given connection' do
+      models.each do |name, model|
+        expect(model.load_balancer.name).to eq(name)
+        expect(model.sticking.instance_variable_get(:@load_balancer)).to eq(model.load_balancer)
       end
     end
   end

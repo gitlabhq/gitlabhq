@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -53,7 +53,7 @@ the GitLab server itself, but your setup may vary. If the CA is only
 used for GitLab consider putting this in the `Match User git` section
 (described below).
 
-The SSH certificates being issued by that CA **MUST** have a "key ID"
+The SSH certificates being issued by that CA **must** have a "key ID"
 corresponding to that user's username on GitLab, for example (some output
 omitted for brevity):
 

@@ -13,11 +13,15 @@ module BulkImports
     end
 
     def started?
-      export_status['status'] == Export::STARTED
+      !empty? && export_status['status'] == Export::STARTED
     end
 
     def failed?
-      export_status['status'] == Export::FAILED
+      !empty? && export_status['status'] == Export::FAILED
+    end
+
+    def empty?
+      export_status.nil?
     end
 
     def error
@@ -30,14 +34,7 @@ module BulkImports
 
     def export_status
       strong_memoize(:export_status) do
-        status = fetch_export_status
-
-        relation_export_status = status&.find { |item| item['relation'] == relation }
-
-        # Consider empty response as failed export
-        raise StandardError, 'Empty relation export status' unless relation_export_status&.present?
-
-        relation_export_status
+        fetch_export_status&.find { |item| item['relation'] == relation }
       end
     rescue StandardError => e
       { 'status' => Export::FAILED, 'error' => e.message }

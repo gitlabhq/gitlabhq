@@ -10,11 +10,9 @@ RSpec.describe BulkImports::ExportStatus do
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
 
   let(:response_double) do
-    double(parsed_response: [{ 'relation' => 'labels', 'status' => status, 'error' => 'error!' }])
-  end
-
-  let(:invalid_response_double) do
-    double(parsed_response: [{ 'relation' => 'not_a_real_relation', 'status' => status, 'error' => 'error!' }])
+    instance_double(HTTParty::Response,
+      parsed_response: [{ 'relation' => 'labels', 'status' => status, 'error' => 'error!' }]
+    )
   end
 
   subject { described_class.new(tracker, relation) }
@@ -40,22 +38,34 @@ RSpec.describe BulkImports::ExportStatus do
       it 'returns false' do
         expect(subject.started?).to eq(false)
       end
+    end
 
-      context 'when returned relation is invalid' do
-        before do
-          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:get).and_return(invalid_response_double)
-          end
-        end
+    context 'when export status is not present' do
+      let(:response_double) do
+        instance_double(HTTParty::Response, parsed_response: [])
+      end
 
-        it 'returns false' do
-          expect(subject.started?).to eq(false)
+      it 'returns false' do
+        expect(subject.started?).to eq(false)
+      end
+    end
+
+    context 'when something goes wrong during export status fetch' do
+      before do
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client).to receive(:get).and_raise(
+            BulkImports::NetworkError.new("Unsuccessful response", response: nil)
+          )
         end
+      end
+
+      it 'returns false' do
+        expect(subject.started?).to eq(false)
       end
     end
   end
 
-  describe '#failed' do
+  describe '#failed?' do
     context 'when export status is failed' do
       let(:status) { BulkImports::Export::FAILED }
 
@@ -74,12 +84,67 @@ RSpec.describe BulkImports::ExportStatus do
 
     context 'when export status is not present' do
       let(:response_double) do
-        double(parsed_response: [])
+        instance_double(HTTParty::Response, parsed_response: [])
+      end
+
+      it 'returns false' do
+        expect(subject.started?).to eq(false)
+      end
+    end
+
+    context 'when something goes wrong during export status fetch' do
+      before do
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client).to receive(:get).and_raise(
+            BulkImports::NetworkError.new("Unsuccessful response", response: nil)
+          )
+        end
+      end
+
+      it 'returns false' do
+        expect(subject.started?).to eq(false)
+      end
+    end
+  end
+
+  describe '#empty?' do
+    context 'when export status is present' do
+      let(:status) { 'any status' }
+
+      it { expect(subject.empty?).to eq(false) }
+    end
+
+    context 'when export status is not present' do
+      let(:response_double) do
+        instance_double(HTTParty::Response, parsed_response: [])
       end
 
       it 'returns true' do
-        expect(subject.failed?).to eq(true)
-        expect(subject.error).to eq('Empty relation export status')
+        expect(subject.empty?).to eq(true)
+      end
+    end
+
+    context 'when export status is empty' do
+      let(:response_double) do
+        instance_double(HTTParty::Response, parsed_response: nil)
+      end
+
+      it 'returns true' do
+        expect(subject.empty?).to eq(true)
+      end
+    end
+
+    context 'when something goes wrong during export status fetch' do
+      before do
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client).to receive(:get).and_raise(
+            BulkImports::NetworkError.new("Unsuccessful response", response: nil)
+          )
+        end
+      end
+
+      it 'returns false' do
+        expect(subject.started?).to eq(false)
       end
     end
   end

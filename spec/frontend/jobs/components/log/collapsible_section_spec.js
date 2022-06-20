@@ -45,7 +45,7 @@ describe('Job Log Collapsible Section', () => {
     });
 
     it('renders an icon with the closed state', () => {
-      expect(findCollapsibleLineSvg().attributes('data-testid')).toBe('angle-right-icon');
+      expect(findCollapsibleLineSvg().attributes('data-testid')).toBe('chevron-lg-right-icon');
     });
   });
 
@@ -62,7 +62,7 @@ describe('Job Log Collapsible Section', () => {
     });
 
     it('renders an icon with the open state', () => {
-      expect(findCollapsibleLineSvg().attributes('data-testid')).toBe('angle-down-icon');
+      expect(findCollapsibleLineSvg().attributes('data-testid')).toBe('chevron-lg-down-icon');
     });
 
     it('renders collapsible lines content', () => {

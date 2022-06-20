@@ -18,7 +18,7 @@ RSpec.describe EnvironmentsHelper do
 
     it 'returns data' do
       expect(metrics_data).to include(
-        'settings_path' => edit_project_integration_path(project, 'prometheus'),
+        'settings_path' => edit_project_settings_integration_path(project, 'prometheus'),
         'clusters_path' => project_clusters_path(project),
         'metrics_dashboard_base_path' => project_metrics_dashboard_path(project, environment: environment),
         'current_environment_name' => environment.name,
@@ -39,7 +39,6 @@ RSpec.describe EnvironmentsHelper do
         'custom_metrics_path' => project_prometheus_metrics_path(project),
         'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
         'custom_metrics_available' => 'true',
-        'alerts_endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
         'custom_dashboard_base_path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations_settings_path' => project_settings_operations_path(project),
         'can_access_operations_settings' => 'true',

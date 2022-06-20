@@ -2,7 +2,7 @@
 import {
   GlBadge,
   GlLink,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlSkeletonLoader,
   GlTooltipDirective,
   GlLoadingIcon,
   GlIcon,
@@ -25,7 +25,7 @@ export default {
   components: {
     GlBadge,
     GlLink,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     GlLoadingIcon,
     GlIcon,
     TimeagoTooltip,
@@ -277,12 +277,12 @@ export default {
         class="str-truncated-100 tree-commit-link"
       />
       <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
-        <gl-skeleton-loading v-if="showSkeletonLoader" :lines="1" class="h-auto" />
+        <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
       </gl-intersection-observer>
     </td>
     <td class="tree-time-ago text-right cursor-default">
       <timeago-tooltip v-if="commitData" :time="commitData.committedDate" />
-      <gl-skeleton-loading v-if="showSkeletonLoader" :lines="1" class="ml-auto h-auto w-50" />
+      <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
     </td>
   </tr>
 </template>

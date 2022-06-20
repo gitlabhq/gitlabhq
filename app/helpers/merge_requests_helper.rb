@@ -139,7 +139,7 @@ module MergeRequestsHelper
   end
 
   def toggle_draft_merge_request_path(issuable)
-    wip_event = issuable.work_in_progress? ? 'unwip' : 'wip'
+    wip_event = issuable.draft? ? 'ready' : 'draft'
 
     issuable_path(issuable, { merge_request: { wip_event: wip_event } })
   end
@@ -246,13 +246,13 @@ module MergeRequestsHelper
                     ''
                   end
 
-    link_to branch, branch_path, title: branch, class: 'gl-link gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mb-n2'
+    link_to branch, branch_path, title: branch, class: 'gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mb-n2'
   end
 
   def merge_request_header(project, merge_request)
     link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold', avatar: false)
     copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'btn btn-default btn-sm gl-button btn-default-tertiary btn-icon gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
-    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'gl-link gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mb-n2'
+    target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mb-n2'
 
     _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % { author: link_to_author.html_safe, source_branch: merge_request_source_branch(merge_request).html_safe, copy_button: copy_button.html_safe, target_branch: target_branch.html_safe, created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-display-inline-block').html_safe }
   end

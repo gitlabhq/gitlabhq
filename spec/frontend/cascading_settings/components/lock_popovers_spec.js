@@ -21,12 +21,12 @@ describe('LockPopovers', () => {
     };
 
     if (lockedByApplicationSetting) {
-      popoverMountEl.setAttribute('data-popover-data', JSON.stringify(popoverData));
+      popoverMountEl.dataset.popoverData = JSON.stringify(popoverData);
     } else if (lockedByAncestor) {
-      popoverMountEl.setAttribute(
-        'data-popover-data',
-        JSON.stringify({ ...popoverData, ancestor_namespace: mockNamespace }),
-      );
+      popoverMountEl.dataset.popoverData = JSON.stringify({
+        ...popoverData,
+        ancestor_namespace: mockNamespace,
+      });
     }
 
     document.body.appendChild(popoverMountEl);

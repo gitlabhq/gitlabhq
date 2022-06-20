@@ -534,24 +534,26 @@ RSpec.describe SearchHelper do
   end
 
   describe '#repository_ref' do
+    using RSpec::Parameterized::TableSyntax
+
     let_it_be(:project) { create(:project, :repository) }
 
-    let(:params) { { repository_ref: 'the-repository-ref-param' } }
+    let(:default_branch) { project.default_branch }
+    let(:params) { { repository_ref: ref, project_id: project_id } }
 
     subject { repository_ref(project) }
 
-    it { is_expected.to eq('the-repository-ref-param') }
-
-    context 'when the param :repository_ref is not set' do
-      let(:params) { { repository_ref: nil } }
-
-      it { is_expected.to eq(project.default_branch) }
+    where(:project_id, :ref, :expected_ref) do
+      123 | 'ref-param' | 'ref-param'
+      123 | nil         | ref(:default_branch)
+      123 | 111111      | '111111'
+      nil | 'ref-param' | ref(:default_branch)
     end
 
-    context 'when the repository_ref param is a number' do
-      let(:params) { { repository_ref: 111111 } }
-
-      it { is_expected.to eq('111111') }
+    with_them do
+      it 'returns expected_ref' do
+        expect(repository_ref(project)).to eq(expected_ref)
+      end
     end
   end
 

@@ -32,8 +32,8 @@ module Gitlab
       def mail_metadata
         {
           mail_uid: mail.message_id,
-          from_address: mail.from,
-          to_address: mail.to,
+          from_address: from,
+          to_address: to,
           mail_key: mail_key,
           references: Array(mail.references),
           delivered_to: delivered_to.map(&:value),
@@ -42,7 +42,7 @@ module Gitlab
           # reduced down to what looks like an email in the received headers
           received_recipients: recipients_from_received_headers,
           meta: {
-            client_id: "email/#{mail.from.first}",
+            client_id: "email/#{from.first}",
             project: handler&.project&.full_path
           }
         }
@@ -63,6 +63,8 @@ module Gitlab
       end
 
       def build_mail
+        # See https://github.com/mikel/mail/blob/641060598f8f4be14d79bad8d703e9f2967e1cdb/spec/mail/message_spec.rb#L569
+        # for mail structure
         Mail::Message.new(@raw)
       rescue Encoding::UndefinedConversionError,
              Encoding::InvalidByteSequenceError => e
@@ -76,7 +78,7 @@ module Gitlab
       end
 
       def key_from_to_header
-        mail.to.find do |address|
+        to.find do |address|
           key = email_class.key_from_address(address)
           break key if key
         end
@@ -108,6 +110,14 @@ module Gitlab
           key = email_class.key_from_fallback_message_id(mail_id)
           break key if key
         end
+      end
+
+      def from
+        Array(mail.from)
+      end
+
+      def to
+        Array(mail.to)
       end
 
       def delivered_to
@@ -148,8 +158,6 @@ module Gitlab
       end
 
       def find_first_key_from_received_headers
-        return unless ::Feature.enabled?(:use_received_header_for_incoming_emails)
-
         recipients_from_received_headers.find do |email|
           key = email_class.key_from_address(email)
           break key if key

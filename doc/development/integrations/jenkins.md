@@ -36,8 +36,8 @@ GitLab does not allow requests to localhost or the local network by default. Whe
 Jenkins uses the GitLab API and needs an access token.
 
 1. Sign in to your GitLab instance.
-1. Click on your profile picture, then click **Settings**.
-1. Click **Access Tokens**.
+1. Select your profile picture, then select **Settings**.
+1. Select **Access Tokens**.
 1. Create a new Access Token with the **API** scope enabled. Note the value of the token.
 
 ## Configure Jenkins

@@ -235,7 +235,7 @@ v1.0, 2019-01-01
 NOTE:
 [Wiki pages](project/wiki/index.md#create-a-new-wiki-page) created with the AsciiDoc
 format are saved with the file extension `.asciidoc`. When working with AsciiDoc wiki
-pages, change the file name from `.adoc` to `.asciidoc`.
+pages, change the filename from `.adoc` to `.asciidoc`.
 
 ```plaintext
 include::basics.adoc[]
@@ -381,9 +381,9 @@ comment - content which is not included in the output document
 It's possible to have color written in `HEX`, `RGB`, or `HSL` format rendered with a color indicator.
 Supported formats (named colors are not supported):
 
-- HEX: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
-- RGB: `` `RGB[A](R, G, B[, A])` ``
-- HSL: `` `HSL[A](H, S, L[, A])` ``
+- `HEX`: `` `#RGB[A]` `` or `` `#RRGGBB[AA]` ``
+- `RGB`: `` `RGB[A](R, G, B[, A])` ``
+- `HSL`: `` `HSL[A](H, S, L[, A])` ``
 
 Color written inside backticks is followed by a color "chip":
 
@@ -399,10 +399,10 @@ Color written inside backticks is followed by a color "chip":
 - `HSLA(540,70%,50%,0.3)`
 ```
 
-### STEM
+### Equations and Formulas (STEM)
 
-To activate equation and formula support,
-set the `stem` attribute in the document's header to `latexmath`.
+If you need to include Science, Technology, Engineering and Math (STEM)
+expressions, set the `stem` attribute in the document's header to `latexmath`.
 Equations and formulas are rendered using [KaTeX](https://katex.org/):
 
 ```plaintext

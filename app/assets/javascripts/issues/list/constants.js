@@ -29,7 +29,11 @@ export const i18n = {
   jiraIntegrationSecondaryMessage: s__('JiraService|This feature requires a Premium plan.'),
   jiraIntegrationTitle: s__('JiraService|Using Jira for issue tracking?'),
   newIssueLabel: __('New issue'),
+  newProjectLabel: __('New project'),
   noClosedIssuesTitle: __('There are no closed issues'),
+  noGroupIssuesSignedInDescription: __(
+    'Issues exist in projects, so to create an issue, first create a project.',
+  ),
   noOpenIssuesDescription: __('To keep this project going, create a new issue'),
   noOpenIssuesTitle: __('There are no open issues'),
   noIssuesSignedInDescription: __(
@@ -57,6 +61,8 @@ export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
 export const PAGE_SIZE_MANUAL = 100;
 export const PARAM_ASSIGNEE_ID = 'assignee_id';
+export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
+export const PARAM_LAST_PAGE_SIZE = 'last_page_size';
 export const PARAM_PAGE_AFTER = 'page_after';
 export const PARAM_PAGE_BEFORE = 'page_before';
 export const PARAM_SORT = 'sort';

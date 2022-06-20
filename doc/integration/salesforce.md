@@ -15,7 +15,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
 
 1. Sign in to [Salesforce](https://login.salesforce.com/).
 
-1. In Setup, enter `App Manager` in the Quick Find box, click **App Manager**, then click **New Connected App**.
+1. In Setup, enter `App Manager` in the Quick Find box, select **App Manager**, then select **New Connected App**.
 
 1. Fill in the application details into the following fields:
    - **Connected App Name** and **API Name**: Set to any value but consider something like `<Organization>'s GitLab`, `<Your Name>'s GitLab`, or something else that is descriptive.
@@ -24,14 +24,14 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
 
    ![Salesforce App Details](img/salesforce_app_details.png)
 
-1. Select **API (Enable OAuth Settings)** and click on **Enable OAuth Settings**.
+1. Select **API (Enable OAuth Settings)** and select **Enable OAuth Settings**.
 1. Fill in the application details into the following fields:
    - **Callback URL**: The callback URL of your GitLab installation. For example, `https://gitlab.example.com/users/auth/salesforce/callback`.
    - **Selected OAuth Scopes**: Move `Access your basic information (id, profile, email, address, phone)` and `Allow access to your unique identifier (openid)` to the right column.
 
    ![Salesforce OAuth App Details](img/salesforce_oauth_app_details.png)
 
-1. Click **Save**.
+1. Select **Save**.
 
 1. On your GitLab server, open the configuration file.
 
@@ -86,7 +86,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    to take effect if you installed GitLab via Omnibus or from source respectively.
 
 On the sign in page, there should now be a Salesforce icon below the regular sign in form.
-Click the icon to begin the authentication process. Salesforce asks the user to sign in and authorize the GitLab application.
+Select the icon to begin the authentication process. Salesforce asks the user to sign in and authorize the GitLab application.
 If everything goes well, the user is returned to GitLab and is signed in.
 
 NOTE:

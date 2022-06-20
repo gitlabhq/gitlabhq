@@ -75,6 +75,7 @@ export default class SourceEditor {
     blobGlobalId,
     instance,
     isDiff,
+    language,
   } = {}) {
     if (!instance) {
       return null;
@@ -82,7 +83,7 @@ export default class SourceEditor {
     const uriFilePath = joinPaths(URI_PREFIX, blobGlobalId, blobPath);
     const uri = Uri.file(uriFilePath);
     const existingModel = monacoEditor.getModel(uri);
-    const model = existingModel || monacoEditor.createModel(blobContent, undefined, uri);
+    const model = existingModel || monacoEditor.createModel(blobContent, language, uri);
     if (!isDiff) {
       instance.setModel(model);
       return model;
@@ -132,6 +133,7 @@ export default class SourceEditor {
     });
 
     let model;
+    const language = instanceOptions.language || getBlobLanguage(blobPath);
     if (instanceOptions.model !== null) {
       model = SourceEditor.createEditorModel({
         blobGlobalId,
@@ -140,6 +142,7 @@ export default class SourceEditor {
         blobContent,
         instance,
         isDiff,
+        language,
       });
     }
 

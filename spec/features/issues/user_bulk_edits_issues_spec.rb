@@ -107,10 +107,6 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
   describe 'select all issues' do
     let!(:issue_2) { create(:issue, project: project) }
 
-    before do
-      stub_feature_flags(vue_issues_list: true)
-    end
-
     it 'after selecting all issues, unchecking one issue only unselects that one issue' do
       visit project_issues_path(project)
 

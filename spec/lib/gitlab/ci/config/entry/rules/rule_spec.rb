@@ -18,6 +18,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
 
   let(:entry) { factory.create! }
 
+  before do
+    entry.compose!
+  end
+
   describe '.new' do
     subject { entry }
 
@@ -121,7 +125,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
       it { is_expected.not_to be_valid }
 
       it 'returns errors' do
-        expect(subject.errors).to include(/changes should be an array of strings/)
+        expect(subject.errors).to include(/changes config should be an array of strings/)
       end
     end
 
@@ -131,7 +135,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
       it { is_expected.not_to be_valid }
 
       it 'returns errors' do
-        expect(subject.errors).to include(/changes is too long \(maximum is 50 characters\)/)
+        expect(subject.errors).to include(/changes config has too many entries \(maximum 50\)/)
       end
     end
 
@@ -434,6 +438,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
   end
 
   describe '.default' do
+    let(:config) {}
+
     it 'does not have default value' do
       expect(described_class.default).to be_nil
     end

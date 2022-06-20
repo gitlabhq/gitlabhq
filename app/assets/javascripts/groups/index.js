@@ -44,6 +44,31 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
     components: {
       groupsApp,
     },
+    provide() {
+      const {
+        dataset: {
+          newSubgroupPath,
+          newProjectPath,
+          newSubgroupIllustration,
+          newProjectIllustration,
+          emptySubgroupIllustration,
+          renderEmptyState,
+          canCreateSubgroups,
+          canCreateProjects,
+        },
+      } = this.$options.el;
+
+      return {
+        newSubgroupPath,
+        newProjectPath,
+        newSubgroupIllustration,
+        newProjectIllustration,
+        emptySubgroupIllustration,
+        renderEmptyState: parseBoolean(renderEmptyState),
+        canCreateSubgroups: parseBoolean(canCreateSubgroups),
+        canCreateProjects: parseBoolean(canCreateProjects),
+      };
+    },
     data() {
       const { dataset } = dataEl || this.$options.el;
       const hideProjects = parseBoolean(dataset.hideProjects);

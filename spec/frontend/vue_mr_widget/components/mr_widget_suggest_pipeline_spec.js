@@ -71,7 +71,7 @@ describe('MRWidgetSuggestPipeline', () => {
         const button = findOkBtn();
 
         expect(button.exists()).toBe(true);
-        expect(button.classes('btn-info')).toEqual(true);
+        expect(button.classes('btn-confirm')).toEqual(true);
         expect(button.attributes('href')).toBe(suggestProps.pipelinePath);
       });
 

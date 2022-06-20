@@ -2,7 +2,7 @@ package upload
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -23,7 +23,7 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 			return
 		}
 
-		fh, err := destination.Upload(r.Context(), r.Body, r.ContentLength, opts)
+		fh, err := destination.Upload(r.Context(), r.Body, r.ContentLength, "upload", opts)
 		if err != nil {
 			helper.Fail500(w, r, fmt.Errorf("RequestBody: upload failed: %v", err))
 			return
@@ -42,7 +42,7 @@ func RequestBody(rails PreAuthorizer, h http.Handler, p Preparer) http.Handler {
 
 		// Hijack body
 		body := data.Encode()
-		r.Body = ioutil.NopCloser(strings.NewReader(body))
+		r.Body = io.NopCloser(strings.NewReader(body))
 		r.ContentLength = int64(len(body))
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 

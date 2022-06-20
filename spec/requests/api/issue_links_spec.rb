@@ -156,6 +156,87 @@ RSpec.describe API::IssueLinks do
     end
   end
 
+  describe 'GET /links/:issue_link_id' do
+    def perform_request(issue_link_id, user = nil, params = {})
+      get api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link_id}", user), params: params
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401' do
+        issue_link = create(:issue_link)
+
+        perform_request(issue_link.id)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated' do
+      context 'when issue link does not exist' do
+        it 'returns 404' do
+          perform_request(non_existing_record_id, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      let_it_be(:target_issue) { create(:issue, project: project) }
+
+      context 'when issue link does not belong to the specified issue' do
+        it 'returns 404' do
+          other_issue = create(:issue, project: project)
+          # source is different than the given API route issue
+          issue_link = create(:issue_link, source: other_issue, target: target_issue)
+
+          perform_request(issue_link.id, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user has ability to read the issue link' do
+        it 'returns 200' do
+          issue_link = create(:issue_link, source: issue, target: target_issue)
+
+          perform_request(issue_link.id, user)
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('public_api/v4/issue_link')
+          end
+        end
+      end
+
+      context 'when user cannot read issue link' do
+        let(:private_project) { create(:project) }
+        let(:public_project) { create(:project, :public) }
+        let(:public_issue) { create(:issue, project: public_project) }
+
+        context 'when the issue link targets an issue in a non-accessible project' do
+          it 'returns 404' do
+            private_issue = create(:issue, project: private_project)
+            issue_link = create(:issue_link, source: public_issue, target: private_issue)
+
+            perform_request(issue_link.id, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when issue link targets a non-accessible issue' do
+          it 'returns 404' do
+            confidential_issue = create(:issue, :confidential, project: public_project)
+            issue_link = create(:issue_link, source: public_issue, target: confidential_issue)
+
+            perform_request(issue_link.id, user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
+  end
+
   describe 'DELETE /links/:issue_link_id' do
     context 'when unauthenticated' do
       it 'returns 401' do

@@ -14,13 +14,11 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   feature_category :continuous_integration
   urgency :low
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @scope = params[:scope]
     @all_schedules = Ci::PipelineSchedulesFinder.new(@project).execute
     @schedules = Ci::PipelineSchedulesFinder.new(@project).execute(scope: params[:scope])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @schedule = project.pipeline_schedules.new

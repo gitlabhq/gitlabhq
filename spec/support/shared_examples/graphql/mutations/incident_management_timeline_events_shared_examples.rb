@@ -21,6 +21,7 @@ RSpec.shared_examples 'creating an incident timeline event' do
     expect(timeline_event.occurred_at.to_s).to eq(expected_timeline_event.occurred_at)
     expect(timeline_event.incident).to eq(expected_timeline_event.incident)
     expect(timeline_event.author).to eq(expected_timeline_event.author)
+    expect(timeline_event.editable).to eq(expected_timeline_event.editable)
   end
 end
 

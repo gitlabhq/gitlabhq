@@ -67,7 +67,7 @@ export function darkModeEnabled() {
   const ideDarkThemes = ['dark', 'solarized-dark', 'monokai'];
 
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  const isWebIde = document.body.dataset.page.startsWith('ide:');
+  const isWebIde = document.body.dataset.page?.startsWith('ide:');
 
   if (isWebIde) {
     return ideDarkThemes.includes(window.gon?.user_color_scheme);

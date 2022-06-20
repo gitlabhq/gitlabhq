@@ -99,6 +99,16 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
             expect { subject }.not_to change { artifact.file.exists? }
           end
         end
+
+        context 'when the project in which the arfifact belongs to is undergoing stats refresh' do
+          before do
+            create(:project_build_artifacts_size_refresh, :pending, project: artifact.project)
+          end
+
+          it 'does not destroy job artifact' do
+            expect { subject }.not_to change { Ci::JobArtifact.count }
+          end
+        end
       end
 
       context 'when artifact is locked' do

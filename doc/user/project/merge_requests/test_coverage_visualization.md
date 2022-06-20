@@ -68,10 +68,36 @@ A single Cobertura XML file can be no more than 10MiB. For large projects, split
 smaller files. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328772) for more details.
 When submitting many files, it can take a few minutes for coverage to show on a merge request.
 
+The visualization only displays after the pipeline is complete. If the pipeline has
+a [blocking manual job](../../../ci/jobs/job_control.md#types-of-manual-jobs), the
+pipeline waits for the manual job before continuing and is not considered complete.
+The visualization cannot be displayed if the blocking manual job did not run.
+
 ### Artifact expiration
 
 By default, the [pipeline artifact](../../../ci/pipelines/pipeline_artifacts.md#storage) used
 to draw the visualization on the merge request expires **one week** after creation.
+
+### Coverage report from child pipeline
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md). Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+If the test coverage is created in jobs that are in a child pipeline, the parent pipeline must use
+`strategy: depend`.
+
+```yaml
+child_test_pipeline:
+  trigger:
+    include:
+      - local: path/to/child_pipeline.yml
+      - template: Security/SAST.gitlab-ci.yml
+    strategy: depend
+```
 
 ### Automatic class path correction
 
@@ -255,7 +281,7 @@ run tests:
     - coverage run -m pytest
     - coverage report
     - coverage xml
-  coverage: '/TOTAL.*\s([.\d]+)%/'
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:
       coverage_report:
@@ -388,4 +414,28 @@ run tests:
       coverage_report:
         coverage_format: cobertura
         path: coverage/coverage.xml
+```
+
+## Troubleshooting
+
+### Test coverage visualization not displayed
+
+If the test coverage visualization is not displayed in the diff view, you can check
+the coverage report itself and verify that:
+
+- The file you are viewing in the diff view is mentioned in the coverage report.
+- The `source` and `filename` nodes in the report follows the [expected structure](#automatic-class-path-correction)
+  to match the files in your repository.
+
+Report artifacts are not downloadable by default. If you want the report to be downloadable
+from the job details page, add your coverage report to the artifact `paths`:
+
+```yaml
+artifacts:
+  paths:
+    - coverage/cobertura-coverage.xml
+  reports:
+    coverage_report:
+      coverage_format: cobertura
+      path: coverage/cobertura-coverage.xml
 ```

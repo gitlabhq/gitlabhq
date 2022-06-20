@@ -1,167 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Remove cluster confirmation modal renders splitbutton with modal included 1`] = `
+exports[`Remove cluster confirmation modal renders buttons with modal included 1`] = `
 <div
-  class="gl-display-flex gl-justify-content-end"
+  class="gl-display-flex"
 >
-  <div
-    class="dropdown b-dropdown gl-new-dropdown btn-group"
-    menu-class="dropdown-menu-large"
+  <button
+    class="btn gl-mr-3 btn-danger btn-md gl-button"
+    data-testid="remove-integration-and-resources-button"
+    type="button"
   >
-    <button
-      class="btn btn-danger btn-md gl-button split-content-button"
-      type="button"
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
     >
-      <!---->
-       
-      <!---->
-       
-      <span
-        class="gl-new-dropdown-button-text"
-      >
-        Remove integration and resources
-      </span>
-       
-      <!---->
-    </button>
-    <button
-      aria-expanded="false"
-      aria-haspopup="true"
-      class="btn dropdown-toggle btn-danger btn-md gl-button gl-dropdown-toggle dropdown-toggle-split"
-      type="button"
+      
+    Remove integration and resources
+  
+    </span>
+  </button>
+   
+  <button
+    class="btn btn-danger btn-md gl-button btn-danger-secondary"
+    data-testid="remove-integration-button"
+    type="button"
+  >
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
     >
-      <span
-        class="sr-only"
-      >
-        Toggle dropdown
-      </span>
-    </button>
-    <ul
-      class="dropdown-menu dropdown-menu-large"
-      role="menu"
-      tabindex="-1"
-    >
-      <div
-        class="gl-new-dropdown-inner"
-      >
-        <!---->
-         
-        <!---->
-         
-        <div
-          class="gl-new-dropdown-contents"
-        >
-          <!---->
-           
-          <li
-            class="gl-new-dropdown-item"
-            role="presentation"
-          >
-            <button
-              class="dropdown-item"
-              role="menuitem"
-              type="button"
-            >
-              <svg
-                aria-hidden="true"
-                class="gl-icon s16 gl-new-dropdown-item-check-icon gl-mt-3 gl-align-self-start"
-                data-testid="dropdown-item-checkbox"
-                role="img"
-              >
-                <use
-                  href="#mobile-issue-close"
-                />
-              </svg>
-               
-              <!---->
-               
-              <!---->
-               
-              <div
-                class="gl-new-dropdown-item-text-wrapper"
-              >
-                <p
-                  class="gl-new-dropdown-item-text-primary"
-                >
-                  <strong>
-                    Remove integration and resources
-                  </strong>
-                   
-                  <div>
-                    Deletes all GitLab resources attached to this cluster during removal
-                  </div>
-                </p>
-                 
-                <!---->
-              </div>
-               
-              <!---->
-            </button>
-          </li>
-           
-          <li
-            class="gl-new-dropdown-divider"
-            role="presentation"
-          >
-            <hr
-              aria-orientation="horizontal"
-              class="dropdown-divider"
-              role="separator"
-            />
-          </li>
-          <li
-            class="gl-new-dropdown-item"
-            role="presentation"
-          >
-            <button
-              class="dropdown-item"
-              role="menuitem"
-              type="button"
-            >
-              <svg
-                aria-hidden="true"
-                class="gl-icon s16 gl-new-dropdown-item-check-icon gl-visibility-hidden gl-mt-3 gl-align-self-start"
-                data-testid="dropdown-item-checkbox"
-                role="img"
-              >
-                <use
-                  href="#mobile-issue-close"
-                />
-              </svg>
-               
-              <!---->
-               
-              <!---->
-               
-              <div
-                class="gl-new-dropdown-item-text-wrapper"
-              >
-                <p
-                  class="gl-new-dropdown-item-text-primary"
-                >
-                  <strong>
-                    Remove integration
-                  </strong>
-                   
-                  <div>
-                    Removes cluster from project but keeps associated resources
-                  </div>
-                </p>
-                 
-                <!---->
-              </div>
-               
-              <!---->
-            </button>
-          </li>
-           
-          <!---->
-        </div>
-         
-        <!---->
-      </div>
-    </ul>
-  </div>
+      
+    Remove integration
+  
+    </span>
+  </button>
    
   <!---->
 </div>

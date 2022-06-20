@@ -228,6 +228,21 @@ RSpec.describe MergeRequests::RefreshService do
           expect(@another_merge_request.has_commits?).to be_falsy
         end
 
+        context 'when "push_options: nil" is passed' do
+          let(:service_instance) { service.new(project: project, current_user: @user, params: { push_options: nil }) }
+
+          subject { service_instance.execute(@oldrev, @newrev, ref) }
+
+          it 'creates a detached merge request pipeline with commits' do
+            expect { subject }
+              .to change { @merge_request.pipelines_for_merge_request.count }.by(1)
+              .and change { @another_merge_request.pipelines_for_merge_request.count }.by(0)
+
+            expect(@merge_request.has_commits?).to be_truthy
+            expect(@another_merge_request.has_commits?).to be_falsy
+          end
+        end
+
         it 'does not create detached merge request pipeline for forked project' do
           expect { subject }
             .not_to change { @fork_merge_request.pipelines_for_merge_request.count }
@@ -741,47 +756,48 @@ RSpec.describe MergeRequests::RefreshService do
         refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
         fixup_merge_request.reload
 
-        expect(fixup_merge_request.work_in_progress?).to eq(true)
+        expect(fixup_merge_request.draft?).to eq(true)
         expect(fixup_merge_request.notes.last.note).to match(
           /marked this merge request as \*\*draft\*\* from #{Commit.reference_pattern}/
         )
       end
 
       it 'references the commit that caused the draft status' do
-        wip_merge_request = create(:merge_request,
+        draft_merge_request = create(:merge_request,
                                    source_project: @project,
                                    source_branch: 'wip',
                                    target_branch: 'master',
                                    target_project: @project)
 
-        commits = wip_merge_request.commits
+        commits = draft_merge_request.commits
         oldrev = commits.last.id
         newrev = commits.first.id
-        wip_commit = wip_merge_request.commits.find(&:work_in_progress?)
+        draft_commit = draft_merge_request.commits.find(&:draft?)
 
         refresh_service.execute(oldrev, newrev, 'refs/heads/wip')
 
-        expect(wip_merge_request.reload.notes.last.note).to eq(
-          "marked this merge request as **draft** from #{wip_commit.id}"
+        expect(draft_merge_request.reload.notes.last.note).to eq(
+          "marked this merge request as **draft** from #{draft_commit.id}"
         )
       end
 
       it 'does not mark as draft based on commits that do not belong to an MR' do
         allow(refresh_service).to receive(:find_new_commits)
+
         refresh_service.instance_variable_set("@commits", [
           double(
             id: 'aaaaaaa',
             sha: 'aaaaaaa',
             short_id: 'aaaaaaa',
             title: 'Fix issue',
-            work_in_progress?: false
+            draft?: false
           ),
           double(
             id: 'bbbbbbb',
             sha: 'bbbbbbbb',
             short_id: 'bbbbbbb',
             title: 'fixup! Fix issue',
-            work_in_progress?: true,
+            draft?: true,
             to_reference: 'bbbbbbb'
           )
         ])
@@ -789,7 +805,7 @@ RSpec.describe MergeRequests::RefreshService do
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
 
-        expect(@merge_request.work_in_progress?).to be_falsey
+        expect(@merge_request.draft?).to be_falsey
       end
     end
 

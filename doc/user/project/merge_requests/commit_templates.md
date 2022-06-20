@@ -92,8 +92,8 @@ Commit message templates support these variables:
 Any line containing only an empty variable is removed. If the line to be removed is both
 preceded and followed by an empty line, the preceding empty line is also removed.
 
-After you edit a commit message on an open merge request, GitLab will
-not automatically update the commit message again.
+After you edit a commit message on an open merge request, GitLab
+automatically updates the commit message again.
 To restore the commit message to the project template, reload the page.
 
 ## Related topics

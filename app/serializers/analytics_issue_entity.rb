@@ -30,6 +30,10 @@ class AnalyticsIssueEntity < Grape::Entity
     url_to(:namespace_project_issue, object)
   end
 
+  expose :end_event_timestamp do |object|
+    object[:end_event_timestamp] && interval_in_words(object[:end_event_timestamp])
+  end
+
   private
 
   def url_to(route, object)

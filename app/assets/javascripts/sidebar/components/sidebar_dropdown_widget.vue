@@ -322,7 +322,7 @@ export default {
           class="sidebar-collapsed-icon"
         >
           <gl-icon :aria-label="attributeTypeTitle" :name="attributeTypeIcon" />
-          <span class="collapse-truncated-title">
+          <span class="collapse-truncated-title gl-pt-2 gl-px-3 gl-font-sm">
             {{ attributeTitle }}
           </span>
         </div>

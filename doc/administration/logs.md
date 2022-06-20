@@ -61,7 +61,7 @@ Some of these services have their own environment variables to override the log 
 | GitLab Export        | `INFO`    | `EXPORT_DEBUG`       |
 | GitLab Geo           | `INFO`    |                      |
 | GitLab Import        | `INFO`    | `IMPORT_DEBUG`       |
-| GitLab QA Runtime    | `ERROR`   | `QA_DEBUG`           |
+| GitLab QA Runtime    | `INFO`    | `QA_LOG_LEVEL`       |
 | Google APIs          | `INFO`    |                      |
 | Rack Timeout         | `ERROR`   |                      |
 | Sidekiq (server)     | `INFO`    |                      |
@@ -144,7 +144,8 @@ Line breaks were added to examples for legibility:
   "db_duration_s":0.08,
   "view_duration_s":2.39,
   "duration_s":20.54,
-  "pid": 81836
+  "pid": 81836,
+  "worker_id":"puma_0"
 }
 ```
 
@@ -167,7 +168,8 @@ seconds:
 - `redis_<instance>_duration_s`: Total time to retrieve data from a Redis instance
 - `redis_<instance>_read_bytes`: Total bytes read from a Redis instance
 - `redis_<instance>_write_bytes`: Total bytes written to a Redis instance
-- `pid`: Process ID of the Puma worker
+- `pid`: The worker's Linux process ID (changes when workers restart)
+- `worker_id`: The worker's logical ID (does not change when workers restart)
 
 User clone and fetch activity using HTTP transport appears in the log as `action: git_upload_pack`.
 
@@ -240,6 +242,7 @@ Starting with GitLab 12.5, if an error occurs, an
   "view_duration_s":2.39,
   "duration_s":20.54,
   "pid": 81836,
+  "worker_id": "puma_0",
   "exception.class": "NameError",
   "exception.message": "undefined local variable or method `adsf' for #<Admin::DashboardController:0x00007ff3c9648588>",
   "exception.backtrace": [
@@ -319,7 +322,10 @@ It helps you see requests made directly to the API. For example:
   "username":"root",
   "queue_duration":100.31,
   "gitaly_calls":30,
-  "gitaly_duration":5.36
+  "gitaly_duration":5.36,
+  "pid": 81836,
+  "worker_id": "puma_0",
+  ...
 }
 ```
 
@@ -546,6 +552,7 @@ Sidekiq. For example:
   "created_at":"2018-04-03T22:57:21.930Z",
   "enqueued_at":"2018-04-03T22:57:21.931Z",
   "pid":10077,
+  "worker_id":"sidekiq_0",
   "message":"UpdateAllMirrorsWorker JID-06aeaa3b0aadacf9981f368e: done: 0.139 sec",
   "job_status":"done",
   "duration":0.139,

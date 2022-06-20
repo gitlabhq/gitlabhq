@@ -8,31 +8,19 @@ RSpec.describe Repositories::DestroyService do
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:repository) { project.repository }
   let(:path) { repository.disk_path }
-  let(:remove_path) { "#{path}+#{project.id}#{described_class::DELETED_FLAG}" }
 
   subject { described_class.new(repository).execute }
 
-  it 'moves the repository to a +deleted folder' do
+  it 'removes the repository' do
     expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
-    expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
 
     subject
 
-    expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
-    expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_truthy
-  end
-
-  it 'schedules the repository deletion' do
-    subject
-
-    expect(Repositories::ShellDestroyService).to receive(:new).with(repository).and_call_original
-
-    expect(GitlabShellWorker).to receive(:perform_in)
-      .with(Repositories::ShellDestroyService::REPO_REMOVAL_DELAY, :remove_repository, project.repository_storage, remove_path)
-
-    # Because GitlabShellWorker is inside a run_after_commit callback we need to
+    # Because the removal happens inside a run_after_commit callback we need to
     # trigger the callback
     project.touch
+
+    expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
   end
 
   context 'on a read-only instance' do
@@ -41,22 +29,12 @@ RSpec.describe Repositories::DestroyService do
     end
 
     it 'schedules the repository deletion' do
-      expect(Repositories::ShellDestroyService).to receive(:new).with(repository).and_call_original
-
-      expect(GitlabShellWorker).to receive(:perform_in)
-        .with(Repositories::ShellDestroyService::REPO_REMOVAL_DELAY, :remove_repository, project.repository_storage, remove_path)
+      expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
 
       subject
+
+      expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
     end
-  end
-
-  it 'removes the repository', :sidekiq_inline do
-    subject
-
-    project.touch
-
-    expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
-    expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
   end
 
   it 'flushes the repository cache' do
@@ -77,48 +55,20 @@ RSpec.describe Repositories::DestroyService do
     expect(subject[:status]).to eq :success
   end
 
-  context 'when move operation cannot be performed' do
-    let(:service) { described_class.new(repository) }
-
-    before do
-      expect(service).to receive(:mv_repository).and_return(false)
-    end
-
-    it 'returns error' do
-      expect(service.execute[:status]).to eq :error
-    end
-
-    it 'logs the error' do
-      expect(Gitlab::AppLogger).to receive(:error)
-
-      service.execute
-    end
-
-    context 'when repository does not exist' do
-      it 'returns success' do
-        allow(service).to receive(:repo_exists?).and_return(true, false)
-
-        expect(Repositories::ShellDestroyService).not_to receive(:new)
-        expect(service.execute[:status]).to eq :success
-      end
-    end
-  end
-
   context 'with a project wiki repository' do
     let(:project) { create(:project, :wiki_repo) }
     let(:repository) { project.wiki.repository }
 
     it 'schedules the repository deletion' do
+      expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_truthy
+
       subject
 
-      expect(Repositories::ShellDestroyService).to receive(:new).with(repository).and_call_original
-
-      expect(GitlabShellWorker).to receive(:perform_in)
-        .with(Repositories::ShellDestroyService::REPO_REMOVAL_DELAY, :remove_repository, project.repository_storage, remove_path)
-
-      # Because GitlabShellWorker is inside a run_after_commit callback we need to
+      # Because the removal happens inside a run_after_commit callback we need to
       # trigger the callback
       project.touch
+
+      expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
     end
   end
 end

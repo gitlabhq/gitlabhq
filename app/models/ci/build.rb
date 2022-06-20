@@ -137,13 +137,14 @@ module Ci
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end
 
-    scope :with_reports, ->(reports_scope) do
-      with_existing_job_artifacts(reports_scope)
+    scope :with_artifacts, ->(artifact_scope) do
+      with_existing_job_artifacts(artifact_scope)
         .eager_load_job_artifacts
     end
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
+    scope :eager_load_for_archiving_trace, -> { includes(:project, :pending_state) }
 
     scope :eager_load_everything, -> do
       includes(
@@ -424,8 +425,16 @@ module Ci
       pipeline.manual_actions.reject { |action| action.name == self.name }
     end
 
+    def environment_manual_actions
+      pipeline.manual_actions.filter { |action| action.expanded_environment_name == self.expanded_environment_name }
+    end
+
     def other_scheduled_actions
       pipeline.scheduled_actions.reject { |action| action.name == self.name }
+    end
+
+    def environment_scheduled_actions
+      pipeline.scheduled_actions.filter { |action| action.expanded_environment_name == self.expanded_environment_name }
     end
 
     def pages_generator?
@@ -559,6 +568,10 @@ module Ci
       options&.dig(:environment, :on_stop)
     end
 
+    def stop_action_successful?
+      success?
+    end
+
     ##
     # All variables, including persisted environment variables.
     #
@@ -673,7 +686,7 @@ module Ci
     end
 
     def has_live_trace?
-      trace.live_trace_exist?
+      trace.live?
     end
 
     def has_archived_trace?
@@ -795,6 +808,7 @@ module Ci
 
     def execute_hooks
       return unless project
+      return if user&.blocked?
 
       project.execute_hooks(build_data.dup, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data.dup, :job_hooks) if project.has_active_integrations?(:job_hooks)
@@ -826,11 +840,25 @@ module Ci
     end
 
     def erase_erasable_artifacts!
+      if project.refreshing_build_artifacts_size?
+        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
+          method: 'Ci::Build#erase_erasable_artifacts!',
+          project_id: project_id
+        )
+      end
+
       job_artifacts.erasable.destroy_all # rubocop: disable Cop/DestroyAll
     end
 
     def erase(opts = {})
       return false unless erasable?
+
+      if project.refreshing_build_artifacts_size?
+        Gitlab::ProjectStatsRefreshConflictsLogger.warn_artifact_deletion_during_stats_refresh(
+          method: 'Ci::Build#erase',
+          project_id: project_id
+        )
+      end
 
       job_artifacts.destroy_all # rubocop: disable Cop/DestroyAll
       erase_trace!
@@ -983,7 +1011,7 @@ module Ci
     end
 
     def collect_test_reports!(test_reports)
-      test_reports.get_suite(group_name).tap do |test_suite|
+      test_reports.get_suite(test_suite_name).tap do |test_suite|
         each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
           Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
             blob,
@@ -1000,19 +1028,6 @@ module Ci
       end
 
       accessibility_report
-    end
-
-    def collect_coverage_reports!(coverage_report)
-      each_report(Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES) do |file_type, blob|
-        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(
-          blob,
-          coverage_report,
-          project_path: project.full_path,
-          worktree_paths: pipeline.all_worktree_paths
-        )
-      end
-
-      coverage_report
     end
 
     def collect_codequality_reports!(codequality_report)
@@ -1032,7 +1047,7 @@ module Ci
     end
 
     def report_artifacts
-      job_artifacts.with_reports
+      job_artifacts.all_reports
     end
 
     # Virtual deployment status depending on the environment status.
@@ -1055,6 +1070,8 @@ module Ci
         all_queuing_entries.delete_all
         all_runtime_metadata.delete_all
       end
+
+      deployment&.sync_status_with(self)
 
       Gitlab::AppLogger.info(
         message: 'Build doomed',
@@ -1145,6 +1162,14 @@ module Ci
       Gitlab::Utils::UsageData.track_usage_event('ci_users_executing_deployment_job', user_id) if user_id.present? && count_user_deployment?
     end
 
+    def each_report(report_types)
+      job_artifacts_for_types(report_types).each do |report_artifact|
+        report_artifact.each_blob do |blob|
+          yield report_artifact.file_type, blob, report_artifact
+        end
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1154,6 +1179,18 @@ module Ci
     end
 
     private
+
+    def test_suite_name
+      if matrix_build?
+        name
+      else
+        group_name
+      end
+    end
+
+    def matrix_build?
+      options.dig(:parallel, :matrix).present?
+    end
 
     def stick_build_if_status_changed
       return unless saved_change_to_status?
@@ -1181,14 +1218,6 @@ module Ci
         :last
       else
         :out_of_date
-      end
-    end
-
-    def each_report(report_types)
-      job_artifacts_for_types(report_types).each do |report_artifact|
-        report_artifact.each_blob do |blob|
-          yield report_artifact.file_type, blob, report_artifact
-        end
       end
     end
 

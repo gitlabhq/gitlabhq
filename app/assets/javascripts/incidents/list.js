@@ -46,7 +46,6 @@ export default () => {
       assigneeUsernameQuery,
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
       canCreateIncident: parseBoolean(canCreateIncident),
-      incidentEscalationsAvailable: parseBoolean(gon?.features?.incidentEscalations),
     },
     apolloProvider,
     render(createElement) {

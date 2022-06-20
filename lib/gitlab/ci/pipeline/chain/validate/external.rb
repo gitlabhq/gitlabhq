@@ -83,7 +83,9 @@ module Gitlab
                 project: {
                   id: project.id,
                   path: project.full_path,
-                  created_at: project.created_at&.iso8601
+                  created_at: project.created_at&.iso8601,
+                  shared_runners_enabled: project.shared_runners_enabled?,
+                  group_runners_enabled: project.group_runners_enabled?
                 },
                 user: {
                   id: current_user.id,

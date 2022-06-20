@@ -12,7 +12,7 @@ Each experiment should have an [experiment rollout](https://gitlab.com/groups/gi
 The rollout issue is similar to a feature flag rollout issue, and is also used to track the status of an experiment.
 
 When an experiment is deployed, the due date of the issue should be set (this depends on the experiment but can be up to a few weeks in the future).
-After the deadline, the issue needs to be resolved and either:
+After the deadline, the issue must be resolved and either:
 
 - It was successful and the experiment becomes the new default.
 - It was not successful and all code related to the experiment is removed.
@@ -29,7 +29,7 @@ This can be done via ChatOps:
 
 - [disable](../feature_flags/controls.md#disabling-feature-flags): `/chatops run feature set gitlab_experiment false`
 - [enable](../feature_flags/controls.md#process): `/chatops run feature delete gitlab_experiment`
-- This allows the `default_enabled` [value of true in the yml](https://gitlab.com/gitlab-org/gitlab/-/blob/016430f6751b0c34abb24f74608c80a1a8268f20/config/feature_flags/ops/gitlab_experiment.yml#L8) to be honored.
+- This allows the `default_enabled` [value of true in the YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/016430f6751b0c34abb24f74608c80a1a8268f20/config/feature_flags/ops/gitlab_experiment.yml#L8) to be honored.
 
 ## Notes on feature flags
 
@@ -42,8 +42,8 @@ You may already be familiar with the concept of feature flags in GitLab, but usi
 feature flags in experiments is a bit different. While in general terms, a feature flag
 is viewed as being either `on` or `off`, this isn't accurate for experiments.
 
-Generally, `off` means that when we ask if a feature flag is enabled, it will always
-return `false`, and `on` means that it will always return `true`. An interim state,
+Generally, `off` means that when we ask if a feature flag is enabled, it always
+returns `false`, and `on` means that it always returns `true`. An interim state,
 considered `conditional`, also exists. We take advantage of this trinary state of
 feature flags. To understand this `conditional` aspect: consider that either of these
 settings puts a feature flag into this state:
@@ -64,7 +64,7 @@ We don't refer to this as being enabled, because that's a confusing and overload
 term here. In the experiment terms, our experiment is _running_, and the feature flag is
 `conditional`.
 
-When a feature flag is enabled (meaning the state is `on`), the candidate will always be
+When a feature flag is enabled (meaning the state is `on`), the candidate is always
 assigned.
 
 We should try to be consistent with our terms, and so for experiments, we have an

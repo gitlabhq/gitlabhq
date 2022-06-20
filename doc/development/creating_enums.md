@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -98,7 +98,7 @@ end
 This looks working as a workaround, however, this approach has some downsides that:
 
 - Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
-  For example, when you move `activity_limit_exceeded` to FOSS, you'll see `{ unknown_failure: 0, config_error: 1, activity_limit_exceeded: 1_000 }`.
+  For example, when you move `activity_limit_exceeded` to FOSS, you see `{ unknown_failure: 0, config_error: 1, activity_limit_exceeded: 1_000 }`.
 - The integer column for the `enum` is likely created [as `SMALLINT`](#creating-enums).
   Therefore, you need to be careful of that the offset doesn't exceed the maximum value of 2 bytes integer.
 

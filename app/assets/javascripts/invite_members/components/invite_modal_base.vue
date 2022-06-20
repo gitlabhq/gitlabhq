@@ -131,6 +131,11 @@ export default {
       required: false,
       default: false,
     },
+    closeToLimit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     reachedLimit: {
       type: Boolean,
       required: false,
@@ -182,6 +187,17 @@ export default {
     },
     actionCancel() {
       if (this.reachedLimit && this.usersLimitDataset.userNamespace) return undefined;
+
+      if (this.closeToLimit && this.usersLimitDataset.userNamespace) {
+        return {
+          text: INVITE_BUTTON_TEXT_DISABLED,
+          attributes: {
+            href: this.usersLimitDataset.membersPath,
+            category: 'secondary',
+            variant: 'confirm',
+          },
+        };
+      }
 
       return {
         text: this.reachedLimit ? CANCEL_BUTTON_TEXT_DISABLED : this.cancelButtonText,

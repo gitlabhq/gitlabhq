@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe JiraImport::StartImportService do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }

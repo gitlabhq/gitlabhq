@@ -52,7 +52,8 @@ RSpec.describe Subscriptions::IssuableUpdated do
         let(:current_user) { unauthorized_user }
 
         it 'unsubscribes the user' do
-          expect { subject }.to throw_symbol(:graphql_subscription_unsubscribed)
+          # GraphQL::Execution::Execute::Skip is returned when unsubscribed
+          expect(subject).to be_an(GraphQL::Execution::Execute::Skip)
         end
       end
     end

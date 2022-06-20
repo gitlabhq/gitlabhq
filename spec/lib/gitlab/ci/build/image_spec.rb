@@ -28,8 +28,14 @@ RSpec.describe Gitlab::Ci::Build::Image do
 
       context 'when image is defined as hash' do
         let(:entrypoint) { '/bin/sh' }
+        let(:pull_policy) { %w[always if-not-present] }
 
-        let(:job) { create(:ci_build, options: { image: { name: image_name, entrypoint: entrypoint, ports: [80] } } ) }
+        let(:job) do
+          create(:ci_build, options: { image: { name: image_name,
+                                                entrypoint: entrypoint,
+                                                ports: [80],
+                                                pull_policy: pull_policy } } )
+        end
 
         it 'fabricates an object of the proper class' do
           is_expected.to be_kind_of(described_class)
@@ -38,6 +44,7 @@ RSpec.describe Gitlab::Ci::Build::Image do
         it 'populates fabricated object with the proper attributes' do
           expect(subject.name).to eq(image_name)
           expect(subject.entrypoint).to eq(entrypoint)
+          expect(subject.pull_policy).to eq(pull_policy)
         end
 
         it 'populates the ports' do

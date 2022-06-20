@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -12,11 +12,6 @@ This document describes how to properly write database migrations
 for [the decomposed GitLab application using multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 
 Learn more about general multiple databases support in a [separate document](multiple_databases.md).
-
-WARNING:
-If you experience any issues using `Gitlab::Database::Migration[2.0]`,
-you can temporarily revert back to the previous behavior by changing the version to `Gitlab::Database::Migration[1.0]`.
-Please report any issues with `Gitlab::Database::Migration[2.0]` in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/358430).
 
 The design for multiple databases (except for the Geo database) assumes
 that all decomposed databases have **the same structure** (for example, schema), but **the data is different** in each database. This means that some tables do not contain data on each database.
@@ -77,6 +72,30 @@ class AddUserIdAndStateIndexToMergeRequestReviewers < Gitlab::Database::Migratio
   end
 end
 ```
+
+#### Example: Add a new table to store in a single database
+
+1. Define the [GitLab Schema](multiple_databases.md#gitlab-schema) of the table in [`lib/gitlab/database/gitlab_schemas.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/gitlab_schemas.yml):
+
+   ```yaml
+   ssh_signatures: :gitlab_main
+   ```
+
+1. Create the table in a schema migration:
+
+   ```ruby
+   class CreateSshSignatures < Gitlab::Database::Migration[2.0]
+     def change
+       create_table :ssh_signatures do |t|
+         t.timestamps_with_timezone null: false
+         t.bigint :project_id, null: false, index: true
+         t.bigint :key_id, null: false, index: true
+         t.integer :verification_status, default: 0, null: false, limit: 2
+         t.binary :commit_sha, null: false, index: { unique: true }
+       end
+     end
+   end
+   ```
 
 ### Data Manipulation Language (DML)
 
@@ -241,7 +260,7 @@ the `database_tasks: false` set. `gitlab:db:validate_config` always runs before 
 
 ## Validation
 
-Validation in a nutshell uses [pg_query](https://github.com/pganalyze/pg_query) to analyze
+Validation in a nutshell uses [`pg_query`](https://github.com/pganalyze/pg_query) to analyze
 each query and classify tables with information from [`gitlab_schema.yml`](multiple_databases.md#gitlab-schema).
 The migration is skipped if the specified `gitlab_schema` is outside of a list of schemas
 managed by a given database connection (`Gitlab::Database::gitlab_schemas_for_connection`).
@@ -408,7 +427,7 @@ updating all `ci_pipelines`, you would set
 
 As with all DML migrations, you cannot query another database outside of
 `restrict_gitlab_migration` or `gitlab_shared`. If you need to query another database,
-you'll likely need to separate these into two migrations somehow.
+separate the migrations.
 
 Because the actual migration logic (not the queueing step) for background
 migrations runs in a Sidekiq worker, the logic can perform DML queries on

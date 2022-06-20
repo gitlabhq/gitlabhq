@@ -21,8 +21,8 @@
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
-      .merge-request-tabs-container
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links
+      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if Feature.enabled?(:moved_mr_sidebar, @project) && !fluid_layout}" }
+        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0{ class: "#{'gl-w-full gl-lg-w-auto!' if Feature.enabled?(:moved_mr_sidebar, @project)}" }
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
@@ -41,6 +41,12 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }
+          - if Feature.enabled?(:moved_mr_sidebar, @project)
+            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.js-expand-sidebar{ class: "gl-lg-display-none!" }
+              = render Pajamas::ButtonComponent.new(size: 'small',
+                icon: 'angle-double-left',
+                button_options: { class: 'js-sidebar-toggle' }) do
+                = _('Expand')
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
 
@@ -57,13 +63,10 @@
               = render "projects/merge_requests/widget"
               = render "projects/merge_requests/awards_block"
               - if mr_action === "show"
-                - if Feature.enabled?(:paginated_notes, @project)
-                  - add_page_startup_api_call notes_url
-                - else
-                  - add_page_startup_api_call discussions_path(@merge_request)
+                - add_page_startup_api_call Feature.enabled?(:paginated_mr_discussions, @project) ? discussions_path(@merge_request, per_page: 20) : discussions_path(@merge_request)
                 - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
-              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request, Feature.enabled?(:paginated_notes, @project)).to_json,
+              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
                 endpoint_metadata: @endpoint_metadata_url,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',

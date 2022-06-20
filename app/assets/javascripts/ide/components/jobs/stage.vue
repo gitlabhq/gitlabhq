@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     collapseIcon() {
-      return this.stage.isCollapsed ? 'angle-left' : 'angle-down';
+      return this.stage.isCollapsed ? 'chevron-lg-left' : 'chevron-lg-down';
     },
     showLoadingIcon() {
       return this.stage.isLoading && !this.stage.jobs.length;

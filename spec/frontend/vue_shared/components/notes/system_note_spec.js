@@ -1,12 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
+import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
-import initMRPopovers from '~/mr_popover/index';
 import createStore from '~/notes/stores';
 import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import axios from '~/lib/utils/axios_utils';
-
-jest.mock('~/mr_popover/index', () => jest.fn());
 
 describe('system note component', () => {
   let vm;
@@ -76,10 +74,12 @@ describe('system note component', () => {
     expect(vm.find('.system-note-message').html()).toContain('<span>closed</span>');
   });
 
-  it('should initMRPopovers onMount', () => {
+  it('should renderGFM onMount', () => {
+    const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
+
     createComponent(props);
 
-    expect(initMRPopovers).toHaveBeenCalled();
+    expect(renderGFMSpy).toHaveBeenCalled();
   });
 
   it('renders outdated code lines', async () => {

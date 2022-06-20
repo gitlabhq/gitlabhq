@@ -6,7 +6,7 @@
 # For a list of all options, see https://docs.errata.ai/vale/styles.
 extends: conditional
 message: "'%s' is uppercase. Use lowercase or `backticks` if possible. Otherwise add this word to the rule's exception list."
-link: https://about.gitlab.com/handbook/marketing/growth-marketing/content/editorial-team/#acronyms
+link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-uppercase-acronym-test
 level: warning
 ignorecase: false
 # Ensures that the existence of 'first' implies the existence of 'second'.
@@ -14,8 +14,10 @@ first: '\b([A-Z]{3,5})\b'
 second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 # ... with the exception of these:
 exceptions:
+  - ACL
   - AJAX
   - ANSI
+  - APAC
   - API
   - APM
   - ARM
@@ -26,26 +28,36 @@ exceptions:
   - BSD
   - CAS
   - CDN
+  - CGI
   - CIDR
   - CLI
   - CNA
-  - CNAME
+  - CNCF
   - CORE
+  - CORS
   - CPU
   - CRIME
+  - CRM
+  - CRUD
   - CSRF
   - CSS
   - CSV
+  - CTE
+  - CWE
   - CVE
   - CVS
+  - CVSS
   - DAG
   - DAST
+  - DDL
   - DHCP
+  - DML
   - DNS
   - DOM
   - DSA
   - DSL
   - DVCS
+  - DVD
   - ECDSA
   - ECS
   - EFS
@@ -70,10 +82,12 @@ exceptions:
   - GID
   - GIF
   - GKE
+  - GLEX
   - GLFM
   - GNU
   - GPG
   - GPL
+  - GPS
   - GPU
   - GUI
   - HAML
@@ -81,6 +95,7 @@ exceptions:
   - HEAD
   - HIPAA
   - HLL
+  - HSTS
   - HTML
   - HTTP
   - HTTPS
@@ -90,6 +105,7 @@ exceptions:
   - ICO
   - IDE
   - IID
+  - IIS
   - IMAP
   - IOPS
   - IRC
@@ -99,16 +115,19 @@ exceptions:
   - JSON
   - JVM
   - JWT
+  - KICS
   - LAN
   - LDAP
   - LDAPS
   - LESS
   - LFS
   - LRU
+  - LSIF
   - LTM
   - LTS
   - MIME
   - MIT
+  - MITRE
   - MVC
   - NAT
   - NDA
@@ -117,6 +136,7 @@ exceptions:
   - NOTE
   - NPM
   - NTP
+  - OKD
   - ONLY
   - OSS
   - OTP
@@ -133,7 +153,9 @@ exceptions:
   - PNG
   - POSIX
   - POST
+  - PROXY
   - PUT
+  - QPS
   - RAID
   - RAM
   - RBAC
@@ -155,7 +177,9 @@ exceptions:
   - SAN
   - SAST
   - SATA
+  - SBOM
   - SCIM
+  - SCM
   - SCP
   - SCSS
   - SDK
@@ -163,13 +187,17 @@ exceptions:
   - SEO
   - SFTP
   - SHA
+  - SKI
   - SLA
   - SLI
+  - SLO
   - SMS
   - SMTP
+  - SOAP
   - SOC
   - SOX
   - SPDX
+  - SPDY
   - SPF
   - SQL
   - SRE
@@ -179,6 +207,7 @@ exceptions:
   - SSL
   - SSO
   - STI
+  - SUSE
   - SVG
   - SVN
   - TCP
@@ -189,7 +218,9 @@ exceptions:
   - TODO
   - TOML
   - TOTP
+  - TPS
   - TTL
+  - UBI
   - UDP
   - UID
   - UID

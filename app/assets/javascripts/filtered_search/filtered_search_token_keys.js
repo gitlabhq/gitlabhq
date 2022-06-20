@@ -1,5 +1,3 @@
-import { __ } from '~/locale';
-
 export default class FilteredSearchTokenKeys {
   constructor(tokenKeys = [], alternativeTokenKeys = [], conditions = []) {
     this.tokenKeys = tokenKeys;
@@ -74,24 +72,6 @@ export default class FilteredSearchTokenKeys {
           condition.value.toLowerCase() === value.toLowerCase(),
       ) || null
     );
-  }
-
-  addExtraTokensForIssues() {
-    const confidentialToken = {
-      formattedKey: __('Confidential'),
-      key: 'confidential',
-      type: 'string',
-      param: '',
-      symbol: '',
-      icon: 'eye-slash',
-      tag: __('Yes or No'),
-      lowercaseValueOnSubmit: true,
-      uppercaseTokenName: false,
-      capitalizeTokenValue: true,
-    };
-
-    this.tokenKeys.push(confidentialToken);
-    this.tokenKeysWithAlternative.push(confidentialToken);
   }
 
   removeTokensForKeys(...keys) {

@@ -144,7 +144,6 @@ export default {
     'assigneeUsernameQuery',
     'slaFeatureAvailable',
     'canCreateIncident',
-    'incidentEscalationsAvailable',
   ],
   apollo: {
     incidents: {
@@ -238,7 +237,6 @@ export default {
       const isHidden = {
         published: !this.publishedAvailable,
         incidentSla: !this.slaFeatureAvailable,
-        escalationStatus: !this.incidentEscalationsAvailable,
       };
 
       return this.$options.fields.filter(({ key }) => !isHidden[key]);
@@ -421,7 +419,7 @@ export default {
             </div>
           </template>
 
-          <template v-if="incidentEscalationsAvailable" #cell(escalationStatus)="{ item }">
+          <template #cell(escalationStatus)="{ item }">
             <tooltip-on-truncate
               :title="getEscalationStatus(item.escalationStatus)"
               data-testid="incident-escalation-status"

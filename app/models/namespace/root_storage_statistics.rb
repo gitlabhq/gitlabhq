@@ -44,15 +44,26 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   def merged_attributes
     attributes_from_project_statistics.merge!(
       attributes_from_personal_snippets,
-      attributes_from_namespace_statistics
+      attributes_from_namespace_statistics,
+      attributes_for_container_registry_size
     ) { |key, v1, v2| v1 + v2 }
+  end
+
+  def attributes_for_container_registry_size
+    container_registry_size = namespace.container_repositories_size || 0
+
+    {
+      storage_size: container_registry_size,
+      container_registry_size: container_registry_size
+    }.with_indifferent_access
   end
 
   def attributes_from_project_statistics
     from_project_statistics
-      .take
-      .attributes
-      .slice(*STATISTICS_ATTRIBUTES)
+    .take
+    .attributes
+    .slice(*STATISTICS_ATTRIBUTES)
+    .with_indifferent_access
   end
 
   def from_project_statistics
@@ -74,7 +85,10 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   def attributes_from_personal_snippets
     return {} unless namespace.user_namespace?
 
-    from_personal_snippets.take.slice(SNIPPETS_SIZE_STAT_NAME)
+    from_personal_snippets
+    .take
+    .slice(SNIPPETS_SIZE_STAT_NAME)
+    .with_indifferent_access
   end
 
   def from_personal_snippets
@@ -102,7 +116,12 @@ class Namespace::RootStorageStatistics < ApplicationRecord
     # guard clause.
     return {} unless namespace.group_namespace?
 
-    from_namespace_statistics.take.slice(*self.class.namespace_statistics_attributes)
+    from_namespace_statistics
+    .take
+    .slice(
+      *self.class.namespace_statistics_attributes
+    )
+    .with_indifferent_access
   end
 end
 

@@ -256,7 +256,7 @@ To create a thread by replying to a comment:
    The reply section is displayed.
 
 1. Enter your reply.
-1. Select **Comment** or **Add comment now** (depending on where in the UI you are replying).
+1. Select **Reply** or **Add comment now** (depending on where in the UI you are replying).
 
 The top comment is converted to a thread.
 

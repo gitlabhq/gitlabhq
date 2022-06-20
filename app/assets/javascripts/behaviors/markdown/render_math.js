@@ -1,6 +1,7 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
+import { unrestrictedPages } from './constants';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
@@ -48,6 +49,7 @@ class SafeMathRenderer {
     this.renderElement = this.renderElement.bind(this);
     this.render = this.render.bind(this);
     this.attachEvents = this.attachEvents.bind(this);
+    this.pageName = document.querySelector('body').dataset.page;
   }
 
   renderElement(chosenEl) {
@@ -56,7 +58,7 @@ class SafeMathRenderer {
     }
 
     const el = chosenEl || this.queue.shift();
-    const forceRender = Boolean(chosenEl);
+    const forceRender = Boolean(chosenEl) || unrestrictedPages.includes(this.pageName);
     const text = el.textContent;
 
     el.removeAttribute('style');
@@ -79,7 +81,7 @@ class SafeMathRenderer {
                 'math|Displaying this math block may cause performance issues on this page',
               )}</div>
               <div class="gl-alert-actions">
-                <button class="js-lazy-render-math btn gl-alert-action btn-primary btn-md gl-button">Display anyway</button>
+                <button class="js-lazy-render-math btn gl-alert-action btn-confirm btn-md gl-button">Display anyway</button>
               </div>
             </div>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -110,7 +112,7 @@ class SafeMathRenderer {
 
       try {
         displayContainer.innerHTML = this.katex.renderToString(text, {
-          displayMode: el.getAttribute('data-math-style') === 'display',
+          displayMode: el.dataset.mathStyle === 'display',
           throwOnError: true,
           maxSize: 20,
           maxExpand: 20,
@@ -143,7 +145,7 @@ class SafeMathRenderer {
     this.elements.forEach((el) => {
       const placeholder = document.createElement('span');
       placeholder.style.display = 'none';
-      placeholder.setAttribute('data-math-style', el.getAttribute('data-math-style'));
+      placeholder.dataset.mathStyle = el.dataset.mathStyle;
       placeholder.textContent = el.textContent;
       el.parentNode.replaceChild(placeholder, el);
       this.queue.push(placeholder);

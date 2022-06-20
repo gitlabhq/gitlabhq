@@ -256,6 +256,24 @@ RSpec.describe API::Wikis do
           include_examples 'wiki API 404 Wiki Page Not Found'
         end
       end
+
+      context 'when content contains a reference' do
+        let(:issue) { create(:issue, project: project) }
+        let(:params) { { render_html: true } }
+        let(:page) { create(:wiki_page, wiki: project.wiki, title: 'page_with_ref', content: issue.to_reference) }
+        let(:expected_content) { %r{<a href=".*#{issue.iid}".*>#{issue.to_reference}</a>} }
+
+        before do
+          project.add_developer(user)
+
+          request
+        end
+
+        it 'expands the reference in the content' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['content']).to match(expected_content)
+        end
+      end
     end
   end
 

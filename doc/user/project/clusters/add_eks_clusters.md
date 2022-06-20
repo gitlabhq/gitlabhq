@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
-This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
+This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/index.md)
 to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
@@ -23,7 +23,7 @@ use the [GitLab agent](../../clusters/agent/index.md).
 
 ## Create a new EKS cluster
 
-To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
+To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md).
 
 ### How to create a new cluster on EKS through cluster certificates (DEPRECATED)
 
@@ -58,7 +58,7 @@ cluster certificates:
    - Group's **Kubernetes** page, for a group-level cluster.
    - **Menu > Admin > Kubernetes**, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
-1. Under the **Create new cluster** tab, click **Amazon EKS** to display an
+1. Under the **Create new cluster** tab, select **Amazon EKS** to display an
    `Account ID` and `External ID` needed for later steps.
 1. In the [IAM Management Console](https://console.aws.amazon.com/iam/home), create an IAM policy:
    1. From the left panel, select **Policies**.
@@ -116,8 +116,8 @@ cluster certificates:
       If you get an error during this process, GitLab does not roll back the changes. You must remove resources manually. You can do this by deleting
       the relevant [CloudFormation stack](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-delete-stack.html).
 
-   1. Click **Review policy**.
-   1. Enter a suitable name for this policy, and click **Create Policy**. You can now close this window.
+   1. Select **Review policy**.
+   1. Enter a suitable name for this policy, and select **Create Policy**. You can now close this window.
 
 ### Prepare the cluster in Amazon
 
@@ -140,16 +140,16 @@ In the [IAM Management Console](https://console.aws.amazon.com/iam/home),
 create another IAM role (**role B**) for GitLab authentication with AWS:
 
 1. On the AWS IAM console, select **Roles** from the left panel.
-1. Click **Create role**.
+1. Select **Create role**.
 1. Under **Select type of trusted entity**, select **Another AWS account**.
 1. Enter the Account ID from GitLab into the **Account ID** field.
 1. Check **Require external ID**.
 1. Enter the External ID from GitLab into the **External ID** field.
-1. Click **Next: Permissions**, and select the policy you just created.
-1. Click **Next: Tags**, and optionally enter any tags you wish to associate with this role.
-1. Click **Next: Review**.
+1. Select **Next: Permissions**, and select the policy you just created.
+1. Select **Next: Tags**, and optionally enter any tags you wish to associate with this role.
+1. Select **Next: Review**.
 1. Enter a role name and optional description into the fields provided.
-1. Click **Create role**. The new role name displays at the top. Click on its name and copy the
+1. Select **Create role**. The new role name displays at the top. Select its name and copy the
    `Role ARN` from the newly created role.
 
 ### Configure your cluster's data in GitLab
@@ -213,7 +213,7 @@ Otherwise, the deployed app isn't externally available outside of the cluster.
 GitLab creates a new pipeline, which begins to build, test, and deploy the app.
 
 After the pipeline has finished, your app runs in EKS, and is available
-to users. Click on **CI/CD > Environments**.
+to users. Select **CI/CD > Environments**.
 
 ![Deployed Environment](img/environment.png)
 
@@ -252,7 +252,7 @@ IAM user in the Amazon AWS console, and follow these steps:
 1. Check **Enable Amazon EKS integration**.
 1. Enter your **Account ID**.
 1. Enter your [access key and ID](#eks-access-key-and-id).
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 #### EKS access key and ID
 

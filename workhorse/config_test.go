@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"io"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"testing"
@@ -24,7 +23,7 @@ func TestDefaultConfig(t *testing.T) {
 }
 
 func TestConfigFile(t *testing.T) {
-	f, err := ioutil.TempFile("", "workhorse-config-test")
+	f, err := os.CreateTemp("", "workhorse-config-test")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
 
@@ -47,6 +46,15 @@ certificate = "/path/to/certificate"
 key = "/path/to/private/key"
 min_version = "tls1.1"
 max_version = "tls1.2"
+[[listeners]]
+network = "tcp"
+addr = "localhost:3444"
+[metrics_listener]
+network = "tcp"
+addr = "localhost:3445"
+[metrics_listener.tls]
+certificate = "/path/to/certificate"
+key = "/path/to/private/key"
 `
 	_, err = io.WriteString(f, data)
 	require.NoError(t, err)
@@ -66,14 +74,69 @@ max_version = "tls1.2"
 	require.Equal(t, []string{"10.0.0.1/8"}, cfg.TrustedCIDRsForPropagation)
 	require.Equal(t, 60*time.Second, cfg.ShutdownTimeout.Duration)
 
-	require.Len(t, cfg.Listeners, 1)
-	listener := cfg.Listeners[0]
-	require.Equal(t, "/path/to/certificate", listener.Tls.Certificate)
-	require.Equal(t, "/path/to/private/key", listener.Tls.Key)
-	require.Equal(t, "tls1.1", listener.Tls.MinVersion)
-	require.Equal(t, "tls1.2", listener.Tls.MaxVersion)
-	require.Equal(t, "tcp", listener.Network)
-	require.Equal(t, "localhost:3443", listener.Addr)
+	listenerConfigs := []config.ListenerConfig{
+		{
+			Network: "tcp",
+			Addr:    "localhost:3445",
+			Tls: &config.TlsConfig{
+				Certificate: "/path/to/certificate",
+				Key:         "/path/to/private/key",
+			},
+		},
+		{
+			Network: "tcp",
+			Addr:    "localhost:3443",
+			Tls: &config.TlsConfig{
+				Certificate: "/path/to/certificate",
+				Key:         "/path/to/private/key",
+				MinVersion:  "tls1.1",
+				MaxVersion:  "tls1.2",
+			},
+		},
+		{
+			Network: "tcp",
+			Addr:    "localhost:3444",
+		},
+	}
+
+	require.Len(t, cfg.Listeners, 2)
+	require.NotNil(t, cfg.MetricsListener)
+
+	for i, cfg := range []config.ListenerConfig{*cfg.MetricsListener, cfg.Listeners[0], cfg.Listeners[1]} {
+		require.Equal(t, listenerConfigs[i].Network, cfg.Network)
+		require.Equal(t, listenerConfigs[i].Addr, cfg.Addr)
+	}
+
+	for i, cfg := range []config.ListenerConfig{*cfg.MetricsListener, cfg.Listeners[0]} {
+		require.Equal(t, listenerConfigs[i].Tls.Certificate, cfg.Tls.Certificate)
+		require.Equal(t, listenerConfigs[i].Tls.Key, cfg.Tls.Key)
+		require.Equal(t, listenerConfigs[i].Tls.MinVersion, cfg.Tls.MinVersion)
+		require.Equal(t, listenerConfigs[i].Tls.MaxVersion, cfg.Tls.MaxVersion)
+	}
+
+	require.Nil(t, cfg.Listeners[1].Tls)
+}
+
+func TestTwoMetricsAddrsAreSpecifiedError(t *testing.T) {
+	f, err := os.CreateTemp("", "workhorse-config-test")
+	require.NoError(t, err)
+	defer os.Remove(f.Name())
+
+	data := `
+[metrics_listener]
+network = "tcp"
+addr = "localhost:3445"
+`
+	_, err = io.WriteString(f, data)
+	require.NoError(t, err)
+	require.NoError(t, f.Close())
+
+	args := []string{
+		"-config", f.Name(),
+		"-prometheusListenAddr", "prometheus listen addr",
+	}
+	_, _, err = buildConfig("test", args)
+	require.EqualError(t, err, "configFile: both prometheusListenAddr and metrics_listener can't be specified")
 }
 
 func TestConfigErrorHelp(t *testing.T) {
@@ -215,6 +278,7 @@ func TestConfigFlagParsing(t *testing.T) {
 		APICILongPollingDuration: 234 * time.Second,
 		PropagateCorrelationID:   true,
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
+		MetricsListener:          &config.ListenerConfig{Network: "tcp", Addr: "prometheus listen addr"},
 	}
 	require.Equal(t, expectedCfg, cfg)
 }

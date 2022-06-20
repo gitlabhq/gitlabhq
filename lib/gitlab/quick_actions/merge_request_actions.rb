@@ -88,19 +88,19 @@ module Gitlab
           @execution_message[:rebase] = _('Scheduled a rebase of branch %{branch}.') % { branch: branch }
         end
 
-        desc 'Toggle the Draft status'
+        desc { _('Toggle the Draft status') }
         explanation do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          if quick_action_target.work_in_progress?
-            _("Unmarks this %{noun} as a draft.")
+          if quick_action_target.draft?
+            _("Marks this %{noun} as ready.")
           else
             _("Marks this %{noun} as a draft.")
           end % { noun: noun }
         end
         execution_message do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          if quick_action_target.work_in_progress?
-            _("Unmarked this %{noun} as a draft.")
+          if quick_action_target.draft?
+            _("Marked this %{noun} as ready.")
           else
             _("Marked this %{noun} as a draft.")
           end % { noun: noun }
@@ -108,15 +108,45 @@ module Gitlab
 
         types MergeRequest
         condition do
-          quick_action_target.respond_to?(:work_in_progress?) &&
-            # Allow it to mark as WIP on MR creation page _or_ through MR notes.
+          quick_action_target.respond_to?(:draft?) &&
+            # Allow it to mark as draft on MR creation page or through MR notes
+            #
             (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
         end
         command :draft do
-          @updates[:wip_event] = quick_action_target.work_in_progress? ? 'unwip' : 'wip'
+          @updates[:wip_event] = quick_action_target.draft? ? 'ready' : 'draft'
         end
 
-        desc _('Set target branch')
+        desc { _('Set the Ready status') }
+        explanation do
+          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
+          if quick_action_target.draft?
+            _("Marks this %{noun} as ready.")
+          else
+            _("No change to this %{noun}'s draft status.")
+          end % { noun: noun }
+        end
+        execution_message do
+          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
+          if quick_action_target.draft?
+            _("Marked this %{noun} as ready.")
+          else
+            _("No change to this %{noun}'s draft status.")
+          end % { noun: noun }
+        end
+
+        types MergeRequest
+        condition do
+          # Allow it to mark as draft on MR creation page or through MR notes
+          #
+          quick_action_target.respond_to?(:draft?) &&
+            (quick_action_target.new_record? || current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target))
+        end
+        command :ready do
+          @updates[:wip_event] = 'ready' if quick_action_target.draft?
+        end
+
+        desc { _('Set target branch') }
         explanation do |branch_name|
           _('Sets target branch to %{branch_name}.') % { branch_name: branch_name }
         end
@@ -137,8 +167,8 @@ module Gitlab
           @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
         end
 
-        desc _('Submit a review')
-        explanation _('Submit the current review.')
+        desc { _('Submit a review') }
+        explanation { _('Submit the current review.') }
         types MergeRequest
         condition do
           quick_action_target.persisted?
@@ -154,8 +184,8 @@ module Gitlab
                                                end
         end
 
-        desc _('Approve a merge request')
-        explanation _('Approve the current merge request.')
+        desc { _('Approve a merge request') }
+        explanation { _('Approve the current merge request.') }
         types MergeRequest
         condition do
           quick_action_target.persisted? && quick_action_target.can_be_approved_by?(current_user)
@@ -168,8 +198,8 @@ module Gitlab
           @execution_message[:approve] = _('Approved the current merge request.')
         end
 
-        desc _('Unapprove a merge request')
-        explanation _('Unapprove the current merge request.')
+        desc { _('Unapprove a merge request') }
+        explanation { _('Unapprove the current merge request.') }
         types MergeRequest
         condition do
           quick_action_target.persisted? && quick_action_target.can_be_unapproved_by?(current_user)

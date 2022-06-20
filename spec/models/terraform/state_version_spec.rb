@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Terraform::StateVersion do
   it { is_expected.to be_a FileStoreMounter }
+  it { is_expected.to be_a EachBatch }
 
   it { is_expected.to belong_to(:terraform_state).required }
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }

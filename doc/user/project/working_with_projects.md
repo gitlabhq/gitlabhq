@@ -59,7 +59,7 @@ To explore project topics:
 The **Projects** page shows list of topics sorted by the number of associated projects.
 To view projects associated with a topic, select a topic from the list.
 
-You can assign topics to a project on the [Project Settings page](settings/index.md#topics).
+You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
 
 If you're an instance administrator, you can administer all project topics from the
 [Admin Area's Topics page](../admin_area/index.md#administering-topics).
@@ -73,7 +73,7 @@ To create a project in GitLab:
    - Create a [blank project](#create-a-blank-project).
    - Create a project from a:
       - [built-in template](#create-a-project-from-a-built-in-template).
-      - [custom template](#create-a-project-from-a-custom-template).  
+      - [custom template](#create-a-project-from-a-custom-template).
       - [HIPAA audit protocol template](#create-a-project-from-the-hipaa-audit-protocol-template).
    - [Import a project](../../user/project/import/index.md)
      from a different repository. Contact your GitLab administrator if this option is not available.
@@ -115,7 +115,7 @@ Built-in templates are sourced from the following groups:
 - [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
 - [`pages`](https://gitlab.com/pages)
 
-Anyone can contribute a built-in template by following [these steps](https://about.gitlab.com/community/contribute/project-templates/).
+Anyone can [contribute a built-in template](../../development/project_templates.md).
 
 To create a project from a built-in template:
 
@@ -336,6 +336,29 @@ To view the activity of a project:
 1. On the left sidebar, select **Project information > Activity**.
 1. Select a tab to view the type of project activity.
 
+## Search in projects
+
+You can search through your projects.
+
+1. On the top bar, select **Menu**.
+1. In **Search your projects**, type the project name.
+
+GitLab filters as you type.
+
+You can also look for the projects you [starred](#star-a-project) (**Starred projects**).
+
+You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
+through **Trending**, best rated with **Most stars**, or **All** of them.
+
+You can sort projects by:
+
+- Name
+- Created date
+- Updated date
+- Owner
+
+You can also choose to hide or show archived projects.
+
 ## Leave a project
 
 If you leave a project, you are no longer a project
@@ -484,5 +507,5 @@ download starts, the `insteadOf` configuration sends the traffic to the secondar
 - [Import a project](../../user/project/import/index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 - [Fork a project](repository/forking_workflow.md#creating-a-fork).
-- [Adjust project visibility and access levels](settings/index.md#sharing-and-permissions).
+- [Adjust project visibility and access levels](settings/index.md#configure-project-visibility-features-and-permissions).
 - [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)

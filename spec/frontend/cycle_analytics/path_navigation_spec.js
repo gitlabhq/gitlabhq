@@ -1,4 +1,4 @@
-import { GlPath, GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlPath, GlSkeletonLoader } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -73,7 +73,7 @@ describe('Project PathNavigation', () => {
         });
 
         it('hides the gl-skeleton-loading component', () => {
-          expect(wrapper.find(GlSkeletonLoading).exists()).toBe(false);
+          expect(wrapper.find(GlSkeletonLoader).exists()).toBe(false);
         });
 
         it('renders each stage', () => {
@@ -116,7 +116,7 @@ describe('Project PathNavigation', () => {
         });
 
         it('displays the gl-skeleton-loading component', () => {
-          expect(wrapper.find(GlSkeletonLoading).exists()).toBe(true);
+          expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
         });
       });
     });

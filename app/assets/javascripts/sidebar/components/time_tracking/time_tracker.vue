@@ -252,6 +252,7 @@ export default {
           size="lg"
           :title="__('Time tracking report')"
           :hide-footer="true"
+          @hide="refresh"
         >
           <time-tracking-report :limit-to-hours="limitToHours" :issuable-id="issuableId" />
         </gl-modal>

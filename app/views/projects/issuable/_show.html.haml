@@ -4,7 +4,7 @@
 - if issuable.relocation_target
   - page_canonical_link issuable.relocation_target.present(current_user: current_user).web_url
 
-= render "projects/issues/alert_moved_from_service_desk", issue: issuable
+= render "projects/issues/service_desk/alert_moved_from_service_desk", issue: issuable
 
 = render 'shared/issue_type/details_header', issuable: issuable
 = render 'shared/issue_type/details_content', issuable: issuable, api_awards_path: api_awards_path

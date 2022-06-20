@@ -2,10 +2,9 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
 
-export * from './alert_management_alerts_api';
-
 const PROJECTS_PATH = '/api/:version/projects.json';
 const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_members/:project_id';
+const PROJECT_REPOSITORY_SIZE_PATH = '/api/:version/projects/:id/repository_size';
 
 export function getProjects(query, options, callback = () => {}) {
   const url = buildApiUrl(PROJECTS_PATH);
@@ -33,5 +32,13 @@ export function importProjectMembers(sourceId, targetId) {
   const url = buildApiUrl(PROJECT_IMPORT_MEMBERS_PATH)
     .replace(':id', sourceId)
     .replace(':project_id', targetId);
+  return axios.post(url);
+}
+
+export function updateRepositorySize(projectPath) {
+  const url = buildApiUrl(PROJECT_REPOSITORY_SIZE_PATH).replace(
+    ':id',
+    encodeURIComponent(projectPath),
+  );
   return axios.post(url);
 }

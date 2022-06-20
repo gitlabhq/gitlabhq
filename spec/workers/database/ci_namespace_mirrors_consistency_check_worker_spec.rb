@@ -6,29 +6,11 @@ RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker do
   let(:worker) { described_class.new }
 
   describe '#perform' do
-    context 'feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_namespace_mirrors_consistency_check: false)
-      end
-
-      it 'does not perform the consistency check on namespaces' do
-        expect(Database::ConsistencyCheckService).not_to receive(:new)
-        expect(worker).not_to receive(:log_extra_metadata_on_done)
-        worker.perform
-      end
-    end
-
-    context 'feature flag is enabled' do
-      before do
-        stub_feature_flags(ci_namespace_mirrors_consistency_check: true)
-      end
-
-      it 'executes the consistency check on namespaces' do
-        expect(Database::ConsistencyCheckService).to receive(:new).and_call_original
-        expected_result = { batches: 0, matches: 0, mismatches: 0, mismatches_details: [] }
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:results, expected_result)
-        worker.perform
-      end
+    it 'executes the consistency check on namespaces' do
+      expect(Database::ConsistencyCheckService).to receive(:new).and_call_original
+      expected_result = { batches: 0, matches: 0, mismatches: 0, mismatches_details: [] }
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:results, expected_result)
+      worker.perform
     end
 
     context 'logs should contain the detailed mismatches' do
@@ -37,7 +19,6 @@ RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker do
 
       before do
         redis_shared_state_cleanup!
-        stub_feature_flags(ci_namespace_mirrors_consistency_check: true)
         create_list(:namespace, 10) # This will also create Ci::NameSpaceMirror objects
         missing_namespace.delete
 

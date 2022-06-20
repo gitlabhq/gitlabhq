@@ -41,7 +41,7 @@ RSpec.describe ProjectFeature do
     end
   end
 
-  it_behaves_like 'access level validation', ProjectFeature::FEATURES - %i(pages) do
+  it_behaves_like 'access level validation', ProjectFeature::FEATURES - %i(pages package_registry) do
     let(:container_features) { project.project_feature }
   end
 
@@ -170,6 +170,10 @@ RSpec.describe ProjectFeature do
       expect(described_class.required_minimum_access_level(:repository)).to eq(Gitlab::Access::GUEST)
     end
 
+    it 'handles package registry' do
+      expect(described_class.required_minimum_access_level(:package_registry)).to eq(Gitlab::Access::REPORTER)
+    end
+
     it 'raises error if feature is invalid' do
       expect do
         described_class.required_minimum_access_level(:foos)
@@ -243,6 +247,50 @@ RSpec.describe ProjectFeature do
     end
   end
 
+  describe 'package_registry_access_level' do
+    context 'with default value' do
+      where(:config_packages_enabled, :expected_result) do
+        false | ProjectFeature::DISABLED
+        true  | ProjectFeature::ENABLED
+        nil   | ProjectFeature::DISABLED
+      end
+
+      with_them do
+        it 'creates project_feature with correct package_registry_access_level' do
+          stub_packages_setting(enabled: config_packages_enabled)
+          project = Project.new
+
+          expect(project.project_feature.package_registry_access_level).to eq(expected_result)
+        end
+      end
+    end
+
+    context 'sync packages_enabled' do
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      where(:initial_value, :new_value, :expected_result) do
+        ProjectFeature::DISABLED | ProjectFeature::DISABLED | false
+        ProjectFeature::DISABLED | ProjectFeature::ENABLED  | true
+        ProjectFeature::DISABLED | ProjectFeature::PUBLIC   | true
+        ProjectFeature::ENABLED  | ProjectFeature::DISABLED | false
+        ProjectFeature::ENABLED  | ProjectFeature::ENABLED  | true
+        ProjectFeature::ENABLED  | ProjectFeature::PUBLIC   | true
+        ProjectFeature::PUBLIC   | ProjectFeature::DISABLED | false
+        ProjectFeature::PUBLIC   | ProjectFeature::ENABLED  | true
+        ProjectFeature::PUBLIC   | ProjectFeature::PUBLIC   | true
+      end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+
+      with_them do
+        it 'set correct value' do
+          project = create(:project, package_registry_access_level: initial_value)
+
+          project.project_feature.update!(package_registry_access_level: new_value)
+
+          expect(project.packages_enabled).to eq(expected_result)
+        end
+      end
+    end
+  end
   # rubocop:disable Gitlab/FeatureAvailableUsage
   describe '#feature_available?' do
     let(:features) { ProjectFeature::FEATURES }

@@ -39,4 +39,8 @@
         .form-text.text-muted
           = html_escape(s_('Number of Git pushes after which %{code_start}git gc%{code_end} is run.')) % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }
 
+    .sub-section
+      %h4= s_("AdminSettings|Inactive project deletion")
+      .js-inactive-project-deletion-form{ data: inactive_projects_deletion_data(@application_setting) }
+
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

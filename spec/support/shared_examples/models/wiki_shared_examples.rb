@@ -540,14 +540,6 @@ RSpec.shared_examples 'wiki model' do
         end
       end
     end
-
-    context 'when feature flag :gitaly_replace_wiki_create_page is disabled' do
-      before do
-        stub_feature_flags(gitaly_replace_wiki_create_page: false)
-      end
-
-      it_behaves_like 'create_page tests'
-    end
   end
 
   describe '#update_page' do

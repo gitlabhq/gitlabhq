@@ -222,7 +222,7 @@ module QA
               # expected visibility.
               commit_success = retry_until(sleep_interval: 5) do
                 within_element(:commit_to_current_branch_radio_container) do
-                  choose_element(:commit_type_radio)
+                  choose_element(:commit_type_radio, true)
                 end
                 click_element(:commit_button) if has_element?(:commit_button)
 

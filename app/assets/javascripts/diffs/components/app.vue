@@ -384,14 +384,26 @@ export default {
 
     this.unwatchDiscussions = this.$watch(
       () => `${this.diffFiles.length}:${this.$store.state.notes.discussions.length}`,
-      () => this.setDiscussions(),
+      () => {
+        this.setDiscussions();
+
+        if (
+          this.$store.state.notes.doneFetchingBatchDiscussions &&
+          window.gon?.features?.paginatedMrDiscussions
+        ) {
+          this.unwatchDiscussions();
+        }
+      },
     );
 
     this.unwatchRetrievingBatches = this.$watch(
       () => `${this.retrievingBatches}:${this.$store.state.notes.discussions.length}`,
       () => {
         if (!this.retrievingBatches && this.$store.state.notes.discussions.length) {
-          this.unwatchDiscussions();
+          if (!window.gon?.features?.paginatedMrDiscussions) {
+            this.unwatchDiscussions();
+          }
+
           this.unwatchRetrievingBatches();
         }
       },

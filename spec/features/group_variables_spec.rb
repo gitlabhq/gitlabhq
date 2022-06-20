@@ -12,8 +12,18 @@ RSpec.describe 'Group variables', :js do
     group.add_owner(user)
     gitlab_sign_in(user)
     wait_for_requests
-    visit page_path
   end
 
-  it_behaves_like 'variable list'
+  context 'with disabled ff `ci_variable_settings_graphql' do
+    before do
+      stub_feature_flags(ci_variable_settings_graphql: false)
+      visit page_path
+    end
+
+    it_behaves_like 'variable list'
+  end
+
+  # TODO: Uncomment when the new graphQL app for variable settings
+  # is enabled.
+  # it_behaves_like 'variable list'
 end

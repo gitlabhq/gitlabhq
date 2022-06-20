@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -34,5 +34,5 @@ to be wrapped in a `Gitlab::Database.read_only?` or `Gitlab::Database.read_write
 guard, to make sure it doesn't for read-only databases.
 
 We have a Rails Middleware that filters any potentially writing
-operations (the CUD operations of CRUD) and prevent the user from trying
+operations (the `CUD` operations of CRUD) and prevent the user from trying
 to update the database and getting a 500 error (see `Gitlab::Middleware::ReadOnly`).

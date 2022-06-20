@@ -7,6 +7,7 @@ module BackgroundMigration
     include ApplicationWorker
 
     MAX_LEASE_ATTEMPTS = 5
+    BACKGROUND_MIGRATIONS_DELAY = 4.hours.freeze
 
     included do
       data_consistency :always
@@ -44,6 +45,18 @@ module BackgroundMigration
     #   lease on the class before giving up. See MR for more discussion.
     #   https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45298#note_434304956
     def perform(class_name, arguments = [], lease_attempts = MAX_LEASE_ATTEMPTS)
+      unless Feature.enabled?(:execute_background_migrations, type: :ops)
+        # Delay execution of background migrations
+        self.class.perform_in(BACKGROUND_MIGRATIONS_DELAY, class_name, arguments, lease_attempts)
+
+        Sidekiq.logger.info(
+          class: self.class.name,
+          database: self.class.tracking_database,
+          message: 'skipping execution, migration rescheduled')
+
+        return
+      end
+
       job_coordinator.with_shared_connection do
         perform_with_connection(class_name, arguments, lease_attempts)
       end

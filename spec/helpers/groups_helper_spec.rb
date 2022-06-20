@@ -419,4 +419,89 @@ RSpec.describe GroupsHelper do
       expect(localized_jobs_to_be_done_choices.keys).to match_array(NamespaceSetting.jobs_to_be_dones.keys)
     end
   end
+
+  describe '#group_name_and_path_app_data' do
+    let_it_be(:group) { build(:group, name: 'My awesome group', path: 'my-awesome-group') }
+    let_it_be(:subgroup) { build(:group, parent: group) }
+    let_it_be(:root_url) { 'https://gitlab.com/' }
+
+    before do
+      allow(Gitlab.config.mattermost).to receive(:enabled).and_return(true)
+      allow(helper).to receive(:root_url) { root_url }
+    end
+
+    context 'when group has a parent' do
+      it 'returns expected hash' do
+        expect(group_name_and_path_app_data(subgroup)).to match(
+          { base_path: 'https://gitlab.com/my-awesome-group', mattermost_enabled: 'true' }
+        )
+      end
+    end
+
+    context 'when group does not have a parent' do
+      it 'returns expected hash' do
+        expect(group_name_and_path_app_data(group)).to match(
+          { base_path: root_url, mattermost_enabled: 'true' }
+        )
+      end
+    end
+  end
+
+  describe '#subgroups_and_projects_list_app_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
+      allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
+    end
+
+    it 'returns expected hash' do
+      expect(helper.subgroups_and_projects_list_app_data(group)).to match({
+        show_schema_markup: 'true',
+        new_subgroup_path: including("groups/new?parent_id=#{group.id}"),
+        new_project_path: including("/projects/new?namespace_id=#{group.id}"),
+        new_subgroup_illustration: including('illustrations/subgroup-create-new-sm'),
+        new_project_illustration: including('illustrations/project-create-new-sm'),
+        empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
+        render_empty_state: 'true',
+        can_create_subgroups: 'true',
+        can_create_projects: 'true'
+      })
+    end
+  end
+
+  describe "#enabled_git_access_protocol_options_for_group" do
+    subject { helper.enabled_git_access_protocol_options_for_group }
+
+    before do
+      expect(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
+    end
+
+    context "instance setting is nil" do
+      let(:instance_setting) { nil }
+
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+    end
+
+    context "instance setting is blank" do
+      let(:instance_setting) { nil }
+
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+    end
+
+    context "instance setting is ssh" do
+      let(:instance_setting) { "ssh" }
+
+      it { is_expected.to contain_exactly([_("Only SSH"), "ssh"]) }
+    end
+
+    context "instance setting is http" do
+      let(:instance_setting) { "http" }
+
+      it { is_expected.to contain_exactly([_("Only HTTP(S)"), "http"]) }
+    end
+  end
 end

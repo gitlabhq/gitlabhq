@@ -43,6 +43,12 @@ RSpec.describe IssueBoardEntity do
     expect(subject).to include(labels: array_including(hash_including(:id, :title, :color, :description, :text_color, :priority)))
   end
 
+  describe 'type' do
+    it 'has an issue type' do
+      expect(subject[:type]).to eq('ISSUE')
+    end
+  end
+
   describe 'real_path' do
     it 'has an issue path' do
       expect(subject[:real_path]).to eq(project_issue_path(project, resource.iid))

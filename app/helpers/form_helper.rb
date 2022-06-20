@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module FormHelper
-  def form_errors(model, type: 'form', truncate: [])
+  def form_errors(model, type: 'form', truncate: [], pajamas_alert: false)
     errors = model.errors
 
     return unless errors.any?
@@ -14,21 +14,37 @@ module FormHelper
 
     truncate = Array.wrap(truncate)
 
-    tag.div(class: 'alert alert-danger', id: 'error_explanation') do
-      tag.h4(headline) <<
-        tag.ul do
-          messages = errors.map do |error|
-            attribute = error.attribute
-            message = error.message
+    messages = errors.map do |error|
+      attribute = error.attribute
+      message = error.message
 
-            message = html_escape_once(errors.full_message(attribute, message)).html_safe
-            message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
+      message = html_escape_once(errors.full_message(attribute, message)).html_safe
+      message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
+      message = append_help_page_link(message, error.options) if error.options[:help_page_url].present?
 
-            tag.li(message)
+      tag.li(message)
+    end.join.html_safe
+
+    if pajamas_alert
+      render Pajamas::AlertComponent.new(
+        variant: :danger,
+        title: headline,
+        dismissible: false,
+        alert_options: { id: 'error_explanation', class: 'gl-mb-5' }
+      ) do |c|
+        c.body do
+          tag.ul(class: 'gl-pl-5 gl-mb-0') do
+            messages
           end
-
-          messages.join.html_safe
         end
+      end
+    else
+      tag.div(class: 'alert alert-danger', id: 'error_explanation') do
+        tag.h4(headline) <<
+          tag.ul do
+            messages
+          end
+      end
     end
   end
 
@@ -119,6 +135,20 @@ module FormHelper
   end
 
   private
+
+  def append_help_page_link(message, options)
+    help_page_url = options[:help_page_url]
+    help_link_text = options[:help_link_text] || _('Learn more.')
+
+    help_link = link_to(
+      help_link_text,
+      help_page_url,
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    )
+
+    message + " #{help_link}".html_safe
+  end
 
   def multiple_assignees_dropdown_options(options)
     new_options = options.dup

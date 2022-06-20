@@ -1,11 +1,11 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
 export default {
   name: 'SkeletonNote',
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     TimelineEntryItem,
   },
 };
@@ -16,7 +16,7 @@ export default {
     <div class="timeline-icon"></div>
     <div class="timeline-content">
       <div class="note-header"></div>
-      <div class="note-body"><gl-skeleton-loading /></div>
+      <div class="note-body"><gl-skeleton-loader /></div>
     </div>
   </timeline-entry-item>
 </template>

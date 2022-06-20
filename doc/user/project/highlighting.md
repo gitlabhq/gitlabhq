@@ -42,7 +42,7 @@ To override syntax highlighting for a file type:
 After the changes merge into your [default branch](repository/branches/default.md),
 all `*.pl` files in your project are highlighted in your preferred language.
 
-You can also extend the highlighting with common gateway interface (CGI) options, such as:
+You can also extend the highlighting with Common Gateway Interface (CGI) options, such as:
 
 ``` conf
 # JSON file with .erb in it

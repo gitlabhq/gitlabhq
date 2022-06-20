@@ -23,7 +23,9 @@ module Mutations
 
           authorize!(incident)
 
-          response ::IncidentManagement::TimelineEvents::CreateService.new(incident, current_user, args).execute
+          response ::IncidentManagement::TimelineEvents::CreateService.new(
+            incident, current_user, args.merge(editable: true)
+          ).execute
         end
 
         private

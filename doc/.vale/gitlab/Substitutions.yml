@@ -38,7 +38,7 @@ swap:
   to sign-in: to sign in
   can sign-in: can sign in
   x509: X.509
-  yaml: YAML
+  yml: YAML
   admin user: administrator
   admin users: administrators
   administrator permission: administrator access

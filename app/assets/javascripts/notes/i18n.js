@@ -14,8 +14,8 @@ export const COMMENT_FORM = {
   epic: __('epic'),
   bodyPlaceholder: __('Write a comment or drag your files here…'),
   bodyPlaceholderInternal: __('Write an internal note or drag your files here…'),
-  confidential: s__('Notes|Make this an internal note'),
-  confidentialVisibility: s__(
+  internal: s__('Notes|Make this an internal note'),
+  internalVisibility: s__(
     'Notes|Internal notes are only visible to the author, assignees, and members with the role of Reporter or higher',
   ),
   discussionThatNeedsResolution: __(

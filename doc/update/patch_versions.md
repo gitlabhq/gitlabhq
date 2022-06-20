@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
@@ -107,7 +107,7 @@ sudo -u git -H make
 
 ### 8. Install/Update `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
 
-Please follow the [install instruction](../integration/elasticsearch.md#install-elasticsearch).
+Please follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 
 ### 9. Start application
 

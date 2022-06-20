@@ -12,12 +12,16 @@
       "required": [
         "id",
         "path",
-        "created_at"
+        "created_at",
+        "shared_runners_enabled",
+        "group_runners_enabled"
       ],
       "properties": {
         "id": { "type": "integer" },
         "path": { "type": "string" },
-        "created_at": { "type": ["string", "null"], "format": "date-time" }
+        "created_at": { "type": ["string", "null"], "format": "date-time" },
+        "shared_runners_enabled": { "type": "boolean" },
+        "group_runners_enabled": { "type": "boolean" }
       }
     },
     "user": {

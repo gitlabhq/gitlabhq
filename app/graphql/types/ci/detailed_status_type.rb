@@ -33,7 +33,7 @@ module Types
             method: :status_tooltip
 
       def id(parent:)
-        "#{object.id}-#{parent.object.object.id}"
+        "#{object.id}-#{parent.id}"
       end
 
       def action

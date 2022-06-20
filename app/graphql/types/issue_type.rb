@@ -127,6 +127,9 @@ module Types
     field :moved_to, Types::IssueType, null: true,
           description: 'Updated Issue after it got moved to another project.'
 
+    field :closed_as_duplicate_of, Types::IssueType, null: true,
+          description: 'Issue this issue was closed as a duplicate of.'
+
     field :create_note_email, GraphQL::Types::String, null: true,
           description: 'User specific email address for the issue.'
 
@@ -159,6 +162,10 @@ module Types
 
     def moved_to
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.moved_to_id).find
+    end
+
+    def closed_as_duplicate_of
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(Issue, object.duplicated_to_id).find
     end
 
     def discussion_locked

@@ -25,7 +25,7 @@ To view versions that are not available on `docs.gitlab.com`:
 ## Documenting version-specific features
 
 When a feature is added or updated, you can include its version information
-either as a **Version history** bullet or as an inline text reference.
+either as a **Version history** list item or as an inline text reference.
 
 You do not need to add version information on the pages in the `/development` directory.
 
@@ -132,7 +132,7 @@ To remove a page:
 
    ```markdown
    ---
-   stage: Enablement
+   stage: Data Stores
    group: Global Search
    info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
    remove_date: '2022-08-02'
@@ -141,8 +141,8 @@ To remove a page:
 
    # Title (removed) **(ULTIMATE SELF)**
 
-   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8
-   and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in 15.0.
+   This feature was [deprecated](<link-to-issue>) in GitLab X.Y
+   and [removed](<link-to-issue>) in X.Y.
    Use [feature X](<link-to-issue>) instead.
    ```
 
@@ -162,12 +162,12 @@ To remove a topic:
    For the `remove_date`, set a date three months after the release where it was removed.
 
    ```markdown
-   <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+   <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
    ## Title (removed) **(ULTIMATE SELF)**
 
-   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in GitLab 14.8
-   and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351963) in 15.0.
+   This feature was [deprecated](<link-to-issue>) in GitLab X.Y
+   and [removed](<link-to-issue>) in X.Y.
    Use [feature X](<link-to-issue>) instead.
 
    <!--- end_remove -->
@@ -179,8 +179,8 @@ This content is removed from the documentation as part of the Technical Writing 
 ## Which versions are removed
 
 GitLab supports the current major version and two previous major versions.
-For example, if 14.0 is the current major version, all major and minor releases of
-GitLab 14.0, 13.0 and 12.0 are supported.
+For example, if 15.0 is the current major version, all major and minor releases of
+GitLab 15.0, 14.0, and 13.0 are supported.
 
 [View the list of supported versions](https://about.gitlab.com/support/statement-of-support.html#version-support).
 

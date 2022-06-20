@@ -115,7 +115,7 @@ module QA
 
       def node_state(name)
         state = "stopped"
-        wait_until_shell_command("docker inspect -f {{.State.Status}} #{name}") do |line|
+        wait_until_shell_command("docker inspect -f {{.State.Status}} #{name}", stream_progress: false) do |line|
           QA::Runtime::Logger.debug(line)
           break state = "running" if line.include?("running")
           break state = "paused" if line.include?("paused")
@@ -164,7 +164,8 @@ module QA
       end
 
       def query_read_distribution
-        output = shell "docker exec #{@gitlab} bash -c 'curl -s http://localhost:9090/api/v1/query?query=gitaly_praefect_read_distribution'" do |line|
+        cmd = "docker exec #{@gitlab} bash -c 'curl -s http://localhost:9090/api/v1/query?query=gitaly_praefect_read_distribution'"
+        output = shell(cmd, stream_progress: false) do |line|
           QA::Runtime::Logger.debug(line)
           break line
         end

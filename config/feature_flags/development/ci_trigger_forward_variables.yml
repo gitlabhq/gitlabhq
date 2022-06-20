@@ -1,8 +1,0 @@
----
-name: ci_trigger_forward_variables
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82676
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355572
-milestone: '14.9'
-type: development
-group: group::pipeline authoring
-default_enabled: true

@@ -8,7 +8,7 @@ module Gitlab
 
       included do
         # Commit only quick actions definitions
-        desc _('Tag this commit.')
+        desc { _('Tag this commit.') }
         explanation do |tag_name, message|
           if message.present?
             _("Tags this commit to %{tag_name} with \"%{message}\".") % { tag_name: tag_name, message: message }

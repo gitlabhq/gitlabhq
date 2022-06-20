@@ -268,10 +268,36 @@ RSpec.describe ResourceAccessTokens::CreateService do
         end
 
         it_behaves_like 'allows creation of bot with valid params'
+
+        context 'when user specifies an access level of OWNER for the bot' do
+          let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
+
+          context 'when the executor is a MAINTAINER' do
+            it 'does not add the bot user with the specified access level in the resource' do
+              response = subject
+
+              expect(response.error?).to be true
+              expect(response.errors).to include('Could not provision owner access to project access token')
+            end
+          end
+
+          context 'when the executor is an OWNER' do
+            let_it_be(:user) { project.first_owner }
+
+            it 'adds the bot user with the specified access level in the resource' do
+              response = subject
+
+              access_token = response.payload[:access_token]
+              bot_user = access_token.user
+
+              expect(resource.members.owners.map(&:user_id)).to include(bot_user.id)
+            end
+          end
+        end
       end
     end
 
-    context 'when resource is a project' do
+    context 'when resource is a group' do
       let_it_be(:resource_type) { 'group' }
       let_it_be(:resource) { group }
 
@@ -283,6 +309,18 @@ RSpec.describe ResourceAccessTokens::CreateService do
         end
 
         it_behaves_like 'allows creation of bot with valid params'
+
+        context 'when user specifies an access level of OWNER for the bot' do
+          let_it_be(:params) { { access_level: Gitlab::Access::OWNER } }
+
+          it 'adds the bot user with the specified access level in the resource' do
+            response = subject
+            access_token = response.payload[:access_token]
+            bot_user = access_token.user
+
+            expect(resource.members.owners.map(&:user_id)).to include(bot_user.id)
+          end
+        end
       end
     end
   end

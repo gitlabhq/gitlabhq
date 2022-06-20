@@ -82,7 +82,7 @@ describe('~/environments/components/environments_folder.vue', () => {
 
         expect(collapse.attributes('visible')).toBeUndefined();
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-        expect(iconNames).toEqual(['angle-right', 'folder-o']);
+        expect(iconNames).toEqual(['chevron-lg-right', 'folder-o']);
         expect(folderName.classes('gl-font-weight-bold')).toBe(false);
         expect(link.exists()).toBe(false);
       });
@@ -95,7 +95,7 @@ describe('~/environments/components/environments_folder.vue', () => {
         expect(button.attributes('aria-label')).toBe(__('Collapse'));
         expect(collapse.attributes('visible')).toBe('visible');
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-        expect(iconNames).toEqual(['angle-down', 'folder-open']);
+        expect(iconNames).toEqual(['chevron-lg-down', 'folder-open']);
         expect(folderName.classes('gl-font-weight-bold')).toBe(true);
         expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
 

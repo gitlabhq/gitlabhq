@@ -16,6 +16,7 @@ module Projects
     end
 
     feature_category :metrics
+    urgency :low
 
     def show
       if environment

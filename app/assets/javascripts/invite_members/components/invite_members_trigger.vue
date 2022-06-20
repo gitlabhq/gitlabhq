@@ -2,7 +2,11 @@
 import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
-import { TRIGGER_ELEMENT_BUTTON, TRIGGER_ELEMENT_SIDE_NAV } from '../constants';
+import {
+  TRIGGER_ELEMENT_BUTTON,
+  TRIGGER_ELEMENT_SIDE_NAV,
+  TRIGGER_DEFAULT_QA_SELECTOR,
+} from '../constants';
 
 export default {
   components: { GlButton, GlLink, GlIcon },
@@ -46,12 +50,17 @@ export default {
       required: false,
       default: '',
     },
+    qaSelector: {
+      type: String,
+      required: false,
+      default: TRIGGER_DEFAULT_QA_SELECTOR,
+    },
   },
   computed: {
     componentAttributes() {
       const baseAttributes = {
         class: this.classes,
-        'data-qa-selector': 'invite_members_button',
+        'data-qa-selector': this.qaSelector,
         'data-test-id': 'invite-members-button',
       };
 

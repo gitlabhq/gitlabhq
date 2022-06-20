@@ -1,10 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlKeysetPagination,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlPagination,
-} from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -27,7 +22,7 @@ export default {
   components: {
     GlAlert,
     GlKeysetPagination,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     IssuableTabs,
     FilteredSearchBar,
     IssuableItem,
@@ -137,6 +132,11 @@ export default {
       type: Number,
       required: false,
       default: 2,
+    },
+    hasScopedLabelsFeature: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     labelFilterParam: {
       type: String,
@@ -307,7 +307,7 @@ export default {
     </issuable-bulk-edit-sidebar>
     <ul v-if="issuablesLoading" class="content-list">
       <li v-for="n in skeletonItemCount" :key="n" class="issue gl-px-5! gl-py-5!">
-        <gl-skeleton-loading />
+        <gl-skeleton-loader />
       </li>
     </ul>
     <template v-else>
@@ -325,6 +325,7 @@ export default {
           :class="{ 'gl-cursor-grab': isManualOrdering }"
           data-qa-selector="issuable_container"
           :data-qa-issuable-title="issuable.title"
+          :has-scoped-labels-feature="hasScopedLabelsFeature"
           :issuable-symbol="issuableSymbol"
           :issuable="issuable"
           :label-filter-param="labelFilterParam"

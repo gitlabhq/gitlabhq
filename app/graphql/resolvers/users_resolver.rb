@@ -47,10 +47,7 @@ module Resolvers
     end
 
     def authorize!(usernames)
-      authorized = Ability.allowed?(context[:current_user], :read_users_list)
-      authorized &&= usernames.present? if context[:current_user].blank?
-
-      raise_resource_not_available_error! unless authorized
+      raise_resource_not_available_error! unless context[:current_user].present?
     end
 
     private

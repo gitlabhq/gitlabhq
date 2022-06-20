@@ -72,10 +72,6 @@ module Import
       @url ||= params[:bitbucket_server_url]
     end
 
-    def authorized?
-      can?(current_user, :create_projects, target_namespace)
-    end
-
     def allow_local_requests?
       Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
     end

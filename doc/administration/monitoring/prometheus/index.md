@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -137,8 +137,8 @@ The steps below are the minimum necessary to configure a Monitoring node running
 
    # Enable service discovery for Prometheus
    consul['enable'] = true
-   consul['monitoring_service_discovery'] =  true
-   consul['configuration'] = { 
+   consul['monitoring_service_discovery'] = true
+   consul['configuration'] = {
       retry_join: %w(10.0.0.1 10.0.0.2 10.0.0.3), # The addresses can be IPs or FQDNs
    }
 
@@ -205,7 +205,7 @@ To use an external Prometheus server:
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-1. Add the Prometheus server IP address to the [monitoring IP whitelist](../ip_whitelist.md). For example:
+1. Add the Prometheus server IP address to the [monitoring IP allowlist](../ip_whitelist.md). For example:
 
    ```ruby
    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
@@ -381,11 +381,12 @@ memory, disk, and CPU utilization.
 
 [Read more about the node exporter](node_exporter.md).
 
-### Puma exporter
+### Web exporter
 
-The Puma exporter allows you to measure various Puma metrics.
+The web exporter is a dedicated metrics server that allows splitting end-user and Prometheus traffic
+into two separate applications to improve performance and availability.
 
-[Read more about the Puma exporter](puma_exporter.md).
+[Read more about the web exporter](puma_exporter.md).
 
 ### Redis exporter
 

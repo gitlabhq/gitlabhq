@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -14,7 +14,7 @@ Once Maintenance Mode is enabled, in-progress actions finish relatively quickly 
 In that state, various maintenance tasks are easier, and services can be stopped completely or be
 further degraded for a much shorter period of time than might otherwise be needed. For example, stopping cron jobs and draining queues should be fairly quick.
 
-Maintenance Mode allows most external actions that do not change internal state. On a high-level, HTTP POST, PUT, PATCH, and DELETE requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
+Maintenance Mode allows most external actions that do not change internal state. On a high-level, HTTP `POST`, `PUT`, `PATCH`, and `DELETE` requests are blocked and a detailed overview of [how special cases are handled](#rest-api) is available.
 
 ## Enable Maintenance Mode
 
@@ -107,22 +107,22 @@ Notification emails continue to arrive, but emails that require database writes,
 
 ### REST API
 
-For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API returns a 403 response with the error message: `You cannot perform write operations on a read-only instance`. Only the following requests are allowed:
+For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and the API returns a 403 response with the error message: `You cannot perform write operations on a read-only instance`. Only the following requests are allowed:
 
 |HTTP request | Allowed routes |  Notes |
 |:----:|:--------------------------------------:|:----:|
-| POST | `/admin/application_settings/general` | To allow updating application settings in the administrator UI |
-| PUT  | `/api/v4/application/settings` | To allow updating application settings with the API |
-| POST | `/users/sign_in` | To allow users to log in. |
-| POST | `/users/sign_out`| To allow users to log out. |
-| POST | `/oauth/token` | To allow users to log in to a Geo secondary for the first time. |
-| POST | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
-| POST | Paths ending with `/compare`| Git revision routes. |
-| POST | `.git/git-upload-pack` | To allow Git pull/clone. |
-| POST | `/api/v4/internal` | [internal API routes](../../development/internal_api/index.md) |
-| POST | `/admin/sidekiq` | To allow management of background jobs in the Admin Area |
-| POST | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
-| POST | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
+| `POST` | `/admin/application_settings/general` | To allow updating application settings in the administrator UI |
+| `PUT`  | `/api/v4/application/settings` | To allow updating application settings with the API |
+| `POST` | `/users/sign_in` | To allow users to log in. |
+| `POST` | `/users/sign_out`| To allow users to log out. |
+| `POST` | `/oauth/token` | To allow users to log in to a Geo secondary for the first time. |
+| `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
+| `POST` | Paths ending with `/compare`| Git revision routes. |
+| `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |
+| `POST` | `/api/v4/internal` | [internal API routes](../../development/internal_api/index.md) |
+| `POST` | `/admin/sidekiq` | To allow management of background jobs in the Admin Area |
+| `POST` | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
+| `POST` | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
 
 ### GraphQL API
 

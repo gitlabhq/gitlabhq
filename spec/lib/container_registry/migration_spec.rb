@@ -58,17 +58,20 @@ RSpec.describe ContainerRegistry::Migration do
   describe '.capacity' do
     subject { described_class.capacity }
 
-    where(:ff_1_enabled, :ff_2_enabled, :ff_5_enabled, :ff_10_enabled, :ff_25_enabled, :expected_result) do
-      false | false | false | false | false | 0
-      true  | false | false | false | false | 1
-      false | true  | false | false | false | 2
-      true  | true  | false | false | false | 2
-      false | false | true  | false | false | 5
-      true  | true  | true  | false | false | 5
-      false | false | false | true  | false | 10
-      true  | true  | true  | true  | false | 10
-      false | false | false | false | true  | 25
-      true  | true  | true  | true  | true  | 25
+    where(:ff_1_enabled, :ff_2_enabled, :ff_5_enabled,
+          :ff_10_enabled, :ff_25_enabled, :ff_40_enabled, :expected_result) do
+      false | false | false | false | false | false | 0
+      true  | false | false | false | false | false | 1
+      false | true  | false | false | false | false | 2
+      true  | true  | false | false | false | false | 2
+      false | false | true  | false | false | false | 5
+      true  | true  | true  | false | false | false | 5
+      false | false | false | true  | false | false | 10
+      true  | true  | true  | true  | false | false | 10
+      false | false | false | false | true  | false | 25
+      true  | true  | true  | true  | true  | false | 25
+      false | false | false | false | false | true  | 40
+      true  | true  | true  | true  | true  | true  | 40
     end
 
     with_them do
@@ -78,7 +81,8 @@ RSpec.describe ContainerRegistry::Migration do
           container_registry_migration_phase2_capacity_2: ff_2_enabled,
           container_registry_migration_phase2_capacity_5: ff_5_enabled,
           container_registry_migration_phase2_capacity_10: ff_10_enabled,
-          container_registry_migration_phase2_capacity_25: ff_25_enabled
+          container_registry_migration_phase2_capacity_25: ff_25_enabled,
+          container_registry_migration_phase2_capacity_40: ff_40_enabled
         )
       end
 
@@ -182,6 +186,18 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
+  describe '.pre_import_tags_rate' do
+    let(:value) { 2.5 }
+
+    before do
+      stub_application_setting(container_registry_pre_import_tags_rate: value)
+    end
+
+    it 'returns the matching application_setting' do
+      expect(described_class.pre_import_tags_rate).to eq(value)
+    end
+  end
+
   describe '.target_plans' do
     subject { described_class.target_plans }
 
@@ -214,31 +230,30 @@ RSpec.describe ContainerRegistry::Migration do
     end
   end
 
-  describe '.enqueue_twice?' do
-    subject { described_class.enqueue_twice? }
+  describe '.delete_container_repository_worker_support?' do
+    subject { described_class.delete_container_repository_worker_support? }
 
     it { is_expected.to eq(true) }
 
     context 'feature flag disabled' do
       before do
-        stub_feature_flags(container_registry_migration_phase2_enqueue_twice: false)
+        stub_feature_flags(container_registry_migration_phase2_delete_container_repository_worker_support: false)
       end
 
       it { is_expected.to eq(false) }
     end
   end
 
-  describe '.enqueue_loop?' do
-    subject { described_class.enqueuer_loop? }
+  describe '.dynamic_pre_import_timeout_for' do
+    let(:container_repository) { build(:container_repository) }
 
-    it { is_expected.to eq(true) }
+    subject { described_class.dynamic_pre_import_timeout_for(container_repository) }
 
-    context 'feature flag disabled' do
-      before do
-        stub_feature_flags(container_registry_migration_phase2_enqueuer_loop: false)
-      end
+    it 'returns the expected seconds' do
+      stub_application_setting(container_registry_pre_import_tags_rate: 0.6)
+      expect(container_repository).to receive(:tags_count).and_return(50)
 
-      it { is_expected.to eq(false) }
+      expect(subject).to eq((0.6 * 50).seconds)
     end
   end
 end

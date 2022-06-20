@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { WEBIDE_MARK_FILE_CLICKED } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
@@ -10,7 +10,7 @@ import NavDropdown from './nav_dropdown.vue';
 export default {
   name: 'IdeTreeList',
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     NavDropdown,
     FileTree,
   },
@@ -55,7 +55,7 @@ export default {
   <div class="ide-file-list qa-file-list">
     <template v-if="showLoading">
       <div v-for="n in 3" :key="n" class="multi-file-loading-container">
-        <gl-skeleton-loading />
+        <gl-skeleton-loader />
       </div>
     </template>
     <template v-else>

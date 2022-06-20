@@ -120,6 +120,7 @@ type Config struct {
 	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for"`
 	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation"`
 	Listeners                    []ListenerConfig         `toml:"listeners"`
+	MetricsListener              *ListenerConfig          `toml:"metrics_listener"`
 }
 
 var DefaultImageResizerConfig = ImageResizerConfig{

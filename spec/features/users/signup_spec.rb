@@ -341,6 +341,7 @@ RSpec.describe 'Signup' do
   end
 
   it 'redirects to step 2 of the signup process, sets the role and redirects back' do
+    stub_feature_flags(about_your_company_registration_flow: false)
     visit new_user_registration_path
 
     fill_in_signup_form

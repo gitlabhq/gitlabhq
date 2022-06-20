@@ -1,0 +1,8 @@
+---
+name: ci_enforce_throttle_pipelines_creation_override
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89518
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/362513
+milestone: '15.1'
+type: development
+group: group::pipeline execution
+default_enabled: false

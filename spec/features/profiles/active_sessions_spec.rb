@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) do
     create(:user).tap do |user|
       user.current_sign_in_at = Time.current
@@ -10,10 +12,6 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
   end
 
   let(:admin) { create(:admin) }
-
-  before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
-  end
 
   it 'user sees their active sessions' do
     travel_to(Time.zone.parse('2018-03-12 09:06')) do
@@ -101,7 +99,9 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
 
       expect(page).to have_link('Revoke', count: 1)
 
-      accept_confirm { click_on 'Revoke' }
+      accept_gl_confirm(button_text: 'Revoke') do
+        click_on 'Revoke'
+      end
 
       expect(page).not_to have_link('Revoke')
     end

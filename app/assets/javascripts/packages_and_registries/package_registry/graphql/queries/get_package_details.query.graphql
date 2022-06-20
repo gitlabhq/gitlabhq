@@ -27,18 +27,10 @@ query getPackageDetails($id: PackagesPackageID!) {
         name
       }
     }
-    pipelines(first: 10) {
+    pipelines(first: 1) {
       nodes {
         ref
         id
-        sha
-        createdAt
-        commitPath
-        path
-        user {
-          id
-          name
-        }
         project {
           id
           name
@@ -91,37 +83,15 @@ query getPackageDetails($id: PackagesPackageID!) {
       }
     }
     metadata {
-      ... on ComposerMetadata {
-        targetSha
-        composerJson {
-          license
-          version
-        }
-      }
-      ... on PypiMetadata {
-        id
-        requiredPython
-      }
-      ... on ConanMetadata {
-        id
-        packageChannel
-        packageUsername
-        recipe
-        recipePath
-      }
       ... on MavenMetadata {
         id
         appName
         appGroup
         appVersion
-        path
       }
-
       ... on NugetMetadata {
         id
         iconUrl
-        licenseUrl
-        projectUrl
       }
     }
   }

@@ -54,7 +54,10 @@ module Gitlab
         # in order to prevent it being picked up by the background worker. Perform all pending jobs,
         # then keep running until migration is finished.
         def finalize(job_class_name, table_name, column_name, job_arguments)
-          migration = BatchedMigration.find_for_configuration(job_class_name, table_name, column_name, job_arguments)
+          migration = BatchedMigration.find_for_configuration(
+            Gitlab::Database.gitlab_schemas_for_connection(connection),
+            job_class_name, table_name, column_name, job_arguments
+          )
 
           configuration = {
             job_class_name: job_class_name,

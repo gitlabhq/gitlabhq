@@ -139,6 +139,16 @@ Do not use **and so on**. Instead, be more specific. For details, see
 
 Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
 
+## associate
+
+Do not use **associate** when describing adding issues to epics, or users to issues, merge requests,
+or epics.
+
+Instead, use **assign**. For example:
+
+- Assign the issue to an epic.
+- Assign a user to the issue.
+
 ## below
 
 Try to avoid **below** when referring to an example or table in a documentation page. If required, use **following** instead. For example:
@@ -347,6 +357,8 @@ See also [**type**](#type).
 
 Use lowercase for **epic**.
 
+See also [associate](#associate).
+
 ## epic board
 
 Use lowercase for **epic board**.
@@ -394,6 +406,13 @@ of the fields at once. For example:
 1. Complete the fields.
 
 Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
+
+## filter
+
+When you are viewing a list of items, like issues or merge requests, you filter the list by
+the available attributes. For example, you might filter by assignee or reviewer.
+
+Filtering is different from [searching](#search).
 
 ## foo
 
@@ -850,6 +869,13 @@ Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../
 Do not use **scalability** when talking about increasing GitLab performance for additional users. The words scale or scaling
 are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers
 to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page.
+
+## search
+
+When you search, you type a string in the search box on the top bar.
+The search results are displayed on a search page.
+
+Searching is different from [filtering](#filter).
 
 ## section
 

@@ -23,14 +23,6 @@ RSpec.describe ServiceHook do
     end
   end
 
-  describe '#rate_limit' do
-    let(:hook) { build(:service_hook) }
-
-    it 'returns nil' do
-      expect(hook.rate_limit).to be_nil
-    end
-  end
-
   describe '#parent' do
     let(:hook) { build(:service_hook, integration: integration) }
 

@@ -83,7 +83,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
-Create a [group access token](../user/group/settings/group_access_tokens.md).
+Create a [group access token](../user/group/settings/group_access_tokens.md). You must have the Owner role for the
+group to create group access tokens.
 
 ```plaintext
 POST groups/:id/access_tokens
@@ -94,7 +95,7 @@ POST groups/:id/access_tokens
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
 | `name` | String | yes | Name of the group access token  |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
-| `access_level` | Integer | no | A valid access level. Default value is 40 (Maintainer). Other allowed values are 10 (Guest), 20 (Reporter), and 30 (Developer). |
+| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). |
 | `expires_at` | Date | no | Token expires at midnight UTC on that date |
 
 ```shell

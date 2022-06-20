@@ -33,6 +33,18 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
     it 'raises a Gitlab::Access::AccessDeniedError' do
       expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
+
+    context 'when a project maintainer attempts to add owners' do
+      let(:access_level) { Gitlab::Access::OWNER }
+
+      before do
+        source.add_maintainer(current_user)
+      end
+
+      it 'raises a Gitlab::Access::AccessDeniedError' do
+        expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
   end
 
   context 'when passing an invalid source' do

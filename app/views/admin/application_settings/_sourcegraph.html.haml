@@ -5,7 +5,7 @@
   .settings-header
     %h4
       = _('Sourcegraph')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://sourcegraph.com/' }
@@ -17,7 +17,7 @@
 
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-sourcegraph-settings'), html: { class: 'fieldset-form', id: 'sourcegraph-settings' } do |f|
-      = form_errors(@application_setting)
+      = form_errors(@application_setting, pajamas_alert: true)
 
       %fieldset
         .form-group

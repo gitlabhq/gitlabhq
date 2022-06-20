@@ -15,7 +15,7 @@ class IssuePolicy < IssuablePolicy
   desc "Project belongs to a group, crm is enabled and user can read contacts in the root group"
   condition(:can_read_crm_contacts, scope: :subject) do
     subject.project.group&.crm_enabled? &&
-      @user.can?(:read_crm_contact, @subject.project.root_ancestor)
+      (@user&.can?(:read_crm_contact, @subject.project.root_ancestor) || @user&.support_bot?)
   end
 
   desc "Issue is confidential"

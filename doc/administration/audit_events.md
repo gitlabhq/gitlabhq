@@ -115,8 +115,14 @@ From there, you can see the following actions:
 - Instance administrator started or stopped impersonation of a group member. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
 - Group deploy token was successfully created, revoked, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 - Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
-- [IP restrictions](../user/group/index.md#restrict-group-access-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0
+- [IP restrictions](../user/group/index.md#group-access-restriction-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
 - Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356152) in GitLab 15.1, changes to the following merge request approvals settings:
+  - Prevent approval by author.
+  - Prevent approvals by users who add commits.
+  - Prevent editing approval rules in projects and merge requests.
+  - Require user password to approve.
+  - Remove all approvals when commits are added to the source branch.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
@@ -228,6 +234,7 @@ The following user actions are recorded:
 - Administrator added or removed ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) in GitLab 14.1)
 - Removed SSH key ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1)
 - Added or removed GPG key ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1)
+- A user's two-factor authentication was disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in GitLab 15.1)
 
 Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 

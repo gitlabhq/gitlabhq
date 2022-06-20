@@ -56,7 +56,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     buttonclass=""
     buttonicon="archive"
     buttonsize="medium"
-    buttonvariant="warning"
+    buttonvariant="default"
     class="gl-ml-3"
     hasselecteddesigns="true"
     title="Archive design"

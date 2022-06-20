@@ -10,16 +10,9 @@ module BulkImports
 
         relation_name BulkImports::FileTransfer::BaseConfig::SELF_RELATION
 
+        extractor ::BulkImports::Common::Extractors::JsonExtractor, relation: relation
+
         transformer ::BulkImports::Common::Transformers::ProhibitedAttributesTransformer
-
-        def extract(_context)
-          download_service.execute
-          decompression_service.execute
-
-          project_attributes = json_decode(json_attributes)
-
-          BulkImports::Pipeline::ExtractedData.new(data: project_attributes)
-        end
 
         def transform(_context, data)
           subrelations = config.portable_relations_tree.keys.map(&:to_s)
@@ -39,50 +32,13 @@ module BulkImports
         end
 
         def after_run(_context)
-          FileUtils.remove_entry(tmpdir) if Dir.exist?(tmpdir)
-        end
-
-        def json_attributes
-          @json_attributes ||= File.read(File.join(tmpdir, filename))
+          extractor.remove_tmpdir
         end
 
         private
 
-        def tmpdir
-          @tmpdir ||= Dir.mktmpdir('bulk_imports')
-        end
-
         def config
           @config ||= BulkImports::FileTransfer.config_for(portable)
-        end
-
-        def download_service
-          @download_service ||= BulkImports::FileDownloadService.new(
-            configuration: context.configuration,
-            relative_url:  context.entity.relation_download_url_path(self.class.relation),
-            tmpdir: tmpdir,
-            filename: compressed_filename
-          )
-        end
-
-        def decompression_service
-          @decompression_service ||= BulkImports::FileDecompressionService.new(tmpdir: tmpdir, filename: compressed_filename)
-        end
-
-        def compressed_filename
-          "#{filename}.gz"
-        end
-
-        def filename
-          "#{self.class.relation}.json"
-        end
-
-        def json_decode(string)
-          Gitlab::Json.parse(string)
-        rescue JSON::ParserError => e
-          Gitlab::ErrorTracking.log_exception(e)
-
-          raise BulkImports::Error, 'Incorrect JSON format'
         end
       end
     end

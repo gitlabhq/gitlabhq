@@ -166,6 +166,14 @@ RSpec.describe Projects::CommitsController do
           end
         end
       end
+
+      context 'with markdown cache' do
+        it 'preloads markdown cache for commits' do
+          expect(Commit).to receive(:preload_markdown_cache!).and_call_original
+
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' }
+        end
+      end
     end
 
     describe "GET /commits/:id/signatures" do

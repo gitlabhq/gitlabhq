@@ -8,7 +8,7 @@
   .settings-header
     %h4
       = _('Metrics - Prometheus')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Monitor the health and performance of GitLab with Prometheus.')
@@ -19,7 +19,7 @@
   .settings-header
     %h4
       = _('Metrics - Grafana')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Link to your Grafana instance.')
@@ -32,7 +32,7 @@
   .settings-header
     %h4
       = _('Profiling - Performance bar')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable access to the performance bar for non-administrators in a given group.')
@@ -46,7 +46,7 @@
   .settings-header#usage-statistics
     %h4
       = _('Usage statistics')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable or disable version check and Service Ping.')
@@ -58,7 +58,7 @@
     .settings-header
       %h4
         = _('Sentry')
-      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? _('Collapse') : _('Expand')
       %p
         = _('Configure Sentry integration for error tracking')

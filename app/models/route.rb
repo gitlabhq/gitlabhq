@@ -13,7 +13,6 @@ class Route < ApplicationRecord
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  before_validation :delete_conflicting_orphaned_routes
   after_create :delete_conflicting_redirects
   after_update :delete_conflicting_redirects, if: :saved_change_to_path?
   after_update :create_redirect_for_old_path
@@ -70,14 +69,5 @@ class Route < ApplicationRecord
 
   def create_redirect_for_old_path
     create_redirect(path_before_last_save) if saved_change_to_path?
-  end
-
-  def delete_conflicting_orphaned_routes
-    conflicting = self.class.iwhere(path: path)
-    conflicting_orphaned_routes = conflicting.select do |route|
-      route.source.nil?
-    end
-
-    conflicting_orphaned_routes.each(&:destroy)
   end
 end

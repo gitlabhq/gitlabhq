@@ -287,9 +287,15 @@ page, then selecting **Delete**.
 
 ![Pipeline Delete](img/pipeline-delete.png)
 
+Deleting a pipeline does not automatically delete its
+[child pipelines](parent_child_pipelines.md).
+See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
+for details.
+
 WARNING:
-Deleting a pipeline expires all pipeline caches, and deletes all related objects,
-such as builds, logs, artifacts, and triggers. **This action cannot be undone.**
+Deleting a pipeline expires all pipeline caches, and deletes all immediately
+related objects, such as builds, logs, artifacts, and triggers.
+**This action cannot be undone.**
 
 ### Pipeline security on protected branches
 
@@ -451,11 +457,14 @@ For information on adding pipeline badges to projects, see [Pipeline badges](set
 
 ### Downstream pipelines
 
-> Cancel or retry downstream pipelines from the graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
-
 In the pipeline graph view, downstream pipelines ([Multi-project pipelines](multi_project_pipelines.md)
 and [Parent-child pipelines](parent_child_pipelines.md)) display as a list of cards
 on the right of the graph.
+
+#### Cancel or retry downstream pipelines from the graph view
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
+> - [Generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357406) in GitLab 15.1.
 
 To cancel a downstream pipeline that is still running, select **Cancel** (**{cancel}**)
 on the pipeline's card.

@@ -1,0 +1,37 @@
+- service_desk_enabled = @project.service_desk_enabled?
+
+- can_edit_project_settings = can?(current_user, :admin_project, @project)
+- title_text = s_("ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab")
+
+- if Gitlab::ServiceDesk.supported?
+  .empty-state
+    .svg-content
+      = render partial: 'shared/empty_states/icons/service_desk_empty_state', formats: :svg
+
+    .text-content
+      %h4= title_text
+
+      - if can_edit_project_settings && service_desk_enabled
+        %p
+          = s_("ServiceDesk|Your users can send emails to this address:")
+          %code= @project.service_desk_address
+
+      %span= s_("ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.")
+      = link_to _('Learn more.'), help_page_path('user/project/service_desk')
+
+      - if can_edit_project_settings && !service_desk_enabled
+        .text-center
+          = link_to s_("ServiceDesk|Enable Service Desk"), edit_project_path(@project), class: 'gl-button btn btn-confirm'
+- else
+  .empty-state
+    .svg-content
+      = render partial: 'shared/empty_states/icons/service_desk_setup', formats: :svg
+    .text-content
+      - if can_edit_project_settings
+        %h4= s_('ServiceDesk|Service Desk is not supported')
+        %p
+          = s_("ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email.")
+          = link_to _('Learn more.'), help_page_path('administration/incoming_email', anchor: 'set-it-up')
+      - else
+        %h4= s_('ServiceDesk|Service Desk is not enabled')
+        %p= s_("ServiceDesk|For help setting up the Service Desk for your instance, please contact an administrator.")

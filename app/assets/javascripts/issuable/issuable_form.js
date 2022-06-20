@@ -46,6 +46,9 @@ function getFallbackKey() {
 
 export default class IssuableForm {
   constructor(form) {
+    if (form.length === 0) {
+      return;
+    }
     this.form = form;
     this.toggleWip = this.toggleWip.bind(this);
     this.renderWipExplanation = this.renderWipExplanation.bind(this);

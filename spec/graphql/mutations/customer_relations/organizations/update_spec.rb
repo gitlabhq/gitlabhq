@@ -56,17 +56,6 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
         expect(resolve_mutation[:organization]).to have_attributes(attributes)
       end
 
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(customer_relations: false)
-        end
-
-        it 'raises an error' do
-          expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-            .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
-        end
-      end
-
       context 'when the feature is disabled' do
         let_it_be(:group) { create(:group) }
 

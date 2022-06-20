@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -36,23 +36,23 @@ before attempting to leverage this feature.
 
 While partitioning can be very useful when properly applied, it's
 imperative to identify if the data and workload of a table naturally fit a
-partitioning scheme. There are a few details you'll have to understand
-in order to decide if partitioning is a good fit for your particular
+partitioning scheme. There are a few details you have to understand
+to decide if partitioning is a good fit for your particular
 problem.
 
 First, a table is partitioned on a partition key, which is a column or
-set of columns which determine how the data will be split across the
+set of columns which determine how the data is split across the
 partitions. The partition key is used by the database when reading or
-writing data, to decide which partitions need to be accessed. The
+writing data, to decide which partitions must be accessed. The
 partition key should be a column that would be included in a `WHERE`
 clause on almost all queries accessing that table.
 
-Second, it's necessary to understand the strategy the database will
-use to split the data across the partitions. The scheme supported by the
+Second, it's necessary to understand the strategy the database uses
+to split the data across the partitions. The scheme supported by the
 GitLab migration helpers is date-range partitioning, where each partition
 in the table contains data for a single month. In this case, the partitioning
-key would need to be a timestamp or date column. In order for this type of
-partitioning to work well, most queries would need to access data within a
+key must be a timestamp or date column. In order for this type of
+partitioning to work well, most queries must access data in a
 certain date range.
 
 For a more concrete example, the `audit_events` table can be used, which
@@ -73,7 +73,7 @@ CREATE TABLE audit_events (
   created_at timestamptz NOT NULL);
 ```
 
-Now imagine typical queries in the UI would display the data within a
+Now imagine typical queries in the UI would display the data in a
 certain date range, like a single week:
 
 ```sql
@@ -117,7 +117,7 @@ partition key falls in the specified range. For example, the partition
 greater than or equal to `2020-01-01` and less than `2020-02-01`.
 
 Now, if we look at the previous example query again, the database can
-use the `WHERE` to recognize that all matching rows will be in the
+use the `WHERE` to recognize that all matching rows are in the
 `audit_events_202001` partition. Rather than searching all of the data
 in all of the partitions, it can search only the single month's worth
 of data in the appropriate partition. In a large table, this can
@@ -136,11 +136,11 @@ LIMIT 100
 In this example, the database can't prune any partitions from the search,
 because matching data could exist in any of them. As a result, it has to
 query each partition individually, and aggregate the rows into a single result
-set. Since `author_id` would be indexed, the performance impact could
+set. Because `author_id` would be indexed, the performance impact could
 likely be acceptable, but on more complex queries the overhead can be
 substantial. Partitioning should only be leveraged if the access patterns
-of the data support the partitioning strategy, otherwise performance will
-suffer.
+of the data support the partitioning strategy, otherwise performance
+suffers.
 
 ## Partitioning a table
 
@@ -158,15 +158,15 @@ migration to copy data into the new table. Changes to the original table
 schema can be made in parallel with the partitioning migration, but they
 must take care to not break the underlying mechanism that makes the migration
 work. For example, if a column is added to the table that is being
-partitioned, both the partitioned table and the trigger definition need to
+partitioned, both the partitioned table and the trigger definition must
 be updated to match.
 
 ### Step 1: Creating the partitioned copy (Release N)
 
 The first step is to add a migration to create the partitioned copy of
-the original table. This migration will also create the appropriate
+the original table. This migration creates the appropriate
 partitions based on the data in the original table, and install a
-trigger that will sync writes from the original table into the
+trigger that syncs writes from the original table into the
 partitioned copy.
 
 An example migration of partitioning the `audit_events` table by its
@@ -186,15 +186,15 @@ class PartitionAuditEvents < Gitlab::Database::Migration[1.0]
 end
 ```
 
-Once this has executed, any inserts, updates or deletes in the
-original table will also be duplicated in the new table. For updates and
-deletes, the operation will only have an effect if the corresponding row
+After this has executed, any inserts, updates, or deletes in the
+original table are also duplicated in the new table. For updates and
+deletes, the operation only has an effect if the corresponding row
 exists in the partitioned table.
 
 ### Step 2: Backfill the partitioned copy (Release N)
 
-The second step is to add a post-deployment migration that will schedule
-the background jobs that will backfill existing data from the original table
+The second step is to add a post-deployment migration that schedules
+the background jobs that backfill existing data from the original table
 into the partitioned copy.
 
 Continuing the above example, the migration would look like:
@@ -225,7 +225,7 @@ partitioning migration.
 The third step must occur at least one release after the release that
 includes the background migration. This gives time for the background
 migration to execute properly in self-managed installations. In this step,
-add another post-deployment migration that will cleanup after the
+add another post-deployment migration that cleans up after the
 background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or
 failed jobs.
@@ -248,12 +248,11 @@ end
 
 After this migration has completed, the original table and partitioned
 table should contain identical data. The trigger installed on the
-original table guarantees that the data will remain in sync going
-forward.
+original table guarantees that the data remains in sync going forward.
 
 ### Step 4: Swap the partitioned and non-partitioned tables (Release N+1)
 
-The final step of the migration will make the partitioned table ready
+The final step of the migration makes the partitioned table ready
 for use by the application. This section will be updated when the
 migration helper is ready, for now development can be followed in the
 [Tracking Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241267).

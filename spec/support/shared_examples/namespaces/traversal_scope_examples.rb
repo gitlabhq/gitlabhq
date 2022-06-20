@@ -238,6 +238,12 @@ RSpec.shared_examples 'namespace traversal scopes' do
       subject { described_class.where(id: [nested_group_1, nested_group_2]).self_and_descendants(include_self: false) }
 
       it { is_expected.to contain_exactly(deep_nested_group_1, deep_nested_group_2) }
+
+      context 'with duplicate descendants' do
+        subject { described_class.where(id: [group_1, nested_group_1]).self_and_descendants(include_self: false) }
+
+        it { is_expected.to contain_exactly(nested_group_1, deep_nested_group_1) }
+      end
     end
 
     context 'with offset and limit' do
@@ -263,6 +269,14 @@ RSpec.shared_examples 'namespace traversal scopes' do
     context 'with traversal_ids_btree feature flag disabled' do
       before do
         stub_feature_flags(traversal_ids_btree: false)
+      end
+
+      include_examples '.self_and_descendants'
+    end
+
+    context 'with linear_scopes_superset feature flag disabled' do
+      before do
+        stub_feature_flags(linear_scopes_superset: false)
       end
 
       include_examples '.self_and_descendants'
@@ -306,6 +320,14 @@ RSpec.shared_examples 'namespace traversal scopes' do
     context 'with traversal_ids_btree feature flag disabled' do
       before do
         stub_feature_flags(traversal_ids_btree: false)
+      end
+
+      include_examples '.self_and_descendant_ids'
+    end
+
+    context 'with linear_scopes_superset feature flag disabled' do
+      before do
+        stub_feature_flags(linear_scopes_superset: false)
       end
 
       include_examples '.self_and_descendant_ids'

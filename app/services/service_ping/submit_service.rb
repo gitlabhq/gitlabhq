@@ -10,8 +10,9 @@ module ServicePing
 
     SubmissionError = Class.new(StandardError)
 
-    def initialize(skip_db_write: false)
+    def initialize(skip_db_write: false, payload: nil)
       @skip_db_write = skip_db_write
+      @payload = payload
     end
 
     def execute
@@ -19,7 +20,7 @@ module ServicePing
 
       start = Time.current
       begin
-        usage_data = ServicePing::BuildPayload.new.execute
+        usage_data = payload || ServicePing::BuildPayload.new.execute
         response = submit_usage_data_payload(usage_data)
       rescue StandardError => e
         return unless Gitlab::CurrentSettings.usage_ping_enabled?
@@ -34,7 +35,7 @@ module ServicePing
         }
         submit_payload({ error: error_payload }, path: ERROR_PATH)
 
-        usage_data = Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
+        usage_data = payload || Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
         response = submit_usage_data_payload(usage_data)
       end
 
@@ -45,7 +46,7 @@ module ServicePing
         raise SubmissionError, "Invalid usage_data_id in response: #{version_usage_data_id}"
       end
 
-      unless @skip_db_write
+      unless skip_db_write
         raw_usage_data = save_raw_usage_data(usage_data)
         raw_usage_data.update_version_metadata!(usage_data_id: version_usage_data_id)
         ServicePing::DevopsReport.new(response).execute
@@ -57,6 +58,8 @@ module ServicePing
     end
 
     private
+
+    attr_reader :payload, :skip_db_write
 
     def metrics_collection_time(payload, parents = [])
       return [] unless payload.is_a?(Hash)

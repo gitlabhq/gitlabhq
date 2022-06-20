@@ -21,7 +21,7 @@ RSpec.describe WebHookLogPresenter do
       let(:web_hook) { create(:service_hook, integration: integration) }
       let(:integration) { create(:drone_ci_integration, project: project) }
 
-      it { is_expected.to eq(project_integration_hook_log_path(project, integration, web_hook_log)) }
+      it { is_expected.to eq(project_settings_integration_hook_log_path(project, integration, web_hook_log)) }
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe WebHookLogPresenter do
       let(:web_hook) { create(:service_hook, integration: integration) }
       let(:integration) { create(:drone_ci_integration, project: project) }
 
-      it { is_expected.to eq(retry_project_integration_hook_log_path(project, integration, web_hook_log)) }
+      it { is_expected.to eq(retry_project_settings_integration_hook_log_path(project, integration, web_hook_log)) }
     end
   end
 end

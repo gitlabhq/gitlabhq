@@ -12,35 +12,69 @@ GitLab can check your application for security vulnerabilities including:
 - Data leaks.
 - Denial of Service (DoS) attacks.
 
-Statistics and details on vulnerabilities are included in the merge request. Providing
-actionable information _before_ changes are merged enables you to be proactive.
-
-GitLab also provides high-level statistics of vulnerabilities across projects and groups:
-
-- The [Security Dashboard](security_dashboard/index.md) provides a
-  high-level view of vulnerabilities detected in your projects, pipeline, and groups.
-
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).
 
-## Security scanning tools
+Statistics and details on vulnerabilities are included in the merge request. Providing
+actionable information _before_ changes are merged enables you to be proactive.
 
-GitLab uses the following tools to scan and report known vulnerabilities found in your project.
+To help with the task of managing and addressing vulnerabilities, GitLab provides a security
+dashboard you can access from your project or group. For more details, see
+[Security Dashboard](security_dashboard/index.md).
 
-| Secure scanning tool                                           | Description                                                         |
-| :------------------------------------------------------------- | :------------------------------------------------------------------ |
-| [Container Scanning](container_scanning/index.md)              | Scan Docker containers for known vulnerabilities.                   |
-| [Dependency List](dependency_list/index.md)                    | View your project's dependencies and their known vulnerabilities.   |
-| [Dependency Scanning](dependency_scanning/index.md)            | Analyze your dependencies for known vulnerabilities.                |
-| [Dynamic Application Security Testing (DAST)](dast/index.md)   | Analyze running web applications for known vulnerabilities.         |
-| [DAST API](dast_api/index.md)                                  | Analyze running web APIs for known vulnerabilities.                 |
-| [API fuzzing](api_fuzzing/index.md)                            | Find unknown bugs and vulnerabilities in web APIs with fuzzing.     |
-| [Secret Detection](secret_detection/index.md)                  | Analyze Git history for leaked secrets.                             |
-| [Security Dashboard](security_dashboard/index.md)              | View vulnerabilities in all your projects and groups.               |
-| [Static Application Security Testing (SAST)](sast/index.md)    | Analyze source code for known vulnerabilities.                      |
-| [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md) | Analyze your IaC configuration files for known vulnerabilities.      |
-| [Coverage fuzzing](coverage_fuzzing/index.md)                  | Find unknown bugs and vulnerabilities with coverage-guided fuzzing. |
-| [Cluster Image Scanning](cluster_image_scanning/index.md)      | Scan Kubernetes clusters for known vulnerabilities.                 |
+## Application coverage
+
+GitLab analyzes various details of your application, either as part of your CI/CD pipeline or on a
+schedule. Coverage includes:
+
+- Source code.
+- Dependencies in your projects or container images.
+- Vulnerabilities in a running web application.
+- Infrastructure as code configuration.
+
+### Source code analysis
+
+Source code analysis occurs on every code commit. Details of vulnerabilities detected are provided
+in the merge request.
+
+A source code analysis can:
+
+- Analyze source code for vulnerabilities - [Static Application Security Testing (SAST)](sast/index.md).
+- Analyze the Git repository's history for secrets - [Secret Detection](secret_detection/index.md).
+
+### Analysis of the running web application
+
+Analysis of the web application occurs on every code commit. As part of the CI/CD pipeline, your
+application is built, deployed to a test environment, and subjected to the following tests:
+
+- Test for known application vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
+- Analysis of APIs for known attack vectors - [DAST API](dast_api/index.md).
+- Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
+
+### Dependency analysis
+
+Dependency analysis occurs on every code commit. Your application's dependencies are collated and
+checked against a database of known vulnerabilities.
+
+Dependency analysis can run:
+
+- At build time - [Dependency Scanning](dependency_scanning/index.md).
+- For projects that use container images, also after the final container
+  image is built - [Container Scanning](container_scanning/index.md).
+
+For more details, see
+[Dependency Scanning compared to Container Scanning](dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning).
+
+Additionally, dependencies in operational container images can be analyzed for vulnerabilities
+on a regular schedule or cadence. For more details, see [Cluster Image Scanning](cluster_image_scanning/index.md).
+
+### Infrastructure analysis
+
+Your application's infrastructure is a source of potential vulnerabilities. To help defend
+against this, infrastructure analysis occurs on every merge request. Checks are run against:
+
+- Infrastructure as Code (IaC) configuration files that define your application's deployment
+  environment - [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md).
 
 ## Vulnerability scanner maintenance
 
@@ -102,14 +136,16 @@ variables:
   DAST_WEBSITE: https://staging.example.com
 ```
 
-For more details about each of the security scanning tools, see their respective
-[documentation sections](#security-scanning-tools).
-
 ### Override the default registry base address
 
 By default, GitLab security scanners use `registry.gitlab.com/security-products` as the
-base address for Docker images. You can override this globally by setting the CI/CD variable
+base address for Docker images. You can override this for most scanners by setting the CI/CD variable
 `SECURE_ANALYZERS_PREFIX` to another location. Note that this affects all scanners at once.
+
+The [Container Scanning](container_scanning/index.md) analyzer is an exception, and it
+does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
+the instructions for [Running container scanning in an offline
+environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
 ### Use security scanning tools with merge request pipelines
 
@@ -126,19 +162,19 @@ rules:
 
 ### Secure jobs in your pipeline
 
-If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#security-scanning-tools) behave as described below.
+If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#application-coverage) behave as described below.
 
 For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline.
 Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md)
 that rely on this scan data only show results from pipelines on the default branch, only if all jobs are finished, including manual ones. One tool might use many analyzers.
 
-Our language and package manager specific jobs attempt to assess which analyzer(s) they should run for your project so that you can do less configuration.
+Our language and package manager specific jobs attempt to assess which analyzers they should run for your project so that you can do less configuration.
 
 If you want to override this to increase the pipeline speed you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
 
 ### Secure job status
 
-Jobs pass if they are able to complete a scan. A _pass_ result does NOT indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
+Jobs pass if they are able to complete a scan. A _pass_ result does not indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
 
 Jobs fail if they are unable to complete a scan. You can view the pipeline logs for more information.
 
@@ -169,11 +205,11 @@ reports are available to download. To download a report, select
 
 ### Ultimate
 
-A merge request contains a security widget which displays a summary of the NEW results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
+A merge request contains a security widget which displays a summary of the new results. New results are determined by comparing the current findings against existing findings in the target (default) branch (if there are prior findings).
 
 We recommend you run a scan of the `default` branch before enabling feature branch scans for your developers. Otherwise, there is no base for comparison and all feature branches display the full scan results in the merge request security widget.
 
-The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both NEW and EXISTING findings.
+The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 
 From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type. Select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
 
@@ -213,9 +249,9 @@ security issues:
 
 ### Migration of existing Vulnerability-Check rules
 
-If your projects have rules that have a security orchestration project, a new MR with 
+If your projects have rules that have a security orchestration project, a new MR with
 the existing rule's content is created automatically against the default branch belonging
-to the security orchestration project. To maintain the same security approval rules you 
+to the security orchestration project. To maintain the same security approval rules you
 had before GitLab 15.0, we recommend merging this new MR.
 
 If your projects have rules without a security orchestration project, a new security orchestration project is created automatically with the content of the existing rule. No additional action is required.
@@ -360,9 +396,16 @@ Self managed installations can also run the security scanners on a GitLab Runner
 You can enforce validation of the security report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database. GitLab validates the
 artifacts based on the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
-
-In GitLab 14.0 and later, when artifact validation is enabled, the pipeline's **Security** tab lists
+When artifact validation is enabled, the pipeline's **Security** tab lists
 any report artifacts that failed validation.
+
+Validation depends on the schema:
+
+- If your security report does not specify which schema version it uses, GitLab attempts to verify it against the earliest supported schema version for that report type. Validation fails but it's attempted anyway because it may identify other problems present in the report.
+- If your security report uses a version that is not supported, GitLab attempts to validate it against the earliest supported schema version for that report type. Validation fails but will identify the differences between the schema version used and the earliest supported version.
+- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a warning to the validation result.
+
+You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9).
 
 ### Enable security report validation
 
@@ -553,18 +596,18 @@ When overriding the template to control job execution, previous instances of
 [`only` or `except`](../../ci/yaml/index.md#only--except) are no longer compatible
 and must be transitioned to [the `rules` syntax](../../ci/yaml/index.md#rules).
 
-If your override is aimed at limiting jobs to only run on `master`, the previous syntax
+If your override is aimed at limiting jobs to only run on `main`, the previous syntax
 would look similar to:
 
 ```yaml
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-# Ensure that the scanning is only executed on master or merge requests
+# Ensure that the scanning is only executed on main or merge requests
 spotbugs-sast:
   only:
     refs:
-      - master
+      - main
       - merge_requests
 ```
 
@@ -575,10 +618,10 @@ would be written as follows:
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-# Ensure that the scanning is only executed on master or merge requests
+# Ensure that the scanning is only executed on main or merge requests
 spotbugs-sast:
   rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_MERGE_REQUEST_ID
 ```
 
@@ -659,6 +702,3 @@ These security pages can be populated by running the jobs from the manual step o
 There is [an issue open to handle this scenario](https://gitlab.com/gitlab-org/gitlab/-/issues/346843).
 Please upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).
-  doc/user/project/merge_requests/approvals/settings.md 
-+
-0

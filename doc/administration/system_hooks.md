@@ -61,7 +61,7 @@ To create a system hook:
 1. Provide the **URL** and **Secret Token**.
 1. Select the checkbox next to each optional **Trigger** you want to enable.
 1. Select **Enable SSL verification**, if desired.
-1. Click **Add system hook**.
+1. Select **Add system hook**.
 
 ## Hooks request example
 

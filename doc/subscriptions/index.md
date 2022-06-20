@@ -53,8 +53,8 @@ at each tier for each product, see:
 
 ## Find your subscription
 
-The following chart should help you determine your subscription model. Click
-on the list item to go to the respective help page.
+The following chart should help you determine your subscription model. Select
+the list item to go to the respective help page.
 
 ```mermaid
 graph TD
@@ -91,7 +91,7 @@ To change your personal details, including name, billing address, and email addr
 1. Select **My account > Account details**.
 1. Expand the **Personal details** section.
 1. Edit your personal details.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Change your company details
 
@@ -101,7 +101,7 @@ To change your company details, including company name and VAT number:
 1. Select **My account > Account details**.
 1. Expand the **Company details** section.
 1. Edit the company details.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ### Change your payment method
 
@@ -117,7 +117,7 @@ To change your payment method:
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My account > Payment methods**.
 1. **Edit** an existing payment method's information or **Add new payment method**.
-1. Click **Save Changes**.
+1. Select **Save Changes**.
 
 #### Set a default payment method
 
@@ -127,7 +127,7 @@ method as the default:
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My account > Payment methods**.
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
-1. Click **Save Changes**.
+1. Select **Save Changes**.
 
 ### Change the linked account
 
@@ -137,8 +137,8 @@ To change the GitLab.com account linked to your Customers Portal account:
    [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com) and ensure you
    are not logged in.
-1. On the Customers Portal page, click **My account > Account details**.
-1. Under **Your GitLab.com account**, click **Change linked account**.
+1. On the Customers Portal page, select **My account > Account details**.
+1. Under **Your GitLab.com account**, select **Change linked account**.
 1. Log in to the [GitLab SaaS](https://gitlab.com) account you want to link to the Customers Portal
    account.
 
@@ -164,9 +164,9 @@ Only one namespace can be linked to a subscription.
 To change the password for this customers portal account:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and click on **Account details**.
+1. Select the **My account** drop-down and select **Account details**.
 1. Make the required changes to the **Your password** section.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Community program subscriptions
 
@@ -183,68 +183,63 @@ Find more information on how to apply and renew at
 
 ### GitLab for Open Source
 
-For qualifying open source projects, the [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/) program provides
-the top GitLab tier, plus 50,000 CI/CD minutes per month.
-
-You can find more information about the [program requirements](https://about.gitlab.com/solutions/open-source/join/#requirements),
-[renewals](https://about.gitlab.com/solutions/open-source/join/#renewals),
-and benefits on the [GitLab for Open Source application page](https://about.gitlab.com/solutions/open-source/join/).
+For qualifying open source projects, the [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/) provides
+GitLab Ultimate, plus 50,000 CI/CD minutes per month. For more information, see [program requirements](https://about.gitlab.com/solutions/open-source/join/#requirements), [renewals](https://about.gitlab.com/solutions/open-source/join/#renewals), and [program benefits](https://about.gitlab.com/solutions/open-source/join/).
 
 If you have any questions, send an email to `opensource@gitlab.com` for assistance.
 
-#### Verification for Open Source program
+#### License requirements for GitLab for Open Source Program members
 
-As part of the [application verification process](https://about.gitlab.com/solutions/open-source/join/), you must upload <b>three screenshots</b>.
-These are the three screenshots that are needed to qualify you for the GitLab for Open Source program.
+GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, **all projects in an applicant's namespace** must carry an [OSI-approved license](https://opensource.org/licenses/).
+
+To add a license:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/licenses/alphabetical) into the `LICENSE` file. Note that GitLab defaults to **All rights reserved** if users do not perform this action.
+
+Applicants must add the correct license to each project in their respective groups or namespaces When you're sure you're using OSI-approved licenses for your projects, you can take your screenshots.
+
+#### Verification for Open Source Program
+
+As part of the [application verification process](https://about.gitlab.com/solutions/open-source/join/), you must upload **three screenshots**:
 
 - [OSI-approved license overview](#screenshot-1-license-overview)
-- [OSI-approved license file](#screenshot-2-license-file)
+- [OSI-approved license contents](#screenshot-2-license-contents)
 - [Publicly visible settings](#screenshot-3-publicly-visible-settings)
 
-##### OSI-approved license
-
-You must apply an [OSI-approved license](https://opensource.org/licenses/) to each project in your group before you can be verified.
-
-Add the license to the LICENSE file so that it shows up in the overview section of the project. This allows contributors to see it at a glance.
-
-It's best to copy and paste the entire license into the file in its original form. GitLab defaults to **All rights reserved** if no license file is mentioned.
-You must ensure that you add the correct license to each project within your group.
-
-After you ensure that you are using OSI-approved licenses for your projects, you can take your screenshots.
+Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements. However, if you submit materials for **one project** in your namespace, the open source program team uses that project to verify the contents of the entire namespace you use when applying to the program.
 
 ##### Screenshot 1: License overview
 
-On the left sidebar, select **Project information > Details**. Take a screenshot that includes a view of the license you've chosen for your project.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select your project avatar. If you haven't specified an avatar for your project, the avatar displays as a single letter.
+1. Take a screenshot of the project overview that clearly displays the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)
 
-##### Screenshot 2: License file
+##### Screenshot 2: License contents
 
-Navigate to one of the license files that you uploaded. You can usually find the license file by selecting **Project information > Details** and scanning the page for the license.
-Make sure the screenshot includes the title of the license.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository** and locate the project's `LICENSE` file.
+1. Take a screenshot of the contents of the file. Make sure the screenshot includes the title of the license.
 
 ![License file](img/license-file.png)
 
 ##### Screenshot 3: Publicly visible settings
 
-The goal of the GitLab for Open Source program is to enable collaboration on open source projects.
-As a pre-condition to collaboration, people must be able to view the open source project.
-As a result, we ask that all projects under this license are publicly visible.
+To be eligible for the GitLab Open Source Program, projects must be publicly visible. To check your project's public visibility settings:
 
-Follow these instructions to take a screenshot of the publicly visible settings:
-
- 1. Go to your project and select **Settings**.
- 1. Expand **Visibility, project features, permissions**.
- 1. Set **Project Visibility** to **Public**.
- 1. Ensure others can request access by selecting the **Users can request access** checkbox.
- 1. Take the screenshot. Include as much of the publicly visible settings as possible. Make sure to include your project's name in the
-    upper-left of the screenshot.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. From the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. From the **Project visibility** dropdown list, select **Public**.
+1. Select the **Users can request access** checkbox.
+1. Take a screenshot of this view. Include as much of the publicly visible settings as possible. Make sure to include your project's name in the upper-left of the screenshot.
 
 ![Publicly visible setting](img/publicly-visible.png)
 
 NOTE:
-From time to time, GitLab allows exceptions. One or two projects within a group can be private if there is a legitimate need for it, for example,
-if a project holds sensitive data. Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions.
+Exceptions to this public visibility requirement apply in select circumstances (for example, in cases where a project may hold sensitive data). Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions.
 
 ### GitLab for Startups
 

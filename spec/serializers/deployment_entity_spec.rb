@@ -60,12 +60,16 @@ RSpec.describe DeploymentEntity do
   end
 
   context 'when the pipeline has another manual action' do
-    let(:other_build) { create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline) }
-    let!(:other_deployment) { create(:deployment, deployable: other_build) }
+    let!(:other_build) do
+      create(:ci_build, :manual, name: 'another deploy',
+             pipeline: pipeline, environment: build.environment)
+    end
+
+    let!(:other_deployment) { create(:deployment, deployable: build) }
 
     it 'returns another manual action' do
-      expect(subject[:manual_actions].count).to eq(1)
-      expect(subject[:manual_actions].first[:name]).to eq('another deploy')
+      expect(subject[:manual_actions].count).to eq(2)
+      expect(subject[:manual_actions].pluck(:name)).to match_array(['test', 'another deploy'])
     end
 
     context 'when user is a reporter' do

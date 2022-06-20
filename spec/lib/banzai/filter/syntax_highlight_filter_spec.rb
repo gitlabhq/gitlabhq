@@ -23,7 +23,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     it "highlights as plaintext" do
       result = filter('<pre><code>def fun end</code></pre>')
 
-      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">def fun end</span></code></pre><copy-code></copy-code></div>')
+      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">def fun end</span></code></pre><copy-code></copy-code></div>')
     end
 
     include_examples "XSS prevention", ""
@@ -59,7 +59,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     it "highlights as plaintext" do
       result = filter('<pre lang="gnuplot"><code>This is a test</code></pre>')
 
-      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a test</span></code></pre><copy-code></copy-code></div>')
+      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="gnuplot" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a test</span></code></pre><copy-code></copy-code></div>')
     end
 
     include_examples "XSS prevention", "gnuplot"
@@ -130,13 +130,13 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     it "includes it in the highlighted code block" do
       result = filter('<pre data-sourcepos="1:1-3:3"><code lang="plaintext">This is a test</code></pre>')
 
-      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a test</span></code></pre><copy-code></copy-code></div>')
+      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a test</span></code></pre><copy-code></copy-code></div>')
     end
 
     it "escape sourcepos metadata to prevent XSS" do
       result = filter('<pre data-sourcepos="&#34;%22 href=&#34;x&#34;></pre><base href=http://unsafe-website.com/><pre x=&#34;"><code></code></pre>')
 
-      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos=\'"%22 href="x"&gt;&lt;/pre&gt;&lt;base href=http://unsafe-website.com/&gt;&lt;pre x="\' class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code></code></pre><copy-code></copy-code></div>')
+      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre data-sourcepos=\'"%22 href="x"&gt;&lt;/pre&gt;&lt;base href=http://unsafe-website.com/&gt;&lt;pre x="\' class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code></code></pre><copy-code></copy-code></div>')
     end
   end
 
@@ -150,7 +150,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     it "highlights as plaintext" do
       result = filter('<pre lang="ruby"><code>This is a test</code></pre>')
 
-      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre class="code highlight js-syntax-highlight" lang="" v-pre="true"><code><span id="LC1" class="line" lang="">This is a test</span></code></pre><copy-code></copy-code></div>')
+      expect(result.to_html.delete("\n")).to eq('<div class="gl-relative markdown-code-block js-markdown-code"><pre class="code highlight js-syntax-highlight" lang="" data-canonical-lang="ruby" v-pre="true"><code><span id="LC1" class="line" lang="">This is a test</span></code></pre><copy-code></copy-code></div>')
     end
 
     include_examples "XSS prevention", "ruby"

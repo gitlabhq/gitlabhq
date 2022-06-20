@@ -222,6 +222,13 @@ class Notify < ApplicationMailer
     headers['List-Unsubscribe'] = list_unsubscribe_methods.map { |e| "<#{e}>" }.join(',')
     @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
   end
+
+  def email_with_layout(to:, subject:, layout: 'mailer')
+    mail(to: to, subject: subject) do |format|
+      format.html { render layout: layout }
+      format.text { render layout: layout }
+    end
+  end
 end
 
 Notify.prepend_mod_with('Notify')

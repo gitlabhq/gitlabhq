@@ -6,6 +6,7 @@ module Gitlab
       FALLBACK = -1
       MIN_REQUIRED_BATCH_SIZE = 1_250
       DEFAULT_SUM_BATCH_SIZE = 1_000
+      DEFAULT_AVERAGE_BATCH_SIZE = 1_000
       MAX_ALLOWED_LOOPS = 10_000
       SLEEP_TIME_IN_SECONDS = 0.01 # 10 msec sleep
       ALLOWED_MODES = [:itself, :distinct].freeze
@@ -26,6 +27,7 @@ module Gitlab
       def unwanted_configuration?(finish, batch_size, start)
         (@operation == :count && batch_size <= MIN_REQUIRED_BATCH_SIZE) ||
           (@operation == :sum && batch_size < DEFAULT_SUM_BATCH_SIZE) ||
+          (@operation == :average && batch_size < DEFAULT_AVERAGE_BATCH_SIZE) ||
           (finish - start) / batch_size >= MAX_ALLOWED_LOOPS ||
           start >= finish
       end
@@ -92,6 +94,7 @@ module Gitlab
 
       def batch_size_for_mode_and_operation(mode, operation)
         return DEFAULT_SUM_BATCH_SIZE if operation == :sum
+        return DEFAULT_AVERAGE_BATCH_SIZE if operation == :average
 
         mode == :distinct ? DEFAULT_DISTINCT_BATCH_SIZE : DEFAULT_BATCH_SIZE
       end

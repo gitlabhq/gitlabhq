@@ -8,8 +8,6 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import getIssuesWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_without_crm.query.graphql';
-import getIssuesCountsWithoutCrmQuery from 'ee_else_ce/issues/list/queries/get_issues_counts_without_crm.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -38,9 +36,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   urlSortParams,
@@ -67,6 +67,9 @@ describe('CE IssuesListApp component', () => {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
+    canCreateProjects: false,
+    canReadCrmContact: false,
+    canReadCrmOrganization: false,
     emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
     fullPath: 'path/to/project',
@@ -77,6 +80,7 @@ describe('CE IssuesListApp component', () => {
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
     hasMultipleIssueAssigneesFeature: true,
+    hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
     isAnonymousSearchDisabled: false,
@@ -86,6 +90,7 @@ describe('CE IssuesListApp component', () => {
     isSignedIn: true,
     jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
+    newProjectPath: 'new/project/path',
     releasesPath: 'releases/path',
     rssPath: 'rss/path',
     showNewIssueLink: true,
@@ -100,6 +105,9 @@ describe('CE IssuesListApp component', () => {
     defaultQueryResponse.data.project.issues.nodes[0].weight = 5;
   }
 
+  const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
+  const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
+
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
   const findGlButton = () => wrapper.findComponent(GlButton);
@@ -113,16 +121,15 @@ describe('CE IssuesListApp component', () => {
   const mountComponent = ({
     provide = {},
     data = {},
-    issuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse),
-    issuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse),
+    issuesQueryResponse = mockIssuesQueryResponse,
+    issuesCountsQueryResponse = mockIssuesCountsQueryResponse,
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
+    stubs = {},
     mountFn = shallowMount,
   } = {}) => {
     const requestHandlers = [
       [getIssuesQuery, issuesQueryResponse],
       [getIssuesCountsQuery, issuesCountsQueryResponse],
-      [getIssuesWithoutCrmQuery, issuesQueryResponse],
-      [getIssuesCountsWithoutCrmQuery, issuesCountsQueryResponse],
       [setSortPreferenceMutation, sortPreferenceMutationResponse],
     ];
 
@@ -136,6 +143,7 @@ describe('CE IssuesListApp component', () => {
       data() {
         return data;
       },
+      stubs,
     });
   };
 
@@ -154,6 +162,22 @@ describe('CE IssuesListApp component', () => {
       wrapper = mountComponent();
       jest.runOnlyPendingTimers();
       return waitForPromises();
+    });
+
+    it('queries list with types `ISSUE` and `INCIDENT', () => {
+      const expectedTypes = ['ISSUE', 'INCIDENT', 'TEST_CASE'];
+
+      expect(mockIssuesQueryResponse).toHaveBeenCalledWith(
+        expect.objectContaining({
+          types: expectedTypes,
+        }),
+      );
+
+      expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
+        expect.objectContaining({
+          types: expectedTypes,
+        }),
+      );
     });
 
     it('renders', () => {
@@ -301,17 +325,23 @@ describe('CE IssuesListApp component', () => {
   describe('initial url params', () => {
     describe('page', () => {
       it('page_after is set from the url params', () => {
-        setWindowLocation('?page_after=randomCursorString');
+        setWindowLocation('?page_after=randomCursorString&first_page_size=20');
         wrapper = mountComponent();
 
-        expect(wrapper.vm.$route.query).toMatchObject({ page_after: 'randomCursorString' });
+        expect(wrapper.vm.$route.query).toMatchObject({
+          page_after: 'randomCursorString',
+          first_page_size: '20',
+        });
       });
 
       it('page_before is set from the url params', () => {
-        setWindowLocation('?page_before=anotherRandomCursorString');
+        setWindowLocation('?page_before=anotherRandomCursorString&last_page_size=20');
         wrapper = mountComponent();
 
-        expect(wrapper.vm.$route.query).toMatchObject({ page_before: 'anotherRandomCursorString' });
+        expect(wrapper.vm.$route.query).toMatchObject({
+          page_before: 'anotherRandomCursorString',
+          last_page_size: '20',
+        });
       });
     });
 
@@ -515,10 +545,12 @@ describe('CE IssuesListApp component', () => {
 
         it('shows empty state', () => {
           expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noIssuesSignedInDescription,
             title: IssuesListApp.i18n.noIssuesSignedInTitle,
             svgPath: defaultProvide.emptyStateSvgPath,
           });
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noIssuesSignedInDescription,
+          );
         });
 
         it('shows "New issue" and import/export buttons', () => {
@@ -532,15 +564,38 @@ describe('CE IssuesListApp component', () => {
 
         it('shows Jira integration information', () => {
           const paragraphs = wrapper.findAll('p');
-          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(2).text()).toContain(
+          expect(paragraphs.at(2).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
+          expect(paragraphs.at(3).text()).toContain(
             'Enable the Jira integration to view your Jira issues in GitLab.',
           );
-          expect(paragraphs.at(3).text()).toContain(
+          expect(paragraphs.at(4).text()).toContain(
             IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
           );
           expect(findGlLink().text()).toBe('Enable the Jira integration');
           expect(findGlLink().attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
+        });
+      });
+
+      describe('when user is logged in and can create projects', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { canCreateProjects: true, hasAnyIssues: false, isSignedIn: true },
+            stubs: { GlEmptyState },
+          });
+        });
+
+        it('shows empty state with additional description about creating projects', () => {
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noIssuesSignedInDescription,
+          );
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noGroupIssuesSignedInDescription,
+          );
+        });
+
+        it('shows "New project" button', () => {
+          expect(findGlButton().text()).toBe(IssuesListApp.i18n.newProjectLabel);
+          expect(findGlButton().attributes('href')).toBe(defaultProvide.newProjectPath);
         });
       });
 
@@ -587,6 +642,21 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
+    describe('when user does not have CRM enabled', () => {
+      beforeEach(() => {
+        wrapper = mountComponent({
+          provide: { canReadCrmContact: false, canReadCrmOrganization: false },
+        });
+      });
+
+      it('does not render Contact or Organization tokens', () => {
+        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
+          { type: TOKEN_TYPE_CONTACT },
+          { type: TOKEN_TYPE_ORGANIZATION },
+        ]);
+      });
+    });
+
     describe('when all tokens are available', () => {
       const originalGon = window.gon;
 
@@ -599,7 +669,13 @@ describe('CE IssuesListApp component', () => {
           current_user_avatar_url: mockCurrentUser.avatar_url,
         };
 
-        wrapper = mountComponent({ provide: { isSignedIn: true } });
+        wrapper = mountComponent({
+          provide: {
+            canReadCrmContact: true,
+            canReadCrmOrganization: true,
+            isSignedIn: true,
+          },
+        });
       });
 
       afterEach(() => {
@@ -615,9 +691,11 @@ describe('CE IssuesListApp component', () => {
           { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
           { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
           { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_CONTACT },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_MY_REACTION },
+          { type: TOKEN_TYPE_ORGANIZATION },
           { type: TOKEN_TYPE_RELEASE },
           { type: TOKEN_TYPE_TYPE },
         ]);
@@ -675,10 +753,10 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe.each`
-      event              | paramName        | paramValue
-      ${'next-page'}     | ${'page_after'}  | ${'endCursor'}
-      ${'previous-page'} | ${'page_before'} | ${'startCursor'}
-    `('when "$event" event is emitted by IssuableList', ({ event, paramName, paramValue }) => {
+      event              | params
+      ${'next-page'}     | ${{ page_after: 'endCursor', page_before: undefined, first_page_size: 20, last_page_size: undefined }}
+      ${'previous-page'} | ${{ page_after: undefined, page_before: 'startCursor', first_page_size: undefined, last_page_size: 20 }}
+    `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
       beforeEach(() => {
         wrapper = mountComponent({
           data: {
@@ -697,9 +775,9 @@ describe('CE IssuesListApp component', () => {
         expect(scrollUp).toHaveBeenCalled();
       });
 
-      it(`updates url with "${paramName}" param`, () => {
+      it(`updates url`, () => {
         expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
-          query: expect.objectContaining({ [paramName]: paramValue }),
+          query: expect.objectContaining(params),
         });
       });
     });

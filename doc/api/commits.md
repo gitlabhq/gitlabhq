@@ -804,7 +804,7 @@ Example response:
       "discussion_locked":null,
       "should_remove_source_branch":null,
       "force_remove_source_branch":false,
-      "web_url":"http://https://gitlab.example.com/root/test-project/merge_requests/1",
+      "web_url":"https://gitlab.example.com/root/test-project/merge_requests/1",
       "time_stats":{
          "time_estimate":0,
          "total_time_spent":0,

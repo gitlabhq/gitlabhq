@@ -137,9 +137,8 @@ export default {
         class="gl-text-decoration-underline gl-text-blue-600! gl-mr-3"
         data-testid="pipeline-url-link"
         data-qa-selector="pipeline_url_link"
+        >#{{ pipeline[pipelineKey] }}</gl-link
       >
-        #{{ pipeline[pipelineKey] }}
-      </gl-link>
       <!--Commit row-->
       <div class="icon-container gl-display-inline-block gl-mr-1">
         <gl-icon

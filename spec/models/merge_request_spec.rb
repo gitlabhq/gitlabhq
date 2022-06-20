@@ -1381,7 +1381,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe "#work_in_progress?" do
+  describe "#draft?" do
     subject { build_stubbed(:merge_request) }
 
     [
@@ -1390,102 +1390,89 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it "detects the '#{draft_prefix}' prefix" do
         subject.title = "#{draft_prefix}#{subject.title}"
 
-        expect(subject.work_in_progress?).to eq true
+        expect(subject.draft?).to eq true
       end
     end
 
-    [
-      'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
-      "WIP ", "(WIP)",
-      "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
-    ].each do |draft_prefix|
-      it "doesn't detect '#{draft_prefix}' at the start of the title as a draft" do
-        subject.title = "#{draft_prefix}#{subject.title}"
+    context "returns false" do
+      # We have removed support for variations of "WIP", and additionally need
+      #   to test unsupported variations of "Draft" that we have seen users
+      #   attempt.
+      #
+      [
+        'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
+        "WIP ", "(WIP)",
+        "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
+      ].each do |trigger|
+        it "when '#{trigger}' prefixes the title" do
+          subject.title = "#{trigger}#{subject.title}"
 
-        expect(subject.work_in_progress?).to eq false
+          expect(subject.draft?).to eq false
+        end
       end
-    end
 
-    it "doesn't detect merge request title just saying 'wip'" do
-      subject.title = "wip"
+      ["WIP", "Draft"].each do |trigger| # rubocop:disable Style/WordArray
+        it "when merge request title is simply '#{trigger}'" do
+          subject.title = trigger
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it "does not detect merge request title just saying 'draft'" do
-      subject.title = "draft"
+        it "when #{trigger} is in the middle of the title" do
+          subject.title = "Something with #{trigger} in the middle"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it 'does not detect WIP in the middle of the title' do
-      subject.title = 'Something with WIP in the middle'
+        it "when #{trigger} is at the end of the title" do
+          subject.title = "Something ends with #{trigger}"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it 'does not detect Draft in the middle of the title' do
-      subject.title = 'Something with Draft in the middle'
+        it "when title contains words starting with #{trigger}" do
+          subject.title = "#{trigger}foo #{subject.title}"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
 
-    it 'does not detect Draft: in the middle of the title' do
-      subject.title = 'Something with Draft: in the middle'
+        it "when title contains words containing with #{trigger}" do
+          subject.title = "Foo#{trigger}Bar #{subject.title}"
 
-      expect(subject.work_in_progress?).to eq false
-    end
+          expect(subject.draft?).to eq false
+        end
+      end
 
-    it 'does not detect WIP at the end of the title' do
-      subject.title = 'Something ends with WIP'
+      it 'when Draft: in the middle of the title' do
+        subject.title = 'Something with Draft: in the middle'
 
-      expect(subject.work_in_progress?).to eq false
-    end
+        expect(subject.draft?).to eq false
+      end
 
-    it 'does not detect Draft at the end of the title' do
-      subject.title = 'Something ends with Draft'
+      it "when the title does not contain draft" do
+        expect(subject.draft?).to eq false
+      end
 
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect WIP for words starting with WIP" do
-      subject.title = "Wipwap #{subject.title}"
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect WIP for words containing with WIP" do
-      subject.title = "WupWipwap #{subject.title}"
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect draft for words containing with draft" do
-      subject.title = "Drafting #{subject.title}"
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "doesn't detect WIP by default" do
-      expect(subject.work_in_progress?).to eq false
-    end
-
-    it "is aliased to #draft?" do
-      expect(subject.method(:work_in_progress?)).to eq(subject.method(:draft?))
+      it "is aliased to #draft?" do
+        expect(subject.method(:work_in_progress?)).to eq(subject.method(:draft?))
+      end
     end
   end
 
-  describe "#wipless_title" do
+  describe "#draftless_title" do
     subject { build_stubbed(:merge_request) }
 
     ['draft:', 'Draft: ', '[Draft]', '[DRAFT] '].each do |draft_prefix|
       it "removes a '#{draft_prefix}' prefix" do
-        wipless_title = subject.title
+        draftless_title = subject.title
         subject.title = "#{draft_prefix}#{subject.title}"
 
-        expect(subject.wipless_title).to eq wipless_title
+        expect(subject.draftless_title).to eq draftless_title
       end
 
       it "is satisfies the #work_in_progress? method" do
         subject.title = "#{draft_prefix}#{subject.title}"
-        subject.title = subject.wipless_title
+        subject.title = subject.draftless_title
 
         expect(subject.work_in_progress?).to eq false
       end
@@ -1497,58 +1484,58 @@ RSpec.describe MergeRequest, factory_default: :keep do
       it "doesn't remove a '#{wip_prefix}' prefix" do
         subject.title = "#{wip_prefix}#{subject.title}"
 
-        expect(subject.wipless_title).to eq subject.title
+        expect(subject.draftless_title).to eq subject.title
       end
     end
 
     it 'removes only draft prefix from the MR title' do
       subject.title = 'Draft: Implement feature called draft'
 
-      expect(subject.wipless_title).to eq 'Implement feature called draft'
+      expect(subject.draftless_title).to eq 'Implement feature called draft'
     end
 
     it 'does not remove WIP in the middle of the title' do
       subject.title = 'Something with WIP in the middle'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
 
     it 'does not remove Draft in the middle of the title' do
       subject.title = 'Something with Draft in the middle'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
 
     it 'does not remove WIP at the end of the title' do
       subject.title = 'Something ends with WIP'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
 
     it 'does not remove Draft at the end of the title' do
       subject.title = 'Something ends with Draft'
 
-      expect(subject.wipless_title).to eq subject.title
+      expect(subject.draftless_title).to eq subject.title
     end
   end
 
-  describe "#wip_title" do
+  describe "#draft_title" do
     it "adds the Draft: prefix to the title" do
-      wip_title = "Draft: #{subject.title}"
+      draft_title = "Draft: #{subject.title}"
 
-      expect(subject.wip_title).to eq wip_title
+      expect(subject.draft_title).to eq draft_title
     end
 
     it "does not add the Draft: prefix multiple times" do
-      wip_title = "Draft: #{subject.title}"
-      subject.title = subject.wip_title
-      subject.title = subject.wip_title
+      draft_title = "Draft: #{subject.title}"
+      subject.title = subject.draft_title
+      subject.title = subject.draft_title
 
-      expect(subject.wip_title).to eq wip_title
+      expect(subject.draft_title).to eq draft_title
     end
 
     it "is satisfies the #work_in_progress? method" do
-      subject.title = subject.wip_title
+      subject.title = subject.draft_title
 
       expect(subject.work_in_progress?).to eq true
     end
@@ -5075,6 +5062,77 @@ RSpec.describe MergeRequest, factory_default: :keep do
       assignees = subject.merge_request_assignees_with([assignee1.id])
 
       expect(assignees).to match_array([subject.merge_request_assignees[0]])
+    end
+  end
+
+  describe '#recent_diff_head_shas' do
+    let_it_be(:merge_request_with_diffs) do
+      params = {
+        target_project: project,
+        source_project: project,
+        target_branch: 'master',
+        source_branch: 'feature'
+      }
+
+      create(:merge_request, params).tap do |mr|
+        4.times { mr.merge_request_diffs.create! }
+        mr.create_merge_head_diff
+      end
+    end
+
+    let(:shas) do
+      # re-find to avoid caching the association
+      described_class.find(merge_request_with_diffs.id).merge_request_diffs.order(id: :desc).pluck(:head_commit_sha)
+    end
+
+    shared_examples 'correctly sorted and limited diff_head_shas' do
+      it 'has up to MAX_RECENT_DIFF_HEAD_SHAS, ordered most recent first' do
+        stub_const('MergeRequest::MAX_RECENT_DIFF_HEAD_SHAS', 3)
+
+        expect(subject.recent_diff_head_shas).to eq(shas.first(3))
+      end
+
+      it 'supports limits' do
+        expect(subject.recent_diff_head_shas(2)).to eq(shas.first(2))
+      end
+    end
+
+    context 'when the association is not loaded' do
+      subject(:mr) { merge_request_with_diffs }
+
+      include_examples 'correctly sorted and limited diff_head_shas'
+    end
+
+    context 'when the association is loaded' do
+      subject(:mr) do
+        described_class.where(id: merge_request_with_diffs.id).preload(:merge_request_diffs).first
+      end
+
+      include_examples 'correctly sorted and limited diff_head_shas'
+
+      it 'does not issue any queries' do
+        expect(subject).to be_a(described_class) # preload here
+
+        expect { subject.recent_diff_head_shas }.not_to exceed_query_limit(0)
+      end
+    end
+  end
+
+  describe '#target_default_branch?' do
+    let_it_be(:merge_request) { build(:merge_request, project: project) }
+
+    it 'returns false' do
+      expect(merge_request.target_default_branch?).to be false
+    end
+
+    context 'with target_branch equal project default branch' do
+      before do
+        merge_request.target_branch = "master"
+      end
+
+      it 'returns false' do
+        expect(merge_request.target_default_branch?).to be true
+      end
     end
   end
 end

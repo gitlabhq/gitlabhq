@@ -3,36 +3,57 @@
 require 'spec_helper'
 
 RSpec.describe 'Sidekiq::Worker' do
-  let(:worker_class) do
-    Class.new do
-      include Sidekiq::Worker
+  shared_examples_for 'a forbiddable operation within a transaction' do
+    it 'allows the operation outside of a transaction' do
+      expect { operation }.not_to raise_error
+    end
 
-      def perform
+    it 'forbids the operation within a transaction' do
+      ApplicationRecord.transaction do
+        expect { operation }.to raise_error(Sidekiq::Worker::EnqueueFromTransactionError)
+      end
+    end
+
+    it 'allows the oepration within a transaction if skipped' do
+      Sidekiq::Worker.skipping_transaction_check do
+        ApplicationRecord.transaction do
+          expect { operation }.not_to raise_error
+        end
+      end
+    end
+
+    it 'forbids the operation if it is within a Ci::ApplicationRecord transaction' do
+      Ci::Pipeline.transaction do
+        expect { operation }.to raise_error(Sidekiq::Worker::EnqueueFromTransactionError)
       end
     end
   end
 
-  it 'allows sidekiq worker outside of a transaction' do
-    expect { worker_class.perform_async }.not_to raise_error
-  end
+  context 'for sidekiq workers' do
+    let(:worker_class) do
+      Class.new do
+        include Sidekiq::Worker
 
-  it 'forbids queue sidekiq worker in a transaction' do
-    Project.transaction do
-      expect { worker_class.perform_async }.to raise_error(Sidekiq::Worker::EnqueueFromTransactionError)
-    end
-  end
-
-  it 'allows sidekiq worker in a transaction if skipped' do
-    Sidekiq::Worker.skipping_transaction_check do
-      Project.transaction do
-        expect { worker_class.perform_async }.not_to raise_error
+        def perform
+        end
       end
     end
+
+    let(:operation) { worker_class.perform_async }
+
+    it_behaves_like 'a forbiddable operation within a transaction'
   end
 
-  it 'forbids queue sidekiq worker in a Ci::ApplicationRecord transaction' do
-    Ci::Pipeline.transaction do
-      expect { worker_class.perform_async }.to raise_error(Sidekiq::Worker::EnqueueFromTransactionError)
+  context 'for mailers' do
+    let(:mailer_class) do
+      Class.new(ApplicationMailer) do
+        def test_mail
+        end
+      end
     end
+
+    let(:operation) { mailer_class.test_mail.deliver_later }
+
+    it_behaves_like 'a forbiddable operation within a transaction'
   end
 end

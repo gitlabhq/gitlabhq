@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Pages edits pages settings', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:project) { create(:project, pages_https_only: false) }
   let(:user) { create(:user) }
 
@@ -176,7 +178,6 @@ RSpec.describe 'Pages edits pages settings', :js do
   describe 'Remove page' do
     context 'when pages are deployed' do
       before do
-        stub_feature_flags(bootstrap_confirmation_modals: false)
         project.mark_pages_as_deployed
       end
 
@@ -185,7 +186,7 @@ RSpec.describe 'Pages edits pages settings', :js do
 
         expect(page).to have_link('Remove pages')
 
-        accept_confirm { click_link 'Remove pages' }
+        accept_gl_confirm(button_text: 'Remove pages') { click_link 'Remove pages' }
 
         expect(page).to have_content('Pages were scheduled for removal')
         expect(project.reload.pages_deployed?).to be_falsey

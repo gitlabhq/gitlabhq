@@ -61,20 +61,12 @@ module QA
         ENV['CI_PROJECT_NAME']
       end
 
-      def debug?
-        enabled?(ENV['QA_DEBUG'], default: false)
-      end
-
       def generate_allure_report?
         enabled?(ENV['QA_GENERATE_ALLURE_REPORT'], default: false)
       end
 
       def default_branch
         ENV['QA_DEFAULT_BRANCH'] || 'main'
-      end
-
-      def log_destination
-        ENV['QA_LOG_PATH'] || $stdout
       end
 
       def colorized_logs?

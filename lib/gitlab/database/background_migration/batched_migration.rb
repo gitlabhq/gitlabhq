@@ -30,9 +30,23 @@ module Gitlab
 
         scope :created_after, ->(time) { where('created_at > ?', time) }
 
-        scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do
-          where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
+        scope :for_configuration, ->(gitlab_schema, job_class_name, table_name, column_name, job_arguments) do
+          relation = where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
             .where("job_arguments = ?", job_arguments.to_json) # rubocop:disable Rails/WhereEquals
+
+          # This method is called from migrations older than the gitlab_schema column,
+          # check and add this filter only if the column exists.
+          relation = relation.for_gitlab_schema(gitlab_schema) if gitlab_schema_column_exists?
+
+          relation
+        end
+
+        def self.gitlab_schema_column_exists?
+          column_names.include?('gitlab_schema')
+        end
+
+        scope :for_gitlab_schema, ->(gitlab_schema) do
+          where(gitlab_schema: gitlab_schema)
         end
 
         state_machine :status, initial: :paused do
@@ -73,12 +87,13 @@ module Gitlab
           state_machine.states.map(&:name)
         end
 
-        def self.find_for_configuration(job_class_name, table_name, column_name, job_arguments)
-          for_configuration(job_class_name, table_name, column_name, job_arguments).first
+        def self.find_for_configuration(gitlab_schema, job_class_name, table_name, column_name, job_arguments)
+          for_configuration(gitlab_schema, job_class_name, table_name, column_name, job_arguments).first
         end
 
-        def self.active_migration
-          executable.queue_order.first
+        def self.active_migration(connection:)
+          for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
+            .executable.queue_order.first
         end
 
         def self.successful_rows_counts(migrations)

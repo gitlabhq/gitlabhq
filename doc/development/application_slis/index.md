@@ -39,8 +39,8 @@ for clarity, they define different metric names:
     1. `gitlab_sli:foo_apdex:success_total` for the number of successful
        measurements.
 1. `Gitlab::Metrics::Sli::ErrorRate.new('foo')` defines:
-    1. `gitlab_sli:foo_error_rate:total` for the total number of measurements.
-    1. `gitlab_sli:foo_error_rate:error_total` for the number of error
+    1. `gitlab_sli:foo:total` for the total number of measurements.
+    1. `gitlab_sli:foo:error_total` for the number of error
        measurements - as this is an error rate, it's more natural to talk about
        errors divided by the total.
 

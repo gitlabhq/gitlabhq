@@ -41,6 +41,13 @@ FactoryBot.define do
       end
     end
 
+    trait :closed_as_duplicate do
+      closed
+      after(:create) do |issue|
+        issue.update!(duplicated_to: create(:issue, project: issue.project))
+      end
+    end
+
     after(:build) do |issue, evaluator|
       issue.state_id = Issue.available_states[evaluator.state]
     end

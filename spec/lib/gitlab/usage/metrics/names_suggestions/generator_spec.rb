@@ -77,8 +77,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
 
     context 'for redis metrics' do
       it_behaves_like 'name suggestion' do
-        # corresponding metric is collected with redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
-        let(:key_path) { 'analytics_unique_visits.analytics_unique_visits_for_any_target' }
+        let(:key_path) { 'usage_activity_by_stage_monthly.create.merge_requests_users' }
         let(:name_suggestion) { /<please fill metric name, suggested format is: {subject}_{verb}{ing|ed}_{object} eg: users_creating_epics or merge_requests_viewed_in_single_file_mode>/ }
       end
     end

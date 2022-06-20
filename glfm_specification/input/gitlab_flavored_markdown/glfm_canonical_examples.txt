@@ -1,23 +1,20 @@
-# First GitLab-Specific Section with Examples
+# GitLab-Specific Markdown
 
-## Strong but with two asterisks
+Currently, only some of the GitLab-specific markdown features are
+listed in this section. We will eventually add all
+GitLab-specific features currently listed as supported in the
+[user-facing documentation for GitLab Flavored Markdown](https://docs.gitlab.com/ee/user/markdown.html).
 
-```````````````````````````````` example
-**bold**
-.
-<p><strong>bold</strong></p>
-````````````````````````````````
+There is currently only this single top-level heading, but the
+examples may be split into multiple top-level headings in the future.
 
-# Second GitLab-Specific Section with Examples
+## Footnotes
 
-## Strong but with HTML
+See
+[the footnotes section of the user-facing documentation for GitLab Flavored Markdown](https://docs.gitlab.com/ee/user/markdown.html#footnotes).
 
-```````````````````````````````` example
-<strong>
-bold
-</strong>
-.
-<p><strong>
-bold
-</strong></p>
+```````````````````````````````` example gitlab footnote
+footnote reference tag [^1]
+
+[^1]: footnote text
 ````````````````````````````````

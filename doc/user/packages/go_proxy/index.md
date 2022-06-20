@@ -108,7 +108,7 @@ and add the following text. Replace the variables in `< >` with your values.
 
 WARNING:
 If you use an environment variable called `NETRC`, Go will use its value
-as a filename and ignore `~/.netrc`. If you intend to use `~/.netrc` in 
+as a filename and ignore `~/.netrc`. If you intend to use `~/.netrc` in
 the GitLab CI **do not use `NETRC` as an environment variable name**.
 
 ```plaintext

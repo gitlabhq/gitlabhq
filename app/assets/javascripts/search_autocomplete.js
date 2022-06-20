@@ -477,7 +477,7 @@ export class SearchAutocomplete {
   }
 
   getAvatar(item) {
-    if (!Object.hasOwnProperty.call(item, 'avatar_url')) {
+    if (!Object.prototype.hasOwnProperty.call(item, 'avatar_url')) {
       return false;
     }
 

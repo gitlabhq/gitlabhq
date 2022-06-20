@@ -11,6 +11,7 @@ import {
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
+import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { I18N_PAGERDUTY_SETTINGS_FORM, CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK } from '../constants';
 
@@ -42,6 +43,21 @@ export default {
     };
   },
   i18n: I18N_PAGERDUTY_SETTINGS_FORM,
+  modal: {
+    id: 'resetWebhookModal',
+    actionPrimary: {
+      text: I18N_PAGERDUTY_SETTINGS_FORM.webhookUrl.resetWebhookUrl,
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK,
   computed: {
     formData() {
@@ -152,11 +168,11 @@ export default {
           {{ $options.i18n.webhookUrl.resetWebhookUrl }}
         </gl-button>
         <gl-modal
-          modal-id="resetWebhookModal"
+          :modal-id="$options.modal.id"
           :title="$options.i18n.webhookUrl.resetWebhookUrl"
-          :ok-title="$options.i18n.webhookUrl.resetWebhookUrl"
-          ok-variant="danger"
-          @ok="resetWebhookUrl"
+          :action-primary="$options.modal.actionPrimary"
+          :action-cancel="$options.modal.actionCancel"
+          @primary="resetWebhookUrl"
         >
           {{ $options.i18n.webhookUrl.restKeyInfo }}
         </gl-modal>

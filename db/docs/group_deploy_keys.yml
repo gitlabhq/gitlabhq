@@ -3,7 +3,7 @@ table_name: group_deploy_keys
 classes:
 - GroupDeployKey
 feature_categories:
-- secrets_management
-description: TODO
+- continuous_delivery
+description: https://docs.gitlab.com/ee/user/project/deploy_keys/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30886
 milestone: '13.1'

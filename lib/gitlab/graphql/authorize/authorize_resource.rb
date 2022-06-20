@@ -15,11 +15,7 @@ module Gitlab
             # If the `#authorize` call is used on multiple classes, we add the
             # permissions specified on a subclass, to the ones that were specified
             # on its superclass.
-            @required_permissions ||= if respond_to?(:superclass) && superclass.respond_to?(:required_permissions)
-                                        superclass.required_permissions.dup
-                                      else
-                                        []
-                                      end
+            @required_permissions ||= call_superclass_method(:required_permissions, []).dup
           end
 
           def authorize(*permissions)
@@ -27,6 +23,8 @@ module Gitlab
           end
 
           def authorizes_object?
+            return true if call_superclass_method(:authorizes_object?, false)
+
             defined?(@authorizes_object) ? @authorizes_object : false
           end
 
@@ -36,6 +34,14 @@ module Gitlab
 
           def raise_resource_not_available_error!(msg = RESOURCE_ACCESS_ERROR)
             raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, msg
+          end
+
+          private
+
+          def call_superclass_method(method_name, or_else)
+            return or_else unless respond_to?(:superclass) && superclass.respond_to?(method_name)
+
+            superclass.send(method_name) # rubocop: disable GitlabSecurity/PublicSend
           end
         end
 

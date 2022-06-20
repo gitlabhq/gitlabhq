@@ -5,6 +5,7 @@ import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
 import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
 import eventHub from '~/pipelines/event_hub';
+import waitForPromises from 'helpers/wait_for_promises';
 import { stageReply } from '../../mock_data';
 
 const dropdownPath = 'path.json';
@@ -55,7 +56,10 @@ describe('Pipelines stage component', () => {
   const findDropdownToggle = () => wrapper.find('button.dropdown-toggle');
   const findDropdownMenu = () =>
     wrapper.find('[data-testid="mini-pipeline-graph-dropdown-menu-list"]');
+  const findDropdownMenuTitle = () =>
+    wrapper.find('[data-testid="pipeline-stage-dropdown-menu-title"]');
   const findMergeTrainWarning = () => wrapper.find('[data-testid="warning-message-merge-trains"]');
+  const findLoadingState = () => wrapper.find('[data-testid="pipeline-stage-loading-state"]');
 
   const openStageDropdown = () => {
     findDropdownToggle().trigger('click');
@@ -63,6 +67,27 @@ describe('Pipelines stage component', () => {
       wrapper.vm.$root.$on('bv::dropdown::show', resolve);
     });
   };
+
+  describe('loading state', () => {
+    beforeEach(async () => {
+      createComponent({ updateDropdown: true });
+
+      mock.onGet(dropdownPath).reply(200, stageReply);
+
+      await openStageDropdown();
+    });
+
+    it('displays loading state while jobs are being fetched', () => {
+      expect(findLoadingState().exists()).toBe(true);
+      expect(findLoadingState().text()).toBe(PipelineStage.i18n.loadingText);
+    });
+
+    it('does not display loading state after jobs have been fetched', async () => {
+      await waitForPromises();
+
+      expect(findLoadingState().exists()).toBe(false);
+    });
+  });
 
   describe('default appearance', () => {
     beforeEach(() => {
@@ -77,6 +102,17 @@ describe('Pipelines stage component', () => {
       expect(findDropdown().exists()).toBe(true);
       expect(findDropdownToggle().exists()).toBe(true);
       expect(findCiIcon().exists()).toBe(true);
+    });
+
+    it('should render a borderless ci-icon', () => {
+      expect(findCiIcon().exists()).toBe(true);
+      expect(findCiIcon().props('isBorderless')).toBe(true);
+      expect(findCiIcon().classes('borderless')).toBe(true);
+    });
+
+    it('should render a ci-icon with a custom border class', () => {
+      expect(findCiIcon().exists()).toBe(true);
+      expect(findCiIcon().classes('gl-border')).toBe(true);
     });
   });
 
@@ -97,6 +133,7 @@ describe('Pipelines stage component', () => {
 
     it('should render the received data and emit `clickedDropdown` event', async () => {
       expect(findDropdownMenu().text()).toContain(stageReply.latest_statuses[0].name);
+      expect(findDropdownMenuTitle().text()).toContain(stageReply.name);
       expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
     });
 

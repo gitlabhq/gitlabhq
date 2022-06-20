@@ -34,17 +34,17 @@ describe('Graph group component', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('should show the angle-down caret icon', () => {
+    it('should show the chevron-lg-down caret icon', () => {
       expect(findContent().isVisible()).toBe(true);
-      expect(findCaretIcon().props('name')).toBe('angle-down');
+      expect(findCaretIcon().props('name')).toBe('chevron-lg-down');
     });
 
-    it('should show the angle-right caret icon when the user collapses the group', async () => {
+    it('should show the chevron-lg-right caret icon when the user collapses the group', async () => {
       findToggleButton().trigger('click');
 
       await nextTick();
       expect(findContent().isVisible()).toBe(false);
-      expect(findCaretIcon().props('name')).toBe('angle-right');
+      expect(findCaretIcon().props('name')).toBe('chevron-lg-right');
     });
 
     it('should contain a tab index for the collapse button', () => {
@@ -60,7 +60,7 @@ describe('Graph group component', () => {
 
       await nextTick();
       expect(findContent().isVisible()).toBe(true);
-      expect(findCaretIcon().props('name')).toBe('angle-down');
+      expect(findCaretIcon().props('name')).toBe('chevron-lg-down');
     });
   });
 
@@ -72,15 +72,15 @@ describe('Graph group component', () => {
       });
     });
 
-    it('should show the angle-down caret icon when collapseGroup is true', () => {
-      expect(findCaretIcon().props('name')).toBe('angle-right');
+    it('should show the chevron-lg-down caret icon when collapseGroup is true', () => {
+      expect(findCaretIcon().props('name')).toBe('chevron-lg-right');
     });
 
-    it('should show the angle-right caret icon when collapseGroup is false', async () => {
+    it('should show the chevron-lg-right caret icon when collapseGroup is false', async () => {
       findToggleButton().trigger('click');
 
       await nextTick();
-      expect(findCaretIcon().props('name')).toBe('angle-down');
+      expect(findCaretIcon().props('name')).toBe('chevron-lg-down');
     });
 
     it('should call collapse the graph group content when enter is pressed on the caret icon', () => {

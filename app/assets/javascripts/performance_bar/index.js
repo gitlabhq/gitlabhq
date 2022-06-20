@@ -56,12 +56,12 @@ const initPerformanceBar = (el) => {
           this.addRequest(urlOrRequestId, urlOrRequestId);
         }
       },
-      addRequest(requestId, requestUrl) {
+      addRequest(requestId, requestUrl, operationName) {
         if (!this.store.canTrackRequest(requestUrl)) {
           return;
         }
 
-        this.store.addRequest(requestId, requestUrl);
+        this.store.addRequest(requestId, requestUrl, operationName);
       },
       loadRequestDetails(requestId) {
         const request = this.store.findRequest(requestId);

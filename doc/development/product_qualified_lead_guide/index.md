@@ -21,7 +21,7 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 1. Enter the credentials on CustomersDot development to Platypus in your `/config/secrets.yml` and restart. Credentials for the Platypus Staging are in the 1Password Growth vault. The URL for staging is `https://staging.ci.nexus.gitlabenvironment.cloud`.
 
 ```yaml
-  platypus_url: "<%= ENV['PLATYPUS_URL'] %>" 
+  platypus_url: "<%= ENV['PLATYPUS_URL'] %>"
   platypus_client_id: "<%= ENV['PLATYPUS_CLIENT_ID'] %>"
   platypus_client_secret: "<%= ENV['PLATYPUS_CLIENT_SECRET'] %>"
 ```
@@ -42,7 +42,7 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 
 - Check the application and Sidekiq logs on `gitlab.com` and CustomersDot to monitor leads.
 - Check the `leads` table in CustomersDot.
-- Set up staging credentials for Platypus, and track the leads on the [Platypus Dashboard](https://staging.ci.nexus.gitlabenvironment.cloud/admin/queues/queue/new-lead-queue).
+- Set up staging credentials for Platypus, and track the leads on the Platypus Dashboard: `https://staging.ci.nexus.gitlabenvironment.cloud/admin/queues/queue/new-lead-queue`.
 - Ask for access to the Marketo Sandbox and validate the leads there, [to this example request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/13162).
 
 ## Embed a hand-raise lead form

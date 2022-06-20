@@ -84,7 +84,7 @@ class Projects::CommitsController < Projects::ApplicationController
 
     @commits.each(&:lazy_author) # preload authors
 
-    @commits = @commits.with_latest_pipeline(@ref)
+    @commits = @commits.with_markdown_cache.with_latest_pipeline(@ref)
     @commits = set_commits_for_rendering(@commits)
   end
 

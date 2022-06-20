@@ -1070,4 +1070,202 @@ RSpec.describe 'Pipeline', :js do
       end
     end
   end
+
+  describe 'GET /:project/-/pipelines/:id/builds' do
+    include_context 'pipeline builds'
+
+    let_it_be(:project) { create(:project, :repository) }
+
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+
+    before do
+      visit builds_project_pipeline_path(project, pipeline)
+    end
+
+    it 'shows a list of jobs' do
+      expect(page).to have_content('Test')
+      expect(page).to have_content(build_passed.id)
+      expect(page).to have_content('Deploy')
+      expect(page).to have_content(build_failed.id)
+      expect(page).to have_content(build_running.id)
+      expect(page).to have_content(build_external.id)
+      expect(page).to have_content('Retry')
+      expect(page).to have_content('Cancel running')
+      expect(page).to have_button('Play')
+    end
+
+    context 'page tabs' do
+      it 'shows Pipeline, Jobs and DAG tabs with link' do
+        expect(page).to have_link('Pipeline')
+        expect(page).to have_link('Jobs')
+        expect(page).to have_link('Needs')
+      end
+
+      it 'shows counter in Jobs tab' do
+        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+      end
+    end
+
+    context 'retrying jobs' do
+      it { expect(page).not_to have_content('retried') }
+
+      context 'when retrying' do
+        before do
+          find('[data-testid="retry"]', match: :first).click
+        end
+
+        it 'does not show a "Retry" button', :sidekiq_might_not_need_inline do
+          expect(page).not_to have_content('Retry')
+        end
+      end
+    end
+
+    context 'canceling jobs' do
+      it { expect(page).not_to have_selector('.ci-canceled') }
+
+      context 'when canceling' do
+        before do
+          click_on 'Cancel running'
+        end
+
+        it 'does not show a "Cancel running" button', :sidekiq_might_not_need_inline do
+          expect(page).not_to have_content('Cancel running')
+        end
+      end
+    end
+
+    context 'playing manual job' do
+      before do
+        within '[data-testid="jobs-tab-table"]' do
+          click_button('Play')
+
+          wait_for_requests
+        end
+      end
+
+      it { expect(build_manual.reload).to be_pending }
+    end
+
+    context 'when user unschedules a delayed job' do
+      before do
+        within '[data-testid="jobs-tab-table"]' do
+          click_button('Unschedule')
+        end
+      end
+
+      it 'unschedules the delayed job and shows play button as a manual job' do
+        expect(page).to have_button('Play')
+        expect(page).not_to have_button('Unschedule')
+      end
+    end
+  end
+
+  describe 'GET /:project/-/pipelines/:id/failures' do
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
+    let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
+    let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
+
+    subject { visit pipeline_failures_page }
+
+    context 'with failed build' do
+      before do
+        failed_build.trace.set('4 examples, 1 failure')
+      end
+
+      it 'lists failed builds' do
+        subject
+
+        expect(page).to have_content(failed_build.name)
+        expect(page).to have_content(failed_build.stage)
+      end
+
+      it 'shows build failure logs' do
+        subject
+
+        expect(page).to have_content('4 examples, 1 failure')
+      end
+
+      it 'shows the failure reason' do
+        subject
+
+        expect(page).to have_content('There is an unknown failure, please try again')
+      end
+
+      context 'when user does not have permission to retry build' do
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).not_to have_button('Retry')
+          end
+        end
+      end
+
+      context 'when user does have permission to retry build' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('#js-tab-failures', match: :first)) do
+            expect(page).to have_button('Retry')
+          end
+        end
+      end
+    end
+
+    context 'when missing build logs' do
+      it 'lists failed builds' do
+        subject
+
+        expect(page).to have_content(failed_build.name)
+        expect(page).to have_content(failed_build.stage)
+      end
+
+      it 'does not show log' do
+        subject
+
+        expect(page).to have_content('No job log')
+      end
+    end
+
+    context 'without permission to access builds' do
+      let(:role) { :guest }
+
+      before do
+        project.update!(public_builds: false)
+      end
+
+      context 'when accessing failed jobs page' do
+        it 'renders a 404 page' do
+          requests = inspect_requests { subject }
+
+          expect(page).to have_title('Not Found')
+          expect(requests.first.status_code).to eq(404)
+        end
+      end
+    end
+
+    context 'without failures' do
+      before do
+        failed_build.update!(status: :success)
+      end
+
+      it 'does not show the failure tab' do
+        subject
+
+        expect(page).not_to have_content('Failed Jobs')
+      end
+
+      it 'displays the pipeline graph' do
+        subject
+
+        expect(page).to have_current_path(pipeline_path(pipeline), ignore_query: true)
+        expect(page).to have_selector('.js-pipeline-graph')
+      end
+    end
+  end
 end

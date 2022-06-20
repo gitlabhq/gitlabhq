@@ -987,7 +987,9 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_selector('[data-testid="job-stuck-with-tags"')
-          expect(page).to have_content("This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:")
+          expect(page).to have_content("This job is stuck because of one of the following problems. There are no active runners online, no runners for the ")
+          expect(page).to have_content("protected branch")
+          expect(page).to have_content(", or no runners that match all of the job's tags:")
         end
       end
 
@@ -997,7 +999,9 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_selector('[data-testid="job-stuck-with-tags"')
-          expect(page).to have_content("This job is stuck because you don't have any active runners online or available with any of these tags assigned to them:")
+          expect(page).to have_content("This job is stuck because of one of the following problems. There are no active runners online, no runners for the ")
+          expect(page).to have_content("protected branch")
+          expect(page).to have_content(", or no runners that match all of the job's tags:")
         end
       end
 

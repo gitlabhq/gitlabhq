@@ -99,7 +99,6 @@ module Gitlab
                                      #{config.root}/app/models/badges
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
-                                     #{config.root}/app/models/project_services
                                      #{config.root}/app/graphql/resolvers/concerns
                                      #{config.root}/app/graphql/mutations/concerns
                                      #{config.root}/app/graphql/types/concerns])
@@ -324,6 +323,8 @@ module Gitlab
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
+    config.assets.paths << "#{config.root}/node_modules/@jihulab/svgs/dist" if Gitlab.jh?
+    config.assets.precompile << "illustrations/jh/*.svg" if Gitlab.jh?
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
@@ -399,7 +400,7 @@ module Gitlab
           resource oauth_path,
             headers: %w(Authorization),
             credentials: false,
-            methods: %i(post)
+            methods: %i(post options)
         end
       end
 
@@ -410,7 +411,7 @@ module Gitlab
         resource '/oauth/userinfo',
           headers: %w(Authorization),
           credentials: false,
-          methods: %i(get head post)
+          methods: %i(get head post options)
       end
 
       %w(/oauth/discovery/keys /.well-known/openid-configuration /.well-known/webfinger).each do |openid_path|

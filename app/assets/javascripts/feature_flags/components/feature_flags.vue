@@ -161,7 +161,7 @@ export default {
         <gl-button
           v-if="canUserConfigure"
           v-gl-modal="'configure-feature-flags'"
-          variant="info"
+          variant="confirm"
           category="secondary"
           data-qa-selector="configure_feature_flags_button"
           data-testid="ff-configure-button"
@@ -184,7 +184,10 @@ export default {
         class="gl-display-flex gl-align-items-baseline gl-flex-direction-row gl-justify-content-space-between gl-mt-6"
       >
         <div class="gl-display-flex gl-align-items-center">
-          <h2 data-testid="feature-flags-tab-title" class="gl-font-size-h2 gl-my-0">
+          <h2
+            data-testid="feature-flags-tab-title"
+            class="page-title gl-font-size-h-display gl-my-0"
+          >
             {{ s__('FeatureFlags|Feature Flags') }}
           </h2>
           <gl-badge v-if="count" class="gl-ml-4">{{ count }}</gl-badge>
@@ -197,7 +200,7 @@ export default {
             :href="userListPath"
             variant="confirm"
             category="tertiary"
-            class="gl-mb-0 gl-mr-4"
+            class="gl-mb-0 gl-mr-3"
             data-testid="ff-user-list-button"
           >
             {{ s__('FeatureFlags|View user lists') }}
@@ -205,11 +208,11 @@ export default {
           <gl-button
             v-if="canUserConfigure"
             v-gl-modal="'configure-feature-flags'"
-            variant="info"
+            variant="confirm"
             category="secondary"
             data-qa-selector="configure_feature_flags_button"
             data-testid="ff-configure-button"
-            class="gl-mb-0 gl-mr-4"
+            class="gl-mb-0 gl-mr-3"
           >
             {{ s__('FeatureFlags|Configure') }}
           </gl-button>

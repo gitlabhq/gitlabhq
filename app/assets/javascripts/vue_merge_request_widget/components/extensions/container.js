@@ -14,7 +14,7 @@ export default {
     if (extensions.length === 0) return null;
 
     return h(
-      'div',
+      'section',
       {
         attrs: {
           role: 'region',
@@ -34,13 +34,7 @@ export default {
                   { ...extension },
                   {
                     props: {
-                      ...extension.props.reduce(
-                        (acc, key) => ({
-                          ...acc,
-                          [key]: this.mr[key],
-                        }),
-                        {},
-                      ),
+                      mr: this.mr,
                     },
                   },
                 ),

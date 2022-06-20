@@ -12,12 +12,12 @@ RSpec.describe 'delete a terraform state' do
   let(:mutation) { graphql_mutation(:terraform_state_delete, id: state.to_global_id.to_s) }
 
   before do
+    expect_next_instance_of(Terraform::States::TriggerDestroyService, state, current_user: user) do |service|
+      expect(service).to receive(:execute).once.and_return(ServiceResponse.success)
+    end
+
     post_graphql_mutation(mutation, current_user: user)
   end
 
   include_examples 'a working graphql query'
-
-  it 'deletes the state' do
-    expect { state.reload }.to raise_error(ActiveRecord::RecordNotFound)
-  end
 end

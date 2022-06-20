@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Group > Settings > Access Tokens', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:bot_user) { create(:user, :project_bot) }
   let_it_be(:group) { create(:group) }
@@ -13,7 +15,6 @@ RSpec.describe 'Group > Settings > Access Tokens', :js do
   end
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 

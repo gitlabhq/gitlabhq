@@ -72,7 +72,7 @@ export default {
         {{ replies.length }} {{ n__('reply', 'replies', replies.length) }}
       </gl-button>
       {{ __('Last reply by') }}
-      <a :href="lastReply.author.path" class="btn btn-link author-link gl-mx-2">
+      <a :href="lastReply.author.path" class="btn btn-link author-link gl-mx-2 gl-button">
         {{ lastReply.author.name }}
       </a>
       <time-ago-tooltip :time="lastReply.created_at" tooltip-placement="bottom" />

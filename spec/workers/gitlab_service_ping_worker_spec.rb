@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
+  let(:payload) { { recorded_at: Time.current.rfc3339 } }
+
   before do
     allow_next_instance_of(ServicePing::SubmitService) { |service| allow(service).to receive(:execute) }
+    allow_next_instance_of(ServicePing::BuildPayload) do |service|
+      allow(service).to receive(:execute).and_return(payload)
+    end
+
     allow(subject).to receive(:sleep)
   end
 
@@ -15,10 +21,54 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state do
     subject.perform
   end
 
-  it 'delegates to ServicePing::SubmitService' do
-    expect_next_instance_of(ServicePing::SubmitService) { |service| expect(service).to receive(:execute) }
+  context 'with prerecord_service_ping_data feature enabled' do
+    it 'delegates to ServicePing::SubmitService' do
+      stub_feature_flags(prerecord_service_ping_data: true)
 
-    subject.perform
+      expect_next_instance_of(ServicePing::SubmitService, payload: payload) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      subject.perform
+    end
+  end
+
+  context 'with prerecord_service_ping_data feature disabled' do
+    it 'does not prerecord ServicePing, and calls SubmitService', :aggregate_failures do
+      stub_feature_flags(prerecord_service_ping_data: false)
+
+      expect(ServicePing::BuildPayload).not_to receive(:new)
+      expect(ServicePing::BuildPayload).not_to receive(:new)
+      expect_next_instance_of(ServicePing::SubmitService, payload: nil) do |service|
+        expect(service).to receive(:execute)
+      end
+      expect { subject.perform }.not_to change { RawUsageData.count }
+    end
+  end
+
+  context 'payload computation' do
+    it 'creates RawUsageData entry when there is NO entry with the same recorded_at timestamp' do
+      expect { subject.perform }.to change { RawUsageData.count }.by(1)
+    end
+
+    it 'updates RawUsageData entry when there is entry with the same recorded_at timestamp' do
+      record = create(:raw_usage_data, payload: { some_metric: 123 }, recorded_at: payload[:recorded_at])
+
+      expect { subject.perform }.to change { record.reload.payload }
+                                      .from("some_metric" => 123).to(payload.stringify_keys)
+    end
+
+    it 'reports errors and continue on execution' do
+      error = StandardError.new('some error')
+      allow(::ServicePing::BuildPayload).to receive(:new).and_raise(error)
+
+      expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+      expect_next_instance_of(::ServicePing::SubmitService, payload: nil) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      subject.perform
+    end
   end
 
   it "obtains a #{described_class::LEASE_TIMEOUT} second exclusive lease" do

@@ -106,17 +106,30 @@ RSpec.describe API::ErrorTracking::Collector do
     end
 
     context 'gzip body' do
-      let(:headers) do
+      let(:standard_headers) do
         {
           'X-Sentry-Auth' => "Sentry sentry_key=#{client_key.public_key}",
-          'HTTP_CONTENT_ENCODING' => 'gzip',
-          'CONTENT_TYPE' => 'application/x-sentry-envelope'
+          'HTTP_CONTENT_ENCODING' => 'gzip'
         }
       end
 
       let(:params) { ActiveSupport::Gzip.compress(raw_event) }
 
-      it_behaves_like 'successful request'
+      context 'with application/x-sentry-envelope Content-Type' do
+        let(:headers) { standard_headers.merge({ 'CONTENT_TYPE' => 'application/x-sentry-envelope' }) }
+
+        it_behaves_like 'successful request'
+      end
+
+      context 'with unexpected Content-Type' do
+        let(:headers) { standard_headers.merge({ 'CONTENT_TYPE' => 'application/gzip' }) }
+
+        it 'responds with 415' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:unsupported_media_type)
+        end
+      end
     end
   end
 

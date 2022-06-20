@@ -54,6 +54,13 @@ module Mail
           decoded = dec.decode(raw_source)
 
           if defined?(Encoding) && charset && charset != "US-ASCII"
+            # Sometimes, the decoded string is frozen. Encoders in
+            # Mail::Encodings behave differently in this case. Unlike the
+            # original implementation which does not modify this string, we
+            # enforce the encoding below. That may lead to FrozenError.
+            # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/364619
+            decoded = decoded.dup if decoded.frozen?
+
             # PATCH
             # We need to force the encoding: in the case of quoted-printable
             # this will throw an exception otherwise, because `decoded` will have

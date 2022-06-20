@@ -50,10 +50,12 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       before do
         render_inline described_class.new(
           title: '_title_',
-          alert_class: '_alert_class_',
-          alert_data: {
-            feature_id: '_feature_id_',
-            dismiss_endpoint: '_dismiss_endpoint_'
+          alert_options: {
+            class: '_alert_class_',
+            data: {
+              feature_id: '_feature_id_',
+              dismiss_endpoint: '_dismiss_endpoint_'
+            }
           }
         )
       end
@@ -106,9 +108,11 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     context 'with dismissible content' do
       before do
         render_inline described_class.new(
-          close_button_class: '_close_button_class_',
-          close_button_data: {
-            testid: '_close_button_testid_'
+          close_button_options: {
+            class: '_close_button_class_',
+            data: {
+              testid: '_close_button_testid_'
+            }
           }
         )
       end

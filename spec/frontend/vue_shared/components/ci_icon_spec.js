@@ -5,6 +5,8 @@ import ciIcon from '~/vue_shared/components/ci_icon.vue';
 describe('CI Icon component', () => {
   let wrapper;
 
+  const findIconWrapper = () => wrapper.find('[data-testid="ci-icon-wrapper"]');
+
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
@@ -21,6 +23,52 @@ describe('CI Icon component', () => {
 
     expect(wrapper.find('span').exists()).toBe(true);
     expect(wrapper.find(GlIcon).exists()).toBe(true);
+  });
+
+  describe('active icons', () => {
+    it.each`
+      isActive | cssClass
+      ${true}  | ${'active'}
+      ${false} | ${'active'}
+    `('active should be $isActive', ({ isActive, cssClass }) => {
+      wrapper = shallowMount(ciIcon, {
+        propsData: {
+          status: {
+            icon: 'status_success',
+          },
+          isActive,
+        },
+      });
+
+      if (isActive) {
+        expect(findIconWrapper().classes()).toContain(cssClass);
+      } else {
+        expect(findIconWrapper().classes()).not.toContain(cssClass);
+      }
+    });
+  });
+
+  describe('interactive icons', () => {
+    it.each`
+      isInteractive | cssClass
+      ${true}       | ${'interactive'}
+      ${false}      | ${'interactive'}
+    `('interactive should be $isInteractive', ({ isInteractive, cssClass }) => {
+      wrapper = shallowMount(ciIcon, {
+        propsData: {
+          status: {
+            icon: 'status_success',
+          },
+          isInteractive,
+        },
+      });
+
+      if (isInteractive) {
+        expect(findIconWrapper().classes()).toContain(cssClass);
+      } else {
+        expect(findIconWrapper().classes()).not.toContain(cssClass);
+      }
+    });
   });
 
   describe('rendering a status', () => {

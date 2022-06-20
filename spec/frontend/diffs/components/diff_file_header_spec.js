@@ -14,7 +14,6 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 import testAction from '../../__helpers__/vuex_action_helper';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
@@ -223,16 +222,6 @@ describe('DiffFileHeader component', () => {
         },
       });
       expect(findFileActions().exists()).toBe(false);
-    });
-
-    it('renders submodule icon', () => {
-      createComponent({
-        props: {
-          diffFile: submoduleDiffFile,
-        },
-      });
-
-      expect(wrapper.find(FileIcon).props('submodule')).toBe(true);
     });
   });
 

@@ -15,6 +15,7 @@ module Tooling
       DATA_WAREHOUSE_SCOPE = 'Data Warehouse::'
       FILE_PATH_REGEX = %r{((ee|jh)/)?config/metrics(/.+\.yml)}.freeze
       PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}.freeze
+      METRIC_REMOVED = %r{\+status: removed}.freeze
       DATABASE_REGEX = %r{\Adb/structure\.sql}.freeze
       STRUCTURE_SQL_FILE = %w(db/structure.sql).freeze
 
@@ -31,18 +32,18 @@ module Tooling
       private
 
       def data_warehouse_impact_files
-        @impacted_files ||= (performance_indicator_changed_files + database_changed_files)
+        @impacted_files ||= (metrics_changed_files + database_changed_files)
       end
 
       def labelled_as_datawarehouse?
         helper.mr_labels.any? { |label| label.start_with?(DATA_WAREHOUSE_SCOPE) }
       end
 
-      def performance_indicator_changed_files
+      def metrics_changed_files
         metrics_definitions_files = helper.modified_files.grep(FILE_PATH_REGEX)
 
         metrics_definitions_files.select do |file|
-          helper.changed_lines(file).any? { |change| change =~ PERFORMANCE_INDICATOR_REGEX }
+          helper.changed_lines(file).any? { |change| performance_indicator_changed?(change) || status_removed?(change) }
         end.compact
       end
 
@@ -52,6 +53,14 @@ module Tooling
 
       def database_changed_files
         helper.modified_files & STRUCTURE_SQL_FILE
+      end
+
+      def performance_indicator_changed?(change)
+        change =~ PERFORMANCE_INDICATOR_REGEX
+      end
+
+      def status_removed?(change)
+        change =~ METRIC_REMOVED
       end
     end
   end

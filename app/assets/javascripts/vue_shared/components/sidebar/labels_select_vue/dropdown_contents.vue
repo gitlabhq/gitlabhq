@@ -4,6 +4,9 @@ import { mapGetters, mapState } from 'vuex';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue` instead.
 export default {
   components: {
     DropdownContentsLabelsView,

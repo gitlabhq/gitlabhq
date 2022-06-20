@@ -84,3 +84,5 @@ module MembersHelper
     }
   end
 end
+
+MembersHelper.prepend_mod_with('MembersHelper')

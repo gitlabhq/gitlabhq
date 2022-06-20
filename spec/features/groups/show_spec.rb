@@ -72,6 +72,58 @@ RSpec.describe 'Group show page' do
         end
       end
     end
+
+    context 'subgroups and projects empty state', :js do
+      context 'when user has permissions to create new subgroups or projects' do
+        before do
+          group.add_owner(user)
+          sign_in(user)
+          visit path
+        end
+
+        it 'shows `Create new subgroup` link' do
+          expect(page).to have_link(
+            s_('GroupsEmptyState|Create new subgroup'),
+            href: new_group_path(parent_id: group.id)
+          )
+        end
+
+        it 'shows `Create new project` link' do
+          expect(page).to have_link(
+            s_('GroupsEmptyState|Create new project'),
+            href: new_project_path(namespace_id: group.id)
+          )
+        end
+      end
+    end
+
+    context 'when user does not have permissions to create new subgroups or projects', :js do
+      before do
+        group.add_reporter(user)
+        sign_in(user)
+        visit path
+      end
+
+      it 'does not show `Create new subgroup` link' do
+        expect(page).not_to have_link(
+          s_('GroupsEmptyState|Create new subgroup'),
+          href: new_group_path(parent_id: group.id)
+        )
+      end
+
+      it 'does not show `Create new project` link' do
+        expect(page).not_to have_link(
+          s_('GroupsEmptyState|Create new project'),
+          href: new_project_path(namespace_id: group.id)
+        )
+      end
+
+      it 'shows empty state' do
+        expect(page).to have_content(s_('GroupsEmptyState|No subgroups or projects.'))
+        expect(page).to have_content(s_('GroupsEmptyState|You do not have necessary permissions to create a subgroup' \
+          ' or project in this group. Please contact an owner of this group to create a new subgroup or project.'))
+      end
+    end
   end
 
   context 'when signed out' do

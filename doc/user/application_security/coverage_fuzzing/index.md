@@ -145,7 +145,7 @@ You can download the JSON report file from the CI/CD pipelines page. For more in
 ## Corpus registry
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5017) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347187) in GitLab 14.9. [Feature flags `corpus_management` and `corpus_management_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/328418) removed.  
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347187) in GitLab 14.9. [Feature flags `corpus_management` and `corpus_management_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/328418) removed.
 
 The corpus registry is a library of corpuses. Corpuses in a project's registry are available to
 all jobs in that project. A project-wide registry is a more efficient way to manage corpuses than
@@ -312,6 +312,10 @@ This creates two jobs:
    development cycle and MRs.
 
 The `covfuzz-ci.yml` is the same as that in the [original synchronous example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example#running-go-fuzz-from-ci).
+
+## FIPS-enabled binary
+
+[Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549) the coverage fuzzing binary is compiled with `golang-fips` on Linux x86 and uses OpenSSL as the cryptographic backend. For more details, see [FIPS compliance at GitLab with Go](../../../development/fips_compliance.md#go).
 
 ## Offline environment
 

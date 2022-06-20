@@ -8,6 +8,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
+import RunnerListEmptyState from '../components/runner_list_empty_state.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
@@ -31,6 +32,7 @@ import {
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
+  isSearchFiltered,
 } from '../runner_search_utils';
 import { captureException } from '../sentry_utils';
 
@@ -86,12 +88,14 @@ export default {
     RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerList,
+    RunnerListEmptyState,
     RunnerName,
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
   },
+  inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
     registrationToken: {
       type: String,
@@ -196,6 +200,9 @@ export default {
     filteredSearchNamespace() {
       return `${GROUP_FILTERED_SEARCH_NAMESPACE}/${this.groupFullPath}`;
     },
+    isSearchFiltered() {
+      return isSearchFiltered(this.search);
+    },
   },
   watch: {
     search: {
@@ -299,9 +306,13 @@ export default {
       :stale-runners-count="staleRunnersTotal"
     />
 
-    <div v-if="noRunnersFound" class="gl-text-center gl-p-5">
-      {{ __('No runners found') }}
-    </div>
+    <runner-list-empty-state
+      v-if="noRunnersFound"
+      :registration-token="registrationToken"
+      :is-search-filtered="isSearchFiltered"
+      :svg-path="emptyStateSvgPath"
+      :filtered-svg-path="emptyStateFilteredSvgPath"
+    />
     <template v-else>
       <runner-list :runners="runners.items" :loading="runnersLoading">
         <template #runner-name="{ runner }">

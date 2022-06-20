@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
       use Gitlab::Graphql::Tracers::LoggerTracer
       use Gitlab::Graphql::Tracers::TimerTracer
 
-      query_analyzer Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer.new
+      query_analyzer Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer
 
       query Graphql::FakeQueryType
     end
@@ -20,11 +20,11 @@ RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
     end
   end
 
-  it "logs every query", :aggregate_failures do
+  it "logs every query", :aggregate_failures, :unlimited_max_formatted_output_length do
     variables = { name: "Ada Lovelace" }
     query_string = 'query fooOperation($name: String) { helloWorld(message: $name) }'
 
-    # Build an actual query so we don't have to hardocde the "fingerprint" calculations
+    # Build an actual query so we don't have to hardcode the "fingerprint" calculations
     query = GraphQL::Query.new(dummy_schema, query_string, variables: variables)
 
     expect(::Gitlab::GraphqlLogger).to receive(:info).with({

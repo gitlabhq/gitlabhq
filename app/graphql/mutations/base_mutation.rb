@@ -39,14 +39,16 @@ module Mutations
       true
     end
 
-    def load_application_object(argument, lookup_as_type, id, context)
-      ::Gitlab::Graphql::Lazy.new { super }.catch(::GraphQL::UnauthorizedError) do |e|
-        Gitlab::ErrorTracking.track_exception(e)
-        # The default behaviour is to abort processing and return nil for the
-        # entire mutation field, but not set any top-level errors. We prefer to
-        # at least say that something went wrong.
-        raise_resource_not_available_error!
-      end
+    def load_application_object(argument, id, context)
+      ::Gitlab::Graphql::Lazy.new { super }
+    end
+
+    def unauthorized_object(error)
+      # The default behavior is to abort processing and return nil for the
+      # entire mutation field, but not set any top-level errors. We prefer to
+      # at least say that something went wrong.
+      Gitlab::ErrorTracking.track_exception(error)
+      raise_resource_not_available_error!
     end
 
     def self.authorizes_object?

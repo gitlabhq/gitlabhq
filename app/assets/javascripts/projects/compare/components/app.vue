@@ -104,7 +104,7 @@ export default {
         @selectRevision="onSelectRevision"
       />
       <div
-        class="compare-ellipsis gl-display-flex gl-justify-content-center gl-align-items-center gl-my-4 gl-md-my-0"
+        class="compare-ellipsis gl-display-flex gl-justify-content-center gl-align-items-center gl-align-self-end gl-my-4 gl-md-my-0"
         data-testid="ellipsis"
       >
         ...
@@ -121,7 +121,7 @@ export default {
         @selectRevision="onSelectRevision"
       />
     </div>
-    <div class="gl-mt-4">
+    <div class="gl-mt-6">
       <gl-button category="primary" variant="confirm" @click="onSubmit">
         {{ s__('CompareRevisions|Compare') }}
       </gl-button>

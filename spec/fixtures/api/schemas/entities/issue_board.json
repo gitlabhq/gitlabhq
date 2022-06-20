@@ -3,6 +3,7 @@
   "properties" : {
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
+    "type": { "type": "string" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
     "closed": { "type": "boolean" },

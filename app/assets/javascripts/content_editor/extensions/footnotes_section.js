@@ -10,7 +10,10 @@ export default Node.create({
   isolating: true,
 
   parseHTML() {
-    return [{ tag: 'section.footnotes > ol' }];
+    return [
+      { tag: 'section.footnotes', skip: true },
+      { tag: 'section.footnotes > ol', skip: true },
+    ];
   },
 
   renderHTML({ HTMLAttributes }) {

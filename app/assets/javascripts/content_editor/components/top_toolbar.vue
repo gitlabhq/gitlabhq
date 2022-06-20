@@ -5,6 +5,7 @@ import ToolbarImageButton from './toolbar_image_button.vue';
 import ToolbarLinkButton from './toolbar_link_button.vue';
 import ToolbarTableButton from './toolbar_table_button.vue';
 import ToolbarTextStyleDropdown from './toolbar_text_style_dropdown.vue';
+import ToolbarMoreDropdown from './toolbar_more_dropdown.vue';
 
 export default {
   components: {
@@ -13,6 +14,7 @@ export default {
     ToolbarLinkButton,
     ToolbarTableButton,
     ToolbarImageButton,
+    ToolbarMoreDropdown,
   },
   methods: {
     trackToolbarControlExecution({ contentType, value }) {
@@ -117,16 +119,8 @@ export default {
       :label="__('Add a collapsible section')"
       @execute="trackToolbarControlExecution"
     />
-    <toolbar-button
-      data-testid="horizontal-rule"
-      content-type="horizontalRule"
-      icon-name="dash"
-      class="gl-mx-2"
-      editor-command="setHorizontalRule"
-      :label="__('Add a horizontal rule')"
-      @execute="trackToolbarControlExecution"
-    />
-    <toolbar-table-button @execute="trackToolbarControlExecution" />
+    <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
+    <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
   </div>
 </template>
 <style>

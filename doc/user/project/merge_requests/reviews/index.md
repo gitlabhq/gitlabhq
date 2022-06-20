@@ -89,7 +89,7 @@ comment itself.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8225) in GitLab 13.10.
 
-If you have a review in progress, you will be presented with the option to **Add to review**:
+If you have a review in progress, you are presented with the option to **Add to review**:
 
 ![New thread](img/mr_review_new_comment_v13_11.png)
 
@@ -123,9 +123,9 @@ Use [attention requests](../index.md#request-attention-to-a-merge-request) inste
 After a reviewer completes their [merge request reviews](../../../discussions/index.md),
 the author of the merge request can request a new review from the reviewer:
 
-1. If the right sidebar in the merge request is collapsed, click the
+1. If the right sidebar in the merge request is collapsed, select the
    **{chevron-double-lg-left}** **Expand Sidebar** icon to expand it.
-1. In the **Reviewers** section, click the **Re-request a review** icon (**{redo}**)
+1. In the **Reviewers** section, select the **Re-request a review** icon (**{redo}**)
    next to the reviewer's name.
 
 GitLab creates a new [to-do item](../../../todos.md) for the reviewer, and sends
@@ -168,11 +168,11 @@ When bulk-editing merge requests in a project, you can edit the following attrib
 To update multiple project merge requests at the same time:
 
 1. In a project, go to **Merge requests**.
-1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+1. Select **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
    editable fields.
 1. Select the checkboxes next to each merge request you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
+1. Select **Update all**.
 
 ## Bulk edit merge requests at the group level **(PREMIUM)**
 
@@ -188,11 +188,11 @@ When bulk editing merge requests in a group, you can edit the following attribut
 To update multiple group merge requests at the same time:
 
 1. In a group, go to **Merge requests**.
-1. Click **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+1. Select **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
    editable fields.
 1. Select the checkboxes next to each merge request you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
+1. Select **Update all**.
 
 ## Associated features
 

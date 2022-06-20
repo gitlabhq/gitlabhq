@@ -12,6 +12,10 @@ module API
     class MailRoom < ::API::Base
       feature_category :service_desk
 
+      format :json
+      content_type :txt, 'text/plain'
+      default_format :txt
+
       before do
         authenticate_gitlab_mailroom_request!
       end
@@ -30,7 +34,7 @@ module API
           end
           post "/*mailbox_type" do
             worker = Gitlab::MailRoom.worker_for(params[:mailbox_type])
-            raw = request.body.read
+            raw = Gitlab::EncodingHelper.encode_utf8(request.body.read)
             begin
               worker.perform_async(raw)
             rescue Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError

@@ -27,7 +27,7 @@ module Issuables
     def by_label(issuables)
       return issuables unless label_names_from_params.present?
 
-      target_model = issuables.model
+      target_model = issuables.base_class
 
       if filter_by_no_label?
         issuables.where(label_link_query(target_model).arel.exists.not)
@@ -55,7 +55,7 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issuables_with_selected_labels(issuables, label_names)
-      target_model = issuables.model
+      target_model = issuables.base_class
 
       if root_namespace
         all_label_ids = find_label_ids(label_names)
@@ -77,7 +77,7 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issuables_without_selected_labels(issuables, label_names)
-      target_model = issuables.model
+      target_model = issuables.base_class
 
       if root_namespace
         label_ids = find_label_ids(label_names).flatten(1)

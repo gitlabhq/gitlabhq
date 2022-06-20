@@ -11,10 +11,8 @@ module QA
 
           view 'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue' do
             element :more_actions_menu
-          end
-
-          view 'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue' do
             element :tag_delete_button
+            element :tag_name_content
           end
 
           def has_registry_repository?(name)
@@ -26,11 +24,11 @@ module QA
           end
 
           def has_tag?(tag_name)
-            has_button?(tag_name)
+            has_element?(:tag_name_content, text: tag_name)
           end
 
           def has_no_tag?(tag_name)
-            has_no_button?(tag_name)
+            has_no_element?(:tag_name_content, text: tag_name)
           end
 
           def click_delete

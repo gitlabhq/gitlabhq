@@ -66,7 +66,7 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     it('displays value as hidden', () => {
-      expect(findFormInputGroup().props('value')).toBe('********************');
+      expect(findFormInput().element.value).toBe('********************');
     });
 
     it('saves actual value to clipboard when manually copied', () => {
@@ -75,6 +75,16 @@ describe('InputCopyToggleVisibility', () => {
 
       expect(event.clipboardData.setData).toHaveBeenCalledWith('text/plain', valueProp);
       expect(event.preventDefault).toHaveBeenCalled();
+    });
+
+    it('emits `copy` event when manually copied the token', () => {
+      expect(wrapper.emitted('copy')).toBeUndefined();
+
+      findFormInput().element.dispatchEvent(createCopyEvent());
+
+      expect(wrapper.emitted()).toHaveProperty('copy');
+      expect(wrapper.emitted('copy')).toHaveLength(1);
+      expect(wrapper.emitted('copy')[0]).toEqual([]);
     });
 
     describe('visibility toggle button', () => {
@@ -97,7 +107,7 @@ describe('InputCopyToggleVisibility', () => {
         });
 
         it('displays value', () => {
-          expect(findFormInputGroup().props('value')).toBe(valueProp);
+          expect(findFormInput().element.value).toBe(valueProp);
         });
 
         it('renders a hide button', () => {
@@ -135,6 +145,8 @@ describe('InputCopyToggleVisibility', () => {
         });
 
         it('emits `copy` event', () => {
+          expect(wrapper.emitted()).toHaveProperty('copy');
+          expect(wrapper.emitted('copy')).toHaveLength(1);
           expect(wrapper.emitted('copy')[0]).toEqual([]);
         });
       });
@@ -147,25 +159,52 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     it('displays value as hidden with 20 asterisks', () => {
-      expect(findFormInputGroup().props('value')).toBe('********************');
+      expect(findFormInput().element.value).toBe('********************');
     });
   });
 
   describe('when `initialVisibility` prop is `true`', () => {
+    const label = 'My label';
+
     beforeEach(() => {
       createComponent({
         propsData: {
           value: valueProp,
           initialVisibility: true,
+          label,
+          'label-for': 'my-input',
+          formInputGroupProps: {
+            id: 'my-input',
+          },
         },
       });
     });
 
     it('displays value', () => {
-      expect(findFormInputGroup().props('value')).toBe(valueProp);
+      expect(findFormInput().element.value).toBe(valueProp);
     });
 
     itDoesNotModifyCopyEvent();
+
+    describe('when input is clicked', () => {
+      it('selects input value', async () => {
+        const mockSelect = jest.fn();
+        wrapper.vm.$refs.input.$el.select = mockSelect;
+        await wrapper.findByLabelText(label).trigger('click');
+
+        expect(mockSelect).toHaveBeenCalled();
+      });
+    });
+
+    describe('when label is clicked', () => {
+      it('selects input value', async () => {
+        const mockSelect = jest.fn();
+        wrapper.vm.$refs.input.$el.select = mockSelect;
+        await wrapper.find('label').trigger('click');
+
+        expect(mockSelect).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('when `showToggleVisibilityButton` is `false`', () => {
@@ -184,7 +223,7 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     it('displays value', () => {
-      expect(findFormInputGroup().props('value')).toBe(valueProp);
+      expect(findFormInput().element.value).toBe(valueProp);
     });
 
     itDoesNotModifyCopyEvent();
@@ -204,16 +243,30 @@ describe('InputCopyToggleVisibility', () => {
     });
   });
 
-  it('passes `formInputGroupProps` prop to `GlFormInputGroup`', () => {
+  it('passes `formInputGroupProps` prop only to the input', () => {
     createComponent({
       propsData: {
         formInputGroupProps: {
-          label: 'Foo bar',
+          name: 'Foo bar',
+          'data-qa-selector': 'Foo bar',
+          class: 'Foo bar',
+          id: 'Foo bar',
         },
       },
     });
 
-    expect(findFormInputGroup().props('label')).toBe('Foo bar');
+    expect(findFormInput().attributes()).toMatchObject({
+      name: 'Foo bar',
+      'data-qa-selector': 'Foo bar',
+      class: expect.stringContaining('Foo bar'),
+      id: 'Foo bar',
+    });
+
+    const attributesInputGroup = findFormInputGroup().attributes();
+    expect(attributesInputGroup.name).toBeUndefined();
+    expect(attributesInputGroup['data-qa-selector']).toBeUndefined();
+    expect(attributesInputGroup.class).not.toContain('Foo bar');
+    expect(attributesInputGroup.id).toBeUndefined();
   });
 
   it('passes `copyButtonTitle` prop to `ClipboardButton`', () => {

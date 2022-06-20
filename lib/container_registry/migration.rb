@@ -22,6 +22,7 @@ module ContainerRegistry
       delegate :container_registry_import_created_before, to: ::Gitlab::CurrentSettings
       delegate :container_registry_pre_import_timeout, to: ::Gitlab::CurrentSettings
       delegate :container_registry_import_timeout, to: ::Gitlab::CurrentSettings
+      delegate :container_registry_pre_import_tags_rate, to: ::Gitlab::CurrentSettings
 
       alias_method :max_tags_count, :container_registry_import_max_tags_count
       alias_method :max_retries, :container_registry_import_max_retries
@@ -31,6 +32,7 @@ module ContainerRegistry
       alias_method :created_before, :container_registry_import_created_before
       alias_method :pre_import_timeout, :container_registry_pre_import_timeout
       alias_method :import_timeout, :container_registry_import_timeout
+      alias_method :pre_import_tags_rate, :container_registry_pre_import_tags_rate
     end
 
     def self.enabled?
@@ -39,6 +41,10 @@ module ContainerRegistry
 
     def self.limit_gitlab_org?
       Feature.enabled?(:container_registry_migration_limit_gitlab_org)
+    end
+
+    def self.delete_container_repository_worker_support?
+      Feature.enabled?(:container_registry_migration_phase2_delete_container_repository_worker_support)
     end
 
     def self.enqueue_waiting_time
@@ -54,6 +60,7 @@ module ContainerRegistry
       #
       # TODO: See https://gitlab.com/gitlab-org/container-registry/-/issues/582
       #
+      return 40 if Feature.enabled?(:container_registry_migration_phase2_capacity_40)
       return 25 if Feature.enabled?(:container_registry_migration_phase2_capacity_25)
       return 10 if Feature.enabled?(:container_registry_migration_phase2_capacity_10)
       return 5 if Feature.enabled?(:container_registry_migration_phase2_capacity_5)
@@ -71,12 +78,8 @@ module ContainerRegistry
       Feature.enabled?(:container_registry_migration_phase2_all_plans)
     end
 
-    def self.enqueue_twice?
-      Feature.enabled?(:container_registry_migration_phase2_enqueue_twice)
-    end
-
-    def self.enqueuer_loop?
-      Feature.enabled?(:container_registry_migration_phase2_enqueuer_loop)
+    def self.dynamic_pre_import_timeout_for(repository)
+      (repository.tags_count * pre_import_tags_rate).seconds
     end
   end
 end

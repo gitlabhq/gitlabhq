@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe 'Groups > Members > Leave group' do
   include Spec::Support::Helpers::Features::MembersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:group) { create(:group) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 
@@ -32,7 +32,7 @@ RSpec.describe 'Groups > Members > Leave group' do
 
     visit group_path(group, leave: 1)
 
-    page.accept_confirm
+    accept_gl_confirm(button_text: 'Leave group')
 
     wait_for_all_requests
     expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)

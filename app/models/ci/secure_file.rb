@@ -23,6 +23,8 @@ module Ci
     after_initialize :generate_key_data
     before_validation :assign_checksum
 
+    scope :order_by_created_at, -> { order(created_at: :desc) }
+
     default_value_for(:file_store) { Ci::SecureFileUploader.default_store }
 
     mount_file_store_uploader Ci::SecureFileUploader

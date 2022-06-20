@@ -2,6 +2,9 @@
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_header.vue` instead.
 export default {
   components: {
     GlButton,
@@ -23,7 +26,9 @@ export default {
 </script>
 
 <template>
-  <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900 gl-font-weight-bold">
+  <div
+    class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900 gl-font-weight-bold gl-mb-0"
+  >
     {{ __('Labels') }}
     <template v-if="allowLabelEdit">
       <gl-loading-icon v-show="labelsSelectInProgress" size="sm" inline />

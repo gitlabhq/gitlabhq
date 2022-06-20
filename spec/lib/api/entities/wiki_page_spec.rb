@@ -43,6 +43,23 @@ RSpec.describe API::Entities::WikiPage do
           expect(subject[:content]).to eq("<div>&#x000A;<p><strong>Test</strong> <em>content</em></p>&#x000A;</div>")
         end
       end
+
+      context 'when content contains a reference' do
+        let(:user) { create(:user) }
+        let(:project) { create(:project) }
+        let(:issue) { create(:issue, project: project) }
+        let(:wiki_page) { create(:wiki_page, wiki: project.wiki, title: 'page_with_ref', content: issue.to_reference) }
+        let(:expected_content) { %r{<a href=".*#{issue.iid}".*>#{issue.to_reference}</a>} }
+
+        before do
+          params[:current_user] = user
+          project.add_developer(user)
+        end
+
+        it 'expands the reference in the content' do
+          expect(subject[:content]).to match(expected_content)
+        end
+      end
     end
 
     context 'when it is false' do

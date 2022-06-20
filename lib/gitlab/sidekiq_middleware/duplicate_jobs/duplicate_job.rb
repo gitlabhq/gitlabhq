@@ -63,7 +63,7 @@ module Gitlab
           read_jid = nil
           read_wal_locations = {}
 
-          Sidekiq.redis do |redis|
+          with_redis do |redis|
             redis.multi do |multi|
               multi.set(idempotency_key, jid, ex: expiry, nx: true)
               read_wal_locations = check_existing_wal_locations!(multi, expiry)
@@ -81,7 +81,7 @@ module Gitlab
         def update_latest_wal_location!
           return unless job_wal_locations.present?
 
-          Sidekiq.redis do |redis|
+          with_redis do |redis|
             redis.multi do |multi|
               job_wal_locations.each do |connection_name, location|
                 multi.eval(
@@ -100,20 +100,19 @@ module Gitlab
           strong_memoize(:latest_wal_locations) do
             read_wal_locations = {}
 
-            Sidekiq.redis do |redis|
+            with_redis do |redis|
               redis.multi do |multi|
                 job_wal_locations.keys.each do |connection_name|
                   read_wal_locations[connection_name] = multi.lindex(wal_location_key(connection_name), 0)
                 end
               end
             end
-
             read_wal_locations.transform_values(&:value).compact
           end
         end
 
         def delete!
-          Sidekiq.redis do |redis|
+          with_redis do |redis|
             redis.multi do |multi|
               multi.del(idempotency_key, deduplicated_flag_key)
               delete_wal_locations!(multi)
@@ -140,7 +139,7 @@ module Gitlab
         def set_deduplicated_flag!(expiry = duplicate_key_ttl)
           return unless reschedulable?
 
-          Sidekiq.redis do |redis|
+          with_redis do |redis|
             redis.set(deduplicated_flag_key, DEDUPLICATED_FLAG_VALUE, ex: expiry, nx: true)
           end
         end
@@ -148,7 +147,7 @@ module Gitlab
         def should_reschedule?
           return false unless reschedulable?
 
-          Sidekiq.redis do |redis|
+          with_redis do |redis|
             redis.get(deduplicated_flag_key).present?
           end
         end
@@ -271,6 +270,18 @@ module Gitlab
 
         def reschedulable?
           !scheduled? && options[:if_deduplicated] == :reschedule_once
+        end
+
+        def with_redis
+          if Feature.enabled?(:use_primary_and_secondary_stores_for_duplicate_jobs) ||
+             Feature.enabled?(:use_primary_store_as_default_for_duplicate_jobs)
+            # TODO: Swap for Gitlab::Redis::SharedState after store transition
+            # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923
+            Gitlab::Redis::DuplicateJobs.with { |redis| yield redis }
+          else
+            # Keep the old behavior intact if neither feature flag is turned on
+            Sidekiq.redis { |redis| yield redis }
+          end
         end
       end
     end

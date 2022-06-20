@@ -7,10 +7,9 @@ module Gitlab
         module Limit
           class RateLimit < Chain::Base
             include Chain::Helpers
+            include ::Gitlab::Utils::StrongMemoize
 
             def perform!
-              return unless throttle_enabled?
-
               # We exclude child-pipelines from the rate limit because they represent
               # sub-pipelines that would otherwise hit the rate limit due to having the
               # same scope (project, user, sha).
@@ -19,7 +18,7 @@ module Gitlab
 
               if rate_limit_throttled?
                 create_log_entry
-                error(throttle_message) unless dry_run?
+                error(throttle_message) if enforce_throttle?
               end
             end
 
@@ -43,7 +42,9 @@ module Gitlab
                 commit_sha: command.sha,
                 current_user_id: current_user.id,
                 subscription_plan: project.actual_plan_name,
-                message: 'Activated pipeline creation rate limit'
+                message: 'Activated pipeline creation rate limit',
+                throttled: enforce_throttle?,
+                throttle_override: throttle_override?
               )
             end
 
@@ -51,16 +52,17 @@ module Gitlab
               'Too many pipelines created in the last minute. Try again later.'
             end
 
-            def throttle_enabled?
-              ::Feature.enabled?(
-                :ci_throttle_pipelines_creation,
-                project)
+            def enforce_throttle?
+              strong_memoize(:enforce_throttle) do
+                ::Feature.enabled?(:ci_enforce_throttle_pipelines_creation, project) &&
+                  !throttle_override?
+              end
             end
 
-            def dry_run?
-              ::Feature.enabled?(
-                :ci_throttle_pipelines_creation_dry_run,
-                project)
+            def throttle_override?
+              strong_memoize(:throttle_override) do
+                ::Feature.enabled?(:ci_enforce_throttle_pipelines_creation_override, project)
+              end
             end
           end
         end

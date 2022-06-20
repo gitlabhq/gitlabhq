@@ -5,18 +5,18 @@
 - @content_class = "admin-projects"
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
-%h3.page-title
+%h1.page-title.gl-font-size-h-display
   = _('Project: %{name}') % { name: @project.full_name }
   = link_to edit_project_path(@project), class: "btn btn-default gl-button float-right" do
-    = sprite_icon('pencil-square', css_class: 'gl-icon')
+    = sprite_icon('pencil', css_class: 'gl-icon gl-mr-2')
     = _('Edit')
 %hr
 - if @project.last_repository_check_failed?
   .row
     .col-md-12
       = render Pajamas::AlertComponent.new(variant: :danger,
-        alert_class: 'gl-mb-5',
-        alert_data: { testid: 'last-repository-check-failed-alert' }) do |c|
+        alert_options: { class: 'gl-mb-5',
+                         data: { testid: 'last-repository-check-failed-alert' }}) do |c|
         = c.body do
           - last_check_message = _("Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages.")
           - last_check_message = last_check_message % { last_check_timestamp: time_ago_with_tooltip(@project.last_repository_check_at) }

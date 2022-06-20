@@ -239,6 +239,17 @@ RSpec.describe API::Ci::Jobs do
         end
       end
 
+      context 'when non-deployment environment action' do
+        let(:job) do
+          create(:environment, name: 'review', project_id: project.id)
+          create(:ci_build, :artifacts, :stop_review_app, environment: 'review', pipeline: pipeline, user: api_user, status: job_status)
+        end
+
+        it 'includes environment slug' do
+          expect(json_response.dig('environment', 'slug')).to eq('review')
+        end
+      end
+
       context 'when passing the token as params' do
         let(:headers) { {} }
         let(:params) { { job_token: job.token } }
@@ -655,62 +666,80 @@ RSpec.describe API::Ci::Jobs do
 
     before do
       project.add_role(user, role)
-
-      post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
-    shared_examples_for 'erases job' do
-      it 'erases job content' do
-        expect(response).to have_gitlab_http_status(:created)
-        expect(job.job_artifacts.count).to eq(0)
-        expect(job.trace.exist?).to be_falsy
-        expect(job.artifacts_file.present?).to be_falsy
-        expect(job.artifacts_metadata.present?).to be_falsy
-        expect(job.has_job_artifacts?).to be_falsy
+    context 'when project is not undergoing stats refresh' do
+      before do
+        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
+      end
+
+      shared_examples_for 'erases job' do
+        it 'erases job content' do
+          expect(response).to have_gitlab_http_status(:created)
+          expect(job.job_artifacts.count).to eq(0)
+          expect(job.trace.exist?).to be_falsy
+          expect(job.artifacts_file.present?).to be_falsy
+          expect(job.artifacts_metadata.present?).to be_falsy
+          expect(job.has_job_artifacts?).to be_falsy
+        end
+      end
+
+      context 'job is erasable' do
+        let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
+
+        it_behaves_like 'erases job'
+
+        it 'updates job' do
+          job.reload
+
+          expect(job.erased_at).to be_truthy
+          expect(job.erased_by).to eq(user)
+        end
+      end
+
+      context 'when job has an unarchived trace artifact' do
+        let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, project: project, pipeline: pipeline) }
+
+        it_behaves_like 'erases job'
+      end
+
+      context 'job is not erasable' do
+        let(:job) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
+
+        it 'responds with forbidden' do
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when a developer erases a build' do
+        let(:role) { :developer }
+        let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+
+        context 'when the build was created by the developer' do
+          let(:owner) { user }
+
+          it { expect(response).to have_gitlab_http_status(:created) }
+        end
+
+        context 'when the build was created by another user' do
+          let(:owner) { create(:user) }
+
+          it { expect(response).to have_gitlab_http_status(:forbidden) }
+        end
       end
     end
 
-    context 'job is erasable' do
+    context 'when project is undergoing stats refresh' do
       let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
 
-      it_behaves_like 'erases job'
+      it_behaves_like 'preventing request because of ongoing project stats refresh' do
+        let(:make_request) { post api("/projects/#{project.id}/jobs/#{job.id}/erase", user) }
 
-      it 'updates job' do
-        job.reload
+        it 'does not delete artifacts' do
+          make_request
 
-        expect(job.erased_at).to be_truthy
-        expect(job.erased_by).to eq(user)
-      end
-    end
-
-    context 'when job has an unarchived trace artifact' do
-      let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, project: project, pipeline: pipeline) }
-
-      it_behaves_like 'erases job'
-    end
-
-    context 'job is not erasable' do
-      let(:job) { create(:ci_build, :trace_live, project: project, pipeline: pipeline) }
-
-      it 'responds with forbidden' do
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'when a developer erases a build' do
-      let(:role) { :developer }
-      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
-
-      context 'when the build was created by the developer' do
-        let(:owner) { user }
-
-        it { expect(response).to have_gitlab_http_status(:created) }
-      end
-
-      context 'when the build was created by the other' do
-        let(:owner) { create(:user) }
-
-        it { expect(response).to have_gitlab_http_status(:forbidden) }
+          expect(job.reload.job_artifacts).not_to be_empty
+        end
       end
     end
   end

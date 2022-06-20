@@ -3,8 +3,8 @@
 %section.settings.no-animate#js-deploy-tokens{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_tokens_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= s_('DeployTokens|Deploy tokens')
-    %button.btn.gl-button.btn-default.js-settings-toggle
-      = expanded ? 'Collapse' : 'Expand'
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
     %p
       = description
   .settings-content

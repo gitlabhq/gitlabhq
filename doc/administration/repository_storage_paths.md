@@ -174,4 +174,4 @@ information.
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/index.md#migrating-to-gitaly-cluster).
+same process as [migrating to Gitaly Cluster](gitaly/index.md#migrate-to-gitaly-cluster).

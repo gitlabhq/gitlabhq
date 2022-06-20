@@ -31,7 +31,13 @@ RSpec.describe Ci::PipelineEditorHelper do
 
       allow(helper)
         .to receive(:image_path)
-        .and_return('foo')
+        .with('illustrations/empty-state/empty-dag-md.svg')
+        .and_return('illustrations/empty.svg')
+
+      allow(helper)
+        .to receive(:image_path)
+        .with('illustrations/project-run-CICD-pipelines-sm.svg')
+        .and_return('illustrations/validate.svg')
     end
 
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }
@@ -43,7 +49,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
           "ci-help-page-path" => help_page_path('ci/index'),
           "default-branch" => project.default_branch_or_main,
-          "empty-state-illustration-path" => 'foo',
+          "empty-state-illustration-path" => 'illustrations/empty.svg',
           "initial-branch-name" => nil,
           "includes-help-page-path" => help_page_path('ci/yaml/includes'),
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
@@ -57,6 +63,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
           "total-branches" => project.repository.branches.length,
+          "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')
         })
       end
@@ -71,7 +78,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
           "ci-help-page-path" => help_page_path('ci/index'),
           "default-branch" => project.default_branch_or_main,
-          "empty-state-illustration-path" => 'foo',
+          "empty-state-illustration-path" => 'illustrations/empty.svg',
           "initial-branch-name" => nil,
           "includes-help-page-path" => help_page_path('ci/yaml/includes'),
           "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
@@ -85,6 +92,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
           "total-branches" => 0,
+          "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')
         })
       end

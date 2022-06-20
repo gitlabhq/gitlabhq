@@ -114,7 +114,7 @@ to the end of the Bitbucket authorization callback URL.
    if you installed from source.
 
 On the sign-in page there should now be a Bitbucket icon below the regular
-sign-in form. Click the icon to begin the authentication process. Bitbucket asks
+sign-in form. Select the icon to begin the authentication process. Bitbucket asks
 the user to sign in and authorize the GitLab application. If successful, the user
 is returned to GitLab and signed in.
 

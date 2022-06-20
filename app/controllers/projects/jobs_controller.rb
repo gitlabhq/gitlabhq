@@ -3,6 +3,7 @@
 class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
   include ContinueParams
+  include ProjectStatsRefreshConflictsGuard
 
   urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :status, :erase, :raw]
 
@@ -19,6 +20,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :push_jobs_table_vue, only: [:index]
   before_action :push_jobs_table_vue_search, only: [:index]
+  before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
 
   before_action do
     push_frontend_feature_flag(:infinitely_collapsible_sections, @project)
@@ -40,7 +42,6 @@ class Projects::JobsController < Projects::ApplicationController
     @builds = @builds.page(params[:page]).per(30).without_count
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def show
     respond_to do |format|
       format.html
@@ -53,7 +54,6 @@ class Projects::JobsController < Projects::ApplicationController
       end
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def trace
     @build.trace.being_watched! if @build.running?

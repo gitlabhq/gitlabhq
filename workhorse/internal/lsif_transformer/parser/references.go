@@ -19,15 +19,13 @@ type SerializedReference struct {
 	Path string `json:"path"`
 }
 
-func NewReferences(config Config) (*References, error) {
-	tempPath := config.TempPath
-
-	items, err := newCache(tempPath, "references", Item{})
+func NewReferences() (*References, error) {
+	items, err := newCache("references", Item{})
 	if err != nil {
 		return nil, err
 	}
 
-	offsets, err := newCache(tempPath, "references-offsets", ReferencesOffset{})
+	offsets, err := newCache("references-offsets", ReferencesOffset{})
 	if err != nil {
 		return nil, err
 	}

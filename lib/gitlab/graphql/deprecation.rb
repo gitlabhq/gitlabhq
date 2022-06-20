@@ -3,9 +3,12 @@
 module Gitlab
   module Graphql
     class Deprecation
+      REASON_RENAMED = :renamed
+      REASON_ALPHA = :alpha
+
       REASONS = {
-        renamed: 'This was renamed.',
-        alpha: 'This feature is in Alpha, and can be removed or changed at any point.'
+        REASON_RENAMED => 'This was renamed.',
+        REASON_ALPHA => 'This feature is in Alpha. It can be changed or removed at any time.'
       }.freeze
 
       include ActiveModel::Validations
@@ -39,7 +42,7 @@ module Gitlab
 
       def markdown(context: :inline)
         parts = [
-          "#{deprecated_in(format: :markdown)}.",
+          "#{changed_in_milestone(format: :markdown)}.",
           reason_text,
           replacement_markdown.then { |r| "Use: #{r}." if r }
         ].compact
@@ -77,7 +80,7 @@ module Gitlab
         [
           reason_text,
           replacement && "Please use `#{replacement}`.",
-          "#{deprecated_in}."
+          "#{changed_in_milestone}."
         ].compact.join(' ')
       end
 
@@ -107,15 +110,24 @@ module Gitlab
       end
 
       def description_suffix
-        " #{deprecated_in}: #{reason_text}"
+        " #{changed_in_milestone}: #{reason_text}"
       end
 
-      def deprecated_in(format: :plain)
+      # Returns 'Deprecated in <milestone>' for proper deprecations.
+      # Retruns 'Introduced in <milestone>' for :alpha deprecations.
+      # Formatted to markdown or plain format.
+      def changed_in_milestone(format: :plain)
+        verb = if reason == REASON_ALPHA
+                 'Introduced'
+               else
+                 'Deprecated'
+               end
+
         case format
         when :plain
-          "Deprecated in #{milestone}"
+          "#{verb} in #{milestone}"
         when :markdown
-          "**Deprecated** in #{milestone}"
+          "**#{verb}** in #{milestone}"
         end
       end
     end

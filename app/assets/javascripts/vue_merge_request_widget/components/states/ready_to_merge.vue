@@ -417,6 +417,7 @@ export default {
       }
 
       this.isMakingRequest = true;
+      this.editCommitMessage = false;
 
       if (!useAutoMerge) {
         this.mr.transitionStateMachine({ transition: MERGE });
@@ -663,7 +664,11 @@ export default {
               <gl-sprintf v-else :message="mergeDisabledText" />
             </div>
             <template v-if="glFeatures.restructuredMrWidget">
-              <div v-show="editCommitMessage" class="gl-w-full gl-order-n1">
+              <div
+                v-if="editCommitMessage"
+                class="gl-w-full gl-order-n1"
+                data-testid="edit_commit_message"
+              >
                 <ul
                   :class="{
                     'content-list': !glFeatures.restructuredMrWidget,
@@ -711,15 +716,13 @@ export default {
               <div
                 v-if="!restructuredWidgetShowMergeButtons"
                 class="gl-w-full gl-order-n1 gl-text-gray-500"
+                data-qa-selector="merged_status_content"
               >
                 <strong v-if="mr.state !== 'closed'">
                   {{ __('Merge details') }}
                 </strong>
                 <ul class="gl-pl-4 gl-m-0">
-                  <li
-                    v-if="mr.divergedCommitsCount > 0 && glFeatures.updatedMrHeader"
-                    class="gl-line-height-normal"
-                  >
+                  <li v-if="mr.divergedCommitsCount > 0" class="gl-line-height-normal">
                     <gl-sprintf
                       :message="s__('mrWidget|The source branch is %{link} the target branch')"
                     >
@@ -788,11 +791,7 @@ export default {
         </div>
       </div>
       <template v-if="shouldShowMergeControls && !glFeatures.restructuredMrWidget">
-        <div
-          v-if="!shouldShowMergeEdit"
-          class="mr-fast-forward-message"
-          data-qa-selector="fast_forward_message_content"
-        >
+        <div v-if="!shouldShowMergeEdit" class="mr-fast-forward-message">
           {{ __('Fast-forward merge without a merge commit') }}
         </div>
         <commits-header

@@ -2,6 +2,7 @@ import { escape, minBy } from 'lodash';
 import emojiRegexFactory from 'emoji-regex';
 import emojiAliases from 'emojis/aliases.json';
 import { setAttributes } from '~/lib/utils/dom_utils';
+import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import AccessorUtilities from '../lib/utils/accessor';
 import axios from '../lib/utils/axios_utils';
 import { CACHE_KEY, CACHE_VERSION_KEY, CATEGORY_ICON_MAP, FREQUENTLY_USED_KEY } from './constants';
@@ -144,6 +145,11 @@ function getNameMatch(emoji, query) {
   return null;
 }
 
+// Sort emoji by emoji score falling back to a string comparison
+export function sortEmoji(a, b) {
+  return a.score - b.score || a.fieldValue.localeCompare(b.fieldValue);
+}
+
 export function searchEmoji(query) {
   const lowercaseQuery = query ? `${query}`.toLowerCase() : '';
 
@@ -156,16 +162,14 @@ export function searchEmoji(query) {
         getDescriptionMatch(emoji, lowercaseQuery),
         getAliasMatch(emoji, matchingAliases),
         getNameMatch(emoji, lowercaseQuery),
-      ].filter(Boolean);
+      ]
+        .filter(Boolean)
+        .map((x) => ({ ...x, score: getEmojiScoreWithIntent(x.emoji.name, x.score) }));
 
       return minBy(matches, (x) => x.score);
     })
-    .filter(Boolean);
-}
-
-export function sortEmoji(items) {
-  // Sort results by index of and string comparison
-  return [...items].sort((a, b) => a.score - b.score || a.fieldValue.localeCompare(b.fieldValue));
+    .filter(Boolean)
+    .sort(sortEmoji);
 }
 
 export const CATEGORY_NAMES = Object.keys(CATEGORY_ICON_MAP);

@@ -11,6 +11,8 @@ RSpec.shared_examples 'subscribes to event' do
 
     ::Gitlab::EventStore.publish(event)
   end
+
+  it_behaves_like 'an idempotent worker'
 end
 
 def consume_event(subscriber:, event:)

@@ -57,7 +57,7 @@ To download and run a container image hosted in the GitLab Container Registry:
 1. Copy the link to your container image:
    - Go to your project or group's **Packages & Registries > Container Registry**
      and find the image you want.
-   - Next to the image name, click the **Copy** button.
+   - Next to the image name, select **Copy**.
 
     ![Container Registry image URL](img/container_registry_hover_path_13_4.png)
 
@@ -113,7 +113,7 @@ To authenticate, you can use:
 Both of these require the minimum scope to be:
 
 - For read (pull) access, `read_registry`.
-- For write (push) access, `write_registry`.
+- For write (push) access, `write_registry` & `read_registry`.
 
 To authenticate, run the `docker` command. For example:
 
@@ -404,7 +404,7 @@ To delete images from within GitLab:
      by clicking the red **{remove}** **Trash** icon next to the tag you want
      to delete.
 
-1. In the dialog box, click **Remove tag**.
+1. In the dialog box, select **Remove tag**.
 
 ### Delete images using the API
 
@@ -506,7 +506,7 @@ You can, however, remove the Container Registry for a project:
 1. Go to your project's **Settings > General** page.
 1. Expand the **Visibility, project features, permissions** section
    and disable **Container Registry**.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 The **Packages & Registries > Container Registry** entry is removed from the project's sidebar.
 
@@ -707,3 +707,27 @@ GitLab is [migrating to the next generation of the Container Registry](https://g
 During the migration, you may encounter difficulty deleting tags.
 If you encounter an error, it's likely that your image repository is in the process of being migrated.
 Please wait a few minutes and try again.
+
+### `unauthorized: authentication required` when pushing large images
+
+When pushing large images, you might get an error like the following:
+
+```shell
+docker push gitlab.example.com/myproject/docs:latest
+The push refers to a repository [gitlab.example.com/myproject/docs]
+630816f32edb: Preparing
+530d5553aec8: Preparing
+...
+4b0bab9ff599: Waiting
+d1c800db26c7: Waiting
+42755cf4ee95: Waiting
+unauthorized: authentication required
+```
+
+On self-managed GitLab instances, by default, tokens for the Container Registry expire every five minutes.
+When pushing larger images, or images that take longer than five minutes to push,
+you might encounter this error. On GitLab.com, the expiration time is 15 minutes.
+
+If you are using self-managed GitLab, you can ask an administrator to
+[increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration)
+if necessary.

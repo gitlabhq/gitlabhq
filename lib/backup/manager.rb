@@ -11,7 +11,8 @@ module Backup
 
     LIST_ENVS = {
       skipped: 'SKIP',
-      repositories_storages: 'REPOSITORIES_STORAGES'
+      repositories_storages: 'REPOSITORIES_STORAGES',
+      repositories_paths: 'REPOSITORIES_PATHS'
     }.freeze
 
     TaskDefinition = Struct.new(
@@ -41,29 +42,8 @@ module Backup
     end
 
     def create
-      if incremental?
-        unpack(ENV.fetch('PREVIOUS_BACKUP', ENV['BACKUP']))
-        read_backup_information
-        verify_backup_version
-        update_backup_information
-      end
-
-      build_backup_information
-
-      definitions.keys.each do |task_name|
-        run_create_task(task_name)
-      end
-
-      write_backup_information
-
-      if skipped?('tar')
-        upload
-      else
-        pack
-        upload
-        cleanup
-        remove_old
-      end
+      unpack(ENV.fetch('PREVIOUS_BACKUP', ENV['BACKUP'])) if incremental?
+      run_all_create_tasks
 
       puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
            "and are not included in this backup. You will need these files to restore a backup.\n" \
@@ -95,22 +75,8 @@ module Backup
     end
 
     def restore
-      cleanup_required = unpack(ENV['BACKUP'])
-      read_backup_information
-      verify_backup_version
-
-      definitions.keys.each do |task_name|
-        run_restore_task(task_name) if !skipped?(task_name) && enabled_task?(task_name)
-      end
-
-      Rake::Task['gitlab:shell:setup'].invoke
-      Rake::Task['cache:clear'].invoke
-
-      if cleanup_required
-        cleanup
-      end
-
-      remove_tmp
+      unpack(ENV['BACKUP'])
+      run_all_restore_tasks
 
       puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
         "and are not included in this backup. You will need to restore these files manually.".color(:red)
@@ -225,11 +191,57 @@ module Backup
       max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence
       strategy = Backup::GitalyBackup.new(progress, incremental: incremental?, max_parallelism: max_concurrency, storage_parallelism: max_storage_concurrency)
 
-      Repositories.new(progress, strategy: strategy, storages: repositories_storages)
+      Repositories.new(progress,
+                       strategy: strategy,
+                       storages: list_env(:repositories_storages),
+                       paths: list_env(:repositories_paths)
+                      )
     end
 
     def build_files_task(app_files_dir, excludes: [])
       Files.new(progress, app_files_dir, excludes: excludes)
+    end
+
+    def run_all_create_tasks
+      if incremental?
+        read_backup_information
+        verify_backup_version
+        update_backup_information
+      end
+
+      build_backup_information
+
+      definitions.keys.each do |task_name|
+        run_create_task(task_name)
+      end
+
+      write_backup_information
+
+      unless skipped?('tar')
+        pack
+        upload
+        remove_old
+      end
+
+    ensure
+      cleanup unless skipped?('tar')
+      remove_tmp
+    end
+
+    def run_all_restore_tasks
+      read_backup_information
+      verify_backup_version
+
+      definitions.keys.each do |task_name|
+        run_restore_task(task_name) if !skipped?(task_name) && enabled_task?(task_name)
+      end
+
+      Rake::Task['gitlab:shell:setup'].invoke
+      Rake::Task['cache:clear'].invoke
+
+    ensure
+      cleanup unless skipped?('tar')
+      remove_tmp
     end
 
     def incremental?
@@ -259,7 +271,8 @@ module Backup
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
         skipped: ENV['SKIP'],
-        repositories_storages: ENV['REPOSITORIES_STORAGES']
+        repositories_storages: ENV['REPOSITORIES_STORAGES'],
+        repositories_paths: ENV['REPOSITORIES_PATHS']
       }
     end
 
@@ -272,7 +285,8 @@ module Backup
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
         skipped: list_env(:skipped).join(','),
-        repositories_storages: list_env(:repositories_storages).join(',')
+        repositories_storages: list_env(:repositories_storages).join(','),
+        repositories_paths: list_env(:repositories_paths).join(',')
       )
     end
 
@@ -299,7 +313,7 @@ module Backup
 
     def upload
       connection_settings = Gitlab.config.backup.upload.connection
-      if connection_settings.blank? || skipped?('remote')
+      if connection_settings.blank? || skipped?('remote') || skipped?('tar')
         puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end
@@ -405,8 +419,7 @@ module Backup
     def unpack(source_backup_id)
       if source_backup_id.blank? && non_tarred_backup?
         puts_time "Non tarred backup found in #{backup_path}, using that"
-
-        return false
+        return
       end
 
       Dir.chdir(backup_path) do
@@ -464,10 +477,6 @@ module Backup
 
     def skipped
       @skipped ||= list_env(:skipped)
-    end
-
-    def repositories_storages
-      @repositories_storages ||= list_env(:repositories_storages)
     end
 
     def list_env(name)

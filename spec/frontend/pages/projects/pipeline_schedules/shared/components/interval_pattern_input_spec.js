@@ -190,7 +190,7 @@ describe('Interval Pattern Input Component', () => {
 
       findCustomInput().setValue(newValue);
 
-      await nextTick;
+      await nextTick();
 
       expect(findSelectedRadioKey()).toBe(customKey);
     });

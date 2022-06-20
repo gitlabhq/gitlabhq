@@ -3,6 +3,8 @@
 class SnippetBlobPresenter < BlobPresenter
   include GitlabRoutingHelper
 
+  delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
+
   presents ::SnippetBlob
 
   def rich_data

@@ -12,7 +12,34 @@ module Projects::ProjectMembersHelper
     }.to_json
   end
 
+  def project_member_header_subtext(project)
+    if can?(current_user, :admin_project_member, project)
+      share_project_description(project)
+    else
+      html_escape(_("Members can be added by project " \
+                  "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
+        i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
+      }
+    end
+  end
+
   private
+
+  def share_project_description(project)
+    share_with_group   = project.allowed_to_share_with_group?
+    share_with_members = !membership_locked?
+
+    description =
+      if share_with_group && share_with_members
+        _("You can invite a new member to %{project_name} or invite another group.")
+      elsif share_with_group
+        _("You can invite another group to %{project_name}.")
+      elsif share_with_members
+        _("You can invite a new member to %{project_name}.")
+      end
+
+    html_escape(description) % { project_name: tag.strong(project.name) }
+  end
 
   def project_members_serialized(project, members)
     MemberSerializer.new.represent(members, { current_user: current_user, group: project.group, source: project })
@@ -38,3 +65,5 @@ module Projects::ProjectMembersHelper
     }
   end
 end
+
+Projects::ProjectMembersHelper.prepend_mod_with('Projects::ProjectMembersHelper')

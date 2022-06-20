@@ -36,9 +36,9 @@ environments are not displayed.
 
 To add a project to the dashboard:
 
-1. Click the **Add projects** button in the home screen of the dashboard.
+1. Select **Add projects** in the home screen of the dashboard.
 1. Search and add one or more projects using the **Search your projects** field.
-1. Click the **Add projects** button.
+1. Select **Add projects**.
 
 Once added, you can see a summary of each project's environment operational
 health, including the latest commit, pipeline status, and deployment time.

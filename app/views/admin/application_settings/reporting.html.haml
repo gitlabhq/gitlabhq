@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Spam and Anti-bot Protection')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure CAPTCHAs, IP address limits, and other anti-spam measures.')
@@ -20,7 +20,7 @@
   .settings-header
     %h4
       = _('Abuse reports')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Receive notification of abuse reports by email.')

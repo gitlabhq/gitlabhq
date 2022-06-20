@@ -25,12 +25,12 @@ WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost
 
 Sometimes a test might fail and the failure stack trace doesn't provide enough
 information to determine what went wrong. You can get more information by enabling
-debug logs by setting `QA_DEBUG=true`, to see what the test framework is attempting.
+debug logs by setting `QA_LOG_LEVEL=debug`, to see what the test framework is attempting.
 For example:
 
 ```shell
 cd gitlab/qa
-QA_DEBUG=true bundle exec bin/qa Test::Instance::All http://localhost:3000
+QA_LOG_LEVEL=debug bundle exec bin/qa Test::Instance::All http://localhost:3000
 ```
 
 The test framework then outputs many logs showing the actions taken during

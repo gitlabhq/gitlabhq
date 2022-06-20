@@ -18,7 +18,7 @@ to cherry-pick the changes introduced by that merge request.
 
 ![Cherry-pick merge request](img/cherry_pick_changes_mr.png)
 
-After you click that button, a modal displays a
+After you select that button, a modal displays a
 [branch filter search box](../repository/branches/index.md#branch-filter-search-box)
 where you can choose to either:
 
@@ -69,12 +69,12 @@ git cherry-pick -m 2 7a39eb0
 You can cherry-pick merge requests from the same project, or forks of the same
 project, from the GitLab user interface:
 
-1. In the merge request's secondary menu, click **Commits** to display the commit details page.
-1. Click on the **Options** dropdown and select **Cherry-pick** to show the cherry-pick modal.
+1. In the merge request's secondary menu, select **Commits** to display the commit details page.
+1. Select the **Options** dropdown and select **Cherry-pick** to show the cherry-pick modal.
 1. In **Pick into project** and **Pick into branch**, select the destination project and branch:
    ![Cherry-pick commit](img/cherry_pick_into_project_v13_11.png)
 1. Optional. Select **Start a new merge request** if you're ready to create a merge request.
-1. Click **Cherry-pick**.
+1. Select **Cherry-pick**.
 
 ## Related topics
 

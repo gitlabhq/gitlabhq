@@ -8,9 +8,10 @@ import { DropdownVariant } from '../constants';
  * @param {object} state
  */
 export const dropdownButtonText = (state, getters) => {
-  const selectedLabels = getters.isDropdownVariantSidebar
-    ? state.labels.filter((label) => label.set)
-    : state.selectedLabels;
+  const selectedLabels =
+    getters.isDropdownVariantSidebar || getters.isDropdownVariantEmbedded
+      ? state.labels.filter((label) => label.set || label.indeterminate)
+      : state.selectedLabels;
 
   if (!selectedLabels.length) {
     return state.dropdownButtonText || __('Label');

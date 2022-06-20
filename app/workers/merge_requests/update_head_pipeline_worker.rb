@@ -14,7 +14,7 @@ module MergeRequests
     def handle_event(event)
       Ci::Pipeline.find_by_id(event.data[:pipeline_id]).try do |pipeline|
         pipeline.all_merge_requests.opened.each do |merge_request|
-          UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+          merge_request.update_head_pipeline
         end
       end
     end

@@ -1,0 +1,28 @@
+query workItemQuery($id: WorkItemID!) {
+  workItem(id: $id) {
+    id
+    workItemType {
+      id
+    }
+    title
+    widgets {
+      type
+      ... on WorkItemWidgetHierarchy {
+        type
+        parent {
+          id
+        }
+        children {
+          nodes {
+            id
+            workItemType {
+              id
+            }
+            title
+            state
+          }
+        }
+      }
+    }
+  }
+}

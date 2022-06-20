@@ -14,7 +14,6 @@ RSpec.describe 'User comments on a diff', :js do
   let(:user) { create(:user) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     project.add_maintainer(user)
     sign_in(user)
 

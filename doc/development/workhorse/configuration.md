@@ -21,47 +21,49 @@ Add any new Workhorse configuration options into the configuration file.
 
 Options:
   -apiCiLongPollingDuration duration
-      Long polling duration for job requesting for runners (default 50ns)
+        Long polling duration for job requesting for runners (default 50ns)
   -apiLimit uint
-      Number of API requests allowed at single time
+        Number of API requests allowed at single time
   -apiQueueDuration duration
-      Maximum queueing duration of requests (default 30s)
+        Maximum queueing duration of requests (default 30s)
   -apiQueueLimit uint
-      Number of API requests allowed to be queued
+        Number of API requests allowed to be queued
   -authBackend string
-      Authentication/authorization backend (default "http://localhost:8080")
+        Authentication/authorization backend (default "http://localhost:8080")
   -authSocket string
-      Optional: Unix domain socket to dial authBackend at
+        Optional: Unix domain socket to dial authBackend at
   -cableBackend string
-      Optional: ActionCable backend (default authBackend)
+        ActionCable backend
   -cableSocket string
-      Optional: Unix domain socket to dial cableBackend at (default authSocket)
+        Optional: Unix domain socket to dial cableBackend at
   -config string
-      TOML file to load config from
+        TOML file to load config from
   -developmentMode
-      Allow the assets to be served from Rails app
+        Allow the assets to be served from Rails app
   -documentRoot string
-      Path to static files content (default "public")
+        Path to static files content (default "public")
   -listenAddr string
-      Listen address for HTTP server (default "localhost:8181")
+        Listen address for HTTP server (default "localhost:8181")
   -listenNetwork string
-      Listen 'network' (tcp, tcp4, tcp6, unix) (default "tcp")
+        Listen 'network' (tcp, tcp4, tcp6, unix) (default "tcp")
   -listenUmask int
-      Umask for Unix socket
+        Umask for Unix socket
   -logFile string
-      Log file location
+        Log file location
   -logFormat string
-      Log format to use defaults to text (text, json, structured, none) (default "text")
+        Log format to use defaults to text (text, json, structured, none) (default "text")
   -pprofListenAddr string
-      pprof listening address, e.g. 'localhost:6060'
+        pprof listening address, e.g. 'localhost:6060'
   -prometheusListenAddr string
-      Prometheus listening address, e.g. 'localhost:9229'
+        Prometheus listening address, e.g. 'localhost:9229'
+  -propagateCorrelationID X-Request-ID
+        Reuse existing Correlation-ID from the incoming request header X-Request-ID if present
   -proxyHeadersTimeout duration
-      How long to wait for response headers when proxying the request (default 5m0s)
+        How long to wait for response headers when proxying the request (default 5m0s)
   -secretPath string
-      File with secret key to authenticate with authBackend (default "./.gitlab_workhorse_secret")
+        File with secret key to authenticate with authBackend (default "./.gitlab_workhorse_secret")
   -version
-      Print version and exit
+        Print version and exit
 ```
 
 The 'auth backend' refers to the GitLab Rails application. The name is
@@ -70,7 +72,7 @@ HTTP.
 
 GitLab Workhorse can listen on either a TCP or a Unix domain socket. It
 can also open a second listening TCP listening socket with the Go
-[`net/http/pprof` profiler server](http://golang.org/pkg/net/http/pprof/).
+[`net/http/pprof` profiler server](https://pkg.go.dev/net/http/pprof).
 
 GitLab Workhorse can listen on Redis build and runner registration events if you
 pass a valid TOML configuration file through the `-config` flag.
@@ -147,6 +149,19 @@ addr = "localhost:3443"
 The `certificate` file should contain the concatenation
 of the server's certificate, any intermediates, and the CA's certificate.
 
+Metrics endpoints can be configured similarly:
+
+```toml
+[metrics_listener]
+network = "tcp"
+addr = "localhost:9229"
+[metrics_listener.tls]
+  certificate = "/path/to/certificate"
+  key = "/path/to/private/key"
+  min_version = "tls1.2"
+  max_version = "tls1.3"
+```
+
 ## Interaction of authBackend and authSocket
 
 The interaction between `authBackend` and `authSocket` can be confusing.
@@ -211,6 +226,53 @@ configuration with the `GITLAB_TRACING` environment variable, like this:
 
 ```shell
 GITLAB_TRACING=opentracing://jaeger ./gitlab-workhorse
+```
+
+### Propagate correlation IDs
+
+When a user makes an HTTP request, such as creating a new project, the
+initial request is routed through Workhorse to another service, which
+may in turn, make other requests. To help trace the request as it flows
+across services, Workhorse generates a random value called a
+[correlation ID](../../administration/troubleshooting/tracing_correlation_id.md).
+Workhorse sends this correlation ID via the `X-Request-Id` HTTP header.
+
+Some GitLab services, such as GitLab Shell, generate their own
+correlation IDs. In addition, other services, such as Gitaly, make
+internal API calls that pass along a correlation ID from the original
+request. In either case, the correlation ID is also passed via the
+`X-Request-Id` HTTP header.
+
+By default, Workhorse ignores this header and always generates a new
+correlation ID. This makes debugging harder and prevents distributed
+tracing from working properly, since the new correlation ID is
+completely unrelated to the original one.
+
+Workhorse can be configured to propagate an incoming correlation ID via
+the `-propagateCorrelationID` command-line flag. It is highly
+recommended that this option be used with an IP allow list to ensure
+arbitrary values cannot be generated by untrusted clients.
+
+An IP allow list is specified via the `trusted_cidrs_for_propagation`
+option in the Workhorse configuration file. Specify a list of CIDR blocks
+that can be trusted. For example:
+
+```toml
+trusted_cidrs_for_propagation = ["10.0.0.0/8", "127.0.0.1/32"]
+```
+
+NOTE:
+The `-propagateCorrelationID` flag must be used for the `trusted_cidrs_for_propagation` option to work.
+
+### Trusted proxies
+
+If Workhorse is behind a reverse proxy such as NGINX, the
+`trusted_cidrs_for_x_forwarded_for` option is needed to specify which
+CIDR blocks can be used to trust to provide the originating IP address
+via the `X-Forwarded-For` HTTP header. For example:
+
+```toml
+trusted_cidrs_for_x_forwarded_for = ["10.0.0.0/8", "127.0.0.1/32"]
 ```
 
 ## Continuous profiling

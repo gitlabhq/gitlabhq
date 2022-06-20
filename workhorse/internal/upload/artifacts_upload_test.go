@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -72,7 +71,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 				return
 			}
 
-			_, err := ioutil.ReadFile(r.FormValue("file.path"))
+			_, err := os.ReadFile(r.FormValue("file.path"))
 			if err != nil {
 				t.Fatal("Expected file to be readable")
 				return
@@ -85,7 +84,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 		}
 
 		if r.FormValue("metadata.path") != "" {
-			metadata, err := ioutil.ReadFile(r.FormValue("metadata.path"))
+			metadata, err := os.ReadFile(r.FormValue("metadata.path"))
 			if err != nil {
 				t.Fatal("Expected metadata to be readable")
 				return
@@ -96,7 +95,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 				return
 			}
 			defer gz.Close()
-			metadata, err = ioutil.ReadAll(gz)
+			metadata, err = io.ReadAll(gz)
 			if err != nil {
 				t.Fatal("Expected metadata to be valid")
 				return
@@ -130,8 +129,7 @@ type testServer struct {
 }
 
 func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format string, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *testServer {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
+	tempPath := t.TempDir()
 
 	if authResponse == nil {
 		authResponse = &api.Response{TempPath: tempPath}
@@ -147,7 +145,6 @@ func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format 
 
 	cleanup := func() {
 		ts.Close()
-		require.NoError(t, os.RemoveAll(tempPath))
 		require.NoError(t, writer.Close())
 	}
 
@@ -292,8 +289,7 @@ func TestUploadFormProcessing(t *testing.T) {
 }
 
 func TestLsifFileProcessing(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
+	tempPath := t.TempDir()
 
 	s := setupWithTmpPath(t, "file", true, "zip", &api.Response{TempPath: tempPath, ProcessLsif: true}, nil)
 	defer s.cleanup()
@@ -312,8 +308,7 @@ func TestLsifFileProcessing(t *testing.T) {
 }
 
 func TestInvalidLsifFileProcessing(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
+	tempPath := t.TempDir()
 
 	s := setupWithTmpPath(t, "file", true, "zip", &api.Response{TempPath: tempPath, ProcessLsif: true}, nil)
 	defer s.cleanup()

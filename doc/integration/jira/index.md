@@ -67,10 +67,13 @@ The authentication method in Jira depends on whether you host Jira on your own s
 
 ## Privacy considerations
 
-If you integrate a private GitLab project with Jira using the [**Jira integration**](#jira-integration),
-actions in GitLab issues and merge requests linked to a Jira issue leak information
-about the private project to non-administrator Jira users. If your installation uses Jira Cloud,
-you can use the [GitLab.com for Jira Cloud app](connect-app.md) to avoid this risk.
+All Jira integrations share data with Jira to make it visible outside of GitLab.
+If you integrate a private GitLab project with Jira, the private data is
+shared with users who have access to your Jira project.
+
+The [**Jira project integration**](#jira-integration) posts GitLab data in the form of comments in Jira issues.
+The GitLab.com for Jira Cloud app and Jira DVCS connector share this data through the [**Jira Development Panel**](development_panel.md).
+This method provides more fine-grained access control because access can be restricted to certain user groups or roles.
 
 ## Third-party Jira integrations
 
@@ -90,6 +93,8 @@ set up for the integration has permission to:
 - Transition the Jira issue.
 
 Jira issue references and update comments do not work if the GitLab issue tracker is disabled.
+
+If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), make sure you add your self-managed IP addresses or [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
 
 ### GitLab cannot close a Jira issue
 
@@ -111,3 +116,9 @@ authenticate with the Jira site.
 
 To fix this error, sign in to your Jira instance
 and complete the CAPTCHA.
+
+### Jira integration does not work for imported project
+
+There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571) 
+where the Jira integration sometimes does not work for a project that has been imported. 
+As a workaround, disable the integration and then re-enable it.

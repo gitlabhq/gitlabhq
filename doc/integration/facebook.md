@@ -108,6 +108,6 @@ Facebook. Facebook generates an app ID and secret key for you to use.
    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a Facebook icon below the regular sign
-in form. Click the icon to begin the authentication process. Facebook asks the
+in form. Select the icon to begin the authentication process. Facebook asks the
 user to sign in and authorize the GitLab application. If everything goes well
 the user is returned to GitLab and signed in.

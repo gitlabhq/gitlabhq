@@ -79,9 +79,14 @@ module Gitlab
         if job_exception
           payload['message'] = "#{message}: fail: #{payload['duration_s']} sec"
           payload['job_status'] = 'fail'
-          payload['error_message'] = job_exception.message
-          payload['error_class'] = job_exception.class.name
-          add_exception_backtrace!(job_exception, payload)
+
+          Gitlab::ExceptionLogFormatter.format!(job_exception, payload)
+
+          # Deprecated fields for compatibility
+          # See https://gitlab.com/gitlab-org/gitlab/-/issues/364241
+          payload['error_class'] = payload['exception.class']
+          payload['error_message'] = payload['exception.message']
+          payload['error_backtrace'] = payload['exception.backtrace']
         else
           payload['message'] = "#{message}: done: #{payload['duration_s']} sec"
           payload['job_status'] = 'done'
@@ -96,12 +101,6 @@ module Gitlab
       def add_time_keys!(time, payload)
         payload['duration_s'] = time[:duration].round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
         payload['completed_at'] = Time.now.utc.to_f
-      end
-
-      def add_exception_backtrace!(job_exception, payload)
-        return if job_exception.backtrace.blank?
-
-        payload['error_backtrace'] = Rails.backtrace_cleaner.clean(job_exception.backtrace)
       end
 
       def elapsed(t0)

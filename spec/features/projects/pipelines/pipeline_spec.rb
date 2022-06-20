@@ -414,16 +414,6 @@ RSpec.describe 'Pipeline', :js do
               expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
             end
 
-            context 'and the FF downstream_retry_action is disabled' do
-              before do
-                stub_feature_flags(downstream_retry_action: false)
-              end
-
-              it 'does not show the retry action' do
-                expect(page).not_to have_selector('button[aria-label="Retry downstream pipeline"]')
-              end
-            end
-
             context 'when retrying' do
               before do
                 find('button[aria-label="Retry downstream pipeline"]').click
@@ -508,8 +498,7 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        skip('Enable in jobs `pipeline_tabs_vue` MR')
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+        expect(page.find('[data-testid="builds-counter"]').text).to eq(pipeline.total_size.to_s)
       end
 
       context 'without permission to access builds' do
@@ -889,7 +878,6 @@ RSpec.describe 'Pipeline', :js do
 
     describe 'GET /:project/-/pipelines/:id/builds' do
       before do
-        stub_feature_flags(pipeline_tabs_vue: false)
         visit builds_project_pipeline_path(project, pipeline)
       end
 
@@ -1042,7 +1030,6 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      stub_feature_flags(pipeline_tabs_vue: false)
       visit builds_project_pipeline_path(project, pipeline)
     end
 
@@ -1066,8 +1053,7 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'shows counter in Jobs tab' do
-        skip('unskip when jobs tab is implemented with ff `pipeline_tabs_vue`')
-        expect(page.find('.js-builds-counter').text).to eq(pipeline.total_size.to_s)
+        expect(page.find('[data-testid="builds-counter"]').text).to eq(pipeline.total_size.to_s)
       end
     end
 
@@ -1130,10 +1116,6 @@ RSpec.describe 'Pipeline', :js do
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
-    before do
-      stub_feature_flags(pipeline_tabs_vue: false)
-    end
-
     subject { visit pipeline_failures_page }
 
     context 'with failed build' do
@@ -1160,42 +1142,11 @@ RSpec.describe 'Pipeline', :js do
         expect(page).to have_content('There is an unknown failure, please try again')
       end
 
-      context 'when failed_jobs_tab_vue feature flag is disabled' do
-        before do
-          stub_feature_flags(failed_jobs_tab_vue: false)
-        end
-
-        context 'when user does not have permission to retry build' do
-          it 'shows retry button for failed build' do
-            subject
-
-            page.within(find('.build-failures', match: :first)) do
-              expect(page).not_to have_link('Retry')
-            end
-          end
-        end
-
-        context 'when user does have permission to retry build' do
-          before do
-            create(:protected_branch, :developers_can_merge,
-                   name: pipeline.ref, project: project)
-          end
-
-          it 'shows retry button for failed build' do
-            subject
-
-            page.within(find('.build-failures', match: :first)) do
-              expect(page).to have_link('Retry')
-            end
-          end
-        end
-      end
-
       context 'when user does not have permission to retry build' do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('#js-tab-failures', match: :first)) do
+          page.within(find('[data-testid="tab-failures"]', match: :first)) do
             expect(page).not_to have_button('Retry')
           end
         end
@@ -1210,7 +1161,7 @@ RSpec.describe 'Pipeline', :js do
         it 'shows retry button for failed build' do
           subject
 
-          page.within(find('#js-tab-failures', match: :first)) do
+          page.within(find('[data-testid="tab-failures"]', match: :first)) do
             expect(page).to have_button('Retry')
           end
         end
@@ -1255,7 +1206,6 @@ RSpec.describe 'Pipeline', :js do
       end
 
       it 'does not show the failure tab' do
-        skip('unskip when the failure tab has been implemented in ff `pipeline_tabs_vue`')
         subject
 
         expect(page).not_to have_content('Failed Jobs')

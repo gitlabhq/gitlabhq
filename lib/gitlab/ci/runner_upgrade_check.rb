@@ -20,15 +20,27 @@ module Gitlab
         return :invalid unless runner_version
 
         releases = RunnerReleases.instance.releases
-        parsed_runner_version = runner_version.is_a?(::Gitlab::VersionInfo) ? runner_version : ::Gitlab::VersionInfo.parse(runner_version)
+        orig_runner_version = runner_version
+        runner_version = ::Gitlab::VersionInfo.parse(runner_version) unless runner_version.is_a?(::Gitlab::VersionInfo)
 
-        raise ArgumentError, "'#{runner_version}' is not a valid version" unless parsed_runner_version.valid?
+        raise ArgumentError, "'#{orig_runner_version}' is not a valid version" unless runner_version.valid?
 
-        available_releases = releases.reject { |release| release > @gitlab_version }
+        gitlab_minor_version = version_without_patch(@gitlab_version)
 
-        return :recommended if available_releases.any? { |available_release| patch_update?(available_release, parsed_runner_version) }
-        return :recommended if outside_backport_window?(parsed_runner_version, releases)
-        return :available if available_releases.any? { |available_release| available_release > parsed_runner_version }
+        available_releases = releases
+            .reject { |release| release.major > @gitlab_version.major }
+            .reject do |release|
+              release_minor_version = version_without_patch(release)
+
+              # Do not reject a patch update, even if the runner is ahead of the instance version
+              next false if version_without_patch(runner_version) == release_minor_version
+
+              release_minor_version > gitlab_minor_version
+            end
+
+        return :recommended if available_releases.any? { |available_rel| patch_update?(available_rel, runner_version) }
+        return :recommended if outside_backport_window?(runner_version, releases)
+        return :available if available_releases.any? { |available_rel| available_rel > runner_version }
 
         :not_available
       end

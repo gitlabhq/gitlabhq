@@ -14,7 +14,7 @@ Users with auditor access have read-only access to all groups, projects, and oth
 For more information, see [Auditor user permissions and restrictions](#auditor-user-permissions-and-restrictions)
 section.
 
-Situations where auditor access for users could be helpful include: 
+Situations where auditor access for users could be helpful include:
 
 - Your compliance department wants to run tests against the entire GitLab base
   to ensure users are complying with password, credit card, and other sensitive

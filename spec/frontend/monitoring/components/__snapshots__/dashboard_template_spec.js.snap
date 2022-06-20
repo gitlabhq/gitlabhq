@@ -151,7 +151,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     emptynodatasvgpath="/images/illustrations/monitoring/no_data.svg"
     emptyunabletoconnectsvgpath="/images/illustrations/monitoring/unable_to_connect.svg"
     selectedstate="gettingStarted"
-    settingspath="/monitoring/monitor-project/-/integrations/prometheus/edit"
+    settingspath="/monitoring/monitor-project/-/settings/integrations/prometheus/edit"
   />
 </div>
 `;

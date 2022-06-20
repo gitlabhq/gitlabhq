@@ -13,6 +13,7 @@ import {
   IMAGE_MIGRATING_STATE,
   SCHEDULED_STATUS,
   ROOT_IMAGE_TEXT,
+  COPY_IMAGE_PATH_TITLE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -106,7 +107,7 @@ describe('Image List Row', () => {
       const button = findClipboardButton();
       expect(button.exists()).toBe(true);
       expect(button.props('text')).toBe(item.location);
-      expect(button.props('title')).toBe(item.location);
+      expect(button.props('title')).toBe(COPY_IMAGE_PATH_TITLE);
     });
 
     describe('cleanup status component', () => {

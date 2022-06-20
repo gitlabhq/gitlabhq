@@ -48,6 +48,21 @@ RSpec.describe Ci::SecureFile do
     end
   end
 
+  describe 'ordered scope' do
+    it 'returns the newest item first' do
+      project = create(:project)
+      file1 = create(:ci_secure_file, created_at: 1.week.ago, project: project)
+      file2 = create(:ci_secure_file, created_at: 2.days.ago, project: project)
+      file3 = create(:ci_secure_file, created_at: 1.day.ago, project: project)
+
+      files = project.secure_files.order_by_created_at
+
+      expect(files[0]).to eq(file3)
+      expect(files[1]).to eq(file2)
+      expect(files[2]).to eq(file1)
+    end
+  end
+
   describe '#checksum' do
     it 'computes SHA256 checksum on the file before encrypted' do
       expect(subject.checksum).to eq(Digest::SHA256.hexdigest(sample_file))

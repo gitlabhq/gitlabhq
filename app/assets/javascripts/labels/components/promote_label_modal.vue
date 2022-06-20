@@ -9,7 +9,7 @@ import eventHub from '../event_hub';
 export default {
   primaryProps: {
     text: s__('Labels|Promote Label'),
-    attributes: [{ variant: 'warning' }, { category: 'primary' }],
+    attributes: [{ variant: 'confirm' }],
   },
   cancelProps: {
     text: __('Cancel'),

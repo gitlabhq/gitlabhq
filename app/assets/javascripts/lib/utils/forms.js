@@ -119,12 +119,14 @@ export const parseRailsFormFields = (mountEl) => {
     }
 
     const fieldNameCamelCase = convertToCamelCase(fieldName);
-    const { id, placeholder, name, value, type, checked } = input;
+    const { id, placeholder, name, value, type, checked, maxLength, pattern } = input;
     const attributes = {
       name,
       id,
       value,
       ...(placeholder && { placeholder }),
+      ...(input.hasAttribute('maxlength') && { maxLength }),
+      ...(pattern && { pattern }),
     };
 
     // Store radio buttons and checkboxes as an array so they can be

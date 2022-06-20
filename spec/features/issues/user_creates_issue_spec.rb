@@ -8,10 +8,6 @@ RSpec.describe "User creates issue" do
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   context "when unauthenticated" do
     before do
       sign_out(:user)

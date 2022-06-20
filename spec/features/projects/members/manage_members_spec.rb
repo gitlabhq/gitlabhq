@@ -48,20 +48,48 @@ RSpec.describe 'Projects > Members > Manage members', :js do
     end
   end
 
-  it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
-    visit_members_page
+  context 'when owner' do
+    it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
+      visit_members_page
 
-    click_on 'Invite members'
+      click_on 'Invite members'
 
-    click_on 'Guest'
-    wait_for_requests
+      click_on 'Guest'
+      wait_for_requests
 
-    page.within '.dropdown-menu' do
-      expect(page).to have_button('Guest')
-      expect(page).to have_button('Reporter')
-      expect(page).to have_button('Developer')
-      expect(page).to have_button('Maintainer')
-      expect(page).not_to have_button('Owner')
+      page.within '.dropdown-menu' do
+        expect(page).to have_button('Guest')
+        expect(page).to have_button('Reporter')
+        expect(page).to have_button('Developer')
+        expect(page).to have_button('Maintainer')
+        expect(page).to have_button('Owner')
+      end
+    end
+  end
+
+  context 'when maintainer' do
+    let(:maintainer) { create(:user) }
+
+    before do
+      project.add_maintainer(maintainer)
+      sign_in(maintainer)
+    end
+
+    it 'uses ProjectMember access_level_roles for the invite members modal access option', :aggregate_failures do
+      visit_members_page
+
+      click_on 'Invite members'
+
+      click_on 'Guest'
+      wait_for_requests
+
+      page.within '.dropdown-menu' do
+        expect(page).to have_button('Guest')
+        expect(page).to have_button('Reporter')
+        expect(page).to have_button('Developer')
+        expect(page).to have_button('Maintainer')
+        expect(page).not_to have_button('Owner')
+      end
     end
   end
 

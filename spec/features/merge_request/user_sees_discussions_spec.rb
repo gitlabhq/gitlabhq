@@ -62,7 +62,7 @@ RSpec.describe 'Merge request > User sees threads', :js do
         within(".discussion[data-discussion-id='#{discussion_id}']") do
           find_field('Reply…').click
           fill_in 'note[note]', with: 'Test!'
-          click_button 'Comment'
+          click_button 'Reply'
 
           expect(page).to have_css('.note', count: 2)
         end

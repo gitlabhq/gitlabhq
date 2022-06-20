@@ -4,6 +4,6 @@ classes:
 - Dast::ProfilesPipeline
 feature_categories:
 - dynamic_application_security_testing
-description: TODO
+description: Join table between DAST Profiles and CI Pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56821
 milestone: '13.11'

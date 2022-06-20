@@ -12,10 +12,6 @@ RSpec.describe Projects::IssuesController do
   let(:issue) { create(:issue, project: project) }
   let(:spam_action_response_fields) { { 'stub_spam_action_response_fields' => true } }
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   describe "GET #index" do
     context 'external issue tracker' do
       before do
@@ -145,13 +141,104 @@ RSpec.describe Projects::IssuesController do
       project.add_developer(user)
     end
 
-    it "returns issue_email_participants" do
+    it "returns issue attributes" do
       participants = create_list(:issue_email_participant, 2, issue: issue)
 
       get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }, format: :json
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['issue_email_participants']).to contain_exactly({ "email" => participants[0].email }, { "email" => participants[1].email })
+      expect(json_response).to include(
+        'issue_email_participants' => contain_exactly(
+          { "email" => participants[0].email }, { "email" => participants[1].email }
+        ),
+        'type' => 'ISSUE'
+      )
+    end
+
+    context 'when issue is not a task and work items feature flag is enabled' do
+      it 'does not redirect to work items route' do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+        expect(response).to render_template(:show)
+      end
+    end
+
+    context 'when issue is of type task' do
+      let(:query) { {} }
+
+      let_it_be(:task) { create(:issue, :task, project: project) }
+
+      context 'when work_items feature flag is enabled' do
+        shared_examples 'redirects to show work item page' do
+          it 'redirects to work item page' do
+            expect(response).to redirect_to(project_work_items_path(project, task.id, query))
+          end
+        end
+
+        context 'show action' do
+          let(:query) { { query: 'any' } }
+
+          before do
+            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+          end
+
+          it_behaves_like 'redirects to show work item page'
+        end
+
+        context 'edit action' do
+          let(:query) { { query: 'any' } }
+
+          before do
+            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+          end
+
+          it_behaves_like 'redirects to show work item page'
+        end
+
+        context 'update action' do
+          before do
+            put :update, params: { namespace_id: project.namespace, project_id: project, id: task.iid, issue: { title: 'New title' } }
+          end
+
+          it_behaves_like 'redirects to show work item page'
+        end
+      end
+
+      context 'when work_items feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        shared_examples 'renders 404' do
+          it 'renders 404 for show action' do
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'show action' do
+          before do
+            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid }
+          end
+
+          it_behaves_like 'renders 404'
+        end
+
+        context 'edit action' do
+          before do
+            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid }
+          end
+
+          it_behaves_like 'renders 404'
+        end
+
+        context 'update action' do
+          before do
+            put :update, params: { namespace_id: project.namespace, project_id: project, id: task.iid, issue: { title: 'New title' } }
+          end
+
+          it_behaves_like 'renders 404'
+        end
+      end
     end
   end
 

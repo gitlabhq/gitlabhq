@@ -129,6 +129,29 @@ RSpec.describe 'Query.issue(id)' do
         expect(graphql_errors.first['message']).to eq("\"#{gid}\" does not represent an instance of Issue")
       end
     end
+
+    context 'when selecting `closed_as_duplicate_of`' do
+      let(:issue_fields) { ['closedAsDuplicateOf { id }'] }
+      let(:duplicate_issue) { create(:issue, project: project) }
+
+      before do
+        issue.update!(duplicated_to_id: duplicate_issue.id)
+
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'returns the related issue' do
+        expect(issue_data['closedAsDuplicateOf']['id']).to eq(duplicate_issue.to_global_id.to_s)
+      end
+
+      context 'no permission to related issue' do
+        let(:duplicate_issue) { create(:issue) }
+
+        it 'does not return the related issue' do
+          expect(issue_data['closedAsDuplicateOf']).to eq(nil)
+        end
+      end
+    end
   end
 
   context 'when there is a confidential issue' do

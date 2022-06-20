@@ -3,6 +3,8 @@
 class BackfillCiBuildsForBigintConversion < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   DOWNTIME = false
 
   TABLE = :ci_builds

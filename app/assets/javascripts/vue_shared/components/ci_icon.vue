@@ -45,7 +45,12 @@ export default {
         return validSizes.includes(value);
       },
     },
-    borderless: {
+    isActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isBorderless: {
       type: Boolean,
       required: false,
       default: false,
@@ -67,15 +72,19 @@ export default {
       return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status} gl-rounded-full gl-justify-content-center`;
     },
     icon() {
-      return this.borderless ? `${this.status.icon}_borderless` : this.status.icon;
+      return this.isBorderless ? `${this.status.icon}_borderless` : this.status.icon;
     },
   },
 };
 </script>
 <template>
   <span
-    :class="[wrapperStyleClasses, { interactive: isInteractive }]"
+    :class="[
+      wrapperStyleClasses,
+      { interactive: isInteractive, active: isActive, borderless: isBorderless },
+    ]"
     :style="{ height: `${size}px`, width: `${size}px` }"
+    data-testid="ci-icon-wrapper"
   >
     <gl-icon :name="icon" :size="size" :class="cssClasses" :aria-label="status.icon" />
   </span>

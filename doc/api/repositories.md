@@ -17,7 +17,7 @@ This command provides essentially the same functionality as the `git ls-tree` co
 WARNING:
 This endpoint is changing to keyset-based pagination. Iterating pages of results
 with a number (`?page=2`) [is deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67509).
-Support for iterating with a number will become unsupported in GitLab 15.0. Use
+Support for iterating with a number became supported in GitLab 15.0. Use
 the new [keyset pagination system](index.md#keyset-based-pagination) instead.
 
 ```plaintext
@@ -326,6 +326,11 @@ WARNING:
 GitLab treats trailers case-sensitively. If you set the `trailer` field to
 `Example`, GitLab _won't_ include commits that use the trailer `example`,
 `eXaMpLE`, or anything else that isn't _exactly_ `Example`.
+
+WARNING:
+The allowed commits range between `from` and `to` is limited to 15000 commits. To disable
+this restriction, [turn off the feature flag](../administration/feature_flags.md)
+`changelog_commits_limitation`.
 
 If the `from` attribute is unspecified, GitLab uses the Git tag of the last
 stable version that came before the version specified in the `version`

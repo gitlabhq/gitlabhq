@@ -66,6 +66,10 @@ module ProjectFeaturesCompatibility
     write_feature_attribute_string(:snippets_access_level, value)
   end
 
+  def package_registry_access_level=(value)
+    write_feature_attribute_string(:package_registry_access_level, value)
+  end
+
   def pages_access_level=(value)
     write_feature_attribute_string(:pages_access_level, value)
   end

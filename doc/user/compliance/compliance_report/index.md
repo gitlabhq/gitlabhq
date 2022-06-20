@@ -113,7 +113,7 @@ You can generate a commit-specific Chain of Custody report for a given commit SH
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
-1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{angle-down}**).
+1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{chevron-lg-down}**).
 1. Enter the merge commit SHA, and then select **Export commit custody report**.
    SHA and then select **Export commit custody report**.
 

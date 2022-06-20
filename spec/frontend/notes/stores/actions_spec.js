@@ -404,13 +404,13 @@ describe('Actions Notes Store', () => {
     beforeEach(() => {
       axiosMock.onDelete(endpoint).replyOnce(200, {});
 
-      document.body.setAttribute('data-page', '');
+      document.body.dataset.page = '';
     });
 
     afterEach(() => {
       axiosMock.restore();
 
-      document.body.setAttribute('data-page', '');
+      document.body.dataset.page = '';
     });
 
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', () => {
@@ -440,7 +440,7 @@ describe('Actions Notes Store', () => {
     it('dispatches removeDiscussionsFromDiff on merge request page', () => {
       const note = { path: endpoint, id: 1 };
 
-      document.body.setAttribute('data-page', 'projects:merge_requests:show');
+      document.body.dataset.page = 'projects:merge_requests:show';
 
       return testAction(
         actions.removeNote,
@@ -473,13 +473,13 @@ describe('Actions Notes Store', () => {
     beforeEach(() => {
       axiosMock.onDelete(endpoint).replyOnce(200, {});
 
-      document.body.setAttribute('data-page', '');
+      document.body.dataset.page = '';
     });
 
     afterEach(() => {
       axiosMock.restore();
 
-      document.body.setAttribute('data-page', '');
+      document.body.dataset.page = '';
     });
 
     it('dispatches removeNote', () => {
@@ -1382,6 +1382,29 @@ describe('Actions Notes Store', () => {
         ],
       );
     });
+
+    it('dispatches `fetchDiscussionsBatch` action if `paginatedMrDiscussions` feature flag is enabled', () => {
+      window.gon = { features: { paginatedMrDiscussions: true } };
+
+      return testAction(
+        actions.fetchDiscussions,
+        { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
+        null,
+        [],
+        [
+          {
+            type: 'fetchDiscussionsBatch',
+            payload: {
+              config: {
+                params: { notes_filter: 'test-filter', persist_filter: 'test-persist-filter' },
+              },
+              path: 'test-path',
+              perPage: 20,
+            },
+          },
+        ],
+      );
+    });
   });
 
   describe('fetchDiscussionsBatch', () => {
@@ -1401,6 +1424,7 @@ describe('Actions Notes Store', () => {
         null,
         [
           { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
+          { type: mutationTypes.SET_DONE_FETCHING_BATCH_DISCUSSIONS, payload: true },
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
         ],
         [{ type: 'updateResolvableDiscussionsCounts' }],

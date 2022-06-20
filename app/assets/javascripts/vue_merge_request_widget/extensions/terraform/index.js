@@ -23,7 +23,6 @@ export default {
     reportErrored: s__('Terraform|Generating the report caused an error.'),
     fullLog: __('Full log'),
   },
-  expandEvent: 'i_testing_terraform_widget_total',
   props: ['terraformReportsPath'],
   computed: {
     // Extension computed props
@@ -113,6 +112,7 @@ export default {
           href: report.job_path,
           text: this.$options.i18n.fullLog,
           target: '_blank',
+          fullReport: true,
         };
         actions.push(action);
       }

@@ -329,7 +329,7 @@ export default {
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <comment-field-layout
         :noteable-data="getNoteableData"
-        :note-is-confidential="discussion.confidential"
+        :is-internal-note="discussion.confidential"
       >
         <markdown-field
           :markdown-preview-path="markdownPreviewPath"

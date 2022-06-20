@@ -51,7 +51,7 @@ Follow the steps below to set up a custom hook:
    in any language, and ensure the 'shebang' at the top properly reflects the
    language type. For example, if the script is in Ruby the shebang will
    probably be `#!/usr/bin/env ruby`.
-1. The data to the file hook is provided as JSON on STDIN. It is exactly the
+1. The data to the file hook is provided as JSON on `STDIN`. It is exactly the
    same as for [system hooks](system_hooks.md).
 
 That's it! Assuming the file hook code is properly implemented, the hook fires

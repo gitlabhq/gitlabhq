@@ -1,3 +1,4 @@
+const { execSync } = require('child_process');
 const chalk = require('chalk');
 
 // check that fsevents is available if we're on macOS
@@ -20,3 +21,8 @@ if (process.platform === 'darwin') {
 }
 
 console.log(`${chalk.green('success')} Dependency postinstall check passed.`);
+
+// Apply any patches to our packages
+// See https://gitlab.com/gitlab-org/gitlab/-/issues/336138
+execSync('node_modules/.bin/patch-package --error-on-fail');
+console.log(`${chalk.green('success')} Packages successfully patched.`);

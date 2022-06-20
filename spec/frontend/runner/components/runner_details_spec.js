@@ -1,14 +1,13 @@
-import { GlSprintf, GlIntersperse, GlTab } from '@gitlab/ui';
-import { createWrapper, ErrorWrapper } from '@vue/test-utils';
+import { GlSprintf, GlIntersperse } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { useFakeDate } from 'helpers/fake_date';
+import { findDd } from 'helpers/dl_locator_helper';
 import { ACCESS_LEVEL_REF_PROTECTED, ACCESS_LEVEL_NOT_PROTECTED } from '~/runner/constants';
 
 import RunnerDetails from '~/runner/components/runner_details.vue';
 import RunnerDetail from '~/runner/components/runner_detail.vue';
 import RunnerGroups from '~/runner/components/runner_groups.vue';
-import RunnersJobs from '~/runner/components/runner_jobs.vue';
 import RunnerTags from '~/runner/components/runner_tags.vue';
 import RunnerTag from '~/runner/components/runner_tag.vue';
 
@@ -24,25 +23,14 @@ describe('RunnerDetails', () => {
 
   useFakeDate(mockNow);
 
-  /**
-   * Find the definition (<dd>) that corresponds to this term (<dt>)
-   * @param {string} dtLabel - Label for this value
-   * @returns Wrapper
-   */
-  const findDd = (dtLabel) => {
-    const dt = wrapper.findByText(dtLabel).element;
-    const dd = dt.nextElementSibling;
-    if (dt.tagName === 'DT' && dd.tagName === 'DD') {
-      return createWrapper(dd, {});
-    }
-    return ErrorWrapper(dtLabel);
-  };
-
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
-  const findRunnersJobs = () => wrapper.findComponent(RunnersJobs);
-  const findJobCountBadge = () => wrapper.findByTestId('job-count-badge');
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended, stubs } = {}) => {
+  const createComponent = ({
+    props = {},
+    stubs,
+    mountFn = shallowMountExtended,
+    ...options
+  } = {}) => {
     wrapper = mountFn(RunnerDetails, {
       propsData: {
         ...props,
@@ -51,6 +39,7 @@ describe('RunnerDetails', () => {
         RunnerDetail,
         ...stubs,
       },
+      ...options,
     });
   };
 
@@ -108,7 +97,7 @@ describe('RunnerDetails', () => {
       });
 
       it(`displays expected value "${expectedValue}"`, () => {
-        expect(findDd(field).text()).toBe(expectedValue);
+        expect(findDd(field, wrapper).text()).toBe(expectedValue);
       });
     });
 
@@ -123,7 +112,7 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
+        expect(findDd('Tags', wrapper).text().replace(/\s+/g, ' ')).toBe('tag-1 tag-2');
       });
 
       it('displays "None" when runner has no tags', () => {
@@ -134,7 +123,7 @@ describe('RunnerDetails', () => {
           stubs,
         });
 
-        expect(findDd('Tags').text().replace(/\s+/g, ' ')).toBe('None');
+        expect(findDd('Tags', wrapper).text().replace(/\s+/g, ' ')).toBe('None');
       });
     });
 
@@ -153,40 +142,17 @@ describe('RunnerDetails', () => {
     });
   });
 
-  describe('Jobs tab', () => {
-    const stubs = { GlTab };
+  describe('Jobs tab slot', () => {
+    it('shows job tab slot', () => {
+      const JOBS_TAB = '<div>Jobs Tab</div>';
 
-    it('without a runner, shows no jobs', () => {
       createComponent({
-        props: { runner: null },
-        stubs,
-      });
-
-      expect(findJobCountBadge().exists()).toBe(false);
-      expect(findRunnersJobs().exists()).toBe(false);
-    });
-
-    it('without a job count, shows no jobs count', () => {
-      createComponent({
-        props: {
-          runner: { ...mockRunner, jobCount: undefined },
+        slots: {
+          'jobs-tab': JOBS_TAB,
         },
-        stubs,
       });
 
-      expect(findJobCountBadge().exists()).toBe(false);
-    });
-
-    it('with a job count, shows jobs count', () => {
-      const runner = { ...mockRunner, jobCount: 3 };
-
-      createComponent({
-        props: { runner },
-        stubs,
-      });
-
-      expect(findJobCountBadge().text()).toBe('3');
-      expect(findRunnersJobs().props('runner')).toBe(runner);
+      expect(wrapper.html()).toContain(JOBS_TAB);
     });
   });
 });

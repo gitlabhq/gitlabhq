@@ -17,8 +17,6 @@ RSpec.describe 'User sorts merge requests', :js do
   let_it_be(:project) { create(:project, :public, group: group) }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
-
     sign_in(user)
 
     visit(project_merge_requests_path(project))

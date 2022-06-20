@@ -7,7 +7,7 @@ RSpec.describe Deployments::HooksWorker do
 
   describe '#perform' do
     before do
-      allow(ProjectServiceWorker).to receive(:perform_async)
+      allow(Integrations::ExecuteWorker).to receive(:perform_async)
     end
 
     it 'logs deployment and project IDs as metadata' do
@@ -25,7 +25,7 @@ RSpec.describe Deployments::HooksWorker do
       project = deployment.project
       service = create(:integrations_slack, project: project, deployment_events: true)
 
-      expect(ProjectServiceWorker).to receive(:perform_async).with(service.id, an_instance_of(Hash))
+      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(service.id, an_instance_of(Hash))
 
       worker.perform(deployment_id: deployment.id, status_changed_at: Time.current)
     end
@@ -35,13 +35,13 @@ RSpec.describe Deployments::HooksWorker do
       project = deployment.project
       create(:integrations_slack, project: project, deployment_events: true, active: false)
 
-      expect(ProjectServiceWorker).not_to receive(:perform_async)
+      expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
 
       worker.perform(deployment_id: deployment.id, status_changed_at: Time.current)
     end
 
     it 'does not execute if a deployment does not exist' do
-      expect(ProjectServiceWorker).not_to receive(:perform_async)
+      expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
 
       worker.perform(deployment_id: non_existing_record_id, status_changed_at: Time.current)
     end

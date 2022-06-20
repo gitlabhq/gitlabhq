@@ -17,7 +17,6 @@ RSpec.describe 'Getting starredProjects of the user' do
   let_it_be(:user, reload: true) { create(:user) }
 
   let(:user_fields) { 'starredProjects { nodes { id } }' }
-  let(:current_user) { nil }
 
   let(:starred_projects) do
     post_graphql(query, current_user: current_user)
@@ -34,20 +33,22 @@ RSpec.describe 'Getting starredProjects of the user' do
     user.toggle_star(project_c)
   end
 
-  it_behaves_like 'a working graphql query' do
-    before do
-      post_graphql(query)
-    end
-  end
+  context 'anonymous access' do
+    let(:current_user) { nil }
 
-  it 'found only public project' do
-    expect(starred_projects).to contain_exactly(
-      a_graphql_entity_for(project_a)
-    )
+    it 'returns nothing' do
+      expect(starred_projects).to be_nil
+    end
   end
 
   context 'the current user is the user' do
     let(:current_user) { user }
+
+    it_behaves_like 'a working graphql query' do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+    end
 
     it 'found all projects' do
       expect(starred_projects).to contain_exactly(

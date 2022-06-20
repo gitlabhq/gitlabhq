@@ -4,10 +4,13 @@ group: Import
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
-# Project import/export **(FREE)**
+# Migrating projects using file exports **(FREE)**
 
 Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and
-then imported into a new GitLab instance.
+then imported into a new GitLab instance. You can also:
+
+- [Migrate groups](../../group/import/index.md) using the preferred method.
+- [Migrate groups using file exports](../../group/settings/import_export.md).
 
 ## Set up project import/export
 
@@ -34,8 +37,8 @@ Before you can import a project, you must export it.
 
 Prerequisites:
 
-- Review the list of [data that will be exported](#items-that-are-exported).
-  Not all data is exported.
+- Review the list of [items that are exported](#items-that-are-exported).
+  Not all items are exported.
 - You must have at least the Maintainer role for the project.
 
 To export a project and its data, follow these steps:
@@ -74,7 +77,7 @@ The following items are **not** exported:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Build traces and artifacts
-- Container registry images
+- Package and container registry images
 - CI/CD variables
 - Pipeline triggers
 - Webhooks
@@ -151,6 +154,9 @@ Administrators can set the maximum import file size one of two ways:
 - In the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md#max-import-size).
 
 The default is `0` (unlimited).
+
+For the GitLab.com setting, see the [Account and limit settings](../../gitlab_com/index.md#account-and-limit-settings)
+section of the GitLab.com settings page.
 
 ## Map users for import
 

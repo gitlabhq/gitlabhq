@@ -1,7 +1,7 @@
 - max_date = ::Gitlab::CurrentSettings.max_ssh_key_lifetime_from_now.to_date if ssh_key_expiration_policy_enabled?
 %div
   = form_for [:profile, @key], html: { class: 'js-requires-input' } do |f|
-    = form_errors(@key)
+    = form_errors(@key, pajamas_alert: true)
 
     .form-group
       = f.label :key, s_('Profiles|Key'), class: 'label-bold'
@@ -23,7 +23,8 @@
         %strong= _('Oops, are you sure?')
         %p= s_("Profiles|Publicly visible private SSH keys can compromise your system.")
 
-      %button.btn.gl-button.btn-confirm.js-add-ssh-key-validation-confirm-submit= _("Yes, add it")
-
+      = render Pajamas::ButtonComponent.new(variant: :confirm,
+        button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
+        = _("Yes, add it")
     .gl-mt-3
       = f.submit s_('Profiles|Add key'), class: "gl-button btn btn-confirm js-add-ssh-key-validation-original-submit qa-add-key-button"

@@ -22,8 +22,13 @@ In GitLab, you can:
 - Lock and unlock states.
 - Remotely execute `terraform plan` and `terraform apply` commands.
 
-For self-managed instances, before you can use GitLab for your Terraform state files,
-an administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
+## Prerequisites
+
+For self-managed GitLab, before you can use GitLab for your Terraform state files:
+
+- An administrator must [set up Terraform state storage](../../../administration/terraform_state.md).
+- You must enable the **Infrastructure** menu for your project. Go to **Settings > General**,
+  expand **Visibility, project features, permissions**, and under **Operations**, turn on the toggle.
 
 ## Initialize a Terraform state as a backend by using GitLab CI/CD
 
@@ -56,7 +61,7 @@ To configure GitLab CI/CD as a backend:
 1. In the root directory of your project repository, create a `.gitlab-ci.yml` file. Use
    [this file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
    to populate it.
-   
+
 1. Push your project to GitLab. This action triggers a pipeline, which
    runs the `gitlab-terraform init`, `gitlab-terraform validate`, and
    `gitlab-terraform plan` commands.
@@ -99,12 +104,31 @@ The following example demonstrates how to change the state name. The same workfl
 You can use a GitLab-managed Terraform state backend as a
 [Terraform data source](https://www.terraform.io/language/state/remote-state-data).
 
-1. Create a file named `example.auto.tfvars` with the following contents:
+1. In your `main.tf` or other relevant file, declare these variables. Leave the values empty.
+
+   ```hcl
+   variable "example_remote_state_address" {
+     type = string
+     description = "Gitlab remote state file address"
+   }
+
+   variable "example_username" {
+     type = string
+     description = "Gitlab username to query remote state"
+   }
+
+   variable "example_access_token" {
+     type = string
+     description = "GitLab access token to query remote state"
+   }
+   ```
+
+1. To override the values from the previous step, create a file named `example.auto.tfvars`. This file should **not** be versioned in your project repository.
 
    ```plaintext
-   example_remote_state_address=https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>
-   example_username=<GitLab username>
-   example_access_token=<GitLab Personal Access Token>
+   example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"
+   example_username = "<GitLab username>"
+   example_access_token = "<GitLab Personal Access Token>"
    ```
 
 1. In a `.tf` file, define the data source by using [Terraform input variables](https://www.terraform.io/language/values/variables):

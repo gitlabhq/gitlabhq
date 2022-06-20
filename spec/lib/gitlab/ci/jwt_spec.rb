@@ -160,20 +160,8 @@ RSpec.describe Gitlab::Ci::Jwt do
 
     subject(:jwt) { described_class.for_build(build) }
 
-    context 'when ci_jwt_signing_key feature flag is disabled' do
+    context 'when ci_jwt_signing_key is present' do
       before do
-        stub_feature_flags(ci_jwt_signing_key: false)
-
-        allow(Rails.application.secrets).to receive(:openid_connect_signing_key).and_return(rsa_key_data)
-      end
-
-      it_behaves_like 'generating JWT for build'
-    end
-
-    context 'when ci_jwt_signing_key feature flag is enabled' do
-      before do
-        stub_feature_flags(ci_jwt_signing_key: true)
-
         stub_application_setting(ci_jwt_signing_key: rsa_key_data)
       end
 

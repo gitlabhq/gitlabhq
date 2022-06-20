@@ -92,7 +92,7 @@ describe('Base editor', () => {
 
         expect(monacoEditor.createModel).toHaveBeenCalledWith(
           blobContent,
-          undefined,
+          'markdown',
           expect.objectContaining({
             path: uriFilePath,
           }),
@@ -117,7 +117,7 @@ describe('Base editor', () => {
 
         expect(modelSpy).toHaveBeenCalledWith(
           blobContent,
-          undefined,
+          'markdown',
           expect.objectContaining({
             path: uriFilePath,
           }),
@@ -177,6 +177,29 @@ describe('Base editor', () => {
 
         expect(layoutSpy).toHaveBeenCalled();
       });
+
+      it.each`
+        params                                          | expectedLanguage
+        ${{}}                                           | ${'markdown'}
+        ${{ blobPath: undefined }}                      | ${'plaintext'}
+        ${{ blobPath: undefined, language: 'ruby' }}    | ${'ruby'}
+        ${{ language: 'go' }}                           | ${'go'}
+        ${{ blobPath: undefined, language: undefined }} | ${'plaintext'}
+      `(
+        'correctly sets $expectedLanguage on the model when $params are passed',
+        ({ params, expectedLanguage }) => {
+          jest.spyOn(monacoEditor, 'createModel');
+          editor.createInstance({
+            ...defaultArguments,
+            ...params,
+          });
+          expect(monacoEditor.createModel).toHaveBeenCalledWith(
+            expect.anything(),
+            expectedLanguage,
+            expect.anything(),
+          );
+        },
+      );
     });
 
     describe('instance of the Diff Editor', () => {
@@ -210,7 +233,7 @@ describe('Base editor', () => {
         expect(modelSpy).toHaveBeenCalledTimes(2);
         expect(modelSpy.mock.calls[0]).toEqual([
           blobContent,
-          undefined,
+          'markdown',
           expect.objectContaining({
             path: uriFilePath,
           }),

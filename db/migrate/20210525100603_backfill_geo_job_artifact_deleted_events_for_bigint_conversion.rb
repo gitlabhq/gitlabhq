@@ -3,6 +3,8 @@
 class BackfillGeoJobArtifactDeletedEventsForBigintConversion < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   TABLE = :geo_job_artifact_deleted_events
   COLUMNS = %i(job_artifact_id)
 

@@ -2,11 +2,10 @@ import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import { BoardType } from '~/boards/constants';
-import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
-import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
 import groupBoardsQuery from '~/boards/graphql/group_boards.query.graphql';
 import projectBoardsQuery from '~/boards/graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.graphql';
@@ -15,8 +14,7 @@ import defaultStore from '~/boards/stores';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import {
-  mockGroupBoardResponse,
-  mockProjectBoardResponse,
+  mockBoard,
   mockGroupAllBoardsResponse,
   mockProjectAllBoardsResponse,
   mockGroupRecentBoardsResponse,
@@ -49,6 +47,7 @@ describe('BoardsSelector', () => {
       },
       state: {
         boardType: isGroupBoard ? 'group' : 'project',
+        board: mockBoard,
       },
     });
   };
@@ -64,9 +63,6 @@ describe('BoardsSelector', () => {
   const getDropdownHeaders = () => wrapper.findAllComponents(GlDropdownSectionHeader);
   const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-
-  const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
-  const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
 
   const projectBoardsQueryHandlerSuccess = jest
     .fn()
@@ -92,8 +88,6 @@ describe('BoardsSelector', () => {
     projectRecentBoardsQueryHandler = projectRecentBoardsQueryHandlerSuccess,
   } = {}) => {
     fakeApollo = createMockApollo([
-      [projectBoardQuery, projectBoardQueryHandlerSuccess],
-      [groupBoardQuery, groupBoardQueryHandlerSuccess],
       [projectBoardsQuery, projectBoardsQueryHandler],
       [groupBoardsQuery, groupBoardsQueryHandlerSuccess],
       [projectRecentBoardsQuery, projectRecentBoardsQueryHandler],
@@ -133,12 +127,13 @@ describe('BoardsSelector', () => {
     describe('loading', () => {
       // we are testing loading state, so don't resolve responses until after the tests
       afterEach(async () => {
-        await nextTick();
+        await waitForPromises();
       });
 
-      it('shows loading spinner', () => {
+      it('shows loading spinner', async () => {
         // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
         findDropdown().vm.$emit('show');
+        await nextTick();
 
         expect(getLoadingIcon().exists()).toBe(true);
         expect(getDropdownHeaders()).toHaveLength(0);
@@ -244,25 +239,6 @@ describe('BoardsSelector', () => {
 
       // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
       findDropdown().vm.$emit('show');
-
-      await nextTick();
-
-      expect(queryHandler).toHaveBeenCalled();
-      expect(notCalledHandler).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('fetching current board', () => {
-    it.each`
-      boardType            | queryHandler                       | notCalledHandler
-      ${BoardType.group}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-      ${BoardType.project} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
-    `('fetches $boardType board', async ({ boardType, queryHandler, notCalledHandler }) => {
-      createStore({
-        isProjectBoard: boardType === BoardType.project,
-        isGroupBoard: boardType === BoardType.group,
-      });
-      createComponent();
 
       await nextTick();
 

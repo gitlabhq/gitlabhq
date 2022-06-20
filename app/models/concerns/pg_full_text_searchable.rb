@@ -24,6 +24,7 @@ module PgFullTextSearchable
   LONG_WORDS_REGEX = %r([A-Za-z0-9+/@]{50,}).freeze
   TSVECTOR_MAX_LENGTH = 1.megabyte.freeze
   TEXT_SEARCH_DICTIONARY = 'english'
+  URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}.freeze
 
   def update_search_data!
     tsvector_sql_nodes = self.class.pg_full_text_searchable_columns.map do |column, weight|
@@ -104,6 +105,10 @@ module PgFullTextSearchable
     def pg_full_text_search(search_term)
       search_data_table = reflect_on_association(:search_data).klass.arel_table
 
+      # This fixes an inconsistency with how to_tsvector and websearch_to_tsquery process URLs
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/354784#note_905431920
+      search_term = remove_url_scheme(search_term)
+
       joins(:search_data).where(
         Arel::Nodes::InfixOperation.new(
           '@@',
@@ -114,6 +119,12 @@ module PgFullTextSearchable
           )
         )
       )
+    end
+
+    private
+
+    def remove_url_scheme(search_term)
+      search_term.gsub(URL_SCHEME_REGEX, '')
     end
   end
 end

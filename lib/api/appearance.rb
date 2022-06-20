@@ -5,6 +5,7 @@ module API
     before { authenticated_as_admin! }
 
     feature_category :navigation
+    urgency :low
 
     helpers do
       def current_appearance

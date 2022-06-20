@@ -177,7 +177,7 @@ describe('error tracking settings app', () => {
           const clipBoardButton = findDsnSettings().findComponent(ClipboardButton);
 
           expect(clipBoardInput.props('value')).toBe(TEST_GITLAB_DSN);
-          expect(clipBoardInput.attributes('readonly')).toBeTruthy();
+          expect(clipBoardInput.attributes('readonly')).toBe('');
           expect(clipBoardButton.props('text')).toBe(TEST_GITLAB_DSN);
         });
       });

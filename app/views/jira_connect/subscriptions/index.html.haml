@@ -1,8 +1,4 @@
-%header.jira-connect-header.gl-display-flex.gl-align-items-center.gl-justify-content-center.gl-px-5.gl-border-b-solid.gl-border-b-gray-100.gl-border-b-1.gl-bg-white
-  = link_to brand_header_logo, Gitlab.config.gitlab.url, target: '_blank', rel: 'noopener noreferrer'
-
-%main.jira-connect-app.gl-px-5.gl-pt-7.gl-mx-auto
-  .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
+.js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
 
 = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 = webpack_bundle_tag 'jira_connect_app'

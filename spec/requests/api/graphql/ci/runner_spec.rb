@@ -12,7 +12,7 @@ RSpec.describe 'Query.runner(id)' do
     create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
            active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
            access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true, executor_type: :custom,
-           maintenance_note: 'Test maintenance note')
+           maintenance_note: '**Test maintenance note**')
   end
 
   let_it_be(:inactive_instance_runner) do
@@ -66,6 +66,8 @@ RSpec.describe 'Query.runner(id)' do
         'architectureName' => runner.architecture,
         'platformName' => runner.platform,
         'maintenanceNote' => runner.maintenance_note,
+        'maintenanceNoteHtml' =>
+          runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
         'jobCount' => 0,
         'jobs' => a_hash_including("count" => 0, "nodes" => [], "pageInfo" => anything),
         'projectCount' => nil,
@@ -150,34 +152,72 @@ RSpec.describe 'Query.runner(id)' do
   end
 
   describe 'for project runner' do
-    using RSpec::Parameterized::TableSyntax
+    describe 'locked' do
+      using RSpec::Parameterized::TableSyntax
 
-    where(is_locked: [true, false])
+      where(is_locked: [true, false])
 
-    with_them do
-      let(:project_runner) do
-        create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
-               version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+      with_them do
+        let(:project_runner) do
+          create(:ci_runner, :project, description: 'Runner 3', contacted_at: 1.day.ago, active: false, locked: is_locked,
+                 version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
+        end
+
+        let(:query) do
+          wrap_fields(query_graphql_path(query_path, 'id locked'))
+        end
+
+        let(:query_path) do
+          [
+            [:runner, { id: project_runner.to_global_id.to_s }]
+          ]
+        end
+
+        it 'retrieves correct locked value' do
+          post_graphql(query, current_user: user)
+
+          runner_data = graphql_data_at(:runner)
+
+          expect(runner_data).to match a_hash_including(
+            'id' => project_runner.to_global_id.to_s,
+            'locked' => is_locked
+          )
+        end
       end
+    end
 
+    describe 'ownerProject' do
+      let_it_be(:project1) { create(:project) }
+      let_it_be(:project2) { create(:project) }
+      let_it_be(:runner1) { create(:ci_runner, :project, projects: [project2, project1]) }
+      let_it_be(:runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
+
+      let(:runner_query_fragment) { 'id ownerProject { id }' }
       let(:query) do
-        wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
+        %(
+          query {
+            runner1: runner(id: "#{runner1.to_global_id}") { #{runner_query_fragment} }
+            runner2: runner(id: "#{runner2.to_global_id}") { #{runner_query_fragment} }
+          }
+        )
       end
 
-      let(:query_path) do
-        [
-          [:runner, { id: project_runner.to_global_id.to_s }]
-        ]
-      end
-
-      it 'retrieves correct locked value' do
+      it 'retrieves correct ownerProject.id values' do
         post_graphql(query, current_user: user)
 
-        runner_data = graphql_data_at(:runner)
-
-        expect(runner_data).to match a_hash_including(
-          'id' => project_runner.to_global_id.to_s,
-          'locked' => is_locked
+        expect(graphql_data).to match a_hash_including(
+          'runner1' => {
+            'id' => runner1.to_global_id.to_s,
+            'ownerProject' => {
+              'id' => project2.to_global_id.to_s
+            }
+          },
+          'runner2' => {
+            'id' => runner2.to_global_id.to_s,
+            'ownerProject' => {
+              'id' => project1.to_global_id.to_s
+            }
+          }
         )
       end
     end
@@ -405,17 +445,35 @@ RSpec.describe 'Query.runner(id)' do
       <<~SINGLE
         runner(id: "#{runner.to_global_id}") {
           #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
+          groups {
+            nodes {
+              id
+            }
+          }
+          projects {
+            nodes {
+              id
+            }
+          }
+          ownerProject {
+            id
+          }
         }
       SINGLE
     end
 
-    # Currently excluding a known N+1 issue, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
-    let(:excluded_fields) { %w[jobCount] }
+    let(:active_project_runner2) { create(:ci_runner, :project) }
+    let(:active_group_runner2) { create(:ci_runner, :group) }
+
+    # Currently excluding known N+1 issues, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
+    let(:excluded_fields) { %w[jobCount groups projects ownerProject] }
 
     let(:single_query) do
       <<~QUERY
         {
-          active: #{runner_query(active_instance_runner)}
+          instance_runner1: #{runner_query(active_instance_runner)}
+          project_runner1: #{runner_query(active_project_runner)}
+          group_runner1: #{runner_query(active_group_runner)}
         }
       QUERY
     end
@@ -423,22 +481,51 @@ RSpec.describe 'Query.runner(id)' do
     let(:double_query) do
       <<~QUERY
         {
-          active: #{runner_query(active_instance_runner)}
-          inactive: #{runner_query(inactive_instance_runner)}
+          instance_runner1: #{runner_query(active_instance_runner)}
+          instance_runner2: #{runner_query(inactive_instance_runner)}
+          group_runner1: #{runner_query(active_group_runner)}
+          group_runner2: #{runner_query(active_group_runner2)}
+          project_runner1: #{runner_query(active_project_runner)}
+          project_runner2: #{runner_query(active_project_runner2)}
         }
       QUERY
     end
 
     it 'does not execute more queries per runner', :aggregate_failures do
       # warm-up license cache and so on:
-      post_graphql(single_query, current_user: user)
+      post_graphql(double_query, current_user: user)
 
       control = ActiveRecord::QueryRecorder.new { post_graphql(single_query, current_user: user) }
 
       expect { post_graphql(double_query, current_user: user) }
         .not_to exceed_query_limit(control)
-      expect(graphql_data_at(:active)).not_to be_nil
-      expect(graphql_data_at(:inactive)).not_to be_nil
+
+      expect(graphql_data.count).to eq 6
+      expect(graphql_data).to match(
+        a_hash_including(
+          'instance_runner1' => a_hash_including('id' => active_instance_runner.to_global_id.to_s),
+          'instance_runner2' => a_hash_including('id' => inactive_instance_runner.to_global_id.to_s),
+          'group_runner1' => a_hash_including(
+            'id' => active_group_runner.to_global_id.to_s,
+            'groups' => { 'nodes' => [a_hash_including('id' => group.to_global_id.to_s)] }
+          ),
+          'group_runner2' => a_hash_including(
+            'id' => active_group_runner2.to_global_id.to_s,
+            'groups' => { 'nodes' => [a_hash_including('id' => active_group_runner2.groups[0].to_global_id.to_s)] }
+          ),
+          'project_runner1' => a_hash_including(
+            'id' => active_project_runner.to_global_id.to_s,
+            'projects' => { 'nodes' => [a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)] },
+            'ownerProject' => a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)
+          ),
+          'project_runner2' => a_hash_including(
+            'id' => active_project_runner2.to_global_id.to_s,
+            'projects' => {
+              'nodes' => [a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)]
+            },
+            'ownerProject' => a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)
+          )
+        ))
     end
   end
 end

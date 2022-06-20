@@ -8,7 +8,7 @@ module Integrations
     ALLOWED_STATES = %w[failed canceled running pending success success-with-warnings skipped not_found].freeze
 
     field :mock_service_url,
-      title: s_('ProjectService|Mock service URL'),
+      title: -> { s_('ProjectService|Mock service URL') },
       placeholder: 'http://localhost:4004',
       required: true
 

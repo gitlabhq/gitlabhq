@@ -1,17 +1,29 @@
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { stubComponent } from 'helpers/stub_component';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   packageData,
   packagePipelines,
+  packagePipelinesQuery,
 } from 'jest/packages_and_registries/package_registry/mock_data';
 import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/constants';
 import component from '~/packages_and_registries/package_registry/components/details/package_history.vue';
+import PackageHistoryLoader from '~/packages_and_registries/package_registry/components/details/package_history_loader.vue';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import waitForPromises from 'helpers/wait_for_promises';
+import getPackagePipelines from '~/packages_and_registries/package_registry/graphql/queries/get_package_pipelines.query.graphql';
+
+Vue.use(VueApollo);
 
 describe('Package History', () => {
   let wrapper;
+  let apolloProvider;
+
   const defaultProps = {
     projectName: 'baz project',
     packageEntity: { ...packageData() },
@@ -22,8 +34,15 @@ describe('Package History', () => {
   const createPipelines = (amount) =>
     [...Array(amount)].map((x, index) => packagePipelines({ id: index + 1 })[0]);
 
-  const mountComponent = (props) => {
+  const mountComponent = ({
+    props = {},
+    resolver = jest.fn().mockResolvedValue(packagePipelinesQuery()),
+  } = {}) => {
+    const requestHandlers = [[getPackagePipelines, resolver]];
+    apolloProvider = createMockApollo(requestHandlers);
+
     wrapper = shallowMountExtended(component, {
+      apolloProvider,
       propsData: { ...defaultProps, ...props },
       stubs: {
         HistoryItem: stubComponent(HistoryItem, {
@@ -34,18 +53,40 @@ describe('Package History', () => {
     });
   };
 
-  afterEach(() => {
-    wrapper.destroy();
+  beforeEach(() => {
+    jest.spyOn(Sentry, 'captureException').mockImplementation();
   });
 
+  afterEach(() => {
+    wrapper.destroy();
+    wrapper = null;
+  });
+
+  const findPackageHistoryLoader = () => wrapper.findComponent(PackageHistoryLoader);
   const findHistoryElement = (testId) => wrapper.findByTestId(testId);
   const findElementLink = (container) => container.findComponent(GlLink);
   const findElementTimeAgo = (container) => container.findComponent(TimeAgoTooltip);
+  const findPackageHistoryAlert = () => wrapper.findComponent(GlAlert);
   const findTitle = () => wrapper.findByTestId('title');
   const findTimeline = () => wrapper.findByTestId('timeline');
 
-  it('has the correct title', () => {
+  it('renders the loading container when loading', () => {
     mountComponent();
+
+    expect(findPackageHistoryLoader().exists()).toBe(true);
+  });
+
+  it('does not render the loading container once resolved', async () => {
+    mountComponent();
+    await waitForPromises();
+
+    expect(findPackageHistoryLoader().exists()).toBe(false);
+    expect(Sentry.captureException).not.toHaveBeenCalled();
+  });
+
+  it('has the correct title', async () => {
+    mountComponent();
+    await waitForPromises();
 
     const title = findTitle();
 
@@ -53,8 +94,9 @@ describe('Package History', () => {
     expect(title.text()).toBe('History');
   });
 
-  it('has a timeline container', () => {
+  it('has a timeline container', async () => {
     mountComponent();
+    await waitForPromises();
 
     const title = findTimeline();
 
@@ -62,6 +104,24 @@ describe('Package History', () => {
     expect(title.classes()).toEqual(
       expect.arrayContaining(['timeline', 'main-notes-list', 'notes']),
     );
+  });
+
+  it('does not render gl-alert', () => {
+    mountComponent();
+
+    expect(findPackageHistoryAlert().exists()).toBe(false);
+  });
+
+  it('renders gl-alert if load fails', async () => {
+    mountComponent({ resolver: jest.fn().mockRejectedValue() });
+
+    await waitForPromises();
+
+    expect(findPackageHistoryAlert().exists()).toBe(true);
+    expect(findPackageHistoryAlert().text()).toEqual(
+      'Something went wrong while fetching the package history.',
+    );
+    expect(Sentry.captureException).toHaveBeenCalled();
   });
 
   describe.each`
@@ -78,11 +138,21 @@ describe('Package History', () => {
     ({ name, icon, text, timeAgoTooltip, link, amount }) => {
       let element;
 
-      beforeEach(() => {
-        const packageEntity = { ...packageData(), pipelines: { nodes: createPipelines(amount) } };
+      beforeEach(async () => {
+        const packageEntity = { ...packageData() };
+        const pipelinesResolver = jest
+          .fn()
+          .mockResolvedValue(packagePipelinesQuery(createPipelines(amount)));
+
         mountComponent({
-          packageEntity,
+          props: {
+            packageEntity,
+          },
+          resolver: pipelinesResolver,
         });
+
+        await waitForPromises();
+
         element = findHistoryElement(name);
       });
 

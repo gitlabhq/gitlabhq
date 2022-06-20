@@ -77,9 +77,9 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter do
       expect(reference_filter(act).to_html).to eq exp
     end
 
-    it 'has no title' do
+    it 'has the MR title in the title attribute' do
       doc = reference_filter("Merge #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq ""
+      expect(doc.css('a').first.attr('title')).to eq(merge.title)
     end
 
     it 'escapes the title attribute' do
@@ -169,7 +169,6 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter do
       expect(link.attr('data-project')).to eq project2.id.to_s
       expect(link.attr('data-project-path')).to eq project2.full_path
       expect(link.attr('data-iid')).to eq merge.iid.to_s
-      expect(link.attr('data-mr-title')).to eq merge.title
     end
 
     it 'ignores invalid merge IDs on the referenced project' do
@@ -271,12 +270,6 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter do
       doc = reference_filter("See #{reference}")
 
       expect(doc.text).to eq("See #{mr.to_reference(full: true)} (#{commit.short_id})")
-    end
-
-    it 'has valid title attribute' do
-      doc = reference_filter("See #{reference}")
-
-      expect(doc.css('a').first.attr('title')).to eq(commit.title)
     end
 
     it 'ignores invalid commit short_ids on link text' do

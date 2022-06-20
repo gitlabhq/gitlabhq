@@ -99,18 +99,7 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def pipeline_exists?(name)
-    pipelines.any? { |_, pipeline| pipeline.to_s == name.to_s }
-  end
-
-  def create_pipeline_trackers!
-    self.class.transaction do
-      pipelines.each do |stage, pipeline|
-        trackers.create!(
-          stage: stage,
-          pipeline_name: pipeline
-        )
-      end
-    end
+    pipelines.any? { _1[:pipeline].to_s == name.to_s }
   end
 
   def entity_type

@@ -35,8 +35,8 @@ describe('ItemCaret', () => {
 
     it.each`
       isGroupOpen | icon
-      ${true}     | ${'angle-down'}
-      ${false}    | ${'angle-right'}
+      ${true}     | ${'chevron-down'}
+      ${false}    | ${'chevron-right'}
     `('renders "$icon" icon when `isGroupOpen` is $isGroupOpen', ({ isGroupOpen, icon }) => {
       createComponent({
         isGroupOpen,

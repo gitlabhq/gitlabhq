@@ -455,7 +455,7 @@ RSpec.describe Issue do
     end
   end
 
-  describe '#related_issues' do
+  describe '#related_issues to relate incidents and issues' do
     let_it_be(:authorized_project) { create(:project) }
     let_it_be(:authorized_project2) { create(:project) }
     let_it_be(:unauthorized_project) { create(:project) }
@@ -463,12 +463,14 @@ RSpec.describe Issue do
     let_it_be(:authorized_issue_a) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_b) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_c) { create(:issue, project: authorized_project2) }
+    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project )}
 
     let_it_be(:unauthorized_issue) { create(:issue, project: unauthorized_project) }
 
     let_it_be(:issue_link_a) { create(:issue_link, source: authorized_issue_a, target: authorized_issue_b) }
     let_it_be(:issue_link_b) { create(:issue_link, source: authorized_issue_a, target: unauthorized_issue) }
     let_it_be(:issue_link_c) { create(:issue_link, source: authorized_issue_a, target: authorized_issue_c) }
+    let_it_be(:issue_incident_link_a) { create(:issue_link, source: authorized_issue_a, target: authorized_incident_a) }
 
     before_all do
       authorized_project.add_developer(user)
@@ -477,7 +479,7 @@ RSpec.describe Issue do
 
     it 'returns only authorized related issues for given user' do
       expect(authorized_issue_a.related_issues(user))
-        .to contain_exactly(authorized_issue_b, authorized_issue_c)
+        .to contain_exactly(authorized_issue_b, authorized_issue_c, authorized_incident_a)
     end
 
     it 'returns issues with valid issue_link_type' do
@@ -507,7 +509,7 @@ RSpec.describe Issue do
         expect(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
 
         expect(authorized_issue_a.related_issues(user))
-          .to contain_exactly(authorized_issue_b)
+          .to contain_exactly(authorized_issue_b, authorized_incident_a)
       end
     end
   end
@@ -1563,6 +1565,66 @@ RSpec.describe Issue do
       issue = escalation_status.issue
 
       expect(issue.escalation_status).to eq(escalation_status)
+    end
+  end
+
+  describe '#expire_etag_cache' do
+    let_it_be(:issue) { create(:issue) }
+
+    subject(:expire_cache) { issue.expire_etag_cache }
+
+    it 'touches the etag cache store' do
+      key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(issue.project, issue)
+
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |cache_store|
+        expect(cache_store).to receive(:touch).with(key)
+      end
+
+      expire_cache
+    end
+  end
+
+  describe '#link_reference_pattern' do
+    let(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
+
+    context 'with issue url' do
+      let(:link_reference_url) { 'http://localhost/namespace/project/-/issues/1' }
+
+      it 'matches with expected attributes' do
+        expect(match_data['namespace']).to eq('namespace')
+        expect(match_data['project']).to eq('project')
+        expect(match_data['issue']).to eq('1')
+      end
+    end
+
+    context 'with incident url' do
+      let(:link_reference_url) { 'http://localhost/namespace1/project1/-/issues/incident/2' }
+
+      it 'matches with expected attributes' do
+        expect(match_data['namespace']).to eq('namespace1')
+        expect(match_data['project']).to eq('project1')
+        expect(match_data['issue']).to eq('2')
+      end
+    end
+  end
+
+  context 'order by closed_at' do
+    let!(:issue_a) { create(:issue, closed_at: 1.day.ago) }
+    let!(:issue_b) { create(:issue, closed_at: 5.days.ago) }
+    let!(:issue_c_nil) { create(:issue, closed_at: nil) }
+    let!(:issue_d) { create(:issue, closed_at: 3.days.ago) }
+    let!(:issue_e_nil) { create(:issue, closed_at: nil) }
+
+    describe '.order_closed_at_asc' do
+      it 'orders on closed at' do
+        expect(described_class.order_closed_at_asc.to_a).to eq([issue_b, issue_d, issue_a, issue_c_nil, issue_e_nil])
+      end
+    end
+
+    describe '.order_closed_at_desc' do
+      it 'orders on closed at' do
+        expect(described_class.order_closed_at_desc.to_a).to eq([issue_a, issue_d, issue_b, issue_c_nil, issue_e_nil])
+      end
     end
   end
 end

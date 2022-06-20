@@ -34,12 +34,12 @@ RSpec.describe Mutations::Terraform::State::Delete do
         state.project.add_maintainer(user)
       end
 
-      it 'deletes the state', :aggregate_failures do
-        expect do
-          expect(subject).to eq(errors: [])
-        end.to change { ::Terraform::State.count }.by(-1)
+      it 'schedules the state for deletion', :aggregate_failures do
+        expect_next_instance_of(Terraform::States::TriggerDestroyService, state, current_user: user) do |service|
+          expect(service).to receive(:execute).once.and_return(ServiceResponse.success)
+        end
 
-        expect { state.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        subject
       end
     end
 

@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
 
@@ -8,19 +8,20 @@ const { mapActions: mapCommitActions, mapGetters: mapCommitGetters } = createNam
 );
 
 export default {
+  components: { GlFormCheckbox },
   directives: {
     GlTooltip: GlTooltipDirective,
+  },
+  i18n: {
+    newMrText: s__('IDE|Start a new merge request'),
+    tooltipText: s__(
+      'IDE|This option is disabled because you are not allowed to create merge requests in this project.',
+    ),
   },
   computed: {
     ...mapCommitGetters(['shouldHideNewMrOption', 'shouldDisableNewMrOption', 'shouldCreateMR']),
     tooltipText() {
-      if (this.shouldDisableNewMrOption) {
-        return s__(
-          'IDE|This option is disabled because you are not allowed to create merge requests in this project.',
-        );
-      }
-
-      return '';
+      return this.shouldDisableNewMrOption ? this.$options.i18n.tooltipText : null;
     },
   },
   methods: {
@@ -30,22 +31,23 @@ export default {
 </script>
 
 <template>
-  <fieldset v-if="!shouldHideNewMrOption">
-    <hr class="my-2" />
-    <label
-      v-gl-tooltip="tooltipText"
-      class="mb-0 js-ide-commit-new-mr"
-      :class="{ 'is-disabled': shouldDisableNewMrOption }"
+  <fieldset
+    v-if="!shouldHideNewMrOption"
+    v-gl-tooltip="tooltipText"
+    data-testid="new-merge-request-fieldset"
+    class="js-ide-commit-new-mr"
+    :class="{ 'is-disabled': shouldDisableNewMrOption }"
+  >
+    <hr class="gl-mt-3 gl-mb-4" />
+
+    <gl-form-checkbox
+      :disabled="shouldDisableNewMrOption"
+      :checked="shouldCreateMR"
+      @change="toggleShouldCreateMR"
     >
-      <input
-        :disabled="shouldDisableNewMrOption"
-        :checked="shouldCreateMR"
-        type="checkbox"
-        @change="toggleShouldCreateMR"
-      />
-      <span class="gl-ml-3 ide-option-label">
-        {{ __('Start a new merge request') }}
+      <span class="ide-option-label">
+        {{ $options.i18n.newMrText }}
       </span>
-    </label>
+    </gl-form-checkbox>
   </fieldset>
 </template>

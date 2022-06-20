@@ -29,7 +29,7 @@ export default class PayloadPreviewer {
   requestPayload() {
     if (this.isInserted) return this.showPayload();
 
-    this.spinner.classList.add('gl-display-inline-flex');
+    this.spinner.classList.add('gl-display-inline');
 
     const container = this.getContainer();
 
@@ -38,11 +38,11 @@ export default class PayloadPreviewer {
         responseType: 'text',
       })
       .then(({ data }) => {
-        this.spinner.classList.remove('gl-display-inline-flex');
+        this.spinner.classList.remove('gl-display-inline');
         this.insertPayload(data);
       })
       .catch(() => {
-        this.spinner.classList.remove('gl-display-inline-flex');
+        this.spinner.classList.remove('gl-display-inline');
         createFlash({
           message: __('Error fetching payload data.'),
         });

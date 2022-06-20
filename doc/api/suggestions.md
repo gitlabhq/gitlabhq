@@ -36,7 +36,7 @@ Example response:
     "id": 36,
     "from_line": 10,
     "to_line": 10,
-    "appliable": false,
+    "applicable": false,
     "applied": true,
     "from_content": "        \"--talk-name=org.freedesktop.\",\n",
     "to_content": "        \"--talk-name=org.free.\",\n        \"--talk-name=org.desktop.\",\n"

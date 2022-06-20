@@ -31,8 +31,14 @@ module Tooling
             consolidated_again = consolidate_paths(consolidated)
           end
 
-          consolidated.each do |file|
-            puts "/#{file.chomp} #{group}"
+          consolidated.each do |line|
+            path = line.chomp
+
+            if File.directory?(path)
+              puts "/#{path}/ #{group}"
+            else
+              puts "/#{path} #{group}"
+            end
           end
         end
       end
@@ -76,7 +82,27 @@ module Tooling
       flags |= ::File::FNM_EXTGLOB
       # END extension
 
-      ::File.fnmatch?(pattern, path, flags)
+      ::File.fnmatch?(normalize_pattern(pattern), path, flags)
+    end
+
+    # Copied from ee/lib/gitlab/code_owners/file.rb
+    def normalize_pattern(pattern)
+      # Remove `\` when escaping `\#`
+      pattern = pattern.sub(/\A\\#/, '#')
+      # Replace all whitespace preceded by a \ with a regular whitespace
+      pattern = pattern.gsub(/\\\s+/, ' ')
+
+      return '/**/*' if pattern == '*'
+
+      unless pattern.start_with?('/')
+        pattern = "/**/#{pattern}"
+      end
+
+      if pattern.end_with?('/')
+        pattern = "#{pattern}**/*"
+      end
+
+      pattern
     end
 
     def consolidate_paths(matched_files)

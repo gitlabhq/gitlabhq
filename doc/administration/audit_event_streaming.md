@@ -10,11 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338939) in GitLab 14.7.
 > - [Feature flag `ff_external_audit_events_namespace`](https://gitlab.com/gitlab-org/gitlab/-/issues/349588) removed in GitLab 14.8.
 
-Event streaming allows owners of top-level groups to set an HTTP endpoint to receive **all** audit events about the group, and its
-subgroups and projects as structured JSON.
+Users can set an HTTP endpoint for a top-level group to receive all audit events about the group, its subgroups, and
+projects as structured JSON.
 
-Top-level group owners can manage their audit logs in third-party systems such as Splunk, using the Splunk
-[HTTP Event Collector](https://docs.splunk.com/Documentation/Splunk/8.2.2/Data/UsetheHTTPEventCollector). Any service that can receive
+Top-level group owners can manage their audit logs in third-party systems. Any service that can receive
 structured JSON data can be used as the endpoint.
 
 NOTE:
@@ -132,7 +131,7 @@ Delete an event streaming destination by specifying an ID. Get the required ID b
 streaming destinations.
 
 ```graphql
-mutation { 
+mutation {
   externalAuditEventDestinationDestroy(input: { id: destination }) {
     errors
   }
@@ -143,6 +142,43 @@ Destination is deleted if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
+
+## Custom HTTP header values
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361216) in GitLab 15.1 [with a flag](feature_flags.md) named `streaming_audit_event_headers`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `streaming_audit_event_headers`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Each streaming destination can have up to 20 custom HTTP headers included with each streamed event.
+
+### Add with the API
+
+Group owners can add a HTTP header using the GraphQL `auditEventsStreamingHeadersCreate` mutation.
+
+```graphql
+mutation {
+  auditEventsStreamingHeadersCreate(input: { destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/24601", key: "foo", value: "bar" }) {
+    errors
+  }
+}
+```
+
+### Delete with the API
+
+Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation.
+
+```graphql
+mutation {
+  auditEventsStreamingHeadersDestroy(input: { headerId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/24601" }) {
+    errors
+  }
+}
+```
+
+The header is created if the returned `errors` object is empty.
 
 ## Verify event authenticity
 
@@ -158,9 +194,11 @@ the destination's value when [listing streaming destinations](#list-streaming-de
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.0.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.1 by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named `audit_event_streaming_git_operations`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available. To hide the
+feature, ask an administrator to [disable the feature flag](feature_flags.md) named `audit_event_streaming_git_operations`.
 
 Streaming audit events can be sent when signed-in users push or pull a project's remote Git repositories:
 

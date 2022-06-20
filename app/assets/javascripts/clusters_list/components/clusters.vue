@@ -4,7 +4,7 @@ import {
   GlLink,
   GlLoadingIcon,
   GlPagination,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlSkeletonLoader,
   GlSprintf,
   GlTableLite,
   GlTooltipDirective,
@@ -25,7 +25,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlPagination,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     GlSprintf,
     GlTableLite,
     NodeErrorHelpText,
@@ -267,7 +267,7 @@ export default {
       <template #cell(node_size)="{ item }">
         <span v-if="item.nodes">{{ item.nodes.length }}</span>
 
-        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
         <node-error-help-text
           v-else-if="item.kubernetes_errors"
@@ -288,7 +288,7 @@ export default {
           </gl-sprintf>
         </span>
 
-        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
         <node-error-help-text
           v-else-if="item.kubernetes_errors"
@@ -309,7 +309,7 @@ export default {
           </gl-sprintf>
         </span>
 
-        <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
         <node-error-help-text
           v-else-if="item.kubernetes_errors"

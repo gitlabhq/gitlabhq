@@ -28,5 +28,4 @@ Performance/ConstantRegexp:
     - 'scripts/perf/query_limiting_report.rb'
     - 'scripts/validate_migration_schema'
     - 'spec/models/concerns/token_authenticatable_spec.rb'
-    - 'spec/scripts/lib/glfm/update_specification_spec.rb'
     - 'spec/services/notes/copy_service_spec.rb'

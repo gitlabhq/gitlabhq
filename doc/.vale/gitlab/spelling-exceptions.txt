@@ -73,6 +73,7 @@ blockquoting
 boolean
 booleans
 Bootsnap
+Bottlerocket
 browsable
 bugfix
 bugfixed
@@ -571,7 +572,7 @@ rsyncing
 rsyncs
 Rubinius
 Rubix
-Rubocop
+RuboCop
 Rubular
 ruleset
 rulesets

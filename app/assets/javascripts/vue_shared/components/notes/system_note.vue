@@ -18,7 +18,7 @@
  */
 import {
   GlButton,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlSkeletonLoader,
   GlTooltipDirective,
   GlIcon,
   GlSafeHtmlDirective as SafeHtml,
@@ -26,9 +26,9 @@ import {
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
+import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import initMRPopovers from '~/mr_popover/';
 import noteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { spriteIcon } from '~/lib/utils/common_utils';
@@ -46,7 +46,7 @@ export default {
     noteHeader,
     TimelineEntryItem,
     GlButton,
-    GlSkeletonLoading,
+    GlSkeletonLoader,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -94,7 +94,7 @@ export default {
     },
   },
   mounted() {
-    initMRPopovers(this.$el.querySelectorAll('.gfm-merge_request'));
+    $(this.$refs['gfm-content']).renderGFM();
   },
   methods: {
     ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
@@ -130,7 +130,7 @@ export default {
     <div class="timeline-content">
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
-          <span v-safe-html="actionTextHtml"></span>
+          <span ref="gfm-content" v-safe-html="actionTextHtml"></span>
           <template
             v-if="canSeeDescriptionVersion || note.outdated_line_change_path"
             #extra-controls
@@ -172,7 +172,7 @@ export default {
         </div>
         <div v-if="shouldShowDescriptionVersion" class="description-version pt-2">
           <pre v-if="isLoadingDescriptionVersion" class="loading-state">
-            <gl-skeleton-loading />
+            <gl-skeleton-loader />
           </pre>
           <pre v-else v-safe-html="descriptionVersion" class="wrapper mt-2"></pre>
           <gl-button
@@ -218,7 +218,9 @@ export default {
             </tr>
           </table>
         </div>
-        <gl-skeleton-loading v-else-if="showLines" class="gl-mt-4" />
+        <div v-else-if="showLines" class="mt-4">
+          <gl-skeleton-loader />
+        </div>
       </div>
     </div>
   </timeline-entry-item>

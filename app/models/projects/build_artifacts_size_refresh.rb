@@ -36,6 +36,7 @@ module Projects
       before_transition created: :running do |refresh|
         refresh.reset_project_statistics!
         refresh.refresh_started_at = Time.zone.now
+        refresh.last_job_artifact_id_on_refresh_start = refresh.project.job_artifacts.last&.id
       end
 
       before_transition running: any do |refresh, transition|
@@ -49,6 +50,7 @@ module Projects
 
     scope :stale, -> { with_state(:running).where('updated_at < ?', STALE_WINDOW.ago) }
     scope :remaining, -> { with_state(:created, :pending).or(stale) }
+    scope :processing_queue, -> { remaining.order(state: :desc) }
 
     def self.enqueue_refresh(projects)
       now = Time.zone.now
@@ -64,8 +66,7 @@ module Projects
       next_refresh = nil
 
       transaction do
-        next_refresh = remaining
-          .order(:state, :updated_at)
+        next_refresh = processing_queue
           .lock('FOR UPDATE SKIP LOCKED')
           .take
 
@@ -83,9 +84,14 @@ module Projects
 
     def next_batch(limit:)
       project.job_artifacts.select(:id, :size)
-        .where('created_at <= ? AND id > ?', refresh_started_at, last_job_artifact_id.to_i)
-        .order(:created_at)
+        .id_before(last_job_artifact_id_on_refresh_start)
+        .id_after(last_job_artifact_id.to_i)
+        .ordered_by_id
         .limit(limit)
+    end
+
+    def started?
+      !created?
     end
   end
 end

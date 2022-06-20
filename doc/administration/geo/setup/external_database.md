@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -51,7 +51,7 @@ developed and tested. We aim to be compatible with most external
    gitlab-ctl set-geo-primary-node
    ```
 
-   This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
+   This command uses your defined `external_url` in `/etc/gitlab/gitlab.rb`.
 
 ### Configure the external database to be replicated
 
@@ -64,14 +64,14 @@ To set up an external database, you can either:
 
 Given you have a primary node set up on AWS EC2 that uses RDS.
 You can now just create a read-only replica in a different region and the
-replication process will be managed by AWS. Make sure you've set Network ACL, Subnet, and
+replication process is managed by AWS. Make sure you've set Network ACL (Access Control List), Subnet, and
 Security Group according to your needs, so the secondary application node can access the database.
 
 The following instructions detail how to create a read-only replica for common
 cloud providers:
 
 - Amazon RDS - [Creating a Read Replica](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Create)
-- Azure Database for PostgreSQL - [Create and manage read replicas in Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/howto-read-replicas-portal)
+- Azure Database for PostgreSQL - [Create and manage read replicas in Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/single-server/how-to-read-replicas-portal)
 - Google Cloud SQL - [Creating read replicas](https://cloud.google.com/sql/docs/postgres/replication/create-replica)
 
 Once your read-only replica is set up, you can skip to [configure your secondary application node](#configure-secondary-application-nodes-to-use-the-external-read-replica).
@@ -190,7 +190,7 @@ to grant additional roles to your tracking database user (by default, this is
 `gitlab_geo`):
 
 - Amazon RDS requires the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role.
-- Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/howto-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role.
+- Azure Database for PostgreSQL requires the [`azure_pg_admin`](https://docs.microsoft.com/en-us/azure/postgresql/single-server/how-to-create-users#how-to-create-additional-admin-users-in-azure-database-for-postgresql) role.
 - Google Cloud SQL requires the [`cloudsqlsuperuser`](https://cloud.google.com/sql/docs/postgres/users#default-users) role.
 
 This is for the installation of extensions during installation and upgrades. As an alternative,

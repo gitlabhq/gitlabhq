@@ -14,8 +14,6 @@ module ServicePing
     ].to_set.freeze
 
     def execute
-      return [] unless ServicePingSettings.product_intelligence_enabled?
-
       CATEGORIES
     end
   end

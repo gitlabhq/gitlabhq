@@ -31,13 +31,37 @@ RSpec.describe Tooling::FindCodeowners do
         end
       end.to output(<<~CODEOWNERS).to_stdout
         [Section name]
-        /dir0/dir1 @group
+        /dir0/dir1/ @group
         /file @group
       CODEOWNERS
     end
   end
 
   describe '#load_definitions' do
+    before do
+      allow(subject).to receive(:load_config).and_return(
+        {
+          '[Authentication and Authorization]': {
+            '@gitlab-org/manage/authentication-and-authorization': {
+              allow: {
+                keywords: %w[password auth token],
+                patterns:
+                  %w[
+                    /{,ee/}app/**/*%{keyword}*{,/**/*}
+                    /{,ee/}config/**/*%{keyword}*{,/**/*}
+                    /{,ee/}lib/**/*%{keyword}*{,/**/*}
+                  ]
+              },
+              deny: {
+                keywords: %w[*author.* *author_* *authored*],
+                patterns: ['%{keyword}']
+              }
+            }
+          }
+        }
+      )
+    end
+
     it 'expands the allow and deny list with keywords and patterns' do
       subject.load_definitions.each do |section, group_defintions|
         group_defintions.each do |group, definitions|
@@ -54,56 +78,20 @@ RSpec.describe Tooling::FindCodeowners do
 
       expect(auth).to eq(
         allow: %w[
-          /{,ee/}app/**/*password*{/**/*,}
-          /{,ee/}config/**/*password*{/**/*,}
-          /{,ee/}lib/**/*password*{/**/*,}
-          /{,ee/}app/**/*auth*{/**/*,}
-          /{,ee/}config/**/*auth*{/**/*,}
-          /{,ee/}lib/**/*auth*{/**/*,}
-          /{,ee/}app/**/*token*{/**/*,}
-          /{,ee/}config/**/*token*{/**/*,}
-          /{,ee/}lib/**/*token*{/**/*,}
+          /{,ee/}app/**/*password*{,/**/*}
+          /{,ee/}config/**/*password*{,/**/*}
+          /{,ee/}lib/**/*password*{,/**/*}
+          /{,ee/}app/**/*auth*{,/**/*}
+          /{,ee/}config/**/*auth*{,/**/*}
+          /{,ee/}lib/**/*auth*{,/**/*}
+          /{,ee/}app/**/*token*{,/**/*}
+          /{,ee/}config/**/*token*{,/**/*}
+          /{,ee/}lib/**/*token*{,/**/*}
         ],
         deny: %w[
-          **/*author.*{/**/*,}
-          **/*author_*{/**/*,}
-          **/*authored*{/**/*,}
-          **/*authoring*{/**/*,}
-          **/*.png*{/**/*,}
-          **/*.svg*{/**/*,}
-          **/*deploy_token*{/**/*,}
-          **/*runner{,s}_token*{/**/*,}
-          **/*job_token*{/**/*,}
-          **/*autocomplete_tokens*{/**/*,}
-          **/*dast_site_token*{/**/*,}
-          **/*reset_prometheus_token*{/**/*,}
-          **/*reset_registration_token*{/**/*,}
-          **/*runners_registration_token*{/**/*,}
-          **/*terraform_registry_token*{/**/*,}
-          **/*tokenizer*{/**/*,}
-          **/*filtered_search*{/**/*,}
-          **/*/alert_management/*{/**/*,}
-          **/*/analytics/*{/**/*,}
-          **/*/bitbucket/*{/**/*,}
-          **/*/clusters/*{/**/*,}
-          **/*/clusters_list/*{/**/*,}
-          **/*/dast/*{/**/*,}
-          **/*/dast_profiles/*{/**/*,}
-          **/*/dast_site_tokens/*{/**/*,}
-          **/*/dast_site_validation/*{/**/*,}
-          **/*/dependency_proxy/*{/**/*,}
-          **/*/error_tracking/*{/**/*,}
-          **/*/google_api/*{/**/*,}
-          **/*/google_cloud/*{/**/*,}
-          **/*/jira_connect/*{/**/*,}
-          **/*/kubernetes/*{/**/*,}
-          **/*/protected_environments/*{/**/*,}
-          **/*/config/feature_flags/development/jira_connect_*{/**/*,}
-          **/*/config/metrics/*{/**/*,}
-          **/*/app/controllers/groups/dependency_proxy_auth_controller.rb*{/**/*,}
-          **/*/app/finders/ci/auth_job_finder.rb*{/**/*,}
-          **/*/ee/config/metrics/*{/**/*,}
-          **/*/lib/gitlab/conan_token.rb*{/**/*,}
+          *author.*
+          *author_*
+          *authored*
         ]
       )
     end
@@ -159,9 +147,28 @@ RSpec.describe Tooling::FindCodeowners do
       expected_flags =
         ::File::FNM_DOTMATCH | ::File::FNM_PATHNAME | ::File::FNM_EXTGLOB
 
-      expect(File).to receive(:fnmatch?).with(pattern, path, expected_flags)
+      expect(File).to receive(:fnmatch?)
+        .with("/**/#{pattern}", path, expected_flags)
 
       subject.path_matches?(pattern, path)
+    end
+  end
+
+  describe '#normalize_pattern' do
+    it 'returns /**/* if the input is *' do
+      expect(subject.normalize_pattern('*')).to eq('/**/*')
+    end
+
+    it 'prepends /** if the input does not start with /' do
+      expect(subject.normalize_pattern('app')).to eq('/**/app')
+    end
+
+    it 'returns the pattern if the input starts with /' do
+      expect(subject.normalize_pattern('/app')).to eq('/app')
+    end
+
+    it 'appends **/* if the input ends with /' do
+      expect(subject.normalize_pattern('/app/')).to eq('/app/**/*')
     end
   end
 

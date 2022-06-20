@@ -16,7 +16,6 @@ RSpec.describe 'admin issues labels' do
 
   describe 'list' do
     before do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
       visit admin_labels_path
     end
 
@@ -38,11 +37,9 @@ RSpec.describe 'admin issues labels' do
     end
 
     it 'deletes all labels', :js do
-      page.within '.labels' do
-        page.all('.js-remove-label').each do |remove|
-          accept_confirm { remove.click }
-          wait_for_requests
-        end
+      page.all('.labels .js-remove-label').each do |remove|
+        accept_gl_confirm(button_text: 'Delete label') { remove.click }
+        wait_for_requests
       end
 
       wait_for_requests

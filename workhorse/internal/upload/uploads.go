@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/http"
 
@@ -25,7 +25,7 @@ type PreAuthorizer interface {
 
 type MultipartClaims struct {
 	RewrittenFields map[string]string `json:"rewritten_fields"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // MultipartFormProcessor abstracts away implementation differences
@@ -36,17 +36,18 @@ type MultipartFormProcessor interface {
 	Finalize(ctx context.Context) error
 	Name() string
 	Count() int
+	TransformContents(ctx context.Context, filename string, r io.Reader) (io.ReadCloser, error)
 }
 
 // interceptMultipartFiles is the core of the implementation of
 // Multipart.
-func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *destination.UploadOpts) {
+func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, filter MultipartFormProcessor, fa fileAuthorizer, p Preparer) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()
 
 	// Rewrite multipart form data
-	err := rewriteFormFilesFromMultipart(r, writer, preauth, filter, opts)
+	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p)
 	if err != nil {
 		switch err {
 		case ErrInjectedClientParam:
@@ -71,7 +72,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	writer.Close()
 
 	// Hijack the request
-	r.Body = ioutil.NopCloser(&body)
+	r.Body = io.NopCloser(&body)
 	r.ContentLength = int64(body.Len())
 	r.Header.Set("Content-Type", writer.FormDataContentType())
 

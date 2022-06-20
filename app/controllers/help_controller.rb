@@ -13,7 +13,7 @@ class HelpController < ApplicationController
 
   def index
     # Remove YAML frontmatter so that it doesn't look weird
-    @help_index = File.read(Rails.root.join('doc', 'index.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
+    @help_index = File.read(path_to_doc('index.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
 
     # Prefix Markdown links with `help/` unless they are external links.
     # '//' not necessarily part of URL, e.g., mailto:mail@example.com
@@ -24,7 +24,7 @@ class HelpController < ApplicationController
   end
 
   def show
-    @path = Rack::Utils.clean_path_info(path_params[:path])
+    @path = Rack::Utils.clean_path_info(params[:path])
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
@@ -38,7 +38,7 @@ class HelpController < ApplicationController
       # Allow access to specific media files in the doc folder
       format.any(:png, :gif, :jpeg, :mp4, :mp3) do
         # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
-        path = File.join(Rails.root, 'doc', "#{@path}.#{params[:format]}")
+        path = path_to_doc("#{@path}.#{params[:format]}")
 
         if File.exist?(path)
           send_file(path, disposition: 'inline')
@@ -61,16 +61,8 @@ class HelpController < ApplicationController
 
   private
 
-  def path_params
-    params.require(:path)
-
-    params
-  end
-
   def redirect_to_documentation_website?
-    return false unless Gitlab::UrlSanitizer.valid_web?(documentation_url)
-
-    true
+    Gitlab::UrlSanitizer.valid_web?(documentation_url)
   end
 
   def documentation_url
@@ -105,17 +97,21 @@ class HelpController < ApplicationController
 
   def render_documentation
     # Note: We are purposefully NOT using `Rails.root.join` because of https://gitlab.com/gitlab-org/gitlab/-/issues/216028.
-    path = File.join(Rails.root, 'doc', "#{@path}.md")
+    path = path_to_doc("#{@path}.md")
 
     if File.exist?(path)
       # Remove YAML frontmatter so that it doesn't look weird
       @markdown = File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
 
-      render 'show.html.haml'
+      render :show, formats: :html
     else
       # Force template to Haml
-      render 'errors/not_found.html.haml', layout: 'errors', status: :not_found
+      render 'errors/not_found', layout: 'errors', status: :not_found, formats: :html
     end
+  end
+
+  def path_to_doc(file_name)
+    File.join(Rails.root, 'doc', file_name)
   end
 end
 

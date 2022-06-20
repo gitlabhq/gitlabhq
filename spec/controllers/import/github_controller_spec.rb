@@ -96,19 +96,6 @@ RSpec.describe Import::GithubController do
 
   describe "POST personal_access_token" do
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
-
-    it 'passes namespace_id param as query param if it was present' do
-      namespace_id = 5
-      status_import_url = public_send("status_import_#{provider}_url", { namespace_id: namespace_id })
-
-      allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
-        allow(client).to receive(:user).and_return(true)
-      end
-
-      post :personal_access_token, params: { personal_access_token: 'some-token', namespace_id: 5 }
-
-      expect(controller).to redirect_to(status_import_url)
-    end
   end
 
   describe "GET status" do

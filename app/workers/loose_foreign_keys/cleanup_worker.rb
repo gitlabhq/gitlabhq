@@ -7,7 +7,7 @@ module LooseForeignKeys
     include CronjobQueue # rubocop: disable Scalability/CronWorkerContext
 
     sidekiq_options retry: false
-    feature_category :sharding
+    feature_category :pods
     data_consistency :always
     idempotent!
 

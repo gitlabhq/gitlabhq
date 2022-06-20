@@ -39,16 +39,31 @@ const validateImportCredentials = (url, user, password) => {
   return importCredentialsValidationPromise;
 };
 
-const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
+const onProjectNameChangeJq = ($projectNameInput, $projectPathInput) => {
   const slug = slugify(convertUnicodeToAscii($projectNameInput.val()));
   $projectPathInput.val(slug);
 };
 
-const onProjectPathChange = ($projectNameInput, $projectPathInput, hasExistingProjectName) => {
+const onProjectNameChange = ($projectNameInput, $projectPathInput) => {
+  const slug = slugify(convertUnicodeToAscii($projectNameInput.value));
+  // eslint-disable-next-line no-param-reassign
+  $projectPathInput.value = slug;
+};
+
+const onProjectPathChangeJq = ($projectNameInput, $projectPathInput, hasExistingProjectName) => {
   const slug = $projectPathInput.val();
 
   if (!hasExistingProjectName) {
     $projectNameInput.val(convertToTitleCase(humanize(slug, '[-_]')));
+  }
+};
+
+const onProjectPathChange = ($projectNameInput, $projectPathInput, hasExistingProjectName) => {
+  const slug = $projectPathInput.value;
+
+  if (!hasExistingProjectName) {
+    // eslint-disable-next-line no-param-reassign
+    $projectNameInput.value = convertToTitleCase(humanize(slug, '[-_]'));
   }
 };
 
@@ -73,24 +88,31 @@ const validateGroupNamespaceDropdown = (e) => {
 
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   const specialRepo = document.querySelector('.js-user-readme-repo');
-
-  // eslint-disable-next-line @gitlab/no-global-event-off
-  $projectNameInput.off('keyup change').on('keyup change', () => {
+  const projectNameInputListener = () => {
     onProjectNameChange($projectNameInput, $projectPathInput);
-    hasUserDefinedProjectName = $projectNameInput.val().trim().length > 0;
-    hasUserDefinedProjectPath = $projectPathInput.val().trim().length > 0;
-  });
+    hasUserDefinedProjectName = $projectNameInput.value.trim().length > 0;
+    hasUserDefinedProjectPath = $projectPathInput.value.trim().length > 0;
+  };
 
-  // eslint-disable-next-line @gitlab/no-global-event-off
-  $projectPathInput.off('keyup change').on('keyup change', () => {
+  $projectNameInput.removeEventListener('keyup', projectNameInputListener);
+  $projectNameInput.addEventListener('keyup', projectNameInputListener);
+  $projectNameInput.removeEventListener('change', projectNameInputListener);
+  $projectNameInput.addEventListener('change', projectNameInputListener);
+
+  const projectPathInputListener = () => {
     onProjectPathChange($projectNameInput, $projectPathInput, hasUserDefinedProjectName);
-    hasUserDefinedProjectPath = $projectPathInput.val().trim().length > 0;
+    hasUserDefinedProjectPath = $projectPathInput.value.trim().length > 0;
 
     specialRepo.classList.toggle(
       'gl-display-none',
-      $projectPathInput.val() !== $projectPathInput.data('username'),
+      $projectPathInput.value !== $projectPathInput.dataset.username,
     );
-  });
+  };
+
+  $projectPathInput.removeEventListener('keyup', projectPathInputListener);
+  $projectPathInput.addEventListener('keyup', projectPathInputListener);
+  $projectPathInput.removeEventListener('change', projectPathInputListener);
+  $projectPathInput.addEventListener('change', projectPathInputListener);
 
   document.querySelector('.js-create-project-button').addEventListener('click', (e) => {
     validateGroupNamespaceDropdown(e);
@@ -99,17 +121,17 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
 
 const deriveProjectPathFromUrl = ($projectImportUrl) => {
   const $currentProjectName = $projectImportUrl
-    .parents('.toggle-import-form')
-    .find('#project_name');
+    .closest('.toggle-import-form')
+    .querySelector('#project_name');
   const $currentProjectPath = $projectImportUrl
-    .parents('.toggle-import-form')
-    .find('#project_path');
+    .closest('.toggle-import-form')
+    .querySelector('#project_path');
 
   if (hasUserDefinedProjectPath || $currentProjectPath.length === 0) {
     return;
   }
 
-  let importUrl = $projectImportUrl.val().trim();
+  let importUrl = $projectImportUrl.value.trim();
   if (importUrl.length === 0) {
     return;
   }
@@ -125,7 +147,9 @@ const deriveProjectPathFromUrl = ($projectImportUrl) => {
   // extract everything after the last slash
   const pathMatch = /\/([^/]+)$/.exec(importUrl);
   if (pathMatch) {
-    $currentProjectPath.val(pathMatch[1]);
+    // eslint-disable-next-line no-unused-vars
+    const [_, matchingString] = pathMatch;
+    $currentProjectPath.value = matchingString;
     onProjectPathChange($currentProjectName, $currentProjectPath, false);
   }
 };
@@ -149,19 +173,20 @@ const bindHowToImport = () => {
 
 const bindEvents = () => {
   const $newProjectForm = $('#new_project');
-  const $projectImportUrl = $('#project_import_url');
   const $projectImportUrlUser = $('#project_import_url_user');
   const $projectImportUrlPassword = $('#project_import_url_password');
   const $projectImportUrlError = $('.js-import-url-error');
   const $projectImportForm = $('form.js-project-import');
-  const $projectPath = $('.tab-pane.active #project_path');
   const $useTemplateBtn = $('.template-button > input');
-  const $projectFieldsForm = $('.project-fields-form');
-  const $selectedTemplateText = $('.selected-template');
   const $changeTemplateBtn = $('.change-template');
-  const $selectedIcon = $('.selected-icon');
-  const $projectTemplateButtons = $('.project-templates-buttons');
-  const $projectName = $('.tab-pane.active #project_name');
+
+  const $projectImportUrl = document.querySelector('#project_import_url');
+  const $projectPath = document.querySelector('.tab-pane.active #project_path');
+  const $projectFieldsForm = document.querySelector('.project-fields-form');
+  const $selectedIcon = document.querySelector('.selected-icon');
+  const $selectedTemplateText = document.querySelector('.selected-template');
+  const $projectName = document.querySelector('.tab-pane.active #project_name');
+  const $projectTemplateButtons = document.querySelectorAll('.project-templates-buttons');
 
   if ($newProjectForm.length !== 1 && $projectImportForm.length !== 1) {
     return;
@@ -170,31 +195,38 @@ const bindEvents = () => {
   bindHowToImport();
 
   $('.btn_import_gitlab_project').on('click contextmenu', () => {
-    const importHref = $('a.btn_import_gitlab_project').attr('data-href');
-    $('.btn_import_gitlab_project').attr(
-      'href',
-      `${importHref}?namespace_id=${$(
-        '#project_namespace_id',
-      ).val()}&name=${$projectName.val()}&path=${$projectPath.val()}`,
-    );
+    const importGitlabProjectBtn = document.querySelector('.btn_import_gitlab_project');
+    const projectNamespaceId = document.querySelector('#project_namespace_id');
+
+    const { href: importHref } = importGitlabProjectBtn.dataset;
+    const newHref = `${importHref}?namespace_id=${projectNamespaceId.value}&name=${$projectName.value}&path=${$projectPath.value}`;
+    importGitlabProjectBtn.setAttribute('href', newHref);
   });
 
+  const clearChildren = (el) => {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  };
+
   function chooseTemplate() {
-    $projectTemplateButtons.addClass('hidden');
-    $projectFieldsForm.addClass('selected');
-    $selectedIcon.empty();
+    $projectTemplateButtons.forEach((ptb) => ptb.classList.add('hidden'));
+    $projectFieldsForm.classList.add('selected');
 
-    const $selectedTemplate = $(this);
-    $selectedTemplate.prop('checked', true);
+    clearChildren($selectedIcon);
 
-    const value = $selectedTemplate.val();
+    const $selectedTemplate = this;
+    $selectedTemplate.checked = true;
 
+    const { value } = $selectedTemplate;
     const selectedTemplate = DEFAULT_PROJECT_TEMPLATES[value];
-    $selectedTemplateText.text(selectedTemplate.text);
-    $(selectedTemplate.icon).clone().addClass('d-block').appendTo($selectedIcon);
+    $selectedTemplateText.textContent = selectedTemplate.text;
+    const clone = document.querySelector(selectedTemplate.icon).cloneNode(true);
+    clone.classList.add('d-block');
 
-    const $activeTabProjectName = $('.tab-pane.active #project_name');
-    const $activeTabProjectPath = $('.tab-pane.active #project_path');
+    $selectedIcon.append(clone);
+
+    const $activeTabProjectName = document.querySelector('.tab-pane.active #project_name');
+    const $activeTabProjectPath = document.querySelector('.tab-pane.active #project_path');
+
     $activeTabProjectName.focus();
     setProjectNamePathHandlers($activeTabProjectName, $activeTabProjectPath);
   }
@@ -216,8 +248,8 @@ const bindEvents = () => {
   $useTemplateBtn.on('keypress', chooseTemplateOnEnter);
 
   $changeTemplateBtn.on('click', () => {
-    $projectTemplateButtons.removeClass('hidden');
-    $projectFieldsForm.removeClass('selected');
+    $projectTemplateButtons.forEach((ptb) => ptb.classList.remove('hidden'));
+    $projectFieldsForm.classList.remove('selected');
     $useTemplateBtn.prop('checked', false);
   });
 
@@ -227,7 +259,7 @@ const bindEvents = () => {
 
   const updateUrlPathWarningVisibility = async () => {
     const { success: isUrlValid, cancelled } = await validateImportCredentials(
-      $projectImportUrl.val(),
+      $projectImportUrl.value,
       $projectImportUrlUser.val(),
       $projectImportUrlPassword.val(),
     );
@@ -235,7 +267,7 @@ const bindEvents = () => {
       return;
     }
 
-    $projectImportUrl.toggleClass(invalidInputClass, !isUrlValid);
+    $projectImportUrl.classList.toggle(invalidInputClass, !isUrlValid);
     $projectImportUrlError.toggleClass('hide', isUrlValid);
   };
   const debouncedUpdateUrlPathWarningVisibility = debounce(
@@ -244,20 +276,28 @@ const bindEvents = () => {
   );
 
   let isProjectImportUrlDirty = false;
-  $projectImportUrl.on('blur', () => {
+  $projectImportUrl.addEventListener('blur', () => {
     isProjectImportUrlDirty = true;
     debouncedUpdateUrlPathWarningVisibility();
   });
-  $projectImportUrl.on('keyup', () => {
+  $projectImportUrl.addEventListener('keyup', () => {
     deriveProjectPathFromUrl($projectImportUrl);
   });
 
   [$projectImportUrl, $projectImportUrlUser, $projectImportUrlPassword].forEach(($f) => {
-    $f.on('input', () => {
-      if (isProjectImportUrlDirty) {
-        debouncedUpdateUrlPathWarningVisibility();
-      }
-    });
+    if ($f?.on) {
+      $f.on('input', () => {
+        if (isProjectImportUrlDirty) {
+          debouncedUpdateUrlPathWarningVisibility();
+        }
+      });
+    } else {
+      $f.addEventListener('input', () => {
+        if (isProjectImportUrlDirty) {
+          debouncedUpdateUrlPathWarningVisibility();
+        }
+      });
+    }
   });
 
   $projectImportForm.on('submit', async (e) => {
@@ -287,8 +327,8 @@ const bindEvents = () => {
 
   $('.js-import-git-toggle-button').on('click', () => {
     setProjectNamePathHandlers(
-      $('.tab-pane.active #project_name'),
-      $('.tab-pane.active #project_path'),
+      document.querySelector('.tab-pane.active #project_name'),
+      document.querySelector('.tab-pane.active #project_path'),
     );
   });
 
@@ -300,6 +340,8 @@ export default {
   deriveProjectPathFromUrl,
   onProjectNameChange,
   onProjectPathChange,
+  onProjectNameChangeJq,
+  onProjectPathChangeJq,
 };
 
 export { bindHowToImport };

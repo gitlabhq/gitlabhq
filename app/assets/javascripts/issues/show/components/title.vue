@@ -74,7 +74,7 @@ export default {
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
-      class="title qa-title"
+      class="title qa-title gl-font-size-h-display"
       dir="auto"
     ></h1>
     <gl-button

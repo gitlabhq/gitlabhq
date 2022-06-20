@@ -324,8 +324,12 @@ git config --global user.email <your email address>
 
 ## User activity
 
-GitLab tracks user contribution activity.
-You can follow or unfollow other users from their [user profiles](#access-your-user-profile).
+GitLab tracks user contribution activity. You can follow or unfollow other users from either:
+
+- Their [user profiles](#access-your-user-profile).
+- The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
+  in GitLab 15.0).
+
 To view a user's activity in a top-level Activity view:
 
 1. From a user's profile, select **Follow**.
@@ -395,7 +399,7 @@ You can add this URL to your feed reader.
 
 ### Reset the user activity feed token
 
-Feed tokens are sensitive and can reveal information from confidential issues. 
+Feed tokens are sensitive and can reveal information from confidential issues.
 If you think your feed token has been exposed, you should reset it.
 
 To reset your feed token:
@@ -404,7 +408,7 @@ To reset your feed token:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
 1. Scroll down. In the **Feed token** section, select the
-   **reset this token** link. 
+   **reset this token** link.
 1. On the confirmation box, select **OK**.
 
 A new token is generated.
@@ -415,8 +419,13 @@ A new token is generated.
 
 When you sign in to the main GitLab application, a `_gitlab_session` cookie is
 set. When you close your browser, the cookie is cleared client-side
-and it expires after "Application settings > Session duration (minutes)"/`session_expire_delay`
-(defaults to `10080` minutes = 7 days) of no activity.
+and it expires after a set duration. GitLab administrators can determine the duration:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
+
+The default is `10080`, which equals 7 days.
 
 When you sign in to the main GitLab application, you can also check the
 **Remember me** option. This sets the `remember_user_token`

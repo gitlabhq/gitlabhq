@@ -13,6 +13,7 @@ module Projects
       before_action :define_variables
       before_action do
         push_frontend_feature_flag(:ajax_new_deploy_token, @project)
+        push_frontend_feature_flag(:ci_variable_settings_graphql, @project)
       end
 
       helper_method :highlight_badge
@@ -27,14 +28,7 @@ module Projects
           ).to_json
         end
 
-        if current_user.ci_owned_runners_cross_joins_fix_enabled?
-          render
-        else
-          # @assignable_runners is using ci_owned_runners
-          ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
-            render
-          end
-        end
+        render
       end
 
       def update

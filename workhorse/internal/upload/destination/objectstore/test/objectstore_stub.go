@@ -6,7 +6,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -22,7 +21,8 @@ type partsEtagMap map[int]string
 // Instead of storing objects it will just save md5sum.
 type ObjectstoreStub struct {
 	// bucket contains md5sum of uploaded objects
-	bucket map[string]string
+	bucket   map[string]string
+	contents map[string][]byte
 	// overwriteMD5 contains overwrites for md5sum that should be return instead of the regular hash
 	overwriteMD5 map[string]string
 	// multipart is a map of MultipartUploads
@@ -48,6 +48,7 @@ func StartObjectStoreWithCustomMD5(md5Hashes map[string]string) (*ObjectstoreStu
 		multipart:    make(map[string]partsEtagMap),
 		overwriteMD5: make(map[string]string),
 		headers:      make(map[string]*http.Header),
+		contents:     make(map[string][]byte),
 	}
 
 	for k, v := range md5Hashes {
@@ -80,6 +81,15 @@ func (o *ObjectstoreStub) GetObjectMD5(path string) string {
 	defer o.m.Unlock()
 
 	return o.bucket[path]
+}
+
+// GetObject returns the contents of the uploaded object. The caller must
+// not modify the byte slice.
+func (o *ObjectstoreStub) GetObject(path string) []byte {
+	o.m.Lock()
+	defer o.m.Unlock()
+
+	return o.contents[path]
 }
 
 // GetHeader returns a given HTTP header of the object uploaded to the path
@@ -154,11 +164,11 @@ func (o *ObjectstoreStub) putObject(w http.ResponseWriter, r *http.Request) {
 
 	etag, overwritten := o.overwriteMD5[objectPath]
 	if !overwritten {
+		buf, _ := io.ReadAll(r.Body)
+		o.contents[objectPath] = buf
 		hasher := md5.New()
-		io.Copy(hasher, r.Body)
-
-		checksum := hasher.Sum(nil)
-		etag = hex.EncodeToString(checksum)
+		hasher.Write(buf)
+		etag = hex.EncodeToString(hasher.Sum(nil))
 	}
 
 	o.headers[objectPath] = &r.Header
@@ -196,7 +206,7 @@ func (o *ObjectstoreStub) completeMultipartUpload(w http.ResponseWriter, r *http
 		return
 	}
 
-	buf, err := ioutil.ReadAll(r.Body)
+	buf, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return

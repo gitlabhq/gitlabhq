@@ -28,19 +28,20 @@ FactoryBot.define do
     end
 
     after(:build) do |commit, evaluator|
-      allow(commit).to receive(:author).and_return(evaluator.author || build_stubbed(:author))
-      allow(commit).to receive(:parent_ids).and_return([])
+      author = evaluator.author || build_stubbed(:author)
+      stub_method(commit, :author) { author }
+      stub_method(commit, :parent_ids) { [] }
     end
 
     trait :merge_commit do
       after(:build) do |commit|
-        allow(commit).to receive(:parent_ids).and_return(Array.new(2) { SecureRandom.hex(20) })
+        stub_method(commit, :parent_ids) { Array.new(2) { SecureRandom.hex(20) } }
       end
     end
 
     trait :without_author do
       after(:build) do |commit|
-        allow(commit).to receive(:author).and_return nil
+        stub_method(commit, :author) { nil }
       end
     end
   end

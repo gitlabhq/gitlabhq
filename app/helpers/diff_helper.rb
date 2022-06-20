@@ -225,6 +225,23 @@ module DiffHelper
     end
   end
 
+  def conflicts(allow_tree_conflicts: false)
+    return unless options[:merge_ref_head_diff]
+
+    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
+
+    return unless allow_tree_conflicts || conflicts_service.can_be_resolved_in_ui?
+
+    conflicts_service.conflicts.files.index_by(&:path)
+  rescue Gitlab::Git::Conflict::Resolver::ConflictSideMissing
+    # This exception is raised when changes on a fork isn't present on canonical repo yet.
+    # We can't list conflicts until the canonical repo gets the references from the fork
+    # which happens asynchronously when updating MR.
+    #
+    # Return empty hash to indicate that there are no conflicts.
+    {}
+  end
+
   private
 
   def diff_btn(title, name, selected)
@@ -269,16 +286,6 @@ module DiffHelper
 
   def code_navigation_path(diffs)
     Gitlab::CodeNavigationPath.new(merge_request.project, merge_request.diff_head_sha)
-  end
-
-  def conflicts(allow_tree_conflicts: false)
-    return unless options[:merge_ref_head_diff]
-
-    conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
-
-    return unless allow_tree_conflicts || conflicts_service.can_be_resolved_in_ui?
-
-    conflicts_service.conflicts.files.index_by(&:path)
   end
 
   def log_overflow_limits(diff_files:, collection_overflow:)

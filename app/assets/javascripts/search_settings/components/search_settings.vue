@@ -184,7 +184,7 @@ export default {
   <gl-search-box-by-type
     :value="searchTerm"
     :debounce="$options.TYPING_DELAY"
-    :placeholder="__('Search settings')"
+    :placeholder="__('Search page')"
     @input="search"
   />
 </template>

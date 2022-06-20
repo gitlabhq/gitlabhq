@@ -103,7 +103,7 @@ The global nav has five levels:
       - Doc
         - Doc
 
-You can view this structure in [the navigation.yml file](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml).
+You can view this structure in [the `navigation.yml` file](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml).
 
 **Do not** [add items](#add-a-navigation-entry) to the global nav without
 the consent of one of the technical writers.

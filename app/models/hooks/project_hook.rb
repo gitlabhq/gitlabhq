@@ -31,11 +31,6 @@ class ProjectHook < WebHook
     _('Webhooks')
   end
 
-  override :rate_limit
-  def rate_limit
-    project.actual_limits.limit_for(:web_hook_calls)
-  end
-
   override :application_context
   def application_context
     super.merge(project: project)

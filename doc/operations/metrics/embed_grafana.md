@@ -52,7 +52,7 @@ To set up the Grafana API in Grafana:
 1. To enable the integration, check the **Active** checkbox.
 1. For **Grafana URL**, enter the base URL of the Grafana instance.
 1. For **API Token**, enter the Administrator API token you just generated.
-1. Click **Save Changes**.
+1. Select **Save Changes**.
 
 ### Generate a link to a panel
 
@@ -61,10 +61,10 @@ To generate a link to a panel:
 1. In Grafana, go to the dashboard you wish to embed a panel from.
 1. In the upper-left corner of the page, select a specific value for each variable required for the
    queries in the dashboard.
-1. In Grafana click on a panel's title, then click **Share** to open the panel's sharing dialog to
+1. In Grafana select a panel's title, then select **Share** to open the panel's sharing dialog to
    the **Link** tab.
 
-   If you click the dashboard's share button instead, GitLab attempts to embed the first supported
+   If you select the dashboard's share button instead, GitLab attempts to embed the first supported
    panel on the dashboard (if available).
 1. If your Prometheus queries use Grafana's custom template variables, ensure the
    **Template variables** option is set to on. Only the Grafana global template variables

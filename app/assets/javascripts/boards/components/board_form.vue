@@ -1,7 +1,8 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
-import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl, updateHistory, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { formType } from '../constants';
@@ -170,17 +171,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setError', 'unsetError']),
-    boardCreateResponse(data) {
-      return data.createBoard.board.webPath;
-    },
-    boardUpdateResponse(data) {
-      const path = data.updateBoard.board.webPath;
-      const param = getParameterByName('group_by')
-        ? `?group_by=${getParameterByName('group_by')}`
-        : '';
-      return `${path}${param}`;
-    },
+    ...mapActions(['setError', 'unsetError', 'setBoard']),
     cancel() {
       this.$emit('cancel');
     },
@@ -191,10 +182,10 @@ export default {
       });
 
       if (!this.board.id) {
-        return this.boardCreateResponse(response.data);
+        return response.data.createBoard.board;
       }
 
-      return this.boardUpdateResponse(response.data);
+      return response.data.updateBoard.board;
     },
     async deleteBoard() {
       await this.$apollo.mutate({
@@ -218,8 +209,14 @@ export default {
         }
       } else {
         try {
-          const url = await this.createOrUpdateBoard();
-          visitUrl(url);
+          const board = await this.createOrUpdateBoard();
+          this.setBoard(board);
+          this.cancel();
+
+          const param = getParameterByName('group_by')
+            ? `?group_by=${getParameterByName('group_by')}`
+            : '';
+          updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
         } catch {
           this.setError({ message: this.$options.i18n.saveErrorMessage });
         } finally {

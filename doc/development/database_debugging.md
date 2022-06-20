@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This section is to help give some copy-pasta you can use as a reference when you
 run into some head-banging database problems.
 
-An easy first step is to search for your error in Slack, or search for `GitLab <my error>` with Google.
+A first step is to search for your error in Slack, or search for `GitLab <my error>` with Google.
 
 Available `RAILS_ENV`:
 
@@ -57,7 +57,7 @@ bundle exec rake db:reset RAILS_ENV=test
 
 Access the database via one of these commands (they all get you to the same place)
 
-```ruby
+```shell
 gdk psql -d gitlabhq_development
 bundle exec rails dbconsole -e development
 bundle exec rails db -e development
@@ -72,7 +72,7 @@ bundle exec rails db -e development
 
 ## Access the database with a GUI
 
-Most GUIs (DataGrid, RubyMine, DBeaver) require a TCP connection to the database, but by default
+Most GUIs (DataGrip, RubyMine, DBeaver) require a TCP connection to the database, but by default
 the database runs on a UNIX socket. To be able to access the database from these tools, some steps
 are needed:
 
@@ -106,8 +106,8 @@ Use these instructions for exploring the GitLab database while developing with t
 
 1. Install or open [Visual Studio Code](https://code.visualstudio.com/download).
 1. Install the [PostgreSQL VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres).
-1. In Visual Studio Code click on the PostgreSQL Explorer button in the left toolbar.
-1. In the top bar of the new window, click on the `+` to **Add Database Connection**, and follow the prompts to fill in the details:
+1. In Visual Studio Code select **PostgreSQL Explorer** in the left toolbar.
+1. In the top bar of the new window, select `+` to **Add Database Connection**, and follow the prompts to fill in the details:
    1. **Hostname**: the path to the PostgreSQL folder in your GDK directory (for example `/dev/gitlab-development-kit/postgresql`).
    1. **PostgreSQL user to authenticate as**: usually your local username, unless otherwise specified during PostgreSQL installation.
    1. **Password of the PostgreSQL user**: the password you set when installing PostgreSQL.
@@ -169,7 +169,7 @@ possible to migrate GitLab from every previous version.
 
 In some cases you may want to bypass this check. For example, if you were on a version
 of GitLab schema later than the `MIN_SCHEMA_VERSION`, and then rolled back the
-to an older migration, from before. In this case, in order to migrate forward again,
+to an older migration, from before. In this case, to migrate forward again,
 you should set the `SKIP_SCHEMA_VERSION_CHECK` environment variable.
 
 ```shell

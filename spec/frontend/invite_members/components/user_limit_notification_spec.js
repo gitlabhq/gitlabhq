@@ -14,9 +14,15 @@ describe('UserLimitNotification', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
 
-  const createComponent = (reachedLimit = false, usersLimitDataset = {}) => {
+  const createComponent = (
+    closeToLimit = false,
+    reachedLimit = false,
+    usersLimitDataset = {},
+    props = {},
+  ) => {
     wrapper = shallowMountExtended(UserLimitNotification, {
       propsData: {
+        closeToLimit,
         reachedLimit,
         usersLimitDataset: {
           freeUsersLimit,
@@ -25,6 +31,7 @@ describe('UserLimitNotification', () => {
           purchasePath: 'purchasePath',
           ...usersLimitDataset,
         },
+        ...props,
       },
       provide: { name: 'my group' },
       stubs: { GlSprintf },
@@ -43,9 +50,26 @@ describe('UserLimitNotification', () => {
     });
   });
 
+  describe('when close to limit with a personal namepace', () => {
+    beforeEach(() => {
+      createComponent(true, false, { membersCount: 3, userNamespace: true });
+    });
+
+    it('renders the limit for a personal namespace', () => {
+      const alert = findAlert();
+
+      expect(alert.attributes('title')).toEqual(
+        'You only have space for 2 more members in your personal projects',
+      );
+      expect(alert.text()).toEqual(
+        'To make more space, you can remove members who no longer need access.',
+      );
+    });
+  });
+
   describe('when close to limit', () => {
     it("renders user's limit notification", () => {
-      createComponent(false, { membersCount: 3 });
+      createComponent(true, false, { membersCount: 3 });
 
       const alert = findAlert();
 
@@ -61,7 +85,7 @@ describe('UserLimitNotification', () => {
 
   describe('when limit is reached', () => {
     it("renders user's limit notification", () => {
-      createComponent(true);
+      createComponent(true, true);
 
       const alert = findAlert();
 
@@ -71,12 +95,12 @@ describe('UserLimitNotification', () => {
 
     describe('when free user namespace', () => {
       it("renders user's limit notification", () => {
-        createComponent(true, { userNamespace: true });
+        createComponent(true, true, { userNamespace: true });
 
         const alert = findAlert();
 
         expect(alert.attributes('title')).toEqual(
-          "You've reached your 5 members limit for my group",
+          "You've reached your 5 members limit for your personal projects",
         );
 
         expect(alert.text()).toEqual(REACHED_LIMIT_MESSAGE);

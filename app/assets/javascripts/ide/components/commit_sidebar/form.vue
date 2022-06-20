@@ -154,7 +154,7 @@ export default {
           <gl-button
             :disabled="commitButtonDisabled"
             category="primary"
-            variant="info"
+            variant="confirm"
             block
             class="qa-begin-commit-button"
             data-testid="begin-commit-button"

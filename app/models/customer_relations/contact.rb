@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CustomerRelations::Contact < ApplicationRecord
+  include Gitlab::SQL::Pattern
+  include Sortable
   include StripAttribute
 
   self.table_name = "customer_relations_contacts"
@@ -37,6 +39,25 @@ class CustomerRelations::Contact < ApplicationRecord
 
   def self.reference_postfix
     ']'
+  end
+
+  # Searches for contacts with a matching first name, last name, email or description.
+  #
+  # This method uses ILIKE on PostgreSQL
+  #
+  # query - The search query as a String
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.search(query)
+    fuzzy_search(query, [:first_name, :last_name, :email, :description], use_minimum_char_limit: false)
+  end
+
+  def self.search_by_state(state)
+    where(state: state)
+  end
+
+  def self.sort_by_name
+    order("last_name ASC, first_name ASC")
   end
 
   def self.find_ids_by_emails(group, emails)

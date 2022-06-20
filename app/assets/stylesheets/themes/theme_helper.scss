@@ -97,8 +97,7 @@
 
             .notification-dot {
               will-change: border-color, background-color;
-              // stylelint-disable-next-line
-              border-color: $nav-svg-color + 33;
+              border-color: adjust-color($nav-svg-color, $red: 33, $green: 33, $blue: 33);
             }
 
             &.header-help-dropdown-toggle .notification-dot {

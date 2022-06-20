@@ -22,6 +22,11 @@ module Members
     def execute
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, create_member_permission(source), source)
 
+      # rubocop:disable Layout/EmptyLineAfterGuardClause
+      raise Gitlab::Access::AccessDeniedError if adding_at_least_one_owner &&
+        cannot_assign_owner_responsibilities_to_member_in_project?
+      # rubocop:enable Layout/EmptyLineAfterGuardClause
+
       validate_invite_source!
       validate_invitable!
 
@@ -44,6 +49,14 @@ module Members
 
     attr_reader :source, :errors, :invites, :member_created_namespace_id, :members,
                 :tasks_to_be_done_members, :member_created_member_task_id
+
+    def adding_at_least_one_owner
+      params[:access_level] == Gitlab::Access::OWNER
+    end
+
+    def cannot_assign_owner_responsibilities_to_member_in_project?
+      source.is_a?(Project) && !current_user.can?(:manage_owners, source)
+    end
 
     def invites_from_params
       # String, Nil, Array, Integer

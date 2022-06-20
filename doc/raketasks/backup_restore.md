@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -304,6 +304,9 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=p
 
 #### Skipping tar creation
 
+NOTE:
+It is not possible to skip the tar creation when using [object storage](#uploading-backups-to-a-remote-cloud-storage) for backups.
+
 The last part of creating a backup is generation of a `.tar` file containing
 all the parts. In some cases (for example, if the backup is picked up by other
 backup software) creating a `.tar` file might be wasted effort or even directly
@@ -390,7 +393,7 @@ bundle for each repository. There must be an existing backup to create an increm
 
 - In GitLab 14.9 and 14.10, use the `BACKUP=<timestamp_of_backup>` option to choose the backup to use. The chosen previous backup is overwritten.
 - In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<timestamp_of_backup>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the 
+  as documented in the [Backup timestamp](#backup-timestamp) section. You can override the `[TIMESTAMP]` portion of the filename by setting the
   [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
@@ -426,11 +429,37 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_STORAGES=storage1,storage2
 ```
 
+#### Back up specific repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+
+You can back up a specific repositories using the `REPOSITORIES_PATHS` option.
+The option accepts a comma-separated list of project and group paths. If you
+specify a group path, all repositories in all projects in the group and
+descendent groups are included.
+
+For example, to back up all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
+
+- Omnibus GitLab installations:
+
+  ```shell
+  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c
+  ```
+
+- Installations from source:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c
+  ```
+
 #### Uploading backups to a remote (cloud) storage
 
-You can let the backup script upload (using the [Fog library](http://fog.io/))
+NOTE:
+It is not possible to [skip the tar creation](#skipping-tar-creation) when using object storage for backups.
+
+You can let the backup script upload (using the [Fog library](https://fog.io/))
 the `.tar` file it creates. In the following example, we use Amazon S3 for
-storage, but Fog also lets you use [other storage providers](http://fog.io/storage/).
+storage, but Fog also lets you use [other storage providers](https://fog.io/storage/).
 GitLab also [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L113)
 for AWS, Google, OpenStack Swift, Rackspace, and Aliyun. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
@@ -561,7 +590,7 @@ For installations from source:
      backup:
        # snip
        upload:
-         # Fog storage connection settings, see http://fog.io/storage/ .
+         # Fog storage connection settings, see https://fog.io/storage/ .
          connection:
            provider: AWS
            region: eu-west-1
@@ -811,7 +840,7 @@ For installations from source:
    ```yaml
    backup:
      upload:
-       # Fog storage connection settings, see http://fog.io/storage/ .
+       # Fog storage connection settings, see https://fog.io/storage/ .
        connection:
          provider: Local
          local_root: '/mnt/backups'
@@ -986,9 +1015,9 @@ more of the following options:
 
 - `BACKUP=timestamp_of_backup`: Required if more than one backup exists.
   Read what the [backup timestamp is about](#backup-timestamp).
-- `force=yes`: Doesn't ask if the authorized_keys file should get regenerated,
+- `force=yes`: Doesn't ask if the `authorized_keys` file should get regenerated,
   and assumes 'yes' for warning about database tables being removed,
-  enabling the "Write to authorized_keys file" setting, and updating LDAP
+  enabling the `Write to authorized_keys file` setting, and updating LDAP
   providers.
 
 If you're restoring into directories that are mount points, you must ensure these directories are
@@ -1259,6 +1288,30 @@ For example, for installations from source:
 sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_STORAGES=storage1,storage2
 ```
 
+#### Restore specific repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+
+You can restore specific repositories using the `REPOSITORIES_PATHS` option.
+The option accepts a comma-separated list of project and group paths. If you
+specify a group path, all repositories in all projects in the group and
+descendent groups are included. The project and group repositories must exist
+within the specified backup.
+
+For example, to restore all repositories for all projects in **Group A** (`group-a`), and the repository for **Project C** in **Group B** (`group-b/project-c`):
+
+- Omnibus GitLab installations:
+
+  ```shell
+  sudo gitlab-backup restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c
+  ```
+
+- Installations from source:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=timestamp_of_backup REPOSITORIES_PATHS=group-a,group-b/project-c
+  ```
+
 ## Alternative backup strategies
 
 If your GitLab instance contains a lot of Git repository data, you may find the
@@ -1354,7 +1407,7 @@ There is an **experimental** script that attempts to automate this process in
 
 ## Back up and restore for installations using PgBouncer
 
-Do NOT back up or restore GitLab through a PgBouncer connection. These
+Do not back up or restore GitLab through a PgBouncer connection. These
 tasks must [bypass PgBouncer and connect directly to the PostgreSQL primary database node](#bypassing-pgbouncer),
 or they cause a GitLab outage.
 
@@ -1365,7 +1418,7 @@ following error message is shown:
 ActiveRecord::StatementInvalid: PG::UndefinedTable
 ```
 
-Each time the GitLab backup runs, GitLab will start generating 500 errors and errors about missing
+Each time the GitLab backup runs, GitLab starts generating 500 errors and errors about missing
 tables will [be logged by PostgreSQL](../administration/logs.md#postgresql-logs):
 
 ```plaintext
@@ -1427,7 +1480,7 @@ WARNING:
 Avoid uncoordinated data processing by both the new and old servers, where multiple
 servers could connect concurrently and process the same data. For example, when using
 [incoming email](../administration/incoming_email.md), if both GitLab instances are
-processing email at the same time, then both instances will end up missing some data.
+processing email at the same time, then both instances miss some data.
 This type of problem can occur with other services as well, such as a
 [non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
 a non-packaged Redis instance, or non-packaged Sidekiq.
@@ -1447,7 +1500,7 @@ To prepare the new server:
 1. Copy the
    [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
    from the old server to avoid man-in-the-middle attack warnings.
-   See [Manually replicate the primary site’s SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
+   See [Manually replicate the primary site's SSH host keys](../administration/geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
 1. [Install and configure GitLab](https://about.gitlab.com/install) except
    [incoming email](../administration/incoming_email.md):
    1. Install GitLab.
@@ -1591,7 +1644,7 @@ To prepare the new server:
 1. Test that the GitLab instance is working as expected.
 1. If applicable, re-enable [incoming email](../administration/incoming_email.md) and test it is working as expected.
 1. Update your DNS or load balancer to point at the new server.
-1. Unblock new CI/CD jobs from starting by removing the custom NGINX config
+1. Unblock new CI/CD jobs from starting by removing the custom NGINX configuration
    you added previously:
 
    ```ruby
@@ -1670,6 +1723,7 @@ decrypt those columns, preventing access to the following items:
 - [Project error tracking](../operations/error_tracking.md)
 - [Runner authentication](../ci/runners/index.md)
 - [Project mirroring](../user/project/repository/mirror/index.md)
+- [Integrations](../user/project/integrations/index.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
 In cases like CI/CD variables and runner authentication, you can experience
@@ -1844,12 +1898,14 @@ A similar strategy can be employed for the remaining features. By removing the
 data that can't be decrypted, GitLab can be returned to operation, and the
 lost data can be manually replaced.
 
-#### Fix project integrations
+#### Fix integrations and webhooks
 
-If you've lost your secrets, the [projects' integrations settings pages](../user/project/integrations/index.md)
-are probably displaying `500` error messages.
+If you've lost your secrets, the [integrations settings pages](../user/project/integrations/index.md)
+and [webhooks settings pages](../user/project/integrations/webhooks.md) are probably displaying `500` error messages.
 
-The fix is to truncate the `web_hooks` table:
+The fix is to truncate the affected tables (those containing encrypted columns).
+This deletes all your configured integrations, webhooks, and related metadata.
+You should verify that the secrets are the root cause before deleting any data.
 
 1. Enter the database console:
 
@@ -1877,11 +1933,11 @@ The fix is to truncate the `web_hooks` table:
    sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
-1. Truncate the table:
+1. Truncate the following tables:
 
    ```sql
    -- truncate web_hooks table
-   TRUNCATE web_hooks CASCADE;
+   TRUNCATE integrations, chat_names, issue_tracker_data, jira_tracker_data, slack_integrations, web_hooks, zentao_tracker_data, web_hook_logs;
    ```
 
 ### Container Registry push failures after restoring from a backup

@@ -45,7 +45,6 @@ RSpec.describe Metrics::Dashboard::PanelPreviewService do
           ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
           ::Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter,
           ::Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter,
-          ::Gitlab::Metrics::Dashboard::Stages::AlertsInserter,
           ::Gitlab::Metrics::Dashboard::Stages::UrlValidator
         ]
         processor_params = [project, dashboard, sequence, environment: environment]

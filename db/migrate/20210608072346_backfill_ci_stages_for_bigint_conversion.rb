@@ -3,6 +3,8 @@
 class BackfillCiStagesForBigintConversion < ActiveRecord::Migration[6.1]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   TABLE = :ci_stages
   COLUMNS = %i(id)
 

@@ -11,6 +11,8 @@ module Gitlab
           finish { Issue.maximum(:id) }
 
           relation { Issue }
+
+          cache_start_and_finish_as :issue
         end
       end
     end

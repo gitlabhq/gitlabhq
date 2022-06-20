@@ -43,7 +43,7 @@ To import the project:
 
 1. On the top bar, select **Menu > Create new project**.
 1. Select **Import project**.
-1. Select **Repo by URL**.
+1. Select **Repository by URL**.
 1. For the **Git repository URL**, enter `https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke.git`.
 1. Complete the fields and select **Create project**.
 
@@ -70,9 +70,6 @@ To create a GitLab agent for Kubernetes:
 
 To set up your project to communicate to GCP and the GitLab API:
 
-1. Create a [GitLab personal access token](../../../profile/personal_access_tokens.md) with
-   `api` scope. The Terraform script uses it to connect the cluster to your GitLab group. Take note of the generated token. You will
-   need it when you [configure your project](#configure-your-project).
 1. To authenticate GCP with GitLab, create a [GCP service account](https://cloud.google.com/docs/authentication/getting-started)
 with following roles: `Compute Network Viewer`, `Kubernetes Engine Admin`, `Service Account User`, and `Service Account Admin`. Both User and Admin
 service accounts are necessary. The User role impersonates the [default service account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
@@ -98,7 +95,7 @@ Use CI/CD environment variables to configure your project.
 1. Set the variable `BASE64_GOOGLE_CREDENTIALS` to the `base64` encoded JSON file you just created.
 1. Set the variable `TF_VAR_gcp_project` to your GCP's `project` name.
 1. Set the variable `TF_VAR_agent_token` to the agent token displayed in the previous task.
-1. Set the variable `TF_VAR_kas_address` to the agent server address displayed in the previous task. 
+1. Set the variable `TF_VAR_kas_address` to the agent server address displayed in the previous task.
 
 **Optional configuration:**
 
@@ -120,7 +117,7 @@ Refer to the [Google Terraform provider](https://registry.terraform.io/providers
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
 1. On the left sidebar, go to **CI/CD > Pipelines**.
-1. Next to **Play** (**{play}**), select the dropdown icon (**{angle-down}**).
+1. Next to **Play** (**{play}**), select the dropdown icon (**{chevron-lg-down}**).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can see your new cluster:
@@ -151,11 +148,12 @@ To remove all resources:
       - init
       - validate
       - build
+      - test
       - deploy
       - cleanup
 
     destroy:
-      extends: .destroy
+      extends: .terraform:destroy
       needs: []
     ```
 

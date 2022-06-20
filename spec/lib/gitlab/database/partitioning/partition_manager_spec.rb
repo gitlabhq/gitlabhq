@@ -8,7 +8,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
   def has_partition(model, month)
     Gitlab::Database::PostgresPartition.for_parent_table(model.table_name).any? do |partition|
-      Gitlab::Database::Partitioning::TimePartition.from_sql(model.table_name, partition.name, partition.condition).from == month
+      Gitlab::Database::Partitioning::TimePartition.from_sql(
+        model.table_name,
+        partition.name,
+        partition.condition
+      ).from == month
     end
   end
 
@@ -16,14 +20,17 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     subject(:sync_partitions) { described_class.new(model).sync_partitions }
 
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
-    let(:partitioning_strategy) { double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { "issues" }
+    let(:partitioning_strategy) do
+      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil)
+    end
 
     before do
       allow(connection).to receive(:table_exists?).and_call_original
       allow(connection).to receive(:table_exists?).with(table).and_return(true)
       allow(connection).to receive(:execute).and_call_original
+      expect(partitioning_strategy).to receive(:validate_and_fix)
 
       stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
     end
@@ -84,13 +91,16 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
     let(:manager) { described_class.new(model) }
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
-    let(:partitioning_strategy) { double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { "foo" }
+    let(:partitioning_strategy) do
+      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil)
+    end
 
     before do
       allow(connection).to receive(:table_exists?).and_call_original
       allow(connection).to receive(:table_exists?).with(table).and_return(true)
+      expect(partitioning_strategy).to receive(:validate_and_fix)
 
       stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
     end
@@ -104,6 +114,24 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
     it 'detaches each extra partition' do
       extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
+
+      sync_partitions
+    end
+
+    it 'logs an error if the partitions are not detachable' do
+      allow(Gitlab::Database::PostgresForeignKey).to receive(:by_referenced_table_identifier).with("public.foo")
+        .and_return([double(name: "fk_1", constrained_table_identifier: "public.constrainted_table_1")])
+
+      expect(Gitlab::AppLogger).to receive(:error).with(
+        {
+          message: "Failed to create / detach partition(s)",
+          connection_name: "main",
+          exception_class: Gitlab::Database::Partitioning::PartitionManager::UnsafeToDetachPartitionError,
+          exception_message:
+            "Cannot detach foo1, it would block while checking foreign key fk_1 on public.constrainted_table_1",
+          table_name: "foo"
+        }
+      )
 
       sync_partitions
     end

@@ -250,7 +250,7 @@ RSpec.describe Integration do
 
     context 'with all existing instances' do
       def integration_hash(type)
-        Integration.new(instance: true, type: type).to_integration_hash
+        Integration.new(instance: true, type: type).to_database_hash
       end
 
       before do
@@ -812,14 +812,14 @@ RSpec.describe Integration do
         Class.new(Integration) do
           def fields
             [
-              { name: 'token' },
-              { name: 'api_token' },
-              { name: 'token_api' },
-              { name: 'safe_token' },
-              { name: 'key' },
-              { name: 'api_key' },
-              { name: 'password' },
-              { name: 'password_field' },
+              { name: 'token', type: 'password' },
+              { name: 'api_token', type: 'password' },
+              { name: 'token_api', type: 'password' },
+              { name: 'safe_token', type: 'password' },
+              { name: 'key', type: 'password' },
+              { name: 'api_key', type: 'password' },
+              { name: 'password', type: 'password' },
+              { name: 'password_field', type: 'password' },
               { name: 'some_safe_field' },
               { name: 'safe_field' },
               { name: 'url' },
@@ -837,15 +837,14 @@ RSpec.describe Integration do
     context 'when the class uses the field DSL' do
       let(:fake_integration) do
         Class.new(described_class) do
-          field :token
-          field :token
-          field :api_token
-          field :token_api
-          field :safe_token
-          field :key
-          field :api_key
-          field :password
-          field :password_field
+          field :token, type: 'password'
+          field :api_token, type: 'password'
+          field :token_api, type: 'password'
+          field :safe_token, type: 'password'
+          field :key, type: 'password'
+          field :api_key, type: 'password'
+          field :password, type: 'password'
+          field :password_field, type: 'password'
           field :some_safe_field
           field :safe_field
           field :url
@@ -977,19 +976,25 @@ RSpec.describe Integration do
     end
   end
 
-  describe '#to_integration_hash' do
+  describe '#to_database_hash' do
     let(:properties) { { foo: 1, bar: true } }
     let(:db_props) { properties.stringify_keys }
     let(:record) { create(:integration, :instance, properties: properties) }
 
     it 'does not include the properties key' do
-      hash = record.to_integration_hash
+      hash = record.to_database_hash
 
       expect(hash).not_to have_key('properties')
     end
 
+    it 'does not include certain attributes' do
+      hash = record.to_database_hash
+
+      expect(hash.keys).not_to include('id', 'instance', 'project_id', 'group_id', 'created_at', 'updated_at')
+    end
+
     it 'saves correctly using insert_all' do
-      hash = record.to_integration_hash
+      hash = record.to_database_hash
       hash[:project_id] = project.id
 
       expect do
@@ -999,8 +1004,8 @@ RSpec.describe Integration do
       expect(described_class.last).to have_attributes(properties: db_props)
     end
 
-    it 'is part of the to_integration_hash' do
-      hash = record.to_integration_hash
+    it 'decrypts encrypted properties correctly' do
+      hash = record.to_database_hash
 
       expect(hash).to include('encrypted_properties' => be_present, 'encrypted_properties_iv' => be_present)
       expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
@@ -1016,14 +1021,14 @@ RSpec.describe Integration do
     context 'when the properties are empty' do
       let(:properties) { {} }
 
-      it 'is part of the to_integration_hash' do
-        hash = record.to_integration_hash
+      it 'is part of the to_database_hash' do
+        hash = record.to_database_hash
 
         expect(hash).to include('encrypted_properties' => be_nil, 'encrypted_properties_iv' => be_nil)
       end
 
       it 'saves correctly using insert_all' do
-        hash = record.to_integration_hash
+        hash = record.to_database_hash
         hash[:project_id] = project
 
         expect do
@@ -1196,6 +1201,48 @@ RSpec.describe Integration do
         )
 
         expect(copy.data_fields).not_to eq(original.data_fields)
+      end
+    end
+  end
+
+  describe '#async_execute' do
+    let(:integration) { described_class.new(id: 123) }
+    let(:data) { { object_kind: 'push' } }
+    let(:supported_events) { %w[push] }
+
+    subject(:async_execute) { integration.async_execute(data) }
+
+    before do
+      allow(integration).to receive(:supported_events).and_return(supported_events)
+    end
+
+    it 'queues a Integrations::ExecuteWorker' do
+      expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data)
+      expect(ProjectServiceWorker).not_to receive(:perform_async)
+
+      async_execute
+    end
+
+    context 'when the event is not supported' do
+      let(:supported_events) { %w[issue] }
+
+      it 'does not queue a worker' do
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+    end
+
+    context 'when the FF :rename_integration_workers is disabled' do
+      before do
+        stub_feature_flags(rename_integrations_workers: false)
+      end
+
+      it 'queues a ProjectServiceWorker' do
+        expect(ProjectServiceWorker).to receive(:perform_async).with(integration.id, data)
+        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
       end
     end
   end

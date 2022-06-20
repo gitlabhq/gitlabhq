@@ -51,7 +51,7 @@ as other environment [variables](../../ci/variables/index.md#cicd-variable-prece
 
 If you don't specify the base domain in your projects and groups, Auto DevOps uses the instance-wide **Auto DevOps domain**.
 
-Auto DevOps requires a wildcard DNS A record matching the base domains. For
+Auto DevOps requires a wildcard DNS `A` record matching the base domains. For
 a base domain of `example.com`, you'd need a DNS entry like:
 
 ```plaintext

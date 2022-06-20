@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -62,7 +62,7 @@ monitor .[#7FFFD4,norank]--> redis
 @enduml
 ```
 
-The diagram above shows that while GitLab can be installed on a single server, it is internally composed of multiple services. As a GitLab instance is scaled, each of these services are broken out and independently scaled according to the demands placed on them. In some cases PaaS can be leveraged for some services (e.g. Cloud Object Storage for some file systems). For the sake of redundancy some of the services become clusters of nodes storing the same data. In a horizontal configuration of GitLab there are various ancillary services required to coordinate clusters or discover of resources (e.g. PgBouncer for PostgreSQL connection management, Consul for Prometheus end point discovery).
+The diagram above shows that while GitLab can be installed on a single server, it is internally composed of multiple services. As a GitLab instance is scaled, each of these services are broken out and independently scaled according to the demands placed on them. In some cases PaaS can be leveraged for some services (for example, Cloud Object Storage for some file systems). For the sake of redundancy some of the services become clusters of nodes storing the same data. In a horizontal configuration of GitLab there are various ancillary services required to coordinate clusters or discover of resources (for example, PgBouncer for PostgreSQL connection management, Consul for Prometheus end point discovery).
 
 ## Requirements
 
@@ -106,13 +106,13 @@ performance and reliability at an increased complexity cost.
 
 ## Configure Advanced Search **(PREMIUM SELF)**
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, read how to
-[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+[choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 ## Cloud Native Hybrid reference architecture with Helm Charts
 

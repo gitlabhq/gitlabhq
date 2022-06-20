@@ -15,21 +15,5 @@ RSpec.describe CleanUpFixMergeRequestDiffCommitUsers, :migration do
 
       migrate!
     end
-
-    it 'processes pending background jobs' do
-      project = projects.create!(name: 'p1', namespace_id: namespace.id, project_namespace_id: project_namespace.id)
-
-      Gitlab::Database::BackgroundMigrationJob.create!(
-        class_name: 'FixMergeRequestDiffCommitUsers',
-        arguments: [project.id]
-      )
-
-      migrate!
-
-      background_migrations = Gitlab::Database::BackgroundMigrationJob
-        .where(class_name: 'FixMergeRequestDiffCommitUsers')
-
-      expect(background_migrations.count).to eq(0)
-    end
   end
 end

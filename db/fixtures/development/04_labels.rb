@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'digest/md5'
-
 class Gitlab::Seeder::GroupLabels
   def initialize(group, label_per_group: 10)
     @group = group

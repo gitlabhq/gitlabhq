@@ -102,18 +102,6 @@ RSpec.describe 'Setting issues crm contacts' do
       group.add_reporter(user)
     end
 
-    context 'when the feature is disabled' do
-      before do
-        stub_feature_flags(customer_relations: false)
-      end
-
-      it 'raises expected error' do
-        post_graphql_mutation(mutation, current_user: user)
-
-        expect(graphql_errors).to include(a_hash_including('message' => 'Feature disabled'))
-      end
-    end
-
     it_behaves_like 'successful mutation'
 
     context 'when the contact does not exist' do

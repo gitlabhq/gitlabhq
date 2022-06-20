@@ -39,25 +39,19 @@
 
         %hr
         .form-group
-          %h5.gl-mt-0
+          %h5.gl-mt-0.gl-mb-3
             = _("Git strategy")
-          %p
+          .gl-mb-3
             = _("Choose which Git strategy to use when fetching the project.")
             = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'choose-the-default-git-strategy'), target: '_blank', rel: 'noopener noreferrer'
-          .form-check
-            = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
-            = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
-              %strong git clone
-              %br
-              %span
-                = _("For each job, clone the repository.")
-          .form-check
-            = f.radio_button :build_allow_git_fetch, 'true', { class: 'form-check-input' }
-            = f.label :build_allow_git_fetch_true, class: 'form-check-label' do
-              %strong git fetch
-              %br
-              %span
-                = html_escape(_("For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+          = f.gitlab_ui_radio_component :build_allow_git_fetch,
+            false,
+            "git clone",
+            help_text: _("For each job, clone the repository.")
+          = f.gitlab_ui_radio_component :build_allow_git_fetch,
+            true,
+            "git fetch",
+            help_text: html_escape(_("For each job, re-use the project workspace. If the workspace doesn't exist, use %{code_open}git clone%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
 
         .form-group
           = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|

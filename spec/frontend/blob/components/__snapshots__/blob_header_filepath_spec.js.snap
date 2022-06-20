@@ -7,7 +7,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
    
   <file-icon-stub
     aria-hidden="true"
-    cssclasses="mr-2"
+    cssclasses="gl-mr-3"
     filemode=""
     filename="foo/bar/dummy.md"
     size="16"
@@ -32,7 +32,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
   />
    
   <small
-    class="mr-2"
+    class="gl-mr-3"
   >
     a lot
   </small>

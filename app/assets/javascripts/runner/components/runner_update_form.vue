@@ -31,6 +31,8 @@ export default {
     GlFormGroup,
     GlFormInputGroup,
     GlSkeletonLoader,
+    RunnerMaintenanceNoteField: () =>
+      import('ee_component/runner/components/runner_maintenance_note_field.vue'),
     RunnerUpdateCostFactorFields: () =>
       import('ee_component/runner/components/runner_update_cost_factor_fields.vue'),
   },
@@ -115,9 +117,13 @@ export default {
     <h4 class="gl-font-lg gl-my-5">{{ s__('Runners|Details') }}</h4>
 
     <gl-skeleton-loader v-if="loading" />
-    <gl-form-group v-else :label="__('Description')" data-testid="runner-field-description">
-      <gl-form-input-group v-model="model.description" />
-    </gl-form-group>
+
+    <template v-else>
+      <gl-form-group :label="__('Description')" data-testid="runner-field-description">
+        <gl-form-input-group v-model="model.description" />
+      </gl-form-group>
+      <runner-maintenance-note-field v-model="model.maintenanceNote" />
+    </template>
 
     <hr />
 

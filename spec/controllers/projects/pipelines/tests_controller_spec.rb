@@ -51,18 +51,6 @@ RSpec.describe Projects::Pipelines::TestsController do
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['errors']).to eq('Test report artifacts have expired')
         end
-
-        context 'when ci_test_report_artifacts_expired is disabled' do
-          before do
-            stub_feature_flags(ci_test_report_artifacts_expired: false)
-          end
-          it 'renders test suite', :aggregate_failures do
-            get_tests_show_json(build_ids)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['name']).to eq('test')
-          end
-        end
       end
 
       context 'when artifacts are not expired' do

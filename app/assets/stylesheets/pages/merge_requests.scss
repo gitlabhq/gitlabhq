@@ -3,6 +3,7 @@
  *
  */
 $tabs-holder-z-index: 250;
+$comparison-empty-state-height: 62px;
 
 .space-children {
   @include clearfix;
@@ -68,6 +69,10 @@ $tabs-holder-z-index: 250;
       background: none;
     }
   }
+}
+
+.compare-commit-empty {
+  min-height: $comparison-empty-state-height;
 }
 
 .commits-empty {
@@ -200,11 +205,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.assign-to-me-link {
-  padding-left: 12px;
-  white-space: nowrap;
-}
-
 .table-holder {
   .ci-table {
     th {
@@ -214,14 +214,9 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.merge-request-tabs-holder,
-.epic-tabs-holder {
+.merge-request-tabs-holder {
   top: $header-height;
   z-index: $tabs-holder-z-index;
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  padding-left: $gl-padding;
-  padding-right: $gl-padding;
   background-color: $body-bg;
   border-bottom: 1px solid $border-color;
 
@@ -251,30 +246,14 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.merge-request-tabs-holder.affix .merge-request-tabs-container,
-.epic-tabs-holder.affix .epic-tabs-container {
-  padding-left: $gl-padding;
-  padding-right: $gl-padding;
-}
-
 .with-performance-bar {
-  .merge-request-tabs-holder,
-  .epic-tabs-holder {
+  .merge-request-tabs-holder {
     top: calc(#{$header-height} + #{$performance-bar-height});
   }
 }
 
-.merge-request-tabs,
-.epic-tabs {
-  display: flex;
-  flex-wrap: nowrap;
-  margin-bottom: 0;
-  padding: 0;
-}
-
 .limit-container-width {
-  .merge-request-tabs-container,
-  .epic-tabs-container {
+  .merge-request-tabs-container {
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
@@ -287,11 +266,7 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.merge-request-tabs-container,
-.epic-tabs-container {
-  display: flex;
-  justify-content: space-between;
-
+.merge-request-tabs-container {
   @include media-breakpoint-down(xs) {
     .discussion-filter-container {
       margin-bottom: $gl-padding-4;
@@ -318,16 +293,14 @@ $tabs-holder-z-index: 250;
 
 // Wrap MR tabs/buttons so you don't have to scroll on desktop
 @include media-breakpoint-down(md) {
-  .merge-request-tabs-container,
-  .epic-tabs-container {
+  .merge-request-tabs-container {
     flex-direction: column-reverse;
   }
 }
 
 @include media-breakpoint-down(lg) {
   .right-sidebar-expanded {
-    .merge-request-tabs-container,
-    .epic-tabs-container {
+    .merge-request-tabs-container {
       flex-direction: column-reverse;
       align-items: flex-start;
     }
@@ -335,8 +308,7 @@ $tabs-holder-z-index: 250;
 }
 
 .limit-container-width:not(.container-limited) {
-  .merge-request-tabs-holder:not(.affix) .merge-request-tabs-container,
-  .epic-tabs-holder:not(.affix) .epic-tabs-container {
+  .merge-request-tabs-holder .merge-request-tabs-container {
     max-width: $limited-layout-width - ($gl-padding * 2);
   }
 }

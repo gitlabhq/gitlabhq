@@ -13,6 +13,9 @@ module Types
 
     present_using ReleasePresenter
 
+    field :id, ::Types::GlobalIDType[Release],
+          null: false,
+          description: 'Global ID of the release.'
     field :assets, Types::ReleaseAssetsType, null: true, method: :itself,
           description: 'Assets of the release.'
     field :created_at, Types::TimeType, null: true,

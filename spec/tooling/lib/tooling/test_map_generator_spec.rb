@@ -17,7 +17,7 @@ RSpec.describe Tooling::TestMapGenerator do
         :timestamp: 1602668405
         :version:
         ---
-        "./spec/factories_spec.rb[1]":
+        "./spec/models/factories_spec.rb[1]":
         - lib/gitlab/current_settings.rb
         - lib/feature.rb
         - lib/gitlab/marginalia.rb
@@ -62,13 +62,13 @@ RSpec.describe Tooling::TestMapGenerator do
       let(:expected_mapping) do
         {
           'lib/gitlab/current_settings.rb' => [
-            'spec/factories_spec.rb'
+            'spec/models/factories_spec.rb'
           ],
           'lib/feature.rb' => [
-            'spec/factories_spec.rb'
+            'spec/models/factories_spec.rb'
           ],
           'lib/gitlab/marginalia.rb' => [
-            'spec/factories_spec.rb'
+            'spec/models/factories_spec.rb'
           ]
         }
       end
@@ -96,15 +96,15 @@ RSpec.describe Tooling::TestMapGenerator do
       let(:expected_mapping) do
         {
           'lib/gitlab/current_settings.rb' => [
-            'spec/factories_spec.rb',
+            'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ],
           'lib/feature.rb' => [
-            'spec/factories_spec.rb',
+            'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ],
           'lib/gitlab/marginalia.rb' => [
-            'spec/factories_spec.rb',
+            'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ]
         }

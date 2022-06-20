@@ -73,8 +73,6 @@ RSpec.describe ProjectPresenter do
       context 'when repository is not empty' do
         let_it_be(:project) { create(:project, :public, :repository) }
 
-        let(:release) { create(:release, project: project, author: user) }
-
         it 'returns files and readme if user has repository access' do
           allow(presenter).to receive(:can?).with(nil, :download_code, project).and_return(true)
 
@@ -98,6 +96,9 @@ RSpec.describe ProjectPresenter do
         end
 
         it 'returns releases anchor' do
+          user = create(:user)
+          release = create(:release, project: project, author: user)
+
           expect(release).to be_truthy
           expect(presenter.releases_anchor_data).to have_attributes(
             is_link: true,
@@ -211,16 +212,6 @@ RSpec.describe ProjectPresenter do
   context 'statistics anchors (empty repo)' do
     let_it_be(:project) { create(:project, :empty_repo) }
 
-    describe '#files_anchor_data' do
-      it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(
-          is_link: true,
-          label:  a_string_including('0 Bytes'),
-          link: nil
-        )
-      end
-    end
-
     describe '#storage_anchor_data' do
       it 'returns storage data' do
         expect(presenter.storage_anchor_data).to have_attributes(
@@ -275,22 +266,22 @@ RSpec.describe ProjectPresenter do
 
     let(:presenter) { described_class.new(project, current_user: user) }
 
-    describe '#files_anchor_data' do
-      it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(
-          is_link: true,
-          label:  a_string_including('0 Bytes'),
-          link: presenter.project_tree_path(project)
-        )
-      end
-    end
-
     describe '#storage_anchor_data' do
-      it 'returns storage data' do
+      it 'returns storage data without usage quotas link for non-admin users' do
         expect(presenter.storage_anchor_data).to have_attributes(
           is_link: true,
           label:  a_string_including('0 Bytes'),
-          link: presenter.project_tree_path(project)
+          link: nil
+        )
+      end
+
+      it 'returns storage data with usage quotas link for admin users' do
+        project.add_owner(user)
+
+        expect(presenter.storage_anchor_data).to have_attributes(
+          is_link: true,
+          label:  a_string_including('0 Bytes'),
+          link: presenter.project_usage_quotas_path(project)
         )
       end
     end

@@ -20,6 +20,7 @@ class ProjectFeature < ApplicationRecord
     operations
     security_and_compliance
     container_registry
+    package_registry
   ].freeze
 
   EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages]).freeze
@@ -29,7 +30,8 @@ class ProjectFeature < ApplicationRecord
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL = {
     merge_requests: Gitlab::Access::REPORTER,
     metrics_dashboard: Gitlab::Access::REPORTER,
-    container_registry: Gitlab::Access::REPORTER
+    container_registry: Gitlab::Access::REPORTER,
+    package_registry: Gitlab::Access::REPORTER
   }.freeze
   PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT = { repository: Gitlab::Access::REPORTER }.freeze
 
@@ -73,6 +75,14 @@ class ProjectFeature < ApplicationRecord
       PRIVATE
     else
       feature.project&.public? ? ENABLED : PRIVATE
+    end
+  end
+
+  default_value_for(:package_registry_access_level) do |feature|
+    if ::Gitlab.config.packages.enabled
+      ENABLED
+    else
+      DISABLED
     end
   end
 
@@ -142,6 +152,12 @@ class ProjectFeature < ApplicationRecord
     !public_pages?
   end
 
+  def package_registry_access_level=(value)
+    super(value).tap do
+      project.packages_enabled = self.package_registry_access_level != DISABLED if project
+    end
+  end
+
   private
 
   # Validates builds and merge requests access level
@@ -157,7 +173,7 @@ class ProjectFeature < ApplicationRecord
   end
 
   def feature_validation_exclusion
-    %i(pages)
+    %i(pages package_registry)
   end
 
   override :resource_member?

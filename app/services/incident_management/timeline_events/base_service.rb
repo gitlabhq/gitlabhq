@@ -3,6 +3,8 @@
 module IncidentManagement
   module TimelineEvents
     class BaseService
+      include Gitlab::Utils::UsageData
+
       def allowed?
         user&.can?(:admin_incident_management_timeline_event, incident)
       end

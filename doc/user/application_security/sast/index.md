@@ -13,7 +13,7 @@ The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.
 explains how 4 of the top 6 attacks were application based. Download it to learn how to protect your
 organization.
 
-If you’re using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
+If you're using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
 Testing (SAST) to check your source code for known vulnerabilities. You can run SAST analyzers in
 any GitLab tier. The analyzers output JSON-formatted reports as job artifacts.
 
@@ -182,6 +182,7 @@ as shown in the following table:
 | [Configure SAST in the UI](#configure-sast-in-the-ui)           | **{dotted-circle}** | **{check-circle}** |
 | [Customize SAST rulesets](#customize-rulesets)                  | **{dotted-circle}** | **{check-circle}** |
 | [Detect False Positives](#false-positive-detection)             | **{dotted-circle}** | **{check-circle}** |
+| [Track moved vulnerabilities](#advanced-vulnerability-tracking) | **{dotted-circle}** | **{check-circle}** |
 
 ## Contribute your scanner
 
@@ -524,7 +525,7 @@ defined for the `nodejs-scan` scanner:
 '''
 ```
 
-##### File passthrough for gosec
+##### File passthrough for Gosec
 
 Provide the name of the file containing a custom analyzer configuration. In
 this example, customized rules for the `gosec` scanner are contained in the
@@ -539,7 +540,7 @@ file `gosec-config.json`:
     value = "gosec-config.json"
 ```
 
-##### Passthrough chain for semgrep
+##### Passthrough chain for Semgrep
 
 In the below example, we generate a custom configuration under the `/sgrules`
 target directory with a total `timeout` of 60 seconds.
@@ -560,7 +561,7 @@ Several passthrouh types generate a configuration for the target analyzer:
 - The `url` entry fetches a configuration made available through a URL and
   stores it in the `/sgrules/gosec.yml` file.
 
-Afterwards, semgrep is invoked with the final configuration located under
+Afterwards, Semgrep is invoked with the final configuration located under
 `/sgrules`.
 
 ```toml
@@ -632,12 +633,12 @@ created when preceding passthroughs in the chain find a naming
 collision. If `mode` is set to `append`, a passthrough appends data to the
 files created by its predecessors instead of overwriting.
 
-In the below semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
+In the below Semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
 
 - `insecure`
 - `secret`
 
-These rules add a search pattern to the analyzer and extends semgrep capabilities.
+These rules add a search pattern to the analyzer and extends Semgrep capabilities.
 
 For passthrough chains we recommend that you enable validation. To enable validation,
 you can either:
@@ -695,6 +696,32 @@ rules:
 > Introduced in GitLab 14.2.
 
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
+
+False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- Ruby, in the Brakeman-based analyzer
+
+### Advanced vulnerability tracking **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
+
+Source code is volatile; as developers make changes, source code may move within files or between files.
+Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/).
+These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
+If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
+
+GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the same vulnerability has moved within a file due to refactoring or unrelated changes.
+
+Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- C, in the Semgrep-based analyzer only
+- Go, in the Gosec- and Semgrep-based analyzers
+- Java, in the Semgrep-based analyzer only
+- JavaScript, in the Semgrep-based analyzer only
+- Python, in the Semgrep-based analyzer only
+- Ruby, in the Brakeman-based analyzer
+
+Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
 ### Using CI/CD variables to pass credentials for private repositories
 

@@ -4,6 +4,7 @@ import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import ZenMode from '~/zen_mode';
 import WorkItemDetail from '../components/work_item_detail.vue';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
@@ -28,6 +29,9 @@ export default {
     gid() {
       return convertToGraphQLId(TYPE_WORK_ITEM, this.id);
     },
+  },
+  mounted() {
+    this.ZenMode = new ZenMode();
   },
   methods: {
     deleteWorkItem() {

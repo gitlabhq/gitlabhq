@@ -79,7 +79,7 @@ To create a `.gitlab-ci.yml` file:
 
 1. On the left sidebar, select **Project information > Details**.
 1. Above the file list, select the branch you want to commit to,
-   click the plus icon, then select **New file**:
+   select the plus icon, then select **New file**:
 
    ![New file](img/new_file_v13_6.png)
 
@@ -115,7 +115,7 @@ To create a `.gitlab-ci.yml` file:
    [predefined variables](../variables/predefined_variables.md)
    that populate when the job runs.
 
-1. Click **Commit changes**.
+1. Select **Commit changes**.
 
 The pipeline starts when the commit is committed.
 
@@ -172,11 +172,11 @@ To view your pipeline:
 
   ![Three stages](img/three_stages_v13_6.png)
 
-- To view a visual representation of your pipeline, click the pipeline ID.
+- To view a visual representation of your pipeline, select the pipeline ID.
 
   ![Pipeline graph](img/pipeline_graph_v13_6.png)
 
-- To view details of a job, click the job name, for example, `deploy-prod`.
+- To view details of a job, select the job name, for example, `deploy-prod`.
 
   ![Job details](img/job_details_v13_6.png)
 

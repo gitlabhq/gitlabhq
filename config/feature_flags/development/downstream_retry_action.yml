@@ -1,8 +1,0 @@
----
-name: downstream_retry_action
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83751
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357406
-milestone: '15.0'
-type: development
-group: group::pipeline authoring
-default_enabled: false

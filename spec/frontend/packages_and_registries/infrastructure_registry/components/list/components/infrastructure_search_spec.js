@@ -65,7 +65,7 @@ describe('Infrastructure Search', () => {
 
     expect(findRegistrySearch().exists()).toBe(true);
     expect(findRegistrySearch().props()).toMatchObject({
-      filter: store.state.filter,
+      filters: store.state.filter,
       sorting: store.state.sorting,
       tokens: [],
       sortableFields: sortableFields(),
@@ -80,7 +80,7 @@ describe('Infrastructure Search', () => {
     mountComponent(isGroupPage);
 
     expect(findRegistrySearch().props()).toMatchObject({
-      filter: store.state.filter,
+      filters: store.state.filter,
       sorting: store.state.sorting,
       tokens: [],
       sortableFields: fields,

@@ -1112,4 +1112,200 @@ RSpec.describe ProjectsHelper do
 
     it_behaves_like 'configure import method modal'
   end
+
+  describe '#show_inactive_project_deletion_banner?' do
+    shared_examples 'does not show the banner' do |pass_project: true|
+      it { expect(helper.show_inactive_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
+    end
+
+    context 'with no project' do
+      it_behaves_like 'does not show the banner', pass_project: false
+    end
+
+    context 'with unsaved project' do
+      let_it_be(:project) { build(:project) }
+
+      it_behaves_like 'does not show the banner'
+    end
+
+    context 'with the setting disabled' do
+      before do
+        stub_application_setting(delete_inactive_projects: false)
+      end
+
+      it_behaves_like 'does not show the banner'
+    end
+
+    context 'with the setting enabled' do
+      before do
+        stub_application_setting(delete_inactive_projects: true)
+      end
+
+      context 'with the feature flag disabled' do
+        before do
+          stub_feature_flags(inactive_projects_deletion: false)
+        end
+
+        it_behaves_like 'does not show the banner'
+      end
+
+      context 'with the feature flag enabled' do
+        before do
+          stub_feature_flags(inactive_projects_deletion: true)
+          stub_application_setting(inactive_projects_min_size_mb: 0)
+          stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
+        end
+
+        context 'with an active project' do
+          it_behaves_like 'does not show the banner'
+        end
+
+        context 'with an inactive project' do
+          before do
+            project.statistics.storage_size = 1.megabyte
+            project.last_activity_at = 1.year.ago
+            project.save!
+          end
+
+          it 'shows the banner' do
+            expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#inactive_project_deletion_date' do
+    let(:tracker) { instance_double(::Gitlab::InactiveProjectsDeletionWarningTracker) }
+
+    before do
+      stub_application_setting(inactive_projects_delete_after_months: 2)
+      stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
+
+      allow(::Gitlab::InactiveProjectsDeletionWarningTracker).to receive(:new).with(project.id).and_return(tracker)
+      allow(tracker).to receive(:scheduled_deletion_date).and_return('2022-03-01')
+    end
+
+    it 'returns the deletion date' do
+      expect(helper.inactive_project_deletion_date(project)).to eq('2022-03-01')
+    end
+  end
+
+  describe '#can_admin_associated_clusters?' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project) }
+
+    subject { helper.send(:can_admin_associated_clusters?, project) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper)
+        .to receive(:can?)
+        .with(current_user, :admin_cluster, namespace)
+        .and_return(user_can_admin_cluster)
+    end
+
+    context 'when project has a cluster' do
+      let_it_be(:namespace) { project }
+
+      before do
+        create(:cluster, projects: [namespace])
+      end
+
+      context 'if user can admin cluster' do
+        let_it_be(:user_can_admin_cluster) { true }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'if user can not admin cluster' do
+        let_it_be(:user_can_admin_cluster) { false }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when project has a group cluster' do
+      let_it_be(:namespace) { create(:group) }
+
+      before do
+        project.update!(namespace: namespace)
+        create(:cluster, :group, groups: [namespace])
+      end
+
+      context 'if user can admin cluster' do
+        let_it_be(:user_can_admin_cluster) { true }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'if user can not admin cluster' do
+        let_it_be(:user_can_admin_cluster) { false }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when project doesn\'t have a cluster' do
+      let_it_be(:namespace) { project }
+
+      context 'if user can admin cluster' do
+        let_it_be(:user_can_admin_cluster) { true }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'if user can not admin cluster' do
+        let_it_be(:user_can_admin_cluster) { false }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#show_clusters_alert?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.show_clusters_alert?(project) }
+
+    where(:is_gitlab_com, :user_can_admin_cluster, :expected) do
+      false | false | false
+      false | true  | false
+      true  | false | false
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(is_gitlab_com)
+        allow(helper).to receive(:can_admin_associated_clusters?).and_return(user_can_admin_cluster)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#clusters_deprecation_alert_message' do
+    subject { helper.clusters_deprecation_alert_message }
+
+    before do
+      allow(helper).to receive(:has_active_license?).and_return(has_active_license)
+    end
+
+    context 'if user has an active licence' do
+      let_it_be(:has_active_license) { true }
+
+      it 'displays the correct messagee' do
+        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd} or reach out to GitLab support.'))
+      end
+    end
+
+    context 'if user doesn\'t have an active licence' do
+      let_it_be(:has_active_license) { false }
+
+      it 'displays the correct message' do
+        expect(subject).to eq(s_('Clusters|The certificate-based Kubernetes integration has been deprecated and will be turned off at the end of November 2022. Please %{linkStart}migrate to the GitLab agent for Kubernetes%{linkEnd}.'))
+      end
+    end
+  end
 end

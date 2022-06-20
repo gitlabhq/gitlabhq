@@ -102,6 +102,7 @@ module ApplicationSettingImplementation
         import_sources: Settings.gitlab['import_sources'],
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
+        jira_connect_application_key: nil,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
         mailgun_signing_key: nil,
@@ -224,6 +225,7 @@ module ApplicationSettingImplementation
         container_registry_import_max_retries: 3,
         container_registry_import_start_max_retries: 50,
         container_registry_import_max_step_duration: 5.minutes,
+        container_registry_pre_import_tags_rate: 0.5,
         container_registry_pre_import_timeout: 30.minutes,
         container_registry_import_timeout: 10.minutes,
         container_registry_import_target_plan: 'free',
@@ -508,7 +510,34 @@ module ApplicationSettingImplementation
     'https://sandbox-prod.gitlab-static.net'
   end
 
+  def ensure_key_restrictions!
+    return if Gitlab::Database.read_only?
+    return unless Gitlab::FIPS.enabled?
+
+    Gitlab::SSHPublicKey.supported_types.each do |key_type|
+      set_max_key_restriction!(key_type)
+    end
+  end
+
   private
+
+  def set_max_key_restriction!(key_type)
+    attr_name = "#{key_type}_key_restriction"
+    current = self.attributes[attr_name].to_i
+
+    return if current == KeyRestrictionValidator::FORBIDDEN
+
+    min_size = self.class.default_min_key_size(key_type)
+
+    new_value =
+      if min_size == KeyRestrictionValidator::FORBIDDEN
+        min_size
+      else
+        [min_size, current].max
+      end
+
+    self.assign_attributes({ attr_name => new_value })
+  end
 
   def separate_allowlists(string_array)
     string_array.reduce([[], []]) do |(ip_allowlist, domain_allowlist), string|

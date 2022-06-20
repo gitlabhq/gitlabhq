@@ -8,6 +8,9 @@ class MergeRequest::CleanupSchedule < ApplicationRecord
     failed: 3
   }.freeze
 
+  # NOTE: Limit the number of stuck schedule jobs to retry just in case it becomes too big.
+  STUCK_RETRY_LIMIT = 5
+
   belongs_to :merge_request, inverse_of: :cleanup_schedule
 
   validates :scheduled_at, presence: true
@@ -48,6 +51,11 @@ class MergeRequest::CleanupSchedule < ApplicationRecord
       .order('scheduled_at DESC')
   }
 
+  # NOTE: It is considered stuck as it is unusual to take more than 6 hours to finish the cleanup task.
+  scope :stuck, -> {
+    where('updated_at <= NOW() - interval \'6 hours\' AND status = ?', STATUSES[:running])
+  }
+
   def self.start_next
     MergeRequest::CleanupSchedule.transaction do
       cleanup_schedule = scheduled_and_unstarted.lock('FOR UPDATE SKIP LOCKED').first
@@ -57,5 +65,9 @@ class MergeRequest::CleanupSchedule < ApplicationRecord
       cleanup_schedule.run!
       cleanup_schedule
     end
+  end
+
+  def self.stuck_retry!
+    self.stuck.limit(STUCK_RETRY_LIMIT).map(&:retry!)
   end
 end

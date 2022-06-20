@@ -50,9 +50,8 @@ To view value stream analytics for your group:
       - In the **To** field, select an end date. The charts and list show workflow items created
         during the date range.
 1. Optional. Sort results by ascending or descending:
-      - To sort by most recent or oldest workflow item, select the **Merge requests** or **Issues**
-        header. The header name differs based on the stage you select.
-      - To sort by most or least amount of time spent in each stage, select the **Time** header.
+      - To sort by most recent or oldest workflow item, select the **Last event** header.
+      - To sort by most or least amount of time spent in each stage, select the **Duration** header.
 
 A badge next to the workflow items table header shows the number of workflow items that
 completed during the selected stage.
@@ -366,7 +365,7 @@ The chart shows data for the last 500 workflow items.
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 
-## Type of work - Tasks by type chart
+## Tasks by type chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
 

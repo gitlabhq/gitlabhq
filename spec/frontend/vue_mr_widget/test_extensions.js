@@ -4,11 +4,14 @@ export const workingExtension = (shouldCollapse = true) => ({
   name: 'WidgetTestExtension',
   props: ['targetProjectFullPath'],
   expandEvent: 'test_expand_event',
+  i18n: {
+    loading: 'Test extension loading...',
+  },
   computed: {
-    summary({ count, targetProjectFullPath }) {
+    summary({ count, targetProjectFullPath } = {}) {
       return `Test extension summary count: ${count} & ${targetProjectFullPath}`;
     },
-    statusIcon({ count }) {
+    statusIcon({ count } = {}) {
       return count > 0 ? EXTENSION_ICONS.warning : EXTENSION_ICONS.success;
     },
     shouldCollapse() {
@@ -105,6 +108,50 @@ export const pollingExtension = {
   ...workingExtension(),
   enablePolling: true,
 };
+
+export const fullReportExtension = {
+  ...workingExtension(),
+  computed: {
+    ...workingExtension().computed,
+    tertiaryButtons() {
+      return [
+        {
+          text: 'test',
+          href: `testref`,
+          target: '_blank',
+          fullReport: true,
+        },
+      ];
+    },
+  },
+};
+
+export const noTelemetryExtension = {
+  ...fullReportExtension,
+  telemetry: false,
+};
+
+export const multiPollingExtension = (endpointsToBePolled) => ({
+  name: 'WidgetTestMultiPollingExtension',
+  props: [],
+  i18n: {
+    loading: 'Test extension loading...',
+  },
+  computed: {
+    summary(data) {
+      return `Multi polling test extension reports: ${data?.[0]?.reports}, count: ${data.length}`;
+    },
+    statusIcon(data) {
+      return data?.[0]?.reports === 'parsed' ? EXTENSION_ICONS.success : EXTENSION_ICONS.warning;
+    },
+  },
+  enablePolling: true,
+  methods: {
+    fetchMultiData() {
+      return endpointsToBePolled;
+    },
+  },
+});
 
 export const pollingErrorExtension = {
   ...collapsedDataErrorExtension,

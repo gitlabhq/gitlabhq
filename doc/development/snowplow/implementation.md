@@ -464,7 +464,10 @@ Page titles are hardcoded as `GitLab` for the same reason.
 
 #### Snowplow Inspector Chrome Extension
 
-Snowplow Inspector Chrome Extension is a browser extension for testing frontend events. This works in production, staging, and local development environments.
+Snowplow Inspector Chrome Extension is a browser extension for testing frontend events. This works in production, staging, and local development environments. 
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video tutorial, see the [Snowplow plugin walk through](https://www.youtube.com/watch?v=g4rqnIZ1Mb4).
 
 1. Install [Snowplow Inspector](https://chrome.google.com/webstore/detail/snowplow-inspector/maplkdomeamdlngconidoefjpogkmljm?hl=en).
 1. To open the extension, select the Snowplow Inspector icon beside the address bar.

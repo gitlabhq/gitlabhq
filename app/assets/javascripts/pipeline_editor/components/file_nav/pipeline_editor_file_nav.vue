@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import getAppStatus from '~/pipeline_editor/graphql/queries/client/app_status.query.graphql';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EDITOR_APP_STATUS_EMPTY, EDITOR_APP_STATUS_LOADING } from '../../constants';
 import FileTreePopover from '../popovers/file_tree_popover.vue';
 import BranchSwitcher from './branch_switcher.vue';
@@ -12,7 +11,6 @@ export default {
     FileTreePopover,
     GlButton,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     hasUnsavedChanges: {
       type: Boolean,
@@ -43,11 +41,7 @@ export default {
       return this.appStatus === EDITOR_APP_STATUS_LOADING;
     },
     showFileTreeToggle() {
-      return (
-        this.glFeatures.pipelineEditorFileTree &&
-        !this.isNewCiConfigFile &&
-        this.appStatus !== EDITOR_APP_STATUS_EMPTY
-      );
+      return !this.isNewCiConfigFile && this.appStatus !== EDITOR_APP_STATUS_EMPTY;
     },
   },
   methods: {

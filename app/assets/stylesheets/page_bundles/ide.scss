@@ -563,24 +563,11 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-commit-options {
-  label {
-    font-weight: normal;
-
-    &.is-disabled {
-      .ide-option-label {
-        text-decoration: line-through;
-      }
+  .is-disabled {
+    .ide-option-label {
+      text-decoration: line-through;
     }
   }
-
-  .form-text.text-muted {
-    margin-top: 0;
-    line-height: 0;
-  }
-}
-
-.ide-commit-new-branch {
-  margin-left: 25px;
 }
 
 .ide-sidebar-link {

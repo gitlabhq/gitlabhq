@@ -1216,19 +1216,6 @@ RSpec.describe GroupPolicy do
     end
   end
 
-  context 'with customer relations feature flag disabled' do
-    let(:current_user) { owner }
-
-    before do
-      stub_feature_flags(customer_relations: false)
-    end
-
-    it { is_expected.to be_disallowed(:read_crm_contact) }
-    it { is_expected.to be_disallowed(:read_crm_organization) }
-    it { is_expected.to be_disallowed(:admin_crm_contact) }
-    it { is_expected.to be_disallowed(:admin_crm_organization) }
-  end
-
   context 'when crm_enabled is false' do
     let(:current_user) { owner }
 

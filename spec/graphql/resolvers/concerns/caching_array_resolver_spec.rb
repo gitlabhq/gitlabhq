@@ -79,7 +79,7 @@ RSpec.describe ::CachingArrayResolver do
         expect(User).to receive(:from_union).twice.and_call_original
 
         results = users.in_groups_of(2, false).map do |users|
-          resolve(resolver, args: { username: users.map(&:username) }, schema: schema)
+          resolve(resolver, args: { username: users.map(&:username) }, schema: schema, arg_style: :internal)
         end
 
         expect(results.flat_map(&method(:force))).to match_array(users)
@@ -208,6 +208,6 @@ RSpec.describe ::CachingArrayResolver do
     args = { is_admin: admin }
     opts = resolver.field_options
     allow(resolver).to receive(:field_options).and_return(opts.merge(max_page_size: max_page_size))
-    resolve(resolver, args: args, ctx: query_context, schema: schema)
+    resolve(resolver, args: args, ctx: query_context, schema: schema, arg_style: :internal)
   end
 end

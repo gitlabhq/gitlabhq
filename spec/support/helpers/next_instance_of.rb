@@ -22,7 +22,7 @@ module NextInstanceOf
   def stub_new(target, number, ordered = false, *new_args, &blk)
     receive_new = receive(:new)
     receive_new.ordered if ordered
-    receive_new.with(*new_args) if new_args.any?
+    receive_new.with(*new_args) if new_args.present?
 
     if number.is_a?(Range)
       receive_new.at_least(number.begin).times if number.begin

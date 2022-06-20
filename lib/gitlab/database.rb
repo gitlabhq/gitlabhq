@@ -68,7 +68,8 @@ module Gitlab
       @schemas_to_base_models ||= {
         gitlab_main: [self.database_base_models.fetch(:main)],
         gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
-        gitlab_shared: self.database_base_models.values # all models
+        gitlab_shared: self.database_base_models.values, # all models
+        gitlab_internal: self.database_base_models.values # all models
       }.with_indifferent_access.freeze
     end
 
@@ -203,8 +204,13 @@ module Gitlab
     # This does not look at literal connection names, but rather compares
     # models that are holders for a given db_config_name
     def self.gitlab_schemas_for_connection(connection)
-      db_name = self.db_config_name(connection)
-      primary_model = self.database_base_models.fetch(db_name.to_sym)
+      db_config = self.db_config_for_connection(connection)
+
+      # connection might not be yet adopted (returning NullPool, and no connection_klass)
+      # in such cases it is fine to ignore such connections
+      return unless db_config
+
+      primary_model = self.database_base_models.fetch(db_config.name.to_sym)
 
       self.schemas_to_base_models.select do |_, child_models|
         child_models.any? do |child_model|
@@ -218,8 +224,11 @@ module Gitlab
     def self.db_config_for_connection(connection)
       return unless connection
 
+      # For a ConnectionProxy we want to avoid ambiguous db_config as it may
+      # sometimes default to replica so we always return the primary config
+      # instead.
       if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
-        return connection.load_balancer.configuration.primary_db_config
+        return connection.load_balancer.configuration.db_config
       end
 
       # During application init we might receive `NullPool`

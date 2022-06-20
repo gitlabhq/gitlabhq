@@ -35,18 +35,18 @@ module QA
 
       let(:files) do
         [
-            {
-                number: 1,
-                content: first_file_content
-            },
-            {
-                number: 2,
-                content: second_file_content
-            },
-            {
-                number: 3,
-                content: third_file_content
-            }
+          {
+            number: 1,
+            content: first_file_content
+          },
+          {
+            number: 2,
+            content: second_file_content
+          },
+          {
+            number: 3,
+            content: third_file_content
+          }
         ]
       end
 

@@ -105,7 +105,7 @@ export default {
       <template #default="{ updateQuery }">
         <registry-search
           v-if="mountRegistrySearch"
-          :filter="filters"
+          :filters="filters"
           :sorting="sorting"
           :tokens="$options.tokens"
           :sortable-fields="sortableFields"

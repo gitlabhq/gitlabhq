@@ -5,6 +5,7 @@ module API
     include PaginationParams
 
     feature_category :navigation
+    urgency :low
 
     resource :broadcast_messages do
       helpers do

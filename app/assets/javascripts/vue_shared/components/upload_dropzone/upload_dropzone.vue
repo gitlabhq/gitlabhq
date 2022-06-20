@@ -149,7 +149,7 @@ export default {
   >
     <slot>
       <button
-        class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+        class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
         type="button"
         @click="openFileUpload"
       >
@@ -192,7 +192,7 @@ export default {
     <transition name="upload-dropzone-fade">
       <div
         v-show="dragging && !enableDragBehavior"
-        class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+        class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       >
         <div v-show="!isDragDataValid" class="mw-50 gl-text-center">
           <slot name="invalid-drag-data-slot">

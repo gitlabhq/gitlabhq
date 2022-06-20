@@ -17,12 +17,12 @@ module ProjectHelpers
     end
   end
 
-  def update_feature_access_level(project, access_level)
+  def update_feature_access_level(project, access_level, additional_params = {})
     features = ProjectFeature::FEATURES.dup
     features.delete(:pages)
     params = features.each_with_object({}) { |feature, h| h["#{feature}_access_level"] = access_level }
 
-    project.update!(params)
+    project.update!(params.merge(additional_params))
   end
 
   def create_project_with_statistics(namespace = nil, with_data: false, size_multiplier: 1)

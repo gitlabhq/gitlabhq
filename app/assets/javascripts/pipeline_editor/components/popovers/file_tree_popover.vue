@@ -26,11 +26,8 @@ export default {
     this.showPopover = localStorage.getItem(FILE_TREE_POPOVER_DISMISSED_KEY) !== 'true';
   },
   methods: {
-    closePopover() {
-      this.showPopover = false;
-    },
     dismissPermanently() {
-      this.closePopover();
+      this.showPopover = false;
       localStorage.setItem(FILE_TREE_POPOVER_DISMISSED_KEY, 'true');
     },
   },
@@ -48,7 +45,7 @@ export default {
     data-qa-selector="file_tree_popover"
     @close-button-clicked="dismissPermanently"
   >
-    <div v-outside="closePopover" class="gl-font-base gl-mb-3">
+    <div v-outside="dismissPermanently" class="gl-font-base gl-mb-3">
       <gl-sprintf :message="$options.i18n.description">
         <template #link="{ content }">
           <gl-link :href="includesHelpPagePath" target="_blank">{{ content }}</gl-link>

@@ -6,6 +6,17 @@ namespace :tw do
   desc 'Generates a list of codeowners for documentation pages.'
   task :codeowners do
     CodeOwnerRule = Struct.new(:category, :writer)
+    DocumentOwnerMapping = Struct.new(:path, :writer) do
+      def writer_owns_all_pages?(mappings)
+        mappings
+          .select { |mapping| mapping.directory == directory }
+          .all? { |mapping| mapping.writer == writer }
+      end
+
+      def directory
+        @directory ||= File.dirname(path)
+      end
+    end
 
     CODE_OWNER_RULES = [
       CodeOwnerRule.new('Activation', '@kpaizee'),
@@ -61,7 +72,6 @@ namespace :tw do
       CodeOwnerRule.new('Sharding', '@sselhorn'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Static Site Editor', '@aqualls'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@claytoncornell'),
@@ -85,6 +95,7 @@ namespace :tw do
     end
 
     errors = []
+    mappings = []
 
     path = Rails.root.join("doc/**/*.md")
     Dir.glob(path) do |file|
@@ -99,8 +110,20 @@ namespace :tw do
       writer = writer_for_group(document.group)
       next unless writer
 
-      puts "#{file.gsub(Dir.pwd, ".")} #{writer}" if document.has_a_valid_group?
+      mappings << DocumentOwnerMapping.new(file.delete_prefix(Dir.pwd), writer) if document.has_a_valid_group?
     end
+
+    deduplicated_mappings = Set.new
+
+    mappings.each do |mapping|
+      if mapping.writer_owns_all_pages?(mappings)
+        deduplicated_mappings.add("#{mapping.directory}/ #{mapping.writer}")
+      else
+        deduplicated_mappings.add("#{mapping.path} #{mapping.writer}")
+      end
+    end
+
+    deduplicated_mappings.each { |mapping| puts mapping }
 
     if errors.present?
       puts "-----"

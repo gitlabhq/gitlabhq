@@ -6,13 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Code signing for SaaS runners on macOS
 
-> Introduced in GitLab 15.0.
-
 Before you can integrate GitLab with Apple services, install to a device, or deploy to the Apple App Store, you must [code sign](https://developer.apple.com/support/code-signing/) your application.
 
 To code sign an iOS project, you need the following files:
 
-- A certifcate issued by Apple.
+- A certificate issued by Apple.
 - A provisioning profile.
 
 ## Code signing iOS Projects with fastlane
@@ -61,7 +59,7 @@ To use fastlane to code sign your application:
        get_provisioning_profile
        # match(type: "appstore",read_only: true)
        gym
-       upload_to_testflight    
+       upload_to_testflight
      end
    end
    ```

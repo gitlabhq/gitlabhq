@@ -72,7 +72,7 @@ export default {
       category="primary"
       variant="default"
       icon="pencil"
-      class="gl-mr-3 js-edit-button ml-2 pb-2"
+      class="gl-mr-3 js-edit-button gl-ml-3 gl-pb-3"
       :title="$options.i18n.editButton"
       :aria-label="$options.i18n.editButton"
       :href="editLink"

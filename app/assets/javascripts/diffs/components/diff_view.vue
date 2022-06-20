@@ -6,7 +6,6 @@ import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
@@ -23,11 +22,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [
-    draftCommentsMixin,
-    glFeatureFlagsMixin(),
-    IdState({ idProp: (vm) => vm.diffFile.file_hash }),
-  ],
+  mixins: [draftCommentsMixin, IdState({ idProp: (vm) => vm.diffFile.file_hash })],
   props: {
     diffFile: {
       type: Object,
@@ -171,7 +166,6 @@ export default {
     <template v-for="(line, index) in diffLines">
       <template v-if="line.isMatchLineLeft || line.isMatchLineRight">
         <diff-expansion-cell
-          v-if="glFeatures.updatedDiffExpansionButtons"
           :key="`expand-${index}`"
           :file="diffFile"
           :line="line.left"
@@ -180,41 +174,6 @@ export default {
           :inline="inline"
           :line-count-between="getCountBetweenIndex(index)"
         />
-        <template v-else>
-          <div :key="`expand-${index}`" class="diff-tr line_expansion old-line_expansion match">
-            <div class="diff-td text-center gl-font-regular">
-              <diff-expansion-cell
-                :file="diffFile"
-                :context-lines-path="diffFile.context_lines_path"
-                :line="line.left"
-                :is-top="index === 0"
-                :is-bottom="index + 1 === diffLinesLength"
-                :inline="inline"
-              />
-            </div>
-          </div>
-          <div
-            v-if="line.left.rich_text"
-            :key="`expand-definition-${index}`"
-            class="diff-grid-row diff-tr line_holder match"
-          >
-            <div class="diff-grid-left diff-grid-3-col left-side">
-              <div class="diff-td diff-line-num"></div>
-              <div v-if="inline" class="diff-td diff-line-num"></div>
-              <div
-                v-safe-html="line.left.rich_text"
-                class="diff-td line_content left-side gl-white-space-normal!"
-              ></div>
-            </div>
-            <div v-if="!inline" class="diff-grid-right diff-grid-3-col right-side">
-              <div class="diff-td diff-line-num"></div>
-              <div
-                v-safe-html="line.left.rich_text"
-                class="diff-td line_content right-side gl-white-space-normal!"
-              ></div>
-            </div>
-          </div>
-        </template>
       </template>
       <diff-row
         v-if="!line.isMatchLineLeft && !line.isMatchLineRight"

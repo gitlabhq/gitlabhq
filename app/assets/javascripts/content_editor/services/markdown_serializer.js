@@ -17,7 +17,6 @@ import Diagram from '../extensions/diagram';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
-import FootnotesSection from '../extensions/footnotes_section';
 import FootnoteDefinition from '../extensions/footnote_definition';
 import FootnoteReference from '../extensions/footnote_reference';
 import Frontmatter from '../extensions/frontmatter';
@@ -60,11 +59,13 @@ import {
   renderPlayable,
   renderHTMLNode,
   renderContent,
+  renderBulletList,
   preserveUnchanged,
   bold,
   italic,
   link,
   code,
+  strike,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -89,12 +90,7 @@ const defaultSerializerConfig = {
       close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
       escape: false,
     },
-    [Strike.name]: {
-      open: '~~',
-      close: '~~',
-      mixable: true,
-      expelEnclosingWhitespace: true,
-    },
+    [Strike.name]: strike,
     ...HTMLMarks.reduce(
       (acc, { name }) => ({
         ...acc,
@@ -124,7 +120,7 @@ const defaultSerializerConfig = {
         state.wrapBlock('> ', null, node, () => state.renderContent(node));
       }
     }),
-    [BulletList.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.bullet_list),
+    [BulletList.name]: preserveUnchanged(renderBulletList),
     [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
     [Diagram.name]: renderCodeBlock,
     [Division.name]: (state, node) => {
@@ -157,15 +153,14 @@ const defaultSerializerConfig = {
 
       state.write(`:${name}:`);
     },
-    [FootnoteDefinition.name]: (state, node) => {
+    [FootnoteDefinition.name]: preserveUnchanged((state, node) => {
+      state.write(`[^${node.attrs.identifier}]: `);
       state.renderInline(node);
-    },
-    [FootnoteReference.name]: (state, node) => {
-      state.write(`[^${node.attrs.footnoteNumber}]`);
-    },
-    [FootnotesSection.name]: (state, node) => {
-      state.renderList(node, '', (index) => `[^${index + 1}]: `);
-    },
+      state.ensureNewLine();
+    }),
+    [FootnoteReference.name]: preserveUnchanged((state, node) => {
+      state.write(`[^${node.attrs.identifier}]`);
+    }),
     [Frontmatter.name]: (state, node) => {
       const { language } = node.attrs;
       const syntax = {
@@ -196,18 +191,18 @@ const defaultSerializerConfig = {
       state.write('[[_TOC_]]');
       state.closeBlock(node);
     },
-    [Table.name]: renderTable,
+    [Table.name]: preserveUnchanged(renderTable),
     [TableCell.name]: renderTableCell,
     [TableHeader.name]: renderTableCell,
     [TableRow.name]: renderTableRow,
-    [TaskItem.name]: (state, node) => {
+    [TaskItem.name]: preserveUnchanged((state, node) => {
       state.write(`[${node.attrs.checked ? 'x' : ' '}] `);
       state.renderContent(node);
-    },
-    [TaskList.name]: (state, node) => {
+    }),
+    [TaskList.name]: preserveUnchanged((state, node) => {
       if (node.attrs.numeric) renderOrderedList(state, node);
-      else defaultMarkdownSerializer.nodes.bullet_list(state, node);
-    },
+      else renderBulletList(state, node);
+    }),
     [Text.name]: defaultMarkdownSerializer.nodes.text,
     [Video.name]: renderPlayable,
     [WordBreak.name]: (state) => state.write('<wbr>'),

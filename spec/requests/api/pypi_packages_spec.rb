@@ -17,7 +17,68 @@ RSpec.describe API::PypiPackages do
 
   let(:headers) { {} }
 
-  context 'simple API endpoint' do
+  context 'simple index API endpoint' do
+    let_it_be(:package) { create(:pypi_package, project: project) }
+    let_it_be(:package2) { create(:pypi_package, project: project) }
+
+    subject { get api(url), headers: headers }
+
+    describe 'GET /api/v4/groups/:id/-/packages/pypi/simple' do
+      let(:url) { "/groups/#{group.id}/-/packages/pypi/simple" }
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
+
+      it_behaves_like 'pypi simple index API endpoint'
+      it_behaves_like 'rejects PyPI access with unknown group id'
+
+      context 'deploy tokens' do
+        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token, group: group) }
+
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+          group.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        end
+
+        it_behaves_like 'deploy token for package GET requests'
+
+        context 'with group path as id' do
+          let(:url) { "/groups/#{CGI.escape(group.full_path)}/-/packages/pypi/simple"}
+
+          it_behaves_like 'deploy token for package GET requests'
+        end
+      end
+
+      context 'job token' do
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+          group.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+          group.add_developer(user)
+        end
+
+        it_behaves_like 'job token for package GET requests'
+      end
+
+      it_behaves_like 'a pypi user namespace endpoint'
+    end
+
+    describe 'GET /api/v4/projects/:id/packages/pypi/simple' do
+      let(:package_name) { package.name }
+      let(:url) { "/projects/#{project.id}/packages/pypi/simple" }
+      let(:snowplow_gitlab_standard_context) { { project: nil, namespace: group } }
+
+      it_behaves_like 'pypi simple index API endpoint'
+      it_behaves_like 'rejects PyPI access with unknown project id'
+      it_behaves_like 'deploy token for package GET requests'
+      it_behaves_like 'job token for package GET requests'
+
+      context 'with project path as id' do
+        let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple" }
+
+        it_behaves_like 'deploy token for package GET requests'
+      end
+    end
+  end
+
+  context 'simple package API endpoint' do
     let_it_be(:package) { create(:pypi_package, project: project) }
 
     subject { get api(url), headers: headers }
@@ -25,7 +86,7 @@ RSpec.describe API::PypiPackages do
     describe 'GET /api/v4/groups/:id/-/packages/pypi/simple/:package_name' do
       let(:package_name) { package.name }
       let(:url) { "/groups/#{group.id}/-/packages/pypi/simple/#{package_name}" }
-      let(:snowplow_gitlab_standard_context) { {} }
+      let(:snowplow_gitlab_standard_context) { { project: nil, namespace: group } }
 
       it_behaves_like 'pypi simple API endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'

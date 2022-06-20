@@ -68,8 +68,8 @@ RSpec.describe Ci::Artifactable do
     end
 
     describe '.expired' do
-      it 'returns a limited number of expired artifacts' do
-        expect(Ci::JobArtifact.expired(1).order_id_asc).to eq([recently_expired_artifact])
+      it 'returns all expired artifacts' do
+        expect(Ci::JobArtifact.expired).to contain_exactly(recently_expired_artifact, later_expired_artifact)
       end
     end
 

@@ -2,6 +2,18 @@
 
 module SystemNotes
   class IssuablesService < ::SystemNotes::BaseService
+    # We create cross-referenced system notes when a commit relates to an issue.
+    # There are two options what time to use for the system note:
+    # 1. The push date (default)
+    # 2. The commit date
+    #
+    # The commit date is useful when an existing Git repository is imported to GitLab.
+    # It helps to preserve an original order of all notes (comments, commits, status changes, e.t.c)
+    # in the imported issues. Otherwise, all commits will be linked before or after all other imported notes.
+    #
+    # See also the discussion in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60700#note_612724683
+    USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE = false
+
     #
     # noteable_ref - Referenced noteable object
     #
@@ -216,7 +228,8 @@ module SystemNotes
         )
       else
         track_cross_reference_action
-        create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference'))
+        created_at = mentioner.created_at if USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE && mentioner.is_a?(Commit)
+        create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference', created_at: created_at))
       end
     end
 

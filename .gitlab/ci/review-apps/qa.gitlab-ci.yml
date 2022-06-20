@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 0.6.0
+    ref: 0.13.0
     file:
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
@@ -13,8 +13,8 @@ include:
 
 .test_variables:
   variables:
-    QA_DEBUG: "true"
     QA_GENERATE_ALLURE_REPORT: "true"
+    COLORIZED_LOGS: "true"
     GITLAB_USERNAME: "root"
     GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITLAB_ADMIN_USERNAME: "root"
@@ -28,7 +28,7 @@ include:
     - .qa-cache
     - .test_variables
     - .bundler_variables
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-99-docker-20.10.14-gcloud-383-kubectl-1.23
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   stage: qa
   needs:
     - review-deploy
@@ -50,6 +50,9 @@ include:
         --tag ~orchestrated \
         --tag ~transient \
         --tag ~skip_signup_disabled \
+        --tag ~requires_git_protocol_v2 \
+        --tag ~requires_praefect \
+        --tag ~sanity_feature_flags \
         --force-color \
         --order random \
         --format documentation \
@@ -79,27 +82,52 @@ include:
 
 # Store knapsack report as artifact so the same report is reused across all jobs
 download-knapsack-report:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-99
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-2.7:bundler-2.3-git-2.33-chrome-${CHROME_VERSION}
   extends:
     - .qa-cache
     - .bundler_variables
     - .review:rules:review-qa-reliable
   stage: prepare
+  variables:
+    QA_KNAPSACK_REPORTS: review-qa-reliable,review-qa-all
   before_script:
     - cd qa && bundle install
   script:
-    - QA_KNAPSACK_REPORT_NAME=review-qa-reliable bundle exec rake "knapsack:download"
-    - QA_KNAPSACK_REPORT_NAME=review-qa-all bundle exec rake "knapsack:download"
+    - bundle exec rake "knapsack:download"
   allow_failure: true
   artifacts:
     paths:
       - qa/knapsack/review-qa-*.json
     expire_in: 1 day
 
+review-qa-sanity:
+  extends:
+    - .review-qa-base
+    - .review:rules:review-qa-sanity
+  retry: 1
+  variables:
+    QA_RUN_TYPE: review-qa-sanity
+  script:
+    - qa_run_status=0
+    - |
+      bundle exec rake "knapsack:rspec[\
+        --tag sanity_feature_flags \
+        --force-color \
+        --order random \
+        --format documentation \
+        --format RspecJunitFormatter --out tmp/rspec.xml \
+      ]" || qa_run_status=$?
+    - if [ ${qa_run_status} -ne 0 ]; then
+        release_sha=$(echo "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-${CI_COMMIT_SHA}}" | cut -c1-11);
+        echo "Errors can be found at https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/${release_sha}/all-events/.";
+      fi
+    - exit ${qa_run_status}
+
 review-qa-smoke:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-smoke
+  retry: 1
   variables:
     QA_RUN_TYPE: review-qa-smoke
     RSPEC_TAGS: --tag smoke
@@ -108,6 +136,7 @@ review-qa-reliable:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-reliable
+  retry: 1
   parallel: 10
   variables:
     QA_RUN_TYPE: review-qa-reliable

@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -157,10 +157,10 @@ version prior to upgrading the application server.
 
 If you're using Geo:
 
-- Review [Geo upgrade documentation](../administration/geo/replication/updating_the_geo_sites.md).
-- Read about the [Geo version-specific update instructions](../administration/geo/replication/version_specific_updates.md).
-- Review Geo-specific steps when [updating the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
-- Create an upgrade and rollback plan for _each_ Geo node (primary and each secondary).
+- Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
+- Read about the [Geo version-specific update instructions](../administration/geo/replication/version_specific_upgrades.md).
+- Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
+- Create an upgrade and rollback plan for _each_ Geo site (primary and each secondary).
 
 #### Runners
 
@@ -170,7 +170,7 @@ After updating GitLab, upgrade your runners to match
 #### Elasticsearch
 
 After updating GitLab, you may have to upgrade
-[Elasticsearch if the new version breaks compatibility](../integration/elasticsearch.md#version-requirements).
+[Elasticsearch if the new version breaks compatibility](../integration/advanced_search/elasticsearch.md#version-requirements).
 Updating Elasticsearch is **out of scope for GitLab Support**.
 
 ## Troubleshooting

@@ -369,7 +369,7 @@ export default {
                 :href="awsTipLearnLink"
                 target="_blank"
                 category="secondary"
-                variant="info"
+                variant="confirm"
                 class="gl-overflow-wrap-break"
                 >{{ __('Learn more about deploying to AWS') }}</gl-button
               >
@@ -416,6 +416,7 @@ export default {
         :disabled="!canSubmit"
         variant="confirm"
         category="primary"
+        data-testid="ciUpdateOrAddVariableBtn"
         data-qa-selector="ci_variable_save_button"
         @click="updateOrAddVariable"
         >{{ modalActionText }}

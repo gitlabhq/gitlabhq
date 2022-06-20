@@ -2,6 +2,7 @@ import { __, sprintf } from '~/locale';
 
 export const issuableTypesMap = {
   ISSUE: 'issue',
+  INCIDENT: 'incident',
   EPIC: 'epic',
   MERGE_REQUEST: 'merge_request',
 };
@@ -25,6 +26,11 @@ export const autoCompleteTextMap = {
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
+    [issuableTypesMap.INCIDENT]: sprintf(
+      __(' or %{emphasisStart}#id%{emphasisEnd}'),
+      { emphasisStart: '<', emphasisEnd: '>' },
+      false,
+    ),
     [issuableTypesMap.EPIC]: sprintf(
       __(' or %{emphasisStart}&epic id%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
@@ -45,6 +51,7 @@ export const autoCompleteTextMap = {
 
 export const inputPlaceholderTextMap = {
   [issuableTypesMap.ISSUE]: __('Paste issue link'),
+  [issuableTypesMap.INCIDENT]: __('Paste link'),
   [issuableTypesMap.EPIC]: __('Paste epic link'),
   [issuableTypesMap.MERGE_REQUEST]: __('Enter merge request URLs'),
 };
@@ -88,6 +95,7 @@ export const addRelatedItemErrorMap = {
  */
 export const issuableIconMap = {
   [issuableTypesMap.ISSUE]: 'issues',
+  [issuableTypesMap.INCIDENT]: 'issues',
   [issuableTypesMap.EPIC]: 'epic',
 };
 
@@ -107,6 +115,7 @@ export const PathIdSeparator = {
 
 export const issuablesBlockHeaderTextMap = {
   [issuableTypesMap.ISSUE]: __('Linked issues'),
+  [issuableTypesMap.INCIDENT]: __('Related incidents or issues'),
   [issuableTypesMap.EPIC]: __('Linked epics'),
 };
 
@@ -122,10 +131,12 @@ export const issuablesBlockAddButtonTextMap = {
 
 export const issuablesFormCategoryHeaderTextMap = {
   [issuableTypesMap.ISSUE]: __('The current issue'),
+  [issuableTypesMap.INCIDENT]: __('The current incident'),
   [issuableTypesMap.EPIC]: __('The current epic'),
 };
 
 export const issuablesFormInputTextMap = {
   [issuableTypesMap.ISSUE]: __('the following issue(s)'),
+  [issuableTypesMap.INCIDENT]: __('the following incident(s) or issue(s)'),
   [issuableTypesMap.EPIC]: __('the following epic(s)'),
 };

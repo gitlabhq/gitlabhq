@@ -72,7 +72,7 @@ export default {
       <span class="d-md-none mr-1">
         {{ $options.translations.addEnvironmentsLabel }}
       </span>
-      <gl-icon class="d-none d-md-inline-flex" name="plus" />
+      <gl-icon class="d-none d-md-inline-flex gl-mr-1" name="plus" />
     </template>
     <gl-search-box-by-type
       ref="searchBox"

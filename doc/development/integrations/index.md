@@ -43,7 +43,7 @@ if you need clarification or spot any outdated information.
 ### Define properties
 
 Integrations can define arbitrary properties to store their configuration with the class method `Integration.prop_accessor`.
-The values are stored as a serialized JSON hash in the `integrations.properties` column.
+The values are stored as an encrypted JSON hash in the `integrations.encrypted_properties` column.
 
 For example:
 

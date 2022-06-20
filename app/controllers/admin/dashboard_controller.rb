@@ -7,7 +7,6 @@ class Admin::DashboardController < Admin::ApplicationController
 
   feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @counts = Gitlab::Database::Count.approximate_counts(COUNTED_ITEMS)
     @projects = Project.order_id_desc.without_deleted.with_route.limit(10)
@@ -24,7 +23,6 @@ class Admin::DashboardController < Admin::ApplicationController
       Gitlab::Redis::Sessions
     ].map(&:version).uniq
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def stats
     @users_statistics = UsersStatistics.latest

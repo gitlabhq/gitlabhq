@@ -177,6 +177,7 @@ export default class MergeRequestTabs {
     this.peek = document.getElementById('js-peek');
     this.sidebar = document.querySelector('.js-right-sidebar');
     this.pageLayout = document.querySelector('.layout-page');
+    this.expandSidebar = document.querySelector('.js-expand-sidebar');
     this.paddingTop = 16;
 
     this.scrollPositions = {};
@@ -280,6 +281,8 @@ export default class MergeRequestTabs {
       if (tabPane) tabPane.style.display = 'block';
       const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
       if (tab) tab.classList.add('active');
+
+      this.expandSidebar?.classList.toggle('gl-display-none!', action !== 'show');
 
       if (action === 'commits') {
         this.loadCommits(href);

@@ -48,7 +48,7 @@ export default {
 
       <gl-table :items="list" :fields="$options.tableFields" />
 
-      <gl-button :href="createUrl" category="primary" variant="info">
+      <gl-button :href="createUrl" category="primary" variant="confirm">
         {{ $options.i18n.configureRegions }}
       </gl-button>
     </div>

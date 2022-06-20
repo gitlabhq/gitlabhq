@@ -24,7 +24,7 @@ There are various configuration options to help GitLab server administrators:
 
 - Enabling/disabling Git LFS support.
 - Changing the location of LFS object storage.
-- Setting up object storage supported by [Fog](http://fog.io/about/provider_documentation.html).
+- Setting up object storage supported by [Fog](https://fog.io/about/provider_documentation.html).
 
 ### Configuration for Omnibus installations
 
@@ -57,7 +57,7 @@ In `config/gitlab.yml`:
 
 You can store LFS objects in remote object storage. This allows you
 to reduce reads and writes to the local disk, and free up disk space significantly.
-GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](http://fog.io/about/provider_documentation.html)
+GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](https://fog.io/about/provider_documentation.html)
 to check which storage services can be integrated with GitLab.
 You can also use external object storage in a private local network. For example,
 [MinIO](https://min.io/) is a standalone object storage service that works with GitLab instances.

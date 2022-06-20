@@ -105,7 +105,7 @@ To filter only projects in that namespace, select from the **Namespace** dropdow
 
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 
-1. Click the **Public** tab.
+1. Select the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
 
 ### Administering Users
@@ -115,7 +115,7 @@ You can administer all users in the GitLab instance from the Admin Area's Users 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 
-To list users matching a specific criteria, click on one of the following tabs on the **Users** page:
+To list users matching a specific criteria, select one of the following tabs on the **Users** page:
 
 - **Active**
 - **Admins**
@@ -135,13 +135,13 @@ For each user, the following are listed:
 1. Date of account creation
 1. Date of last activity
 
-To edit a user, click the **Edit** button in that user's
-row. To delete the user, or delete the user and their contributions, click the cog dropdown in
+To edit a user, select the **Edit** button in that user's
+row. To delete the user, or delete the user and their contributions, select the cog dropdown in
 that user's row, and select the desired option.
 
 To change the sort order:
 
-1. Click the sort dropdown.
+1. Select the sort dropdown.
 1. Select the desired order.
 
 By default the sort dropdown shows **Name**.
@@ -240,17 +240,17 @@ To access the Groups page:
 1. On the left sidebar, select **Overview > Groups**.
 
 For each group, the page displays their name, description, size, number of projects in the group,
-number of members, and whether the group is private, internal, or public. To edit a group, click
-the **Edit** button in that group's row. To delete the group, click the **Delete** button in
+number of members, and whether the group is private, internal, or public. To edit a group, select
+the **Edit** button in that group's row. To delete the group, select the **Delete** button in
 that group's row.
 
-To change the sort order, click the sort dropdown and select the desired order. The default
+To change the sort order, select the sort dropdown and select the desired order. The default
 sort order is by **Last created**.
 
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../group/index.md#create-a-group) click **New group**.
+To [Create a new group](../group/index.md#create-a-group) select **New group**.
 
 ### Administering Topics
 
@@ -286,7 +286,7 @@ To access the Jobs page:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Jobs**. All jobs are listed, in descending order of job ID.
-1. Click the **All** tab to list all jobs. Click the **Pending**, **Running**, or **Finished**
+1. Select the **All** tab to list all jobs. Select the **Pending**, **Running**, or **Finished**
    tab to list only jobs of that status.
 
 For each job, the following details are listed:
@@ -313,14 +313,7 @@ To access the **Runners** page:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Runners**.
 
-The **Runners** page features:
-
-- A description of runners and their possible states.
-- Instructions on installing a runner.
-- A list of all registered runners.
-
-Runners are listed in descending order by the date they were created, by default. You can change
-the sort order to *Last Contacted* from the dropdown beside the search field.
+#### Search and filter runners
 
 To search runners' descriptions:
 
@@ -336,20 +329,18 @@ You can also filter runners by status, type, and tag. To filter:
 
 ![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
 
+#### Runner attributes
+
 For each runner, the following attributes are listed:
 
 | Attribute    | Description |
 |--------------|-------------|
-| Type/State   | One or more of the following states: shared, group, specific, locked, or paused |
-| Runner token | Partial token used to identify the runner, and which the runner uses to communicate with the GitLab instance |
-| Runner ID    | Numerical ID of the runner |
-| Description  | Description given to the runner |
-| Version      | GitLab Runner version |
-| IP address   | IP address of the host on which the runner is registered |
-| Projects     | Number of projects to which the runner is assigned |
-| Jobs         | Total of jobs run by the runner |
-| Tags         | Tags associated with the runner |
-| Last contact | Timestamp indicating when the runner last contacted the GitLab instance |
+| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the **Ultimate** tier, the upgrade status is available. |
+| Runner details | Information about the runner, including partial token and details about the computer the runner was registered from. |
+| Version      | GitLab Runner version. |
+| Jobs         | Total number of jobs run by the runner. |
+| Tags         | Tags associated with the runner. |
+| Last contact | Timestamp indicating when the runner last contacted the GitLab instance. |
 
 You can also edit, pause, or remove each runner.
 

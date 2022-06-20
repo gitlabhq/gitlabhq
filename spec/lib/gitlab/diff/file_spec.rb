@@ -56,45 +56,21 @@ RSpec.describe Gitlab::Diff::File do
 
     context 'when file is ipynb' do
       let(:ipynb_semantic_diff) { false }
-      let(:rendered_diffs_viewer) { false }
 
       before do
-        stub_feature_flags(ipynb_semantic_diff: ipynb_semantic_diff, rendered_diffs_viewer: rendered_diffs_viewer)
+        stub_feature_flags(ipynb_semantic_diff: ipynb_semantic_diff)
       end
 
-      context 'when ipynb_semantic_diff is off, and rendered_viewer is off' do
-        it 'does not generate notebook diffs' do
-          expect(Gitlab::Diff::CustomDiff).not_to receive(:preprocess_before_diff)
-          expect(diff_file.rendered).to be_nil
-        end
+      subject { diff_file.rendered }
+
+      context 'when ipynb_semantic_diff is off' do
+        it { is_expected.to be_nil }
       end
 
-      context 'when ipynb_semantic_diff is off, and rendered_viewer is on' do
-        let(:rendered_diffs_viewer) { true }
-
-        it 'does not generate rendered diff' do
-          expect(Gitlab::Diff::CustomDiff).not_to receive(:preprocess_before_diff)
-          expect(diff_file.rendered).to be_nil
-        end
-      end
-
-      context 'when ipynb_semantic_diff is on, and rendered_viewer is off' do
+      context 'and rendered_viewer is on' do
         let(:ipynb_semantic_diff) { true }
 
-        it 'transforms using custom diff CustomDiff' do
-          expect(Gitlab::Diff::CustomDiff).to receive(:preprocess_before_diff).and_call_original
-          expect(diff_file.rendered).to be_nil
-        end
-      end
-
-      context 'when ipynb_semantic_diff is on, and rendered_viewer is on' do
-        let(:ipynb_semantic_diff) { true }
-        let(:rendered_diffs_viewer) { true }
-
-        it 'transforms diff using NotebookDiffFile' do
-          expect(Gitlab::Diff::CustomDiff).not_to receive(:preprocess_before_diff)
-          expect(diff_file.rendered).not_to be_nil
-        end
+        it { is_expected.not_to be_nil }
       end
     end
   end

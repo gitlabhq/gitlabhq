@@ -64,7 +64,7 @@ RSpec.describe 'Milestone' do
       end
       find('input[name="commit"]').click
 
-      expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
+      expect(find('.gl-alert-danger')).to have_content('already being used for another group or project milestone.')
     end
   end
 
@@ -122,8 +122,8 @@ RSpec.describe 'Milestone' do
 
         click_link 'Reopen Milestone'
 
-        expect(page).not_to have_selector('.status-box-closed')
-        expect(page).to have_selector('.status-box-open')
+        expect(page).not_to have_selector('.gl-bg-red-500')
+        expect(page).to have_selector('.gl-bg-green-500')
       end
     end
 
@@ -133,8 +133,8 @@ RSpec.describe 'Milestone' do
 
         click_link 'Reopen Milestone'
 
-        expect(page).not_to have_selector('.status-box-closed')
-        expect(page).to have_selector('.status-box-open')
+        expect(page).not_to have_selector('.gl-bg-red-500')
+        expect(page).to have_selector('.gl-bg-green-500')
       end
     end
   end

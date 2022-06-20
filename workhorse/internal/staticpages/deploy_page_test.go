@@ -1,7 +1,6 @@
 package staticpages
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,11 +13,7 @@ import (
 )
 
 func TestIfNoDeployPageExist(t *testing.T) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	w := httptest.NewRecorder()
 
@@ -33,14 +28,10 @@ func TestIfNoDeployPageExist(t *testing.T) {
 }
 
 func TestIfDeployPageExist(t *testing.T) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	deployPage := "DEPLOY"
-	ioutil.WriteFile(filepath.Join(dir, "index.html"), []byte(deployPage), 0600)
+	os.WriteFile(filepath.Join(dir, "index.html"), []byte(deployPage), 0600)
 
 	w := httptest.NewRecorder()
 

@@ -37,7 +37,7 @@ class IssuesFinder < IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def klass
-    Issue.includes(:author)
+    model_class.includes(:author)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -47,10 +47,10 @@ class IssuesFinder < IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def with_confidentiality_access_check
-    return Issue.all if params.user_can_see_all_issues?
+    return model_class.all if params.user_can_see_all_issues?
 
     # Only admins can see hidden issues, so for non-admins, we filter out any hidden issues
-    issues = Issue.without_hidden
+    issues = model_class.without_hidden
 
     return issues.all if params.user_can_see_all_confidential_issues?
 
@@ -77,7 +77,7 @@ class IssuesFinder < IssuableFinder
 
   def init_collection
     if params.public_only?
-      Issue.public_only
+      model_class.public_only
     else
       with_confidentiality_access_check
     end
@@ -129,7 +129,7 @@ class IssuesFinder < IssuableFinder
   def by_issue_types(items)
     issue_type_params = Array(params[:issue_types]).map(&:to_s)
     return items if issue_type_params.blank?
-    return Issue.none unless (WorkItems::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
+    return model_class.none unless (WorkItems::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
 
     items.with_issue_type(params[:issue_types])
   end
@@ -139,6 +139,10 @@ class IssuesFinder < IssuableFinder
     return items if issue_type_params.blank?
 
     items.without_issue_type(issue_type_params)
+  end
+
+  def model_class
+    Issue
   end
 end
 

@@ -13,7 +13,7 @@
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class} #{'right-sidebar-merge-requests' if moved_sidebar_enabled}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if moved_sidebar_enabled}" }
-    .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-md-display-none!' if moved_sidebar_enabled}" }
+    .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if moved_sidebar_enabled}" }
       %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", class: "#{'gl-display-block' if moved_sidebar_enabled}", href: "#", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       - if signed_in && !moved_sidebar_enabled
@@ -48,7 +48,7 @@
           .js-milestone-select{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
       - if in_group_context_with_iterations
-        .block{ class: 'gl-pt-0! gl-collapse-empty', data: { qa_selector: 'iteration_container', testid: 'iteration_container' } }<
+        .block.gl-collapse-empty{ data: { qa_selector: 'iteration_container', testid: 'iteration_container' } }<
           = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:show_crm_contacts]
@@ -106,8 +106,7 @@
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
             = sprite_icon('long-arrow')
           .dropdown.sidebar-move-issue-dropdown.hide-collapsed
-            %button.gl-button.btn.btn-default.btn-block.js-sidebar-dropdown-toggle.js-move-issue{ type: 'button',
-              data: { toggle: 'dropdown', display: 'static', track_label: "right_sidebar", track_property: "move_issue", track_action: "click_button", track_value: "" } }
+            = render Pajamas::ButtonComponent.new(block: true, button_options: { class: 'js-sidebar-dropdown-toggle js-move-issue', data: { toggle: 'dropdown', display: 'static', track_label: "right_sidebar", track_property: "move_issue", track_action: "click_button", track_value: "" } } ) do
               = _('Move issue')
             .dropdown-menu.dropdown-menu-selectable.dropdown-extended-height
               = dropdown_title(_('Move issue'))

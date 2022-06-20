@@ -114,7 +114,9 @@ module API
                   module_version: params[:module_version]
                 )
 
-                jwt_token = Gitlab::TerraformRegistryToken.from_token(token_from_namespace_inheritable).encoded
+                if token_from_namespace_inheritable
+                  jwt_token = Gitlab::TerraformRegistryToken.from_token(token_from_namespace_inheritable).encoded
+                end
 
                 header 'X-Terraform-Get', module_file_path.sub(%r{module_version/file$}, "#{params[:module_version]}/file?token=#{jwt_token}&archive=tgz")
                 status :no_content

@@ -39,17 +39,17 @@ the following tables:
 |----------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
 | [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)     | **{check-circle}** Yes   | String                     | `CRITICAL`, `HIGH`, `MEDIUM` in [analyzer version 3.2.0 and later](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/blob/master/CHANGELOG.md#v320). In earlier versions, hardcoded to `Unknown`. |
 | [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                         | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
-| [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                           | **{check-circle}** Yes   | N/A                        | Hardcodes all severity levels to `Unknown` |
+| [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
 | [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                   | **{check-circle}** Yes   | String                     | `INFO`, `WARNING`, `ERROR`         |
 | [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                     | **{check-circle}** Yes   | Integer                    | `0`, `1`, `2`, `3`, `4`, `5`       |
-| [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                             | **{check-circle}** Yes   | N/A                        | Hardcodes all severity levels to `Unknown` |
+| [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                             | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
 | [`SpotBugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `11`, `12`, `18`    |
 | [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)                               | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
 | [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)                             | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
 | [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) | **{check-circle}** Yes   | String                     | `ERROR`, `WARNING`                 |
 | [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `4`, `5`            |
 | [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                           | **{check-circle}** Yes   | String                     | `CriticalSeverity`, `InfoSeverity` |
-| [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)                           | **{check-circle}** Yes   | N/A                        | Hardcodes all severity levels to `Critical` |
+| [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Critical` |
 | [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)                           | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
 
 ## Dependency Scanning

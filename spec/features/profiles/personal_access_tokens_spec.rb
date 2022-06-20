@@ -3,34 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe 'Profile > Personal Access Tokens', :js do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:user) { create(:user) }
   let(:pat_create_service) { double('PersonalAccessTokens::CreateService', execute: ServiceResponse.error(message: 'error', payload: { personal_access_token: PersonalAccessToken.new })) }
 
   def active_personal_access_tokens
-    find(".table.active-tokens")
-  end
-
-  def no_personal_access_tokens_message
-    find(".settings-message")
+    find("[data-testid='active-tokens']")
   end
 
   def created_personal_access_token
-    find("#created-personal-access-token").value
+    find_field('new-access-token').value
   end
 
   def feed_token_description
     "Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
   end
 
-  def disallow_personal_access_token_saves!
-    allow(PersonalAccessTokens::CreateService).to receive(:new).and_return(pat_create_service)
-
-    errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
-    allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
-  end
-
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 
@@ -51,6 +41,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       check "read_user"
 
       click_on "Create personal access token"
+      wait_for_all_requests
 
       expect(active_personal_access_tokens).to have_text(name)
       expect(active_personal_access_tokens).to have_text('in')
@@ -61,13 +52,16 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
 
     context "when creation fails" do
       it "displays an error message" do
-        disallow_personal_access_token_saves!
+        number_tokens_before = PersonalAccessToken.count
         visit profile_personal_access_tokens_path
         fill_in "Token name", with: 'My PAT'
 
-        expect { click_on "Create personal access token" }.not_to change { PersonalAccessToken.count }
-        expect(page).to have_content("Name cannot be nil")
-        expect(page).not_to have_selector("#created-personal-access-token")
+        click_on "Create personal access token"
+        wait_for_all_requests
+
+        expect(number_tokens_before).to equal(PersonalAccessToken.count)
+        expect(page).to have_content(_("Scopes can't be blank"))
+        expect(page).not_to have_selector("[data-testid='new-access-tokens']")
       end
     end
   end
@@ -101,31 +95,27 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
 
     it "allows revocation of an active token" do
       visit profile_personal_access_tokens_path
-      accept_confirm { click_on "Revoke" }
+      accept_gl_confirm(button_text: 'Revoke') { click_on "Revoke" }
 
-      expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active personal access tokens.")
+      expect(active_personal_access_tokens).to have_text("This user has no active personal access tokens.")
     end
 
     it "removes expired tokens from 'active' section" do
       personal_access_token.update!(expires_at: 5.days.ago)
       visit profile_personal_access_tokens_path
 
-      expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active personal access tokens.")
+      expect(active_personal_access_tokens).to have_text("This user has no active personal access tokens.")
     end
 
     context "when revocation fails" do
       it "displays an error message" do
-        visit profile_personal_access_tokens_path
-
         allow_next_instance_of(PersonalAccessTokens::RevokeService) do |instance|
           allow(instance).to receive(:revocation_permitted?).and_return(false)
         end
+        visit profile_personal_access_tokens_path
 
-        accept_confirm { click_on "Revoke" }
+        accept_gl_confirm(button_text: "Revoke") { click_on "Revoke" }
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)
-        expect(page).to have_content("Not permitted to revoke")
       end
     end
   end

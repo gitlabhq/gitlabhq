@@ -121,7 +121,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 
    1. Navigate to your project's **Settings > Repository** and
    expand **Protected branches**.
-   1. Scroll down to locate the protected branches and click
+   1. Scroll down to locate the protected branches and select
    **Unprotect** the default branch.
 
 1. Force-push to GitLab:
@@ -162,7 +162,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    1. Select the default branch from the **Branch** dropdown menu,
    and set up the
    **Allowed to push** and **Allowed to merge** rules.
-   1. Click **Protect**.
+   1. Select **Protect**.
 
 <!-- ## Troubleshooting
 

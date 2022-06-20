@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Specs::Runner do
-  shared_examples 'excludes orchestrated, transient, and geo' do
-    it 'excludes the orchestrated, transient, and geo tags, and includes default args' do
-      expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+  shared_examples 'excludes default skipped, and geo' do
+    it 'excludes the default skipped and geo tags, and includes default args' do
+      expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
 
       subject.perform
     end
+  end
+
+  before do
+    stub_const('DEFAULT_SKIPPED_TAGS', %w[--tag ~orchestrated --tag ~transient --tag ~sanity_feature_flags].freeze)
   end
 
   describe '#perform' do
@@ -17,13 +21,15 @@ RSpec.describe QA::Specs::Runner do
       QA::Runtime::Scenario.define(:klass, "QA::Scenario::Test::Instance::All")
     end
 
-    it_behaves_like 'excludes orchestrated, transient, and geo'
+    it_behaves_like 'excludes default skipped, and geo'
 
     context 'when tty is set' do
       subject { described_class.new.tap { |runner| runner.tty = true } }
 
       it 'sets the `--tty` flag' do
-        expect_rspec_runner_arguments(['--tty', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(
+          ['--tty'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS]
+        )
 
         subject.perform
       end
@@ -39,7 +45,10 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'sets the `--dry-run` flag' do
-        expect_rspec_runner_arguments(['--dry-run', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS], [$stderr, anything])
+        expect_rspec_runner_arguments(
+          ['--dry-run'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
+          [$stderr, anything]
+        )
 
         subject.perform
       end
@@ -73,7 +82,10 @@ RSpec.describe QA::Specs::Runner do
         subject { described_class.new.tap { |runner| runner.options = %w[--tag actioncable] } }
 
         it 'includes the option value in the file name' do
-          expect_rspec_runner_arguments(['--dry-run', '--tag', '~geo', '--tag', 'actioncable', *described_class::DEFAULT_TEST_PATH_ARGS], [$stderr, anything])
+          expect_rspec_runner_arguments(
+            ['--dry-run', '--tag', '~geo', '--tag', 'actioncable', *described_class::DEFAULT_TEST_PATH_ARGS],
+            [$stderr, anything]
+          )
 
           expect(File).to receive(:open).with('no_of_examples/test_instance_all_actioncable.txt', 'w') { '22' }
 
@@ -98,7 +110,10 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'sets the `--dry-run` flag' do
-        expect_rspec_runner_arguments(['--dry-run', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS], [$stderr, anything])
+        expect_rspec_runner_arguments(
+          ['--dry-run'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
+          [$stderr, anything]
+        )
 
         subject.perform
       end
@@ -125,7 +140,9 @@ RSpec.describe QA::Specs::Runner do
       subject { described_class.new.tap { |runner| runner.tags = %i[orchestrated github] } }
 
       it 'focuses on the given tags' do
-        expect_rspec_runner_arguments(['--tag', 'orchestrated', '--tag', 'github', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(
+          ['--tag', 'orchestrated', '--tag', 'github', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS]
+        )
 
         subject.perform
       end
@@ -144,8 +161,8 @@ RSpec.describe QA::Specs::Runner do
     context 'when "qa/specs/features/foo" is set as options' do
       subject { described_class.new.tap { |runner| runner.options = %w[qa/specs/features/foo] } }
 
-      it 'passes the given tests path and excludes the orchestrated, transient, and geo tags' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', 'qa/specs/features/foo'])
+      it 'passes the given tests path and excludes the default skipped, and geo tags' do
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', 'qa/specs/features/foo'])
 
         subject.perform
       end
@@ -167,7 +184,7 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'includes default args and excludes the skip_signup_disabled tag' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
       end
@@ -179,7 +196,7 @@ RSpec.describe QA::Specs::Runner do
       end
 
       it 'includes default args and excludes the skip_live_env tag' do
-        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', '--tag', '~skip_live_env', *described_class::DEFAULT_TEST_PATH_ARGS])
+        expect_rspec_runner_arguments(DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', '--tag', '~skip_live_env', *described_class::DEFAULT_TEST_PATH_ARGS])
         subject.perform
       end
     end
@@ -212,7 +229,10 @@ RSpec.describe QA::Specs::Runner do
         end
 
         it 'includes default args and excludes all unsupported tags' do
-          expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *excluded_feature_tags_except(feature), *described_class::DEFAULT_TEST_PATH_ARGS])
+          expect_rspec_runner_arguments(
+            DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *excluded_feature_tags_except(feature),
+                                    *described_class::DEFAULT_TEST_PATH_ARGS]
+          )
 
           subject.perform
         end
@@ -237,11 +257,11 @@ RSpec.describe QA::Specs::Runner do
           end
         end
 
-        it_behaves_like 'excludes orchestrated, transient, and geo'
+        it_behaves_like 'excludes default skipped, and geo'
       end
 
       context 'when features are not specified' do
-        it_behaves_like 'excludes orchestrated, transient, and geo'
+        it_behaves_like 'excludes default skipped, and geo'
       end
     end
 

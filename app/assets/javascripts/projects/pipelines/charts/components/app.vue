@@ -12,11 +12,14 @@ export default {
     DeploymentFrequencyCharts: () =>
       import('ee_component/dora/components/deployment_frequency_charts.vue'),
     LeadTimeCharts: () => import('ee_component/dora/components/lead_time_charts.vue'),
+    TimeToRestoreServiceCharts: () =>
+      import('ee_component/dora/components/time_to_restore_service_charts.vue'),
     ProjectQualitySummary: () => import('ee_component/project_quality_summary/app.vue'),
   },
   piplelinesTabEvent: 'p_analytics_ci_cd_pipelines',
   deploymentFrequencyTabEvent: 'p_analytics_ci_cd_deployment_frequency',
   leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
+  timeToRestoreServiceTabEvent: 'p_analytics_ci_cd_time_to_restore_service',
   inject: {
     shouldRenderDoraCharts: {
       type: Boolean,
@@ -37,7 +40,7 @@ export default {
       const chartsToShow = ['pipelines'];
 
       if (this.shouldRenderDoraCharts) {
-        chartsToShow.push('deployment-frequency', 'lead-time');
+        chartsToShow.push('deployment-frequency', 'lead-time', 'time-to-restore-service');
       }
 
       if (this.shouldRenderQualitySummary) {
@@ -94,6 +97,13 @@ export default {
           @click="trackTabClick($options.leadTimeTabEvent)"
         >
           <lead-time-charts />
+        </gl-tab>
+        <gl-tab
+          :title="s__('DORA4Metrics|Time to restore service')"
+          data-testid="time-to-restore-service-tab"
+          @click="trackTabClick($options.timeToRestoreServiceTabEvent)"
+        >
+          <time-to-restore-service-charts />
         </gl-tab>
       </template>
       <gl-tab v-if="shouldRenderQualitySummary" :title="s__('QualitySummary|Project quality')">

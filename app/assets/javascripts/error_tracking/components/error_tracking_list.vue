@@ -369,7 +369,7 @@ export default {
       </div>
 
       <div v-if="loading" class="py-3">
-        <gl-loading-icon size="md" />
+        <gl-loading-icon size="lg" />
       </div>
 
       <template v-else>

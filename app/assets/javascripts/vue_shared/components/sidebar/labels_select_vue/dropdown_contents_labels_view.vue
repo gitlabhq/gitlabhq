@@ -13,6 +13,9 @@ import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/
 
 import LabelItem from './label_item.vue';
 
+// @deprecated This component should only be used when there is no GraphQL API.
+// In most cases you should use
+// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue` instead.
 export default {
   components: {
     GlIntersectionObserver,
@@ -166,7 +169,7 @@ export default {
         <span class="flex-grow-1">{{ labelsListTitle }}</span>
         <gl-button
           :aria-label="__('Close')"
-          variant="link"
+          category="tertiary"
           size="small"
           class="dropdown-header-button gl-p-0!"
           icon="close"
@@ -193,6 +196,7 @@ export default {
             :key="label.id"
             :label="label"
             :is-label-set="label.set"
+            :is-label-indeterminate="label.indeterminate"
             :highlight="index === currentHighlightItem"
             @clickLabel="handleLabelClick(label)"
           />

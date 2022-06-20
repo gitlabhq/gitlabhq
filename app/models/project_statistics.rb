@@ -26,7 +26,7 @@ class ProjectStatistics < ApplicationRecord
     pipeline_artifacts_size: %i[storage_size],
     snippets_size: %i[storage_size]
   }.freeze
-  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size].freeze
+  NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size, :container_registry_size].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -77,8 +77,6 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_container_registry_size
-    return unless Feature.enabled?(:container_registry_project_statistics, project)
-
     self.container_registry_size = project.container_repositories_size || 0
   end
 

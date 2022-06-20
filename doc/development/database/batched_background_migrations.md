@@ -1,6 +1,6 @@
 ---
 type: reference, dev
-stage: Enablement
+stage: Data Stores
 group: Database
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
 ---
@@ -152,9 +152,7 @@ When you start the second post-deployment migration, delete the
 previously batched migration with the provided code:
 
 ```ruby
-Gitlab::Database::BackgroundMigration::BatchedMigration
-  .for_configuration(MIGRATION_NAME, TABLE_NAME, COLUMN, JOB_ARGUMENTS)
-  .delete_all
+delete_batched_background_migration(MIGRATION_NAME, TABLE_NAME, COLUMN, JOB_ARGUMENTS)
 ```
 
 ## Cleaning up
@@ -192,7 +190,7 @@ data to be in the new format.
 
 The `routes` table has a `source_type` field that's used for a polymorphic relationship.
 As part of a database redesign, we're removing the polymorphic relationship. One step of
-the work will be migrating data from the `source_id` column into a new singular foreign key.
+the work is migrating data from the `source_id` column into a new singular foreign key.
 Because we intend to delete old rows later, there's no need to update them as part of the
 background migration.
 
@@ -221,9 +219,9 @@ background migration.
    NOTE:
    Job classes must be subclasses of `BatchedMigrationJob` to be
    correctly handled by the batched migration framework. Any subclass of
-   `BatchedMigrationJob` will be initialized with necessary arguments to
+   `BatchedMigrationJob` is initialized with necessary arguments to
    execute the batch, as well as a connection to the tracking database.
-   Additional `job_arguments` set on the migration will be passed to the
+   Additional `job_arguments` set on the migration are passed to the
    job's `perform` method.
 
 1. Add a new trigger to the database to update newly created and updated routes,
@@ -245,11 +243,13 @@ background migration.
 1. Create a post-deployment migration that queues the migration for existing data:
 
    ```ruby
-   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[1.0]
+   class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.0]
      disable_ddl_transaction!
 
      MIGRATION = 'BackfillRouteNamespaceId'
      DELAY_INTERVAL = 2.minutes
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
 
      def up
        queue_batched_background_migration(
@@ -261,11 +261,18 @@ background migration.
      end
 
      def down
-       Gitlab::Database::BackgroundMigration::BatchedMigration
-         .for_configuration(MIGRATION, :routes, :id, []).delete_all
+       delete_batched_background_migration(MIGRATION, :routes, :id, [])
      end
    end
    ```
+
+   NOTE:
+   When queuing a batched background migration, you need to restrict
+   the schema to the database where you make the actual changes.
+   In this case, we are updating `routes` records, so we set
+   `restrict_gitlab_migration gitlab_schema: :gitlab_main`. If, however,
+   you need to perform a CI data migration, you would set
+   `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 
    After deployment, our application:
    - Continues using the data as before.
@@ -275,16 +282,19 @@ background migration.
    that checks that the batched background migration is completed. For example:
 
    ```ruby
-   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[1.0]
+   class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.0]
      MIGRATION = 'BackfillRouteNamespaceId'
      disable_ddl_transaction!
+
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
 
      def up
        ensure_batched_background_migration_is_finished(
          job_class_name: MIGRATION,
          table_name: :routes,
          column_name: :id,
-         job_arguments: []
+         job_arguments: [],
+         finalize: true
        )
      end
 
@@ -293,6 +303,11 @@ background migration.
      end
    end
    ```
+
+   NOTE:
+   If the batched background migration is not finished, the system will
+   execute the batched background migration inline. If you don't want
+   to see this behavior, you need to pass `finalize: false`.
 
    If the application does not depend on the data being 100% migrated (for
    instance, the data is advisory, and not mission-critical), then you can skip this

@@ -178,7 +178,8 @@ To enable DAST to run automatically, either:
 
 #### Include the DAST template
 
-> This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
+> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
+> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
 
 If you want to manually add DAST to your application, the DAST job is defined
 in a CI/CD template file. Updates to the template are provided with GitLab
@@ -333,7 +334,7 @@ Vulnerability rules in an API scan are different than those in a normal website 
 
 A new DAST API scanning engine is available in GitLab 13.12 and later. For more details, see [DAST API scanning engine](../dast_api). The new scanning engine supports REST, SOAP, GraphQL, and generic APIs using forms, XML, and JSON. Testing can be performed using OpenAPI, Postman Collections, and HTTP Archive (HAR) documents.
 
-The target API instance’s base URL is provided by using the `DAST_API_TARGET_URL` variable or an `environment_url.txt` file.
+The target API instance's base URL is provided by using the `DAST_API_TARGET_URL` variable or an `environment_url.txt` file.
 
 #### Specification format
 
@@ -493,7 +494,7 @@ To perform a [full scan](#full-scan) on the listed paths, use the `DAST_FULL_SCA
 ### List URLs scanned
 
 When DAST completes scanning, the merge request page states the number of URLs scanned.
-Click **View details** to view the web console output which includes the list of scanned URLs.
+Select **View details** to view the web console output which includes the list of scanned URLs.
 
 ![DAST Widget](img/dast_urls_scanned_v12_10.png)
 
@@ -574,7 +575,7 @@ DAST scan with both configured exits with an error.
 
 By default, several rules are disabled because they either take a long time to
 run or frequently generate false positives. The complete list of disabled rules
-can be found in [exclude_rules.yml](https://gitlab.com/gitlab-org/security-products/dast/-/blob/main/src/config/exclude_rules.yml).
+can be found in [`exclude_rules.yml`](https://gitlab.com/gitlab-org/security-products/dast/-/blob/main/src/config/exclude_rules.yml).
 
 The lists for `DAST_EXCLUDE_RULES` and `DAST_ONLY_INCLUDE_RULES` **must** be enclosed in double
 quotes (`"`), otherwise they are interpreted as numeric values.
@@ -737,7 +738,7 @@ by the application as correctly authenticated.
 Authentication supports single form logins, multi-step login forms, and authenticating to URLs outside of the configured target URL.
 
 WARNING:
-**NEVER** run an authenticated scan against a production server. When an authenticated
+**Never** run an authenticated scan against a production server. When an authenticated
 scan is run, it may perform *any* function that the authenticated user can. This
 includes actions like modifying and deleting data, submitting forms, and following links.
 Only run an authenticated scan against a test server.
@@ -846,7 +847,7 @@ Many web applications show the user the login form in a pop-up (modal) window.
 For these applications, navigating to the form requires both:
 
 - A starting URL.
-- A list of elements to click to display the modal window.
+- A list of elements to select to display the modal window.
 
 When `DAST_BROWSER_PATH_TO_LOGIN_FORM` is present, like in this example:
 
@@ -1327,7 +1328,7 @@ class DastWebsiteTargetView(View):
 ##### Node (with Express) example for on-demand scan
 
 Here's how you can add a
-[custom header in Node (with Express)](http://expressjs.com/en/5x/api.html#res.append):
+[custom header in Node (with Express)](https://expressjs.com/en/5x/api.html#res.append):
 
 ```javascript
 app.get('/dast-website-target', function(req, res) {
@@ -1399,17 +1400,19 @@ and DAST site profiles are included in the [audit log](../../../administration/a
 
 ## Reports
 
-The DAST tool outputs a report file in JSON format by default. However, this tool can also generate reports in
-Markdown, HTML, and XML. For more information, see the [schema for DAST reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json).
+The DAST tool outputs a `gl-dast-report.json` report file containing details of the scan and its results.
+This file is included in the job's artifacts. JSON is the default format, but
+you can output the report in Markdown, HTML, and XML formats. To specify an alternative
+format, use a [CI/CD variable](#available-cicd-variables). You can also use a CI/CD variable
+to configure the job to output the `gl-dast-debug-auth-report.html` file which helps when debugging
+authentication issues.
 
-### JSON
+For details of the report's schema, see the [schema for DAST reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json). Example reports can be found in the
+[DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/main/test/end-to-end/expect).
 
 WARNING:
-The JSON report artifacts are not a public API of DAST and their format is expected to change in the future.
-
-The DAST tool always emits a JSON report file called `gl-dast-report.json` and
-sample reports can be found in the
-[DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/main/test/end-to-end/expect).
+The JSON report artifacts are not a public API of DAST and their format is expected to change in the
+future.
 
 ## Optimizing DAST
 

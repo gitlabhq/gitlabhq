@@ -2,6 +2,7 @@
 import { GlButton, GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import {
   visibilityOptions,
@@ -16,7 +17,7 @@ import { toggleHiddenClassBySelector } from '../external';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectSettingRow from './project_setting_row.vue';
 
-const PAGE_FEATURE_ACCESS_LEVEL = s__('ProjectSettings|Everyone');
+const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
 
 export default {
   i18n: {
@@ -28,7 +29,14 @@ export default {
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
     mergeRequestsLabel: s__('ProjectSettings|Merge requests'),
     operationsLabel: s__('ProjectSettings|Operations'),
+    packagesHelpText: s__(
+      'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
+    ),
+    packageRegistryHelpText: s__(
+      'ProjectSettings|Every project can have its own space to store its packages.',
+    ),
     packagesLabel: s__('ProjectSettings|Packages'),
+    packageRegistryLabel: s__('ProjectSettings|Package registry'),
     pagesLabel: s__('ProjectSettings|Pages'),
     ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
@@ -54,7 +62,7 @@ export default {
     GlToggle,
     ConfirmDanger,
   },
-  mixins: [settingsMixin],
+  mixins: [settingsMixin, glFeatureFlagsMixin()],
 
   props: {
     requestCveAvailable: {
@@ -183,6 +191,7 @@ export default {
       repositoryAccessLevel: featureAccessLevel.EVERYONE,
       forkingAccessLevel: featureAccessLevel.EVERYONE,
       mergeRequestsAccessLevel: featureAccessLevel.EVERYONE,
+      packageRegistryAccessLevel: featureAccessLevel.EVERYONE,
       buildsAccessLevel: featureAccessLevel.EVERYONE,
       wikiAccessLevel: featureAccessLevel.EVERYONE,
       snippetsAccessLevel: featureAccessLevel.EVERYONE,
@@ -196,6 +205,7 @@ export default {
       warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
+      enforceAuthChecksOnUploads: true,
       highlightChangesClass: false,
       emailsDisabled: false,
       cveIdRequestEnabled: true,
@@ -229,6 +239,18 @@ export default {
       );
     },
 
+    packageRegistryFeatureAccessLevelOptions() {
+      const options = [FEATURE_ACCESS_LEVEL_ANONYMOUS];
+
+      if (this.visibilityLevel === visibilityOptions.PRIVATE) {
+        options.unshift(featureAccessLevelMembers);
+      } else if (this.visibilityLevel === visibilityOptions.INTERNAL) {
+        options.unshift(featureAccessLevelEveryone);
+      }
+
+      return options;
+    },
+
     pagesFeatureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
 
@@ -242,7 +264,7 @@ export default {
         }
 
         if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
-          options.push([30, PAGE_FEATURE_ACCESS_LEVEL]);
+          options.push(FEATURE_ACCESS_LEVEL_ANONYMOUS);
         }
       }
       return options;
@@ -285,6 +307,16 @@ export default {
         this.visibilityLevel < this.currentSettings.visibilityLevel
       );
     },
+    packageRegistryAccessLevelEnabled() {
+      return this.glFeatures.packageRegistryAccessLevel;
+    },
+    showAdditonalSettings() {
+      if (this.glFeatures.enforceAuthChecksOnUploads) {
+        return true;
+      }
+
+      return this.visibilityLevel !== this.visibilityOptions.PRIVATE;
+    },
   },
 
   watch: {
@@ -307,6 +339,15 @@ export default {
           featureAccessLevel.PROJECT_MEMBERS,
           this.buildsAccessLevel,
         );
+        if (this.packageRegistryAccessLevelEnabled) {
+          if (
+            this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE ||
+            (this.packageRegistryAccessLevel > featureAccessLevel.EVERYONE &&
+              oldValue === visibilityOptions.PUBLIC)
+          ) {
+            this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
+          }
+        }
         this.wikiAccessLevel = Math.min(featureAccessLevel.PROJECT_MEMBERS, this.wikiAccessLevel);
         this.snippetsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -349,6 +390,14 @@ export default {
           this.repositoryAccessLevel = featureAccessLevel.EVERYONE;
         if (this.mergeRequestsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.mergeRequestsAccessLevel = featureAccessLevel.EVERYONE;
+        if (
+          this.packageRegistryAccessLevelEnabled &&
+          this.packageRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS
+        ) {
+          this.packageRegistryAccessLevel = Math.min(
+            ...this.packageRegistryFeatureAccessLevelOptions.map((option) => option[0]),
+          );
+        }
         if (this.buildsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.buildsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.wikiAccessLevel > featureAccessLevel.NOT_ENABLED)
@@ -369,6 +418,19 @@ export default {
           this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
 
         this.highlightChanges();
+      } else if (this.packageRegistryAccessLevelEnabled) {
+        if (
+          value === visibilityOptions.PUBLIC &&
+          this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
+        ) {
+          // eslint-disable-next-line prefer-destructuring
+          this.packageRegistryAccessLevel = FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
+        } else if (
+          value === visibilityOptions.INTERNAL &&
+          this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
+        ) {
+          this.packageRegistryAccessLevel = featureAccessLevel.EVERYONE;
+        }
       }
     },
 
@@ -465,15 +527,38 @@ export default {
           )
         }}</span>
         <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
-        <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="gl-line-height-28">
-          <input
-            :value="requestAccessEnabled"
-            type="hidden"
-            name="project[request_access_enabled]"
-          />
-          <input v-model="requestAccessEnabled" type="checkbox" />
-          {{ s__('ProjectSettings|Users can request access') }}
-        </label>
+        <div v-if="showAdditonalSettings" class="gl-mt-4">
+          <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
+          <label
+            v-if="visibilityLevel !== visibilityOptions.PRIVATE"
+            class="gl-line-height-28 gl-font-weight-normal gl-mb-0"
+          >
+            <input
+              :value="requestAccessEnabled"
+              type="hidden"
+              name="project[request_access_enabled]"
+            />
+            <input v-model="requestAccessEnabled" type="checkbox" />
+            {{ s__('ProjectSettings|Users can request access') }}
+          </label>
+          <label
+            v-if="
+              visibilityLevel !== visibilityOptions.PUBLIC && glFeatures.enforceAuthChecksOnUploads
+            "
+            class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
+          >
+            <input
+              :value="enforceAuthChecksOnUploads"
+              type="hidden"
+              name="project[project_setting_attributes][enforce_auth_checks_on_uploads]"
+            />
+            <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
+            {{ s__('ProjectSettings|Require authentication to view media files') }}
+            <span class="gl-text-gray-500 gl-display-block gl-ml-5 gl-mt-n3">{{
+              s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
+            }}</span>
+          </label>
+        </div>
       </project-setting-row>
     </div>
     <div
@@ -587,15 +672,11 @@ export default {
           </p>
         </project-setting-row>
         <project-setting-row
-          v-if="packagesAvailable"
+          v-if="packagesAvailable && !packageRegistryAccessLevelEnabled"
           ref="package-settings"
           :help-path="packagesHelpPath"
           :label="$options.i18n.packagesLabel"
-          :help-text="
-            s__(
-              'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
-            )
-          "
+          :help-text="$options.i18n.packagesHelpText"
         >
           <gl-toggle
             v-model="packagesEnabled"
@@ -707,6 +788,20 @@ export default {
           :label="$options.i18n.snippetsLabel"
           :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][snippets_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="packageRegistryAccessLevelEnabled && packagesAvailable"
+        :help-path="packagesHelpPath"
+        :label="$options.i18n.packageRegistryLabel"
+        :help-text="$options.i18n.packageRegistryHelpText"
+        data-testid="package-registry-access-level"
+      >
+        <project-feature-setting
+          v-model="packageRegistryAccessLevel"
+          :label="$options.i18n.packageRegistryLabel"
+          :options="packageRegistryFeatureAccessLevelOptions"
+          name="project[project_feature_attributes][package_registry_access_level]"
         />
       </project-setting-row>
       <project-setting-row

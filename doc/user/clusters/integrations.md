@@ -98,7 +98,7 @@ To enable the Prometheus integration for your cluster:
       **Kubernetes** page.
 1. Select the **Integrations** tab.
 1. Check the **Enable Prometheus integration** checkbox.
-1. Click **Save changes**.
+1. Select **Save changes**.
 1. Go to the **Health** tab to see your cluster's metrics.
 
 ## Elastic Stack cluster integration **(FREE SELF)**
@@ -165,5 +165,5 @@ To enable the Elastic Stack integration for your cluster:
       **Kubernetes** page.
 1. Select the **Integrations** tab.
 1. Check the **Enable Elastic Stack integration** checkbox.
-1. Click **Save changes**.
+1. Select **Save changes**.
 1. Go to the **Health** tab to see your cluster's metrics.

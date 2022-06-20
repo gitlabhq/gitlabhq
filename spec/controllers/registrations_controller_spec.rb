@@ -292,13 +292,26 @@ RSpec.describe RegistrationsController do
         end
       end
 
-      it 'displays an error when the reCAPTCHA is not solved' do
-        allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+      context 'when the reCAPTCHA is not solved' do
+        before do
+          allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+        end
 
-        subject
+        it 'displays an error' do
+          subject
 
-        expect(response).to render_template(:new)
-        expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
+          expect(response).to render_template(:new)
+          expect(flash[:alert]).to eq(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
+        end
+
+        it 'sets gon variables' do
+          Gon.clear
+
+          subject
+
+          expect(response).to render_template(:new)
+          expect(Gon.all_variables).not_to be_empty
+        end
       end
 
       it 'redirects to the welcome page when the reCAPTCHA is solved' do

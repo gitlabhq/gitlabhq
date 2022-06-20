@@ -294,31 +294,28 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '.with_reports' do
-    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+  describe '.with_artifacts' do
+    subject(:builds) { described_class.with_artifacts(artifact_scope) }
 
-    context 'when build has a test report' do
-      let!(:build) { create(:ci_build, :success, :test_reports) }
+    let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
 
-      it 'selects the build' do
-        is_expected.to eq([build])
-      end
+    let!(:build_1) { create(:ci_build, :artifacts) }
+    let!(:build_2) { create(:ci_build, :codequality_reports) }
+    let!(:build_3) { create(:ci_build, :test_reports) }
+    let!(:build_4) { create(:ci_build, :artifacts) }
+
+    it 'returns artifacts matching the given scope' do
+      expect(builds).to contain_exactly(build_1, build_4)
     end
 
-    context 'when build does not have test reports' do
-      let!(:build) { create(:ci_build, :success, :trace_artifact) }
-
-      it 'does not select the build' do
-        is_expected.to be_empty
+    context 'when there are multiple builds containing artifacts' do
+      before do
+        create_list(:ci_build, 5, :success, :test_reports)
       end
-    end
-
-    context 'when there are multiple builds with test reports' do
-      let!(:builds) { create_list(:ci_build, 5, :success, :test_reports) }
 
       it 'does not execute a query for selecting job artifact one by one' do
         recorded = ActiveRecord::QueryRecorder.new do
-          subject.each do |build|
+          builds.each do |build|
             build.job_artifacts.map { |a| a.file.exists? }
           end
         end
@@ -1367,7 +1364,7 @@ RSpec.describe Ci::Build do
 
     before do
       allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      allow(Deployments::HooksWorker).to receive(:perform_async)
+      allow(deployment).to receive(:execute_hooks)
     end
 
     it 'has deployments record with created status' do
@@ -1423,7 +1420,7 @@ RSpec.describe Ci::Build do
 
       before do
         allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
-        allow(Deployments::HooksWorker).to receive(:perform_async)
+        allow(deployment).to receive(:execute_hooks)
       end
 
       it_behaves_like 'avoid deadlock'
@@ -1509,13 +1506,27 @@ RSpec.describe Ci::Build do
 
         it 'transitions to running and calls webhook' do
           freeze_time do
-            expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+            expect(deployment).to receive(:execute_hooks).with(Time.current)
 
             subject
           end
 
           expect(deployment).to be_running
+        end
+
+        context 'when `deployment_hooks_skip_worker` flag is disabled' do
+          before do
+            stub_feature_flags(deployment_hooks_skip_worker: false)
+          end
+
+          it 'executes Deployments::HooksWorker asynchronously' do
+            freeze_time do
+              expect(Deployments::HooksWorker)
+                .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+              subject
+            end
+          end
         end
       end
     end
@@ -1830,6 +1841,27 @@ RSpec.describe Ci::Build do
     end
 
     context 'build is erasable' do
+      context 'when project is undergoing stats refresh' do
+        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
+
+        describe '#erase' do
+          before do
+            allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
+          end
+
+          it 'logs and continues with deleting the artifacts' do
+            expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+              method: 'Ci::Build#erase',
+              project_id: build.project.id
+            )
+
+            build.erase
+
+            expect(build.job_artifacts.count).to eq(0)
+          end
+        end
+      end
+
       context 'new artifacts' do
         let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
 
@@ -1922,6 +1954,23 @@ RSpec.describe Ci::Build do
 
       Ci::JobArtifact::NON_ERASABLE_FILE_TYPES.each do |file_type|
         expect(build.send("job_artifacts_#{file_type}")).not_to be_nil
+      end
+    end
+
+    context 'when the project is undergoing stats refresh' do
+      before do
+        allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
+      end
+
+      it 'logs and continues with deleting the artifacts' do
+        expect(Gitlab::ProjectStatsRefreshConflictsLogger).to receive(:warn_artifact_deletion_during_stats_refresh).with(
+          method: 'Ci::Build#erase_erasable_artifacts!',
+          project_id: build.project.id
+        )
+
+        subject
+
+        expect(build.job_artifacts.erasable).to be_empty
       end
     end
   end
@@ -2757,6 +2806,7 @@ RSpec.describe Ci::Build do
           { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true, masked: false },
           { key: 'CI_PROJECT_NAME', value: project.path, public: true, masked: false },
           { key: 'CI_PROJECT_TITLE', value: project.title, public: true, masked: false },
+          { key: 'CI_PROJECT_DESCRIPTION', value: project.description, public: true, masked: false },
           { key: 'CI_PROJECT_PATH', value: project.full_path, public: true, masked: false },
           { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true, masked: false },
@@ -3486,7 +3536,7 @@ RSpec.describe Ci::Build do
         ]
       end
 
-      context 'when gitlab-deploy-token exists' do
+      context 'when gitlab-deploy-token exists for project' do
         before do
           project.deploy_tokens << deploy_token
         end
@@ -3496,10 +3546,31 @@ RSpec.describe Ci::Build do
         end
       end
 
-      context 'when gitlab-deploy-token does not exist' do
+      context 'when gitlab-deploy-token does not exist for project' do
         it 'does not include deploy token variables' do
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+        end
+
+        context 'when gitlab-deploy-token exists for group' do
+          before do
+            group.deploy_tokens << deploy_token
+          end
+
+          it 'includes deploy token variables' do
+            is_expected.to include(*deploy_token_variables)
+          end
+
+          context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
+            before do
+              stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
+            end
+
+            it 'does not include deploy token variables' do
+              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
+              expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+            end
+          end
         end
       end
     end
@@ -4298,6 +4369,56 @@ RSpec.describe Ci::Build do
         end
       end
     end
+
+    context 'when build is part of parallel build' do
+      let(:build_1) { create(:ci_build, name: 'build 1/2') }
+      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+
+      before do
+        build_1.collect_test_reports!(test_report)
+      end
+
+      it 'uses the group name for test suite name' do
+        expect(test_report.test_suites.keys).to contain_exactly('build')
+      end
+
+      context 'when there are more than one parallel builds' do
+        let(:build_2) { create(:ci_build, name: 'build 2/2') }
+
+        before do
+          build_2.collect_test_reports!(test_report)
+        end
+
+        it 'merges the test suite from parallel builds' do
+          expect(test_report.test_suites.keys).to contain_exactly('build')
+        end
+      end
+    end
+
+    context 'when build is part of matrix build' do
+      let(:test_report) { Gitlab::Ci::Reports::TestReports.new }
+      let(:matrix_build_1) { create(:ci_build, :matrix) }
+
+      before do
+        matrix_build_1.collect_test_reports!(test_report)
+      end
+
+      it 'uses the job name for the test suite' do
+        expect(test_report.test_suites.keys).to contain_exactly(matrix_build_1.name)
+      end
+
+      context 'when there are more than one matrix builds' do
+        let(:matrix_build_2) { create(:ci_build, :matrix) }
+
+        before do
+          matrix_build_2.collect_test_reports!(test_report)
+        end
+
+        it 'keeps separate test suites' do
+          expect(test_report.test_suites.keys).to match_array([matrix_build_1.name, matrix_build_2.name])
+        end
+      end
+    end
   end
 
   describe '#collect_accessibility_reports!' do
@@ -4350,68 +4471,6 @@ RSpec.describe Ci::Build do
           expect(accessibility_report.errors_count).to eq(0)
           expect(accessibility_report.scans_count).to eq(0)
           expect(accessibility_report.passes_count).to eq(0)
-        end
-      end
-    end
-  end
-
-  describe '#collect_coverage_reports!' do
-    subject { build.collect_coverage_reports!(coverage_report) }
-
-    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReports.new }
-
-    it { expect(coverage_report.files).to eq({}) }
-
-    context 'when build has a coverage report' do
-      context 'when there is a Cobertura coverage report from simplecov-cobertura' do
-        before do
-          create(:ci_job_artifact, :cobertura, job: build, project: build.project)
-        end
-
-        it 'parses blobs and add the results to the coverage report' do
-          expect { subject }.not_to raise_error
-
-          expect(coverage_report.files.keys).to match_array(['app/controllers/abuse_reports_controller.rb'])
-          expect(coverage_report.files['app/controllers/abuse_reports_controller.rb'].count).to eq(23)
-        end
-      end
-
-      context 'when there is a Cobertura coverage report from gocov-xml' do
-        before do
-          create(:ci_job_artifact, :coverage_gocov_xml, job: build, project: build.project)
-        end
-
-        it 'parses blobs and add the results to the coverage report' do
-          expect { subject }.not_to raise_error
-
-          expect(coverage_report.files.keys).to match_array(['auth/token.go', 'auth/rpccredentials.go'])
-          expect(coverage_report.files['auth/token.go'].count).to eq(49)
-          expect(coverage_report.files['auth/rpccredentials.go'].count).to eq(10)
-        end
-      end
-
-      context 'when there is a Cobertura coverage report with class filename paths not relative to project root' do
-        before do
-          allow(build.project).to receive(:full_path).and_return('root/javademo')
-          allow(build.pipeline).to receive(:all_worktree_paths).and_return(['src/main/java/com/example/javademo/User.java'])
-
-          create(:ci_job_artifact, :coverage_with_paths_not_relative_to_project_root, job: build, project: build.project)
-        end
-
-        it 'parses blobs and add the results to the coverage report with corrected paths' do
-          expect { subject }.not_to raise_error
-
-          expect(coverage_report.files.keys).to match_array(['src/main/java/com/example/javademo/User.java'])
-        end
-      end
-
-      context 'when there is a corrupted Cobertura coverage report' do
-        before do
-          create(:ci_job_artifact, :coverage_with_corrupted_data, job: build, project: build.project)
-        end
-
-        it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Coverage::Cobertura::InvalidLineInformationError)
         end
       end
     end
@@ -4503,6 +4562,18 @@ RSpec.describe Ci::Build do
           )
         end
       end
+    end
+  end
+
+  describe '#each_report' do
+    let(:report_types) { Ci::JobArtifact::COVERAGE_REPORT_FILE_TYPES }
+
+    let!(:codequality) { create(:ci_job_artifact, :codequality, job: build) }
+    let!(:coverage) { create(:ci_job_artifact, :coverage_gocov_xml, job: build) }
+    let!(:junit) { create(:ci_job_artifact, :junit, job: build) }
+
+    it 'yields job artifact blob that matches the type' do
+      expect { |b| build.each_report(report_types, &b) }.to yield_with_args(coverage.file_type, String, coverage)
     end
   end
 
@@ -4946,6 +5017,18 @@ RSpec.describe Ci::Build do
           .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
 
         build.execute_hooks
+      end
+
+      context 'with blocked users' do
+        before do
+          allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
+        end
+
+        it 'does not call project.execute_hooks' do
+          expect(build.project).not_to receive(:execute_hooks)
+
+          build.execute_hooks
+        end
       end
     end
 
@@ -5408,6 +5491,19 @@ RSpec.describe Ci::Build do
         .and_call_original
 
       subject
+    end
+
+    context 'with deployment' do
+      let(:environment) { create(:environment) }
+      let(:build) { create(:ci_build, :with_deployment, environment: environment.name, pipeline: pipeline) }
+
+      it 'updates the deployment status', :aggregate_failures do
+        expect(build.deployment).to receive(:sync_status_with).with(build).and_call_original
+
+        subject
+
+        expect(build.deployment.reload.status).to eq("failed")
+      end
     end
 
     context 'with queued builds' do

@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -87,7 +87,7 @@ GitLab installation to the Community Edition.
   To downgrade a source installation, you must replace the current remote of
   your GitLab installation with the Community Edition's remote. After that, you
   can fetch the latest changes, and checkout the latest stable branch:
-  
+
   ```shell
   git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
   git fetch --all

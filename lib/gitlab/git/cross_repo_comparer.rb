@@ -45,7 +45,7 @@ module Gitlab
       # name that will be deleted once the method completes. This is a no-op if
       # fetching the source branch fails
       def with_commit_in_source_tmp(commit_id, &blk)
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}"
+        tmp_ref = "refs/#{::Repository::REF_TMP}/#{SecureRandom.hex}"
 
         yield commit_id if source_repo.fetch_source_branch!(target_repo, commit_id, tmp_ref)
       ensure

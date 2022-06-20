@@ -1,4 +1,4 @@
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -34,7 +34,7 @@ describe('RunnerProjects', () => {
   let mockRunnerProjectsQuery;
 
   const findHeading = () => wrapper.find('h3');
-  const findGlSkeletonLoading = () => wrapper.findComponent(GlSkeletonLoading);
+  const findGlSkeletonLoading = () => wrapper.findComponent(GlSkeletonLoader);
   const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
 

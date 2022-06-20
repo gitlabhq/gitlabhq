@@ -49,56 +49,26 @@ RSpec.describe Gitlab::Checks::ChangesAccess do
 
     context 'when changes contain empty revisions' do
       let(:expected_commit) { instance_double(Commit) }
-      let(:expected_allow_quarantine) { allow_quarantine }
 
       shared_examples 'returns only commits with non empty revisions' do
-        before do
-          stub_feature_flags(filter_quarantined_commits: filter_quarantined_commits)
-        end
-
         specify do
           expect(project.repository)
             .to receive(:new_commits)
-            .with([newrev], allow_quarantine: expected_allow_quarantine) { [expected_commit] }
+            .with([newrev]) { [expected_commit] }
           expect(subject.commits).to match_array([expected_commit])
         end
       end
 
-      it_behaves_like 'returns only commits with non empty revisions' do
+      context 'with oldrev' do
         let(:changes) { [{ oldrev: oldrev, newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
-        let(:allow_quarantine) { true }
-        let(:filter_quarantined_commits) { true }
+
+        it_behaves_like 'returns only commits with non empty revisions'
       end
 
       context 'without oldrev' do
         let(:changes) { [{ newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
 
-        context 'with disallowed quarantine' do
-          # The quarantine directory should not be used because we're lacking
-          # oldrev, and we're not filtering commits.
-          let(:allow_quarantine) { false }
-          let(:filter_quarantined_commits) { false }
-
-          it_behaves_like 'returns only commits with non empty revisions'
-        end
-
-        context 'with allowed quarantine and :filter_quarantined_commits disabled' do
-          # When we allow usage of the quarantine but have no oldrev and we're
-          # not filtering commits then results returned by the quarantine aren't
-          # accurate. We thus mustn't try using it.
-          let(:allow_quarantine) { true }
-          let(:filter_quarantined_commits) { false }
-          let(:expected_allow_quarantine) { false }
-
-          it_behaves_like 'returns only commits with non empty revisions'
-        end
-
-        context 'with allowed quarantine and :filter_quarantined_commits enabled' do
-          let(:allow_quarantine) { true }
-          let(:filter_quarantined_commits) { true }
-
-          it_behaves_like 'returns only commits with non empty revisions'
-        end
+        it_behaves_like 'returns only commits with non empty revisions'
       end
     end
   end

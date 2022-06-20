@@ -1,5 +1,11 @@
 <script>
-import { GlFormInputGroup, GlFormGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlFormInputGroup,
+  GlFormInput,
+  GlFormGroup,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -12,6 +18,7 @@ export default {
   },
   components: {
     GlFormInputGroup,
+    GlFormInput,
     GlFormGroup,
     GlButton,
     ClipboardButton,
@@ -80,10 +87,15 @@ export default {
 
       this.$emit('visibility-change', this.valueIsVisible);
     },
+    handleClick() {
+      this.$refs.input.$el.select();
+    },
     handleCopyButtonClick() {
       this.$emit('copy');
     },
     handleFormInputCopy(event) {
+      this.handleCopyButtonClick();
+
       if (this.computedValueIsVisible) {
         return;
       }
@@ -96,14 +108,21 @@ export default {
 </script>
 <template>
   <gl-form-group v-bind="$attrs">
-    <gl-form-input-group
-      :value="displayedValue"
-      input-class="gl-font-monospace! gl-cursor-default!"
-      select-on-click
-      readonly
-      v-bind="formInputGroupProps"
-      @copy="handleFormInputCopy"
-    >
+    <gl-form-input-group>
+      <gl-form-input
+        ref="input"
+        readonly
+        class="gl-font-monospace! gl-cursor-default!"
+        v-bind="formInputGroupProps"
+        :value="displayedValue"
+        @copy="handleFormInputCopy"
+        @click="handleClick"
+      />
+
+      <!--
+        This v-if is necessary to avoid an issue with border radius.
+        See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88059#note_969812649
+       -->
       <template v-if="showToggleVisibilityButton || showCopyButton" #append>
         <gl-button
           v-if="showToggleVisibilityButton"

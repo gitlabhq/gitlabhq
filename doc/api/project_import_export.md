@@ -152,16 +152,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "path=a
      --form "file=@/path/to/file" "https://gitlab.example.com/api/v4/projects/import"
 ```
 
-cURL doesn't support posting a file from a remote server. Importing a project from a remote server can be accomplished through something like the following:
+cURL doesn't support posting a file from a remote server. This example imports a project
+using Python's `open` method:
 
 ```python
 import requests
-from io import BytesIO
-
-s3_file = requests.get(presigned_url)
 
 url =  'https://gitlab.example.com/api/v4/projects/import'
-files = {'file': ('file.tar.gz', BytesIO(s3_file.content))}
+files = { "file": open("project_export.tar.gz", "rb") }
 data = {
     "path": "example-project",
     "namespace": "example-group"
@@ -291,6 +289,27 @@ curl --request POST \
   "access_key_id": "<Your AWS access key id>",
   "secret_access_key": "<Your AWS secret access key>"
 }'
+```
+
+This example imports from an Amazon S3 bucket, using a module that connects to Amazon S3:
+
+```python
+import requests
+from io import BytesIO
+
+s3_file = requests.get(presigned_url)
+
+url =  'https://gitlab.example.com/api/v4/projects/import'
+files = {'file': ('file.tar.gz', BytesIO(s3_file.content))}
+data = {
+    "path": "example-project",
+    "namespace": "example-group"
+}
+headers = {
+    'Private-Token': "<your_access_token>"
+}
+
+requests.post(url, headers=headers, data=data, files=files)
 ```
 
 ```json

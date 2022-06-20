@@ -175,6 +175,9 @@ module Types
       field :warning_messages, [Types::Ci::PipelineMessageType], null: true,
             description: 'Pipeline warning messages.'
 
+      field :merge_request_event_type, Types::Ci::PipelineMergeRequestEventTypeEnum, null: true,
+            description: "Event type of the pipeline associated with a merge request."
+
       def detailed_status
         object.detailed_status(current_user)
       end

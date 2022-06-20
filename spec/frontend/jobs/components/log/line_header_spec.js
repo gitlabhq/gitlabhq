@@ -56,8 +56,8 @@ describe('Job Log Header Line', () => {
       createComponent({ ...data, isClosed: true });
     });
 
-    it('sets icon name to be angle-right', () => {
-      expect(wrapper.vm.iconName).toEqual('angle-right');
+    it('sets icon name to be chevron-lg-right', () => {
+      expect(wrapper.vm.iconName).toEqual('chevron-lg-right');
     });
   });
 
@@ -66,8 +66,8 @@ describe('Job Log Header Line', () => {
       createComponent({ ...data, isClosed: false });
     });
 
-    it('sets icon name to be angle-down', () => {
-      expect(wrapper.vm.iconName).toEqual('angle-down');
+    it('sets icon name to be chevron-lg-down', () => {
+      expect(wrapper.vm.iconName).toEqual('chevron-lg-down');
     });
   });
 

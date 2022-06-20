@@ -195,22 +195,22 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
             },
             'high urgency CI queues' => {
               query: 'feature_category=continuous_integration&urgency=high',
-              included_queues: %w(pipeline_cache:expire_job_cache pipeline_cache:expire_pipeline_cache),
+              included_queues: %w(pipeline_default:ci_drop_pipeline),
               excluded_queues: %w(merge)
             },
             'CPU-bound high urgency CI queues' => {
               query: 'feature_category=continuous_integration&urgency=high&resource_boundary=cpu',
-              included_queues: %w(pipeline_cache:expire_pipeline_cache),
-              excluded_queues: %w(pipeline_cache:expire_job_cache merge)
+              included_queues: %w(pipeline_default:ci_create_downstream_pipeline),
+              excluded_queues: %w(pipeline_default:ci_drop_pipeline merge)
             },
             'CPU-bound high urgency non-CI queues' => {
               query: 'feature_category!=continuous_integration&urgency=high&resource_boundary=cpu',
               included_queues: %w(new_issue),
-              excluded_queues: %w(pipeline_cache:expire_pipeline_cache)
+              excluded_queues: %w(pipeline_default:ci_create_downstream_pipeline)
             },
             'CI and SCM queues' => {
               query: 'feature_category=continuous_integration|feature_category=source_code_management',
-              included_queues: %w(pipeline_cache:expire_job_cache merge),
+              included_queues: %w(pipeline_default:ci_drop_pipeline merge),
               excluded_queues: %w(mailers)
             }
           }
@@ -243,10 +243,17 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         end
 
         it 'expands multiple queue groups correctly' do
+          expected_workers =
+            if Gitlab.ee?
+              [%w[chat_notification], %w[project_export project_template_export]]
+            else
+              [%w[chat_notification], %w[project_export]]
+            end
+
           expect(Gitlab::SidekiqCluster)
             .to receive(:start)
-                  .with([['chat_notification'], ['project_export']], default_options)
-                  .and_return([])
+            .with(expected_workers, default_options)
+            .and_return([])
 
           cli.run(%w(--queue-selector feature_category=chatops&has_external_dependencies=true resource_boundary=memory&feature_category=importers))
         end

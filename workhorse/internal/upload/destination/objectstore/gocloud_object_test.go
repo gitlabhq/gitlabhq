@@ -15,8 +15,7 @@ import (
 )
 
 func TestGoCloudObjectUpload(t *testing.T) {
-	mux, _, cleanup := test.SetupGoCloudFileBucket(t, "azuretest")
-	defer cleanup()
+	mux, _ := test.SetupGoCloudFileBucket(t, "azuretest")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	deadline := time.Now().Add(testTimeout)

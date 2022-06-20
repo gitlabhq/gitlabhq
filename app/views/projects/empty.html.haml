@@ -3,8 +3,10 @@
 - escaped_default_branch_name = default_branch_name.shellescape
 - @skip_current_level_breadcrumb = true
 
-= render_if_exists 'shared/user_over_limit_free_plan_alert', source: @project
+= render_if_exists 'projects/free_user_cap_alert', project: @project
+
 = render partial: 'flash_messages', locals: { project: @project }
+= render 'clusters_deprecation_alert'
 
 = render "home_panel"
 = render "archived_notice", project: @project
@@ -74,6 +76,3 @@
           %span><
             git push -u origin --all
             git push -u origin --tags
-
-- if @project.upload_anchor_data.present?
-  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, default_branch_name), ref: default_branch_name, method: :post

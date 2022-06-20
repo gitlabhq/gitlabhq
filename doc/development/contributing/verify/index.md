@@ -53,7 +53,7 @@ and they serve us and our users well. Some examples of these principles are that
 - The feedback delivered by GitLab CI/CD and data produced by the platform should be accurate.
   If a job fails and we notify a user that it was successful, it can have severe negative consequences.
 - Feedback needs to be available when a user needs it and data can not disappear unexpectedly when engineers need it.
-- It all doesn’t matter if the platform is not secure and we
+- It all doesn't matter if the platform is not secure and we
 are leaking credentials or secrets.
 - When a user provides a set of preconditions in a form of CI/CD configuration, the result should be deterministic each time a pipeline runs, because otherwise the platform might not be trustworthy.
 - If it is fast, simple to use and has a great UX it will serve our users well.
@@ -134,7 +134,7 @@ applied to many other technical implementations.
 GitLab is a DevOps platform. We popularize DevOps because it helps companies
 be more efficient and achieve better results. One important component of
 DevOps culture is to take ownership over features and code that you are
-building. It is very difficult to do that when you don’t know how your features
+building. It is very difficult to do that when you don't know how your features
 perform and behave in the production environment.
 
 This is why we want to make our features and code observable. It
@@ -164,15 +164,29 @@ data from the database, file system, or object storage, you should get an extra 
 of eyes on your changes. When you are defining a new retention policy, you
 should double check with PMs and EMs.
 
+### Get your design reviewed
+
+When you are designing a subsystem for pipeline processing and transitioning
+CI/CD statuses, request an additional opinion on the design from a Verify maintainer (`@gitlab-org/maintainers/cicd-verify`)
+as early as possible and hold others accountable for doing the same. Having your
+design reviewed by a Verify maintainer helps to identify any blind spots you might
+have overlooked as early as possible and possibly leads to a better solution.
+
+By having the design reviewed before any development work is started, it also helps to
+make merge request review more efficient. You would be less likely to encounter
+significantly differing opinions or change requests during the maintainer review
+if the design has been reviewed by a Verify maintainer. As a result, the merge request
+could be merged sooner.
+
 ### Get your changes reviewed
 
-When your merge request is ready for reviews you must assign
-reviewers and then maintainers. Depending on the complexity of a change, you
-might want to involve the people that know the most about the codebase area you are
-changing. We do have many domain experts in Verify and it is absolutely acceptable to
-ask them to review your code when you are not certain if a reviewer or
-maintainer assigned by the Reviewer Roulette has enough context about the
-change.
+When your merge request is ready for reviews you must assign reviewers and then
+maintainers. Depending on the complexity of a change, you might want to involve
+the people that know the most about the codebase area you are changing. We do
+have many domain experts and maintainers in Verify and it is absolutely
+acceptable to ask them to review your code when you are not certain if a
+reviewer or maintainer assigned by the Reviewer Roulette has enough context
+about the change.
 
 The reviewer roulette offers useful suggestions, but as assigning the right
 reviewers is important it should not be done automatically every time. It might
@@ -181,8 +195,18 @@ updating, because their feedback might be limited to code style and syntax.
 Depending on the complexity and impact of a change, assigning the right people
 to review your changes might be very important.
 
-If you don’t know who to assign, consult `git blame` or ask in the `#verify`
+If you don't know who to assign, consult `git blame` or ask in the `#s_verify`
 Slack channel (GitLab team members only).
+
+There are two kinds of changes / merge requests that require additional
+attention from reviews and an additional reviewer:
+
+1. Merge requests changing code around pipelines / stages / builds statuses.
+1. Merge requests changing code around authentication / security features.
+
+In both cases engineers are expected to request a review from a maintainer and
+a domain expert. If maintainer is the domain expert, involving another person
+is recommended.
 
 ### Incremental rollouts
 
@@ -220,7 +244,7 @@ scenario relating to a software being built by one of our [early customers](http
 
 That would be quite an undesirable outcome of a small bug in GitLab CI/CD status
 processing. Please take extra care when you are working on CI/CD statuses,
-we don’t want to implode our Universe!
+we don't want to implode our Universe!
 
 This is an extreme and unlikely scenario, but presenting data that is not accurate
 can potentially cause a myriad of problems through the
@@ -230,6 +254,22 @@ can have disastrous consequences. GitLab CI/CD is being used by companies
 building medical, aviation, and automotive software. Continuous Integration is
 a mission critical part of software engineering.
 
-When you are working on a subsystem for pipeline processing and transitioning
-CI/CD statuses, request an additional opinion on the design from a domain expert
-as early as possible and hold others accountable for doing the same.
+### Definition of Done
+
+In Verify, we follow our Development team's [Definition of Done](../merge_request_workflow.md#definition-of-done).
+We also want to keep things efficient and [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) when we answer questions
+and solve problems for our users.
+
+For any issue that is resolved because the solution is supported with existing `.gitlab-ci.yml` syntax,
+create a project in the [`ci-sample-projects`](https://gitlab.com/gitlab-org/ci-sample-projects) group
+that demonstrates the solution.
+
+The project must have:
+
+- A simple title.
+- A clear description.
+- A `README.md` with:
+  - A link to the resolved issue. You should also direct users to collaborate in the
+    resolved issue if any questions arise.
+  - A link to any relevant documentation.
+  - A detailed explanation of what the example is doing.

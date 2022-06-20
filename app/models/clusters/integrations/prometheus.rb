@@ -55,13 +55,23 @@ module Clusters
       private
 
       def activate_project_integrations
-        ::Clusters::Applications::ActivateServiceWorker
-          .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
+        if Feature.enabled?(:rename_integrations_workers)
+          ::Clusters::Applications::ActivateIntegrationWorker
+            .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
+        else
+          ::Clusters::Applications::ActivateServiceWorker
+            .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
+        end
       end
 
       def deactivate_project_integrations
-        ::Clusters::Applications::DeactivateServiceWorker
-          .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
+        if Feature.enabled?(:rename_integrations_workers)
+          ::Clusters::Applications::DeactivateIntegrationWorker
+            .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
+        else
+          ::Clusters::Applications::DeactivateServiceWorker
+            .perform_async(cluster_id, ::Integrations::Prometheus.to_param)
+        end
       end
     end
   end

@@ -9,6 +9,10 @@ module QA
         def self.included(base)
           super
 
+          base.class_eval do
+            include QA::Page::Component::ConfirmModal
+          end
+
           base.view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
             element :expiry_date_field
           end
@@ -22,11 +26,11 @@ module QA
             element :api_label, '#{scope}_label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
 
-          base.view 'app/views/shared/access_tokens/_created_container.html.haml' do
+          base.view 'app/assets/javascripts/access_tokens/components/new_access_token_app.vue' do
             element :created_access_token
           end
 
-          base.view 'app/views/shared/access_tokens/_table.html.haml' do
+          base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
             element :revoke_button
           end
         end
@@ -64,10 +68,10 @@ module QA
 
         def revoke_first_token_with_name(token_name)
           within first_token_row_for_name(token_name) do
-            accept_confirm do
-              click_element(:revoke_button)
-            end
+            click_element(:revoke_button)
           end
+
+          click_confirmation_ok_button
         end
       end
     end

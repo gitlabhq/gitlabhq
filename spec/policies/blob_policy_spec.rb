@@ -20,8 +20,11 @@ RSpec.describe BlobPolicy do
   with_them do
     it 'grants permission' do
       enable_admin_mode!(user) if admin_mode
-      project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
-      update_feature_access_level(project, feature_access_level)
+      update_feature_access_level(
+        project,
+        feature_access_level,
+        visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s)
+      )
 
       if expected_count == 1
         expect(policy).to be_allowed(:read_blob)

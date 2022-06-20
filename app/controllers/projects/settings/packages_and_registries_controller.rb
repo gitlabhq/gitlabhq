@@ -17,12 +17,7 @@ module Projects
       private
 
       def packages_and_registries_settings_enabled!
-        render_404 unless can_destroy_container_registry_image?(project)
-      end
-
-      def can_destroy_container_registry_image?(project)
-        Gitlab.config.registry.enabled &&
-          can?(current_user, :destroy_container_image, project)
+        render_404 unless can?(current_user, :view_package_registry_project_settings, project)
       end
     end
   end

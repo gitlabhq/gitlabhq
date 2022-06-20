@@ -4,7 +4,19 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Todo'] do
   it 'has the correct fields' do
-    expected_fields = [:id, :project, :group, :author, :action, :target, :target_type, :body, :state, :created_at]
+    expected_fields = [
+      :id,
+      :project,
+      :group,
+      :author,
+      :action,
+      :target,
+      :target_type,
+      :body,
+      :state,
+      :created_at,
+      :note
+    ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

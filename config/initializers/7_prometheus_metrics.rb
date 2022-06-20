@@ -62,6 +62,11 @@ Gitlab::Cluster::LifecycleEvents.on_master_start do
   Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
 
   if Gitlab::Runtime.puma?
+    [
+      Gitlab::Metrics::Samplers::RubySampler,
+      Gitlab::Metrics::Samplers::ThreadsSampler
+    ].each { |sampler| sampler.instance(logger: Gitlab::AppLogger).start }
+
     Gitlab::Metrics::Samplers::PumaSampler.instance.start
 
     MetricsServer.start_for_puma if puma_dedicated_metrics_server?
@@ -76,9 +81,14 @@ end
 Gitlab::Cluster::LifecycleEvents.on_worker_start do
   defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
   logger = Gitlab::AppLogger
-  Gitlab::Metrics::Samplers::RubySampler.initialize_instance(logger: logger).start
+  # Since we also run these samplers in the Puma primary, we need to re-create them each time we fork.
+  # For Sidekiq, this does not make any difference, since there is no primary.
+  [
+    Gitlab::Metrics::Samplers::RubySampler,
+    Gitlab::Metrics::Samplers::ThreadsSampler
+  ].each { |sampler| sampler.initialize_instance(logger: logger, recreate: true).start }
+
   Gitlab::Metrics::Samplers::DatabaseSampler.initialize_instance(logger: logger).start
-  Gitlab::Metrics::Samplers::ThreadsSampler.initialize_instance(logger: logger).start
 
   if Gitlab::Runtime.puma?
     # Since we are observing a metrics server from the Puma primary, we would inherit

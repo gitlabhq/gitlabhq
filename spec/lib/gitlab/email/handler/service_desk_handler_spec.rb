@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
   let(:author_email) { 'jake@adventuretime.ooo' }
   let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com' }
 
-  let_it_be(:group) { create(:group, :private, name: "email") }
+  let_it_be(:group) { create(:group, :private, :crm_enabled, name: "email") }
 
   let(:expected_description) do
     "Service desk stuff!\n\n```\na = b\n```\n\n`/label ~label1`\n`/assign @user1`\n`/close`\n![image](uploads/image.png)"
@@ -50,6 +50,14 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         new_issue = Issue.last
 
         expect(new_issue.issue_email_participants.first.email).to eq(author_email)
+      end
+
+      it 'attaches existing CRM contact' do
+        contact = create(:contact, group: group, email: author_email)
+        receiver.execute
+        new_issue = Issue.last
+
+        expect(new_issue.issue_customer_relations_contacts.last.contact).to eq(contact)
       end
 
       it 'sends thank you email' do

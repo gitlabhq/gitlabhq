@@ -180,16 +180,16 @@ module MergeRequests
       return unless changed_fields.include?("title")
 
       old_title, new_title = merge_request.previous_changes["title"]
-      old_title_wip = MergeRequest.work_in_progress?(old_title)
-      new_title_wip = MergeRequest.work_in_progress?(new_title)
+      old_title_draft = MergeRequest.draft?(old_title)
+      new_title_draft = MergeRequest.draft?(new_title)
 
-      if !old_title_wip && new_title_wip
-        # Marked as Draft/WIP
+      if !old_title_draft && new_title_draft
+        # Marked as Draft
         #
         merge_request_activity_counter
           .track_marked_as_draft_action(user: current_user)
-      elsif old_title_wip && !new_title_wip
-        # Unmarked as Draft/WIP
+      elsif old_title_draft && !new_title_draft
+        # Unmarked as Draft
         #
         notify_draft_status_changed(merge_request)
 

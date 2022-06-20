@@ -167,7 +167,7 @@ module WikiActions
 
     render 'shared/wikis/diff'
   end
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def destroy

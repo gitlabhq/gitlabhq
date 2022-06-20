@@ -185,14 +185,6 @@ RSpec.describe SystemHook do
     end
   end
 
-  describe '#rate_limit' do
-    let(:hook) { build(:system_hook) }
-
-    it 'returns nil' do
-      expect(hook.rate_limit).to be_nil
-    end
-  end
-
   describe '#application_context' do
     let(:hook) { build(:system_hook) }
 

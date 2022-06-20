@@ -3,6 +3,8 @@
 class BackfillDeploymentsForBigintConversion < ActiveRecord::Migration[6.0]
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   TABLE = :deployments
   COLUMNS = %i(deployable_id)
 

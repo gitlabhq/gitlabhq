@@ -65,7 +65,7 @@ Requirements:
   - Postman Collection v2.0 or v2.1
 
   WARNING:
-  **NEVER** run fuzz testing against a production server. Not only can it perform *any* function that
+  **Never** run fuzz testing against a production server. Not only can it perform *any* function that
   the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
   data. Only run fuzzing against a test server.
 
@@ -586,7 +586,7 @@ profile increases as the number of tests increases.
 | CI/CD variable                                              | Description |
 |-------------------------------------------------------------|-------------|
 | `SECURE_ANALYZERS_PREFIX`                                   | Specify the Docker registry base address from which to download the analyzer. |
-| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `1`. |
+| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `2`. |
 | `FUZZAPI_IMAGE_SUFFIX`                                      | Specify a container image suffix. Defaults to none. |
 | `FUZZAPI_TARGET_URL`                                        | Base URL of API testing target. |
 | `FUZZAPI_CONFIG`                                            | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/276395) in GitLab 13.12, replaced with default `.gitlab/gitlab-api-fuzzing-config.yml`. API Fuzzing configuration file. |
@@ -883,7 +883,7 @@ Adding some basic logging to your overrides script is useful in case the script 
 Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Please notice two things in the script:
 
 - Log file is saved in the location indicated by the environment variable `CI_PROJECT_DIR`.
-- Log file name should match `gl-*.log`.
+- Log filename should match `gl-*.log`.
 
 ```python
 #!/usr/bin/env python
@@ -1296,7 +1296,7 @@ variables:
 
 The `api-fuzzing-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document).
 
-### Exclude URLS
+### Exclude URLs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
 
@@ -1476,9 +1476,9 @@ Follow these steps to view details of a fuzzing fault:
 
    - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
-   - In a merge request, go the merge request's **Security** section and click the **Expand**
+   - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API Fuzzing faults are available in a section labeled
-     **API Fuzzing detected N potential vulnerabilities**. Click the title to display the fault
+     **API Fuzzing detected N potential vulnerabilities**. Select the title to display the fault
      details.
 
 1. Select the fault's title to display the fault's details. The table below describes these details.
@@ -1652,11 +1652,11 @@ Steps:
 
 The Docker image for API Fuzzing must be pulled (downloaded) from the public registry and then pushed (imported) into a local registry. The GitLab container registry can be used to locally host the Docker image. This process can be performed using a special template. See [loading Docker images onto your offline host](../offline_deployments/index.md#loading-docker-images-onto-your-offline-host) for instructions.
 
-Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable is set with the location of the local registry. The variable must be set such that concatenating `/api-fuzzing:1` results in a valid image location.
+Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable is set with the location of the local registry. The variable must be set such that concatenating `/api-security:2` results in a valid image location.
 
-For example, the below line sets a registry for the image `registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:1`:
+For example, the below line sets a registry for the image `registry.gitlab.com/security-products/api-security:2`:
 
-`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"`
+`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"`
 
 NOTE:
 Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab Secure templates.

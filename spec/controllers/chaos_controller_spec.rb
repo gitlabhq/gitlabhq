@@ -147,8 +147,8 @@ RSpec.describe ChaosController do
     let(:gc_stat) { GC.stat.stringify_keys }
 
     it 'runs a full GC on the current web worker' do
-      expect(Prometheus::PidProvider).to receive(:worker_id).and_return('worker-0')
-      expect(Gitlab::Chaos).to receive(:run_gc).and_return(gc_stat)
+      allow(Prometheus::PidProvider).to receive(:worker_id).and_return('worker-0')
+      allow(Gitlab::Chaos).to receive(:run_gc).and_return(gc_stat)
 
       post :gc
 

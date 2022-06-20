@@ -53,7 +53,7 @@ export default {
       actionPrimary: {
         text: this.i18n.actionPrimaryText,
         attributes: [
-          { variant: 'success' },
+          { variant: 'confirm' },
           { category: 'primary' },
           { 'data-testid': 'submit-commit' },
           { 'data-qa-selector': 'submit_commit_button' },

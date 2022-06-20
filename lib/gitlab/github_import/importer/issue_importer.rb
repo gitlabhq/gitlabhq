@@ -31,6 +31,7 @@ module Gitlab
             if (issue_id = create_issue)
               create_assignees(issue_id)
               issuable_finder.cache_database_id(issue_id)
+              update_search_data(issue_id) if Feature.enabled?(:issues_full_text_search)
             end
           end
         end
@@ -76,6 +77,13 @@ module Gitlab
           end
 
           ApplicationRecord.legacy_bulk_insert(IssueAssignee.table_name, assignees) # rubocop:disable Gitlab/BulkInsert
+        end
+
+        #  Adds search data to database (if full_text_search feature is enabled)
+        #
+        # issue_id - The ID of the created issue.
+        def update_search_data(issue_id)
+          project.issues.find(issue_id)&.update_search_data!
         end
       end
     end

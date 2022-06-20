@@ -67,7 +67,7 @@ export default {
         </template>
       </gl-table>
 
-      <gl-button :href="createUrl" category="primary" variant="info">
+      <gl-button :href="createUrl" category="primary" variant="confirm">
         {{ $options.i18n.createServiceAccount }}
       </gl-button>
 

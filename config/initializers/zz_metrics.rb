@@ -32,7 +32,9 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
     config.middleware.insert_before Gitlab::Database::LoadBalancing::RackMiddleware,
       Gitlab::Metrics::RackMiddleware
 
-    config.middleware.use(Gitlab::Middleware::RailsQueueDuration)
+    config.middleware.insert_before Gitlab::Database::LoadBalancing::RackMiddleware,
+                                   Gitlab::Middleware::RailsQueueDuration
+
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 

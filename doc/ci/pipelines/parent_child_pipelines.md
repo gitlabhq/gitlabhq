@@ -48,6 +48,9 @@ include the child pipeline configuration.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
 
+NOTE:
+The artifact containing the generated YAML file must not be larger than 5MB.
+
 ## Examples
 
 The simplest case is [triggering a child pipeline](../yaml/index.md#trigger) using a

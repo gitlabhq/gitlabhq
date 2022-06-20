@@ -34,7 +34,7 @@ RSpec.describe Gitlab::GitAccess do
 
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
-      allow(Gitlab::ProtocolAccess).to receive(:allowed?).with(protocol).and_return(false)
+      allow(Gitlab::ProtocolAccess).to receive(:allowed?).with(protocol, project: project).and_return(false)
     end
 
     context 'ssh disabled' do

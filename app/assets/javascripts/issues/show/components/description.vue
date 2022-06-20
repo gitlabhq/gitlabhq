@@ -23,6 +23,7 @@ import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import animateMixin from '../mixins/animate';
 import { convertDescriptionWithNewSort } from '../utils';
@@ -135,9 +136,6 @@ export default {
 
       this.$nextTick(() => {
         this.renderGFM();
-        if (this.workItemsEnabled) {
-          this.renderTaskActions();
-        }
       });
     },
     taskStatus() {
@@ -147,10 +145,6 @@ export default {
   mounted() {
     this.renderGFM();
     this.updateTaskStatusText();
-
-    if (this.workItemsEnabled) {
-      this.renderTaskActions();
-    }
 
     if (this.workItemId) {
       const taskLink = this.$el.querySelector(
@@ -178,15 +172,20 @@ export default {
           onError: this.taskListUpdateError.bind(this),
         });
 
-        if (this.issuableType === IssuableType.Issue) {
-          this.renderSortableLists();
+        this.removeAllPointerEventListeners();
+
+        this.renderSortableLists();
+
+        if (this.workItemsEnabled) {
+          this.renderTaskActions();
         }
       }
     },
     renderSortableLists() {
-      this.removeAllPointerEventListeners();
-
-      const lists = document.querySelectorAll('.description ul, .description ol');
+      // We exclude GLFM table of contents which have a `section-nav` class on the root `ul`.
+      const lists = document.querySelectorAll(
+        '.description .md > ul:not(.section-nav), .description .md > ul:not(.section-nav) ul, .description ol',
+      );
       lists.forEach((list) => {
         if (list.children.length <= 1) {
           return;
@@ -194,7 +193,7 @@ export default {
 
         Array.from(list.children).forEach((listItem) => {
           listItem.prepend(this.createDragIconElement());
-          this.addPointerEventListeners(listItem);
+          this.addPointerEventListeners(listItem, '.drag-icon');
         });
 
         Sortable.create(
@@ -216,20 +215,20 @@ export default {
       </svg>`;
       return container.firstChild;
     },
-    addPointerEventListeners(listItem) {
+    addPointerEventListeners(listItem, iconSelector) {
       const pointeroverListener = (event) => {
-        const dragIcon = event.target.closest('li').querySelector('.drag-icon');
-        if (!dragIcon || isDragging() || this.isUpdating) {
+        const icon = event.target.closest('li').querySelector(iconSelector);
+        if (!icon || isDragging() || this.isUpdating) {
           return;
         }
-        dragIcon.style.visibility = 'visible';
+        icon.style.visibility = 'visible';
       };
       const pointeroutListener = (event) => {
-        const dragIcon = event.target.closest('li').querySelector('.drag-icon');
-        if (!dragIcon) {
+        const icon = event.target.closest('li').querySelector(iconSelector);
+        if (!icon) {
           return;
         }
-        dragIcon.style.visibility = 'hidden';
+        icon.style.visibility = 'hidden';
       };
 
       // We use pointerover/pointerout instead of CSS so that when we hover over a
@@ -238,10 +237,16 @@ export default {
       listItem.addEventListener('pointerout', pointeroutListener);
 
       this.pointerEventListeners = this.pointerEventListeners || new Map();
-      this.pointerEventListeners.set(listItem, [
+      const events = [
         { type: 'pointerover', listener: pointeroverListener },
         { type: 'pointerout', listener: pointeroutListener },
-      ]);
+      ];
+      if (this.pointerEventListeners.has(listItem)) {
+        const concatenatedEvents = this.pointerEventListeners.get(listItem).concat(events);
+        this.pointerEventListeners.set(listItem, concatenatedEvents);
+      } else {
+        this.pointerEventListeners.set(listItem, events);
+      }
     },
     removeAllPointerEventListeners() {
       this.pointerEventListeners?.forEach((events, listItem) => {
@@ -311,13 +316,14 @@ export default {
             this.workItemId = workItemId;
             this.updateWorkItemIdUrlQuery(issue);
             this.track('viewed_work_item_from_modal', {
-              category: 'workItems:show',
+              category: TRACKING_CATEGORY_SHOW,
               label: 'work_item_view',
               property: `type_${referenceType}`,
             });
           });
           return;
         }
+        this.addPointerEventListeners(item, '.js-add-task');
         const button = document.createElement('button');
         button.classList.add(
           'btn',
@@ -325,6 +331,7 @@ export default {
           'btn-md',
           'gl-button',
           'btn-default-tertiary',
+          'gl-visibility-hidden',
           'gl-p-0!',
           'gl-mt-n1',
           'gl-ml-3',
@@ -339,7 +346,7 @@ export default {
         `;
         button.setAttribute('aria-label', s__('WorkItem|Convert to work item'));
         button.addEventListener('click', () => this.openCreateTaskModal(button));
-        item.append(button);
+        this.insertButtonNextToTaskText(item, button);
       });
     },
     addHoverListeners(taskLink, id) {
@@ -355,9 +362,24 @@ export default {
         }
       });
     },
+    insertButtonNextToTaskText(listItem, button) {
+      const paragraph = Array.from(listItem.children).find((element) => element.tagName === 'P');
+      const lastChild = listItem.lastElementChild;
+      if (paragraph) {
+        // If there's a `p` element, then it's a multi-paragraph task item
+        // and the task text exists within the `p` element as the last child
+        paragraph.append(button);
+      } else if (lastChild.tagName === 'OL' || lastChild.tagName === 'UL') {
+        // Otherwise, the task item can have a child list which exists directly after the task text
+        lastChild.insertAdjacentElement('beforebegin', button);
+      } else {
+        // Otherwise, the task item is a simple one where the task text exists as the last child
+        listItem.append(button);
+      }
+    },
     setActiveTask(el) {
       const { parentElement } = el;
-      const lineNumbers = parentElement.getAttribute('data-sourcepos').match(/\b\d+(?=:)/g);
+      const lineNumbers = parentElement.dataset.sourcepos.match(/\b\d+(?=:)/g);
       this.activeTask = {
         title: parentElement.innerText,
         lineNumberStart: lineNumbers[0],
@@ -431,13 +453,7 @@ export default {
     >
     </textarea>
 
-    <gl-modal
-      ref="modal"
-      modal-id="create-task-modal"
-      :title="s__('WorkItem|New Task')"
-      hide-footer
-      body-class="gl-p-0!"
-    >
+    <gl-modal ref="modal" size="lg" modal-id="create-task-modal" hide-footer body-class="gl-p-0!">
       <create-work-item
         is-modal
         :initial-title="activeTask.title"

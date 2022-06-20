@@ -362,7 +362,7 @@ class Group < Namespace
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
-    Members::Groups::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+    Members::Groups::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
@@ -374,7 +374,7 @@ class Group < Namespace
   end
 
   def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false, blocking_refresh: true)
-    Members::Groups::CreatorService.new( # rubocop:disable CodeReuse/ServiceClass
+    Members::Groups::CreatorService.add_user( # rubocop:disable CodeReuse/ServiceClass
       self,
       user,
       access_level,
@@ -382,7 +382,7 @@ class Group < Namespace
       expires_at: expires_at,
       ldap: ldap,
       blocking_refresh: blocking_refresh
-    ).execute
+    )
   end
 
   def add_guest(user, current_user = nil)
@@ -432,8 +432,9 @@ class Group < Namespace
   end
 
   # Check if user is a last owner of the group.
+  # Excludes project_bots
   def last_owner?(user)
-    has_owner?(user) && single_owner?
+    has_owner?(user) && all_owners_excluding_project_bots.size == 1
   end
 
   def member_last_owner?(member)
@@ -442,8 +443,8 @@ class Group < Namespace
     last_owner?(member.user)
   end
 
-  def single_owner?
-    members_with_parents.owners.size == 1
+  def all_owners_excluding_project_bots
+    members_with_parents.owners.merge(User.without_project_bot)
   end
 
   def single_blocked_owner?
@@ -860,6 +861,12 @@ class Group < Namespace
       group_feature.feature_available?(feature, user) # rubocop:disable Gitlab/FeatureAvailableUsage
     else
       super
+    end
+  end
+
+  def gitlab_deploy_token
+    strong_memoize(:gitlab_deploy_token) do
+      deploy_tokens.gitlab_deploy_token
     end
   end
 

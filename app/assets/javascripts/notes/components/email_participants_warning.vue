@@ -58,7 +58,7 @@ export default {
   <div class="issuable-note-warning" data-testid="email-participants-warning">
     <gl-sprintf :message="message">
       <template #andMore>
-        <button type="button" class="btn-transparent btn-link" @click="showMoreParticipants">
+        <button type="button" class="gl-button btn-link" @click="showMoreParticipants">
           {{ moreLabel }}
         </button>
       </template>

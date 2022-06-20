@@ -1,0 +1,27 @@
+---
+# See the following documentation for more info on normalization:
+#
+# - https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
+# - https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#glfm_example_normalizationsyml
+#
+# NOTE: All YAML anchors which are shared across one or more entries are defined in the `00_shared` section.
+00_shared:
+  00_uri: &00_uri
+    - regex: '(href|data-src)(=")(.*?)(test-file\.(png|zip)")'
+      replacement: '\1\2URI_PREFIX\4'
+07_01__gitlab_specific_markdown__footnotes__001:
+  html:
+    static:
+      shared:
+        07_01_href: &07_01_href
+          - regex: '(href)(=")(.+?)(")'
+            replacement: '\1\2REF\4'
+        07_01_id: &07_01_id
+          - regex: '(id)(=")(.+?)(")'
+            replacement: '\1\2ID\4'
+      canonical:
+        07_01_href: *07_01_href
+        07_01_id: *07_01_id
+      snapshot:
+        07_01_href: *07_01_href
+        07_01_id: *07_01_id

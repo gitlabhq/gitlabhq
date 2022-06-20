@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveNotNullContraintOnTitleFromSprints, :migration, schema: 20220304052335 do
+RSpec.describe RemoveNotNullContraintOnTitleFromSprints, :migration do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:sprints) { table(:sprints) }

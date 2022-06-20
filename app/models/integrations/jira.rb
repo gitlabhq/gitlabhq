@@ -24,7 +24,10 @@ module Integrations
     validates :password, presence: true, if: :activated?
 
     validates :jira_issue_transition_id,
-              format: { with: Gitlab::Regex.jira_transition_id_regex, message: s_("JiraService|IDs must be a list of numbers that can be split with , or ;") },
+              format: {
+                with: Gitlab::Regex.jira_transition_id_regex,
+                message: ->(*_) { s_("JiraService|IDs must be a list of numbers that can be split with , or ;") }
+              },
               allow_blank: true
 
     # Jira Cloud version is deprecating authentication via username and password.

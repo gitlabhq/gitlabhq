@@ -44,7 +44,7 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
-    Members::Projects::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
+    Members::Projects::CreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       project,
       users,
       access_level,
@@ -56,12 +56,12 @@ class ProjectTeam
   end
 
   def add_user(user, access_level, current_user: nil, expires_at: nil)
-    Members::Projects::CreatorService.new(project, # rubocop:disable CodeReuse/ServiceClass
-                                          user,
-                                          access_level,
-                                          current_user: current_user,
-                                          expires_at: expires_at)
-                                     .execute
+    Members::Projects::CreatorService.add_user( # rubocop:disable CodeReuse/ServiceClass
+      project,
+      user,
+      access_level,
+      current_user: current_user,
+      expires_at: expires_at)
   end
 
   # Remove all users from project team

@@ -28,12 +28,12 @@ time zone:
 
 1. Sign in as a user with Manage Project Operations [permissions](../../../user/permissions.md).
 1. Navigate to **Settings > Monitor**.
-1. Scroll to **Metrics Dashboard** and click **Expand**.
+1. Scroll to **Metrics Dashboard** and select **Expand**.
 1. In the **Dashboard timezone** select box, select *User's local timezone*
    or *UTC*:
 
    ![Dashboard timezone setting](img/dashboard_local_timezone_v13_1.png)
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Link to an external dashboard
 
@@ -44,12 +44,12 @@ existing external dashboards:
 
 1. Sign in as a user with Manage Project Operations [permissions](../../../user/permissions.md).
 1. Navigate to **Settings > Monitor**.
-1. Scroll to **Metrics Dashboard** and click **Expand**.
+1. Scroll to **Metrics Dashboard** and select **Expand**.
 1. In **External dashboard URL**, provide the URL to your external dashboard:
 
    ![External Dashboard Setting](img/dashboard_external_link_v13_1.png)
 
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 GitLab displays a **View full dashboard** button in the top right corner of your
 [monitoring dashboard](../../../ci/environments/index.md#monitor-environments)

@@ -55,7 +55,7 @@ RSpec.describe 'Promote an incident timeline event from a comment' do
       },
       'note' => comment.note,
       'action' => 'comment',
-      'editable' => false,
+      'editable' => true,
       'occurredAt' => comment.created_at.iso8601
     )
   end

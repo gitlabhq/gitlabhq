@@ -13,8 +13,8 @@
 
 - if can?(current_user, :read_issue, @project) && @milestone.total_issues_count == 0
   = render Pajamas::AlertComponent.new(dismissible: false,
-    alert_data: { testid: 'no-issues-alert' },
-    alert_class: 'gl-mt-3 gl-mb-5') do |c|
+                                       alert_options: { class: 'gl-mt-3 gl-mb-5',
+                                                        data: { testid: 'no-issues-alert' }}) do |c|
     = c.body do
       = _('Assign some issues to this milestone.')
 - else

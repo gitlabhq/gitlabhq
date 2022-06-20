@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"testing"
 	"testing/iotest"
 )
@@ -14,7 +13,7 @@ func TestBusyReader(t *testing.T) {
 	r := testReader(testData)
 	br, _ := NewWriteAfterReader(r, &bytes.Buffer{})
 
-	result, err := ioutil.ReadAll(br)
+	result, err := io.ReadAll(br)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -27,7 +26,7 @@ func TestBusyReader(t *testing.T) {
 func TestFirstWriteAfterReadDone(t *testing.T) {
 	writeRecorder := &bytes.Buffer{}
 	br, cw := NewWriteAfterReader(&bytes.Buffer{}, writeRecorder)
-	if _, err := io.Copy(ioutil.Discard, br); err != nil {
+	if _, err := io.Copy(io.Discard, br); err != nil {
 		t.Fatalf("copy from busyreader: %v", err)
 	}
 	testData := "test data"
@@ -53,7 +52,7 @@ func TestWriteDelay(t *testing.T) {
 	}
 
 	// Unblock the coupled writer by draining the reader
-	if _, err := io.Copy(ioutil.Discard, br); err != nil {
+	if _, err := io.Copy(io.Discard, br); err != nil {
 		t.Fatalf("copy from busyreader: %v", err)
 	}
 	// Now it is no longer an error if 'w' receives a Write()

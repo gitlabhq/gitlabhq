@@ -122,12 +122,13 @@ class Issue < ApplicationRecord
   scope :order_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
   scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
   scope :order_closest_future_date, -> { reorder(Arel.sql('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC')) }
-  scope :order_closed_date_desc, -> { reorder(closed_at: :desc) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> { includes(:issuable_severity).order('issuable_severities.severity ASC NULLS FIRST') }
   scope :order_severity_desc, -> { includes(:issuable_severity).order('issuable_severities.severity DESC NULLS LAST') }
   scope :order_escalation_status_asc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].asc.nulls_last).references(:incident_management_issuable_escalation_status) }
   scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
+  scope :order_closed_at_asc, -> { reorder(arel_table[:closed_at].asc.nulls_last) }
+  scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> { preload(:author, project: [:project_feature, :route, namespace: :route]) }
@@ -138,7 +139,8 @@ class Issue < ApplicationRecord
   scope :with_api_entity_associations, -> {
     preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       milestone: { project: [:route, { namespace: :route }] },
-      project: [:route, { namespace: :route }])
+      project: [:route, { namespace: :route }],
+      duplicated_to: { project: [:project_feature] })
   }
   scope :with_issue_type, ->(types) { where(issue_type: types) }
   scope :without_issue_type, ->(types) { where.not(issue_type: types) }
@@ -149,7 +151,7 @@ class Issue < ApplicationRecord
 
   scope :without_hidden, -> {
     if Feature.enabled?(:ban_user_feature_flag)
-      where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
+      where.not(author_id: Users::BannedUser.all.select(:user_id))
     else
       all
     end
@@ -295,7 +297,7 @@ class Issue < ApplicationRecord
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("issues", Gitlab::Regex.issue)
+    @link_reference_pattern ||= super(%r{issues(?:\/incident)?}, Gitlab::Regex.issue)
   end
 
   def self.reference_valid?(reference)
@@ -330,6 +332,8 @@ class Issue < ApplicationRecord
     when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
     when 'escalation_status_asc'                          then order_escalation_status_asc.with_order_id_desc
     when 'escalation_status_desc'                         then order_escalation_status_desc.with_order_id_desc
+    when 'closed_at_asc'                                  then order_closed_at_asc
+    when 'closed_at_desc'                                 then order_closed_at_desc
     else
       super
     end
@@ -613,6 +617,11 @@ class Issue < ApplicationRecord
     super || WorkItems::Type.default_by_type(issue_type)
   end
 
+  def expire_etag_cache
+    key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
+    Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
   private
 
   override :persist_pg_full_text_search_vector
@@ -641,11 +650,6 @@ class Issue < ApplicationRecord
   def publicly_visible?
     project.public? && project.feature_available?(:issues, nil) &&
       !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
-  end
-
-  def expire_etag_cache
-    key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
-    Gitlab::EtagCaching::Store.new.touch(key)
   end
 
   def could_not_move(exception)

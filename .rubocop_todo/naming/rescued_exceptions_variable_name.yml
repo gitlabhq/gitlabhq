@@ -86,7 +86,6 @@ Naming/RescuedExceptionsVariableName:
     - 'app/workers/namespaces/schedule_aggregation_worker.rb'
     - 'app/workers/packages/go/sync_packages_worker.rb'
     - 'app/workers/project_destroy_worker.rb'
-    - 'app/workers/project_service_worker.rb'
     - 'app/workers/projects/git_garbage_collect_worker.rb'
     - 'app/workers/remove_expired_members_worker.rb'
     - 'app/workers/users/create_statistics_worker.rb'

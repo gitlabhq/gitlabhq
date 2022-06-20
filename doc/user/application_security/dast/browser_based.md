@@ -111,7 +111,7 @@ a page fully loaded. Browser-based scans consider a page loaded when:
 1. The [DOMContentLoaded](https://developer.mozilla.org/en-US/docs/Web/API/Window/DOMContentLoaded_event) event has fired.
 1. There are no open or outstanding requests that are deemed important, such as JavaScript and CSS. Media files are usually deemed unimportant.
 1. Depending on whether the browser executed a navigation, was forcibly transitioned, or action:
-  
+
    - There are no new Document Object Model (DOM) modification events after the `DAST_BROWSER_NAVIGATION_STABILITY_TIMEOUT`, `DAST_BROWSER_STABILITY_TIMEOUT`, or `DAST_BROWSER_ACTION_STABILITY_TIMEOUT` durations.
 
 After these events have occurred, browser-based scans consider the page loaded and ready, and attempt the next action.

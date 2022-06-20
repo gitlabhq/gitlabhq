@@ -179,9 +179,12 @@ bin/feature-flag use_primary_store_as_default_for_foo
 By enabling `use_primary_and_secondary_stores_for_foo` feature flag, our `Gitlab::Redis::Foo` will use `MultiStore` to write to both new Redis instance
 and the [old (fallback-instance)](#fallback-instance).
 If we fail to fetch data from the new instance, we will fallback and read from the old Redis instance.
-
 We can monitor logs for `Gitlab::Redis::MultiStore::ReadFromPrimaryError`, and also the Prometheus counter `gitlab_redis_multi_store_read_fallback_total`.
-Once we stop seeing them, this means that we are no longer relying on the data stored on the old Redis store.
+
+For pipelined commands (`pipelined` and `multi`), we execute the entire operation in both stores and then compare the results. If they differ, we emit a
+`Gitlab::Redis::MultiStore:PipelinedDiffError` error, and track it in the `gitlab_redis_multi_store_pipelined_diff_error_total` Prometheus counter.
+
+Once we stop seeing those errors, this means that we are no longer relying on the data stored on the old Redis store.
 At this point, we are probably safe to move the traffic to the new Redis store.
 
 By enabling `use_primary_store_as_default_for_foo` feature flag, the `MultiStore` will use `primary_store` (new instance) as default Redis store.
@@ -213,6 +216,15 @@ MultiStore implements read and write Redis commands separately.
 - `del`
 - `pipelined`
 - `flushdb`
+- `rpush`
+
+##### Pipelined commands
+
+**NOTE:** The Ruby block passed to these commands will be executed twice, once per each store.
+Thus, excluding the Redis operations performed, the block should be idempotent.
+
+- `pipelined`
+- `multi`
 
 When a command outside of the supported list is used, `method_missing` will pass it to the old Redis instance and keep track of it.
 This ensures that anything unexpected behaves like it would before.
@@ -223,17 +235,19 @@ a developer will need to add an implementation for missing Redis commands before
 
 ##### Errors
 
-| error                                           | message                                                               |
-|-------------------------------------------------|-----------------------------------------------------------------------|
+| error                                             | message                                                                                     |
+|---------------------------------------------------|---------------------------------------------------------------------------------------------|
 | `Gitlab::Redis::MultiStore::ReadFromPrimaryError` | Value not found on the Redis primary store. Read from the Redis secondary store successful. |
-| `Gitlab::Redis::MultiStore::MethodMissingError`   | Method missing. Falling back to execute method on the Redis secondary store. |
+| `Gitlab::Redis::MultiStore::PipelinedDiffError`   | Pipelined command executed on both stores successfully but results differ between them.     |
+| `Gitlab::Redis::MultiStore::MethodMissingError`   | Method missing. Falling back to execute method on the Redis secondary store.                |
 
 ##### Metrics
 
-| metrics name                                    | type               | labels                 | description                                        |
-|-------------------------------------------------|--------------------|------------------------|----------------------------------------------------|
-| `gitlab_redis_multi_store_read_fallback_total`    | Prometheus Counter | command, instance_name | Client side Redis MultiStore reading fallback total|
-| `gitlab_redis_multi_store_method_missing_total`   | Prometheus Counter | command, instance_name | Client side Redis MultiStore method missing total  |
+| metrics name                                          | type               | labels                 | description                                            |
+|-------------------------------------------------------|--------------------|------------------------|--------------------------------------------------------|
+| `gitlab_redis_multi_store_read_fallback_total`        | Prometheus Counter | command, instance_name | Client side Redis MultiStore reading fallback total    |
+| `gitlab_redis_multi_store_pipelined_diff_error_total` | Prometheus Counter | command, instance_name | Redis MultiStore pipelined command diff between stores |
+| `gitlab_redis_multi_store_method_missing_total`       | Prometheus Counter | command, instance_name | Client side Redis MultiStore method missing total      |
 
 ## Step 4: clean up after the migration
 

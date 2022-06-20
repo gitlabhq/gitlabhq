@@ -27,7 +27,7 @@ export default {
       return this.getNoteableData.confidential;
     },
     isMergeRequest() {
-      return this.getNoteableData.targetType === 'merge_request' && this.glFeatures.updatedMrHeader;
+      return this.getNoteableData.targetType === 'merge_request';
     },
     warningIconsMeta() {
       return [

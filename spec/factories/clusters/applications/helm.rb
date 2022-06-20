@@ -10,19 +10,18 @@ FactoryBot.define do
 
     before(:create) do |_record, evaluator|
       if evaluator.helm_installed
-        allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root)
-          .and_return(
-            double(
-              key_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')),
-              cert_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
-            )
+        stub_method(Gitlab::Kubernetes::Helm::V2::Certificate, :generate_root) do
+          OpenStruct.new( # rubocop: disable Style/OpenStructUse
+            key_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')),
+            cert_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
           )
+        end
       end
     end
 
     after(:create) do |_record, evaluator|
       if evaluator.helm_installed
-        allow(Gitlab::Kubernetes::Helm::V2::Certificate).to receive(:generate_root).and_call_original
+        restore_original_methods(Gitlab::Kubernetes::Helm::V2::Certificate)
       end
     end
 

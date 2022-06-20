@@ -4,6 +4,7 @@ class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
   include RedisTracking
+  include ProductAnalyticsTracking
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete].freeze
@@ -71,7 +72,6 @@ class SearchController < ApplicationController
     render json: { count: count }
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def autocomplete
     term = params[:term]
 
@@ -80,7 +80,6 @@ class SearchController < ApplicationController
 
     render json: search_autocomplete_opts(term).to_json
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def opensearch
   end

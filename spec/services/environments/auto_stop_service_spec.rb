@@ -37,7 +37,7 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, 
     it 'stops environments and play stop jobs' do
       expect { subject }
         .to change { Environment.all.map(&:state).uniq }
-        .from(['available']).to(['stopped'])
+        .from(['available']).to(['stopping'])
 
       expect(Ci::Build.where(name: 'stop_review_app').map(&:status).uniq).to eq(['pending'])
     end

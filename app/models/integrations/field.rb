@@ -13,10 +13,11 @@ module Integrations
       exposes_secrets
     ].freeze
 
-    attr_reader :name
+    attr_reader :name, :integration_class
 
-    def initialize(name:, type: 'text', api_only: false, **attributes)
+    def initialize(name:, integration_class:, type: 'text', api_only: false, **attributes)
       @name = name.to_s.freeze
+      @integration_class = integration_class
 
       attributes[:type] = SECRET_NAME.match?(@name) ? 'password' : type
       attributes[:api_only] = api_only
@@ -27,7 +28,7 @@ module Integrations
       return name if key == :name
 
       value = @attributes[key]
-      return value.call if value.respond_to?(:call)
+      return integration_class.class_exec(&value) if value.respond_to?(:call)
 
       value
     end

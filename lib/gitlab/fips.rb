@@ -16,18 +16,14 @@ module Gitlab
       Technology.new(:ed25519_sk, SSHData::PublicKey::SKED25519, [256], %w(sk-ssh-ed25519@openssh.com))
     ].freeze
 
+    OPENSSL_DIGESTS = %i(SHA1 SHA256 SHA384 SHA512).freeze
+
     class << self
       # Returns whether we should be running in FIPS mode or not
       #
       # @return [Boolean]
       def enabled?
-        # Attempt to auto-detect FIPS mode from OpenSSL
-        return true if OpenSSL.fips_mode
-
-        # Otherwise allow it to be set manually via the env vars
-        return true if ENV["FIPS_MODE"] == "true"
-
-        false
+        ::Labkit::FIPS.enabled?
       end
     end
   end

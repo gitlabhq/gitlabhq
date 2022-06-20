@@ -52,7 +52,6 @@ Rails/RedundantForeignKey:
     - 'ee/app/models/incident_management/oncall_shift.rb'
     - 'ee/app/models/incident_management/pending_escalations/alert.rb'
     - 'ee/app/models/incident_management/pending_escalations/issue.rb'
-    - 'ee/app/models/incident_management/timeline_event.rb'
     - 'ee/app/models/issuable_metric_image.rb'
     - 'ee/app/models/security/orchestration_policy_configuration.rb'
     - 'ee/app/models/security/orchestration_policy_rule_schedule.rb'

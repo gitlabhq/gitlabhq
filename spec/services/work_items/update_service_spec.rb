@@ -8,11 +8,12 @@ RSpec.describe WorkItems::UpdateService do
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
   let(:spam_params) { double }
+  let(:widget_params) { {} }
   let(:opts) { {} }
   let(:current_user) { developer }
 
   describe '#execute' do
-    subject(:update_work_item) { described_class.new(project: project, current_user: current_user, params: opts, spam_params: spam_params).execute(work_item) }
+    subject(:update_work_item) { described_class.new(project: project, current_user: current_user, params: opts, spam_params: spam_params, widget_params: widget_params).execute(work_item) }
 
     before do
       stub_spam_services
@@ -66,6 +67,18 @@ RSpec.describe WorkItems::UpdateService do
             update_work_item
             work_item.reload
           end.to change(work_item, :state).from('closed').to('opened')
+        end
+      end
+    end
+
+    context 'when updating widgets' do
+      context 'for the description widget' do
+        let(:widget_params) { { description_widget: { description: 'changed' } } }
+
+        it 'updates the description of the work item' do
+          update_work_item
+
+          expect(work_item.description).to eq('changed')
         end
       end
     end

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -60,7 +60,7 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 		message, contentType = developmentModeResponse(err)
 	}
 
-	injectedResponse.Body = ioutil.NopCloser(strings.NewReader(message))
+	injectedResponse.Body = io.NopCloser(strings.NewReader(message))
 	injectedResponse.Header.Set("Content-Type", contentType)
 
 	return injectedResponse, nil

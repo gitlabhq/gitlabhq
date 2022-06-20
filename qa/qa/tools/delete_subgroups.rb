@@ -32,14 +32,18 @@ module QA
       def delete_subgroups(sub_group_ids)
         $stdout.puts "Deleting #{sub_group_ids.length} subgroups..."
         sub_group_ids.each do |subgroup_id|
-          delete_response = delete Runtime::API::Request.new(@api_client, "/groups/#{subgroup_id}").url
-          dot_or_f = delete_response.code == 202 ? "\e[32m.\e[0m" : "\e[31mF\e[0m"
+          request_url = Runtime::API::Request.new(@api_client, "/groups/#{subgroup_id}").url
+          path = parse_body(get(request_url))[:full_path]
+          $stdout.puts "\nDeleting subgroup #{path}..."
+
+          delete_response = delete(request_url)
+          dot_or_f = delete_response.code == 202 ? "\e[32m.\e[0m" : "\e[31mF - #{delete_response}\e[0m"
           print dot_or_f
         end
       end
 
       def fetch_group_id
-        group_name = ENV['TOP_LEVEL_GROUP_NAME'] || 'gitlab-qa-sandbox-group'
+        group_name = ENV['TOP_LEVEL_GROUP_NAME'] || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
         group_search_response = get Runtime::API::Request.new(@api_client, "/groups/#{group_name}" ).url
         JSON.parse(group_search_response.body)["id"]
       end

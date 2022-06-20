@@ -4,23 +4,13 @@ module MergeRequests
     class RunChecksService
       include Gitlab::Utils::StrongMemoize
 
-      # We want to have the cheapest checks first in the list,
-      # that way we can fail fast before running the more expensive ones
-      CHECKS = [
-        CheckOpenStatusService,
-        CheckDraftStatusService,
-        CheckBrokenStatusService,
-        CheckDiscussionsStatusService,
-        CheckCiStatusService
-      ].freeze
-
       def initialize(merge_request:, params:)
         @merge_request = merge_request
         @params = params
       end
 
       def execute
-        CHECKS.each_with_object([]) do |check_class, results|
+        merge_request.mergeability_checks.each_with_object([]) do |check_class, results|
           check = check_class.new(merge_request: merge_request, params: params)
 
           next if check.skip?

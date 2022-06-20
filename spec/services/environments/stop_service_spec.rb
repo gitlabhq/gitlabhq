@@ -29,12 +29,25 @@ RSpec.describe Environments::StopService do
         review_job.success!
       end
 
-      it 'stops the environment' do
-        expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+      context 'without stop action' do
+        let!(:environment) { create(:environment, :available, project: project) }
+
+        it 'stops the environment' do
+          expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+        end
       end
 
       it 'plays the stop action' do
         expect { subject }.to change { stop_review_job.reload.status }.from('manual').to('pending')
+      end
+
+      context 'force option' do
+        let(:service) { described_class.new(project, user, { force: true }) }
+
+        it 'does not play the stop action when forced' do
+          expect { subject }.to change { environment.reload.state }.from('available').to('stopped')
+          expect(stop_review_job.reload.status).to eq('manual')
+        end
       end
 
       context 'when an environment has already been stopped' do
@@ -65,11 +78,6 @@ RSpec.describe Environments::StopService do
 
   describe '#execute_for_branch' do
     context 'when environment with review app exists' do
-      before do
-        create(:environment, :with_review_app, project: project,
-                                               ref: 'feature')
-      end
-
       context 'when user has permission to stop environment' do
         before do
           project.add_developer(user)
@@ -77,25 +85,25 @@ RSpec.describe Environments::StopService do
 
         context 'when environment is associated with removed branch' do
           it 'stops environment' do
-            expect_environment_stopped_on('feature')
+            expect_environment_stopping_on('feature', feature_environment)
           end
         end
 
         context 'when environment is associated with different branch' do
           it 'does not stop environment' do
-            expect_environment_not_stopped_on('master')
+            expect_environment_not_stopped_on('master', feature_environment)
           end
         end
 
         context 'when specified branch does not exist' do
           it 'does not stop environment' do
-            expect_environment_not_stopped_on('non/existent/branch')
+            expect_environment_not_stopped_on('non/existent/branch', feature_environment)
           end
         end
 
         context 'when no branch not specified' do
           it 'does not stop environment' do
-            expect_environment_not_stopped_on(nil)
+            expect_environment_not_stopped_on(nil, feature_environment)
           end
         end
 
@@ -107,7 +115,7 @@ RSpec.describe Environments::StopService do
           end
 
           it 'does not stop environment' do
-            expect_environment_not_stopped_on('feature')
+            expect_environment_not_stopped_on('feature', feature_environment)
           end
         end
       end
@@ -119,7 +127,7 @@ RSpec.describe Environments::StopService do
           end
 
           it 'does not stop environment' do
-            expect_environment_not_stopped_on('master')
+            expect_environment_not_stopped_on('master', feature_environment)
           end
         end
       end
@@ -132,7 +140,7 @@ RSpec.describe Environments::StopService do
         end
 
         it 'does not stop environment' do
-          expect_environment_not_stopped_on('master')
+          expect_environment_not_stopped_on('master', feature_environment)
         end
       end
     end
@@ -148,7 +156,7 @@ RSpec.describe Environments::StopService do
         end
 
         it 'does not stop environment' do
-          expect_environment_not_stopped_on('master')
+          expect_environment_not_stopped_on('master', feature_environment)
         end
       end
     end
@@ -177,7 +185,7 @@ RSpec.describe Environments::StopService do
         merge_requests_as_head_pipeline: [merge_request])
     end
 
-    let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
+    let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, :success, pipeline: pipeline, project: project) }
     let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project) }
 
     before do
@@ -195,8 +203,7 @@ RSpec.describe Environments::StopService do
 
       it 'stops the active environment' do
         subject
-
-        expect(pipeline.environments_in_self_and_descendants.first).to be_stopped
+        expect(pipeline.environments_in_self_and_descendants.first).to be_stopping
       end
 
       context 'when pipeline is a branch pipeline for merge request' do
@@ -263,13 +270,22 @@ RSpec.describe Environments::StopService do
     end
   end
 
-  def expect_environment_stopped_on(branch)
+  def expect_environment_stopped_on(branch, environment)
     expect { service.execute_for_branch(branch) }
-      .to change { Environment.last.state }.from('available').to('stopped')
+      .to change { environment.reload.state }.from('available').to('stopped')
   end
 
-  def expect_environment_not_stopped_on(branch)
+  def expect_environment_stopping_on(branch, environment)
     expect { service.execute_for_branch(branch) }
-      .not_to change { Environment.last.state }
+      .to change { environment.reload.state }.from('available').to('stopping')
+  end
+
+  def expect_environment_not_stopped_on(branch, environment)
+    expect { service.execute_for_branch(branch) }
+      .not_to change { environment.reload.state }.from('available')
+  end
+
+  def feature_environment
+    create(:environment, :with_review_app, project: project, ref: 'feature')
   end
 end

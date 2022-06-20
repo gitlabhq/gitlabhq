@@ -96,26 +96,14 @@ RSpec.describe Gitlab::Checks::SingleChangeAccess do
         let(:provided_commits) { nil }
 
         before do
-          stub_feature_flags(filter_quarantined_commits: filter_quarantined_commits)
-
           expect(project.repository)
             .to receive(:new_commits)
-            .with(newrev, allow_quarantine: filter_quarantined_commits)
+            .with(newrev)
             .once
             .and_return(expected_commits)
         end
 
-        context 'with :filter_quarantined_commits disabled' do
-          let(:filter_quarantined_commits) { false }
-
-          it_behaves_like '#commits'
-        end
-
-        context 'with :filter_quarantined_commits enabled' do
-          let(:filter_quarantined_commits) { true }
-
-          it_behaves_like '#commits'
-        end
+        it_behaves_like '#commits'
       end
     end
   end

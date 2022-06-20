@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -25,22 +25,22 @@ costly-to-operate environment by using the
 >   - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)**
 
-| Service                                    | Nodes       | Configuration           | GCP             | AWS          | Azure    |
-|--------------------------------------------|-------------|-------------------------|-----------------|--------------|----------|
-| External load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Redis<sup>2</sup>                          | 3           | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Consul<sup>1</sup> + Sentinel<sup>2</sup>  | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL<sup>1</sup>                     | 3           | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| PgBouncer<sup>1</sup>                      | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Gitaly<sup>5</sup>                         | 3           | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` | `D8s v3` |
-| Praefect<sup>5</sup>                       | 3           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Praefect PostgreSQL<sup>1</sup>            | 1+          | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| GitLab Rails                               | 3           | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` | `F16s v2`|
-| Monitoring node                            | 1           | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>4</sup>                 | n/a         | n/a                     | n/a             | n/a          | n/a      |
-| NFS server (non-Gitaly)     | 1           | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
+| Service                                    | Nodes          | Configuration           | GCP             | AWS            | Azure          |
+|--------------------------------------------|----------------|-------------------------|-----------------|----------------|----------------|
+| External load balancing node<sup>3</sup>   | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Redis<sup>2</sup>                          | 3              | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`     | `D2s v3`       |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup>  | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| PostgreSQL<sup>1</sup>                     | 3              | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`    | `D4s v3`       |
+| PgBouncer<sup>1</sup>                      | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Internal load balancing node<sup>3</sup>   | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Gitaly<sup>5</sup>                         | 3              | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge`   | `D8s v3`       |
+| Praefect<sup>5</sup>                       | 3              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Praefect PostgreSQL<sup>1</sup>            | 1+             | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Sidekiq                                    | 4              | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`     | `D2s v3`       |
+| GitLab Rails                               | 3              | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge`   | `F16s v2`      |
+| Monitoring node                            | 1              | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`     | `F2s v2`       |
+| Object storage<sup>4</sup>                 | Not applicable | Not applicable          | Not applicable  | Not applicable | Not applicable |
+| NFS server (non-Gitaly)                    | 1              | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`    | `F4s v2`       |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -1562,18 +1562,12 @@ and on all Praefect clients that communicate with it following the procedure des
 
 Note the following:
 
-- The certificate must specify the address you use to access the Praefect server. If
-  addressing the Praefect server by:
-
-  - Hostname, you can either use the Common Name field for this, or add it as a Subject
-    Alternative Name.
-  - IP address, you must add it as a Subject Alternative Name to the certificate.
-
+- The certificate must specify the address you use to access the Praefect server. You must add the hostname or IP
+  address as a Subject Alternative Name to the certificate.
 - You can configure Praefect servers with both an unencrypted listening address
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
-  necessary.
-
+  necessary. To disable the unencrypted listener, set `praefect['listen_addr'] = nil`.
 - The Internal Load Balancer will also access to the certificates and need to be configured
   to allow for TLS passthrough.
   Refer to the load balancers documentation on how to configure this.
@@ -2125,7 +2119,7 @@ GitLab has been tested on a number of object storage providers:
 
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](http://www.digitalocean.com/products/spaces)
+- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
@@ -2140,10 +2134,6 @@ There are two ways of specifying object storage configuration in GitLab:
   own object storage [connection and configuration](../object_storage.md#connection-settings).
 
 Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
-
-GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared via NFS on any GitLab Rails and Sidekiq nodes.
-
-In GitLab 13.6 and later, it's also recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs. This is required when no NFS node has been deployed.
 
 For configuring object storage in GitLab 13.1 and earlier, or for storage types not
 supported by consolidated configuration form, refer to the following guides based
@@ -2174,15 +2164,21 @@ in the future.
   </a>
 </div>
 
+## Enable incremental logging
+
+GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
+
+While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+
 ## Configure Advanced Search
 
-You can leverage Elasticsearch and [enable Advanced Search](../../integration/elasticsearch.md)
+You can leverage Elasticsearch and [enable Advanced Search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
 Elasticsearch cluster design and requirements are dependent on your specific
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, read how to
-[choose the optimal cluster configuration](../../integration/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
+[choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2250,17 +2246,17 @@ future with further specific cloud provider details.
 Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
 services where applicable):
 
-| Service                                   | Nodes | Configuration         | GCP             | AWS          |
-|-------------------------------------------|-------|-----------------------|-----------------|--------------|
-| Redis<sup>2</sup>                         | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
-| Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| PostgreSQL<sup>1</sup>                    | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
-| PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Gitaly<sup>5</sup>                        | 3     | 8 vCPU, 30 GB memory  | `n1-standard-8` | `m5.2xlarge` |
-| Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Object storage<sup>4</sup>                | n/a   | n/a                   | n/a             | n/a          |
+| Service                                   | Nodes          | Configuration         | GCP             | AWS            |
+|-------------------------------------------|----------------|-----------------------|-----------------|----------------|
+| Redis<sup>2</sup>                         | 3              | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`     |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| PostgreSQL<sup>1</sup>                    | 3              | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`    |
+| PgBouncer<sup>1</sup>                     | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Internal load balancing node<sup>3</sup>  | 1              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Gitaly<sup>5</sup>                        | 3              | 8 vCPU, 30 GB memory  | `n1-standard-8` | `m5.2xlarge`   |
+| Praefect<sup>5</sup>                      | 3              | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Praefect PostgreSQL<sup>1</sup>           | 1+             | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`     |
+| Object storage<sup>4</sup>                | Not applicable | Not applicable        | Not applicable  | Not applicable |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

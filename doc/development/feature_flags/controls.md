@@ -95,6 +95,7 @@ Guidelines:
 - Consider notifying `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
 - If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
+- For support requests to toggle feature flags for specific groups or projects, please follow the process outlined in the [support workflows](https://about.gitlab.com/handbook/support/workflows/saas_feature_flags.html).
 
 #### Process
 
@@ -198,6 +199,14 @@ For groups the `--group` flag is available:
 /chatops run feature set --group=gitlab-org some_feature true
 ```
 
+Note that `--group` does not work with user namespaces. To enable a feature flag for a
+generic namespace (including groups) use `--namespace`:
+
+```shell
+/chatops run feature set --namespace=gitlab-org some_feature true
+/chatops run feature set --namespace=myusername some_feature true
+```
+
 Note that actor-based gates are applied before percentages. For example, considering the
 `group/project` as `gitlab-org/gitlab` and a given example feature as `some_feature`, if
 you run these 2 commands:
@@ -213,6 +222,16 @@ actors.
 
 ```ruby
 Feature.enabled?(:some_feature, group)
+```
+
+Multiple actors can be passed together in a comma-separated form:
+
+```shell
+/chatops run feature set --project=gitlab-org/gitlab,example-org/example-project some_feature true
+
+/chatops run feature set --group=gitlab-org,example-org some_feature true
+
+/chatops run feature set --namespace=gitlab-org,example-org some_feature true
 ```
 
 Lastly, to verify that the feature is deemed stable in as many cases as possible,
@@ -267,7 +286,7 @@ To disable a feature flag that has been enabled for a specific project you can r
 
 You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](index.md#selectively-disable-by-actor) the feature flags.
 
-If a feature flag is disabled via ChatOps, that will take precedence over the `default_enabled` value in the YML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
+If a feature flag is disabled via ChatOps, that will take precedence over the `default_enabled` value in the YAML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
 
 ### Feature flag change logging
 

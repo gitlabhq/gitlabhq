@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User comments on commit", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
+  include Spec::Support::Helpers::ModalHelpers
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -93,8 +94,6 @@ RSpec.describe "User comments on commit", :js do
 
   context "when deleting comment" do
     before do
-      stub_feature_flags(bootstrap_confirmation_modals: false)
-
       visit(project_commit_path(project, sample_commit.id))
 
       add_note(comment_text)
@@ -112,8 +111,10 @@ RSpec.describe "User comments on commit", :js do
         find(".more-actions").click
         find(".more-actions .dropdown-menu li", match: :first)
 
-        accept_confirm { find(".js-note-delete").click }
+        find(".js-note-delete").click
       end
+
+      accept_gl_confirm(button_text: 'Delete comment')
 
       expect(page).not_to have_css(".note")
     end

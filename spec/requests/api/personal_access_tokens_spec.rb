@@ -73,6 +73,61 @@ RSpec.describe API::PersonalAccessTokens do
     end
   end
 
+  describe 'GET /personal_access_tokens/:id' do
+    let_it_be(:user_token) { create(:personal_access_token, user: current_user) }
+    let_it_be(:user_token_path) { "/personal_access_tokens/#{user_token.id}" }
+    let_it_be(:invalid_path) { "/personal_access_tokens/#{non_existing_record_id}" }
+
+    context 'when current_user is an administrator', :enable_admin_mode do
+      let_it_be(:admin_user) { create(:admin) }
+      let_it_be(:admin_token) { create(:personal_access_token, user: admin_user) }
+      let_it_be(:admin_path) { "/personal_access_tokens/#{admin_token.id}" }
+
+      it 'returns admins own PAT by id' do
+        get api(admin_path, admin_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(admin_token.id)
+      end
+
+      it 'returns a different users PAT by id' do
+        get api(user_token_path, admin_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(user_token.id)
+      end
+
+      it 'fails to return PAT because no PAT exists with this id' do
+        get api(invalid_path, admin_user)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when current_user is not an administrator' do
+      let_it_be(:other_users_path) { "/personal_access_tokens/#{token1.id}" }
+
+      it 'returns users own PAT by id' do
+        get api(user_token_path, current_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(user_token.id)
+      end
+
+      it 'fails to return other users PAT by id' do
+        get api(other_users_path, current_user)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'fails to return PAT because no PAT exists with this id' do
+        get api(invalid_path, current_user)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'DELETE /personal_access_tokens/self' do
     let(:path) { '/personal_access_tokens/self' }
     let(:token) { create(:personal_access_token, user: current_user) }

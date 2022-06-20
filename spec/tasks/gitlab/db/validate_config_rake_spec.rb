@@ -3,6 +3,10 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
+  # We don't need to delete this data since it only modifies `ar_internal_metadata`
+  # which would not be cleaned either by `DbCleaner`
+  self.use_transactional_tests = false
+
   before :all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
@@ -111,6 +115,26 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
       end
 
       it_behaves_like 'validates successfully'
+
+      context 'when config is pointing to incorrect server' do
+        let(:test_config) do
+          {
+            main: main_database_config.merge(port: 11235)
+          }
+        end
+
+        it_behaves_like 'validates successfully'
+      end
+
+      context 'when config is pointing to non-existent database' do
+        let(:test_config) do
+          {
+            main: main_database_config.merge(database: 'non_existent_database')
+          }
+        end
+
+        it_behaves_like 'validates successfully'
+      end
     end
 
     context 'when main: uses database_tasks=false' do
@@ -180,6 +204,23 @@ RSpec.describe 'gitlab:db:validate_config', :silence_stdout do
 
         it_behaves_like 'raises an error', /The 'ci' since it is using 'database_tasks: false' should share database with 'main:'/
       end
+    end
+
+    context 'one of the databases is in read-only mode' do
+      let(:test_config) do
+        {
+          main: main_database_config
+        }
+      end
+
+      let(:exception) { ActiveRecord::StatementInvalid.new("READONLY") }
+
+      before do
+        allow(exception).to receive(:cause).and_return(PG::ReadOnlySqlTransaction.new("cannot execute INSERT in a read-only transaction"))
+        allow(ActiveRecord::InternalMetadata).to receive(:upsert).at_least(:once).and_raise(exception)
+      end
+
+      it_behaves_like 'validates successfully'
     end
   end
 

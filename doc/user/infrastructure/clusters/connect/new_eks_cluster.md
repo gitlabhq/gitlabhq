@@ -36,7 +36,7 @@ To import the project:
 
 1. On the top bar, select **Menu > Create new project**.
 1. Select **Import project**.
-1. Select **Repo by URL**.
+1. Select **Repository by URL**.
 1. For the **Git repository URL**, enter `https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-eks.git`.
 1. Complete the fields and select **Create project**.
 
@@ -92,7 +92,7 @@ View the [AWS Terraform provider](https://registry.terraform.io/providers/hashic
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
 1. On the left sidebar, go to **CI/CD > Pipelines**.
-1. Next to **Play** (**{play}**), select the dropdown icon (**{angle-down}**).
+1. Next to **Play** (**{play}**), select the dropdown icon (**{chevron-lg-down}**).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can view the new cluster:

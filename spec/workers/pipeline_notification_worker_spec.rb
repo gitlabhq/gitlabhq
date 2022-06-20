@@ -21,6 +21,20 @@ RSpec.describe PipelineNotificationWorker, :mailer do
       subject.perform(non_existing_record_id)
     end
 
+    context 'when the user is blocked' do
+      before do
+        expect_next_found_instance_of(Ci::Pipeline) do |pipeline|
+          allow(pipeline).to receive(:user) { build(:user, :blocked) }
+        end
+      end
+
+      it 'does nothing' do
+        expect(NotificationService).not_to receive(:new)
+
+        subject.perform(pipeline.id)
+      end
+    end
+
     it_behaves_like 'worker with data consistency',
       described_class,
       data_consistency: :delayed

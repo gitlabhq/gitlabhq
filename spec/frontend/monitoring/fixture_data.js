@@ -14,13 +14,12 @@ const datasetState = stateAndPropsFromDataset(
   convertObjectPropsToCamelCase(metricsDashboardResponse.metrics_data),
 );
 
-// new properties like addDashboardDocumentationPath prop and alertsEndpoint
+// new properties like addDashboardDocumentationPath prop
 // was recently added to dashboard.vue component this needs to be
 // added to fixtures data
 // https://gitlab.com/gitlab-org/gitlab/-/issues/229256
 export const dashboardProps = {
   ...datasetState.dataProps,
-  alertsEndpoint: null,
 };
 
 export const metricsDashboardViewModel = mapToDashboardViewModel(metricsDashboardPayload);

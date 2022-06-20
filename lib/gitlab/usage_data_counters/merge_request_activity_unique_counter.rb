@@ -250,3 +250,7 @@ module Gitlab
     end
   end
 end
+
+# rubocop:disable Layout/LineLength
+Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.prepend_mod_with('Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter')
+# rubocop:enable Layout/LineLength

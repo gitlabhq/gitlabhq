@@ -2,15 +2,15 @@
   .settings-header
     %h4
       = s_('ExternalAuthorization|External authorization')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? 'Collapse' : 'Expand'
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
     %p
       = s_('ExternalAuthorization|External classification policy authorization.')
       = link_to _('Learn more.'), help_page_path('user/admin_area/settings/external_authorization'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
 
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-external-auth-settings'), html: { class: 'fieldset-form', id: 'external-auth-settings' } do |f|
-      = form_errors(@application_setting)
+      = form_errors(@application_setting, pajamas_alert: true)
 
       %fieldset
         .form-group

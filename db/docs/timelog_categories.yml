@@ -1,0 +1,9 @@
+---
+table_name: timelog_categories
+classes:
+- TimelogCategory
+feature_categories:
+- team_planning
+description: Categories that can be associated to a timelog to categorize them
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87529
+milestone: '15.1'

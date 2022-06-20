@@ -4,6 +4,6 @@ classes:
 - Clusters::Agents::ProjectAuthorization
 feature_categories:
 - kubernetes_management
-description: TODO
+description: Configuration for a project that is authorized to use a particular cluster agent
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67295
 milestone: '14.3'

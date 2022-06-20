@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9186) in GitLab 12.0.
 > - [Squash and merge](../../user/project/merge_requests/squash_and_merge.md) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13001) in GitLab 12.6.
 
-For more information about why you might want to use merge trains, read [How merge trains keep your master green](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
+For more information about why you might want to use merge trains, read [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
 
 When [merged results pipelines](merged_results_pipelines.md) are
 enabled, the pipeline jobs run as if the changes from your source branch have already

@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -117,7 +117,7 @@ Install the required packages (needed to compile Ruby and native extensions to R
 ```shell
 sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev \
   libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
-  libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake runit-systemd
+  libcurl4-openssl-dev libicu-dev logrotate rsync python3-docutils pkg-config cmake runit-systemd
 ```
 
 If you want to use Kerberos for user authentication, install `libkrb5-dev`
@@ -211,7 +211,7 @@ sudo apt-get install -y libimage-exiftool-perl
 ## 2. Ruby
 
 The Ruby interpreter is required to run GitLab.
-See the [requirements section of this page](#software-requirements) for the minimum
+See the [requirements section](#software-requirements) for the minimum
 Ruby requirements.
 
 The use of Ruby version managers such as [`RVM`](https://rvm.io/), [`rbenv`](https://github.com/rbenv/rbenv) or [`chruby`](https://github.com/postmodern/chruby) with GitLab
@@ -226,9 +226,9 @@ Download Ruby and compile it:
 
 ```shell
 mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.tar.gz"
-echo '2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1 ruby-2.7.5.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.5.tar.gz
-cd ruby-2.7.5
+curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.6.tar.gz"
+echo 'e7203b0cc09442ed2c08936d483f8ac140ec1c72e37bb5c401646b7866cb5d10 ruby-2.7.6.tar.gz' | sha256sum -c - && tar xzf ruby-2.7.6.tar.gz
+cd ruby-2.7.6
 
 ./configure --disable-install-rdoc --enable-shared
 make
@@ -246,11 +246,11 @@ page](https://go.dev/dl).
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.16.10.linux-amd64.tar.gz"
-echo '414cd18ce1d193769b9e97d2401ad718755ab47816e13b2a1cde203d263b55cf  go1.16.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.16.10.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.17.10.linux-amd64.tar.gz"
+echo '87fc728c9c731e2f74e4a999ef53cf07302d7ed3504b0839027bd9c10edaa3fd  go1.17.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.17.10.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.16.10.linux-amd64.tar.gz
+rm go1.17.10.linux-amd64.tar.gz
 ```
 
 ## 4. Node
@@ -859,7 +859,7 @@ You can set the Administrator/root password and email by supplying them in envir
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_LICENSE_FILE="/path/to/license"
 ```
 
-### Secure secrets.yml
+### Secure `secrets.yml`
 
 The `secrets.yml` file stores encryption keys for sessions and secure variables.
 Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.

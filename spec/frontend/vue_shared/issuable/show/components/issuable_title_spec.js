@@ -1,4 +1,4 @@
-import { GlIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -40,7 +40,7 @@ describe('IssuableTitle', () => {
   describe('methods', () => {
     describe('handleTitleAppear', () => {
       it('sets value of `stickyTitleVisible` prop to false', () => {
-        wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
         expect(wrapper.vm.stickyTitleVisible).toBe(false);
       });
@@ -48,7 +48,7 @@ describe('IssuableTitle', () => {
 
     describe('handleTitleDisappear', () => {
       it('sets value of `stickyTitleVisible` prop to true', () => {
-        wrapper.find(GlIntersectionObserver).vm.$emit('disappear');
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('disappear');
 
         expect(wrapper.vm.stickyTitleVisible).toBe(true);
       });
@@ -70,14 +70,14 @@ describe('IssuableTitle', () => {
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.html()).toBe(
-        '<h1 dir="auto" data-testid="title" class="title qa-title"><b>Sample</b> title</h1>',
+        '<h1 dir="auto" data-testid="title" class="title qa-title gl-font-size-h-display"><b>Sample</b> title</h1>',
       );
 
       wrapperWithTitle.destroy();
     });
 
     it('renders edit button', () => {
-      const editButtonEl = wrapper.find(GlButton);
+      const editButtonEl = wrapper.findComponent(GlButton);
       const tooltip = getBinding(editButtonEl.element, 'gl-tooltip');
 
       expect(editButtonEl.exists()).toBe(true);
@@ -97,7 +97,10 @@ describe('IssuableTitle', () => {
       const stickyHeaderEl = wrapper.find('[data-testid="header"]');
 
       expect(stickyHeaderEl.exists()).toBe(true);
-      expect(stickyHeaderEl.find(GlIcon).props('name')).toBe(issuableTitleProps.statusIcon);
+      expect(stickyHeaderEl.findComponent(GlBadge).props('variant')).toBe('success');
+      expect(stickyHeaderEl.findComponent(GlIcon).props('name')).toBe(
+        issuableTitleProps.statusIcon,
+      );
       expect(stickyHeaderEl.text()).toContain('Open');
       expect(stickyHeaderEl.text()).toContain(issuableTitleProps.issuable.title);
     });

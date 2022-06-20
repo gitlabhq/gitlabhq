@@ -171,8 +171,12 @@ Users can also be deactivated using the [GitLab API](../../api/users.md#deactiva
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320875) in GitLab 14.0.
 
-Administrators can enable automatic deactivation of users who have not signed in, or have no activity
-in the last 90 days. To do this:
+Administrators can enable automatic deactivation of users who either:
+
+- Were created more than a week ago and have not signed in.
+- Have no activity in the last 90 days.
+
+To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
@@ -246,3 +250,33 @@ A banned user can be unbanned using the Admin Area. To do this:
 
 The user's state is set to active and they consume a
 [seat](../../subscriptions/self_managed/index.md#billable-users).
+
+### Delete a user
+
+Use the Admin Area to delete users.
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Banned** tab.
+1. Optional. Select a user.
+1. Select the **{settings}** **User administration** dropdown list.
+1. Select **Delete user**.
+1. Type the username.
+1. Select **Delete user**.
+
+NOTE:
+You can only delete a user if there are inherited or direct owners of a group. You cannot delete a user if they are the only group owner.  
+
+You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Banned** tab.
+1. Optional. Select a user.
+1. Select the **{settings}** **User administration** dropdown list.
+1. Select **Delete user and contributions**.
+1. Type the username.
+1. Select **Delete user and contributions**.
+
+NOTE:
+Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.

@@ -68,4 +68,33 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       expect(rendered).not_to have_css('#js-add-license-toggle')
     end
   end
+
+  describe 'jira connect application key' do
+    it 'shows the jira connect application key section' do
+      render
+
+      expect(rendered).to have_css('#js-jira_connect-settings')
+    end
+
+    context 'when the jira_connect_oauth feature flag is disabled' do
+      before do
+        stub_feature_flags(jira_connect_oauth: false)
+      end
+
+      it 'does not show the jira connect application key section' do
+        render
+
+        expect(rendered).not_to have_css('#js-jira_connect-settings')
+      end
+    end
+  end
+
+  describe 'sign-up restrictions' do
+    it 'renders js-signup-form tag' do
+      render
+
+      expect(rendered).to match 'id="js-signup-form"'
+      expect(rendered).to match ' data-minimum-password-length='
+    end
+  end
 end

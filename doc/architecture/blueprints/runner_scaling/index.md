@@ -36,7 +36,7 @@ rapid growth of CI/CD adoption on GitLab.com.
 We can not, however, continue using Docker Machine. Work on that project [was
 paused in July 2018](https://github.com/docker/machine/issues/4537) and there
 was no development made since that time (except for some highly important
-security fixes). In 2018, after Docker Machine entered the “maintenance mode”,
+security fixes). In 2018, after Docker Machine entered the "maintenance mode",
 we decided to create [our own fork](https://gitlab.com/gitlab-org/ci-cd/docker-machine)
 to be able to keep using this and ship fixes and updates needed for our use case.
 [On September 26th, 2021 the project got archived](https://github.com/docker/docker.github.io/commit/2dc8b49dcbe85686cc7230e17aff8e9944cb47a5)
@@ -48,7 +48,7 @@ new mechanism for GitLab Runner auto-scaling. It not only needs to support
 auto-scaling, but it also needs to do that in the way to enable us to build on
 top of it to improve efficiency, reliability and availability.
 
-We call this new mechanism the “next GitLab Runner Scaling architecture”.
+We call this new mechanism the "next GitLab Runner Scaling architecture".
 
 _Disclaimer The following contain information related to upcoming products,
 features, and functionality._
@@ -82,11 +82,11 @@ about how people are using Docker Machine right now, and it seems that GitLab
 CI is one of the most frequent reasons for people to keep using Docker Machine.
 
 There is also an opportunity in being able to optionally run multiple jobs in a
-single, larger virtual machine. We can’t do that today, but we know that this
+single, larger virtual machine. We can't do that today, but we know that this
 can potentially significantly improve efficiency. We might want to build a new
 architecture that makes it easier and allows us to test how efficient it is
 with PoCs. Running multiple jobs on a single machine can also make it possible
-to reuse what we call a “sticky context” - a space for build artifacts / user
+to reuse what we call a "sticky context" - a space for build artifacts / user
 data that can be shared between job runs.
 
 ### 💡 Design a simple abstraction that users will be able to build on top of
@@ -165,7 +165,7 @@ sequence diagram.
 ![GitLab Runner Autoscaling Overview](gitlab-autoscaling-overview.png)
 
 On the diagrams above we see that currently a GitLab Runner Manager runs on a
-machine that has access to a cloud provider’s API. It is using Docker Machine
+machine that has access to a cloud provider's API. It is using Docker Machine
 to provision new Virtual Machines with Docker Engine installed and it
 configures the Docker daemon there to allow external authenticated requests. It
 stores credentials to such ephemeral Docker environments on disk. Once a
@@ -186,8 +186,8 @@ through os/exec system calls.
 
 Thanks to the custom executor abstraction there is no more need to implement
 new executors internally in Runner. Users who have specific needs can implement
-their own drivers and don’t need to wait for us to make their work part of the
-“official” GitLab Runner. As each driver is a separate project, it also makes
+their own drivers and don't need to wait for us to make their work part of the
+"official" GitLab Runner. As each driver is a separate project, it also makes
 it easier to create communities around them, where interested people can
 collaborate together on improvements and bug fixes.
 
@@ -197,7 +197,7 @@ provide a context and an environment in which a build will be executed by one
 of the Custom Executors.
 
 There are multiple solutions to implementing a custom provider abstraction. We
-can use raw Go plugins, Hashcorp’s Go Plugin, HTTP interface or gRPC based
+can use raw Go plugins, Hashcorp's Go Plugin, HTTP interface or gRPC based
 facade service. There are many solutions, and we want to choose the most
 optimal one. In order to do that, we will describe the solutions in a separate
 document, define requirements and score the solution accordingly. This will

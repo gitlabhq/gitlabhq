@@ -113,7 +113,7 @@ RSpec.describe API::Environments do
       end
 
       context 'when filtering' do
-        let_it_be(:environment2) { create(:environment, project: project) }
+        let_it_be(:stopped_environment) { create(:environment, :stopped, project: project) }
 
         it 'returns environment by name' do
           get api("/projects/#{project.id}/environments?name=#{environment.name}", user)
@@ -152,11 +152,32 @@ RSpec.describe API::Environments do
           expect(json_response.size).to eq(0)
         end
 
-        it 'returns a 400 status code with invalid states' do
+        it 'returns environment by valid state' do
+          get api("/projects/#{project.id}/environments?states=available", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['name']).to eq(environment.name)
+        end
+
+        it 'returns all environments when state is not specified' do
+          get api("/projects/#{project.id}/environments", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.size).to eq(2)
+          expect(json_response.first['name']).to eq(environment.name)
+          expect(json_response.last['name']).to eq(stopped_environment.name)
+        end
+
+        it 'returns a 400 when filtering by invalid state' do
           get api("/projects/#{project.id}/environments?states=test", user)
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to include('Requested states are invalid')
+          expect(json_response['error']).to eq('states does not have a valid value')
         end
       end
     end

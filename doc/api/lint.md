@@ -126,7 +126,7 @@ Example response:
       "stage":"test",
       "before_script":[],
       "script":["echo 1"],
-      "after_script":[], 
+      "after_script":[],
       "tag_list":[],
       "environment":null,
       "when":"on_success",

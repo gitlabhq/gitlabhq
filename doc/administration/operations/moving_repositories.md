@@ -27,7 +27,7 @@ For more information, see:
   querying and scheduling snippet repository moves.
 - [The API documentation](../../api/group_repository_storage_moves.md) details the endpoints for
   querying and scheduling group repository moves **(PREMIUM SELF)**.
-- [Migrating to Gitaly Cluster](../gitaly/index.md#migrating-to-gitaly-cluster).
+- [Migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
 
 ### Move Repositories
 
@@ -276,7 +276,7 @@ If the source or target directory has many contents, this startup phase of `rsyn
 server. You can reduce the workload of `rsync` by dividing its work into smaller pieces, and sync one repository at a
 time.
 
-In addition to `rsync` we use [GNU Parallel](http://www.gnu.org/software/parallel/).
+In addition to `rsync` we use [GNU Parallel](https://www.gnu.org/software/parallel/).
 This utility is not included in GitLab, so you must install it yourself with `apt`
 or `yum`.
 
@@ -377,3 +377,14 @@ sudo -u git -H bundle exec rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
     /home/git/repositories \
     /mnt/gitlab/repositories
 ```
+
+## Troubleshooting
+
+See the following for information on troubleshooting repository moves.
+
+### Repository move fails for archived projects
+
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/363670),
+[archived projects](../../user/project/settings/index.md#advanced-settings) fail to move even though the data is cloned
+by Gitaly. Make sure archived projects are
+[unarchived](../../user/project/settings/index.md#unarchiving-a-project) before initiating a move. 

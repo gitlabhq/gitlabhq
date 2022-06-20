@@ -2,12 +2,11 @@ package helper
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 )
 
 func ReadAllTempfile(r io.Reader) (tempfile *os.File, err error) {
-	tempfile, err = ioutil.TempFile("", "gitlab-workhorse-read-all-tempfile")
+	tempfile, err = os.CreateTemp("", "gitlab-workhorse-read-all-tempfile")
 	if err != nil {
 		return nil, err
 	}

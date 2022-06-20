@@ -316,10 +316,8 @@ class IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_project(items)
-    if params.project?
+    if params.project? || params.projects
       items.of_projects(params.projects).references_project
-    elsif params.projects
-      items.merge(params.projects.reorder(nil)).join_project
     else
       items.none
     end

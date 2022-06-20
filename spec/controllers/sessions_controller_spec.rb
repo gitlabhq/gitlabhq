@@ -233,14 +233,23 @@ RSpec.describe SessionsController do
             request.headers[described_class::CAPTCHA_HEADER] = '1'
           end
 
-          it 'displays an error when the reCAPTCHA is not solved' do
-            # Without this, `verify_recaptcha` arbitrarily returns true in test env
+          context 'when the reCAPTCHA is not solved' do
+            it 'displays an error' do
+              unsuccesful_login(user_params)
 
-            unsuccesful_login(user_params)
+              expect(response).to render_template(:new)
+              expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
+              expect(subject.current_user).to be_nil
+            end
 
-            expect(response).to redirect_to new_user_session_path
-            expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
-            expect(subject.current_user).to be_nil
+            it 'sets gon variables' do
+              Gon.clear
+
+              unsuccesful_login(user_params)
+
+              expect(response).to render_template(:new)
+              expect(Gon.all_variables).not_to be_empty
+            end
           end
 
           it 'successfully logs in a user when reCAPTCHA is solved' do
@@ -262,7 +271,7 @@ RSpec.describe SessionsController do
             it 'displays an error when the reCAPTCHA is not solved' do
               unsuccesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
 
-              expect(response).to redirect_to new_user_session_path
+              expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
               expect(subject.current_user).to be_nil
             end
@@ -282,7 +291,7 @@ RSpec.describe SessionsController do
             it 'displays an error when the reCAPTCHA is not solved' do
               unsuccesful_login(user_params)
 
-              expect(response).to redirect_to new_user_session_path
+              expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
               expect(subject.current_user).to be_nil
             end

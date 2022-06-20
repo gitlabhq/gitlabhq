@@ -33,6 +33,18 @@ FactoryBot.define do
       name { generate(:job_name) }
     end
 
+    trait :matrix do
+      sequence(:name) { |n| "job: [#{n}]" }
+      options do
+        {
+          parallel: {
+            total: 2,
+            matrix: [{ ID: %w[1 2] }]
+          }
+        }
+      end
+    end
+
     trait :dependent do
       scheduling_type { 'dag' }
 
@@ -494,13 +506,15 @@ FactoryBot.define do
 
     trait :with_commit do
       after(:build) do |build|
-        allow(build).to receive(:commit).and_return build(:commit, :without_author)
+        commit = build(:commit, :without_author)
+        stub_method(build, :commit) { commit }
       end
     end
 
     trait :with_commit_and_author do
       after(:build) do |build|
-        allow(build).to receive(:commit).and_return build(:commit)
+        commit = build(:commit)
+        stub_method(build, :commit) { commit }
       end
     end
 

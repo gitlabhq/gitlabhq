@@ -1,5 +1,5 @@
 - page_title _("Report abuse to admin")
-%h3.page-title
+%h1.page-title.gl-font-size-h-display
   = _("Report abuse to admin")
 %p
   = _("Please use this form to report to the admin users who create spam issues, comments or behave inappropriately.")
@@ -7,7 +7,7 @@
   = _("A member of the abuse team will review your report as soon as possible.")
 %hr
 = form_for @abuse_report, html: { class: 'js-quick-submit js-requires-input'} do |f|
-  = form_errors(@abuse_report)
+  = form_errors(@abuse_report, pajamas_alert: true)
 
   = f.hidden_field :user_id
   .form-group.row

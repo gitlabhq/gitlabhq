@@ -14,7 +14,11 @@ FactoryBot.define do
 
     trait :legacy do
       sha { nil }
-      author { nil }
+
+      # Legacy releases which are created during tags creation have empty users.
+      after(:create) do |release, _|
+        release.update_column(:author_id, nil)
+      end
     end
 
     trait :with_evidence do

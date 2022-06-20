@@ -100,7 +100,7 @@ export default {
       <gl-button
         v-else
         v-gl-tooltip="$options.i18n.edit"
-        icon="pencil-square"
+        icon="pencil"
         v-bind="editButtonAttrs"
         :aria-label="$options.i18n.edit"
       />

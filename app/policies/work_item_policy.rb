@@ -8,4 +8,9 @@ class WorkItemPolicy < IssuePolicy
   rule { can?(:update_issue) }.enable :update_work_item
 
   rule { can?(:read_issue) }.enable :read_work_item
+  # because IssuePolicy delegates to ProjectPolicy and
+  # :read_work_item is enabled in ProjectPolicy too, we
+  # need to make sure we also prevent this rule if read_issue
+  # is prevented
+  rule { ~can?(:read_issue) }.prevent :read_work_item
 end

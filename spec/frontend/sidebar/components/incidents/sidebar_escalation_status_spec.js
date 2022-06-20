@@ -1,6 +1,12 @@
 import { createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import {
+  fetchData,
+  fetchError,
+  mutationData,
+  mutationError,
+} from 'ee_else_ce_jest/sidebar/components/incidents/mock_data';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -12,7 +18,6 @@ import EscalationStatus from 'ee_else_ce/sidebar/components/incidents/escalation
 import { STATUS_ACKNOWLEDGED } from '~/sidebar/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
-import { fetchData, fetchError, mutationData, mutationError } from './mock_data';
 
 jest.mock('~/lib/logger');
 jest.mock('~/flash');

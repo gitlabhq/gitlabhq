@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -31,6 +31,8 @@ GitLab package.
   upgrade is in progress. The user's web browser shows a `Deploy in progress` message or a `502` error.
 - For multi-node installations, see how to perform
   [zero downtime upgrades](../zero_downtime.md).
+- Upgrades to multi-node installations can also be performed
+  [with downtime](../with_downtime.md).
 
 ## Version-specific changes
 
@@ -128,7 +130,7 @@ or upgrade command:
 
 1. Install the specific `gitlab-ee` package by using one of the following commands
    and replacing `<version>` with the next supported version you would like to install
-   (make sure to review the [upgrade path](../index.md#upgrade-paths) to confirm the 
+   (make sure to review the [upgrade path](../index.md#upgrade-paths) to confirm the
    version you're installing is part of a supported path):
 
    ```shell
@@ -308,3 +310,32 @@ To update the GPG key of the GitLab packages server run:
 curl --silent "https://packages.gitlab.com/gpg.key" | apt-key add -
 apt-get update
 ```
+
+### `Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails] [..] Command timed out after 3600s`
+
+If database schema and data changes (database migrations) must take more than one hour to run,
+upgrades fail with a `timed out` error:
+
+```plaintext
+FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails] (gitlab::database_migrations line 51)
+had an error: Mixlib::ShellOut::CommandTimeout: bash[migrate gitlab-rails database]
+(/opt/gitlab/embedded/cookbooks/cache/cookbooks/gitlab/resources/rails_migration.rb line 16)
+had an error: Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+```
+
+To fix this error:
+
+1. Run the remaining database migrations:
+
+   ```shell
+   sudo gitlab-rake db:migrate
+   ```
+
+   This command may take a very long time to complete. Use `screen` or some other mechanism to ensure
+   the program is not interrupted if your SSH session drops.
+
+1. Complete the upgrade:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```

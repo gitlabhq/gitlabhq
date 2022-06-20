@@ -37,9 +37,6 @@ Don't tell them **how** to do this thing. Tell them **what it is**.
 
 If you start describing another concept, start a new concept and link to it.
 
-Also, do not use **Overview** or **Introduction** for the title. Instead,
-use a noun or phrase that someone would search for.
-
 Concepts should be in this format:
 
 ```markdown
@@ -52,6 +49,19 @@ Another paragraph that explains what this thing is.
 Remember, if you start to describe about another concept, stop yourself.
 Each concept should be about one concept only.
 ```
+
+### Concept headings
+
+For the heading text, use a noun. For example, `Widgets` or `GDK dependency management`.
+
+If a noun is ambiguous, you can add a gerund. For example, `Documenting versions` instead of `Versions`.
+
+Avoid these heading titles:
+
+- `Overview` or `Introduction`. Instead, use a more specific
+  noun or phrase that someone would search for.
+- `Use cases`. Instead, incorporate the information as part of the concept.
+- `How it works`. Instead, use a noun followed by `workflow`. For example, `Merge request workflow`.
 
 ## Task
 
@@ -101,8 +111,13 @@ To create an issue:
 The issue is created. You can view it by going to **Issues > List**.
 ```
 
+### Task headings
+
+For the heading text, use the structure `active verb` + `noun`.
+For example, `Create an issue`.
+
 If you have several tasks on a page that share prerequisites, you can use the title
-**Prerequisites**, and link to it.
+`Prerequisites` and link to it.
 
 ## Reference
 
@@ -119,8 +134,17 @@ Introductory sentence.
 | **Name** | Descriptive sentence about the setting. |
 ```
 
-If a feature or concept has its own prerequisites, you can use reference
-content to create a **Prerequisites** header for the information.
+### Reference headings
+
+Reference headings are usually nouns.
+
+Avoid these heading titles:
+
+- `Important notes`. Instead, incorporate this information
+  closer to where it belongs. For example, this information might be a prerequisite
+  for a task, or information about a concept.
+- `Limitations`. Instead, move the content near other similar information.
+  If you must, you can use the title `Known issues`.
 
 ## Troubleshooting
 
@@ -142,6 +166,10 @@ This issue occurs when...
 The workaround is...
 ```
 
+If multiple causes or workarounds exist, consider putting them into a table format.
+
+### Troubleshooting headings
+
 For the heading:
 
 - Consider including at least a partial error message.
@@ -149,7 +177,17 @@ For the heading:
 
 If you do not put the full error in the title, include it in the body text.
 
-If multiple causes or workarounds exist, consider putting them into a table format.
+## General heading text guidelines
+
+In general, for heading text:
+
+- Be clear and direct. Make every word count.
+- Use articles and prepositions.
+- Follow [capitalization](styleguide/index.md#capitalization) guidelines.
+- Do not repeat text from earlier headings. For example, if the page is about merge requests,
+  instead of `Troubleshooting merge requests`, use only `Troubleshooting`.
+
+See also [guidelines for headings in Markdown](styleguide/index.md#headings-in-markdown).
 
 ## Other types of content
 

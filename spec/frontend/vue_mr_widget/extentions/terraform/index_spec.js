@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
@@ -13,6 +14,8 @@ import {
   invalidPlanWithName,
   invalidPlanWithoutName,
 } from '../../components/terraform/mock_data';
+
+jest.mock('~/api.js');
 
 describe('Terraform extension', () => {
   let wrapper;
@@ -130,20 +133,33 @@ describe('Terraform extension', () => {
         }
       });
     });
+
+    it('responds with the correct telemetry when the deeply nested "Full log" link is clicked', () => {
+      api.trackRedisHllUserEvent.mockClear();
+      api.trackRedisCounterEvent.mockClear();
+
+      findListItem(0).find('[data-testid="extension-actions-button"]').trigger('click');
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_terraform_click_full_report',
+      );
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
+      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+        'i_merge_request_widget_terraform_count_click_full_report',
+      );
+    });
   });
 
   describe('polling', () => {
     let pollRequest;
-    let pollStop;
 
     beforeEach(() => {
       pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
-      pollStop = jest.spyOn(Poll.prototype, 'stop');
     });
 
     afterEach(() => {
       pollRequest.mockRestore();
-      pollStop.mockRestore();
     });
 
     describe('successful poll', () => {
@@ -155,7 +171,6 @@ describe('Terraform extension', () => {
 
       it('does not make additional requests after poll is successful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
-        expect(pollStop).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -171,7 +186,6 @@ describe('Terraform extension', () => {
 
       it('does not make additional requests after poll is unsuccessful', () => {
         expect(pollRequest).toHaveBeenCalledTimes(1);
-        expect(pollStop).toHaveBeenCalledTimes(1);
       });
     });
   });

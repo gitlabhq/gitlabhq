@@ -359,7 +359,7 @@ RSpec.describe Notes::CreateService do
                   issuable.reload.update!(title: "title")
                 },
                 expectation: ->(issuable, can_use_quick_action) {
-                  expect(issuable.work_in_progress?).to eq(can_use_quick_action)
+                  expect(issuable.draft?).to eq(can_use_quick_action)
                 }
               ),
               # Remove draft status
@@ -369,7 +369,7 @@ RSpec.describe Notes::CreateService do
                   issuable.reload.update!(title: "Draft: title")
                 },
                 expectation: ->(noteable, can_use_quick_action) {
-                  expect(noteable.work_in_progress?).not_to eq(can_use_quick_action)
+                  expect(noteable.draft?).not_to eq(can_use_quick_action)
                 }
               )
             ]

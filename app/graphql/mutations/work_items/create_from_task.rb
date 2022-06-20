@@ -8,7 +8,7 @@ module Mutations
       include Mutations::SpamProtection
 
       description "Creates a work item from a task in another work item's description." \
-                  " Available only when feature flag `work_items` is enabled. This feature is experimental and is subject to change without notice."
+                  " Available only when feature flag `work_items` is enabled."
 
       authorize :update_work_item
 

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"image"
 	"image/png"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -184,7 +184,7 @@ func TestServeOriginalImageWhenSourceImageFormatIsNotAllowed(t *testing.T) {
 	cfg := config.DefaultImageResizerConfig
 	// SVG images are not allowed to be resized
 	svgImagePath := "../../testdata/image.svg"
-	svgImage, err := ioutil.ReadFile(svgImagePath)
+	svgImage, err := os.ReadFile(svgImagePath)
 	require.NoError(t, err)
 	// ContentType is no longer used to perform the format validation.
 	// To make the test more strict, we'll use allowed, but incorrect ContentType.
@@ -193,7 +193,7 @@ func TestServeOriginalImageWhenSourceImageFormatIsNotAllowed(t *testing.T) {
 	resp := requestScaledImage(t, nil, params, cfg)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	responseData, err := ioutil.ReadAll(resp.Body)
+	responseData, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	require.Equal(t, svgImage, responseData, "expected original image")
 }
@@ -201,7 +201,7 @@ func TestServeOriginalImageWhenSourceImageFormatIsNotAllowed(t *testing.T) {
 func TestServeOriginalImageWhenSourceImageIsTooSmall(t *testing.T) {
 	content := []byte("PNG") // 3 bytes only, invalid as PNG/JPEG image
 
-	img, err := ioutil.TempFile("", "*.png")
+	img, err := os.CreateTemp("", "*.png")
 	require.NoError(t, err)
 
 	defer img.Close()
@@ -216,7 +216,7 @@ func TestServeOriginalImageWhenSourceImageIsTooSmall(t *testing.T) {
 	resp := requestScaledImage(t, nil, params, cfg)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
-	responseData, err := ioutil.ReadAll(resp.Body)
+	responseData, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	require.Equal(t, content, responseData, "expected original image")
 }

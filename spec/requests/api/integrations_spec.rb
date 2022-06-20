@@ -55,33 +55,49 @@ RSpec.describe API::Integrations do
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
         include_context integration
 
+        # NOTE: Some attributes are not supported for PUT requests, even though in most cases they should be.
+        # For some of them the problem is somewhere else, i.e. most chat integrations don't support the `*_channel`
+        # fields but they're incorrectly included in `#fields`.
+        #
+        # We can fix these manually, or with a generic approach like https://gitlab.com/gitlab-org/gitlab/-/issues/348208
+        let(:missing_channel_attributes) { %i[push_channel issue_channel confidential_issue_channel merge_request_channel note_channel confidential_note_channel tag_push_channel pipeline_channel wiki_page_channel] }
+        let(:missing_attributes) do
+          {
+            datadog: %i[archive_trace_events],
+            discord: missing_channel_attributes + %i[branches_to_be_notified notify_only_broken_pipelines],
+            hangouts_chat: missing_channel_attributes + %i[notify_only_broken_pipelines],
+            jira: %i[issues_enabled project_key vulnerabilities_enabled vulnerabilities_issuetype],
+            mattermost: %i[deployment_channel labels_to_be_notified],
+            microsoft_teams: missing_channel_attributes,
+            mock_ci: %i[enable_ssl_verification],
+            prometheus: %i[manual_configuration],
+            slack: %i[alert_events alert_channel deployment_channel labels_to_be_notified],
+            unify_circuit: missing_channel_attributes + %i[branches_to_be_notified notify_only_broken_pipelines],
+            webex_teams: missing_channel_attributes + %i[branches_to_be_notified notify_only_broken_pipelines]
+          }
+        end
+
         it "updates #{integration} settings and returns the correct fields" do
-          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: integration_attrs
+          supported_attrs = integration_attrs.without(missing_attributes.fetch(integration.to_sym, []))
 
-          expect(response).to have_gitlab_http_status(:ok)
-
-          current_integration = project.integrations.first
-          events = current_integration.event_names.empty? ? ["foo"].freeze : current_integration.event_names
-          query_strings = []
-          events.map(&:to_sym).each do |event|
-            event_value = !current_integration[event]
-            query_strings << "#{event}=#{event_value}"
-            integration_attrs[event] = event_value if integration_attrs[event].present?
-          end
-          query_strings = query_strings.join('&')
-
-          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}?#{query_strings}", user), params: integration_attrs
+          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: supported_attrs
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['slug']).to eq(dashed_integration)
-          events.each do |event|
-            next if event == "foo"
 
-            expect(project.integrations.first[event]).not_to eq(current_integration[event]),
-                                                             "expected #{!current_integration[event]} for event #{event} for #{endpoint} #{current_integration.title}, got #{current_integration[event]}"
+          current_integration = project.integrations.first
+          expect(current_integration).to have_attributes(supported_attrs)
+          assert_correct_response_fields(json_response['properties'].keys, current_integration)
+
+          # Flip all booleans and verify that we can set these too
+          flipped_attrs = supported_attrs.transform_values do |value|
+            [true, false].include?(value) ? !value : value
           end
 
-          assert_correct_response_fields(json_response['properties'].keys, current_integration)
+          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: flipped_attrs
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project.integrations.first).to have_attributes(flipped_attrs)
         end
 
         it "returns if required fields missing" do

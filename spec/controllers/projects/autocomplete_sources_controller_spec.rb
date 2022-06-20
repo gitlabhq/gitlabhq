@@ -114,17 +114,5 @@ RSpec.describe Projects::AutocompleteSourcesController do
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(customer_relations: false)
-      end
-
-      it 'renders 404' do
-        get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 end

@@ -49,7 +49,7 @@ To create a project from the cluster management project template:
 1. Select **Create project**.
 
 If you use self-managed GitLab, your instance might not include the latest version of the template.
-In that case, select **Import project**, **Repo by URL** and for the **Git repository URL**, enter
+In that case, select **Import project**, **Repository by URL** and for the **Git repository URL**, enter
 `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`.
 
 ## Configure the project

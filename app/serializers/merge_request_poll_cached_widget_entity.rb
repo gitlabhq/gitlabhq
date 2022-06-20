@@ -18,7 +18,8 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :rebase_in_progress?, as: :rebase_in_progress
   expose :commits_count
   expose :merge_ongoing?, as: :merge_ongoing
-  expose :work_in_progress?, as: :work_in_progress
+  expose :draft?, as: :draft
+  expose :draft?, as: :work_in_progress
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
   expose :remove_source_branch?, as: :remove_source_branch

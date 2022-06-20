@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Sharding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -23,7 +23,8 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 - `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
 - `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
-- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`).
+- `gitlab_shared`: describe all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
+- `gitlab_internal`: describe all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
 - `...`: more schemas to be introduced with additional decomposed databases
 
 The usage of schema enforces the base class to be used:
@@ -44,10 +45,8 @@ This is used as a primary source of classification for:
 
 ### The special purpose of `gitlab_shared`
 
-`gitlab_shared` is a special case describing tables or views that by design contain data across
-all decomposed databases. This does describe application-defined tables (like `loose_foreign_keys_deleted_records`),
-Rails-defined tables (like `schema_migrations` or `ar_internal_metadata` as well as internal PostgreSQL tables
-(for example, `pg_attribute`).
+`gitlab_shared` is a special case that describes tables or views that, by design, contain data across
+all decomposed databases. This classification describes application-defined tables (like `loose_foreign_keys_deleted_records`).
 
 **Be careful** to use `gitlab_shared` as it requires special handling while accessing data.
 Since `gitlab_shared` shares not only structure but also data, the application needs to be written in a way
@@ -61,6 +60,11 @@ end
 
 As such, migrations modifying data of `gitlab_shared` tables are expected to run across
 all decomposed databases.
+
+### The special purpose of `gitlab_internal`
+
+`gitlab_internal` describes Rails-defined tables (like `schema_migrations` or `ar_internal_metadata`), as well as internal PostgreSQL tables (for example, `pg_attribute`). Its primary purpose is to [support other databases](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85842#note_943453682), like Geo, that
+might be missing some of those application-defined `gitlab_shared` tables (like `loose_foreign_keys_deleted_records`), but are valid Rails databases.
 
 ## Migrations
 
@@ -597,3 +601,21 @@ way to replace cascading deletes so we don't end up with orphaned data
 or records that point to nowhere, which might lead to bugs. As such we created
 ["loose foreign keys"](loose_foreign_keys.md) which is an asynchronous
 process of cleaning up orphaned records.
+
+## Locking writes on the tables that don't belong to the database schemas
+
+When the CI database is promoted and the two databases are fully split,
+as an extra safeguard against creating a split brain situation,
+run the Rake task `gitlab:db:lock_writes`. This command locks writes on:
+
+- The `gitlab_main` tables on the CI Database.
+- The `gitlab_ci` tables on the Main Database.
+
+This Rake task adds triggers to all the tables, to prevent any
+`INSERT`, `UPDATE`, `DELETE`, or `TRUNCATE` statements from running
+against the tables that need to be locked.
+
+If this task was run against a GitLab setup that uses only a single database
+for both `gitlab_main` and `gitlab_ci` tables, then no tables will be locked.
+
+To undo the operation, run the opposite Rake task: `gitlab:db:unlock_writes`.

@@ -112,7 +112,7 @@ For example, the following two definitions are equal:
   image: "registry.example.com/my/image:latest"
 
   services:
-    - postgresql:9.4
+    - postgresql:14.3
     - redis:latest
   ```
 
@@ -124,7 +124,7 @@ For example, the following two definitions are equal:
     name: "registry.example.com/my/image:latest"
 
   services:
-    - name: postgresql:9.4
+    - name: postgresql:14.3
     - name: redis:latest
   ```
 

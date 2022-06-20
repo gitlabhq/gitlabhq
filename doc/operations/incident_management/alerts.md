@@ -205,7 +205,7 @@ To assign an alert:
    ![Alert Details View Assignees](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
-   **Expand sidebar** (**{angle-double-right}**) to expand it.
+   **Expand sidebar** (**{chevron-double-lg-right}**) to expand it.
 
 1. On the right sidebar, locate the **Assignee**, and then select **Edit**.
    From the list, select each user you want to assign to the alert.

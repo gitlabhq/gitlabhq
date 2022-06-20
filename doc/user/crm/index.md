@@ -9,10 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
 > - In GitLab 14.8 and later, you can [create contacts and organizations only in root groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `customer_relations`.
-On GitLab.com, this feature is available.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.1.
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
@@ -33,9 +30,13 @@ To read more about what is planned for the future, see [issue 2256](https://gitl
 
 ## Enable customer relations management (CRM)
 
-To enable customer relations management in a group:
+Customer relations management features must be enabled at the group level. If your
+group also contains subgroups, and you want to use CRM features in the subgroup,
+you must enable CRM features for the subgroup.
 
-1. On the top bar, select **Menu > Groups** and find your group.
+To enable customer relations management in a group or subgroup:
+
+1. On the top bar, select **Menu > Groups** and find your group or subgroup.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Enable customer relations**.
@@ -173,7 +174,6 @@ API.
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `contacts_autocomplete`.
 On GitLab.com, this feature is available.
-This feature is not ready for production use.
 
 When you use the `/add_contacts` or `/remove_contacts` quick actions, follow them with `[contact:` and an autocomplete list appears:
 

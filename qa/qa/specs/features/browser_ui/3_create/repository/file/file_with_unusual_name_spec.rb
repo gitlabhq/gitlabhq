@@ -21,7 +21,7 @@ module QA
             file.project = project
             file.commit_message = 'Add new file'
             file.name = "test-folder/#{file_name}"
-            file.content = "### Heading\n\n[Gitlab link](https://gitlab.com/)"
+            file.content = "### Heading\n\n[Example link](https://example.com/)"
           end
 
           project.visit!
@@ -35,9 +35,9 @@ module QA
 
             aggregate_failures 'markdown file contents' do
               expect(show).to have_content('Heading')
-              expect(show).to have_content('Gitlab link')
+              expect(show).to have_content('Example link')
               expect(show).not_to have_content('###')
-              expect(show).not_to have_content('https://gitlab.com/')
+              expect(show).not_to have_content('https://example.com/')
             end
           end
         end

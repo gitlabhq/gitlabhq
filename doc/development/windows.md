@@ -65,21 +65,21 @@ Build a Google Cloud image with the above shared runners repository by doing the
 
 1. In a web browser, go to the [Google Cloud Platform console](https://console.cloud.google.com/compute/images).
 1. Filter images by the name you used when creating image, `windows` is likely all you need to filter by.
-1. Click the image's name.
-1. Click the **CREATE INSTANCE** link.
+1. Select the image's name.
+1. Select **CREATE INSTANCE**.
 1. Important: Change name to what you'd like as you can't change it later.
 1. Optional: Change Region to be closest to you as well as any other option you'd like.
-1. Click **Create** at the bottom of the page.
-1. Click the name of your newly created VM Instance (optionally you can filter to find it).
-1. Click **Set Windows password**.
+1. Select **Create** at the bottom of the page.
+1. Select the name of your newly created VM Instance (optionally you can filter to find it).
+1. Select **Set Windows password**.
 1. Optional: Set a username or use default.
-1. Click **Next**.
+1. Select **Next**.
 1. Copy and save the password as it is not shown again.
-1. Click **RDP** down arrow.
-1. Click **Download the RDP file**.
+1. Select **RDP** down arrow.
+1. Select **Download the RDP file**.
 1. Open the downloaded RDP file with the Windows remote desktop app (<https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients>).
-1. Click **Continue** to accept the certificate.
-1. Enter the password and click **Next**.
+1. Select **Continue** to accept the certificate.
+1. Enter the password and select **Next**.
 
 You should now be connected into a Windows machine with a command prompt.
 

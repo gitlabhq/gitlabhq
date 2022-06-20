@@ -67,10 +67,22 @@ module Gitlab
           batch_class_name: BATCH_CLASS_NAME,
           batch_size: BATCH_SIZE,
           max_batch_size: nil,
-          sub_batch_size: SUB_BATCH_SIZE
+          sub_batch_size: SUB_BATCH_SIZE,
+          gitlab_schema: nil
         )
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
 
-          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(job_class_name, batch_table_name, batch_column_name, job_arguments).exists?
+          if transaction_open?
+            raise 'The `queue_batched_background_migration` cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` in the body of ' \
+              'your migration class.'
+          end
+
+          gitlab_schema ||= gitlab_schema_from_context
+
+          Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
+
+          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments).exists?
             Gitlab::AppLogger.warn "Batched background migration not enqueued because it already exists: " \
               "job_class_name: #{job_class_name}, table_name: #{batch_table_name}, column_name: #{batch_column_name}, " \
               "job_arguments: #{job_arguments.inspect}"
@@ -119,24 +131,77 @@ module Gitlab
             end
           end
 
+          if migration.respond_to?(:gitlab_schema)
+            migration.gitlab_schema = gitlab_schema
+          end
+
           migration.save!
           migration
         end
 
         def finalize_batched_background_migration(job_class_name:, table_name:, column_name:, job_arguments:)
-          database_name = Gitlab::Database.db_config_name(connection)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
 
-          unless ActiveRecord::Base.configurations.primary?(database_name)
-            raise 'The `#finalize_background_migration` is currently not supported when running in decomposed database, ' \
-              'and this database is not `main:`. For more information visit: ' \
-              'https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html'
+          if transaction_open?
+            raise 'The `finalize_batched_background_migration` cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` in the body of ' \
+              'your migration class.'
           end
 
-          migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(job_class_name, table_name, column_name, job_arguments)
+          Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
+
+          migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+            gitlab_schema_from_context, job_class_name, table_name, column_name, job_arguments)
 
           raise 'Could not find batched background migration' if migration.nil?
 
-          Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(job_class_name, table_name, column_name, job_arguments, connection: connection)
+          with_restored_connection_stack do |restored_connection|
+            Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+              Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(
+                job_class_name, table_name,
+                column_name, job_arguments,
+                connection: restored_connection)
+            end
+          end
+        end
+
+        # Deletes batched background migration for the given configuration.
+        #
+        # job_class_name - The background migration job class as a string
+        # table_name - The name of the table the migration iterates over
+        # column_name - The name of the column the migration will batch over
+        # job_arguments - Migration arguments
+        #
+        # Example:
+        #
+        #     delete_batched_background_migration(
+        #       'CopyColumnUsingBackgroundMigrationJob',
+        #       :events,
+        #       :id,
+        #       ['column1', 'column2'])
+        def delete_batched_background_migration(job_class_name, table_name, column_name, job_arguments)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
+
+          if transaction_open?
+            raise 'The `#delete_batched_background_migration` cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` in the body of ' \
+              'your migration class.'
+          end
+
+          Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
+
+          Gitlab::Database::BackgroundMigration::BatchedMigration
+            .for_configuration(
+              gitlab_schema_from_context, job_class_name, table_name, column_name, job_arguments
+            ).delete_all
+        end
+
+        def gitlab_schema_from_context
+          if respond_to?(:allowed_gitlab_schemas) # Gitlab::Database::Migration::V2_0
+            Array(allowed_gitlab_schemas).first
+          else                                    # Gitlab::Database::Migration::V1_0
+            :gitlab_main
+          end
         end
       end
     end

@@ -129,5 +129,9 @@
     "VulnerabilityLocationGeneric",
     "VulnerabilityLocationSast",
     "VulnerabilityLocationSecretDetection"
+  ],
+  "WorkItemWidget": [
+    "WorkItemWidgetDescription",
+    "WorkItemWidgetHierarchy"
   ]
 }

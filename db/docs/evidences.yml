@@ -4,6 +4,6 @@ classes:
 - Releases::Evidence
 feature_categories:
 - release_evidence
-description: TODO
+description: https://docs.gitlab.com/ee/user/project/releases/#release-evidence
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17217
 milestone: '12.4'

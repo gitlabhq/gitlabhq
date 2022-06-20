@@ -16,6 +16,10 @@ with a `script` command.
 
 There are also a number of [variables you can use to configure runner behavior](../runners/configure_runners.md#configure-runner-behavior-with-variables) globally or for individual jobs.
 
+NOTE:
+You should avoid [overriding](index.md#override-a-defined-cicd-variable) predefined variables,
+as it can cause the pipeline to behave unexpectedly.
+
 | Variable                                 | GitLab | Runner | Description |
 |------------------------------------------|--------|--------|-------------|
 | `CHAT_CHANNEL`                           | 10.6   | all    | The Source chat channel that triggered the [ChatOps](../chatops/index.md) command. |
@@ -92,6 +96,7 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_PROJECT_REPOSITORY_LANGUAGES`        | 12.3   | all    | A comma-separated, lowercase list of the languages used in the repository. For example `ruby,javascript,html,css`. |
 | `CI_PROJECT_ROOT_NAMESPACE`              | 13.2   | 0.5    | The root project namespace (username or group name) of the job. For example, if `CI_PROJECT_NAMESPACE` is `root-group/child-group/grandchild-group`, `CI_PROJECT_ROOT_NAMESPACE` is `root-group`. |
 | `CI_PROJECT_TITLE`                       | 12.4   | all    | The human-readable project name as displayed in the GitLab web interface. |
+| `CI_PROJECT_DESCRIPTION`                 | 15.1   | all    | The project description as displayed in the GitLab web interface. |
 | `CI_PROJECT_URL`                         | 8.10   | 0.5    | The HTTP(S) address of the project. |
 | `CI_PROJECT_VISIBILITY`                  | 10.3   | all    | The project visibility. Can be `internal`, `private`, or `public`. |
 | `CI_PROJECT_CLASSIFICATION_LABEL`        | 14.2   | all    | The project [external authorization classification label](../../user/admin_area/settings/external_authorization.md). |
@@ -112,7 +117,6 @@ There are also a number of [variables you can use to configure runner behavior](
 | `CI_SERVER_PORT`                         | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |
 | `CI_SERVER_PROTOCOL`                     | 12.8   | all    | The protocol of the GitLab instance URL, without host or port. For example `https`. |
 | `CI_SERVER_REVISION`                     | all    | all    | GitLab revision that schedules jobs. |
-| `CI_SERVER_TLS_CA_FILE`                  | all    | all    | File containing the CA certificate to verify the GitLab server. |
 | `CI_SERVER_URL`                          | 12.7   | all    | The base URL of the GitLab instance, including protocol and port. For example `https://gitlab.example.com:8080`. |
 | `CI_SERVER_VERSION_MAJOR`                | 11.4   | all    | The major version of the GitLab instance. For example, if the GitLab version is `13.6.1`, the `CI_SERVER_VERSION_MAJOR` is `13`. |
 | `CI_SERVER_VERSION_MINOR`                | 11.4   | all    | The minor version of the GitLab instance. For example, if the GitLab version is `13.6.1`, the `CI_SERVER_VERSION_MINOR` is `6`. |

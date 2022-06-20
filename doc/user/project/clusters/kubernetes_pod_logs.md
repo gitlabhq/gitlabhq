@@ -52,7 +52,7 @@ is required to use Logs.
 
 ## Accessing the log explorer
 
-To access the **Log explorer**, click the **More actions** **{ellipsis_v}** menu on
+To access the **Log explorer**, select the **More actions** **{ellipsis_v}** menu on
 a [metrics dashboard](../../../operations/metrics/index.md) and select **View logs**, or:
 
 1. Sign in as a user with the _View pod logs_
@@ -68,7 +68,7 @@ a [metrics dashboard](../../../operations/metrics/index.md) and select **View lo
    1. When mousing over the list of pods, GitLab displays a tooltip with the exact pod name
       and status.
       ![deploy boards pod list](img/pod_logs_deploy_board.png)
-   1. Click on the desired pod to display the **Log Explorer**.
+   1. Select the desired pod to display the **Log Explorer**.
 
 ### Logs view
 
@@ -97,7 +97,7 @@ Support for historical data is coming
 When you enable [Elastic Stack](../../clusters/integrations.md#elastic-stack-cluster-integration)
 on your cluster, you can filter logs displayed in the **Log Explorer** by date.
 
-Click **Show last** in the **Log Explorer** to see the available options.
+Select **Show last** in the **Log Explorer** to see the available options.
 
 ### Full text search
 

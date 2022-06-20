@@ -47,10 +47,20 @@
   - 1
 - - audit_events_user_impersonation_event_create
   - 1
+- - auth_saml_group_sync
+  - 1
 - - authorized_keys
   - 2
-- - authorized_project_update
+- - authorized_project_update:authorized_project_update_project_recalculate
   - 1
+- - authorized_project_update:authorized_project_update_project_recalculate_per_user
+  - 1
+- - authorized_project_update:authorized_project_update_user_refresh_from_replica
+  - 1
+- - authorized_project_update:authorized_project_update_user_refresh_over_user_range
+  - 1
+- - authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
+  - 2
 - - authorized_projects
   - 2
 - - auto_devops
@@ -97,8 +107,6 @@
   - 1
 - - cronjob
   - 1
-- - dast_site_validation
-  - 1
 - - default
   - 1
 - - delete_diff_files
@@ -144,6 +152,8 @@
 - - elastic_namespace_indexer
   - 1
 - - elastic_namespace_rollout
+  - 1
+- - elastic_project_transfer
   - 1
 - - email_receiver
   - 2
@@ -223,6 +233,10 @@
   - 1
 - - integrations_create_external_cross_reference
   - 1
+- - integrations_execute
+  - 1
+- - integrations_irker
+  - 1
 - - invalid_gpg_signature_update
   - 2
 - - irker
@@ -232,10 +246,6 @@
 - - issuable_label_links_destroy
   - 1
 - - issuables_clear_groups_issue_counter
-  - 1
-- - issue_placement
-  - 2
-- - issue_rebalancing
   - 1
 - - issues_placement
   - 2
@@ -278,8 +288,6 @@
 - - metrics_dashboard_sync_dashboards
   - 1
 - - migrate_external_diffs
-  - 1
-- - namespaceless_project_destroy
   - 1
 - - namespaces_onboarding_issue_created
   - 1
@@ -327,8 +335,6 @@
   - 1
 - - pipeline_background
   - 1
-- - pipeline_cache
-  - 3
 - - pipeline_creation
   - 4
 - - pipeline_default
@@ -342,8 +348,6 @@
 - - process_commit
   - 3
 - - project_cache
-  - 1
-- - project_daily_statistics
   - 1
 - - project_destroy
   - 1
@@ -373,8 +377,6 @@
   - 1
 - - projects_update_repository_storage
   - 1
-- - prometheus_create_default_alerts
-  - 1
 - - propagate_integration
   - 1
 - - propagate_integration_group
@@ -403,10 +405,6 @@
   - 1
 - - repository_import
   - 1
-- - repository_push_audit_event
-  - 1
-- - repository_remove_remote
-  - 1
 - - repository_update_mirror
   - 1
 - - repository_update_remote_mirror
@@ -419,8 +417,6 @@
   - 1
 - - security_findings_delete_by_job_id
   - 1
-- - security_generate_scan_finding_rules
-  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_scans
@@ -432,7 +428,7 @@
 - - self_monitoring_project_delete
   - 2
 - - service_desk_email_receiver
-  - 1
+  - 2
 - - set_user_status_based_on_user_cap_setting
   - 1
 - - snippets_schedule_bulk_repository_shard_moves
@@ -446,6 +442,8 @@
 - - system_hook_push
   - 1
 - - tasks_to_be_done_create
+  - 1
+- - terraform
   - 1
 - - todos_destroyer
   - 1
@@ -472,6 +470,8 @@
 - - web_hook
   - 1
 - - web_hooks_destroy
+  - 1
+- - web_hooks_log_destroy
   - 1
 - - web_hooks_log_execution
   - 1

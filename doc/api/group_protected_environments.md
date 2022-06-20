@@ -28,7 +28,7 @@ Currently, these levels are recognized:
 
 Gets a list of protected environments from a group.
 
-```shell
+```plaintext
 GET /groups/:id/protected_environments
 ```
 
@@ -63,7 +63,7 @@ Example response:
 
 Gets a single protected environment.
 
-```shell
+```plaintext
 GET /groups/:id/protected_environments/:name
 ```
 
@@ -97,7 +97,7 @@ Example response:
 
 Protects a single environment.
 
-```shell
+```plaintext
 POST /groups/:id/protected_environments
 ```
 
@@ -137,7 +137,7 @@ Example response:
 
 Unprotects the given protected environment.
 
-```shell
+```plaintext
 DELETE /groups/:id/protected_environments/:name
 ```
 

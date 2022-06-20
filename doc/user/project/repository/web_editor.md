@@ -14,7 +14,7 @@ dropdown menu.
 
 ## Create a file
 
-From a project's files page, click the '+' button to the right of the branch selector.
+From a project's files page, select the '+' button to the right of the branch selector.
 Choose **New file** from the dropdown.
 ![New file dropdown menu](img/web_editor_new_file_dropdown_v14_1.png)
 
@@ -24,7 +24,7 @@ defaults to the branch you were viewing in the file browser. If you enter
 a new branch name, a checkbox displays, allowing you to start a new merge
 request after you commit the changes.
 
-When you are satisfied with your new file, click **Commit Changes** at the bottom.
+When you are satisfied with your new file, select **Commit Changes** at the bottom.
 
 ![Create file editor](img/web_editor_new_file_editor_v14_1.png)
 
@@ -72,7 +72,7 @@ You don't need to construct these lines manually. Instead, you can:
 
 1. Hover over the number of a line you want to be highlighted when sharing.
 1. Right-click the number with your mouse.
-1. Click **Copy Link Address** in the context menu.
+1. Select **Copy Link Address** in the context menu.
 
    ![Link to a line](img/web_editor_line_link_v13_10.png)
 
@@ -82,7 +82,7 @@ The ability to create a file is great when the content is text. However, this
 doesn't work well for binary data such as images, PDFs, or other binary file types. In
 this case, you need to upload a file.
 
-From a project's files page, click the '+' button to the right of the branch
+From a project's files page, select the '+' button to the right of the branch
 selector. Choose **Upload file** from the dropdown:
 
 ![Upload file dropdown menu](img/web_editor_upload_file_dropdown_v14_1.png)
@@ -91,7 +91,7 @@ After the upload dialog pops up, there are two ways to upload your file. Either
 drag and drop a file on the popup or use the **click to upload** link. After you
 select a file to upload, a file preview displays.
 
-Enter a commit message, choose a branch, and click **Upload file** when you are
+Enter a commit message, choose a branch, and select **Upload file** when you are
 ready.
 
 ![Upload file dialog](img/web_editor_upload_file_dialog_v14_1.png)
@@ -101,13 +101,13 @@ ready.
 To keep files in the repository organized it is often helpful to create a new
 directory.
 
-From a project's files page, click the plus button (`+`) to the right of the branch selector.
+From a project's files page, select the plus button (`+`) to the right of the branch selector.
 Choose **New directory** from the dropdown.
 
 ![New directory dropdown](img/web_editor_new_directory_dropdown_v14_1.png)
 
 In the new directory dialog, enter a directory name, a commit message, and choose
-the target branch. Click **Create directory** to finish.
+the target branch. Select **Create directory** to finish.
 
 ![New directory dialog](img/web_editor_new_directory_dialog_v14_1.png)
 
@@ -153,7 +153,7 @@ The branch name is based on an internal ID, and the issue title. The example
 screenshot above creates a branch named
 `2-make-static-site-auto-deploy-and-serve`.
 
-When you click the **Create branch** button in an empty
+When you select the **Create branch** button in an empty
 repository project, GitLab performs these actions:
 
 - Creates a default branch.

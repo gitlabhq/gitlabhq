@@ -22,12 +22,21 @@ export default {
   },
   methods: {
     toggleDrawer() {
-      this.$emit(this.showDrawer ? 'close-drawer' : 'open-drawer');
+      if (this.showDrawer) {
+        this.$emit('close-drawer');
+      } else {
+        this.$emit('open-drawer');
+        this.trackHelpDrawerClick();
+      }
+    },
+    trackHelpDrawerClick() {
+      const { label, actions } = pipelineEditorTrackingOptions;
+      this.track(actions.openHelpDrawer, { label });
     },
     trackTemplateBrowsing() {
       const { label, actions } = pipelineEditorTrackingOptions;
 
-      this.track(actions.browse_templates, { label });
+      this.track(actions.browseTemplates, { label });
     },
   },
 };

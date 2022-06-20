@@ -35,7 +35,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Contacts'),
             link: group_crm_contacts_path(context.group),
-            active_routes: { path: 'groups/crm#contacts' },
+            active_routes: { controller: 'groups/crm/contacts' },
             item_id: :crm_contacts
           )
         end
@@ -44,7 +44,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Organizations'),
             link: group_crm_organizations_path(context.group),
-            active_routes: { path: 'groups/crm#organizations' },
+            active_routes: { controller: 'groups/crm/organizations' },
             item_id: :crm_organizations
           )
         end

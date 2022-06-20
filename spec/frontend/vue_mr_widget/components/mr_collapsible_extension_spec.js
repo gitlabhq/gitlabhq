@@ -42,8 +42,8 @@ describe('Merge Request Collapsible Extension', () => {
       expect(wrapper.find('[data-testid="collapsed-header"]').text()).toBe('hello there');
     });
 
-    it('renders angle-right icon', () => {
-      expect(findIcon().props('name')).toBe('angle-right');
+    it('renders chevron-lg-right icon', () => {
+      expect(findIcon().props('name')).toBe('chevron-lg-right');
     });
 
     describe('onClick', () => {
@@ -60,8 +60,8 @@ describe('Merge Request Collapsible Extension', () => {
         expect(findTitle().text()).toBe('Collapse');
       });
 
-      it('renders angle-down icon', () => {
-        expect(findIcon().props('name')).toBe('angle-down');
+      it('renders chevron-lg-down icon', () => {
+        expect(findIcon().props('name')).toBe('chevron-lg-down');
       });
     });
   });

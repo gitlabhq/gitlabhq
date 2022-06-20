@@ -6,6 +6,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   before_action :finder, only: [:edit, :update, :destroy]
 
   feature_category :navigation
+  urgency :low
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

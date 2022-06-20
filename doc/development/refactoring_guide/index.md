@@ -71,7 +71,7 @@ expect(cleanForSnapshot(wrapper.element)).toMatchSnapshot();
 
 ### Resources
 
-[Unofficial wiki explanation](http://wiki.c2.com/?PinningTests)
+[Unofficial wiki explanation](https://wiki.c2.com/?PinningTests)
 
 ### Examples
 

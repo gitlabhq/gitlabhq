@@ -33,10 +33,10 @@ To create a new dashboard from the GitLab user interface:
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
 1. Navigate to your dashboard at **Monitor > Metrics**.
-1. In the top-right corner of your dashboard, click the **{ellipsis_v}** **More actions** menu,
+1. In the top-right corner of your dashboard, select the **{ellipsis_v}** **More actions** menu,
    and select **Create new**:
    ![Monitoring Dashboard actions menu with create new item](img/actions_menu_create_new_dashboard_v13_3.png)
-1. In the modal window, click **Open Repository**, then follow the instructions
+1. In the modal window, select **Open Repository**, then follow the instructions
    for creating a new dashboard from the command line.
 
 To create a new dashboard from the command line:
@@ -84,7 +84,7 @@ with the **Add Panel** page:
 
 1. Sign in to GitLab as a user with Maintainer or Owner
    [permissions](../../../user/permissions.md#project-members-permissions).
-1. Click **Add panel** in the **{ellipsis_v}** **More actions** menu.
+1. Select **Add panel** in the **{ellipsis_v}** **More actions** menu.
 
    NOTE:
    You can only add panels to custom dashboards.
@@ -92,7 +92,7 @@ with the **Add Panel** page:
    ![Monitoring Dashboard actions menu with add panel item](img/actions_menu_create_add_panel_v13_3.png)
 1. In the **Define and preview panel** section, paste in the YAML you want to
    preview in the **Panel YAML** field.
-1. Click **Preview panel**, and GitLab displays a preview of the chart below the
+1. Select **Preview panel**, and GitLab displays a preview of the chart below the
    `Define and preview panel` section:
    ![Monitoring Dashboard Add Panel page](img/metrics_dashboard_panel_preview_v13_3.png)
 
@@ -106,8 +106,8 @@ The resulting `.yml` file can be customized and adapted to your project.
 You can decide to save the dashboard `.yml` file in the project's **default** branch or in a
 new branch. To duplicate a GitLab-defined dashboard:
 
-1. Click **Duplicate current dashboard** in the **{ellipsis_v}** **More actions** menu.
-1. Enter the filename and other information, such as the new commit's message, and click **Duplicate**.
+1. Select **Duplicate current dashboard** in the **{ellipsis_v}** **More actions** menu.
+1. Enter the filename and other information, such as the new commit's message, and select **Duplicate**.
 1. Select a branch to add your dashboard to:
    - *If you select your **default** branch,* the new dashboard becomes immediately available.
    - *If you select another branch,* this branch should be merged to your **default** branch first.
@@ -133,7 +133,7 @@ any chart on a dashboard:
 The options are:
 
 - **Expand panel** - Displays a larger version of a visualization. To return to
-  the dashboard, click the **Back** button in your browser, or press the <kbd>Escape</kbd> key.
+  the dashboard, select the **Back** button in your browser, or press the <kbd>Escape</kbd> key.
   ([Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3100) in GitLab 13.0.)
 - **View logs** **(ULTIMATE)** - Displays [Logs](../../../user/project/clusters/kubernetes_pod_logs.md),
   if they are enabled. If used in conjunction with the [timeline zoom](#timeline-zoom-and-url-sharing)
@@ -146,7 +146,7 @@ The options are:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198910) in GitLab 12.8.
 
 You can use the **Timeline zoom** function at the bottom of a chart to zoom in
-on a date and time of your choice. When you click and drag the sliders to select
+on a date and time of your choice. When you select and drag the sliders to select
 a different beginning or end date of data to display, GitLab adds your selected start
 and end times to the URL, enabling you to share specific time frames more easily.
 

@@ -50,16 +50,6 @@ RSpec.describe Mutations::Issues::SetEscalationStatus do
             expect { result }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature unavailable for provided issue')
           end
         end
-
-        context 'with feature disabled' do
-          before do
-            stub_feature_flags(incident_escalations: false)
-          end
-
-          it 'raises an error' do
-            expect { result }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature unavailable for provided issue')
-          end
-        end
       end
     end
   end

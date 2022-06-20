@@ -4,6 +4,8 @@ module WebHooks
   class DestroyWorker
     include ApplicationWorker
 
+    DestroyError = Class.new(StandardError)
+
     data_consistency :always
     sidekiq_options retry: 3
     feature_category :integrations
@@ -19,12 +21,7 @@ module WebHooks
 
       result = ::WebHooks::DestroyService.new(user).sync_destroy(hook)
 
-      return result if result[:status] == :success
-
-      e = ::WebHooks::DestroyService::DestroyError.new(result[:message])
-      Gitlab::ErrorTracking.track_exception(e, web_hook_id: hook.id)
-
-      raise e
+      result.track_and_raise_exception(as: DestroyError, web_hook_id: hook.id)
     end
   end
 end

@@ -52,6 +52,7 @@ describe('Design management design sidebar component', () => {
         design,
         resolvedDiscussionsExpanded: false,
         markdownPreviewPath: '',
+        isLoading: false,
         ...props,
       },
       mocks: {

@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -398,7 +398,7 @@ where some queries never complete due to being canceled on every replication.
 These long-running queries are
 [planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
 but as a workaround, we recommend enabling
-[hot_standby_feedback](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
+[`hot_standby_feedback`](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
 This increases the likelihood of bloat on the **primary** node as it prevents
 `VACUUM` from removing recently-dead rows. However, it has been used
 successfully in production on GitLab.com.
@@ -767,7 +767,7 @@ The appropriate action sometimes depends on the cause. For example, you can remo
 
 In some cases, a file may be determined to be of low value, and so it may be worth deleting the record.
 
-Geo itself is an excellent mitigation for files missing on the primary. If a file disappears on the primary but it was already synced to the secondary, you can grab the secondary's file. In cases like this, the `File is not checksummable` error message will not occur on Geo secondary sites, and only the primary will log this error message.
+Geo itself is an excellent mitigation for files missing on the primary. If a file disappears on the primary but it was already synced to the secondary, you can grab the secondary's file. In cases like this, the `File is not checksummable` error message does not occur on Geo secondary sites, and only the primary logs this error message.
 
 This problem is more likely to show up in Geo secondary sites which were set up long after the original GitLab site. In this case, Geo is only surfacing an existing problem.
 
@@ -814,6 +814,20 @@ Gitlab::Geo.verification_enabled_replicator_classes.each do |klass|
   pp "Updated #{updated} #{klass.replicable_name_plural}"
 end
 ```
+
+### Message: curl 18 transfer closed with outstanding read data remaining & fetch-pack: unexpected disconnect while reading sideband packet
+
+Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository 
+data from the primary site. This is more likely to happen if a repository has to be
+replicated from scratch between sites.
+
+Geo retries several times, but if the transmission is consistently interrupted
+by network hiccups, an alternative method such as `rsync` can be used to circumvent `git` and 
+create the initial copy of any repository that fails to be replicated by Geo.
+
+We recommend transferring each failing repository individually and checking for consistency
+after each transfer. Follow the [single target `rsync` instructions](../../operations/moving_repositories.md#single-rsync-to-another-server) 
+to transfer each affected repository from the primary to the secondary site.
 
 ## Fixing errors during a failover or when promoting a secondary to a primary node
 
@@ -1104,9 +1118,9 @@ If using a load balancer, ensure that the load balancer's URL is set as the `ext
 
 ### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
 
-In GitLab 13.9 through GitLab 14.3, when [GitLab Maintenance Mode](../../maintenance_mode/index.md) is enabled, the status of Geo secondary sites will stop getting updated. After 10 minutes, the status changes to `Unhealthy`.
+In GitLab 13.9 through GitLab 14.3, when [GitLab Maintenance Mode](../../maintenance_mode/index.md) is enabled, the status of Geo secondary sites stops getting updated. After 10 minutes, the status changes to `Unhealthy`.
 
-Geo secondary sites will continue to replicate and verify data, and the secondary sites should still be usable. You can use the [Sync status Rake task](#sync-status-rake-task) to determine the actual status of a secondary site during Maintenance Mode.
+Geo secondary sites continue to replicate and verify data, and the secondary sites should still be usable. You can use the [Sync status Rake task](#sync-status-rake-task) to determine the actual status of a secondary site during Maintenance Mode.
 
 This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/292983).
 
@@ -1129,7 +1143,7 @@ Geo::TrackingBase::SecondaryNotConfigured: Geo secondary database is not configu
 
 On a Geo primary site this error can be ignored.
 
-This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists). 
+This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../administration/geo/#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
 
 ## Fixing client errors
 
@@ -1148,7 +1162,7 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
 1. SSH into every Sidekiq, PostgresSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary node to primary:
-     
+
      ```shell
      sudo gitlab-ctl geo promote
      ```
@@ -1158,8 +1172,8 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
      ```shell
      sudo gitlab-ctl geo promote --force
      ```
-     
-1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.  
+
+1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
 1. If **successful**, the **secondary** site is now promoted to the **primary** site.
 
 If the above steps are **not successful**, proceed through the next steps:

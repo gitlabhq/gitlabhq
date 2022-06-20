@@ -54,6 +54,11 @@ export default {
       required: false,
       default: false,
     },
+    overrideCopy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     downloadUrl() {
@@ -63,6 +68,10 @@ export default {
       return this.activeViewer === RICH_BLOB_VIEWER;
     },
     getBlobHashTarget() {
+      if (this.overrideCopy) {
+        return null;
+      }
+
       return `[data-blob-hash="${this.blobHash}"]`;
     },
     showCopyButton() {
@@ -72,6 +81,13 @@ export default {
       return sprintf(s__('BlobViewer|View on %{environmentName}'), {
         environmentName: this.environmentName,
       });
+    },
+  },
+  methods: {
+    onCopy() {
+      if (this.overrideCopy) {
+        this.$emit('copy');
+      }
     },
   },
   BTN_COPY_CONTENTS_TITLE,
@@ -94,6 +110,7 @@ export default {
       category="primary"
       variant="default"
       class="js-copy-blob-source-btn"
+      @click="onCopy"
     />
     <gl-button
       v-if="!isBinary"

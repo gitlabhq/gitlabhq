@@ -53,6 +53,10 @@ module Types
           description: 'Timestamp this to-do item was created.',
           null: false
 
+    field :note, Types::Notes::NoteType,
+          description: 'Note which created this to-do item.',
+          null: true
+
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
     end

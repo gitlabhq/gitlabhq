@@ -1,0 +1,9 @@
+#import "./work_item.fragment.graphql"
+
+mutation localUpdateWorkItem($input: LocalWorkItemAssigneesInput) {
+  localUpdateWorkItem(input: $input) @client {
+    workItem {
+      ...WorkItem
+    }
+  }
+}

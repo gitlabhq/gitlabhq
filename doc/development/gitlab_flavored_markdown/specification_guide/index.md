@@ -52,7 +52,10 @@ this inconsistency.
 Some places in the code refer to both the GitLab and GitHub specifications
 simultaneous in the same areas of logic. In these situations,
 _GitHub_ Flavored Markdown may be referred to with variable or constant names like
-`ghfm_` to avoid confusion.
+`ghfm_` to avoid confusion. For example, we use the `ghfm` acronym for the
+[`ghfm_spec_v_0.29.txt` GitHub Flavored Markdown specification file](#github-flavored-markdown-specification)
+which is committed to the `gitlab` repo and used as input to the
+[`update_specification.rb` script](#update-specificationrb-script).
 
 The original CommonMark specification is referred to as _CommonMark_ (no acronym).
 
@@ -141,6 +144,8 @@ and the existing GLFM parser and render implementations. They may also be
 manually updated as necessary to test-drive incomplete implementations.
 Regarding the terminology used here:
 
+<!-- vale gitlab.InclusionCultural = NO -->
+
 1. The Markdown snapshot tests can be considered a form of the
    [Golden Master Testing approach](https://www.google.com/search?q=golden+master+testing),
    which is also referred to as Approval Testing or Characterization Testing.
@@ -167,6 +172,11 @@ Regarding the terminology used here:
    they are colocated under the `spec/fixtures` directory with the rest of
    the fixture data for the GitLab Rails application.
 
+<!-- vale gitlab.InclusionCultural = YES -->
+
+See also the section on [normalization](#normalization) below, which is an important concept used
+in the Markdown snapshot testing.
+
 ## Parsing and Rendering
 
 The Markdown dialect used in the GitLab application has a dual requirement for rendering:
@@ -187,7 +197,7 @@ implementations:
    It leverages the [`commonmarker`](https://github.com/gjtorikian/commonmarker) gem,
    which is a Ruby wrapper for [`libcmark-gfm`](https://github.com/github/cmark),
    GitHub's fork of the reference parser for CommonMark. `libcmark-gfm` is an extended
-   version of the C reference implementation of [CommonMark](http://commonmark.org/)
+   version of the C reference implementation of [CommonMark](https://commonmark.org/)
 1. The frontend parser / renderer supports parsing and _WYSIWYG_ rendering for
    the Content Editor. It is implemented in JavaScript. Parsing is based on the
    [Remark](https://github.com/remarkjs/remark) Markdown parser, which produces a
@@ -213,32 +223,42 @@ HTML which differs from the canonical HTML examples from the specification.
 For every Markdown example in the GLFM specification, three
 versions of HTML can potentially be rendered from the example:
 
-1. **Static HTML**: HTML produced by the backend (Ruby) renderer, which
-   contains extra styling and behavioral HTML. For example, **Create task** buttons
-   added for dynamically creating an issue from a task list item.
-   The GitLab [Markdown API](../../../api/markdown.md) generates HTML
-   for a given Markdown string using this method.
-1. **WYSIWYG HTML**: HTML produced by the frontend (JavaScript) Content Editor,
-   which includes parsing and rendering logic. Used to present an editable document
-   in the ProseMirror WYSIWYG editor.
-1. **Canonical HTML**: The clean, basic version of HTML rendered from Markdown.
-   1. For the examples which come from the CommonMark specification and
-      GFM extensions specification,
-      the canonical HTML is the exact identical HTML found in the
-      GFM
-      `spec.txt` example blocks.
-   1. For GLFM extensions to the <abbr title="GitHub Flavored Markdown">GFM</abbr> / CommonMark
-      specification, a `glfm_canonical_examples.txt`
-      [input specification file](#input-specification-files) contains the
-      Markdown examples and corresponding canonical HTML examples.
+- Static HTML.
+- WYSIWYG HTML.
+- Canonical HTML.
 
-As the rendered static and WYSIWYG HTML from the backend (Ruby) and frontend (JavaScript)
-renderers contain extra HTML, their rendered HTML can be converted to canonical HTML
-by a [canonicalization](#canonicalization-of-html) process.
+#### Static HTML
 
-#### Canonicalization of HTML
+**Static HTML** is HTML produced by the backend (Ruby) renderer, which
+contains extra styling and behavioral HTML. For example, **Create task** buttons
+added for dynamically creating an issue from a task list item.
+The GitLab [Markdown API](../../../api/markdown.md) generates HTML
+for a given Markdown string using this method.
 
-Neither the backend (Ruby) nor the frontend (JavaScript) rendered can directly render canonical HTML.
+#### WYSIWYG HTML
+
+**WYSIWYG HTML** is HTML produced by the frontend (JavaScript) Content Editor,
+which includes parsing and rendering logic. It is used to present an editable document
+in the ProseMirror WYSIWYG editor.
+
+#### Canonical HTML
+
+**Canonical HTML** is the clean, basic version of HTML rendered from Markdown.
+
+1. For the examples which come from the CommonMark specification and
+   GFM extensions specification, the canonical HTML is the exact identical HTML found in the
+   GFM `spec.txt` example blocks.
+1. For GLFM extensions to the <abbr title="GitHub Flavored Markdown">GFM</abbr> / CommonMark
+   specification, a `glfm_canonical_examples.txt` [input specification file](#input-specification-files)
+   contains the Markdown examples and corresponding canonical HTML examples.
+
+### Canonicalization of HTML
+
+The rendered [static HTML](#static-html) and [WYSIWYG HTML](#wysiwyg-html)
+from the backend (Ruby) and frontend (JavaScript) renderers usually contains extra styling
+or HTML elements, to support specific appearance and behavioral requirements.
+
+Neither the backend nor the frontend rendering logic can directly render the clean, basic canonical HTML.
 Nor should they be able to, because:
 
 - It's not a direct requirement to support any GitLab application feature.
@@ -257,6 +277,49 @@ Some of the static or WYSIWYG HTML examples may not be representable as canonica
 HTML. (For example, when they are represented as an image.) In these cases, the Markdown
 conformance test for the example can be skipped by setting `skip_update_example_snapshots: true`
 for the example in `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml`.
+
+### Normalization
+
+Versions of the rendered HTML and ProseMirror JSON can vary for a number of reasons.
+Differences in styling or HTML structure can occur, but the values of attributes or nodes may
+also vary across different test runs or environments. For example:
+
+1. Database record identifiers
+1. Namespace or project identifiers
+1. Portions of URIs
+1. File paths or names
+1. Random values
+
+For the [Markdown snapshot testing](#markdown-snapshot-testing) to work
+properly, you must account for these differences in a way that ensures the tests are reliable,
+and always behave the same across different test runs or environments.
+
+To account for these differences, there is a process called **_normalization_**. Normalization
+allows custom regular expressions with
+[_capturing groups_](https://ruby-doc.org/core-3.1.2/Regexp.html#class-Regexp-label-Capturing)
+to be applied to two different versions of HTML or JSON for a given Markdown example,
+and the contents of the captured groups can be replaced with the same fixed values.
+
+Then, the two normalized versions can be compared to each other to ensure all other non-variable
+content is identical.
+
+NOTE:
+We don't care about verifying specific attribute values here, so
+it's OK if the normalizations discard and replace these variable values with fixed values.
+Different testing levels have different purposes:
+
+1. [Markdown snapshot testing](#markdown-snapshot-testing) is intended to enforce the structure of
+   the rendered HTML/JSON, and to ensure that it conforms to the canonical specification.
+1. Individual unit tests of the implementation for a specific Markdown example are responsible for
+   specific and targeted testing of these variable values.
+
+We also use this same regex capture-and-replace normalization approach for
+[canonicalization of HTML](#canonicalization-of-html), because it is essentially the same process.
+With canonicalization, instead of just replacing variable values, we are removing non-canonical
+portions of the HTML.
+
+Refer to [`glfm_example_normalizations.yml`](#glfm_example_normalizationsyml) for a detailed explanation
+of how the normalizations are specified.
 
 ## Goals
 
@@ -374,7 +437,7 @@ subgraph script:
   A --> B{Backend Markdown API}
 end
 subgraph input:<br/>input specification files
-  C[gfm_spec_v_0.29.txt] --> A
+  C[ghfm_spec_v_0.29.txt] --> A
   D[glfm_intro.txt] --> A
   E[glfm_canonical_examples.txt] --> A
 end
@@ -512,11 +575,15 @@ updated, as in the case of all GFM files.
 
 ##### GitHub Flavored Markdown specification
 
-[`glfm_specification/input/github_flavored_markdown/gfm_spec_v_0.29.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/github_flavored_markdown/gfm_spec_v_0.29.txt)
+[`glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.txt)
 is the official latest [GFM `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
 
 - It is automatically downloaded and updated by `update-specification.rb` script.
 - When it is downloaded, the version number is added to the filename.
+
+NOTE:
+This file uses the `ghfm` acronym instead of `gfm`, as
+explained in the [Acronyms section](#acronyms-glfm-ghfm-gfm-commonmark).
 
 ##### `glfm_intro.txt`
 
@@ -578,23 +645,114 @@ The actual file should not have these prefixed `|` characters.
 controls the behavior of the [scripts](#scripts) and [tests](#types-of-markdown-tests-driven-by-the-glfm-specification).
 
 - It is manually updated.
-- It controls the status of automatic generation of files based on Markdown examples.
-- It allows example snapshot generation, Markdown conformance tests, or
-  Markdown snapshot tests to be skipped for individual examples. For example, if
-  they are unimplemented, broken, or cannot be tested for some reason.
+- The `skip_update_example_snapshot*` fields control the status of automatic generation of
+  snapshot example entries based on Markdown examples.
+- The `skip_running_*` control allow Markdown conformance tests or
+  Markdown snapshot tests to be skipped for individual examples.
+- This allows control over skipping this processing or testing of various examples when they
+  are unimplemented, partially implemented, broken, cannot be generated, or cannot be tested for some reason.
+- All entries default to false. They can be set to true by specifying a Ruby
+  value which evaluates as truthy. This could be the boolean `true` value, but ideally should
+  be a string describing why the example's updating or testing is being skipped.
+- When a `skip_update_example_snapshot*` entry is true, the existing value is preserved.
+  However, since the YAML is re-written, the style of the string value and its
+  [Block Chomping Indicator (`|`)](https://yaml.org/spec/1.2.2/#8112-block-chomping-indicator)
+  may be modified, because the Ruby `psych` YAML library automatically determines this.
+
+The following optional entries are supported for each example. They all default to `false`:
+
+- `skip_update_example_snapshots`: When true, skips any addition or update of any this example's entries
+  in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file
+  or the [`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) file.
+  If this value is truthy, then no other `skip_update_example_snapshot_*` entries can be truthy,
+  and an error is raised if any of them are.
+- `skip_update_example_snapshot_html_static`: When true, skips addition or update of this example's [static HTML](#static-html)
+  entry in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file.
+- `skip_update_example_snapshot_html_wysiwyg`: When true, skips addition or update of this example's [WYSIWYG HTML](#wysiwyg-html)
+  entry in the [`spec/fixtures/glfm/example_snapshots/html.yml`](#specfixturesglfmexample_snapshotshtmlyml) file.
+- `skip_update_example_snapshot_prosemirror_json`: When true, skips addition or update of this example's
+  entry in the [`spec/fixtures/glfm/example_snapshots/prosemirror_json.yml`](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) file.
+- `skip_running_conformance_static_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
+  of the [static HTML](#static-html) for this example.
+- `skip_running_conformance_wysiwyg_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
+  of the [WYSIWYG HTML](#wysiwyg-html) for this example.
+- `skip_running_snapshot_static_html_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
+  of the [static HTML](#multiple-versions-of-rendered-html) for this example.
+- `skip_running_snapshot_wysiwyg_html_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
+  of the [WYSIWYG HTML](#wysiwyg-html) for this example.
+- `skip_running_snapshot_prosemirror_json_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
+  of the [ProseMirror JSON](#specfixturesglfmexample_snapshotsprosemirror_jsonyml) for this example.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` sample entry:
 
 ```yaml
 07_99_an_example_with_incomplete_wysiwyg_implementation_1:
-  skip_update_example_snapshots: false
-  skip_update_example_snapshot_html_static: false
-  skip_update_example_snapshot_html_wysiwyg: false
-  skip_running_conformance_static_tests: false
-  skip_running_conformance_wysiwyg_tests: false
-  skip_running_snapshot_static_html_tests: false
-  skip_running_snapshot_wysiwyg_html_tests: false
-  skip_running_snapshot_prosemirror_json_tests: false
+  skip_update_example_snapshots: 'An explanation of the reason for skipping.'
+  skip_update_example_snapshot_html_static: 'An explanation of the reason for skipping.'
+  skip_update_example_snapshot_html_wysiwyg: 'An explanation of the reason for skipping.'
+  skip_update_example_snapshot_prosemirror_json: 'An explanation of the reason for skipping.'
+  skip_running_conformance_static_tests: 'An explanation of the reason for skipping.'
+  skip_running_conformance_wysiwyg_tests: 'An explanation of the reason for skipping.'
+  skip_running_snapshot_static_html_tests: 'An explanation of the reason for skipping.'
+  skip_running_snapshot_wysiwyg_html_tests: 'An explanation of the reason for skipping.'
+  skip_running_snapshot_prosemirror_json_tests: 'An explanation of the reason for skipping.'
+```
+
+##### `glfm_example_normalizations.yml`
+
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_example_normalizations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_example_normalizations.yml)
+controls the [normalization](#normalization) process. It allows one or more `regex`/`replacement` pairs
+to be specified for a Markdown example.
+
+- It is manually updated.
+- It has a nested structure corresponding to the example and type of entry it refers to.
+- It extensively uses [YAML anchors and aliases](https://yaml.org/spec/1.2.2/#692-node-anchors)
+  to avoid duplication of `regex`/`replacement` pairs and allow them to be shared across multiple examples.
+- The YAML anchors use a naming convention based on the index number of the example, to
+  ensure unique anchor names and avoid naming conflicts.
+
+`glfm_specification/input/gitlab_flavored_markdown/glfm_example_normalizations.yml` sample entries:
+
+```yaml
+# NOTE: All YAML anchors which are shared across one or more examples are defined in the `00_shared` section.
+00_shared:
+  00_uri: &00_uri
+    - regex: '(href|data-src)(=")(.*?)(test-file\.(png|zip)")'
+      replacement: '\1\2URI_PREFIX\4'
+01_01__section_one__example_containing_a_uri__001:
+  html:
+    static:
+      canonical:
+        01_01_uri: *00_uri
+      snapshot:
+        01_01_uri: *00_uri
+      wysiwyg:
+        01_01_uri: *00_uri
+  prosemirror_json:
+    01_01_uri: *00_uri
+07_01__gitlab_specific_markdown__footnotes__001:
+  # YAML anchors which are only shared within a single example should be defined within the example
+  shared:
+    07_01_href: &07_01_href
+      - regex: '(href)(=")(.+?)(")'
+        replacement: '\1\2REF\4'
+    07_01_id: &07_01_id
+      - regex: '(id)(=")(.+?)(")'
+        replacement: '\1\2ID\4'
+  html:
+    static:
+      canonical:
+        07_01_href: *07_01_href
+        07_01_id: *07_01_id
+      snapshot:
+        07_01_href: *07_01_href
+        07_01_id: *07_01_id
+    wysiwyg:
+      07_01_href: *07_01_href
+      07_01_id: *07_01_id
+  prosemirror_json:
+    07_01_href: *07_01_href
+    07_01_id: *07_01_id
 ```
 
 #### Output specification files
@@ -610,7 +768,8 @@ are colocated under the same parent folder `glfm_specification` with the other
 a mix of manually edited and generated files.
 
 In GFM, `spec.txt` is [located in the test dir](https://github.com/github/cmark-gfm/blob/master/test/spec.txt),
-and in CommonMark it's located [in the project root](https://github.com/github/cmark-gfm/blob/master/test/spec.txt). No precedent exists for a standard location. In the future, we may decide to
+and in CommonMark it's located [in the project root](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
+No precedent exists for a standard location. In the future, we may decide to
 move or copy a hosted version of the rendered HTML `spec.html` version to another location or site.
 
 ##### spec.txt
@@ -748,12 +907,12 @@ Any exceptions or failures which occur when generating HTML are replaced with an
 
 ```yaml
 06_04_inlines_emphasis_and_strong_emphasis_1:
- canonical: |
-   <p><em>foo bar</em></p>
- static: |
-   <p data-sourcepos="1:1-1:9" dir="auto"><strong>foo bar</strong></p>
- wysiwyg: |
-   <p><strong>foo bar</strong></p>
+  canonical: |
+    <p><em>foo bar</em></p>
+  static: |
+    <p data-sourcepos="1:1-1:9" dir="auto"><strong>foo bar</strong></p>
+  wysiwyg: |
+    <p><strong>foo bar</strong></p>
 ```
 
 NOTE:

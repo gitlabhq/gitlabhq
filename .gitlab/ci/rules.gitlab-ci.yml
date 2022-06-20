@@ -73,11 +73,17 @@
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
+.if-merge-request-labels-community-contribution: &if-merge-request-labels-community-contribution
+  if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
+
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
+
+.if-merge-request-labels-pipeline-revert: &if-merge-request-labels-pipeline-revert
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:revert/'
 
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
@@ -175,16 +181,26 @@
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
 
 .yaml-lint-patterns: &yaml-lint-patterns
+  - "*.yml"
+  - "**/*.yml"
+
+.lint-pipeline-yaml-patterns: &lint-pipeline-yaml-patterns
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*.yml"
-  - "data/**/*.yml"
   - "lib/gitlab/ci/templates/**/*.yml"
+  - "data/deprecations/**/*.yml"
+  - "data/removals/**/*.yml"
+  - "data/whats_new/**/*.yml"
+
+.lint-metrics-yaml-patterns: &lint-metrics-yaml-patterns
+  - "config/metrics/**/*.yml"
 
 .docs-patterns: &docs-patterns
   - ".gitlab/route-map.yml"
   - "doc/**/*"
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
+  - ".gitlab/ci/docs.gitlab-ci.yml"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
@@ -896,9 +912,25 @@
     - <<: *if-default-refs
       changes: *qa-patterns
 
+.qa:rules:determine-qa-tests:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-force-ci
+      allow_failure: true
+
 .qa:rules:package-and-qa:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-revert
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
@@ -924,6 +956,8 @@
 .qa:rules:package-and-qa:feature-flags:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-revert
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
       changes: *feature-flag-development-config-patterns
@@ -1060,10 +1094,8 @@
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
-      changes: *core-backend-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
-    - changes: ["config/**/*"]
+      changes: *backend-patterns
+    - changes: *core-backend-patterns
 
 .rails:rules:code-backstage-qa:
   rules:
@@ -1354,6 +1386,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-pipeline-revert
+      when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1558,6 +1592,8 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-pipeline-revert
+      when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
@@ -1601,6 +1637,10 @@
   rules:
     - when: on_success
 
+.review:rules:review-qa-sanity:
+  rules:
+    - when: on_success
+
 .review:rules:review-qa-smoke:
   rules:
     - when: on_success
@@ -1627,7 +1667,6 @@
 
 .review:rules:review-qa-all:
   rules:
-    - <<: *if-merge-request-labels-run-review-app  # we explicitly don't allow the job to fail in that case
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
@@ -1661,6 +1700,14 @@
   rules:
     - <<: *if-merge-request
       changes: *danger-patterns
+
+.review:rules:reviewers-recommender:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request-labels-community-contribution
+      when: never
+    - <<: *if-merge-request
 
 ###############
 # Setup rules #
@@ -1769,3 +1816,13 @@
   rules:
     - <<: *if-default-refs
       changes: *yaml-lint-patterns
+
+.lint-pipeline-yaml:rules:
+  rules:
+    - <<: *if-default-refs
+      changes: *lint-pipeline-yaml-patterns
+
+.lint-metrics-yaml:rules:
+  rules:
+    - <<: *if-default-refs
+      changes: *lint-metrics-yaml-patterns

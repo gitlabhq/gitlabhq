@@ -29,6 +29,14 @@ module Banzai
           super + design_link_extras(issue, matches.named_captures['path'])
         end
 
+        def reference_class(object_sym, tooltip: false)
+          super
+        end
+
+        def data_attributes_for(text, parent, object, **data)
+          super.merge(project_path: parent.full_path, iid: object.iid)
+        end
+
         private
 
         def additional_object_attributes(issue)

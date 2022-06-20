@@ -10,7 +10,6 @@ module Metrics
         ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter,
         ::Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter,
         ::Gitlab::Metrics::Dashboard::Stages::PanelIdsInserter,
-        ::Gitlab::Metrics::Dashboard::Stages::AlertsInserter,
         ::Gitlab::Metrics::Dashboard::Stages::UrlValidator
       ].freeze
 

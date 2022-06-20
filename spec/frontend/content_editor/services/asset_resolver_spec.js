@@ -20,4 +20,14 @@ describe('content_editor/services/asset_resolver', () => {
       );
     });
   });
+
+  describe('renderDiagram', () => {
+    it('resolves a diagram code to a url containing the diagram image', async () => {
+      renderMarkdown.mockResolvedValue(
+        '<p><img data-diagram="nomnoml" src="url/to/some/diagram"></p>',
+      );
+
+      expect(await assetResolver.renderDiagram('test')).toBe('url/to/some/diagram');
+    });
+  });
 });

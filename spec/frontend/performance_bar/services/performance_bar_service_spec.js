@@ -63,5 +63,17 @@ describe('PerformanceBarService', () => {
         );
       });
     });
+
+    describe('operationName', () => {
+      function requestUrl(response, peekUrl) {
+        return PerformanceBarService.callbackParams(response, peekUrl)[3];
+      }
+
+      it('gets the operation name from response.config', () => {
+        expect(
+          requestUrl({ headers: {}, config: { operationName: 'someOperation' } }, '/peek'),
+        ).toBe('someOperation');
+      });
+    });
   });
 });

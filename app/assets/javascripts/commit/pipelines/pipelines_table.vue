@@ -9,6 +9,7 @@ import PipelinesService from '~/pipelines/services/pipelines_service';
 import PipelineStore from '~/pipelines/stores/pipelines_store';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { s__, __ } from '~/locale';
 
 export default {
   PipelineKeyOptions,
@@ -170,6 +171,20 @@ export default {
       }
     },
   },
+  modal: {
+    actionPrimary: {
+      text: s__('Pipeline|Run pipeline'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
 };
 </script>
 <template>
@@ -229,9 +244,9 @@ export default {
       ref="modal"
       :modal-id="modalId"
       :title="s__('Pipelines|Are you sure you want to run this pipeline?')"
-      :ok-title="s__('Pipeline|Run pipeline')"
-      ok-variant="danger"
-      @ok="onClickRunPipeline"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="onClickRunPipeline"
     >
       <p>
         {{

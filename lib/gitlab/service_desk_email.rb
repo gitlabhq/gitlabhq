@@ -23,6 +23,12 @@ module Gitlab
 
         config.address.sub(Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER, key)
       end
+
+      def key_from_fallback_message_id(mail_id)
+        message_id_regexp = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/
+
+        mail_id[message_id_regexp, 1]
+      end
     end
   end
 end

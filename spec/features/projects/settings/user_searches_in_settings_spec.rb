@@ -7,7 +7,6 @@ RSpec.describe 'User searches project settings', :js do
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace, pages_https_only: false) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 

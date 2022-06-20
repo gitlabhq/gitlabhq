@@ -6,16 +6,16 @@ import {
   GlTooltipDirective,
   GlIntersectionObserver,
 } from '@gitlab/ui';
-import { once } from 'lodash';
 import * as Sentry from '@sentry/browser';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
-import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
+import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import StatusIcon from './status_icon.vue';
 import Actions from './actions.vue';
 import ChildContent from './child_content.vue';
+import { createTelemetryHub } from './telemetry';
 import { generateText } from './utils';
 
 export const LOADING_STATES = {
@@ -26,6 +26,7 @@ export const LOADING_STATES = {
 };
 
 export default {
+  telemetry: true,
   components: {
     GlButton,
     GlLoadingIcon,
@@ -49,6 +50,7 @@ export default {
       showFade: false,
       modalData: undefined,
       modalName: undefined,
+      telemetry: null,
     };
   },
   computed: {
@@ -131,50 +133,85 @@ export default {
       }
     },
   },
+  created() {
+    if (this.$options.telemetry) {
+      this.telemetry = createTelemetryHub(this.$options.name);
+    }
+  },
   mounted() {
     this.loadCollapsedData();
+
+    this.telemetry?.viewed();
   },
   methods: {
-    triggerRedisTracking: once(function triggerRedisTracking() {
-      if (this.$options.expandEvent) {
-        api.trackRedisHllUserEvent(this.$options.expandEvent);
-      }
-    }),
     toggleCollapsed(e) {
       if (this.isCollapsible && !e?.target?.closest('.btn:not(.btn-icon),a')) {
-        this.isCollapsed = !this.isCollapsed;
+        if (this.isCollapsed) {
+          this.telemetry?.expanded({ type: this.statusIconName });
+        }
 
-        this.triggerRedisTracking();
+        this.isCollapsed = !this.isCollapsed;
       }
+    },
+    initExtensionMultiPolling() {
+      const allData = [];
+      const requests = this.fetchMultiData();
+
+      requests.forEach((request) => {
+        const poll = new Poll({
+          resource: {
+            fetchData: () => request(this),
+          },
+          method: 'fetchData',
+          successCallback: (response) => {
+            this.headerCheck(response, (data) => allData.push(data));
+
+            if (allData.length === requests.length) {
+              this.setCollapsedData(allData);
+            }
+          },
+          errorCallback: (e) => {
+            this.setCollapsedError(e);
+          },
+        });
+
+        poll.makeRequest();
+      });
     },
     initExtensionPolling() {
       const poll = new Poll({
         resource: {
-          fetchData: () => this.fetchCollapsedData(this.$props),
+          fetchData: () => this.fetchCollapsedData(this),
         },
         method: 'fetchData',
-        successCallback: ({ data }) => {
-          if (Object.keys(data).length > 0) {
-            poll.stop();
-            this.setCollapsedData(data);
-          }
+        successCallback: (response) => {
+          this.headerCheck(response, (data) => this.setCollapsedData(data));
         },
         errorCallback: (e) => {
-          poll.stop();
-
           this.setCollapsedError(e);
         },
       });
 
       poll.makeRequest();
     },
+    headerCheck(response, callback) {
+      const headers = normalizeHeaders(response.headers);
+
+      if (!headers['POLL-INTERVAL']) {
+        callback(response.data);
+      }
+    },
     loadCollapsedData() {
       this.loadingState = LOADING_STATES.collapsedLoading;
 
       if (this.$options.enablePolling) {
-        this.initExtensionPolling();
+        if (this.fetchMultiData) {
+          this.initExtensionMultiPolling();
+        } else {
+          this.initExtensionPolling();
+        }
       } else {
-        this.fetchCollapsedData(this.$props)
+        this.fetchCollapsedData(this)
           .then((data) => {
             this.setCollapsedData(data);
           })
@@ -197,7 +234,7 @@ export default {
 
       this.loadingState = LOADING_STATES.expandedLoading;
 
-      this.fetchFullData(this.$props)
+      this.fetchFullData(this)
         .then((data) => {
           this.loadingState = null;
           this.fullData = data.map((x, i) => ({ id: i, ...x }));
@@ -229,6 +266,11 @@ export default {
       // more than 200ms
       if (up - this.down < 200 && !e?.target?.closest('.btn-icon')) {
         this.toggleCollapsed(e);
+      }
+    },
+    onClickedAction(action) {
+      if (action.fullReport) {
+        this.telemetry?.fullReportClicked();
       }
     },
     generateText,
@@ -268,6 +310,7 @@ export default {
         <actions
           :widget="$options.label || $options.name"
           :tertiary-buttons="tertiaryActionsButtons"
+          @clickedAction="onClickedAction"
         />
         <div
           v-if="isCollapsible"
@@ -324,6 +367,7 @@ export default {
                   :widget-label="widgetLabel"
                   :modal-id="modalId"
                   :level="2"
+                  @clickedAction="onClickedAction"
                 />
               </gl-intersection-observer>
             </div>

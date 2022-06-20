@@ -483,7 +483,6 @@ Layout/HashAlignment:
     - 'lib/backup/gitaly_backup.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/banzai/reference_redactor.rb'
-    - 'lib/bulk_imports/projects/pipelines/project_attributes_pipeline.rb'
     - 'lib/gitlab/abuse.rb'
     - 'lib/gitlab/access.rb'
     - 'lib/gitlab/application_rate_limiter.rb'

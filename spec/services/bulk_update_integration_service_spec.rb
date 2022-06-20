@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkUpdateIntegrationService do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
 
   before_all do
     stub_jira_integration_test
@@ -55,6 +55,20 @@ RSpec.describe BulkUpdateIntegrationService do
         .not_to eq(subgroup_integration.attributes.except(*excluded_attributes))
     end
 
+    it 'does not change the created_at timestamp' do
+      subgroup_integration.update_column(:created_at, Time.utc('2022-01-01'))
+
+      expect do
+        described_class.new(subgroup_integration, batch).execute
+      end.not_to change { integration.reload.created_at }
+    end
+
+    it 'sets the updated_at timestamp to the current time', time_travel_to: Time.utc('2022-01-01') do
+      expect do
+        described_class.new(subgroup_integration, batch).execute
+      end.to change { integration.reload.updated_at }.to(Time.current)
+    end
+
     context 'with integration with data fields' do
       let(:excluded_attributes) do
         %w[id service_id created_at updated_at encrypted_properties encrypted_properties_iv]
@@ -68,6 +82,20 @@ RSpec.describe BulkUpdateIntegrationService do
 
         expect(integration.data_fields.attributes.except(*excluded_attributes))
           .not_to eq(excluded_integration.data_fields.attributes.except(*excluded_attributes))
+      end
+
+      it 'does not change the created_at timestamp' do
+        subgroup_integration.data_fields.update_column(:created_at, Time.utc('2022-01-02'))
+
+        expect do
+          described_class.new(subgroup_integration, batch).execute
+        end.not_to change { integration.data_fields.reload.created_at }
+      end
+
+      it 'sets the updated_at timestamp to the current time', time_travel_to: Time.utc('2022-01-01') do
+        expect do
+          described_class.new(subgroup_integration, batch).execute
+        end.to change { integration.data_fields.reload.updated_at }.to(Time.current)
       end
     end
   end

@@ -52,6 +52,10 @@ export class ContentEditor {
     return this._assetResolver.resolveUrl(canonicalSrc);
   }
 
+  renderDiagram(code, language) {
+    return this._assetResolver.renderDiagram(code, language);
+  }
+
   async setSerializedContent(serializedContent) {
     const { _tiptapEditor: editor, _eventHub: eventHub } = this;
     const { doc, tr } = editor.state;

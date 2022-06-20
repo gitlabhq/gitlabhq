@@ -1,12 +1,14 @@
 <script>
 import {
   GlIcon,
+  GlBadge,
   GlButton,
   GlIntersectionObserver,
   GlTooltipDirective,
   GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 
 export default {
   i18n: {
@@ -14,6 +16,7 @@ export default {
   },
   components: {
     GlIcon,
+    GlBadge,
     GlButton,
     GlIntersectionObserver,
   },
@@ -24,10 +27,6 @@ export default {
   props: {
     issuable: {
       type: Object,
-      required: true,
-    },
-    statusBadgeClass: {
-      type: String,
       required: true,
     },
     statusIcon: {
@@ -43,6 +42,11 @@ export default {
     return {
       stickyTitleVisible: false,
     };
+  },
+  computed: {
+    badgeVariant() {
+      return this.issuable.state === IssuableStates.Opened ? 'success' : 'info';
+    },
   },
   methods: {
     handleTitleAppear() {
@@ -60,7 +64,7 @@ export default {
     <div class="title-container">
       <h1
         v-safe-html="issuable.titleHtml || issuable.title"
-        class="title qa-title"
+        class="title qa-title gl-font-size-h-display"
         dir="auto"
         data-testid="title"
       ></h1>
@@ -84,14 +88,12 @@ export default {
           <div
             class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
           >
-            <p
-              data-testid="status"
-              class="issuable-status-box status-box gl-white-space-nowrap gl-my-0"
-              :class="statusBadgeClass"
-            >
-              <gl-icon :name="statusIcon" class="gl-display-block d-sm-none gl-h-6!" />
-              <span class="gl-display-none d-sm-block"><slot name="status-badge"></slot></span>
-            </p>
+            <gl-badge class="gl-white-space-nowrap gl-mr-3" :variant="badgeVariant">
+              <gl-icon v-if="statusIcon" class="gl-sm-display-none" :name="statusIcon" />
+              <span class="gl-display-none gl-sm-display-block">
+                <slot name="status-badge"></slot>
+              </span>
+            </gl-badge>
             <p
               class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0"
               :title="issuable.title"

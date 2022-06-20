@@ -16,7 +16,6 @@ module Resolvers
               description: 'Used to get a recursive tree. Default is false.'
     argument :ref, GraphQL::Types::String,
               required: false,
-              default_value: :head,
               description: 'Commit ref to get the tree for. Default value is HEAD.'
 
     alias_method :repository, :object
@@ -24,6 +23,7 @@ module Resolvers
     def resolve(**args)
       return unless repository.exists?
 
+      args[:ref] ||= :head
       repository.tree(args[:ref], args[:path], recursive: args[:recursive])
     end
   end

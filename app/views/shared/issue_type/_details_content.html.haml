@@ -3,9 +3,9 @@
 
 .issue-details.issuable-details.js-issue-details
   .detail-page-description.content-block.js-detail-page-description
-    #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json, full_path: @project.full_path } }
+    #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json, issuable_id: issuable.id, full_path: @project.full_path } }
       .title-container
-        %h1.title= markdown_field(issuable, :title)
+        %h1.title.page-title.gl-font-size-h-display= markdown_field(issuable, :title)
       - if issuable.description.present?
         .description
           .md= markdown_field(issuable, :description)
@@ -17,6 +17,7 @@
 
     = render 'projects/issues/design_management'
 
+    = render_if_exists 'projects/issues/work_item_links'
     = render_if_exists 'projects/issues/related_issues'
 
     #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: issuable.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }

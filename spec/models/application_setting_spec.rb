@@ -85,12 +85,15 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:container_registry_import_max_step_duration).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_pre_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:container_registry_pre_import_tags_rate).is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_tags_count) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_retries) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_start_max_retries) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_step_duration) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_timeout) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_import_timeout) }
+    it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_tags_rate) }
+    it { is_expected.to allow_value(1.5).for(:container_registry_pre_import_tags_rate) }
 
     it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
     it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
@@ -551,11 +554,45 @@ RSpec.describe ApplicationSetting do
           it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
           it { is_expected.not_to allow_value(128).for(field) }
         end
+      end
+    end
 
-        it_behaves_like 'key validations'
+    describe '#ensure_key_restrictions!' do
+      context 'with non-compliant FIPS settings' do
+        before do
+          setting.update_columns(
+            rsa_key_restriction: 1024,
+            dsa_key_restriction: 0,
+            ecdsa_key_restriction: 521,
+            ed25519_key_restriction: -1,
+            ecdsa_sk_key_restriction: 0,
+            ed25519_sk_key_restriction: 0
+          )
+        end
 
-        context 'FIPS mode', :fips_mode do
-          it_behaves_like 'key validations'
+        context 'in non-FIPS mode', fips_mode: false do
+          it 'keeps existing key restrictions' do
+            expect { setting.ensure_key_restrictions! }.not_to change { setting.valid? }
+            expect(setting).to be_valid
+            expect(setting.rsa_key_restriction).to eq(1024)
+            expect(setting.dsa_key_restriction).to eq(0)
+            expect(setting.ecdsa_key_restriction).to eq(521)
+            expect(setting.ed25519_key_restriction).to eq(-1)
+            expect(setting.ecdsa_sk_key_restriction).to eq(0)
+            expect(setting.ed25519_sk_key_restriction).to eq(0)
+          end
+        end
+
+        context 'in FIPS mode', :fips_mode do
+          it 'updates key restrictions to meet FIPS compliance' do
+            expect { setting.ensure_key_restrictions! }.to change { setting.valid? }.from(false).to(true)
+            expect(setting.rsa_key_restriction).to eq(3072)
+            expect(setting.dsa_key_restriction).to eq(-1)
+            expect(setting.ecdsa_key_restriction).to eq(521)
+            expect(setting.ed25519_key_restriction).to eq(-1)
+            expect(setting.ecdsa_sk_key_restriction).to eq(256)
+            expect(setting.ed25519_sk_key_restriction).to eq(256)
+          end
         end
       end
     end

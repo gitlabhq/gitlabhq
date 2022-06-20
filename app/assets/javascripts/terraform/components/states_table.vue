@@ -1,7 +1,16 @@
 <script>
-import { GlAlert, GlBadge, GlLink, GlLoadingIcon, GlSprintf, GlTable, GlTooltip } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlLink,
+  GlLoadingIcon,
+  GlSprintf,
+  GlTable,
+  GlTooltip,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -19,6 +28,9 @@ export default {
     GlTooltip,
     StateActions,
     TimeAgoTooltip,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -68,6 +80,8 @@ export default {
     locked: s__('Terraform|Locked'),
     lockedByUser: s__('Terraform|Locked by %{user} %{timeAgo}'),
     lockingState: s__('Terraform|Locking state'),
+    deleting: s__('Terraform|Removed'),
+    deletionInProgress: s__('Terraform|Deletion in progress'),
     name: s__('Terraform|Name'),
     pipeline: s__('Terraform|Pipeline'),
     removing: s__('Terraform|Removing'),
@@ -84,6 +98,12 @@ export default {
     },
     lockedByUserName(item) {
       return item.lockedByUser?.name || this.$options.i18n.unknownUser;
+    },
+    lockedByUserText(item) {
+      return sprintf(this.$options.i18n.lockedByUser, {
+        user: this.lockedByUserName(item),
+        timeAgo: this.timeFormatted(item.lockedAt),
+      });
     },
     pipelineDetailedStatus(item) {
       return item.latestVersion?.job?.detailedStatus;
@@ -142,29 +162,27 @@ export default {
         </div>
 
         <div
-          v-else-if="item.lockedAt"
-          :id="`terraformLockedBadgeContainer${item.name}`"
+          v-else-if="item.deletedAt"
+          v-gl-tooltip.right
           class="gl-mx-3"
+          :title="$options.i18n.deletionInProgress"
+          :data-testid="`state-badge-${item.name}`"
         >
-          <gl-badge :id="`terraformLockedBadge${item.name}`" icon="lock">
+          <gl-badge icon="remove">
+            {{ $options.i18n.deleting }}
+          </gl-badge>
+        </div>
+
+        <div
+          v-else-if="item.lockedAt"
+          v-gl-tooltip.right
+          class="gl-mx-3"
+          :title="lockedByUserText(item)"
+          :data-testid="`state-badge-${item.name}`"
+        >
+          <gl-badge icon="lock">
             {{ $options.i18n.locked }}
           </gl-badge>
-
-          <gl-tooltip
-            :container="`terraformLockedBadgeContainer${item.name}`"
-            :target="`terraformLockedBadge${item.name}`"
-            placement="right"
-          >
-            <gl-sprintf :message="$options.i18n.lockedByUser">
-              <template #user>
-                {{ lockedByUserName(item) }}
-              </template>
-
-              <template #timeAgo>
-                {{ timeFormatted(item.lockedAt) }}
-              </template>
-            </gl-sprintf>
-          </gl-tooltip>
         </div>
       </div>
     </template>

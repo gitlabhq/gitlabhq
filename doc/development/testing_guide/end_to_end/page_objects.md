@@ -150,7 +150,7 @@ In our case, `data-qa-selector="login_field"`, `data-qa-selector="password_field
 ```haml
 = f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { qa_selector: 'login_field' }
 = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { qa_selector: 'password_field' }
-= f.submit "Sign in", class: "btn btn-success", data: { qa_selector: 'sign_in_button' }
+= f.submit "Sign in", class: "btn btn-confirm", data: { qa_selector: 'sign_in_button' }
 ```
 
 Things to note:

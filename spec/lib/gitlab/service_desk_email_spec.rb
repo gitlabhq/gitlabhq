@@ -78,4 +78,10 @@ RSpec.describe Gitlab::ServiceDeskEmail do
       end
     end
   end
+
+  context 'self.key_from_fallback_message_id' do
+    it 'returns reply key' do
+      expect(described_class.key_from_fallback_message_id('reply-key@localhost')).to eq('key')
+    end
+  end
 end

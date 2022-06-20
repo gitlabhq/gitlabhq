@@ -63,35 +63,6 @@ content directly. Instead, it enhances the results with additional properties, i
 - Location tracking fields.
 - A means of identifying false positives or insignificant findings. **(ULTIMATE)**
 
-## Data provided by analyzers
-
-Each analyzer provides data about the vulnerabilities it detects. The following table details the
-data available from each analyzer. The values provided by these tools are heterogeneous so they are sometimes
-normalized into common values, for example, `severity` and `confidence`.
-
-| Property / tool                | Apex | Bandit | Brakeman | ESLint security | SpotBugs | Flawfinder | Gosec | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET) | Semgrep | Sobelow |
-|--------------------------------|------|--------|----------|-----------------|----------|------------|-------|-----------------|-------|------------|-----------------------|---------------------------|---------|---------|
-| Affected item (for example, class or package) | ✓ | ✗ | ✓ | ✗               | ✓        | ✓          | ✗     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| Confidence                     | ✗    | ✓      | ✓        | ✗               | ✓        | x          | ✓     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✓       |
-| Description                    | ✓    | ✗      | ✗        | ✓               | ✓        | ✗          | ✗     | ✓               | ✓     | ✓          | ✗                     | ✗                         | ✓       | ✓       |
-| End column                     | ✓    | ✗      | ✗        | ✓               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| End line                       | ✓    | ✓      | ✗        | ✓               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| External ID (for example, CVE) | ✗    | ✗      | ⚠        | ✗               | ⚠        | ✓          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
-| File                           | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| Internal doc/explanation       | ✓    | ⚠      | ✓        | ✗               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✓       |
-| Internal ID                    | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✓       |
-| Severity                       | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✗                         | ⚠       | ✗       |
-| Solution                       | ✓    | ✗      | ✗        | ✗               | ⚠        | ✓          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
-| Source code extract            | ✗    | ✓      | ✓        | ✓               | ✗        | ✓          | ✓     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| Start column                   | ✓    | ✗      | ✗        | ✓               | ✓        | ✓          | ✓     | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✗       |
-| Start line                     | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✗               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| Title                          | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| URLs                           | ✓    | ✗      | ✓        | ✗               | ⚠        | ✗          | ⚠     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-
-- ✓ => Data is available.
-- ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
-- ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.
-
 ## Transition to Semgrep-based scanning
 
 SAST includes a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](index.md#supported-languages-and-frameworks).
@@ -120,10 +91,10 @@ The Vulnerability Management system automatically moves vulnerabilities from the
 
 However, you'll see old vulnerabilities re-created based on Semgrep results if:
 
-- A vulnerability was created by Bandit or SpotBugs and you disable those analyzers. We only recommend disabling Bandit and SpotBugs now if the analyzers aren’t working. Work to automatically translate Bandit and SpotBugs vulnerabilities to Semgrep is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328062).
+- A vulnerability was created by Bandit or SpotBugs and you disable those analyzers. We only recommend disabling Bandit and SpotBugs now if the analyzers aren't working. Work to automatically translate Bandit and SpotBugs vulnerabilities to Semgrep is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328062).
 - A vulnerability was created by ESLint, Gosec, or Flawfinder in a default-branch pipeline where Semgrep scanning did not run successfully (before Semgrep coverage was introduced for the language, because you disabled Semgrep explicitly, or because the Semgrep scan failed in that pipeline). We do not currently plan to combine these vulnerabilities if they already exist.
 
-When a vulnerability is re-created, the original vulnerability is marked as “no longer detected” in the Vulnerability Report.
+When a vulnerability is re-created, the original vulnerability is marked as "no longer detected" in the Vulnerability Report.
 A new vulnerability is then created based on the Semgrep finding.
 
 ### Activating Semgrep-based scanning early
@@ -184,7 +155,7 @@ variables:
 You can disable all default SAST analyzers, leaving only [custom analyzers](#custom-analyzers)
 enabled.
 
-To disable all default analyzers, set the CI/CD variable `SAST_DISABLED` to `true` in your
+To disable all default analyzers, set the CI/CD variable `SAST_DISABLED` to `"true"` in your
 `.gitlab-ci.yml` file.
 
 Example:
@@ -194,7 +165,7 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  SAST_DISABLED: true
+  SAST_DISABLED: "true"
 ```
 
 ### Disable specific default analyzers
@@ -241,3 +212,32 @@ csharp-sast:
     reports:
       sast: gl-sast-report.json
 ```
+
+## Data provided by analyzers
+
+Each analyzer provides data about the vulnerabilities it detects. The following table details the
+data available from each analyzer. The values provided by these tools are heterogeneous so they are sometimes
+normalized into common values, for example, `severity` and `confidence`.
+
+| Property / tool                | Apex | Bandit | Brakeman | ESLint security | SpotBugs | Flawfinder | Gosec | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET) | Semgrep | Sobelow |
+|--------------------------------|------|--------|----------|-----------------|----------|------------|-------|-----------------|-------|------------|-----------------------|---------------------------|---------|---------|
+| Affected item (for example, class or package) | ✓ | ✗ | ✓ | ✗               | ✓        | ✓          | ✗     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| Confidence                     | ✗    | ✓      | ✓        | ✗               | ✓        | x          | ✓     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✓       |
+| Description                    | ✓    | ✗      | ✗        | ✓               | ✓        | ✗          | ✗     | ✓               | ✓     | ✓          | ✗                     | ✗                         | ✓       | ✓       |
+| End column                     | ✓    | ✗      | ✗        | ✓               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| End line                       | ✓    | ✓      | ✗        | ✓               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| External ID (for example, CVE) | ✗    | ✗      | ⚠        | ✗               | ⚠        | ✓          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
+| File                           | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
+| Internal doc/explanation       | ✓    | ⚠      | ✓        | ✗               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✓       |
+| Internal ID                    | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✓       |
+| Severity                       | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✗                         | ⚠       | ✗       |
+| Solution                       | ✓    | ✗      | ✗        | ✗               | ⚠        | ✓          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
+| Source code extract            | ✗    | ✓      | ✓        | ✓               | ✗        | ✓          | ✓     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| Start column                   | ✓    | ✗      | ✗        | ✓               | ✓        | ✓          | ✓     | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✗       |
+| Start line                     | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✗               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
+| Title                          | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
+| URLs                           | ✓    | ✗      | ✓        | ✗               | ⚠        | ✗          | ⚠     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+
+- ✓ => Data is available.
+- ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
+- ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.

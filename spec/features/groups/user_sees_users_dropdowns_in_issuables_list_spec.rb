@@ -2,23 +2,50 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > User sees users dropdowns in issuables list' do
-  let(:entity) { create(:group) }
+RSpec.describe 'Groups > User sees users dropdowns in issuables list', :js do
+  include FilteredSearchHelpers
+
+  let(:group) { create(:group) }
   let(:user_in_dropdown) { create(:user) }
   let!(:user_not_in_dropdown) { create(:user) }
-  let!(:project) { create(:project, group: entity) }
+  let!(:project) { create(:project, group: group) }
 
   before do
-    entity.add_developer(user_in_dropdown)
+    group.add_developer(user_in_dropdown)
+    sign_in(user_in_dropdown)
   end
 
-  it_behaves_like 'issuable user dropdown behaviors' do
-    let(:issuable) { create(:issue, project: project) }
-    let(:issuables_path) { issues_group_path(entity) }
+  describe 'issues' do
+    let!(:issuable) { create(:issue, project: project) }
+
+    %w[Author Assignee].each do |dropdown|
+      describe "#{dropdown} dropdown" do
+        it 'only includes members of the project/group' do
+          visit issues_group_path(group)
+
+          select_tokens dropdown, '=', submit: false
+
+          expect_suggestion(user_in_dropdown.name)
+          expect_no_suggestion(user_not_in_dropdown.name)
+        end
+      end
+    end
   end
 
-  it_behaves_like 'issuable user dropdown behaviors' do
-    let(:issuable) { create(:merge_request, source_project: project) }
-    let(:issuables_path) { merge_requests_group_path(entity) }
+  describe 'merge requests' do
+    let!(:issuable) { create(:merge_request, source_project: project) }
+
+    %w[author assignee].each do |dropdown|
+      describe "#{dropdown} dropdown" do
+        it 'only includes members of the project/group' do
+          visit merge_requests_group_path(group)
+
+          filtered_search.set("#{dropdown}:=")
+
+          expect(find("#js-dropdown-#{dropdown} .filter-dropdown")).to have_content(user_in_dropdown.name)
+          expect(find("#js-dropdown-#{dropdown} .filter-dropdown")).not_to have_content(user_not_in_dropdown.name)
+        end
+      end
+    end
   end
 end

@@ -18,6 +18,20 @@ export default {
       required: true,
     },
   },
+  modal: {
+    actionPrimary: {
+      text: __('Discard changes'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   computed: {
     discardModalId() {
       return `discard-file-${this.activeFile.path}`;
@@ -43,9 +57,9 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex ide-commit-editor-header align-items-center">
-    <file-icon :file-name="activeFile.name" :size="16" class="mr-2" />
-    <strong class="mr-2">
+  <div class="gl-display-flex ide-commit-editor-header gl-align-items-center">
+    <file-icon :file-name="activeFile.name" :size="16" class="gl-mr-3" />
+    <strong class="gl-mr-3">
       <template v-if="activeFile.prevPath && activeFile.prevPath !== activeFile.path">
         {{ activeFile.prevPath }} &#x2192;
       </template>
@@ -66,12 +80,11 @@ export default {
     </div>
     <gl-modal
       ref="discardModal"
-      ok-variant="danger"
-      cancel-variant="light"
-      :ok-title="__('Discard changes')"
       :modal-id="discardModalId"
       :title="discardModalTitle"
-      @ok="discardChanges(activeFile.path)"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="discardChanges(activeFile.path)"
     >
       {{ __("You will lose all changes you've made to this file. This action cannot be undone.") }}
     </gl-modal>

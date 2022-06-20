@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Import::JiraController do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }

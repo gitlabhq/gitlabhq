@@ -35,10 +35,11 @@ approval_project_rules_users: :gitlab_main
 approvals: :gitlab_main
 approver_groups: :gitlab_main
 approvers: :gitlab_main
-ar_internal_metadata: :gitlab_shared
+ar_internal_metadata: :gitlab_internal
 atlassian_identities: :gitlab_main
 audit_events_external_audit_event_destinations: :gitlab_main
 audit_events: :gitlab_main
+audit_events_streaming_headers: :gitlab_main
 authentication_events: :gitlab_main
 award_emoji: :gitlab_main
 aws_roles: :gitlab_main
@@ -121,6 +122,7 @@ ci_unit_tests: :gitlab_ci
 ci_variables: :gitlab_ci
 cluster_agents: :gitlab_main
 cluster_agent_tokens: :gitlab_main
+cluster_enabled_grants: :gitlab_main
 cluster_groups: :gitlab_main
 cluster_platforms_kubernetes: :gitlab_main
 cluster_projects: :gitlab_main
@@ -217,7 +219,6 @@ geo_event_log: :gitlab_main
 geo_events: :gitlab_main
 geo_hashed_storage_attachments_events: :gitlab_main
 geo_hashed_storage_migrated_events: :gitlab_main
-geo_lfs_object_deleted_events: :gitlab_main
 geo_node_namespace_links: :gitlab_main
 geo_nodes: :gitlab_main
 geo_node_statuses: :gitlab_main
@@ -266,6 +267,7 @@ integrations: :gitlab_main
 internal_ids: :gitlab_main
 ip_restrictions: :gitlab_main
 issuable_metric_images: :gitlab_main
+issuable_resource_links: :gitlab_main
 issuable_severities: :gitlab_main
 issuable_slas: :gitlab_main
 issue_assignees: :gitlab_main
@@ -465,7 +467,7 @@ routes: :gitlab_main
 saml_group_links: :gitlab_main
 saml_providers: :gitlab_main
 saved_replies: :gitlab_main
-schema_migrations: :gitlab_shared
+schema_migrations: :gitlab_internal
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main
 security_findings: :gitlab_main
@@ -491,6 +493,7 @@ software_license_policies: :gitlab_main
 software_licenses: :gitlab_main
 spam_logs: :gitlab_main
 sprints: :gitlab_main
+ssh_signatures: :gitlab_main
 status_check_responses: :gitlab_main
 status_page_published_incidents: :gitlab_main
 status_page_settings: :gitlab_main
@@ -503,6 +506,7 @@ term_agreements: :gitlab_main
 terraform_states: :gitlab_main
 terraform_state_versions: :gitlab_main
 timelogs: :gitlab_main
+timelog_categories: :gitlab_main
 todos: :gitlab_main
 token_with_ivs: :gitlab_main
 topics: :gitlab_main
@@ -549,6 +553,7 @@ vulnerability_occurrences: :gitlab_main
 vulnerability_reads: :gitlab_main
 vulnerability_remediations: :gitlab_main
 vulnerability_scanners: :gitlab_main
+vulnerability_state_transitions: :gitlab_main
 vulnerability_statistics: :gitlab_main
 vulnerability_user_mentions: :gitlab_main
 webauthn_registrations: :gitlab_main
@@ -556,10 +561,13 @@ web_hook_logs: :gitlab_main
 web_hooks: :gitlab_main
 wiki_page_meta: :gitlab_main
 wiki_page_slugs: :gitlab_main
+work_item_parent_links: :gitlab_main
 work_item_types: :gitlab_main
 x509_certificates: :gitlab_main
 x509_commit_signatures: :gitlab_main
 x509_issuers: :gitlab_main
 zentao_tracker_data: :gitlab_main
+# dingtalk_tracker_data JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
+dingtalk_tracker_data: :gitlab_main
 zoom_meetings: :gitlab_main
 batched_background_migration_job_transition_logs: :gitlab_shared

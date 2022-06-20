@@ -1,9 +1,4 @@
-import {
-  GlAlert,
-  GlKeysetPagination,
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlPagination,
-} from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueDraggable from 'vuedraggable';
 
@@ -263,7 +258,7 @@ describe('IssuableListRoot', () => {
     it('renders gl-loading-icon when `issuablesLoading` prop is true', () => {
       wrapper = createComponent({ props: { issuablesLoading: true } });
 
-      expect(wrapper.findAllComponents(GlSkeletonLoading)).toHaveLength(
+      expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(
         wrapper.vm.skeletonItemCount,
       );
     });

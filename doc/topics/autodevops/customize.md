@@ -409,6 +409,7 @@ applications.
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes doesn't prevent word splitting. [More details](#passing-arguments-to-docker-build). |
 | `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
+| `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | In GitLab 15.0 and later, port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app). |
 | `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | Used to set the name of the Helm repository. Defaults to `gitlab`. |
@@ -466,6 +467,8 @@ The following table lists CI/CD variables related to the database.
 | `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
 | `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
 | `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
+| `POSTGRES_CHART_REPOSITORY`             | Helm Chart repository used to search for PostgreSQL chart. Defaults to `https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami`. |
+| `POSTGRES_CHART_VERSION`                | Helm Chart version used for PostgreSQL chart. Defaults to `8.2.1`. |
 
 ### Disable jobs
 
@@ -669,7 +672,7 @@ The percentage is based on the `REPLICAS` CI/CD variable, and defines the number
 pods you want to have for your deployment. If the value is `10`, and you run the
 `10%` rollout job, there is `1` new pod and `9` old ones.
 
-To start a job, click the play icon (**{play}**) next to the job's name. You're not
+To start a job, select the play icon (**{play}**) next to the job's name. You're not
 required to go from `10%` to `100%`, you can jump to whatever job you want.
 You can also scale down by running a lower percentage job, just before hitting
 `100%`. Once you get to `100%`, you can't scale down, and you'd have to roll

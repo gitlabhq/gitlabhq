@@ -135,6 +135,10 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_ready
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_reassign
   category: quickactions
   redis_slot: quickactions

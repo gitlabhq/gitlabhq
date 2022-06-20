@@ -8,6 +8,10 @@ module Import
       @params = params
     end
 
+    def authorized?
+      can?(current_user, :create_projects, target_namespace)
+    end
+
     private
 
     def find_or_create_namespace(namespace, owner)

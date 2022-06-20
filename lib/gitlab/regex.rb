@@ -5,7 +5,7 @@ module Gitlab
     module Packages
       CONAN_RECIPE_FILES = %w[conanfile.py conanmanifest.txt conan_sources.tgz conan_export.tgz].freeze
       CONAN_PACKAGE_FILES = %w[conaninfo.txt conanmanifest.txt conan_package.tgz].freeze
-
+      PYPI_NORMALIZED_NAME_REGEX_STRING = '[-_.]+'
       API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
 
       def conan_package_reference_regex
@@ -119,9 +119,9 @@ module Gitlab
         # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/parsehelp.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n205
         @debian_version_regex ||= %r{
           \A(?:
-            (?:([0-9]{1,9}):)?    (?# epoch)
-            ([0-9][0-9a-z\.+~-]*)  (?# version)
-            (?:(-[0-0a-z\.+~]+))?  (?# revision)
+            (?:([0-9]{1,9}):)?            (?# epoch)
+            ([0-9][0-9a-z\.+~]*-?){1,15}  (?# version-revision)
+            (?<!-)
             )\z}xi.freeze
       end
 
@@ -480,6 +480,11 @@ module Gitlab
     def saved_reply_name_regex_message
       "can contain only lowercase letters, digits, '_' and '-'. " \
       "Must start with a letter, and cannot end with '-' or '_'"
+    end
+
+    # One or more `part`s, separated by separator
+    def sep_by_1(separator, part)
+      %r(#{part} (#{separator} #{part})*)x
     end
   end
 end

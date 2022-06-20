@@ -71,7 +71,7 @@ the current status of these issues, please refer to the referenced issues and ep
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
 | Gitaly Cluster + Geo - Issues retrying failed syncs                             | If Gitaly Cluster is used on a Geo secondary site, repositories that have failed to sync could continue to fail when Geo tries to resync them. Recovering from this state requires assistance from support to run manual steps. Work is in-progress to update Gitaly Cluster to [identify repositories with a unique and persistent identifier](https://gitlab.com/gitlab-org/gitaly/-/issues/3485), which is expected to resolve the issue.                                                                                                                                                                                                                                          | No known solution at this time. |
-| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance.html) so your upgrade plan can be reviewed by support. |
+| Praefect unable to insert data into the database due to migrations not being applied after an upgrade | If the database is not kept up to date with completed migrations, then the Praefect node is unable to perform normal operation. | Make sure the Praefect database is up and running with all migrations completed (For example: `/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-migrate-status` should show a list of all applied migrations). Consider [requesting live upgrade assistance](https://about.gitlab.com/support/scheduling-upgrade-assistance/) so your upgrade plan can be reviewed by support. |
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind will result in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup, it's best to snapshot all Gitaly Cluster nodes at the same time and take a database dump of the Praefect database. |
 
 ### Snapshot backup and recovery limitations
@@ -206,6 +206,29 @@ WARNING:
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
 RPO and RTO discussed above.
 
+### Comparison to Geo
+
+Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+
+- Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
+  not aware when Gitaly Cluster is used.
+- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
+  an entire instance of GitLab. Users know when they are using Geo for
+  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#limitations-on-replicationverification),
+  including Git data.
+
+The following table outlines the major differences between Gitaly Cluster and Geo:
+
+| Tool           | Nodes    | Locations | Latency tolerance                                                                                     | Failover                                                                    | Consistency                           | Provides redundancy for |
+|:---------------|:---------|:----------|:------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------|:--------------------------------------|:------------------------|
+| Gitaly Cluster | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](praefect.md#network-latency-and-connectivity) | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](index.md#strong-consistency) | Data storage in Git     |
+| Geo            | Multiple | Multiple  | Up to one minute                                                                                      | [Manual](../geo/disaster_recovery/index.md)                                 | Eventual                              | Entire GitLab instance  |
+
+For more information, see:
+
+- Geo [use cases](../geo/index.md#use-cases).
+- Geo [architecture](../geo/index.md#architecture).
+
 ### Virtual storage
 
 Virtual storage makes it viable to have a single repository storage in GitLab to simplify repository
@@ -320,9 +343,9 @@ Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subco
   - The virtual storage and relative path.
   - The repository ID.
 
-The repository on disk also contains the project path in the Git configuration file. The configuration file can be used to determine
-the project's location even if the repository's metadata has been deleted. Follow the
-[instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
+The repository on disk also contains the project path in the Git configuration file. The configuration
+file can be used to determine the project path even if the repository's metadata has been deleted.
+Follow the [instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
 
 #### Atomicity of operations
 
@@ -330,7 +353,7 @@ Gitaly Cluster uses the PostgreSQL metadata store with the storage layout to ens
 deletion, and move operations. The disk operations can't be atomically applied across multiple storages. However, PostgreSQL guarantees
 the atomicity of the metadata operations. Gitaly Cluster models the operations in a manner that the failing operations always leave
 the metadata consistent. The disks may contain stale state even after successful operations. This is expected and the leftover state
-won't intefere with future operations but may use up disk space unnecessarily until a clean up is performed.
+won't interfere with future operations but may use up disk space unnecessarily until a clean up is performed.
 
 There is on-going work on a [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that cleans up the leftover
 repositories from the storages.
@@ -366,7 +389,7 @@ relative path of the repository in the metadata store.
 ### Moving beyond NFS
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
-November 22, 2022. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs)
+November 22, 2022. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
 for more details.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
@@ -495,24 +518,31 @@ For configuration information, see [Configure replication factor](praefect.md#co
 
 For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
 
-## Migrating to Gitaly Cluster
+### Upgrade Gitaly Cluster
 
-See the [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster) section before continuing. The basic process
-for migrating to Gitaly Cluster involves:
+To upgrade a Gitaly Cluster, follow the documentation for
+[zero downtime upgrades](../../update/zero_downtime.md#gitaly-or-gitaly-cluster).
+
+## Migrate to Gitaly Cluster
+
+WARNING:
+Some [known issues](#known-issues) exist in Gitaly Cluster. Review the following information before you continue.
+
+Before migrating to Gitaly Cluster:
+
+- Review [Before deploying Gitaly Cluster](#before-deploying-gitaly-cluster).
+- Upgrade to the latest possible version of GitLab, to take advantage of improvements and bug fixes.
+
+To migrate to Gitaly Cluster:
 
 1. Create the required storage. Refer to
-   [repository storage recommendations](faq.md#what-are-some-repository-storage-recommendations).
+   [repository storage recommendations](praefect.md#repository-storage-recommendations).
 1. Create and configure [Gitaly Cluster](praefect.md).
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories). To migrate to
    Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
    automatic migration but the moves can be scheduled with the GitLab API.
 
-WARNING:
-Some [known database inconsistency issues](#known-issues) exist in Gitaly Cluster. We recommend you
-remain on your current service for now.
-
-NOTE:
-GitLab requires a `default` repository storage to be configured.
+Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
 ## Migrate off Gitaly Cluster

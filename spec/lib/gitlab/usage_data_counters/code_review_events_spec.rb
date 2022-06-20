@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 # If this spec fails, we need to add the new code review event to the correct aggregated metric
+# NOTE: ONLY user related metrics to be added to the aggregates - otherwise add it to the exception list
 RSpec.describe 'Code review events' do
   it 'the aggregated metrics contain all the code review metrics' do
     path = Rails.root.join('config/metrics/aggregates/code_review.yml')
@@ -15,7 +16,7 @@ RSpec.describe 'Code review events' do
 
     code_review_events = Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category("code_review")
 
-    exceptions = %w[i_code_review_mr_diffs i_code_review_mr_single_file_diffs i_code_review_total_suggestions_applied i_code_review_total_suggestions_added]
+    exceptions = %w[i_code_review_mr_diffs i_code_review_mr_with_invalid_approvers i_code_review_mr_single_file_diffs i_code_review_total_suggestions_applied i_code_review_total_suggestions_added i_code_review_create_note_in_ipynb_diff i_code_review_create_note_in_ipynb_diff_mr i_code_review_create_note_in_ipynb_diff_commit]
     code_review_aggregated_events += exceptions
 
     expect(code_review_events - code_review_aggregated_events).to be_empty

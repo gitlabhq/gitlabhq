@@ -55,14 +55,8 @@ module Gitlab
               end
 
               def schema_path
-                # We can't exactly error out here pre-15.0.
-                # If the report itself doesn't specify the schema version,
-                # it will be considered invalid post-15.0 but for now we will
-                # validate against earliest supported version.
-                # https://gitlab.com/gitlab-org/gitlab/-/issues/335789#note_801479803
-                # describes the indended behavior in detail
-                # TODO: After 15.0 - pass report_type and report_data here and
-                # error out if no version.
+                # The schema version selection logic here is described in the user documentation:
+                # https://docs.gitlab.com/ee/user/application_security/#security-report-validation
                 report_declared_version = File.join(root_path, report_version, file_name)
                 return report_declared_version if File.file?(report_declared_version)
 

@@ -46,7 +46,7 @@ export default {
     <slot name="filepath-prepend"></slot>
 
     <template v-if="fileName">
-      <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="mr-2" />
+      <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
       <strong
         class="file-title-name mr-1 js-blob-header-filepath"
         data-qa-selector="file_title_content"
@@ -62,7 +62,7 @@ export default {
       css-class="btn-clipboard btn-transparent lh-100 position-static"
     />
 
-    <small class="mr-2">{{ blobSize }}</small>
+    <small class="gl-mr-3">{{ blobSize }}</small>
 
     <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>

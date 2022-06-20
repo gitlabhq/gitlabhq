@@ -17,7 +17,9 @@ module Gitlab
           original_handler = ActiveRecord::Base.connection_handler
 
           original_db_config = ActiveRecord::Base.connection_db_config
-          return yield if ActiveRecord::Base.configurations.primary?(original_db_config.name)
+          if ActiveRecord::Base.configurations.primary?(original_db_config.name)
+            return yield(ActiveRecord::Base.connection)
+          end
 
           # If the `ActiveRecord::Base` connection is different than `:main`
           # re-establish and configure `SharedModel` context accordingly
@@ -43,7 +45,7 @@ module Gitlab
           ActiveRecord::Base.establish_connection :main # rubocop:disable Database/EstablishConnection
 
           Gitlab::Database::SharedModel.using_connection(base_model.connection) do
-            yield
+            yield(base_model.connection)
           end
         ensure
           ActiveRecord::Base.connection_handler = original_handler

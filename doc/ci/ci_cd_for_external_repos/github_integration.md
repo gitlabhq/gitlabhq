@@ -62,7 +62,7 @@ To manually enable GitLab CI/CD for your repository:
       `repo` so that GitLab can access your project and update commit statuses.
 1. In GitLab, create a project:
    1. On the top menu, select **Projects > Create new project**.
-   1. Select **Run CI/CD for external repository** and **Repo by URL**.
+   1. Select **Run CI/CD for external repository** and **Repository by URL**.
    1. In the **Git repository URL** field, enter the HTTPS URL for your GitHub repository.
       If your project is private, use the personal access token you just created for authentication.
    1. Fill in all the other fields and select **Create project**.

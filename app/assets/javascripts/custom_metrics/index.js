@@ -13,7 +13,7 @@ export default () => {
       const domEl = document.querySelector(this.$options.el);
       const {
         customMetricsPath,
-        editProjectServicePath,
+        editIntegrationPath,
         validateQueryPath,
         title,
         query,
@@ -30,7 +30,7 @@ export default () => {
         props: {
           customMetricsPath,
           metricPersisted,
-          editProjectServicePath,
+          editIntegrationPath,
           validateQueryPath,
           formData: {
             title,

@@ -11,7 +11,11 @@ module Gitlab
       def parse_job(job)
         # Error information from the previous try is in the payload for
         # displaying in the Sidekiq UI, but is very confusing in logs!
-        job = job.except('error_backtrace', 'error_class', 'error_message')
+        job = job.except(
+          'error_backtrace', 'error_class', 'error_message',
+          'exception.backtrace', 'exception.class', 'exception.message', 'exception.sql'
+        )
+
         job['class'] = job.delete('wrapped') if job['wrapped'].present?
 
         job['job_size_bytes'] = Sidekiq.dump_json(job['args']).bytesize

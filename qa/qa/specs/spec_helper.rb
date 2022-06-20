@@ -15,6 +15,9 @@ QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 Dir[::File.join(__dir__, "features/shared_examples/*.rb")].sort.each { |f| require f }
 Dir[::File.join(__dir__, "features/shared_contexts/*.rb")].sort.each { |f| require f }
 
+# For JH additionally process when `jh/` exists
+require_relative('../../../jh/qa/qa/specs/spec_helper') if GitlabEdition.jh?
+
 RSpec.configure do |config|
   config.include QA::Support::Matchers::EventuallyMatcher
   config.include QA::Support::Matchers::HaveMatcher
@@ -35,6 +38,8 @@ RSpec.configure do |config|
     QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
     QA::Runtime::Example.current = example
 
+    visit(QA::Runtime::Scenario.gitlab_address) if QA::Runtime::Env.remote_mobile_device_name
+
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
     Thread.current[:browser_ui_fabrication] = 0
@@ -43,6 +48,15 @@ RSpec.configure do |config|
   config.after do
     # If a .netrc file was created during the test, delete it so that subsequent tests don't try to use the same logins
     QA::Git::Repository.new.delete_netrc
+  end
+
+  config.prepend_after do |example|
+    if example.exception
+      page = Capybara.page
+
+      QA::Support::PageErrorChecker.log_request_errors(page)
+      QA::Support::PageErrorChecker.check_page_for_error_code(page)
+    end
   end
 
   # Add fabrication time to spec metadata

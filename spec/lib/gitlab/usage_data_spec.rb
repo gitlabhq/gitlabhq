@@ -723,7 +723,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
-      expect(counts_monthly[:promoted_issues]).to eq(Gitlab::UsageData::DEPRECATED_VALUE)
     end
   end
 
@@ -755,7 +754,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     it { is_expected.to include(:kubernetes_agent_gitops_sync) }
     it { is_expected.to include(:kubernetes_agent_k8s_api_proxy_request) }
-    it { is_expected.to include(:static_site_editor_views) }
     it { is_expected.to include(:package_events_i_package_pull_package) }
     it { is_expected.to include(:package_events_i_package_delete_package_by_user) }
     it { is_expected.to include(:package_events_i_package_conan_push_package) }
@@ -1188,12 +1186,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       counter.track_web_ide_edit_action(author: user3, time: time - 3.days)
       counter.track_snippet_editor_edit_action(author: user3)
-
-      counter.track_sse_edit_action(author: user1)
-      counter.track_sse_edit_action(author: user1)
-      counter.track_sse_edit_action(author: user2)
-      counter.track_sse_edit_action(author: user3)
-      counter.track_sse_edit_action(author: user2, time: time - 3.days)
     end
 
     it 'returns the distinct count of user actions within the specified time period' do
@@ -1206,105 +1198,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           action_monthly_active_users_web_ide_edit: 2,
           action_monthly_active_users_sfe_edit: 2,
           action_monthly_active_users_snippet_editor_edit: 2,
-          action_monthly_active_users_ide_edit: 3,
-          action_monthly_active_users_sse_edit: 3
+          action_monthly_active_users_ide_edit: 3
         }
       )
-    end
-  end
-
-  describe '.analytics_unique_visits_data' do
-    subject { described_class.analytics_unique_visits_data }
-
-    it 'returns the number of unique visits to pages with analytics features' do
-      ::Gitlab::Analytics::UniqueVisits.analytics_events.each do |target|
-        expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: target).and_return(123)
-      end
-
-      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics).and_return(543)
-      expect_any_instance_of(::Gitlab::Analytics::UniqueVisits).to receive(:unique_visits_for).with(targets: :analytics, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
-
-      expect(subject).to eq({
-        analytics_unique_visits: {
-          'g_analytics_contribution' => 123,
-          'g_analytics_insights' => 123,
-          'g_analytics_issues' => 123,
-          'g_analytics_productivity' => 123,
-          'g_analytics_valuestream' => 123,
-          'p_analytics_pipelines' => 123,
-          'p_analytics_code_reviews' => 123,
-          'p_analytics_valuestream' => 123,
-          'p_analytics_insights' => 123,
-          'p_analytics_issues' => 123,
-          'p_analytics_repo' => 123,
-          'i_analytics_cohorts' => 123,
-          'i_analytics_dev_ops_score' => 123,
-          'i_analytics_instance_statistics' => 123,
-          'p_analytics_ci_cd_deployment_frequency' => 123,
-          'p_analytics_ci_cd_lead_time' => 123,
-          'p_analytics_ci_cd_pipelines' => 123,
-          'p_analytics_merge_request' => 123,
-          'i_analytics_dev_ops_adoption' => 123,
-          'users_viewing_analytics_group_devops_adoption' => 123,
-          'analytics_unique_visits_for_any_target' => 543,
-          'analytics_unique_visits_for_any_target_monthly' => 987
-        }
-      })
-    end
-  end
-
-  describe '.compliance_unique_visits_data' do
-    subject { described_class.compliance_unique_visits_data }
-
-    before do
-      allow_next_instance_of(::Gitlab::Analytics::UniqueVisits) do |instance|
-        ::Gitlab::Analytics::UniqueVisits.compliance_events.each do |target|
-          allow(instance).to receive(:unique_visits_for).with(targets: target).and_return(123)
-        end
-
-        allow(instance).to receive(:unique_visits_for).with(targets: :compliance).and_return(543)
-
-        allow(instance).to receive(:unique_visits_for).with(targets: :compliance, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
-      end
-    end
-
-    it 'returns the number of unique visits to pages with compliance features' do
-      expect(subject).to eq({
-        compliance_unique_visits: {
-          'g_compliance_dashboard' => 123,
-          'g_compliance_audit_events' => 123,
-          'i_compliance_credential_inventory' => 123,
-          'i_compliance_audit_events' => 123,
-          'a_compliance_audit_events_api' => 123,
-          'compliance_unique_visits_for_any_target' => 543,
-          'compliance_unique_visits_for_any_target_monthly' => 987
-        }
-      })
-    end
-  end
-
-  describe '.search_unique_visits_data' do
-    subject { described_class.search_unique_visits_data }
-
-    before do
-      events = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('search')
-      events.each do |event|
-        allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: event, start_date: 7.days.ago.to_date, end_date: Date.current).and_return(123)
-      end
-      allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: events, start_date: 7.days.ago.to_date, end_date: Date.current).and_return(543)
-      allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).with(event_names: events, start_date: 4.weeks.ago.to_date, end_date: Date.current).and_return(987)
-    end
-
-    it 'returns the number of unique visits to pages with search features' do
-      expect(subject).to eq({
-        search_unique_visits: {
-          'i_search_total' => 123,
-          'i_search_advanced' => 123,
-          'i_search_paid' => 123,
-          'search_unique_visits_for_any_target_weekly' => 543,
-          'search_unique_visits_for_any_target_monthly' => 987
-        }
-      })
     end
   end
 
@@ -1494,6 +1390,22 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           .to receive(:new).with(2, kind_of(Float))
 
         described_class.with_duration { 1 + 1 }
+      end
+    end
+  end
+
+  context 'on Gitlab.com' do
+    before do
+      allow(Gitlab).to receive(:com?).and_return(true)
+    end
+
+    describe '.system_usage_data' do
+      subject { described_class.system_usage_data }
+
+      it 'returns fallback value for disabled metrics' do
+        expect(subject[:counts][:ci_internal_pipelines]).to eq(Gitlab::Utils::UsageData::FALLBACK)
+        expect(subject[:counts][:issues_created_gitlab_alerts]).to eq(Gitlab::Utils::UsageData::FALLBACK)
+        expect(subject[:counts][:issues_created_manually_from_alerts]).to eq(Gitlab::Utils::UsageData::FALLBACK)
       end
     end
   end

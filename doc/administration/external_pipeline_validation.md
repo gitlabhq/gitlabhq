@@ -54,7 +54,9 @@ required number of seconds.
       "required": [
         "id",
         "path",
-        "created_at"
+        "created_at",
+        "shared_runners_enabled",
+        "group_runners_enabled"
       ],
       "properties": {
         "id": { "type": "integer" },

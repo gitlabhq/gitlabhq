@@ -47,7 +47,6 @@ RSpec.describe 'Database schema' do
     events: %w[target_id],
     forked_project_links: %w[forked_from_project_id],
     geo_event_log: %w[hashed_storage_attachments_event_id],
-    geo_lfs_object_deleted_events: %w[lfs_object_id],
     geo_node_statuses: %w[last_event_id cursor_last_event_id],
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],
@@ -94,7 +93,10 @@ RSpec.describe 'Database schema' do
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
     security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
-    vulnerability_reads: %w[cluster_agent_id]
+    vulnerability_reads: %w[cluster_agent_id],
+    # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
+    # Fixes performance issues with the deletion of web-hooks with many log entries
+    web_hook_logs: %w[web_hook_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
@@ -256,14 +258,6 @@ RSpec.describe 'Database schema' do
   end
 
   context 'primary keys' do
-    let(:exceptions) do
-      %i(
-        elasticsearch_indexed_namespaces
-        elasticsearch_indexed_projects
-        merge_request_context_commit_diff_files
-      )
-    end
-
     it 'expects every table to have a primary key defined' do
       connection = ActiveRecord::Base.connection
 
@@ -271,7 +265,7 @@ RSpec.describe 'Database schema' do
         !connection.primary_key(table).present?
       end.map(&:to_sym)
 
-      expect(problematic_tables - exceptions).to be_empty
+      expect(problematic_tables).to be_empty
     end
   end
 

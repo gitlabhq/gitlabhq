@@ -12,7 +12,7 @@ Given the view:
 
 ```html
 <form id="my-form">
-    <label for="first-name">First name</label>    
+    <label for="first-name">First name</label>
     <input type="text" name="first-name" data-qa-selector="first_name" />
 
     <label for="last-name">Last name</label>
@@ -26,7 +26,7 @@ Given the view:
 
     <label for="password">Password</label>
     <input type="password" name="password" data-qa-selector="password" />
-    
+
     <input type="submit" value="Continue" data-qa-selector="continue"/>
 </form>
 ```

@@ -62,7 +62,7 @@ You can launch Gitpod directly from GitLab in one of these ways:
 
 - *From your project's page:*
   1. Go to your project, then go to the page you want to edit.
-  1. Select the caret **(angle-down)** next to **Web IDE**, and select **Gitpod**
+  1. Select the caret (**{chevron-lg-down}**) next to **Web IDE**, and select **Gitpod**
      from the list:
 
      ![Gitpod Button on Project Page](img/gitpod_button_project_page_v13_4.png)

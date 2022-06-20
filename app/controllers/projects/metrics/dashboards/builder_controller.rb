@@ -7,6 +7,7 @@ module Projects
         before_action :authorize_metrics_dashboard!
 
         feature_category :metrics
+        urgency :low
 
         def panel_preview
           respond_to do |format|

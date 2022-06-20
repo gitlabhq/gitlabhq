@@ -13,7 +13,6 @@ class Integration < ApplicationRecord
   include IgnorableColumns
   extend ::Gitlab::Utils::Override
 
-  ignore_column :type, remove_with: '15.0', remove_after: '2022-04-22'
   ignore_column :properties, remove_with: '15.1', remove_after: '2022-05-22'
 
   UnknownType = Class.new(StandardError)
@@ -47,7 +46,9 @@ class Integration < ApplicationRecord
     Integrations::BaseSlashCommands
   ].freeze
 
+  SECTION_TYPE_CONFIGURATION = 'configuration'
   SECTION_TYPE_CONNECTION = 'connection'
+  SECTION_TYPE_TRIGGER = 'trigger'
 
   attr_encrypted :properties,
                  mode: :per_attribute_iv,
@@ -143,7 +144,7 @@ class Integration < ApplicationRecord
 
   # :nocov: Tested on subclasses.
   def self.field(name, storage: field_storage, **attrs)
-    fields << ::Integrations::Field.new(name: name, **attrs)
+    fields << ::Integrations::Field.new(name: name, integration_class: self, **attrs)
 
     case storage
     when :properties
@@ -465,13 +466,14 @@ class Integration < ApplicationRecord
     super.except('properties')
   end
 
-  # return a hash of columns => values suitable for passing to insert_all
-  def to_integration_hash
+  # Returns a hash of attributes (columns => values) used for inserting into the database.
+  def to_database_hash
     column = self.class.attribute_aliases.fetch('type', 'type')
 
-    as_json(except: %w[id instance project_id group_id])
-      .merge(column => type)
-      .merge(reencrypt_properties)
+    as_json(
+      except: %w[id instance project_id group_id created_at updated_at]
+    ).merge(column => type)
+     .merge(reencrypt_properties)
   end
 
   def reencrypt_properties
@@ -482,10 +484,6 @@ class Integration < ApplicationRecord
     end
 
     { 'encrypted_properties' => ep, 'encrypted_properties_iv' => iv }
-  end
-
-  def to_data_fields_hash
-    data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id', 'integration_id')
   end
 
   def event_channel_names
@@ -501,10 +499,7 @@ class Integration < ApplicationRecord
   end
 
   def api_field_names
-    fields
-      .reject { _1[:type] == 'password' }
-      .pluck(:name)
-      .grep_v(/password|token|key/)
+    fields.reject { _1[:type] == 'password' }.pluck(:name)
   end
 
   def global_fields
@@ -579,7 +574,11 @@ class Integration < ApplicationRecord
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    ProjectServiceWorker.perform_async(id, data)
+    if Feature.enabled?(:rename_integrations_workers)
+      Integrations::ExecuteWorker.perform_async(id, data)
+    else
+      ProjectServiceWorker.perform_async(id, data)
+    end
   end
 
   # override if needed

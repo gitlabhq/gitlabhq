@@ -2,12 +2,6 @@
 
 module Diffs
   class OverflowWarningComponent < BaseComponent
-    # Skipping coverage because of https://gitlab.com/gitlab-org/gitlab/-/issues/357381
-    #
-    # This is fully tested by the output in the view part of this component,
-    # but undercoverage doesn't understand the relationship between the two parts.
-    #
-    # :nocov:
     def initialize(diffs:, diff_files:, project:, commit: nil, merge_request: nil)
       @diffs = diffs
       @diff_files = diff_files
@@ -68,6 +62,5 @@ module Diffs
     def button_classes
       "btn gl-alert-action btn-default gl-button btn-default-secondary"
     end
-    # :nocov:
   end
 end

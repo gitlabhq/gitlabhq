@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Gitlab::SubscriptionPortal do
   using RSpec::Parameterized::TableSyntax
+  include SubscriptionPortalHelper
 
   let(:env_value) { nil }
 
@@ -13,9 +14,9 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
   describe '.default_subscriptions_url' do
     where(:test, :development, :result) do
-      false | false | 'https://customers.gitlab.com'
-      false | true  | 'https://customers.staging.gitlab.com'
-      true  | false | 'https://customers.staging.gitlab.com'
+      false | false | prod_customers_url
+      false | true | staging_customers_url
+      true | false | staging_customers_url
     end
 
     before do
@@ -34,7 +35,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     subject { described_class.subscriptions_url }
 
     context 'when CUSTOMER_PORTAL_URL ENV is unset' do
-      it { is_expected.to eq('https://customers.staging.gitlab.com') }
+      it { is_expected.to eq(staging_customers_url) }
     end
 
     context 'when CUSTOMER_PORTAL_URL ENV is set' do
@@ -54,17 +55,17 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
   context 'url methods' do
     where(:method_name, :result) do
-      :default_subscriptions_url         | 'https://customers.staging.gitlab.com'
-      :payment_form_url                  | 'https://customers.staging.gitlab.com/payment_forms/cc_validation'
-      :payment_validation_form_id        | 'payment_method_validation'
-      :registration_validation_form_url  | 'https://customers.staging.gitlab.com/payment_forms/cc_registration_validation'
-      :subscriptions_graphql_url         | 'https://customers.staging.gitlab.com/graphql'
-      :subscriptions_more_minutes_url    | 'https://customers.staging.gitlab.com/buy_pipeline_minutes'
-      :subscriptions_more_storage_url    | 'https://customers.staging.gitlab.com/buy_storage'
-      :subscriptions_manage_url          | 'https://customers.staging.gitlab.com/subscriptions'
-      :subscriptions_instance_review_url | 'https://customers.staging.gitlab.com/instance_review'
-      :subscriptions_gitlab_plans_url    | 'https://customers.staging.gitlab.com/gitlab_plans'
-      :edit_account_url                  | 'https://customers.staging.gitlab.com/customers/edit'
+      :default_subscriptions_url | staging_customers_url
+      :payment_form_url | "#{staging_customers_url}/payment_forms/cc_validation"
+      :payment_validation_form_id | 'payment_method_validation'
+      :registration_validation_form_url | "#{staging_customers_url}/payment_forms/cc_registration_validation"
+      :subscriptions_graphql_url | "#{staging_customers_url}/graphql"
+      :subscriptions_more_minutes_url | "#{staging_customers_url}/buy_pipeline_minutes"
+      :subscriptions_more_storage_url | "#{staging_customers_url}/buy_storage"
+      :subscriptions_manage_url | "#{staging_customers_url}/subscriptions"
+      :subscriptions_instance_review_url | "#{staging_customers_url}/instance_review"
+      :subscriptions_gitlab_plans_url | "#{staging_customers_url}/gitlab_plans"
+      :edit_account_url | "#{staging_customers_url}/customers/edit"
     end
 
     with_them do
@@ -79,7 +80,10 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
     let(:group_id) { 153 }
 
-    it { is_expected.to eq("https://customers.staging.gitlab.com/gitlab/namespaces/#{group_id}/extra_seats") }
+    it do
+      url = "#{staging_customers_url}/gitlab/namespaces/#{group_id}/extra_seats"
+      is_expected.to eq(url)
+    end
   end
 
   describe '.upgrade_subscription_url' do
@@ -88,7 +92,10 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     let(:group_id) { 153 }
     let(:plan_id) { 5 }
 
-    it { is_expected.to eq("https://customers.staging.gitlab.com/gitlab/namespaces/#{group_id}/upgrade/#{plan_id}") }
+    it do
+      url = "#{staging_customers_url}/gitlab/namespaces/#{group_id}/upgrade/#{plan_id}"
+      is_expected.to eq(url)
+    end
   end
 
   describe '.renew_subscription_url' do
@@ -96,6 +103,9 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
     let(:group_id) { 153 }
 
-    it { is_expected.to eq("https://customers.staging.gitlab.com/gitlab/namespaces/#{group_id}/renew") }
+    it do
+      url = "#{staging_customers_url}/gitlab/namespaces/#{group_id}/renew"
+      is_expected.to eq(url)
+    end
   end
 end

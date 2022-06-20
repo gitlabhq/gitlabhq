@@ -7,6 +7,8 @@ module API
         class Image < Grape::Entity
           expose :name, :entrypoint
           expose :ports, using: Entities::Ci::JobRequest::Port
+
+          expose :pull_policy, if: ->(_) { ::Feature.enabled?(:ci_docker_image_pull_policy) }
         end
       end
     end

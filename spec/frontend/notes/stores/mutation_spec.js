@@ -883,4 +883,16 @@ describe('Notes Store mutations', () => {
       expect(state.discussions[0].position).toEqual(position);
     });
   });
+
+  describe('SET_DONE_FETCHING_BATCH_DISCUSSIONS', () => {
+    it('should set doneFetchingBatchDiscussions', () => {
+      const state = {
+        doneFetchingBatchDiscussions: false,
+      };
+
+      mutations.SET_DONE_FETCHING_BATCH_DISCUSSIONS(state, true);
+
+      expect(state.doneFetchingBatchDiscussions).toEqual(true);
+    });
+  });
 });

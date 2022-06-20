@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -239,18 +239,19 @@ in the `connection` setting.
 
 The connection settings match those provided by [fog-aws](https://github.com/fog/fog-aws):
 
-| Setting                         | Description                        | Default |
-|---------------------------------|------------------------------------|---------|
-| `provider`                      | Always `AWS` for compatible hosts. | `AWS` |
-| `aws_access_key_id`             | AWS credentials, or compatible.    | |
-| `aws_secret_access_key`         | AWS credentials, or compatible.    | |
-| `aws_signature_version`         | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
-| `enable_signature_v4_streaming` | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
-| `region`                        | AWS region.                        | |
-| `host`                          | S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
-| `endpoint`                      | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
-| `path_style`                    | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false`. |
-| `use_iam_profile`               | Set to `true` to use IAM profile instead of access keys. | `false` |
+| Setting                                     | Description                        | Default |
+|---------------------------------------------|------------------------------------|---------|
+| `provider`                                  | Always `AWS` for compatible hosts. | `AWS` |
+| `aws_access_key_id`                         | AWS credentials, or compatible.    | |
+| `aws_secret_access_key`                     | AWS credentials, or compatible.    | |
+| `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
+| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
+| `region`                                    | AWS region.                        | |
+| `host`                                      | S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
+| `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
+| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false`. |
+| `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
+| `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) when using temporary credentials in IAM. | `15` |
 
 #### Oracle Cloud S3 connection settings
 
@@ -540,6 +541,10 @@ supported by consolidated configuration form, refer to the following guides:
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
 | [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
 
+WARNING:
+The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated configuration is not supported. 
+You may start getting [ETag mismatch errors](#etag-mismatch) if you use it.
+
 ### Other alternatives to file system storage
 
 If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,
@@ -765,7 +770,7 @@ Prerequisites:
 
 1. [Install](https://rclone.org/downloads/) Rclone.
 1. Configure Rclone by running the following:
-   
+
    ```shell
    rclone config
    ```
@@ -778,7 +783,7 @@ Prerequisites:
    rclone ls old:uploads | head
    ```
 
-   This should print a partial list of the objects currently stored in your `uploads` bucket. If you get an error, or if 
+   This should print a partial list of the objects currently stored in your `uploads` bucket. If you get an error, or if
    the list is empty, go back and update your Rclone configuration using `rclone config`.
 
 1. Perform an initial copy. You do not need to take your GitLab server offline for this step.
@@ -788,7 +793,7 @@ Prerequisites:
    ```
 
 1. After the first sync completes, use the web UI or command-line interface of your new object storage provider to
-   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone 
+   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone
    sync`, check your Rclone configuration and try again.
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:

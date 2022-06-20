@@ -36,12 +36,12 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="pipeline-mini-graph" class="gl-display-inline gl-vertical-align-middle gl-my-1">
+  <div data-testid="pipeline-mini-graph" class="gl-display-inline gl-vertical-align-middle">
     <div
       v-for="stage in stages"
       :key="stage.name"
       :class="stagesClass"
-      class="stage-container dropdown"
+      class="dropdown gl-display-inline-block gl-mr-2 gl-my-2 gl-vertical-align-middle stage-container"
     >
       <pipeline-stage
         :stage="stage"

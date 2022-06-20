@@ -89,6 +89,16 @@ include:
   - template: DAST.latest.gitlab-ci.yml
 ```
 
+## Getting error `shell not found` when using DAST CI/CD template
+
+When including the DAST CI/CD template as described in the documentation, the job may fail, with an error like the following recorded in the job logs:
+
+```shell
+shell not found
+```
+
+To avoid this error, make sure you are using the latest stable version of Docker. More information is available in [issue 358847](https://gitlab.com/gitlab-org/gitlab/-/issues/358847).
+
 ## Lack of IPv6 support
 
 Due to the underlying [ZAProxy engine not supporting IPv6](https://github.com/zaproxy/zaproxy/issues/3705), DAST is unable to scan or crawl IPv6-based applications.

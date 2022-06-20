@@ -365,12 +365,14 @@ RSpec.describe IssuesHelper do
       expected = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
+        can_create_projects: 'true',
         empty_state_svg_path: '#',
         full_path: group.full_path,
         has_any_issues: false.to_s,
         has_any_projects: true.to_s,
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
+        new_project_path: new_project_path(namespace_id: group.id),
         rss_path: '#',
         sign_in_path: new_user_session_path
       }
@@ -446,6 +448,43 @@ RSpec.describe IssuesHelper do
         end
 
         it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '#status_box_class' do
+    context 'when object is expired' do
+      it 'returns orange background' do
+        milestone = build(:milestone, due_date: Date.today.prev_month)
+        expect(helper.status_box_class(milestone)).to eq('gl-bg-orange-500')
+      end
+    end
+
+    context 'when object is merged' do
+      it 'returns blue background' do
+        merge_request = build(:merge_request, :merged)
+        expect(helper.status_box_class(merge_request)).to eq('badge-info')
+      end
+    end
+
+    context 'when object is closed' do
+      it 'returns red background' do
+        merge_request = build(:merge_request, :closed)
+        expect(helper.status_box_class(merge_request)).to eq('badge-danger')
+      end
+    end
+
+    context 'when object is upcoming' do
+      it 'returns gray background' do
+        milestone = build(:milestone, start_date: Date.today.next_month)
+        expect(helper.status_box_class(milestone)).to eq('gl-bg-gray-500')
+      end
+    end
+
+    context 'when object is opened' do
+      it 'returns green background' do
+        merge_request = build(:merge_request, :opened)
+        expect(helper.status_box_class(merge_request)).to eq('badge-success')
       end
     end
   end

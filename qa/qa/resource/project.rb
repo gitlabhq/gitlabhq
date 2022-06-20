@@ -7,13 +7,14 @@ module QA
       include Members
       include Visibility
 
-      attr_accessor :repository_storage, # requires admin access
-                    :initialize_with_readme,
+      attr_accessor :initialize_with_readme,
                     :auto_devops_enabled,
                     :github_personal_access_token,
                     :github_repository_path,
                     :gitlab_repository_path,
                     :personal_namespace
+
+      attr_reader :repository_storage
 
       attributes :id,
                  :name,
@@ -68,6 +69,15 @@ module QA
 
       def name=(raw_name)
         @name = @add_name_uuid ? "#{raw_name}-#{SecureRandom.hex(8)}" : raw_name
+      end
+
+      # Sets the project's repository storage
+      # This feature requires admin access so be sure to fabricate the project as an admin user, and add the metadata
+      # `:requires_admin` to the test it's used in.
+      def repository_storage=(name)
+        raise ArgumentError, "Please provide a valid repository storage name" if name.to_s.empty?
+
+        @repository_storage = name
       end
 
       def fabricate!

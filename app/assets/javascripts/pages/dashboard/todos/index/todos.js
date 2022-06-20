@@ -31,6 +31,7 @@ export default class Todos {
     $('.js-done-todo, .js-undo-todo, .js-add-todo').off('click', this.updateRowStateClickedWrapper);
     $('.js-todos-mark-all', '.js-todos-undo-all').off('click', this.updateallStateClickedWrapper);
     $('.todo').off('click', this.goToTodoUrl);
+    $('.todo').off('auxclick', this.goToTodoUrl);
   }
 
   bindEvents() {
@@ -40,6 +41,7 @@ export default class Todos {
     $('.js-done-todo, .js-undo-todo, .js-add-todo').on('click', this.updateRowStateClickedWrapper);
     $('.js-todos-mark-all, .js-todos-undo-all').on('click', this.updateAllStateClickedWrapper);
     $('.todo').on('click', this.goToTodoUrl);
+    $('.todo').on('auxclick', this.goToTodoUrl);
   }
 
   initFilters() {
@@ -198,11 +200,13 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
+    const isPrimaryClick = e.button === 0;
+
     if (isMetaClick(e)) {
       const windowTarget = '_blank';
 
       window.open(todoLink, windowTarget);
-    } else {
+    } else if (isPrimaryClick) {
       visitUrl(todoLink);
     }
   }

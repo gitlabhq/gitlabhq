@@ -46,20 +46,18 @@ RSpec.describe ContainerRegistry::Event do
       handle!
     end
 
+    it 'clears the cache for the namespace container repositories size' do
+      expect(Rails.cache).to receive(:delete).with(group.container_repositories_size_cache_key)
+
+      handle!
+    end
+
     shared_examples 'event without project statistics update' do
       it 'does not queue a project statistics update' do
         expect(ProjectCacheWorker).not_to receive(:perform_async)
 
         handle!
       end
-    end
-
-    context 'with :container_registry_project_statistics feature flag disabled' do
-      before do
-        stub_feature_flags(container_registry_project_statistics: false)
-      end
-
-      it_behaves_like 'event without project statistics update'
     end
 
     context 'with no target tag' do

@@ -176,6 +176,36 @@ If using [Group Sync](#group-sync), customize the name of the group claim to mat
 
 See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#azure-active-directory) for an example configuration.
 
+### Google Workspace setup notes
+
+Follow the Google Workspace documentation on
+[setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en)
+with the notes below for consideration.
+
+| GitLab setting                       | Google Workspace field |
+|:-------------------------------------|:-----------------------|
+| Identifier                           | Entity ID              |
+| Assertion consumer service URL       | ACS URL                |
+| GitLab single sign-on URL            | Start URL              |
+| Identity provider single sign-on URL | SSO URL                |
+
+You must download the certificate to get the SHA1 certificate fingerprint.
+
+The recommended attributes and claims settings are:
+
+- **Primary email** set to `email`.
+- **First name** set to `first_name`.
+- **Last name** set to `last_name`.
+
+For NameID, the following settings are recommended:
+
+- **Name ID format** is set to `EMAIL`.
+- **NameID** set to `Basic Information > Primary email`.
+
+When selecting **Verify SAML Configuration** on the GitLab SAML SSO page, disregard the warning recommending setting the NameID format to "persistent".
+
+See the [troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md#google-workspace) for an example configuration.
+
 ### Okta setup notes
 
 Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) with the notes below for consideration.
@@ -342,7 +372,7 @@ To rescind a user's access to the group when only SAML SSO is configured, either
 - Remove (in order) the user from:
   1. The user data store on the identity provider or the list of users on the specific app.
   1. The GitLab.com group.
-- Use Group Sync at the top-level of your group to [automatically remove the user](#automatic-member-removal).
+- Use Group Sync at the top-level of your group to [automatically remove the user](group_sync.md#automatic-member-removal).
 
 To rescind a user's access to the group when also using SCIM, refer to [Blocking access](scim_setup.md#blocking-access).
 
@@ -372,149 +402,7 @@ For example, to unlink the `MyOrg` account:
 
 ## Group Sync
 
-WARNING:
-Changing Group Sync configuration can remove users from the relevant GitLab group.
-Removal happens if there is any mismatch between the group names and the list of `groups` in the SAML response.
-If changes must be made, ensure either the SAML response includes the `groups` attribute
-and the `AttributeValue` value matches the **SAML Group Name** in GitLab,
-or that all groups are removed from GitLab to disable Group Sync.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
-
-When the SAML response includes a user and their group memberships from the SAML identity provider,
-GitLab uses that information to automatically manage that user's GitLab group memberships.
-
-Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups` like the following:
-
-```xml
-<saml:AttributeStatement>
-  <saml:Attribute Name="Groups">
-    <saml:AttributeValue xsi:type="xs:string">Developers</saml:AttributeValue>
-    <saml:AttributeValue xsi:type="xs:string">Product Managers</saml:AttributeValue>
-  </saml:Attribute>
-</saml:AttributeStatement>
-```
-
-Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
-are not accepted as a source of groups.
-See the [SAML troubleshooting page](../../../administration/troubleshooting/group_saml_scim.md)
-for examples on configuring the required attribute name in the SAML identity provider's settings.
-
-NOTE:
-The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.
-To inspect the SAML response, you can use one of these [SAML debugging tools](#saml-debugging-tools).
-
-When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
-see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
-a SAML identity provider group name to a GitLab Access Level. This can be done for the parent group or the subgroups.
-
-To link the SAML groups from the `saml:AttributeStatement` example above:
-
-1. In the **SAML Group Name** box, enter the value of `saml:AttributeValue`.
-1. Choose the desired **Access Level**.
-1. **Save** the group link.
-1. Repeat to add additional group links if desired.
-
-![SAML Group Links](img/saml_group_links_v13_9.png)
-
-If a user is a member of multiple SAML groups mapped to the same GitLab group,
-the user gets the highest access level from the groups. For example, if one group
-is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
-access.
-
-Users granted:
-
-- A higher role with Group Sync are displayed as having
-  [direct membership](../../project/members/#display-direct-members) of the group.
-- A lower or the same role with Group Sync are displayed as having
-  [inherited membership](../../project/members/#display-inherited-members) of the group.
-
-### Automatic member removal
-
-After a group sync, users who are not members of a mapped SAML group are removed from
-the GitLab group. Even if SSO authentication is successful, if an existing user is not a member of any of the configured groups:
-
-- They get an "unauthorized" message if they try to view the group.
-- All of their permissions to subgroups and projects are also removed.
-
-For example, in the following diagram:
-
-- Alex Garcia signs into GitLab and is removed from GitLab Group C because they don't belong
-  to SAML Group C.
-- Sidney Jones belongs to SAML Group C, but is not added to GitLab Group C because they have
-  not yet signed in.
-
-```mermaid
-graph TB
-   subgraph SAML users
-      SAMLUserA[Sidney Jones]
-      SAMLUserB[Zhang Wei]
-      SAMLUserC[Alex Garcia]
-      SAMLUserD[Charlie Smith]
-   end
-
-   subgraph SAML groups
-      SAMLGroupA["Group A"] --> SAMLGroupB["Group B"]
-      SAMLGroupA --> SAMLGroupC["Group C"]
-      SAMLGroupA --> SAMLGroupD["Group D"]
-   end
-
-   SAMLGroupB --> |Member|SAMLUserA
-   SAMLGroupB --> |Member|SAMLUserB
-
-   SAMLGroupC --> |Member|SAMLUserA
-   SAMLGroupC --> |Member|SAMLUserB
-
-   SAMLGroupD --> |Member|SAMLUserD
-   SAMLGroupD --> |Member|SAMLUserC
-```
-
-```mermaid
-graph TB
-    subgraph GitLab users
-      GitLabUserA[Sidney Jones]
-      GitLabUserB[Zhang Wei]
-      GitLabUserC[Alex Garcia]
-      GitLabUserD[Charlie Smith]
-    end
-
-   subgraph GitLab groups
-      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
-   end
-
-   GitLabGroupB --> |Member|GitLabUserA
-
-   GitLabGroupC --> |Member|GitLabUserB
-   GitLabGroupC --> |Member|GitLabUserC
-
-   GitLabGroupD --> |Member|GitLabUserC
-   GitLabGroupD --> |Member|GitLabUserD
-```
-
-```mermaid
-graph TB
-   subgraph GitLab users
-      GitLabUserA[Sidney Jones]
-      GitLabUserB[Zhang Wei]
-      GitLabUserC[Alex Garcia]
-      GitLabUserD[Charlie Smith]
-   end
-
-   subgraph GitLab groups after Alex Garcia signs in
-      GitLabGroupA[Group A]
-      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
-   end
-
-   GitLabGroupB --> |Member|GitLabUserA
-   GitLabGroupC --> |Member|GitLabUserB
-   GitLabGroupD --> |Member|GitLabUserC
-   GitLabGroupD --> |Member|GitLabUserD
-```
+For information on automatically managing GitLab group membership, see [SAML Group Sync](group_sync.md).
 
 ## Passwords for users created via SAML SSO for Groups
 
@@ -528,8 +416,8 @@ This section contains possible solutions for problems you might encounter.
 
 SAML responses are base64 encoded, so we recommend the following browser plugins to decode them on the fly:
 
-- [SAML tracer for Firefox](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/)
-- [Chrome SAML Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace?hl=en)
+- [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
+- [SAML Message Decoder](https://chrome.google.com/webstore/detail/saml-message-decoder/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
 Specific attention should be paid to:
 
@@ -548,7 +436,7 @@ To generate a SAML Response:
    - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
 1. Open a new browser tab.
 1. Open the SAML tracer console:
-   - Chrome: Right click on the page, select **Inspect**, then click on the SAML tab in the opened developer console.
+   - Chrome: Right-click on the page, select **Inspect**, then select the **SAML** tab in the opened developer console.
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
 1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
 1. Select **Authorize** or attempt to log in. A SAML response is displayed in the tracer console that resembles this
@@ -568,6 +456,10 @@ Similarly, group members of a role with the appropriate permissions can make use
 This can then be compared to the [NameID](#nameid) being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match in order to identify users.
 
 ### Users receive a 404
+
+Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
+If all users are receiving a `404` when attempting to log in using SAML, confirm
+[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#notes-on-configuring-your-identity-provider).

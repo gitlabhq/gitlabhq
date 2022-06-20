@@ -31,6 +31,7 @@ RSpec.describe Namespace do
     it { is_expected.to have_many :pending_builds }
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
+    it { is_expected.to have_one :cluster_enabled_grant }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
@@ -374,6 +375,14 @@ RSpec.describe Namespace do
 
     context 'linear' do
       it_behaves_like 'namespace traversal scopes'
+
+      context 'without inner join ancestors query' do
+        before do
+          stub_feature_flags(use_traversal_ids_for_ancestor_scopes_with_inner_join: false)
+        end
+
+        it_behaves_like 'namespace traversal scopes'
+      end
     end
 
     shared_examples 'makes recursive queries' do
@@ -571,6 +580,107 @@ RSpec.describe Namespace do
       stub_container_registry_tags(repository: :any, tags: nil)
 
       expect(namespace.first_project_with_container_registry_tags).to be_nil
+    end
+  end
+
+  describe '#container_repositories_size_cache_key' do
+    it 'returns the correct cache key' do
+      expect(namespace.container_repositories_size_cache_key).to eq "namespaces:#{namespace.id}:container_repositories_size"
+    end
+  end
+
+  describe '#container_repositories_size', :clean_gitlab_redis_cache do
+    let(:project_namespace) { create(:namespace) }
+
+    subject { project_namespace.container_repositories_size }
+
+    context 'on gitlab.com' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:gitlab_api_supported, :no_container_repositories, :all_migrated, :returned_size, :expected_result) do
+        nil   | nil   | nil   | nil | nil
+        false | nil   | nil   | nil | nil
+        true  | true  | nil   | nil | 0
+        true  | false | false | nil | nil
+        true  | false | true  | 555 | 555
+        true  | false | true  | nil | nil
+      end
+
+      with_them do
+        before do
+          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
+          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
+          allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(no_container_repositories)
+          allow(project_namespace).to receive_message_chain(:all_container_repositories, :all_migrated?).and_return(all_migrated)
+          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(returned_size)
+        end
+
+        it { is_expected.to eq(expected_result) }
+
+        it 'caches the result when all migrated' do
+          if all_migrated
+            expect(Rails.cache)
+              .to receive(:fetch)
+              .with(project_namespace.container_repositories_size_cache_key, expires_in: 7.days)
+
+            subject
+          end
+        end
+      end
+    end
+
+    context 'not on gitlab.com' do
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'for a sub-group' do
+      let(:parent_namespace) { create(:group) }
+      let(:project_namespace) { create(:group, parent: parent_namespace) }
+
+      it { is_expected.to eq(nil) }
+    end
+  end
+
+  describe '#all_container_repositories' do
+    context 'with personal namespace' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:project_namespace) { user.namespace }
+
+      context 'with no project' do
+        it { expect(project_namespace.all_container_repositories).to match_array([]) }
+      end
+
+      context 'with projects' do
+        it "returns container repositories" do
+          project = create(:project, namespace: project_namespace)
+          rep = create(:container_repository, project: project)
+
+          expect(project_namespace.all_container_repositories).to match_array([rep])
+        end
+      end
+    end
+
+    context 'with subgroups' do
+      let_it_be(:project_namespace) { create(:group) }
+      let_it_be(:subgroup1) { create(:group, parent: project_namespace) }
+      let_it_be(:subgroup2) { create(:group, parent: subgroup1) }
+
+      context 'with no project' do
+        it { expect(project_namespace.all_container_repositories).to match_array([]) }
+      end
+
+      context 'with projects' do
+        it "returns container repositories" do
+          subgrp1_project = create(:project, namespace: subgroup1)
+          rep1 = create(:container_repository, project: subgrp1_project)
+
+          subgrp2_project = create(:project, namespace: subgroup2)
+          rep2 = create(:container_repository, project: subgrp2_project)
+
+          expect(project_namespace.all_container_repositories).to match_array([rep1, rep2])
+        end
+      end
     end
   end
 
@@ -894,24 +1004,6 @@ RSpec.describe Namespace do
               expect_project_directories_at('parent/renamed', with_pages: false)
             end
           end
-
-          context 'when the project has pages deployed' do
-            before do
-              project.pages_metadatum.update!(deployed: true)
-            end
-
-            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-              child.update!(path: 'renamed')
-
-              expect_project_directories_at('parent/renamed')
-            end
-
-            it 'performs the move async of pages async' do
-              expect(PagesTransferWorker).to receive(:perform_async).with('rename_namespace', ['parent/child', 'parent/renamed'])
-
-              child.update!(path: 'renamed')
-            end
-          end
         end
 
         context 'renaming parent' do
@@ -921,24 +1013,6 @@ RSpec.describe Namespace do
               parent.update!(path: 'renamed')
 
               expect_project_directories_at('renamed/child', with_pages: false)
-            end
-          end
-
-          context 'when the project has pages deployed' do
-            before do
-              project.pages_metadatum.update!(deployed: true)
-            end
-
-            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-              parent.update!(path: 'renamed')
-
-              expect_project_directories_at('renamed/child')
-            end
-
-            it 'performs the move async of pages async' do
-              expect(PagesTransferWorker).to receive(:perform_async).with('rename_namespace', %w(parent renamed))
-
-              parent.update!(path: 'renamed')
             end
           end
         end
@@ -952,24 +1026,6 @@ RSpec.describe Namespace do
               expect_project_directories_at('new_parent/child', with_pages: false)
             end
           end
-
-          context 'when the project has pages deployed' do
-            before do
-              project.pages_metadatum.update!(deployed: true)
-            end
-
-            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-              child.update!(parent: new_parent)
-
-              expect_project_directories_at('new_parent/child')
-            end
-
-            it 'performs the move async of pages async' do
-              expect(PagesTransferWorker).to receive(:perform_async).with('move_namespace', %w(child parent new_parent))
-
-              child.update!(parent: new_parent)
-            end
-          end
         end
 
         context 'moving from having a parent to root' do
@@ -981,24 +1037,6 @@ RSpec.describe Namespace do
               expect_project_directories_at('child', with_pages: false)
             end
           end
-
-          context 'when the project has pages deployed' do
-            before do
-              project.pages_metadatum.update!(deployed: true)
-            end
-
-            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-              child.update!(parent: nil)
-
-              expect_project_directories_at('child')
-            end
-
-            it 'performs the move async of pages async' do
-              expect(PagesTransferWorker).to receive(:perform_async).with('move_namespace', ['child', 'parent', nil])
-
-              child.update!(parent: nil)
-            end
-          end
         end
 
         context 'moving from root to having a parent' do
@@ -1008,24 +1046,6 @@ RSpec.describe Namespace do
               parent.update!(parent: new_parent)
 
               expect_project_directories_at('new_parent/parent/child', with_pages: false)
-            end
-          end
-
-          context 'when the project has pages deployed' do
-            before do
-              project.pages_metadatum.update!(deployed: true)
-            end
-
-            it 'correctly moves the repository, uploads and pages', :sidekiq_inline do
-              parent.update!(parent: new_parent)
-
-              expect_project_directories_at('new_parent/parent/child')
-            end
-
-            it 'performs the move async of pages async' do
-              expect(PagesTransferWorker).to receive(:perform_async).with('move_namespace', ['parent', nil, 'new_parent'])
-
-              parent.update!(parent: new_parent)
             end
           end
         end
@@ -2238,9 +2258,23 @@ RSpec.describe Namespace do
   describe 'storage_enforcement_date' do
     let_it_be(:namespace) { create(:group) }
 
+    before do
+      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
+    end
+
     # Date TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
-    it 'returns false' do
+    it 'returns nil' do
       expect(namespace.storage_enforcement_date).to be(nil)
+    end
+
+    context 'when :storage_banner_bypass_date_check is enabled' do
+      before do
+        stub_feature_flags(namespace_storage_limit_bypass_date_check: true)
+      end
+
+      it 'returns the current date', :freeze_time do
+        expect(namespace.storage_enforcement_date).to eq(Date.current)
+      end
     end
   end
 
@@ -2251,27 +2285,23 @@ RSpec.describe Namespace do
   end
 
   describe '#certificate_based_clusters_enabled?' do
-    it 'does not call Feature.enabled? twice with request_store', :request_store do
-      expect(Feature).to receive(:enabled?).once
-
-      namespace.certificate_based_clusters_enabled?
-      namespace.certificate_based_clusters_enabled?
-    end
-
-    it 'call Feature.enabled? twice without request_store' do
-      expect(Feature).to receive(:enabled?).twice
-
-      namespace.certificate_based_clusters_enabled?
-      namespace.certificate_based_clusters_enabled?
-    end
-
     context 'with ff disabled' do
       before do
         stub_feature_flags(certificate_based_clusters: false)
       end
 
-      it 'is truthy' do
-        expect(namespace.certificate_based_clusters_enabled?).to be_falsy
+      context 'with a cluster_enabled_grant' do
+        it 'is truthy' do
+          create(:cluster_enabled_grant, namespace: namespace)
+
+          expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a cluster_enabled_grant' do
+        it 'is falsy' do
+          expect(namespace.certificate_based_clusters_enabled?).to be_falsy
+        end
       end
     end
 
@@ -2280,8 +2310,18 @@ RSpec.describe Namespace do
         stub_feature_flags(certificate_based_clusters: true)
       end
 
-      it 'is truthy' do
-        expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+      context 'with a cluster_enabled_grant' do
+        it 'is truthy' do
+          create(:cluster_enabled_grant, namespace: namespace)
+
+          expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a cluster_enabled_grant' do
+        it 'is truthy' do
+          expect(namespace.certificate_based_clusters_enabled?).to be_truthy
+        end
       end
     end
   end

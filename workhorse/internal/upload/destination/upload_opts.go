@@ -29,8 +29,6 @@ type ObjectStorageConfig struct {
 
 // UploadOpts represents all the options available for saving a file to object store
 type UploadOpts struct {
-	// TempFilePrefix is the prefix used to create temporary local file
-	TempFilePrefix string
 	// LocalTempPath is the directory where to write a local copy of the file
 	LocalTempPath string
 	// RemoteID is the remote ObjectID provided by GitLab

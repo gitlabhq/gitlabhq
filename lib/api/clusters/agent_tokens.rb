@@ -26,9 +26,7 @@ module API
               use :pagination
             end
             get do
-              authorize! :read_cluster, user_project
-
-              agent = user_project.cluster_agents.find(params[:agent_id])
+              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
               present paginate(agent.agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end
@@ -41,9 +39,8 @@ module API
               requires :token_id, type: Integer, desc: 'The ID of the agent token'
             end
             get ':token_id' do
-              authorize! :read_cluster, user_project
+              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
-              agent = user_project.cluster_agents.find(params[:agent_id])
               token = agent.agent_tokens.find(params[:token_id])
 
               present token, with: Entities::Clusters::AgentToken
@@ -62,7 +59,7 @@ module API
 
               token_params = declared_params(include_missing: false)
 
-              agent = user_project.cluster_agents.find(params[:agent_id])
+              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
 
               result = ::Clusters::AgentTokens::CreateService.new(
                 container: agent.project, current_user: current_user, params: token_params.merge(agent_id: agent.id)
@@ -82,7 +79,8 @@ module API
             delete ':token_id' do
               authorize! :admin_cluster, user_project
 
-              agent = user_project.cluster_agents.find(params[:agent_id])
+              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
+
               token = agent.agent_tokens.find(params[:token_id])
 
               # Skipping explicit error handling and relying on exceptions

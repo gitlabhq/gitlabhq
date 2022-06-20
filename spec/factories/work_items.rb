@@ -9,5 +9,10 @@ FactoryBot.define do
     relative_position { RelativePositioning::START_POSITION }
     issue_type { :issue }
     association :work_item_type, :default
+
+    trait :task do
+      issue_type { :task }
+      association :work_item_type, :default, :task
+    end
   end
 end

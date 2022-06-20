@@ -43,13 +43,13 @@ For **self-managed** GitLab instances, make sure your administrator has
 Once you've met the requirements, enable Let's Encrypt integration:
 
 1. Navigate to your project's **Settings > Pages**.
-1. Find your domain and click **Details**.
-1. Click **Edit** in the top-right corner.
+1. Find your domain and select **Details**.
+1. Select **Edit** in the top-right corner.
 1. Enable Let's Encrypt integration by switching **Automatic certificate management using Let's Encrypt**:
 
    ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
 
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 Once enabled, GitLab obtains a LE certificate and add it to the
 associated Pages domain. GitLab also renews it automatically.
@@ -70,8 +70,8 @@ associated Pages domain. GitLab also renews it automatically.
 If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings > General > Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 
 1. Go to your project's **Settings > Pages**.
-1. Click **Edit** on your domain.
-1. Click **Retry**.
+1. Select **Edit** on your domain.
+1. Select **Retry**.
 1. If you're still seeing the same error:
     1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
     1. Make sure your domain **doesn't have** an `AAAA` DNS record.
@@ -86,7 +86,7 @@ Another possible cause of this error is the `_redirects` file because the curren
 If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message, "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.", try to remove and add the domain for GitLab Pages again by following these steps:
 
 1. Go to your project's **Settings > Pages**.
-1. Click **Remove** on your domain.
+1. Select **Remove** on your domain.
 1. [Add the domain again and verify it](index.md#1-add-a-custom-domain-to-pages).
 1. [Enable Let's Encrypt integration for your domain](#enabling-lets-encrypt-integration-for-your-custom-domain).
 1. If you still see the same message after some time:

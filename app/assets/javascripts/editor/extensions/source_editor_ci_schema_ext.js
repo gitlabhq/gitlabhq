@@ -17,10 +17,14 @@ export class CiSchemaExtension {
         const absoluteSchemaUrl = new URL(ciSchemaPath, gon.gitlab_url).href;
         const modelFileName = instance.getModel().uri.path.split('/').pop();
 
-        registerSchema({
-          uri: absoluteSchemaUrl,
-          fileMatch: [modelFileName],
-        });
+        registerSchema(
+          {
+            uri: absoluteSchemaUrl,
+            fileMatch: [modelFileName],
+          },
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          { customTags: ['!reference sequence'] },
+        );
       },
     };
   }

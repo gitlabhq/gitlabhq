@@ -56,7 +56,13 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite :items="failedJobs" :fields="$options.fields" stacked="lg" fixed>
+  <gl-table-lite
+    :items="failedJobs"
+    :fields="$options.fields"
+    stacked="lg"
+    fixed
+    data-testId="tab-failures"
+  >
     <template #table-colgroup="{ fields }">
       <col v-for="field in fields" :key="field.key" :class="field.columnClass" />
     </template>

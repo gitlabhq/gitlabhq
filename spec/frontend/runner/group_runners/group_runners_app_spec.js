@@ -16,6 +16,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
+import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
@@ -48,6 +49,8 @@ import {
   groupRunnersCountData,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  emptyStateSvgPath,
+  emptyStateFilteredSvgPath,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -75,6 +78,7 @@ describe('GroupRunnersApp', () => {
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
+  const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerRow = (id) => extendedWrapper(wrapper.findByTestId(`runner-row-${id}`));
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByLabelText('Go to next page');
@@ -103,6 +107,8 @@ describe('GroupRunnersApp', () => {
       provide: {
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
+        emptyStateSvgPath,
+        emptyStateFilteredSvgPath,
       },
     });
   };
@@ -388,8 +394,8 @@ describe('GroupRunnersApp', () => {
       await waitForPromises();
     });
 
-    it('shows a message for no results', async () => {
-      expect(wrapper.text()).toContain('No runners found');
+    it('shows an empty state', async () => {
+      expect(findRunnerListEmptyState().exists()).toBe(true);
     });
   });
 

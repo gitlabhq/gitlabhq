@@ -20,10 +20,12 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :redirect_if_task, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+
   after_action :log_issue_show, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
   before_action :set_issuables_index, if: ->(c) {
-    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !vue_issues_list?
+    SET_ISSUABLES_INDEX_ONLY_ACTIONS.include?(c.action_name.to_sym) && !index_html_request?
   }
 
   # Allow write(create) issue
@@ -39,7 +41,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:vue_issues_list, project&.group)
     push_frontend_feature_flag(:contacts_autocomplete, project&.group)
     push_frontend_feature_flag(:incident_timeline, project)
   end
@@ -50,6 +51,8 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:paginated_issue_discussions, project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:work_items_mvc_2)
+    push_frontend_feature_flag(:work_items_hierarchy, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -81,7 +84,7 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
-    if vue_issues_list?
+    if index_html_request?
       set_sort_order
     else
       @issues = @issuables
@@ -251,16 +254,14 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def service_desk
-    @issues = @issuables # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    @users.push(User.support_bot) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @issues = @issuables
+    @users.push(User.support_bot)
   end
 
   protected
 
-  def vue_issues_list?
-    action_name.to_sym == :index &&
-      html_request? &&
-      Feature.enabled?(:vue_issues_list, project&.group)
+  def index_html_request?
+    action_name.to_sym == :index && html_request?
   end
 
   def sorting_field
@@ -403,6 +404,13 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Overridden in EE
   def create_vulnerability_issue_feedback(issue); end
+
+  def redirect_if_task
+    return render_404 if issue.task? && !project.work_items_feature_flag_enabled?
+    return unless issue.task?
+
+    redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
+  end
 end
 
 Projects::IssuesController.prepend_mod_with('Projects::IssuesController')

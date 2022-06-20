@@ -9,7 +9,7 @@ module QA
     module Members
       def add_member(user, access_level = AccessLevel::DEVELOPER)
         Support::Retrier.retry_until do
-          QA::Runtime::Logger.debug(%Q[Adding user #{user.username} to #{full_path} #{self.class.name}])
+          QA::Runtime::Logger.info(%(Adding user #{user.username} to #{full_path} #{self.class.name}))
 
           response = post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
           break true if response.code == QA::Support::API::HTTP_STATUS_CREATED
@@ -18,7 +18,7 @@ module QA
       end
 
       def remove_member(user)
-        QA::Runtime::Logger.debug(%Q[Removing user #{user.username} from #{full_path} #{self.class.name}])
+        QA::Runtime::Logger.info(%(Removing user #{user.username} from #{full_path} #{self.class.name}))
 
         delete Runtime::API::Request.new(api_client, "#{api_members_path}/#{user.id}").url
       end
@@ -29,7 +29,7 @@ module QA
 
       def invite_group(group, access_level = AccessLevel::GUEST)
         Support::Retrier.retry_until do
-          QA::Runtime::Logger.debug(%Q[Sharing #{self.class.name} with #{group.name}])
+          QA::Runtime::Logger.info(%(Sharing #{self.class.name} with #{group.name}))
 
           response = post Runtime::API::Request.new(api_client, api_share_path).url, { group_id: group.id, group_access: access_level }
           response.code == QA::Support::API::HTTP_STATUS_CREATED

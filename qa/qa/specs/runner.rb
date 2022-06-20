@@ -12,6 +12,7 @@ module QA
 
       DEFAULT_TEST_PATH_ARGS = ['--', File.expand_path('./features', __dir__)].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
+      DEFAULT_SKIPPED_TAGS = %w[orchestrated transient sanity_feature_flags].freeze
 
       def initialize
         @tty = false
@@ -25,7 +26,7 @@ module QA
         if tags.any?
           tags.each { |tag| tags_for_rspec.push(['--tag', tag.to_s]) }
         else
-          tags_for_rspec.push(%w[--tag ~orchestrated --tag ~transient]) unless (%w[-t --tag] & options).any?
+          tags_for_rspec.push(DEFAULT_SKIPPED_TAGS.map { |tag| %W[--tag ~#{tag}] }) unless (%w[-t --tag] & options).any?
         end
 
         tags_for_rspec.push(%w[--tag ~geo]) unless QA::Runtime::Env.geo_environment?

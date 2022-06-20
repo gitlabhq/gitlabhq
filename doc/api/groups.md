@@ -389,9 +389,9 @@ Example response:
       "tag_list":[], //deprecated, use `topics` instead
       "topics":[],
       "ssh_url_to_repo":"ssh://git@gitlab.com/h5bp/html5-boilerplate.git",
-      "http_url_to_repo":"http://gitlab.com/h5bp/html5-boilerplate.git",
-      "web_url":"http://gitlab.com/h5bp/html5-boilerplate",
-      "readme_url":"http://gitlab.com/h5bp/html5-boilerplate/-/blob/master/README.md",
+      "http_url_to_repo":"https://gitlab.com/h5bp/html5-boilerplate.git",
+      "web_url":"https://gitlab.com/h5bp/html5-boilerplate",
+      "readme_url":"https://gitlab.com/h5bp/html5-boilerplate/-/blob/master/README.md",
       "avatar_url":null,
       "star_count":0,
       "forks_count":4,
@@ -404,16 +404,16 @@ Example response:
          "full_path":"h5bp",
          "parent_id":null,
          "avatar_url":null,
-         "web_url":"http://gitlab.com/groups/h5bp"
+         "web_url":"https://gitlab.com/groups/h5bp"
       },
       "_links":{
-         "self":"http://gitlab.com/api/v4/projects/8",
-         "issues":"http://gitlab.com/api/v4/projects/8/issues",
-         "merge_requests":"http://gitlab.com/api/v4/projects/8/merge_requests",
-         "repo_branches":"http://gitlab.com/api/v4/projects/8/repository/branches",
-         "labels":"http://gitlab.com/api/v4/projects/8/labels",
-         "events":"http://gitlab.com/api/v4/projects/8/events",
-         "members":"http://gitlab.com/api/v4/projects/8/members"
+         "self":"https://gitlab.com/api/v4/projects/8",
+         "issues":"https://gitlab.com/api/v4/projects/8/issues",
+         "merge_requests":"https://gitlab.com/api/v4/projects/8/merge_requests",
+         "repo_branches":"https://gitlab.com/api/v4/projects/8/repository/branches",
+         "labels":"https://gitlab.com/api/v4/projects/8/labels",
+         "events":"https://gitlab.com/api/v4/projects/8/events",
+         "members":"https://gitlab.com/api/v4/projects/8/members"
       },
       "empty_repo":false,
       "archived":false,
@@ -1060,7 +1060,7 @@ Only available to group owners and administrators.
 This endpoint either:
 
 - Removes group, and queues a background job to delete all projects in the group as well.
-- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion happens 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- Since [GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/) or higher tiers, marks a group for deletion. The deletion happens 7 days later by default, but this can be changed in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
 
 ```plaintext
 DELETE /groups/:id

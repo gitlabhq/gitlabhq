@@ -58,6 +58,16 @@ export const validEmoji = {
     unicodeVersion: '6.0',
     description: 'because it contains multiple zero width joiners',
   },
+  thumbsup: {
+    moji: '👍',
+    unicodeVersion: '6.0',
+    description: 'thumbs up sign',
+  },
+  thumbsdown: {
+    moji: '👎',
+    description: 'thumbs down sign',
+    unicodeVersion: '6.0',
+  },
 };
 
 export const invalidEmoji = {

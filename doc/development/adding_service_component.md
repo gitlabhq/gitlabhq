@@ -23,7 +23,7 @@ The following outline re-uses the [maturity metric](https://about.gitlab.com/dir
   - [Release management](#release-management)
   - [Enabled on GitLab.com](feature_flags/controls.md#enabling-a-feature-for-gitlabcom)
 - Complete
-  - [Configurable by the GitLab orchestrator](https://gitlab.com/gitlab-org/gitlab-orchestrator)
+  - [Configurable by the GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit)
 - Lovable
   - Enabled by default for the majority of users
 
@@ -47,7 +47,7 @@ Adding a new service follows the same [merge request workflow](contributing/merg
 
 The first iteration should be to add the ability to connect and use the service as an externally installed component. Often this involves providing settings in GitLab to connect to the service, or allow connections from it. And then shipping documentation on how to install and configure the service with GitLab.
 
-[Elasticsearch](../integration/elasticsearch.md#install-elasticsearch) is an example of a service that has been integrated this way. Many of the other services, including internal projects like Gitaly, started off as separately installed alternatives.
+[Elasticsearch](../integration/advanced_search/elasticsearch.md#install-elasticsearch) is an example of a service that has been integrated this way. Many of the other services, including internal projects like Gitaly, started off as separately installed alternatives.
 
 **For services that depend on the existing GitLab codebase:**
 

@@ -1094,7 +1094,7 @@ RSpec.describe Projects::MergeRequestsController do
       end
 
       context 'when processing coverage reports is completed' do
-        let(:report) { { status: :parsed, data: pipeline.coverage_reports } }
+        let(:report) { { status: :parsed, data: { 'files' => {} } } }
 
         it 'returns coverage reports' do
           subject
@@ -1730,7 +1730,7 @@ RSpec.describe Projects::MergeRequestsController do
 
   describe 'POST remove_wip' do
     before do
-      merge_request.title = merge_request.wip_title
+      merge_request.title = merge_request.draft_title
       merge_request.save!
 
       post :remove_wip,
@@ -1743,8 +1743,8 @@ RSpec.describe Projects::MergeRequestsController do
         xhr: true
     end
 
-    it 'removes the wip status' do
-      expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+    it 'removes the draft status' do
+      expect(merge_request.reload.title).to eq(merge_request.draftless_title)
     end
 
     it 'renders MergeRequest as JSON' do

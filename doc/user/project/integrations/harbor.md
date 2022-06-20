@@ -31,7 +31,7 @@ GitLab supports integrating Harbor projects at the group or project level. Compl
 1. Turn on the **Active** toggle under **Enable Integration**.
 1. Provide the Harbor configuration information:
    - **Harbor URL**: The base URL of Harbor instance which is being linked to this GitLab project. For example, `https://harbor.example.net`.
-   - **Harbor project name**: The project name in the Harbor instance. For example, `testproject`.  
+   - **Harbor project name**: The project name in the Harbor instance. For example, `testproject`.
    - **Username**: Your username in the Harbor instance, which should meet the requirements in [prerequisites](#prerequisites).
    - **Password**: Password of your username.
 
@@ -39,7 +39,7 @@ GitLab supports integrating Harbor projects at the group or project level. Compl
 
 After the Harbor integration is activated:
 
-- The global variables `$HARBOR_USER`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
+- The global variables `$HARBOR_USERNAME`, `$HARBOR_PASSWORD`, `$HARBOR_URL`, and `$HARBOR_PROJECT` are created for CI/CD use.
 - The project-level integration settings override the group-level integration settings.
 
 ## Secure your requests to the Harbor APIs

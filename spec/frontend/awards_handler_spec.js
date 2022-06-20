@@ -57,6 +57,18 @@ describe('AwardsHandler', () => {
       d: 'white question mark ornament',
       u: '6.0',
     },
+    thumbsup: {
+      c: 'people',
+      e: '👍',
+      d: 'thumbs up sign',
+      u: '6.0',
+    },
+    thumbsdown: {
+      c: 'people',
+      e: '👎',
+      d: 'thumbs down sign',
+      u: '6.0',
+    },
   };
 
   const openAndWaitForEmojiMenu = (sel = '.js-add-award') => {
@@ -295,6 +307,23 @@ describe('AwardsHandler', () => {
 
       awardsHandler.searchEmojis('👼');
       expect($('[data-name=angel]').is(':visible')).toBe(true);
+    });
+
+    it('should show positive intent emoji first', async () => {
+      await openAndWaitForEmojiMenu();
+
+      awardsHandler.searchEmojis('thumb');
+
+      const $menu = $('.emoji-menu');
+      const $thumbsUpItem = $menu.find('[data-name=thumbsup]');
+      const $thumbsDownItem = $menu.find('[data-name=thumbsdown]');
+
+      expect($thumbsUpItem.is(':visible')).toBe(true);
+      expect($thumbsDownItem.is(':visible')).toBe(true);
+
+      expect($thumbsUpItem.parents('.emoji-menu-list-item').index()).toBeLessThan(
+        $thumbsDownItem.parents('.emoji-menu-list-item').index(),
+      );
     });
   });
 

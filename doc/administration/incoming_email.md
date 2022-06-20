@@ -68,7 +68,8 @@ this method only supports replies, and not the other features of [incoming email
 
 ## Accepted headers
 
-> Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9 [with a flag](feature_flags.md) named `use_received_header_for_incoming_emails`. Enabled by default.
+> - Accepting `Received` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81489) in GitLab 14.9 [with a flag](feature_flags.md) named `use_received_header_for_incoming_emails`. Enabled by default.
+> - Accepting `Received` headers: [feature flag](feature_flags.md) named `use_received_header_for_incoming_emails` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/362596) in GitLab 14.1.
 
 Email is processed correctly when a configured email address is present in one of the following headers
 (sorted in the order they are checked):
@@ -132,7 +133,7 @@ issue by email" or
 "[Create new merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email)"
 features by using a project's unique address as the email when signing up for
 Slack. This would send a confirmation email, which would create a new issue or
-merge request on the project owned by the attacker, allowing them to click the
+merge request on the project owned by the attacker, allowing them to select the
 confirmation link and validate their account on your company's private Slack
 instance.
 

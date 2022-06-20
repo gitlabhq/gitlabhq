@@ -22,6 +22,7 @@ export const PAGINATION_SORT_FIELD_END_EVENT = 'end_event';
 export const PAGINATION_SORT_FIELD_DURATION = 'duration';
 export const PAGINATION_SORT_DIRECTION_DESC = 'desc';
 export const PAGINATION_SORT_DIRECTION_ASC = 'asc';
+export const FIELD_KEY_TITLE = 'title';
 
 export const I18N_VSA_ERROR_STAGES = __(
   'There was an error fetching value stream analytics stages.',

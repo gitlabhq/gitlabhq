@@ -81,6 +81,20 @@ export default {
       });
     },
   },
+  modal: {
+    actionPrimary: {
+      text: s__('FeatureFlags|Delete feature flag'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionSecondary: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
 };
 </script>
 <template>
@@ -193,11 +207,11 @@ export default {
     <gl-modal
       :ref="modalId"
       :title="modalTitle"
-      :ok-title="s__('FeatureFlags|Delete feature flag')"
       :modal-id="modalId"
       title-tag="h4"
-      ok-variant="danger"
-      category="primary"
+      size="sm"
+      :action-primary="$options.modal.actionPrimary"
+      :action-secondary="$options.modal.actionSecondary"
       @ok="onSubmit"
     >
       {{ deleteModalMessage }}

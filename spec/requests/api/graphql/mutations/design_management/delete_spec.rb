@@ -47,7 +47,7 @@ RSpec.describe "deleting designs" do
   context 'the designs list is empty' do
     it_behaves_like 'a failed request' do
       let(:designs) { [] }
-      let(:the_error) { a_string_matching %r/was provided invalid value/ }
+      let(:the_error) { a_string_matching %r/no filenames/ }
     end
   end
 

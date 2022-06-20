@@ -32,6 +32,8 @@ module Gitlab
           group_testing_hook:           { threshold: 5, interval: 1.minute },
           profile_add_new_email:        { threshold: 5, interval: 1.minute },
           web_hook_calls:               { interval: 1.minute },
+          web_hook_calls_mid:           { interval: 1.minute },
+          web_hook_calls_low:           { interval: 1.minute },
           users_get_by_id:              { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists:              { threshold: 20, interval: 1.minute },
           user_sign_up:                 { threshold: 20, interval: 1.minute },
@@ -42,7 +44,8 @@ module Gitlab
           search_rate_limit:                  { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated:  { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           gitlab_shell_operation:       { threshold: 600, interval: 1.minute },
-          pipelines_create:             { threshold: 25, interval: 1.minute }
+          pipelines_create:             { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
+          temporary_email_failure:      { threshold: 50, interval: 1.day }
         }.freeze
       end
 
@@ -190,3 +193,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ApplicationRateLimiter.prepend_mod

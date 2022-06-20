@@ -39,6 +39,51 @@ module API
       params :package_name do
         requires :package_name, type: String, file_path: true, desc: 'The PyPi package name'
       end
+
+      def present_simple_index(group_or_project)
+        authorize_read_package!(group_or_project)
+
+        packages = Packages::Pypi::PackagesFinder.new(current_user, group_or_project).execute
+        presenter = ::Packages::Pypi::SimpleIndexPresenter.new(packages, group_or_project)
+
+        present_html(presenter.body)
+      end
+
+      def present_simple_package(group_or_project)
+        authorize_read_package!(group_or_project)
+        track_simple_event(group_or_project, 'list_package')
+
+        packages = Packages::Pypi::PackagesFinder.new(current_user, group_or_project, { package_name: params[:package_name] }).execute
+        empty_packages = packages.empty?
+
+        redirect_registry_request(empty_packages, :pypi, package_name: params[:package_name]) do
+          not_found!('Package') if empty_packages
+          presenter = ::Packages::Pypi::SimplePackageVersionsPresenter.new(packages, group_or_project)
+
+          present_html(presenter.body)
+        end
+      end
+
+      def track_simple_event(group_or_project, event_name)
+        if group_or_project.is_a?(Project)
+          project = group_or_project
+          namespace = group_or_project.namespace
+        else
+          project = nil
+          namespace = group_or_project
+        end
+
+        track_package_event(event_name, :pypi, project: project, namespace: namespace)
+      end
+
+      def present_html(content)
+        # Adjusts grape output format
+        # to be HTML
+        content_type "text/html; charset=utf-8"
+        env['api.format'] = :binary
+
+        body content
+      end
     end
 
     params do
@@ -67,7 +112,18 @@ module API
           present_carrierwave_file!(package_file.file, supports_direct_download: true)
         end
 
-        desc 'The PyPi Simple Endpoint' do
+        desc 'The PyPi Simple Group Index Endpoint' do
+          detail 'This feature was introduced in GitLab 15.1'
+        end
+
+        # An API entry point but returns an HTML file instead of JSON.
+        # PyPi simple API returns a list of packages as a simple HTML file.
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        get 'simple', format: :txt do
+          present_simple_index(find_authorized_group!)
+        end
+
+        desc 'The PyPi Simple Group Package Endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
         end
 
@@ -75,29 +131,11 @@ module API
           use :package_name
         end
 
-        # An Api entry point but returns an HTML file instead of JSON.
+        # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns the package descriptor as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
         get 'simple/*package_name', format: :txt do
-          group = find_authorized_group!
-          authorize_read_package!(group)
-
-          track_package_event('list_package', :pypi)
-
-          packages = Packages::Pypi::PackagesFinder.new(current_user, group, { package_name: params[:package_name] }).execute
-          empty_packages = packages.empty?
-
-          redirect_registry_request(empty_packages, :pypi, package_name: params[:package_name]) do
-            not_found!('Package') if empty_packages
-            presenter = ::Packages::Pypi::PackagePresenter.new(packages, group)
-
-            # Adjusts grape output format
-            # to be HTML
-            content_type "text/html; charset=utf-8"
-            env['api.format'] = :binary
-
-            body presenter.body
-          end
+          present_simple_package(find_authorized_group!)
         end
       end
     end
@@ -133,7 +171,18 @@ module API
           present_carrierwave_file!(package_file.file, supports_direct_download: true)
         end
 
-        desc 'The PyPi Simple Endpoint' do
+        desc 'The PyPi Simple Project Index Endpoint' do
+          detail 'This feature was introduced in GitLab 15.1'
+        end
+
+        # An API entry point but returns an HTML file instead of JSON.
+        # PyPi simple API returns a list of packages as a simple HTML file.
+        route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
+        get 'simple', format: :txt do
+          present_simple_index(authorized_user_project)
+        end
+
+        desc 'The PyPi Simple Project Package Endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
         end
 
@@ -141,28 +190,11 @@ module API
           use :package_name
         end
 
-        # An Api entry point but returns an HTML file instead of JSON.
+        # An API entry point but returns an HTML file instead of JSON.
         # PyPi simple API returns the package descriptor as a simple HTML file.
         route_setting :authentication, deploy_token_allowed: true, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
         get 'simple/*package_name', format: :txt do
-          authorize_read_package!(authorized_user_project)
-
-          track_package_event('list_package', :pypi, project: authorized_user_project, namespace: authorized_user_project.namespace)
-
-          packages = Packages::Pypi::PackagesFinder.new(current_user, authorized_user_project, { package_name: params[:package_name] }).execute
-          empty_packages = packages.empty?
-
-          redirect_registry_request(empty_packages, :pypi, package_name: params[:package_name]) do
-            not_found!('Package') if empty_packages
-            presenter = ::Packages::Pypi::PackagePresenter.new(packages, authorized_user_project)
-
-            # Adjusts grape output format
-            # to be HTML
-            content_type "text/html; charset=utf-8"
-            env['api.format'] = :binary
-
-            body presenter.body
-          end
+          present_simple_package(authorized_user_project)
         end
 
         desc 'The PyPi Package upload endpoint' do

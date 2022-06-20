@@ -17,7 +17,7 @@ const ERROR_HTML = `<div class="nothing-here-block">${spriteIcon(
   's16',
 )} Could not load diff</div>`;
 const COLLAPSED_HTML =
-  '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <button class="click-to-expand btn btn-link">Click to expand it.</button></div>';
+  '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <button class="click-to-expand btn btn-link gl-button">Click to expand it.</button></div>';
 
 export default class SingleFileDiff {
   constructor(file) {

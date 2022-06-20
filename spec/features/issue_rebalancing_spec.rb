@@ -15,10 +15,6 @@ RSpec.describe 'Issue rebalancing' do
     group.add_developer(user)
   end
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   context 'when issue rebalancing is in progress' do
     before do
       sign_in(user)

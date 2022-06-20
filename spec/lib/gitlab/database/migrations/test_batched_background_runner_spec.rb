@@ -4,13 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freeze_time do
   include Gitlab::Database::MigrationHelpers
-  include Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers
   include Database::MigrationTestingHelpers
 
   let(:result_dir) { Dir.mktmpdir }
 
   after do
     FileUtils.rm_rf(result_dir)
+  end
+
+  let(:migration) do
+    ActiveRecord::Migration.new.extend(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers)
   end
 
   let(:connection) { ApplicationRecord.connection }
@@ -26,11 +29,13 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
       insert into #{table_name} (id) select i from generate_series(1, 1000) g(i);
     SQL
+
+    allow(migration).to receive(:transaction_open?).and_return(false)
   end
 
   context 'running a real background migration' do
     it 'runs sampled jobs from the batched background migration' do
-      queue_batched_background_migration('CopyColumnUsingBackgroundMigrationJob',
+      migration.queue_batched_background_migration('CopyColumnUsingBackgroundMigrationJob',
                                          table_name, :id,
                                          :id, :data,
                                          batch_size: 100,
@@ -46,7 +51,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
     let(:migration_name) { 'TestBackgroundMigration' }
 
     before do
-      queue_batched_background_migration(migration_name, table_name, :id, job_interval: 5.minutes, batch_size: 100)
+      migration.queue_batched_background_migration(
+        migration_name, table_name, :id, job_interval: 5.minutes, batch_size: 100
+      )
     end
 
     it 'samples jobs' do
@@ -67,13 +74,13 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         travel 3.days
 
         new_migration = define_background_migration('NewMigration') { travel 1.second }
-        queue_batched_background_migration('NewMigration', table_name, :id,
+        migration.queue_batched_background_migration('NewMigration', table_name, :id,
                                            job_interval: 5.minutes,
                                            batch_size: 10,
                                            sub_batch_size: 5)
 
         other_new_migration = define_background_migration('NewMigration2') { travel 2.seconds }
-        queue_batched_background_migration('NewMigration2', table_name, :id,
+        migration.queue_batched_background_migration('NewMigration2', table_name, :id,
                                            job_interval: 5.minutes,
                                            batch_size: 10,
                                            sub_batch_size: 5)

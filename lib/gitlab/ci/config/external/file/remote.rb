@@ -40,7 +40,9 @@ module Gitlab
 
             def fetch_remote_content
               begin
-                response = Gitlab::HTTP.get(location)
+                response = context.logger.instrument(:config_file_fetch_remote_content) do
+                  Gitlab::HTTP.get(location)
+                end
               rescue SocketError
                 errors.push("Remote file `#{masked_location}` could not be fetched because of a socket error!")
               rescue Timeout::Error

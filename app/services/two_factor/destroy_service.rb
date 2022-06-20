@@ -8,7 +8,7 @@ module TwoFactor
 
       result = disable_two_factor
 
-      notification_service.disabled_two_factor(user) if result[:status] == :success
+      notify_on_success(user) if result[:status] == :success
 
       result
     end
@@ -20,5 +20,11 @@ module TwoFactor
         user.disable_two_factor!
       end
     end
+
+    def notify_on_success(user)
+      notification_service.disabled_two_factor(user)
+    end
   end
 end
+
+TwoFactor::DestroyService.prepend_mod_with('TwoFactor::DestroyService')

@@ -174,7 +174,7 @@ RSpec.describe Resolvers::MergeRequestsResolver do
 
     context 'with draft argument' do
       before do
-        merge_request_4.update!(title: MergeRequest.wip_title(merge_request_4.title))
+        merge_request_4.update!(title: MergeRequest.draft_title(merge_request_4.title))
       end
 
       context 'with draft: true argument' do
@@ -411,6 +411,6 @@ RSpec.describe Resolvers::MergeRequestsResolver do
   end
 
   def resolve_mr(project, resolver: described_class, user: current_user, **args)
-    resolve(resolver, obj: project, args: args, ctx: { current_user: user })
+    resolve(resolver, obj: project, args: args, ctx: { current_user: user }, arg_style: :internal)
   end
 end

@@ -76,8 +76,8 @@ module ContainerRegistry
       return unless supported?
       return unless target_tag?
       return unless project
-      return unless Feature.enabled?(:container_registry_project_statistics, project)
 
+      Rails.cache.delete(project.root_ancestor.container_repositories_size_cache_key)
       ProjectCacheWorker.perform_async(project.id, [], [:container_registry_size])
     end
   end

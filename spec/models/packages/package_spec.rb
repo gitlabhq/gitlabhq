@@ -1336,4 +1336,24 @@ RSpec.describe Packages::Package, type: :model do
       end
     end
   end
+
+  describe '#normalized_pypi_name' do
+    let_it_be(:package) { create(:pypi_package) }
+
+    subject { package.normalized_pypi_name }
+
+    where(:package_name, :normalized_name) do
+      'ASDF' | 'asdf'
+      'a.B_c-d' | 'a-b-c-d'
+      'a-------b....c___d' | 'a-b-c-d'
+    end
+
+    with_them do
+      before do
+        package.update_column(:name, package_name)
+      end
+
+      it { is_expected.to eq(normalized_name) }
+    end
+  end
 end

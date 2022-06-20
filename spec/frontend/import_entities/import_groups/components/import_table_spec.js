@@ -122,7 +122,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.find(GlEmptyState).props().title).toBe('You have no groups to import');
+      expect(wrapper.find(GlEmptyState).props().title).toBe(i18n.NO_GROUPS_FOUND);
     });
   });
 
@@ -297,7 +297,7 @@ describe('import table', () => {
       wrapper.find(PaginationLinks).props().change(REQUESTED_PAGE);
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Showing 21-21 of 38 groups from');
+      expect(wrapper.text()).toContain('Showing 21-21 of 38 groups that you own from');
     });
   });
 
@@ -349,7 +349,9 @@ describe('import table', () => {
       await setFilter(FILTER_VALUE);
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Showing 1-1 of 40 groups matching filter "foo" from');
+      expect(wrapper.text()).toContain(
+        'Showing 1-1 of 40 groups that you own matching filter "foo" from',
+      );
     });
 
     it('properly resets filter in graphql query when search box is cleared', async () => {

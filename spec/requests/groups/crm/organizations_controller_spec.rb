@@ -42,14 +42,6 @@ RSpec.describe Groups::Crm::OrganizationsController do
           it_behaves_like 'response with 404 status'
         end
 
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(customer_relations: false)
-          end
-
-          it_behaves_like 'response with 404 status'
-        end
-
         context 'when subgroup' do
           let(:group) { create(:group, :private, :crm_enabled, parent: create(:group)) }
 

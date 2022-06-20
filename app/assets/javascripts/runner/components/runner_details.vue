@@ -1,26 +1,24 @@
 <script>
-import { GlBadge, GlTabs, GlTab, GlIntersperse } from '@gitlab/ui';
+import { GlTabs, GlTab, GlIntersperse } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { ACCESS_LEVEL_REF_PROTECTED, GROUP_TYPE, PROJECT_TYPE } from '../constants';
-import { formatJobCount } from '../utils';
 import RunnerDetail from './runner_detail.vue';
 import RunnerGroups from './runner_groups.vue';
 import RunnerProjects from './runner_projects.vue';
-import RunnerJobs from './runner_jobs.vue';
 import RunnerTags from './runner_tags.vue';
 
 export default {
   components: {
-    GlBadge,
     GlTabs,
     GlTab,
     GlIntersperse,
     RunnerDetail,
+    RunnerMaintenanceNoteDetail: () =>
+      import('ee_component/runner/components/runner_maintenance_note_detail.vue'),
     RunnerGroups,
     RunnerProjects,
-    RunnerJobs,
     RunnerTags,
     TimeAgo,
   },
@@ -56,9 +54,6 @@ export default {
     },
     isProjectRunner() {
       return this.runner?.runnerType === PROJECT_TYPE;
-    },
-    jobCount() {
-      return formatJobCount(this.runner?.jobCount);
     },
   },
   ACCESS_LEVEL_REF_PROTECTED,
@@ -106,6 +101,11 @@ export default {
                 />
               </template>
             </runner-detail>
+
+            <runner-maintenance-note-detail
+              class="gl-pt-4 gl-border-t-gray-100 gl-border-t-1 gl-border-t-solid"
+              :value="runner.maintenanceNoteHtml"
+            />
           </dl>
         </div>
 
@@ -113,15 +113,6 @@ export default {
         <runner-projects v-if="isProjectRunner" :runner="runner" />
       </template>
     </gl-tab>
-    <gl-tab>
-      <template #title>
-        {{ s__('Runners|Jobs') }}
-        <gl-badge v-if="jobCount" data-testid="job-count-badge" class="gl-ml-1" size="sm">
-          {{ jobCount }}
-        </gl-badge>
-      </template>
-
-      <runner-jobs v-if="runner" :runner="runner" />
-    </gl-tab>
+    <slot name="jobs-tab"></slot>
   </gl-tabs>
 </template>

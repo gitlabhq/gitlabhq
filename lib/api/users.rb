@@ -10,7 +10,7 @@ module API
 
     feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
-    urgency :high, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+    urgency :medium, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
@@ -145,7 +145,7 @@ module API
         use :with_custom_attributes
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      get ":id", feature_category: :users, urgency: :medium do
+      get ":id", feature_category: :users, urgency: :low do
         forbidden!('Not authorized!') unless current_user
 
         unless current_user.admin?
@@ -170,7 +170,7 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :high do
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :users, urgency: :default do
         user = find_user(params[:user_id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -345,6 +345,30 @@ module API
         destroy_conditionally!(identity)
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Get the project-level Deploy keys that a specified user can access to.' do
+        success Entities::DeployKey
+      end
+      params do
+        requires :user_id, type: String, desc: 'The ID or username of the user'
+        use :pagination
+      end
+      get ':user_id/project_deploy_keys', requirements: API::USER_REQUIREMENTS, feature_category: :continuous_delivery do
+        user = find_user(params[:user_id])
+        not_found!('User') unless user && can?(current_user, :read_user, user)
+
+        project_ids = Project.visible_to_user_and_access_level(current_user, Gitlab::Access::MAINTAINER)
+
+        unless current_user == user
+          # Restrict to only common projects of both current_user and user.
+          project_ids = project_ids.visible_to_user_and_access_level(user, Gitlab::Access::MAINTAINER)
+        end
+
+        forbidden!('No common authorized project found') unless project_ids.present?
+
+        keys = DeployKey.in_projects(project_ids)
+        present paginate(keys), with: Entities::DeployKey
+      end
 
       desc 'Add an SSH key to a specified user. Available only for admins.' do
         success Entities::SSHKey
@@ -921,7 +945,7 @@ module API
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end
-        get feature_category: :users, urgency: :medium do
+        get feature_category: :users, urgency: :low do
           entity =
             if current_user.admin?
               Entities::UserWithAdmin
@@ -1096,7 +1120,7 @@ module API
         requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
         requires :credit_card_type, type: String, desc: 'The credit card network name'
       end
-      put ":user_id/credit_card_validation", feature_category: :purchase do
+      put ":user_id/credit_card_validation", urgency: :low, feature_category: :purchase do
         authenticated_as_admin!
 
         user = find_user(params[:user_id])

@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -17,11 +17,16 @@ there are the following requirements:
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
 - You have set up a multi-node GitLab instance. Single-node instances do not support zero-downtime upgrades.
 
+If you want to upgrade multiple releases or do not meet the other requirements:
+
+- [Upgrade a single node with downtime](package/index.md).
+- [Upgrade a multi-node instance with downtime](with_downtime.md).
+
 If you meet all the requirements above, follow these instructions in order. There are three sets of steps, depending on your deployment type:
 
 | Deployment type                                                 | Description                                       |
 | --------------------------------------------------------------- | ------------------------------------------------  |
-| [Gitaly Cluster](#gitaly-cluster)                               | GitLab CE/EE using HA architecture for Gitaly Cluster             |
+| [Gitaly or Gitaly Cluster](#gitaly-or-gitaly-cluster)           | GitLab CE/EE using HA architecture for Gitaly or Gitaly Cluster |
 | [Multi-node / PostgreSQL HA](#use-postgresql-ha)                | GitLab CE/EE using HA architecture for PostgreSQL |
 | [Multi-node / Redis HA](#use-redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
 | [Geo](#geo-deployment)                                          | GitLab EE with Geo enabled                        |
@@ -176,66 +181,84 @@ load balancer to latest GitLab version.
       sudo gitlab-rake db:migrate
       ```
 
-### Gitaly Cluster
+### Gitaly or Gitaly Cluster
 
-[Gitaly Cluster](../administration/gitaly/praefect.md) is built using
-Gitaly and the Praefect component. It has its own PostgreSQL database, independent of the rest of
-the application.
+Gitaly nodes can be located on their own server, either as part of a sharded setup, or as part of
+[Gitaly Cluster](../administration/gitaly/praefect.md).
 
-Before you update the main application you need to update Praefect.
-Out of your Praefect nodes, pick one to be your Praefect deploy node.
-This is where you install the new Omnibus package first and run
-database migrations.
+Before you update the main GitLab application you must (in order):
 
-**Praefect deploy node**
+1. Upgrade the Gitaly nodes that reside on separate servers.
+1. Upgrade Praefect if using Gitaly Cluster.
 
-- Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
+#### Upgrade Gitaly nodes
 
-  ```shell
-  sudo touch /etc/gitlab/skip-auto-reconfigure
-  ```
+Upgrade the Gitaly nodes one at a time to ensure access to Git repositories is maintained:
 
-- Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb`
+```shell
+# Debian/Ubuntu
+sudo apt-get update && sudo apt-get install gitlab-ee
 
-**All Praefect nodes _excluding_ the Praefect deploy node**
+# Centos/RHEL
+sudo yum install gitlab-ee
+```
 
-- To prevent `reconfigure` from automatically running database migrations, ensure that `praefect['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb`.
+If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
-**Praefect deploy node**
+#### Upgrade Praefect
 
-- Update the GitLab package:
+From the Praefect nodes, select one to be your Praefect deploy node. You install the new Omnibus package on the deploy
+node first and run database migrations.
 
-  ```shell
-  # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ee
+1. On the **Praefect deploy node**:
 
-  # Centos/RHEL
-  sudo yum install gitlab-ee
-  ```
+   1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`,
+      which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+      ```shell
+      sudo touch /etc/gitlab/skip-auto-reconfigure
+      ```
 
-- To apply the Praefect database migrations and restart Praefect, run:
+   1. Ensure that `praefect['auto_migrate'] = true` is set in `/etc/gitlab/gitlab.rb`.
 
-  ```shell
-  sudo gitlab-ctl reconfigure
-  ```
+1. On all **remaining Praefect nodes**, ensure that `praefect['auto_migrate'] = false` is
+   set in `/etc/gitlab/gitlab.rb` to prevent `reconfigure` from automatically running database migrations.
 
-**All Praefect nodes _excluding_ the Praefect deploy node**
+1. On the **Praefect deploy node**:
 
-- Update the GitLab package:
+   1. Upgrade the GitLab package:
 
-  ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ee
-  ```
+      ```shell
+      # Debian/Ubuntu
+      sudo apt-get update && sudo apt-get install gitlab-ee
 
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+      # Centos/RHEL
+      sudo yum install gitlab-ee
+      ```
 
-- Ensure nodes are running the latest code:
+      If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the command above.
 
-  ```shell
-  sudo gitlab-ctl reconfigure
-  ```
+   1. To apply the Praefect database migrations and restart Praefect, run:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+1. On all **remaining Praefect nodes**:
+
+   1. Upgrade the GitLab package:
+
+      ```shell
+      sudo apt-get update && sudo apt-get install gitlab-ee
+      ```
+
+      If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the command above.
+
+   1. Ensure nodes are running the latest code:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
 
 ### Use PostgreSQL HA
 
@@ -290,7 +313,7 @@ node throughout the process.
 
 - If you're using PgBouncer:
 
-  You need to bypass PgBouncer and connect directly to the database master
+  You need to bypass PgBouncer and connect directly to the database leader
   before running migrations.
 
   Rails uses an advisory lock when attempting to run a migration to prevent
@@ -299,7 +322,7 @@ node throughout the process.
   and other issues when running database migrations using PgBouncer in transaction
   pooling mode.
 
-  To find the master node, run the following on a database node:
+  To find the leader node, run the following on a database node:
 
   ```shell
   sudo gitlab-ctl patroni members
@@ -307,7 +330,7 @@ node throughout the process.
 
   Then, in your `gitlab.rb` file on the deploy node, update
   `gitlab_rails['db_host']` and `gitlab_rails['db_port']` with the database
-  master's host and port.
+  leader's host and port.
 
 - To get the regular database migrations and latest code in place, run
 
@@ -589,7 +612,7 @@ You can only upgrade one minor release at a time.
 
 This section describes the steps required to upgrade a multi-node / HA
 deployment with Geo. Some steps must be performed on a particular node. This
-node is known as the “deploy node” and is noted through the following
+node is known as the "deploy node" and is noted through the following
 instructions.
 
 Updates must be performed in the following order:
@@ -673,7 +696,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 1. If you're using PgBouncer:
 
-   You need to bypass PgBouncer and connect directly to the database master
+   You need to bypass PgBouncer and connect directly to the database leader
    before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent
@@ -682,7 +705,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
    and other issues when running database migrations using PgBouncer in transaction
    pooling mode.
 
-   To find the master node, run the following on a database node:
+   To find the leader node, run the following on a database node:
 
    ```shell
    sudo gitlab-ctl patroni members
@@ -690,7 +713,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
    Then, in your `gitlab.rb` file on the deploy node, update
    `gitlab_rails['db_host']` and `gitlab_rails['db_port']` with the database
-   master's host and port.
+   leader's host and port.
 
 1. To get the regular database migrations and latest code in place, run
 

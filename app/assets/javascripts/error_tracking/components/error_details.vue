@@ -301,7 +301,7 @@ export default {
             <gl-button
               class="ml-2"
               category="secondary"
-              variant="info"
+              variant="confirm"
               :loading="updatingResolveStatus"
               data-testid="update-resolve-status-btn"
               @click="onResolveStatusUpdate"
@@ -313,7 +313,7 @@ export default {
               class="ml-2"
               data-testid="view_issue_button"
               :href="error.gitlabIssuePath"
-              variant="success"
+              variant="confirm"
             >
               {{ __('View issue') }}
             </gl-button>
@@ -364,7 +364,6 @@ export default {
               v-if="error.gitlabIssuePath"
               data-qa-selector="view_issue_button"
               :href="error.gitlabIssuePath"
-              variant="success"
               >{{ __('View issue') }}</gl-dropdown-item
             >
             <gl-dropdown-item
@@ -382,7 +381,7 @@ export default {
           <h2 class="text-truncate">{{ error.title }}</h2>
         </tooltip-on-truncate>
         <template v-if="error.tags">
-          <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="mr-2">
+          <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="gl-mr-3">
             {{ errorLevel }}
           </gl-badge>
           <gl-badge v-if="error.tags.logger" variant="muted">{{ error.tags.logger }} </gl-badge>

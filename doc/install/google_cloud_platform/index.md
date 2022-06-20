@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
@@ -13,7 +13,7 @@ NOTE:
 To deploy production-ready GitLab on
 Google Kubernetes Engine,
 you can follow Google Cloud Platform's
-[Click to Deploy steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
+[`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
 It's an alternative to using a GCP VM, and uses
 the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 

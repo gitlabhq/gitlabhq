@@ -10,31 +10,25 @@ class Repositories::DestroyService < Repositories::BaseService
     # Git data (e.g. a list of branch names).
     ignore_git_errors { repository.before_delete }
 
-    if mv_repository(disk_path, removal_path)
-      log_info(%Q{Repository "#{disk_path}" moved to "#{removal_path}" for repository "#{full_path}"})
+    # Use variables that aren't methods on Project, because they are used in a callback
+    current_storage = repository.shard
+    current_path = "#{disk_path}.git"
 
-      current_repository = repository
-
-      # Because GitlabShellWorker is inside a run_after_commit callback it will
-      # never be triggered on a read-only instance.
-      #
-      # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/223272
-      if Gitlab::Database.read_only?
-        Repositories::ShellDestroyService.new(current_repository).execute
-      else
-        container.run_after_commit do
-          Repositories::ShellDestroyService.new(current_repository).execute
-        end
-      end
-
-      log_info("Repository \"#{full_path}\" was removed")
-
-      success
-    elsif repo_exists?(disk_path)
-      move_error(disk_path)
+    # Because #remove happens inside a run_after_commit callback it will
+    # never be triggered on a read-only instance.
+    #
+    # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/223272
+    if Gitlab::Database.read_only?
+      Gitlab::Git::Repository.new(current_storage, current_path, nil, nil).remove
     else
-      success
+      container.run_after_commit do
+        Gitlab::Git::Repository.new(current_storage, current_path, nil, nil).remove
+      end
     end
+
+    log_info("Repository \"#{full_path}\" was removed")
+
+    success
   rescue Gitlab::Git::Repository::NoRepository
     success
   end

@@ -70,7 +70,7 @@ class AwardEmoji < ApplicationRecord
 
   def expire_cache
     awardable.try(:bump_updated_at)
-    awardable.try(:expire_etag_cache)
+    awardable.expire_etag_cache if awardable.is_a?(Note)
     awardable.try(:update_upvotes_count) if upvote?
   end
 end

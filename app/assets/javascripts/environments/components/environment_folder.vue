@@ -47,8 +47,8 @@ export default {
   computed: {
     icons() {
       return this.visible
-        ? { caret: 'angle-down', folder: 'folder-open' }
-        : { caret: 'angle-right', folder: 'folder-o' };
+        ? { caret: 'chevron-lg-down', folder: 'folder-open' }
+        : { caret: 'chevron-lg-right', folder: 'folder-o' };
     },
     label() {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;

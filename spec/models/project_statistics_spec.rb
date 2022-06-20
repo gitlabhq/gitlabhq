@@ -54,6 +54,18 @@ RSpec.describe ProjectStatistics do
     end
   end
 
+  describe 'namespace relatable columns' do
+    it 'treats the correct columns as namespace relatable' do
+      expect(described_class::NAMESPACE_RELATABLE_COLUMNS).to match_array %i[
+        repository_size
+        wiki_size
+        lfs_objects_size
+        uploads_size
+        container_registry_size
+      ]
+    end
+  end
+
   describe '#total_repository_size' do
     it "sums repository and LFS object size" do
       statistics.repository_size = 2
@@ -345,20 +357,6 @@ RSpec.describe ProjectStatistics do
       update_container_registry_size
 
       expect(statistics.container_registry_size).to eq(0)
-    end
-
-    context 'with container_registry_project_statistics FF disabled' do
-      before do
-        stub_feature_flags(container_registry_project_statistics: false)
-      end
-
-      it 'does not update the container_registry_size' do
-        expect(project).not_to receive(:container_repositories_size)
-
-        update_container_registry_size
-
-        expect(statistics.container_registry_size).to eq(0)
-      end
     end
   end
 

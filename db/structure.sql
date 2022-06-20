@@ -11288,6 +11288,10 @@ CREATE TABLE application_settings (
     database_grafana_api_url text,
     database_grafana_tag text,
     public_runner_releases_url text DEFAULT 'https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases'::text NOT NULL,
+    password_uppercase_required boolean DEFAULT false NOT NULL,
+    password_lowercase_required boolean DEFAULT false NOT NULL,
+    password_number_required boolean DEFAULT false NOT NULL,
+    password_symbol_required boolean DEFAULT false NOT NULL,
     encrypted_arkose_labs_public_api_key bytea,
     encrypted_arkose_labs_public_api_key_iv bytea,
     encrypted_arkose_labs_private_api_key bytea,
@@ -11305,7 +11309,20 @@ CREATE TABLE application_settings (
     container_registry_pre_import_timeout integer DEFAULT 1800 NOT NULL,
     container_registry_import_timeout integer DEFAULT 600 NOT NULL,
     pipeline_limit_per_project_user_sha integer DEFAULT 0 NOT NULL,
+    dingtalk_integration_enabled boolean DEFAULT false NOT NULL,
+    encrypted_dingtalk_corpid bytea,
+    encrypted_dingtalk_corpid_iv bytea,
+    encrypted_dingtalk_app_key bytea,
+    encrypted_dingtalk_app_key_iv bytea,
+    encrypted_dingtalk_app_secret bytea,
+    encrypted_dingtalk_app_secret_iv bytea,
+    jira_connect_application_key text,
+    globally_allowed_ips text DEFAULT ''::text NOT NULL,
+    container_registry_pre_import_tags_rate numeric(6,2) DEFAULT 0.5 NOT NULL,
+    license_usage_data_exported boolean DEFAULT false NOT NULL,
+    phone_verification_code_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
+    CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_p_cleanup_package_file_worker_capacity_positive CHECK ((packages_cleanup_package_file_worker_capacity >= 0)),
@@ -11326,6 +11343,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_5bcba483c4 CHECK ((char_length(sentry_environment) <= 255)),
     CONSTRAINT check_718b4458ae CHECK ((char_length(personal_access_token_prefix) <= 20)),
     CONSTRAINT check_7227fad848 CHECK ((char_length(rate_limiting_response_text) <= 255)),
+    CONSTRAINT check_734cc9407a CHECK ((char_length(globally_allowed_ips) <= 255)),
     CONSTRAINT check_7ccfe2764a CHECK ((char_length(arkose_labs_namespace) <= 255)),
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_8dca35398a CHECK ((char_length(public_runner_releases_url) <= 255)),
@@ -11334,6 +11352,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_a5704163cc CHECK ((char_length(secret_detection_revocation_token_types_url) <= 255)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
+    CONSTRAINT check_e2dd6e290a CHECK ((char_length(jira_connect_application_key) <= 255)),
     CONSTRAINT check_e5024c8801 CHECK ((char_length(elasticsearch_username) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
     CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255)),
@@ -11347,6 +11366,22 @@ COMMENT ON COLUMN application_settings.encrypted_content_validation_api_key IS '
 COMMENT ON COLUMN application_settings.encrypted_content_validation_api_key_iv IS 'JiHu-specific column';
 
 COMMENT ON COLUMN application_settings.content_validation_endpoint_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.dingtalk_integration_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_corpid IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_corpid_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_key IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_key_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_secret IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_dingtalk_app_secret_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.phone_verification_code_enabled IS 'JiHu-specific column';
 
 CREATE SEQUENCE application_settings_id_seq
     START WITH 1
@@ -11384,6 +11419,10 @@ CREATE TABLE approval_merge_request_rules (
     section text,
     modified_from_project_rule boolean DEFAULT false NOT NULL,
     orchestration_policy_idx smallint,
+    vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
+    scanners text[] DEFAULT '{}'::text[] NOT NULL,
+    severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
+    vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL,
     CONSTRAINT check_6fca5928b2 CHECK ((char_length(section) <= 255))
 );
 
@@ -11616,6 +11655,26 @@ CREATE SEQUENCE audit_events_id_seq
 
 ALTER SEQUENCE audit_events_id_seq OWNED BY audit_events.id;
 
+CREATE TABLE audit_events_streaming_headers (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_audit_event_destination_id bigint NOT NULL,
+    key text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_53c3152034 CHECK ((char_length(key) <= 255)),
+    CONSTRAINT check_ac213cca22 CHECK ((char_length(value) <= 255))
+);
+
+CREATE SEQUENCE audit_events_streaming_headers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_headers_id_seq OWNED BY audit_events_streaming_headers.id;
+
 CREATE TABLE authentication_events (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -11767,6 +11826,8 @@ CREATE TABLE batched_background_migrations (
     max_batch_size integer,
     started_at timestamp with time zone,
     on_hold_until timestamp with time zone,
+    gitlab_schema text NOT NULL,
+    CONSTRAINT check_0406d9776f CHECK ((char_length(gitlab_schema) <= 255)),
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
@@ -12291,15 +12352,6 @@ CREATE TABLE ci_build_report_results (
     data jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
-CREATE SEQUENCE ci_build_report_results_build_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_build_report_results_build_id_seq OWNED BY ci_build_report_results.build_id;
-
 CREATE TABLE ci_build_trace_chunks (
     id bigint NOT NULL,
     chunk_index integer NOT NULL,
@@ -12501,6 +12553,7 @@ CREATE TABLE ci_group_variables (
     masked boolean DEFAULT false NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
     environment_scope text DEFAULT '*'::text NOT NULL,
+    raw boolean DEFAULT true NOT NULL,
     CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255))
 );
 
@@ -12521,6 +12574,7 @@ CREATE TABLE ci_instance_variables (
     key text NOT NULL,
     encrypted_value text,
     encrypted_value_iv text,
+    raw boolean DEFAULT true NOT NULL,
     CONSTRAINT check_07a45a5bcb CHECK ((char_length(encrypted_value_iv) <= 255)),
     CONSTRAINT check_5aede12208 CHECK ((char_length(key) <= 255)),
     CONSTRAINT check_956afd70f1 CHECK ((char_length(encrypted_value) <= 13579))
@@ -12546,15 +12600,6 @@ CREATE TABLE ci_job_artifact_states (
     verification_failure text,
     CONSTRAINT check_df832b66ea CHECK ((char_length(verification_failure) <= 255))
 );
-
-CREATE SEQUENCE ci_job_artifact_states_job_artifact_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_job_artifact_states_job_artifact_id_seq OWNED BY ci_job_artifact_states.job_artifact_id;
 
 CREATE TABLE ci_job_artifacts (
     project_id integer NOT NULL,
@@ -12609,7 +12654,8 @@ CREATE TABLE ci_job_variables (
     encrypted_value_iv character varying,
     job_id bigint NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
-    source smallint DEFAULT 0 NOT NULL
+    source smallint DEFAULT 0 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_job_variables_id_seq
@@ -12775,7 +12821,8 @@ CREATE TABLE ci_pipeline_schedule_variables (
     pipeline_schedule_id integer NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
-    variable_type smallint DEFAULT 1 NOT NULL
+    variable_type smallint DEFAULT 1 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_schedule_variables_id_seq
@@ -12818,7 +12865,8 @@ CREATE TABLE ci_pipeline_variables (
     encrypted_value_salt character varying,
     encrypted_value_iv character varying,
     pipeline_id integer NOT NULL,
-    variable_type smallint DEFAULT 1 NOT NULL
+    variable_type smallint DEFAULT 1 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
@@ -12867,15 +12915,6 @@ CREATE TABLE ci_pipelines_config (
     pipeline_id bigint NOT NULL,
     content text NOT NULL
 );
-
-CREATE SEQUENCE ci_pipelines_config_pipeline_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_pipelines_config_pipeline_id_seq OWNED BY ci_pipelines_config.pipeline_id;
 
 CREATE SEQUENCE ci_pipelines_id_seq
     START WITH 1
@@ -13049,6 +13088,8 @@ CREATE TABLE ci_runners (
     maintainer_note text,
     token_expires_at timestamp with time zone,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
+    semver text,
+    CONSTRAINT check_a4f24953fd CHECK ((char_length(semver) <= 16)),
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -13085,7 +13126,6 @@ CREATE TABLE ci_secure_files (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     file_store smallint DEFAULT 1 NOT NULL,
-    permissions smallint DEFAULT 0 NOT NULL,
     name text NOT NULL,
     file text NOT NULL,
     checksum bytea NOT NULL,
@@ -13259,7 +13299,8 @@ CREATE TABLE ci_variables (
     protected boolean DEFAULT false NOT NULL,
     environment_scope character varying DEFAULT '*'::character varying NOT NULL,
     masked boolean DEFAULT false NOT NULL,
-    variable_type smallint DEFAULT 1 NOT NULL
+    variable_type smallint DEFAULT 1 NOT NULL,
+    raw boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE ci_variables_id_seq
@@ -13304,6 +13345,7 @@ CREATE TABLE cluster_agents (
     project_id bigint NOT NULL,
     name text NOT NULL,
     created_by_user_id bigint,
+    has_vulnerabilities boolean DEFAULT false NOT NULL,
     CONSTRAINT check_3498369510 CHECK ((char_length(name) <= 255))
 );
 
@@ -13315,6 +13357,21 @@ CREATE SEQUENCE cluster_agents_id_seq
     CACHE 1;
 
 ALTER SEQUENCE cluster_agents_id_seq OWNED BY cluster_agents.id;
+
+CREATE TABLE cluster_enabled_grants (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE cluster_enabled_grants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cluster_enabled_grants_id_seq OWNED BY cluster_enabled_grants.id;
 
 CREATE TABLE cluster_groups (
     id integer NOT NULL,
@@ -13737,8 +13794,9 @@ CREATE TABLE compliance_management_frameworks (
     description text NOT NULL,
     color text NOT NULL,
     namespace_id integer NOT NULL,
-    regulated boolean DEFAULT true NOT NULL,
     pipeline_configuration_full_path text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
     CONSTRAINT check_08cd34b2c2 CHECK ((char_length(color) <= 10)),
     CONSTRAINT check_1617e0b87e CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_ab00bc2193 CHECK ((char_length(name) <= 255)),
@@ -14311,7 +14369,6 @@ CREATE TABLE deploy_tokens (
     expires_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone NOT NULL,
     name character varying NOT NULL,
-    token character varying,
     username character varying,
     token_encrypted character varying(255),
     deploy_token_type smallint DEFAULT 2 NOT NULL,
@@ -14525,6 +14582,30 @@ CREATE SEQUENCE diff_note_positions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE diff_note_positions_id_seq OWNED BY diff_note_positions.id;
+
+CREATE TABLE dingtalk_tracker_data (
+    id bigint NOT NULL,
+    integration_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    corpid text,
+    CONSTRAINT check_d3fe332e6a CHECK ((char_length(corpid) <= 255))
+);
+
+COMMENT ON TABLE dingtalk_tracker_data IS 'JiHu-specific table';
+
+COMMENT ON COLUMN dingtalk_tracker_data.integration_id IS 'JiHu-specific column';
+
+COMMENT ON COLUMN dingtalk_tracker_data.corpid IS 'JiHu-specific column';
+
+CREATE SEQUENCE dingtalk_tracker_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dingtalk_tracker_data_id_seq OWNED BY dingtalk_tracker_data.id;
 
 CREATE TABLE dora_daily_metrics (
     id bigint NOT NULL,
@@ -14800,6 +14881,10 @@ CREATE TABLE epics (
     confidential boolean DEFAULT false NOT NULL,
     external_key character varying(255),
     color text DEFAULT '#1068bf'::text,
+    total_opened_issue_weight integer DEFAULT 0 NOT NULL,
+    total_closed_issue_weight integer DEFAULT 0 NOT NULL,
+    total_opened_issue_count integer DEFAULT 0 NOT NULL,
+    total_closed_issue_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
@@ -15179,7 +15264,6 @@ CREATE TABLE geo_event_log (
     repositories_changed_event_id bigint,
     repository_created_event_id bigint,
     hashed_storage_migrated_event_id bigint,
-    lfs_object_deleted_event_id bigint,
     hashed_storage_attachments_event_id bigint,
     reset_checksum_event_id bigint,
     cache_invalidation_event_id bigint,
@@ -15251,22 +15335,6 @@ CREATE SEQUENCE geo_hashed_storage_migrated_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_hashed_storage_migrated_events_id_seq OWNED BY geo_hashed_storage_migrated_events.id;
-
-CREATE TABLE geo_lfs_object_deleted_events (
-    id bigint NOT NULL,
-    lfs_object_id integer NOT NULL,
-    oid character varying NOT NULL,
-    file_path character varying NOT NULL
-);
-
-CREATE SEQUENCE geo_lfs_object_deleted_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_lfs_object_deleted_events_id_seq OWNED BY geo_lfs_object_deleted_events.id;
 
 CREATE TABLE geo_node_namespace_links (
     id integer NOT NULL,
@@ -16142,7 +16210,6 @@ CREATE TABLE integrations (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     active boolean DEFAULT false NOT NULL,
-    properties text,
     push_events boolean DEFAULT true,
     issues_events boolean DEFAULT true,
     merge_requests_events boolean DEFAULT true,
@@ -16233,6 +16300,27 @@ CREATE SEQUENCE issuable_metric_images_id_seq
     CACHE 1;
 
 ALTER SEQUENCE issuable_metric_images_id_seq OWNED BY issuable_metric_images.id;
+
+CREATE TABLE issuable_resource_links (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    link_text text,
+    link text NOT NULL,
+    link_type smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_67be6729db CHECK ((char_length(link) <= 2200)),
+    CONSTRAINT check_b137147e0b CHECK ((char_length(link_text) <= 255))
+);
+
+CREATE SEQUENCE issuable_resource_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE issuable_resource_links_id_seq OWNED BY issuable_resource_links.id;
 
 CREATE TABLE issuable_severities (
     id bigint NOT NULL,
@@ -17415,6 +17503,7 @@ CREATE TABLE namespace_settings (
     subgroup_runner_token_expiration_interval integer,
     project_runner_token_expiration_interval integer,
     exclude_from_free_user_cap boolean DEFAULT false NOT NULL,
+    enabled_git_access_protocol smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255))
 );
 
@@ -18697,7 +18786,10 @@ CREATE TABLE plan_limits (
     dotenv_size integer DEFAULT 5120 NOT NULL,
     pipeline_triggers integer DEFAULT 25000 NOT NULL,
     project_ci_secure_files integer DEFAULT 100 NOT NULL,
-    repository_size bigint DEFAULT 0 NOT NULL
+    repository_size bigint DEFAULT 0 NOT NULL,
+    security_policy_scan_execution_schedules integer DEFAULT 0 NOT NULL,
+    web_hook_calls_mid integer DEFAULT 0 NOT NULL,
+    web_hook_calls_low integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -19082,7 +19174,8 @@ CREATE TABLE project_build_artifacts_size_refreshes (
     state smallint DEFAULT 1 NOT NULL,
     refresh_started_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    last_job_artifact_id_on_refresh_start bigint DEFAULT 0
 );
 
 CREATE SEQUENCE project_build_artifacts_size_refreshes_id_seq
@@ -19253,7 +19346,8 @@ CREATE TABLE project_features (
     operations_access_level integer DEFAULT 20 NOT NULL,
     analytics_access_level integer DEFAULT 20 NOT NULL,
     security_and_compliance_access_level integer DEFAULT 10 NOT NULL,
-    container_registry_access_level integer DEFAULT 0 NOT NULL
+    container_registry_access_level integer DEFAULT 0 NOT NULL,
+    package_registry_access_level integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE project_features_id_seq
@@ -20809,6 +20903,25 @@ CREATE SEQUENCE sprints_id_seq
 
 ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
 
+CREATE TABLE ssh_signatures (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    key_id bigint NOT NULL,
+    verification_status smallint DEFAULT 0 NOT NULL,
+    commit_sha bytea NOT NULL
+);
+
+CREATE SEQUENCE ssh_signatures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ssh_signatures_id_seq OWNED BY ssh_signatures.id;
+
 CREATE TABLE status_check_responses (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
@@ -21022,7 +21135,8 @@ CREATE TABLE terraform_states (
     locked_by_user_id bigint,
     uuid character varying(32) NOT NULL,
     name character varying(255) NOT NULL,
-    versioning_enabled boolean DEFAULT true NOT NULL
+    versioning_enabled boolean DEFAULT true NOT NULL,
+    deleted_at timestamp with time zone
 );
 
 CREATE SEQUENCE terraform_states_id_seq
@@ -21033,6 +21147,30 @@ CREATE SEQUENCE terraform_states_id_seq
     CACHE 1;
 
 ALTER SEQUENCE terraform_states_id_seq OWNED BY terraform_states.id;
+
+CREATE TABLE timelog_categories (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    billing_rate numeric(18,4) DEFAULT 0.0,
+    billable boolean DEFAULT false NOT NULL,
+    name text NOT NULL,
+    description text,
+    color text DEFAULT '#6699cc'::text NOT NULL,
+    CONSTRAINT check_37ad5f23d7 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_4ba862ba3e CHECK ((char_length(color) <= 7)),
+    CONSTRAINT check_c4b8aec13a CHECK ((char_length(description) <= 1024))
+);
+
+CREATE SEQUENCE timelog_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE timelog_categories_id_seq OWNED BY timelog_categories.id;
 
 CREATE TABLE timelogs (
     id integer NOT NULL,
@@ -22049,6 +22187,24 @@ CREATE SEQUENCE vulnerability_scanners_id_seq
 
 ALTER SEQUENCE vulnerability_scanners_id_seq OWNED BY vulnerability_scanners.id;
 
+CREATE TABLE vulnerability_state_transitions (
+    id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    to_state smallint NOT NULL,
+    from_state smallint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_state_transitions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_state_transitions_id_seq OWNED BY vulnerability_state_transitions.id;
+
 CREATE TABLE vulnerability_statistics (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22133,7 +22289,9 @@ CREATE TABLE web_hooks (
     subgroup_events boolean DEFAULT false NOT NULL,
     recent_failures smallint DEFAULT 0 NOT NULL,
     backoff_count smallint DEFAULT 0 NOT NULL,
-    disabled_until timestamp with time zone
+    disabled_until timestamp with time zone,
+    encrypted_url_variables bytea,
+    encrypted_url_variables_iv bytea
 );
 
 CREATE SEQUENCE web_hooks_id_seq
@@ -22202,6 +22360,24 @@ CREATE SEQUENCE wiki_page_slugs_id_seq
     CACHE 1;
 
 ALTER SEQUENCE wiki_page_slugs_id_seq OWNED BY wiki_page_slugs.id;
+
+CREATE TABLE work_item_parent_links (
+    id bigint NOT NULL,
+    work_item_id bigint NOT NULL,
+    work_item_parent_id bigint NOT NULL,
+    relative_position integer,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE work_item_parent_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_parent_links_id_seq OWNED BY work_item_parent_links.id;
 
 CREATE TABLE work_item_types (
     id bigint NOT NULL,
@@ -22398,6 +22574,8 @@ ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_external_audit_event_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
+
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
 
 ALTER TABLE ONLY award_emoji ALTER COLUMN id SET DEFAULT nextval('award_emoji_id_seq'::regclass);
@@ -22462,8 +22640,6 @@ ALTER TABLE ONLY ci_build_needs ALTER COLUMN id SET DEFAULT nextval('ci_build_ne
 
 ALTER TABLE ONLY ci_build_pending_states ALTER COLUMN id SET DEFAULT nextval('ci_build_pending_states_id_seq'::regclass);
 
-ALTER TABLE ONLY ci_build_report_results ALTER COLUMN build_id SET DEFAULT nextval('ci_build_report_results_build_id_seq'::regclass);
-
 ALTER TABLE ONLY ci_build_trace_chunks ALTER COLUMN id SET DEFAULT nextval('ci_build_trace_chunks_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_builds ALTER COLUMN id SET DEFAULT nextval('ci_builds_id_seq'::regclass);
@@ -22481,8 +22657,6 @@ ALTER TABLE ONLY ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('ci_freez
 ALTER TABLE ONLY ci_group_variables ALTER COLUMN id SET DEFAULT nextval('ci_group_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_instance_variables ALTER COLUMN id SET DEFAULT nextval('ci_instance_variables_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_job_artifact_states ALTER COLUMN job_artifact_id SET DEFAULT nextval('ci_job_artifact_states_job_artifact_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_job_artifacts ALTER COLUMN id SET DEFAULT nextval('ci_job_artifacts_id_seq'::regclass);
 
@@ -22511,8 +22685,6 @@ ALTER TABLE ONLY ci_pipeline_schedules ALTER COLUMN id SET DEFAULT nextval('ci_p
 ALTER TABLE ONLY ci_pipeline_variables ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_pipelines_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_pipelines_config ALTER COLUMN pipeline_id SET DEFAULT nextval('ci_pipelines_config_pipeline_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_platform_metrics ALTER COLUMN id SET DEFAULT nextval('ci_platform_metrics_id_seq'::regclass);
 
@@ -22557,6 +22729,8 @@ ALTER TABLE ONLY ci_variables ALTER COLUMN id SET DEFAULT nextval('ci_variables_
 ALTER TABLE ONLY cluster_agent_tokens ALTER COLUMN id SET DEFAULT nextval('cluster_agent_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY cluster_agents ALTER COLUMN id SET DEFAULT nextval('cluster_agents_id_seq'::regclass);
+
+ALTER TABLE ONLY cluster_enabled_grants ALTER COLUMN id SET DEFAULT nextval('cluster_enabled_grants_id_seq'::regclass);
 
 ALTER TABLE ONLY cluster_groups ALTER COLUMN id SET DEFAULT nextval('cluster_groups_id_seq'::regclass);
 
@@ -22656,6 +22830,8 @@ ALTER TABLE ONLY detached_partitions ALTER COLUMN id SET DEFAULT nextval('detach
 
 ALTER TABLE ONLY diff_note_positions ALTER COLUMN id SET DEFAULT nextval('diff_note_positions_id_seq'::regclass);
 
+ALTER TABLE ONLY dingtalk_tracker_data ALTER COLUMN id SET DEFAULT nextval('dingtalk_tracker_data_id_seq'::regclass);
+
 ALTER TABLE ONLY dora_daily_metrics ALTER COLUMN id SET DEFAULT nextval('dora_daily_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id_seq'::regclass);
@@ -22725,8 +22901,6 @@ ALTER TABLE ONLY geo_events ALTER COLUMN id SET DEFAULT nextval('geo_events_id_s
 ALTER TABLE ONLY geo_hashed_storage_attachments_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_attachments_events_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_hashed_storage_migrated_events ALTER COLUMN id SET DEFAULT nextval('geo_hashed_storage_migrated_events_id_seq'::regclass);
-
-ALTER TABLE ONLY geo_lfs_object_deleted_events ALTER COLUMN id SET DEFAULT nextval('geo_lfs_object_deleted_events_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_node_namespace_links ALTER COLUMN id SET DEFAULT nextval('geo_node_namespace_links_id_seq'::regclass);
 
@@ -22815,6 +22989,8 @@ ALTER TABLE ONLY internal_ids ALTER COLUMN id SET DEFAULT nextval('internal_ids_
 ALTER TABLE ONLY ip_restrictions ALTER COLUMN id SET DEFAULT nextval('ip_restrictions_id_seq'::regclass);
 
 ALTER TABLE ONLY issuable_metric_images ALTER COLUMN id SET DEFAULT nextval('issuable_metric_images_id_seq'::regclass);
+
+ALTER TABLE ONLY issuable_resource_links ALTER COLUMN id SET DEFAULT nextval('issuable_resource_links_id_seq'::regclass);
 
 ALTER TABLE ONLY issuable_severities ALTER COLUMN id SET DEFAULT nextval('issuable_severities_id_seq'::regclass);
 
@@ -23178,6 +23354,8 @@ ALTER TABLE ONLY spam_logs ALTER COLUMN id SET DEFAULT nextval('spam_logs_id_seq
 
 ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::regclass);
 
+ALTER TABLE ONLY ssh_signatures ALTER COLUMN id SET DEFAULT nextval('ssh_signatures_id_seq'::regclass);
+
 ALTER TABLE ONLY status_check_responses ALTER COLUMN id SET DEFAULT nextval('status_check_responses_id_seq'::regclass);
 
 ALTER TABLE ONLY status_page_published_incidents ALTER COLUMN id SET DEFAULT nextval('status_page_published_incidents_id_seq'::regclass);
@@ -23199,6 +23377,8 @@ ALTER TABLE ONLY term_agreements ALTER COLUMN id SET DEFAULT nextval('term_agree
 ALTER TABLE ONLY terraform_state_versions ALTER COLUMN id SET DEFAULT nextval('terraform_state_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY terraform_states ALTER COLUMN id SET DEFAULT nextval('terraform_states_id_seq'::regclass);
+
+ALTER TABLE ONLY timelog_categories ALTER COLUMN id SET DEFAULT nextval('timelog_categories_id_seq'::regclass);
 
 ALTER TABLE ONLY timelogs ALTER COLUMN id SET DEFAULT nextval('timelogs_id_seq'::regclass);
 
@@ -23282,6 +23462,8 @@ ALTER TABLE ONLY vulnerability_remediations ALTER COLUMN id SET DEFAULT nextval(
 
 ALTER TABLE ONLY vulnerability_scanners ALTER COLUMN id SET DEFAULT nextval('vulnerability_scanners_id_seq'::regclass);
 
+ALTER TABLE ONLY vulnerability_state_transitions ALTER COLUMN id SET DEFAULT nextval('vulnerability_state_transitions_id_seq'::regclass);
+
 ALTER TABLE ONLY vulnerability_statistics ALTER COLUMN id SET DEFAULT nextval('vulnerability_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_user_mentions ALTER COLUMN id SET DEFAULT nextval('vulnerability_user_mentions_id_seq'::regclass);
@@ -23295,6 +23477,8 @@ ALTER TABLE ONLY webauthn_registrations ALTER COLUMN id SET DEFAULT nextval('web
 ALTER TABLE ONLY wiki_page_meta ALTER COLUMN id SET DEFAULT nextval('wiki_page_meta_id_seq'::regclass);
 
 ALTER TABLE ONLY wiki_page_slugs ALTER COLUMN id SET DEFAULT nextval('wiki_page_slugs_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_parent_links ALTER COLUMN id SET DEFAULT nextval('work_item_parent_links_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_types ALTER COLUMN id SET DEFAULT nextval('work_item_types_id_seq'::regclass);
 
@@ -24013,6 +24197,9 @@ ALTER TABLE ONLY audit_events_external_audit_event_destinations
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
 
+ALTER TABLE ONLY audit_events_streaming_headers
+    ADD CONSTRAINT audit_events_streaming_headers_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY authentication_events
     ADD CONSTRAINT authentication_events_pkey PRIMARY KEY (id);
 
@@ -24112,6 +24299,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE routes
+    ADD CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -24123,6 +24313,9 @@ ALTER TABLE sprints
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE requirements
+    ADD CONSTRAINT check_requirement_issue_not_null CHECK ((issue_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
@@ -24276,6 +24469,9 @@ ALTER TABLE ONLY cluster_agent_tokens
 
 ALTER TABLE ONLY cluster_agents
     ADD CONSTRAINT cluster_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cluster_enabled_grants
+    ADD CONSTRAINT cluster_enabled_grants_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT cluster_groups_pkey PRIMARY KEY (id);
@@ -24454,6 +24650,9 @@ ALTER TABLE ONLY detached_partitions
 ALTER TABLE ONLY diff_note_positions
     ADD CONSTRAINT diff_note_positions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY dingtalk_tracker_data
+    ADD CONSTRAINT dingtalk_tracker_data_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT dora_daily_metrics_pkey PRIMARY KEY (id);
 
@@ -24564,9 +24763,6 @@ ALTER TABLE ONLY geo_hashed_storage_attachments_events
 
 ALTER TABLE ONLY geo_hashed_storage_migrated_events
     ADD CONSTRAINT geo_hashed_storage_migrated_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_lfs_object_deleted_events
-    ADD CONSTRAINT geo_lfs_object_deleted_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT geo_node_namespace_links_pkey PRIMARY KEY (id);
@@ -24714,6 +24910,9 @@ ALTER TABLE ONLY ip_restrictions
 
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT issuable_metric_images_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY issuable_resource_links
+    ADD CONSTRAINT issuable_resource_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT issuable_severities_pkey PRIMARY KEY (id);
@@ -25378,6 +25577,9 @@ ALTER TABLE ONLY spam_logs
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT ssh_signatures_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT status_check_responses_pkey PRIMARY KEY (id);
 
@@ -25410,6 +25612,9 @@ ALTER TABLE ONLY terraform_state_versions
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT terraform_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY timelog_categories
+    ADD CONSTRAINT timelog_categories_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT timelogs_pkey PRIMARY KEY (id);
@@ -25552,6 +25757,9 @@ ALTER TABLE ONLY vulnerability_remediations
 ALTER TABLE ONLY vulnerability_scanners
     ADD CONSTRAINT vulnerability_scanners_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY vulnerability_state_transitions
+    ADD CONSTRAINT vulnerability_state_transitions_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY vulnerability_statistics
     ADD CONSTRAINT vulnerability_statistics_pkey PRIMARY KEY (id);
 
@@ -25572,6 +25780,9 @@ ALTER TABLE ONLY wiki_page_meta
 
 ALTER TABLE ONLY wiki_page_slugs
     ADD CONSTRAINT wiki_page_slugs_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_parent_links
+    ADD CONSTRAINT work_item_parent_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY work_item_types
     ADD CONSTRAINT work_item_types_pkey PRIMARY KEY (id);
@@ -26565,6 +26776,8 @@ CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONL
 
 CREATE UNIQUE INDEX i_ci_job_token_project_scope_links_on_source_and_target_project ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id);
 
+CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
+
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
 CREATE INDEX idx_analytics_devops_adoption_snapshots_finalized ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time) WHERE (recorded_at >= end_time);
@@ -26604,6 +26817,8 @@ CREATE INDEX idx_eaprpb_external_approval_rule_id ON external_approval_rules_pro
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
 CREATE UNIQUE INDEX idx_environment_merge_requests_unique_index ON deployment_merge_requests USING btree (environment_id, merge_request_id);
+
+CREATE UNIQUE INDEX idx_external_audit_event_destination_id_key_uniq ON audit_events_streaming_headers USING btree (key, external_audit_event_destination_id);
 
 CREATE INDEX idx_geo_con_rep_updated_events_on_container_repository_id ON geo_container_repository_updated_events USING btree (container_repository_id);
 
@@ -26658,6 +26873,8 @@ CREATE UNIQUE INDEX idx_on_external_approval_rules_project_id_name ON external_a
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_external_url ON external_status_checks USING btree (project_id, external_url);
 
 CREATE UNIQUE INDEX idx_on_external_status_checks_project_id_name ON external_status_checks USING btree (project_id, name);
+
+CREATE INDEX idx_open_issues_on_project_id_and_confidential ON issues USING btree (project_id, confidential) WHERE (state_id = 1);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
 
@@ -26714,6 +26931,8 @@ CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans 
 CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan_type);
 
 CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knative ON serverless_domain_cluster USING btree (clusters_applications_knative_id);
+
+CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
 
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
 
@@ -26910,6 +27129,8 @@ CREATE UNIQUE INDEX index_batched_background_migrations_on_unique_configuration 
 CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_background_migration_jobs USING btree (batched_background_migration_id, id);
 
 CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
+
+CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
 
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
@@ -27115,6 +27336,8 @@ CREATE UNIQUE INDEX index_ci_job_artifacts_on_job_id_and_file_type ON ci_job_art
 
 CREATE INDEX index_ci_job_artifacts_on_project_id ON ci_job_artifacts USING btree (project_id);
 
+CREATE INDEX index_ci_job_artifacts_on_project_id_and_id ON ci_job_artifacts USING btree (project_id, id);
+
 CREATE INDEX index_ci_job_artifacts_on_project_id_for_security_reports ON ci_job_artifacts USING btree (project_id) WHERE (file_type = ANY (ARRAY[5, 6, 7, 8]));
 
 CREATE INDEX index_ci_job_token_project_scope_links_on_added_by_id ON ci_job_token_project_scope_links USING btree (added_by_id);
@@ -27257,6 +27480,8 @@ CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ci_runners USING
 
 CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (description gin_trgm_ops);
 
+CREATE INDEX index_ci_runners_on_id_and_semver_cidr ON ci_runners USING btree (id, ((semver)::cidr));
+
 CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
 
 CREATE INDEX index_ci_runners_on_runner_type ON ci_runners USING btree (runner_type);
@@ -27331,7 +27556,11 @@ CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_age
 
 CREATE INDEX index_cluster_agents_on_created_by_user_id ON cluster_agents USING btree (created_by_user_id);
 
+CREATE INDEX index_cluster_agents_on_project_id_and_has_vulnerabilities ON cluster_agents USING btree (project_id, has_vulnerabilities);
+
 CREATE UNIQUE INDEX index_cluster_agents_on_project_id_and_name ON cluster_agents USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_cluster_enabled_grants_on_namespace_id ON cluster_enabled_grants USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_cluster_groups_on_cluster_id_and_group_id ON cluster_groups USING btree (cluster_id, group_id);
 
@@ -27501,13 +27730,11 @@ CREATE INDEX index_deploy_keys_projects_on_project_id ON deploy_keys_projects US
 
 CREATE INDEX index_deploy_tokens_on_creator_id ON deploy_tokens USING btree (creator_id);
 
-CREATE UNIQUE INDEX index_deploy_tokens_on_token ON deploy_tokens USING btree (token);
-
-CREATE INDEX index_deploy_tokens_on_token_and_expires_at_and_id ON deploy_tokens USING btree (token, expires_at, id) WHERE (revoked IS FALSE);
-
 CREATE UNIQUE INDEX index_deploy_tokens_on_token_encrypted ON deploy_tokens USING btree (token_encrypted);
 
 CREATE INDEX index_deployment_approvals_on_approval_rule_id ON deployment_approvals USING btree (approval_rule_id);
+
+CREATE INDEX index_deployment_approvals_on_created_at_and_id ON deployment_approvals USING btree (created_at, id);
 
 CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_id_and_user_id ON deployment_approvals USING btree (deployment_id, user_id);
 
@@ -27593,6 +27820,8 @@ CREATE UNIQUE INDEX index_design_user_mentions_on_note_id ON design_user_mention
 
 CREATE UNIQUE INDEX index_diff_note_positions_on_note_id_and_diff_type ON diff_note_positions USING btree (note_id, diff_type);
 
+CREATE INDEX index_dingtalk_tracker_data_on_integration_id ON dingtalk_tracker_data USING btree (integration_id);
+
 CREATE UNIQUE INDEX index_dora_daily_metrics_on_environment_id_and_date ON dora_daily_metrics USING btree (environment_id, date);
 
 CREATE INDEX index_draft_notes_on_author_id ON draft_notes USING btree (author_id);
@@ -27676,6 +27905,8 @@ CREATE INDEX index_epics_on_start_date ON epics USING btree (start_date);
 CREATE INDEX index_epics_on_start_date_sourcing_epic_id ON epics USING btree (start_date_sourcing_epic_id) WHERE (start_date_sourcing_epic_id IS NOT NULL);
 
 CREATE INDEX index_epics_on_start_date_sourcing_milestone_id ON epics USING btree (start_date_sourcing_milestone_id);
+
+CREATE INDEX index_error_tracking_client_for_enabled_check ON error_tracking_client_keys USING btree (project_id, public_key) WHERE (active = true);
 
 CREATE INDEX index_error_tracking_client_keys_on_project_id ON error_tracking_client_keys USING btree (project_id);
 
@@ -27771,8 +28002,6 @@ CREATE INDEX index_geo_event_log_on_hashed_storage_attachments_event_id ON geo_e
 
 CREATE INDEX index_geo_event_log_on_hashed_storage_migrated_event_id ON geo_event_log USING btree (hashed_storage_migrated_event_id) WHERE (hashed_storage_migrated_event_id IS NOT NULL);
 
-CREATE INDEX index_geo_event_log_on_lfs_object_deleted_event_id ON geo_event_log USING btree (lfs_object_deleted_event_id) WHERE (lfs_object_deleted_event_id IS NOT NULL);
-
 CREATE INDEX index_geo_event_log_on_repositories_changed_event_id ON geo_event_log USING btree (repositories_changed_event_id) WHERE (repositories_changed_event_id IS NOT NULL);
 
 CREATE INDEX index_geo_event_log_on_repository_created_event_id ON geo_event_log USING btree (repository_created_event_id) WHERE (repository_created_event_id IS NOT NULL);
@@ -27788,8 +28017,6 @@ CREATE INDEX index_geo_event_log_on_reset_checksum_event_id ON geo_event_log USI
 CREATE INDEX index_geo_hashed_storage_attachments_events_on_project_id ON geo_hashed_storage_attachments_events USING btree (project_id);
 
 CREATE INDEX index_geo_hashed_storage_migrated_events_on_project_id ON geo_hashed_storage_migrated_events USING btree (project_id);
-
-CREATE INDEX index_geo_lfs_object_deleted_events_on_lfs_object_id ON geo_lfs_object_deleted_events USING btree (lfs_object_id);
 
 CREATE INDEX index_geo_node_namespace_links_on_geo_node_id ON geo_node_namespace_links USING btree (geo_node_id);
 
@@ -27901,6 +28128,8 @@ CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_rep
 
 CREATE INDEX index_group_wiki_repositories_on_shard_id ON group_wiki_repositories USING btree (shard_id);
 
+CREATE INDEX index_groups_on_parent_id_id ON namespaces USING btree (parent_id, id) WHERE ((type)::text = 'Group'::text);
+
 CREATE INDEX index_historical_data_on_recorded_at ON historical_data USING btree (recorded_at);
 
 CREATE UNIQUE INDEX index_http_integrations_on_active_and_project_and_endpoint ON alert_management_http_integrations USING btree (active, project_id, endpoint_identifier) WHERE active;
@@ -28000,6 +28229,8 @@ CREATE UNIQUE INDEX index_internal_ids_on_usage_and_project_id ON internal_ids U
 CREATE INDEX index_ip_restrictions_on_group_id ON ip_restrictions USING btree (group_id);
 
 CREATE INDEX index_issuable_metric_images_on_issue_id ON issuable_metric_images USING btree (issue_id);
+
+CREATE INDEX index_issuable_resource_links_on_issue_id ON issuable_resource_links USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities USING btree (issue_id);
 
@@ -28409,6 +28640,8 @@ CREATE INDEX index_namespaces_on_traversal_ids ON namespaces USING gin (traversa
 
 CREATE INDEX index_namespaces_on_traversal_ids_for_groups ON namespaces USING gin (traversal_ids) WHERE ((type)::text = 'Group'::text);
 
+CREATE INDEX index_namespaces_on_traversal_ids_for_groups_btree ON namespaces USING btree (traversal_ids) WHERE ((type)::text = 'Group'::text);
+
 CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id);
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
@@ -28428,6 +28661,8 @@ CREATE INDEX index_notes_on_commit_id ON notes USING btree (commit_id);
 CREATE INDEX index_notes_on_created_at ON notes USING btree (created_at);
 
 CREATE INDEX index_notes_on_discussion_id ON notes USING btree (discussion_id);
+
+CREATE INDEX index_notes_on_id_where_confidential ON notes USING btree (id) WHERE (confidential = true);
 
 CREATE INDEX index_notes_on_line_code ON notes USING btree (line_code);
 
@@ -28462,6 +28697,10 @@ CREATE UNIQUE INDEX index_oauth_applications_on_uid ON oauth_applications USING 
 CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requests USING btree (access_grant_id);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
+
+CREATE INDEX index_on_dingtalk_tracker_data_corpid ON dingtalk_tracker_data USING btree (corpid) WHERE (corpid IS NOT NULL);
+
+COMMENT ON INDEX index_on_dingtalk_tracker_data_corpid IS 'JiHu-specific index';
 
 CREATE INDEX index_on_group_id_on_webhooks ON web_hooks USING btree (group_id);
 
@@ -28585,6 +28824,8 @@ CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata US
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
 
+CREATE INDEX index_packages_on_available_pypi_packages ON packages_packages USING btree (project_id, id) WHERE ((status = ANY (ARRAY[0, 1])) AND (package_type = 5) AND (version IS NOT NULL));
+
 CREATE INDEX index_packages_package_file_build_infos_on_package_file_id ON packages_package_file_build_infos USING btree (package_file_id);
 
 CREATE INDEX index_packages_package_file_build_infos_on_pipeline_id ON packages_package_file_build_infos USING btree (pipeline_id);
@@ -28666,6 +28907,8 @@ CREATE INDEX index_pages_domains_on_verified_at ON pages_domains USING btree (ve
 CREATE INDEX index_pages_domains_on_verified_at_and_enabled_until ON pages_domains USING btree (verified_at, enabled_until);
 
 CREATE INDEX index_pages_domains_on_wildcard ON pages_domains USING btree (wildcard);
+
+CREATE UNIQUE INDEX index_parent_links_on_work_item_id_and_work_item_parent_id ON work_item_parent_links USING btree (work_item_id, work_item_parent_id);
 
 CREATE INDEX index_partial_ci_builds_on_user_id_name_parser_features ON ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
 
@@ -29231,6 +29474,12 @@ CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm_ops);
 
+CREATE UNIQUE INDEX index_ssh_signatures_on_commit_sha ON ssh_signatures USING btree (commit_sha);
+
+CREATE INDEX index_ssh_signatures_on_key_id ON ssh_signatures USING btree (key_id);
+
+CREATE INDEX index_ssh_signatures_on_project_id ON ssh_signatures USING btree (project_id);
+
 CREATE INDEX index_status_check_responses_on_external_approval_rule_id ON status_check_responses USING btree (external_approval_rule_id);
 
 CREATE INDEX index_status_check_responses_on_external_status_check_id ON status_check_responses USING btree (external_status_check_id);
@@ -29286,6 +29535,8 @@ CREATE INDEX index_terraform_states_on_locked_by_user_id ON terraform_states USI
 CREATE UNIQUE INDEX index_terraform_states_on_project_id_and_name ON terraform_states USING btree (project_id, name);
 
 CREATE UNIQUE INDEX index_terraform_states_on_uuid ON terraform_states USING btree (uuid);
+
+CREATE UNIQUE INDEX index_timelog_categories_on_unique_name_per_namespace ON timelog_categories USING btree (namespace_id, lower(name));
 
 CREATE INDEX index_timelogs_on_issue_id ON timelogs USING btree (issue_id);
 
@@ -29599,6 +29850,8 @@ CREATE INDEX index_vulnerability_reads_on_cluster_agent_id ON vulnerability_read
 
 CREATE INDEX index_vulnerability_reads_on_location_image ON vulnerability_reads USING btree (location_image) WHERE (report_type = ANY (ARRAY[2, 7]));
 
+CREATE INDEX index_vulnerability_reads_on_location_image_partial ON vulnerability_reads USING btree (project_id, location_image) WHERE ((report_type = ANY (ARRAY[2, 7])) AND (location_image IS NOT NULL));
+
 CREATE INDEX index_vulnerability_reads_on_scanner_id ON vulnerability_reads USING btree (scanner_id);
 
 CREATE UNIQUE INDEX index_vulnerability_reads_on_uuid ON vulnerability_reads USING btree (uuid);
@@ -29608,6 +29861,8 @@ CREATE UNIQUE INDEX index_vulnerability_reads_on_vulnerability_id ON vulnerabili
 CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum ON vulnerability_remediations USING btree (project_id, checksum);
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON vulnerability_scanners USING btree (project_id, external_id);
+
+CREATE INDEX index_vulnerability_state_transitions_id_and_vulnerability_id ON vulnerability_state_transitions USING btree (vulnerability_id, id);
 
 CREATE INDEX index_vulnerability_statistics_on_latest_pipeline_id ON vulnerability_statistics USING btree (latest_pipeline_id);
 
@@ -29646,6 +29901,8 @@ CREATE INDEX index_wiki_page_meta_on_project_id ON wiki_page_meta USING btree (p
 CREATE UNIQUE INDEX index_wiki_page_slugs_on_slug_and_wiki_page_meta_id ON wiki_page_slugs USING btree (slug, wiki_page_meta_id);
 
 CREATE INDEX index_wiki_page_slugs_on_wiki_page_meta_id ON wiki_page_slugs USING btree (wiki_page_meta_id);
+
+CREATE INDEX index_work_item_parent_links_on_work_item_parent_id ON work_item_parent_links USING btree (work_item_parent_id);
 
 CREATE INDEX index_x509_certificates_on_subject_key_identifier ON x509_certificates USING btree (subject_key_identifier);
 
@@ -29709,6 +29966,8 @@ CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON depl
 
 CREATE INDEX partial_index_deployments_for_project_id_and_tag ON deployments USING btree (project_id) WHERE (tag IS TRUE);
 
+CREATE INDEX partial_index_slack_integrations_with_bot_user_id ON slack_integrations USING btree (id) WHERE (bot_user_id IS NOT NULL);
+
 CREATE UNIQUE INDEX partial_index_sop_configs_on_namespace_id ON security_orchestration_policy_configurations USING btree (namespace_id) WHERE (namespace_id IS NOT NULL);
 
 CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestration_policy_configurations USING btree (project_id) WHERE (project_id IS NOT NULL);
@@ -29723,11 +29982,15 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 
 CREATE INDEX tmp_idx_container_repos_on_non_migrated ON container_repositories USING btree (project_id, id) WHERE ((migration_state <> 'import_done'::text) AND (created_at < '2022-01-23 00:00:00'::timestamp without time zone));
 
+CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
+
 CREATE INDEX tmp_index_ci_job_artifacts_on_id_where_trace_and_expire_at ON ci_job_artifacts USING btree (id) WHERE ((file_type = 3) AND (expire_at = ANY (ARRAY['2021-04-22 00:00:00+00'::timestamp with time zone, '2021-05-22 00:00:00+00'::timestamp with time zone, '2021-06-22 00:00:00+00'::timestamp with time zone, '2022-01-22 00:00:00+00'::timestamp with time zone, '2022-02-22 00:00:00+00'::timestamp with time zone, '2022-03-22 00:00:00+00'::timestamp with time zone, '2022-04-22 00:00:00+00'::timestamp with time zone])));
 
 CREATE INDEX tmp_index_container_repositories_on_id_migration_state ON container_repositories USING btree (id, migration_state);
 
 CREATE INDEX tmp_index_for_namespace_id_migration_on_group_members ON members USING btree (id) WHERE ((member_namespace_id IS NULL) AND ((type)::text = 'GroupMember'::text));
+
+CREATE INDEX tmp_index_for_namespace_id_migration_on_project_members ON members USING btree (id) WHERE ((member_namespace_id IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
 CREATE INDEX tmp_index_for_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Namespace'::text));
 
@@ -29735,15 +29998,11 @@ CREATE INDEX tmp_index_for_null_project_namespace_id ON projects USING btree (id
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
-CREATE INDEX tmp_index_integrations_on_id_where_type_droneci_or_teamcity ON integrations USING btree (id) WHERE ((type_new = ANY (ARRAY['Integrations::DroneCi'::text, 'Integrations::Teamcity'::text])) AND (encrypted_properties IS NOT NULL));
-
 CREATE INDEX tmp_index_issues_on_issue_type_and_id ON issues USING btree (issue_type, id);
 
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
 
 CREATE INDEX tmp_index_merge_requests_draft_and_status ON merge_requests USING btree (id) WHERE ((draft = false) AND (state_id = 1) AND ((title)::text ~* '^(\[draft\]|\(draft\)|draft:|draft|\[WIP\]|WIP:|WIP)'::text));
-
-CREATE INDEX tmp_index_notes_on_id_where_discussion_id_is_null ON notes USING btree (id) WHERE (discussion_id IS NULL);
 
 CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
 
@@ -29752,8 +30011,6 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 CREATE INDEX tmp_index_projects_on_id_and_runners_token ON projects USING btree (id, runners_token) WHERE (runners_token IS NOT NULL);
 
 CREATE INDEX tmp_index_projects_on_id_and_runners_token_encrypted ON projects USING btree (id, runners_token_encrypted) WHERE (runners_token_encrypted IS NOT NULL);
-
-CREATE INDEX tp_index_created_at_cluster_id_project_id_on_deployments ON deployments USING btree (created_at, cluster_id, project_id) WHERE ((cluster_id IS NOT NULL) AND (created_at > '2022-04-03 00:00:00'::timestamp without time zone));
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 
@@ -31073,6 +31330,8 @@ CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERE
 
 CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER clusters_loose_fk_trigger AFTER DELETE ON clusters REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER merge_requests_loose_fk_trigger AFTER DELETE ON merge_requests REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER namespaces_loose_fk_trigger AFTER DELETE ON namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -31255,9 +31514,6 @@ ALTER TABLE ONLY ci_pipelines
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_27548c6db3 FOREIGN KEY (hashed_storage_migrated_event_id) REFERENCES geo_hashed_storage_migrated_events(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY deployments
-    ADD CONSTRAINT fk_289bba3222 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_290ec1ab02 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -31417,9 +31673,6 @@ ALTER TABLE ONLY merge_requests
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY routes
-    ADD CONSTRAINT fk_679ff8213d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_693b8795e4 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
 
@@ -31497,6 +31750,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_7c5bb22a22 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT fk_7d2f93996c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -31720,6 +31976,9 @@ ALTER TABLE ONLY customer_relations_contacts
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_b9a3851b82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY routes
+    ADD CONSTRAINT fk_bb2e5b8968 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_bd0c4019c3 FOREIGN KEY (hosted_plan_id) REFERENCES plans(id) ON DELETE CASCADE;
 
@@ -31815,9 +32074,6 @@ ALTER TABLE ONLY web_hooks
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_d5af95fcd9 FOREIGN KEY (lfs_object_deleted_event_id) REFERENCES geo_lfs_object_deleted_events(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
@@ -31929,6 +32185,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_f15266b5f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ssh_signatures
+    ADD CONSTRAINT fk_f177ea6aa5 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
@@ -32074,6 +32333,9 @@ ALTER TABLE ONLY vulnerability_exports
 ALTER TABLE ONLY prometheus_alert_events
     ADD CONSTRAINT fk_rails_106f901176 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_streaming_headers
+    ADD CONSTRAINT fk_rails_109fcf96e2 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ci_sources_projects
     ADD CONSTRAINT fk_rails_10a1eb379a FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
@@ -32202,6 +32464,9 @@ ALTER TABLE ONLY service_desk_settings
 
 ALTER TABLE ONLY saml_group_links
     ADD CONSTRAINT fk_rails_22e312c530 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_parent_links
+    ADD CONSTRAINT fk_rails_231dba8959 FOREIGN KEY (work_item_parent_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_profiles
     ADD CONSTRAINT fk_rails_23cae5abe1 FOREIGN KEY (dast_scanner_profile_id) REFERENCES dast_scanner_profiles(id) ON DELETE CASCADE;
@@ -32377,6 +32642,9 @@ ALTER TABLE ONLY epic_user_mentions
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_rails_3ec9fd7912 FOREIGN KEY (end_event_label_id) REFERENCES labels(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY issuable_resource_links
+    ADD CONSTRAINT fk_rails_3f0ec6b1cf FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_3f6f926bd5 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
 
@@ -32466,9 +32734,6 @@ ALTER TABLE ONLY snippet_user_mentions
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_rails_4e554f96f5 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY deployment_clusters
-    ADD CONSTRAINT fk_rails_4e6243e120 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_repository_renamed_events
     ADD CONSTRAINT fk_rails_4e6524febb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -32574,6 +32839,12 @@ ALTER TABLE ONLY approval_project_rules
 
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_5fe86ea341 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_parent_links
+    ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_state_transitions
+    ADD CONSTRAINT fk_rails_60e4899648 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT fk_rails_60f6c325a6 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -32776,6 +33047,9 @@ ALTER TABLE ONLY approval_merge_request_rules_users
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_enabled_grants
+    ADD CONSTRAINT fk_rails_8336ce35af FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY dast_site_profiles
     ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -32956,11 +33230,17 @@ ALTER TABLE ONLY vulnerability_finding_signatures
 ALTER TABLE ONLY clusters_applications_cert_managers
     ADD CONSTRAINT fk_rails_9e4f2cb4b2 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY timelog_categories
+    ADD CONSTRAINT fk_rails_9f27b821a8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_milestone_events
     ADD CONSTRAINT fk_rails_a006df5590 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespace_root_storage_statistics
     ADD CONSTRAINT fk_rails_a0702c430b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dingtalk_tracker_data
+    ADD CONSTRAINT fk_rails_a138e0d542 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY elastic_reindexing_slices
     ADD CONSTRAINT fk_rails_a17d86aeb9 FOREIGN KEY (elastic_reindexing_subtask_id) REFERENCES elastic_reindexing_subtasks(id) ON DELETE CASCADE;
@@ -33117,9 +33397,6 @@ ALTER TABLE ONLY approval_project_rules_users
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_rails_baed5f39b7 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE;
-
-ALTER TABLE web_hook_logs
-    ADD CONSTRAINT fk_rails_bb3355782d FOREIGN KEY (web_hook_id) REFERENCES web_hooks(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_findings
     ADD CONSTRAINT fk_rails_bb63863cf1 FOREIGN KEY (scan_id) REFERENCES security_scans(id) ON DELETE CASCADE;

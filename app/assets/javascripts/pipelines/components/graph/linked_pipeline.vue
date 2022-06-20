@@ -13,7 +13,6 @@ import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PIPELINE_GRAPHQL_TYPE } from '../../constants';
 import { reportToSentry } from '../../utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from './constants';
@@ -35,7 +34,6 @@ export default {
     flatLeftBorder: ['gl-rounded-bottom-left-none!', 'gl-rounded-top-left-none!'],
     flatRightBorder: ['gl-rounded-bottom-right-none!', 'gl-rounded-top-right-none!'],
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     columnTitle: {
       type: String,
@@ -62,11 +60,12 @@ export default {
     return {
       hasActionTooltip: false,
       isActionLoading: false,
+      isExpandBtnFocus: false,
     };
   },
   computed: {
     action() {
-      if (this.glFeatures?.downstreamRetryAction && this.isDownstream) {
+      if (this.isDownstream) {
         if (this.isCancelable) {
           return {
             icon: 'cancel',
@@ -89,6 +88,9 @@ export default {
         ? ['gl-border-r-0!', ...this.$options.styles.flatRightBorder]
         : ['gl-border-l-0!', ...this.$options.styles.flatLeftBorder];
     },
+    buttonShadowClass() {
+      return this.isExpandBtnFocus ? '' : 'gl-shadow-none!';
+    },
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
@@ -99,9 +101,12 @@ export default {
     },
     expandedIcon() {
       if (this.isUpstream) {
-        return this.expanded ? 'angle-right' : 'angle-left';
+        return this.expanded ? 'chevron-lg-right' : 'chevron-lg-left';
       }
-      return this.expanded ? 'angle-left' : 'angle-right';
+      return this.expanded ? 'chevron-lg-left' : 'chevron-lg-right';
+    },
+    expandBtnText() {
+      return this.expanded ? __('Collapse jobs') : __('Expand jobs');
     },
     childPipeline() {
       return this.isDownstream && this.isSameProject;
@@ -157,7 +162,7 @@ export default {
       return Boolean(this.action?.method && this.action?.icon && this.action?.ariaLabel);
     },
     showCardTooltip() {
-      return !this.hasActionTooltip;
+      return !this.hasActionTooltip && !this.isExpandBtnFocus;
     },
     sourceJobName() {
       return this.pipeline.sourceJob?.name ?? '';
@@ -214,6 +219,9 @@ export default {
     setActionTooltip(flag) {
       this.hasActionTooltip = flag;
     },
+    setExpandBtnActiveState(flag) {
+      this.isExpandBtnFocus = flag;
+    },
   },
 };
 </script>
@@ -221,7 +229,7 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    class="gl-h-full gl-display-flex!"
+    class="gl-h-full gl-display-flex! gl-px-2"
     :class="flexDirection"
     data-qa-selector="linked_pipeline_container"
     @mouseover="onDownstreamHovered"
@@ -237,7 +245,11 @@ export default {
         <div
           class="gl-display-flex gl-downstream-pipeline-job-width gl-flex-direction-column gl-line-height-normal"
         >
-          <span class="gl-text-truncate" data-testid="downstream-title">
+          <span
+            class="gl-text-truncate"
+            data-testid="downstream-title"
+            data-qa-selector="downstream_title_content"
+          >
             {{ downstreamTitle }}
           </span>
           <div class="gl-text-truncate">
@@ -273,12 +285,18 @@ export default {
     <div class="gl-display-flex">
       <gl-button
         :id="buttonId"
-        class="gl-border! gl-shadow-none! gl-rounded-lg!"
-        :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses]"
+        v-gl-tooltip
+        :title="expandBtnText"
+        class="gl-border! gl-rounded-lg!"
+        :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses, buttonShadowClass]"
         :icon="expandedIcon"
-        :aria-label="__('Expand pipeline')"
+        :aria-label="expandBtnText"
         data-testid="expand-pipeline-button"
         data-qa-selector="expand_linked_pipeline_button"
+        @mouseover="setExpandBtnActiveState(true)"
+        @mouseout="setExpandBtnActiveState(false)"
+        @focus="setExpandBtnActiveState(true)"
+        @blur="setExpandBtnActiveState(false)"
         @click="onClickLinkedPipeline"
       />
     </div>

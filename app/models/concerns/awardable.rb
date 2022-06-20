@@ -18,7 +18,7 @@ module Awardable
       inner_query = award_emoji_table
                 .project('true')
                 .where(award_emoji_table[:user_id].eq(user.id))
-                .where(award_emoji_table[:awardable_type].eq(self.name))
+                .where(award_emoji_table[:awardable_type].eq(base_class.name))
                 .where(award_emoji_table[:awardable_id].eq(self.arel_table[:id]))
 
       inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
@@ -31,7 +31,7 @@ module Awardable
       inner_query = award_emoji_table
                 .project('true')
                 .where(award_emoji_table[:user_id].eq(user.id))
-                .where(award_emoji_table[:awardable_type].eq(self.name))
+                .where(award_emoji_table[:awardable_type].eq(base_class.name))
                 .where(award_emoji_table[:awardable_id].eq(self.arel_table[:id]))
 
       inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
@@ -56,13 +56,11 @@ module Awardable
       awardable_table = self.arel_table
       awards_table = AwardEmoji.arel_table
 
-      join_clause = awardable_table.join(awards_table, Arel::Nodes::OuterJoin).on(
-        awards_table[:awardable_id].eq(awardable_table[:id]).and(
-          awards_table[:awardable_type].eq(self.name).and(
-            awards_table[:name].eq(emoji_name)
-          )
-        )
-      ).join_sources
+      join_clause = awardable_table
+        .join(awards_table, Arel::Nodes::OuterJoin)
+        .on(awards_table[:awardable_id].eq(awardable_table[:id])
+              .and(awards_table[:awardable_type].eq(base_class.name).and(awards_table[:name].eq(emoji_name))))
+        .join_sources
 
       joins(join_clause).group(awardable_table[:id]).reorder(
         Arel.sql("COUNT(award_emoji.id) #{direction}")

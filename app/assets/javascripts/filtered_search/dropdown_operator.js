@@ -23,7 +23,7 @@ export default class DropdownOperator extends FilteredSearchDropdown {
     const { selected } = e.detail;
 
     if (selected.tagName === 'LI') {
-      if (selected.hasAttribute('data-value')) {
+      if (Object.prototype.hasOwnProperty.call(selected.dataset, 'value')) {
         const name = FilteredSearchVisualTokens.getLastTokenPartial();
         const operator = selected.dataset.value;
 

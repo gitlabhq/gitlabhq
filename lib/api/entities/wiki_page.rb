@@ -6,7 +6,15 @@ module API
       include ::MarkupHelper
 
       expose :content do |wiki_page, options|
-        options[:render_html] ? render_wiki_content(wiki_page, ref: wiki_page.version.id) : wiki_page.content
+        if options[:render_html]
+          render_wiki_content(
+            wiki_page,
+            ref: wiki_page.version.id,
+            current_user: options[:current_user]
+          )
+        else
+          wiki_page.content
+        end
       end
 
       expose :encoding do |wiki_page|

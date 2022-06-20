@@ -1,4 +1,4 @@
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
@@ -9,6 +9,8 @@ describe('Test case details', () => {
   const defaultTestCase = {
     classname: 'spec.test_spec',
     name: 'Test#something cool',
+    file: '~/index.js',
+    filePath: '/src/javascripts/index.js',
     formattedTime: '10.04ms',
     recent_failures: {
       count: 2,
@@ -19,6 +21,8 @@ describe('Test case details', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findName = () => wrapper.findByTestId('test-case-name');
+  const findFile = () => wrapper.findByTestId('test-case-file');
+  const findFileLink = () => wrapper.findComponent(GlLink);
   const findDuration = () => wrapper.findByTestId('test-case-duration');
   const findRecentFailures = () => wrapper.findByTestId('test-case-recent-failures');
   const findAttachmentUrl = () => wrapper.findByTestId('test-case-attachment-url');
@@ -57,8 +61,23 @@ describe('Test case details', () => {
       expect(findName().text()).toBe(defaultTestCase.name);
     });
 
+    it('renders the test case file', () => {
+      expect(findFile().text()).toBe(defaultTestCase.file);
+      expect(findFileLink().attributes('href')).toBe(defaultTestCase.filePath);
+    });
+
     it('renders the test case duration', () => {
       expect(findDuration().text()).toBe(defaultTestCase.formattedTime);
+    });
+  });
+
+  describe('when test case has execution time instead of formatted time', () => {
+    beforeEach(() => {
+      createComponent({ ...defaultTestCase, formattedTime: null, execution_time: 17 });
+    });
+
+    it('renders the test case duration', () => {
+      expect(findDuration().text()).toBe('17 s');
     });
   });
 

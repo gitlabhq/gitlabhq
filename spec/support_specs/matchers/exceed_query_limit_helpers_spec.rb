@@ -56,6 +56,7 @@ RSpec.describe ExceedQueryLimitHelpers do
         TestQueries.where(version: 'x').update_all(version: 'y')
         TestQueries.where(version: 'foobar').count
         TestQueries.where(version: 'z').delete_all
+        Project.where(id: 1).pluck(:title)
       end
     end
 
@@ -71,10 +72,11 @@ RSpec.describe ExceedQueryLimitHelpers do
         TestQueries.count
         TestQueries.where(version: 'y').update_all(version: 'z')
         TestQueries.where(version: 'z').delete_all
+        Project.where(id: 2).pluck(:title)
       end
     end
 
-    it 'merges two query counts' do
+    it 'merges two query counts, showing only diffs' do
       test_matcher = TestMatcher.new
 
       diff = test_matcher.diff_query_counts(
@@ -131,6 +133,10 @@ RSpec.describe ExceedQueryLimitHelpers do
         },
         "RELEASE SAVEPOINT active_record_1" => {
           "" => [0, 1]
+        },
+        "SELECT \"projects\".\"name\" FROM \"projects\"" => {
+          "WHERE \"projects\".\"id\" = 1" => [1, 0],
+          "WHERE \"projects\".\"id\" = 2" => [0, 1]
         }
       })
     end

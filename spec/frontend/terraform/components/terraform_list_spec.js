@@ -16,6 +16,9 @@ describe('TerraformList', () => {
 
   const propsData = {
     emptyStateImage: '/path/to/image',
+  };
+
+  const provide = {
     projectPath: 'path/to/project',
   };
 
@@ -47,6 +50,7 @@ describe('TerraformList', () => {
     wrapper = shallowMount(TerraformList, {
       apolloProvider,
       propsData,
+      provide,
       stubs: {
         GlTab,
       },

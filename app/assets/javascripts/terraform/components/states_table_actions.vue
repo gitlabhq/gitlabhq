@@ -33,6 +33,7 @@ export default {
   directives: {
     GlModalDirective,
   },
+  inject: ['projectPath'],
   props: {
     state: {
       required: true,
@@ -149,7 +150,14 @@ export default {
           variables: {
             stateID: this.state.id,
           },
-          refetchQueries: () => [{ query: getStatesQuery }],
+          refetchQueries: () => [
+            {
+              query: getStatesQuery,
+              variables: {
+                projectPath: this.projectPath,
+              },
+            },
+          ],
           awaitRefetchQueries: true,
           notifyOnNetworkStatusChange: true,
         })

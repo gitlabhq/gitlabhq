@@ -29,7 +29,7 @@ module QA
         # @param [Hash] release
         # @return [Hash]
         def comparable_release(release)
-          release&.except(:_links, :evidences)&.merge(
+          release&.except(:_links)&.merge(
             {
               author: release[:author].except(:web_url),
               commit: release[:commit].except(:web_url),
@@ -42,12 +42,14 @@ module QA
                                              }),
               milestones: release[:milestones].map do |milestone|
                 milestone.except(:id, :project_id).merge({ web_url: milestone[:web_url].split("/-/").last })
-              end
-              # TODO: Add back evidence testing once implemented
-              # https://gitlab.com/gitlab-org/gitlab/-/issues/360567
-              # evidences: release[:evidences].map do |evidence|
-              #              evidence.merge({ filepath: evidence[:filepath].split("/-/").last })
-              #            end
+              end,
+              # evidences are not directly migrated but rather recreated on the same releases,
+              # so we only check the json file is there
+              evidences: release[:evidences].map do |evidence|
+                           evidence
+                            .except(:collected_at, :sha)
+                            .merge({ filepath: evidence[:filepath].split("/-/").last.gsub(/\d+\.json/, "*.json") })
+                         end
             }
           )
         end

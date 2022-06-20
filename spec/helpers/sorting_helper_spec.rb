@@ -62,6 +62,12 @@ RSpec.describe SortingHelper do
     end
   end
 
+  describe '#can_sort_by_issue_weight?' do
+    it 'returns false' do
+      expect(helper.can_sort_by_issue_weight?(false)).to be_falsey
+    end
+  end
+
   def stub_controller_path(value)
     allow(helper.controller).to receive(:controller_path).and_return(value)
   end

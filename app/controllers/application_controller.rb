@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
   include FlocOptOut
   include CheckRateLimit
 
+  before_action :limit_session_time, if: -> { !current_user }
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
@@ -43,7 +44,6 @@ class ApplicationController < ActionController::Base
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
   before_action :auth_user
-  before_action :limit_session_time, if: -> { !current_user }
 
   prepend_around_action :set_current_context
 

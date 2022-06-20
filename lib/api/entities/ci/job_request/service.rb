@@ -4,7 +4,10 @@ module API
   module Entities
     module Ci
       module JobRequest
-        class Service < Entities::Ci::JobRequest::Image
+        class Service < Grape::Entity
+          expose :name, :entrypoint
+          expose :ports, using: Entities::Ci::JobRequest::Port
+
           expose :alias, :command
           expose :variables
         end

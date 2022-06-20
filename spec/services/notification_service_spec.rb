@@ -975,9 +975,16 @@ RSpec.describe NotificationService, :mailer do
   end
 
   describe '#send_new_release_notifications', :deliver_mails_inline do
-    let(:release) { create(:release, author: current_user) }
+    let(:release) { create(:release, project: project, author: current_user) }
     let(:object) { release }
     let(:action) { notification.send_new_release_notifications(release) }
+
+    before_all do
+      build_team(project)
+
+      update_custom_notification(:new_release, @u_guest_custom, resource: project)
+      update_custom_notification(:new_release, @u_custom_global)
+    end
 
     context 'when release author is blocked' do
       let(:current_user) { create(:user, :blocked) }
@@ -994,19 +1001,15 @@ RSpec.describe NotificationService, :mailer do
     context 'when recipients for a new release exist' do
       let(:current_user) { create(:user) }
 
-      it 'calls new_release_email for each relevant recipient' do
-        user_1 = create(:user)
-        user_2 = create(:user)
-        user_3 = create(:user)
-        recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
-        recipient_2 = NotificationRecipient.new(user_2, :custom, custom_action: :new_release)
-        allow(NotificationRecipients::BuildService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
-
+      it 'notifies the expected users' do
         notification.send_new_release_notifications(release)
 
-        should_email(user_1)
-        should_email(user_2)
-        should_not_email(user_3)
+        should_only_email(
+          @u_watcher,
+          @u_guest_watcher,
+          @u_custom_global,
+          @u_guest_custom
+        )
       end
     end
   end

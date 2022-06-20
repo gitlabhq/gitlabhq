@@ -49,14 +49,28 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="$options.i18n.status" :label-for="$options.labelId">
+  <gl-form-group
+    :label="$options.i18n.status"
+    :label-for="$options.labelId"
+    label-cols="3"
+    label-cols-lg="2"
+    label-class="gl-pb-0!"
+    class="gl-align-items-center"
+  >
     <gl-form-select
       :id="$options.labelId"
       :value="state"
       :options="$options.states"
       :disabled="loading"
-      class="gl-w-auto"
+      class="gl-w-auto hide-select-decoration"
       @change="setState"
     />
   </gl-form-group>
 </template>
+
+<style>
+.hide-select-decoration:not(:focus, :hover) {
+  background-image: none;
+  box-shadow: none;
+}
+</style>

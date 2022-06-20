@@ -33,10 +33,10 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe '.with_reports' do
+  describe '.all_reports' do
     let!(:artifact) { create(:ci_job_artifact, :archive) }
 
-    subject { described_class.with_reports }
+    subject { described_class.all_reports }
 
     it { is_expected.to be_empty }
 
@@ -299,6 +299,42 @@ RSpec.describe Ci::JobArtifact do
       expect(described_class.created_in_time_range(from: 1.week.ago)).to match_array([artifact1])
       expect(described_class.created_in_time_range(to: 1.week.ago)).to match_array([artifact2, artifact3])
       expect(described_class.created_in_time_range(from: 2.months.ago, to: 1.week.ago)).to match_array([artifact2])
+    end
+  end
+
+  describe '.created_at_before' do
+    it 'returns artifacts' do
+      artifact1 = create(:ci_job_artifact, created_at: 1.day.ago)
+      _artifact2 = create(:ci_job_artifact, created_at: 1.day.from_now)
+
+      expect(described_class.created_at_before(Time.current)).to match_array([artifact1])
+    end
+  end
+
+  describe '.id_before' do
+    it 'returns artifacts' do
+      artifact1 = create(:ci_job_artifact)
+      artifact2 = create(:ci_job_artifact)
+
+      expect(described_class.id_before(artifact2.id)).to match_array([artifact1, artifact2])
+    end
+  end
+
+  describe '.id_after' do
+    it 'returns artifacts' do
+      artifact1 = create(:ci_job_artifact)
+      artifact2 = create(:ci_job_artifact)
+
+      expect(described_class.id_after(artifact1.id)).to match_array([artifact2])
+    end
+  end
+
+  describe '.ordered_by_id' do
+    it 'returns artifacts in asc order' do
+      artifact1 = create(:ci_job_artifact)
+      artifact2 = create(:ci_job_artifact)
+
+      expect(described_class.ordered_by_id).to eq([artifact1, artifact2])
     end
   end
 

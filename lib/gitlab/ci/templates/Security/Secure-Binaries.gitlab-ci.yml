@@ -20,7 +20,7 @@ variables:
   SECURE_BINARIES_ANALYZERS: >-
     bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python,
     license-finder,
-    dast, dast-runner-validation, api-fuzzing
+    dast, dast-runner-validation, api-security
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -252,11 +252,11 @@ dast-runner-validation:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
           $SECURE_BINARIES_ANALYZERS =~ /\bdast-runner-validation\b/
 
-api-fuzzing:
+api-security:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "1"
+    SECURE_BINARIES_ANALYZER_VERSION: "2"
   only:
     variables:
       - $SECURE_BINARIES_DOWNLOAD_IMAGES == "true" &&
-          $SECURE_BINARIES_ANALYZERS =~ /\bapi-fuzzing\b/
+          $SECURE_BINARIES_ANALYZERS =~ /\bapi-security\b/

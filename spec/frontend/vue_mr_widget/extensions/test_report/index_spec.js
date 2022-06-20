@@ -9,6 +9,7 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import httpStatusCodes from '~/lib/utils/http_status';
+import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
 
 import { failedReport } from 'jest/reports/mock_data/mock_data';
 import mixedResultsTestReports from 'jest/reports/mock_data/new_and_fixed_failures_report.json';
@@ -39,6 +40,7 @@ describe('Test report extension', () => {
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
   const findTertiaryButton = () => wrapper.find(GlButton);
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
+  const findModal = () => wrapper.find(TestCaseDetails);
 
   const createComponent = () => {
     wrapper = mountExtended(extensionsContainer, {
@@ -187,6 +189,21 @@ describe('Test report extension', () => {
 
       expect(trimText(findAllExtensionListItems().at(0).text())).toContain(
         'Failed 8 times in main in the last 14 days',
+      );
+    });
+  });
+
+  describe('modal link', () => {
+    beforeEach(async () => {
+      await createExpandedWidgetWithData();
+
+      wrapper.findByTestId('modal-link').trigger('click');
+    });
+
+    it('opens a modal to display test case details', () => {
+      expect(findModal().exists()).toBe(true);
+      expect(findModal().props('testCase')).toMatchObject(
+        mixedResultsTestReports.suites[0].new_failures[0],
       );
     });
   });

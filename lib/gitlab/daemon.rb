@@ -2,10 +2,20 @@
 
 module Gitlab
   class Daemon
-    def self.initialize_instance(...)
-      raise "#{name} singleton instance already initialized" if @instance
+    # Options:
+    # - recreate: We usually only allow a single instance per process to exist;
+    #             this can be overridden with this switch, so that existing
+    #             instances are stopped and recreated.
+    def self.initialize_instance(*args, recreate: false, **options)
+      if @instance
+        if recreate
+          @instance.stop
+        else
+          raise "#{name} singleton instance already initialized"
+        end
+      end
 
-      @instance = new(...)
+      @instance = new(*args, **options)
       Kernel.at_exit(&@instance.method(:stop))
       @instance
     end

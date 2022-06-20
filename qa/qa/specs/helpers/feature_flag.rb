@@ -23,10 +23,16 @@ module QA
             else
               # Tests using a feature flag scoped to an actor (ex: :project, :user, :group), or
               # with no scope defined (such as in the case of a low risk global feature flag),
-              # will only be skipped in canary and production due to no admin account existing there.
-              example.metadata[:skip] = feature_flag_message if ContextSelector.context_matches?(:production)
+              # will only be skipped on environments without an admin account
+              example.metadata[:skip] = feature_flag_message if skip_env_for_scoped_feature_flag
             end
           end
+        end
+
+        private
+
+        def skip_env_for_scoped_feature_flag
+          ContextSelector.context_matches?(:production) || ContextSelector.context_matches?({ subdomain: :pre })
         end
       end
     end

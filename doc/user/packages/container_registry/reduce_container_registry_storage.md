@@ -109,12 +109,12 @@ To create a cleanup policy in the UI:
    | **Remove tags older than** | Remove only tags older than X days. |
    | **Remove tags matching**  | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
-1. Click **Save**.
+1. Select **Save**.
 
 Depending on the interval you chose, the policy is scheduled to run.
 
 NOTE:
-If you edit the policy and click **Save** again, the interval is reset.
+If you edit the policy and select **Save** again, the interval is reset.
 
 ### Regex pattern examples
 

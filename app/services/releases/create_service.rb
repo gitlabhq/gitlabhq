@@ -34,7 +34,7 @@ module Releases
 
       result = Tags::CreateService
         .new(project, current_user)
-        .execute(tag_name, ref, nil)
+        .execute(tag_name, ref, tag_message)
 
       return result unless result[:status] == :success
 

@@ -4,7 +4,7 @@
 # they are able to only include the jobs that they find interesting.
 #
 # Therefore, this template is not supposed to run any jobs. The idea is to only
-# create hidden jobs. See: https://docs.gitlab.com/ee/ci/yaml/#hide-jobs
+# create hidden jobs. See: https://docs.gitlab.com/ee/ci/jobs/#hide-jobs
 #
 # There is a more opinionated template which we suggest the users to abide,
 # which is the lib/gitlab/ci/templates/Terraform.gitlab-ci.yml

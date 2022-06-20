@@ -154,8 +154,8 @@ describe('UsersCache', () => {
       };
 
       const user = await UsersCache.retrieveById(dummyUserId);
-      expect(user).toBe(dummyUser);
-      expect(UsersCache.internalStorage[dummyUserId]).toBe(dummyUser);
+      expect(user).toEqual(dummyUser);
+      expect(UsersCache.internalStorage[dummyUserId]).toEqual(dummyUser);
     });
 
     it('returns undefined if Ajax call fails and cache is empty', async () => {
@@ -179,6 +179,29 @@ describe('UsersCache', () => {
 
       const user = await UsersCache.retrieveById(dummyUserId);
       expect(user).toBe(dummyUser);
+    });
+
+    it('does not clobber existing cached values', async () => {
+      UsersCache.internalStorage[dummyUserId] = {
+        status: dummyUserStatus,
+      };
+
+      apiSpy = (id) => {
+        expect(id).toBe(dummyUserId);
+
+        return Promise.resolve({
+          data: dummyUser,
+        });
+      };
+
+      const user = await UsersCache.retrieveById(dummyUserId);
+      const expectedUser = {
+        status: dummyUserStatus,
+        ...dummyUser,
+      };
+
+      expect(user).toEqual(expectedUser);
+      expect(UsersCache.internalStorage[dummyUserId]).toEqual(expectedUser);
     });
   });
 

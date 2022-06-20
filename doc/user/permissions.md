@@ -150,6 +150,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>View project [Audit Events](../administration/audit_events.md)                                                                                      |          |          | ✓ (*10*)  | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add [deploy keys](project/deploy_keys/index.md)                                                                                                     |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add new [team members](project/members/index.md)                                                                                                    |          |          |           | ✓          | ✓        |
+| [Projects](project/index.md):<br>Manage [team members](project/members/index.md)                                                                                                     |          |          |           | ✓ (*21*)   | ✓        |
 | [Projects](project/index.md):<br>Change [project features visibility](public_access.md) level                                                                                        |          |          |           | ✓ (*13*)   | ✓        |
 | [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                                                              |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                                                                                          |          |          | ✓         | ✓          | ✓        |
@@ -157,7 +158,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Edit project badges                                                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit project settings                                                                                                                               |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Export project                                                                                                                                      |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) (*11*)                                                                    |          |          |           | ✓          | ✓        |
+| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) (*11*)                                                                    |          |          |           | ✓ (*21*)   | ✓        |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Rename project                                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Share (invite) projects with groups                                                                                                                 |          |          |           | ✓ (*7*)    | ✓ (*7*)  |
@@ -212,7 +213,7 @@ The following table lists project permissions available for each role:
    public and internal projects (not on private projects). [External users](#external-users)
    must be given explicit access even if the project is internal. For GitLab.com, see the
    [GitLab.com visibility settings](gitlab_com/index.md#visibility-settings).
-2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves.
+2. Guest users can only view the [confidential issues](project/issues/confidential_issues.md) they created themselves or are assigned to.
 3. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md).
 4. If the [branch is protected](project/protected_branches.md), this depends on the access Developers and Maintainers are given.
 5. Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets).
@@ -232,11 +233,12 @@ The following table lists project permissions available for each role:
 15. Guest users can only set metadata (for example, labels, assignees, or milestones)
     when creating an issue. They cannot change the metadata on existing issues.
 16. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
-    A guest who created an incident when they had the Reporter role or who is assigned to the incident can modify the title, description and metrics. They can also close and reopen the incident.
+    In GitLab 15.1 and later, a Guest who created an issue that was promoted to an incident cannot edit, close, or reopen their incident.
 17. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
 18. Authors and assignees of issues can modify the title and description even if they don't have the Reporter role.
 19. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
 20. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
+21. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -250,8 +252,8 @@ More details about the permissions for some project-level features follow.
 
 - [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
   When set to public, gives access to certain CI/CD features to *Guest* project members.
-- [Pipeline visibility](../ci/enable_or_disable_ci.md#enable-cicd-in-a-project): When set to **Everyone with Access**,
-  gives access to certain CI/CD "view" features to *non-project* members.
+- [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
+  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to *non-project* members.
 
 | Action                                                                                                                    | Non-member | Guest   | Reporter | Developer | Maintainer | Owner |
 |---------------------------------------------------------------------------------------------------------------------------|------------|---------|----------|-----------|------------|-------|
@@ -268,6 +270,7 @@ More details about the permissions for some project-level features follow.
 | Cancel and retry jobs                                                                                                     |            |         |          | ✓         | ✓          | ✓     |
 | Create new [environments](../ci/environments/index.md)                                                                    |            |         |          | ✓         | ✓          | ✓     |
 | Delete job logs or job artifacts                                                                                          |            |         |          | ✓ (*4*)   | ✓          | ✓     |
+| Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
 | Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (*5*)   | ✓ (*5*)    | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
 | View a job with [debug logging](../ci/variables/index.md#debug-logging)                                                   |            |         |          | ✓         | ✓          | ✓     |
@@ -355,7 +358,7 @@ Read through the documentation on [permissions for File Locking](project/file_lo
 ### Confidential Issues permissions
 
 [Confidential issues](project/issues/confidential_issues.md) can be accessed by users with reporter and higher permission levels,
-as well as by guest users that create a confidential issue. To learn more,
+as well as by guest users that create a confidential issue or are assigned to it. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
 ### Container Registry visibility permissions
@@ -428,6 +431,7 @@ The following table lists group permissions available for each role:
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (4) |
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (4) |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
+| [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 
@@ -477,7 +481,7 @@ For example, if an external user is added as Guest, and your project is internal
 private, they do not have access to the code; you need to grant the external
 user access at the Reporter level or above if you want them to have access to the code. You should
 always take into account the
-[project's visibility and permissions settings](project/settings/index.md#sharing-and-permissions)
+[project's visibility and permissions settings](project/settings/index.md#configure-project-visibility-features-and-permissions)
 as well as the permission level of the user.
 
 NOTE:
@@ -517,7 +521,7 @@ and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 - Use `\.internal@domain\.com$` to mark email addresses ending with
   `.internal@domain.com` as internal.
 - Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses
-  NOT including `.ext@domain.com` as internal.
+  not including `.ext@domain.com` as internal.
 
 WARNING:
 Be aware that this regex could lead to a

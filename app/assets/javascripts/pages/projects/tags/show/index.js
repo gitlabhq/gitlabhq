@@ -1,8 +1,3 @@
-import { redirectTo, getBaseURL, stripFinalUrlSegment } from '~/lib/utils/url_utility';
-import { initRemoveTag } from '../remove_tag';
+import initDeleteTagModal from '~/tags/init_delete_tag_modal';
 
-initRemoveTag({
-  onDelete: (path = '') => {
-    redirectTo(stripFinalUrlSegment([getBaseURL(), path].join('')));
-  },
-});
+initDeleteTagModal();

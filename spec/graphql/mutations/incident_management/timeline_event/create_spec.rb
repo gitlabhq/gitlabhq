@@ -22,7 +22,8 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create do
           occurred_at: args[:occurred_at].to_s,
           incident: incident,
           author: current_user,
-          promoted_from_note: nil
+          promoted_from_note: nil,
+          editable: true
         )
       end
 

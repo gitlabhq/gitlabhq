@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import securityReportExtension from 'ee_else_ce/vue_merge_request_widget/extensions/security_reports';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -15,7 +16,6 @@ import SmartInterval from '~/smart_interval';
 import { setFaviconOverlay } from '../lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
-import WidgetHeader from './components/mr_widget_header.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
@@ -59,7 +59,6 @@ export default {
   components: {
     Loading,
     ExtensionsContainer,
-    'mr-widget-header': WidgetHeader,
     'mr-widget-suggest-pipeline': WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
     'mr-widget-related-links': WidgetRelatedLinks,
@@ -190,7 +189,7 @@ export default {
       );
     },
     shouldRenderSecurityReport() {
-      return Boolean(this.mr.pipeline.id);
+      return Boolean(this.mr?.pipeline?.id);
     },
     shouldRenderTerraformPlans() {
       return Boolean(this.mr?.terraformReportsPath);
@@ -231,11 +230,14 @@ export default {
         window.gon?.features?.refactorMrWidgetsExtensionsUser
       );
     },
+    shouldShowSecurityExtension() {
+      return window.gon?.features?.refactorSecurityExtension;
+    },
+    shouldShowCodeQualityExtension() {
+      return window.gon?.features?.refactorCodeQualityExtension;
+    },
     isRestructuredMrWidgetEnabled() {
       return window.gon?.features?.restructuredMrWidget;
-    },
-    isUpdatedHeaderEnabled() {
-      return window.gon?.features?.updatedMrHeader;
     },
   },
   watch: {
@@ -268,6 +270,11 @@ export default {
     shouldRenderTestReport(newVal) {
       if (newVal) {
         this.registerTestReportExtension();
+      }
+    },
+    shouldRenderSecurityReport(newVal) {
+      if (newVal) {
+        this.registerSecurityReportExtension();
       }
     },
   },
@@ -516,7 +523,7 @@ export default {
       }
     },
     registerCodeQualityExtension() {
-      if (this.shouldRenderCodeQuality && this.shouldShowExtension) {
+      if (this.shouldRenderCodeQuality && this.shouldShowCodeQualityExtension) {
         registerExtension(codeQualityExtension);
       }
     },
@@ -525,20 +532,23 @@ export default {
         registerExtension(testReportExtension);
       }
     },
+    registerSecurityReportExtension() {
+      if (this.shouldRenderSecurityReport && this.shouldShowSecurityExtension) {
+        registerExtension(securityReportExtension);
+      }
+    },
   },
 };
 </script>
 <template>
   <div v-if="isLoaded" class="mr-state-widget gl-mt-3">
     <header
-      v-if="shouldRenderCollaborationStatus || !isUpdatedHeaderEnabled"
-      :class="{ 'mr-widget-workflow gl-mt-0!': isUpdatedHeaderEnabled }"
-      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden"
+      v-if="shouldRenderCollaborationStatus"
+      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden mr-widget-workflow gl-mt-0!"
     >
       <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
       </mr-widget-alert-message>
-      <mr-widget-header v-if="!isUpdatedHeaderEnabled" :mr="mr" />
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
@@ -584,7 +594,7 @@ export default {
       </div>
       <extensions-container :mr="mr" />
       <grouped-codequality-reports-app
-        v-if="shouldRenderCodeQuality && !shouldShowExtension"
+        v-if="shouldRenderCodeQuality && !shouldShowCodeQualityExtension"
         :head-blob-path="mr.headBlobPath"
         :base-blob-path="mr.baseBlobPath"
         :codequality-reports-path="mr.codequalityReportsPath"
@@ -592,7 +602,7 @@ export default {
       />
 
       <security-reports-app
-        v-if="shouldRenderSecurityReport"
+        v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
         :pipeline-id="mr.pipeline.id"
         :project-id="mr.sourceProjectId"
         :security-reports-docs-path="mr.securityReportsDocsPath"

@@ -1,3 +1,6 @@
 - add_to_breadcrumbs _('Runners'), group_runners_path(@group)
 
-= render 'shared/runners/runner_details', runner: @runner
+- if Feature.enabled?(:group_runner_view_ui)
+  #js-group-runner-show{ data: {runner_id: @runner.id, runners_path: group_runners_path(@group)} }
+- else
+  = render 'shared/runners/runner_details', runner: @runner

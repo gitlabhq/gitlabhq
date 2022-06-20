@@ -305,10 +305,36 @@ RSpec.describe Groups::GroupMembersController do
           group.add_owner(user)
         end
 
-        it 'cannot removes himself from the group' do
+        it 'cannot remove user from the group' do
           delete :leave, params: { group_id: group }
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        context 'and there is a group project bot owner' do
+          before do
+            create(:group_member, :owner, source: group, user: create(:user, :project_bot))
+          end
+
+          it 'cannot remove user from the group' do
+            delete :leave, params: { group_id: group }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'and there is another owner' do
+          before do
+            create(:group_member, :owner, source: group)
+          end
+
+          it 'removes user from members', :aggregate_failures do
+            delete :leave, params: { group_id: group }
+
+            expect(controller).to set_flash.to "You left the \"#{group.name}\" group."
+            expect(response).to redirect_to(dashboard_groups_path)
+            expect(group.users).not_to include user
+          end
         end
       end
 

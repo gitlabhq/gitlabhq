@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Admin uses repository checks', :request_store do
   include StubENV
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:admin) { create(:admin) }
 
   before do
-    stub_feature_flags(bootstrap_confirmation_modals: false)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
   end
@@ -57,7 +57,9 @@ RSpec.describe 'Admin uses repository checks', :request_store do
 
       expect(RepositoryCheck::ClearWorker).to receive(:perform_async)
 
-      accept_confirm { find(:link, 'Clear all repository checks').send_keys(:return) }
+      accept_gl_confirm(button_text: 'Clear repository checks') do
+        find(:link, 'Clear all repository checks').send_keys(:return)
+      end
 
       expect(page).to have_content('Started asynchronous removal of all repository check states.')
     end

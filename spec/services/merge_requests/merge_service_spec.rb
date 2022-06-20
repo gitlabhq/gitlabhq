@@ -161,7 +161,7 @@ RSpec.describe MergeRequests::MergeService do
       end
 
       context 'with Jira integration' do
-        include JiraServiceHelper
+        include JiraIntegrationHelpers
 
         let(:jira_tracker) { project.create_jira_integration }
         let(:jira_issue)   { ExternalIssue.new('JIRA-123', project) }
@@ -263,10 +263,13 @@ RSpec.describe MergeRequests::MergeService do
             merge_request.update_attribute(:merge_params, { 'force_remove_source_branch' => '1' })
           end
 
+          # Not a real use case. When a merger merges a MR , merge param 'should_remove_source_branch' is defined
           it 'removes the source branch using the author user' do
             expect(::MergeRequests::DeleteSourceBranchWorker).to receive(:perform_async).with(merge_request.id, merge_request.source_branch_sha, merge_request.author.id)
 
             service.execute(merge_request)
+
+            expect(merge_request.reload.should_remove_source_branch?).to be nil
           end
 
           context 'when the merger set the source branch not to be removed' do
@@ -276,6 +279,8 @@ RSpec.describe MergeRequests::MergeService do
               expect(::MergeRequests::DeleteSourceBranchWorker).not_to receive(:perform_async)
 
               service.execute(merge_request)
+
+              expect(merge_request.reload.should_remove_source_branch?).to be false
             end
           end
         end
@@ -289,6 +294,8 @@ RSpec.describe MergeRequests::MergeService do
             expect(::MergeRequests::DeleteSourceBranchWorker).to receive(:perform_async).with(merge_request.id, merge_request.source_branch_sha, user.id)
 
             service.execute(merge_request)
+
+            expect(merge_request.reload.should_remove_source_branch?).to be true
           end
         end
       end

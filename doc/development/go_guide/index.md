@@ -88,7 +88,7 @@ of the "GitLab" project on the Engineering Projects
 page in the handbook.
 
 To add yourself to this list, add the following to your profile in the
-[team.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/team.yml)
+[`team.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/team.yml)
 file and ask your manager to review and merge.
 
 ```yaml
@@ -406,9 +406,8 @@ variable).
 
 Since daemons are long-running applications, they should have mechanisms to
 manage cancellations, and avoid unnecessary resources consumption (which could
-lead to DDOS vulnerabilities). [Go
-Context](https://github.com/golang/go/wiki/CodeReviewComments#contexts) should
-be used in functions that can block and passed as the first parameter.
+lead to DDoS vulnerabilities). [Go Context](https://github.com/golang/go/wiki/CodeReviewComments#contexts)
+should be used in functions that can block and passed as the first parameter.
 
 ## Dockerfiles
 

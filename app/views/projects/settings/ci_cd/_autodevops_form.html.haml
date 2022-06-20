@@ -9,6 +9,10 @@
 - base_domain_path = help_page_path('user/project/clusters/gitlab_managed_clusters', anchor: 'base-domain')
 - base_domain_link_start = link_start % { url: base_domain_path }
 
+- help_link_continouos = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_timed = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'timed-incremental-rollout-to-production'), target: '_blank', rel: 'noopener noreferrer'
+- help_link_incremental = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'incremental-rollout-to-production'), target: '_blank', rel: 'noopener noreferrer'
+
 .row
   .col-lg-12
     = gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
@@ -33,22 +37,8 @@
                     = s_('CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
                 %label.gl-mt-3
                   %strong= s_('CICD|Deployment strategy')
-                .form-check
-                  = form.radio_button :deploy_strategy, 'continuous', class: 'form-check-input'
-                  = form.label :deploy_strategy_continuous, class: 'form-check-label' do
-                    = s_('CICD|Continuous deployment to production')
-                    = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/stages.md', anchor: 'auto-deploy'), target: '_blank', rel: 'noopener noreferrer'
-
-                .form-check
-                  = form.radio_button :deploy_strategy, 'timed_incremental', class: 'form-check-input'
-                  = form.label :deploy_strategy_timed_incremental, class: 'form-check-label' do
-                    = s_('CICD|Continuous deployment to production using timed incremental rollout')
-                    = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'timed-incremental-rollout-to-production'), target: '_blank', rel: 'noopener noreferrer'
-
-                .form-check
-                  = form.radio_button :deploy_strategy, 'manual', class: 'form-check-input'
-                  = form.label :deploy_strategy_manual, class: 'form-check-label' do
-                    = s_('CICD|Automatic deployment to staging, manual deployment to production')
-                    = link_to sprite_icon('question-o'), help_page_path('topics/autodevops/customize.md', anchor: 'incremental-rollout-to-production'), target: '_blank', rel: 'noopener noreferrer'
+                = form.gitlab_ui_radio_component :deploy_strategy, 'continuous', (s_('CICD|Continuous deployment to production') + ' ' + help_link_continouos).html_safe
+                = form.gitlab_ui_radio_component :deploy_strategy, 'timed_incremental', (s_('CICD|Continuous deployment to production using timed incremental rollout') + ' ' + help_link_timed).html_safe
+                = form.gitlab_ui_radio_component :deploy_strategy, 'manual', (s_('CICD|Automatic deployment to staging, manual deployment to production') + ' ' + help_link_incremental).html_safe
 
           = f.submit _('Save changes'), class: "btn gl-button btn-confirm gl-mt-5", data: { qa_selector: 'save_changes_button' }

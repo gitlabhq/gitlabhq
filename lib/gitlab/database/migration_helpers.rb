@@ -945,8 +945,13 @@ module Gitlab
       end
 
       def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:, finalize: true)
-        migration = Gitlab::Database::BackgroundMigration::BatchedMigration
-          .for_configuration(job_class_name, table_name, column_name, job_arguments).first
+        Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
+
+        Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
+        migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+          Gitlab::Database.gitlab_schemas_for_connection(connection),
+          job_class_name, table_name, column_name, job_arguments
+        )
 
         configuration = {
           job_class_name: job_class_name,
@@ -966,7 +971,7 @@ module Gitlab
             "but it is '#{migration.status_name}':" \
             "\t#{configuration}" \
             "\n\n" \
-            "Finalize it manually by running" \
+            "Finalize it manually by running the following command in a `bash` or `sh` shell:" \
             "\n\n" \
             "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.to_json.gsub(',', '\,')}']" \
             "\n\n" \
@@ -1491,6 +1496,20 @@ into similar problems in the future (e.g. when new tables are created).
         execute <<~SQL
           ALTER TABLE #{quote_table_name(table_name)}
           RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}
+        SQL
+      end
+
+      def drop_sequence(table_name, column_name, sequence_name)
+        execute <<~SQL
+          ALTER TABLE #{quote_table_name(table_name)} ALTER COLUMN #{quote_column_name(column_name)} DROP DEFAULT;
+          DROP SEQUENCE IF EXISTS #{quote_table_name(sequence_name)}
+        SQL
+      end
+
+      def add_sequence(table_name, column_name, sequence_name, start_value)
+        execute <<~SQL
+          CREATE SEQUENCE #{quote_table_name(sequence_name)} START #{start_value};
+          ALTER TABLE #{quote_table_name(table_name)} ALTER COLUMN #{quote_column_name(column_name)} SET DEFAULT nextval(#{quote(sequence_name)})
         SQL
       end
 

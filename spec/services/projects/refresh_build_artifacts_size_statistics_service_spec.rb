@@ -52,6 +52,12 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
       expect { service.execute }.to change { refresh.reload.last_job_artifact_id.to_i }.to(artifact_3.id)
     end
 
+    it 'updates the last_job_artifact_id to the ID of the last artifact from the project' do
+      expect { service.execute }
+        .to change { refresh.reload.last_job_artifact_id_on_refresh_start.to_i }
+        .to(project.job_artifacts.last.id)
+    end
+
     it 'requeues the refresh job' do
       service.execute
       expect(refresh.reload).to be_pending
@@ -63,7 +69,8 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
           :project_build_artifacts_size_refresh,
           :pending,
           project: project,
-          last_job_artifact_id: artifact_3.id
+          last_job_artifact_id: artifact_3.id,
+          last_job_artifact_id_on_refresh_start: artifact_4.id
         )
       end
 
@@ -75,6 +82,10 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
 
       it 'keeps the last_job_artifact_id unchanged' do
         expect(refresh.reload.last_job_artifact_id).to eq(artifact_3.id)
+      end
+
+      it 'keeps the last_job_artifact_id_on_refresh_start unchanged' do
+        expect(refresh.reload.last_job_artifact_id_on_refresh_start).to eq(artifact_4.id)
       end
 
       it 'keeps the state of the refresh record at running' do

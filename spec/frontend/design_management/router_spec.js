@@ -20,6 +20,8 @@ function factory(routeArg) {
 
   return mount(App, {
     router,
+    provide: { issueIid: '1' },
+    stubs: { Toolbar: true },
     mocks: {
       $apollo: {
         queries: {

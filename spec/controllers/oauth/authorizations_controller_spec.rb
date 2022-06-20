@@ -195,6 +195,24 @@ RSpec.describe Oauth::AuthorizationsController do
         end
       end
     end
+
+    context 'when the user is not signed in' do
+      before do
+        sign_out(user)
+      end
+
+      it 'sets a lower session expiry and redirects to the sign in page' do
+        subject
+
+        expect(request.env['rack.session.options'][:expire_after]).to eq(
+          Settings.gitlab['unauthenticated_session_expire_delay']
+        )
+
+        expect(request.session['user_return_to']).to eq("/oauth/authorize?#{params.to_query}")
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
   end
 
   describe 'POST #create' do

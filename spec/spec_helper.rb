@@ -53,8 +53,10 @@ end
 require 'rainbow/ext/string'
 Rainbow.enabled = false
 
-require_relative('../ee/spec/spec_helper') if Gitlab.ee?
+# Require JH first because we need override some EE methods with JH methods,
+# if we load EE first, we can't find JH modules in prepend_mod method
 require_relative('../jh/spec/spec_helper') if Gitlab.jh?
+require_relative('../ee/spec/spec_helper') if Gitlab.ee?
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -256,16 +258,6 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    if example.metadata.fetch(:stub_feature_flags, true)
-      # It doesn't make sense for this to default to enabled as we only plan to
-      # use this temporarily to override an environment variable but eventually
-      # we'll just use the environment variable value when we've completed the
-      # gradual rollout. This stub must happen in around block as there are other
-      # around blocks in tests that will run before this and get the wrong
-      # database connection.
-      stub_feature_flags(force_no_sharing_primary_model: false)
-    end
-
     example.run
   end
 
@@ -307,10 +299,6 @@ RSpec.configure do |config|
       # Disable the usage of file_identifier_hash by default until it is ready
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
       stub_feature_flags(file_identifier_hash: false)
-
-      # The following `vue_issues_list` stub can be removed
-      # once the Vue issues page has feature parity with the current Haml page
-      stub_feature_flags(vue_issues_list: false)
 
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.

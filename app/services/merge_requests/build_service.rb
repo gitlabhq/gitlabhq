@@ -46,7 +46,7 @@ module MergeRequests
              :source_branch_ref,
              :source_project,
              :compare_commits,
-             :wip_title,
+             :draft_title,
              :description,
              :first_multiline_commit,
              :errors,
@@ -206,7 +206,7 @@ module MergeRequests
     def set_draft_title_if_needed
       return unless compare_commits.empty? || Gitlab::Utils.to_boolean(params[:draft])
 
-      merge_request.title = wip_title
+      merge_request.title = draft_title
     end
 
     # When your branch name starts with an iid followed by a dash this pattern will be
@@ -223,6 +223,7 @@ module MergeRequests
     #   more than one commit in the MR
     #
     def assign_title_and_description
+      assign_description_from_repository_template
       assign_title_and_description_from_commits
       merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= source_branch.titleize.humanize
@@ -284,6 +285,37 @@ module MergeRequests
 
       title_parts << "\"#{branch_title}\"" if branch_title.present?
       title_parts.join(' ')
+    end
+
+    def assign_description_from_repository_template
+      return unless merge_request.description.blank?
+
+      # Use TemplateFinder to load the default template. We need this mainly for
+      # the project_id, in case it differs from the target project. Conveniently,
+      # since the underlying merge_request_template_names_hash is cached, this
+      # should also be relatively cheap and allows us to bail early if the project
+      # does not have a default template.
+      templates = TemplateFinder.all_template_names(target_project, :merge_requests)
+      template = templates.values.flatten.find { |tmpl| tmpl[:name].casecmp?('default') }
+
+      return unless template
+
+      begin
+        repository_template = TemplateFinder.build(
+          :merge_requests,
+          target_project,
+          {
+            name: template[:name],
+            source_template_project_id: template[:project_id]
+          }
+        ).execute
+      rescue ::Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
+        return
+      end
+
+      return unless repository_template.present?
+
+      merge_request.description = repository_template.content
     end
 
     def issue_iid

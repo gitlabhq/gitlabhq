@@ -62,8 +62,7 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 - Ensure that the feature MRs have been deployed to non-production environments.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
 - [ ] Enable the feature globally on non-production environments.
-    - [ ] `/chatops run feature set <feature-flag-name> true --dev`
-    - [ ] `/chatops run feature set <feature-flag-name> true --staging`
+    - [ ] `/chatops run feature set <feature-flag-name> true --dev --staging`
 - [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
       The best environment to validate the feature in is [staging-canary](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#staging-canary)
       as this is the first environment deployed to. Note you will need to make sure you are configured to use canary as outlined [here](https://about.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/)
@@ -74,12 +73,9 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 - Ensure that the feature MRs have been deployed to both production and canary.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
 - If you're using [project-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
-    - [ ] `/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`
-    - [ ] `/chatops run feature set --project=gitlab-org/gitlab-foss <feature-flag-name> true`
-    - [ ] `/chatops run feature set --project=gitlab-com/www-gitlab-com <feature-flag-name> true`
+    - [ ] `/chatops run feature set --project=gitlab-org/gitlab,gitlab-org/gitlab-foss,gitlab-com/www-gitlab-com <feature-flag-name> true`
 - If you're using [group-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
-    - [ ] `/chatops run feature set --group=gitlab-org <feature-flag-name> true`
-    - [ ] `/chatops run feature set --group=gitlab-com <feature-flag-name> true`
+    - [ ] `/chatops run feature set --group=gitlab-org,gitlab-com <feature-flag-name> true`
 - If you're using [user-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
     - [ ] `/chatops run feature set --user=<your-username> <feature-flag-name> true`
 - [ ] Verify that the feature works on the specific entries. Posting the QA result in this issue is preferable.
@@ -124,9 +120,7 @@ To do so, follow these steps:
       the feature can be officially announced in a release blog post.
     - [ ] `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Consider cleaning up the feature flag from all environments by running these chatops command in `#production` channel. Otherwise these settings may override the default enabled.
-    - [ ] `/chatops run feature delete <feature-flag-name> --dev`
-    - [ ] `/chatops run feature delete <feature-flag-name> --staging`
-    - [ ] `/chatops run feature delete <feature-flag-name>`
+    - [ ] `/chatops run feature delete <feature-flag-name> --dev --staging --production`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] Set the next milestone to this rollout issue for scheduling [the flag removal](#release-the-feature).
 - [ ] (Optional) You can [create a separate issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20Flag%20Cleanup) for scheduling the steps below to [Release the feature](#release-the-feature).
@@ -162,9 +156,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
     - [ ] `/chatops run release check <merge-request-url> <milestone>`
 - [ ] Close [the feature issue](ISSUE LINK) to indicate the feature will be released in the current milestone.
 - [ ] If not already done, clean up the feature flag from all environments by running these chatops command in `#production` channel:
-    - [ ] `/chatops run feature delete <feature-flag-name> --dev`
-    - [ ] `/chatops run feature delete <feature-flag-name> --staging`
-    - [ ] `/chatops run feature delete <feature-flag-name>`
+    - [ ] `/chatops run feature delete <feature-flag-name> --dev --staging --production`
 - [ ] Close this rollout issue.
 
 ## Rollback Steps

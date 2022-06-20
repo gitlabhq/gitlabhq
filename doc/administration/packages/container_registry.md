@@ -317,6 +317,17 @@ the Container Registry by themselves, follow the steps below.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+### Increase token duration
+
+In GitLab, tokens for the Container Registry expire every five minutes.
+To increase the token duration:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Container Registry**.
+1. For the **Authorization token duration (minutes)**, update the value.
+1. Select **Save changes**.
+
 ## Configure storage for the Container Registry
 
 NOTE:
@@ -477,7 +488,7 @@ To configure the `s3` storage driver in Omnibus:
 
 **Installations from source**
 
-Configuring the storage driver is done in the registry configuration YML file created
+Configuring the storage driver is done in the registry configuration YAML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 `s3` storage driver example:
@@ -600,7 +611,7 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 **Installations from source**
 
-1. Add the `redirect` flag to your registry configuration YML file:
+1. Add the `redirect` flag to your registry configuration YAML file:
 
     ```yaml
     storage:
@@ -652,7 +663,7 @@ For Omnibus GitLab installations:
 
 For installations from source:
 
-1. Edit your registry configuration YML file:
+1. Edit your registry configuration YAML file:
 
     ```yaml
     storage:
@@ -705,7 +716,7 @@ In the examples below we set the Registry's port to `5010`.
 ## Disable Container Registry per project
 
 If Registry is enabled in your GitLab instance, but you don't need it for your
-project, you can [disable it from your project's settings](../../user/project/settings/index.md#sharing-and-permissions).
+project, you can [disable it from your project's settings](../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
 
 ## Use an external container registry with GitLab as an auth endpoint
 
@@ -845,7 +856,7 @@ To configure a notification endpoint in Omnibus:
 
 **Installations from source**
 
-Configuring the notification endpoint is done in your registry configuration YML file created
+Configuring the notification endpoint is done in your registry configuration YAML file created
 when you [deployed your Docker registry](https://docs.docker.com/registry/deploying/).
 
 Example:
@@ -1140,7 +1151,7 @@ for GitLab to run separately from Registry:
 - `gitlab_rails['registry_enabled']`, must be set to `true`. This setting
   signals to GitLab that it should allow Registry API requests.
 - `gitlab_rails['registry_api_url']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L52). This is the Registry URL used internally that users do not need to interact with, `registry['registry_http_addr']` with scheme.
-- `gitlab_rails['registry_host']`, eg. `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
+- `gitlab_rails['registry_host']`, for example, `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
 - `gitlab_rails['registry_port']`. Registry endpoint port, visible to the end user.
 - `gitlab_rails['registry_issuer']` must match the issuer in the Registry configuration.
 - `gitlab_rails['registry_key_path']`, path to the key that matches the certificate on the
@@ -1159,7 +1170,7 @@ The flow described by the diagram above:
 
 1. A user runs `docker login registry.gitlab.example` on their client. This reaches the web server (or LB) on port 443.
 1. Web server connects to the Registry backend pool (by default, using port 5000). Since the user
-   didn’t provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
+   didn't provide a valid token, the Registry returns a 401 HTTP code and the URL (`token_realm` from
    Registry configuration) where to get one. This points to the GitLab API.
 1. The Docker client then connects to the GitLab API and obtains a token.
 1. The API signs the token with the registry key and hands it to the Docker client
@@ -1169,7 +1180,7 @@ Reference: <https://docs.docker.com/registry/spec/auth/token/>
 
 ### Communication between GitLab and Registry
 
-Registry doesn’t have a way to authenticate users internally so it relies on
+Registry doesn't have a way to authenticate users internally so it relies on
 GitLab to validate credentials. The connection between Registry and GitLab is
 TLS encrypted. The key is used by GitLab to sign the tokens while the certificate
 is used by Registry to validate the signature. By default, a self-signed certificate key pair is generated
@@ -1225,29 +1236,6 @@ mounting the Docker daemon and setting `privileged = false` in the GitLab Runner
 ```
 
 Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18239).
-
-### `unauthorized: authentication required` when pushing large images
-
-Example error:
-
-```shell
-docker push gitlab.example.com/myproject/docs:latest
-The push refers to a repository [gitlab.example.com/myproject/docs]
-630816f32edb: Preparing
-530d5553aec8: Preparing
-...
-4b0bab9ff599: Waiting
-d1c800db26c7: Waiting
-42755cf4ee95: Waiting
-unauthorized: authentication required
-```
-
-GitLab has a default token expiration of 5 minutes for the registry. When pushing
-larger images, or images that take longer than 5 minutes to push, users may
-encounter this error. On GitLab.com, the expiration time is 15 minutes.
-
-Administrators can increase the token duration in **Admin Area > Settings >
-CI/CD > Container Registry > Authorization token duration (minutes)**.
 
 ### Docker login attempt fails with: 'token signed by untrusted key'
 
@@ -1309,7 +1297,10 @@ openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry
 ```
 
 If the two pieces of the certificate do not align, remove the files and run `gitlab-ctl reconfigure`
-to regenerate the pair. If you have overridden the automatically generated self-signed pair with
+to regenerate the pair. The pair is recreated using the existing values in `/etc/gitlab/gitlab-secrets.json` if they exist. To generate a new pair,
+delete the `registry` section in your `/etc/gitlab/gitlab-secrets.json` before running `gitlab-ctl reconfigure`.
+
+If you have overridden the automatically generated self-signed pair with
 your own certificates and have made sure that their contents align, you can delete the 'registry'
 section in your `/etc/gitlab/gitlab-secrets.json` and run `gitlab-ctl reconfigure`.
 
@@ -1378,7 +1369,7 @@ You can add a configuration option for backwards compatibility.
 
 **For installations from source**
 
-1. Edit the YML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
+1. Edit the YAML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
 
    ```yaml
    compatibility:
@@ -1426,7 +1417,7 @@ and a simple solution would be to enable relative URLs in the Registry.
 
 **For installations from source**
 
-1. Edit the YML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
+1. Edit the YAML configuration file you created when you [deployed the registry](https://docs.docker.com/registry/deploying/). Add the following snippet:
 
    ```yaml
    http:
@@ -1741,7 +1732,7 @@ In this case, follow these steps:
    ```ruby
    gitlab_rails['registry_enabled'] = true
    ```
-  
+
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure)
    for the changes to take effect.
 1. Try the removal again.

@@ -11,6 +11,7 @@ fragment State on TerraformState {
   name
   lockedAt
   updatedAt
+  deletedAt
 
   lockedByUser {
     ...User

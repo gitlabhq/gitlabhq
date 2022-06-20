@@ -19,7 +19,7 @@ and from merge requests:
 - *When viewing a file, or the repository file list* -
   1. In the upper right corner of the page, select **Open in Web IDE** if it is visible.
   1. If **Open in Web IDE** is not visible:
-     1. Select the **(angle-down)** next to **Edit** or **Gitpod**, depending on your configuration.
+     1. Select the (**{chevron-lg-down}**) next to **Edit** or **Gitpod**, depending on your configuration.
      1. Select **Open in Web IDE** from the list to display it as the editing option.
      1. Select **Open in Web IDE** to open the editor.
 - *When viewing a merge request* -
@@ -198,13 +198,13 @@ left.
 
 ## Switching merge requests
 
-To switch between your authored and assigned merge requests, click the
+To switch between your authored and assigned merge requests, select the
 dropdown in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
 request.
 
 ## Switching branches
 
-To switch between branches of the current project repository, click the dropdown
+To switch between branches of the current project repository, select the dropdown
 in the top of the sidebar to open a list of branches.
 You must commit or discard all your changes before switching to a
 different branch.
@@ -320,7 +320,7 @@ The [File Sync](#file-syncing-to-web-terminal) feature is supported on Kubernete
 
 To enable the Web IDE terminals you must create the file
 `.gitlab/.gitlab-webide.yml` inside the repository's root. This
-file is fairly similar to the [CI configuration file](../../../ci/yaml/index.md)
+file is fairly similar to the [`.gitlab-ci.yml` file](../../../ci/yaml/index.md)
 syntax but with some restrictions:
 
 - No global blocks (such as `before_script` or `after_script`) can be defined.
@@ -334,7 +334,7 @@ syntax but with some restrictions:
   that, if you override the default `script` value, you have to add a command
   which would keep the job running, like `sleep`.
 
-In the code below there is an example of this configuration file:
+For example, with this configuration file:
 
 ```yaml
 terminal:
@@ -348,20 +348,20 @@ terminal:
     NODE_ENV: "test"
 ```
 
-After the terminal has started, the console is displayed and we could access
+After the terminal starts, the console is displayed and you can access
 the project repository files.
 
-When you use the image keyword, a container with the specified image is created. If you specify an image, it has no effect. This is the case when you use the [shell executor](https://docs.gitlab.com/runner/executors/shell.html).
+When you use the `image` keyword, a container with the specified image is created.
+If you use the [shell executor](https://docs.gitlab.com/runner/executors/shell.html)
+or the [SSH executor](https://docs.gitlab.com/runner/executors/ssh.html), `image` has no effect.
 
-**Important**. The terminal job is branch dependent. This means that the
-configuration file used to trigger and configure the terminal is the one in
-the selected branch of the Web IDE.
-
-If there is no configuration file in a branch, an error message is shown.
+The terminal job is branch dependent. The configuration file used to trigger
+and configure the terminal is the one in the selected branch of the Web IDE.
+If no configuration file exists in a branch, an error message is displayed.
 
 ### Running interactive terminals in the Web IDE
 
-If Interactive Terminals are available for the current user, the **Terminal** button is visible in the right sidebar of the Web IDE. Click this button to open
+If Interactive Terminals are available for the current user, the **Terminal** button is visible in the right sidebar of the Web IDE. Select this button to open
 or close the terminal tab.
 
 After opening, the tab shows the **Start Web Terminal** button. This button may
@@ -383,7 +383,7 @@ to running commands in a local terminal or through SSH.
 
 While the terminal is running, it can be stopped by clicking **Stop Terminal**.
 This disconnects the terminal and stops the runner's terminal job. From here,
-click **Restart Terminal** to start a new terminal session.
+select **Restart Terminal** to start a new terminal session.
 
 ### File syncing to web terminal
 

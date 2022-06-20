@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -41,7 +40,7 @@ func validateMetadata(r io.Reader) error {
 		return err
 	}
 
-	meta, err := ioutil.ReadAll(gz)
+	meta, err := io.ReadAll(gz)
 	if err != nil {
 		return err
 	}
@@ -59,7 +58,7 @@ func validateMetadata(r io.Reader) error {
 func TestGenerateZipMetadataFromFile(t *testing.T) {
 	var metaBuffer bytes.Buffer
 
-	f, err := ioutil.TempFile("", "workhorse-metadata.zip-")
+	f, err := os.CreateTemp("", "workhorse-metadata.zip-")
 	if f != nil {
 		defer os.Remove(f.Name())
 	}
@@ -84,7 +83,7 @@ func TestGenerateZipMetadataFromFile(t *testing.T) {
 }
 
 func TestErrNotAZip(t *testing.T) {
-	f, err := ioutil.TempFile("", "workhorse-metadata.zip-")
+	f, err := os.CreateTemp("", "workhorse-metadata.zip-")
 	if f != nil {
 		defer os.Remove(f.Name())
 	}

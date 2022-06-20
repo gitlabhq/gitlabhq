@@ -43,9 +43,7 @@ export default {
   },
   methods: {
     getActiveLabel(labels, data) {
-      return labels.find(
-        (label) => this.getLabelName(label).toLowerCase() === stripQuotes(data).toLowerCase(),
-      );
+      return labels.find((label) => this.getLabelName(label) === stripQuotes(data));
     },
     /**
      * There's an inconsistency between private and public API
@@ -128,7 +126,7 @@ export default {
         <div class="gl-display-flex gl-align-items-center">
           <span
             :style="{ backgroundColor: label.color }"
-            class="gl-display-inline-block mr-2 p-2"
+            class="gl-display-inline-block gl-mr-3 gl-p-3"
           ></span>
           <div>{{ getLabelName(label) }}</div>
         </div>

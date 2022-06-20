@@ -73,6 +73,8 @@ class Namespace < ApplicationRecord
   has_one :ci_namespace_mirror, class_name: 'Ci::NamespaceMirror'
   has_many :sync_events, class_name: 'Namespaces::SyncEvent'
 
+  has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
@@ -208,7 +210,7 @@ class Namespace < ApplicationRecord
       end
     end
 
-    def clean_path(path)
+    def clean_path(path, limited_to: Namespace.all)
       path = path.dup
       # Get the email username by removing everything after an `@` sign.
       path.gsub!(/@.*\z/,                "")
@@ -229,7 +231,7 @@ class Namespace < ApplicationRecord
       path = "blank" if path.blank?
 
       uniquify = Uniquify.new
-      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
+      uniquify.string(path) { |s| limited_to.find_by_path_or_name(s) }
     end
 
     def clean_name(value)
@@ -411,12 +413,10 @@ class Namespace < ApplicationRecord
     return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
 
     strong_memoize(:first_auto_devops_config) do
-      if has_parent? && cache_first_auto_devops_config?
+      if has_parent?
         Rails.cache.fetch(first_auto_devops_config_cache_key_for(id), expires_in: 1.day) do
           parent.first_auto_devops_config
         end
-      elsif has_parent?
-        parent.first_auto_devops_config
       else
         { scope: :instance, status: Gitlab::CurrentSettings.auto_devops_enabled? }
       end
@@ -425,6 +425,28 @@ class Namespace < ApplicationRecord
 
   def aggregation_scheduled?
     aggregation_schedule.present?
+  end
+
+  def container_repositories_size_cache_key
+    "namespaces:#{id}:container_repositories_size"
+  end
+
+  def container_repositories_size
+    strong_memoize(:container_repositories_size) do
+      next unless Gitlab.com?
+      next unless root?
+      next unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+      next 0 if all_container_repositories.empty?
+      next unless all_container_repositories.all_migrated?
+
+      Rails.cache.fetch(container_repositories_size_cache_key, expires_in: 7.days) do
+        ContainerRegistry::GitlabApiClient.deduplicated_size(full_path)
+      end
+    end
+  end
+
+  def all_container_repositories
+    ContainerRepository.for_project_id(all_projects)
   end
 
   def pages_virtual_domain
@@ -524,18 +546,34 @@ class Namespace < ApplicationRecord
   end
 
   def storage_enforcement_date
+    return Date.current if Feature.enabled?(:namespace_storage_limit_bypass_date_check, self)
+
     # should return something like Date.new(2022, 02, 03)
     # TBD: https://gitlab.com/gitlab-org/gitlab/-/issues/350632
     nil
   end
 
   def certificate_based_clusters_enabled?
-    ::Gitlab::SafeRequestStore.fetch("certificate_based_clusters:ns:#{self.id}") do
-      Feature.enabled?(:certificate_based_clusters, self, type: :ops)
-    end
+    cluster_enabled_granted? || certificate_based_clusters_enabled_ff?
+  end
+
+  def enabled_git_access_protocol
+    # If the instance-level setting is enabled, we defer to that
+    return ::Gitlab::CurrentSettings.enabled_git_access_protocol unless ::Gitlab::CurrentSettings.enabled_git_access_protocol.blank?
+
+    # Otherwise we use the stored setting on the group
+    namespace_settings&.enabled_git_access_protocol
   end
 
   private
+
+  def cluster_enabled_granted?
+    (Gitlab.com? || Gitlab.dev_or_test_env?) && root_ancestor.cluster_enabled_grant.present?
+  end
+
+  def certificate_based_clusters_enabled_ff?
+    Feature.enabled?(:certificate_based_clusters, type: :ops)
+  end
 
   def expire_child_caches
     Namespace.where(id: descendants).each_batch do |namespaces|
@@ -611,7 +649,7 @@ class Namespace < ApplicationRecord
       return
     end
 
-    if parent.project_namespace?
+    if parent&.project_namespace?
       errors.add(:parent_id, _('project namespace cannot be the parent of another namespace'))
     end
 
@@ -638,17 +676,11 @@ class Namespace < ApplicationRecord
   end
 
   def expire_first_auto_devops_config_cache
-    return unless cache_first_auto_devops_config?
-
     descendants_to_expire = self_and_descendants.as_ids
     return if descendants_to_expire.load.empty?
 
     keys = descendants_to_expire.map { |group| first_auto_devops_config_cache_key_for(group.id) }
     Rails.cache.delete_multi(keys)
-  end
-
-  def cache_first_auto_devops_config?
-    ::Feature.enabled?(:namespaces_cache_first_auto_devops_config)
   end
 
   def write_projects_repository_config
@@ -670,8 +702,6 @@ class Namespace < ApplicationRecord
   end
 
   def first_auto_devops_config_cache_key_for(group_id)
-    return "namespaces:{first_auto_devops_config}:#{group_id}" unless sync_traversal_ids?
-
     # Use SHA2 of `traversal_ids` to account for moving a namespace within the same root ancestor hierarchy.
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end

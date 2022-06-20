@@ -67,9 +67,10 @@ module API
       end
       get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, feature_category: :subgroups, urgency: :low do
         namespace_path = params[:namespace]
+        existing_namespaces_within_the_parent = Namespace.without_project_namespaces.by_parent(params[:parent_id])
 
-        exists = Namespace.without_project_namespaces.by_parent(params[:parent_id]).filter_by_path(namespace_path).exists?
-        suggestions = exists ? [Namespace.clean_path(namespace_path)] : []
+        exists = existing_namespaces_within_the_parent.filter_by_path(namespace_path).exists?
+        suggestions = exists ? [Namespace.clean_path(namespace_path, limited_to: existing_namespaces_within_the_parent)] : []
 
         present :exists, exists
         present :suggests, suggestions

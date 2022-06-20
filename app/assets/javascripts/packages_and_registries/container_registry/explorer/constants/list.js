@@ -41,6 +41,8 @@ export const EMPTY_RESULT_MESSAGE = s__(
   'ContainerRegistry|To widen your search, change or remove the filters above.',
 );
 
+export const COPY_IMAGE_PATH_TITLE = s__('ContainerRegistry|Copy image path');
+
 // Parameters
 
 export const IMAGE_DELETE_SCHEDULED_STATUS = 'DELETE_SCHEDULED';

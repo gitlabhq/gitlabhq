@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/issues/_service_desk_info_content' do
+RSpec.describe 'projects/issues/service_desk/_service_desk_info_content' do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
   let_it_be(:service_desk_address) { 'address@example.com' }

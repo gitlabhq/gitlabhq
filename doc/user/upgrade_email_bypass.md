@@ -27,7 +27,7 @@ sent within five minutes, with a link for users to re-confirm the subject email 
 
 ## Do the confirmation emails expire?
 
-The links in these re-confirmation emails expire after one day by default. Users who click an expired link are asked to request a new re-confirmation email. Any user can request a new re-confirmation email from `http://gitlab.example.com/users/confirmation/new`.
+The links in these re-confirmation emails expire after one day by default. Users who select an expired link are asked to request a new re-confirmation email. Any user can request a new re-confirmation email from `http://gitlab.example.com/users/confirmation/new`.
 
 ## Generate a list of affected users
 

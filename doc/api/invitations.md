@@ -22,9 +22,9 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 - Maintainer (`40`)
 - Owner (`50`) - Only valid to set for groups
 
-WARNING:
-Due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299),
-projects in personal namespaces don't show owner (`50`) permission.
+NOTE:
+From [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects have a maximum role of Owner.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8 and earlier, projects have a maximum role of Maintainer.
 
 ## Add a member to a group or project
 

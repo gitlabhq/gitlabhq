@@ -4,6 +4,8 @@
 - deploy_token_description = s_('DeployTokens|Deploy tokens allow access to packages, your repository, and registry images.')
 
 = render "projects/default_branch/show"
+- if Feature.enabled?(:branch_rules, @project)
+  = render "projects/branch_rules/show"
 = render_if_exists "projects/push_rules/index"
 = render "projects/mirrors/mirror_repos"
 

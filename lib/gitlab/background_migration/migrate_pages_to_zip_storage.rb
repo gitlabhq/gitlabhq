@@ -9,10 +9,7 @@ module Gitlab
     # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54578 for discussion
     class MigratePagesToZipStorage
       def perform(start_id, stop_id)
-        ::Pages::MigrateFromLegacyStorageService.new(Gitlab::AppLogger,
-                                                     ignore_invalid_entries: false,
-                                                     mark_projects_as_not_deployed: false)
-          .execute_for_batch(start_id..stop_id)
+        # no-op
       end
     end
   end

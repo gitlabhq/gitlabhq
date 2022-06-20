@@ -4,7 +4,7 @@
   .settings-header
     %h4
       = _('Gitpod')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     %p
       #js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" } }

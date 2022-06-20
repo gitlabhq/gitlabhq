@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlDatepicker } from '@gitlab/ui';
 import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
 
 describe('~/access_tokens/components/expires_at_field', () => {
@@ -12,22 +13,40 @@ describe('~/access_tokens/components/expires_at_field', () => {
     },
   };
 
-  const createComponent = (propsData = defaultPropsData) => {
+  const findDatepicker = () => wrapper.findComponent(GlDatepicker);
+
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(ExpiresAtField, {
-      propsData,
+      propsData: {
+        ...defaultPropsData,
+        ...props,
+      },
     });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   it('should render datepicker with input info', () => {
+    createComponent();
+
     expect(wrapper.element).toMatchSnapshot();
+  });
+
+  it('should set the date pickers minimum date', () => {
+    const minDate = new Date('1970-01-01');
+
+    createComponent({ minDate });
+
+    expect(findDatepicker().props('minDate')).toStrictEqual(minDate);
+  });
+
+  it('should set the date pickers maximum date', () => {
+    const maxDate = new Date('1970-01-01');
+
+    createComponent({ maxDate });
+
+    expect(findDatepicker().props('maxDate')).toStrictEqual(maxDate);
   });
 });

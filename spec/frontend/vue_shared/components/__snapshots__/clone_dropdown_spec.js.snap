@@ -12,7 +12,7 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
   right="true"
   size="medium"
   text="Clone"
-  variant="info"
+  variant="confirm"
 >
   <div
     class="pb-2 mx-1"
@@ -24,41 +24,38 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
     <div
       class="mx-3"
     >
-      <div
-        readonly="readonly"
+      <b-input-group-stub
+        readonly=""
+        tag="div"
       >
-        <b-input-group-stub
+        <!---->
+         
+        <b-form-input-stub
+          class="gl-form-input"
+          debounce="0"
+          formatter="[Function]"
+          readonly="true"
+          type="text"
+          value="ssh://foo.bar"
+        />
+         
+        <b-input-group-append-stub
           tag="div"
         >
-          <!---->
-           
-          <b-form-input-stub
-            class="gl-form-input"
-            debounce="0"
-            formatter="[Function]"
-            readonly="true"
-            type="text"
-            value="ssh://foo.bar"
+          <gl-button-stub
+            aria-label="Copy URL"
+            buttontextclasses=""
+            category="primary"
+            class="d-inline-flex"
+            data-clipboard-text="ssh://foo.bar"
+            data-qa-selector="copy_ssh_url_button"
+            icon="copy-to-clipboard"
+            size="medium"
+            title="Copy URL"
+            variant="default"
           />
-           
-          <b-input-group-append-stub
-            tag="div"
-          >
-            <gl-button-stub
-              aria-label="Copy URL"
-              buttontextclasses=""
-              category="primary"
-              class="d-inline-flex"
-              data-clipboard-text="ssh://foo.bar"
-              data-qa-selector="copy_ssh_url_button"
-              icon="copy-to-clipboard"
-              size="medium"
-              title="Copy URL"
-              variant="default"
-            />
-          </b-input-group-append-stub>
-        </b-input-group-stub>
-      </div>
+        </b-input-group-append-stub>
+      </b-input-group-stub>
     </div>
      
     <gl-dropdown-section-header-stub>
@@ -68,41 +65,38 @@ exports[`Clone Dropdown Button rendering matches the snapshot 1`] = `
     <div
       class="mx-3"
     >
-      <div
-        readonly="readonly"
+      <b-input-group-stub
+        readonly=""
+        tag="div"
       >
-        <b-input-group-stub
+        <!---->
+         
+        <b-form-input-stub
+          class="gl-form-input"
+          debounce="0"
+          formatter="[Function]"
+          readonly="true"
+          type="text"
+          value="http://foo.bar"
+        />
+         
+        <b-input-group-append-stub
           tag="div"
         >
-          <!---->
-           
-          <b-form-input-stub
-            class="gl-form-input"
-            debounce="0"
-            formatter="[Function]"
-            readonly="true"
-            type="text"
-            value="http://foo.bar"
+          <gl-button-stub
+            aria-label="Copy URL"
+            buttontextclasses=""
+            category="primary"
+            class="d-inline-flex"
+            data-clipboard-text="http://foo.bar"
+            data-qa-selector="copy_http_url_button"
+            icon="copy-to-clipboard"
+            size="medium"
+            title="Copy URL"
+            variant="default"
           />
-           
-          <b-input-group-append-stub
-            tag="div"
-          >
-            <gl-button-stub
-              aria-label="Copy URL"
-              buttontextclasses=""
-              category="primary"
-              class="d-inline-flex"
-              data-clipboard-text="http://foo.bar"
-              data-qa-selector="copy_http_url_button"
-              icon="copy-to-clipboard"
-              size="medium"
-              title="Copy URL"
-              variant="default"
-            />
-          </b-input-group-append-stub>
-        </b-input-group-stub>
-      </div>
+        </b-input-group-append-stub>
+      </b-input-group-stub>
     </div>
   </div>
 </gl-dropdown-stub>

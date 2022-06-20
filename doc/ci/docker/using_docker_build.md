@@ -92,7 +92,7 @@ the job script in context of the image in privileged mode.
 We recommend you use Docker-in-Docker with TLS enabled,
 which is supported by [GitLab.com shared runners](../runners/index.md).
 
-You should always specify a specific version of the image, like `docker:19.03.12`.
+You should always specify a specific version of the image, like `docker:20.10.16`.
 If you use a tag like `docker:stable`, you have no control over which version is used.
 Unpredictable behavior can result, especially when new versions are released.
 
@@ -126,12 +126,12 @@ To use Docker-in-Docker with TLS enabled:
      --registration-token REGISTRATION_TOKEN \
      --executor docker \
      --description "My Docker Runner" \
-     --docker-image "docker:19.03.12" \
+     --docker-image "docker:20.10.16" \
      --docker-privileged \
      --docker-volumes "/certs/client"
    ```
 
-   - This command registers a new runner to use the `docker:19.03.12` image.
+   - This command registers a new runner to use the `docker:20.10.16` image.
      To start the build and service containers, it uses the `privileged` mode.
      If you want to use [Docker-in-Docker](https://www.docker.com/blog/docker-can-now-run-within-docker/),
      you must always use `privileged = true` in your Docker containers.
@@ -149,7 +149,7 @@ To use Docker-in-Docker with TLS enabled:
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:19.03.12"
+       image = "docker:20.10.16"
        privileged = true
        disable_cache = false
        volumes = ["/certs/client", "/cache"]
@@ -159,10 +159,10 @@ To use Docker-in-Docker with TLS enabled:
    ```
 
 1. You can now use `docker` in the job script. Note the inclusion of the
-   `docker:19.03.12-dind` service:
+   `docker:20.10.16-dind` service:
 
    ```yaml
-   image: docker:19.03.12
+   image: docker:20.10.16
 
    variables:
      # When you use the dind service, you must instruct Docker to talk with
@@ -182,7 +182,7 @@ To use Docker-in-Docker with TLS enabled:
      DOCKER_TLS_CERTDIR: "/certs"
 
    services:
-     - docker:19.03.12-dind
+     - docker:20.10.16-dind
 
    before_script:
      - docker info
@@ -209,7 +209,7 @@ Assuming that the runner's `config.toml` is similar to:
   executor = "docker"
   [runners.docker]
     tls_verify = false
-    image = "docker:19.03.12"
+    image = "docker:20.10.16"
     privileged = true
     disable_cache = false
     volumes = ["/cache"]
@@ -219,10 +219,10 @@ Assuming that the runner's `config.toml` is similar to:
 ```
 
 You can now use `docker` in the job script. Note the inclusion of the
-`docker:19.03.12-dind` service:
+`docker:20.10.16-dind` service:
 
 ```yaml
-image: docker:19.03.12
+image: docker:20.10.16
 
 variables:
   # When using dind service, you must instruct docker to talk with the
@@ -243,7 +243,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 
 services:
-  - docker:19.03.12-dind
+  - docker:20.10.16-dind
 
 before_script:
   - docker info
@@ -284,10 +284,10 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
    ```
 
 1. You can now use `docker` in the job script. Note the inclusion of the
-   `docker:19.03.13-dind` service:
+   `docker:20.10.16-dind` service:
 
    ```yaml
-   image: docker:19.03.13
+   image: docker:20.10.16
 
    variables:
      # When using dind service, you must instruct Docker to talk with
@@ -315,7 +315,7 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
 
    services:
-     - docker:19.03.13-dind
+     - docker:20.10.16-dind
 
    before_script:
      - docker info
@@ -341,7 +341,7 @@ not without its own challenges:
 - **Storage drivers**: By default, earlier versions of Docker use the `vfs` storage driver,
   which copies the file system for each job. Docker 17.09 and later use `--storage-driver overlay2`, which is
   the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver) for details.
-- **Root file system**: Because the `docker:19.03.12-dind` container and the runner container don't share their
+- **Root file system**: Because the `docker:20.10.16-dind` container and the runner container don't share their
   root file system, you can use the job's working directory as a mount point for
   child containers. For example, if you have files you want to share with a
   child container, you might create a subdirectory under `/builds/$CI_PROJECT_PATH`
@@ -364,7 +364,7 @@ container. Docker is then available in the context of the image.
 NOTE:
 If you bind the Docker socket and you are
 [using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
-you can no longer use `docker:19.03.12-dind` as a service. Volume bindings
+you can no longer use `docker:20.10.16-dind` as a service. Volume bindings
 are done to the services as well, making these incompatible.
 
 #### Use the Docker executor with Docker socket binding
@@ -383,7 +383,7 @@ Your configuration should look something like this:
   executor = "docker"
   [runners.docker]
     tls_verify = false
-    image = "docker:19.03.12"
+    image = "docker:20.10.16"
     privileged = false
     disable_cache = false
     volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -399,7 +399,7 @@ sudo gitlab-runner register -n \
   --registration-token REGISTRATION_TOKEN \
   --executor docker \
   --description "My Docker Runner" \
-  --docker-image "docker:19.03.12" \
+  --docker-image "docker:20.10.16" \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
@@ -417,7 +417,7 @@ mirror:
 
 ```yaml
 services:
-  - name: docker:19.03.13-dind
+  - name: docker:20.10.16-dind
     command: ["--registry-mirror", "https://registry-mirror.example.com"]  # Specify the registry mirror to use
 ```
 
@@ -440,7 +440,7 @@ Docker:
     ...
     privileged = true
     [[runners.docker.services]]
-      name = "docker:19.03.13-dind"
+      name = "docker:20.10.16-dind"
       command = ["--registry-mirror", "https://registry-mirror.example.com"]
 ```
 
@@ -454,7 +454,7 @@ Kubernetes:
     ...
     privileged = true
     [[runners.kubernetes.services]]
-      name = "docker:19.03.13-dind"
+      name = "docker:20.10.16-dind"
       command = ["--registry-mirror", "https://registry-mirror.example.com"]
 ```
 
@@ -563,11 +563,11 @@ the implications of this method are:
    docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
    ```
 
-You don't need to include the `docker:19.03.12-dind` service, like you do when
+You don't need to include the `docker:20.10.16-dind` service, like you do when
 you're using the Docker-in-Docker executor:
 
 ```yaml
-image: docker:19.03.12
+image: docker:20.10.16
 
 before_script:
   - docker info
@@ -591,13 +591,13 @@ In [`before_script`](../yaml/index.md#before_script), run `docker
 login`:
 
 ```yaml
-image: docker:19.03.13
+image: docker:20.10.16
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 services:
-  - docker:19.03.13-dind
+  - docker:20.10.16-dind
 
 build:
   stage: build
@@ -616,7 +616,7 @@ empty or remove it.
 If you are an administrator for GitLab Runner, you can mount a file
 with the authentication configuration to `~/.docker/config.json`.
 Then every job that the runner picks up is authenticated already. If you
-are using the official `docker:19.03.13` image, the home directory is
+are using the official `docker:20.10.16` image, the home directory is
 under `/root`.
 
 If you mount the configuration file, any `docker` command
@@ -699,13 +699,13 @@ The following example shows [`before_script`](../yaml/index.md#before_script).
 The same commands apply for any solution you implement.
 
 ```yaml
-image: docker:19.03.13
+image: docker:20.10.16
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 services:
-  - docker:19.03.13-dind
+  - docker:20.10.16-dind
 
 build:
   stage: build
@@ -741,10 +741,10 @@ with the `--cache-from` argument must first be pulled
 Here's a `.gitlab-ci.yml` file that shows how to use Docker caching:
 
 ```yaml
-image: docker:19.03.12
+image: docker:20.10.16
 
 services:
-  - docker:19.03.12-dind
+  - docker:20.10.16-dind
 
 variables:
   # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
@@ -862,10 +862,10 @@ This issue can occur when the service's image name
 [includes a registry hostname](../../ci/services/index.md#available-settings-for-services). For example:
 
 ```yaml
-image: docker:19.03.12
+image: docker:20.10.16
 
 services:
-  - registry.hub.docker.com/library/docker:19.03.12-dind
+  - registry.hub.docker.com/library/docker:20.10.16-dind
 ```
 
 A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
@@ -873,9 +873,9 @@ However, the shorter service hostname `docker` is expected.
 To allow service resolution and access, add an explicit alias for the service name `docker`:
 
 ```yaml
-image: docker:19.03.12
+image: docker:20.10.16
 
 services:
-  - name: registry.hub.docker.com/library/docker:19.03.12-dind
+  - name: registry.hub.docker.com/library/docker:20.10.16-dind
     alias: docker
 ```

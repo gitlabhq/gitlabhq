@@ -10,6 +10,7 @@ import {
   MISSING_MANIFEST_WARNING_TOOLTIP,
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
+  COPY_IMAGE_PATH_TITLE,
 } from '~/packages_and_registries/container_registry/explorer/constants/index';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
@@ -150,7 +151,7 @@ describe('tags list row', () => {
 
       expect(findClipboardButton().attributes()).toMatchObject({
         text: tag.location,
-        title: tag.location,
+        title: COPY_IMAGE_PATH_TITLE,
       });
     });
 

@@ -15,6 +15,12 @@ Development guides that are specific to CI/CD are listed here:
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
 to learn how to update the [reference page](../../ci/yaml/index.md).
 
+## Examples of CI/CD usage
+
+We maintain a [`ci-sample-projects`](https://gitlab.com/gitlab-org/ci-sample-projects) group, with projects that showcase
+examples of `.gitlab-ci.yml` for different use cases of GitLab CI/CD. They also cover specific syntax that could
+be used for different scenarios.
+
 ## CI Architecture overview
 
 The following is a simplified diagram of the CI architecture. Some details are left out to focus on

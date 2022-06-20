@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -12,7 +12,7 @@ which becomes the owner of the project. You can resume an import
 with the same command.
 
 Bear in mind that the syntax is very specific. Remove any spaces within the argument block and
-before/after the brackets. Also, some shells (for example, `zsh`) can interpret the open/close brackets
+before/after the brackets. Also, some shells (for example, Zsh) can interpret the open/close brackets
 (`[]`) separately. You may need to either escape the brackets or use double quotes.
 
 ## Caveats

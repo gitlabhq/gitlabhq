@@ -114,7 +114,7 @@ export default {
 
 <template>
   <div class="well-segment commit gl-p-5 gl-w-full gl-display-flex">
-    <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto" />
+    <gl-loading-icon v-if="isLoading" size="lg" color="dark" class="m-auto" />
     <template v-else-if="commit">
       <user-avatar-link
         v-if="commit.author"

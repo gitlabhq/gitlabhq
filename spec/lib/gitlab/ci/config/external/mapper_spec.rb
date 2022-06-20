@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
   include StubRequests
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { project.owner }
 
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
@@ -34,6 +34,19 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
   describe '#process' do
     subject(:process) { mapper.process }
 
+    shared_examples 'logging config file fetch' do |key, count|
+      it 'propagates the pipeline logger' do
+        process
+
+        fetch_content_log_count = mapper
+          .logger
+          .observations_hash
+          .dig(key, 'count')
+
+        expect(fetch_content_log_count).to eq(count)
+      end
+    end
+
     context "when single 'include' keyword is defined" do
       context 'when the string is a local file' do
         let(:values) do
@@ -45,6 +58,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect(subject).to contain_exactly(
             an_instance_of(Gitlab::Ci::Config::External::File::Local))
         end
+
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_local_content_duration_s', 1
       end
 
       context 'when the key is a local file hash' do
@@ -68,6 +83,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect(subject).to contain_exactly(
             an_instance_of(Gitlab::Ci::Config::External::File::Remote))
         end
+
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_remote_content_duration_s', 1
       end
 
       context 'when the key is a remote file hash' do
@@ -92,6 +109,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect(subject).to contain_exactly(
             an_instance_of(Gitlab::Ci::Config::External::File::Template))
         end
+
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_template_content_duration_s', 1
       end
 
       context 'when the key is a hash of file and remote' do
@@ -118,6 +137,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect(subject).to contain_exactly(
             an_instance_of(Gitlab::Ci::Config::External::File::Project))
         end
+
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
       end
 
       context "when the key is project's files" do
@@ -131,6 +152,8 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
             an_instance_of(Gitlab::Ci::Config::External::File::Project),
             an_instance_of(Gitlab::Ci::Config::External::File::Project))
         end
+
+        it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 2
       end
     end
 

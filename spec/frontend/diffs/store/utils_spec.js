@@ -30,13 +30,6 @@ describe('DiffsStoreUtils', () => {
     });
   });
 
-  describe('getReversePosition', () => {
-    it('should return correct line position name', () => {
-      expect(utils.getReversePosition(LINE_POSITION_RIGHT)).toEqual(LINE_POSITION_LEFT);
-      expect(utils.getReversePosition(LINE_POSITION_LEFT)).toEqual(LINE_POSITION_RIGHT);
-    });
-  });
-
   describe('findIndexInInlineLines', () => {
     const expectSet = (method, lines, invalidLines) => {
       expect(method(lines, { oldLineNumber: 3, newLineNumber: 5 })).toEqual(4);

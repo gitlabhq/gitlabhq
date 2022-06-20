@@ -23,7 +23,7 @@ alternatives to server hooks include:
 
 - [Webhooks](../user/project/integrations/webhooks.md).
 - [GitLab CI/CD](../ci/index.md).
-- [Push rules](../push_rules/push_rules.md), for a user-configurable Git hook interface.
+- [Push rules](../user/project/repository/push_rules.md), for a user-configurable Git hook interface.
 
 [Geo](geo/index.md) doesn't replicate server hooks to secondary nodes.
 

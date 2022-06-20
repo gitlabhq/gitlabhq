@@ -34,7 +34,7 @@ prompt, command shell, and command line). Here are some options:
 
 - For macOS users:
   - Built-in [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). Press <kbd>⌘ command</kbd> + <kbd>space</kbd> and type `terminal`.
-  - [iTerm2](https://iterm2.com/). You can integrate it with [zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [oh my zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
+  - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
 - For Windows users:
   - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
   - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7).
@@ -149,7 +149,7 @@ between your computer and GitLab.
 
 1. GitLab requests your username and password:
    - If you have 2FA enabled for your account, you must use a [Personal Access Token](../user/profile/personal_access_tokens.md)
-     with **read_repository** or **write_repository** permissions instead of your account's password.
+     with `read_repository` or `write_repository` permissions instead of your account's password.
    - If you don't have 2FA enabled, use your account's password.
 
 1. To view the files, go to the new directory:

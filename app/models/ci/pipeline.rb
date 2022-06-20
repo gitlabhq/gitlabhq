@@ -81,6 +81,7 @@ module Ci
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(::Ci::Pipeline.artifacts_locked.where('ci_pipelines.id = ci_builds.commit_id'))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
+    has_many :latest_successful_builds, -> { latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 
@@ -239,7 +240,9 @@ module Ci
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(pipeline.id)
+          unless pipeline.user&.blocked?
+            PipelineHooksWorker.perform_async(pipeline.id)
+          end
 
           if pipeline.project.jira_subscription_exists?
             # Passing the seq-id ensures this is idempotent
@@ -296,7 +299,12 @@ module Ci
         ref_status = pipeline.ci_ref&.update_status_by!(pipeline)
 
         pipeline.run_after_commit do
-          PipelineNotificationWorker.perform_async(pipeline.id, ref_status: ref_status)
+          # We don't send notifications for a pipeline dropped due to the
+          # user been blocked.
+          unless pipeline.user&.blocked?
+            PipelineNotificationWorker
+              .perform_async(pipeline.id, ref_status: ref_status)
+          end
         end
       end
 
@@ -327,14 +335,14 @@ module Ci
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
     scope :created_before_id, -> (id) { where('ci_pipelines.id < ?', id) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
-    scope :with_pipeline_source, -> (source) { where(source: source)}
+    scope :with_pipeline_source, -> (source) { where(source: source) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
     end
 
     scope :with_reports, -> (reports_scope) do
-      where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
+      where('EXISTS (?)', ::Ci::Build.latest.with_artifacts(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
     end
 
     scope :with_only_interruptible_builds, -> do
@@ -688,7 +696,7 @@ module Ci
     def latest_report_artifacts
       ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
-          id: job_artifacts.with_reports
+          id: job_artifacts.all_reports
             .select('max(ci_job_artifacts.id) as id')
             .group(:file_type)
         )
@@ -1049,12 +1057,16 @@ module Ci
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_not_expired.to_a
     end
 
-    def latest_report_builds(reports_scope = ::Ci::JobArtifact.with_reports)
-      builds.latest.with_reports(reports_scope)
+    def latest_report_builds(reports_scope = ::Ci::JobArtifact.all_reports)
+      builds.latest.with_artifacts(reports_scope)
     end
 
     def latest_test_report_builds
-      latest_report_builds(Ci::JobArtifact.test_reports).preload(:project)
+      latest_report_builds(Ci::JobArtifact.test_reports).preload(:project, :metadata)
+    end
+
+    def latest_report_builds_in_self_and_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
+      builds_in_self_and_descendants.with_artifacts(reports_scope)
     end
 
     def builds_with_coverage
@@ -1071,10 +1083,6 @@ module Ci
 
     def has_coverage_reports?
       pipeline_artifacts&.report_exists?(:code_coverage)
-    end
-
-    def can_generate_coverage_reports?
-      has_reports?(Ci::JobArtifact.coverage_reports)
     end
 
     def has_codequality_mr_diff_report?
@@ -1103,14 +1111,6 @@ module Ci
       Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
         latest_report_builds(Ci::JobArtifact.accessibility_reports).each do |build|
           build.collect_accessibility_reports!(accessibility_reports)
-        end
-      end
-    end
-
-    def coverage_reports
-      Gitlab::Ci::Reports::CoverageReports.new.tap do |coverage_reports|
-        latest_report_builds(Ci::JobArtifact.coverage_reports).includes(:project).find_each do |build|
-          build.collect_coverage_reports!(coverage_reports)
         end
       end
     end
@@ -1308,8 +1308,8 @@ module Ci
     end
 
     def has_expired_test_reports?
-      strong_memoize(:artifacts_expired) do
-        !has_reports?(::Ci::JobArtifact.test_reports.not_expired)
+      strong_memoize(:has_expired_test_reports) do
+        has_reports?(::Ci::JobArtifact.test_reports.expired)
       end
     end
 

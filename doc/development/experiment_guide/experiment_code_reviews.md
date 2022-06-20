@@ -22,4 +22,4 @@ but is acceptable for now, mention your concerns with a note that there's no
 need to change the code. The author can then add a comment to this piece of code
 and link to the issue that resolves the experiment. The author or reviewer can add a link to this concern in the
 experiment rollout issue under the `Experiment Successful Cleanup Concerns` section of the description.
-If the experiment is successful and becomes part of the product, any items that appear under this section will be addressed.
+If the experiment is successful and becomes part of the product, any items that appear under this section are addressed.

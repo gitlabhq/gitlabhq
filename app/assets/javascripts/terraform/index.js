@@ -30,6 +30,7 @@ export default () => {
     el,
     apolloProvider: new VueApollo({ defaultClient }),
     provide: {
+      projectPath,
       accessTokensPath,
       terraformApiUrl,
       username,
@@ -38,8 +39,7 @@ export default () => {
       return createElement(TerraformList, {
         props: {
           emptyStateImage,
-          projectPath,
-          terraformAdmin: el.hasAttribute('data-terraform-admin'),
+          terraformAdmin: Object.prototype.hasOwnProperty.call(el.dataset, 'terraformAdmin'),
         },
       });
     },

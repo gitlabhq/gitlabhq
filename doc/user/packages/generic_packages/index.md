@@ -32,6 +32,11 @@ Prerequisites:
   If authenticating with a deploy token, it must be configured with the `write_package_registry`
   scope. If authenticating with a personal access token or project access token, it must be
   configured with the `api` scope.
+- You must call this API endpoint serially when attempting to upload multiple files under the
+  same package name and version. Attempts to concurrently upload multiple files into
+  a new package name and version may face partial failures with
+  `HTTP 500: Internal Server Error` responses due to the requests racing to
+  create the package.
 
 ```plaintext
 PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
@@ -62,6 +67,14 @@ Example response without attribute `select`:
 {
   "message":"201 Created"
 }
+```
+
+Example request with attribute `select = package_file`:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?select=package_file"
 ```
 
 Example response with attribute `select = package_file`:

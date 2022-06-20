@@ -235,6 +235,10 @@ The identity can be specified with the following keys:
 
 See the [official Kubernetes documentation for details](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation).
 
+## Related topics
+
+- [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)
+
 ## Troubleshooting
 
 ### `kubectl` commands not supported

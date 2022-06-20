@@ -60,7 +60,7 @@ module Ci
       end
 
       def destroy_batch(artifacts)
-        Ci::JobArtifacts::DestroyBatchService.new(artifacts).execute
+        Ci::JobArtifacts::DestroyBatchService.new(artifacts, skip_projects_on_refresh: true).execute
       end
 
       def loop_timeout?

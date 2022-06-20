@@ -1,23 +1,41 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import { i18n } from '../constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  i18n,
+  WIDGET_TYPE_ASSIGNEE,
+  WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_WEIGHT,
+} from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
+import WorkItemDescription from './work_item_description.vue';
+import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemWeight from './work_item_weight.vue';
 
 export default {
   i18n,
   components: {
     GlAlert,
     GlSkeletonLoader,
+    WorkItemAssignees,
     WorkItemActions,
+    WorkItemDescription,
     WorkItemTitle,
     WorkItemState,
+    WorkItemWeight,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    workItemParentId: {
       type: String,
       required: false,
       default: null,
@@ -66,6 +84,18 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    workItemsMvc2Enabled() {
+      return this.glFeatures.workItemsMvc2;
+    },
+    hasDescriptionWidget() {
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
+    },
+    workItemAssignees() {
+      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEE);
+    },
+    workItemWeight() {
+      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
+    },
   },
 };
 </script>
@@ -83,27 +113,40 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
-      <div class="gl-display-flex">
+      <div class="gl-display-flex gl-align-items-start">
         <work-item-title
           :work-item-id="workItem.id"
           :work-item-title="workItem.title"
           :work-item-type="workItemType"
+          :work-item-parent-id="workItemParentId"
           class="gl-mr-5"
           @error="error = $event"
-          @updated="$emit('workItemUpdated')"
         />
         <work-item-actions
           :work-item-id="workItem.id"
           :can-delete="canDelete"
-          class="gl-ml-auto gl-mt-5"
+          class="gl-ml-auto gl-mt-6"
           @deleteWorkItem="$emit('deleteWorkItem')"
           @error="error = $event"
         />
       </div>
+      <template v-if="workItemsMvc2Enabled">
+        <work-item-assignees
+          v-if="workItemAssignees"
+          :work-item-id="workItem.id"
+          :assignees="workItemAssignees.nodes"
+        />
+        <work-item-weight v-if="workItemWeight" :weight="workItemWeight.weight" />
+      </template>
       <work-item-state
         :work-item="workItem"
+        :work-item-parent-id="workItemParentId"
         @error="error = $event"
-        @updated="$emit('workItemUpdated')"
+      />
+      <work-item-description
+        v-if="hasDescriptionWidget"
+        :work-item-id="workItem.id"
+        @error="error = $event"
       />
     </template>
   </section>

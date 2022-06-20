@@ -33,7 +33,7 @@ module Gitlab
 
       # Returns the Arel relation for this CTE.
       def to_arel
-        sql = Arel::Nodes::SqlLiteral.new("(#{query.to_sql})")
+        sql = Arel::Nodes::SqlLiteral.new("(#{query_as_sql})")
 
         Gitlab::Database::AsWithMaterialized.new(table, sql, materialized: @materialized)
       end
@@ -53,6 +53,12 @@ module Gitlab
         relation.except(:where)
           .with(to_arel)
           .from(alias_to(relation.model.arel_table))
+      end
+
+      private
+
+      def query_as_sql
+        query.is_a?(String) ? query : query.to_sql
       end
     end
   end

@@ -49,6 +49,20 @@ RSpec.describe API::Release::Links do
 
         expect(response).to match_response_schema('release/links')
       end
+
+      context 'when using JOB-TOKEN auth' do
+        let(:job) { create(:ci_build, :running, user: maintainer) }
+
+        it 'returns releases links' do
+          get api("/projects/#{project.id}/releases/v0.1/assets/links", job_token: job.token)
+
+          aggregate_failures "testing response" do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('release/links')
+            expect(json_response.count).to eq(2)
+          end
+        end
+      end
     end
 
     context 'when release does not exist' do
@@ -114,6 +128,20 @@ RSpec.describe API::Release::Links do
       get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer)
 
       expect(response).to match_response_schema('release/link')
+    end
+
+    context 'when using JOB-TOKEN auth' do
+      let(:job) { create(:ci_build, :running, user: maintainer) }
+
+      it 'returns releases link' do
+        get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", job_token: job.token)
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('release/link')
+          expect(json_response['name']).to eq(release_link.name)
+        end
+      end
     end
 
     context 'when specified tag is not found in the project' do
@@ -196,6 +224,25 @@ RSpec.describe API::Release::Links do
       post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer), params: params
 
       expect(response).to match_response_schema('release/link')
+    end
+
+    context 'when using JOB-TOKEN auth' do
+      let(:job) { create(:ci_build, :running, user: maintainer) }
+
+      it 'creates a new release link' do
+        expect do
+          post api("/projects/#{project.id}/releases/v0.1/assets/links"), params: params.merge(job_token: job.token)
+        end.to change { Releases::Link.count }.by(1)
+
+        release.reload
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:created)
+          expect(last_release_link.name).to eq('awesome-app.dmg')
+          expect(last_release_link.filepath).to eq('/binaries/awesome-app.dmg')
+          expect(last_release_link.url).to eq('https://example.com/download/awesome-app.dmg')
+        end
+      end
     end
 
     context 'with protected tag' do
@@ -314,6 +361,20 @@ RSpec.describe API::Release::Links do
       expect(response).to match_response_schema('release/link')
     end
 
+    context 'when using JOB-TOKEN auth' do
+      let(:job) { create(:ci_build, :running, user: maintainer) }
+
+      it 'updates the release link' do
+        put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}"), params: params.merge(job_token: job.token)
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('release/link')
+          expect(json_response['name']).to eq('awesome-app.msi')
+        end
+      end
+    end
+
     context 'with protected tag' do
       context 'when user has access to the protected tag' do
         let!(:protected_tag) { create(:protected_tag, :developers_can_create, name: '*', project: project) }
@@ -409,6 +470,21 @@ RSpec.describe API::Release::Links do
       delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer)
 
       expect(response).to match_response_schema('release/link')
+    end
+
+    context 'when using JOB-TOKEN auth' do
+      let(:job) { create(:ci_build, :running, user: maintainer) }
+
+      it 'deletes the release link' do
+        expect do
+          delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", job_token: job.token)
+        end.to change { Releases::Link.count }.by(-1)
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('release/link')
+        end
+      end
     end
 
     context 'with protected tag' do

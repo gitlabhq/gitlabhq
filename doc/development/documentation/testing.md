@@ -276,6 +276,22 @@ guidelines:
 | UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
 | UI text from a third-party product                   | Rewrite the sentence to avoid it, or [add the vale exception code in-line](#disable-vale-tests). |
 
+#### Vale uppercase (acronym) test
+
+The [`Uppercase.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Uppercase.yml)
+test checks for incorrect usage of words in all capitals. For example, avoid usage
+like `This is NOT important`.
+
+If the word must be in all capitals, follow these guidelines:
+
+| Flagged word                                                   | Guideline |
+|----------------------------------------------------------------|-----------|
+| Acronym (likely known by the average visitor to that page)     | Add the acronym to the list of words and acronyms in `Uppercase.yml`. |
+| Acronym (likely not known by the average visitor to that page) | The first time the acronym is used, write it out fully followed by the acronym in parentheses. In later uses, use just the acronym by itself. For example: `This feature uses the File Transfer Protocol (FTP). FTP is...`. |
+| Correctly capitalized name of a product or service           | Add the name to the list of words and acronyms in `Uppercase.yml`. |
+| Command, variable, code, or similar                            | Put it in backticks or a code block. For example: ``Use `FALSE` as the variable value.`` |
+| UI text from a third-party product                             | Rewrite the sentence to avoid it, or [add the vale exception code in-line](#disable-vale-tests). |
+
 #### Vale readability score
 
 In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ReadingLevel.yml),
@@ -321,12 +337,12 @@ To match the versions of `markdownlint-cli` and `vale` used in the GitLab projec
 [versions used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml)
 when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
-| Tool               | Version   | Command                                   | Additional information |
-|--------------------|-----------|-------------------------------------------|------------------------|
-| `markdownlint-cli` | Latest    | `yarn global add markdownlint-cli`        | n/a                    |
-| `markdownlint-cli` | Specific  | `yarn global add markdownlint-cli@0.23.2` | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
-| Vale               | Latest    | `brew update && brew upgrade vale`        | This command is for macOS only. |
-| Vale               | Specific  | n/a                                       | Not possible using `brew`, but can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
+| Tool               | Version   | Command                                                | Additional information |
+|--------------------|-----------|--------------------------------------------------------|------------------------|
+| `markdownlint-cli` | Latest    | `yarn global add markdownlint-cli`                     | None.                  |
+| `markdownlint-cli` | Specific  | `yarn global add markdownlint-cli@0.23.2`              | The `@` indicates a specific version, and this example updates the tool to version `0.23.2`. |
+| Vale               | Latest    | `brew update && brew upgrade vale`                     | This command is for macOS only. |
+| Vale               | Specific  | Not applicable.                                        | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
 
 ### Configure editors
 

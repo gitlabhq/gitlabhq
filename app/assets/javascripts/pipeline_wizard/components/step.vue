@@ -4,7 +4,7 @@ import { isNode, isDocument, parseDocument, Document } from 'yaml';
 import { merge } from '~/lib/utils/yaml';
 import { s__ } from '~/locale';
 import { logError } from '~/lib/logger';
-import InputWrapper from './input.vue';
+import InputWrapper from './input_wrapper.vue';
 import StepNav from './step_nav.vue';
 
 export default {

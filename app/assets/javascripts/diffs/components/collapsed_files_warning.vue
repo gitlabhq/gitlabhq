@@ -55,7 +55,7 @@ export default {
         {{ __('For a faster browsing experience, some files are collapsed by default.') }}
       </p>
       <template #actions>
-        <gl-button category="secondary" variant="warning" class="gl-alert-action" @click="expand">
+        <gl-button class="gl-alert-action" @click="expand">
           {{ __('Expand all files') }}
         </gl-button>
       </template>

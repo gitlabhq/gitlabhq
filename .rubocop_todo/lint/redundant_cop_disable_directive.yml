@@ -6,22 +6,6 @@ Lint/RedundantCopDisableDirective:
   # REVEAL_RUBOCOP_TODO environment variable.
   Enabled: false
   Exclude:
-    - 'app/controllers/admin/dashboard_controller.rb'
-    - 'app/controllers/concerns/enforces_two_factor_authentication.rb'
-    - 'app/controllers/concerns/integrations/actions.rb'
-    - 'app/controllers/concerns/issues_calendar.rb'
-    - 'app/controllers/concerns/snippets_actions.rb'
-    - 'app/controllers/concerns/wiki_actions.rb'
-    - 'app/controllers/groups/autocomplete_sources_controller.rb'
-    - 'app/controllers/groups/labels_controller.rb'
-    - 'app/controllers/import/fogbugz_controller.rb'
-    - 'app/controllers/import/github_controller.rb'
-    - 'app/controllers/projects/issues_controller.rb'
-    - 'app/controllers/projects/jobs_controller.rb'
-    - 'app/controllers/projects/pipeline_schedules_controller.rb'
-    - 'app/controllers/projects/pipelines/tests_controller.rb'
-    - 'app/controllers/search_controller.rb'
-    - 'app/controllers/sessions_controller.rb'
     - 'app/finders/autocomplete/acts_as_taggable_on/tags_finder.rb'
     - 'app/finders/autocomplete/move_to_project_finder.rb'
     - 'app/finders/autocomplete/routes_finder.rb'

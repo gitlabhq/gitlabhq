@@ -2,7 +2,7 @@
 - if @forked_project && !@forked_project.saved?
   = render Pajamas::AlertComponent.new(title: _('Fork Error!'),
     variant: :danger,
-    alert_class: 'gl-mt-5',
+    alert_options: { class: 'gl-mt-5' },
     dismissible: false) do |c|
     = c.body do
       %p

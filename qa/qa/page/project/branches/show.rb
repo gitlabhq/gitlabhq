@@ -5,6 +5,8 @@ module QA
     module Project
       module Branches
         class Show < Page::Base
+          include Page::Component::ConfirmModal
+
           view 'app/assets/javascripts/branches/components/delete_branch_button.vue' do
             element :delete_branch_button
           end
@@ -54,9 +56,8 @@ module QA
           end
 
           def delete_merged_branches
-            accept_alert do
-              click_element(:delete_merged_branches)
-            end
+            click_element(:delete_merged_branches)
+            click_confirmation_ok_button
           end
         end
       end

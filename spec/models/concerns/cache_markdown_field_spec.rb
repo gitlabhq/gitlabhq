@@ -404,6 +404,16 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache do
       it 'returns false when there are no changes' do
         expect(thing.attribute_invalidated?(:description_html)).to eq(false)
       end
+
+      it 'returns false if skip_markdown_cache_validation is true' do
+        # invalidates the attribute
+        thing.cached_markdown_version += 1
+        thing.description = updated_markdown
+
+        thing.skip_markdown_cache_validation = true
+
+        expect(thing.attribute_invalidated?(:description_html)).to eq(false)
+      end
     end
 
     context 'when cache version is updated' do

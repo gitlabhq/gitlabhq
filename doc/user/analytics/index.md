@@ -81,7 +81,7 @@ Deployment frequency displays in several charts:
 Lead time for changes measures the time to deliver a feature once it has been developed,
 as described in [Measuring DevOps Performance](https://devops.com/measuring-devops-performance/).
 
-Lead time for changes displays in several charts: 
+Lead time for changes displays in several charts:
 
 - [Group-level value stream analytics](../group/value_stream_analytics/index.md)
 - [Project-level value stream analytics](value_stream_analytics.md)
@@ -89,7 +89,7 @@ Lead time for changes displays in several charts:
 
 ### Time to restore service
 
-Time to restore service measures how long it takes an organization to recover from a failure in production. 
+Time to restore service measures how long it takes an organization to recover from a failure in production.
 GitLab measures this as the average time required to close the incidents
 in the given time period. This assumes:
 
@@ -97,9 +97,15 @@ in the given time period. This assumes:
 - Incidents and deployments have a strictly one-to-one relationship. An incident is related to only
 one production deployment, and any production deployment is related to no more than one incident).
 
+Time to restore service displays in several charts:
+
+- [Group-level value stream analytics](../group/value_stream_analytics/index.md)
+- [Project-level value stream analytics](value_stream_analytics.md)
+- [CI/CD analytics](ci_cd_analytics.md)
+
 To retrieve metrics for time to restore service, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
-### Change failure rate 
+### Change failure rate
 
 Change failure rate measures the percentage of deployments that cause a failure in production. GitLab measures this as the number
 of incidents divided by the number of deployments to a

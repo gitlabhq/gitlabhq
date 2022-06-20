@@ -22,7 +22,8 @@ flexibility:
 - Specify a list of users who act as [code owners](../../code_owners.md) for specific files,
   and require their approval before work can merge.
 
-You can configure merge request approvals on a per-project basis. Administrators of
+You can configure merge request approvals on a per-project basis, and
+[on the group level](../../../group/index.md#group-merge-request-approval-settings). Administrators of
 [GitLab Premium](https://about.gitlab.com/pricing/) and
 [GitLab Ultimate](https://about.gitlab.com/pricing/) self-managed GitLab instances
 can also configure approvals
@@ -103,7 +104,18 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
   to determine who should review the work.
 - Require an [approval before merging code that causes test coverage to decline](../../../../ci/pipelines/settings.md#coverage-check-approval-rule)
 - Users on GitLab Ultimate can also [require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
-  before merging code that could introduce a vulnerability. 
+  before merging code that could introduce a vulnerability.
+
+## Invalid rules
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
+
+Whenever an approval rule cannot be satisfied, the rule will be displayed as `Invalid`. This applies to the following conditions:
+
+- The only eligible approver is the author of the merge request.
+- No eligible approvers (either groups or users) have been assigned to the approval rule.
+
+These rules will be automatically approved to unblock their respective merge requests.
 
 ## Related topics
 

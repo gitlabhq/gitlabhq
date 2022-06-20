@@ -1,6 +1,8 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
+import { pipelineEditorTrackingOptions } from '../../../constants';
 
 export default {
   i18n: {
@@ -25,7 +27,14 @@ export default {
     GlLink,
     GlSprintf,
   },
+  mixins: [Tracking.mixin()],
   inject: ['runnerHelpPagePath'],
+  methods: {
+    trackHelpPageClick() {
+      const { label, actions } = pipelineEditorTrackingOptions;
+      this.track(actions.helpDrawerLinks.runners, { label });
+    },
+  },
 };
 </script>
 <template>
@@ -38,7 +47,7 @@ export default {
     <p class="gl-mb-0">
       <gl-sprintf :message="$options.i18n.note">
         <template #link="{ content }">
-          <gl-link :href="runnerHelpPagePath" target="_blank">
+          <gl-link :href="runnerHelpPagePath" target="_blank" @click="trackHelpPageClick()">
             {{ content }}
           </gl-link>
         </template>

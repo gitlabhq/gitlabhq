@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const DEBOUNCE_DELAY = 500;
 export const MAX_RECENT_TOKENS_SIZE = 3;
@@ -46,11 +46,13 @@ export const SortDirection = {
 export const FILTERED_SEARCH_LABELS = 'labels';
 export const FILTERED_SEARCH_TERM = 'filtered-search-term';
 
-export const TOKEN_TITLE_AUTHOR = __('Author');
 export const TOKEN_TITLE_ASSIGNEE = __('Assignee');
-export const TOKEN_TITLE_MILESTONE = __('Milestone');
-export const TOKEN_TITLE_LABEL = __('Label');
-export const TOKEN_TITLE_TYPE = __('Type');
-export const TOKEN_TITLE_RELEASE = __('Release');
-export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
+export const TOKEN_TITLE_AUTHOR = __('Author');
 export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
+export const TOKEN_TITLE_CONTACT = s__('Crm|Contact');
+export const TOKEN_TITLE_LABEL = __('Label');
+export const TOKEN_TITLE_MILESTONE = __('Milestone');
+export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
+export const TOKEN_TITLE_ORGANIZATION = s__('Crm|Organization');
+export const TOKEN_TITLE_RELEASE = __('Release');
+export const TOKEN_TITLE_TYPE = __('Type');

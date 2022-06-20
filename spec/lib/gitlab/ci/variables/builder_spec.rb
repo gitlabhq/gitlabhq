@@ -64,6 +64,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder do
           value: project.path },
         { key: 'CI_PROJECT_TITLE',
           value: project.title },
+        { key: 'CI_PROJECT_DESCRIPTION',
+          value: project.description },
         { key: 'CI_PROJECT_PATH',
           value: project.full_path },
         { key: 'CI_PROJECT_PATH_SLUG',

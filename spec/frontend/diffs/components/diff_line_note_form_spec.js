@@ -64,6 +64,16 @@ describe('DiffLineNoteForm', () => {
         expect(confirmAction).toHaveBeenCalled();
       });
 
+      it('should only ask for confirmation once', () => {
+        // Never resolve so we can test what happens when triggered while "confirmAction" is loading
+        confirmAction.mockImplementation(() => new Promise(() => {}));
+
+        findNoteForm().vm.$emit('cancelForm', true, true);
+        findNoteForm().vm.$emit('cancelForm', true, true);
+
+        expect(confirmAction).toHaveBeenCalledTimes(1);
+      });
+
       it('should not ask for confirmation when one of the params false', () => {
         confirmAction.mockResolvedValueOnce(false);
 

@@ -6,15 +6,8 @@
 
 .groups-list {
   @include basic-list;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
 
   li {
-    .title {
-      font-weight: 600;
-    }
-
     a {
       text-decoration: none;
 
@@ -40,8 +33,8 @@
 }
 
 .save-group-loader {
-  margin-top: $gl-padding-50;
-  margin-bottom: $gl-padding-50;
+  margin-top: $gl-spacing-scale-9;
+  margin-bottom: $gl-spacing-scale-9;
   color: $gray-700;
 }
 
@@ -81,17 +74,13 @@ table.pipeline-project-metrics tr td {
 }
 
 .explore-groups.landing {
-  .inner-content {
-    padding: 0;
+  .inner-content p {
+    margin: 7px 0 0;
+    max-width: 480px;
+    padding: 0 $gl-padding;
 
-    p {
-      margin: 7px 0 0;
-      max-width: 480px;
-      padding: 0 $gl-padding;
-
-      @include media-breakpoint-down(sm) {
-        margin: 0 auto;
-      }
+    @include media-breakpoint-down(sm) {
+      margin: 0 auto;
     }
   }
 
@@ -113,13 +102,6 @@ table.pipeline-project-metrics tr td {
 }
 
 .groups-list-tree-container {
-  .has-no-search-results {
-    text-align: center;
-    padding: $gl-padding;
-    font-style: italic;
-    color: $well-light-text-color;
-  }
-
   > .group-list-tree > .group-row.has-children:first-child {
     border-top: 0;
   }
@@ -133,16 +115,6 @@ table.pipeline-project-metrics tr td {
     span {
       font-size: $gl-font-size;
     }
-  }
-
-  .folder-caret,
-  .item-type-icon {
-    display: inline-block;
-    color: $gl-text-color-secondary;
-  }
-
-  .folder-caret {
-    width: $gl-font-size-large;
   }
 
   .item-type-icon {
@@ -286,12 +258,5 @@ table.pipeline-project-metrics tr td {
       text-align: right;
       color: $gl-text-color-secondary;
     }
-  }
-}
-
-.js-groups-list-holder {
-  .groups-list-loading {
-    font-size: 34px;
-    text-align: center;
   }
 }

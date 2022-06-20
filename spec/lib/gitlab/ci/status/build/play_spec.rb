@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Status::Build::Play do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :stubbed_repository) }
-  let(:build) { create(:ci_build, :manual, project: project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :stubbed_repository) }
+  let_it_be_with_refind(:build) { create(:ci_build, :manual, project: project) }
+
   let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 
   subject { described_class.new(status) }

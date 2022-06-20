@@ -70,17 +70,17 @@ GitLab automatically loads the last board you visited.
 
 To create a new issue board:
 
-1. Click the dropdown with the current board name in the upper left corner of the issue boards page.
-1. Click **Create new board**.
+1. Select the dropdown with the current board name in the upper left corner of the issue boards page.
+1. Select **Create new board**.
 1. Enter the new board's name and select its scope: milestone, labels, assignee, or weight.
 
 ### Delete an issue board
 
 To delete the currently active issue board:
 
-1. Click the dropdown with the current board name in the upper left corner of the issue boards page.
-1. Click **Delete board**.
-1. Click **Delete** to confirm.
+1. Select the dropdown with the current board name in the upper left corner of the issue boards page.
+1. Select **Delete board**.
+1. Select **Delete** to confirm.
 
 ## Issue boards use cases
 
@@ -289,7 +289,7 @@ assignee list:
 
 Now that the assignee list is added, you can assign or unassign issues to that user
 by [moving issues](#move-issues-and-lists) to and from an assignee list.
-To remove an assignee list, just as with a label list, click the trash icon.
+To remove an assignee list, just as with a label list, select the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists_v14_1.png)
 
@@ -307,7 +307,7 @@ milestone, giving you more freedom and visibility on the issue board. To add a m
 
 Like the assignee lists, you're able to [drag issues](#move-issues-and-lists)
 to and from a milestone list to manipulate the milestone of the dragged issues.
-As in other list types, click the trash icon to remove a list.
+As in other list types, select the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v14_1.png)
 
@@ -392,8 +392,8 @@ Examples:
 To set a WIP limit for a list:
 
 1. Navigate to a Project or Group board of which you're a member.
-1. Click the settings icon in a list's header.
-1. Next to **Work In Progress Limit**, click **Edit**.
+1. Select the settings icon in a list's header.
+1. Next to **Work In Progress Limit**, select **Edit**.
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.
 

@@ -160,13 +160,15 @@ RSpec.describe Gitlab::Database do
       end
     end
 
-    context 'when the connection is LoadBalancing::ConnectionProxy' do
-      it 'returns primary_db_config' do
-        lb_config = ::Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
-        lb = ::Gitlab::Database::LoadBalancing::LoadBalancer.new(lb_config)
-        proxy = ::Gitlab::Database::LoadBalancing::ConnectionProxy.new(lb)
+    context 'when the connection is LoadBalancing::ConnectionProxy', :database_replica do
+      it 'returns primary db config even if ambiguous queries default to replica' do
+        Gitlab::Database::LoadBalancing::Session.current.use_primary!
+        primary_config = described_class.db_config_for_connection(ActiveRecord::Base.connection)
 
-        expect(described_class.db_config_for_connection(proxy)).to eq(lb_config.primary_db_config)
+        Gitlab::Database::LoadBalancing::Session.clear_session
+        Gitlab::Database::LoadBalancing::Session.current.fallback_to_replicas_for_ambiguous_queries do
+          expect(described_class.db_config_for_connection(ActiveRecord::Base.connection)).to eq(primary_config)
+        end
       end
     end
 
@@ -222,14 +224,7 @@ RSpec.describe Gitlab::Database do
   end
 
   describe '.gitlab_schemas_for_connection' do
-    it 'does raise exception for invalid connection' do
-      expect { described_class.gitlab_schemas_for_connection(:invalid) }.to raise_error /key not found: "unknown"/
-    end
-
     it 'does return a valid schema depending on a base model used', :request_store do
-      # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
-      stub_feature_flags(force_no_sharing_primary_model: true)
-
       expect(described_class.gitlab_schemas_for_connection(Project.connection)).to include(:gitlab_main, :gitlab_shared)
       expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).to include(:gitlab_ci, :gitlab_shared)
     end
@@ -281,6 +276,15 @@ RSpec.describe Gitlab::Database do
           expect(described_class.gitlab_schemas_for_connection(Ci::Build.connection)).not_to include(:gitlab_main)
         end
       end
+    end
+
+    it 'does return empty for non-adopted connections' do
+      new_connection = ActiveRecord::Base.postgresql_connection(
+        ActiveRecord::Base.connection_db_config.configuration_hash)
+
+      expect(described_class.gitlab_schemas_for_connection(new_connection)).to be_nil
+    ensure
+      new_connection&.disconnect!
     end
   end
 

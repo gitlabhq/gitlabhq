@@ -19,7 +19,7 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
   let_it_be(:existing_issue2) { create(:labeled_issue, project: project, labels: [testing], relative_position: 50) }
 
   let(:current_ctx) { { current_user: user } }
-  let(:params) { { board_id: global_id_of(board), project_path: project.full_path, iid: issue1.iid } }
+  let(:params) { { board_id: global_id_of(board), project_path: project.full_path, iid: issue1.iid.to_s } }
   let(:move_params) do
     {
       from_list_id: list1.id,
@@ -67,7 +67,7 @@ RSpec.describe Mutations::Boards::Issues::IssueMoveList do
       end
 
       it 'raises an error' do
-        expect { subject }.to raise_error(::GraphQL::LoadApplicationObjectFailedError)
+        expect { subject }.to raise_error(::GraphQL::CoercionError, "\"#{params[:board_id]}\" does not represent an instance of Board")
       end
     end
 

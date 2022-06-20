@@ -109,6 +109,7 @@ Rails.application.routes.draw do
       get '/autocomplete/project_groups' => 'autocomplete#project_groups'
       get '/autocomplete/project_routes' => 'autocomplete#project_routes'
       get '/autocomplete/namespace_routes' => 'autocomplete#namespace_routes'
+      get '/autocomplete/group_subgroups' => 'autocomplete#group_subgroups'
     end
 
     # sandbox
@@ -117,6 +118,7 @@ Rails.application.routes.draw do
     get '/whats_new' => 'whats_new#index'
 
     get 'offline' => "pwa#offline"
+    get 'manifest' => "pwa#manifest", constraints: lambda { |req| req.format == :json }
 
     # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
@@ -228,7 +230,12 @@ Rails.application.routes.draw do
 
     draw :snippets
     draw :profile
-    draw :members
+
+    post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
+
+    # Deprecated route for permanent failures
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/362606
+    post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
 
     # Product analytics collector
     match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
@@ -241,8 +248,6 @@ Rails.application.routes.draw do
         get  :connect
         get  :new_cluster_docs
         post :create_user
-        post :create_aws
-        post :authorize_aws_role
       end
 
       resource :integration, controller: 'clusters/integrations', only: [] do

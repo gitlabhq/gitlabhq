@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe JiraConnectSubscriptions::CreateService do
-  let(:installation) { create(:jira_connect_installation) }
-  let(:current_user) { create(:user) }
-  let(:group) { create(:group) }
+  let_it_be(:installation) { create(:jira_connect_installation) }
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+
   let(:path) { group.full_path }
   let(:params) { { namespace_path: path, jira_user: jira_user } }
   let(:jira_user) { double(:JiraUser, site_admin?: true) }
@@ -16,38 +17,31 @@ RSpec.describe JiraConnectSubscriptions::CreateService do
     group.add_maintainer(current_user)
   end
 
-  shared_examples 'a failed execution' do
+  shared_examples 'a failed execution' do |**status_attributes|
     it 'does not create a subscription' do
       expect { subject }.not_to change { installation.subscriptions.count }
     end
 
     it 'returns an error status' do
       expect(subject[:status]).to eq(:error)
+      expect(subject).to include(status_attributes)
     end
   end
 
   context 'remote user does not have access' do
     let(:jira_user) { double(site_admin?: false) }
 
-    it 'does not create a subscription' do
-      expect { subject }.not_to change { installation.subscriptions.count }
-    end
-
-    it 'returns error' do
-      expect(subject[:status]).to eq(:error)
-    end
+    it_behaves_like 'a failed execution',
+      http_status: 403,
+      message: 'The Jira user is not a site administrator. Check the permissions in Jira and try again.'
   end
 
   context 'remote user cannot be retrieved' do
     let(:jira_user) { nil }
 
-    it 'does not create a subscription' do
-      expect { subject }.not_to change { installation.subscriptions.count }
-    end
-
-    it 'returns error' do
-      expect(subject[:status]).to eq(:error)
-    end
+    it_behaves_like 'a failed execution',
+      http_status: 403,
+      message: 'Could not fetch user information from Jira. Check the permissions in Jira and try again.'
   end
 
   context 'when user does have access' do
@@ -60,8 +54,8 @@ RSpec.describe JiraConnectSubscriptions::CreateService do
     end
 
     context 'namespace has projects' do
-      let!(:project_1) { create(:project, group: group) }
-      let!(:project_2) { create(:project, group: group) }
+      let_it_be(:project_1) { create(:project, group: group) }
+      let_it_be(:project_2) { create(:project, group: group) }
 
       before do
         stub_const("#{described_class}::MERGE_REQUEST_SYNC_BATCH_SIZE", 1)
@@ -81,12 +75,18 @@ RSpec.describe JiraConnectSubscriptions::CreateService do
   context 'when path is invalid' do
     let(:path) { 'some_invalid_namespace_path' }
 
-    it_behaves_like 'a failed execution'
+    it_behaves_like 'a failed execution',
+      http_status: 401,
+      message: 'Cannot find namespace. Make sure you have sufficient permissions.'
   end
 
   context 'when user does not have access' do
-    subject { described_class.new(installation, create(:user), namespace_path: path).execute }
+    let_it_be(:other_group) { create(:group) }
 
-    it_behaves_like 'a failed execution'
+    let(:path) { other_group.full_path }
+
+    it_behaves_like 'a failed execution',
+      http_status: 401,
+      message: 'Cannot find namespace. Make sure you have sufficient permissions.'
   end
 end

@@ -42,14 +42,6 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
 
   it_behaves_like 'successful response', { status_event: :acknowledge }
 
-  context 'when feature flag is disabled' do
-    before do
-      stub_feature_flags(incident_escalations: false)
-    end
-
-    it_behaves_like 'availability error response'
-  end
-
   context 'when user is anonymous' do
     let(:current_user) { nil }
 

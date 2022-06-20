@@ -6,15 +6,13 @@ module Database
     include CronjobQueue # rubocop: disable Scalability/CronWorkerContext
 
     sidekiq_options retry: false
-    feature_category :sharding
+    feature_category :pods
     data_consistency :sticky
     idempotent!
 
     version 1
 
     def perform
-      return if Feature.disabled?(:ci_namespace_mirrors_consistency_check)
-
       results = ConsistencyCheckService.new(
         source_model: Namespace,
         target_model: Ci::NamespaceMirror,

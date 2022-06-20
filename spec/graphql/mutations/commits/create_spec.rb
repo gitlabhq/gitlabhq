@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Commits::Create do
+  include GraphqlHelpers
+
   subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   let_it_be(:user) { create(:user) }
@@ -10,7 +12,7 @@ RSpec.describe Mutations::Commits::Create do
 
   let(:context) do
     GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: nil),
+      query: query_double(schema: nil), # rubocop:disable RSpec/VerifiedDoubles
       values: { current_user: user },
       object: nil
     )

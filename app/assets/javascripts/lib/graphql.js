@@ -105,7 +105,7 @@ export default (resolvers = {}, config = {}) => {
   const {
     baseUrl,
     batchMax = 10,
-    cacheConfig,
+    cacheConfig = { typePolicies: {}, possibleTypes: {} },
     fetchPolicy = fetchPolicies.CACHE_FIRST,
     typeDefs,
     path = '/api/graphql',
@@ -166,6 +166,7 @@ export default (resolvers = {}, config = {}) => {
         PerformanceBarService.interceptor({
           config: {
             url: httpResponse.url,
+            operationName: operation.operationName,
           },
           headers: {
             'x-request-id': httpResponse.headers.get('x-request-id'),
@@ -221,9 +222,15 @@ export default (resolvers = {}, config = {}) => {
     typeDefs,
     link: appLink,
     cache: new InMemoryCache({
-      typePolicies,
-      possibleTypes,
       ...cacheConfig,
+      typePolicies: {
+        ...typePolicies,
+        ...cacheConfig.typePolicies,
+      },
+      possibleTypes: {
+        ...possibleTypes,
+        ...cacheConfig.possibleTypes,
+      },
     }),
     resolvers,
     defaultOptions: {

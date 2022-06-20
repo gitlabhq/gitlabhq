@@ -40,7 +40,10 @@ class Compare
   end
 
   def commits
-    @commits ||= Commit.decorate(@compare.commits, project)
+    @commits ||= begin
+      decorated_commits = Commit.decorate(@compare.commits, project)
+      CommitCollection.new(project, decorated_commits)
+    end
   end
 
   def start_commit

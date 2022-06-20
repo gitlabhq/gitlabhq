@@ -2,7 +2,6 @@ import MockAdapter from 'axios-mock-adapter';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
-import createFlash from '~/flash';
 
 jest.mock('~/flash');
 
@@ -608,30 +607,10 @@ describe('Api', () => {
         },
       ]);
 
-      return new Promise((resolve) => {
-        Api.groupProjects(groupId, query, {}, (response) => {
-          expect(response.length).toBe(1);
-          expect(response[0].name).toBe('test');
-          resolve();
-        });
+      return Api.groupProjects(groupId, query, {}).then((response) => {
+        expect(response.data.length).toBe(1);
+        expect(response.data[0].name).toBe('test');
       });
-    });
-
-    it('uses flesh on error by default', async () => {
-      const groupId = '123456';
-      const query = 'dummy query';
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
-      const flashCallback = (callCount) => {
-        expect(createFlash).toHaveBeenCalledTimes(callCount);
-        createFlash.mockClear();
-      };
-
-      mock.onGet(expectedUrl).reply(500, null);
-
-      const response = await Api.groupProjects(groupId, query, {}, () => {}).then(() => {
-        flashCallback(1);
-      });
-      expect(response).toBeUndefined();
     });
 
     it('NOT uses flesh on error with param useCustomErrorHandler', async () => {
@@ -640,7 +619,7 @@ describe('Api', () => {
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/projects.json`;
 
       mock.onGet(expectedUrl).reply(500, null);
-      const apiCall = Api.groupProjects(groupId, query, {}, () => {}, true);
+      const apiCall = Api.groupProjects(groupId, query, {});
       await expect(apiCall).rejects.toThrow();
     });
   });

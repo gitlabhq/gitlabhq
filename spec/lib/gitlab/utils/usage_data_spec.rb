@@ -259,6 +259,37 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
   end
 
+  describe '#average' do
+    let(:relation) { double(:relation) }
+
+    it 'returns the average when operation succeeds' do
+      allow(Gitlab::Database::BatchCount)
+        .to receive(:batch_average)
+        .with(relation, :column, batch_size: 100, start: 2, finish: 3)
+        .and_return(1)
+
+      expect(described_class.average(relation, :column, batch_size: 100, start: 2, finish: 3)).to eq(1)
+    end
+
+    it 'records duration' do
+      expect(described_class).to receive(:with_duration)
+
+      allow(Gitlab::Database::BatchCount).to receive(:batch_average).and_return(1)
+
+      described_class.average(relation, :column)
+    end
+
+    context 'when operation fails' do
+      subject { described_class.average(relation, :column) }
+
+      let(:fallback) { 15 }
+      let(:failing_class) { Gitlab::Database::BatchCount }
+      let(:failing_method) { :batch_average }
+
+      it_behaves_like 'failing hardening method'
+    end
+  end
+
   describe '#histogram' do
     let_it_be(:projects) { create_list(:project, 3) }
 

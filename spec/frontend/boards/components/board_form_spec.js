@@ -1,4 +1,6 @@
 import { GlModal } from '@gitlab/ui';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,13 +10,14 @@ import { formType } from '~/boards/constants';
 import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
-import { createStore } from '~/boards/stores';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
+
+Vue.use(Vuex);
 
 const currentBoard = {
   id: 'gid://gitlab/Board/1',
@@ -46,10 +49,17 @@ describe('BoardForm', () => {
   const findDeleteConfirmation = () => wrapper.findByTestId('delete-confirmation-message');
   const findInput = () => wrapper.find('#board-new-name');
 
-  const store = createStore({
+  const setBoardMock = jest.fn();
+  const setErrorMock = jest.fn();
+
+  const store = new Vuex.Store({
     getters: {
       isGroupBoard: () => true,
       isProjectBoard: () => false,
+    },
+    actions: {
+      setBoard: setBoardMock,
+      setError: setErrorMock,
     },
   });
 
@@ -168,7 +178,7 @@ describe('BoardForm', () => {
         expect(mutate).not.toHaveBeenCalled();
       });
 
-      it('calls a correct GraphQL mutation and redirects to correct page from existing board', async () => {
+      it('calls a correct GraphQL mutation and sets board in state', async () => {
         createComponent({ canAdminBoard: true, currentPage: formType.new });
         fillForm();
 
@@ -184,13 +194,12 @@ describe('BoardForm', () => {
         });
 
         await waitForPromises();
-        expect(visitUrl).toHaveBeenCalledWith('test-path');
+        expect(setBoardMock).toHaveBeenCalledTimes(1);
       });
 
-      it('shows a GlAlert if GraphQL mutation fails', async () => {
+      it('sets error in state if GraphQL mutation fails', async () => {
         mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
         createComponent({ canAdminBoard: true, currentPage: formType.new });
-        jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
 
         fillForm();
 
@@ -199,8 +208,8 @@ describe('BoardForm', () => {
         expect(mutate).toHaveBeenCalled();
 
         await waitForPromises();
-        expect(visitUrl).not.toHaveBeenCalled();
-        expect(wrapper.vm.setError).toHaveBeenCalled();
+        expect(setBoardMock).not.toHaveBeenCalled();
+        expect(setErrorMock).toHaveBeenCalled();
       });
     });
   });
@@ -256,7 +265,8 @@ describe('BoardForm', () => {
       });
 
       await waitForPromises();
-      expect(visitUrl).toHaveBeenCalledWith('test-path');
+      expect(setBoardMock).toHaveBeenCalledTimes(1);
+      expect(global.window.location.href).not.toContain('?group_by=epic');
     });
 
     it('calls GraphQL mutation with correct parameters when issues are grouped by epic', async () => {
@@ -282,13 +292,13 @@ describe('BoardForm', () => {
       });
 
       await waitForPromises();
-      expect(visitUrl).toHaveBeenCalledWith('test-path?group_by=epic');
+      expect(setBoardMock).toHaveBeenCalledTimes(1);
+      expect(global.window.location.href).toContain('?group_by=epic');
     });
 
-    it('shows a GlAlert if GraphQL mutation fails', async () => {
+    it('sets error in state if GraphQL mutation fails', async () => {
       mutate = jest.fn().mockRejectedValue('Houston, we have a problem');
       createComponent({ canAdminBoard: true, currentPage: formType.edit });
-      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
 
       findInput().trigger('keyup.enter', { metaKey: true });
 
@@ -297,8 +307,8 @@ describe('BoardForm', () => {
       expect(mutate).toHaveBeenCalled();
 
       await waitForPromises();
-      expect(visitUrl).not.toHaveBeenCalled();
-      expect(wrapper.vm.setError).toHaveBeenCalled();
+      expect(setBoardMock).not.toHaveBeenCalled();
+      expect(setErrorMock).toHaveBeenCalled();
     });
   });
 

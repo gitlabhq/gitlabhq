@@ -37,7 +37,12 @@ module API
 
           entity = params[:with_content] ? Entities::WikiPage : Entities::WikiPageBasic
 
-          present container.wiki.list_pages(load_content: params[:with_content]), with: entity
+          options = {
+            with: entity,
+            current_user: current_user
+          }
+
+          present container.wiki.list_pages(load_content: params[:with_content]), options
         end
 
         desc 'Get a wiki page' do
@@ -51,7 +56,13 @@ module API
         get ':id/wikis/:slug', urgency: :low do
           authorize! :read_wiki, container
 
-          present wiki_page(params[:version]), with: Entities::WikiPage, render_html: params[:render_html]
+          options = {
+            with: Entities::WikiPage,
+            render_html: params[:render_html],
+            current_user: current_user
+          }
+
+          present wiki_page(params[:version]), options
         end
 
         desc 'Create a wiki page' do

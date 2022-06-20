@@ -54,7 +54,6 @@ function mountBoardApp(el) {
     apolloProvider,
     provide: {
       disabled: parseBoolean(el.dataset.disabled),
-      boardId,
       groupId: Number(groupId),
       rootPath,
       fullPath,

@@ -37,7 +37,7 @@ RSpec.describe Mutations::ReleaseAssetLinks::Create do
 
     context 'when the user has access and no validation errors occur' do
       it 'creates a new release asset link', :aggregate_failures do
-        expect(subject).to eq({
+        expect(subject).to include({
           link: release.reload.links.first,
           errors: []
         })

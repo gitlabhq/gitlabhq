@@ -22,7 +22,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    editProjectServicePath: {
+    editIntegrationPath: {
       type: String,
       required: true,
     },
@@ -79,7 +79,7 @@ export default {
         <gl-button variant="success" category="primary" :disabled="!formIsValid" @click="submit">
           {{ saveButtonText }}
         </gl-button>
-        <gl-button class="float-right" :href="editProjectServicePath">{{ __('Cancel') }}</gl-button>
+        <gl-button class="float-right" :href="editIntegrationPath">{{ __('Cancel') }}</gl-button>
         <delete-custom-metric-modal
           v-if="metricPersisted"
           :delete-metric-url="customMetricsPath"

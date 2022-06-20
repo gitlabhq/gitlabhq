@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ScheduleNullifyOrphanRunnerIdOnCiBuilds < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
   MIGRATION = 'NullifyOrphanRunnerIdOnCiBuilds'
   INTERVAL = 2.minutes
   BATCH_SIZE = 50_000
@@ -20,8 +22,6 @@ class ScheduleNullifyOrphanRunnerIdOnCiBuilds < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :ci_builds, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :ci_builds, :id, [])
   end
 end

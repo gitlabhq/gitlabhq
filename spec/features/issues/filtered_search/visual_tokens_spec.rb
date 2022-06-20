@@ -15,7 +15,6 @@ RSpec.describe 'Visual tokens', :js do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
     project.add_user(user, :maintainer)
     project.add_user(user_rock, :maintainer)
     sign_in(user)

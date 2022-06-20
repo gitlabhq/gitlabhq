@@ -329,10 +329,6 @@ RSpec.describe NotesHelper do
       allow(helper).to receive(:current_user).and_return(guest)
     end
 
-    it 'sets last_fetched_at to 0 when start_at_zero is true' do
-      expect(helper.notes_data(issue, true)[:lastFetchedAt]).to eq(0)
-    end
-
     it 'includes the current notes filter for the user' do
       guest.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 

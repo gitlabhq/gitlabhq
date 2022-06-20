@@ -4,6 +4,6 @@ classes:
 - CiPlatformMetric
 feature_categories:
 - continuous_integration
-description: TODO
+description: Instrumentation for https://docs.gitlab.com/ee/ci/cloud_deployment/ecs/quick_start_guide.html
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40036
 milestone: '13.4'

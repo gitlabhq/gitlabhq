@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BackfillNamespaceIdForNamespaceRoutes < Gitlab::Database::Migration[1.0]
+  disable_ddl_transaction!
+
   MIGRATION = 'BackfillNamespaceIdForNamespaceRoute'
   INTERVAL = 2.minutes
   BATCH_SIZE = 1_000
@@ -20,8 +22,6 @@ class BackfillNamespaceIdForNamespaceRoutes < Gitlab::Database::Migration[1.0]
   end
 
   def down
-    Gitlab::Database::BackgroundMigration::BatchedMigration
-      .for_configuration(MIGRATION, :routes, :id, [])
-      .delete_all
+    delete_batched_background_migration(MIGRATION, :routes, :id, [])
   end
 end

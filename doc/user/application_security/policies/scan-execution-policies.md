@@ -47,7 +47,8 @@ The policy editor currently only supports the YAML mode. The Rule mode is tracke
 
 The YAML file with scan execution policies consists of an array of objects matching scan execution
 policy schema nested under the `scan_execution_policy` key. You can configure a maximum of 5
-policies under the `scan_execution_policy` key.
+policies under the `scan_execution_policy` key. Any other policies configured after
+the first 5 are not applied.
 
 When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
@@ -85,9 +86,8 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
-| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. | <!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-| `clusters` (removed) | `object` | | This field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0. Use the `agents` field instead. The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. |
-<!--- end_remove -->
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. <!--- start_remove The following content will be removed on remove_date: '2022-08-22' --> |
+| `clusters` (removed) | `object` | | This field was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/356465) in 15.0. Use the `agents` field instead. The cluster where the given policy enforces running selected scans (only for `container_scanning`/`cluster_image_scanning` scans). The key of the object is the name of the Kubernetes cluster configured for your project in GitLab. In the optionally provided value of the object, you can precisely select Kubernetes resources that are scanned. <!--- end_remove --> |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
@@ -152,7 +152,7 @@ Note the following:
   mode when executed as part of a scheduled scan.
 - A container scanning and cluster image scanning scans configured for the `pipeline` rule type ignores the cluster defined in the `clusters` object.
   They use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
-  Cluster with name provided in `clusters` object must be created and configured for the project. To be able to successfully perform the `container_scanning`/`cluster_image_scanning` scans for the cluster you must follow instructions for the [Cluster Image Scanning feature](../cluster_image_scanning/index.md#prerequisites).
+  A cluster with a name provided in the `clusters` object must be created and configured for the project.
 - The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/parent_child_pipelines.md).
 
 ## Example security policies project

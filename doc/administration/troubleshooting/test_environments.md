@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
@@ -26,27 +26,8 @@ but contributions are welcome.
 
 ### GitLab
 
-Please see [our Docker test environment docs](../../install/digitaloceandocker.md#create-new-gitlab-container)
-for how to run GitLab on Docker. When spinning this up with `docker-machine`, ensure
-you change a few things:
-
-1. Update the name of the `docker-machine` host. You can see a list of hosts
-   with `docker-machine ls`.
-1. Expose the necessary ports using the `-p` flag. Docker normally doesn't
-   allow access to any ports it uses outside of the container, so they must be
-   explicitly exposed.
-1. Add any necessary `gitlab.rb` configuration to the
-   `GITLAB_OMNIBUS_CONFIG` variable.
-
-For example, when the `docker-machine` host we want to use is `do-docker`:
-
-```shell
-docker run --detach --name gitlab \
---env GITLAB_OMNIBUS_CONFIG="external_url 'http://$(docker-machine ip do-docker)'; gitlab_rails['gitlab_shell_ssh_port'] = 2222;" \
---hostname $(docker-machine ip do-docker) \
--p 80:80 -p 2222:22 \
-gitlab/gitlab-ee:11.5.3-ee.0
-```
+Please see [our official Docker installation method](../../install/docker.md)
+for how to run GitLab on Docker.
 
 ### SAML
 

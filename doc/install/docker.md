@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -449,14 +449,14 @@ web browser under `<hostIP>:8929` and push using SSH under the port `2289`.
 A `docker-compose.yml` example that uses different ports can be found in the
 [Docker compose](#install-gitlab-using-docker-compose) section.
 
-## Update
+## Upgrade
 
-In most cases, updating GitLab is as easy as downloading the newest Docker
+In most cases, upgrading GitLab is as easy as downloading the newest Docker
 [image tag](#use-tagged-versions-of-gitlab).
 
-### Update GitLab using Docker Engine
+### Upgrade GitLab using Docker Engine
 
-To update GitLab that was [installed using Docker Engine](#install-gitlab-using-docker-engine):
+To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using-docker-engine):
 
 1. Take a [backup](#back-up-gitlab).
 1. Stop the running container:
@@ -493,17 +493,17 @@ To update GitLab that was [installed using Docker Engine](#install-gitlab-using-
    gitlab/gitlab-ee:latest
    ```
 
-On the first run, GitLab will reconfigure and update itself.
+On the first run, GitLab will reconfigure and upgrade itself.
 
-Refer to the GitLab [Update recommendations](../policy/maintenance.md#upgrade-recommendations)
+Refer to the GitLab [Upgrade recommendations](../policy/maintenance.md#upgrade-recommendations)
 when upgrading between major versions.
 
-### Update GitLab using Docker compose
+### Upgrade GitLab using Docker compose
 
-To update GitLab that was [installed using Docker Compose](#install-gitlab-using-docker-compose):
+To upgrade GitLab that was [installed using Docker Compose](#install-gitlab-using-docker-compose):
 
 1. Take a [backup](#back-up-gitlab).
-1. Download the newest release and update your GitLab instance:
+1. Download the newest release and upgrade your GitLab instance:
 
    ```shell
    docker-compose pull
@@ -517,7 +517,7 @@ To update GitLab that was [installed using Docker Compose](#install-gitlab-using
 
 You can convert an existing Docker-based GitLab Community Edition (CE) container
 to a GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE) container
-using the same approach as [updating the version](#update).
+using the same approach as [upgrading the version](#upgrade).
 
 We recommend you convert from the same version of CE to EE (for example, CE 14.1 to EE 14.1).
 This is not explicitly necessary, and any standard upgrade (for example, CE 14.0 to EE 14.1) should work.
@@ -643,7 +643,7 @@ sudo setfacl -mR default:group:docker:rwx $GITLAB_HOME
 The default group is `docker`. If you changed the group, be sure to update your
 commands.
 
-### /dev/shm mount not having enough space in Docker container
+### `/dev/shm` mount not having enough space in Docker container
 
 GitLab comes with a Prometheus metrics endpoint at `/-/metrics` to expose a
 variety of statistics on the health and performance of GitLab. The files

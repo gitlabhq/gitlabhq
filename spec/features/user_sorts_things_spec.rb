@@ -16,8 +16,6 @@ RSpec.describe "User sorts things", :js do
   let_it_be(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: current_user) }
 
   before do
-    stub_feature_flags(vue_issues_list: true)
-
     project.add_developer(current_user)
     sign_in(current_user)
   end

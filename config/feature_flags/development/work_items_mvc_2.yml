@@ -1,0 +1,8 @@
+---
+name: work_items_mvc_2
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89028
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363030
+milestone: '15.1'
+type: development
+group: group::project management
+default_enabled: false

@@ -45,6 +45,157 @@ RSpec.describe Key, :mailer do
         end
       end
     end
+
+    describe 'validation of banned keys' do
+      let_it_be(:user) { create(:user) }
+
+      let(:key) { build(:key) }
+      let(:banned_keys) do
+        [
+          'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAwRIdDlHaIqZXND/l1vFT7ue3rc/DvXh2y' \
+          'x5EFtuxGQRHVxGMazDhV4vj5ANGXDQwUYI0iZh6aOVrDy8I/y9/y+YDGCvsnqrDbuPDjW' \
+          '26s2bBXWgUPiC93T3TA6L2KOxhVcl7mljEOIYACRHPpJNYVGhinCxDUH9LxMrdNXgP5Ok= mateidu@localhost',
+
+          'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIBnZQ+6nhlPX/JnX5i5hXpljJ89bSnnrsSs51' \
+          'hSPuoJGmoKowBddISK7s10AIpO0xAWGcr8PUr2FOjEBbDHqlRxoXF0Ocms9xv3ql9EYUQ5' \
+          '+U+M6BymWhNTFPOs6gFHUl8Bw3t6c+SRKBpfRFB0yzBj9d093gSdfTAFoz+yLo4vRw==',
+
+          'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAvIhC5skTzxyHif/7iy3yhxuK6/OB13hjPq' \
+          'rskogkYFrcW8OK4VJT+5+Fx7wd4sQCnVn8rNqahw/x6sfcOMDI/Xvn4yKU4t8TnYf2MpUV' \
+          'r4ndz39L5Ds1n7Si1m2suUNxWbKv58I8+NMhlt2ITraSuTU0NGymWOc8+LNi+MHXdLk= SCCP Superuser',
+
+          'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr' \
+          '+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6' \
+          'IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5' \
+          'y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0j' \
+          'MZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98' \
+          'OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key',
+
+          'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAwRIdDlHaIqZXND/l1vFT7ue3rc/DvXh2yx' \
+          '5EFtuxGQRHVxGMazDhV4vj5ANGXDQwUYI0iZh6aOVrDy8I/y9/y+YDGCvsnqrDbuPDjW26' \
+          's2bBXWgUPiC93T3TA6L2KOxhVcl7mljEOIYACRHPpJNYVGhinCxDUH9LxMrdNXgP5Ok= mateidu@localhost',
+
+          'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAn8LoId2N5i28cNKuEWWea3yt0I/LdT/NRO' \
+          'rF44WZewtxch+DIwteQhM1qL6EKUSqz3Q2geX1crpOsNnyh67xy5lNo086u/QewOCSRAUG' \
+          'rQCXqFQ4JU8ny/qugWALQHjbIaPHj/3zMK09r4cpTSeAU7CW5nQyTKGmh7v9CAfWfcs= adam@localhost.localdomain',
+
+          'ssh-dss AAAAB3NzaC1kc3MAAACBAJTDsX+8olPZeyr58g9XE0L8PKT5030NZBPlE7np4h' \
+          'Bqx36HoWarWq1Csn8M57dWN9StKbs03k2ggY6sYJK5AW2EWar70um3pYjKQHiZq7mITmit' \
+          'sozFN/K7wu2e2iKRgquUwH5SuYoOJ29n7uhaILXiKZP4/H/dDudqPRSY6tJPAAAAFQDtuW' \
+          'H90mDbU2L/Ms2lfl/cja/wHwAAAIAMBwSHZt2ysOHCFe1WLUvdwVDHUqk3QHTskuuAnMlw' \
+          'MtSvCaUxSatdHahsMZ9VCHjoQUx6j+TcgRLDbMlRLnwUlb6wpniehLBFk+qakGcREqks5N' \
+          'xYzFTJXwROzP72jPvVgQyOZHWq81gCild/ljL7hmrduCqYwxDIz4o7U92UKQAAAIBmhSl9' \
+          'CVPgVMv1xO8DAHVhM1huIIK8mNFrzMJz+JXzBx81ms1kWSeQOC/nraaXFTBlqiQsvB8tzr' \
+          '4xZdbaI/QzVLKNAF5C8BJ4ScNlTIx1aZJwyMil8Nzb+0YAsw5Ja+bEZZvEVlAYnd10qRWr' \
+          'PeEY1txLMmX3wDa+JvJL7fmuBg==',
+
+          'ssh-dss AAAAB3NzaC1kc3MAAACBAMq5EcIFdfCjJakyQnP/BBp9oc6mpaZVguf0Znp5C4' \
+          '0twiG1lASQJZlM1qOB/hkBWYeBCHUkcOLEnVXSZzB62L+W/LGKodqnsiQPRr57AA6jPc6m' \
+          'NBnejHai8cSdAl9n/0s2IQjdcrxM8CPq2uEyfm0J3AV6Lrbbxr5NgE5xxM+DAAAAFQCmFk' \
+          '/M7Rx2jexsJ9COpHkHwUjcNQAAAIAdg18oByp/tjjDKhWhmmv+HbVIROkRqSxBvuEZEmcW' \
+          'lg38mLIT1bydfpSou/V4rI5ctxwCfJ1rRr66pw6GwCrz4fXmyVlhrj7TrktyQ9+zRXhynF' \
+          '4wdNPWErhNHb8tGlSOFiOBcUTlouX3V/ka6Dkd6ZQrZLQFaH+gjfyTZZ82HQAAAIEArsJg' \
+          'p7RLPOsCeLqoia/eljseBFVDazO5Q0ysUotTw9wgXGGVWREwm8wNggFNb9eCiBAAUfVZVf' \
+          'hVAtFT0pBf/eIVLPXyaMw3prBt7LqeBrbagODc3WAAdMTPIdYYcOKgv+YvTXa51zG64v6p' \
+          'QOfS8WXgKCzDl44puXfYeDk5lVQ=',
+
+          'ssh-dss AAAAB3NzaC1kc3MAAACBAKwKBw7D4OA1H/uD4htdh04TBIHdbSjeXUSnWJsce8' \
+          'C0tvoB01Yarjv9TFj+tfeDYVWtUK1DA1JkyqSuoAtDANJzF4I6Isyd0KPrW3dHFTcg6Xlz' \
+          '8d3KEaHokY93NOmB/xWEkhme8b7Q0U2iZie2pgWbTLXV0FA+lhskTtPHW3+VAAAAFQDRya' \
+          'yUlVZKXEweF3bUe03zt9e8VQAAAIAEPK1k3Y6ErAbIl96dnUCnZjuWQ7xXy062pf63QuRW' \
+          'I6LYSscm3f1pEknWUNFr/erQ02pkfi2eP9uHl1TI1ql+UmJX3g3frfssLNZwWXAW0m8PbY' \
+          '3HZSs+f5hevM3ua32pnKDmbQ2WpvKNyycKHi81hSI14xMcdblJolhN5iY8/wAAAIAjEe5+' \
+          '0m/TlBtVkqQbUit+s/g+eB+PFQ+raaQdL1uztW3etntXAPH1MjxsAC/vthWYSTYXORkDFM' \
+          'hrO5ssE2rfg9io0NDyTIZt+VRQMGdi++dH8ptU+ldl2ZejLFdTJFwFgcfXz+iQ1mx6h9TP' \
+          'X1crE1KoMAVOj3yKVfKpLB1EkA== root@lbslave',
+
+          'ssh-dss AAAAB3NzaC1kc3MAAACBAN3AITryJMQyOKZjAky+mQ/8pOHIlu4q8pzmR0qotK' \
+          'aLm2yye5a0PY2rOaQRAzi7EPheBXbqTb8a8TrHhGXI5P7GUHaJho5HhEnw+5TwAvP72L7L' \
+          'cPwxMxj/rLcR/jV+uLMsVeJVWjwJcUv83yzPXoVjK0hrIm+RLLeuTM+gTylHAAAAFQD5gB' \
+          'dXsXAiTz1atzMg3xDFF1zlowAAAIAlLy6TCMlOBM0IcPsvP/9bEjDj0M8YZazdqt4amO2I' \
+          'aNUPYt9/sIsLOQfxIj8myDK1TOp8NyRJep7V5aICG4f3Q+XktlmLzdWn3sjvbWuIAXe1op' \
+          'jG2T69YhxfHZr8Wn7P4tpCgyqM4uHmUKrfnBzQQ9vkUUWsZoUXM2Z7vUXVfQAAAIAU6eNl' \
+          'phQWDwx0KOBiiYhF9BM6kDbQlyw8333rAG3G4CcjI2G8eYGtpBNliaD185UjCEsjPiudhG' \
+          'il/j4Zt/+VY3aGOLoi8kqXBBc8ZAML9bbkXpyhQhMgwiywx3ciFmvSn2UAin8yurStYPQx' \
+          'tXauZN5PYbdwCHPS7ApIStdpMA== wood@endec1',
+
+          'ssh-dss AAAAB3NzaC1kc3MAAACBAISAE3CAX4hsxTw0dRc0gx8nQ41r3Vkj9OmG6LGeKW' \
+          'Rmpy7C6vaExuupjxid76fd4aS56lCUEEoRlJ3zE93qoK9acI6EGqGQFLuDZ0fqMyRSX+il' \
+          'f+1HDo/TRyuraggxp9Hj9LMpZVbpFATMm0+d9Xs7eLmaJjuMsowNlOf8NFdHAAAAFQCwdv' \
+          'qOAkR6QhuiAapQ/9iVuR0UAQAAAIBpLMo4dhSeWkChfv659WLPftxRrX/HR8YMD/jqa3R4' \
+          'PsVM2g6dQ1191nHugtdV7uaMeOqOJ/QRWeYM+UYwT0Zgx2LqvgVSjNDfdjk+ZRY8x3SmEx' \
+          'Fi62mKFoTGSOCXfcAfuanjaoF+sepnaiLUd+SoJShGYHoqR2QWiysTRqknlwAAAIBLEgYm' \
+          'r9XCSqjENFDVQPFELYKT7Zs9J87PjPS1AP0qF1OoRGZ5mefK6X/6VivPAUWmmmev/BuAs8' \
+          'M1HtfGeGGzMzDIiU/WZQ3bScLB1Ykrcjk7TOFD6xrnk/inYAp5l29hjidoAONcXoHmUAMY' \
+          'OKqn63Q2AsDpExVcmfj99/BlpQ=='
+        ]
+      end
+
+      context 'when ssh_banned_key feature flag is enabled with a user' do
+        before do
+          stub_feature_flags(ssh_banned_key: user)
+        end
+
+        where(:key_content) { banned_keys }
+
+        with_them do
+          it 'does not allow banned keys' do
+            key.key = key_content
+            key.user = user
+
+            expect(key).to be_invalid
+            expect(key.errors[:key]).to include(
+              _('cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one.'))
+          end
+
+          it 'allows when the user is a ghost user' do
+            key.key = key_content
+            key.user = User.ghost
+
+            expect(key).to be_valid
+          end
+
+          it 'allows when the user is nil' do
+            key.key = key_content
+            key.user = nil
+
+            expect(key).to be_valid
+          end
+        end
+
+        it 'allows other keys' do
+          key.user = user
+
+          expect(key).to be_valid
+        end
+
+        it 'allows other users' do
+          key.user = User.ghost
+
+          expect(key).to be_valid
+        end
+      end
+
+      context 'when ssh_banned_key feature flag is disabled' do
+        before do
+          stub_feature_flags(ssh_banned_key: false)
+        end
+
+        where(:key_content) { banned_keys }
+
+        with_them do
+          it 'allows banned keys' do
+            key.key = key_content
+
+            expect(key).to be_valid
+          end
+        end
+
+        it 'allows other keys' do
+          expect(key).to be_valid
+        end
+      end
+    end
   end
 
   describe "Methods" do

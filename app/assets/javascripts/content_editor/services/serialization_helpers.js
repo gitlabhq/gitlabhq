@@ -1,4 +1,4 @@
-import { uniq, isString } from 'lodash';
+import { uniq, isString, omit } from 'lodash';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null },
@@ -11,22 +11,6 @@ const ignoreAttrs = {
 };
 
 const tableMap = new WeakMap();
-
-// Source taken from
-// prosemirror-markdown/src/to_markdown.js
-export function isPlainURL(link, parent, index, side) {
-  if (link.attrs.title || !/^\w+:/.test(link.attrs.href)) return false;
-  const content = parent.child(index + (side < 0 ? -1 : 0));
-  if (
-    !content.isText ||
-    content.text !== link.attrs.href ||
-    content.marks[content.marks.length - 1] !== link
-  )
-    return false;
-  if (index === (side < 0 ? 1 : parent.childCount - 1)) return true;
-  const next = parent.child(index + (side < 0 ? -2 : 1));
-  return !link.isInSet(next.marks);
-}
 
 function containsOnlyText(node) {
   if (node.childCount === 1) {
@@ -219,7 +203,7 @@ function renderTableRowAsHTML(state, node) {
   node.forEach((cell, _, i) => {
     const tag = cell.type.name === 'tableHeader' ? 'th' : 'td';
 
-    renderTagOpen(state, tag, cell.attrs);
+    renderTagOpen(state, tag, omit(cell.attrs, 'sourceMapKey', 'sourceMarkdown'));
 
     if (!containsParagraphWithOnlyText(cell)) {
       state.closeBlock(node);
@@ -270,19 +254,6 @@ export function renderHTMLNode(tagName, forceRenderContentInline = false) {
       state.flushClose();
     }
   };
-}
-
-export function renderOrderedList(state, node) {
-  const { parens } = node.attrs;
-  const start = node.attrs.start || 1;
-  const maxW = String(start + node.childCount - 1).length;
-  const space = state.repeat(' ', maxW + 2);
-  const delimiter = parens ? ')' : '.';
-
-  state.renderList(node, space, (i) => {
-    const nStr = String(start + i);
-    return `${state.repeat(' ', maxW - nStr.length) + nStr}${delimiter} `;
-  });
 }
 
 export function renderTableCell(state, node) {
@@ -364,7 +335,72 @@ export function preserveUnchanged(render) {
   };
 }
 
-const generateBoldTags = (open = true) => {
+/**
+ * We extracted this function from
+ * https://github.com/ProseMirror/prosemirror-markdown/blob/master/src/to_markdown.ts#L350.
+ *
+ * We need to overwrite this function because we don’t want to wrap the list item nodes
+ * with the bullet delimiter when the list item node hasn’t changed
+ */
+const renderList = (state, node, delim, firstDelim) => {
+  if (state.closed && state.closed.type === node.type) state.flushClose(3);
+  else if (state.inTightList) state.flushClose(1);
+
+  const isTight =
+    typeof node.attrs.tight !== 'undefined' ? node.attrs.tight : state.options.tightLists;
+  const prevTight = state.inTightList;
+
+  state.inTightList = isTight;
+
+  node.forEach((child, _, i) => {
+    const same = state.options.changeTracker.get(child);
+
+    if (i && isTight) {
+      state.flushClose(1);
+    }
+
+    if (same) {
+      // Avoid wrapping list item when node hasn’t changed
+      state.render(child, node, i);
+    } else {
+      state.wrapBlock(delim, firstDelim(i), node, () => state.render(child, node, i));
+    }
+  });
+
+  state.inTightList = prevTight;
+};
+
+export const renderBulletList = (state, node) => {
+  const { sourceMarkdown, bullet: bulletAttr } = node.attrs;
+  const bullet = /^(\*|\+|-)\s/.exec(sourceMarkdown)?.[1] || bulletAttr || '*';
+
+  renderList(state, node, '  ', () => `${bullet} `);
+};
+
+export function renderOrderedList(state, node) {
+  const { sourceMarkdown } = node.attrs;
+  let start;
+  let delimiter;
+
+  if (sourceMarkdown) {
+    const match = /^(\d+)(\)|\.)/.exec(sourceMarkdown);
+    start = parseInt(match[1], 10) || 1;
+    [, , delimiter] = match;
+  } else {
+    start = node.attrs.start || 1;
+    delimiter = node.attrs.parens ? ')' : '.';
+  }
+
+  const maxW = String(start + node.childCount - 1).length;
+  const space = state.repeat(' ', maxW + 2);
+
+  renderList(state, node, space, (i) => {
+    const nStr = String(start + i);
+    return `${state.repeat(' ', maxW - nStr.length) + nStr}${delimiter} `;
+  });
+}
+
+const generateBoldTags = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(\*\*|__|<strong|<b).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
@@ -375,7 +411,7 @@ const generateBoldTags = (open = true) => {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       case '<strong':
       case '<b':
-        return (open ? openTag : closeTag)(type.substring(1));
+        return wrapTagName(type.substring(1));
       default:
         return '**';
     }
@@ -384,12 +420,12 @@ const generateBoldTags = (open = true) => {
 
 export const bold = {
   open: generateBoldTags(),
-  close: generateBoldTags(false),
+  close: generateBoldTags(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
 };
 
-const generateItalicTag = (open = true) => {
+const generateItalicTag = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(\*|_|<em|<i).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
@@ -400,7 +436,7 @@ const generateItalicTag = (open = true) => {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       case '<em':
       case '<i':
-        return (open ? openTag : closeTag)(type.substring(1));
+        return wrapTagName(type.substring(1));
       default:
         return '_';
     }
@@ -409,17 +445,17 @@ const generateItalicTag = (open = true) => {
 
 export const italic = {
   open: generateItalicTag(),
-  close: generateItalicTag(false),
+  close: generateItalicTag(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
 };
 
-const generateCodeTag = (open = true) => {
+const generateCodeTag = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(`|<code).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
     if (type === '<code') {
-      return (open ? openTag : closeTag)(type.substring(1));
+      return wrapTagName(type.substring(1));
     }
 
     return '`';
@@ -428,7 +464,7 @@ const generateCodeTag = (open = true) => {
 
 export const code = {
   open: generateCodeTag(),
-  close: generateCodeTag(false),
+  close: generateCodeTag(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
 };
@@ -446,10 +482,79 @@ const linkType = (sourceMarkdown) => {
   return LINK_HTML;
 };
 
+const removeUrlProtocol = (url) => url.replace(/^\w+:\/?\/?/, '');
+
+const normalizeUrl = (url) => decodeURIComponent(removeUrlProtocol(url));
+
+/**
+ * Validates that the provided URL is well-formed
+ *
+ * @param {String} url
+ * @returns Returns true when the browser’s URL constructor
+ * can successfully parse the URL string
+ */
+const isValidUrl = (url) => {
+  try {
+    return new URL(url) && true;
+  } catch {
+    return false;
+  }
+};
+
+const findChildWithMark = (mark, parent) => {
+  let child;
+  let offset;
+  let index;
+
+  parent.forEach((_child, _offset, _index) => {
+    if (mark.isInSet(_child.marks)) {
+      child = _child;
+      offset = _offset;
+      index = _index;
+    }
+  });
+
+  return child ? { child, offset, index } : null;
+};
+
+/**
+ * This function detects whether a link should be serialized
+ * as an autolink.
+ *
+ * See https://github.github.com/gfm/#autolinks-extension-
+ * to understand the parsing rules of autolinks.
+ * */
+const isAutoLink = (linkMark, parent) => {
+  const { title, href } = linkMark.attrs;
+
+  if (title || !/^\w+:/.test(href)) {
+    return false;
+  }
+
+  const { child } = findChildWithMark(linkMark, parent);
+
+  if (
+    !child ||
+    !child.isText ||
+    !isValidUrl(href) ||
+    normalizeUrl(child.text) !== normalizeUrl(href)
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
+ * Returns true if the user used brackets to the define
+ * the autolink in the original markdown source
+ */
+const isBracketAutoLink = (sourceMarkdown) => /^<.+?>$/.test(sourceMarkdown);
+
 export const link = {
-  open(state, mark, parent, index) {
-    if (isPlainURL(mark, parent, index, 1)) {
-      return '<';
+  open(state, mark, parent) {
+    if (isAutoLink(mark, parent)) {
+      return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '<' : '';
     }
 
     const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
@@ -466,9 +571,9 @@ export const link = {
 
     return openTag('a', attrs);
   },
-  close(state, mark, parent, index) {
-    if (isPlainURL(mark, parent, index, -1)) {
-      return '>';
+  close(state, mark, parent) {
+    if (isAutoLink(mark, parent)) {
+      return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
     const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
@@ -479,4 +584,29 @@ export const link = {
 
     return `](${state.esc(canonicalSrc || href)}${title ? ` ${state.quote(title)}` : ''})`;
   },
+};
+
+const generateStrikeTag = (wrapTagName = openTag) => {
+  return (_, mark) => {
+    const type = /^(~~|<del|<strike|<s).*/.exec(mark.attrs.sourceMarkdown)?.[1];
+
+    switch (type) {
+      case '~~':
+        return type;
+      /* eslint-disable @gitlab/require-i18n-strings */
+      case '<del':
+      case '<strike':
+      case '<s':
+        return wrapTagName(type.substring(1));
+      default:
+        return '~~';
+    }
+  };
+};
+
+export const strike = {
+  open: generateStrikeTag(),
+  close: generateStrikeTag(closeTag),
+  mixable: true,
+  expelEnclosingWhitespace: true,
 };

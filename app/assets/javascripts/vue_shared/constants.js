@@ -71,10 +71,14 @@ export const AVATAR_SHAPE_OPTION_RECT = 'rect';
 export const confidentialityInfoText = (workspaceType, issuableType) =>
   sprintf(
     __(
-      'Only %{workspaceType} members with at least Reporter role can view or be notified about this %{issuableType}.',
+      'Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}.',
     ),
     {
       workspaceType: workspaceType === WorkspaceType.project ? __('project') : __('group'),
       issuableType: issuableType === IssuableType.Issue ? __('issue') : __('epic'),
+      permissions:
+        issuableType === IssuableType.Issue
+          ? __('at least the Reporter role, the author, and assignees')
+          : __('at least the Reporter role'),
     },
   );

@@ -10,7 +10,7 @@ module SensitiveSerializableHash
   class_methods do
     def prevent_from_serialization(*keys)
       self.attributes_exempt_from_serializable_hash ||= []
-      self.attributes_exempt_from_serializable_hash.concat keys
+      self.attributes_exempt_from_serializable_hash += keys
     end
   end
 

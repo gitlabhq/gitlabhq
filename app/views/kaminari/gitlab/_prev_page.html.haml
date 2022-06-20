@@ -10,5 +10,5 @@
 
 %li.page-item.js-previous-button{ class: ('disabled' if current_page.first?) }
   = link_to page_url, rel: 'prev', remote: remote, class: 'page-link' do
-    = sprite_icon('angle-left', size: 8)
+    = sprite_icon('chevron-lg-left', size: 8)
     = s_('Pagination|Prev')

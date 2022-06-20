@@ -8,7 +8,7 @@ import { confidentialityQueries } from '~/sidebar/constants';
 export default {
   i18n: {
     confidentialityOnWarning: __(
-      'You are going to turn on confidentiality. Only %{context} members with %{strongStart}at least Reporter role%{strongEnd} can view or be notified about this %{issuableType}.',
+      'You are going to turn on confidentiality. Only %{context} members with %{strongStart}%{permissions}%{strongEnd} can view or be notified about this %{issuableType}.',
     ),
     confidentialityOffWarning: __(
       'You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}.',
@@ -65,6 +65,11 @@ export default {
             groupPath: this.fullPath,
           };
     },
+    permissions() {
+      return this.issuableType === IssuableType.Issue
+        ? __('at least the Reporter role, the author, and assignees')
+        : __('at least the Reporter role');
+    },
   },
   methods: {
     submitForm() {
@@ -120,7 +125,11 @@ export default {
         <p data-testid="warning-message">
           <gl-sprintf :message="warningMessage">
             <template #strong="{ content }">
-              <strong>{{ content }}</strong>
+              <strong>
+                <gl-sprintf :message="content">
+                  <template #permissions>{{ permissions }}</template>
+                </gl-sprintf>
+              </strong>
             </template>
             <template #context>{{ context }}</template>
             <template #issuableType>{{ issuableType }}</template>

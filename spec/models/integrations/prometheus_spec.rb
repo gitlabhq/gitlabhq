@@ -145,6 +145,17 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         expect(req_stub).to have_been_requested
       end
     end
+
+    context 'when configuration is not valid' do
+      before do
+        integration.api_url = nil
+      end
+
+      it 'returns failure message' do
+        expect(integration.test[:success]).to be_falsy
+        expect(integration.test[:result]).to eq('Prometheus configuration error')
+      end
+    end
   end
 
   describe '#prometheus_client' do

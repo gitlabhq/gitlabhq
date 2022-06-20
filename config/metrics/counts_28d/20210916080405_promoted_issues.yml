@@ -7,8 +7,10 @@ product_stage: growth
 product_group: group::product intelligence
 product_category: collection
 value_type: number
-status: deprecated
+status: removed
 milestone: "14.3"
+milestone_removed: "15.1"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88113
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70485
 time_frame: 28d
 data_source: database

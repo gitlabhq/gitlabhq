@@ -21,7 +21,7 @@ module Emails
 
       user = User.find(recipient_id)
 
-      member_email_with_layout(
+      email_with_layout(
         to: user.notification_email_for(notification_group),
         subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))
     end
@@ -32,7 +32,7 @@ module Emails
 
       return unless member_exists?
 
-      member_email_with_layout(
+      email_with_layout(
         to: member.user.notification_email_for(notification_group),
         subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
@@ -47,7 +47,7 @@ module Emails
 
       human_name = @source_hidden ? 'Hidden' : member_source.human_name
 
-      member_email_with_layout(
+      email_with_layout(
         to: user.notification_email_for(notification_group),
         subject: subject("Access to the #{human_name} #{member_source.model_name.singular} was denied"))
     end
@@ -83,7 +83,7 @@ module Emails
 
       subject_line = subjects[reminder_index] % { inviter: member.created_by.name }
 
-      member_email_with_layout(
+      email_with_layout(
         layout: 'unknown_user_mailer',
         to: member.invite_email,
         subject: subject(subject_line)
@@ -97,7 +97,7 @@ module Emails
       return unless member_exists?
       return unless member.created_by
 
-      member_email_with_layout(
+      email_with_layout(
         to: member.created_by.notification_email_for(notification_group),
         subject: subject('Invitation accepted'))
     end
@@ -111,7 +111,7 @@ module Emails
 
       user = User.find(created_by_id)
 
-      member_email_with_layout(
+      email_with_layout(
         to: user.notification_email_for(notification_group),
         subject: subject('Invitation declined'))
     end
@@ -128,7 +128,7 @@ module Emails
                   _('Group membership expiration date removed')
                 end
 
-      member_email_with_layout(
+      email_with_layout(
         to: member.user.notification_email_for(notification_group),
         subject: subject(subject))
     end
@@ -175,13 +175,6 @@ module Emails
 
     def member_source_class
       @member_source_type.classify.constantize
-    end
-
-    def member_email_with_layout(to:, subject:, layout: 'mailer')
-      mail(to: to, subject: subject) do |format|
-        format.html { render layout: layout }
-        format.text { render layout: layout }
-      end
     end
   end
 end

@@ -42,6 +42,13 @@ class ProjectsController < Projects::ApplicationController
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
+    push_frontend_feature_flag(:work_items_mvc_2)
+    push_frontend_feature_flag(:package_registry_access_level)
+    push_frontend_feature_flag(:work_items_hierarchy, @project)
+  end
+
+  before_action only: :edit do
+    push_frontend_feature_flag(:enforce_auth_checks_on_uploads, @project)
   end
 
   layout :determine_layout
@@ -410,6 +417,7 @@ class ProjectsController < Projects::ApplicationController
       repository_access_level
       snippets_access_level
       wiki_access_level
+      package_registry_access_level
       pages_access_level
       metrics_dashboard_access_level
       analytics_access_level

@@ -5,6 +5,8 @@ module API
     class Pipelines < ::API::Base
       include PaginationParams
 
+      helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
+
       before { authenticate_non_get! }
 
       params do
@@ -207,6 +209,8 @@ module API
         end
         delete ':id/pipelines/:pipeline_id', urgency: :low, feature_category: :continuous_integration do
           authorize! :destroy_pipeline, pipeline
+
+          reject_if_build_artifacts_size_refreshing!(pipeline.project)
 
           destroy_conditionally!(pipeline) do
             ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)

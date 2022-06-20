@@ -52,7 +52,9 @@ module Gitlab
             end
 
             def fetch_template_content
-              Gitlab::Template::GitlabCiYmlTemplate.find(template_name, context.project)&.content
+              context.logger.instrument(:config_file_fetch_template_content) do
+                Gitlab::Template::GitlabCiYmlTemplate.find(template_name, context.project)&.content
+              end
             end
 
             def masked_raw

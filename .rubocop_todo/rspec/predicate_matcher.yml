@@ -503,7 +503,6 @@ RSpec/PredicateMatcher:
     - 'spec/validators/namespace_path_validator_spec.rb'
     - 'spec/validators/project_path_validator_spec.rb'
     - 'spec/workers/bulk_imports/entity_worker_spec.rb'
-    - 'spec/workers/bulk_imports/pipeline_worker_spec.rb'
     - 'spec/workers/ci/delete_objects_worker_spec.rb'
     - 'spec/workers/concerns/worker_attributes_spec.rb'
     - 'spec/workers/container_expiration_policies/cleanup_container_repository_worker_spec.rb'

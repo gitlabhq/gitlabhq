@@ -47,13 +47,6 @@ RSpec.describe QA::Runtime::Env do
       default: false
   end
 
-  describe '.debug?' do
-    it_behaves_like 'boolean method',
-      method: :debug?,
-      env_key: 'QA_DEBUG',
-      default: false
-  end
-
   describe '.webdriver_headless?' do
     it_behaves_like 'boolean method',
       method: :webdriver_headless?,
@@ -261,20 +254,6 @@ RSpec.describe QA::Runtime::Env do
       stub_env('GITLAB_QA_ADMIN_ACCESS_TOKEN', 'foobar123')
 
       expect { described_class.require_admin_access_token! }.not_to raise_error
-    end
-  end
-
-  describe '.log_destination' do
-    it 'returns $stdout if QA_LOG_PATH is not defined' do
-      stub_env('QA_LOG_PATH', nil)
-
-      expect(described_class.log_destination).to eq($stdout)
-    end
-
-    it 'returns the path if QA_LOG_PATH is defined' do
-      stub_env('QA_LOG_PATH', 'path/to_file')
-
-      expect(described_class.log_destination).to eq('path/to_file')
     end
   end
 

@@ -28,6 +28,20 @@ Code Quality:
 - Is available by using [Auto Code Quality](../../../topics/autodevops/stages.md#auto-code-quality), provided by [Auto DevOps](../../../topics/autodevops/index.md).
 - Can be extended through [Analysis Plugins](https://docs.codeclimate.com/docs/list-of-engines) or a [custom tool](#implementing-a-custom-tool).
 
+## Summary of features per tier
+
+Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
+as shown in the following table:
+
+| Capability                                                            | In Free             | In Premium          | In Ultimate        |
+|:----------------------------------------------------------------------|:--------------------|:--------------------|:-------------------|
+| [Configure scanners](#configuring-jobs-using-variables)               | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
+| [Integrate custom scanners](#implementing-a-custom-tool)              | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
+| [Generate JSON or HTML report artifacts](#generate-an-html-report)    | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
+| [See findings in merge request widget](#code-quality-widget)          | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
+| [See reports in CI pipelines](#code-quality-reports)                  | **{dotted-circle}** | **{check-circle}**  | **{check-circle}** |
+| [See findings in merge request diff view](#code-quality-in-diff-view) | **{dotted-circle}** | **{dotted-circle}** | **{check-circle}** |
+
 ## Code Quality Widget
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
@@ -242,7 +256,7 @@ This can be done:
 - For a single pipeline run:
 
   1. Go to **CI/CD > Pipelines**
-  1. Click **Run pipeline**
+  1. Select **Run pipeline**
   1. Add `CODE_QUALITY_DISABLED` as the variable key, with any value.
 
 ### Using with merge request pipelines
@@ -402,19 +416,7 @@ CI/CD variable to `html`. This is useful if you just want to view the report in 
 human-readable format or to publish this artifact on GitLab Pages for even
 easier reviewing.
 
-```yaml
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
-code_quality:
-  variables:
-    REPORT_FORMAT: html
-  artifacts:
-    paths: [gl-code-quality-report.html]
-```
-
-It's also possible to generate both JSON and HTML report files by defining
-another job and using `extends: code_quality`:
+To generate both JSON and HTML report files, add another job to your template by using `extends: code_quality`:
 
 ```yaml
 include:
@@ -427,6 +429,26 @@ code_quality_html:
   artifacts:
     paths: [gl-code-quality-report.html]
 ```
+
+NOTE:
+Adding a job means your code is scanned twice: once to generate a JSON report and once to generate an HTML report.
+
+You can also generate _only_ an HTML report instead of the standard JSON report. To do so, set `REPORT_FORMAT` to `html` in the existing job:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    REPORT_FORMAT: html
+  artifacts:
+    paths: [gl-code-quality-report.html]
+```
+
+WARNING:
+If you only generate an HTML report, you can't see your results in the [merge request widget](#code-quality-widget), [pipeline report](#code-quality-reports), or [diff view](#code-quality-in-diff-view).
+These features require a JSON report.
 
 ## Extending functionality
 
@@ -557,9 +579,9 @@ GitLab only uses the Code Quality artifact from the latest created job (with the
 If multiple jobs in a pipeline generate a code quality artifact, those of earlier jobs are ignored.
 To avoid confusion, configure only one job to generate a `gl-code-quality-report.json`.
 
-### Rubocop errors
+### RuboCop errors
 
-When using Code Quality jobs on a Ruby project, you can encounter problems running Rubocop.
+When using Code Quality jobs on a Ruby project, you can encounter problems running RuboCop.
 For example, the following error can appear when using either a very recent or very old version
 of Ruby:
 
@@ -569,15 +591,15 @@ Unknown Ruby version 2.7 found in `.ruby-version`. (RuboCop::ValidationError)
 Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5
 ```
 
-This is caused by the default version of Rubocop used by the check engine not covering
+This is caused by the default version of RuboCop used by the check engine not covering
 support for the Ruby version in use.
 
-To use a custom version of Rubocop that
+To use a custom version of RuboCop that
 [supports the version of Ruby used by the project](https://docs.rubocop.org/rubocop/compatibility.html#support-matrix),
 you can [override the configuration through a `.codeclimate.yml` file](https://docs.codeclimate.com/docs/rubocop#using-rubocops-newer-versions)
 created in the project repository.
 
-For example, to specify using Rubocop release **0.67**:
+For example, to specify using RuboCop release **0.67**:
 
 ```yaml
 version: "2"

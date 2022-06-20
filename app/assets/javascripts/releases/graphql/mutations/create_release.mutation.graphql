@@ -1,6 +1,7 @@
 mutation createRelease($input: ReleaseCreateInput!) {
   releaseCreate(input: $input) {
     release {
+      id
       links {
         selfUrl
       }

@@ -254,7 +254,7 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
-    <h3 class="page-title">{{ __('New Jira import') }}</h3>
+    <h1 class="page-title gl-font-size-h-display">{{ __('New Jira import') }}</h1>
 
     <hr />
 
@@ -331,7 +331,7 @@ export default {
         </template>
       </gl-table-lite>
 
-      <gl-loading-icon v-if="isInitialLoadingState" size="md" />
+      <gl-loading-icon v-if="isInitialLoadingState" size="lg" />
 
       <gl-button
         v-if="hasMoreUsers"

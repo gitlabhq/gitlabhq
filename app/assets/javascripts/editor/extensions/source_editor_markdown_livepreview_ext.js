@@ -36,6 +36,8 @@ const setupDomElement = ({ injectToEl = null } = {}) => {
   return previewEl;
 };
 
+let dimResize = false;
+
 export class EditorMarkdownPreviewExtension {
   static get extensionName() {
     return 'EditorMarkdownPreview';
@@ -50,6 +52,7 @@ export class EditorMarkdownPreviewExtension {
       },
       shown: false,
       modelChangeListener: undefined,
+      layoutChangeListener: undefined,
       path: setupOptions.previewMarkdownPath,
       actionShowPreviewCondition: instance.createContextKey('toggleLivePreview', true),
     };
@@ -59,6 +62,14 @@ export class EditorMarkdownPreviewExtension {
     if (instance.toolbar) {
       this.setupToolbar(instance);
     }
+
+    this.preview.layoutChangeListener = instance.onDidLayoutChange(() => {
+      if (instance.markdownPreview?.shown && !dimResize) {
+        const { width } = instance.getLayoutInfo();
+        const newWidth = width * EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH;
+        EditorMarkdownPreviewExtension.resizePreviewLayout(instance, newWidth);
+      }
+    });
   }
 
   onBeforeUnuse(instance) {
@@ -70,6 +81,9 @@ export class EditorMarkdownPreviewExtension {
   }
 
   cleanup(instance) {
+    if (this.preview.layoutChangeListener) {
+      this.preview.layoutChangeListener.dispose();
+    }
     if (this.preview.modelChangeListener) {
       this.preview.modelChangeListener.dispose();
     }
@@ -80,6 +94,15 @@ export class EditorMarkdownPreviewExtension {
       this.togglePreviewLayout(instance);
     }
     this.preview.shown = false;
+  }
+
+  static resizePreviewLayout(instance, width) {
+    const { height } = instance.getLayoutInfo();
+    dimResize = true;
+    instance.layout({ width, height });
+    window.requestAnimationFrame(() => {
+      dimResize = false;
+    });
   }
 
   setupToolbar(instance) {
@@ -99,11 +122,11 @@ export class EditorMarkdownPreviewExtension {
   }
 
   togglePreviewLayout(instance) {
-    const { width, height } = instance.getLayoutInfo();
+    const { width } = instance.getLayoutInfo();
     const newWidth = this.preview.shown
       ? width / EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH
       : width * EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH;
-    instance.layout({ width: newWidth, height });
+    EditorMarkdownPreviewExtension.resizePreviewLayout(instance, newWidth);
   }
 
   togglePreviewPanel(instance) {

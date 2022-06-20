@@ -57,7 +57,7 @@ In your Auto DevOps project, you can use the GitLab agent to connect with your K
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value.
    - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:agent-name`.
      Select the environment scope of your choice.
-     If you are not sure what your agent’s context is, edit your `.gitlab-ci.yml` file and add a job to see the available contexts:
+     If you are not sure what your agent's context is, edit your `.gitlab-ci.yml` file and add a job to see the available contexts:
 
      ```yaml
       deploy:

@@ -200,6 +200,30 @@ describe('InviteModalBase', () => {
       });
     });
 
+    describe('when user limit is close on a personal namespace', () => {
+      beforeEach(() => {
+        createComponent(
+          {
+            closeToLimit: true,
+            reachedLimit: false,
+            usersLimitDataset: { membersPath, userNamespace: true },
+          },
+          { GlModal, GlFormGroup },
+        );
+      });
+
+      it('renders correct buttons', () => {
+        const cancelButton = findCancelButton();
+        const actionButton = findActionButton();
+
+        expect(cancelButton.text()).toBe(INVITE_BUTTON_TEXT_DISABLED);
+        expect(cancelButton.attributes('href')).toBe(membersPath);
+
+        expect(actionButton.text()).toBe(INVITE_BUTTON_TEXT);
+        expect(actionButton.attributes('href')).toBe(); // default submit button
+      });
+    });
+
     describe('when users limit is not reached', () => {
       const textRegex = /Select a role.+Read more about role permissions Access expiration date \(optional\)/;
 

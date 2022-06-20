@@ -144,6 +144,40 @@ module GroupsHelper
     false
   end
 
+  def group_name_and_path_app_data(group)
+    parent = group.parent
+
+    {
+      base_path: URI.join(root_url, parent&.full_path || "").to_s,
+      mattermost_enabled: Gitlab.config.mattermost.enabled.to_s
+    }
+  end
+
+  def subgroups_and_projects_list_app_data(group)
+    {
+      show_schema_markup: 'true',
+      new_subgroup_path: new_group_path(parent_id: group.id),
+      new_project_path: new_project_path(namespace_id: group.id),
+      new_subgroup_illustration: image_path('illustrations/subgroup-create-new-sm.svg'),
+      new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),
+      empty_subgroup_illustration: image_path('illustrations/empty-state/empty-subgroup-md.svg'),
+      render_empty_state: 'true',
+      can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
+      can_create_projects: can?(current_user, :create_projects, group).to_s
+    }
+  end
+
+  def enabled_git_access_protocol_options_for_group
+    case ::Gitlab::CurrentSettings.enabled_git_access_protocol
+    when nil, ""
+      [[_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]]
+    when "ssh"
+      [[_("Only SSH"), "ssh"]]
+    when "http"
+      [[_("Only HTTP(S)"), "http"]]
+    end
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)

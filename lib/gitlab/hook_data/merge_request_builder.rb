@@ -52,7 +52,7 @@ module Gitlab
           source: merge_request.source_project.try(:hook_attrs),
           target: merge_request.target_project.hook_attrs,
           last_commit: merge_request.diff_head_commit&.hook_attrs,
-          work_in_progress: merge_request.work_in_progress?,
+          work_in_progress: merge_request.draft?,
           total_time_spent: merge_request.total_time_spent,
           time_change: merge_request.time_change,
           human_total_time_spent: merge_request.human_total_time_spent,

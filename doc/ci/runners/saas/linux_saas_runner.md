@@ -18,7 +18,7 @@ region of the VMs is US East1.
 Each instance is used only for one job. This ensures that any sensitive data left on the system can't be accessed by other people's CI/CD jobs.
 
 NOTE:
-The final disk space your jobs can use will be less than 25GB. Some disk space allocated to the instance will be occupied by the operating system, the Docker image, and a copy of your cloned repository.  
+The final disk space your jobs can use will be less than 25GB. Some disk space allocated to the instance will be occupied by the operating system, the Docker image, and a copy of your cloned repository.
 
 The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They don't run untagged jobs and unlike the general fleet of shared runners, the instances are re-used up to 40 times.
 
@@ -55,7 +55,7 @@ To use this feature, define a [CI/CD variable](../../../ci/variables/index.md#cu
 `CI_PRE_CLONE_SCRIPT` that contains a bash script.
 
 NOTE:
-The `CI_PRE_CLONE_SCRIPT` variable does not work on Windows runners.
+The `CI_PRE_CLONE_SCRIPT` variable does not work on GitLab SaaS Windows or macOS Runners.
 
 ### Pre-clone script example
 

@@ -6,53 +6,55 @@ require_relative '../../../../rubocop/cop/migration/migration_record'
 RSpec.describe RuboCop::Cop::Migration::MigrationRecord do
   subject(:cop) { described_class.new }
 
-  shared_examples 'a disabled cop' do
+  shared_examples 'a disabled cop' do |klass|
     it 'does not register any offenses' do
       expect_no_offenses(<<~SOURCE)
         class MyMigration < Gitlab::Database::Migration[2.0]
-          class Project < ActiveRecord::Base
+          class Project < #{klass}
           end
         end
       SOURCE
     end
   end
 
-  context 'outside of a migration' do
-    it_behaves_like 'a disabled cop'
-  end
-
-  context 'in migration' do
-    before do
-      allow(cop).to receive(:in_migration?).and_return(true)
+  %w(ActiveRecord::Base ApplicationRecord).each do |klass|
+    context 'outside of a migration' do
+      it_behaves_like 'a disabled cop', klass
     end
 
-    context 'in an old migration' do
+    context 'in migration' do
       before do
-        allow(cop).to receive(:version).and_return(described_class::ENFORCED_SINCE - 5)
+        allow(cop).to receive(:in_migration?).and_return(true)
       end
 
-      it_behaves_like 'a disabled cop'
-    end
+      context 'in an old migration' do
+        before do
+          allow(cop).to receive(:version).and_return(described_class::ENFORCED_SINCE - 5)
+        end
 
-    context 'that is recent' do
-      before do
-        allow(cop).to receive(:version).and_return(described_class::ENFORCED_SINCE)
+        it_behaves_like 'a disabled cop', klass
       end
 
-      it 'adds an offense if inheriting from ActiveRecord::Base' do
-        expect_offense(<<~RUBY)
-          class Project < ActiveRecord::Base
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Base but use MigrationRecord instead.[...]
+      context 'that is recent' do
+        before do
+          allow(cop).to receive(:version).and_return(described_class::ENFORCED_SINCE)
+        end
+
+        it "adds an offense if inheriting from #{klass}" do
+          expect_offense(<<~RUBY)
+          class Project < #{klass}
+          ^^^^^^^^^^^^^^^^#{'^' * klass.length} Don't inherit from ActiveRecord::Base or ApplicationRecord but use MigrationRecord instead.[...]
           end
-        RUBY
-      end
+          RUBY
+        end
 
-      it 'adds an offense if inheriting from ::ActiveRecord::Base' do
-        expect_offense(<<~RUBY)
-          class Project < ::ActiveRecord::Base
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't inherit from ActiveRecord::Base but use MigrationRecord instead.[...]
+        it "adds an offense if inheriting from ::#{klass}" do
+          expect_offense(<<~RUBY)
+          class Project < ::#{klass}
+          ^^^^^^^^^^^^^^^^^^#{'^' * klass.length} Don't inherit from ActiveRecord::Base or ApplicationRecord but use MigrationRecord instead.[...]
           end
-        RUBY
+          RUBY
+        end
       end
     end
   end

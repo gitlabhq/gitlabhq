@@ -77,7 +77,7 @@ For example, this defines the `retry` keyword:
         }
       ]
     }
-  } 
+  }
 }
 ```
 
@@ -106,7 +106,7 @@ under the topmost **properties** key.
         }
       },
     }
-  }  
+  }
 }
 ```
 

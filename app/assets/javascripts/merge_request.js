@@ -95,7 +95,7 @@ MergeRequest.prototype.initMRBtnListeners = function () {
           .then(({ data }) => {
             draftToggle.removeAttribute('disabled');
             eventHub.$emit('MRWidgetUpdateRequested');
-            MergeRequest.toggleDraftStatus(data.title, wipEvent === 'unwip');
+            MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready');
           })
           .catch(() => {
             createFlash({
@@ -156,11 +156,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
   } else {
     toast(__('Marked as draft. Can only be merged when marked as ready.'));
   }
-  const titleEl = document.querySelector(
-    `.merge-request .detail-page-${
-      window.gon?.features?.updatedMrHeader ? 'header' : 'description'
-    } .title`,
-  );
+  const titleEl = document.querySelector(`.merge-request .detail-page-header .title`);
 
   if (titleEl) {
     titleEl.textContent = title;
@@ -172,7 +168,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
     draftToggles.forEach((el) => {
       const draftToggle = el;
       const url = setUrlParams(
-        { 'merge_request[wip_event]': isReady ? 'wip' : 'unwip' },
+        { 'merge_request[wip_event]': isReady ? 'draft' : 'ready' },
         draftToggle.href,
       );
 

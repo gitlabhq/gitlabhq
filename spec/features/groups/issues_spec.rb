@@ -11,10 +11,6 @@ RSpec.describe 'Group issues page' do
   let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
-  before do
-    stub_feature_flags(vue_issues_list: true)
-  end
-
   context 'with shared examples', :js do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
 
@@ -140,8 +136,6 @@ RSpec.describe 'Group issues page' do
     let!(:issue3) { create(:issue, project: project, title: 'Issue #3', relative_position: 3) }
 
     before do
-      stub_feature_flags(vue_issues_list: false)
-
       sign_in(user_in_group)
     end
 
@@ -164,45 +158,36 @@ RSpec.describe 'Group issues page' do
     end
 
     it 'issues should be draggable and persist order' do
-      visit issues_group_path(group, sort: 'relative_position')
+      visit issues_group_path(group)
+      select_manual_sort
 
-      wait_for_requests
+      drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
 
-      drag_to(selector: '.manual-ordering',
-        from_index: 0,
-        to_index: 2)
+      expect_issue_order
 
-      wait_for_requests
+      visit issues_group_path(group)
 
-      check_issue_order
-
-      visit issues_group_path(group, sort: 'relative_position')
-
-      check_issue_order
+      expect_issue_order
     end
 
     it 'issues should not be draggable when user is not logged in' do
       sign_out(user_in_group)
-
-      visit issues_group_path(group, sort: 'relative_position')
-
       wait_for_requests
+      visit issues_group_path(group)
+      select_manual_sort
 
-      drag_to(selector: '.manual-ordering',
-        from_index: 0,
-        to_index: 2)
+      drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
 
-      wait_for_requests
-
-      # Issue order should remain the same
-      page.within('.manual-ordering') do
-        expect(find('.issue:nth-child(1) .title')).to have_content('Issue #1')
-        expect(find('.issue:nth-child(2) .title')).to have_content('Issue #2')
-        expect(find('.issue:nth-child(3) .title')).to have_content('Issue #3')
-      end
+      expect(page).to have_text 'An error occurred while reordering issues.'
     end
 
-    def check_issue_order
+    def select_manual_sort
+      click_button 'Created date'
+      click_button 'Manual'
+      wait_for_requests
+    end
+
+    def expect_issue_order
       expect(page).to have_css('.issue:nth-child(1) .title', text: 'Issue #2')
       expect(page).to have_css('.issue:nth-child(2) .title', text: 'Issue #3')
       expect(page).to have_css('.issue:nth-child(3) .title', text: 'Issue #1')

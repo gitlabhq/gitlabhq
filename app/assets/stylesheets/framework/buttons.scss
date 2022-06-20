@@ -106,15 +106,15 @@
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white);
+  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-contrast);
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-500, $orange-600, $orange-500, $orange-600, $orange-600, $orange-800, $white);
+  @include btn-color($orange-500, $orange-600, $orange-500, $orange-600, $orange-600, $orange-800, $white-contrast);
 }
 
 @mixin btn-red {
-  @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white);
+  @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white-contrast);
 }
 
 @mixin btn-white {
@@ -122,7 +122,7 @@
 }
 
 @mixin btn-purple {
-  @include btn-color($purple-700, $purple-800, $purple-800, $purple-900, $purple-900, $purple-950, $white);
+  @include btn-color($purple-700, $purple-800, $purple-800, $purple-900, $purple-900, $purple-950, $white-contrast);
 }
 
 @mixin btn-with-margin {
@@ -175,10 +175,6 @@
       @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
     }
 
-    &.btn-warning {
-      @include btn-outline($white, $orange-500, $orange-500, $orange-50, $orange-600, $orange-600, $orange-100, $orange-700, $orange-700);
-    }
-
     &.btn-primary,
     &.btn-info {
       @include btn-outline($white, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);
@@ -188,10 +184,6 @@
   &.btn-info,
   &.btn-primary {
     @include btn-blue;
-  }
-
-  &.btn-warning {
-    @include btn-orange;
   }
 
   &.btn-danger {
@@ -357,25 +349,6 @@
   }
 }
 
-.btn-link {
-  padding: 0;
-  background-color: transparent;
-  color: $blue-600;
-  font-weight: normal;
-  border-radius: 0;
-  border-color: transparent;
-  border-width: 0;
-
-  &:hover,
-  &:active,
-  &:focus {
-    color: $blue-800;
-    text-decoration: underline;
-    background-color: transparent;
-    border-color: transparent;
-  }
-}
-
 // The .btn-svg class is available for legacy icon buttons to
 // preserve a 34px height and have 16x16 icons at the same time.
 // Once a button is migrated (to the current 32px height)
@@ -417,16 +390,6 @@ fieldset[disabled] .btn,
   cursor: default;
 }
 
-// This class helps convert `.gl-button` children so that they consistently
-// match the style of `.btn` elements which might be around them. Ideally we
-// wouldn't need this class.
-//
-// Remove by upgrading all buttons in a container to use the new `.gl-button` style.
-.gl-button-deprecated-adapter .gl-button {
-  box-shadow: none;
-  border-width: 1px;
-}
-
 copy-code {
   @include gl-absolute;
   @include gl-transition-medium;
@@ -438,5 +401,24 @@ copy-code {
   .markdown-code-block:hover &,
   &:focus-within {
     @include gl-opacity-10;
+  }
+}
+
+.btn-link {
+  padding: 0;
+  background-color: transparent;
+  color: $blue-600;
+  font-weight: normal;
+  border-radius: 0;
+  border-color: transparent;
+  border-width: 0;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $blue-800;
+    text-decoration: underline;
+    background-color: transparent;
+    border-color: transparent;
   }
 }

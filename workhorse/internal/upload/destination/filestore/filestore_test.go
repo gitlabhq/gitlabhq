@@ -2,7 +2,6 @@ package filestore
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -12,7 +11,7 @@ import (
 )
 
 func TestConsume(t *testing.T) {
-	f, err := ioutil.TempFile("", "filestore-local-file")
+	f, err := os.CreateTemp("", "filestore-local-file")
 	if f != nil {
 		defer os.Remove(f.Name())
 	}
@@ -32,7 +31,7 @@ func TestConsume(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, int64(len(content)), n)
 
-	consumedContent, err := ioutil.ReadFile(f.Name())
+	consumedContent, err := os.ReadFile(f.Name())
 	require.NoError(t, err)
 	require.Equal(t, content, string(consumedContent))
 }

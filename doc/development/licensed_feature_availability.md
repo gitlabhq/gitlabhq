@@ -22,8 +22,16 @@ it should be restricted on namespace scope.
 1. Check using:
 
 ```ruby
-project.feature_available?(:feature_symbol)
+project.licensed_feature_available?(:feature_symbol)
 ```
+
+or
+
+```ruby
+group.licensed_feature_available?(:feature_symbol)
+```
+
+For projects, `licensed_feature_available` delegates to its associated `namespace`.
 
 ## Restricting global features (instance)
 

@@ -71,19 +71,19 @@ To import Jira issues to a GitLab project:
 
    ![Import issues from Jira form](img/jira/import_issues_from_jira_form_v13_2.png)
 
-1. Click the **Import from** dropdown list and select the Jira project that you wish to import issues from.
+1. Select the **Import from** dropdown list and select the Jira project that you wish to import issues from.
 
    In the **Jira-GitLab user mapping template** section, the table shows to which GitLab users your Jira
    users are mapped.
    When the form appears, the dropdown list defaults to the user conducting the import.
 
-1. To change any of the mappings, click the dropdown list in the **GitLab username** column and
+1. To change any of the mappings, select the dropdown list in the **GitLab username** column and
    select the user you want to map to each Jira user.
 
    The dropdown list may not show all the users, so use the search bar to find a specific
    user in this GitLab project.
 
-1. Click **Continue**. You're presented with a confirmation that import has started.
+1. Select **Continue**. You're presented with a confirmation that import has started.
 
    While the import is running in the background, you can navigate away from the import status page
    to the issues page, and you can see the new issues appearing in the issues list.

@@ -315,7 +315,7 @@ $tabs-holder-z-index: 250;
   }
 
   .mr-fast-forward-message {
-    padding-left: $gl-padding-50;
+    padding-left: $gl-spacing-scale-9;
     padding-bottom: $gl-padding;
   }
 
@@ -610,10 +610,10 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-extension {
   border-top: 1px solid var(--border-color, $border-color);
-  background-color: var(--gray-50, $gray-50);
+  background-color: var(--gray-10, $gray-10);
 
   &.clickable:hover {
-    background-color: var(--gray-100, $gray-100);
+    background-color: var(--gray-50, $gray-50);
     cursor: pointer;
   }
 }
@@ -737,9 +737,70 @@ $tabs-holder-z-index: 250;
 }
 
 .merge-request-overview {
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(lg) {
     display: grid;
-    grid-template-columns: 1fr 270px;
+    grid-template-columns: calc(95% - 285px) auto;
     grid-gap: 5%;
+  }
+}
+
+.container-fluid:not(.container-limited) {
+  .detail-page-header,
+  .detail-page-description,
+  .merge-request-tabs-container {
+    &.is-merge-request {
+      @include gl-mx-auto;
+      max-width: $fixed-layout-width - ($gl-padding * 2);
+    }
+  }
+}
+
+.submit-review-dropdown {
+  &.show .dropdown-menu {
+    width: calc(100vw - 20px);
+    max-width: 650px;
+
+    .gl-new-dropdown-inner {
+      max-height: none !important;
+    }
+
+    .md-header {
+      .gl-tab-nav-item {
+        @include gl-text-gray-900;
+        @include gl-pb-5;
+
+        &:hover {
+          @include gl-bg-none;
+          @include gl-text-gray-900;
+
+          &:not(.gl-tab-nav-item-active) {
+            @include gl-inset-border-b-2-gray-200;
+          }
+        }
+      }
+
+      .gl-tab-nav-item-active {
+        @include gl-font-weight-bold;
+        @include gl-text-gray-900;
+        @include gl-inset-border-b-2-theme-accent;
+
+        &:active,
+        &:focus,
+        &:focus:active {
+          box-shadow: inset 0 -#{$gl-border-size-2} 0 0 var(--gl-theme-accent, $theme-indigo-500),
+            $focus-ring;
+          @include gl-outline-none;
+        }
+      }
+    }
+  }
+
+  .gl-new-dropdown-contents {
+    padding: $gl-spacing-scale-4 !important;
+  }
+
+  .md-preview-holder {
+    max-height: 180px;
+    height: 180px;
   }
 }

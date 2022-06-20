@@ -13,12 +13,8 @@ class PagesTransferWorker # rubocop:disable Scalability/IdempotentWorker
   loggable_arguments 0, 1
 
   def perform(method, args)
-    return unless Gitlab::PagesTransfer::METHODS.include?(method)
-
-    result = Gitlab::PagesTransfer.new.public_send(method, *args) # rubocop:disable GitlabSecurity/PublicSend
-
-    # If result isn't truthy, the move failed. Promote this to an
-    # exception so that it will be logged and retried appropriately
-    raise TransferFailedError unless result
+    # noop
+    # This worker is not necessary anymore and will be removed
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/340616
   end
 end

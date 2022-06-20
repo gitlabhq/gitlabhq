@@ -44,6 +44,14 @@ RSpec.describe Projects::CompareController do
         expect(response).to be_successful
       end
     end
+
+    context 'with missing parameters' do
+      let(:params) { super().merge(from: '', to: '') }
+
+      it 'returns successfully' do
+        expect(response).to be_successful
+      end
+    end
   end
 
   describe 'GET show' do
@@ -99,6 +107,23 @@ RSpec.describe Projects::CompareController do
           expect(assigns(:diffs).diff_files.first).not_to be_nil
           expect(assigns(:commits).length).to be >= 1
         end
+      end
+    end
+
+    context 'when refs have CI::Pipeline' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { '08f22f25' }
+      let(:to_ref) { '59e29889' }
+
+      before do
+        create(:ci_pipeline, project: project)
+      end
+
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new { show_request }
+
+        # Only 1 query to ci/pipeline.rb is allowed
+        expect(control.find_query(/pipeline\.rb/, 1)).to be_empty
       end
     end
 
@@ -434,7 +459,7 @@ RSpec.describe Projects::CompareController do
           expect(CompareService).to receive(:new).with(project, escaped_to_ref).and_return(compare_service)
           expect(compare_service).to receive(:execute).with(project, escaped_from_ref).and_return(compare)
 
-          expect(compare).to receive(:commits).and_return([signature_commit, non_signature_commit])
+          expect(compare).to receive(:commits).and_return(CommitCollection.new(project, [signature_commit, non_signature_commit]))
           expect(non_signature_commit).to receive(:has_signature?).and_return(false)
         end
 

@@ -14,7 +14,7 @@ export default {
       return {
         id: 'home',
         view: 'home',
-        icon: 'angle-left',
+        icon: 'chevron-lg-left',
       };
     },
   },

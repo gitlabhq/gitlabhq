@@ -76,7 +76,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   end
 
   describe '#update' do
-    include JiraServiceHelper
+    include JiraIntegrationHelpers
 
     let(:integration) { create(:jira_integration, :group, group: group) }
 

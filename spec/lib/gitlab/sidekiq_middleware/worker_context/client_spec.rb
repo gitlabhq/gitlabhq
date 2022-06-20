@@ -50,6 +50,26 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
   end
 
   describe "#call" do
+    context 'root_caller_id' do
+      it 'uses caller_id of the current context' do
+        Gitlab::ApplicationContext.with_context(caller_id: 'CALLER') do
+          TestWithContextWorker.perform_async
+        end
+
+        job = TestWithContextWorker.jobs.last
+        expect(job['meta.root_caller_id']).to eq('CALLER')
+      end
+
+      it 'uses root_caller_id instead of caller_id of the current context' do
+        Gitlab::ApplicationContext.with_context(caller_id: 'CALLER', root_caller_id: 'ROOT_CALLER') do
+          TestWithContextWorker.perform_async
+        end
+
+        job = TestWithContextWorker.jobs.last
+        expect(job['meta.root_caller_id']).to eq('ROOT_CALLER')
+      end
+    end
+
     it 'applies a context for jobs scheduled in batch' do
       user_per_job = { 'job1' => build_stubbed(:user, username: 'user-1'),
                        'job2' => build_stubbed(:user, username: 'user-2') }
@@ -97,7 +117,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
       end
 
       it 'does not set any explicit feature category for mailers', :sidekiq_mailers do
-        expect(Gitlab::ApplicationContext).not_to receive(:with_context)
+        expect(Gitlab::ApplicationContext).to receive(:with_context).with(hash_excluding(feature_category: anything))
 
         TestMailer.test_mail.deliver_later
       end

@@ -69,6 +69,7 @@ describe('StatesTableActions', () => {
     wrapper = shallowMount(StateActions, {
       apolloProvider,
       propsData,
+      provide: { projectPath: 'path/to/project' },
       mocks: { $toast: { show: toast } },
       stubs: { GlDropdown, GlModal, GlSprintf },
     });

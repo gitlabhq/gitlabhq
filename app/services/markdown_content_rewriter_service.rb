@@ -4,29 +4,69 @@
 # which rewrite references to GitLab objects and uploads within the content
 # based on their visibility by the `target_parent`.
 class MarkdownContentRewriterService
+  include Gitlab::Utils::StrongMemoize
+
   REWRITERS = [Gitlab::Gfm::ReferenceRewriter, Gitlab::Gfm::UploadsRewriter].freeze
 
-  def initialize(current_user, content, source_parent, target_parent)
-    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39654#note_399095117
-    raise ArgumentError, 'The rewriter classes require that `source_parent` is a `Project`' \
-      unless source_parent.is_a?(Project)
-
+  def initialize(current_user, object, field, source_parent, target_parent)
     @current_user = current_user
-    @content = content.presence
     @source_parent = source_parent
     @target_parent = target_parent
+    @object = object
+    @field = field
+
+    validate_parameters!
+
+    @content = object[field].dup.presence
+    @html_field = object.cached_markdown_fields.html_field(field)
+    @content_html = object.cached_html_for(field)
+
+    @rewriters =
+      REWRITERS.map do |rewriter_class|
+        rewriter_class.new(@content, content_html, source_parent, current_user)
+      end
+
+    @result = {
+      field => nil,
+      html_field => nil
+    }.with_indifferent_access
   end
 
   def execute
-    return unless content
+    return result unless content
 
-    REWRITERS.inject(content) do |text, klass|
-      rewriter = klass.new(text, source_parent, current_user)
-      rewriter.rewrite(target_parent)
+    unless safe_to_copy_markdown?
+      rewriters.each do |rewriter|
+        rewriter.rewrite(target_parent)
+      end
+    end
+
+    result[field] = content
+    result[html_field] = content_html if safe_to_copy_markdown?
+    result[:skip_markdown_cache_validation] = safe_to_copy_markdown?
+
+    result
+  end
+
+  def safe_to_copy_markdown?
+    strong_memoize(:safe_to_copy_markdown) do
+      rewriters.none?(&:needs_rewrite?)
     end
   end
 
   private
 
-  attr_reader :current_user, :content, :source_parent, :target_parent
+  def validate_parameters!
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39654#note_399095117
+    raise ArgumentError, 'The rewriter classes require that `source_parent` is a `Project`' \
+      unless source_parent.is_a?(Project)
+
+    if object.cached_markdown_fields[field].nil?
+      raise ArgumentError, 'The `field` attribute does not contain cached markdown'
+    end
+  end
+
+  attr_reader :current_user, :content, :source_parent,
+              :target_parent, :rewriters, :content_html,
+              :field, :html_field, :object, :result
 end

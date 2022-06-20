@@ -3,7 +3,7 @@ import { omit } from 'lodash';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineWizardStep from '~/pipeline_wizard/components/step.vue';
-import InputWrapper from '~/pipeline_wizard/components/input.vue';
+import InputWrapper from '~/pipeline_wizard/components/input_wrapper.vue';
 import StepNav from '~/pipeline_wizard/components/step_nav.vue';
 import {
   stepInputs,

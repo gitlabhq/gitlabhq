@@ -5,7 +5,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -41,7 +41,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style="display: none;"
     >
       <div
@@ -86,7 +86,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -126,7 +126,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style=""
     >
       <div
@@ -171,7 +171,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -211,7 +211,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style=""
     >
       <div
@@ -256,7 +256,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -296,7 +296,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style=""
     >
       <div
@@ -342,7 +342,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -382,7 +382,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style=""
     >
       <div
@@ -428,7 +428,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -468,7 +468,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style="display: none;"
     >
       <div
@@ -514,7 +514,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
   class="gl-w-full gl-relative"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
+    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-4"
     type="button"
   >
     <div
@@ -554,7 +554,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style="display: none;"
     >
       <div
@@ -606,7 +606,7 @@ exports[`Upload dropzone component when slot provided renders dropzone with slot
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-3 gl-bg-white"
+      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
       style="display: none;"
     >
       <div

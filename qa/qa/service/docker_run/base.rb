@@ -12,9 +12,7 @@ module QA
         end
 
         def logs
-          shell "docker logs #{@name}" do |line|
-            yield "   #{line.chomp}"
-          end
+          shell "docker logs #{@name}"
         end
 
         def network

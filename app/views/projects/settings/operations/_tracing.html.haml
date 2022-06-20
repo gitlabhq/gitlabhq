@@ -4,7 +4,7 @@
   .settings-header{ :class => 'border-top' }
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Tracing')
-    %button.btn.btn-default.gl-button.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Expand')
     %p
       = _('Embed an image of your existing Jaeger server in GitLab.')

@@ -8,7 +8,9 @@
     "tag_push_events",
     "merge_requests_events",
     "repository_update_events",
-    "enable_ssl_verification"
+    "enable_ssl_verification",
+    "alert_status",
+    "disabled_until"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -18,7 +20,9 @@
     "tag_push_events": { "type": "boolean" },
     "merge_requests_events": { "type": "boolean" },
     "repository_update_events": { "type": "boolean" },
-    "enable_ssl_verification": { "type": "boolean" }
+    "enable_ssl_verification": { "type": "boolean" },
+    "alert_status": { "type": "string", "enum": ["executable", "disabled", "temporarily_disabled"] },
+    "disabled_until": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

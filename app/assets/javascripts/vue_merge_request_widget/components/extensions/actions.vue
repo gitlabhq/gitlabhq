@@ -26,6 +26,7 @@ export default {
   },
   methods: {
     onClickAction(action) {
+      this.$emit('clickedAction', action);
       if (action.onClick) {
         action.onClick();
       }

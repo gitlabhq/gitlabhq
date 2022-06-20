@@ -4,6 +4,9 @@ module API
   module Ci
     class Jobs < ::API::Base
       include PaginationParams
+
+      helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
+
       before { authenticate! }
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -137,6 +140,8 @@ module API
           authorize!(:erase_build, build)
           break forbidden!('Job is not erasable!') unless build.erasable?
 
+          reject_if_build_artifacts_size_refreshing!(build.project)
+
           build.erase(erased_by: current_user)
           present build, with: Entities::Ci::Job
         end
@@ -204,7 +209,7 @@ module API
             .select { |_role, role_access_level| role_access_level <= user_access_level }
             .map(&:first)
 
-          environment = if environment_slug = current_authenticated_job.deployment&.environment&.slug
+          environment = if environment_slug = current_authenticated_job.persisted_environment&.slug
                           { slug: environment_slug }
                         end
 

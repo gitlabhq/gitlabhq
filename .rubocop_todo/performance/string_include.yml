@@ -10,6 +10,5 @@ Performance/StringInclude:
     - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
     - 'lib/prometheus/pid_provider.rb'
-    - 'qa/qa/specs/runner.rb'
     - 'spec/features/projects/jobs_spec.rb'
     - 'spec/spec_helper.rb'

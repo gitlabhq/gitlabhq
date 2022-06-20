@@ -6,14 +6,14 @@ RSpec.describe Import::FogbugzController do
   include ImportSpecHelper
 
   let(:user) { create(:user) }
+  let(:token) { FFaker::Lorem.characters(8) }
+  let(:uri) { 'https://example.com' }
 
   before do
     sign_in(user)
   end
 
   describe 'POST #callback' do
-    let(:token) { FFaker::Lorem.characters(8) }
-    let(:uri) { 'https://example.com' }
     let(:xml_response) { %Q(<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><token><![CDATA[#{token}]]></token></response>) }
 
     it 'attempts to contact Fogbugz server' do
@@ -97,6 +97,38 @@ RSpec.describe Import::FogbugzController do
   end
 
   describe 'POST create' do
+    let(:repo_id) { 'FOGBUGZ_REPO_ID' }
+    let(:project) { create(:project) }
+    let(:client) { instance_double(Gitlab::FogbugzImport::Client, user_map: {}) }
+
+    before do
+      allow(controller).to receive(:client).and_return(client)
+    end
+
+    it 'returns the new project' do
+      expect(Import::FogbugzService).to receive(:new).and_return(
+        instance_double(Import::FogbugzService, execute: ServiceResponse.success)
+      )
+
+      post :create, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'returns an error when service reports an error' do
+      message = 'Error message'
+      status = :unprocessable_entity
+
+      expect(Import::FogbugzService).to receive(:new).and_return(
+        instance_double(Import::FogbugzService, execute: ServiceResponse.error(message: message, http_status: status))
+      )
+
+      post :create, format: :json
+
+      expect(response).to have_gitlab_http_status(status)
+      expect(json_response).to eq({ 'errors' => message })
+    end
+
     it_behaves_like 'project import rate limiter'
   end
 end

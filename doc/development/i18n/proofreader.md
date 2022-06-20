@@ -60,6 +60,7 @@ are very appreciative of the work done by translators and proofreaders!
 - German
   - Michael Hahnle - [GitLab](https://gitlab.com/mhah), [Crowdin](https://crowdin.com/profile/mhah)
   - Katrin Leinweber - [GitLab](https://gitlab.com/katrinleinweber), [Crowdin](https://crowdin.com/profile/katrinleinweber)
+  - Justman10000 - [GitLab](https://gitlab.com/Justman10000), [Crowdin](https://crowdin.com/profile/Justman10000)
 - Greek
   - Proofreaders needed.
 - Hebrew
@@ -101,7 +102,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Horberlan Brito - [GitLab](https://gitlab.com/horberlan), [Crowdin](https://crowdin.com/profile/horberlan)
 - Romanian
   - Mircea Pop - [GitLab](https://gitlab.com/eeex), [Crowdin](https://crowdin.com/profile/eex)
-  - Rareș Pița - [GitLab](https://gitlab.com/dlphin), [Crowdin](https://crowdin.com/profile/dlphin)
+  - Rareș Pița - [GitLab](https://gitlab.com/dlphin)
   - Nicolae Liviu - [GitLab](https://gitlab.com/nicklcanada), [Crowdin](https://crowdin.com/profile/nicklcanada)
 - Russian
   - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)
@@ -147,7 +148,7 @@ translations to the GitLab project.
 1. Request proofreader permissions by opening a merge request to add yourself to the list of
    proofreaders.
 
-   Open the [`proofreader.md` source file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/i18n/proofreader.md) and click **Edit**.
+   Open the [`proofreader.md` source file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/i18n/proofreader.md) and select **Edit**.
 
    Add your language in alphabetical order and add yourself to the list, including:
 

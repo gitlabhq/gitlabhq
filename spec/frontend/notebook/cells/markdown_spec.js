@@ -78,8 +78,8 @@ describe('Markdown component', () => {
     });
 
     await nextTick();
-    expect(findLink().getAttribute('data-remote')).toBe(null);
-    expect(findLink().getAttribute('data-type')).toBe(null);
+    expect(findLink().dataset.remote).toBeUndefined();
+    expect(findLink().dataset.type).toBeUndefined();
   });
 
   describe('When parsing images', () => {

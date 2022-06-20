@@ -8,7 +8,7 @@ const codeBlockLanguageLoader = {
 
   allLanguages: CODE_BLOCK_LANGUAGES,
 
-  findLanguageBySyntax(value) {
+  findOrCreateLanguageBySyntax(value, isDiagram) {
     const lowercaseValue = value?.toLowerCase() || 'plaintext';
     return (
       this.allLanguages.find(
@@ -16,7 +16,9 @@ const codeBlockLanguageLoader = {
           syntax === lowercaseValue || variants?.toLowerCase().split(', ').includes(lowercaseValue),
       ) || {
         syntax: lowercaseValue,
-        label: sprintf(__(`Custom (%{language})`), { language: lowercaseValue }),
+        label: sprintf(isDiagram ? __(`Diagram (%{language})`) : __(`Custom (%{language})`), {
+          language: lowercaseValue,
+        }),
       }
     );
   },
@@ -38,7 +40,7 @@ const codeBlockLanguageLoader = {
   },
 
   loadLanguageFromInputRule(match) {
-    const { syntax } = this.findLanguageBySyntax(match[1]);
+    const { syntax } = this.findOrCreateLanguageBySyntax(match[1]);
 
     this.loadLanguage(syntax);
 

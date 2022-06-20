@@ -4,6 +4,6 @@ classes:
 - DastSite
 feature_categories:
 - dynamic_application_security_testing
-description: TODO
+description: Site to run dast scan on
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36659
 milestone: '13.2'

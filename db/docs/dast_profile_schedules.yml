@@ -4,6 +4,6 @@ classes:
 - Dast::ProfileSchedule
 feature_categories:
 - dynamic_application_security_testing
-description: TODO
+description: Scheduling for scans using DAST Profiles
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65327
 milestone: '14.2'

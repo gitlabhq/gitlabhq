@@ -65,6 +65,7 @@ issues:
 - customer_relations_contacts
 - issue_customer_relations_contacts
 - email
+- issuable_resource_links
 work_item_type:
 - issues
 events:
@@ -274,6 +275,7 @@ ci_pipelines:
 - security_findings
 - daily_build_group_report_results
 - latest_builds
+- latest_successful_builds
 - daily_report_results
 - latest_builds_report_results
 - messages
@@ -336,6 +338,8 @@ integrations:
 - jira_tracker_data
 - zentao_tracker_data
 - issue_tracker_data
+# dingtalk_tracker_data JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
+- dingtalk_tracker_data
 hooks:
 - project
 - web_hook_logs
@@ -414,6 +418,8 @@ project:
 - pushover_integration
 - jira_integration
 - zentao_integration
+# dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
+- dingtalk_integration
 - redmine_integration
 - youtrack_integration
 - custom_issue_tracker_integration
@@ -613,6 +619,7 @@ project:
 - secure_files
 - security_trainings
 - vulnerability_reads
+- build_artifacts_size_refresh
 award_emoji:
 - awardable
 - user

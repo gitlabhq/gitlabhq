@@ -33,6 +33,14 @@ RSpec.describe Terraform::RemoteStateHandler do
         it 'returns the state' do
           expect(subject.find_with_lock).to eq(state)
         end
+
+        context 'with a state scheduled for deletion' do
+          let!(:state) { create(:terraform_state, :deletion_in_progress, project: project, name: 'state') }
+
+          it 'raises an exception' do
+            expect { subject.find_with_lock }.to raise_error(described_class::StateDeletedError)
+          end
+        end
       end
     end
   end
@@ -84,6 +92,13 @@ RSpec.describe Terraform::RemoteStateHandler do
           .to raise_error(described_class::StateLockedError)
       end
 
+      it 'raises an exception if the state is scheduled for deletion' do
+        create(:terraform_state, :deletion_in_progress, project: project, name: 'new-state')
+
+        expect { handler.handle_with_lock }
+          .to raise_error(described_class::StateDeletedError)
+      end
+
       context 'user does not have permission to modify state' do
         let(:user) { developer }
 
@@ -127,22 +142,26 @@ RSpec.describe Terraform::RemoteStateHandler do
 
         expect { handler.lock! }.to raise_error(described_class::StateLockedError)
       end
+
+      it 'raises an exception when the state exists and is scheduled for deletion' do
+        create(:terraform_state, :deletion_in_progress, project: project, name: 'new-state')
+
+        expect { handler.lock! }.to raise_error(described_class::StateDeletedError)
+      end
     end
 
     describe '#unlock!' do
-      let(:lock_id) { 'abc-abc' }
+      let_it_be(:state) { create(:terraform_state, :locked, project: project, name: 'new-state', lock_xid: 'abc-abc') }
+
+      let(:lock_id) { state.lock_xid }
 
       subject(:handler) do
         described_class.new(
           project,
           user,
-          name: 'new-state',
+          name: state.name,
           lock_id: lock_id
         )
-      end
-
-      before do
-        create(:terraform_state, :locked, project: project, name: 'new-state', lock_xid: 'abc-abc')
       end
 
       it 'unlocks the state' do
@@ -167,6 +186,15 @@ RSpec.describe Terraform::RemoteStateHandler do
         it 'raises an exception' do
           expect { handler.unlock! }
             .to raise_error(described_class::StateLockedError)
+        end
+      end
+
+      context 'with a state scheduled for deletion' do
+        it 'raises an exception' do
+          state.update!(deleted_at: Time.current)
+
+          expect { handler.unlock! }
+            .to raise_error(described_class::StateDeletedError)
         end
       end
     end

@@ -121,13 +121,19 @@ RSpec.describe Gitlab::GitAccessSnippet do
             if Ability.allowed?(user, :update_snippet, snippet)
               expect { push_access_check }.not_to raise_error
             else
-              expect { push_access_check }.to raise_error(described_class::ForbiddenError)
+              expect { push_access_check }.to raise_error(
+                described_class::ForbiddenError,
+                described_class::ERROR_MESSAGES[:update_snippet]
+              )
             end
 
             if Ability.allowed?(user, :read_snippet, snippet)
               expect { pull_access_check }.not_to raise_error
             else
-              expect { pull_access_check }.to raise_error(described_class::ForbiddenError)
+              expect { pull_access_check }.to raise_error(
+                described_class::ForbiddenError,
+                described_class::ERROR_MESSAGES[:read_snippet]
+              )
             end
           end
         end

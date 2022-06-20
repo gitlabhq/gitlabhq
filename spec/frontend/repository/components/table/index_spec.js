@@ -1,4 +1,4 @@
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlButton } from '@gitlab/ui';
+import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Table from '~/repository/components/table/index.vue';
@@ -103,7 +103,7 @@ describe('Repository table component', () => {
   it('shows loading icon', () => {
     factory({ path: '/', isLoading: true });
 
-    expect(vm.find(GlSkeletonLoading).exists()).toBe(true);
+    expect(vm.findComponent(GlSkeletonLoader).exists()).toBe(true);
   });
 
   it('renders table rows', () => {

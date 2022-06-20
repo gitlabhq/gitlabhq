@@ -25,6 +25,22 @@ RSpec.describe LinkedProjectIssueEntity do
     it { is_expected.to include(link_type: 'relates_to') }
   end
 
+  describe 'type' do
+    it 'returns the issue type' do
+      expect(serialized_entity).to include(type: 'ISSUE')
+    end
+
+    context 'when related issue is a task' do
+      before do
+        related_issue.update!(issue_type: :task, work_item_type: WorkItems::Type.default_by_type(:task))
+      end
+
+      it 'returns a work item issue type' do
+        expect(serialized_entity).to include(type: 'TASK')
+      end
+    end
+  end
+
   describe 'path' do
     it 'returns an issue path' do
       expect(serialized_entity).to include(path: project_issue_path(related_issue.project, related_issue.iid))

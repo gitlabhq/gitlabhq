@@ -5,6 +5,7 @@ class Projects::GrafanaApiController < Projects::ApplicationController
   include MetricsDashboard
 
   feature_category :metrics
+  urgency :low
 
   def proxy
     result = ::Grafana::ProxyService.new(

@@ -18,11 +18,9 @@ module ResolvesGroups
 
   def preloads
     {
-      contacts: [:contacts],
       container_repositories_count: [:container_repositories],
       custom_emoji: [:custom_emoji],
       full_path: [:route],
-      organizations: [:organizations],
       path: [:route],
       dependency_proxy_blob_count: [:dependency_proxy_blobs],
       dependency_proxy_blobs: [:dependency_proxy_blobs],

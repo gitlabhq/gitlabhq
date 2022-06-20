@@ -1,12 +1,15 @@
-import { GlBadge } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import RunnerStatusCell from '~/runner/components/cells/runner_status_cell.vue';
+
+import RunnerStatusBadge from '~/runner/components/runner_status_badge.vue';
+import RunnerPausedBadge from '~/runner/components/runner_paused_badge.vue';
 import { INSTANCE_TYPE, STATUS_ONLINE, STATUS_OFFLINE } from '~/runner/constants';
 
-describe('RunnerTypeCell', () => {
+describe('RunnerStatusCell', () => {
   let wrapper;
 
-  const findBadgeAt = (i) => wrapper.findAllComponents(GlBadge).at(i);
+  const findStatusBadge = () => wrapper.findComponent(RunnerStatusBadge);
+  const findPausedBadge = () => wrapper.findComponent(RunnerPausedBadge);
 
   const createComponent = ({ runner = {} } = {}) => {
     wrapper = mount(RunnerStatusCell, {
@@ -29,7 +32,7 @@ describe('RunnerTypeCell', () => {
     createComponent();
 
     expect(wrapper.text()).toMatchInterpolatedText('online');
-    expect(findBadgeAt(0).text()).toBe('online');
+    expect(findStatusBadge().text()).toBe('online');
   });
 
   it('Displays offline status', () => {
@@ -40,7 +43,7 @@ describe('RunnerTypeCell', () => {
     });
 
     expect(wrapper.text()).toMatchInterpolatedText('offline');
-    expect(findBadgeAt(0).text()).toBe('offline');
+    expect(findStatusBadge().text()).toBe('offline');
   });
 
   it('Displays paused status', () => {
@@ -52,9 +55,7 @@ describe('RunnerTypeCell', () => {
     });
 
     expect(wrapper.text()).toMatchInterpolatedText('online paused');
-
-    expect(findBadgeAt(0).text()).toBe('online');
-    expect(findBadgeAt(1).text()).toBe('paused');
+    expect(findPausedBadge().text()).toBe('paused');
   });
 
   it('Is empty when data is missing', () => {

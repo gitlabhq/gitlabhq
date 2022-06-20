@@ -32,7 +32,6 @@ module Quality
         haml_lint
         helpers
         initializers
-        javascripts
         lib
         metrics_server
         models
@@ -55,7 +54,7 @@ module Quality
         views
         workers
         tooling
-        component
+        components
       ],
       integration: %w[
         commands
@@ -75,7 +74,7 @@ module Quality
     end
 
     def pattern(level)
-      @patterns[level] ||= "#{prefixes_for_pattern}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}"
+      @patterns[level] ||= "#{prefixes_for_pattern}spec/#{folders_pattern(level)}{,/**/}*#{suffix(level)}".freeze # rubocop:disable Style/RedundantFreeze
     end
 
     def regexp(level)
@@ -149,11 +148,11 @@ module Quality
     def folders_regex(level)
       case level
       when :migration
-        "(#{migration_and_background_migration_folders.join('|')})"
+        "(#{migration_and_background_migration_folders.join('|')})/"
       when :all
         ''
       else
-        "(#{TEST_LEVEL_FOLDERS.fetch(level).join('|')})"
+        "(#{TEST_LEVEL_FOLDERS.fetch(level).join('|')})/"
       end
     end
   end

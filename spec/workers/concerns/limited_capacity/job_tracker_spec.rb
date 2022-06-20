@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LimitedCapacity::JobTracker, :clean_gitlab_redis_queues do
+RSpec.describe LimitedCapacity::JobTracker, :clean_gitlab_redis_shared_state do
   let(:job_tracker) do
     described_class.new('namespace')
   end

@@ -54,17 +54,13 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
 
   subject(:pipeline) { described_class.new(context) }
 
-  before do
-    allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
-  end
-
-  after do
-    FileUtils.remove_entry(tmpdir) if Dir.exist?(tmpdir)
-  end
-
   describe '#run' do
     before do
-      allow(pipeline).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: project_attributes))
+      allow_next_instance_of(BulkImports::Common::Extractors::JsonExtractor) do |extractor|
+        allow(extractor).to receive(:extract).and_return(
+          BulkImports::Pipeline::ExtractedData.new(data: project_attributes)
+        )
+      end
 
       pipeline.run
     end
@@ -80,46 +76,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
 
       it 'sets project as archived' do
         expect(project.archived).to eq(true)
-      end
-    end
-  end
-
-  describe '#extract' do
-    before do
-      file_download_service = instance_double("BulkImports::FileDownloadService")
-      file_decompression_service = instance_double("BulkImports::FileDecompressionService")
-
-      expect(BulkImports::FileDownloadService)
-        .to receive(:new)
-        .with(
-          configuration: context.configuration,
-          relative_url: "/#{entity.pluralized_name}/#{entity.source_full_path}/export_relations/download?relation=self",
-          tmpdir: tmpdir,
-          filename: 'self.json.gz')
-        .and_return(file_download_service)
-
-      expect(BulkImports::FileDecompressionService)
-        .to receive(:new)
-        .with(tmpdir: tmpdir, filename: 'self.json.gz')
-        .and_return(file_decompression_service)
-
-      expect(file_download_service).to receive(:execute)
-      expect(file_decompression_service).to receive(:execute)
-    end
-
-    it 'downloads, decompresses & decodes json' do
-      allow(pipeline).to receive(:json_attributes).and_return("{\"test\":\"test\"}")
-
-      extracted_data = pipeline.extract(context)
-
-      expect(extracted_data.data).to match_array([{ 'test' => 'test' }])
-    end
-
-    context 'when json parsing error occurs' do
-      it 'raises an error' do
-        allow(pipeline).to receive(:json_attributes).and_return("invalid")
-
-        expect { pipeline.extract(context) }.to raise_error(BulkImports::Error)
       end
     end
   end
@@ -145,35 +101,13 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline do
     end
   end
 
-  describe '#json_attributes' do
-    it 'reads raw json from file' do
-      filepath = File.join(tmpdir, 'self.json')
-
-      FileUtils.touch(filepath)
-      expect_file_read(filepath)
-
-      pipeline.json_attributes
-    end
-  end
-
   describe '#after_run' do
-    it 'removes tmp dir' do
-      allow(FileUtils).to receive(:remove_entry).and_call_original
-      expect(FileUtils).to receive(:remove_entry).with(tmpdir).and_call_original
+    it 'calls extractor#remove_tmpdir' do
+      expect_next_instance_of(BulkImports::Common::Extractors::JsonExtractor) do |extractor|
+        expect(extractor).to receive(:remove_tmpdir)
+      end
 
       pipeline.after_run(nil)
-
-      expect(Dir.exist?(tmpdir)).to eq(false)
-    end
-
-    context 'when dir does not exist' do
-      it 'does not attempt to remove tmpdir' do
-        FileUtils.remove_entry(tmpdir)
-
-        expect(FileUtils).not_to receive(:remove_entry).with(tmpdir)
-
-        pipeline.after_run(nil)
-      end
     end
   end
 

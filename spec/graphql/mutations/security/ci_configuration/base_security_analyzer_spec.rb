@@ -7,8 +7,10 @@ RSpec.describe Mutations::Security::CiConfiguration::BaseSecurityAnalyzer do
 
   it 'raises a NotImplementedError error if the resolve method is called on the base class' do
     user = create(:user)
+    mutation = described_class.new(context: { current_user: user }, object: nil, field: nil)
     project = create(:project, :public, :repository)
     project.add_developer(user)
-    expect { resolve(described_class, args: { project_path: project.full_path }, ctx: { current_user: user }) }.to raise_error(NotImplementedError)
+
+    expect { mutation.resolve(project_path: project.full_path ) }.to raise_error(NotImplementedError)
   end
 end

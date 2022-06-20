@@ -234,16 +234,9 @@ and clear the **Default to Auto DevOps pipeline** checkbox.
 
 ### Quick start
 
-To guide you through the process of setting up Auto DevOps to deploy to a Kubernetes cluster on
-Google Kubernetes Engine (GKE), see the [quick start guide](quick_start_guide.md).
-
-You can also follow the quick start for the general steps, but deploy to
-[AWS ECS](requirements.md#auto-devops-requirements-for-amazon-ecs) instead.
-
-If you're a self-managed user, before deploying to GKE, a GitLab administrator needs to:
-
-1. Configure the [Google OAuth 2.0 OmniAuth Provider](../../integration/google.md).
-1. Configure a cluster on GKE.
+- [Use Auto DevOps to deploy to a Kubernetes cluster on Google Kubernetes Engine (GKE)](cloud_deployments/auto_devops_with_gke.md)
+- [Use Auto DevOps to deploy to EC2](cloud_deployments/auto_devops_with_ec2.md)
+- [Use Auto DevOps to deploy to ECS](cloud_deployments/auto_devops_with_ecs.md)
 
 ## Upgrade Auto DevOps dependencies when updating GitLab
 

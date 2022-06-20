@@ -94,5 +94,18 @@ RSpec.describe LastGroupOwnerAssigner do
         end
       end
     end
+
+    context 'when there are bot members' do
+      context 'with a bot owner' do
+        specify do
+          create(:group_member, :owner, source: group, user: create(:user, :project_bot))
+
+          expect { assigner.execute }.to change(group_member, :last_owner)
+            .from(nil).to(true)
+            .and change(group_member, :last_blocked_owner)
+            .from(nil).to(false)
+        end
+      end
+    end
   end
 end

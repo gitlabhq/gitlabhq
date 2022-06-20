@@ -60,7 +60,7 @@ Please update your Git repository remotes as soon as possible.`),
       return {
         text: __('Update username'),
         attributes: [
-          { variant: 'warning' },
+          { variant: 'confirm' },
           { category: 'primary' },
           { disabled: this.isRequestPending },
         ],
@@ -127,8 +127,7 @@ Please update your Git repository remotes as soon as possible.`),
       v-gl-modal-directive="$options.modalId"
       :disabled="newUsername === username"
       :loading="isRequestPending"
-      category="primary"
-      variant="warning"
+      variant="confirm"
       data-testid="username-change-confirmation-modal"
       >{{ $options.buttonText }}</gl-button
     >

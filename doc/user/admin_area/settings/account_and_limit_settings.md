@@ -112,7 +112,7 @@ To change the default global prefix:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Personal Access Token prefix** field.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 You can also configure the prefix by using the
 [settings API](../../../api/settings.md).
@@ -148,17 +148,17 @@ These settings can be found in:
 - Each project's settings:
   1. From the Project's homepage, navigate to **Settings > General**.
   1. Fill in the **Repository size limit (MB)** field in the **Naming, topics, avatar** section.
-  1. Click **Save changes**.
+  1. Select **Save changes**.
 - Each group's settings:
   1. From the Group's homepage, navigate to **Settings > General**.
   1. Fill in the **Repository size limit (MB)** field in the **Naming, visibility** section.
-  1. Click **Save changes**.
+  1. Select **Save changes**.
 - GitLab global settings:
   1. On the top bar, select **Menu > Admin**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand the **Account and limit** section.
   1. Fill in the **Size limit per repository (MB)** field.
-  1. Click **Save changes**.
+  1. Select **Save changes**.
 
 The first push of a new project, including LFS objects, is checked for size.
 If the sum of their sizes exceeds the maximum allowed repository size, the push
@@ -186,13 +186,13 @@ To set a limit on how long these sessions are valid:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Limit the lifetime of SSH keys **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346753) in GitLab 14.6.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.7. [Feature flag ff_limit_ssh_key_lifetime](https://gitlab.com/gitlab-org/gitlab/-/issues/347408) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.7. [Feature flag `ff_limit_ssh_key_lifetime`](https://gitlab.com/gitlab-org/gitlab/-/issues/347408) removed.
 
 Users can optionally specify a lifetime for
 [SSH keys](../../ssh.md).
@@ -213,7 +213,7 @@ To set a lifetime on how long SSH keys are valid:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Maximum allowable lifetime for SSH keys (days)** field.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 Once a lifetime for SSH keys is set, GitLab:
 
@@ -261,7 +261,7 @@ To set a lifetime on how long access tokens are valid:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Fill in the **Maximum allowable lifetime for access tokens (days)** field.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 Once a lifetime for access tokens is set, GitLab:
 
@@ -328,4 +328,4 @@ Your push has been rejected, because this repository has exceeded its size limit
 To resolve this problem, either of these options helps in the short- to middle-term:
 
 - Increase the [repository size limit](#repository-size-limit).
-- [Reduce the repo size](../../project/repository/reducing_the_repo_size_using_git.md).
+- [Reduce the repository size](../../project/repository/reducing_the_repo_size_using_git.md).

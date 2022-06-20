@@ -98,7 +98,7 @@ RSpec.describe 'OpenID Connect requests' do
   shared_examples 'cross-origin GET and POST request' do
     it 'allows cross-origin request' do
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
-      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD, POST'
+      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD, POST, OPTIONS'
       expect(response.headers['Access-Control-Allow-Headers']).to be_nil
       expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end

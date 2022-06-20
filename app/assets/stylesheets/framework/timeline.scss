@@ -49,7 +49,7 @@
   }
 
   img.avatar {
-    margin-right: $gl-padding;
+    margin-right: $gl-padding-12;
 
     @include media-breakpoint-down(sm) {
       width: $gl-spacing-scale-6;

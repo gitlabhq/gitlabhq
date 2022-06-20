@@ -1,13 +1,16 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting Elasticsearch **(PREMIUM SELF)**
 
-To install and configure Elasticsearch, and for common and known issues,
-visit the [administrator documentation](../../integration/elasticsearch.md).
+To install and configure Elasticsearch,
+visit the [administrator documentation](../../integration/advanced_search/elasticsearch.md).
+
+For troubleshooting, visit the
+[administrator troubleshooting documentation](../../integration/advanced_search/elasticsearch_troubleshooting.md).
 
 Troubleshooting Elasticsearch requires:
 
@@ -219,7 +222,7 @@ The output from the last command is the key here. If it shows:
 
 If all the settings look correct and it is still not using Elasticsearch for the search function, it is best to escalate to GitLab support. This could be a bug/issue.
 
-Moving past that, it is best to attempt the same [search via the Rails console](../../integration/elasticsearch.md#i-indexed-all-the-repositories-but-i-cant-get-any-hits-for-my-search-term-in-the-ui)
+Moving past that, it is best to attempt the same [search via the Rails console](../../integration/advanced_search/elasticsearch_troubleshooting.md#i-indexed-all-the-repositories-but-i-cant-get-any-hits-for-my-search-term-in-the-ui)
 or the [Elasticsearch Search API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html),
 and compare the results from what you see in GitLab.
 
@@ -242,7 +245,7 @@ The best place to start is to determine if the issue is with creating an empty i
 If it is, check on the Elasticsearch side to determine if the `gitlab-production` (the
 name for the GitLab index) exists. If it exists, manually delete it on the Elasticsearch
 side and attempt to recreate it from the
-[`recreate_index`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks)
+[`recreate_index`](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks)
 Rake task.
 
 If you still encounter issues, try creating an index manually on the Elasticsearch
@@ -257,12 +260,12 @@ during the indexing of projects. If errors do occur, they stem from either the i
 
 - On the GitLab side. You need to rectify those. If they are not
   something you are familiar with, contact GitLab support for guidance.
-- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/elasticsearch.md#troubleshooting). If not, speak with your Elasticsearch administrator.
+- Within the Elasticsearch instance itself. See if the error is [documented and has a fix](../../integration/advanced_search/elasticsearch_troubleshooting.md). If not, speak with your Elasticsearch administrator.
 
 If the indexing process does not present errors, check the status of the indexed projects. You can do this via the following Rake tasks:
 
-- [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows the overall status)
-- [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows specific projects that are not indexed)
+- [`sudo gitlab-rake gitlab:elastic:index_projects_status`](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows the overall status)
+- [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) (shows specific projects that are not indexed)
 
 If:
 
@@ -375,7 +378,7 @@ If you still encounter issues after retrying the migration, reach out to GitLab 
 
 ## Common issues
 
-All common issues [should be documented](../../integration/elasticsearch.md#troubleshooting). If not,
+All common issues [should be documented](../../integration/advanced_search/elasticsearch_troubleshooting.md). If not,
 feel free to update that page with issues you encounter and solutions.
 
 ## Replication

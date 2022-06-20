@@ -17,8 +17,7 @@ module Metrics
         STAGES::CustomMetricsDetailsInserter,
         STAGES::MetricEndpointInserter,
         STAGES::VariableEndpointInserter,
-        STAGES::PanelIdsInserter,
-        STAGES::AlertsInserter
+        STAGES::PanelIdsInserter
       ].freeze
 
       class << self

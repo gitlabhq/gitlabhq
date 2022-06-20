@@ -45,13 +45,11 @@ module QA
     end
 
     before do
-      Runtime::Feature.enable(:ci_trigger_forward_variables)
       Flow::Login.sign_in
     end
 
     after do
       runner.remove_via_api!
-      Runtime::Feature.disable(:ci_trigger_forward_variables)
     end
 
     def start_pipeline_with_variable
@@ -61,6 +59,13 @@ module QA
       Page::Project::Pipeline::New.perform do |new|
         new.configure_variable(key: key, value: value)
         new.click_run_pipeline_button
+      end
+    end
+
+    def wait_for_pipelines
+      Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
+        upstream_pipeline.status == 'success' &&
+          downstream_pipeline(downstream1_project, 'downstream1_trigger').status == 'success'
       end
     end
 
@@ -90,6 +95,20 @@ module QA
       Page::Project::Job::Show.perform do |show|
         show.wait_until { show.successful? }
         expect(show.output).to have_no_content(value)
+      end
+    end
+
+    def upstream_pipeline
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = upstream_project
+        pipeline.id = upstream_project.pipelines.first[:id]
+      end
+    end
+
+    def downstream_pipeline(project, bridge_name)
+      Resource::Pipeline.fabricate_via_api! do |pipeline|
+        pipeline.project = project
+        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: bridge_name)
       end
     end
 

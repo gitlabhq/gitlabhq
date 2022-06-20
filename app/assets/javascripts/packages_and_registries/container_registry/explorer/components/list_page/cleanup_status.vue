@@ -56,6 +56,9 @@ export default {
     calculatedTimeTilNextRun() {
       return timeTilRun(this.expirationPolicy?.next_run);
     },
+    expireIconName() {
+      return this.failedDelete ? 'expire' : 'clock';
+    },
   },
   statusPopoverOptions: {
     triggers: 'hover',
@@ -75,7 +78,7 @@ export default {
     class="gl-display-inline-flex gl-align-items-center"
   >
     <div class="gl-display-inline-flex gl-align-items-center">
-      <gl-icon name="expire" data-testid="main-icon" />
+      <gl-icon :name="expireIconName" data-testid="main-icon" />
     </div>
     <span class="gl-mx-2">
       {{ statusText }}

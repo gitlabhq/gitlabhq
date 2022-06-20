@@ -1,6 +1,14 @@
 - page_title s_("UsageQuota|Usage")
 
-%h3.page-title
+= render_if_exists 'namespaces/free_user_cap/projects/usage_quota_limitations_banner'
+
+= render Pajamas::AlertComponent.new(title: _('Repository usage recalculation started'),
+  variant: :info,
+  alert_options: { class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 gl-display-none' }) do |c|
+  = c.body do
+    = _('To view usage, refresh this page in a few minutes.')
+
+%h1.page-title.gl-font-size-h-display
   = s_('UsageQuota|Usage Quotas')
 
 .row

@@ -225,9 +225,10 @@ GitLab users can request to become a member of a project.
 
 An email is sent to the most recently active project maintainers.
 Up to ten project maintainers are notified.
-Any project maintainer can approve or decline the request.
+Any project owner or maintainer can approve or decline the request.
+Project maintainers cannot approve Owner role access requests.
 
-If a project does not have any maintainers, the notification is sent to the
+If a project does not have any direct owners or maintainers, the notification is sent to the
 most recently active owners of the project's group.
 
 If you change your mind before your request is approved, select

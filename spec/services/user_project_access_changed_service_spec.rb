@@ -31,6 +31,19 @@ RSpec.describe UserProjectAccessChangedService do
                                           priority: described_class::LOW_PRIORITY)
     end
 
+    it 'permits medium-priority operation' do
+      expect(AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker).to(
+        receive(:bulk_perform_in).with(
+          described_class::MEDIUM_DELAY,
+          [[1], [2]],
+          { batch_delay: 30.seconds, batch_size: 100 }
+        )
+      )
+
+      described_class.new([1, 2]).execute(blocking: false,
+                                          priority: described_class::MEDIUM_PRIORITY)
+    end
+
     it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
       Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
         described_class.new([1, 2]).execute(blocking: false,

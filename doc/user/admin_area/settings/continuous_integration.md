@@ -39,6 +39,23 @@ You can set all new projects to have the instance's shared runners available by 
 
 Any time a new project is created, the shared runners are available.
 
+## Shared runners CI/CD minutes
+
+As an administrator you can set either a global or namespace-specific
+limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) you can use.
+
+## Enable a specific runner for multiple projects
+
+To enable a specific runner for one or more projects:
+
+1. On the top bar, select **Menu > Admin**.
+1. From the left sidebar, select **Overview > Runners**.
+1. Select the runner you want to edit.
+1. In the top right, select **Edit** (**{pencil}**).
+1. Under **Restrict projects for this runner**, search for a project.
+1. To the left of the project, select **Enable**.
+1. Repeat this process for each additional project.
+
 ## Add a message for shared runners
 
 To display details about the instance's shared runners in all projects'
@@ -142,10 +159,6 @@ A new pipeline must run before the latest artifacts can expire and be deleted.
 
 NOTE:
 All application settings have a [customizable cache expiry interval](../../../administration/application_settings_cache.md) which can delay the settings affect.
-
-## Shared runners CI/CD minutes
-
-As an administrator you can set either a global or namespace-specific limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) you can use.
 
 ## Archive jobs
 

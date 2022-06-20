@@ -12,9 +12,9 @@ module Gitlab
       rack_attack::Request.include(Gitlab::RackAttack::Request)
 
       # This is Rack::Attack::DEFAULT_THROTTLED_RESPONSE, modified to allow a custom response
-      rack_attack.throttled_response = lambda do |env|
+      rack_attack.throttled_responder = lambda do |request|
         throttled_headers = Gitlab::RackAttack.throttled_response_headers(
-          env['rack.attack.matched'], env['rack.attack.match_data']
+          request.env['rack.attack.matched'], request.env['rack.attack.match_data']
         )
         [429, { 'Content-Type' => 'text/plain' }.merge(throttled_headers), [Gitlab::Throttle.rate_limiting_response_text]]
       end

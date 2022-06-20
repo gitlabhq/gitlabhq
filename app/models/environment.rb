@@ -59,7 +59,7 @@ class Environment < ApplicationRecord
             allow_nil: true,
             addressable_url: true
 
-  delegate :manual_actions, to: :last_deployment, allow_nil: true
+  delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
@@ -132,10 +132,16 @@ class Environment < ApplicationRecord
     end
 
     event :stop do
-      transition available: :stopped
+      transition available: :stopping, if: :wait_for_stop?
+      transition available: :stopped, unless: :wait_for_stop?
+    end
+
+    event :stop_complete do
+      transition %i(available stopping) => :stopped
     end
 
     state :available
+    state :stopping
     state :stopped
 
     before_transition any => :stopped do |environment|
@@ -202,7 +208,7 @@ class Environment < ApplicationRecord
   #   - deploy job A => production environment
   #   - deploy job B => production environment
   # In this case, `last_deployment_group` returns both deployments, whereas `last_deployable` returns only B.
-  def last_deployment_group
+  def legacy_last_deployment_group
     return Deployment.none unless last_deployment_pipeline
 
     successful_deployments.where(
@@ -293,6 +299,10 @@ class Environment < ApplicationRecord
     end
   end
 
+  def wait_for_stop?
+    stop_actions.present?
+  end
+
   def stop_with_actions!(current_user)
     return unless available?
 
@@ -314,9 +324,15 @@ class Environment < ApplicationRecord
 
   def stop_actions
     strong_memoize(:stop_actions) do
-      # Fix N+1 queries it brings to the serializer.
-      # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/358780
       last_deployment_group.map(&:stop_action).compact
+    end
+  end
+
+  def last_deployment_group
+    if ::Feature.enabled?(:batch_load_environment_last_deployment_group, project)
+      Deployment.last_deployment_group_for_environment(self)
+    else
+      legacy_last_deployment_group
     end
   end
 
@@ -325,9 +341,9 @@ class Environment < ApplicationRecord
   end
 
   def actions_for(environment)
-    return [] unless manual_actions
+    return [] unless other_manual_actions
 
-    manual_actions.select do |action|
+    other_manual_actions.select do |action|
       action.expanded_environment_name == environment
     end
   end

@@ -7,10 +7,20 @@ import {
   GlLink,
   GlButton,
   GlPagination,
+  GlEmptyState,
+  GlSprintf,
 } from '@gitlab/ui';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import TestCaseDetails from './test_case_details.vue';
+
+export const i18n = {
+  expiredArtifactsTitle: s__('TestReports|Job artifacts are expired'),
+  expiredArtifactsDescription: s__(
+    'TestReports|Test reports require job artifacts but all artifacts are expired. %{linkStart}Learn more%{linkEnd}',
+  ),
+};
 
 export default {
   name: 'TestsSuiteTable',
@@ -20,11 +30,18 @@ export default {
     GlLink,
     GlButton,
     GlPagination,
+    GlEmptyState,
+    GlSprintf,
     TestCaseDetails,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModalDirective,
+  },
+  inject: {
+    artifactsExpiredImagePath: {
+      default: '',
+    },
   },
   props: {
     heading: {
@@ -44,18 +61,21 @@ export default {
     ...mapActions(['setPage']),
   },
   wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
+  i18n,
+  learnMorePath: helpPagePath('ci/unit_test_reports', {
+    anchor: 'viewing-unit-test-reports-on-gitlab',
+  }),
 };
 </script>
 
 <template>
   <div>
-    <div class="row gl-mt-3">
-      <div class="col-12">
-        <h4>{{ heading }}</h4>
-      </div>
-    </div>
-
     <div v-if="hasSuites" class="test-reports-table gl-mb-3 js-test-cases-table">
+      <div class="row gl-mt-3">
+        <div class="col-12">
+          <h4>{{ heading }}</h4>
+        </div>
+      </div>
       <div role="row" class="gl-responsive-table-row table-row-header font-weight-bold fgray">
         <div role="rowheader" class="table-section section-20">
           {{ __('Suite') }}
@@ -158,15 +178,23 @@ export default {
     </div>
 
     <div v-else>
-      <p data-testid="no-test-cases">
+      <gl-empty-state
+        v-if="getSuiteArtifactsExpired"
+        :title="$options.i18n.expiredArtifactsTitle"
+        :svg-path="artifactsExpiredImagePath"
+        :svg-height="100"
+        data-testid="artifacts-expired"
+      >
+        <template #description>
+          <gl-sprintf :message="$options.i18n.expiredArtifactsDescription">
+            <template #link="{ content }">
+              <gl-link :href="$options.learnMorePath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
+      </gl-empty-state>
+      <p v-else data-testid="no-test-cases">
         {{ s__('TestReports|There are no test cases to display.') }}
-      </p>
-      <p v-if="getSuiteArtifactsExpired" data-testid="artifacts-expired">
-        {{
-          s__(
-            'TestReports|Test details are populated by job artifacts. The job artifacts from this pipeline are expired.',
-          )
-        }}
       </p>
     </div>
   </div>

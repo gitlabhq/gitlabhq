@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class Advanced < Page::Base
-          include Component::ConfirmModal
+          include QA::Page::Component::ConfirmModal
           include Component::NamespaceSelect
 
           view 'app/views/projects/edit.html.haml' do
@@ -65,15 +65,13 @@ module QA
           end
 
           def archive_project
-            page.accept_alert("Are you sure that you want to archive this project?") do
-              click_element :archive_project_link
-            end
+            click_element :archive_project_link
+            click_confirmation_ok_button
           end
 
           def unarchive_project
-            page.accept_alert("Are you sure that you want to unarchive this project?") do
-              click_element :unarchive_project_link
-            end
+            click_element :unarchive_project_link
+            click_confirmation_ok_button
           end
         end
       end

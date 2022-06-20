@@ -92,6 +92,14 @@ module Gitlab
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    # Returns a relation that includes ID of the descendants_base set of objects
+    # and all their descendants IDs (recursively).
+    # rubocop: disable CodeReuse/ActiveRecord
+    def base_and_descendant_ids
+      read_only(base_and_descendant_ids_cte.apply_to(unscoped_model.select(objects_table[:id])))
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     # Returns a relation that includes the base objects, their ancestors,
     # and the descendants of the base objects.
     #
@@ -208,6 +216,26 @@ module Gitlab
           descendants_query.default_select_columns
         ).where(cte.table[:tree_cycle].eq(false))
       end
+
+      cte << descendants_query
+      cte
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def base_and_descendant_ids_cte
+      cte = SQL::RecursiveCTE.new(:base_and_descendants)
+
+      base_query = descendants_base.except(:order).select(objects_table[:id])
+
+      cte << base_query
+
+      # Recursively get all the descendants of the base set.
+      descendants_query = unscoped_model
+        .select(objects_table[:id])
+        .from(from_tables(cte))
+        .where(descendant_conditions(cte))
+        .except(:order)
 
       cte << descendants_query
       cte

@@ -299,3 +299,10 @@ if (flashContainer && flashContainer.children.length) {
 $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
 
 requestIdleCallback(deferredInitialisation);
+
+// initialize hiding of tooltip after clicking on dropdown's links and buttons
+document
+  .querySelectorAll('a[data-toggle="dropdown"], button[data-toggle="dropdown"]')
+  .forEach((element) => {
+    element.addEventListener('click', () => tooltips.hide(element));
+  });

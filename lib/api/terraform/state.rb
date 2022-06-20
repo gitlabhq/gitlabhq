@@ -13,6 +13,7 @@ module API
       default_format :json
 
       rescue_from(
+        ::Terraform::RemoteStateHandler::StateDeletedError,
         ::ActiveRecord::RecordNotUnique,
         ::PG::UniqueViolation
       ) do |e|
@@ -24,6 +25,11 @@ module API
         authorize! :read_terraform_state, user_project
 
         increment_unique_values('p_terraform_state_api_unique_users', current_user.id)
+
+        if Feature.enabled?(:route_hll_to_snowplow_phase2, user_project&.namespace)
+          Gitlab::Tracking.event('API::Terraform::State', 'p_terraform_state_api_unique_users',
+            namespace: user_project&.namespace, user: current_user)
+        end
       end
 
       params do
@@ -76,7 +82,7 @@ module API
             authorize! :admin_terraform_state, user_project
 
             remote_state_handler.handle_with_lock do |state|
-              state.destroy!
+              ::Terraform::States::TriggerDestroyService.new(state, current_user: current_user).execute
             end
 
             body false

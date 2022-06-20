@@ -60,6 +60,12 @@ export default {
     isBrowserSupported() {
       return !this.isOauthEnabled || AccessorUtilities.canUseCrypto();
     },
+    gitlabUrl() {
+      return gon.gitlab_url;
+    },
+    gitlabLogo() {
+      return gon.gitlab_logo;
+    },
   },
   created() {
     this.setInitialAlert();
@@ -99,43 +105,55 @@ export default {
 </script>
 
 <template>
-  <browser-support-alert v-if="!isBrowserSupported" class="gl-mb-7" />
-  <div v-else data-testid="jira-connect-app">
-    <compatibility-alert class="gl-mb-7" />
-
-    <gl-alert
-      v-if="shouldShowAlert"
-      :variant="alert.variant"
-      :title="alert.title"
-      class="gl-mb-5"
-      data-testid="jira-connect-persisted-alert"
-      @dismiss="setAlert"
+  <div>
+    <header
+      class="jira-connect-header gl-display-flex gl-align-items-center gl-justify-content-center gl-px-5 gl-border-b-solid gl-border-b-gray-100 gl-border-b-1 gl-bg-white"
     >
-      <gl-sprintf v-if="alert.linkUrl" :message="alert.message">
-        <template #link="{ content }">
-          <gl-link :href="alert.linkUrl" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-
-      <template v-else>
-        {{ alert.message }}
-      </template>
-    </gl-alert>
-
-    <user-link
-      :user-signed-in="userSignedIn"
-      :has-subscriptions="hasSubscriptions"
-      :user="currentUser"
-    />
-
-    <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
-      <sign-in-page
-        v-if="!userSignedIn"
+      <gl-link :href="gitlabUrl" target="_blank">
+        <img :src="gitlabLogo" class="gl-h-6" :alt="__('GitLab')" />
+      </gl-link>
+      <user-link
+        :user-signed-in="userSignedIn"
         :has-subscriptions="hasSubscriptions"
-        @sign-in-oauth="onSignInOauth"
-        @error="onSignInError"
+        :user="currentUser"
+        class="gl-fixed gl-right-4"
       />
-      <subscriptions-page v-else :has-subscriptions="hasSubscriptions" />
-    </div>
+    </header>
+
+    <main class="jira-connect-app gl-px-5 gl-pt-7 gl-mx-auto">
+      <browser-support-alert v-if="!isBrowserSupported" class="gl-mb-7" />
+      <div v-else data-testid="jira-connect-app">
+        <compatibility-alert class="gl-mb-7" />
+
+        <gl-alert
+          v-if="shouldShowAlert"
+          :variant="alert.variant"
+          :title="alert.title"
+          class="gl-mb-5"
+          data-testid="jira-connect-persisted-alert"
+          @dismiss="setAlert"
+        >
+          <gl-sprintf v-if="alert.linkUrl" :message="alert.message">
+            <template #link="{ content }">
+              <gl-link :href="alert.linkUrl" target="_blank">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+
+          <template v-else>
+            {{ alert.message }}
+          </template>
+        </gl-alert>
+
+        <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
+          <sign-in-page
+            v-if="!userSignedIn"
+            :has-subscriptions="hasSubscriptions"
+            @sign-in-oauth="onSignInOauth"
+            @error="onSignInError"
+          />
+          <subscriptions-page v-else :has-subscriptions="hasSubscriptions" />
+        </div>
+      </div>
+    </main>
   </div>
 </template>

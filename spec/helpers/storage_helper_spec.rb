@@ -51,7 +51,7 @@ RSpec.describe StorageHelper do
     end
   end
 
-  describe "storage_enforcement_banner" do
+  describe "storage_enforcement_banner", :saas do
     let_it_be_with_refind(:current_user) { create(:user) }
     let_it_be(:free_group) { create(:group) }
     let_it_be(:paid_group) { create(:group) }
@@ -60,8 +60,9 @@ RSpec.describe StorageHelper do
       allow(helper).to receive(:can?).with(current_user, :admin_namespace, free_group).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :admin_namespace, paid_group).and_return(true)
       allow(helper).to receive(:current_user) { current_user }
-      allow(Gitlab).to receive(:com?).and_return(true)
       allow(paid_group).to receive(:paid?).and_return(true)
+
+      stub_feature_flags(namespace_storage_limit_bypass_date_check: false)
     end
 
     describe "#storage_enforcement_banner_info" do
@@ -108,6 +109,28 @@ RSpec.describe StorageHelper do
               expect(helper.storage_enforcement_banner_info(free_group)[:text]).to eql("From #{storage_enforcement_date} storage limits will apply to this namespace. You are currently using 100 KB of namespace storage. View and manage your usage from <strong>Group settings &gt; Usage quotas</strong>.")
             end
           end
+
+          context 'when the given group is a sub-group' do
+            let_it_be(:sub_group) { build(:group) }
+
+            before do
+              allow(sub_group).to receive(:root_ancestor).and_return(free_group)
+            end
+
+            it 'returns the banner hash' do
+              expect(helper.storage_enforcement_banner_info(sub_group).keys).to match_array(%i(text variant callouts_feature_name callouts_path learn_more_link))
+            end
+          end
+        end
+      end
+
+      context 'when the :storage_banner_bypass_date_check is enabled', :freeze_time do
+        before do
+          stub_feature_flags(namespace_storage_limit_bypass_date_check: true)
+        end
+
+        it 'returns the enforcement info' do
+          expect(helper.storage_enforcement_banner_info(free_group)[:text]).to include("From #{Date.current} storage limits will apply to this namespace.")
         end
       end
 

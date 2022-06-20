@@ -30,10 +30,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action :user_actions, only: [:show]
 
-  before_action do
-    push_frontend_feature_flag(:vue_issues_list, @group)
-  end
-
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
   before_action :track_experiment_event, only: [:new]
@@ -212,7 +208,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
-    return super if !html_request? || Feature.disabled?(:vue_issues_list, group)
+    return super unless html_request?
 
     @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
       .non_archived
@@ -289,6 +285,7 @@ class GroupsController < Groups::ApplicationController
       :chat_team_name,
       :require_two_factor_authentication,
       :two_factor_grace_period,
+      :enabled_git_access_protocol,
       :project_creation_level,
       :subgroup_creation_level,
       :default_branch_protection,
@@ -360,6 +357,7 @@ class GroupsController < Groups::ApplicationController
     flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
     flash.delete :recaptcha_error
     @group = Group.new(group_params)
+    add_gon_variables
     render action: 'new'
   end
 

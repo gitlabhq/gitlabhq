@@ -1,4 +1,5 @@
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { stateToComponentMap as classStateMap, stateKey } from './stores/state_maps';
 
 export const SUCCESS = 'success';
@@ -165,4 +166,15 @@ export const EXTENSION_ICON_CLASS = {
 export const EXTENSION_SUMMARY_FAILED_CLASS = 'gl-text-red-500';
 export const EXTENSION_SUMMARY_NEUTRAL_CLASS = 'gl-text-gray-700';
 
+export const TELEMETRY_WIDGET_VIEWED = 'WIDGET_VIEWED';
+export const TELEMETRY_WIDGET_EXPANDED = 'WIDGET_EXPANDED';
+export const TELEMETRY_WIDGET_FULL_REPORT_CLICKED = 'WIDGET_FULL_REPORT_CLICKED';
+
 export { STATE_MACHINE };
+
+export const INVALID_RULES_DOCS_PATH = helpPagePath(
+  'user/project/merge_requests/approvals/index.md',
+  {
+    anchor: 'invalid-rules',
+  },
+);

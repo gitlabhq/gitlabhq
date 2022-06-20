@@ -14,7 +14,7 @@ RSpec.describe DataList do
     end
 
     def data_list(integration)
-      DataList.new([integration], integration.to_data_fields_hash, integration.data_fields.class).to_array
+      DataList.new([integration], integration.to_database_hash, integration.data_fields.class).to_array
     end
 
     it 'returns current data' do

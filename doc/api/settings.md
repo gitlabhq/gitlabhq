@@ -11,6 +11,10 @@ These API calls allow you to read and modify GitLab instance
 as they appear in `/admin/application_settings/general`. You must be an
 administrator to perform this action.
 
+Application settings are subject to caching and may not immediately take effect.
+By default, GitLab caches application settings for 60 seconds.
+For information on how to control the application settings cache for an instance, see [Application cache interval](../administration/application_settings_cache.md).
+
 ## Get current application settings
 
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
@@ -277,10 +281,10 @@ listed in the descriptions of the relevant settings.
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
-| `delayed_project_deletion` **(PREMIUM SELF)** | boolean     | no                                   | Enable delayed project deletion by default in new groups. Default is `false`. |
-| `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion by default in new groups. Requires both `delayed_group_deletion` to be true and `deletion_adjourned_period` to be greater than 0. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. |
+| `delayed_project_deletion` **(PREMIUM SELF)** | boolean     | no                                   | Enable delayed project deletion by default in new groups. Default is `false`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), can only be enabled when `delayed_group_deletion` is true. |
+| `delayed_group_deletion` **(PREMIUM SELF)**   | boolean     | no                                   | Enable delayed group deletion. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), disables and locks the group-level setting for delayed protect deletion when set to `false`.  |
 | `delete_inactive_projects`               | boolean          | no                                   | Enable inactive project deletion feature. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84519) in GitLab 14.10. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 (with feature flag `inactive_projects_deletion`, disabled by default). |
-| `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between 0 and 90. On every update, a hook on `deletion_adjourned_period` sets the value of `delayed_group_deletion` to `true` if `deletion_adjourned_period` is greater than 0 and `false` if `deletion_adjourned_period` is 0.
+| `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), a hook on `deletion_adjourned_period` sets the period to `1` on every update, and sets both `delayed_project_deletion` and `delayed_group_deletion` to `false` if the period is `0`. |
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |
 | `diff_max_lines`                         | integer          | no                                   | Maximum [lines in a diff](../user/admin_area/diff_limits.md). |
@@ -385,6 +389,10 @@ listed in the descriptions of the relevant settings.
 | `pages_domain_verification_enabled`       | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |
+| `password_number_required` **(PREMIUM)**    | boolean       | no                                   | Indicates whether passwords require at least one number. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
+| `password_symbol_required` **(PREMIUM)**    | boolean       | no                                   | Indicates whether passwords require at least one symbol character. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
+| `password_uppercase_required` **(PREMIUM)** | boolean       | no                                   | Indicates whether passwords require at least one uppercase letter. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
+| `password_lowercase_required` **(PREMIUM)** | boolean       | no                                   | Indicates whether passwords require at least one lowercase letter. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85763) in GitLab 15.1. |
 | `performance_bar_allowed_group_id`       | string           | no                                   | (Deprecated: Use `performance_bar_allowed_group_path` instead) Path of the group that is allowed to toggle the performance bar. |
 | `performance_bar_allowed_group_path`     | string           | no                                   | Path of the group that is allowed to toggle the performance bar. |
 | `performance_bar_enabled`                | boolean          | no                                   | (Deprecated: Pass `performance_bar_allowed_group_path: nil` instead) Allow enabling the performance bar. |

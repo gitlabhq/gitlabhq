@@ -88,7 +88,7 @@ options = {
 
     # :filter is optional
     # This filter includes OID 1.2.840.113556.1.4.1941
-    # It will search for all direct and nested members of the group gitlab_grp in the LDAP directory  
+    # It will search for all direct and nested members of the group gitlab_grp in the LDAP directory
     filter: Net::LDAP::Filter.construct("(memberOf:1.2.840.113556.1.4.1941:=CN=gitlab_grp,DC=example,DC=com)"),
 
     # :attributes is optional
@@ -707,7 +707,7 @@ For more information, see the [official `ldapsearch` documentation](https://linu
 
 ### Using **AdFind** (Windows)
 
-You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](http://www.joeware.net/freetools/tools/adfind/index.htm).
+You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](https://www.joeware.net/freetools/tools/adfind/index.htm).
 
 **Return all objects**
 

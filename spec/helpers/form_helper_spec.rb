@@ -10,11 +10,16 @@ RSpec.describe FormHelper do
       expect(helper.form_errors(model)).to be_nil
     end
 
-    it 'renders an alert div' do
+    it 'renders an appropriately styled alert div' do
       model = double(errors: errors_stub('Error 1'))
 
-      expect(helper.form_errors(model))
+      expect(helper.form_errors(model, pajamas_alert: false))
         .to include('<div class="alert alert-danger" id="error_explanation">')
+
+      expect(helper.form_errors(model, pajamas_alert: true))
+        .to include(
+          '<div class="gl-alert gl-mb-5 gl-alert-danger gl-alert-not-dismissible" id="error_explanation" role="alert">'
+        )
     end
 
     it 'contains a summary message' do
@@ -22,9 +27,9 @@ RSpec.describe FormHelper do
       multi_errors = double(errors: errors_stub('A', 'B', 'C'))
 
       expect(helper.form_errors(single_error))
-        .to include('<h4>The form contains the following error:')
+        .to include('The form contains the following error:')
       expect(helper.form_errors(multi_errors))
-        .to include('<h4>The form contains the following errors:')
+        .to include('The form contains the following errors:')
     end
 
     it 'renders each message' do
@@ -55,6 +60,43 @@ RSpec.describe FormHelper do
         expect(errors).to include('<li>Error 2</li>')
         expect(errors).to include('<li><span class="str-truncated-100">Title is truncated</span></li>')
         expect(errors).to include('<li>Error 3</li>')
+      end
+    end
+
+    it 'renders help page links' do
+      stubbed_errors = ActiveModel::Errors.new(double).tap do |errors|
+        errors.add(:base, 'No text.', help_page_url: 'http://localhost/doc/user/index.html')
+        errors.add(
+          :base,
+          'With text.',
+          help_link_text: 'Documentation page title.',
+          help_page_url: 'http://localhost/doc/administration/index.html'
+        )
+        errors.add(
+          :base,
+          'With HTML text.',
+          help_link_text: '<foo>',
+          help_page_url: 'http://localhost/doc/security/index.html'
+        )
+      end
+
+      model = double(errors: stubbed_errors)
+
+      errors = helper.form_errors(model)
+
+      aggregate_failures do
+        expect(errors).to include(
+          '<li>No text. <a target="_blank" rel="noopener noreferrer" ' \
+          'href="http://localhost/doc/user/index.html">Learn more.</a></li>'
+        )
+        expect(errors).to include(
+          '<li>With text. <a target="_blank" rel="noopener noreferrer" ' \
+          'href="http://localhost/doc/administration/index.html">Documentation page title.</a></li>'
+        )
+        expect(errors).to include(
+          '<li>With HTML text. <a target="_blank" rel="noopener noreferrer" ' \
+          'href="http://localhost/doc/security/index.html">&lt;foo&gt;</a></li>'
+        )
       end
     end
 

@@ -11,7 +11,7 @@ describe('Registry Search', () => {
   const findFilteredSearch = () => wrapper.find(GlFilteredSearch);
 
   const defaultProps = {
-    filter: [],
+    filters: [],
     sorting: { sort: 'asc', orderBy: 'name' },
     tokens: [{ type: 'foo' }],
     sortableFields: [
@@ -123,7 +123,7 @@ describe('Registry Search', () => {
   });
 
   describe('query string calculation', () => {
-    const filter = [
+    const filters = [
       { type: FILTERED_SEARCH_TERM, value: { data: 'one' } },
       { type: FILTERED_SEARCH_TERM, value: { data: 'two' } },
       { type: 'typeOne', value: { data: 'value_one' } },
@@ -131,7 +131,7 @@ describe('Registry Search', () => {
     ];
 
     it('aggregates the filter in the correct object', () => {
-      mountComponent({ ...defaultProps, filter });
+      mountComponent({ ...defaultProps, filters });
 
       findFilteredSearch().vm.$emit('submit');
 

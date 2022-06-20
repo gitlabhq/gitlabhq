@@ -97,6 +97,6 @@ application.
      [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 On the sign-in page there should now be an Auth0 icon below the regular sign-in
-form. Click the icon to begin the authentication process. Auth0 asks the
+form. Select the icon to begin the authentication process. Auth0 asks the
 user to sign in and authorize the GitLab application. If the user authenticates
 successfully, the user is returned to GitLab and signed in.

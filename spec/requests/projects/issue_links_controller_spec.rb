@@ -32,7 +32,10 @@ RSpec.describe Projects::IssueLinksController do
         get namespace_project_issue_links_path(issue_links_params)
 
         expect(json_response.count).to eq(1)
-        expect(json_response.first).to include('path' => project_work_items_path(issue_b.project, issue_b.id))
+        expect(json_response.first).to include(
+          'path' => project_work_items_path(issue_b.project, issue_b.id),
+          'type' => 'TASK'
+        )
       end
     end
   end

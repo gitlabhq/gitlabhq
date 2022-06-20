@@ -38,7 +38,7 @@ RSpec.describe Resolvers::GroupLabelsResolver do
       it 'does not raise error' do
         group.add_guest(current_user)
 
-        expect { resolve_labels(subgroup) }.not_to raise_error
+        expect(resolve_labels(subgroup)).to be_instance_of(Gitlab::Graphql::Pagination::Keyset::Connection)
       end
     end
 

@@ -101,6 +101,7 @@ RSpec.describe 'Merge request > User sees versions', :js do
       outdated_diff_note.save!
 
       refresh
+      wait_for_requests
 
       expect(page).to have_css(".diffs .notes[data-discussion-id='#{outdated_diff_note.discussion_id}']")
     end

@@ -3,6 +3,8 @@
 class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
   include RedisTracking
+  include ProjectStatsRefreshConflictsGuard
+  include ZuoraCSP
 
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,
@@ -19,11 +21,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
+  before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
 
   before_action do
     push_frontend_feature_flag(:pipeline_tabs_vue, @project)
-    push_frontend_feature_flag(:downstream_retry_action, @project)
-    push_frontend_feature_flag(:failed_jobs_tab_vue, @project)
   end
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
@@ -41,23 +42,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   wrap_parameters Ci::Pipeline
 
   POLLING_INTERVAL = 10_000
-
-  content_security_policy do |policy|
-    next if policy.directives.blank?
-
-    default_script_src = policy.directives['script-src'] || policy.directives['default-src']
-    script_src_values = Array.wrap(default_script_src) | ["'self'", "'unsafe-eval'", 'https://*.zuora.com']
-
-    default_frame_src = policy.directives['frame-src'] || policy.directives['default-src']
-    frame_src_values = Array.wrap(default_frame_src) | ["'self'", 'https://*.zuora.com']
-
-    default_child_src = policy.directives['child-src'] || policy.directives['default-src']
-    child_src_values = Array.wrap(default_child_src) | ["'self'", 'https://*.zuora.com']
-
-    policy.script_src(*script_src_values)
-    policy.frame_src(*frame_src_values)
-    policy.child_src(*child_src_values)
-  end
 
   feature_category :continuous_integration, [
                      :charts, :show, :config_variables, :stage, :cancel, :retry,

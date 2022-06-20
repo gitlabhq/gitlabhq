@@ -4,7 +4,6 @@ import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import initUserPopovers from '~/user_popovers';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import {
   FIELD_KEY_ACTIONS,
@@ -13,9 +12,9 @@ import {
   TAB_QUERY_PARAM_VALUES,
   MEMBER_STATE_AWAITING,
   MEMBER_STATE_ACTIVE,
-  USER_STATE_BLOCKED_PENDING_APPROVAL,
-  BADGE_LABELS_AWAITING_USER_SIGNUP,
-  BADGE_LABELS_PENDING_OWNER_APPROVAL,
+  USER_STATE_BLOCKED,
+  BADGE_LABELS_AWAITING_SIGNUP,
+  BADGE_LABELS_PENDING,
 } from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
@@ -84,9 +83,6 @@ export default {
     isInvitedUser() {
       return this.tabQueryParamValue === TAB_QUERY_PARAM_VALUES.invite;
     },
-  },
-  mounted() {
-    initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
   },
   methods: {
     hasActionButtons(member) {
@@ -166,7 +162,7 @@ export default {
       );
     },
     /**
-     * Returns whether the user is awaiting root approval
+     * Returns whether the user is blocked awaiting root approval
      *
      * This checks User.state exposed via MemberEntity
      *
@@ -174,11 +170,11 @@ export default {
      * @see {@link ~/app/serializers/member_entity.rb}
      * @returns {boolean}
      */
-    isUserPendingRootApproval(memberInviteMetadata) {
-      return memberInviteMetadata?.userState === USER_STATE_BLOCKED_PENDING_APPROVAL;
+    isUserBlocked(memberInviteMetadata) {
+      return memberInviteMetadata?.userState === USER_STATE_BLOCKED;
     },
     /**
-     * Returns whether the member is awaiting owner approval
+     * Returns whether the member is awaiting state
      *
      * This checks Member.state exposed via MemberEntity
      *
@@ -187,16 +183,13 @@ export default {
      * @see {@link ~/app/serializers/member_entity.rb}
      * @returns {boolean}
      */
-    isMemberPendingOwnerApproval(memberState) {
+    isMemberAwaiting(memberState) {
       return memberState === MEMBER_STATE_AWAITING;
     },
     isUserAwaiting(memberInviteMetadata, memberState) {
-      return (
-        this.isUserPendingRootApproval(memberInviteMetadata) ||
-        this.isMemberPendingOwnerApproval(memberState)
-      );
+      return this.isUserBlocked(memberInviteMetadata) || this.isMemberAwaiting(memberState);
     },
-    shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState) {
+    shouldAddPendingBadge(memberInviteMetadata, memberState) {
       return (
         this.isUserAwaiting(memberInviteMetadata, memberState) &&
         !this.isNewUser(memberInviteMetadata)
@@ -213,11 +206,11 @@ export default {
      */
     inviteBadge(memberInviteMetadata, memberState) {
       if (this.isNewUser(memberInviteMetadata, memberState)) {
-        return BADGE_LABELS_AWAITING_USER_SIGNUP;
+        return BADGE_LABELS_AWAITING_SIGNUP;
       }
 
-      if (this.shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState)) {
-        return BADGE_LABELS_PENDING_OWNER_APPROVAL;
+      if (this.shouldAddPendingBadge(memberInviteMetadata, memberState)) {
+        return BADGE_LABELS_PENDING;
       }
 
       return '';

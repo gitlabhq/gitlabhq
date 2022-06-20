@@ -31,7 +31,7 @@ To protect a tag, you must have at least the Maintainer role.
 
 1. Go to the project's **Settings > Repository**.
 
-1. From the **Tag** dropdown list, select the tag you want to protect or type and click **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
+1. From the **Tag** dropdown list, select the tag you want to protect or type and select **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
 
    ![Protected tags page](img/protected_tags_page_v12_3.png)
 
@@ -85,6 +85,26 @@ To prevent this problem:
    - Select **Protect**.
 
 Users can still create branches, but not tags, with the protected names.
+
+## Delete a protected tag
+
+You can manually delete protected tags with the GitLab API, or the
+GitLab user interface.
+
+Prerequisite:
+
+- You must have at least the Maintainer role in your project.
+
+To do this:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Tags**.
+1. Next to the tag you want to delete, select **Delete** (**{remove}**).
+1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.
+
+Protected tags can only be deleted by using GitLab either from the UI or API.
+These protections prevent you from accidentally deleting a tag through local
+Git commands or third-party Git clients.
 
 <!-- ## Troubleshooting
 

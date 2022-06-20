@@ -25,6 +25,12 @@ RSpec.describe ScheduleMergeRequestCleanupRefsWorker do
       end
     end
 
+    it 'retries stuck cleanup schedules' do
+      expect(MergeRequest::CleanupSchedule).to receive(:stuck_retry!)
+
+      worker.perform
+    end
+
     include_examples 'an idempotent worker' do
       it 'schedules MergeRequestCleanupRefsWorker to be performed with capacity' do
         expect(MergeRequestCleanupRefsWorker).to receive(:perform_with_capacity).twice

@@ -3,6 +3,7 @@
 - form = local_assigns.fetch(:form, nil)
 - setting_locked = local_assigns.fetch(:setting_locked, false)
 - help_text = local_assigns.fetch(:help_text, s_('CascadingSettings|Subgroups cannot change this setting.'))
+- label = local_assigns.fetch(:label, s_('CascadingSettings|Enforce for all subgroups'))
 
 - return unless attribute && group && form
 - return if setting_locked
@@ -10,6 +11,6 @@
 - lock_attribute = "lock_#{attribute}"
 
 = form.gitlab_ui_checkbox_component lock_attribute,
-  s_('CascadingSettings|Enforce for all subgroups'),
+  label,
   help_text: help_text,
   checkbox_options: { checked: group.namespace_settings.public_send(lock_attribute), data: { testid: 'enforce-for-all-subgroups-checkbox' } }

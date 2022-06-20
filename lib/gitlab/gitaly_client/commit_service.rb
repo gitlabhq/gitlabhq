@@ -258,9 +258,9 @@ module Gitlab
       end
 
       # List all commits which are new in the repository. If commits have been pushed into the repo
-      def list_new_commits(revisions, allow_quarantine: false)
+      def list_new_commits(revisions)
         git_env = Gitlab::Git::HookEnv.all(@gitaly_repo.gl_repository)
-        if allow_quarantine && git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
+        if git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
           # If we have a quarantine environment, then we can optimize the check
           # by doing a ListAllCommitsRequest. Instead of walking through
           # references, we just walk through all quarantined objects, which is
@@ -278,32 +278,29 @@ module Gitlab
           response = GitalyClient.call(@repository.storage, :commit_service, :list_all_commits, request, timeout: GitalyClient.medium_timeout)
 
           quarantined_commits = consume_commits_response(response)
+          quarantined_commit_ids = quarantined_commits.map(&:id)
 
-          if Feature.enabled?(:filter_quarantined_commits)
-            quarantined_commit_ids = quarantined_commits.map(&:id)
+          # While in general the quarantine directory would only contain objects
+          # which are actually new, this is not guaranteed by Git. In fact,
+          # git-push(1) may sometimes push objects which already exist in the
+          # target repository. We do not want to return those from this method
+          # though given that they're not actually new.
+          #
+          # To fix this edge-case we thus have to filter commits down to those
+          # which don't yet exist. To do so, we must check for object existence
+          # in the main repository, but the object directory of our repository
+          # points into the object quarantine. This can be fixed by unsetting
+          # it, which will cause us to use the normal repository as indicated by
+          # its relative path again.
+          main_repo = @gitaly_repo.dup
+          main_repo.git_object_directory = ""
 
-            # While in general the quarantine directory would only contain objects
-            # which are actually new, this is not guaranteed by Git. In fact,
-            # git-push(1) may sometimes push objects which already exist in the
-            # target repository. We do not want to return those from this method
-            # though given that they're not actually new.
-            #
-            # To fix this edge-case we thus have to filter commits down to those
-            # which don't yet exist. To do so, we must check for object existence
-            # in the main repository, but the object directory of our repository
-            # points into the object quarantine. This can be fixed by unsetting
-            # it, which will cause us to use the normal repository as indicated by
-            # its relative path again.
-            main_repo = @gitaly_repo.dup
-            main_repo.git_object_directory = ""
+          # Check object existence of all quarantined commits' IDs.
+          quarantined_commit_existence = object_existence_map(quarantined_commit_ids, gitaly_repo: main_repo)
 
-            # Check object existence of all quarantined commits' IDs.
-            quarantined_commit_existence = object_existence_map(quarantined_commit_ids, gitaly_repo: main_repo)
-
-            # And then we reject all quarantined commits which exist in the main
-            # repository already.
-            quarantined_commits.reject! { |c| quarantined_commit_existence[c.id] }
-          end
+          # And then we reject all quarantined commits which exist in the main
+          # repository already.
+          quarantined_commits.reject! { |c| quarantined_commit_existence[c.id] }
 
           quarantined_commits
         else

@@ -15,6 +15,7 @@ RSpec.describe Backup::Manager do
     # is trying to display a diff and `File.exist?` is stubbed. Adding a
     # default stub fixes this.
     allow(File).to receive(:exist?).and_call_original
+    allow(FileUtils).to receive(:rm_rf).and_call_original
 
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
@@ -171,12 +172,14 @@ RSpec.describe Backup::Manager do
       allow(task2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'task2.tar.gz'), full_backup_id)
     end
 
-    it 'executes tar' do
+    it 'creates a backup tar' do
       travel_to(backup_time) do
         subject.create # rubocop:disable Rails/SaveBang
-
-        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
       end
+
+      expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+      expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+      expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
     end
 
     context 'when BACKUP is set' do
@@ -203,6 +206,8 @@ RSpec.describe Backup::Manager do
           end.to raise_error(Backup::Error, 'Backup failed')
 
           expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
         end
       end
 
@@ -597,6 +602,7 @@ RSpec.describe Backup::Manager do
           skipped: 'tar',
           tar_version: be_a(String)
         )
+        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
       end
     end
 
@@ -697,6 +703,8 @@ RSpec.describe Backup::Manager do
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
           expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
         end
 
         context 'untar fails' do
@@ -724,6 +732,8 @@ RSpec.describe Backup::Manager do
             end.to raise_error(Backup::Error, 'Backup failed')
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
+            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
           end
         end
 
@@ -786,6 +796,8 @@ RSpec.describe Backup::Manager do
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
           expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
         end
 
         context 'untar fails' do
@@ -817,6 +829,8 @@ RSpec.describe Backup::Manager do
             end.to raise_error(Backup::Error, 'Backup failed')
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
+            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
           end
         end
 
@@ -1001,6 +1015,8 @@ RSpec.describe Backup::Manager do
         subject.restore
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
+        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
       end
 
       context 'tar fails' do
@@ -1031,22 +1047,6 @@ RSpec.describe Backup::Manager do
             .with(a_string_matching('GitLab version mismatch'))
         end
       end
-
-      describe 'tmp files' do
-        let(:path) { File.join(Gitlab.config.backup.path, 'tmp') }
-
-        before do
-          allow(FileUtils).to receive(:rm_rf).and_call_original
-        end
-
-        it 'removes backups/tmp dir' do
-          expect(FileUtils).to receive(:rm_rf).with(path).and_call_original
-
-          subject.restore
-
-          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting backups/tmp ... ')
-        end
-      end
     end
 
     context 'when there is a non-tarred backup in the directory' do
@@ -1066,6 +1066,7 @@ RSpec.describe Backup::Manager do
 
         expect(progress).to have_received(:puts)
           .with(a_string_matching('Non tarred backup found '))
+        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
       end
 
       context 'on version mismatch' do
@@ -1080,22 +1081,6 @@ RSpec.describe Backup::Manager do
           expect { subject.restore }.to raise_error SystemExit
           expect(progress).to have_received(:puts)
             .with(a_string_matching('GitLab version mismatch'))
-        end
-      end
-
-      describe 'tmp files' do
-        let(:path) { File.join(Gitlab.config.backup.path, 'tmp') }
-
-        before do
-          allow(FileUtils).to receive(:rm_rf).and_call_original
-        end
-
-        it 'removes backups/tmp dir' do
-          expect(FileUtils).to receive(:rm_rf).with(path).and_call_original
-
-          subject.restore
-
-          expect(Gitlab::BackupLogger).to have_received(:info).with(message: 'Deleting backups/tmp ... ')
         end
       end
     end

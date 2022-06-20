@@ -1,5 +1,6 @@
 fragment Release on Release {
   __typename
+  id
   name
   tagName
   tagPath

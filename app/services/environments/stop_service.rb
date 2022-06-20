@@ -7,7 +7,11 @@ module Environments
     def execute(environment)
       return unless can?(current_user, :stop_environment, environment)
 
-      environment.stop_with_actions!(current_user)
+      if params[:force]
+        environment.stop_complete!
+      else
+        environment.stop_with_actions!(current_user)
+      end
     end
 
     def execute_for_branch(branch_name)

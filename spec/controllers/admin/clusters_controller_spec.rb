@@ -210,63 +210,6 @@ RSpec.describe Admin::ClustersController do
     end
   end
 
-  describe 'POST authorize AWS role for EKS cluster' do
-    let!(:role) { create(:aws_role, user: admin) }
-
-    let(:role_arn) { 'arn:new-role' }
-    let(:params) do
-      {
-        cluster: {
-          role_arn: role_arn
-        }
-      }
-    end
-
-    def go
-      post :authorize_aws_role, params: params
-    end
-
-    include_examples ':certificate_based_clusters feature flag controller responses' do
-      let(:subject) { go }
-    end
-
-    before do
-      allow(Clusters::Aws::FetchCredentialsService).to receive(:new)
-        .and_return(double(execute: double))
-    end
-
-    it 'updates the associated role with the supplied ARN' do
-      go
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(role.reload.role_arn).to eq(role_arn)
-    end
-
-    context 'supplied role is invalid' do
-      let(:role_arn) { 'invalid-role' }
-
-      it 'does not update the associated role' do
-        expect { go }.not_to change { role.role_arn }
-
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      end
-    end
-
-    describe 'security' do
-      before do
-        allow_next_instance_of(Clusters::Aws::AuthorizeRoleService) do |service|
-          response = double(status: :ok, body: double)
-
-          allow(service).to receive(:execute).and_return(response)
-        end
-      end
-
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-    end
-  end
-
   describe 'DELETE clear cluster cache' do
     let(:cluster) { create(:cluster, :instance) }
     let!(:kubernetes_namespace) do

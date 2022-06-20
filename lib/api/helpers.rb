@@ -394,8 +394,7 @@ module API
     end
 
     def order_options_with_tie_breaker
-      order_by = if Feature.enabled?(:replace_order_by_created_at_with_id) &&
-                    params[:order_by] == 'created_at'
+      order_by = if params[:order_by] == 'created_at'
                    'id'
                  else
                    params[:order_by]
@@ -409,15 +408,11 @@ module API
     # error helpers
 
     def forbidden!(reason = nil)
-      message = ['403 Forbidden']
-      message << "- #{reason}" if reason
-      render_api_error!(message.join(' '), 403)
+      render_api_error_with_reason!(403, '403 Forbidden', reason)
     end
 
     def bad_request!(reason = nil)
-      message = ['400 Bad request']
-      message << "- #{reason}" if reason
-      render_api_error!(message.join(' '), 400)
+      render_api_error_with_reason!(400, '400 Bad request', reason)
     end
 
     def bad_request_missing_attribute!(attribute)
@@ -437,8 +432,8 @@ module API
       end
     end
 
-    def unauthorized!
-      render_api_error!('401 Unauthorized', 401)
+    def unauthorized!(reason = nil)
+      render_api_error_with_reason!(401, '401 Unauthorized', reason)
     end
 
     def not_allowed!(message = nil)
@@ -489,6 +484,12 @@ module API
 
     def model_error_messages(model)
       model.errors.messages
+    end
+
+    def render_api_error_with_reason!(status, message, reason)
+      message = [message]
+      message << "- #{reason}" if reason
+      render_api_error!(message.join(' '), status)
     end
 
     def render_api_error!(message, status)
@@ -569,10 +570,18 @@ module API
       end
     end
 
+    def log_artifact_size(file)
+      Gitlab::ApplicationContext.push(artifact: file.model)
+    end
+
+    def present_artifacts_file!(file, **args)
+      log_artifact_size(file) if file
+
+      present_carrierwave_file!(file, **args)
+    end
+
     def present_carrierwave_file!(file, supports_direct_download: true)
       return not_found! unless file&.exists?
-
-      log_artifact_size(file) if file.is_a?(JobArtifactUploader)
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename)
@@ -724,7 +733,6 @@ module API
     # Deprecated. Use `send_artifacts_entry` instead.
     def legacy_send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
-      log_artifact_size(file)
 
       body ''
     end
@@ -732,13 +740,8 @@ module API
     def send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
       header(*Gitlab::Workhorse.detect_content_type)
-      log_artifact_size(file)
 
       body ''
-    end
-
-    def log_artifact_size(file)
-      Gitlab::ApplicationContext.push(artifact: file.model)
     end
 
     # The Grape Error Middleware only has access to `env` but not `params` nor

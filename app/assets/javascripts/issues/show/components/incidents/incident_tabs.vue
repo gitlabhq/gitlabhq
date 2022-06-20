@@ -9,6 +9,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DescriptionComponent from '../description.vue';
 import getAlert from './graphql/queries/get_alert.graphql';
 import HighlightBar from './highlight_bar.vue';
+import TimelineTab from './timeline_events_tab.vue';
 
 export default {
   components: {
@@ -17,8 +18,7 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
-    TimelineTab: () =>
-      import('ee_component/issues/show/components/incidents/timeline_events_tab.vue'),
+    TimelineTab,
     IncidentMetricTab: () =>
       import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
   },
@@ -53,7 +53,7 @@ export default {
       return this.$apollo.queries.alert.loading;
     },
     incidentTabEnabled() {
-      return this.glFeatures.incidentTimelineEvents && this.glFeatures.incidentTimeline;
+      return this.glFeatures.incidentTimeline;
     },
   },
   mounted() {
@@ -65,17 +65,26 @@ export default {
       Tracking.event(category, action);
     },
     handleTabChange(tabIndex) {
+      /**
+       * TODO: Implement a solution that does not violate Vue principles in using
+       * DOM manipulation directly (#361618)
+       */
       const parent = document.querySelector('.js-issue-details');
 
       if (parent !== null) {
         const itemsToHide = parent.querySelectorAll('.js-issue-widgets');
         const lineSeparator = parent.querySelector('.js-detail-page-description');
+        const editButton = document.querySelector('.js-issuable-edit');
+        const isSummaryTab = tabIndex === 0;
 
-        lineSeparator.classList.toggle('gl-border-b-0', tabIndex > 0);
+        lineSeparator.classList.toggle('gl-border-b-0', !isSummaryTab);
 
         itemsToHide.forEach(function hide(item) {
-          item.classList.toggle('gl-display-none', tabIndex > 0);
+          item.classList.toggle('gl-display-none', !isSummaryTab);
         });
+
+        editButton.classList.toggle('gl-display-none', !isSummaryTab);
+        editButton.classList.toggle('gl-sm-display-inline-flex!', isSummaryTab);
       }
     },
   },
@@ -103,7 +112,7 @@ export default {
       >
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
-      <timeline-tab v-if="incidentTabEnabled" data-testid="timeline-events-tab" />
+      <timeline-tab v-if="incidentTabEnabled" />
     </gl-tabs>
   </div>
 </template>

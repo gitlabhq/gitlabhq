@@ -78,4 +78,83 @@ RSpec.describe CustomerRelations::Organization, type: :model do
       expect(contact2.reload.organization_id).to eq(dupe_organization1.id)
     end
   end
+
+  describe '.search' do
+    let_it_be(:organization_a) do
+      create(
+        :organization,
+        group: group,
+        name: "DEF",
+        description: "ghi_st",
+        state: "inactive"
+      )
+    end
+
+    let_it_be(:organization_b) do
+      create(
+        :organization,
+        group: group,
+        name: "ABC_st",
+        description: "JKL",
+        state: "active"
+      )
+    end
+
+    subject(:found_organizations) { group.organizations.search(search_term) }
+
+    context 'when search term is empty' do
+      let(:search_term) { "" }
+
+      it 'returns all group organizations' do
+        expect(found_organizations).to contain_exactly(organization_a, organization_b)
+      end
+    end
+
+    context 'when search term is not empty' do
+      context 'when searching for name' do
+        let(:search_term) { "aBc" }
+
+        it { is_expected.to contain_exactly(organization_b) }
+      end
+
+      context 'when searching for description' do
+        let(:search_term) { "ghI" }
+
+        it { is_expected.to contain_exactly(organization_a) }
+      end
+
+      context 'when searching for name and description' do
+        let(:search_term) { "_st" }
+
+        it { is_expected.to contain_exactly(organization_a, organization_b) }
+      end
+    end
+  end
+
+  describe '.search_by_state' do
+    let_it_be(:organization_a) { create(:organization, group: group, state: "inactive") }
+    let_it_be(:organization_b) { create(:organization, group: group, state: "active") }
+
+    context 'when searching for organizations state' do
+      it 'returns only inactive organizations' do
+        expect(group.organizations.search_by_state(:inactive)).to contain_exactly(organization_a)
+      end
+
+      it 'returns only active organizations' do
+        expect(group.organizations.search_by_state(:active)).to contain_exactly(organization_b)
+      end
+    end
+  end
+
+  describe '.sort_by_name' do
+    let_it_be(:organization_a) { create(:organization, group: group, name: "c") }
+    let_it_be(:organization_b) { create(:organization, group: group, name: "a") }
+    let_it_be(:organization_c) { create(:organization, group: group, name: "b") }
+
+    context 'when sorting the organizations' do
+      it 'sorts them by name in ascendent order' do
+        expect(group.organizations.sort_by_name).to eq([organization_b, organization_c, organization_a])
+      end
+    end
+  end
 end

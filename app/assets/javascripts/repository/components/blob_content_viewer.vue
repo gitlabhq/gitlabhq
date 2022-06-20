@@ -6,9 +6,9 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { isLoggedIn } from '~/lib/utils/common_utils';
+import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { redirectTo, getLocationHash } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -183,7 +183,7 @@ export default {
       this.isLoadingLegacyViewer = true;
       axios
         .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
-        .then(({ data: { html, binary } }) => {
+        .then(async ({ data: { html, binary } }) => {
           if (type === SIMPLE_BLOB_VIEWER) {
             this.isRenderingLegacyTextViewer = true;
 
@@ -197,19 +197,13 @@ export default {
             this.legacyRichViewer = html;
           }
 
-          this.scrollToHash();
           this.isBinary = binary;
           this.isLoadingLegacyViewer = false;
+
+          await this.$nextTick();
+          handleLocationHash(); // Ensures that we scroll to the hash when async content is loaded
         })
         .catch(() => this.displayError());
-    },
-    scrollToHash() {
-      const hash = getLocationHash();
-      if (hash) {
-        // Ensures the browser's native scroll to hash is triggered for async content
-        window.location.hash = '';
-        window.location.hash = hash;
-      }
     },
     displayError() {
       createFlash({ message: __('An error occurred while loading the file. Please try again.') });
@@ -233,6 +227,9 @@ export default {
     setForkTarget(target) {
       this.forkTarget = target;
     },
+    onCopy() {
+      navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
+    },
   },
 };
 </script>
@@ -248,7 +245,9 @@ export default {
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         :show-path="false"
+        :override-copy="glFeatures.highlightJs"
         @viewer-changed="switchViewer"
+        @copy="onCopy"
       >
         <template #actions>
           <web-ide-link

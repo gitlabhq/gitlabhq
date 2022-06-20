@@ -114,12 +114,12 @@ pipeline in the main `gitlab` repository as well as in `gitlab-docs`. Create an 
 a different name first and test it to ensure you do not break the pipelines.
 
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Pipelines**.
-1. Click the **Run pipeline** button.
+1. Select **Run pipeline**.
 1. See that a new pipeline is running. The jobs that build the images are in the first
-   stage, `build-images`. You can click the pipeline number to see the larger pipeline
-   graph, or click the first (`build-images`) stage in the mini pipeline graph to
+   stage, `build-images`. You can select the pipeline number to see the larger pipeline
+   graph, or select the first (`build-images`) stage in the mini pipeline graph to
    expose the jobs that build the images.
-1. Click the **play** (**{play}**) button next to the images you want to rebuild.
+1. Select the **play** (**{play}**) button next to the images you want to rebuild.
    - Normally, you do not need to rebuild the `image:gitlab-docs-base` image, as it
      rarely changes. If it does need to be rebuilt, be sure to only run `image:docs-lint`
      after it is finished rebuilding.
@@ -133,7 +133,7 @@ and deploys it to <https://docs.gitlab.com>.
 To build and deploy the site immediately (must have the Maintainer role):
 
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Schedules**.
-1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, click the **play** (**{play}**) button.
+1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, select the **play** (**{play}**) button.
 
 Read more about [documentation deployments](deployment_process.md).
 

@@ -13,7 +13,6 @@ export default {
     loading: s__('ciReport|Code Quality test metrics results are being parsed'),
     error: s__('ciReport|Code Quality failed loading results'),
   },
-  expandEvent: 'i_testing_code_quality_widget_total',
   computed: {
     summary() {
       const { newErrors, resolvedErrors, errorSummary } = this.collapsedData;

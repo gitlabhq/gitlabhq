@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::JiraImport::IssuesImporter do
-  include JiraServiceHelper
+  include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:current_user) { create(:user) }

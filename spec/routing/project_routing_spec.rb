@@ -772,6 +772,58 @@ RSpec.describe 'project routing' do
     end
   end
 
+  describe Projects::Settings::IntegrationsController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/-/settings/integrations')).to route_to('projects/settings/integrations#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+
+    it 'to #edit' do
+      expect(get('/gitlab/gitlabhq/-/settings/integrations/acme/edit')).to route_to('projects/settings/integrations#edit', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
+    end
+
+    it 'to #update' do
+      expect(put('/gitlab/gitlabhq/-/settings/integrations/acme')).to route_to('projects/settings/integrations#update', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
+    end
+
+    it 'to #test' do
+      expect(put('/gitlab/gitlabhq/-/settings/integrations/acme/test')).to route_to('projects/settings/integrations#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
+    end
+
+    context 'legacy routes' do
+      it 'to #edit' do
+        expect(get('/gitlab/gitlabhq/-/integrations/acme/edit')).to route_to('projects/settings/integrations#edit', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
+      end
+
+      it 'to #update' do
+        expect(put('/gitlab/gitlabhq/-/integrations/acme')).to route_to('projects/settings/integrations#update', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
+      end
+
+      it 'to #test' do
+        expect(put('/gitlab/gitlabhq/-/integrations/acme/test')).to route_to('projects/settings/integrations#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
+      end
+    end
+  end
+
+  describe Projects::Settings::IntegrationHookLogsController do
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/-/settings/integrations/acme/hook_logs/log')).to route_to('projects/settings/integration_hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
+    end
+
+    it 'to #retry' do
+      expect(post('/gitlab/gitlabhq/-/settings/integrations/acme/hook_logs/log/retry')).to route_to('projects/settings/integration_hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
+    end
+
+    context 'legacy routes' do
+      it 'to #show' do
+        expect(get('/gitlab/gitlabhq/-/integrations/acme/hook_logs/log')).to route_to('projects/settings/integration_hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
+      end
+
+      it 'to #retry' do
+        expect(post('/gitlab/gitlabhq/-/integrations/acme/hook_logs/log/retry')).to route_to('projects/settings/integration_hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
+      end
+    end
+  end
+
   describe Projects::TemplatesController, 'routing' do
     describe '#show' do
       def show_with_template_type(template_type)
@@ -805,15 +857,6 @@ RSpec.describe 'project routing' do
 
     it 'routes to service_ping#web_ide_pipelines_count' do
       expect(post('/gitlab/gitlabhq/service_ping/web_ide_pipelines_count')).to route_to('projects/service_ping#web_ide_pipelines_count', namespace_id: 'gitlab', project_id: 'gitlabhq')
-    end
-  end
-
-  describe Projects::StaticSiteEditorController, 'routing' do
-    it 'routes to static_site_editor#show', :aggregate_failures do
-      expect(get('/gitlab/gitlabhq/-/sse/master%2FCONTRIBUTING.md')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/CONTRIBUTING.md')
-      expect(get('/gitlab/gitlabhq/-/sse/master%2FCONTRIBUTING.md/')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/CONTRIBUTING.md')
-      expect(get('/gitlab/gitlabhq/-/sse/master%2FREADME/unsupported/error')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/README', vueroute: 'unsupported/error')
-      expect(get('/gitlab/gitlabhq/-/sse/master%2Flib%2FREADME/success')).to route_to('projects/static_site_editor#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/lib/README', vueroute: 'success')
     end
   end
 

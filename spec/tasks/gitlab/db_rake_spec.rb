@@ -822,18 +822,20 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool ) }
     let(:connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
     let(:configurations) { double(ActiveRecord::DatabaseConfigurations) }
-    let(:configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig) }
+    let(:configuration) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, env_name: 'test', name: 'main') }
     let(:config_hash) { { username: 'foo' } }
 
-    it 'migrate as nonsuperuser check with default username' do
+    before do
       allow(Rake::Task['db:drop']).to receive(:invoke)
       allow(Rake::Task['db:create']).to receive(:invoke)
       allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
       allow(configurations).to receive(:configs_for).and_return([configuration])
       allow(configuration).to receive(:configuration_hash).and_return(config_hash)
       allow(ActiveRecord::Base).to receive(:establish_connection).and_return(connection_pool)
+    end
 
-      expect(config_hash).to receive(:merge).with({ username: 'gitlab' })
+    it 'migrate as nonsuperuser check with default username' do
+      expect(config_hash).to receive(:merge).with({ username: 'gitlab' }).and_call_original
       expect(Gitlab::Database).to receive(:check_for_non_superuser)
       expect(Rake::Task['db:migrate']).to receive(:invoke)
 
@@ -841,14 +843,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
 
     it 'migrate as nonsuperuser check with specified username' do
-      allow(Rake::Task['db:drop']).to receive(:invoke)
-      allow(Rake::Task['db:create']).to receive(:invoke)
-      allow(ActiveRecord::Base).to receive(:configurations).and_return(configurations)
-      allow(configurations).to receive(:configs_for).and_return([configuration])
-      allow(configuration).to receive(:configuration_hash).and_return(config_hash)
-      allow(ActiveRecord::Base).to receive(:establish_connection).and_return(connection_pool)
-
-      expect(config_hash).to receive(:merge).with({ username: 'foo' })
+      expect(config_hash).to receive(:merge).with({ username: 'foo' }).and_call_original
       expect(Gitlab::Database).to receive(:check_for_non_superuser)
       expect(Rake::Task['db:migrate']).to receive(:invoke)
 

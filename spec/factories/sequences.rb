@@ -16,7 +16,6 @@ FactoryBot.define do
   sequence(:oid) { |n| Digest::SHA2.hexdigest("oid-like-#{n}") }
   sequence(:variable) { |n| "var#{n}" }
   sequence(:draft_title) { |n| "Draft: #{n}" }
-  sequence(:wip_title) { |n| "WIP: #{n}" }
   sequence(:jira_title) { |n| "[PROJ-#{n}]: fix bug" }
   sequence(:jira_description) { |n| "This is a description\n here is the description\n Related to: PROJ-#{n}" }
   sequence(:jira_branch) { |n| "feature/PROJ-#{n}" }

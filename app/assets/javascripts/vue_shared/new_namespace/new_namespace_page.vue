@@ -130,11 +130,7 @@ export default {
       <slot name="extra-description"></slot>
     </div>
     <div class="col-lg-9">
-      <gl-breadcrumb v-if="breadcrumbs" :items="breadcrumbs">
-        <template #separator>
-          <gl-icon name="chevron-right" :size="8" />
-        </template>
-      </gl-breadcrumb>
+      <gl-breadcrumb v-if="breadcrumbs" :items="breadcrumbs" />
       <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
     </div>
   </div>

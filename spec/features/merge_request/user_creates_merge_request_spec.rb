@@ -30,7 +30,6 @@ RSpec.describe "User creates a merge request", :js do
 
     it "shows merge request form" do
       page.within('.merge-request-form') do
-        expect(page.find('#merge_request_title')['placeholder']).to eq 'Title'
         expect(page.find('#merge_request_description')['placeholder']).to eq 'Describe the goal of the changes and what reviewers should be aware of.'
       end
     end
@@ -100,7 +99,7 @@ RSpec.describe "User creates a merge request", :js do
 
       click_button("Compare branches and continue")
 
-      expect(page).to have_css("h3.page-title", text: "New merge request")
+      expect(page).to have_text _('New merge request')
 
       page.within("form#new_merge_request") do
         fill_in("Title", with: title)

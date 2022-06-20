@@ -52,6 +52,7 @@ class Deployment < ApplicationRecord
   scope :upcoming, -> { where(status: %i[blocked running]) }
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
   scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
+  scope :with_environment_page_associations, -> { preload(project: [], environment: [], deployable: [:user, :metadata, :project, pipeline: [:manual_actions]]) }
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
@@ -109,7 +110,11 @@ class Deployment < ApplicationRecord
 
     after_transition any => :running do |deployment|
       deployment.run_after_commit do
-        Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        if Feature.enabled?(:deployment_hooks_skip_worker, deployment.project)
+          deployment.execute_hooks(Time.current)
+        else
+          Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        end
       end
     end
 
@@ -123,7 +128,11 @@ class Deployment < ApplicationRecord
 
     after_transition any => FINISHED_STATUSES do |deployment|
       deployment.run_after_commit do
-        Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        if Feature.enabled?(:deployment_hooks_skip_worker, deployment.project)
+          deployment.execute_hooks(Time.current)
+        else
+          Deployments::HooksWorker.perform_async(deployment_id: id, status_changed_at: Time.current)
+        end
       end
     end
 
@@ -171,6 +180,38 @@ class Deployment < ApplicationRecord
       .group(:environment_id)
       .map(&:id)
     find(ids)
+  end
+
+  # This method returns the deployment records of the last deployment pipeline, that successfully executed for the given environment.
+  # e.g.
+  # A pipeline contains
+  #   - deploy job A => production environment
+  #   - deploy job B => production environment
+  # In this case, `last_deployment_group` returns both deployments.
+  #
+  # NOTE: Preload environment.last_deployment and pipeline.latest_successful_builds prior to avoid N+1.
+  def self.last_deployment_group_for_environment(env)
+    return self.none unless env.last_deployment_pipeline&.latest_successful_builds&.present?
+
+    BatchLoader.for(env).batch do |environments, loader|
+      latest_successful_build_ids = []
+      environments_hash = {}
+
+      environments.each do |environment|
+        environments_hash[environment.id] = environment
+
+        # Refer comment note above, if not preloaded this can lead to N+1.
+        latest_successful_build_ids << environment.last_deployment_pipeline.latest_successful_builds.map(&:id)
+      end
+
+      Deployment
+        .where(deployable_type: 'CommitStatus', deployable_id: latest_successful_build_ids.flatten)
+        .preload(last_deployment_group_associations)
+        .group_by { |deployment| deployment.environment_id }
+        .each do |env_id, deployment_group|
+          loader.call(environments_hash[env_id], deployment_group)
+        end
+    end
   end
 
   def self.distinct_on_environment
@@ -247,11 +288,27 @@ class Deployment < ApplicationRecord
   end
 
   def manual_actions
-    @manual_actions ||= deployable.try(:other_manual_actions)
+    environment_manual_actions
+  end
+
+  def other_manual_actions
+    @other_manual_actions ||= deployable.try(:other_manual_actions)
+  end
+
+  def environment_manual_actions
+    @environment_manual_actions ||= deployable.try(:environment_manual_actions)
   end
 
   def scheduled_actions
-    @scheduled_actions ||= deployable.try(:other_scheduled_actions)
+    environment_scheduled_actions
+  end
+
+  def environment_scheduled_actions
+    @environment_scheduled_actions ||= deployable.try(:environment_scheduled_actions)
+  end
+
+  def other_scheduled_actions
+    @other_scheduled_actions ||= deployable.try(:other_scheduled_actions)
   end
 
   def playable_build
@@ -414,6 +471,18 @@ class Deployment < ApplicationRecord
       raise ArgumentError, "The status #{status.inspect} is invalid"
     end
   end
+
+  def self.last_deployment_group_associations
+    {
+      deployable: {
+        pipeline: {
+          manual_actions: []
+        }
+      }
+    }
+  end
+
+  private_class_method :last_deployment_group_associations
 end
 
 Deployment.prepend_mod_with('Deployment')

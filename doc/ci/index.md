@@ -89,7 +89,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md)                  | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md)                               | Open an interactive web terminal to debug the running jobs. |
 | [Review Apps](review_apps/index.md)                                                          | Configure GitLab CI/CD to preview code changes. |
-| [Unit test reports](unit_test_reports.md)                                                    | Identify test failures directly on merge requests. |
+| [Unit test reports](testing/unit_test_reports.md)                                            | Identify test failures directly on merge requests. |
 | [Using Docker images](docker/using_docker_images.md)                                         | Use GitLab and GitLab Runner with Docker to build and test applications. |
 | **Release**                                                                                  |             |
 | [Auto Deploy](../topics/autodevops/stages.md#auto-deploy)                                    | Deploy your application to a production environment in a Kubernetes cluster. |

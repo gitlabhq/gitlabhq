@@ -53,14 +53,14 @@ memory than it costs to have Workhorse look after it.
   for example, JavaScript files and CSS files are served straight
   from disk.
 - Workhorse can modify responses sent by Rails: for example if you use
-  `send_file` in Rails then GitLab Workhorse will open the file on
+  `send_file` in Rails then GitLab Workhorse opens the file on
   disk and send its contents as the response body to the client.
 - Workhorse can take over requests after asking permission from Rails.
   Example: handling `git clone`.
 - Workhorse can modify requests before passing them to Rails. Example:
   when handling a Git LFS upload Workhorse first asks permission from
-  Rails, then it stores the request body in a tempfile, then it sends
-  a modified request containing the tempfile path to Rails.
+  Rails, then it stores the request body in a temporary file, then it sends
+  a modified request containing the file path to Rails.
 - Workhorse can manage long-lived WebSocket connections for Rails.
   Example: handling the terminal websocket for environments.
 - Workhorse does not connect to PostgreSQL, only to Rails and (optionally) Redis.

@@ -2,6 +2,7 @@
 
 class Projects::GoogleCloud::BaseController < Projects::ApplicationController
   feature_category :five_minute_production_app
+  urgency :low
 
   before_action :admin_project_google_cloud!
   before_action :google_oauth2_enabled!

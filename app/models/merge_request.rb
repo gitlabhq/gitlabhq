@@ -231,7 +231,10 @@ class MergeRequest < ApplicationRecord
     # rubocop: disable CodeReuse/ServiceClass
     after_transition [:unchecked, :checking] => :cannot_be_merged do |merge_request, transition|
       if merge_request.notify_conflict?
-        NotificationService.new.merge_request_unmergeable(merge_request)
+        merge_request.run_after_commit do
+          NotificationService.new.merge_request_unmergeable(merge_request)
+        end
+
         TodoService.new.merge_request_became_unmergeable(merge_request)
       end
     end
@@ -1150,6 +1153,19 @@ class MergeRequest < ApplicationRecord
     can_be_merged? && !should_be_rebased?
   end
 
+  def mergeability_checks
+    # We want to have the cheapest checks first in the list, that way we can
+    #   fail fast before running the more expensive ones.
+    #
+    [
+      ::MergeRequests::Mergeability::CheckOpenStatusService,
+      ::MergeRequests::Mergeability::CheckDraftStatusService,
+      ::MergeRequests::Mergeability::CheckBrokenStatusService,
+      ::MergeRequests::Mergeability::CheckDiscussionsStatusService,
+      ::MergeRequests::Mergeability::CheckCiStatusService
+    ]
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     if Feature.enabled?(:improved_mergeability_checks, self.project)
@@ -1654,9 +1670,9 @@ class MergeRequest < ApplicationRecord
   # TODO: consider renaming this as with exposed artifacts we generate reports,
   # not always compare
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
-  def compare_reports(service_class, current_user = nil, report_type = nil )
+  def compare_reports(service_class, current_user = nil, report_type = nil, additional_params = {} )
     with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
-      unless service_class.new(project, current_user, id: id, report_type: report_type)
+      unless service_class.new(project, current_user, id: id, report_type: report_type, additional_params: additional_params)
         .latest?(comparison_base_pipeline(service_class.name), actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
@@ -1696,7 +1712,12 @@ class MergeRequest < ApplicationRecord
     service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(identifier), actual_head_pipeline)
   end
 
-  def recent_diff_head_shas(limit = 100)
+  MAX_RECENT_DIFF_HEAD_SHAS = 100
+
+  def recent_diff_head_shas(limit = MAX_RECENT_DIFF_HEAD_SHAS)
+    # see MergeRequestDiff.recent
+    return merge_request_diffs.to_a.sort_by(&:id).reverse.first(limit).pluck(:head_commit_sha) if merge_request_diffs.loaded?
+
     merge_request_diffs.recent(limit).pluck(:head_commit_sha)
   end
 
@@ -1953,6 +1974,10 @@ class MergeRequest < ApplicationRecord
     strong_memoize(:context_commits_diff) do
       ContextCommitsDiff.new(self)
     end
+  end
+
+  def target_default_branch?
+    target_branch == project.default_branch
   end
 
   private

@@ -207,7 +207,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   private
 
   def deployments
-    environment.deployments.ordered.page(params[:page])
+    environment
+      .deployments
+      .with_environment_page_associations
+      .ordered
+      .page(params[:page])
   end
 
   def verify_api_request!

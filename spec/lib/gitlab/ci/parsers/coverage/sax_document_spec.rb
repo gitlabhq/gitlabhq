@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::SaxDocument do
   subject(:parse_report) { Nokogiri::XML::SAX::Parser.new(described_class.new(coverage_report, project_path, paths)).parse(cobertura) }
 
   describe '#parse!' do
-    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReports.new }
+    let(:coverage_report) { Gitlab::Ci::Reports::CoverageReport.new }
     let(:project_path) { 'foo/bar' }
     let(:paths) { ['app/user.rb'] }
 

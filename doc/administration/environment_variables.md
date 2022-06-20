@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
@@ -25,7 +25,7 @@ You can use the following environment variables to override certain values:
 | `EXTERNAL_VALIDATION_SERVICE_TIMEOUT`      | integer | Timeout, in seconds, for an [external CI/CD pipeline validation service](external_pipeline_validation.md). Default is `5`. |
 | `EXTERNAL_VALIDATION_SERVICE_URL`          | string  | URL to an [external CI/CD pipeline validation service](external_pipeline_validation.md).                |
 | `EXTERNAL_VALIDATION_SERVICE_TOKEN`        | string  | The `X-Gitlab-Token` for authentication with an [external CI/CD pipeline validation service](external_pipeline_validation.md). |
-| `GITLAB_CDN_HOST`                          | string  | Sets the base URL for a CDN to serve static assets (for example, `//mycdnsubdomain.fictional-cdn.com`). |
+| `GITLAB_CDN_HOST`                          | string  | Sets the base URL for a CDN to serve static assets (for example, `https://mycdnsubdomain.fictional-cdn.com`). |
 | `GITLAB_EMAIL_DISPLAY_NAME`                | string  | The name used in the **From** field in emails sent by GitLab.                                           |
 | `GITLAB_EMAIL_FROM`                        | string  | The email address used in the **From** field in emails sent by GitLab.                                  |
 | `GITLAB_EMAIL_REPLY_TO`                    | string  | The email address used in the **Reply-To** field in emails sent by GitLab.                              |

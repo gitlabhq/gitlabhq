@@ -538,7 +538,7 @@ can be added, removed, and modified by creating a custom configuration.
 | CI/CD variable                                       | Description        |
 |------------------------------------------------------|--------------------|
 | `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
-| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `1`. |
+| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `2`. |
 | `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
@@ -837,7 +837,7 @@ Adding some basic logging to your overrides script is useful in case the script 
 Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Please notice two things in the script:
 
 - Log file is saved in the location indicated by the environmental variable `CI_PROJECT_DIR`.
-- Log file name should match `gl-*.log`.
+- Log filename should match `gl-*.log`.
 
 ```python
 #!/usr/bin/env python
@@ -1019,6 +1019,19 @@ To exclude multiple paths we use the `;` character. In this example we exclude `
 ```yaml
 variables:
   DAST_API_EXCLUDE_PATHS=/auth*;/v1/*
+```
+
+To exclude one or more nested levels within a path we use `**`. In this example we are testing API endpoints. We are testing `/api/v1/` and `/api/v2/` of a data query requesting `mass`, `brightness` and `coordinates` data for `planet`, `moon`, `star`, and `satellite` objects. Example paths that could be scanned include, but are not limited to:
+
+- `/api/v2/planet/coordinates`
+- `/api/v1/star/mass`
+- `/api/v2/satellite/brightness`
+
+In this example we test the `brightness` endpoint only:
+
+```yaml
+variables:
+  DAST_API_EXCLUDE_PATHS=/api/**/mass;/api/**/coordinates
 ```
 
 ### Exclude parameters
@@ -1250,7 +1263,7 @@ variables:
 
 The `dast-api-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document).
 
-### Exclude URLS
+### Exclude URLs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
 
@@ -1332,12 +1345,12 @@ Follow these steps to view details of a vulnerability:
 
    - In a project, go to the project's **{shield}** **Security & Compliance > Vulnerability Report**
      page. This page shows all vulnerabilities from the default branch only.
-   - In a merge request, go the merge request's **Security** section and click the **Expand**
+   - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. DAST API vulnerabilities are available in a section labeled
-     **DAST detected N potential vulnerabilities**. Click the title to display the vulnerability
+     **DAST detected N potential vulnerabilities**. Select the title to display the vulnerability
      details.
 
-1. Click the vulnerabilities title to display the details. The table below describes these details.
+1. Select the vulnerabilities title to display the details. The table below describes these details.
 
    | Field               | Description                                                                             |
    |:--------------------|:----------------------------------------------------------------------------------------|
@@ -1489,14 +1502,14 @@ Steps:
 
 The Docker image for DAST API must be pulled (downloaded) from the public registry and then pushed (imported) into a local registry. The GitLab container registry can be used to locally host the Docker image. This process can be performed using a special template. See [loading Docker images onto your offline host](../offline_deployments/index.md#loading-docker-images-onto-your-offline-host) for instructions.
 
-Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable is set with the location of the local registry. The variable must be set such that concatenating `/api-fuzzing:1` results in a valid image location.
+Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable is set with the location of the local registry. The variable must be set such that concatenating `/api-security:2` results in a valid image location.
 
 NOTE:
-DAST API and API Fuzzing both use the same underlying Docker image `api-fuzzing:1`.
+DAST API and API Fuzzing both use the same underlying Docker image `api-security:2`.
 
-For example, the below line sets a registry for the image `registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:1`:
+For example, the below line sets a registry for the image `registry.gitlab.com/security-products/api-security:2`:
 
-`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"`
+`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"`
 
 NOTE:
 Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab Secure templates.

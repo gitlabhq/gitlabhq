@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
-To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
+To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md).
 
 ## Disable a cluster
 
@@ -22,7 +22,7 @@ When you successfully connect an existing cluster using cluster certificates, th
    - **Menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Select the name of the cluster you want to disable.
 1. Toggle **GitLab Integration** off (in gray).
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Remove a cluster
 

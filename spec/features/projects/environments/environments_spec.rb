@@ -132,8 +132,6 @@ RSpec.describe 'Environments page', :js do
       create(:environment, project: project, state: :available)
     end
 
-    stub_feature_flags(bootstrap_confirmation_modals: false)
-
     context 'when there are no deployments' do
       before do
         visit_environments(project)

@@ -85,9 +85,9 @@ To protect or unprotect a runner:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the runner you want to protect or unprotect. Make sure it's enabled.
-1. Click the pencil button.
+1. Select the pencil button.
 1. Check the **Protected** option.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ![specific runners edit icon](img/protected_runners_check_box_v14_1.png)
 
@@ -113,7 +113,7 @@ To reset the registration token:
 
 1. Go to the project's **Settings > CI/CD**.
 1. Expand the **General pipelines settings** section.
-1. Find the **Runner token** form field and click the **Reveal value** button.
+1. Find the **Runner token** form field and select **Reveal value**.
 1. Delete the value and save the form.
 1. After the page is refreshed, expand the **Runners settings** section
    and check the registration token - it should be changed.
@@ -193,16 +193,16 @@ To make a runner pick untagged jobs:
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Find the runner you want to pick untagged jobs and make sure it's enabled.
-1. Click the pencil button.
+1. Select the pencil button.
 1. Check the **Run untagged jobs** option.
-1. Click the **Save changes** button for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 NOTE:
 The runner tags list can not be empty when it's not allowed to pick untagged jobs.
 
 Below are some example scenarios of different variations.
 
-### runner runs only tagged jobs
+### Runner runs only tagged jobs
 
 The following examples illustrate the potential impact of the runner being set
 to run only tagged jobs.
@@ -222,7 +222,7 @@ Example 3:
 1. The runner is configured to run only tagged jobs and has the `docker` tag.
 1. A job that has no tags defined is executed and stuck.
 
-### runner is allowed to run untagged jobs
+### Runner is allowed to run untagged jobs
 
 The following examples illustrate the potential impact of the runner being set
 to run tagged and untagged jobs.
@@ -280,6 +280,17 @@ variables:
     script:
       - echo "Hello runner selector feature"
 ```
+
+## Runner statuses
+
+A runner can have one of the following statuses.
+
+| Status | Description |
+|--------|-------------|
+| **online** | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
+| **offline** | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
+| **stale** | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
+| **never_contacted** | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
 ## Configure runner behavior with variables
 
@@ -706,3 +717,175 @@ variables:
 | `ARTIFACT_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
+
+## Artifact attestation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
+
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{JOB_ID}-artifacts-metadata.json`.
+
+### Attestation format
+
+The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://in-toto.io/Statement/v0.1). The following fields are populated by default:
+
+| Field  | Value  |
+| ------ | ------ |
+| `_type` | `https://in-toto.io/Statement/v0.1` |
+| `subject.name` | The filename of the artifact. |
+| `subject.digest.sha256` | The artifact's `sha256` checksum. |
+| `predicateType` | `https://slsa.dev/provenance/v0.2` |
+| `predicate.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example v15.0.0 |
+| `predicate.builder.id` | A URI pointing to the runner details page, for example `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
+| `predicate.invocation.configSource.uri` | ``https://gitlab.example.com/.../{PROJECT_NAME}`` |
+| `predicate.invocation.configSource.digest.sha256` | The repository's `sha256` checksum. |
+| `predicate.invocation.configSource.entryPoint` | The name of the CI job that triggered the build. |
+| `predicate.invocation.environment.name` | The name of the runner. |
+| `predicate.invocation.environment.executor` | The runner executor. |
+| `predicate.invocation.environment.architecture` | The architecture on which the CI job is run. |
+| `predicate.invocation.parameters` | The names of any CI/CD or environment variables that were present when the build command was run. The value is always represented as an empty string to avoid leaking any secrets. |
+| `metadata.buildStartedOn` | The time when the build was started. `RFC3339` formatted. |
+| `metadata.buildEndedOn` | The time when the build ended. Since metadata generation happens during the build this moment in time will be slightly earlier than the one reported in GitLab. `RFC3339` formatted. |
+| `metadata.reproducible` | Whether the build is reproducible by gathering all the generated metadata. Always `false`. |
+| `metadata.completeness.parameters` | Whether the parameters are supplied. Always `true`. |
+| `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
+| `metadata.completeness.materials` | Whether the build materials are reported. Always `false`. |
+
+An example of an attestation that the GitLab Runner might generate is as follows:
+
+```yaml
+{
+    "_type": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v15.1.0/PROVENANCE.md",
+    "subject": [
+        {
+            "name": "script.sh",
+            "digest": {
+                "sha256": "f5ae5ced234922eebe6461d32228ba8ab9c3d0c0f3983a3bef707e6e1a1ab52a"
+            }
+        }
+    ],
+    "predicateType": "https://slsa.dev/provenance/v0.2",
+    "predicate": {
+        "buildType": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v15.1.0/PROVENANCE.md",
+        "builder": {
+            "id": "https://gitlab.com/ggeorgiev_gitlab/playground/-/runners/14811533"
+        },
+        "invocation": {
+            "configSource": {
+                "uri": "https://gitlab.com/ggeorgiev_gitlab/playground",
+                "digest": {
+                    "sha256": "f0582e2c9a16b5cc2cde90e8be8f1b50fd67c631"
+                },
+                "entryPoint": "whoami shell"
+            },
+            "environment": {
+                "name": "local",
+                "executor": "shell",
+                "architecture": "amd64"
+            },
+            "parameters": {
+                "CI_PIPELINE_ID": "",
+                "CI_PIPELINE_URL": "",
+                // All other CI variable names are listed here. Values are always represented as empty strings to avoid leaking secrets.
+            }
+        },
+        "metadata": {
+            "buildStartedOn": "2022-06-17T00:47:27+03:00",
+            "buildFinishedOn": "2022-06-17T00:47:28+03:00",
+            "completeness": {
+                "parameters": true,
+                "environment": true,
+                "materials": false
+            },
+            "reproducible": false
+        },
+        "materials": []
+    }
+}
+```
+
+### Staging directory
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
+
+If you do not want to archive cache and artifacts in the system's default temporary directory, you can specify a different directory.
+
+You might need to change the directory if your system's default temporary path has constraints.
+If you use a fast disk for the directory location, it can also improve performance.
+
+To change the directory, set `ARCHIVER_STAGING_DIR` as a variable in your CI job, or use a runner variable when you register the runner (`gitlab register --env ARCHIVER_STAGING_DIR=<dir>`).
+
+The directory you specify is used as the location for downloading artifacts prior to extraction. If the `fastzip` archiver is
+used, this location is also used as scratch space when archiving.
+
+### Configure `fastzip` to improve performance
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
+
+To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
+Then use any of the following environment variables.
+
+| Variable                        | Description                                            |
+|---------------------------------|--------------------------------------------------------|
+| `FASTZIP_ARCHIVER_CONCURRENCY`  | The number of files to be concurrently compressed. Default is the number of CPUs available. |
+| `FASTZIP_ARCHIVER_BUFFER_SIZE`  | The buffer size allocated per concurrency for each file. Data exceeding this number moves to scratch space. Default is 2 MiB.  |
+| `FASTZIP_EXTRACTOR_CONCURRENCY` | The number of files to be concurrency decompressed. Default is the number of CPUs available. |
+
+Files in a zip archive are appended sequentially. This makes concurrent compression challenging. `fastzip` works around
+this limitation by compressing files concurrently to disk first, and then copying the result back to zip archive
+sequentially.
+
+To avoid writing to disk and reading the contents back for smaller files, a small buffer per concurrency is used. This setting
+can be controlled with `FASTZIP_ARCHIVER_BUFFER_SIZE`. The default size for this buffer is 2 MiB, therefore, a
+concurrency of 16 will allocate 32 MiB. Data that exceeds the buffer size will be written to and read back from disk.
+Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
+
+`FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As mentioned above, this setting
+therefore can increase how much memory is being used, but also how much temporary data is written to the scratch space.
+The default is the number of CPUs available, but given the memory ramifications, this may not always be the best
+setting.
+
+`FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
+be read from concurrency, so no additional memory is allocated in additional to what the decompressor requires. This
+defaults to the number of CPUs available.
+
+## Clean up stale runners **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
+
+You can clean up group runners that have been inactive for more than three months.
+
+Group runners are those that were created at the group level.
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Turn on the **Enable stale runner cleanup** toggle.
+
+### View stale runner cleanup logs
+
+You can check the [Sidekiq logs](../../administration/logs.md#sidekiq-logs) to see the cleanup result. In Kibana you can use the following query:
+
+```json
+{
+  "query": {
+    "match_phrase": {
+      "json.class.keyword": "Ci::Runners::StaleGroupRunnersPruneCronWorker"
+    }
+  }
+}
+```
+
+Filter entries where stale runners were removed:
+
+```json
+{
+  "query": {
+    "range": {
+      "json.extra.ci_runners_stale_group_runners_prune_cron_worker.total_pruned": {
+        "gte": 1,
+        "lt": null
+      }
+    }
+  }
+}
+```

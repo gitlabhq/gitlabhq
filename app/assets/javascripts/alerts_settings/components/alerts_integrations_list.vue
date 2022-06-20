@@ -42,6 +42,20 @@ const bodyTrClass =
 export default {
   i18n,
   typeSet,
+  modal: {
+    actionPrimary: {
+      text: i18n.deleteIntegration,
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionSecondary: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   components: {
     GlButtonGroup,
     GlButton,
@@ -204,8 +218,8 @@ export default {
     <gl-modal
       modal-id="deleteIntegration"
       :title="$options.i18n.deleteIntegration"
-      :ok-title="$options.i18n.deleteIntegration"
-      ok-variant="danger"
+      :action-primary="$options.modal.actionPrimary"
+      :action-secondary="$options.modal.actionSecondary"
       @ok="deleteIntegration"
     >
       <gl-sprintf

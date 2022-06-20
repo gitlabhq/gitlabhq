@@ -35,7 +35,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `name`              | no       | Metric name suggestion. Can replace the last part of `key_path`. |
 | `description`       | yes      |                                                                |
 | `product_section`   | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
-| `product_stage`     | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
+| `product_stage`     | yes       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `product_category`  | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the metric. |
 | `value_type`        | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type.html).                                                     |
@@ -43,11 +43,11 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `time_frame`        | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
 | `data_source`       | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`. |
 | `data_category`     | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`.|
-| `instrumentation_class` | no   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
+| `instrumentation_class` | yes   | `string`; [the class that implements the metric](metrics_instrumentation.md).  |
 | `distribution`      | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available.  |
 | `performance_indicator_type`  | no      | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, or `umau`](https://about.gitlab.com/handbook/business-technology/data-team/data-catalog/xmau-analysis/). |
 | `tier`              | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
-| `milestone`         | no       | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
+| `milestone`         | yes       | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
 | `milestone_removed` | no       | The milestone when the metric is removed. |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the metric to be available for self-managed instances. |
 | `removed_by_url`    | no       | The URL to the merge request that removed the metric. |

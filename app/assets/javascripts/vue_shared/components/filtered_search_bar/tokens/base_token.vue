@@ -168,7 +168,7 @@ export default {
       if (data || operator) {
         this.searchKey = data;
 
-        if (!this.suggestionsLoading && !this.activeTokenValue) {
+        if (!this.activeTokenValue) {
           let search = this.searchTerm ? this.searchTerm : data;
 
           if (search.startsWith('"') && search.endsWith('"')) {

@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
+import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
 import { mount, shallowMount, createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 
@@ -24,6 +24,8 @@ import {
 const mockToken = '0123456789';
 const maskToken = '**********';
 
+Vue.use(VueApollo);
+
 describe('RegistrationDropdown', () => {
   let wrapper;
 
@@ -32,9 +34,11 @@ describe('RegistrationDropdown', () => {
   const findRegistrationInstructionsDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
   const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
-  const findRegistrationTokenInput = () => wrapper.findByTestId('token-value').find('input');
+  const findRegistrationTokenInput = () =>
+    wrapper.findByLabelText(RegistrationToken.i18n.registrationToken);
   const findTokenResetDropdownItem = () =>
     wrapper.findComponent(RegistrationTokenResetDropdownItem);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findModalContent = () =>
     createWrapper(document.body)
       .find('[data-testid="runner-instructions-modal"]')
@@ -43,6 +47,8 @@ describe('RegistrationDropdown', () => {
 
   const openModal = async () => {
     await findRegistrationInstructionsDropdownItem().trigger('click');
+    findModal().vm.$emit('shown');
+
     await waitForPromises();
   };
 
@@ -60,8 +66,6 @@ describe('RegistrationDropdown', () => {
   };
 
   const createComponentWithModal = () => {
-    Vue.use(VueApollo);
-
     const requestHandlers = [
       [getRunnerPlatformsQuery, jest.fn().mockResolvedValue(mockGraphqlRunnerPlatforms)],
       [getRunnerSetupInstructionsQuery, jest.fn().mockResolvedValue(mockGraphqlInstructions)],
@@ -169,10 +173,10 @@ describe('RegistrationDropdown', () => {
       await nextTick();
     };
 
-    it('Updates token in input', async () => {
+    it('Updates token input', async () => {
       createComponent({}, mount);
 
-      expect(findRegistrationTokenInput().props('value')).not.toBe(newToken);
+      expect(findRegistrationToken().props('value')).not.toBe(newToken);
 
       await resetToken();
 

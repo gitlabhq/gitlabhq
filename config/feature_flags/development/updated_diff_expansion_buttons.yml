@@ -1,8 +1,0 @@
----
-name: updated_diff_expansion_buttons
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80890
-rollout_issue_url:
-milestone: '14.10'
-type: development
-group: group::code review
-default_enabled: true

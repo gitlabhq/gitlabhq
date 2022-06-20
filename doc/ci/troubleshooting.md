@@ -26,8 +26,32 @@ experience (rather than the single file editor or the Web IDE). It includes:
 - The [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration),
   a graphical representation of your `.gitlab-ci.yml` file.
 
-If you prefer to use another editor, you can use a schema like [the Schemastore `gitlab-ci` schema](https://json.schemastore.org/gitlab-ci)
-with your editor of choice.
+### Edit `.gitlab-ci.yml` locally
+
+If you prefer to edit your pipeline configuration locally, you can use the
+GitLab CI/CD schema in your editor to verify basic syntax issues. Any
+[editor with Schemastore support](https://www.schemastore.org/json/#editors) uses
+the GitLab CI/CD schema by default.
+
+If you need to link to the schema directly, it
+is at:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json.
+```
+
+The schema rules for custom YAML tags like `!reference` will not work until the
+custom tags are set in the editor settings. For example, in VS Code, you can set
+`vscode-yaml` to parse `customTags`:
+
+```json
+"yaml.customTags": [
+   "!reference sequence"
+]
+```
+
+To see the full list of custom tags covered by the CI/CD schema, check the
+latest version of the schema, linked above.
 
 ### Verify syntax with CI Lint tool
 

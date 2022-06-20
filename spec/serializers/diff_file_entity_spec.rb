@@ -91,5 +91,38 @@ RSpec.describe DiffFileEntity do
     end
   end
 
+  describe '#highlighted_diff_lines' do
+    context 'file without a conflict' do
+      let(:options) { { conflicts: {} } }
+
+      it 'calls diff_lines_for_serializer on diff_file' do
+        # #diff_lines_for_serializer gets called in #fully_expanded? as well so we expect twice
+        expect(diff_file).to receive(:diff_lines_for_serializer).twice.and_return([])
+        expect(subject[:highlighted_diff_lines]).to eq([])
+      end
+    end
+
+    context 'file with a conflict' do
+      let(:conflict_file) { instance_double(Gitlab::Conflict::File, conflict_type: :both_modified) }
+      let(:options) { { conflicts: { diff_file.new_path => conflict_file } } }
+
+      it 'calls diff_lines_for_serializer on matching conflict file' do
+        expect(conflict_file).to receive(:diff_lines_for_serializer).and_return([])
+        expect(subject[:highlighted_diff_lines]).to eq([])
+      end
+
+      context 'when Gitlab::Git::Conflict::Parser::UnmergeableFile gets raised' do
+        before do
+          allow(conflict_file).to receive(:diff_lines_for_serializer).and_raise(Gitlab::Git::Conflict::Parser::UnmergeableFile)
+        end
+
+        it 'falls back to diff_file diff_lines_for_serializer' do
+          expect(diff_file).to receive(:diff_lines_for_serializer).and_return([])
+          expect(subject[:highlighted_diff_lines]).to eq([])
+        end
+      end
+    end
+  end
+
   it_behaves_like 'diff file with conflict_type'
 end

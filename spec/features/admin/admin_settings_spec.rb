@@ -61,7 +61,7 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.import_sources).to be_empty
 
         page.within('.as-visibility-access') do
-          check "Repo by URL"
+          check "Repository by URL"
           click_button 'Save changes'
         end
 
@@ -278,6 +278,18 @@ RSpec.describe 'Admin updates settings' do
           expect(page).to have_content 'Application settings saved successfully'
           expect(current_settings.gitpod_url).to eq('https://gitpod.test/')
           expect(current_settings.gitpod_enabled).to be(true)
+        end
+      end
+
+      context 'GitLab for Jira App settings' do
+        it 'changes the setting' do
+          page.within('#js-jira_connect-settings') do
+            fill_in 'Jira Connect Application ID', with: '1234'
+            click_button 'Save changes'
+          end
+
+          expect(current_settings.jira_connect_application_key).to eq('1234')
+          expect(page).to have_content "Application settings saved successfully"
         end
       end
     end

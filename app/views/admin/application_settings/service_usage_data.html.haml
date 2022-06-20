@@ -8,12 +8,12 @@
 %h3= name
 
 - if @service_ping_data_present
-  %button.gl-button.btn.btn-default.js-payload-preview-trigger{ type: 'button', data: { payload_selector: ".#{payload_class}" } }
-    = gl_loading_icon(css_class: 'js-spinner gl-display-none gl-mr-2')
-    .js-text.gl-display-inline= _('Preview payload')
-  %button.gl-button.btn.btn-default.js-payload-download-trigger{ type: 'button', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } }
-    = gl_loading_icon(css_class: 'js-spinner gl-display-none gl-mr-2')
-    .js-text.d-inline= _('Download payload')
+  = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } } ) do
+    = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+    %span.js-text.gl-display-inline= _('Preview payload')
+  = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } } ) do
+    = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+    %span.js-text.gl-display-inline= _('Download payload')
   %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
 - else
   = render Pajamas::AlertComponent.new(variant: :warning,

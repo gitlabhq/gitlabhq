@@ -88,6 +88,14 @@ describe('Blob Header Default Actions', () => {
       expect(findCopyButton().exists()).toBe(false);
       expect(findViewRawButton().exists()).toBe(false);
     });
+
+    it('emits a copy event if overrideCopy is set to true', () => {
+      createComponent({ overrideCopy: true });
+      jest.spyOn(wrapper.vm, '$emit');
+      findCopyButton().vm.$emit('click');
+
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('copy');
+    });
   });
 
   describe('view on environment button', () => {

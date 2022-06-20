@@ -53,7 +53,7 @@ search the web for `how to add dns record on <my hosting service>`.
 
 ## `A` record
 
-A DNS A record maps a host to an IPv4 IP address.
+A DNS `A` record maps a host to an IPv4 IP address.
 It points a root domain as `example.com` to the host's IP address as
 `192.192.192.192`.
 
@@ -61,10 +61,10 @@ Example:
 
 - `example.com` => `A` => `192.192.192.192`
 
-## CNAME record
+## `CNAME` record
 
-CNAME records define an alias for canonical name for your server (one defined
-by an A record). It points a subdomain to another domain.
+`CNAME` records define an alias for canonical name for your server (one defined
+by an `A` record). It points a subdomain to another domain.
 
 Example:
 
@@ -84,14 +84,14 @@ Example:
 
 Then you can register emails for `users@mail.example.com`.
 
-## TXT record
+## `TXT` record
 
 A `TXT` record can associate arbitrary text with a host or other name. A common
 use is for site verification.
 
 Example:
 
-- `example.com`=> TXT => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
+- `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
 
 This way, you can verify the ownership for that domain name.
 
@@ -102,4 +102,4 @@ You can have one DNS record or more than one combined:
 - `example.com` => `A` => `192.192.192.192`
 - `www` => `CNAME` => `example.com`
 - `MX` => `mail.example.com`
-- `example.com`=> TXT => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`
+- `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`

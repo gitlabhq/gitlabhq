@@ -56,7 +56,7 @@ RSpec.describe 'Removing an incident timeline event' do
       },
       'note' => timeline_event.note,
       'noteHtml' => timeline_event.note_html,
-      'editable' => false,
+      'editable' => true,
       'action' => timeline_event.action,
       'occurredAt' => timeline_event.occurred_at.iso8601,
       'createdAt' => timeline_event.created_at.iso8601,

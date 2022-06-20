@@ -6,7 +6,7 @@
   .settings-header
     %h4
       = _('Performance optimization')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Various settings that affect GitLab performance.')
@@ -17,7 +17,7 @@
   .settings-header
     %h4
       = _('User and IP rate limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set limits for web and API requests.')
@@ -29,7 +29,7 @@
   .settings-header
     %h4
       = _('Package registry rate limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
@@ -41,7 +41,7 @@
   .settings-header
     %h4
       = _('Files API Rate Limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
@@ -52,7 +52,7 @@
   .settings-header
     %h4
       = _('Search rate limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set rate limits for searches performed by web or API requests.')
@@ -63,7 +63,7 @@
   .settings-header
     %h4
       = _('Deprecated API rate limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
@@ -75,7 +75,7 @@
   .settings-header
     %h4
       = _('Git LFS Rate Limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
@@ -88,7 +88,7 @@
     %h4
       = s_('OutboundRequests|Outbound requests')
 
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = s_('OutboundRequests|Allow requests to the local network from hooks and services.')
@@ -100,7 +100,7 @@
   .settings-header
     %h4
       = _('Protected paths')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Rate limit access to specified paths.')
@@ -113,7 +113,7 @@
   .settings-header
     %h4
       = _('Issues Rate Limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
@@ -125,7 +125,7 @@
   .settings-header
     %h4
       = _('Notes rate limit')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set the per-user rate limit for notes created by web or API requests.')
@@ -137,7 +137,7 @@
   .settings-header
     %h4
       = _('Users API rate limit')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set the per-user rate limit for getting a user by ID via the API.')
@@ -149,7 +149,7 @@
   .settings-header
     %h4
       = _('Import and export rate limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Set per-user rate limits for imports and exports of projects and groups.')
@@ -161,7 +161,7 @@
   .settings-header
     %h4
       = _('Pipeline creation rate limits')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')

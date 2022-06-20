@@ -221,7 +221,7 @@ Example response:
 
 Updates an existing instance cluster.
 
-```shell
+```plaintext
 PUT /admin/clusters/:cluster_id
 ```
 

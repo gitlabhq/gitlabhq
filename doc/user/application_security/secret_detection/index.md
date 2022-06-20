@@ -197,7 +197,8 @@ Secret Detection can be customized by defining available CI/CD variables:
 |-----------------------------------|---------------|-------------|
 | `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
-| `SECRET_DETECTION_IMAGE_SUFFIX`       | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
+| `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
+| `SECRET_DETECTION_LOG_OPTIONS`  | ""         | [`git log`](https://git-scm.com/docs/git-log) options used to define commit ranges. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350660) in GitLab 15.1.|
 
 In previous GitLab versions, the following variables were also available:
 
@@ -220,7 +221,7 @@ simultaneously:
 
 - [Disabling predefined rules](index.md#disable-predefined-analyzer-rules).
 - [Overriding predefined rules](index.md#override-predefined-analyzer-rules).
-- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
+- Modifying the default behavior of the Secret Detection analyzer by [synthesizing and passing a custom configuration](index.md#synthesize-a-custom-configuration).
 
 Customization allows replacing the default secret detection rules with rules that you define.
 

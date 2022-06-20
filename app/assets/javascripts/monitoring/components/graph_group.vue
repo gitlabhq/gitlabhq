@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     caretIcon() {
-      return this.isCollapsed ? 'angle-right' : 'angle-down';
+      return this.isCollapsed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
   },
   watch: {

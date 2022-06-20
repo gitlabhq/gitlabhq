@@ -31,7 +31,7 @@ To delete a package in the UI, from your group or project:
 
 1. Go to **Packages & Registries > Package Registry**.
 1. Find the name of the package you want to delete.
-1. Click **Delete**.
+1. Select **Delete**.
 
 The package is permanently deleted.
 

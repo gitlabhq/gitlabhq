@@ -283,8 +283,7 @@ func TestUseWorkhorseClientEnabled(t *testing.T) {
 }
 
 func TestGoCloudConfig(t *testing.T) {
-	mux, _, cleanup := test.SetupGoCloudFileBucket(t, "azblob")
-	defer cleanup()
+	mux, _ := test.SetupGoCloudFileBucket(t, "azblob")
 
 	tests := []struct {
 		name     string

@@ -1,9 +1,9 @@
-import { GlButton, GlFriendlyWrap, GlLink, GlPagination } from '@gitlab/ui';
+import { GlButton, GlFriendlyWrap, GlLink, GlPagination, GlEmptyState } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import SuiteTable from '~/pipelines/components/test_reports/test_suite_table.vue';
+import SuiteTable, { i18n } from '~/pipelines/components/test_reports/test_suite_table.vue';
 import { TestStatus } from '~/pipelines/constants';
 import * as getters from '~/pipelines/stores/test_reports/getters';
 import { formatFilePath } from '~/pipelines/stores/test_reports/utils';
@@ -26,6 +26,7 @@ describe('Test reports suite table', () => {
 
   const noCasesMessage = () => wrapper.findByTestId('no-test-cases');
   const artifactsExpiredMessage = () => wrapper.findByTestId('artifacts-expired');
+  const artifactsExpiredEmptyState = () => wrapper.find(GlEmptyState);
   const allCaseRows = () => wrapper.findAllByTestId('test-case-row');
   const findCaseRowAtIndex = (index) => wrapper.findAllByTestId('test-case-row').at(index);
   const findLinkForRow = (row) => row.find(GlLink);
@@ -65,11 +66,15 @@ describe('Test reports suite table', () => {
     expect(artifactsExpiredMessage().exists()).toBe(false);
   });
 
-  it('should render a message when artifacts have expired', () => {
+  it('should render an empty state when artifacts have expired', () => {
     createComponent({ suite: [], errorMessage: ARTIFACTS_EXPIRED_ERROR_MESSAGE });
+    const emptyState = artifactsExpiredEmptyState();
 
-    expect(noCasesMessage().exists()).toBe(true);
+    expect(noCasesMessage().exists()).toBe(false);
     expect(artifactsExpiredMessage().exists()).toBe(true);
+
+    expect(emptyState.exists()).toBe(true);
+    expect(emptyState.props('title')).toBe(i18n.expiredArtifactsTitle);
   });
 
   describe('when a test suite is supplied', () => {

@@ -3,7 +3,6 @@ package staticpages
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -26,11 +25,7 @@ func TestServingNonExistingFile(t *testing.T) {
 }
 
 func TestServingDirectory(t *testing.T) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 	w := httptest.NewRecorder()
@@ -64,16 +59,12 @@ func TestExecutingHandlerWhenNoFileFound(t *testing.T) {
 }
 
 func TestServingTheActualFile(t *testing.T) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 
 	fileContent := "STATIC"
-	ioutil.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
+	os.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
 
 	w := httptest.NewRecorder()
 	st := &Static{DocumentRoot: dir}
@@ -121,11 +112,7 @@ func TestExcludedPaths(t *testing.T) {
 }
 
 func testServingThePregzippedFile(t *testing.T, enableGzip bool) {
-	dir, err := ioutil.TempDir("", "deploy")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	httpRequest, _ := http.NewRequest("GET", "/file", nil)
 
@@ -140,8 +127,8 @@ func testServingThePregzippedFile(t *testing.T, enableGzip bool) {
 	fileGzip.Write([]byte(fileContent))
 	fileGzip.Close()
 
-	ioutil.WriteFile(filepath.Join(dir, "file.gz"), fileGzipContent.Bytes(), 0600)
-	ioutil.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
+	os.WriteFile(filepath.Join(dir, "file.gz"), fileGzipContent.Bytes(), 0600)
+	os.WriteFile(filepath.Join(dir, "file"), []byte(fileContent), 0600)
 
 	w := httptest.NewRecorder()
 	st := &Static{DocumentRoot: dir}

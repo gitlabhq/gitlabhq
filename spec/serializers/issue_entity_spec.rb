@@ -24,6 +24,12 @@ RSpec.describe IssueEntity do
     end
   end
 
+  describe 'type' do
+    it 'has an issue type' do
+      expect(subject[:type]).to eq('ISSUE')
+    end
+  end
+
   it 'has Issuable attributes' do
     expect(subject).to include(:id, :iid, :author_id, :description, :lock_version, :milestone_id,
                                :title, :updated_by_id, :created_at, :updated_at, :milestone, :labels)

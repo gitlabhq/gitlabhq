@@ -41,6 +41,7 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions do
           post_subscriptions
 
           expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(json_response).to eq('message' => '401 Unauthorized - JWT authentication failed')
         end
       end
 

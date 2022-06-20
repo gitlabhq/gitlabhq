@@ -4,8 +4,6 @@ module Types
   module Ci
     # rubocop: disable Graphql/AuthorizeTypes
     class RunnerWebUrlEdge < ::Types::BaseEdge
-      include FindClosest
-
       field :edit_url, GraphQL::Types::String, null: true,
             description: 'Web URL of the runner edit page. The value depends on where you put this field in the query. You can use it for projects or groups.',
             extras: [:parent]
@@ -19,19 +17,18 @@ module Types
         @runner = node.node
       end
 
+      # here parent is a Keyset::Connection
       def edit_url(parent:)
-        runner_url(parent: parent, url_type: :edit_url)
+        runner_url(owner: parent.parent, url_type: :edit_url)
       end
 
       def web_url(parent:)
-        runner_url(parent: parent, url_type: :default)
+        runner_url(owner: parent.parent, url_type: :default)
       end
 
       private
 
-      def runner_url(parent:, url_type: :default)
-        owner = closest_parent([::Types::ProjectType, ::Types::GroupType], parent)
-
+      def runner_url(owner:, url_type: :default)
         # Only ::Group is supported at the moment, future iterations will include ::Project.
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/16338
         case owner

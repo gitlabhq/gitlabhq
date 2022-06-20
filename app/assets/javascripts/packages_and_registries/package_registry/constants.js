@@ -72,6 +72,12 @@ export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
 export const FETCH_PACKAGE_DETAILS_ERROR_MESSAGE = s__(
   'PackageRegistry|Failed to load the package data',
 );
+export const FETCH_PACKAGE_PIPELINES_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while fetching the package history.',
+);
+export const FETCH_PACKAGE_METADATA_ERROR_MESSAGE = s__(
+  'PackageRegistry|Something went wrong while fetching the package metadata.',
+);
 
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
 export const PACKAGE_REGISTRY_TITLE = __('Package Registry');
@@ -149,3 +155,5 @@ export const CONAN_HELP_PATH = helpPagePath('user/packages/conan_repository/inde
 export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/index');
 export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/index');
 export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/index');
+
+export const GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE = 10;

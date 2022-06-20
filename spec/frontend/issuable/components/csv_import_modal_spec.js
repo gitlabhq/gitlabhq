@@ -76,6 +76,10 @@ describe('CsvImportModal', () => {
 
         expect(formSubmitSpy).toHaveBeenCalled();
       });
+
+      it('displays the cancel button', () => {
+        expect(findModal().props('actionCancel')).toEqual({ text: __('Cancel') });
+      });
     });
   });
 });

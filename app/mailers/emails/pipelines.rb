@@ -30,11 +30,9 @@ module Emails
 
       add_headers
 
-      mail(to: recipient,
-           subject: subject(pipeline_subject(status))) do |format|
-        format.html { render layout: 'mailer' }
-        format.text { render layout: 'mailer' }
-      end
+      email_with_layout(
+        to: recipient,
+        subject: subject(pipeline_subject(status)))
     end
 
     def add_headers

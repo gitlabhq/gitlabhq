@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
         let(:main_replica_host) { main_load_balancer.host }
 
         let(:ci_load_balancer) { double(:load_balancer, host_list: ci_host_list, configuration: configuration) }
-        let(:configuration) { double(:configuration, primary_connection_specification_name: 'Ci::ApplicationRecord') }
+        let(:configuration) { double(:configuration, connection_specification_name: 'Ci::ApplicationRecord') }
         let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
         let(:ci_replica_host) { double(:host, connection: ci_connection) }
         let(:ci_connection) { double(:connection, pool: Ci::ApplicationRecord.connection_pool) }
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
         let(:main_replica_host) { main_load_balancer.host }
 
         let(:ci_load_balancer) { double(:load_balancer, host_list: ci_host_list, configuration: configuration) }
-        let(:configuration) { double(:configuration, primary_connection_specification_name: 'Ci::ApplicationRecord') }
+        let(:configuration) { double(:configuration, connection_specification_name: 'Ci::ApplicationRecord') }
         let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
         let(:ci_replica_host) { double(:host, connection: ci_connection) }
         let(:ci_connection) { double(:connection, pool: Ci::ApplicationRecord.connection_pool) }

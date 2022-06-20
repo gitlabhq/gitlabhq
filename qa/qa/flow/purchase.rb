@@ -26,7 +26,7 @@ module QA
       def purchase_ci_minutes(quantity: 1)
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
-          usage_quota.pipeline_tab
+          usage_quota.pipelines_tab
           usage_quota.buy_ci_minutes
         end
 
@@ -47,6 +47,9 @@ module QA
           usage_quota.storage_tab
           usage_quota.buy_storage
         end
+
+        # Purchase checkout opens a new tab
+        Chemlab.configuration.browser.session.engine.switch_window
 
         Gitlab::Page::Subscriptions::New.perform do |storage|
           storage.quantity = quantity

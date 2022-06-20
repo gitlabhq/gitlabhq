@@ -23,14 +23,14 @@ the **Merge** button until you remove the **Draft** flag:
 
 There are several ways to flag a merge request as a draft:
 
-- **Viewing a merge request**: In the top right corner of the merge request, click **Mark as draft**.
+- **Viewing a merge request**: In the top right corner of the merge request, select **Mark as draft**.
 - **Creating or editing a merge request**: Add `[Draft]`, `Draft:` or `(Draft)` to
-  the beginning of the merge request's title, or click **Start the title with Draft:**
+  the beginning of the merge request's title, or select **Start the title with Draft:**
   below the **Title** field.
 - **Commenting in an existing merge request**: Add the `/draft`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment. This quick action is a toggle, and can be repeated to change the status
-  again. This quick action discards any other text in the comment.
+  back to Ready.
 - **Creating a commit**: Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the
   beginning of a commit message targeting the merge request's source branch. This
   is not a toggle, and adding this text again in a later commit doesn't mark the
@@ -40,19 +40,18 @@ There are several ways to flag a merge request as a draft:
 
 When a merge request is ready to be merged, you can remove the `Draft` flag in several ways:
 
-- **Viewing a merge request**: In the top right corner of the merge request, click **Mark as ready**.
+- **Viewing a merge request**: In the top right corner of the merge request, select **Mark as ready**.
   Users with at least the Developer role
-  can also scroll to the bottom of the merge request description and click **Mark as ready**:
+  can also scroll to the bottom of the merge request description and select **Mark as ready**:
 
   ![Mark as ready](img/draft_blocked_merge_button_v13_10.png)
 
 - **Editing an existing merge request**: Remove `[Draft]`, `Draft:` or `(Draft)`
-  from the beginning of the title, or click **Remove the Draft: prefix from the title**
+  from the beginning of the title, or select **Remove the Draft: prefix from the title**
   below the **Title** field.
-- **Commenting in an existing merge request**: Add the `/draft`
+- **Commenting in an existing merge request**: Add the `/ready`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
-  in a comment in the merge request. This quick action is a toggle, and can be repeated
-  to change the status back. This quick action discards any other text in the comment.
+  in a comment in the merge request.
 
 In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/15332),
 when you mark a merge request as ready, notifications are triggered to
@@ -64,9 +63,9 @@ When viewing or searching in your project's merge requests list, you can include
 draft merge requests:
 
 1. Go to your project and select **Merge requests**.
-1. In the navigation bar, click **Open**, **Merged**, **Closed**, or **All** to
+1. In the navigation bar, select **Open**, **Merged**, **Closed**, or **All** to
    filter by merge request status.
-1. Click the search box to display a list of filters and select **Draft**, or
+1. Select the search box to display a list of filters and select **Draft**, or
    enter the word `draft`.
 1. Select `=`.
 1. Select **Yes** to include drafts, or **No** to exclude, and press **Return**

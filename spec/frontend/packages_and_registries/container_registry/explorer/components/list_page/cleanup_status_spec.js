@@ -1,4 +1,4 @@
-import { GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CleanupStatus from '~/packages_and_registries/container_registry/explorer/components/list_page/cleanup_status.vue';
@@ -16,6 +16,7 @@ describe('cleanup_status', () => {
   let wrapper;
 
   const findMainIcon = () => wrapper.findByTestId('main-icon');
+  const findMainIconName = () => wrapper.findByTestId('main-icon').find(GlIcon);
   const findExtraInfoIcon = () => wrapper.findByTestId('extra-info');
   const findPopover = () => wrapper.findComponent(GlPopover);
 
@@ -60,6 +61,23 @@ describe('cleanup_status', () => {
       mountComponent();
 
       expect(findMainIcon().exists()).toBe(true);
+    });
+
+    it.each`
+      status                | visible  | iconName
+      ${UNFINISHED_STATUS}  | ${true}  | ${'expire'}
+      ${SCHEDULED_STATUS}   | ${true}  | ${'clock'}
+      ${ONGOING_STATUS}     | ${true}  | ${'clock'}
+      ${UNSCHEDULED_STATUS} | ${false} | ${''}
+    `('matches "$iconName" when the status is "$status"', ({ status, visible, iconName }) => {
+      mountComponent({ status });
+
+      expect(findMainIcon().exists()).toBe(visible);
+      if (visible) {
+        const actualIcon = findMainIconName();
+        expect(actualIcon.exists()).toBe(true);
+        expect(actualIcon.props('name')).toBe(iconName);
+      }
     });
   });
 

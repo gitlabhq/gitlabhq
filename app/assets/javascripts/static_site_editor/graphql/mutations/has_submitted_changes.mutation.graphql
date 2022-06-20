@@ -1,5 +1,0 @@
-mutation hasSubmittedChanges($input: HasSubmittedChangesInput) {
-  hasSubmittedChanges(input: $input) @client {
-    hasSubmittedChanges
-  }
-}

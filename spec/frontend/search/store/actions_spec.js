@@ -121,19 +121,12 @@ describe('Global Search Store Actions', () => {
 
     describe('when groupId is set', () => {
       it('calls Api.groupProjects with expected parameters', () => {
-        const callbackTest = jest.fn();
-        actions.fetchProjects({ commit: mockCommit, state }, undefined, callbackTest);
-        expect(Api.groupProjects).toHaveBeenCalledWith(
-          state.query.group_id,
-          state.query.search,
-          {
-            order_by: 'similarity',
-            include_subgroups: true,
-            with_shared: false,
-          },
-          callbackTest,
-          true,
-        );
+        actions.fetchProjects({ commit: mockCommit, state }, undefined);
+        expect(Api.groupProjects).toHaveBeenCalledWith(state.query.group_id, state.query.search, {
+          order_by: 'similarity',
+          include_subgroups: true,
+          with_shared: false,
+        });
         expect(Api.projects).not.toHaveBeenCalled();
       });
     });

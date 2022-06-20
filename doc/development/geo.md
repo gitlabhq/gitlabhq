@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -33,15 +33,15 @@ for new events and creates background jobs for each specific event type.
 
 For example when a repository is updated, the Geo **primary** site creates
 a Geo event with an associated repository updated event. The Geo Log Cursor daemon
-picks the event up and schedules a `Geo::ProjectSyncWorker` job which will
-use the `Geo::RepositorySyncService` and `Geo::WikiSyncService` classes
+picks the event up and schedules a `Geo::ProjectSyncWorker` job which
+uses the `Geo::RepositorySyncService` and `Geo::WikiSyncService` classes
 to update the repository and the wiki respectively.
 
 The Geo Log Cursor daemon can operate in High Availability mode automatically.
-The daemon will try to acquire a lock from time to time and once acquired, it
-will behave as the *active* daemon.
+The daemon tries to acquire a lock from time to time and once acquired, it
+behaves as the *active* daemon.
 
-Any additional running daemons on the same site, will be in standby
+Any additional running daemons on the same site, is in standby
 mode, ready to resume work if the *active* daemon releases its lock.
 
 We use the [`ExclusiveLease`](https://www.rubydoc.info/github/gitlabhq/gitlabhq/Gitlab/ExclusiveLease) lock type with a small TTL, that is renewed at every
@@ -188,15 +188,19 @@ needs to be applied to the tracking database on each **secondary** site.
 
 ### Configuration
 
-The database configuration is set in [`config/database_geo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database_geo.yml.postgresql).
+The database configuration is set in [`config/database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql).
 The directory [`ee/db/geo`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/geo)
 contains the schema and migrations for this database.
 
-To write a migration for the database, use the `GeoMigrationGenerator`:
+To write a migration for the database, run:
 
 ```shell
-rails g geo_migration [args] [options]
+rails g migration [args] [options] --database geo
 ```
+
+Geo should continue using `Gitlab::Database::Migration[1.0]` until the `gitlab_geo` schema is supported, and is for the time being exempt from being validated by `Gitlab::Database::Migration[2.0]`. This requires a developer to manually amend the migration file to change from `[2.0]` to `[1.0]` due to the migration defaults being 2.0.
+
+For more information, see the [Enable Geo migrations to use Migration[2.0]](https://gitlab.com/gitlab-org/gitlab/-/issues/363491) issue.
 
 To migrate the tracking database, run:
 

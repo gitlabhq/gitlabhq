@@ -1,8 +1,5 @@
 <script>
-import {
-  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlSkeletonLoader, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { forEach, escape } from 'lodash';
@@ -14,7 +11,7 @@ let axiosSource;
 
 export default {
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
   },
   directives: {
     SafeHtml,
@@ -115,7 +112,7 @@ export default {
 
 <template>
   <div ref="markdownPreview" class="md-previewer" data-testid="md-previewer">
-    <gl-skeleton-loading v-if="isLoading" />
+    <gl-skeleton-loader v-if="isLoading" />
     <div
       v-else
       v-safe-html:[$options.safeHtmlConfig]="previewContent"

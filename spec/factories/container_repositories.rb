@@ -85,13 +85,12 @@ FactoryBot.define do
       tags = evaluator.tags
       # convert Array into Hash
       tags = tags.product(['sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15']).to_h unless tags.is_a?(Hash)
-
-      allow(repository.client)
-        .to receive(:repository_tags)
-        .and_return({
+      stub_method(repository.client, :repository_tags) do |*args|
+        {
           'name' => repository.path,
           'tags' => tags.keys
-        })
+        }
+      end
 
       tags.each_pair do |tag, digest|
         allow(repository.client)

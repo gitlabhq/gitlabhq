@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -36,7 +35,7 @@ func testEntryServer(t *testing.T, archive string, entry string) *httptest.Respo
 }
 
 func TestDownloadingFromValidArchive(t *testing.T) {
-	tempFile, err := ioutil.TempFile("", "uploads")
+	tempFile, err := os.CreateTemp("", "uploads")
 	require.NoError(t, err)
 	defer tempFile.Close()
 	defer os.Remove(tempFile.Name())
@@ -63,9 +62,7 @@ func TestDownloadingFromValidArchive(t *testing.T) {
 }
 
 func TestDownloadingFromValidHTTPArchive(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	tempDir := t.TempDir()
 
 	f, err := os.Create(filepath.Join(tempDir, "archive.zip"))
 	require.NoError(t, err)
@@ -97,10 +94,9 @@ func TestDownloadingFromValidHTTPArchive(t *testing.T) {
 }
 
 func TestDownloadingNonExistingFile(t *testing.T) {
-	tempFile, err := ioutil.TempFile("", "uploads")
+	tempFile, err := os.CreateTemp(t.TempDir(), "uploads")
 	require.NoError(t, err)
 	defer tempFile.Close()
-	defer os.Remove(tempFile.Name())
 
 	archive := zip.NewWriter(tempFile)
 	defer archive.Close()
@@ -121,9 +117,7 @@ func TestIncompleteApiResponse(t *testing.T) {
 }
 
 func TestDownloadingFromNonExistingHTTPArchive(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "uploads")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
+	tempDir := t.TempDir()
 
 	fileServer := httptest.NewServer(http.FileServer(http.Dir(tempDir)))
 	defer fileServer.Close()

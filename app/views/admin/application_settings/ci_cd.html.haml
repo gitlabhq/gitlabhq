@@ -16,7 +16,7 @@
   .settings-header
     %h4
       = _('Continuous Integration and Deployment')
-    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts.')
@@ -31,7 +31,7 @@
     .settings-header
       %h4
         = _('Container Registry')
-      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? _('Collapse') : _('Expand')
       %p
         = _('Various container registry settings.')
@@ -43,7 +43,7 @@
     .settings-header
       %h4
         = s_('Runners|Runner registration')
-      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? 'Collapse' : 'Expand'
     .settings-content
       = render 'runner_registrars_form'

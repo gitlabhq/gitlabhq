@@ -25,7 +25,7 @@ need to do anything.
 
 There are however some instances when there would be no context
 present when the job is scheduled, or the context that is present is
-likely to be incorrect. For these instances, we've added Rubocop rules
+likely to be incorrect. For these instances, we've added RuboCop rules
 to draw attention and avoid incorrect metadata in our logs.
 
 As with most our cops, there are perfectly valid reasons for disabling

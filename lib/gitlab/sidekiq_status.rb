@@ -36,7 +36,7 @@ module Gitlab
     def self.set(jid, expire = DEFAULT_EXPIRATION)
       return unless expire
 
-      Sidekiq.redis do |redis|
+      with_redis do |redis|
         redis.set(key_for(jid), 1, ex: expire)
       end
     end
@@ -45,7 +45,7 @@ module Gitlab
     #
     # jid - The Sidekiq job ID to remove.
     def self.unset(jid)
-      Sidekiq.redis do |redis|
+      with_redis do |redis|
         redis.del(key_for(jid))
       end
     end
@@ -94,8 +94,7 @@ module Gitlab
 
       keys = job_ids.map { |jid| key_for(jid) }
 
-      Sidekiq
-        .redis { |redis| redis.mget(*keys) }
+      with_redis { |redis| redis.mget(*keys) }
         .map { |result| !result.nil? }
     end
 
@@ -118,5 +117,18 @@ module Gitlab
     def self.key_for(jid)
       STATUS_KEY % jid
     end
+
+    def self.with_redis
+      if Feature.enabled?(:use_primary_and_secondary_stores_for_sidekiq_status) ||
+         Feature.enabled?(:use_primary_store_as_default_for_sidekiq_status)
+        # TODO: Swap for Gitlab::Redis::SharedState after store transition
+        # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923
+        Gitlab::Redis::SidekiqStatus.with { |redis| yield redis }
+      else
+        # Keep the old behavior intact if neither feature flag is turned on
+        Sidekiq.redis { |redis| yield redis }
+      end
+    end
+    private_class_method :with_redis
   end
 end

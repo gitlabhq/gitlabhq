@@ -16,7 +16,7 @@ export default {
       if (isEndingStatus(this.session.status)) {
         return {
           action: () => this.restartSession(),
-          variant: 'info',
+          variant: 'confirm',
           category: 'primary',
           text: __('Restart Terminal'),
         };

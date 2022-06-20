@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime"
 	"net/http"
 	"os"
@@ -53,14 +53,14 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 
 	require.NoError(t, os.MkdirAll(cacheDir, 0755))
 	contentBytes := []byte("content")
-	require.NoError(t, ioutil.WriteFile(contentPath, contentBytes, 0644))
+	require.NoError(t, os.WriteFile(contentPath, contentBytes, 0644))
 
 	resp, err := http.Get(fmt.Sprintf("%s/%s", ws.URL, filePath))
 	require.NoError(t, err)
 
 	requireAttachmentName(t, resp, contentFilename)
 
-	actual, err := ioutil.ReadAll(resp.Body)
+	actual, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	require.NoError(t, resp.Body.Close())
 
@@ -89,7 +89,7 @@ func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath stri
 
 	requireAttachmentName(t, resp, contentFilename)
 
-	actual, err := ioutil.ReadAll(resp.Body)
+	actual, err := io.ReadAll(resp.Body)
 	require.NoError(t, err, "read body")
 	require.NoError(t, resp.Body.Close())
 

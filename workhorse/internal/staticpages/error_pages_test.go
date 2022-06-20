@@ -2,7 +2,6 @@ package staticpages
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -15,14 +14,10 @@ import (
 )
 
 func TestIfErrorPageIsPresented(t *testing.T) {
-	dir, err := ioutil.TempDir("", "error_page")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	ioutil.WriteFile(filepath.Join(dir, "404.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "404.html"), []byte(errorPage), 0600)
 
 	w := httptest.NewRecorder()
 	h := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -42,11 +37,7 @@ func TestIfErrorPageIsPresented(t *testing.T) {
 }
 
 func TestIfErrorPassedIfNoErrorPageIsFound(t *testing.T) {
-	dir, err := ioutil.TempDir("", "error_page")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	w := httptest.NewRecorder()
 	errorResponse := "ERROR"
@@ -63,14 +54,10 @@ func TestIfErrorPassedIfNoErrorPageIsFound(t *testing.T) {
 }
 
 func TestIfErrorPageIsIgnoredInDevelopment(t *testing.T) {
-	dir, err := ioutil.TempDir("", "error_page")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	ioutil.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
 
 	w := httptest.NewRecorder()
 	serverError := "Interesting Server Error"
@@ -86,14 +73,10 @@ func TestIfErrorPageIsIgnoredInDevelopment(t *testing.T) {
 }
 
 func TestIfErrorPageIsIgnoredIfCustomError(t *testing.T) {
-	dir, err := ioutil.TempDir("", "error_page")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	ioutil.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
 
 	w := httptest.NewRecorder()
 	serverError := "Interesting Server Error"
@@ -121,14 +104,10 @@ func TestErrorPageInterceptedByContentType(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		dir, err := ioutil.TempDir("", "error_page")
-		if err != nil {
-			t.Fatal(err)
-		}
-		defer os.RemoveAll(dir)
+		dir := t.TempDir()
 
 		errorPage := "ERROR"
-		ioutil.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+		os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
 
 		w := httptest.NewRecorder()
 		serverError := "Interesting Server Error"

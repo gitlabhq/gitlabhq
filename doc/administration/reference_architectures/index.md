@@ -1,6 +1,6 @@
 ---
 type: reference, concepts
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -116,7 +116,7 @@ per 1,000 users:
 ### How to interpret the results
 
 NOTE:
-Read our blog post on [how our QA team leverages GitLab’s performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
+Read our blog post on [how our QA team leverages GitLab performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
 
 Testing is done publicly and all results are shared.
 
@@ -215,7 +215,7 @@ table.test-coverage th {
 
 ## Cost to run
 
-The following table details the cost to run the different reference architectures across GCP, AWS, and Azure. Bare-metal costs are not included here as it varies widely depending on each customer configuration. 
+The following table details the cost to run the different reference architectures across GCP, AWS, and Azure. Bare-metal costs are not included here as it varies widely depending on each customer configuration.
 
 <table class="test-coverage">
   <col>

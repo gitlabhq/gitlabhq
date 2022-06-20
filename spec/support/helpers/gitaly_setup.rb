@@ -9,6 +9,7 @@
 require 'securerandom'
 require 'socket'
 require 'logger'
+require 'fileutils'
 require 'bundler'
 
 module GitalySetup
@@ -150,6 +151,9 @@ module GitalySetup
   def start(service, toml = nil)
     toml ||= config_path(service)
     args = service_cmd(service, toml)
+
+    # Ensure that tmp/run exists
+    FileUtils.mkdir_p(runtime_dir)
 
     # Ensure user configuration does not affect Git
     # Context: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58776#note_547613780
@@ -369,7 +373,7 @@ module GitalySetup
 
     message += "- The `gitaly` binary does not exist: #{gitaly_binary}\n" unless File.exist?(gitaly_binary)
     message += "- The `praefect` binary does not exist: #{praefect_binary}\n" unless File.exist?(praefect_binary)
-    message += "- The `git` binary does not exist: #{git_binary}\n" unless File.exist?(git_binary)
+    message += "- No `git` binaries exist\n" if git_binaries.empty?
 
     message += "\nCheck log/gitaly-test.log & log/praefect-test.log for errors.\n"
 
@@ -381,8 +385,8 @@ module GitalySetup
     message
   end
 
-  def git_binary
-    File.join(tmp_tests_gitaly_dir, "_build", "bin", "gitaly-git")
+  def git_binaries
+    Dir.glob(File.join(tmp_tests_gitaly_dir, "_build", "bin", "gitaly-git-v*"))
   end
 
   def gitaly_binary
@@ -391,9 +395,5 @@ module GitalySetup
 
   def praefect_binary
     File.join(tmp_tests_gitaly_dir, "_build", "bin", "praefect")
-  end
-
-  def git_binary_exists?
-    File.exist?(git_binary)
   end
 end

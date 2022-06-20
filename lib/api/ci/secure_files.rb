@@ -26,7 +26,7 @@ module API
         end
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
         get ':id/secure_files' do
-          secure_files = user_project.secure_files
+          secure_files = user_project.secure_files.order_by_created_at
           present paginate(secure_files), with: Entities::Ci::SecureFile
         end
 

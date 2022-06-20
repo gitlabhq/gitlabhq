@@ -11,6 +11,6 @@
   %p
     = s_('403|Please contact your GitLab administrator to get permission.')
   .action-container.js-go-back{ hidden: true }
-    %button{ type: 'button', class: 'gl-button btn btn-success' }
+    = render Pajamas::ButtonComponent.new(variant: :confirm) do
       = _('Go Back')
 = render "errors/footer"

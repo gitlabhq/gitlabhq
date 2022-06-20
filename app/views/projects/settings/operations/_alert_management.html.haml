@@ -7,7 +7,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Alerts')
-    %button.gl-button.btn.btn-default.js-settings-toggle{ type: 'button' }
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Expand')
     %p
       = _('Display alerts from all configured monitoring tools.')

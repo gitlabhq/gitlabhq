@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Global Search
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
@@ -9,27 +9,23 @@ type: reference
 
 > Moved to GitLab Premium in 13.9.
 
-NOTE:
-This is the user documentation. To configure the Advanced Search,
-visit the [administrator documentation](../../integration/elasticsearch.md).
-Advanced Search is enabled in GitLab.com.
+Advanced Search uses Elasticsearch for faster, more advanced search across the entire
+GitLab instance.
 
-GitLab Advanced Search expands on the Basic Search with an additional set of
-features for faster, more advanced searches across the entire GitLab instance
-when searching in:
+Use Advanced Search when searching in:
 
 - Projects
 - Issues
 - Merge requests
 - Milestones
-- Epics
-- Comments
-- Code
-- Commits
 - Users
+- Epics (when searching in a group only)
+- Code
+- Comments
+- Commits
 - Wiki (except [group wikis](../project/wiki/group.md))
 
-The Advanced Search can be useful in various scenarios:
+Advanced Search can be useful in various scenarios:
 
 - **Faster searches:**
   Advanced Search is based on Elasticsearch, which is a purpose-built full
@@ -45,6 +41,13 @@ The Advanced Search can be useful in various scenarios:
   their own group where the various projects are hosted. Some of your applications
   may be connected to each other, so your developers need to instantly search
   throughout the GitLab instance and find the code they search for.
+
+## Configuring Advanced Search
+
+For self-managed GitLab instances, an administrator must
+[configure Advanced Search](../../integration/advanced_search/elasticsearch.md).
+
+On GitLab.com, Advanced Search is enabled.
 
 ## Advanced Search syntax
 
@@ -93,7 +96,7 @@ doesn't return any results for searches considered abusive according to the foll
 
 - Searches with less than 2 characters.
 - Searches with any term greater than 100 characters. URL search terms have a maximum of 200 characters.
-- Searches with a stop word as the only term (ie: "the", "and", "if", etc.).
+- Searches with a stop word as the only term (for example, "the", "and", "if", etc.).
 - Searches with a `group_id` or `project_id` parameter that is not completely numeric.
 - Searches with a `repository_ref` or `project_ref` parameter that has special characters not allowed by [Git refname](https://git-scm.com/docs/git-check-ref-format).
 - Searches with a `scope` that is unknown.

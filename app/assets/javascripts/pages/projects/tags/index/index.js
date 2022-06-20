@@ -1,9 +1,5 @@
 import TagSortDropdown from '~/tags';
-import { initRemoveTag } from '../remove_tag';
+import initDeleteTagModal from '~/tags/init_delete_tag_modal';
 
-initRemoveTag({
-  onDelete: (path) => {
-    document.querySelector(`[data-path="${path}"]`).closest('.js-tag-list').remove();
-  },
-});
+initDeleteTagModal();
 TagSortDropdown();

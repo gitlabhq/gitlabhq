@@ -1,7 +1,8 @@
 .form-actions.gl-display-flex
-  = button_tag 'Commit changes', id: 'commit-changes', class: 'gl-button btn btn-confirm js-commit-button  qa-commit-button'
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { id: 'commit-changes', class: 'js-commit-button qa-commit-button' }) do
+    = _('Commit changes')
 
-  = link_to _('Cancel'), cancel_path,
-            id: 'cancel-changes', class: 'gl-button btn btn-default gl-ml-3', data: {confirm: leave_edit_message, confirm_btn_variant: "danger"}, aria: { label: _('Discard changes') }
+  = render Pajamas::ButtonComponent.new(href: cancel_path, button_options: { class: 'gl-ml-3', id: 'cancel-changes', aria: { label: _('Discard changes') }, data: { confirm: leave_edit_message, confirm_btn_variant: "danger" } }) do
+    = _('Cancel')
 
   = render 'shared/projects/edit_information'

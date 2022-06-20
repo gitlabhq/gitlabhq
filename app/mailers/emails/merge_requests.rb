@@ -149,10 +149,9 @@ module Emails
 
       filename = "#{project.full_path.parameterize}_merge_requests_#{Date.current.iso8601}.csv"
       attachments[filename] = { content: csv_data, mime_type: 'text/csv' }
-      mail(to: user.notification_email_for(@project.group), subject: subject("Exported merge requests")) do |format|
-        format.html { render layout: 'mailer' }
-        format.text { render layout: 'mailer' }
-      end
+      email_with_layout(
+        to: user.notification_email_for(@project.group),
+        subject: subject("Exported merge requests"))
     end
 
     def approved_merge_request_email(recipient_id, merge_request_id, approved_by_user_id, reason = nil)

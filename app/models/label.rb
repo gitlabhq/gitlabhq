@@ -118,7 +118,7 @@ class Label < ApplicationRecord
         | # Integer-based label ID, or
           (?<label_name>
               # String-based single-word label title, or
-              [A-Za-z0-9_\-\?\.&]+
+              #{Gitlab::Regex.sep_by_1(/:{1,2}/, /[A-Za-z0-9_\-\?\.&]+/)}
               (?<!\.|\?)
             |
               # String-based multi-word label surrounded in quotes

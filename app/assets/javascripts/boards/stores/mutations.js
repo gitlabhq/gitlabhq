@@ -1,5 +1,6 @@
 import { cloneDeep, pull, union } from 'lodash';
 import Vue from 'vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
 import { formatIssue } from '../boards_util';
 import { issuableTypes } from '../constants';
@@ -33,15 +34,23 @@ export const addItemToList = ({ state, listId, itemId, moveBeforeId, moveAfterId
 };
 
 export default {
+  [mutationTypes.REQUEST_CURRENT_BOARD]: (state) => {
+    state.isBoardLoading = true;
+  },
+
   [mutationTypes.RECEIVE_BOARD_SUCCESS]: (state, board) => {
     state.board = {
       ...board,
       labels: board?.labels?.nodes || [],
     };
+    state.fullBoardId = board.id;
+    state.boardId = getIdFromGraphQLId(board.id);
+    state.isBoardLoading = false;
   },
 
   [mutationTypes.RECEIVE_BOARD_FAILURE]: (state) => {
     state.error = s__('Boards|An error occurred while fetching the board. Please reload the page.');
+    state.isBoardLoading = false;
   },
 
   [mutationTypes.SET_INITIAL_BOARD_DATA](state, data) {
@@ -136,11 +145,6 @@ export default {
     state.boardLists = listsBackup;
   },
 
-  [mutationTypes.RESET_ITEMS_FOR_LIST]: (state, listId) => {
-    Vue.set(state, 'backupItemsList', state.boardItemsByListId[listId]);
-    Vue.set(state.boardItemsByListId, listId, []);
-  },
-
   [mutationTypes.REQUEST_ITEMS_FOR_LIST]: (state, { listId, fetchNext }) => {
     Vue.set(state.listsFlags, listId, { [fetchNext ? 'isLoadingMore' : 'isLoading']: true });
   },
@@ -176,7 +180,6 @@ export default {
       'Boards|An error occurred while fetching the board issues. Please reload the page.',
     );
     Vue.set(state.listsFlags, listId, { isLoading: false, isLoadingMore: false });
-    Vue.set(state.boardItemsByListId, listId, state.backupItemsList);
   },
 
   [mutationTypes.RESET_ISSUES]: (state) => {

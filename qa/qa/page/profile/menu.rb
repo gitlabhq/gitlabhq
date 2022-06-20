@@ -6,7 +6,7 @@ module QA
       class Menu < Page::Base
         # We need to check remote_mobile_device_name instead of mobile_layout? here
         # since tablets have the regular top navigation bar but still close the left nav
-        prepend QA::Mobile::Page::Profile::Menu if QA::Runtime::Env.remote_mobile_device_name
+        prepend QA::Mobile::Page::SubMenus::Common if QA::Runtime::Env.remote_mobile_device_name
 
         view 'app/views/layouts/nav/sidebar/_profile.html.haml' do
           element :access_token_link, 'link_to profile_personal_access_tokens_path' # rubocop:disable QA/ElementWithPattern

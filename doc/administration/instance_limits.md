@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
@@ -133,8 +133,9 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61151) in GitLab 13.12.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/330133) in GitLab 14.1.
+> - [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
 
-Limit the number of times any given webhook can be called per minute.
+Limit the number of times a webhook can be called per minute, per top-level namespace.
 This only applies to project and group webhooks.
 
 Calls over the rate limit are logged into `auth.log`.
@@ -163,6 +164,14 @@ This setting limits global search requests.
 |-------------------------|-------------------------------|
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
+
+### Pipeline creation rate limit
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+
+This setting limits the request rate to the pipeline creation endpoints.
+
+Read more about [pipeline creation rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md).
 
 ## Gitaly concurrency limit
 
@@ -383,6 +392,38 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 
 Set the limit to `0` to disable it.
 
+### Number of pipelines running concurrently
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32823) in GitLab 12.5.
+
+The total number of pipelines running concurrently can be limited per project.
+When enabled, the limit is checked each time a new pipeline is created.
+Without a concurrent pipelines limit, a sudden flood of triggered pipelines could
+overwhelm the instance resources.
+
+If a new pipeline would cause the total number of pipelines to exceed the limit,
+the pipeline fails with a `The pipeline activity limit was exceeded.` error.
+
+On [GitLab Premium](https://about.gitlab.com/pricing/) self-managed or
+higher installations, this limit is defined under a `default` plan that affects all
+projects. This limit is disabled (`0`) by default. GitLab SaaS subscribers have different
+limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd), and they affect
+all projects under that plan.
+
+To set this limit for a self-managed installation, enable the **Maximum number of active pipelines per project**
+[setting in the Admin Area](../user/admin_area/settings/continuous_integration.md#set-cicd-limits).
+
+Alternatively, you can run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(ci_active_pipelines: 100)
+```
+
+Set the limit to `0` to disable it.
+
 ### Maximum time jobs can run
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16777) in GitLab 12.3.
@@ -510,6 +551,26 @@ To set this limit to `1440` on a self-managed installation, run the following in
 
 ```ruby
 Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
+```
+
+This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+
+### Limit the number of schedule rules defined for security policy project
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335659) in GitLab 15.1.
+
+You can limit the total number of schedule rules per security policy project. This limit is
+checked each time policies with schedule rules are updated. If a new schedule rule would
+cause the total number of schedule rules to exceed the limit, the new schedule rule is
+not processed.
+
+By default, self-managed instances do not limit the number of processable schedule rules.
+
+To set this limit for a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100)
 ```
 
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
@@ -646,7 +707,7 @@ Update `ci_jobs_trace_size_limit` with the new value in megabytes:
 Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
-GitLab Runner also has an 
+GitLab Runner also has an
 [`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 that configures the maximum log size in a runner. Jobs that exceed the runner limit
 continue to run, but the log is truncated when it hits the limit.
@@ -825,9 +886,9 @@ prevent any more changes from rendering. For more information about these limits
 
 Reports that go over the 20 MB limit aren't loaded. Affected reports:
 
-- [Merge request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports)
+- [Merge request security reports](../ci/testing/index.md#security-reports)
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
-- [Unit test reports](../ci/unit_test_reports.md)
+- [Unit test reports](../ci/testing/unit_test_reports.md)
 
 ## Advanced Search limits
 
@@ -864,7 +925,7 @@ indexed, which have a separate limit. For more information, read
 - For self-managed installations, the field length is unlimited by default.
 
 You can configure this limit for self-managed installations when you
-[enable Elasticsearch](../integration/elasticsearch.md#enable-advanced-search).
+[enable Elasticsearch](../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 Set the limit to `0` to disable it.
 
 ## Wiki limits
@@ -981,7 +1042,7 @@ varies by file type:
 
 If a branch is merged while open merge requests still point to it, GitLab can
 retarget merge requests pointing to the now-merged branch. To learn more, read
-[Branch retargeting on merge](../user/project/merge_requests/getting_started.md#branch-retargeting-on-merge).
+[Update merge requests when target branch merges](../user/project/merge_requests/index.md#update-merge-requests-when-target-branch-merges).
 
 ## CDN-based limits on GitLab.com
 
@@ -999,3 +1060,11 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 - Files must be smaller than 5 MB.
 - Projects cannot have more than 100 secure files.
+
+## Changelog API limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
+
+The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
+
+- The commit range between `from` and `to` cannot exceed 15000 commits.

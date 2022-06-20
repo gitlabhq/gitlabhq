@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
   let(:old_project) { create(:project, name: 'old-project', group: group) }
   let(:old_project_ref) { old_project.to_reference_base(new_project) }
   let(:text) { 'some text' }
+  let(:note) { create(:note, note: text, project: old_project) }
 
   before do
     old_project.add_reporter(user)
@@ -17,7 +18,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
 
   describe '#rewrite' do
     subject do
-      described_class.new(text, old_project, user).rewrite(new_project)
+      described_class.new(note.note, note.note_html, old_project, user).rewrite(new_project)
     end
 
     context 'multiple issues and merge requests referenced' do

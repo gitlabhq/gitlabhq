@@ -1,5 +1,5 @@
 = render 'devise/shared/tab_single', tab_title: 'Resend confirmation instructions'
-.login-box
+.login-box.gl-p-5
   .login-body
     = form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: 'gl-show-field-errors' }) do |f|
       .devise-errors

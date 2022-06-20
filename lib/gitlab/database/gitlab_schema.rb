@@ -75,8 +75,8 @@ module Gitlab
           return gitlab_schema
         end
 
-        # All tables from `information_schema.` are `:gitlab_shared`
-        return :gitlab_shared if schema_name == 'information_schema'
+        # All tables from `information_schema.` are marked as `internal`
+        return :gitlab_internal if schema_name == 'information_schema'
 
         return :gitlab_main if table_name.start_with?('_test_gitlab_main_')
 
@@ -85,8 +85,8 @@ module Gitlab
         # All tables that start with `_test_` without a following schema are shared and ignored
         return :gitlab_shared if table_name.start_with?('_test_')
 
-        # All `pg_` tables are marked as `shared`
-        return :gitlab_shared if table_name.start_with?('pg_')
+        # All `pg_` tables are marked as `internal`
+        return :gitlab_internal if table_name.start_with?('pg_')
 
         # When undefined it's best to return a unique name so that we don't incorrectly assume that 2 undefined schemas belong on the same database
         :"undefined_#{table_name}"

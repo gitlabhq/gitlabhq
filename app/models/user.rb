@@ -90,6 +90,7 @@ class User < ApplicationRecord
   include ForcedEmailConfirmation
 
   MINIMUM_INACTIVE_DAYS = 90
+  MINIMUM_DAYS_CREATED = 7
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -338,7 +339,6 @@ class User < ApplicationRecord
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
-  delegate :other_role, :other_role=, to: :user_detail, allow_nil: true
   delegate :bio, :bio=, to: :user_detail, allow_nil: true
   delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
@@ -414,7 +414,9 @@ class User < ApplicationRecord
     after_transition any => :deactivated do |user|
       next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
 
-      NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
+      user.run_after_commit do
+        NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
+      end
     end
     # rubocop: enable CodeReuse/ServiceClass
 
@@ -478,7 +480,7 @@ class User < ApplicationRecord
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first) }
   scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
-  scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
+  scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
   scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
@@ -1657,33 +1659,15 @@ class User < ApplicationRecord
 
   def ci_owned_runners
     @ci_owned_runners ||= begin
-      if ci_owned_runners_cross_joins_fix_enabled?
-        Ci::Runner
-          .from_union([ci_owned_project_runners_from_project_members,
-                       ci_owned_project_runners_from_group_members,
-                       ci_owned_group_runners])
-      else
-        Ci::Runner
-          .from_union([ci_legacy_owned_project_runners, ci_legacy_owned_group_runners])
-          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436')
-      end
+      Ci::Runner
+        .from_union([ci_owned_project_runners_from_project_members,
+                     ci_owned_project_runners_from_group_members,
+                     ci_owned_group_runners])
     end
   end
 
   def owns_runner?(runner)
-    if ci_owned_runners_cross_joins_fix_enabled?
-      ci_owned_runners.exists?(runner.id)
-    else
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
-        ci_owned_runners.exists?(runner.id)
-      end
-    end
-  end
-
-  def ci_owned_runners_cross_joins_fix_enabled?
-    strong_memoize(:ci_owned_runners_cross_joins_fix_enabled) do
-      Feature.enabled?(:ci_owned_runners_cross_joins_fix, self)
-    end
+    ci_owned_runners.exists?(runner.id)
   end
 
   def notification_email_for(notification_group)
@@ -2265,20 +2249,6 @@ class User < ApplicationRecord
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
   end
 
-  def ci_legacy_owned_project_runners
-    Ci::RunnerProject
-      .select('ci_runners.*')
-      .joins(:runner)
-      .where(project: authorized_projects(Gitlab::Access::MAINTAINER))
-  end
-
-  def ci_legacy_owned_group_runners
-    Ci::RunnerNamespace
-      .select('ci_runners.*')
-      .joins(:runner)
-      .where(namespace_id: owned_groups.self_and_descendant_ids)
-  end
-
   def ci_owned_project_runners_from_project_members
     project_ids = project_members.where('access_level >= ?', Gitlab::Access::MAINTAINER).pluck(:source_id)
 
@@ -2334,12 +2304,7 @@ class User < ApplicationRecord
       .merge(search_members)
       .shortest_traversal_ids_prefixes
 
-    # Use efficient btree index to perform search
-    if Feature.enabled?(:ci_owned_runners_unnest_index, self)
-      Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
-    else
-      Ci::NamespaceMirror.contains_any_of_namespaces(traversal_ids.map(&:last))
-    end
+    Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
   end
 end
 

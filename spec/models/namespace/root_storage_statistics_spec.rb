@@ -58,6 +58,19 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
         expect(root_storage_statistics.uploads_size).to eq(total_uploads_size)
       end
 
+      it 'aggregates container_repositories_size and storage_size' do
+        allow(namespace).to receive(:container_repositories_size).and_return(999)
+
+        root_storage_statistics.recalculate!
+
+        root_storage_statistics.reload
+
+        total_storage_size = project_stat1.storage_size + project_stat2.storage_size + 999
+
+        expect(root_storage_statistics.container_registry_size).to eq(999)
+        expect(root_storage_statistics.storage_size).to eq(total_storage_size)
+      end
+
       it 'works when there are no projects' do
         Project.delete_all
 

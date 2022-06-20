@@ -11,13 +11,31 @@ changes](../contributing/index.md#breaking-changes) to GitLab features.
 
 ## Terminology
 
-It's important to understand the difference between **deprecation** and
-**removal**:
+**Deprecation**:
 
-**Deprecation** is the process of flagging/marking/announcing that a feature is no longer fully supported and may be removed in a future version of GitLab.
+- Feature not recommended for use.
+- Development restricted to Priority 1 / Severity 1 bug fixes.
+- Will be removed in a future major release.
+- Begins after a deprecation announcement outlining an end-of-support date.
+- Ends after the end-of-support date or removal date has passed.
 
-**Removal** is the process of actually removing a feature that was previously
-deprecated.
+**End of Support**:
+
+- Feature usage strongly discouraged.
+- No support or fixes provided.
+- No longer tested internally.
+- Will be removed in a future major release.
+- Begins after an end-of-support date has passed.
+- Ends after all relevant code has been removed.
+
+**Removal**:
+
+- Feature usage impossible.
+- Happens in a major release in line with our
+  [semantic versioning policy](../../policy/maintenance.md).
+- Begins after removal date has passed.
+
+![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
 
 ## When can a feature be deprecated?
 

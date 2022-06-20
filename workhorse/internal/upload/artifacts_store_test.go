@@ -6,7 +6,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -56,16 +56,11 @@ func testUploadArtifactsFromTestZip(t *testing.T, ts *httptest.Server) *httptest
 }
 
 func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(tempPath)
+	tempPath := t.TempDir()
 
 	archiveData, md5 := createTestZipArchive(t)
-	archiveFile, err := ioutil.TempFile("", "artifact.zip")
+	archiveFile, err := os.CreateTemp(tempPath, "artifact.zip")
 	require.NoError(t, err)
-	defer os.Remove(archiveFile.Name())
 	_, err = archiveFile.Write(archiveData)
 	require.NoError(t, err)
 	archiveFile.Close()
@@ -75,7 +70,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 	storeServerMux.HandleFunc("/url/put", func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "PUT", r.Method)
 
-		receivedData, err := ioutil.ReadAll(r.Body)
+		receivedData, err := io.ReadAll(r.Body)
 		require.NoError(t, err)
 		require.Equal(t, archiveData, receivedData)
 
@@ -135,11 +130,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 }
 
 func TestUploadHandlerSendingToExternalStorageAndStorageServerUnreachable(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(tempPath)
+	tempPath := t.TempDir()
 
 	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
 		t.Fatal("it should not be called")
@@ -161,11 +152,7 @@ func TestUploadHandlerSendingToExternalStorageAndStorageServerUnreachable(t *tes
 }
 
 func TestUploadHandlerSendingToExternalStorageAndInvalidURLIsUsed(t *testing.T) {
-	tempPath, err := ioutil.TempDir("", "uploads")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(tempPath)
+	tempPath := t.TempDir()
 
 	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
 		t.Fatal("it should not be called")

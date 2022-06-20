@@ -1,3 +1,5 @@
+export const timelogToRemoveId = 'gid://gitlab/Timelog/18';
+
 export const getIssueTimelogsQueryResponse = {
   data: {
     issuable: {
@@ -9,7 +11,7 @@ export const getIssueTimelogsQueryResponse = {
         nodes: [
           {
             __typename: 'Timelog',
-            id: 'gid://gitlab/Timelog/18',
+            id: timelogToRemoveId,
             timeSpent: 14400,
             user: {
               id: 'user-1',
@@ -23,6 +25,10 @@ export const getIssueTimelogsQueryResponse = {
               __typename: 'Note',
             },
             summary: 'A summary',
+            userPermissions: {
+              adminTimelog: true,
+              __typename: 'TimelogPermissions',
+            },
           },
           {
             __typename: 'Timelog',
@@ -36,6 +42,10 @@ export const getIssueTimelogsQueryResponse = {
             spentAt: '2021-05-07T13:19:01Z',
             note: null,
             summary: 'A summary',
+            userPermissions: {
+              adminTimelog: false,
+              __typename: 'TimelogPermissions',
+            },
           },
           {
             __typename: 'Timelog',
@@ -53,6 +63,10 @@ export const getIssueTimelogsQueryResponse = {
               __typename: 'Note',
             },
             summary: null,
+            userPermissions: {
+              adminTimelog: false,
+              __typename: 'TimelogPermissions',
+            },
           },
         ],
         __typename: 'TimelogConnection',
@@ -85,6 +99,10 @@ export const getMrTimelogsQueryResponse = {
               __typename: 'Note',
             },
             summary: null,
+            userPermissions: {
+              adminTimelog: true,
+              __typename: 'TimelogPermissions',
+            },
           },
           {
             __typename: 'Timelog',
@@ -98,6 +116,10 @@ export const getMrTimelogsQueryResponse = {
             spentAt: '2021-05-07T14:44:39Z',
             note: null,
             summary: null,
+            userPermissions: {
+              adminTimelog: true,
+              __typename: 'TimelogPermissions',
+            },
           },
           {
             __typename: 'Timelog',
@@ -115,6 +137,10 @@ export const getMrTimelogsQueryResponse = {
               __typename: 'Note',
             },
             summary: null,
+            userPermissions: {
+              adminTimelog: true,
+              __typename: 'TimelogPermissions',
+            },
           },
         ],
         __typename: 'TimelogConnection',

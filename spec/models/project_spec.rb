@@ -147,6 +147,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:job_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:build_trace_chunks).through(:builds).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:secure_files).class_name('Ci::SecureFile').dependent(:restrict_with_error) }
+    it { is_expected.to have_one(:build_artifacts_size_refresh).class_name('Projects::BuildArtifactsSizeRefresh') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -287,41 +288,35 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'updating a project' do
-      shared_examples 'project update' do
-        let_it_be(:project_namespace) { create(:project_namespace) }
-        let_it_be(:project) { project_namespace.project }
+      let_it_be(:project_namespace) { create(:project_namespace) }
+      let_it_be(:project) { project_namespace.project }
 
-        context 'when project namespace is not set' do
-          before do
-            project.update_column(:project_namespace_id, nil)
-            project.reload
-          end
+      context 'when project has an associated project namespace' do
+        # when FF is disabled creating a project does not create a project_namespace, so we create one
+        it 'project is INVALID when trying to remove project namespace' do
+          project.reload
+          # check that project actually has an associated project namespace
+          expect(project.project_namespace_id).to eq(project_namespace.id)
 
-          it 'updates the project successfully' do
-            # pre-check that project does not have a project namespace
-            expect(project.project_namespace).to be_nil
-
-            project.update!(path: 'hopefully-valid-path2')
-
-            expect(project).to be_persisted
-            expect(project).to be_valid
-            expect(project.path).to eq('hopefully-valid-path2')
-            expect(project.project_namespace).to be_nil
-          end
+          expect do
+            project.update!(project_namespace_id: nil, path: 'hopefully-valid-path1')
+          end.to raise_error(ActiveRecord::RecordInvalid)
+          expect(project).to be_invalid
+          expect(project.errors.full_messages).to include("Project namespace can't be blank")
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
 
-        context 'when project has an associated project namespace' do
-          # when FF is disabled creating a project does not create a project_namespace, so we create one
-          it 'project is INVALID when trying to remove project namespace' do
-            project.reload
-            # check that project actually has an associated project namespace
-            expect(project.project_namespace_id).to eq(project_namespace.id)
+        context 'when same project is being updated in 2 instances' do
+          it 'syncs only changed attributes' do
+            project1 = Project.last
+            project2 = Project.last
 
-            expect do
-              project.update!(project_namespace_id: nil, path: 'hopefully-valid-path1')
-            end.to raise_error(ActiveRecord::RecordInvalid)
-            expect(project).to be_invalid
-            expect(project.errors.full_messages).to include("Project namespace can't be blank")
+            project_name = project1.name
+            project_path = project1.path
+
+            project1.update!(name: project_name + "-1")
+            project2.update!(path: project_path + "-1")
+
             expect(project.reload.project_namespace).to be_in_sync_with_project(project)
           end
         end
@@ -4744,8 +4739,7 @@ RSpec.describe Project, factory_default: :keep do
     shared_examples 'filter respects visibility' do
       it 'respects visibility' do
         enable_admin_mode!(user) if admin_mode
-        project.update!(visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
-        update_feature_access_level(project, feature_access_level)
+        update_feature_access_level(project, feature_access_level, visibility_level: Gitlab::VisibilityLevel.level_value(project_level.to_s))
 
         expected_objects = expected_count == 1 ? [project] : []
 
@@ -6225,7 +6219,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#gitlab_deploy_token' do
     let(:project) { create(:project) }
 
-    subject { project.gitlab_deploy_token }
+    subject(:gitlab_deploy_token) { project.gitlab_deploy_token }
 
     context 'when there is a gitlab deploy token associated' do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
@@ -6257,9 +6251,42 @@ RSpec.describe Project, factory_default: :keep do
 
     context 'when there is a deploy token associated to a different project' do
       let(:project_2) { create(:project) }
-      let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project_2]) }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when the project group has a gitlab deploy token associated' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to eq(deploy_token) }
+
+      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
+        before do
+          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when the project and its group has a gitlab deploy token associated' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+      let!(:project_deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
+      let!(:group_deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to eq(project_deploy_token) }
+
+      context 'when the FF ci_variable_for_group_gitlab_deploy_token is disabled' do
+        before do
+          stub_feature_flags(ci_variable_for_group_gitlab_deploy_token: false)
+        end
+
+        it { is_expected.to eq(project_deploy_token) }
+      end
     end
   end
 
@@ -6824,50 +6851,46 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#access_request_approvers_to_be_notified' do
+    shared_examples 'returns active, non_invited, non_requested owners/maintainers of the project' do
+      specify do
+        maintainer = create(:project_member, :maintainer, source: project)
+
+        create(:project_member, :developer, project: project)
+        create(:project_member, :maintainer, :invited, project: project)
+        create(:project_member, :maintainer, :access_request, project: project)
+        create(:project_member, :maintainer, :blocked, project: project)
+        create(:project_member, :owner, :blocked, project: project)
+
+        expect(project.access_request_approvers_to_be_notified.to_a).to match_array([maintainer, owner])
+      end
+    end
+
     context 'for a personal project' do
       let_it_be(:project) { create(:project) }
-      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:owner) { project.members.find_by(user_id: project.first_owner.id) }
 
-      let(:owner_membership) { project.members.owners.find_by(user_id: project.namespace.owner_id) }
-
-      it 'includes only the owner of the personal project' do
-        expect(project.access_request_approvers_to_be_notified.to_a).to eq([owner_membership])
-      end
-
-      it 'includes the maintainers of the personal project, if any' do
-        project.add_maintainer(maintainer)
-        maintainer_membership = project.members.maintainers.find_by(user_id: maintainer.id)
-
-        expect(project.access_request_approvers_to_be_notified.to_a).to match_array([owner_membership, maintainer_membership])
-      end
+      it_behaves_like 'returns active, non_invited, non_requested owners/maintainers of the project'
     end
 
-    let_it_be(:project) { create(:project, group: create(:group, :public)) }
+    context 'for a project in a group' do
+      let_it_be(:project) { create(:project, group: create(:group, :public)) }
+      let_it_be(:owner) { create(:project_member, :owner, source: project) }
 
-    it 'returns a maximum of ten maintainers of the project in recent_sign_in descending order' do
-      limit = 2
-      stub_const("Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT", limit)
-      users = create_list(:user, limit + 1, :with_sign_ins)
-      active_maintainers = users.map do |user|
-        create(:project_member, :maintainer, user: user, project: project)
+      it 'returns a maximum of ten maintainers/owners of the project in recent_sign_in descending order' do
+        users = create_list(:user, 11, :with_sign_ins)
+
+        active_maintainers_and_owners = users.map do |user|
+          create(:project_member, [:maintainer, :owner].sample, user: user, project: project)
+        end
+
+        active_maintainers_and_owners_in_recent_sign_in_desc_order = project.members
+                                                                            .id_in(active_maintainers_and_owners)
+                                                                            .order_recent_sign_in.limit(10)
+
+        expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_and_owners_in_recent_sign_in_desc_order)
       end
 
-      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters
-                                                               .id_in(active_maintainers)
-                                                               .order_recent_sign_in.limit(limit)
-
-      expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_in_recent_sign_in_desc_order)
-    end
-
-    it 'returns active, non_invited, non_requested maintainers of the project' do
-      maintainer = create(:project_member, :maintainer, source: project)
-
-      create(:project_member, :developer, project: project)
-      create(:project_member, :maintainer, :invited, project: project)
-      create(:project_member, :maintainer, :access_request, project: project)
-      create(:project_member, :maintainer, :blocked, project: project)
-
-      expect(project.access_request_approvers_to_be_notified.to_a).to eq([maintainer])
+      it_behaves_like 'returns active, non_invited, non_requested owners/maintainers of the project'
     end
   end
 
@@ -7353,6 +7376,44 @@ RSpec.describe Project, factory_default: :keep do
     subject { create(:project).packages_enabled }
 
     it { is_expected.to be true }
+
+    context 'when packages_enabled is enabled' do
+      where(:project_visibility, :expected_result) do
+        Gitlab::VisibilityLevel::PRIVATE  | ProjectFeature::PRIVATE
+        Gitlab::VisibilityLevel::INTERNAL | ProjectFeature::ENABLED
+        Gitlab::VisibilityLevel::PUBLIC   | ProjectFeature::PUBLIC
+      end
+
+      with_them do
+        it 'set package_registry_access_level to correct value' do
+          project = create(:project,
+            visibility_level: project_visibility,
+            packages_enabled: false,
+            package_registry_access_level: ProjectFeature::DISABLED
+          )
+
+          project.update!(packages_enabled: true)
+
+          expect(project.package_registry_access_level).to eq(expected_result)
+        end
+      end
+    end
+
+    context 'when packages_enabled is disabled' do
+      Gitlab::VisibilityLevel.options.values.each do |project_visibility|
+        it 'set package_registry_access_level to DISABLED' do
+          project = create(:project,
+            visibility_level: project_visibility,
+            packages_enabled: true,
+            package_registry_access_level: ProjectFeature::PUBLIC
+          )
+
+          project.update!(packages_enabled: false)
+
+          expect(project.package_registry_access_level).to eq(ProjectFeature::DISABLED)
+        end
+      end
+    end
   end
 
   describe '#related_group_ids' do
@@ -8287,6 +8348,46 @@ RSpec.describe Project, factory_default: :keep do
                                .tap { |project| project.update!(last_activity_at: 1.month.ago) }
 
       expect(described_class.inactive).to contain_exactly(inactive_large_project)
+    end
+  end
+
+  describe "#refreshing_build_artifacts_size?" do
+    let_it_be(:project) { create(:project) }
+
+    subject { project.refreshing_build_artifacts_size? }
+
+    context 'when project has no existing refresh record' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when project has existing refresh record' do
+      context 'and refresh has not yet started' do
+        before do
+          allow(project)
+            .to receive_message_chain(:build_artifacts_size_refresh, :started?)
+            .and_return(false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'and refresh has started' do
+        before do
+          allow(project)
+            .to receive_message_chain(:build_artifacts_size_refresh, :started?)
+            .and_return(true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '#security_training_available?' do
+    subject { build(:project) }
+
+    it 'returns false' do
+      expect(subject.security_training_available?).to eq false
     end
   end
 

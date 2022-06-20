@@ -121,6 +121,10 @@ Additionally, if you are a project owner and a security policy project has not b
 associated with this project, then a new project is created and associated automatically at the same
 time that the first policy merge request is created.
 
+## Managing projects in bulk via a script
+
+You can use the [Vulnerability-Check Migration](https://gitlab.com/gitlab-org/gitlab/-/snippets/2328089) script to bulk create policies or associate security policy projects with development projects. For instructions and a demonstration of how to use the Vulnerability-Check Migration script, see [this video](https://youtu.be/biU1N26DfBc).
+
 ## Scan execution policies
 
 See [Scan execution policies](scan-execution-policies.md).

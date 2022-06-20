@@ -12,6 +12,7 @@ import {
   STATE_CLOSED,
   STATE_EVENT_CLOSE,
   STATE_EVENT_REOPEN,
+  TRACKING_CATEGORY_SHOW,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import { updateWorkItemMutationResponse, workItemQueryResponse } from '../mock_data';
@@ -81,15 +82,6 @@ describe('WorkItemState component', () => {
       });
     });
 
-    it('emits updated event', async () => {
-      createComponent();
-
-      findItemState().vm.$emit('changed', STATE_CLOSED);
-      await waitForPromises();
-
-      expect(wrapper.emitted('updated')).toEqual([[]]);
-    });
-
     it('emits an error message when the mutation was unsuccessful', async () => {
       createComponent({ mutationHandler: jest.fn().mockRejectedValue('Error!') });
 
@@ -107,8 +99,8 @@ describe('WorkItemState component', () => {
       findItemState().vm.$emit('changed', STATE_CLOSED);
       await waitForPromises();
 
-      expect(trackingSpy).toHaveBeenCalledWith('workItems:show', 'updated_state', {
-        category: 'workItems:show',
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_state', {
+        category: TRACKING_CATEGORY_SHOW,
         label: 'item_state',
         property: 'type_Task',
       });

@@ -325,6 +325,24 @@ RSpec.describe API::Namespaces do
         expect(response.body).to eq(expected_json)
       end
 
+      it 'ignores paths of groups present in other hierarchies when making suggestions' do
+        (1..2).to_a.each do |suffix|
+          create(:group, name: "mygroup#{suffix}", path: "mygroup#{suffix}", parent: namespace2)
+        end
+
+        create(:group, name: 'mygroup', path: 'mygroup', parent: namespace1)
+
+        get api("/namespaces/mygroup/exists", user), params: { parent_id: namespace1.id }
+
+        # if the paths of groups present in hierachies aren't ignored, the suggestion generated would have
+        # been `mygroup3`, just because groups with path `mygroup1` and `mygroup2` exists somewhere else.
+        # But there is no reason for those groups that exists elsewhere to cause a conflict because
+        # their hierarchies differ. Hence, the correct suggestion to be generated would be `mygroup1`
+        expected_json = { exists: true, suggests: ["mygroup1"] }.to_json
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(expected_json)
+      end
+
       it 'ignores top-level namespaces when checking with parent_id' do
         get api("/namespaces/#{namespace1.path}/exists", user), params: { parent_id: namespace1.id }
 

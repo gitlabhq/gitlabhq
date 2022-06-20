@@ -22,7 +22,7 @@ module ContainerRegistry
         repositories = ::ContainerRepository.with_stale_migration(step_before_timestamp)
                                             .limit(max_capacity)
         aborts_count = 0
-        long_running_migration_ids = []
+        long_running_migrations = []
 
         # the #to_a is safe as the amount of entries is limited.
         # In addition, we're calling #each in the next line and we don't want two different SQL queries for these two lines
@@ -32,7 +32,7 @@ module ContainerRegistry
           if actively_importing?(repository)
             # if a repository is actively importing but not yet long_running, do nothing
             if long_running_migration?(repository)
-              long_running_migration_ids << repository.id
+              long_running_migrations << repository
               cancel_long_running_migration(repository)
               aborts_count += 1
             end
@@ -44,8 +44,9 @@ module ContainerRegistry
 
         log_extra_metadata_on_done(:aborted_stale_migrations_count, aborts_count)
 
-        if long_running_migration_ids.any?
-          log_extra_metadata_on_done(:aborted_long_running_migration_ids, long_running_migration_ids)
+        if long_running_migrations.any?
+          log_extra_metadata_on_done(:aborted_long_running_migration_ids, long_running_migrations.map(&:id))
+          log_extra_metadata_on_done(:aborted_long_running_migration_paths, long_running_migrations.map(&:path))
         end
       end
 
@@ -64,14 +65,16 @@ module ContainerRegistry
       end
 
       def long_running_migration?(repository)
-        timeout = long_running_migration_threshold
+        timeout = if repository.migration_state == 'pre_importing'
+                    migration.pre_import_timeout.seconds
+                  else
+                    migration.import_timeout.seconds
+                  end
 
-        if Feature.enabled?(:registry_migration_guard_thresholds)
-          timeout = if repository.migration_state == 'pre_importing'
-                      migration.pre_import_timeout.seconds
-                    else
-                      migration.import_timeout.seconds
-                    end
+        if repository.migration_state == 'pre_importing' &&
+           Feature.enabled?(:registry_migration_guard_dynamic_pre_import_timeout) &&
+           migration_start_timestamp(repository).before?(timeout.ago)
+          timeout = migration.dynamic_pre_import_timeout_for(repository)
         end
 
         migration_start_timestamp(repository).before?(timeout.ago)
@@ -104,10 +107,6 @@ module ContainerRegistry
 
       def migration
         ::ContainerRegistry::Migration
-      end
-
-      def long_running_migration_threshold
-        @threshold ||= 10.minutes
       end
 
       def cancel_long_running_migration(repository)

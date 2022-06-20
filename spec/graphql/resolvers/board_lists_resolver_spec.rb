@@ -100,6 +100,8 @@ RSpec.describe Resolvers::BoardListsResolver do
   end
 
   def resolve_board_lists(args: {}, current_user: user)
-    resolve(described_class, obj: board, args: args, ctx: { current_user: current_user })
+    resolve(described_class, obj: board, args: args, ctx: { current_user: current_user },
+            arg_style: :internal
+    )
   end
 end

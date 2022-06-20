@@ -5,7 +5,6 @@ import {
   canScrollDown,
   parseBooleanDataAttributes,
   isElementVisible,
-  isElementHidden,
   getParents,
   getParentByTagName,
   setAttributes,
@@ -181,30 +180,21 @@ describe('DOM Utils', () => {
     ${1}        | ${0}         | ${0}              | ${true}
     ${0}        | ${1}         | ${0}              | ${true}
     ${0}        | ${0}         | ${1}              | ${true}
-  `(
-    'isElementVisible and isElementHidden',
-    ({ offsetWidth, offsetHeight, clientRectsLength, visible }) => {
-      const element = {
-        offsetWidth,
-        offsetHeight,
-        getClientRects: () => new Array(clientRectsLength),
-      };
+  `('isElementVisible', ({ offsetWidth, offsetHeight, clientRectsLength, visible }) => {
+    const element = {
+      offsetWidth,
+      offsetHeight,
+      getClientRects: () => new Array(clientRectsLength),
+    };
 
-      const paramDescription = `offsetWidth=${offsetWidth}, offsetHeight=${offsetHeight}, and getClientRects().length=${clientRectsLength}`;
+    const paramDescription = `offsetWidth=${offsetWidth}, offsetHeight=${offsetHeight}, and getClientRects().length=${clientRectsLength}`;
 
-      describe('isElementVisible', () => {
-        it(`returns ${visible} when ${paramDescription}`, () => {
-          expect(isElementVisible(element)).toBe(visible);
-        });
+    describe('isElementVisible', () => {
+      it(`returns ${visible} when ${paramDescription}`, () => {
+        expect(isElementVisible(element)).toBe(visible);
       });
-
-      describe('isElementHidden', () => {
-        it(`returns ${!visible} when ${paramDescription}`, () => {
-          expect(isElementHidden(element)).toBe(!visible);
-        });
-      });
-    },
-  );
+    });
+  });
 
   describe('getParents', () => {
     it('gets all parents of an element', () => {

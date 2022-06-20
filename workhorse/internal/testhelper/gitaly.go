@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"path"
 	"strings"
 	"sync"
@@ -49,10 +49,10 @@ var (
 
 func init() {
 	var err error
-	if GitalyReceivePackResponseMock, err = ioutil.ReadFile(path.Join(RootDir(), "testdata/receive-pack-fixture.txt")); err != nil {
+	if GitalyReceivePackResponseMock, err = os.ReadFile(path.Join(RootDir(), "testdata/receive-pack-fixture.txt")); err != nil {
 		log.WithError(err).Fatal("Unable to read pack response")
 	}
-	if GitalyUploadPackResponseMock, err = ioutil.ReadFile(path.Join(RootDir(), "testdata/upload-pack-fixture.txt")); err != nil {
+	if GitalyUploadPackResponseMock, err = os.ReadFile(path.Join(RootDir(), "testdata/upload-pack-fixture.txt")); err != nil {
 		log.WithError(err).Fatal("Unable to read pack response")
 	}
 }

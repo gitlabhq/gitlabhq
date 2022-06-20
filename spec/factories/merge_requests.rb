@@ -25,10 +25,6 @@ FactoryBot.define do
       title { generate(:draft_title) }
     end
 
-    trait :wip_merge_request do
-      title { generate(:wip_title) }
-    end
-
     trait :jira_title do
       title { generate(:jira_title) }
     end
@@ -324,7 +320,7 @@ FactoryBot.define do
       # Fake `fetch_ref!` if we don't have repository
       # We have too many existing tests relying on this behaviour
       unless [target_project, source_project].all?(&:repository_exists?)
-        allow(merge_request).to receive(:fetch_ref!)
+        stub_method(merge_request, :fetch_ref!) { nil }
       end
     end
 

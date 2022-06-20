@@ -29,6 +29,17 @@ describe('CI Editor Header', () => {
     unmockTracking();
   });
 
+  const testTracker = async (element, expectedAction) => {
+    const { label } = pipelineEditorTrackingOptions;
+
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    await element.vm.$emit('click');
+
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, expectedAction, {
+      label,
+    });
+  };
+
   describe('link button', () => {
     beforeEach(() => {
       createComponent();
@@ -48,13 +59,9 @@ describe('CI Editor Header', () => {
     });
 
     it('tracks the click on the browse button', async () => {
-      const { label, actions } = pipelineEditorTrackingOptions;
+      const { browseTemplates } = pipelineEditorTrackingOptions.actions;
 
-      await findLinkBtn().vm.$emit('click');
-
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, actions.browse_templates, {
-        label,
-      });
+      testTracker(findLinkBtn(), browseTemplates);
     });
   });
 
@@ -72,21 +79,31 @@ describe('CI Editor Header', () => {
     });
 
     describe('when pipeline editor drawer is closed', () => {
-      it('emits open drawer event when clicked', () => {
+      beforeEach(() => {
         createComponent({ showDrawer: false });
+      });
 
+      it('emits open drawer event when clicked', () => {
         expect(wrapper.emitted('open-drawer')).toBeUndefined();
 
         findHelpBtn().vm.$emit('click');
 
         expect(wrapper.emitted('open-drawer')).toHaveLength(1);
       });
+
+      it('tracks open help drawer action', async () => {
+        const { actions } = pipelineEditorTrackingOptions;
+
+        testTracker(findHelpBtn(), actions.openHelpDrawer);
+      });
     });
 
     describe('when pipeline editor drawer is open', () => {
-      it('emits close drawer event when clicked', () => {
+      beforeEach(() => {
         createComponent({ showDrawer: true });
+      });
 
+      it('emits close drawer event when clicked', () => {
         expect(wrapper.emitted('close-drawer')).toBeUndefined();
 
         findHelpBtn().vm.$emit('click');

@@ -31,10 +31,12 @@ import {
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import totalCountAndWeightQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
+import { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import eventHub from '../eventhub';
 import { gqlClient } from '../graphql';
 import projectBoardQuery from '../graphql/project_board.query.graphql';
 import groupBoardQuery from '../graphql/group_board.query.graphql';
@@ -49,6 +51,8 @@ import * as types from './mutation_types';
 
 export default {
   fetchBoard: ({ commit, dispatch }, { fullPath, fullBoardId, boardType }) => {
+    commit(types.REQUEST_CURRENT_BOARD);
+
     const variables = {
       fullPath,
       boardId: fullBoardId,
@@ -60,9 +64,12 @@ export default {
         variables,
       })
       .then(({ data }) => {
-        const board = data.workspace?.board;
-        commit(types.RECEIVE_BOARD_SUCCESS, board);
-        dispatch('setBoardConfig', board);
+        if (data.workspace?.errors) {
+          commit(types.RECEIVE_BOARD_FAILURE);
+        } else {
+          const board = data.workspace?.board;
+          dispatch('setBoard', board);
+        }
       })
       .catch(() => commit(types.RECEIVE_BOARD_FAILURE));
   },
@@ -87,6 +94,13 @@ export default {
     commit(types.SET_BOARD_CONFIG, config);
   },
 
+  setBoard: async ({ commit, dispatch }, board) => {
+    commit(types.RECEIVE_BOARD_SUCCESS, board);
+    await dispatch('setBoardConfig', board);
+    dispatch('performSearch', { resetLists: true });
+    eventHub.$emit('updateTokens');
+  },
+
   setActiveId({ commit }, { id, sidebarType }) {
     commit(types.SET_ACTIVE_ID, { id, sidebarType });
   },
@@ -107,16 +121,16 @@ export default {
     );
   },
 
-  performSearch({ dispatch }) {
+  performSearch({ dispatch }, { resetLists = false } = {}) {
     dispatch(
       'setFilters',
       convertObjectPropsToCamelCase(queryToObject(window.location.search, { gatherArrays: true })),
     );
-    dispatch('fetchLists');
+    dispatch('fetchLists', { resetLists });
     dispatch('resetIssues');
   },
 
-  fetchLists: ({ commit, state, dispatch }) => {
+  fetchLists: ({ commit, state, dispatch }, { resetLists = false } = {}) => {
     const { boardType, filterParams, fullPath, fullBoardId, issuableType } = state;
 
     const variables = {
@@ -133,6 +147,7 @@ export default {
       .query({
         query: listsQuery[issuableType].query,
         variables,
+        ...(resetLists ? { fetchPolicy: fetchPolicies.NO_CACHE } : {}),
       })
       .then(({ data }) => {
         const { lists, hideBacklogList } = data[boardType].board;
@@ -404,9 +419,6 @@ export default {
   fetchItemsForList: ({ state, commit }, { listId, fetchNext = false }) => {
     if (!listId) return null;
 
-    if (!fetchNext) {
-      commit(types.RESET_ITEMS_FOR_LIST, listId);
-    }
     commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
     const { fullPath, fullBoardId, boardType, filterParams } = state;
@@ -428,6 +440,7 @@ export default {
           isSingleRequest: true,
         },
         variables,
+        ...(!fetchNext ? { fetchPolicy: fetchPolicies.NO_CACHE } : {}),
       })
       .then(({ data }) => {
         const { lists } = data[boardType].board;

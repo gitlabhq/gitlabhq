@@ -62,6 +62,18 @@ module SnippetsHelper
             rel: 'noopener noreferrer')
   end
 
+  def embedded_copy_snippet_button(blob)
+    return unless blob.rendered_as_text?(ignore_errors: false)
+
+    content_tag(:button,
+        class: 'gl-button btn btn-default copy-to-clipboard-btn',
+        title: 'Copy snippet contents',
+        onclick: "copyToClipboard('.blob-content[data-blob-id=\"#{blob.id}\"] > pre')"
+    ) do
+      external_snippet_icon('copy-to-clipboard')
+    end
+  end
+
   def snippet_file_count(snippet)
     file_count = snippet.statistics&.file_count
 

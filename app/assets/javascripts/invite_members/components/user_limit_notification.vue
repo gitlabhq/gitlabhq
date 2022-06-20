@@ -8,15 +8,20 @@ import {
   REACHED_LIMIT_MESSAGE,
   REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
   CLOSE_TO_LIMIT_MESSAGE,
+  CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE,
+  DANGER_ALERT_TITLE_PERSONAL_NAMESPACE,
+  WARNING_ALERT_TITLE_PERSONAL_NAMESPACE,
 } from '../constants';
-
-const CLOSE_TO_LIMIT_COUNT = 2;
 
 export default {
   name: 'UserLimitNotification',
   components: { GlAlert, GlSprintf, GlLink },
   inject: ['name'],
   props: {
+    closeToLimit: {
+      type: Boolean,
+      required: true,
+    },
     reachedLimit: {
       type: Boolean,
       required: true,
@@ -40,14 +45,14 @@ export default {
     purchasePath() {
       return this.usersLimitDataset.purchasePath;
     },
-    closeToLimit() {
-      if (this.freeUsersLimit && this.membersCount) {
-        return this.membersCount >= this.freeUsersLimit - CLOSE_TO_LIMIT_COUNT;
+    warningAlertTitle() {
+      if (this.usersLimitDataset.userNamespace) {
+        return sprintf(WARNING_ALERT_TITLE_PERSONAL_NAMESPACE, {
+          count: this.freeUsersLimit - this.membersCount,
+          members: this.pluralMembers(this.freeUsersLimit - this.membersCount),
+        });
       }
 
-      return false;
-    },
-    warningAlertTitle() {
       return sprintf(WARNING_ALERT_TITLE, {
         count: this.freeUsersLimit - this.membersCount,
         members: this.pluralMembers(this.freeUsersLimit - this.membersCount),
@@ -55,6 +60,13 @@ export default {
       });
     },
     dangerAlertTitle() {
+      if (this.usersLimitDataset.userNamespace) {
+        return sprintf(DANGER_ALERT_TITLE_PERSONAL_NAMESPACE, {
+          count: this.freeUsersLimit,
+          members: this.pluralMembers(this.freeUsersLimit),
+        });
+      }
+
       return sprintf(DANGER_ALERT_TITLE, {
         count: this.freeUsersLimit,
         members: this.pluralMembers(this.freeUsersLimit),
@@ -79,6 +91,10 @@ export default {
         return this.reachedLimitMessage;
       }
 
+      if (this.usersLimitDataset.userNamespace) {
+        return this.$options.i18n.closeToLimitMessagePersonalNamespace;
+      }
+
       return this.$options.i18n.closeToLimitMessage;
     },
   },
@@ -91,6 +107,7 @@ export default {
     reachedLimitMessage: REACHED_LIMIT_MESSAGE,
     reachedLimitUpgradeSuggestionMessage: REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
     closeToLimitMessage: CLOSE_TO_LIMIT_MESSAGE,
+    closeToLimitMessagePersonalNamespace: CLOSE_TO_LIMIT_MESSAGE_PERSONAL_NAMESPACE,
   },
 };
 </script>

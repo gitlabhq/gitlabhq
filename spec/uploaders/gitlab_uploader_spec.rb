@@ -160,4 +160,10 @@ RSpec.describe GitlabUploader do
       end
     end
   end
+
+  describe '.version' do
+    subject { uploader_class.version }
+
+    it { expect { subject }.to raise_error(RuntimeError, /not supported/) }
+  end
 end

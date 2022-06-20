@@ -206,19 +206,19 @@ describe('Package Files', () => {
       it('toggles the details row', async () => {
         createComponent();
 
-        expect(findFirstToggleDetailsButton().props('icon')).toBe('angle-down');
+        expect(findFirstToggleDetailsButton().props('icon')).toBe('chevron-lg-down');
 
         findFirstToggleDetailsButton().vm.$emit('click');
         await nextTick();
 
         expect(findFirstRowShaComponent('sha-256').exists()).toBe(true);
-        expect(findFirstToggleDetailsButton().props('icon')).toBe('angle-up');
+        expect(findFirstToggleDetailsButton().props('icon')).toBe('chevron-lg-up');
 
         findFirstToggleDetailsButton().vm.$emit('click');
         await nextTick();
 
         expect(findFirstRowShaComponent('sha-256').exists()).toBe(false);
-        expect(findFirstToggleDetailsButton().props('icon')).toBe('angle-down');
+        expect(findFirstToggleDetailsButton().props('icon')).toBe('chevron-lg-down');
       });
     });
 

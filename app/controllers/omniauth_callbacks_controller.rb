@@ -178,6 +178,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
           flash[:notice] = _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
         end
 
+        store_after_sign_up_path_for_user if intent_to_register?
         sign_in_and_redirect(user, event: :authentication)
       end
     else
@@ -259,6 +260,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     (request_params['remember_me'] == '1') if request_params.present?
   end
 
+  def intent_to_register?
+    request_params = request.env['omniauth.params']
+    (request_params['intent'] == 'register') if request_params.present?
+  end
+
   def store_redirect_fragment(redirect_fragment)
     key = stored_location_key_for(:user)
     location = session[key]
@@ -290,6 +296,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_admin_mode_invalid_credentials
     redirect_to new_admin_session_path, alert: _('Invalid login or password')
+  end
+
+  def store_after_sign_up_path_for_user
+    store_location_for(:user, users_sign_up_welcome_path)
   end
 end
 

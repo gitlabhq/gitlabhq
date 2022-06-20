@@ -81,27 +81,24 @@ export default {
 </script>
 <template>
   <div>
-    <h3 class="page-title">
+    <h1 class="page-title gl-font-size-h-display">
       {{ title }}
-    </h3>
-    <hr />
-    <div class="row gl-mt-3 gl-mb-3">
-      <div class="col-lg-3">
-        <h4 class="gl-mt-0">
-          {{ $options.i18n.header }}
-        </h4>
-        <p>
-          <gl-sprintf :message="$options.i18n.helpMessage">
-            <template #link="{ content }">
-              <gl-link :href="$options.helpPagePath">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </p>
-      </div>
+    </h1>
+    <div class="row col-12">
+      <h4 class="gl-mt-0">
+        {{ $options.i18n.header }}
+      </h4>
+      <p class="gl-w-full">
+        <gl-sprintf :message="$options.i18n.helpMessage">
+          <template #link="{ content }">
+            <gl-link :href="$options.helpPagePath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
       <gl-form
         id="new_environment"
         :aria-label="title"
-        class="col-lg-9"
+        class="gl-w-full"
         @submit.prevent="$emit('submit')"
       >
         <gl-form-group
@@ -144,7 +141,7 @@ export default {
           />
         </gl-form-group>
 
-        <div class="form-actions">
+        <div class="gl-mr-6">
           <gl-button
             :loading="loading"
             type="submit"

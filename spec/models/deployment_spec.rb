@@ -17,7 +17,6 @@ RSpec.describe Deployment do
   it { is_expected.to delegate_method(:name).to(:environment).with_prefix }
   it { is_expected.to delegate_method(:commit).to(:project) }
   it { is_expected.to delegate_method(:commit_title).to(:commit).as(:try) }
-  it { is_expected.to delegate_method(:manual_actions).to(:deployable).as(:try) }
   it { is_expected.to delegate_method(:kubernetes_namespace).to(:deployment_cluster).as(:kubernetes_namespace) }
 
   it { is_expected.to validate_presence_of(:ref) }
@@ -25,20 +24,23 @@ RSpec.describe Deployment do
 
   it_behaves_like 'having unique enum values'
 
+  describe '#manual_actions' do
+    let(:deployment) { create(:deployment) }
+
+    it 'delegates to environment_manual_actions' do
+      expect(deployment.deployable).to receive(:environment_manual_actions).and_call_original
+
+      deployment.manual_actions
+    end
+  end
+
   describe '#scheduled_actions' do
-    subject { deployment.scheduled_actions }
+    let(:deployment) { create(:deployment) }
 
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-    let(:deployment) { create(:deployment, deployable: build) }
+    it 'delegates to environment_scheduled_actions' do
+      expect(deployment.deployable).to receive(:environment_scheduled_actions).and_call_original
 
-    it 'delegates to other_scheduled_actions' do
-      expect_next_instance_of(Ci::Build) do |instance|
-        expect(instance).to receive(:other_scheduled_actions)
-      end
-
-      subject
+      deployment.scheduled_actions
     end
   end
 
@@ -137,12 +139,26 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes Deployments::HooksWorker asynchronously' do
+      it 'executes deployment hooks' do
         freeze_time do
-          expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+          expect(deployment).to receive(:execute_hooks).with(Time.current)
 
           deployment.run!
+        end
+      end
+
+      context 'when `deployment_hooks_skip_worker` flag is disabled' do
+        before do
+          stub_feature_flags(deployment_hooks_skip_worker: false)
+        end
+
+        it 'executes Deployments::HooksWorker asynchronously' do
+          freeze_time do
+            expect(Deployments::HooksWorker)
+              .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+            deployment.run!
+          end
         end
       end
 
@@ -173,12 +189,26 @@ RSpec.describe Deployment do
         deployment.succeed!
       end
 
-      it 'executes Deployments::HooksWorker asynchronously' do
+      it 'executes deployment hooks' do
         freeze_time do
-          expect(Deployments::HooksWorker)
-          .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+          expect(deployment).to receive(:execute_hooks).with(Time.current)
 
           deployment.succeed!
+        end
+      end
+
+      context 'when `deployment_hooks_skip_worker` flag is disabled' do
+        before do
+          stub_feature_flags(deployment_hooks_skip_worker: false)
+        end
+
+        it 'executes Deployments::HooksWorker asynchronously' do
+          freeze_time do
+            expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+            deployment.succeed!
+          end
         end
       end
     end
@@ -202,12 +232,26 @@ RSpec.describe Deployment do
         deployment.drop!
       end
 
-      it 'executes Deployments::HooksWorker asynchronously' do
+      it 'executes deployment hooks' do
         freeze_time do
-          expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+          expect(deployment).to receive(:execute_hooks).with(Time.current)
 
           deployment.drop!
+        end
+      end
+
+      context 'when `deployment_hooks_skip_worker` flag is disabled' do
+        before do
+          stub_feature_flags(deployment_hooks_skip_worker: false)
+        end
+
+        it 'executes Deployments::HooksWorker asynchronously' do
+          freeze_time do
+            expect(Deployments::HooksWorker)
+              .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+            deployment.drop!
+          end
         end
       end
     end
@@ -231,12 +275,26 @@ RSpec.describe Deployment do
         deployment.cancel!
       end
 
-      it 'executes Deployments::HooksWorker asynchronously' do
+      it 'executes deployment hooks' do
         freeze_time do
-          expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+          expect(deployment).to receive(:execute_hooks).with(Time.current)
 
           deployment.cancel!
+        end
+      end
+
+      context 'when `deployment_hooks_skip_worker` flag is disabled' do
+        before do
+          stub_feature_flags(deployment_hooks_skip_worker: false)
+        end
+
+        it 'executes Deployments::HooksWorker asynchronously' do
+          freeze_time do
+            expect(Deployments::HooksWorker)
+              .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
+
+            deployment.cancel!
+          end
         end
       end
     end
@@ -266,6 +324,12 @@ RSpec.describe Deployment do
           deployment.skip!
         end
       end
+
+      it 'does not execute deployment hooks' do
+        expect(deployment).not_to receive(:execute_hooks)
+
+        deployment.skip!
+      end
     end
 
     context 'when deployment is blocked' do
@@ -286,6 +350,12 @@ RSpec.describe Deployment do
 
       it 'does not execute Deployments::HooksWorker' do
         expect(Deployments::HooksWorker).not_to receive(:perform_async)
+
+        deployment.block!
+      end
+
+      it 'does not execute deployment hooks' do
+        expect(deployment).not_to receive(:execute_hooks)
 
         deployment.block!
       end
@@ -548,6 +618,143 @@ RSpec.describe Deployment do
         create(:deployment, status: :skipped)
 
         is_expected.to contain_exactly(deployment1, deployment2)
+      end
+    end
+
+    describe 'last_deployment_group_for_environment' do
+      def subject_method(environment)
+        described_class.last_deployment_group_for_environment(environment)
+      end
+
+      let!(:project) { create(:project, :repository) }
+      let!(:environment) { create(:environment, project: project) }
+
+      context 'when there are no deployments and builds' do
+        it do
+          expect(subject_method(environment)).to eq(Deployment.none)
+        end
+      end
+
+      context 'when there are no successful builds' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:ci_build) { create(:ci_build, :running, project: project, pipeline: pipeline) }
+
+        before do
+          create(:deployment, :success, environment: environment, project: project, deployable: ci_build)
+        end
+
+        it do
+          expect(subject_method(environment)).to eq(Deployment.none)
+        end
+      end
+
+      context 'when there are deployments for multiple pipelines' do
+        let(:pipeline_a) { create(:ci_pipeline, project: project) }
+        let(:pipeline_b) { create(:ci_pipeline, project: project) }
+        let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
+        let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
+
+        # Successful deployments for pipeline_a
+        let!(:deployment_a) do
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        end
+
+        let!(:deployment_b) do
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_c)
+        end
+
+        before do
+          # Failed deployment for pipeline_a
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
+
+          # Failed deployment for pipeline_b
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+        end
+
+        it 'returns the successful deployment jobs for the last deployment pipeline' do
+          expect(subject_method(environment).pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
+        end
+      end
+
+      context 'when there are many environments' do
+        let(:environment_b) { create(:environment, project: project) }
+
+        let(:pipeline_a) { create(:ci_pipeline, project: project) }
+        let(:pipeline_b) { create(:ci_pipeline, project: project) }
+        let(:pipeline_c) { create(:ci_pipeline, project: project) }
+        let(:pipeline_d) { create(:ci_pipeline, project: project) }
+
+        # Builds for first environment: 'environment' with pipeline_a and pipeline_b
+        let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
+        let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+        let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
+        let!(:stop_env_a) { create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_env_a') }
+
+        # Builds for second environment: 'environment_b' with pipeline_c and pipeline_d
+        let(:ci_build_e) { create(:ci_build, :success, project: project, pipeline: pipeline_c) }
+        let(:ci_build_f) { create(:ci_build, :failed, project: project, pipeline: pipeline_d) }
+        let(:ci_build_g) { create(:ci_build, :success, project: project, pipeline: pipeline_c) }
+        let(:ci_build_h) { create(:ci_build, :failed, project: project, pipeline: pipeline_c) }
+        let!(:stop_env_b) { create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_env_b') }
+
+        # Successful deployments for 'environment' from pipeline_a
+        let!(:deployment_a) do
+          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
+        end
+
+        let!(:deployment_b) do
+          create(:deployment, :success,
+            project: project, environment: environment, deployable: ci_build_c, on_stop: 'stop_env_a')
+        end
+
+        # Successful deployments for 'environment_b' from pipeline_c
+        let!(:deployment_c) do
+          create(:deployment, :success, project: project, environment: environment_b, deployable: ci_build_e)
+        end
+
+        let!(:deployment_d) do
+          create(:deployment, :success,
+            project: project, environment: environment_b, deployable: ci_build_g, on_stop: 'stop_env_b')
+        end
+
+        before do
+          # Failed deployment for 'environment' from pipeline_a and pipeline_b
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
+          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
+
+          # Failed deployment for 'environment_b' from pipeline_c and pipeline_d
+          create(:deployment, :failed, project: project, environment: environment_b, deployable: ci_build_h)
+          create(:deployment, :failed, project: project, environment: environment_b, deployable: ci_build_f)
+        end
+
+        it 'batch loads for environments' do
+          environments = [environment, environment_b]
+
+          # Loads Batch loader
+          environments.each do |env|
+            subject_method(env)
+          end
+
+          expect(subject_method(environments.first).pluck(:id))
+            .to contain_exactly(deployment_a.id, deployment_b.id)
+
+          expect { subject_method(environments.second).pluck(:id) }.not_to exceed_query_limit(0)
+
+          expect(subject_method(environments.second).pluck(:id))
+            .to contain_exactly(deployment_c.id, deployment_d.id)
+
+          expect(subject_method(environments.first).map(&:stop_action).compact)
+            .to contain_exactly(stop_env_a)
+
+          expect { subject_method(environments.second).map(&:stop_action) }
+            .not_to exceed_query_limit(0)
+
+          expect(subject_method(environments.second).map(&:stop_action).compact)
+            .to contain_exactly(stop_env_b)
+        end
       end
     end
   end
@@ -845,9 +1052,28 @@ RSpec.describe Deployment do
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
       expect(Deployments::ArchiveInProjectWorker).to receive(:perform_async)
-      expect(Deployments::HooksWorker).to receive(:perform_async)
 
       expect(deploy.update_status('success')).to eq(true)
+    end
+
+    context 'when `deployment_hooks_skip_worker` flag is disabled' do
+      before do
+        stub_feature_flags(deployment_hooks_skip_worker: false)
+      end
+
+      it 'schedules `Deployments::HooksWorker` when finishing a deploy' do
+        expect(Deployments::HooksWorker).to receive(:perform_async)
+
+        deploy.update_status('success')
+      end
+    end
+
+    it 'executes deployment hooks when finishing a deploy' do
+      freeze_time do
+        expect(deploy).to receive(:execute_hooks).with(Time.current)
+
+        deploy.update_status('success')
+      end
     end
 
     it 'updates finished_at when transitioning to a finished status' do
@@ -1171,6 +1397,13 @@ RSpec.describe Deployment do
         expect { deployment.update_merge_request_metrics! }
           .not_to change { merge_request.reload.metrics.first_deployed_to_production_at }
       end
+    end
+  end
+
+  context 'loose foreign key on deployments.cluster_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:cluster) }
+      let!(:model) { create(:deployment, cluster: parent) }
     end
   end
 end

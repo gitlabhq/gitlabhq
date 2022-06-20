@@ -991,6 +991,14 @@ RSpec.describe Group do
 
     it { expect(group.last_owner?(@members[:owner])).to be_truthy }
 
+    context 'there is also a project_bot owner' do
+      before do
+        group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+      end
+
+      it { expect(group.last_owner?(@members[:owner])).to be_truthy }
+    end
+
     context 'with two owners' do
       before do
         create(:group_member, :owner, group: group)
@@ -1116,35 +1124,58 @@ RSpec.describe Group do
     end
   end
 
-  describe '#single_owner?' do
+  describe '#all_owners_excluding_project_bots' do
     let_it_be(:user) { create(:user) }
 
     context 'when there is only one owner' do
-      before do
+      let!(:owner) do
         group.add_user(user, GroupMember::OWNER)
       end
 
-      it 'returns true' do
-        expect(group.single_owner?).to eq(true)
+      it 'returns the owner' do
+        expect(group.all_owners_excluding_project_bots).to contain_exactly(owner)
+      end
+
+      context 'and there is also a project_bot owner' do
+        before do
+          group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+        end
+
+        it 'returns only the human owner' do
+          expect(group.all_owners_excluding_project_bots).to contain_exactly(owner)
+        end
       end
     end
 
     context 'when there are multiple owners' do
       let_it_be(:user_2) { create(:user) }
 
-      before do
+      let!(:owner) do
         group.add_user(user, GroupMember::OWNER)
+      end
+
+      let!(:owner2) do
         group.add_user(user_2, GroupMember::OWNER)
       end
 
-      it 'returns true' do
-        expect(group.single_owner?).to eq(false)
+      it 'returns both owners' do
+        expect(group.all_owners_excluding_project_bots).to contain_exactly(owner, owner2)
+      end
+
+      context 'and there is also a project_bot owner' do
+        before do
+          group.add_user(create(:user, :project_bot), GroupMember::OWNER)
+        end
+
+        it 'returns only the human owners' do
+          expect(group.all_owners_excluding_project_bots).to contain_exactly(owner, owner2)
+        end
       end
     end
 
     context 'when there are no owners' do
       it 'returns false' do
-        expect(group.single_owner?).to eq(false)
+        expect(group.all_owners_excluding_project_bots).to be_empty
       end
     end
   end
@@ -2393,19 +2424,6 @@ RSpec.describe Group do
 
           fetch_config
         end
-
-        context 'when traversal ID feature flags are disabled' do
-          before do
-            stub_feature_flags(sync_traversal_ids: false)
-          end
-
-          it 'caches the parent config when group auto_devops_enabled is nil' do
-            cache_key = "namespaces:{first_auto_devops_config}:#{group.id}"
-            define_cache_expectations(cache_key)
-
-            fetch_config
-          end
-        end
       end
 
       context 'cache expiration' do
@@ -2432,14 +2450,6 @@ RSpec.describe Group do
             .with([start_with("namespaces:{#{group.traversal_ids.first}}:first_auto_devops_config:#{group.id}")])
 
           group.update!(auto_devops_enabled: true)
-        end
-
-        it 'does not clear cache when the feature is disabled' do
-          stub_feature_flags(namespaces_cache_first_auto_devops_config: false)
-
-          expect(Rails.cache).not_to receive(:delete_multi)
-
-          parent.update!(auto_devops_enabled: true)
         end
       end
     end
@@ -3415,6 +3425,44 @@ RSpec.describe Group do
           expect(subject_group.shared_with_group_links.of_ancestors_and_self.map(&:shared_with_group_id)).to match_array(result)
         end
       end
+    end
+  end
+
+  describe '#gitlab_deploy_token' do
+    subject(:gitlab_deploy_token) { group.gitlab_deploy_token }
+
+    context 'when there is a gitlab deploy token associated' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, groups: [group]) }
+
+      it { is_expected.to eq(deploy_token) }
+    end
+
+    context 'when there is no a gitlab deploy token associated' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but is has been revoked' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, :revoked, groups: [group]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but it is expired' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, :expired, groups: [group]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated with a different name' do
+      let!(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated to a different group' do
+      let!(:deploy_token) { create(:deploy_token, :group, :gitlab_deploy_token, groups: [create(:group)]) }
+
+      it { is_expected.to be_nil }
     end
   end
 end

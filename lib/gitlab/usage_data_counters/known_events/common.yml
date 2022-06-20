@@ -30,11 +30,6 @@
   redis_slot: edit
   expiry: 29
   aggregation: daily
-- name: g_edit_by_sse
-  category: ide_edit
-  redis_slot: edit
-  expiry: 29
-  aggregation: daily
 - name: g_edit_by_snippet_ide
   category: ide_edit
   redis_slot: edit
@@ -134,6 +129,19 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
+# Incident management timeline events
+- name: incident_management_timeline_event_created
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+- name: incident_management_timeline_event_edited
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
+- name: incident_management_timeline_event_deleted
+  redis_slot: incident_management
+  category: incident_management
+  aggregation: weekly
 # Incident management alerts
 - name: incident_management_alert_create_incident
   redis_slot: incident_management
@@ -144,7 +152,6 @@
   redis_slot: incident_management
   category: incident_management_oncall
   aggregation: weekly
-  feature_flag: usage_data_i_incident_management_oncall_notification_sent
 # Testing category
 - name: i_testing_test_case_parsed
   category: testing

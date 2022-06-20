@@ -67,7 +67,7 @@ When running Gitaly on its own server, note the following regarding GitLab versi
   servers.
 - From GitLab 11.8 to 12.2, it is possible to use Elasticsearch in a Gitaly setup that doesn't use
   NFS. To use Elasticsearch in these versions, the
-  [repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer)
+  [repository indexer](../../integration/advanced_search/elasticsearch.md#elasticsearch-repository-indexer)
   must be enabled in your GitLab configuration.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/6481), the new indexer is
   the default and no configuration is required.
@@ -825,14 +825,14 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 
 ## Control groups
 
-> - Introduced in GitLab 13.10.
+> Introduced in GitLab 13.10.
 
 Gitaly shells out to Git for many of its operations. Git can consume a lot of resources for certain operations,
 especially for large repositories.
 
 Control groups (cgroups) in Linux allow limits to be imposed on how much memory and CPU can be consumed.
 See the [`cgroups` Linux man page](https://man7.org/linux/man-pages/man7/cgroups.7.html) for more information.
-cgroups can be useful for protecting the system against resource exhaustion because of overconsumption of memory and CPU.
+cgroups can be useful for protecting the system against resource exhaustion because of overcomsumption of memory and CPU.
 
 Gitaly has built-in cgroups control. When configured, Gitaly assigns Git
 processes to a cgroup based on the repository the Git command is operating in.
@@ -856,7 +856,59 @@ Using cgroups allows the kernel to kill these operations before they hog up all 
 
 ### Configure cgroups in Gitaly
 
-To configure cgroups in Gitaly, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`. For
+Two ways of configuring cgroups are available.
+
+#### Configure cgroups (new method)
+
+> This method of configuring cgroups introduced in GitLab 15.1.
+
+FLAG:
+On self-managed GitLab, by default this method of configuring cgroups is not available. To make it available, ask an administrator to
+[enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
+
+Gitaly creates a pool of cgroups that are isolated based on the repository used in the Git command to be placed under one of these cgroups.
+
+To configure cgroups in Gitaly, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`.
+
+For example:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
+gitaly['cgroups_hierarchy_root'] =>"gitaly"
+gitaly['cgroups_memory_bytes'] = 64424509440,  # 60gb
+gitaly['cgroups_cpu_shares'] = 1024
+gitaly['cgroups_repositories_count'] => 1000,
+gitaly['cgroups_repositories_memory_bytes'] => 32212254720 # 20gb
+gitaly['cgroups_repositories_cpu_shares'] => 512
+```
+
+- `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
+- `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
+   is expected to be owned by the user and group Gitaly runs as. Omnibus GitLab
+   creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
+   when Gitaly starts.
+- `cgroups_memory_bytes` is the total memory limit that is imposed collectively on all
+   Git processes that Gitaly spawns. 0 implies no limit.
+- `cgroups_cpu_shares` is the cpu limit that is imposed collectively on all Git
+   processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
+   which represents 100% of CPU.
+- `cgroups_repositories_count` is the number of cgroups in the cgroups pool. Each time a new Git
+  command is spawned, Gitaly assigns it to one of these cgroups based
+  on the repository the command is for. A circular hashing algorithm assigns
+  Git commands to these cgroups, so a Git command for a repository is
+  always assigned to the same cgroup.
+- `cgroups_repositories_memory_bytes` is the total memory limit that is imposed collectively on all
+  Git processes that Gitaly spawns. 0 implies no limit. This value cannot exceed
+  that of the top level `cgroups_memory_bytes`.
+- `cgroups_repositories_cpu_shares` is the CPU limit that is imposed collectively on all Git
+  processes Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
+  which represents 100% of CPU. This value cannot exceed that of the top
+  level`cgroups_cpu_shares`.
+
+#### Configure cgroups (legacy method) 
+
+To configure cgroups in Gitaly for GitLab versions using the legacy method, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`. For
 example:
 
 ```ruby
@@ -868,7 +920,6 @@ gitaly['cgroups_memory_limit'] = 32212254720
 gitaly['cgroups_memory_enabled'] = true
 gitaly['cgroups_cpu_shares'] = 1024
 gitaly['cgroups_cpu_enabled'] = true
-
 ```
 
 - `cgroups_count` is the number of cgroups created. Each time a new
@@ -883,9 +934,28 @@ gitaly['cgroups_cpu_enabled'] = true
 - `cgroups_memory_enabled` enables or disables the memory limit on cgroups.
 - `cgroups_memory_bytes` is the total memory limit each cgroup imposes on the processes added to it.
 - `cgroups_cpu_enabled` enables or disables the CPU limit on cgroups.
-- `cgroups_cpu_shares` is the CPU limit each cgroup imposes on the processes added to it. The maximum is 1024 shares,
-   which represents 100% of CPU.
-   which represents 100% of CPU.
+- `cgroups_cpu_shares` is the CPU limit each cgroup imposes on the processes added to it. The maximum is 1024 shares, which represents 100% of CPU.
+
+### Configuring oversubscription
+
+In the previous example using the new configuration method:
+
+- The top level memory limit is capped at 60gb.
+- Each of the 1000 cgroups in the repositories pool is capped at 20gb.
+
+This is called "oversubscription". Each cgroup in the pool has a much larger capacity than 1/1000th
+of the top-level memory limit.
+
+This strategy has two main benefits:
+
+- It gives the host protection from overall memory starvation (OOM), because the top-level
+  cgroup's memory limit can be set to a threshold smaller than the host's
+  capacity. Processes outside of that cgroup are not at risk of OOM.
+- It allows each individual cgroup in the pool to burst up to a generous upper
+  bound (in this example 20 GB) that is smaller than the parent cgroup's limit,
+  but substantially larger than 1/N of the parent's limit. In this example, up
+  to 3 child cgroups can concurrently burst up to their max. In general, all
+  1000 cgroups would use much less than the 20 GB.
 
 ## Background Repository Optimization
 

@@ -140,7 +140,7 @@ module UsersHelper
       messageHtml: message,
       actionPrimary: {
         text: s_('AdminUsers|Confirm user'),
-        attributes: [{ variant: 'info', 'data-qa-selector': 'confirm_user_confirm_button' }]
+        attributes: [{ variant: 'confirm', 'data-qa-selector': 'confirm_user_confirm_button' }]
       },
       actionSecondary: {
         text: _('Cancel'),

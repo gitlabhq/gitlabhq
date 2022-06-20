@@ -110,7 +110,6 @@ module Issues
     end
 
     def copy_contacts
-      return unless Feature.enabled?(:customer_relations, original_entity.project.root_ancestor)
       return unless original_entity.project.root_ancestor == new_entity.project.root_ancestor
 
       new_entity.customer_relations_contacts = original_entity.customer_relations_contacts

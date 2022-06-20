@@ -73,6 +73,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    describe '#latest_successful_builds' do
+      it 'has a one to many relationship with its latest successful builds' do
+        _old_build = create(:ci_build, :retried, pipeline: pipeline)
+        _expired_build = create(:ci_build, :expired, pipeline: pipeline)
+        _failed_builds = create_list(:ci_build, 2, :failed, pipeline: pipeline)
+        successful_builds = create_list(:ci_build, 2, :success, pipeline: pipeline)
+
+        expect(pipeline.latest_successful_builds).to contain_exactly(successful_builds.first, successful_builds.second)
+      end
+    end
+
     describe '#downloadable_artifacts' do
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }
@@ -3045,7 +3056,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe 'hooks trigerring' do
-    let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, :created) }
 
     %i[
       enqueue
@@ -3065,7 +3076,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         it 'schedules a new PipelineHooksWorker job' do
           expect(PipelineHooksWorker).to receive(:perform_async).with(pipeline.id)
 
-          pipeline.reload.public_send(pipeline_action)
+          pipeline.public_send(pipeline_action)
+        end
+
+        context 'with blocked users' do
+          before do
+            allow(pipeline).to receive(:user) { build(:user, :blocked) }
+          end
+
+          it 'does not schedule a new PipelineHooksWorker job' do
+            expect(PipelineHooksWorker).not_to receive(:perform_async)
+
+            pipeline.public_send(pipeline_action)
+          end
         end
       end
     end
@@ -3625,6 +3648,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           pipeline.succeed!
         end
       end
+
+      context 'when the user is blocked' do
+        before do
+          pipeline.user.block!
+        end
+
+        it 'does not enqueue PipelineNotificationWorker' do
+          expect(PipelineNotificationWorker).not_to receive(:perform_async)
+
+          pipeline.succeed
+        end
+      end
     end
 
     context 'with failed pipeline' do
@@ -3644,6 +3679,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           .to receive(:perform_async).with(pipeline.id, ref_status: :failed)
 
         pipeline.drop
+      end
+
+      context 'when the user is blocked' do
+        before do
+          pipeline.user.block!
+        end
+
+        it 'does not enqueue PipelineNotificationWorker' do
+          expect(PipelineNotificationWorker).not_to receive(:perform_async)
+
+          pipeline.drop
+        end
       end
     end
 
@@ -3842,6 +3889,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '#latest_report_builds_in_self_and_descendants' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+    let_it_be(:grandchild_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
+
+    it 'returns builds with reports artifacts from pipelines in the hierarcy' do
+      parent_build = create(:ci_build, :test_reports, pipeline: pipeline)
+      child_build = create(:ci_build, :coverage_reports, pipeline: child_pipeline)
+      grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
+
+      expect(pipeline.latest_report_builds_in_self_and_descendants).to contain_exactly(parent_build, child_build, grandchild_build)
+    end
+
+    it 'filters builds by scope' do
+      create(:ci_build, :test_reports, pipeline: pipeline)
+      grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
+
+      expect(pipeline.latest_report_builds_in_self_and_descendants(Ci::JobArtifact.codequality_reports)).to contain_exactly(grandchild_build)
+    end
+
+    it 'only returns builds that are not retried' do
+      create(:ci_build, :codequality_reports, :retried, pipeline: grandchild_pipeline)
+      grandchild_build = create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline)
+
+      expect(pipeline.latest_report_builds_in_self_and_descendants).to contain_exactly(grandchild_build)
+    end
+  end
+
   describe '#has_reports?' do
     subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
 
@@ -3894,38 +3969,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     context 'when pipeline does not have a code coverage artifact' do
-      let(:pipeline) { create(:ci_pipeline, :success) }
-
-      it { expect(subject).to be_falsey }
-    end
-  end
-
-  describe '#can_generate_coverage_reports?' do
-    subject { pipeline.can_generate_coverage_reports? }
-
-    context 'when pipeline has builds with coverage reports' do
-      before do
-        create(:ci_build, :coverage_reports, pipeline: pipeline)
-      end
-
-      context 'when pipeline status is running' do
-        let(:pipeline) { create(:ci_pipeline, :running) }
-
-        it { expect(subject).to be_falsey }
-      end
-
-      context 'when pipeline status is success' do
-        let(:pipeline) { create(:ci_pipeline, :success) }
-
-        it { expect(subject).to be_truthy }
-      end
-    end
-
-    context 'when pipeline does not have builds with coverage reports' do
-      before do
-        create(:ci_build, :artifacts, pipeline: pipeline)
-      end
-
       let(:pipeline) { create(:ci_pipeline, :success) }
 
       it { expect(subject).to be_falsey }
@@ -4078,55 +4121,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     context 'when pipeline does not have any builds with accessibility reports' do
       it 'returns empty urls for accessibility reports' do
         expect(subject.urls).to be_empty
-      end
-    end
-  end
-
-  describe '#coverage_reports' do
-    subject { pipeline.coverage_reports }
-
-    let_it_be(:pipeline) { create(:ci_pipeline) }
-
-    context 'when pipeline has multiple builds with coverage reports' do
-      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
-      let!(:build_golang) { create(:ci_build, :success, name: 'golang', pipeline: pipeline) }
-
-      before do
-        create(:ci_job_artifact, :cobertura, job: build_rspec)
-        create(:ci_job_artifact, :coverage_gocov_xml, job: build_golang)
-      end
-
-      it 'returns coverage reports with collected data' do
-        expect(subject.files.keys).to match_array([
-          "auth/token.go",
-          "auth/rpccredentials.go",
-          "app/controllers/abuse_reports_controller.rb"
-        ])
-      end
-
-      it 'does not execute N+1 queries' do
-        single_build_pipeline = create(:ci_empty_pipeline, :created)
-        single_rspec = create(:ci_build, :success, name: 'rspec', pipeline: single_build_pipeline)
-        create(:ci_job_artifact, :cobertura, job: single_rspec, project: project)
-
-        control = ActiveRecord::QueryRecorder.new { single_build_pipeline.coverage_reports }
-
-        expect { subject }.not_to exceed_query_limit(control)
-      end
-
-      context 'when builds are retried' do
-        let!(:build_rspec) { create(:ci_build, :retried, :success, name: 'rspec', pipeline: pipeline) }
-        let!(:build_golang) { create(:ci_build, :retried, :success, name: 'golang', pipeline: pipeline) }
-
-        it 'does not take retried builds into account' do
-          expect(subject.files).to eql({})
-        end
-      end
-    end
-
-    context 'when pipeline does not have any builds with coverage reports' do
-      it 'returns empty coverage reports' do
-        expect(subject.files).to eql({})
       end
     end
   end
@@ -4839,9 +4833,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe '#has_expired_test_reports?' do
-    subject { pipeline_with_test_report.has_expired_test_reports? }
+    subject { pipeline.has_expired_test_reports? }
 
-    let(:pipeline_with_test_report) { create(:ci_pipeline, :with_test_reports) }
+    let(:pipeline) { create(:ci_pipeline, :success, :with_test_reports) }
 
     context 'when artifacts are not expired' do
       it { is_expected.to be_falsey }
@@ -4849,10 +4843,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     context 'when artifacts are expired' do
       before do
-        pipeline_with_test_report.job_artifacts.first.update!(expire_at: Date.yesterday)
+        pipeline.job_artifacts.first.update!(expire_at: Date.yesterday)
       end
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'when the pipeline is still running' do
+      let(:pipeline) { create(:ci_pipeline, :running) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the pipeline is completed without test reports' do
+      let(:pipeline) { create(:ci_pipeline, :success) }
+
+      it { is_expected.to be_falsey }
     end
   end
 

@@ -90,21 +90,19 @@ module QA
         "/runners/#{id}"
       end
 
-      def api_get_path
-      end
+      def api_get_path; end
 
       def api_post_path
         "/runners"
       end
 
-      def api_post_body
-      end
+      def api_post_body; end
 
       private
 
       def dump_logs
         if @docker_container.running?
-          @docker_container.logs { |line| QA::Runtime::Logger.debug(line) }
+          @docker_container.logs
         else
           QA::Runtime::Logger.debug("No runner container found named #{name}")
         end

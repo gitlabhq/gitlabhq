@@ -7,34 +7,19 @@
       = s_('ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.')
       = link_to "What is squashing?", help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
 
-    .form-check.gl-mb-2
-      = settings.radio_button :squash_option, :never, class: "form-check-input"
-      = label_tag :project_project_setting_attributes_squash_option_never, class: 'form-check-label' do
-        .gl-font-weight-bold
-          = s_('ProjectSettings|Do not allow')
-        .text-secondary
-          = s_('ProjectSettings|Squashing is never performed and the checkbox is hidden.')
-
-    .form-check.gl-mb-2
-      = settings.radio_button :squash_option, :default_off, class: "form-check-input"
-      = label_tag :project_project_setting_attributes_squash_option_default_off, class: 'form-check-label' do
-        .gl-font-weight-bold
-          = s_('ProjectSettings|Allow')
-        .text-secondary
-          = s_('ProjectSettings|Checkbox is visible and unselected by default.')
-
-    .form-check.gl-mb-2
-      = settings.radio_button :squash_option, :default_on, class: "form-check-input"
-      = label_tag :project_project_setting_attributes_squash_option_default_on, class: 'form-check-label' do
-        .gl-font-weight-bold
-          = s_('ProjectSettings|Encourage')
-        .text-secondary
-          = s_('ProjectSettings|Checkbox is visible and selected by default.')
-
-    .form-check.gl-mb-2
-      = settings.radio_button :squash_option, :always, class: "form-check-input"
-      = label_tag :project_project_setting_attributes_squash_option_always, class: 'form-check-label' do
-        .gl-font-weight-bold
-          = s_('ProjectSettings|Require')
-        .text-secondary
-          = s_('ProjectSettings|Squashing is always performed. Checkbox is visible and selected, and users cannot change it.')
+    = settings.gitlab_ui_radio_component :squash_option,
+      :never,
+      s_('ProjectSettings|Do not allow'),
+      help_text: s_('ProjectSettings|Squashing is never performed and the checkbox is hidden.')
+    = settings.gitlab_ui_radio_component :squash_option,
+      :default_off,
+      s_('ProjectSettings|Allow'),
+      help_text: s_('ProjectSettings|Checkbox is visible and unselected by default.')
+    = settings.gitlab_ui_radio_component :squash_option,
+      :default_on,
+      s_('ProjectSettings|Encourage'),
+      help_text: s_('ProjectSettings|Checkbox is visible and selected by default.')
+    = settings.gitlab_ui_radio_component :squash_option,
+      :always,
+      s_('ProjectSettings|Require'),
+      help_text: s_('ProjectSettings|Squashing is always performed. Checkbox is visible and selected, and users cannot change it.')

@@ -4,6 +4,6 @@ classes:
 - Operations::FeatureFlags::Strategy
 feature_categories:
 - feature_flags
-description: TODO
+description: https://docs.gitlab.com/ee/operations/feature_flags.html#feature-flag-strategies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24819
 milestone: '12.8'

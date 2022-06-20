@@ -13,6 +13,7 @@ class PipelineHooksWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(pipeline_id)
     pipeline = Ci::Pipeline.find_by_id(pipeline_id)
     return unless pipeline
+    return if pipeline.user&.blocked?
 
     Ci::Pipelines::HookService.new(pipeline).execute
   end

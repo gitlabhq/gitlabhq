@@ -11,6 +11,7 @@ RSpec.describe ApplicationExperiment, :experiment do
   before do
     stub_feature_flag_definition(:namespaced_stub, feature_definition)
 
+    allow(Gitlab::FIPS).to receive(:enabled?).and_return(true)
     allow(application_experiment).to receive(:enabled?).and_return(true)
   end
 
@@ -137,7 +138,11 @@ RSpec.describe ApplicationExperiment, :experiment do
           },
           {
             schema: 'iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0',
-            data: { experiment: 'namespaced/stub', key: '86208ac54ca798e11f127e8b23ec396a', variant: 'control' }
+            data: {
+              experiment: 'namespaced/stub',
+              key: '300b002687ba1f68591adb2f45ae67f1e56be05ad55f317cc00f1c4aa38f081a',
+              variant: 'control'
+            }
           }
         ]
       )
@@ -214,8 +219,18 @@ RSpec.describe ApplicationExperiment, :experiment do
   end
 
   describe "#key_for" do
-    it "generates MD5 hashes" do
-      expect(application_experiment.key_for(foo: :bar)).to eq('6f9ac12afdb9b58c2f19a136d09f9153')
+    it "generates FIPS compliant SHA2 hashes" do
+      expect(application_experiment.key_for(foo: :bar))
+        .to eq('1206febc4d022294fc639d68c2905079898ea4fee99290785b822e5010f1a9d1')
+    end
+
+    it "falls back to legacy MD5 when FIPS isn't forced" do
+      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/334590 about
+      # why this remains and why it hasn't been prioritized.
+
+      allow(Gitlab::FIPS).to receive(:enabled?).and_return(false)
+      expect(application_experiment.key_for(foo: :bar))
+        .to eq('6f9ac12afdb9b58c2f19a136d09f9153')
     end
   end
 

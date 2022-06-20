@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Distribution
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
@@ -65,7 +65,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   requests diffs external storage.
 - [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages
   to GitLab users through the UI.
-- [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to
+- [Elasticsearch](../integration/advanced_search/elasticsearch.md): Enable Elasticsearch to
   empower Advanced Search. Use when you deal with a huge amount of data.
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md)
 - [Add a license](../user/admin_area/license.md): Add a license to unlock
@@ -120,7 +120,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Creating users](../user/profile/account/create_accounts.md): Create users manually or through authentication integrations.
 - [Libravatar](libravatar.md): Use Libravatar instead of Gravatar for user avatars.
-- [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
+- [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or allow only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication and Authorization](auth/index.md): Configure external authentication with LDAP, SAML, CAS, and additional providers.
   - [Sync LDAP](auth/ldap/index.md)
@@ -194,7 +194,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Monitoring GitLab](monitoring/index.md):
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-  - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+  - [IP allowlist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
   - [Monitoring GitHub imports](monitoring/github_imports.md): The GitLab GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 
 ### Performance Monitoring
@@ -239,7 +239,7 @@ who are aware of the risks.
 - Related links:
   - [GitLab Developer Documentation](../development/index.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
-  - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
+  - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)
 - GitLab.com-specific resources:
   - [Group SAML/SCIM setup](troubleshooting/group_saml_scim.md)

@@ -9,8 +9,9 @@ RSpec.describe Members::UpdateService do
   let(:member_user) { create(:user) }
   let(:permission) { :update }
   let(:member) { source.members_and_requesters.find_by!(user_id: member_user.id) }
+  let(:access_level) { Gitlab::Access::MAINTAINER }
   let(:params) do
-    { access_level: Gitlab::Access::MAINTAINER }
+    { access_level: access_level }
   end
 
   subject { described_class.new(current_user, params).execute(member, permission: permission) }
@@ -29,7 +30,7 @@ RSpec.describe Members::UpdateService do
       updated_member = subject.fetch(:member)
 
       expect(updated_member).to be_valid
-      expect(updated_member.access_level).to eq(Gitlab::Access::MAINTAINER)
+      expect(updated_member.access_level).to eq(access_level)
     end
 
     it 'returns success status' do
@@ -109,6 +110,77 @@ RSpec.describe Members::UpdateService do
 
     it_behaves_like 'a service updating a member' do
       let(:source) { group }
+    end
+  end
+
+  context 'in a project' do
+    let_it_be(:group_project) { create(:project, group: create(:group)) }
+
+    let(:source) { group_project }
+
+    context 'a project maintainer' do
+      before do
+        group_project.add_maintainer(current_user)
+      end
+
+      context 'cannot update a member to OWNER' do
+        before do
+          group_project.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+          let(:access_level) { Gitlab::Access::OWNER }
+        end
+      end
+
+      context 'cannot update themselves to OWNER' do
+        let(:member) { source.members_and_requesters.find_by!(user_id: current_user.id) }
+
+        before do
+          group_project.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+          let(:access_level) { Gitlab::Access::OWNER }
+        end
+      end
+
+      context 'cannot downgrade a member from OWNER' do
+        before do
+          group_project.add_owner(member_user)
+        end
+
+        it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
+          let(:access_level) { Gitlab::Access::MAINTAINER }
+        end
+      end
+    end
+
+    context 'owners' do
+      before do
+        # so that `current_user` is considered an `OWNER` in the project via inheritance.
+        group_project.group.add_owner(current_user)
+      end
+
+      context 'can update a member to OWNER' do
+        before do
+          group_project.add_developer(member_user)
+        end
+
+        it_behaves_like 'a service updating a member' do
+          let(:access_level) { Gitlab::Access::OWNER }
+        end
+      end
+
+      context 'can downgrade a member from OWNER' do
+        before do
+          group_project.add_owner(member_user)
+        end
+
+        it_behaves_like 'a service updating a member' do
+          let(:access_level) { Gitlab::Access::MAINTAINER }
+        end
+      end
     end
   end
 end

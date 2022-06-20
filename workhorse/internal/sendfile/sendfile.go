@@ -9,7 +9,6 @@ package sendfile
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"regexp"
 
@@ -128,7 +127,7 @@ func sendFileFromDisk(w http.ResponseWriter, r *http.Request, file string) {
 	countSendFileMetrics(fi.Size(), r)
 
 	if contentTypeHeaderPresent {
-		data, err := ioutil.ReadAll(io.LimitReader(content, headers.MaxDetectSize))
+		data, err := io.ReadAll(io.LimitReader(content, headers.MaxDetectSize))
 		if err != nil {
 			helper.Fail500(w, r, fmt.Errorf("content type detection: %v", err))
 			return

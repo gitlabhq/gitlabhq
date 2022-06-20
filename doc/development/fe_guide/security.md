@@ -41,7 +41,7 @@ Security Policy headers in the GitLab Rails app.
 Some resources on implementing Content Security Policy:
 
 - [MDN Article on CSP](https://developer.mozilla.org/en-US/docs/Web/Security/CSP)
-- [GitHub's CSP Journey on the GitHub Engineering Blog](http://githubengineering.com/githubs-csp-journey/)
+- [GitHub's CSP Journey on the GitHub Engineering Blog](https://github.blog/2016-04-12-githubs-csp-journey/)
 - The Dropbox Engineering Blog's series on CSP: [1](https://blogs.dropbox.com/tech/2015/09/on-csp-reporting-and-filtering/), [2](https://blogs.dropbox.com/tech/2015/09/unsafe-inline-and-nonce-deployment/), [3](https://blogs.dropbox.com/tech/2015/09/csp-the-unexpected-eval/), [4](https://blogs.dropbox.com/tech/2015/09/csp-third-party-integrations-and-privilege-separation/)
 
 ### Subresource Integrity (SRI)
@@ -59,7 +59,7 @@ All CSS and JavaScript assets should use Subresource Integrity.
 Some resources on implementing Subresource Integrity:
 
 - [MDN Article on SRI](https://developer.mozilla.org/en-us/docs/web/security/subresource_integrity)
-- [Subresource Integrity on the GitHub Engineering Blog](http://githubengineering.com/subresource-integrity/)
+- [Subresource Integrity on the GitHub Engineering Blog](https://github.blog/2015-09-19-subresource-integrity/)
 
 -->
 

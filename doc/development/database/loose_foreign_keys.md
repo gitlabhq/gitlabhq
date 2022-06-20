@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Data Stores
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
@@ -255,7 +255,7 @@ When the loose foreign key definition is no longer needed (parent table is remov
 we need to remove the definition from the YAML file and ensure that we don't leave pending deleted
 records in the database.
 
-1. Remove the loose foreign key definition from the config (`config/gitlab_loose_foreign_keys.yml`).
+1. Remove the loose foreign key definition from the configuration (`config/gitlab_loose_foreign_keys.yml`).
 1. Remove the deletion tracking trigger from the parent table (if the parent table is still there).
 1. Remove leftover deleted records from the `loose_foreign_keys_deleted_records` table.
 
@@ -429,7 +429,7 @@ ALTER TABLE ONLY vulnerability_occurrence_pipelines
 In this example we expect to delete all associated `vulnerability_occurrence_pipelines` records
 whenever we delete the `ci_pipelines` record associated with them. In this case
 you might end up with some vulnerability page in GitLab which shows an occurrence
-of a vulnerability. However, when you try to click a link to the pipeline, you get
+of a vulnerability. However, when you try to select a link to the pipeline, you get
 a 404, because the pipeline is deleted. Then, when you navigate back you might find the
 occurrence has disappeared too.
 
@@ -515,13 +515,13 @@ referenced child tables.
 ### Database structure
 
 The feature relies on triggers installed on the parent tables. When a parent record is deleted,
-the trigger will automatically insert a new record into the `loose_foreign_keys_deleted_records`
+the trigger automatically inserts a new record into the `loose_foreign_keys_deleted_records`
 database table.
 
-The inserted record will store the following information about the deleted record:
+The inserted record stores the following information about the deleted record:
 
 - `fully_qualified_table_name`: name of the database table where the record was located.
-- `primary_key_value`: the ID of the record, the value will be present in the child tables as
+- `primary_key_value`: the ID of the record, the value is present in the child tables as
 the foreign key value. At the moment, composite primary keys are not supported, the parent table
 must have an `id` column.
 - `status`: defaults to pending, represents the status of the cleanup process.
@@ -532,7 +532,7 @@ several runs.
 
 #### Database decomposition
 
-The `loose_foreign_keys_deleted_records` table will exist on both database servers (Ci and Main)
+The `loose_foreign_keys_deleted_records` table exists on both database servers (`ci` and `main`)
 after the [database decomposition](https://gitlab.com/groups/gitlab-org/-/epics/6168). The worker
 ill determine which parent tables belong to which database by reading the
 `lib/gitlab/database/gitlab_schemas.yml` YAML file.
@@ -547,10 +547,10 @@ Example:
   - `ci_builds`
   - `ci_pipelines`
 
-When the worker is invoked for the Ci database, the worker will load deleted records only from the
+When the worker is invoked for the `ci` database, the worker loads deleted records only from the
 `ci_builds` and `ci_pipelines` tables. During the cleanup process, `DELETE` and `UPDATE` queries
-will mostly run on tables located in the Main database. In this example, one `UPDATE` query will
-nullify the `merge_requests.head_pipeline_id` column.
+mostly run on tables located in the Main database. In this example, one `UPDATE` query
+nullifies the `merge_requests.head_pipeline_id` column.
 
 #### Database partitioning
 
@@ -561,7 +561,7 @@ strategy was considered for the feature but due to the large data volume we deci
 new strategy.
 
 A deleted record is considered fully processed when all its direct children records have been
-cleaned up. When this happens, the loose foreign key worker will update the `status` column of
+cleaned up. When this happens, the loose foreign key worker updates the `status` column of
 the deleted record. After this step, the record is no longer needed.
 
 The sliding partitioning strategy provides an efficient way of cleaning up old, unused data by
@@ -591,7 +591,7 @@ Partitions: gitlab_partitions_dynamic.loose_foreign_keys_deleted_records_84 FOR 
 ```
 
 The `partition` column controls the insert direction, the `partition` value determines which
-partition will get the deleted rows inserted via the trigger. Notice that the default value of
+partition gets the deleted rows inserted via the trigger. Notice that the default value of
 the `partition` table matches with the value of the list partition (84). In `INSERT` query
 within the trigger the value of the `partition` is omitted, the trigger always relies on the
 default value of the column.
@@ -607,20 +607,20 @@ SELECT TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table;
 The partition "sliding" process is controlled by two, regularly executed callbacks. These
 callbacks are defined within the `LooseForeignKeys::DeletedRecord` model.
 
-The `next_partition_if` callback controls when to create a new partition. A new partition will
-be created when the current partition has at least one record older than 24 hours. A new partition
+The `next_partition_if` callback controls when to create a new partition. A new partition is
+created when the current partition has at least one record older than 24 hours. A new partition
 is added by the [`PartitionManager`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/partitioning/partition_manager.rb)
 using the following steps:
 
 1. Create a new partition, where the `VALUE` for the partition is `CURRENT_PARTITION + 1`.
 1. Update the default value of the `partition` column to `CURRENT_PARTITION + 1`.
 
-With these steps, new `INSERT`-s via the triggers will end up in the new partition. At this point,
+With these steps, all new `INSERT` queries via the triggers end up in the new partition. At this point,
 the database table has two partitions.
 
 The `detach_partition_if` callback determines if the old partitions can be detached from the table.
 A partition is detachable if there are no pending (unprocessed) records in the partition
-(`status = 1`). The detached partitions will be available for some time, you can see the list
+(`status = 1`). The detached partitions are available for some time, you can see the list
 detached partitions in the `detached_partitions` table:
 
 ```sql
@@ -663,7 +663,7 @@ WHERE ("merge_requests"."id") IN
 These queries are batched, which means that in many cases, several invocations are needed to clean
 up all associated child records.
 
-The batching is implemented with loops, the processing will stop when all associated child records
+The batching is implemented with loops, the processing stops when all associated child records
 are cleaned up or the limit is reached.
 
 ```ruby
@@ -682,14 +682,14 @@ end
 
 The loop-based batch processing is preferred over `EachBatch` for the following reasons:
 
-- The records in the batch are modified, so the next batch will contain different records.
+- The records in the batch are modified, so the next batch contains different records.
 - There is always an index on the foreign key column however, the column is usually not unique.
 `EachBatch` requires a unique column for the iteration.
 - The record order doesn't matter for the cleanup.
 
-Notice that we have two loops. The initial loop will process records with the `SKIP LOCKED` clause.
-The query will skip rows that are locked by other application processes. This will ensure that the
-cleanup worker will less likely to become blocked. The second loop will execute the database
+Notice that we have two loops. The initial loop processes records with the `SKIP LOCKED` clause.
+The query skips rows that are locked by other application processes. This ensures that the
+cleanup worker is less likely to become blocked. The second loop executes the database
 queries without `SKIP LOCKED` to ensure that all records have been processed.
 
 #### Processing limits
@@ -709,19 +709,19 @@ To mitigate these issues, several limits are applied when the worker runs.
 
 The limit rules are implemented in the `LooseForeignKeys::ModificationTracker` class. When one of
 the limits (record modification count, time limit) is reached the processing is stopped
-immediately. After some time, the next scheduled worker will continue the cleanup process.
+immediately. After some time, the next scheduled worker continues the cleanup process.
 
 #### Performance characteristics
 
-The database trigger on the parent tables will **decrease** the record deletion speed. Each
-statement that removes rows from the parent table will invoke the trigger to insert records
+The database trigger on the parent tables **decreases** the record deletion speed. Each
+statement that removes rows from the parent table invokes the trigger to insert records
 into the `loose_foreign_keys_deleted_records` table.
 
 The queries within the cleanup worker are fairly efficient index scans, with limits in place
 they're unlikely to affect other parts of the application.
 
 The database queries are not running in transaction, when an error happens for example a statement
-timeout or a worker crash, the next job will continue the processing.
+timeout or a worker crash, the next job continues the processing.
 
 ## Troubleshooting
 
@@ -730,13 +730,13 @@ timeout or a worker crash, the next job will continue the processing.
 There can be cases where the workers need to process an unusually large amount of data. This can
 happen under normal usage, for example when a large project or group is deleted. In this scenario,
 there can be several million rows to be deleted or nullified. Due to the limits enforced by the
-worker, processing this data will take some time.
+worker, processing this data takes some time.
 
 When cleaning up "heavy-hitters", the feature ensures fair processing by rescheduling larger
 batches for later. This gives time for other deleted records to be processed.
 
 For example, a project with millions of `ci_builds` records is deleted. The `ci_builds` records
-will be deleted by the loose foreign keys feature.
+is deleted by the loose foreign keys feature.
 
 1. The cleanup worker is scheduled and picks up a batch of deleted `projects` records. The large
 project is part of the batch.
@@ -746,7 +746,7 @@ project is part of the batch.
 1. Go to step 1. The next cleanup worker continues the cleanup.
 1. When the `cleanup_attempts` reaches 3, the batch is re-scheduled 10 minutes later by updating
 the `consume_after` column.
-1. The next cleanup worker will process a different batch.
+1. The next cleanup worker processes a different batch.
 
 We have Prometheus metrics in place to monitor the deleted record cleanup:
 
@@ -812,7 +812,7 @@ runtime.
 LooseForeignKeys::CleanupWorker.new.perform
 ```
 
-When the cleanup is done, the older partitions will be automatically detached by the
+When the cleanup is done, the older partitions are automatically detached by the
 `PartitionManager`.
 
 ### PartitionManager bug

@@ -59,13 +59,13 @@ RSpec.describe API::Invitations do
 
       context 'when authenticated as a maintainer/owner' do
         context 'and new member is already a requester' do
-          it 'does not transform the requester into a proper member' do
+          it 'transforms the requester into a proper member' do
             expect do
               post invitations_url(source, maintainer),
                    params: { email: access_requester.email, access_level: Member::MAINTAINER }
 
               expect(response).to have_gitlab_http_status(:created)
-            end.not_to change { source.members.count }
+            end.to change { source.members.count }.by(1)
           end
         end
 
@@ -258,12 +258,13 @@ RSpec.describe API::Invitations do
         end
       end
 
-      it "returns a message if member already exists" do
+      it "updates an already existing active member" do
         post invitations_url(source, maintainer),
              params: { email: developer.email, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['message'][developer.email]).to eq("User already exists in source")
+        expect(json_response['status']).to eq("success")
+        expect(source.members.find_by(user: developer).access_level).to eq Member::MAINTAINER
       end
 
       it 'returns 400 when the invite params of email and user_id are not sent' do
@@ -328,7 +329,7 @@ RSpec.describe API::Invitations do
 
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
 
-      unresolved_n_plus_ones = 44 # old 48 with 12 per new email, currently there are 11 queries added per email
+      unresolved_n_plus_ones = 40 # currently there are 10 queries added per email
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
@@ -351,7 +352,7 @@ RSpec.describe API::Invitations do
 
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
 
-      unresolved_n_plus_ones = 67 # currently there are 11 queries added per email
+      unresolved_n_plus_ones = 59 # currently there are 10 queries added per email
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
@@ -373,7 +374,7 @@ RSpec.describe API::Invitations do
 
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
 
-      unresolved_n_plus_ones = 36 # old 40 with 10 per new email, currently there are 9 queries added per email
+      unresolved_n_plus_ones = 32 # currently there are 8 queries added per email
 
       expect do
         post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
@@ -396,7 +397,7 @@ RSpec.describe API::Invitations do
 
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
 
-      unresolved_n_plus_ones = 62 # currently there are 9 queries added per email
+      unresolved_n_plus_ones = 56 # currently there are 8 queries added per email
 
       expect do
         post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }

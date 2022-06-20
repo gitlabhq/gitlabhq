@@ -49,22 +49,6 @@ describe('DiffView', () => {
     return shallowMount(DiffView, { propsData, store, stubs });
   };
 
-  it('renders a match line', () => {
-    const wrapper = createWrapper({
-      diffLines: [
-        {
-          isMatchLineLeft: true,
-          left: {
-            rich_text: '@@ -4,12 +4,12 @@ import createFlash from &#39;~/flash&#39;;',
-            lineDraft: {},
-          },
-        },
-      ],
-    });
-    expect(wrapper.find(DiffExpansionCell).exists()).toBe(true);
-    expect(wrapper.text()).toContain("@@ -4,12 +4,12 @@ import createFlash from '~/flash';");
-  });
-
   it.each`
     type          | side       | container | sides                                                                                                    | total
     ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true }, right: { lineDraft: {}, renderDiscussion: true } }} | ${2}

@@ -8,13 +8,13 @@
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.gl-mt-2.gl-bg-gray-10.gl-border-solid.gl-border-1.gl-border-gray-100
+  .labels-container.gl-mt-5
     - if @labels.any?
-      .text-muted
+      .text-muted.gl-mb-5
         = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }
       .other-labels
-        %h5= _('Labels')
-        %ul.content-list.manage-labels-list.js-other-labels
+        %h4= _('Labels')
+        %ul.manage-labels-list.js-other-labels
           = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
           = paginate @labels, theme: 'gitlab'
     - elsif search.present?

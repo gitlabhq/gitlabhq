@@ -344,7 +344,7 @@ provides helper methods to track exceptions:
 1. `Gitlab::ErrorTracking.track_exception`: this method only logs
    and sends exception to Sentry (if configured),
 1. `Gitlab::ErrorTracking.log_exception`: this method only logs the exception,
-   and DOES NOT send the exception to Sentry,
+   and does not send the exception to Sentry,
 1. `Gitlab::ErrorTracking.track_and_raise_for_dev_exception`: this method logs,
    sends exception to Sentry (if configured) and re-raises the exception
   for development and test environments.

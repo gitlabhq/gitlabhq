@@ -1,0 +1,8 @@
+---
+name: use_primary_store_as_default_for_sidekiq_status
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89561
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/924
+milestone:
+type: development
+group: group::scalability
+default_enabled: false

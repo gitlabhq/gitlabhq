@@ -9,7 +9,6 @@ module API
     before { authenticate_non_get! }
 
     helpers Helpers::MergeRequestsHelpers
-    helpers Helpers::SSEHelpers
 
     # These endpoints are defined in `TimeTrackingEndpoints` and is shared by
     # API::Issues. In order to be able to define the feature category of these
@@ -234,8 +233,6 @@ module API
 
         handle_merge_request_errors!(merge_request)
 
-        Gitlab::UsageDataCounters::EditorUniqueCounter.track_sse_edit_action(author: current_user) if request_from_sse?(user_project)
-
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
 
@@ -458,7 +455,11 @@ module API
 
         not_allowed! if !immediately_mergeable && !automatically_mergeable
 
-        render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
+        if Feature.enabled?(:change_response_code_merge_status, user_project)
+          render_api_error!('Branch cannot be merged', 422) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
+        else
+          render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: automatically_mergeable)
+        end
 
         check_sha_param!(params, merge_request)
 

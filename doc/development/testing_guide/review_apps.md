@@ -6,13 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Review Apps
 
-Review Apps are deployed using the `start-review-app-pipeline` job. This job triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a Review App.
+Review Apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a Review App.
 
 ![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
 
 For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started:
 
-- for merge requests with CI config changes
+- for merge requests with CI configuration changes
 - for merge requests with frontend changes
 - for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
 - for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
@@ -27,12 +27,18 @@ On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in
 `review` stage), the `review-qa-smoke` and `review-qa-reliable` jobs are automatically started. The `review-qa-smoke` runs
 the QA smoke suite and the `review-qa-reliable` executes E2E tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests).
 
+`review-qa-*` jobs ensure that end-to-end tests for the changes in the merge request pass in a live environment. This shifts the identification of e2e failures from an environment on the path to production to the merge request, to prevent breaking features on GitLab.com or costly GitLab.com deployment blockers. `review-qa-*` failures should be investigated with counterpart SET involvement if needed to help determine the root cause of the error.
+
 You can also manually start the `review-qa-all`: it runs the full QA suite.
 
 After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
 the `allure-report-qa-smoke`, `allure-report-qa-reliable`, and `allure-report-qa-all` jobs. A comment with links to the reports are added to the merge request.
 
 Errors can be found in the `gitlab-review-apps` Sentry project and [filterable by Review App URL](https://sentry.gitlab.net/gitlab/gitlab-review-apps/?query=url%3A%22https%3A%2F%2Fgitlab-review-require-ve-u92nn2.gitlab-review.app%2F%22) or [commit SHA](https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/6095b501da7/all-events/).
+
+### Bypass failed review app deployment to merge a broken `master` fix
+
+Maintainers can elect to use the [process for merging during broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#instructions-for-the-maintainer) if a customer-critical merge request is blocked by pipelines failing due to review app deployment failures.
 
 ## Performance Metrics
 
@@ -94,8 +100,8 @@ the GitLab handbook information for the [shared 1Password account](https://about
 1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.exec` permission first.
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps). For example, `review-qa-raise-e-12chm0`.
 1. Find and open the `toolbox` Deployment. For example, `review-qa-raise-e-12chm0-toolbox`.
-1. Click on the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`.
-1. Click on the `KUBECTL` dropdown, then `Exec` -> `toolbox`.
+1. Select the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`.
+1. Select the `KUBECTL` dropdown, then `Exec` -> `toolbox`.
 1. Replace `-c toolbox -- ls` with `-it -- gitlab-rails console` from the
    default command or
    - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz -it -- gitlab-rails console` and
@@ -107,8 +113,8 @@ the GitLab handbook information for the [shared 1Password account](https://about
 1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.getLogs` permission first.
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps). For example, `review-qa-raise-e-12chm0`.
 1. Find and open the `migrations` Deployment. For example, `review-qa-raise-e-12chm0-migrations.1`.
-1. Click on the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
-1. Click on the `Container logs` link.
+1. Select the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-migrations.1-nqwtx`.
+1. Select `Container logs`.
 
 Alternatively, you could use the [Logs Explorer](https://console.cloud.google.com/logs/query;query=?project=gitlab-review-apps) which provides more utility to search logs. An example query for a pod name is as follows:
 
@@ -199,7 +205,7 @@ subgraph "CNG-mirror pipeline"
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing,
+- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing (note that we already retry them once),
   please check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
@@ -237,7 +243,7 @@ due to this [known issue on the Kubernetes executor for GitLab Runner](https://g
 ### Helm
 
 The Helm version used is defined in the
-[`registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3-kubectl1.14` image](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.gitlab-helm3-kubectl1.14#L7)
+[`registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3.5-kubectl1.17` image](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.gitlab-helm3.5-kubectl1.17#L6)
 used by the `review-deploy` and `review-stop` jobs.
 
 ## Diagnosing unhealthy Review App releases

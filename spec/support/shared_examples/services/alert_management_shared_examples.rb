@@ -32,7 +32,7 @@ RSpec.shared_context 'incident management settings enabled' do
   end
 
   before do
-    allow(ProjectServiceWorker).to receive(:perform_async)
+    allow(Integrations::ExecuteWorker).to receive(:perform_async)
     allow(service)
       .to receive(:incident_management_setting)
       .and_return(incident_management_setting)

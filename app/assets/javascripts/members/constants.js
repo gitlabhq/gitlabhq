@@ -130,9 +130,15 @@ export const FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS = {
   ],
 };
 
+export const FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS = {
+  ...FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
+  type: 'groups_with_inherited_permissions',
+};
+
 export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
   FILTERED_SEARCH_TOKEN_TWO_FACTOR,
   FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
+  FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
 ];
 
 export const AVATAR_SIZE = 48;
@@ -154,7 +160,7 @@ export const TAB_QUERY_PARAM_VALUES = {
  * This user state value comes from the User model
  * see the state machine in app/models/user.rb
  */
-export const USER_STATE_BLOCKED_PENDING_APPROVAL = 'blocked_pending_approval';
+export const USER_STATE_BLOCKED = 'blocked_pending_approval';
 
 /**
  * This and following member state constants' values
@@ -164,8 +170,8 @@ export const MEMBER_STATE_CREATED = 0;
 export const MEMBER_STATE_AWAITING = 1;
 export const MEMBER_STATE_ACTIVE = 2;
 
-export const BADGE_LABELS_AWAITING_USER_SIGNUP = __('Awaiting user signup');
-export const BADGE_LABELS_PENDING_OWNER_APPROVAL = __('Pending owner approval');
+export const BADGE_LABELS_AWAITING_SIGNUP = __('Awaiting user signup');
+export const BADGE_LABELS_PENDING = __('Pending owner action');
 
 export const DAYS_TO_EXPIRE_SOON = 7;
 

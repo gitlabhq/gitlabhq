@@ -165,7 +165,7 @@ Example of response
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202525) in GitLab 13.0.
 
 NOTE:
-This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.
+This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report
@@ -221,7 +221,7 @@ Sample response:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471) in GitLab 14.2.
 
 NOTE:
-This API route is part of the [Unit test report](../ci/unit_test_reports.md) feature.
+This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report_summary
@@ -421,6 +421,15 @@ Response:
 ## Delete a pipeline
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22988) in GitLab 11.6.
+
+Deleting a pipeline expires all pipeline caches, and deletes all immediately
+related objects, such as builds, logs, artifacts, and triggers.
+**This action cannot be undone.**
+
+Deleting a pipeline does not automatically delete its
+[child pipelines](../ci/pipelines/parent_child_pipelines.md).
+See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
+for details.
 
 ```plaintext
 DELETE /projects/:id/pipelines/:pipeline_id

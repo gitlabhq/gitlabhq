@@ -8,6 +8,7 @@ require 'fileutils'
 require_relative '../support/silence_stdout'
 require_relative '../support/helpers/next_instance_of'
 require_relative '../support/helpers/rake_helpers'
+require_relative '../../rubocop/formatter/todo_formatter'
 require_relative '../../rubocop/todo_dir'
 
 RSpec.describe 'rubocop rake tasks', :silence_stdout do
@@ -29,22 +30,22 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout do
 
     around do |example|
       Dir.chdir(tmp_dir) do
-        with_inflections do
-          example.run
+        ::RuboCop::Formatter::TodoFormatter.with_base_directory(rubocop_todo_dir) do
+          with_inflections do
+            example.run
+          end
         end
       end
     end
 
     before do
-      allow(RuboCop::TodoDir).to receive(:new).and_return(todo_dir)
-
       # This Ruby file will trigger the following 3 offenses.
       File.write('a.rb', <<~RUBY)
         a+b
 
       RUBY
 
-      # Mimic GitLab's .rubocop_todo.yml avoids relying on RuboCop's
+      # Mimicking GitLab's .rubocop_todo.yml avoids relying on RuboCop's
       # default.yml configuration.
       File.write('.rubocop.yml', <<~YAML)
         <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>

@@ -68,6 +68,6 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
   private
 
   def resolve_alerts(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, args: args, ctx: context)
+    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
   end
 end

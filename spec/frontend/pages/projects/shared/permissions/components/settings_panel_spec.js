@@ -53,11 +53,13 @@ const defaultProps = {
   showVisibilityConfirmModal: false,
 };
 
+const FEATURE_ACCESS_LEVEL_ANONYMOUS = 30;
+
 describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    { currentSettings = {}, ...customProps } = {},
+    { currentSettings = {}, glFeatures = {}, ...customProps } = {},
     mountFn = shallowMount,
   ) => {
     const propsData = {
@@ -68,6 +70,12 @@ describe('Settings Panel', () => {
 
     return mountFn(settingsPanel, {
       propsData,
+      provide: {
+        glFeatures: {
+          packageRegistryAccessLevel: false,
+          ...glFeatures,
+        },
+      },
     });
   };
 
@@ -95,6 +103,10 @@ describe('Settings Panel', () => {
   const findContainerRegistryAccessLevelInput = () =>
     wrapper.find('[name="project[project_feature_attributes][container_registry_access_level]"]');
   const findPackageSettings = () => wrapper.find({ ref: 'package-settings' });
+  const findPackageAccessLevel = () =>
+    wrapper.find('[data-testid="package-registry-access-level"]');
+  const findPackageAccessLevels = () =>
+    wrapper.find('[name="project[project_feature_attributes][package_registry_access_level]"]');
   const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
   const findPagesSettings = () => wrapper.find({ ref: 'pages-settings' });
   const findPagesAccessLevels = () =>
@@ -519,6 +531,101 @@ describe('Settings Panel', () => {
 
       expect(findPackagesEnabledInput().findComponent(GlToggle).props('label')).toBe(
         settingsPanel.i18n.packagesLabel,
+      );
+    });
+
+    it('should hide the package access level settings', () => {
+      wrapper = mountComponent();
+
+      expect(findPackageAccessLevel().exists()).toBe(false);
+    });
+
+    describe('packageRegistryAccessLevel feature flag = true', () => {
+      it('should hide the packages settings', () => {
+        wrapper = mountComponent({
+          glFeatures: { packageRegistryAccessLevel: true },
+          packagesAvailable: true,
+        });
+
+        expect(findPackageSettings().exists()).toBe(false);
+      });
+
+      it('should hide the package access level settings with packagesAvailable = false', () => {
+        wrapper = mountComponent({ glFeatures: { packageRegistryAccessLevel: true } });
+
+        expect(findPackageAccessLevel().exists()).toBe(false);
+      });
+
+      it('renders the package access level settings with packagesAvailable = true', () => {
+        wrapper = mountComponent({
+          glFeatures: { packageRegistryAccessLevel: true },
+          packagesAvailable: true,
+        });
+
+        expect(findPackageAccessLevel().exists()).toBe(true);
+      });
+
+      it.each`
+        visibilityLevel               | output
+        ${visibilityOptions.PRIVATE}  | ${[[featureAccessLevel.PROJECT_MEMBERS, 'Only Project Members'], [30, 'Everyone']]}
+        ${visibilityOptions.INTERNAL} | ${[[featureAccessLevel.EVERYONE, 'Everyone With Access'], [30, 'Everyone']]}
+        ${visibilityOptions.PUBLIC}   | ${[[30, 'Everyone']]}
+      `(
+        'renders correct options when visibilityLevel is $visibilityLevel',
+        async ({ visibilityLevel, output }) => {
+          wrapper = mountComponent({
+            glFeatures: { packageRegistryAccessLevel: true },
+            packagesAvailable: true,
+            currentSettings: {
+              visibilityLevel,
+            },
+          });
+
+          expect(findPackageAccessLevels().props('options')).toStrictEqual(output);
+        },
+      );
+
+      it.each`
+        initialProjectVisibilityLevel | newProjectVisibilityLevel     | initialPackageRegistryOption          | expectedPackageRegistryOption
+        ${visibilityOptions.PRIVATE}  | ${visibilityOptions.INTERNAL} | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
+        ${visibilityOptions.PRIVATE}  | ${visibilityOptions.INTERNAL} | ${featureAccessLevel.PROJECT_MEMBERS} | ${featureAccessLevel.EVERYONE}
+        ${visibilityOptions.PRIVATE}  | ${visibilityOptions.INTERNAL} | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${visibilityOptions.PRIVATE}  | ${visibilityOptions.PUBLIC}   | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
+        ${visibilityOptions.PRIVATE}  | ${visibilityOptions.PUBLIC}   | ${featureAccessLevel.PROJECT_MEMBERS} | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${visibilityOptions.PRIVATE}  | ${visibilityOptions.PUBLIC}   | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${visibilityOptions.INTERNAL} | ${visibilityOptions.PRIVATE}  | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
+        ${visibilityOptions.INTERNAL} | ${visibilityOptions.PRIVATE}  | ${featureAccessLevel.EVERYONE}        | ${featureAccessLevel.PROJECT_MEMBERS}
+        ${visibilityOptions.INTERNAL} | ${visibilityOptions.PRIVATE}  | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${visibilityOptions.INTERNAL} | ${visibilityOptions.PUBLIC}   | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
+        ${visibilityOptions.INTERNAL} | ${visibilityOptions.PUBLIC}   | ${featureAccessLevel.EVERYONE}        | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${visibilityOptions.INTERNAL} | ${visibilityOptions.PUBLIC}   | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${visibilityOptions.PUBLIC}   | ${visibilityOptions.PRIVATE}  | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
+        ${visibilityOptions.PUBLIC}   | ${visibilityOptions.PRIVATE}  | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${featureAccessLevel.PROJECT_MEMBERS}
+        ${visibilityOptions.PUBLIC}   | ${visibilityOptions.INTERNAL} | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
+        ${visibilityOptions.PUBLIC}   | ${visibilityOptions.INTERNAL} | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${featureAccessLevel.EVERYONE}
+      `(
+        'changes option from $initialPackageRegistryOption to $expectedPackageRegistryOption when visibilityLevel changed from $initialProjectVisibilityLevel to $newProjectVisibilityLevel',
+        async ({
+          initialProjectVisibilityLevel,
+          newProjectVisibilityLevel,
+          initialPackageRegistryOption,
+          expectedPackageRegistryOption,
+        }) => {
+          wrapper = mountComponent({
+            glFeatures: { packageRegistryAccessLevel: true },
+            packagesAvailable: true,
+            currentSettings: {
+              visibilityLevel: initialProjectVisibilityLevel,
+              packageRegistryAccessLevel: initialPackageRegistryOption,
+            },
+          });
+
+          await findProjectVisibilityLevelInput().setValue(newProjectVisibilityLevel);
+
+          expect(findPackageAccessLevels().props('value')).toStrictEqual(
+            expectedPackageRegistryOption,
+          );
+        },
       );
     });
   });

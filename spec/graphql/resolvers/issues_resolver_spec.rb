@@ -428,6 +428,22 @@ RSpec.describe Resolvers::IssuesResolver do
           end
         end
 
+        context 'when sorting by closed at' do
+          let_it_be(:project) { create(:project, :public) }
+          let_it_be(:closed_issue1) { create(:issue, project: project, closed_at: 3.days.from_now) }
+          let_it_be(:closed_issue2) { create(:issue, project: project, closed_at: nil) }
+          let_it_be(:closed_issue3) { create(:issue, project: project, closed_at: 2.days.ago) }
+          let_it_be(:closed_issue4) { create(:issue, project: project, closed_at: nil) }
+
+          it 'sorts issues ascending' do
+            expect(resolve_issues(sort: :closed_at_asc).to_a).to eq [closed_issue3, closed_issue1, closed_issue4, closed_issue2]
+          end
+
+          it 'sorts issues descending' do
+            expect(resolve_issues(sort: :closed_at_desc).to_a).to eq [closed_issue1, closed_issue3, closed_issue4, closed_issue2]
+          end
+        end
+
         context 'when sorting by due date' do
           let_it_be(:project) { create(:project, :public) }
           let_it_be(:due_issue1) { create(:issue, project: project, due_date: 3.days.from_now) }
@@ -573,22 +589,6 @@ RSpec.describe Resolvers::IssuesResolver do
             issues = resolve_issues(sort: :created_desc).to_a
             expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
           end
-
-          context 'when incident_escalations feature flag is disabled' do
-            before do
-              stub_feature_flags(incident_escalations: false)
-            end
-
-            it 'defaults ascending status sort to created_desc' do
-              issues = resolve_issues(sort: :escalation_status_asc).to_a
-              expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
-            end
-
-            it 'defaults descending status sort to created_desc' do
-              issues = resolve_issues(sort: :escalation_status_desc).to_a
-              expect(issues).to eq([resolved_incident, issue_no_status, triggered_incident])
-            end
-          end
         end
 
         context 'when sorting with non-stable cursors' do
@@ -701,6 +701,6 @@ RSpec.describe Resolvers::IssuesResolver do
   end
 
   def resolve_issues(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, args: args, ctx: context)
+    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
   end
 end

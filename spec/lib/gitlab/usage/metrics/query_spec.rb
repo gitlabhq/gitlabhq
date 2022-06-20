@@ -61,6 +61,12 @@ RSpec.describe Gitlab::Usage::Metrics::Query do
     end
   end
 
+  describe '.average' do
+    it 'returns the raw SQL' do
+      expect(described_class.for(:average, Issue, :weight)).to eq('SELECT AVG("issues"."weight") FROM "issues"')
+    end
+  end
+
   describe 'estimate_batch_distinct_count' do
     it 'returns the raw SQL' do
       expect(described_class.for(:estimate_batch_distinct_count, Issue, :author_id)).to eq('SELECT COUNT(DISTINCT "issues"."author_id") FROM "issues"')

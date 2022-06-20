@@ -60,7 +60,7 @@ GitLab can be integrated with the following enhancements:
 or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc and Markdown documents.
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
-- Add [Elasticsearch](elasticsearch.md) for [Advanced Search](../user/search/advanced_search.md).
+- Add [Elasticsearch](advanced_search/elasticsearch.md) for [Advanced Search](../user/search/advanced_search.md).
 
 ## Integrations
 
@@ -104,3 +104,13 @@ After that restart GitLab with:
 ```shell
 sudo gitlab-ctl restart
 ```
+
+### Search Sidekiq logs in Kibana
+
+To locate a specific integration in Kibana, use the following KQL search string:
+
+```plaintext
+`json.integration_class.keyword : "Integrations::Jira" and json.project_path : "path/to/project"`
+```
+
+You can find information in `json.exception.backtrace`, `json.exception.class`, `json.exception.message`, and `json.message`.

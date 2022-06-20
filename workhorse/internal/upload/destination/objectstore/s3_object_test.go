@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -47,9 +45,7 @@ func TestS3ObjectUpload(t *testing.T) {
 			defer ts.Close()
 
 			deadline := time.Now().Add(testTimeout)
-			tmpDir, err := ioutil.TempDir("", "workhorse-test-")
-			require.NoError(t, err)
-			defer os.Remove(tmpDir)
+			tmpDir := t.TempDir()
 
 			objectName := filepath.Join(tmpDir, "s3-test-data")
 			ctx, cancel := context.WithCancel(context.Background())
@@ -87,9 +83,7 @@ func TestConcurrentS3ObjectUpload(t *testing.T) {
 	defer artifactsServer.Close()
 
 	deadline := time.Now().Add(testTimeout)
-	tmpDir, err := ioutil.TempDir("", "workhorse-test-")
-	require.NoError(t, err)
-	defer os.Remove(tmpDir)
+	tmpDir := t.TempDir()
 
 	var wg sync.WaitGroup
 
@@ -136,9 +130,7 @@ func TestS3ObjectUploadCancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	deadline := time.Now().Add(testTimeout)
-	tmpDir, err := ioutil.TempDir("", "workhorse-test-")
-	require.NoError(t, err)
-	defer os.Remove(tmpDir)
+	tmpDir := t.TempDir()
 
 	objectName := filepath.Join(tmpDir, "s3-test-data")
 
@@ -160,9 +152,7 @@ func TestS3ObjectUploadLimitReached(t *testing.T) {
 	defer ts.Close()
 
 	deadline := time.Now().Add(testTimeout)
-	tmpDir, err := ioutil.TempDir("", "workhorse-test-")
-	require.NoError(t, err)
-	defer os.Remove(tmpDir)
+	tmpDir := t.TempDir()
 
 	objectName := filepath.Join(tmpDir, "s3-test-data")
 	object, err := objectstore.NewS3Object(objectName, creds, config)

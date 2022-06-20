@@ -36,7 +36,7 @@ module Packages
               sha256: file_sha256
             )
 
-            append_metadata_file(content: file_md5, file_name: MD5_FILE_NAME)
+            append_metadata_file(content: file_md5, file_name: MD5_FILE_NAME) unless Gitlab::FIPS.enabled?
             append_metadata_file(content: file_sha1, file_name: SHA1_FILE_NAME)
             append_metadata_file(content: file_sha256, file_name: SHA256_FILE_NAME)
             append_metadata_file(content: file_sha512, file_name: SHA512_FILE_NAME)
@@ -70,6 +70,8 @@ module Packages
         end
 
         def digest_from(content, type)
+          return if type == :md5 && Gitlab::FIPS.enabled?
+
           digest_class = case type
                          when :md5
                            Digest::MD5

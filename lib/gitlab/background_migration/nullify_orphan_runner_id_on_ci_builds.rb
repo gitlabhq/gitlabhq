@@ -10,9 +10,9 @@ module Gitlab
         pause_ms = 0 if pause_ms < 0
 
         batch_relation = relation_scoped_to_range(batch_table, batch_column, start_id, end_id)
-        batch_relation.each_batch(column: batch_column, of: sub_batch_size, order_hint: :type) do |sub_batch|
+        batch_relation.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
           batch_metrics.time_operation(:update_all) do
-            sub_batch.update_all(runner_id: nil)
+            filtered_sub_batch(sub_batch).update_all(runner_id: nil)
           end
 
           sleep(pause_ms * 0.001)
@@ -31,9 +31,13 @@ module Gitlab
 
       def relation_scoped_to_range(source_table, source_key_column, start_id, stop_id)
         define_batchable_model(source_table, connection: connection)
+          .where(source_key_column => start_id..stop_id)
+      end
+
+      def filtered_sub_batch(sub_batch)
+        sub_batch
           .joins('LEFT OUTER JOIN ci_runners ON ci_runners.id = ci_builds.runner_id')
           .where('ci_builds.runner_id IS NOT NULL AND ci_runners.id IS NULL')
-          .where(source_key_column => start_id..stop_id)
       end
     end
   end

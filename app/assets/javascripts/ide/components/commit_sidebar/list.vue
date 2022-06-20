@@ -38,6 +38,20 @@ export default {
       default: __('No changes'),
     },
   },
+  modal: {
+    actionPrimary: {
+      text: __('Discard all changes'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   computed: {
     titleText() {
       if (!this.title) return __('Changes');
@@ -66,10 +80,10 @@ export default {
 
 <template>
   <div class="ide-commit-list-container">
-    <header class="multi-file-commit-panel-header d-flex mb-0">
-      <div class="d-flex align-items-center flex-fill">
+    <header class="multi-file-commit-panel-header gl-display-flex gl-mb-0">
+      <div class="gl-display-flex gl-align-items-center flex-fill">
         <strong> {{ titleText }} </strong>
-        <div class="d-flex ml-auto">
+        <div class="gl-display-flex gl-ml-auto">
           <gl-button
             v-if="!stagedList"
             v-gl-tooltip
@@ -100,17 +114,17 @@ export default {
         />
       </li>
     </ul>
-    <p v-else class="multi-file-commit-list form-text text-muted text-center">
+    <p v-else class="multi-file-commit-list form-text gl-text-gray-600 gl-text-center">
       {{ emptyStateText }}
     </p>
     <gl-modal
       v-if="!stagedList"
       ref="discardAllModal"
-      ok-variant="danger"
       modal-id="discard-all-changes"
-      :ok-title="__('Discard all changes')"
       :title="__('Discard all changes?')"
-      @ok="unstageAndDiscardAllChanges"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="unstageAndDiscardAllChanges"
     >
       {{ $options.discardModalText }}
     </gl-modal>

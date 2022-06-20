@@ -1,5 +1,5 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { flatten, isEqual, keyBy } from 'lodash';
 import createFlash from '~/flash';
 import { sprintf, s__ } from '~/locale';
@@ -48,7 +48,7 @@ const groupRawMetrics = (groups = [], rawData = []) => {
 export default {
   name: 'ValueStreamMetrics',
   components: {
-    GlSkeletonLoading,
+    GlSkeletonLoader,
     MetricTile,
   },
   props: {
@@ -119,8 +119,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-mt-6" data-testid="vsa-metrics">
-    <gl-skeleton-loading v-if="isLoading" class="gl-h-auto gl-py-3 gl-pr-9 gl-my-6" />
+  <div class="gl-display-flex" data-testid="vsa-metrics" :class="isLoading ? 'gl-my-6' : 'gl-mt-6'">
+    <gl-skeleton-loader v-if="isLoading" />
     <template v-else>
       <div v-if="hasGroupedMetrics" class="gl-flex-direction-column">
         <div

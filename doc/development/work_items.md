@@ -45,12 +45,24 @@ Here are some problems with current issues usage and why we are looking into wor
 - Codebase maintainability and feature development becomes a bigger challenges as we grow issues
   beyond its core role of issue tracking into supporting the different types and subtle differences between them.
 
-## Work item and work item type terms
+## Work item terminology
 
-Using the terms "issue" or "issuable" to reference the types of collaboration objects
-(for example, issue, bug, feature, or epic) often creates confusion. To avoid confusion, we will use the term
-work item type (WIT) when referring to the type of a collaboration object.
-An instance of a WIT is a work item (WI). For example, `issue#123`, `bug#456`, `requirement#789`.
+To avoid confusion and ensure communication is efficient, we will use the following terms exclusively when discussing work items.
+
+| Term              | Description | Example of misuse | Should be |
+| ---               | ---         | ---               | ---       |
+| work item type    | Classes of work item; for example: issue, requirement, test case, incident, or task | _Epics will eventually become issues_ | _Epics will eventually become a **work item type**_ |
+| work item         | An instance of a work item type | | |
+| work item view    | The new frontend view that renders work items of any type |  | |
+| legacy issue view | The existing view used to render issues and incidents | | |
+| issue             | The existing issue model | | |
+| issuable          | Any model currently using the issueable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
+
+Some terms have been used in the past but have since become confusing and are now discouraged.
+
+| Term              | Description | Example of misuse | Should be |
+| ---               | ---         | ---               | ---       |
+| issue type        | A former way to refer to classes of work item | _Tasks are an **issue type**_ | _Tasks are a **work item type**_ |
 
 ### Migration strategy
 

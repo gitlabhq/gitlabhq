@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
@@ -10,6 +10,7 @@ type: howto
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
 > - [Enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6.
 > - [Disabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`.
+> - [Enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
 
 FLAG:
 On self-managed GitLab, this feature is only available by default for Geo sites using a unified URL. See below to
@@ -35,6 +36,9 @@ Use secondary proxying for use-cases including:
 
 - Having all Geo sites behind a single URL.
 - Geographically load-balancing traffic without worrying about write access.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see: [Secondary proxying using geographic load-balancer and AWS Route53](https://www.youtube.com/watch?v=TALLy7__Na8).
 
 ## Set up a unified URL for Geo sites
 
@@ -104,17 +108,19 @@ gitlab:
       GEO_SECONDARY_PROXY: "0"
 ```
 
-## Enable Geo proxying with Separate URLs
+## Geo proxying with Separate URLs
 
-The ability to use proxying with separate URLs is still in development. You can follow the
-["Geo secondary proxying with separate URLs" epic](https://gitlab.com/groups/gitlab-org/-/epics/6865)
-for progress.
+Since GitLab 15.1, Geo secondary proxying is enabled by default for separate URLs also.
 
-To try out this feature, enable the `geo_secondary_proxy_separate_urls` feature flag.
+There are minor known issues linked in the ["Geo secondary proxying with separate URLs"
+epic](https://gitlab.com/groups/gitlab-org/-/epics/6865). You can also add feedback in the epic about any use-cases that
+are not possible anymore with proxying enabled.
+
+If you run into issues, to disable this feature, disable the `geo_secondary_proxy_separate_urls` feature flag.
 SSH into one node running Rails on your primary Geo site and run:
 
 ```shell
-sudo gitlab-rails runner "Feature.enable(:geo_secondary_proxy_separate_urls)"
+sudo gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
 ```
 
 In Kubernetes, you can run the same command in the toolbox pod. Refer to the

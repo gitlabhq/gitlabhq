@@ -18,7 +18,6 @@
 
 module Gitlab
   class UsageData
-    DEPRECATED_VALUE = -1000
     MAX_GENERATION_TIME_FOR_SAAS = 40.hours
 
     CE_MEMOIZED_VALUES = %i(
@@ -28,7 +27,6 @@ module Gitlab
         project_maximum_id
         user_minimum_id
         user_maximum_id
-        unique_visit_service
         deployment_minimum_id
         deployment_maximum_id
         auth_providers
@@ -68,13 +66,17 @@ module Gitlab
       # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
-        issues_created_manually_from_alerts = count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue))
+        issues_created_manually_from_alerts = if Gitlab.com?
+                                                FALLBACK
+                                              else
+                                                count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue))
+                                              end
 
         {
           counts: {
             assignee_lists: count(List.assignee),
             ci_builds: count(::Ci::Build),
-            ci_internal_pipelines: count(::Ci::Pipeline.internal),
+            ci_internal_pipelines: Gitlab.com? ? FALLBACK : count(::Ci::Pipeline.internal),
             ci_external_pipelines: count(::Ci::Pipeline.external),
             ci_pipeline_config_auto_devops: count(::Ci::Pipeline.auto_devops_source),
             ci_pipeline_config_repository: count(::Ci::Pipeline.repository_source),
@@ -156,7 +158,7 @@ module Gitlab
             notes: count(Note)
           }.merge(
             runners_usage,
-            services_usage,
+            integrations_usage,
             usage_counters,
             user_preferences_usage,
             container_expiration_policies_usage,
@@ -193,8 +195,7 @@ module Gitlab
             packages: count(::Packages::Package.where(monthly_time_range_db_params)),
             personal_snippets: count(PersonalSnippet.where(monthly_time_range_db_params)),
             project_snippets: count(ProjectSnippet.where(monthly_time_range_db_params)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id),
-            promoted_issues: DEPRECATED_VALUE
+            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id)
           }.tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
@@ -367,7 +368,7 @@ module Gitlab
         results
       end
 
-      def services_usage
+      def integrations_usage
         # rubocop: disable UsageData/LargeTable:
         Integration.available_integration_names(include_dev: false).each_with_object({}) do |name, response|
           type = Integration.integration_name_to_type(name)
@@ -409,7 +410,7 @@ module Gitlab
         {
           jira_imports_total_imported_count: count(finished_jira_imports),
           jira_imports_projects_count: distinct_count(finished_jira_imports, :project_id),
-          jira_imports_total_imported_issues_count: sum(JiraImportState.finished, :imported_issues_count)
+          jira_imports_total_imported_issues_count: add_metric('JiraImportsTotalImportedIssuesCountMetric')
         }
         # rubocop: enable UsageData/LargeTable
       end
@@ -645,38 +646,6 @@ module Gitlab
         }
       end
 
-      def analytics_unique_visits_data
-        results = ::Gitlab::Analytics::UniqueVisits.analytics_events.each_with_object({}) do |target, hash|
-          hash[target] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target) }
-        end
-        results['analytics_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics) }
-        results['analytics_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :analytics, **monthly_time_range) }
-
-        { analytics_unique_visits: results }
-      end
-
-      def compliance_unique_visits_data
-        results = ::Gitlab::Analytics::UniqueVisits.compliance_events.each_with_object({}) do |target, hash|
-          hash[target] = redis_usage_data { unique_visit_service.unique_visits_for(targets: target) }
-        end
-        results['compliance_unique_visits_for_any_target'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance) }
-        results['compliance_unique_visits_for_any_target_monthly'] = redis_usage_data { unique_visit_service.unique_visits_for(targets: :compliance, **monthly_time_range) }
-
-        { compliance_unique_visits: results }
-      end
-
-      def search_unique_visits_data
-        events = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category('search')
-        results = events.each_with_object({}) do |event, hash|
-          hash[event] = redis_usage_data { ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: event, **weekly_time_range) }
-        end
-
-        results['search_unique_visits_for_any_target_weekly'] = redis_usage_data { ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, **weekly_time_range) }
-        results['search_unique_visits_for_any_target_monthly'] = redis_usage_data { ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, **monthly_time_range) }
-
-        { search_unique_visits: results }
-      end
-
       def action_monthly_active_users(time_period)
         date_range = { date_from: time_period[:created_at].first, date_to: time_period[:created_at].last }
 
@@ -724,9 +693,6 @@ module Gitlab
           .merge(topology_usage_data)
           .merge(usage_activity_by_stage)
           .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
-          .merge(analytics_unique_visits_data)
-          .merge(compliance_unique_visits_data)
-          .merge(search_unique_visits_data)
           .merge(redis_hll_counters)
           .deep_merge(aggregated_metrics_data)
       end
@@ -769,7 +735,6 @@ module Gitlab
           action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
           action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
           action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) },
-          action_monthly_active_users_sse_edit: redis_usage_data { counter.count_sse_edit_actions(**date_range) },
           action_monthly_active_users_ide_edit: redis_usage_data { counter.count_edit_using_editor(**date_range) }
         }
       end
@@ -810,9 +775,8 @@ module Gitlab
           # rubocop: enable UsageData/LargeTable:
 
           0.upto(series_amount - 1).map do |series|
-            # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
-            sent_count = sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
-            clicked_count = clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
+            sent_count = sent_in_product_marketing_email_count(sent_emails, track, series)
+            clicked_count = clicked_in_product_marketing_email_count(clicked_emails, track, series)
 
             result["in_product_marketing_email_#{track}_#{series}_sent"] = sent_count
             result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count unless track == 'experience'
@@ -821,18 +785,20 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def unique_visit_service
-        strong_memoize(:unique_visit_service) do
-          ::Gitlab::Analytics::UniqueVisits.new
-        end
+      def sent_in_product_marketing_email_count(sent_emails, track, series)
+        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
+        sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
+      end
+
+      def clicked_in_product_marketing_email_count(clicked_emails, track, series)
+        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
+        clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
       end
 
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated
         # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/217407.
-        add count(Issue.with_alert_management_alerts, start: minimum_id(Issue), finish: maximum_id(Issue)),
-          count(::Issue.with_self_managed_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue)),
-          count(::Issue.with_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue))
+        add_metric('IssuesCreatedFromAlertsMetric')
       end
 
       def clear_memoized
@@ -879,7 +845,7 @@ module Gitlab
           gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :project_entity })
         }
 
-        counters[:total] = add(*counters.values)
+        counters[:total] = add_metric('CountImportedProjectsTotalMetric', time_frame: time_frame)
 
         counters
       end

@@ -12,6 +12,9 @@ export const i18n = {
   ERROR_IMPORT: s__('BulkImport|Importing the group failed.'),
   ERROR_IMPORT_COMPLETED: s__('BulkImport|Import is finished. Pick another name for re-import'),
 
+  NO_GROUPS_FOUND: s__('BulkImport|No groups found'),
+  OWNER: __('Owner'),
+
   features: {
     projectMigration: __('projects'),
   },

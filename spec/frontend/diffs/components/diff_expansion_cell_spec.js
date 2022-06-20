@@ -1,4 +1,3 @@
-import { getByText } from '@testing-library/dom';
 import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
@@ -81,7 +80,7 @@ describe('DiffExpansionCell', () => {
 
   const findExpandUp = (wrapper) => wrapper.find(EXPAND_UP_CLASS);
   const findExpandDown = (wrapper) => wrapper.find(EXPAND_DOWN_CLASS);
-  const findExpandAll = ({ element }) => getByText(element, 'Show all unchanged lines');
+  const findExpandAll = (wrapper) => wrapper.find('.js-unfold-all');
 
   describe('top row', () => {
     it('should have "expand up" and "show all" option', () => {
@@ -90,9 +89,7 @@ describe('DiffExpansionCell', () => {
       });
 
       expect(findExpandUp(wrapper).exists()).toBe(true);
-      expect(findExpandDown(wrapper).exists()).toBe(true);
       expect(findExpandUp(wrapper).attributes('disabled')).not.toBeDefined();
-      expect(findExpandDown(wrapper).attributes('disabled')).toBeDefined();
       expect(findExpandAll(wrapper)).not.toBe(null);
     });
   });
@@ -114,9 +111,7 @@ describe('DiffExpansionCell', () => {
       });
 
       expect(findExpandDown(wrapper).exists()).toBe(true);
-      expect(findExpandUp(wrapper).exists()).toBe(true);
       expect(findExpandDown(wrapper).attributes('disabled')).not.toBeDefined();
-      expect(findExpandUp(wrapper).attributes('disabled')).toBeDefined();
       expect(findExpandAll(wrapper)).not.toBe(null);
     });
   });
@@ -144,9 +139,9 @@ describe('DiffExpansionCell', () => {
             newLineNumber,
           });
 
-          const wrapper = createComponent({ file });
+          const wrapper = createComponent({ file, lineCountBetween: 10 });
 
-          findExpandAll(wrapper).click();
+          findExpandAll(wrapper).trigger('click');
 
           expect(store.dispatch).toHaveBeenCalledWith(
             'diffs/loadMoreLines',

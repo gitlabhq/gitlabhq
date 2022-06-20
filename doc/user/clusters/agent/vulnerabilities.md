@@ -4,7 +4,7 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Container vulnerability scanning **(ULTIMATE)**
+# Operational Container Scanning **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 
@@ -16,8 +16,6 @@ You can also configure your agent so the vulnerabilities are displayed with othe
 Prerequisite:
 
 - You must have at least the Developer role.
-- [Cluster image scanning](../../application_security/cluster_image_scanning/index.md)
-  must be part of your build process.
 
 To view vulnerability information in GitLab:
 
@@ -27,6 +25,8 @@ To view vulnerability information in GitLab:
 1. Select the agent you want to see the vulnerabilities for.
 
 ![Cluster agent security tab UI](../img/cluster_agent_security_tab_v14_8.png)
+
+This information can also be found under [operational vulnerabilities](../../../user/application_security/vulnerability_report/index.md#operational-vulnerabilities).
 
 ## Enable cluster vulnerability scanning **(ULTIMATE)**
 
@@ -39,8 +39,7 @@ containing a CRON expression for when the scans will be run.
 
 ```yaml
 starboard:
-  vulnerability_report:
-    cadence: '0 0 * * *' # Daily at 00:00 (Kubernetes cluster time)
+  cadence: '0 0 * * *' # Daily at 00:00 (Kubernetes cluster time)
 ```
 
 The `cadence` field is required. GitLab supports the following types of CRON syntax for the cadence field:
@@ -58,8 +57,8 @@ namespaces, you can use this configuration:
 
 ```yaml
 starboard:
+  cadence: '0 0 * * *'
   vulnerability_report:
-    cadence: '0 0 * * *'
     namespaces:
       - development
       - staging

@@ -63,6 +63,106 @@ Parameters:
 ]
 ```
 
+## Get an issue link
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
+
+Gets details about an issue link.
+
+```plaintext
+GET /projects/:id/issues/:issue_iid/links/:issue_link_id
+```
+
+Supported attributes:
+
+| Attribute       | Type           | Required               | Description                                                                 |
+|-----------------|----------------|------------------------|-----------------------------------------------------------------------------|
+| `id`            | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `issue_iid`     | integer        | **{check-circle}** Yes | Internal ID of a project's issue.                                           |
+| `issue_link_id` | integer/string | **{check-circle}** Yes | ID of an issue relationship.                                                |
+
+Response body attributes:
+
+| Attribute      | Type   | Description                                                                               |
+|:---------------|:-------|:------------------------------------------------------------------------------------------|
+| `source_issue` | object | Details of the source issue of the relationship.                                          |
+| `target_issue` | object | Details of the target issue of the relationship.                                          |
+| `link_type`    | string | Type of the relationship. Possible values are `relates_to`, `blocks` and `is_blocked_by`. |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/84/issues/14/links/1"
+```
+
+Example response:
+
+```json
+{
+  "source_issue" : {
+    "id" : 83,
+    "iid" : 11,
+    "project_id" : 4,
+    "created_at" : "2016-01-07T12:44:33.959Z",
+    "title" : "Issues with auth",
+    "state" : "opened",
+    "assignees" : [],
+    "assignee" : null,
+    "labels" : [
+      "bug"
+    ],
+    "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+    },
+    "description" : null,
+    "updated_at" : "2016-01-07T12:44:33.959Z",
+    "milestone" : null,
+    "subscribed" : true,
+    "user_notes_count": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/11",
+    "confidential": false,
+    "weight": null
+  },
+  "target_issue" : {
+    "id" : 84,
+    "iid" : 14,
+    "project_id" : 4,
+    "created_at" : "2016-01-07T12:44:33.959Z",
+    "title" : "Issues with auth",
+    "state" : "opened",
+    "assignees" : [],
+    "assignee" : null,
+    "labels" : [
+      "bug"
+    ],
+    "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+    },
+    "description" : null,
+    "updated_at" : "2016-01-07T12:44:33.959Z",
+    "milestone" : null,
+    "subscribed" : true,
+    "user_notes_count": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/14",
+    "confidential": false,
+    "weight": null
+  },
+  "link_type": "relates_to"
+}
+```
+
 ## Create an issue link
 
 Creates a two-way relation between two issues. The user must be allowed to

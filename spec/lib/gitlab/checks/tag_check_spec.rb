@@ -26,8 +26,18 @@ RSpec.describe Gitlab::Checks::TagCheck do
           let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
           let(:newrev) { '0000000000000000000000000000000000000000' }
 
-          it 'is prevented' do
-            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /cannot be deleted/)
+          context 'via web interface' do
+            let(:protocol) { 'web' }
+
+            it 'is allowed' do
+              expect { subject.validate! }.not_to raise_error
+            end
+          end
+
+          context 'via SSH' do
+            it 'is prevented' do
+              expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /only delete.*web interface/)
+            end
           end
         end
 
@@ -37,6 +47,21 @@ RSpec.describe Gitlab::Checks::TagCheck do
 
           it 'is prevented' do
             expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /cannot be updated/)
+          end
+        end
+      end
+
+      context 'as developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        context 'deletion' do
+          let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
+          let(:newrev) { '0000000000000000000000000000000000000000' }
+
+          it 'is prevented' do
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /not allowed to delete/)
           end
         end
       end

@@ -8,7 +8,7 @@ module Gitlab
 
       included do
         # Issue, MergeRequest: quick actions definitions
-        desc _('Assign')
+        desc { _('Assign') }
         explanation do |users|
           _('Assigns %{assignee_users_sentence}.') % { assignee_users_sentence: assignee_users_sentence(users) }
         end
@@ -81,7 +81,7 @@ module Gitlab
           end
         end
 
-        desc _('Set milestone')
+        desc { _('Set milestone') }
         explanation do |milestone|
           _("Sets the milestone to %{milestone_reference}.") % { milestone_reference: milestone.to_reference } if milestone
         end
@@ -103,7 +103,7 @@ module Gitlab
           @updates[:milestone_id] = milestone.id if milestone
         end
 
-        desc _('Remove milestone')
+        desc { _('Remove milestone') }
         explanation do
           _("Removes %{milestone_reference} milestone.") % { milestone_reference: quick_action_target.milestone.to_reference(format: :name) }
         end
@@ -121,7 +121,7 @@ module Gitlab
           @updates[:milestone_id] = nil
         end
 
-        desc _('Copy labels and milestone from other issue or merge request in this project')
+        desc { _('Copy labels and milestone from other issue or merge request in this project') }
         explanation do |source_issuable|
           _("Copy labels and milestone from %{source_issuable_reference}.") % { source_issuable_reference: source_issuable.to_reference }
         end
@@ -143,7 +143,7 @@ module Gitlab
           end
         end
 
-        desc _('Set time estimate')
+        desc { _('Set time estimate') }
         explanation do |time_estimate|
           formatted_time_estimate = format_time_estimate(time_estimate)
           _("Sets time estimate to %{time_estimate}.") % { time_estimate: formatted_time_estimate } if formatted_time_estimate
@@ -167,7 +167,7 @@ module Gitlab
           end
         end
 
-        desc _('Add or subtract spent time')
+        desc { _('Add or subtract spent time') }
         explanation do |time_spent, time_spent_date|
           spend_time_message(time_spent, time_spent_date, false)
         end
@@ -194,9 +194,9 @@ module Gitlab
           end
         end
 
-        desc _('Remove time estimate')
-        explanation _('Removes time estimate.')
-        execution_message _('Removed time estimate.')
+        desc { _('Remove time estimate') }
+        explanation { _('Removes time estimate.') }
+        execution_message { _('Removed time estimate.') }
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&
@@ -206,9 +206,9 @@ module Gitlab
           @updates[:time_estimate] = 0
         end
 
-        desc _('Remove spent time')
-        explanation _('Removes spent time.')
-        execution_message _('Removed spent time.')
+        desc { _('Remove spent time') }
+        explanation { _('Removes spent time.') }
+        execution_message { _('Removed spent time.') }
         condition do
           quick_action_target.persisted? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
@@ -218,9 +218,9 @@ module Gitlab
           @updates[:spend_time] = { duration: :reset, user_id: current_user.id }
         end
 
-        desc _("Lock the discussion")
-        explanation _("Locks the discussion.")
-        execution_message _("Locked the discussion.")
+        desc { _("Lock the discussion") }
+        explanation { _("Locks the discussion.") }
+        execution_message { _("Locked the discussion.") }
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&
@@ -231,9 +231,9 @@ module Gitlab
           @updates[:discussion_locked] = true
         end
 
-        desc _("Unlock the discussion")
-        explanation _("Unlocks the discussion.")
-        execution_message _("Unlocked the discussion.")
+        desc { _("Unlock the discussion") }
+        explanation { _("Unlocks the discussion.") }
+        execution_message { _("Unlocked the discussion.") }
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&

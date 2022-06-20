@@ -71,7 +71,7 @@ GITLAB_TRACING=opentracing://<driver>?<param_name>=<param_value>&<param_name_2>=
 
 In this example, we have the following hypothetical values:
 
-- `driver`: the driver such a jaegar.
+- `driver`: the driver such a Jaeger.
 - `param_name`, `param_value`: these are driver specific configuration values. Configuration
   parameters for Jaeger are documented [further on in this
   document](#2-configure-the-gitlab_tracing-environment-variable) they should be URL encoded.
@@ -87,7 +87,7 @@ The easiest way to access tracing from a GDK environment is through the
 [performance-bar](../administration/monitoring/performance/performance_bar.md). This can be shown
 by typing `p` `b` in the browser window.
 
-Once the performance bar is enabled, click on the **Trace** link in the performance bar to go to
+Once the performance bar is enabled, select **Trace** in the performance bar to go to
 the Jaeger UI.
 
 The Jaeger search UI returns a query for the `Correlation-ID` of the current request. Normally,

@@ -29,7 +29,7 @@ export default {
   <div>
     <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
 
-    <gl-loading-icon v-if="subscriptionsLoading" size="md" />
+    <gl-loading-icon v-if="subscriptionsLoading" size="lg" />
     <div v-else-if="hasSubscriptions && !subscriptionsError">
       <div class="gl-display-flex gl-justify-content-end gl-mb-3">
         <add-namespace-button />

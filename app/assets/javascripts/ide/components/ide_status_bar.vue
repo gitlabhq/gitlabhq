@@ -32,8 +32,11 @@ export default {
     ...mapState('pipelines', ['latestPipeline']),
   },
   watch: {
-    lastCommit() {
-      this.initPipelinePolling();
+    lastCommit: {
+      handler() {
+        this.initPipelinePolling();
+      },
+      immediate: true,
     },
   },
   mounted() {

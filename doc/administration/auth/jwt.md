@@ -74,7 +74,7 @@ JWT provides you with a secret key for you to use.
    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a JWT icon below the regular sign in form.
-Click the icon to begin the authentication process. JWT asks the user to
+Select the icon to begin the authentication process. JWT asks the user to
 sign in and authorize the GitLab application. If everything goes well, the user
 is redirected to GitLab and signed in.
 

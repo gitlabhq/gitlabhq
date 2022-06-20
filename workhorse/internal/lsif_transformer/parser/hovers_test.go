@@ -19,7 +19,7 @@ func TestHoversRead(t *testing.T) {
 }
 
 func setupHovers(t *testing.T) *Hovers {
-	h, err := NewHovers(Config{})
+	h, err := NewHovers()
 	require.NoError(t, err)
 
 	require.NoError(t, h.Read("hoverResult", []byte(`{"id":"2","label":"hoverResult","result":{"contents": ["hello"]}}`)))

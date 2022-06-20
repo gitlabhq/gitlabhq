@@ -19,7 +19,7 @@ RSpec.describe Resolvers::Ci::JobsResolver do
   describe '#resolve' do
     context 'when security_report_types is empty' do
       it "returns all of the pipeline's jobs" do
-        jobs = resolve(described_class, obj: pipeline)
+        jobs = resolve(described_class, obj: pipeline, arg_style: :internal)
 
         expect(jobs).to contain_exactly(
           have_attributes(name: 'Normal job'),
@@ -37,7 +37,8 @@ RSpec.describe Resolvers::Ci::JobsResolver do
           ::Types::Security::ReportTypeEnum.values['SAST'].value,
           ::Types::Security::ReportTypeEnum.values['DAST'].value
         ]
-        jobs = resolve(described_class, obj: pipeline, args: { security_report_types: report_types })
+        jobs = resolve(described_class, obj: pipeline, args: { security_report_types: report_types },
+                       arg_style: :internal)
 
         expect(jobs).to contain_exactly(
           have_attributes(name: 'DAST job'),
@@ -48,7 +49,7 @@ RSpec.describe Resolvers::Ci::JobsResolver do
 
     context 'when a job has tags' do
       it "returns jobs with tags when applicable" do
-        jobs = resolve(described_class, obj: pipeline)
+        jobs = resolve(described_class, obj: pipeline, arg_style: :internal)
         expect(jobs).to contain_exactly(
           have_attributes(tag_list: []),
           have_attributes(tag_list: []),

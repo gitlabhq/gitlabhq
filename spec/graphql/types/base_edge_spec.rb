@@ -25,7 +25,6 @@ RSpec.describe Types::BaseEdge do
 
     Class.new(GraphQL::Schema) do
       lazy_resolve ::Gitlab::Graphql::Lazy, :force
-      use ::GraphQL::Pagination::Connections
       use ::Gitlab::Graphql::Pagination::Connections
 
       query(Class.new(::Types::BaseObject) do

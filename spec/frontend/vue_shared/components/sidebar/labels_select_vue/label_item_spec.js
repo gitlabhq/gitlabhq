@@ -1,4 +1,4 @@
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
@@ -45,18 +45,26 @@ describe('LabelItem', () => {
       wrapperTemp.destroy();
     });
 
-    it('renders visible gl-icon component when `isLabelSet` prop is true', () => {
-      const wrapperTemp = createComponent({
-        isLabelSet: true,
-      });
+    it.each`
+      isLabelSet | isLabelIndeterminate | testId                  | iconName
+      ${true}    | ${false}             | ${'checked-icon'}       | ${'mobile-issue-close'}
+      ${false}   | ${true}              | ${'indeterminate-icon'} | ${'dash'}
+    `(
+      'renders visible gl-icon component when `isLabelSet` prop is $isLabelSet and `isLabelIndeterminate` is $isLabelIndeterminate',
+      ({ isLabelSet, isLabelIndeterminate, testId, iconName }) => {
+        const wrapperTemp = createComponent({
+          isLabelSet,
+          isLabelIndeterminate,
+        });
 
-      const iconEl = wrapperTemp.find(GlIcon);
+        const iconEl = wrapperTemp.find(`[data-testid="${testId}"]`);
 
-      expect(iconEl.isVisible()).toBe(true);
-      expect(iconEl.props('name')).toBe('mobile-issue-close');
+        expect(iconEl.isVisible()).toBe(true);
+        expect(iconEl.props('name')).toBe(iconName);
 
-      wrapperTemp.destroy();
-    });
+        wrapperTemp.destroy();
+      },
+    );
 
     it('renders visible span element as placeholder instead of gl-icon when `isLabelSet` prop is false', () => {
       const wrapperTemp = createComponent({

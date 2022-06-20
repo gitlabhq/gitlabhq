@@ -23,7 +23,7 @@ module Projects
       def show
         respond_to do |format|
           format.json do
-            if Feature.enabled?(:ci_test_report_artifacts_expired, project) && pipeline.has_expired_test_reports?
+            if pipeline.has_expired_test_reports?
               render json: { errors: 'Test report artifacts have expired' }, status: :not_found
             else
               render json: TestSuiteSerializer
@@ -36,7 +36,6 @@ module Projects
 
       private
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def builds
         @builds ||= pipeline.latest_builds.id_in(build_ids).presence || render_404
       end
@@ -56,7 +55,6 @@ module Projects
 
         suite
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

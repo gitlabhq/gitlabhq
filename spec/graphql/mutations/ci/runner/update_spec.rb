@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Ci::Runner::Update do
+RSpec.describe 'Mutations::Ci::Runner::Update' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:runner) { create(:ci_runner, active: true, locked: false, run_untagged: true) }
+  let_it_be(:described_class) { Mutations::Ci::Runner::Update }
 
   let(:current_ctx) { { current_user: user } }
   let(:mutated_runner) { subject[:runner] }
@@ -49,6 +50,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
         {
           id: runner.to_global_id,
           description: 'updated description',
+          maintenance_note: 'updated maintenance note',
           maximum_timeout: 900,
           access_level: 'ref_protected',
           active: false,
@@ -81,6 +83,16 @@ RSpec.describe Mutations::Ci::Runner::Update do
           expect(subject[:errors]).to contain_exactly(
             'Maximum timeout needs to be at least 10 minutes',
             'Tags list can not be empty when runner is not allowed to pick untagged jobs'
+          )
+        end
+      end
+
+      context 'with too long maintenance note' do
+        it 'returns a descriptive error' do
+          mutation_params[:maintenance_note] = '1' * 1025
+
+          expect(subject[:errors]).to contain_exactly(
+            'Maintenance note is too long (maximum is 1024 characters)'
           )
         end
       end

@@ -1,4 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
+import { Emitter } from 'monaco-editor';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -64,7 +66,6 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
   afterEach(() => {
     instance.dispose();
-    editorEl.remove();
     mockAxios.restore();
     resetHTMLFixture();
   });
@@ -75,8 +76,44 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       actions: expect.any(Object),
       shown: false,
       modelChangeListener: undefined,
+      layoutChangeListener: {
+        dispose: expect.anything(),
+      },
       path: previewMarkdownPath,
       actionShowPreviewCondition: expect.any(Object),
+    });
+  });
+
+  describe('onDidLayoutChange', () => {
+    const emitter = new Emitter();
+    let layoutSpy;
+
+    useFakeRequestAnimationFrame();
+
+    beforeEach(() => {
+      instance.unuse(extension);
+      instance.onDidLayoutChange = emitter.event;
+      extension = instance.use({
+        definition: EditorMarkdownPreviewExtension,
+        setupOptions: { previewMarkdownPath },
+      });
+      layoutSpy = jest.spyOn(instance, 'layout');
+    });
+
+    it('does not trigger the layout when the preview is not active [default]', async () => {
+      expect(instance.markdownPreview.shown).toBe(false);
+      expect(layoutSpy).not.toHaveBeenCalled();
+      await emitter.fire();
+      expect(layoutSpy).not.toHaveBeenCalled();
+    });
+
+    it('triggers the layout if the preview panel is opened', async () => {
+      expect(layoutSpy).not.toHaveBeenCalled();
+      instance.togglePreview();
+      layoutSpy.mockReset();
+
+      await emitter.fire();
+      expect(layoutSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -110,6 +147,9 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     beforeEach(async () => {
       mockAxios.onPost().reply(200, { body: responseData });
       await togglePreview();
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
     });
 
     it('removes the registered buttons from the toolbar', () => {
@@ -174,6 +214,31 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
       instance.unuse(extension);
       expect(newWidth === width / EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH).toBe(true);
+    });
+
+    it('disposes the layoutChange listener and does not re-layout on layout changes', () => {
+      expect(instance.markdownPreview.layoutChangeListener).toBeDefined();
+      instance.unuse(extension);
+
+      expect(instance.markdownPreview?.layoutChangeListener).toBeUndefined();
+    });
+
+    it('does not trigger the re-layout after instance is unused', async () => {
+      const emitter = new Emitter();
+
+      instance.unuse(extension);
+      instance.onDidLayoutChange = emitter.event;
+
+      // we have to re-use the extension to pick up the emitter
+      extension = instance.use({
+        definition: EditorMarkdownPreviewExtension,
+        setupOptions: { previewMarkdownPath },
+      });
+      instance.unuse(extension);
+      const layoutSpy = jest.spyOn(instance, 'layout');
+
+      await emitter.fire();
+      expect(layoutSpy).not.toHaveBeenCalled();
     });
   });
 

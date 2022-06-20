@@ -1,5 +1,5 @@
 ---
-stage: Enablement
+stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: howto
@@ -18,8 +18,8 @@ If you have any doubts about the consistency of the data on this site, we recomm
 
 ## Configure the former **primary** site to be a **secondary** site
 
-Since the former **primary** site will be out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
-repositories and uploads will not be replayed when bringing the former **primary** site back
+Since the former **primary** site is out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
+repositories and uploads is not replayed when bringing the former **primary** site back
 into sync, which may result in increased disk usage.
 Alternatively, you can [set up a new **secondary** GitLab instance](../setup/index.md) to avoid this.
 
@@ -34,8 +34,8 @@ To bring the former **primary** site up to date:
 
    NOTE:
    If you [disabled the **primary** site permanently](index.md#step-2-permanently-disable-the-primary-site),
-   you need to undo those steps now. For Debian/Ubuntu you just need to run
-   `sudo systemctl enable gitlab-runsvdir`. For CentOS 6, you need to install
+   you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
+   `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** site by
    following [Setup instructions](../setup/index.md). In this case, you don't need to follow the next step.
 

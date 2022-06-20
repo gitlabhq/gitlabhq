@@ -2,11 +2,14 @@
 - add_to_breadcrumbs _('Webhook Settings'), namespace_project_hooks_path
 - page_title _('Webhook Logs')
 
-%h3.page-title
+%h1.page-title.gl-font-size-h-display
   = _("Request details")
 
 %hr
 
-= link_to _("Resend Request"), @hook_log.present.retry_path, method: :post, class: "btn gl-button btn-default float-right gl-ml-3"
+- if @hook_log.oversize?
+  = button_tag _("Resend Request"), class: "btn gl-button btn-default float-right gl-ml-3 has-tooltip", disabled: true, title: _("Request data is too large")
+- else
+  = link_to _("Resend Request"), @hook_log.present.retry_path, method: :post, class: "btn gl-button btn-default float-right gl-ml-3"
 
 = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

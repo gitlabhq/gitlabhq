@@ -98,3 +98,5 @@ class Admin::RunnersController < Admin::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+
+Admin::RunnersController.prepend_mod

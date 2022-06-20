@@ -85,10 +85,10 @@ GitLab can display the results of one or more reports in:
 ## `artifacts:reports:cobertura` (removed)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.9.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0.
 
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.9 and
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78132) in GitLab 14.7 and
 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/348980) in GitLab 15.0. Use `artifacts:reports:coverage_report`
 instead.
 
@@ -179,7 +179,7 @@ The collected Dependency Scanning report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md#overview).
+- The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md).
 - The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
@@ -209,6 +209,7 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
   self-managed instances is 150, and can be changed by changing the
   `dotenv_variables` [application limit](../../administration/instance_limits.md#limit-dotenv-variables).
 - Variable substitution in the `.env` file is not supported.
+- [Multiline values in the `.env` file](https://github.com/motdotla/dotenv#multiline-values) are not supported.
 - The `.env` file can't have empty lines or comments (starting with `#`).
 - Key values in the `env` file cannot have spaces or newline characters (`\n`), including when using single or double quotes.
 - Quote escaping during parsing (`key = 'value'` -> `{key: "value"}`) is not supported.
@@ -219,7 +220,7 @@ The `junit` report collects [JUnit report format XML files](https://www.ibm.com/
 The collected Unit test reports upload to GitLab as an artifact. Although JUnit was originally developed in Java, there
 are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 
-See [Unit test reports](../unit_test_reports.md) for more details and examples.
+See [Unit test reports](../testing/unit_test_reports.md) for more details and examples.
 Below is an example of collecting a JUnit report format XML file from Ruby's RSpec test tool:
 
 ```yaml
@@ -235,8 +236,8 @@ rspec:
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [code quality widget](../../ci/unit_test_reports.md#how-it-works).
-- The [full report](../../ci/unit_test_reports.md#viewing-unit-test-reports-on-gitlab).
+- The merge request [code quality widget](../testing/unit_test_reports.md#how-it-works).
+- The [full report](../testing/unit_test_reports.md#view-unit-test-reports-on-gitlab).
 
 Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to
 concatenate them into a single file. Use either:

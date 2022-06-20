@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlTab } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineTabs from '~/pipelines/components/pipeline_tabs.vue';
 import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
@@ -21,35 +22,35 @@ describe('The Pipeline Tabs', () => {
   const findPipelineApp = () => wrapper.findComponent(PipelineGraphWrapper);
   const findTestsApp = () => wrapper.findComponent(TestReports);
 
+  const findFailedJobsBadge = () => wrapper.findByTestId('failed-builds-counter');
+  const findJobsBadge = () => wrapper.findByTestId('builds-counter');
+
   const defaultProvide = {
     defaultTabValue: '',
+    failedJobsCount: 1,
+    failedJobsSummary: [],
+    totalJobCount: 10,
   };
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (provide = {}) => {
     wrapper = extendedWrapper(
       shallowMount(PipelineTabs, {
-        propsData,
         provide: {
           ...defaultProvide,
+          ...provide,
         },
         stubs: {
-          JobsApp: { template: '<div class="jobs" />' },
+          GlTab,
           TestReports: { template: '<div id="tests" />' },
         },
       }),
     );
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });
 
-  // The failed jobs MUST be removed from here and tested individually once
-  // the logic for the tab is implemented.
   describe('Tabs', () => {
     it.each`
       tabName          | tabComponent         | appComponent
@@ -58,9 +59,34 @@ describe('The Pipeline Tabs', () => {
       ${'Jobs'}        | ${findJobsTab}       | ${findJobsApp}
       ${'Failed Jobs'} | ${findFailedJobsTab} | ${findFailedJobsApp}
       ${'Tests'}       | ${findTestsTab}      | ${findTestsApp}
-    `('shows $tabName tab and its associated component', ({ appComponent, tabComponent }) => {
+    `('shows $tabName tab with its associated component', ({ appComponent, tabComponent }) => {
+      createComponent();
+
       expect(tabComponent().exists()).toBe(true);
       expect(appComponent().exists()).toBe(true);
+    });
+
+    describe('with no failed jobs', () => {
+      beforeEach(() => {
+        createComponent({ failedJobsCount: 0 });
+      });
+
+      it('hides the failed jobs tab', () => {
+        expect(findFailedJobsTab().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('Tabs badges', () => {
+    it.each`
+      tabName          | badgeComponent         | badgeText
+      ${'Jobs'}        | ${findJobsBadge}       | ${String(defaultProvide.totalJobCount)}
+      ${'Failed Jobs'} | ${findFailedJobsBadge} | ${String(defaultProvide.failedJobsCount)}
+    `('shows badge for $tabName with the correct text', ({ badgeComponent, badgeText }) => {
+      createComponent();
+
+      expect(badgeComponent().exists()).toBe(true);
+      expect(badgeComponent().text()).toBe(badgeText);
     });
   });
 });

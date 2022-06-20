@@ -45,8 +45,6 @@ module API
       # For all projects except those in a user namespace, the `namespace`
       # and `group` are identical. Preload the group when it's not a user namespace.
       def preload_groups(projects_relation)
-        return unless Feature.enabled?(:group_projects_api_preload_groups)
-
         group_projects = projects_for_group_preload(projects_relation)
         groups = group_projects.map(&:namespace)
 

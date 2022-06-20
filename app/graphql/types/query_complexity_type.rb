@@ -5,7 +5,7 @@ module Types
   class QueryComplexityType < ::Types::BaseObject
     graphql_name 'QueryComplexity'
 
-    ANALYZER = GraphQL::Analysis::QueryComplexity.new { |_query, complexity| complexity }
+    ANALYZER = GraphQL::Analysis::AST::QueryComplexity
 
     alias_method :query, :object
 
@@ -23,7 +23,7 @@ module Types
           description: 'GraphQL query complexity score.'
 
     def score
-      ::GraphQL::Analysis.analyze_query(query, [ANALYZER]).first
+      ::GraphQL::Analysis::AST.analyze_query(query, [ANALYZER]).first
     end
   end
   # rubocop: enable Graphql/AuthorizeTypes

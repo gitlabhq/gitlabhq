@@ -133,7 +133,7 @@ Below are the settings for [GitLab Pages](https://about.gitlab.com/stages-devops
 | IP address                | `35.185.44.232`        | -                      |
 | Custom domains support    | **{check-circle}** Yes | **{dotted-circle}** No |
 | TLS certificates support  | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Maximum size](../../administration/pages/index.md#set-global-maximum-pages-size-per-project) (compressed) | 1 GB                   | 100 MB                 |
+| [Maximum size](../../administration/pages/index.md#set-global-maximum-size-of-each-gitlab-pages-site) (compressed) | 1 GB                   | 100 MB                 |
 
 The maximum size of your Pages site is also regulated by the artifacts maximum size,
 which is part of [GitLab CI/CD](#gitlab-cicd).
@@ -156,10 +156,12 @@ the related documentation.
 | Maximum number of pipeline triggers in a project                         | `25000` for Free tier, Unlimited for all paid tiers                                                                       | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers)                                                               |
 | Maximum pipeline schedules in projects                                   | `10` for Free tier, `50` for all paid tiers                                                                               | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules)                                                                                 |
 | Maximum pipelines per schedule                                           | `24` for Free tier, `288` for all paid tiers                                                                              | See [Limit the number of pipelines created by a pipeline schedule per day](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) |
+| Maximum number of schedule rules defined for each security policy project                                   | Unlimited for all paid tiers                                                                               | See [Number of schedule rules defined for each security policy project](../../administration/instance_limits.md#limit-the-number-of-schedule-rules-defined-for-security-policy-project)                                                                                    |
 | Scheduled job archiving                                                  | 3 months (from June 22, 2020). Jobs created before that date were archived after September 22, 2020.                      | Never                                                                                                                                                                                    |
-| Maximum test cases per [unit test report](../../ci/unit_test_reports.md) | `500000`                                                                                                                  | Unlimited                                                                                                                                                                                |
+| Maximum test cases per [unit test report](../../ci/testing/unit_test_reports.md) | `500000`                                                                                                                  | Unlimited                                                                                                                                                                                |
 | Maximum registered runners                                               | Free tier: `50` per-group / `50` per-project<br/>All paid tiers: `1000` per-group  / `1000` per-project                   | See [Number of registered runners per scope](../../administration/instance_limits.md#number-of-registered-runners-per-scope)                                                             |
 | Limit of dotenv variables                                                | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150`                                                              | See [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables)                                                                                             |
+| Authorization token duration (minutes)                                   | `15`                          | To set a custom value, in the Rails console, run `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)`, where `<integer>` is the desired number of minutes. |
 
 ## Package registry limits
 
@@ -186,7 +188,7 @@ the default value [is the same as for self-managed instances](../admin_area/sett
 | Setting                       | GitLab.com default |
 |-------------------------------|--------------------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
-| Maximum import size           | 5 GB               |
+| [Maximum import size](../project/settings/import_export.md#maximum-import-file-size)                        | 5 GB  |
 | Maximum attachment size       | 10 MB              |
 
 If you are near or over the repository size limit, you can either
@@ -232,7 +234,7 @@ The following limits apply for [webhooks](../project/integrations/webhooks.md):
 
 | Setting              | Default for GitLab.com  |
 |----------------------|-------------------------|
-| Webhook rate limit   | `120` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate |
+| Webhook rate limit   | `500` calls per minute for GitLab Free, unlimited for GitLab Premium and GitLab Ultimate. Webhook rate limits are applied per top-level namespace. |
 | Number of webhooks   | `100` per project, `50` per group |
 | Maximum payload size | 25 MB                   |
 
@@ -328,19 +330,20 @@ limiting responses](#rate-limiting-responses).
 The following table describes the rate limits for GitLab.com, both before and
 after the limits change in January, 2021:
 
-| Rate limit                                                                | From 2021-02-12               | From 2022-02-03                         |
-|:--------------------------------------------------------------------------|:------------------------------|:----------------------------------------|
-| **Protected paths** (for a given **IP address**)                          | **10** requests per minute    | **10** requests per minute              |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**) | **300** requests per minute   | **300** requests per minute             |
-| **Unauthenticated** traffic (from a given **IP address**)                 | **500** requests per minute   | **500** requests per minute             |
-| **Authenticated** API traffic (for a given **user**)                      | **2,000** requests per minute | **2,000** requests per minute           |
-| **Authenticated** non-API HTTP traffic (for a given **user**)             | **1,000** requests per minute | **1,000** requests per minute           |
-| **All** traffic (from a given **IP address**)                             | **2,000** requests per minute | **2,000** requests per minute           |
-| **Issue creation**                                                        | **300** requests per minute   | **200** requests per minute             |
-| **Note creation** (on issues and merge requests)                          | **60** requests per minute    | **60** requests per minute              |
-| **Advanced, project, and group search** API (for a given **IP address**)  | **10** requests per minute    | **10** requests per minute              |
-| **GitLab Pages** requests (for a given **IP address**)                    |                               | **1000** requests per **50 seconds**    |
-| **GitLab Pages** requests (for a given **GitLab Pages domain**)           |                               | **5000** requests per **10 seconds**    |
+| Rate limit                                                                 | From 2021-02-12               | From 2022-02-03                         |
+|:---------------------------------------------------------------------------|:------------------------------|:----------------------------------------|
+| **Protected paths** (for a given **IP address**)                           | **10** requests per minute    | **10** requests per minute              |
+| **Raw endpoint** traffic (for a given **project, commit, and file path**)  | **300** requests per minute   | **300** requests per minute             |
+| **Unauthenticated** traffic (from a given **IP address**)                  | **500** requests per minute   | **500** requests per minute             |
+| **Authenticated** API traffic (for a given **user**)                       | **2,000** requests per minute | **2,000** requests per minute           |
+| **Authenticated** non-API HTTP traffic (for a given **user**)              | **1,000** requests per minute | **1,000** requests per minute           |
+| **All** traffic (from a given **IP address**)                              | **2,000** requests per minute | **2,000** requests per minute           |
+| **Issue creation**                                                         | **300** requests per minute   | **200** requests per minute             |
+| **Note creation** (on issues and merge requests)                           | **60** requests per minute    | **60** requests per minute              |
+| **Advanced, project, and group search** API (for a given **IP address**)   | **10** requests per minute    | **10** requests per minute              |
+| **GitLab Pages** requests (for a given **IP address**)                     |                               | **1000** requests per **50 seconds**    |
+| **GitLab Pages** requests (for a given **GitLab Pages domain**)            |                               | **5000** requests per **10 seconds**    |
+| **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute              |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw
@@ -424,7 +427,7 @@ setting [disabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/1
 ### SSH maximum number of connections
 
 GitLab.com defines the maximum number of concurrent, unauthenticated SSH
-connections by using the [MaxStartups setting](http://man.openbsd.org/sshd_config.5#MaxStartups).
+connections by using the [MaxStartups setting](https://man.openbsd.org/sshd_config.5#MaxStartups).
 If more than the maximum number of allowed connections occur concurrently, they
 are dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).

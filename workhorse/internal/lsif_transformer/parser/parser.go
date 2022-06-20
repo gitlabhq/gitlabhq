@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"gitlab.com/gitlab-org/labkit/log"
@@ -22,18 +21,14 @@ type Parser struct {
 	pr *io.PipeReader
 }
 
-type Config struct {
-	TempPath string
-}
-
-func NewParser(ctx context.Context, r io.Reader, config Config) (io.ReadCloser, error) {
-	docs, err := NewDocs(config)
+func NewParser(ctx context.Context, r io.Reader) (io.ReadCloser, error) {
+	docs, err := NewDocs()
 	if err != nil {
 		return nil, err
 	}
 
 	// ZIP files need to be seekable. Don't hold it all in RAM, use a tempfile
-	tempFile, err := ioutil.TempFile(config.TempPath, Lsif)
+	tempFile, err := os.CreateTemp("", Lsif)
 	if err != nil {
 		return nil, err
 	}

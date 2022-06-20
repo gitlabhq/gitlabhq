@@ -59,6 +59,10 @@ module Types
     field :stats, Types::MilestoneStatsType, null: true,
           description: 'Milestone statistics.'
 
+    field :releases, ::Types::ReleaseType.connection_type,
+          null: true,
+          description: 'Releases associated with this milestone.'
+
     def stats
       milestone
     end

@@ -627,7 +627,7 @@ Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_wo
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['cron'] ||= '2/17 * * * *'
 Settings.cron_jobs['projects_schedule_refresh_build_artifacts_size_statistics_worker']['job_class'] = 'Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker'
 Settings.cron_jobs['inactive_projects_deletion_cron_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '0 1 * * *'
+Settings.cron_jobs['inactive_projects_deletion_cron_worker']['cron'] ||= '*/10 * * * *'
 Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Projects::InactiveProjectsDeletionCronWorker'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
@@ -714,7 +714,7 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
   Settings.cron_jobs['free_user_cap_data_remediation'] ||= Settingslogic.new({})
   Settings.cron_jobs['free_user_cap_data_remediation']['cron'] ||= '17 6,10,14,18 * * *'
-  Settings.cron_jobs['free_user_cap_data_remediation']['job_class'] = 'Namespaces::FreeUserCapWorker'
+  Settings.cron_jobs['free_user_cap_data_remediation']['job_class'] = 'Namespaces::FreeUserCap::RemediationWorker'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
@@ -775,6 +775,9 @@ Gitlab.ee do
   Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron'] ||= Settingslogic.new({})
   Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['cron'] ||= '30 * * * *'
   Settings.cron_jobs['ci_runners_stale_group_runners_prune_worker_cron']['job_class'] = 'Ci::Runners::StaleGroupRunnersPruneCronWorker'
+  Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner'] ||= Settingslogic.new({})
+  Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['cron'] ||= "0 0 * * *"
+  Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['job_class'] = 'Licenses::ResetSubmitLicenseUsageDataBannerWorker'
 end
 
 #

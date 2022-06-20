@@ -22,7 +22,7 @@ To enable merge request approval settings for an instance:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **{push-rules}** **Push Rules**, and expand **Merge request approvals**.
 1. Choose the required options.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Available rules
 
@@ -38,4 +38,4 @@ Merge request approval settings that can be set at an instance level are:
 See also the following, which are affected by instance-level rules:
 
 - [Project merge request approval rules](../project/merge_requests/approvals/index.md).
-- [Group merge request approval settings](../group/index.md#group-approval-settings) available in GitLab 13.9 and later.
+- [Group merge request approval settings](../group/index.md#group-merge-request-approval-settings) available in GitLab 13.9 and later.

@@ -27,6 +27,7 @@ const findTableHeadColumns = () => findTableHead().findAll('th');
 const findStageEventTitle = (ev) => extendedWrapper(ev).findByTestId('vsa-stage-event-title');
 const findStageEventLink = (ev) => extendedWrapper(ev).findByTestId('vsa-stage-event-link');
 const findStageTime = () => wrapper.findByTestId('vsa-stage-event-time');
+const findStageLastEvent = () => wrapper.findByTestId('vsa-stage-last-event');
 const findIcon = (name) => wrapper.findByTestId(`${name}-icon`);
 
 function createComponent(props = {}, shallow = false) {
@@ -126,6 +127,10 @@ describe('StageTable', () => {
     it('will render the total time', () => {
       const createdAt = firstIssueEvent.createdAt.replace(' ago', '');
       expect(findStageTime().text()).toBe(createdAt);
+    });
+
+    it('will render the end event', () => {
+      expect(findStageLastEvent().text()).toBe(firstIssueEvent.endEventTimestamp);
     });
 
     it('will render the author', () => {
@@ -303,10 +308,20 @@ describe('StageTable', () => {
       wrapper.destroy();
     });
 
-    it('can sort the table by each column', () => {
-      findTableHeadColumns().wrappers.forEach((w) => {
-        expect(w.attributes('aria-sort')).toBe('none');
-      });
+    it('can sort the end event or duration', () => {
+      findTableHeadColumns()
+        .wrappers.slice(1)
+        .forEach((w) => {
+          expect(w.attributes('aria-sort')).toBe('none');
+        });
+    });
+
+    it('cannot be sorted by title', () => {
+      findTableHeadColumns()
+        .wrappers.slice(0, 1)
+        .forEach((w) => {
+          expect(w.attributes('aria-sort')).toBeUndefined();
+        });
     });
 
     it('clicking a table column will send tracking information', () => {

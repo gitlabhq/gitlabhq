@@ -252,7 +252,7 @@ We are tracking this problem in [issue 20474](https://gitlab.com/gitlab-org/gitl
 This issue often occurs when a branch named `HEAD` is present in the repository.
 To fix the problem:
 
-1. In your local repository, create a new, temporary branch and push it:
+1. In your local repository, create a new temporary branch and push it:
 
    ```shell
    git checkout -b tmp_default && git push -u origin tmp_default

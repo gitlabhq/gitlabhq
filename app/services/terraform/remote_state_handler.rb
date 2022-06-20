@@ -3,6 +3,7 @@
 module Terraform
   class RemoteStateHandler < BaseService
     StateLockedError = Class.new(StandardError)
+    StateDeletedError = Class.new(StandardError)
     UnauthorizedError = Class.new(StandardError)
 
     def find_with_lock
@@ -66,14 +67,15 @@ module Terraform
 
       find_params = { project: project, name: params[:name] }
 
-      return find_state!(find_params) if find_only
+      state = if find_only
+                find_state!(find_params)
+              else
+                Terraform::State.create_or_find_by(find_params)
+              end
 
-      state = Terraform::State.create_or_find_by(find_params)
+      raise StateDeletedError if state.deleted_at?
 
-      # https://github.com/rails/rails/issues/36027
-      return state unless state.errors.of_kind? :name, :taken
-
-      find_state(find_params)
+      state
     end
 
     def lock_matches?(state)

@@ -215,6 +215,39 @@ In this case, the `total time` and `top-level time` numbers match more closely:
        8           8        0.0477s            0.0477s             0.0477s          namespace
 ```
 
+#### Stubbing methods within factories
+
+You should avoid using `allow(object).to receive(:method)` in factories, as this makes the factory unable to be used with `let_it_be`.
+
+Instead, you can use `stub_method` to stub the method:
+
+```ruby
+  before(:create) do |user, evaluator|
+    # Stub a method.
+    stub_method(user, :some_method) { 'stubbed!' }
+    # Or with arguments, including named ones
+    stub_method(user, :some_method) { |var1| "Returning #{var1}!" }
+    stub_method(user, :some_method) { |var1: 'default'| "Returning #{var1}!" }
+  end
+
+  # Un-stub the method.
+  # This may be useful where the stubbed object is created with `let_it_be`
+  # and you want to reset the method between tests.
+  after(:create) do  |user, evaluator|
+    restore_original_method(user, :some_method)
+    # or
+    restore_original_methods(user)
+  end
+```
+
+NOTE:
+`stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
+
+`stub_method` does not support method existence and method arity checks.
+
+WARNING:
+`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec's mocks](https://relishapp.com/rspec/rspec-mocks/v/3-10/docs/basics) if available.
+
 #### Identify slow tests
 
 Running a spec with profiling is a good way to start optimizing a spec. This can
@@ -981,7 +1014,7 @@ is used to delete data in all indices in between examples to ensure a clean inde
 
 Note that Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
-You do NOT need to add `:clean_gitlab_redis_shared_state` manually.
+You do not need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 
@@ -1305,7 +1338,7 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
-- Factories and their traits should produce valid objects that are [verified by specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories_spec.rb).
+- Factories and their traits should produce valid objects that are [verified by specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/models/factories_spec.rb).
 - Avoid the use of [`skip_callback`](https://api.rubyonrails.org/classes/ActiveSupport/Callbacks/ClassMethods.html#method-i-skip_callback) in factories.
   See [issue #247865](https://gitlab.com/gitlab-org/gitlab/-/issues/247865) for details.
 

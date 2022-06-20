@@ -89,10 +89,6 @@ module Import
       end
     end
 
-    def authorized?
-      can?(current_user, :create_projects, target_namespace)
-    end
-
     def url
       @url ||= params[:github_hostname]
     end

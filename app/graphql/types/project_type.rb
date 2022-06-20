@@ -4,6 +4,8 @@ module Types
   class ProjectType < BaseObject
     graphql_name 'Project'
 
+    connection_type_class(Types::CountableConnectionType)
+
     authorize :read_project
 
     expose_permissions Types::PermissionTypes::Project
@@ -142,6 +144,14 @@ module Types
           extras: [:lookahead],
           resolver: Resolvers::IssuesResolver
 
+    field :work_items,
+          Types::WorkItemType.connection_type,
+          null: true,
+          deprecated: { milestone: '15.1', reason: :alpha },
+          description: 'Work items of the project.',
+          extras: [:lookahead],
+          resolver: Resolvers::WorkItemsResolver
+
     field :issue_status_counts,
           Types::IssueStatusCountsType,
           null: true,
@@ -178,6 +188,11 @@ module Types
     field :packages,
           description: 'Packages of the project.',
           resolver: Resolvers::ProjectPackagesResolver
+
+    field :packages_cleanup_policy,
+          Types::Packages::Cleanup::PolicyType,
+          null: true,
+          description: 'Packages cleanup policy for the project.'
 
     field :jobs,
           type: Types::Ci::JobType.connection_type,

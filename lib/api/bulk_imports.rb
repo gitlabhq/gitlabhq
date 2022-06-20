@@ -47,7 +47,7 @@ module API
           requires :source_type, type: String, desc: 'Source entity type (only `group_entity` is supported)',
                    values: %w[group_entity]
           requires :source_full_path, type: String, desc: 'Source full path of the entity to import'
-          requires :destination_name, type: String, desc: 'Destination name for the entity'
+          requires :destination_name, type: String, desc: 'Destination slug for the entity'
           requires :destination_namespace, type: String, desc: 'Destination namespace for the entity'
         end
       end

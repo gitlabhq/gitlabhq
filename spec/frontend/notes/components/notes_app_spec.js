@@ -19,8 +19,6 @@ import '~/behaviors/markdown/render_gfm';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import * as mockData from '../mock_data';
 
-jest.mock('~/user_popovers', () => jest.fn());
-
 setTestTimeout(1000);
 
 const TYPE_COMMENT_FORM = 'comment-form';
@@ -224,7 +222,7 @@ describe('note_app', () => {
     });
 
     it('renders skeleton notes', () => {
-      expect(wrapper.find('.animation-container').exists()).toBe(true);
+      expect(wrapper.find('.gl-skeleton-loader-default-container').exists()).toBe(true);
     });
 
     it('should render form', () => {

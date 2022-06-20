@@ -1,8 +1,20 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlFormRadio,
+  GlFormRadioGroup,
+  GlFormGroup,
+  GlFormInput,
+} from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
+  components: {
+    GlFormRadio,
+    GlFormRadioGroup,
+    GlFormGroup,
+    GlFormInput,
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -51,35 +63,42 @@ export default {
 </script>
 
 <template>
-  <fieldset>
-    <label
+  <fieldset class="gl-mb-2">
+    <gl-form-radio-group
       v-gl-tooltip="tooltipTitle"
+      :checked="commitAction"
       :class="{
         'is-disabled': disabled,
       }"
     >
-      <input
+      <gl-form-radio
         :value="value"
-        :checked="commitAction === value"
         :disabled="disabled"
-        type="radio"
         name="commit-action"
         data-qa-selector="commit_type_radio"
-        @change="updateCommitAction($event.target.value)"
-      />
-      <span class="gl-ml-3">
-        <span v-if="label" class="ide-option-label"> {{ label }} </span> <slot v-else></slot>
-      </span>
-    </label>
-    <div v-if="commitAction === value && showInput" class="ide-commit-new-branch">
-      <input
+        @change="updateCommitAction(value)"
+      >
+        <span v-if="label" class="ide-option-label">
+          {{ label }}
+        </span>
+        <slot v-else></slot>
+      </gl-form-radio>
+    </gl-form-radio-group>
+
+    <gl-form-group
+      v-if="commitAction === value && showInput"
+      :label="placeholderBranchName"
+      :label-sr-only="true"
+      class="gl-ml-6 gl-mb-0"
+    >
+      <gl-form-input
         :placeholder="placeholderBranchName"
         :value="newBranchName"
+        :disabled="disabled"
         data-testid="ide-new-branch-name"
-        type="text"
-        class="form-control monospace"
-        @input="updateBranchName($event.target.value)"
+        class="gl-font-monospace"
+        @input="updateBranchName($event)"
       />
-    </div>
+    </gl-form-group>
   </fieldset>
 </template>

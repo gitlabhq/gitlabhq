@@ -18,9 +18,5 @@ RSpec.describe PrometheusAlertEntity do
     it 'exposes prometheus_alert attributes' do
       expect(subject).to include(:id, :title, :query, :operator, :threshold, :runbook_url)
     end
-
-    it 'exposes alert_path' do
-      expect(subject).to include(:alert_path)
-    end
   end
 end

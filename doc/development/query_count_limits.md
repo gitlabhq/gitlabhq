@@ -58,7 +58,7 @@ By using a `before_action` you don't have to modify the controller method in
 question, reducing the likelihood of merge conflicts.
 
 For Grape API endpoints there unfortunately is not a reliable way of running a
-hook before a specific endpoint. This means that you have to add the whitelist
+hook before a specific endpoint. This means that you have to add the allowlist
 call directly into the endpoint like so:
 
 ```ruby

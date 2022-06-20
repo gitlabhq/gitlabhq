@@ -76,7 +76,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
       context 'when environment_id is missing' do
         let(:mutation) do
           variables = {
-            environment_id: nil,
             starting_at: starting_at,
             ending_at: ending_at,
             dashboard_path: dashboard_path,
@@ -147,7 +146,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create do
       context 'when cluster_id is missing' do
         let(:mutation) do
           variables = {
-            cluster_id: nil,
             starting_at: starting_at,
             ending_at: ending_at,
             dashboard_path: dashboard_path,

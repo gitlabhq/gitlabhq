@@ -3,7 +3,6 @@ import { __, s__ } from '~/locale';
 import createDagApp from './pipeline_details_dag';
 import { createPipelinesDetailApp } from './pipeline_details_graph';
 import { createPipelineHeaderApp } from './pipeline_details_header';
-import { createPipelineNotificationApp } from './pipeline_details_notification';
 import { createPipelineJobsApp } from './pipeline_details_jobs';
 import { createPipelineFailedJobsApp } from './pipeline_details_failed_jobs';
 import { apolloProvider } from './pipeline_shared_client';
@@ -13,7 +12,6 @@ const SELECTORS = {
   PIPELINE_DETAILS: '.js-pipeline-details-vue',
   PIPELINE_GRAPH: '#js-pipeline-graph-vue',
   PIPELINE_HEADER: '#js-pipeline-header-vue',
-  PIPELINE_NOTIFICATION: '#js-pipeline-notification',
   PIPELINE_TABS: '#js-pipeline-tabs',
   PIPELINE_TESTS: '#js-pipeline-tests-detail',
   PIPELINE_JOBS: '#js-pipeline-jobs-vue',
@@ -31,19 +29,13 @@ export default async function initPipelineDetailsBundle() {
     });
   }
 
-  try {
-    createPipelineNotificationApp(SELECTORS.PIPELINE_NOTIFICATION, apolloProvider);
-  } catch {
-    createFlash({
-      message: __('An error occurred while loading a section of this page.'),
-    });
-  }
-
   if (gon.features?.pipelineTabsVue) {
+    const { createAppOptions } = await import('ee_else_ce/pipelines/pipeline_tabs');
     const { createPipelineTabs } = await import('./pipeline_tabs');
 
     try {
-      createPipelineTabs(SELECTORS.PIPELINE_TABS, apolloProvider);
+      const appOptions = createAppOptions(SELECTORS.PIPELINE_TABS, apolloProvider);
+      createPipelineTabs(appOptions);
     } catch {
       createFlash({
         message: __('An error occurred while loading a section of this page.'),
@@ -82,14 +74,12 @@ export default async function initPipelineDetailsBundle() {
       });
     }
 
-    if (gon.features?.failedJobsTabVue) {
-      try {
-        createPipelineFailedJobsApp(SELECTORS.PIPELINE_FAILED_JOBS);
-      } catch {
-        createFlash({
-          message: s__('Jobs|An error occurred while loading the Failed Jobs tab.'),
-        });
-      }
+    try {
+      createPipelineFailedJobsApp(SELECTORS.PIPELINE_FAILED_JOBS);
+    } catch {
+      createFlash({
+        message: s__('Jobs|An error occurred while loading the Failed Jobs tab.'),
+      });
     }
   }
 }

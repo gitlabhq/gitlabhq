@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Status::Build::Scheduled do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :stubbed_repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :stubbed_repository) }
+
   let(:build) { create(:ci_build, :scheduled, project: project) }
   let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
 

@@ -367,20 +367,21 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
 
     context 'when email is already a member with a user on the project' do
       let!(:existing_member) { create(:project_member, :guest, project: project) }
-      let(:params) { { email: "#{existing_member.user.email}" } }
+      let(:params) { { email: "#{existing_member.user.email}", access_level: ProjectMember::MAINTAINER } }
 
-      it 'returns an error for the already invited email' do
-        expect_not_to_create_members
-        expect(result[:message][existing_member.user.email]).to eq("User already exists in source")
+      it 'allows re-invite of an already invited email and updates the access_level' do
+        expect { result }.not_to change(ProjectMember, :count)
+        expect(result[:status]).to eq(:success)
+        expect(existing_member.reset.access_level).to eq ProjectMember::MAINTAINER
       end
 
       context 'when email belongs to an existing user as a secondary email' do
         let(:secondary_email) { create(:email, email: 'secondary@example.com', user: existing_member.user) }
         let(:params) { { email: "#{secondary_email.email}" } }
 
-        it 'returns an error for the already invited email' do
-          expect_not_to_create_members
-          expect(result[:message][secondary_email.email]).to eq("User already exists in source")
+        it 'allows re-invite to an already invited email' do
+          expect_to_create_members(count: 0)
+          expect(result[:status]).to eq(:success)
         end
       end
     end

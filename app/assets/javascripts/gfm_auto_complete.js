@@ -897,7 +897,7 @@ GfmAutoComplete.Emoji = {
     return Emoji.searchEmoji(query);
   },
   sorter(items) {
-    return Emoji.sortEmoji(items);
+    return items.sort(Emoji.sortEmoji);
   },
 };
 // Team Members

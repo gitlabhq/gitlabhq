@@ -169,6 +169,9 @@ export default {
     setFocus() {
       this.$refs.header.focusInput();
     },
+    hideDropdown() {
+      this.$refs.dropdown.hide();
+    },
     showDropdown() {
       this.$refs.dropdown.show();
     },
@@ -205,7 +208,7 @@ export default {
         :show-dropdown-contents-create-view="showDropdownContentsCreateView"
         :is-standalone="isStandalone"
         @toggleDropdownContentsCreateView="toggleDropdownContent"
-        @closeDropdown="$emit('closeDropdown')"
+        @closeDropdown="hideDropdown"
         @input="debouncedSearchKeyUpdate"
         @searchEnter="selectFirstItem"
       />

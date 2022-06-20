@@ -131,7 +131,7 @@ module API
     # This is a specific exception raised by `rack-timeout` gem when Puma
     # requests surpass its timeout. Given it inherits from Exception, we
     # should rescue it separately. For more info, see:
-    # - https://github.com/sharpstone/rack-timeout/blob/master/doc/exceptions.md
+    # - https://github.com/zombocom/rack-timeout/blob/master/doc/exceptions.md
     # - https://github.com/ruby-grape/grape#exception-handling
     rescue_from Rack::Timeout::RequestTimeoutException do |exception|
       handle_api_exception(exception)
@@ -229,6 +229,7 @@ module API
       mount ::API::ImportGithub
       mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions
+      mount ::API::Integrations::Slack::Events
       mount ::API::Invitations
       mount ::API::IssueLinks
       mount ::API::Issues
@@ -314,6 +315,7 @@ module API
     mount ::API::Internal::Kubernetes
     mount ::API::Internal::MailRoom
     mount ::API::Internal::ContainerRegistry::Migration
+    mount ::API::Internal::Workhorse
 
     version 'v3', using: :path do
       # Although the following endpoints are kept behind V3 namespace,
