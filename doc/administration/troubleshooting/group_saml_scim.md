@@ -60,6 +60,10 @@ User claims and attributes:
 
 IdP links and certificate:
 
+NOTE:
+Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for configuring SAML, download the certificate and calculate the SHA1 certificate
+fingerprint.
+
 ![Google Workspace Links and Certificate](img/GoogleWorkspace-linkscert_v14_10.png)
 
 ## Okta

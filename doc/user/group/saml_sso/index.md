@@ -189,7 +189,9 @@ with the notes below for consideration.
 | GitLab single sign-on URL            | Start URL              |
 | Identity provider single sign-on URL | SSO URL                |
 
-You must download the certificate to get the SHA1 certificate fingerprint.
+NOTE:
+Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for [configuring SAML](#configure-gitlab), download the certificate and calculate
+the SHA1 certificate fingerprint.
 
 The recommended attributes and claims settings are:
 
