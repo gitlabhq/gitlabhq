@@ -17,6 +17,8 @@ RSpec.describe API::Users do
   let(:deactivated_user) { create(:user, state: 'deactivated') }
   let(:banned_user) { create(:user, :banned) }
   let(:internal_user) { create(:user, :bot) }
+  let(:user_with_2fa) { create(:user, :two_factor_via_otp) }
+  let(:admin_with_2fa) { create(:admin, :two_factor_via_otp) }
 
   context 'admin notes' do
     let_it_be(:admin) { create(:admin, note: '2019-10-06 | 2FA added | user requested | www.gitlab.com') }
@@ -77,6 +79,79 @@ RSpec.describe API::Users do
           end.not_to change { user.reload.note }
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    describe "PATCH /users/:id/disable_two_factor" do
+      context "when current user is an admin" do
+        it "returns a 204 when 2FA is disabled for the target user" do
+          expect do
+            patch api("/users/#{user_with_2fa.id}/disable_two_factor", admin)
+          end.to change { user_with_2fa.reload.two_factor_enabled? }
+                  .from(true)
+                  .to(false)
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it "uses TwoFactor Destroy Service" do
+          destroy_service = instance_double(TwoFactor::DestroyService, execute: nil)
+          expect(TwoFactor::DestroyService).to receive(:new)
+            .with(admin, user: user_with_2fa)
+            .and_return(destroy_service)
+          expect(destroy_service).to receive(:execute)
+
+          patch api("/users/#{user_with_2fa.id}/disable_two_factor", admin)
+        end
+
+        it "returns a 400 if 2FA is not enabled for the target user" do
+          expect(TwoFactor::DestroyService).to receive(:new).and_call_original
+
+          expect do
+            patch api("/users/#{user.id}/disable_two_factor", admin)
+          end.not_to change { user.reload.two_factor_enabled? }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("400 Bad request - Two-factor authentication is not enabled for this user")
+        end
+
+        it "returns a 403 if the target user is an admin" do
+          expect(TwoFactor::DestroyService).to receive(:new).never
+
+          expect do
+            patch api("/users/#{admin_with_2fa.id}/disable_two_factor", admin)
+          end.not_to change { admin_with_2fa.reload.two_factor_enabled? }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq("403 Forbidden - Two-factor authentication for admins cannot be disabled via the API. Use the Rails console")
+        end
+
+        it "returns a 404 if the target user cannot be found" do
+          expect(TwoFactor::DestroyService).to receive(:new).never
+
+          patch api("/users/#{non_existing_record_id}/disable_two_factor", admin)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq("404 User Not Found")
+        end
+      end
+
+      context "when current user is not an admin" do
+        it "returns a 403" do
+          expect do
+            patch api("/users/#{user_with_2fa.id}/disable_two_factor", user)
+          end.not_to change { user_with_2fa.reload.two_factor_enabled? }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq("403 Forbidden")
+        end
+      end
+
+      context "when unauthenticated" do
+        it "returns a 401" do
+          patch api("/users/#{user_with_2fa.id}/disable_two_factor")
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
     end

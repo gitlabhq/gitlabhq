@@ -1754,7 +1754,7 @@ Be sure to create a full database backup before attempting any changes.
 #### Disable user two-factor authentication (2FA)
 
 Users with 2FA enabled can't sign in to GitLab. In that case, you must
-[disable 2FA for everyone](../security/two_factor_authentication.md#disable-2fa-for-everyone),
+[disable 2FA for everyone](../security/two_factor_authentication.md#for-all-users),
 after which users must reactivate 2FA.
 
 #### Reset CI/CD variables

@@ -2000,3 +2000,33 @@ Example response:
   }
 ]
 ```
+
+## Disable two factor authentication (administrator only)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295260) in GitLab 15.2.
+
+Disables two factor authentication (2FA) for the specified user. Only administrators can disable 2FA for users.
+
+Administrators cannot disable 2FA for their own user account or other administrators using the API. Instead, they can disable an
+administrator's 2FA [using the Rails console](../security/two_factor_authentication.md#for-a-single-user).
+
+```plaintext
+PATCH /user/:id/disable_two_factor
+```
+
+Parameters:
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the user    |
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/1/disable_two_factor"
+```
+
+Returns:
+
+- `204 No content` on success.
+- `400 Bad request` if two factor authentication is not enabled for the specified user.
+- `403 Forbidden` if not authenticated as an administrator.
+- `404 User Not Found` if user cannot be found.

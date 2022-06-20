@@ -63,11 +63,11 @@ module AlertManagement
     end
 
     def process_new_alert
+      return if resolving_alert?
+
       if alert.save
         alert.execute_integrations
         SystemNoteService.create_new_alert(alert, alert_source)
-
-        process_resolved_alert if resolving_alert?
       else
         logger.warn(
           message: "Unable to create AlertManagement::Alert from #{alert_source}",

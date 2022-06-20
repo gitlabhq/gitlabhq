@@ -81,13 +81,32 @@ The following are important notes about 2FA:
 
   This action causes all subgroups with 2FA requirements to stop requiring that from their members.
 
-## Disable 2FA for everyone
+## Disable 2FA
 
 WARNING:
-Disabling 2FA for everyone does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
+Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
 or [enforce 2FA for all users in a group](#enforce-2fa-for-all-users-in-a-group)
 settings. You must also disable any enforced 2FA settings so users aren't asked to set up 2FA again
 when they next sign in to GitLab.
+
+WARNING:
+This is a permanent and irreversible action. Users must reactivate 2FA to use it again.
+
+### For a single user
+
+To disable 2FA for non-administrator users, we recommend using the [API endpoint](../api/users.md#disable-two-factor-authentication-administrator-only)
+instead of the Rails console.
+Using the [Rails console](../administration/operations/rails_console.md), 2FA for a single user can be disabled.
+Connect to the Rails console and run:
+
+```ruby
+admin = User.find_by_username('<USERNAME>')
+user_to_disable = User.find_by_username('<USERNAME>')
+
+TwoFactor::DestroyService.new(admin, user: user_to_disable).execute
+```
+
+### For all users
 
 There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a Rake task for that:
@@ -99,10 +118,6 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 # Installations from source
 sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
-
-WARNING:
-This is a permanent and irreversible action. Users have to
-reactivate 2FA from scratch if they want to use it again.
 
 ## 2FA for Git over SSH operations **(PREMIUM)**
 

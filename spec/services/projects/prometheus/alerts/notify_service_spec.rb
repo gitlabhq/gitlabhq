@@ -228,12 +228,14 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
     context 'when payload exceeds max amount of processable alerts' do
       # We are defining 2 alerts in payload_raw above
       let(:max_alerts) { 1 }
+      let(:fingerprint) { prometheus_alert_payload_fingerprint(alert_resolved) }
 
       before do
         stub_const("#{described_class}::PROCESS_MAX_ALERTS", max_alerts)
 
         create(:prometheus_integration, project: project)
         create(:project_alerting_setting, project: project, token: token)
+        create(:alert_management_alert, project: project, fingerprint: fingerprint)
 
         allow(Gitlab::AppLogger).to receive(:warn)
       end
