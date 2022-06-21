@@ -296,10 +296,6 @@ RSpec.configure do |config|
         stub_feature_flags(flag => enable_rugged)
       end
 
-      # Disable the usage of file_identifier_hash by default until it is ready
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/33867
-      stub_feature_flags(file_identifier_hash: false)
-
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
       # It's done in order to preserve the concistency in tests

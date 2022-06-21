@@ -19,9 +19,6 @@ module Integrations
       s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 

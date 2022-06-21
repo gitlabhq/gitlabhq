@@ -9,7 +9,7 @@ class SearchController < ApplicationController
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete].freeze
 
-  track_redis_hll_event :show, name: 'i_search_total'
+  track_event :show, name: 'i_search_total', destinations: [:redis_hll, :snowplow]
 
   around_action :allow_gitaly_ref_name_caching
 
@@ -202,6 +202,10 @@ class SearchController < ApplicationController
     else
       render status: :request_timeout
     end
+  end
+
+  def tracking_namespace_source
+    search_service.project&.namespace || search_service.group
   end
 end
 

@@ -494,10 +494,6 @@ class Integration < ApplicationRecord
     self.class.event_names
   end
 
-  def event_field(event)
-    nil
-  end
-
   def api_field_names
     fields.reject { _1[:type] == 'password' }.pluck(:name)
   end

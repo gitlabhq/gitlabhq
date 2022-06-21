@@ -22,9 +22,6 @@ module Integrations
       'https://outlook.office.com/webhook/…'
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 

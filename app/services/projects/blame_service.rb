@@ -12,6 +12,8 @@ module Projects
       @page = extract_page(params)
     end
 
+    attr_reader :page
+
     def blame
       Gitlab::Blame.new(blob, commit, range: blame_range)
     end
@@ -27,7 +29,7 @@ module Projects
 
     private
 
-    attr_reader :blob, :commit, :page
+    attr_reader :blob, :commit
 
     def blame_range
       return unless pagination_enabled?

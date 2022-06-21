@@ -23,10 +23,6 @@ module Integrations
       s_('Send notifications about project events to a Discord channel. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
-    def event_field(event)
-      # No-op.
-    end
-
     def default_channel_placeholder
       # No-op.
     end

@@ -10,7 +10,6 @@ RSpec.describe Gitlab::Diff::Formatters::TextFormatter do
       head_sha: 789,
       old_path: 'old_path.txt',
       new_path: 'new_path.txt',
-      file_identifier_hash: '777',
       line_range: nil
     }
   end

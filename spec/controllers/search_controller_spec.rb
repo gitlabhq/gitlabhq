@@ -67,7 +67,7 @@ RSpec.describe SearchController do
       end
     end
 
-    describe 'GET #show' do
+    describe 'GET #show', :snowplow do
       it_behaves_like 'when the user cannot read cross project', :show, { search: 'hello' } do
         it 'still allows accessing the search page' do
           get :show
@@ -255,6 +255,15 @@ RSpec.describe SearchController do
           let(:target_event) { 'i_search_total' }
           let(:expected_value) { instance_of(String) }
         end
+      end
+
+      it_behaves_like 'Snowplow event tracking' do
+        let(:category) { described_class.to_s }
+        let(:action) { 'i_search_total' }
+        let(:namespace) { create(:group) }
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+
+        subject { get :show, params: { group_id: namespace.id, scope: 'blobs', search: 'term' } }
       end
 
       context 'on restricted projects' do

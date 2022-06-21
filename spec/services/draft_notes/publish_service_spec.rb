@@ -168,7 +168,7 @@ RSpec.describe DraftNotes::PublishService do
         # NOTE: This should be reduced as we work on reducing Gitaly calls.
         # Gitaly requests shouldn't go above this threshold as much as possible
         # as it may add more to the Gitaly N+1 issue we are experiencing.
-        expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(21)
+        expect { publish }.to change { Gitlab::GitalyClient.get_request_count }.by(20)
       end
     end
 

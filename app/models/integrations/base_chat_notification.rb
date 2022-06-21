@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Base class for Chat notifications services
+# Base class for Chat notifications integrations
 # This class is not meant to be used directly, but only to inherit from.
 
 module Integrations
@@ -46,7 +46,7 @@ module Integrations
         # `notify_only_default_branch`. Now we have a string property named
         # `branches_to_be_notified`. Instead of doing a background migration, we
         # opted to set a value for the new property based on the old one, if
-        # users haven't specified one already. When users edit the service and
+        # users haven't specified one already. When users edit the integration and
         # select a value for this new property, it will override everything.
 
         self.branches_to_be_notified ||= notify_only_default_branch? ? "default" : "all"
@@ -134,11 +134,9 @@ module Integrations
     end
 
     def event_channel_names
-      supported_events.map { |event| event_channel_name(event) }
-    end
+      return [] unless configurable_channels?
 
-    def event_field(event)
-      fields.find { |field| field[:name] == event_channel_name(event) }
+      supported_events.map { |event| event_channel_name(event) }
     end
 
     def global_fields
@@ -151,6 +149,21 @@ module Integrations
 
     def webhook_placeholder
       raise NotImplementedError
+    end
+
+    # With some integrations the webhook is already tied to a specific channel,
+    # for others the channels are configurable for each event.
+    def configurable_channels?
+      false
+    end
+
+    def event_channel_name(event)
+      EVENT_CHANNEL[event]
+    end
+
+    def get_channel_field(event)
+      field_name = event_channel_name(event)
+      self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     private
@@ -213,19 +226,10 @@ module Integrations
       end
     end
 
-    def get_channel_field(event)
-      field_name = event_channel_name(event)
-      self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
-    end
-
     def build_event_channels
-      supported_events.reduce([]) do |channels, event|
-        channels << { type: 'text', name: event_channel_name(event), placeholder: default_channel_placeholder }
+      event_channel_names.map do |channel_field|
+        { type: 'text', name: channel_field, placeholder: default_channel_placeholder }
       end
-    end
-
-    def event_channel_name(event)
-      EVENT_CHANNEL[event]
     end
 
     def project_name

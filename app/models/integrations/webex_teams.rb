@@ -19,9 +19,6 @@ module Integrations
       s_("WebexTeamsService|Send notifications about project events to a Webex Teams conversation. %{docs_link}") % { docs_link: docs_link.html_safe }
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 

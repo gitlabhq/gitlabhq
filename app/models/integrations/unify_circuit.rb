@@ -19,9 +19,6 @@ module Integrations
       s_('Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
-    def event_field(event)
-    end
-
     def default_channel_placeholder
     end
 

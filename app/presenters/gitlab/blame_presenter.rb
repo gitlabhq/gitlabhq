@@ -66,7 +66,7 @@ module Gitlab
       previous_commit_id = commit.parent_id
       return unless previous_commit_id && !previous_path.nil?
 
-      link_to project_blame_path(project, tree_join(previous_commit_id, previous_path)),
+      link_to project_blame_path(project, tree_join(previous_commit_id, previous_path), page: page),
         title: _('View blame prior to this change'),
         aria: { label: _('View blame prior to this change') },
         class: 'version-link',

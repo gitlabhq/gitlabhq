@@ -49,6 +49,12 @@ RSpec.describe 'File blame', :js do
         expect(page).to have_css('#L3')
         expect(find('.page-link.active')).to have_text('2')
       end
+
+      it 'correctly redirects to the prior blame page' do
+        find('.version-link').click
+
+        expect(find('.page-link.active')).to have_text('2')
+      end
     end
 
     context 'when feature flag disabled' do
