@@ -1,0 +1,8 @@
+---
+name: showcase_free_security_features
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85359
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/360677
+milestone: '15.2'
+type: experiment
+group: group::acquisition
+default_enabled: false

@@ -1,17 +1,23 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import Vuex from 'vuex';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { createStore as createMrStore } from '~/mr_notes/stores';
 import createStore from '~/notes/stores';
 import EditForm from '~/sidebar/components/lock/edit_form.vue';
 import IssuableLockForm from '~/sidebar/components/lock/issuable_lock_form.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import { ISSUABLE_TYPE_ISSUE, ISSUABLE_TYPE_MR } from './constants';
+
+jest.mock('~/vue_shared/plugins/global_toast');
+
+Vue.use(Vuex);
 
 describe('IssuableLockForm', () => {
   let wrapper;
   let store;
   let issuableType; // Either ISSUABLE_TYPE_ISSUE or ISSUABLE_TYPE_MR
+  let updateLockedAttribute;
 
   const setIssuableType = (pageType) => {
     issuableType = pageType;
@@ -29,16 +35,27 @@ describe('IssuableLockForm', () => {
       store = createStore();
       store.getters.getNoteableData.targetType = 'issue';
     } else {
-      store = createMrStore();
+      updateLockedAttribute = jest.fn().mockResolvedValue();
+      store = new Vuex.Store({
+        getters: {
+          getNoteableData: () => ({ targetType: issuableType }),
+        },
+        actions: {
+          updateLockedAttribute,
+        },
+      });
     }
     store.getters.getNoteableData.discussion_locked = isLocked;
   };
 
-  const createComponent = ({ props = {} }) => {
+  const createComponent = ({ props = {} }, movedMrSidebar = false) => {
     wrapper = shallowMount(IssuableLockForm, {
       store,
       provide: {
         fullPath: '',
+        glFeatures: {
+          movedMrSidebar,
+        },
       },
       propsData: {
         isEditable: true,
@@ -142,6 +159,26 @@ describe('IssuableLockForm', () => {
           });
         });
       });
+    });
+  });
+
+  describe('merge requests', () => {
+    beforeEach(() => {
+      setIssuableType('merge_request');
+    });
+
+    it.each`
+      locked   | message
+      ${true}  | ${'Merge request locked.'}
+      ${false} | ${'Merge request unlocked.'}
+    `('displays $message when merge request is $locked', async ({ locked, message }) => {
+      initStore(locked);
+
+      createComponent({}, true);
+
+      await wrapper.find('.dropdown-item').trigger('click');
+
+      expect(toast).toHaveBeenCalledWith(message);
     });
   });
 });

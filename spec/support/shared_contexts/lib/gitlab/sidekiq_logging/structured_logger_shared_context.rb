@@ -16,9 +16,6 @@ RSpec.shared_context 'structured_logger' do
       "created_at" => created_at.to_f,
       "enqueued_at" => created_at.to_f,
       "correlation_id" => 'cid',
-      "error_message" => "wrong number of arguments (2 for 3)",
-      "error_class" => "ArgumentError",
-      "error_backtrace" => [],
       "exception.message" => "wrong number of arguments (2 for 3)",
       "exception.class" => "ArgumentError",
       "exception.backtrace" => []
@@ -32,7 +29,6 @@ RSpec.shared_context 'structured_logger' do
   let(:clock_thread_cputime_end) { 1.333333799 }
   let(:start_payload) do
     job.except(
-      'error_message', 'error_class', 'error_backtrace',
       'exception.backtrace', 'exception.class', 'exception.message'
     ).merge(
       'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
@@ -73,9 +69,6 @@ RSpec.shared_context 'structured_logger' do
     end_payload.merge(
       'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',
       'job_status' => 'fail',
-      'error_class' => 'ArgumentError',
-      'error_message' => 'Something went wrong',
-      'error_backtrace' => be_a(Array).and(be_present),
       'exception.class' => 'ArgumentError',
       'exception.message' => 'Something went wrong',
       'exception.backtrace' => be_a(Array).and(be_present)

@@ -12,11 +12,8 @@ module Gitlab
       @contributor = contributor
       @contributor_time_instance = local_timezone_instance(contributor.timezone).now
       @current_user = current_user
-      @projects = if @contributor.include_private_contributions?
-                    ContributedProjectsFinder.new(@contributor).execute(@contributor)
-                  else
-                    ContributedProjectsFinder.new(contributor).execute(current_user)
-                  end
+      @projects = ContributedProjectsFinder.new(contributor)
+        .execute(current_user, ignore_visibility: @contributor.include_private_contributions?)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

@@ -184,7 +184,7 @@ The following data is included in the export:
 - Type
 - Path
 - Access level ([Project](../permissions.md#project-members-permissions) and [Group](../permissions.md#group-members-permissions))
-- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../../api/users.md#get-user-activities-administrator-only).
+- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../../api/users.md#get-user-activities).
 
 Only the first 100,000 user accounts are exported.
 

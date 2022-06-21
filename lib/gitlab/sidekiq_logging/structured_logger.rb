@@ -81,12 +81,6 @@ module Gitlab
           payload['job_status'] = 'fail'
 
           Gitlab::ExceptionLogFormatter.format!(job_exception, payload)
-
-          # Deprecated fields for compatibility
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/364241
-          payload['error_class'] = payload['exception.class']
-          payload['error_message'] = payload['exception.message']
-          payload['error_backtrace'] = payload['exception.backtrace']
         else
           payload['message'] = "#{message}: done: #{payload['duration_s']} sec"
           payload['job_status'] = 'done'

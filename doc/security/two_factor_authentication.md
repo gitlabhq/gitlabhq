@@ -94,7 +94,7 @@ This is a permanent and irreversible action. Users must reactivate 2FA to use it
 
 ### For a single user
 
-To disable 2FA for non-administrator users, we recommend using the [API endpoint](../api/users.md#disable-two-factor-authentication-administrator-only)
+To disable 2FA for non-administrator users, we recommend using the [API endpoint](../api/users.md#disable-two-factor-authentication)
 instead of the Rails console.
 Using the [Rails console](../administration/operations/rails_console.md), 2FA for a single user can be disabled.
 Connect to the Rails console and run:

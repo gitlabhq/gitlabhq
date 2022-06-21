@@ -62,7 +62,7 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown size="small" category="tertiary" icon="table" class="table-dropdown">
+  <gl-dropdown size="small" category="tertiary" icon="table" class="content-editor-dropdown" right>
     <gl-dropdown-form class="gl-px-3!">
       <div v-for="r of list(maxRows)" :key="r" class="gl-display-flex">
         <gl-button

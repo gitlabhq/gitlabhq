@@ -489,11 +489,6 @@ To do that:
 1. Select the **Disable public access to Pages sites** checkbox.
 1. Select **Save changes**.
 
-WARNING:
-For self-managed installations, all public websites remain private until they are
-redeployed. Resolve this issue by
-[sourcing domain configuration from the GitLab API](https://gitlab.com/gitlab-org/gitlab/-/issues/218357).
-
 ### Running behind a proxy
 
 Like the rest of GitLab, Pages can be used in those environments where external

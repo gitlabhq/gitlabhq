@@ -426,9 +426,10 @@ namespace :gitlab do
         end
       end
 
-      Rake::Task['db:migrate'].enhance do
-        Rake::Task['gitlab:db:dictionary:generate'].invoke if Rails.env.development?
-      end
+      # Temporary disable this, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85760#note_998452069
+      # Rake::Task['db:migrate'].enhance do
+      #   Rake::Task['gitlab:db:dictionary:generate'].invoke if Rails.env.development?
+      # end
     end
   end
 end

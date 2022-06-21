@@ -51,12 +51,12 @@ export default {
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
-      data-testid="strike"
-      content-type="strike"
-      icon-name="strikethrough"
+      data-testid="blockquote"
+      content-type="blockquote"
+      icon-name="quote"
       class="gl-mx-2"
-      editor-command="toggleStrike"
-      :label="__('Strikethrough')"
+      editor-command="toggleBlockquote"
+      :label="__('Insert a quote')"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
@@ -69,34 +69,11 @@ export default {
       @execute="trackToolbarControlExecution"
     />
     <toolbar-link-button data-testid="link" @execute="trackToolbarControlExecution" />
-    <toolbar-image-button
-      ref="imageButton"
-      data-testid="image"
-      @execute="trackToolbarControlExecution"
-    />
-    <toolbar-button
-      data-testid="blockquote"
-      content-type="blockquote"
-      icon-name="quote"
-      class="gl-mx-2"
-      editor-command="toggleBlockquote"
-      :label="__('Insert a quote')"
-      @execute="trackToolbarControlExecution"
-    />
-    <toolbar-button
-      data-testid="code-block"
-      content-type="codeBlock"
-      icon-name="doc-code"
-      class="gl-mx-2"
-      editor-command="toggleCodeBlock"
-      :label="__('Insert a code block')"
-      @execute="trackToolbarControlExecution"
-    />
     <toolbar-button
       data-testid="bullet-list"
       content-type="bulletList"
       icon-name="list-bulleted"
-      class="gl-mx-2"
+      class="gl-mx-2 gl-display-none gl-sm-display-inline"
       editor-command="toggleBulletList"
       :label="__('Add a bullet list')"
       @execute="trackToolbarControlExecution"
@@ -105,18 +82,23 @@ export default {
       data-testid="ordered-list"
       content-type="orderedList"
       icon-name="list-numbered"
-      class="gl-mx-2"
+      class="gl-mx-2 gl-display-none gl-sm-display-inline"
       editor-command="toggleOrderedList"
       :label="__('Add a numbered list')"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
-      data-testid="details"
-      content-type="details"
-      icon-name="details-block"
-      class="gl-mx-2"
-      editor-command="toggleDetails"
-      :label="__('Add a collapsible section')"
+      data-testid="task-list"
+      content-type="taskList"
+      icon-name="list-task"
+      class="gl-mx-2 gl-display-none gl-sm-display-inline"
+      editor-command="toggleTaskList"
+      :label="__('Add a task list')"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-image-button
+      ref="imageButton"
+      data-testid="image"
       @execute="trackToolbarControlExecution"
     />
     <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />

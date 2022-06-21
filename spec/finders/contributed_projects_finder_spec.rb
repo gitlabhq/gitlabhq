@@ -23,9 +23,15 @@ RSpec.describe ContributedProjectsFinder do
   end
 
   describe 'activity without a current user' do
-    subject { finder.execute }
+    it 'does only return public projects' do
+      projects = finder.execute
+      expect(projects).to match_array([public_project])
+    end
 
-    it { is_expected.to match_array([public_project]) }
+    it 'does return all projects when visibility gets ignored' do
+      projects = finder.execute(ignore_visibility: true)
+      expect(projects).to match_array([private_project, internal_project, public_project])
+    end
   end
 
   describe 'activity with a current user' do

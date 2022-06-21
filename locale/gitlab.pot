@@ -6789,6 +6789,9 @@ msgstr ""
 msgid "BulkImport|must be a group"
 msgstr ""
 
+msgid "Bullet list"
+msgstr ""
+
 msgid "Burndown chart"
 msgstr ""
 
@@ -8936,6 +8939,9 @@ msgid "Code Review"
 msgstr ""
 
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
+msgstr ""
+
+msgid "Code block"
 msgstr ""
 
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
@@ -12975,6 +12981,9 @@ msgid "Details"
 msgstr ""
 
 msgid "Details (default)"
+msgstr ""
+
+msgid "Details block"
 msgstr ""
 
 msgid "Detect host keys"
@@ -20455,9 +20464,6 @@ msgstr ""
 msgid "Insert a %{rows}x%{cols} table."
 msgstr ""
 
-msgid "Insert a code block"
-msgstr ""
-
 msgid "Insert a quote"
 msgstr ""
 
@@ -24126,10 +24132,16 @@ msgstr ""
 msgid "Merge request events"
 msgstr ""
 
+msgid "Merge request locked."
+msgstr ""
+
 msgid "Merge request not merged"
 msgstr ""
 
 msgid "Merge request reports"
+msgstr ""
+
+msgid "Merge request unlocked."
 msgstr ""
 
 msgid "Merge request was scheduled to merge after pipeline succeeds"
@@ -26154,6 +26166,12 @@ msgstr ""
 msgid "Notifications on"
 msgstr ""
 
+msgid "Notifications turned off."
+msgstr ""
+
+msgid "Notifications turned on."
+msgstr ""
+
 msgid "Notify users by email when sign-in location is not recognized."
 msgstr ""
 
@@ -26874,6 +26892,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Or you can choose one of the suggested colors below"
+msgstr ""
+
+msgid "Ordered list"
 msgstr ""
 
 msgid "Organizations"
@@ -35482,6 +35503,63 @@ msgstr ""
 msgid "Show whitespace changes"
 msgstr ""
 
+msgid "ShowcaseSecurity|Access a dedicated area for vulnerability management. This includes a security dashboard, vulnerability report, and settings."
+msgstr ""
+
+msgid "ShowcaseSecurity|Audit your Docker-based app. Scan for known vulnerabilities in the Docker images where your code is shipped."
+msgstr ""
+
+msgid "ShowcaseSecurity|Container scanning"
+msgstr ""
+
+msgid "ShowcaseSecurity|Dependency scanning"
+msgstr ""
+
+msgid "ShowcaseSecurity|Dynamic Application Security Testing (DAST)"
+msgstr ""
+
+msgid "ShowcaseSecurity|Dynamically examine your application for vulnerabilities in deployed environments."
+msgstr ""
+
+msgid "ShowcaseSecurity|Enable SAST"
+msgstr ""
+
+msgid "ShowcaseSecurity|Enable Secret Detection"
+msgstr ""
+
+msgid "ShowcaseSecurity|Enable Static Application Security Testing (SAST)"
+msgstr ""
+
+msgid "ShowcaseSecurity|Find out if your external libraries are safe. Run dependency scanning jobs that check for known vulnerabilities in your external libraries."
+msgstr ""
+
+msgid "ShowcaseSecurity|Identify vulnerabilities in your code now"
+msgstr ""
+
+msgid "ShowcaseSecurity|Scan your code to detect unintentionally committed secrets, like keys, passwords, and API tokens."
+msgstr ""
+
+msgid "ShowcaseSecurity|Scan your source code using GitLab CI/CD and uncover vulnerabilities before deploying."
+msgstr ""
+
+msgid "ShowcaseSecurity|Start a free 30-day Ultimate trial or upgrade your instance to access organization-wide security and compliance features. See the other features of the Ultimate plan."
+msgstr ""
+
+msgid "ShowcaseSecurity|Start a free trial"
+msgstr ""
+
+msgid "ShowcaseSecurity|Take your security to the next level"
+msgstr ""
+
+msgid "ShowcaseSecurity|Upgrade now"
+msgstr ""
+
+msgid "ShowcaseSecurity|Use GitLab CI/CD to analyze your source code for known vulnerabilities. Compare the found vulnerabilities between your source and target branches."
+msgstr ""
+
+msgid "ShowcaseSecurity|Vulnerability management"
+msgstr ""
+
 msgid "Showing %{conflict}"
 msgstr ""
 
@@ -37578,6 +37656,9 @@ msgid "Task"
 msgstr ""
 
 msgid "Task ID: %{elastic_task}"
+msgstr ""
+
+msgid "Task list"
 msgstr ""
 
 msgid "TasksToBeDone|Create/import code into a project (repository)"

@@ -8,15 +8,22 @@ import createFlash from '~/flash';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import SidebarSubscriptionWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
-import { issueSubscriptionsResponse } from '../../mock_data';
+import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
+import toast from '~/vue_shared/plugins/global_toast';
+import {
+  issueSubscriptionsResponse,
+  mergeRequestSubscriptionMutationResponse,
+} from '../../mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 Vue.use(VueApollo);
 
 describe('Sidebar Subscriptions Widget', () => {
   let wrapper;
   let fakeApollo;
+  let subscriptionMutationHandler;
 
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findToggle = () => wrapper.findComponent(GlToggle);
@@ -24,18 +31,29 @@ describe('Sidebar Subscriptions Widget', () => {
 
   const createComponent = ({
     subscriptionsQueryHandler = jest.fn().mockResolvedValue(issueSubscriptionsResponse()),
+    issuableType = 'issue',
+    movedMrSidebar = false,
   } = {}) => {
-    fakeApollo = createMockApollo([[issueSubscribedQuery, subscriptionsQueryHandler]]);
+    subscriptionMutationHandler = jest
+      .fn()
+      .mockResolvedValue(mergeRequestSubscriptionMutationResponse);
+    fakeApollo = createMockApollo([
+      [issueSubscribedQuery, subscriptionsQueryHandler],
+      [updateMergeRequestSubscriptionMutation, subscriptionMutationHandler],
+    ]);
 
     wrapper = shallowMount(SidebarSubscriptionWidget, {
       apolloProvider: fakeApollo,
       provide: {
         canUpdate: true,
+        glFeatures: {
+          movedMrSidebar,
+        },
       },
       propsData: {
         fullPath: 'group/project',
         iid: '1',
-        issuableType: 'issue',
+        issuableType,
       },
       stubs: {
         SidebarEditableItem,
@@ -127,5 +145,22 @@ describe('Sidebar Subscriptions Widget', () => {
     await waitForPromises();
 
     expect(createFlash).toHaveBeenCalled();
+  });
+
+  describe('merge request', () => {
+    it('displays toast when mutation is successful', async () => {
+      createComponent({
+        issuableType: 'merge_request',
+        movedMrSidebar: true,
+        subscriptionsQueryHandler: jest.fn().mockResolvedValue(issueSubscriptionsResponse(true)),
+      });
+      await waitForPromises();
+
+      await wrapper.find('.dropdown-item').trigger('click');
+
+      await waitForPromises();
+
+      expect(toast).toHaveBeenCalledWith('Notifications turned on.');
+    });
   });
 });
