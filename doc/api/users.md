@@ -2011,7 +2011,7 @@ Administrators cannot disable 2FA for their own user account or other administra
 administrator's 2FA [using the Rails console](../security/two_factor_authentication.md#for-a-single-user).
 
 ```plaintext
-PATCH /user/:id/disable_two_factor
+PATCH /users/:id/disable_two_factor
 ```
 
 Parameters:
@@ -2021,7 +2021,7 @@ Parameters:
 | `id`      | integer | yes      | The ID of the user    |
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/1/disable_two_factor"
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
 ```
 
 Returns:
