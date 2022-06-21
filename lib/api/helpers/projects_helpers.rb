@@ -96,6 +96,7 @@ module API
 
       params :optional_update_params_ce do
         optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Skip older deployment jobs that are still pending'
+        optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
       end
 
@@ -130,6 +131,7 @@ module API
           :ci_config_path,
           :ci_default_git_depth,
           :ci_forward_deployment_enabled,
+          :ci_separated_caches,
           :container_registry_access_level,
           :container_expiration_policy_attributes,
           :default_branch,

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { merge } from 'lodash';
 import { GlAlert } from '@gitlab/ui';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -50,17 +51,17 @@ describe('GroupNameAndPath', () => {
   const findAlert = () => extendedWrapper(wrapper.findComponent(GlAlert));
 
   const apiMockAvailablePath = () => {
-    getGroupPathAvailability.mockResolvedValue({
+    getGroupPathAvailability.mockResolvedValueOnce({
       data: { exists: false, suggests: [] },
     });
   };
   const apiMockUnavailablePath = (suggests = [mockGroupUrlSuggested]) => {
-    getGroupPathAvailability.mockResolvedValue({
+    getGroupPathAvailability.mockResolvedValueOnce({
       data: { exists: true, suggests },
     });
   };
   const apiMockLoading = () => {
-    getGroupPathAvailability.mockImplementation(() => new Promise(() => {}));
+    getGroupPathAvailability.mockImplementationOnce(() => new Promise(() => {}));
   };
 
   const expectLoadingMessageExists = () => {
@@ -169,7 +170,7 @@ describe('GroupNameAndPath', () => {
 
     describe('when API call fails', () => {
       it('calls `createAlert`', async () => {
-        getGroupPathAvailability.mockRejectedValue({});
+        getGroupPathAvailability.mockRejectedValueOnce({});
 
         createComponent();
 
@@ -184,14 +185,20 @@ describe('GroupNameAndPath', () => {
 
     describe('when multiple API calls are in-flight', () => {
       it('aborts the first API call and resolves second API call', async () => {
-        apiMockLoading();
+        getGroupPathAvailability.mockRejectedValueOnce({ __CANCEL__: true });
         apiMockUnavailablePath();
+
         const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
 
         createComponent();
 
         await findGroupNameField().setValue('Foo');
         await findGroupNameField().setValue(mockGroupName);
+
+        // Wait for re-render to ensure loading message is still there
+        await nextTick();
+        expectLoadingMessageExists();
+
         await waitForPromises();
 
         expect(createAlert).not.toHaveBeenCalled();

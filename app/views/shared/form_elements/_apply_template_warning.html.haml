@@ -7,7 +7,7 @@
       %p
         = _("Applying a template will replace the existing issue description. Any changes you have made will be lost.")
 
-      %button.js-override-template.btn.gl-button.btn-confirm.mr-2{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3 js-override-template' }) do
         = _("Apply template")
-      %button.js-close-btn.js-cancel-btn.btn.gl-button.btn-default{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close-btn js-cancel-btn' }) do
         = _("Cancel")

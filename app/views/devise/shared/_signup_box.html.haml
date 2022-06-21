@@ -45,11 +45,13 @@
       = f.label :email, class: 'label-bold'
       = f.email_field :email,
         value: @invite_email,
-        class: 'form-control gl-form-input middle',
+        class: 'form-control gl-form-input middle js-validate-email',
         data: { qa_selector: 'new_user_email_field' },
         required: true,
         title: _('Please provide a valid email address.')
       %p.gl-field-hint.text-secondary= _('We recommend a work email address.')
+      -# This is used for providing entry to Jihu on email verification
+      = render_if_exists 'devise/shared/signup_email_additional_info'
     .form-group.gl-mb-5#password-strength
       = f.label :password, class: 'label-bold'
       = f.password_field :password,
