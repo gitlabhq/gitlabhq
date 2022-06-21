@@ -45,7 +45,8 @@
             &middot;
             %span.js-expires-in-text{ class: "has-tooltip#{' text-warning' if member.expires_soon?}", title: (member.expires_at.to_time.in_time_zone.to_s(:medium) if member.expires?) }
               - if member.expires?
-                = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(member.expires_at) }
+                - preposition = current_user.time_display_relative ? '' : 'on'
+                = _("Expires %{preposition} %{expires_at}").html_safe % { expires_at: time_ago_with_tooltip(member.expires_at), preposition: preposition }
 
     - else
       = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''

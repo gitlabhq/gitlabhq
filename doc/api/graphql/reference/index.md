@@ -19669,8 +19669,9 @@ The status of the security scan.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="securitypolicyrelationtypedirect"></a>`DIRECT` | Policies defined for the project only. |
-| <a id="securitypolicyrelationtypeinherited"></a>`INHERITED` | Policies defined for the project and project's ancestor groups. |
+| <a id="securitypolicyrelationtypedirect"></a>`DIRECT` | Policies defined for the project/group only. |
+| <a id="securitypolicyrelationtypeinherited"></a>`INHERITED` | Policies defined for the project/group and ancestor groups. |
+| <a id="securitypolicyrelationtypeinherited_only"></a>`INHERITED_ONLY` | Policies defined for the project/group's ancestor groups only. |
 
 ### `SecurityReportTypeEnum`
 

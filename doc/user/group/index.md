@@ -668,6 +668,19 @@ The most popular public email domains cannot be restricted, such as:
 - `hotmail.com`, `hotmail.co.uk`, `hotmail.fr`
 - `msn.com`, `live.com`, `outlook.com`
 
+## Restrict Git access protocols
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1.
+
+Access to the group's repositories via SSH or HTTP(S) can be restricted to individual protocols. This setting is overridden by the instance setting configured in the GitLab Admin.
+
+To alter the permitted Git access protocols:
+
+1. Go to the group's **Settings > General** page.
+1. Expand the **Permissions and group features** section.
+1. Choose the allowed protocols from **Enable Git access protocols**
+1. Select **Save changes**
+
 ## Group file templates **(PREMIUM)**
 
 Use group file templates to share a set of templates for common file

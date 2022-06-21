@@ -231,7 +231,7 @@ module Glfm
         name = example.fetch(:name)
 
         json = if glfm_examples_statuses.dig(name, 'skip_update_example_snapshot_prosemirror_json')
-                 existing_hash.dig(name)
+                 existing_hash[name]
                else
                  wysiwyg_html_and_json_hash.dig(name, 'json')
                end

@@ -16,7 +16,7 @@ module Deployments
         log_extra_metadata_on_done(:deployment_project_id, deploy.project.id)
         log_extra_metadata_on_done(:deployment_id, params[:deployment_id])
 
-        deploy.execute_hooks(params[:status_changed_at].to_time)
+        deploy.execute_hooks(params[:status], params[:status_changed_at].to_time)
       end
     end
   end

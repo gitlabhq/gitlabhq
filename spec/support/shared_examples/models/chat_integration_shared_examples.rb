@@ -357,7 +357,8 @@ RSpec.shared_examples "chat integration" do |integration_name|
     end
 
     context 'deployment events' do
-      let(:sample_data) { Gitlab::DataBuilder::Deployment.build(create(:deployment), Time.now) }
+      let(:deployment) { create(:deployment) }
+      let(:sample_data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.now) }
 
       it_behaves_like "untriggered #{integration_name} integration"
     end

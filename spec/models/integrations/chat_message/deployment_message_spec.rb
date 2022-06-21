@@ -14,7 +14,7 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage do
   let_it_be(:deployment) { create(:deployment, status: :success, deployable: ci_build, environment: environment, project: project, user: user, sha: commit.sha) }
 
   let(:args) do
-    Gitlab::DataBuilder::Deployment.build(deployment, Time.current)
+    Gitlab::DataBuilder::Deployment.build(deployment, 'success', Time.current)
   end
 
   it_behaves_like Integrations::ChatMessage

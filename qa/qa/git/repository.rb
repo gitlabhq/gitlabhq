@@ -218,6 +218,31 @@ module QA
         run_git('git --no-pager branch --list --remotes --format="%(refname:lstrip=3)"').to_s.split("\n")
       end
 
+      # Gets the size of the repository using `git rev-list --all --objects --use-bitmap-index --disk-usage` as
+      # Gitaly does (see https://gitlab.com/gitlab-org/gitlab/-/issues/357680)
+      def local_size
+        internal_refs = %w[
+          refs/keep-around/
+          refs/merge-requests/
+          refs/pipelines/
+          refs/remotes/
+          refs/tmp/
+          refs/environments/
+        ]
+        cmd = <<~CMD
+          git rev-list #{internal_refs.map { |r| "--exclude='#{r}*'" }.join(' ')} \
+          --not --alternate-refs --not \
+          --all --objects --use-bitmap-index --disk-usage
+        CMD
+
+        run_git(cmd).to_i
+      end
+
+      # Performs garbage collection
+      def run_gc
+        run_git('git gc')
+      end
+
       private
 
       attr_reader :uri, :username, :password, :ssh, :use_lfs

@@ -15315,7 +15315,7 @@ msgstr ""
 msgid "Expires"
 msgstr ""
 
-msgid "Expires in %{expires_at}"
+msgid "Expires %{preposition} %{expires_at}"
 msgstr ""
 
 msgid "Expires on"

@@ -79,12 +79,10 @@ page, with these behaviors:
       - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
       - **At capacity** - 🔴 `:red_circle:`
       - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
-1. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
-   are three times as likely to be picked as other reviewers.
 1. Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
    - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
-   - Trainee maintainers with 🔵 `:large_blue_circle:` are four times as likely to be picked as other reviewers.
+   - [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer) with 🔵 `:large_blue_circle:` are three times as likely to be picked as other reviewers.
 1. People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
    is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
 1. It always picks the same reviewers and maintainers for the same

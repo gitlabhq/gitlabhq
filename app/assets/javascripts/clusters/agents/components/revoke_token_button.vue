@@ -148,7 +148,7 @@ export default {
     },
     hideModal() {
       this.resetModal();
-      this.$refs.modal.hide();
+      this.$refs.modal?.hide();
     },
   },
 };

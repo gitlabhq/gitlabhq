@@ -1,0 +1,8 @@
+---
+name: gitaly_revlist_for_repo_size
+introduced_by_url:
+rollout_issue_url:
+milestone:
+type: undefined
+group:
+default_enabled: false

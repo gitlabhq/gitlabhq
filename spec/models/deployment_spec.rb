@@ -139,26 +139,13 @@ RSpec.describe Deployment do
         end
       end
 
-      it 'executes deployment hooks' do
+      it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
-          expect(deployment).to receive(:execute_hooks).with(Time.current)
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'running',
+              status_changed_at: Time.current)
 
           deployment.run!
-        end
-      end
-
-      context 'when `deployment_hooks_skip_worker` flag is disabled' do
-        before do
-          stub_feature_flags(deployment_hooks_skip_worker: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
-
-            deployment.run!
-          end
         end
       end
 
@@ -189,26 +176,13 @@ RSpec.describe Deployment do
         deployment.succeed!
       end
 
-      it 'executes deployment hooks' do
+      it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
-          expect(deployment).to receive(:execute_hooks).with(Time.current)
+          expect(Deployments::HooksWorker)
+          .to receive(:perform_async).with(deployment_id: deployment.id, status: 'success',
+            status_changed_at: Time.current)
 
           deployment.succeed!
-        end
-      end
-
-      context 'when `deployment_hooks_skip_worker` flag is disabled' do
-        before do
-          stub_feature_flags(deployment_hooks_skip_worker: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-            .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
-
-            deployment.succeed!
-          end
         end
       end
     end
@@ -232,26 +206,13 @@ RSpec.describe Deployment do
         deployment.drop!
       end
 
-      it 'executes deployment hooks' do
+      it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
-          expect(deployment).to receive(:execute_hooks).with(Time.current)
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'failed',
+              status_changed_at: Time.current)
 
           deployment.drop!
-        end
-      end
-
-      context 'when `deployment_hooks_skip_worker` flag is disabled' do
-        before do
-          stub_feature_flags(deployment_hooks_skip_worker: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
-
-            deployment.drop!
-          end
         end
       end
     end
@@ -275,26 +236,13 @@ RSpec.describe Deployment do
         deployment.cancel!
       end
 
-      it 'executes deployment hooks' do
+      it 'executes Deployments::HooksWorker asynchronously' do
         freeze_time do
-          expect(deployment).to receive(:execute_hooks).with(Time.current)
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async).with(deployment_id: deployment.id, status: 'canceled',
+              status_changed_at: Time.current)
 
           deployment.cancel!
-        end
-      end
-
-      context 'when `deployment_hooks_skip_worker` flag is disabled' do
-        before do
-          stub_feature_flags(deployment_hooks_skip_worker: false)
-        end
-
-        it 'executes Deployments::HooksWorker asynchronously' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async).with(deployment_id: deployment.id, status_changed_at: Time.current)
-
-            deployment.cancel!
-          end
         end
       end
     end
@@ -324,12 +272,6 @@ RSpec.describe Deployment do
           deployment.skip!
         end
       end
-
-      it 'does not execute deployment hooks' do
-        expect(deployment).not_to receive(:execute_hooks)
-
-        deployment.skip!
-      end
     end
 
     context 'when deployment is blocked' do
@@ -350,12 +292,6 @@ RSpec.describe Deployment do
 
       it 'does not execute Deployments::HooksWorker' do
         expect(Deployments::HooksWorker).not_to receive(:perform_async)
-
-        deployment.block!
-      end
-
-      it 'does not execute deployment hooks' do
-        expect(deployment).not_to receive(:execute_hooks)
 
         deployment.block!
       end
@@ -1052,28 +988,9 @@ RSpec.describe Deployment do
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
       expect(Deployments::ArchiveInProjectWorker).to receive(:perform_async)
+      expect(Deployments::HooksWorker).to receive(:perform_async)
 
       expect(deploy.update_status('success')).to eq(true)
-    end
-
-    context 'when `deployment_hooks_skip_worker` flag is disabled' do
-      before do
-        stub_feature_flags(deployment_hooks_skip_worker: false)
-      end
-
-      it 'schedules `Deployments::HooksWorker` when finishing a deploy' do
-        expect(Deployments::HooksWorker).to receive(:perform_async)
-
-        deploy.update_status('success')
-      end
-    end
-
-    it 'executes deployment hooks when finishing a deploy' do
-      freeze_time do
-        expect(deploy).to receive(:execute_hooks).with(Time.current)
-
-        deploy.update_status('success')
-      end
     end
 
     it 'updates finished_at when transitioning to a finished status' do

@@ -10,7 +10,7 @@ module QA
       let(:differ) { RSpec::Support::Differ.new(color: true) }
       let(:gitlab_group) { ENV['QA_LARGE_IMPORT_GROUP'] || 'gitlab-migration' }
       let(:gitlab_project) { ENV['QA_LARGE_IMPORT_REPO'] || 'dri' }
-      let(:gitlab_source_address) { 'https://staging.gitlab.com' }
+      let(:gitlab_source_address) { ENV['QA_LARGE_IMPORT_SOURCE_URL'] || 'https://staging.gitlab.com' }
 
       let(:import_wait_duration) do
         {

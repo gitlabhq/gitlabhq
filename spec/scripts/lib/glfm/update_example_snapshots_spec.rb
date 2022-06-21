@@ -14,7 +14,7 @@ require_relative '../../../../scripts/lib/glfm/update_example_snapshots'
 # This is because the invocation of the full script is slow, because it executes
 # two subshells for processing, one which runs a full Rails environment, and one
 # which runs a jest test environment. This results in each full run of the script
-# taking between 30-60 seconds. The majority of this is spent loading the Rails environmnent.
+# taking between 30-60 seconds. The majority of this is spent loading the Rails environment.
 #
 # However, only the `writing html.yml and prosemirror_json.yml` context is used
 # to test these slow sub-processes, and it only contains a single example.

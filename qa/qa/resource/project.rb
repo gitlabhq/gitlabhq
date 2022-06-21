@@ -224,6 +224,10 @@ module QA
         "#{api_get_path}/releases"
       end
 
+      def api_housekeeping_path
+        "/projects/#{id}/housekeeping"
+      end
+
       def api_post_body
         post_body = {
           name: name,
@@ -445,6 +449,31 @@ module QA
           # when parts of a resource are stored in multiple tables
           false
         end
+      end
+
+      # Calls the API endpoint that triggers the backend service that performs repository housekeeping (garbage
+      # collection and similar tasks).
+      def perform_housekeeping
+        Runtime::Logger.debug("Calling API endpoint #{api_housekeeping_path}")
+
+        response = post(request_url(api_housekeeping_path), nil)
+
+        unless response.code == HTTP_STATUS_CREATED
+          raise ResourceQueryError,
+            "Could not perform housekeeping. Request returned (#{response.code}): `#{response.body}`."
+        end
+      end
+
+      # Gets project statistics.
+      #
+      # @return [Hash] the project usage data including repository size.
+      def statistics
+        response = get(request_url("#{api_get_path}?statistics=true"))
+        data = parse_body(response)
+
+        raise "Could not get project usage statistics" unless data.key?(:statistics)
+
+        data[:statistics]
       end
 
       protected
