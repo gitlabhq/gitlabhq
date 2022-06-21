@@ -1337,6 +1337,11 @@ msgstr ""
 msgid "0 bytes"
 msgstr ""
 
+msgid "1 Code quality finding"
+msgid_plural "%d Code quality findings"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 Day"
 msgid_plural "%d Days"
 msgstr[0] ""

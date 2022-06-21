@@ -113,6 +113,11 @@ job. If you include these keys in your own job, you must copy their original con
 
 Use the following variables to configure coverage-guided fuzz testing in your CI/CD pipeline.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results, including
+a large number of false positives.
+
 | CI/CD variable            | Description                                                                     |
 |---------------------------|---------------------------------------------------------------------------------|
 | `COVFUZZ_ADDITIONAL_ARGS` | Arguments passed to `gitlab-cov-fuzz`. Used to customize the behavior of the underlying fuzzing engine. Read the fuzzing engine's documentation for a complete list of arguments. |

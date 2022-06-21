@@ -133,6 +133,41 @@ During import, the tarball is cached in your configured `shared_path` directory.
 disk has enough free space to accommodate both the cached tarball and the unpacked
 project files on disk.
 
+##### Import is successful, but with a `Total number of not imported relations: XX` message, and issues are not created during the import
+
+If you receive a `Total number of not imported relations: XX` message, and issues
+aren't created during the import, check [exceptions_json.log](../administration/logs.md#exceptions_jsonlog).
+You might see an error like `N is out of range for ActiveModel::Type::Integer with limit 4 bytes`,
+where `N` is the integer exceeding the 4-byte integer limit. If that's the case, you
+are likely hitting the issue with rebalancing of `relative_position` field of the issues.
+
+The feature flag to enable the rebalance automatically was enabled on GitLab.com.
+We intend to enable it by default on self-managed instances when the issue
+[Rebalance issues FF rollout](https://gitlab.com/gitlab-org/gitlab/-/issues/343368)
+is implemented.
+
+If the feature is not enabled by default on your GitLab version, run the following
+commands in the [Rails console](../administration/operations/rails_console.md) as
+a workaround. Replace the ID with the ID of your project you were trying to import:
+
+```ruby
+# Check if the feature is enabled on your instance. If it is, rebalance should work automatically on your instance
+Feature.enabled?(:rebalance_issues,Project.find(ID).root_namespace)
+
+# Check the current maximum value of relative_position
+Issue.where(project_id: Project.find(ID).root_namespace.all_projects).maximum(:relative_position)
+
+# Enable `rebalance_issues` feauture and check that it was successfully enabled
+Feature.enable(:rebalance_issues,Project.find(ID).root_namespace)
+Feature.enabled?(:rebalance_issues,Project.find(ID).root_namespace)
+
+# Run the rebalancing process and check if the maximum value of relative_position has changed
+Issues::RelativePositionRebalancingService.new(Project.find(ID).root_namespace.all_projects).execute
+Issue.where(project_id: Project.find(ID).root_namespace.all_projects).maximum(:relative_position)
+```
+
+Repeat the import attempt after that and check if the issues are imported successfully.
+
 ### Importing via the Rails console
 
 The last option is to import a project using a Rails console:

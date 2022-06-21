@@ -587,6 +587,11 @@ gemnasium-dependency_scanning:
 Dependency scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 #### Configuring dependency scanning
 
 The following variables allow configuration of global dependency scanning settings.

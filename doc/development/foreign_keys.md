@@ -28,8 +28,79 @@ Guide](migration_style_guide.md) for more information.
 
 Keep in mind that you can only safely add foreign keys to existing tables after
 you have removed any orphaned rows. The method `add_concurrent_foreign_key`
-does not take care of this so you need to do so manually. See
+does not take care of this so you must do so manually. See
 [adding foreign key constraint to an existing column](database/add_foreign_key_to_existing_column.md).
+
+## Updating Foreign Keys In Migrations
+
+Sometimes a foreign key constraint must be changed, preserving the column
+but updating the constraint condition. For example, moving from
+`ON DELETE CASCADE` to `ON DELETE SET NULL` or vice-versa.
+
+PostgreSQL does not prevent you from adding overlapping foreign keys. It
+honors the most recently added constraint. This allows us to replace foreign keys without
+ever losing foreign key protection on a column.
+
+To replace a foreign key:
+
+1. [Add the new foreign key without validation](database/add_foreign_key_to_existing_column.md#prevent-invalid-records)
+
+  The name of the foreign key constraint must be changed to add a new
+  foreign key before removing the old one.
+
+  ```ruby
+  class ReplaceFkOnPackagesPackagesProjectId < Gitlab::Database::Migration[2.0]
+    disable_ddl_transaction!
+
+    NEW_CONSTRAINT_NAME = 'fk_new'
+
+    def up
+      add_concurrent_foreign_key(:packages_packages, :projects, column: :project_id, on_delete: :nullify, validate: false, name: NEW_CONSTRAINT_NAME)
+    end
+
+    def down
+      with_lock_retries do
+        remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :nullify, name: NEW_CONSTRAINT_NAME)
+      end
+    end
+  end
+  ```
+
+1. [Validate the new foreign key](database/add_foreign_key_to_existing_column.md#validate-the-foreign-key)
+
+  ```ruby
+  class ValidateFkNew < Gitlab::Database::Migration[2.0]
+    NEW_CONSTRAINT_NAME = 'fk_new'
+
+    # foreign key added in <link to MR or path to migration adding new FK>
+    def up
+      validate_foreign_key(:packages_packages, name: NEW_CONSTRAINT_NAME)
+    end
+
+    def down
+      # no-op
+    end
+  end
+  ```
+
+1. Remove the old foreign key:
+
+  ```ruby
+  class RemoveFkOld < Gitlab::Database::Migration[2.0]
+    OLD_CONSTRAINT_NAME = 'fk_old'
+
+    # new foreign key added in <link to MR or path to migration adding new FK>
+    # and validated in <link to MR or path to migration validating new FK>
+    def up
+      remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
+    end
+
+    def down
+      # Validation is skipped here, so if rolled back, this will need to be revalidated in a separate migration
+      add_concurrent_foreign_key(:packages_packages, :projects, column: :project_id, on_delete: :cascade, validate: false, name: OLD_CONSTRAINT_NAME)
+    end
+  end
+  ```
 
 ## Cascading Deletes
 

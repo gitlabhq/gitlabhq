@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GoogleCloud
-  class GeneratePipelineService < :: BaseService
+  class GeneratePipelineService < ::GoogleCloud::BaseService
     ACTION_DEPLOY_TO_CLOUD_RUN = 'DEPLOY_TO_CLOUD_RUN'
     ACTION_DEPLOY_TO_CLOUD_STORAGE = 'DEPLOY_TO_CLOUD_STORAGE'
 

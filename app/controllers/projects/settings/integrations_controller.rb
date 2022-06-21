@@ -11,6 +11,7 @@ module Projects
       before_action :integration, only: [:edit, :update, :test]
       before_action :default_integration, only: [:edit, :update]
       before_action :web_hook_logs, only: [:edit, :update]
+      before_action -> { check_rate_limit!(:project_testing_integration, scope: [@project, current_user]) }, only: :test
 
       respond_to :html
 

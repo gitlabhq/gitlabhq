@@ -218,7 +218,7 @@ sudo yum install gitlab-ee
 
 ## Upgrade Redis HA (using Sentinel) **(PREMIUM SELF)**
 
-Follow [the zero downtime instructions](zero_downtime.md#use-redis-ha-using-sentinel)
+Follow [the zero downtime instructions](zero_downtime.md#redis-ha-using-sentinel)
 for upgrading your Redis HA cluster.
 
 ## Upgrade the Rails nodes (Puma / Sidekiq)

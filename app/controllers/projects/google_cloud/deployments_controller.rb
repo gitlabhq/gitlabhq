@@ -4,7 +4,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
   before_action :validate_gcp_token!
 
   def cloud_run
-    params = { token_in_session: token_in_session }
+    params = { google_oauth2_token: token_in_session }
     enable_cloud_run_response = GoogleCloud::EnableCloudRunService
                                   .new(project, current_user, params).execute
 

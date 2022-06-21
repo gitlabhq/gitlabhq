@@ -231,7 +231,12 @@ between GitLab Dependency Scanning and Container Scanning for more details on wh
 
 #### Available CI/CD variables
 
-You can [configure](#customizing-the-container-scanning-settings) analyzers by using the following CI/CD variables:
+You can [configure](#customizing-the-container-scanning-settings) analyzers by using the following CI/CD variables.
+
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
 
 | CI/CD Variable                 | Default       | Description | Scanner |
 | ------------------------------ | ------------- | ----------- | ------------ |

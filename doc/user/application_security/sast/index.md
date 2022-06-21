@@ -837,6 +837,11 @@ spotbugs-sast:
 SAST can be configured using the [`variables`](../../../ci/yaml/index.md#variables) parameter in
 `.gitlab-ci.yml`.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 The following example includes the SAST template to override the `SAST_GOSEC_LEVEL`
 variable to `2`. The template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
 configuration, so the last mention of the variable takes precedence.

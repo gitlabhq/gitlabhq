@@ -407,6 +407,11 @@ The API fuzzing behavior can be changed through CI/CD variables.
 From GitLab 13.12 and later, the default API fuzzing configuration file is `.gitlab/gitlab-api-fuzzing-config.yml`. In GitLab 14.0 and later, API fuzzing configuration files must be in your repository's
 `.gitlab` directory instead of your repository's root.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 ### Authentication
 
 Authentication is handled by providing the authentication token as a header or cookie. You can

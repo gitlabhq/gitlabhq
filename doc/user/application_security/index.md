@@ -114,6 +114,11 @@ While you cannot directly customize Auto DevOps, you can [include the Auto DevOp
 To enable all GitLab security scanning tools, with the option of customizing settings, add the
 GitLab CI/CD templates to your `.gitlab-ci.yml` file.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 To enable Static Application Security Testing, Dependency Scanning, License Scanning, and Secret
 Detection, add:
 

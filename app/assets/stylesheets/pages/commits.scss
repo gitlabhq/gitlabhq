@@ -95,8 +95,14 @@
   }
 }
 
-.commits-row + .commits-row {
-  border-top: 1px solid $white-normal;
+.commits-row {
+  + .commits-row {
+    border-top: 1px solid $white-normal;
+  }
+
+  + .commits-empty {
+    display: none;
+  }
 }
 
 .text-expander {

@@ -622,6 +622,11 @@ To enable Mutual TLS:
 
 These CI/CD variables are specific to DAST. They can be used to customize the behavior of DAST to your requirements.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 | CI/CD variable                                   | Type          | Description                   |
 |:-------------------------------------------------|:--------------|:------------------------------|
 | `DAST_ADVERTISE_SCAN`                            | boolean       | Set to `true` to add a `Via` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334947) in GitLab 14.1. |

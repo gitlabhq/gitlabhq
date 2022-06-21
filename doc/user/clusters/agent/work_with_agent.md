@@ -63,13 +63,21 @@ level according to the available options:
 - `debug`
 
 The log level defaults to `info`. You can change it by using a top-level `observability`
-section in the configuration file, for example:
+section in the [agent configuration file](install/index.md#configure-your-agent), for example setting the level to `debug`:
 
 ```yaml
 observability:
   logging:
     level: debug
 ```
+
+Commit the configuration changes and inspect the agent service logs:
+
+```shell
+kubectl logs -f -l=app=gitlab-agent -n gitlab-agent
+```
+
+For more information about debugging, see [troubleshooting documentation](troubleshooting.md).
 
 ## Reset the agent token
 

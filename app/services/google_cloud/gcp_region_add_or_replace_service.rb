@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GoogleCloud
-  class GcpRegionAddOrReplaceService < ::BaseService
+  class GcpRegionAddOrReplaceService < ::GoogleCloud::BaseService
     def execute(environment, region)
       gcp_region_key = Projects::GoogleCloudController::GCP_REGION_CI_VAR_KEY
 

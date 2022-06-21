@@ -2892,10 +2892,54 @@
   }
 04_06__leaf_blocks__html_blocks__001: |-
   Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  Cannot read properties of undefined (reading 'className')
 04_06__leaf_blocks__html_blocks__002: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "\n           hi\n    "
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "okay."
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__003: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
@@ -2957,8 +3001,43 @@
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__013: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "\nfoo\n"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__014: |-
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
@@ -3121,7 +3200,7 @@
   Hast node of type "style" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__029: |-
   Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  Cannot read properties of undefined (reading 'wrapper')
 04_06__leaf_blocks__html_blocks__030: |-
   Error - check implementation:
   Hast node of type "script" not supported by this converter. Please, provide an specification.
@@ -3130,7 +3209,7 @@
   Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
 04_06__leaf_blocks__html_blocks__032: |-
   Error - check implementation:
-  Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+  Cannot read properties of undefined (reading 'wrapper')
 04_06__leaf_blocks__html_blocks__033: |-
   {
     "type": "doc",
@@ -3193,11 +3272,73 @@
   Error - check implementation:
   Hast node of type "div" not supported by this converter. Please, provide an specification.
 04_06__leaf_blocks__html_blocks__042: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "\nHi\n"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_06__leaf_blocks__html_blocks__043: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": null,
+          "class": "code highlight"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "<td>\n  Hi\n</td>"
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow"
+          }
+        ]
+      }
+    ]
+  }
 04_07__leaf_blocks__link_reference_definitions__001: |-
   {
     "type": "doc",
@@ -4142,20 +4283,580 @@
     ]
   }
 04_10__leaf_blocks__tables_extension__001: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "foo"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "baz"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bim"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_10__leaf_blocks__tables_extension__002: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "abc"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "defghi"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "baz"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_10__leaf_blocks__tables_extension__003: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "f|oo"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "b "
+                      },
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "code"
+                          }
+                        ],
+                        "text": "|"
+                      },
+                      {
+                        "type": "text",
+                        "text": " az"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "b "
+                      },
+                      {
+                        "type": "text",
+                        "marks": [
+                          {
+                            "type": "bold"
+                          }
+                        ],
+                        "text": "|"
+                      },
+                      {
+                        "type": "text",
+                        "text": " im"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_10__leaf_blocks__tables_extension__004: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "abc"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "def"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "baz"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "blockquote",
+        "attrs": {
+          "multiline": false
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "bar"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_10__leaf_blocks__tables_extension__005: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "abc"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "def"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "baz"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "bar"
+          }
+        ]
+      }
+    ]
+  }
 04_10__leaf_blocks__tables_extension__006: |-
   {
     "type": "doc",
@@ -4172,11 +4873,199 @@
     ]
   }
 04_10__leaf_blocks__tables_extension__007: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "abc"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "def"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "bar"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableCell",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "baz"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 04_10__leaf_blocks__tables_extension__008: |-
-  Error - check implementation:
-  Hast node of type "table" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "table",
+        "attrs": {
+          "isMarkdown": null
+        },
+        "content": [
+          {
+            "type": "tableRow",
+            "content": [
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "abc"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "tableHeader",
+                "attrs": {
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "colwidth": null
+                },
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "def"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 05_01__container_blocks__block_quotes__001: |-
   {
     "type": "doc",
@@ -7089,7 +7978,16 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "Bar\nbaz"
+                    "text": "Bar"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "\nbaz"
                   }
                 ]
               }
@@ -7100,33 +7998,8 @@
     ]
   }
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__049: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "bulletList",
-        "attrs": {
-          "bullet": "*"
-        },
-        "content": [
-          {
-            "type": "listItem",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "baz"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  Error - check implementation:
+  Cannot read properties of undefined (reading 'start')
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__050: |-
   {
     "type": "doc",
@@ -15804,8 +16677,40 @@
     ]
   }
 06_09__inlines__autolinks__013: |-
-  Error - check implementation:
-  Cannot read properties of undefined (reading 'end')
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "<"
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": {
+                  "href": "mailto:foo+@bar.example.com",
+                  "target": "_blank",
+                  "class": null,
+                  "title": null,
+                  "canonicalSrc": null
+                }
+              }
+            ],
+            "text": "foo+@bar.example.com"
+          },
+          {
+            "type": "text",
+            "text": ">"
+          }
+        ]
+      }
+    ]
+  }
 06_09__inlines__autolinks__014: |-
   {
     "type": "doc",
@@ -17014,5 +17919,42 @@
     ]
   }
 07_01__gitlab_specific_markdown__footnotes__001: |-
-  Error - check implementation:
-  Hast node of type "sup" not supported by this converter. Please, provide an specification.
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "footnote reference tag "
+          },
+          {
+            "type": "footnoteReference",
+            "attrs": {
+              "identifier": "1",
+              "label": "1"
+            }
+          }
+        ]
+      },
+      {
+        "type": "footnoteDefinition",
+        "attrs": {
+          "identifier": "1",
+          "label": "1"
+        },
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "footnote text"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

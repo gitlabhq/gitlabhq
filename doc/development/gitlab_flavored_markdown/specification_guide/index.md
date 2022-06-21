@@ -69,11 +69,11 @@ serve as input to automated conformance tests. It is
 > This document attempts to specify Markdown syntax unambiguously. It contains many
 > examples with side-by-side Markdown and HTML. These examples are intended to double as conformance tests.
 
-The HTML-rendered versions of the specifications:
+Here are the HTML-rendered versions of the specifications:
 
 - [GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html), which extends the:
-- [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/), which extends the:
-- [CommonMark specification](https://spec.commonmark.org/0.30/)
+- [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/) (rendered from the [source `spec.txt` for GFM specification](https://github.com/github/cmark-gfm/blob/master/test/spec.txt)), which extends the:
+- [CommonMark specification](https://spec.commonmark.org/0.30/) (rendered from the [source `spec.txt` for CommonMark specification](https://github.com/commonmark/commonmark-spec/blob/master/spec.txt))
 
 NOTE:
 The creation of the

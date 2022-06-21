@@ -27,8 +27,8 @@ If you meet all the requirements above, follow these instructions in order. Ther
 | Deployment type                                                 | Description                                       |
 | --------------------------------------------------------------- | ------------------------------------------------  |
 | [Gitaly or Gitaly Cluster](#gitaly-or-gitaly-cluster)           | GitLab CE/EE using HA architecture for Gitaly or Gitaly Cluster |
-| [Multi-node / PostgreSQL HA](#use-postgresql-ha)                | GitLab CE/EE using HA architecture for PostgreSQL |
-| [Multi-node / Redis HA](#use-redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
+| [Multi-node / PostgreSQL HA](#postgresql)                | GitLab CE/EE using HA architecture for PostgreSQL |
+| [Multi-node / Redis HA](#redis-ha-using-sentinel)           | GitLab CE/EE using HA architecture for Redis |
 | [Geo](#geo-deployment)                                          | GitLab EE with Geo enabled                        |
 | [Multi-node / HA with Geo](#multi-node--ha-deployment-with-geo) | GitLab CE/EE on multiple nodes                    |
 
@@ -260,7 +260,7 @@ node first and run database migrations.
       sudo gitlab-ctl reconfigure
       ```
 
-### Use PostgreSQL HA
+### PostgreSQL
 
 Pick a node to be the `Deploy Node`. It can be any application node, but it must be the same
 node throughout the process.
@@ -277,7 +277,7 @@ node throughout the process.
 
 - To prevent `reconfigure` from automatically running database migrations, ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb`.
 
-**Gitaly only nodes**
+**Postgres only nodes**
 
 - Update the GitLab package
 
@@ -385,7 +385,7 @@ sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert
 setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
-### Use Redis HA (using Sentinel) **(PREMIUM SELF)**
+### Redis HA (using Sentinel) **(PREMIUM SELF)**
 
 Package upgrades may involve version updates to the bundled Redis service. On
 instances using [Redis for scaling](../administration/redis/index.md),

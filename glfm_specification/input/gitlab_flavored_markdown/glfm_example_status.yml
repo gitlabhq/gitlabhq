@@ -10,5 +10,5 @@
   skip_running_conformance_static_tests: false # NOT YET SUPPORTED
   skip_running_conformance_wysiwyg_tests: false # NOT YET SUPPORTED
   skip_running_snapshot_static_html_tests: false # NOT YET SUPPORTED
-  skip_running_snapshot_wysiwyg_html_tests: false # NOT YET SUPPORTED
-  skip_running_snapshot_prosemirror_json_tests: false # NOT YET SUPPORTED
+  skip_running_snapshot_wysiwyg_html_tests: false
+  skip_running_snapshot_prosemirror_json_tests: false

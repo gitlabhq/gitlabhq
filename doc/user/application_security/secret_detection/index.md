@@ -157,6 +157,11 @@ The Secret Detection scan settings can be changed through [CI/CD variables](#ava
 by using the
 [`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 
+WARNING:
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results,
+including a large number of false positives.
+
 To override a job definition, (for example, change properties like `variables` or `dependencies`),
 declare a job with the same name as the secret detection job to override. Place this new job after the template
 inclusion and specify any additional keys under it.

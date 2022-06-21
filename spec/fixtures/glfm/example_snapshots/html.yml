@@ -1492,7 +1492,7 @@
     </td></tr></table>
   wysiwyg: |-
     Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    Cannot read properties of undefined (reading 'className')
 04_06__leaf_blocks__html_blocks__002:
   canonical: |
     <table>
@@ -1513,8 +1513,9 @@
     </table>
     <p data-sourcepos="9:1-9:5" dir="auto">okay.</p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><td colspan="1" rowspan="1"><p>
+               hi
+        </p></td></tr></tbody></table>
 04_06__leaf_blocks__html_blocks__003:
   canonical: |2
      <div>
@@ -1627,8 +1628,9 @@
     foo
     </td></tr></table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><td colspan="1" rowspan="1"><p>
+    foo
+    </p></td></tr></tbody></table>
 04_06__leaf_blocks__html_blocks__014:
   canonical: |
     <div></div>
@@ -1850,7 +1852,7 @@
     <p data-sourcepos="2:1-2:5" dir="auto"><em>baz</em></p>
   wysiwyg: |-
     Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    Cannot read properties of undefined (reading 'wrapper')
 04_06__leaf_blocks__html_blocks__030:
   canonical: |
     <script>
@@ -1889,7 +1891,7 @@
     <p data-sourcepos="6:1-6:4" dir="auto">okay</p>
   wysiwyg: |-
     Error - check implementation:
-    Cannot destructure property 'className' of 'hastNode.properties' as it is undefined.
+    Cannot read properties of undefined (reading 'wrapper')
 04_06__leaf_blocks__html_blocks__033:
   canonical: |
     <!DOCTYPE html>
@@ -1911,7 +1913,7 @@
     }
     ]]>
     <p>okay</p>
-  static: |2-
+  static: |-
     &lt;![CDATA[
     function matchwo(a,b)
     {
@@ -2038,8 +2040,9 @@
     </tr>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><td colspan="1" rowspan="1"><p>
+    Hi
+    </p></td></tr></tbody></table>
 04_06__leaf_blocks__html_blocks__043:
   canonical: |
     <table>
@@ -2062,8 +2065,9 @@
       </tr>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <pre class="content-editor-code-block undefined code highlight"><code>&lt;td&gt;
+      Hi
+    &lt;/td&gt;</code></pre>
 04_07__leaf_blocks__link_reference_definitions__001:
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
@@ -2448,8 +2452,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>foo</p></th><th colspan="1" rowspan="1"><p>bar</p></th></tr><tr><td colspan="1" rowspan="1"><p>baz</p></td><td colspan="1" rowspan="1"><p>bim</p></td></tr></tbody></table>
 04_10__leaf_blocks__tables_extension__002:
   canonical: |
     <table>
@@ -2482,8 +2485,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>defghi</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr></tbody></table>
 04_10__leaf_blocks__tables_extension__003:
   canonical: |
     <table>
@@ -2518,8 +2520,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>f|oo</p></th></tr><tr><td colspan="1" rowspan="1"><p>b <code>|</code> az</p></td></tr><tr><td colspan="1" rowspan="1"><p>b <strong>|</strong> im</p></td></tr></tbody></table>
 04_10__leaf_blocks__tables_extension__004:
   canonical: |
     <table>
@@ -2558,8 +2559,7 @@
     <p data-sourcepos="4:3-4:5">bar</p>
     </blockquote>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr></tbody></table>
 04_10__leaf_blocks__tables_extension__005:
   canonical: |
     <table>
@@ -2602,8 +2602,7 @@
     </table>
     <p data-sourcepos="6:1-6:3" dir="auto">bar</p>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p></p></td></tr></tbody></table>
 04_10__leaf_blocks__tables_extension__006:
   canonical: |
     <p>| abc | def |
@@ -2657,8 +2656,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p></p></td></tr><tr><td colspan="1" rowspan="1"><p>bar</p></td><td colspan="1" rowspan="1"><p>baz</p></td></tr></tbody></table>
 04_10__leaf_blocks__tables_extension__008:
   canonical: |
     <table>
@@ -2679,8 +2677,7 @@
     </thead>
     </table>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "table" not supported by this converter. Please, provide an specification.
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>abc</p></th><th colspan="1" rowspan="1"><p>def</p></th></tr></tbody></table>
 05_01__container_blocks__block_quotes__001:
   canonical: |
     <blockquote>
@@ -4032,8 +4029,8 @@
     baz</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p></p><h1>Foo</h1></li><li><p></p><h2>Bar
-    baz</h2></li></ul>
+    <ul bullet="*"><li><p></p><h1>Foo</h1></li><li><p></p><h2>Bar</h2><p>
+    baz</p></li></ul>
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__049:
   canonical: |
     <ul>
@@ -4080,7 +4077,8 @@
     <li data-sourcepos="9:1-9:5">baz</li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p>baz</p></li></ul>
+    Error - check implementation:
+    Cannot read properties of undefined (reading 'start')
 05_02__container_blocks__list_items__motivation__task_list_items_extension__lists__050:
   canonical: |
     <ol>
@@ -6970,8 +6968,7 @@
   static: |-
     <p data-sourcepos="1:1-1:23" dir="auto">&lt;<a href="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
   wysiwyg: |-
-    Error - check implementation:
-    Cannot read properties of undefined (reading 'end')
+    <p>&lt;<a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+@bar.example.com">foo+@bar.example.com</a>&gt;</p>
 06_09__inlines__autolinks__014:
   canonical: |
     <p>&lt;&gt;</p>
@@ -7466,14 +7463,13 @@
 07_01__gitlab_specific_markdown__footnotes__001:
   canonical: ""
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-2118" id="fnref-1-2118" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="1:1-1:27" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-1-5616" id="fnref-1-5616" data-footnote-ref>1</a></sup></p>
     <section data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-2118">
-    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-2118" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <li id="fn-1-5616">
+    <p data-sourcepos="3:7-3:19">footnote text <a href="#fnref-1-5616" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
     </section>
   wysiwyg: |-
-    Error - check implementation:
-    Hast node of type "sup" not supported by this converter. Please, provide an specification.
+    <p>footnote reference tag <sup identifier="1">1</sup></p>

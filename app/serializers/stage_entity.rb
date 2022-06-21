@@ -50,14 +50,6 @@ class StageEntity < Grape::Entity
     stage.detailed_status(request.current_user)
   end
 
-  def grouped_statuses
-    @grouped_statuses ||= stage.statuses.latest_ordered.group_by(&:status)
-  end
-
-  def grouped_retried_statuses
-    @grouped_retried_statuses ||= stage.statuses.retried_ordered.group_by(&:status)
-  end
-
   def latest_statuses
     Ci::HasStatus::ORDERED_STATUSES.flat_map do |ordered_status|
       grouped_statuses.fetch(ordered_status, [])
@@ -68,5 +60,19 @@ class StageEntity < Grape::Entity
     Ci::HasStatus::ORDERED_STATUSES.flat_map do |ordered_status|
       grouped_retried_statuses.fetch(ordered_status, [])
     end
+  end
+
+  def grouped_statuses
+    @grouped_statuses ||= preload_metadata(stage.statuses.latest_ordered).group_by(&:status)
+  end
+
+  def grouped_retried_statuses
+    @grouped_retried_statuses ||= preload_metadata(stage.statuses.retried_ordered).group_by(&:status)
+  end
+
+  def preload_metadata(statuses)
+    Preloaders::CommitStatusPreloader.new(statuses).execute([:metadata])
+
+    statuses
   end
 end
