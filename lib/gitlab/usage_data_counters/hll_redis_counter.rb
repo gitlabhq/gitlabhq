@@ -37,6 +37,10 @@ module Gitlab
         user_packages
       ].freeze
 
+      CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
+        error_tracking
+      ].freeze
+
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
       #
@@ -114,7 +118,7 @@ module Gitlab
         #   - Most of the metrics have weekly aggregation. We recommend this as it generates fewer keys in Redis to store.
         #   - The aggregation used doesn't affect data granulation.
         def unique_events_data
-          categories.each_with_object({}) do |category, category_results|
+          categories_pending_migration.each_with_object({}) do |category, category_results|
             events_names = events_for_category(category)
 
             event_results = events_names.each_with_object({}) do |event, hash|
@@ -147,6 +151,14 @@ module Gitlab
         end
 
         private
+
+        def categories_pending_migration
+          if ::Feature.enabled?(:use_redis_hll_instrumentation_classes)
+            (categories - CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+          else
+            categories
+          end
+        end
 
         def track(values, event_name, context: '', time: Time.zone.now)
           return unless ::ServicePing::ServicePingSettings.enabled?

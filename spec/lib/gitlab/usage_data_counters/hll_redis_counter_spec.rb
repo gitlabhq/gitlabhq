@@ -21,6 +21,81 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     travel_to(reference_time) { example.run }
   end
 
+  context 'migration to instrumentation classes data collection' do
+    let_it_be(:instrumented_events) do
+      ::Gitlab::Usage::MetricDefinition.all.map do |definition|
+        next unless definition.attributes[:instrumentation_class] == 'RedisHLLMetric' && definition.available?
+
+        definition.attributes.dig(:options, :events)&.sort
+      end.compact.to_set
+    end
+
+    def not_instrumented_events(category)
+      described_class
+        .events_for_category(category)
+        .sort
+        .reject do |event|
+          instrumented_events.include?([event])
+        end
+    end
+
+    def not_instrumented_aggregate(category)
+      events = described_class.events_for_category(category).sort
+
+      return unless described_class::CATEGORIES_FOR_TOTALS.include?(category)
+      return unless described_class.send(:eligible_for_totals?, events)
+      return if instrumented_events.include?(events)
+
+      events
+    end
+
+    describe 'Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS' do
+      it 'includes only fully migrated categories' do
+        wrong_skipped_events = described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS.map do |category|
+          next if not_instrumented_events(category).empty? && not_instrumented_aggregate(category).nil?
+
+          [category, [not_instrumented_events(category), not_instrumented_aggregate(category)].compact]
+        end.compact.to_h
+
+        expect(wrong_skipped_events).to be_empty
+      end
+
+      context 'with not instrumented category' do
+        let(:instrumented_events) { [] }
+
+        it 'can detect not migrated category' do
+          wrong_skipped_events = described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS.map do |category|
+            next if not_instrumented_events(category).empty? && not_instrumented_aggregate(category).nil?
+
+            [category, [not_instrumented_events(category), not_instrumented_aggregate(category)].compact]
+          end.compact.to_h
+
+          expect(wrong_skipped_events).not_to be_empty
+        end
+      end
+    end
+
+    describe '.unique_events_data' do
+      context 'with use_redis_hll_instrumentation_classes feature enabled' do
+        it 'does not include instrumented categories' do
+          stub_feature_flags(use_redis_hll_instrumentation_classes: true)
+
+          expect(described_class.unique_events_data.keys)
+            .not_to include(*described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+        end
+      end
+
+      context 'with use_redis_hll_instrumentation_classes feature disabled' do
+        it 'includes instrumented categories' do
+          stub_feature_flags(use_redis_hll_instrumentation_classes: false)
+
+          expect(described_class.unique_events_data.keys)
+            .to include(*described_class::CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS)
+        end
+      end
+    end
+  end
+
   describe '.categories' do
     it 'gets all unique category names' do
       expect(described_class.categories).to contain_exactly(
