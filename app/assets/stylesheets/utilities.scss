@@ -253,6 +253,11 @@ $gl-line-height-42: px-to-rem(42px);
   max-width: 50%;
 }
 
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2894
+.gl-form-lg {
+  max-width: 320px;
+}
+
 /**
   Note: ::-webkit-scrollbar is a non-standard rule only
   supported by webkit browsers.

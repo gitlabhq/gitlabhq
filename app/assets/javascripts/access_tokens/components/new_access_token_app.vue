@@ -117,7 +117,7 @@ export default {
 
       <template v-if="errors">
         <gl-alert :title="alertDangerTitle" variant="danger" @dismiss="errors = null">
-          <ul class="m-0">
+          <ul class="gl-m-0">
             <li v-for="error in errors" :key="error">
               {{ error }}
             </li>

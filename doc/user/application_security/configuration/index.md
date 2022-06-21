@@ -53,7 +53,7 @@ You can configure the following security controls:
     enable Container Scanning. For more details, see
     [Enable Container Scanning through an automatic merge request](../container_scanning/index.md#enable-container-scanning-through-an-automatic-merge-request).
 - [Operational Container Scanning](../../clusters/agent/vulnerabilities.md)
-  - Can be configured by adding a configuration block to your agent configuration. For more details, read [Operational Container Scanning](../../clusters/agent/vulnerabilities.md#enable-cluster-vulnerability-scanning).
+  - Can be configured by adding a configuration block to your agent configuration. For more details, read [Operational Container Scanning](../../clusters/agent/vulnerabilities.md#enable-operational-container-scanning).
 - [Secret Detection](../secret_detection/index.md)
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Secret Detection. For more details, read [Enable Secret Detection via an automatic merge request](../secret_detection/index.md#enable-secret-detection-via-an-automatic-merge-request).

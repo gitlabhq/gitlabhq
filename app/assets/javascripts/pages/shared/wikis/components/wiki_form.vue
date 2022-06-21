@@ -1,5 +1,6 @@
 <script>
 import { GlForm, GlIcon, GlLink, GlButton, GlSprintf, GlAlert } from '@gitlab/ui';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
@@ -81,6 +82,7 @@ export default {
     GlLink,
     GlButton,
     MarkdownField,
+    LocalStorageSync,
     ContentEditor: () =>
       import(
         /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
@@ -184,6 +186,10 @@ export default {
       }
 
       this.useContentEditor = !this.useContentEditor;
+    },
+
+    setUseContentEditor(value) {
+      this.useContentEditor = value;
     },
 
     async handleFormSubmit(e) {
@@ -370,6 +376,11 @@ export default {
             >{{ toggleEditingModeButtonText }}</gl-button
           >
         </div>
+        <local-storage-sync
+          storage-key="gl-wiki-content-editor-enabled"
+          :value="useContentEditor"
+          @input="setUseContentEditor"
+        />
         <markdown-field
           v-if="!isContentEditorActive"
           :markdown-preview-path="pageInfo.markdownPreviewPath"

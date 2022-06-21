@@ -4,9 +4,11 @@ import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking } from 'helpers/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
 import {
   CONTENT_EDITOR_LOADED_ACTION,
@@ -37,6 +39,7 @@ describe('WikiForm', () => {
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
   const findClassicEditor = () => wrapper.findComponent(MarkdownField);
+  const findLocalStorageSync = () => wrapper.find(LocalStorageSync);
 
   const setFormat = (value) => {
     const format = findFormat();
@@ -103,6 +106,7 @@ describe('WikiForm', () => {
           MarkdownField,
           GlAlert,
           GlButton,
+          LocalStorageSync: stubComponent(LocalStorageSync),
         },
       }),
     );
@@ -330,6 +334,19 @@ describe('WikiForm', () => {
       });
     });
 
+    describe('markdown editor type persistance', () => {
+      it('loads content editor by default if it is persisted in local storage', async () => {
+        expect(findClassicEditor().exists()).toBe(true);
+        expect(findContentEditor().exists()).toBe(false);
+
+        // enable content editor
+        await findLocalStorageSync().vm.$emit('input', true);
+
+        expect(findContentEditor().exists()).toBe(true);
+        expect(findClassicEditor().exists()).toBe(false);
+      });
+    });
+
     describe('when content editor is active', () => {
       let mockContentEditor;
 
@@ -374,7 +391,7 @@ describe('WikiForm', () => {
   });
 
   describe('wiki content editor', () => {
-    describe('clicking "use new editor": editor fails to load', () => {
+    describe('clicking "Edit rich text": editor fails to load', () => {
       beforeEach(async () => {
         createWrapper({ mountFn: mount });
         mock.onPost(/preview-markdown/).reply(400);
@@ -401,7 +418,7 @@ describe('WikiForm', () => {
       });
     });
 
-    describe('clicking "use new editor": editor loads successfully', () => {
+    describe('clicking "Edit rich text": editor loads successfully', () => {
       beforeEach(async () => {
         createWrapper({ persisted: true, mountFn: mount });
 

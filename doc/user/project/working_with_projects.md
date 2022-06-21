@@ -391,7 +391,7 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 Prerequisites:
 
 - Your GitLab instance must be accessible with HTTPS.
-- You must have a [personal access token](../profile/personal_access_tokens.md).
+- You must have a [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
 
 To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc) file with the following information:
 
@@ -423,7 +423,7 @@ Configure Git to either:
 - Use SSH instead of HTTPS:
 
     ```shell
-    git config --global url."git@gitlab.example.com".insteadOf "https://gitlab.example.com"
+    git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
     ```
 
 ### Disable Go module fetching for private projects

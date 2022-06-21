@@ -11,26 +11,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To view cluster vulnerabilities, you can view the [vulnerability report](../../application_security/vulnerabilities/index.md).
 You can also configure your agent so the vulnerabilities are displayed with other agent information in GitLab.
 
-## View cluster vulnerabilities
+## Enable operational container scanning **(ULTIMATE)**
 
-Prerequisite:
-
-- You must have at least the Developer role.
-
-To view vulnerability information in GitLab:
-
-1. On the top bar, select **Menu > Projects** and find the project that contains the agent configuration file.
-1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select the **Agent** tab.
-1. Select the agent you want to see the vulnerabilities for.
-
-![Cluster agent security tab UI](../img/cluster_agent_security_tab_v14_8.png)
-
-This information can also be found under [operational vulnerabilities](../../../user/application_security/vulnerability_report/index.md#operational-vulnerabilities).
-
-## Enable cluster vulnerability scanning **(ULTIMATE)**
-
-You can use [cluster image scanning](../../application_security/cluster_image_scanning/index.md)
+You can use operational container scanning
 to scan container images in your cluster for security vulnerabilities.
 
 To begin scanning all resources in your cluster, add a `starboard`
@@ -49,7 +32,7 @@ The `cadence` field is required. GitLab supports the following types of CRON syn
 
 It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
 
-By default, cluster image scanning will attempt to scan the workloads in all
+By default, operational container scanning will attempt to scan the workloads in all
 namespaces for vulnerabilities. The `vulnerability_report` block has a `namespaces`
 field which can be used to restrict which namespaces are scanned. For example,
 if you would like to scan only the `development`, `staging`, and `production`
@@ -64,3 +47,20 @@ starboard:
       - staging
       - production
 ```
+
+## View cluster vulnerabilities
+
+Prerequisite:
+
+- You must have at least the Developer role.
+
+To view vulnerability information in GitLab:
+
+1. On the top bar, select **Menu > Projects** and find the project that contains the agent configuration file.
+1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
+1. Select the **Agent** tab.
+1. Select an agent to view the cluster vulnerabilities.
+
+![Cluster agent security tab UI](../img/cluster_agent_security_tab_v14_8.png)
+
+This information can also be found under [operational vulnerabilities](../../../user/application_security/vulnerability_report/index.md#operational-vulnerabilities).

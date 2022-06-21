@@ -31,8 +31,6 @@ RSpec.shared_examples 'edits content using the content editor' do
 
       page.go_back
       refresh
-
-      click_button 'Edit rich text'
     end
 
     it 'applies theme classes to code blocks' do
