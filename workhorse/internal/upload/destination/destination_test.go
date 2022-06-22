@@ -3,7 +3,6 @@ package destination_test
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"path"
 	"strconv"
@@ -220,14 +219,21 @@ func TestUpload(t *testing.T) {
 			fields, err := fh.GitLabFinalizeFields("file")
 			require.NoError(t, err)
 
-			checkFileHandlerWithFields(t, fh, fields, "file")
-
 			token, jwtErr := jwt.ParseWithClaims(fields["file.gitlab-workhorse-upload"], &testhelper.UploadClaims{}, testhelper.ParseJWT)
 			require.NoError(t, jwtErr)
 
 			uploadFields := token.Claims.(*testhelper.UploadClaims).Upload
 
-			checkFileHandlerWithFields(t, fh, uploadFields, "")
+			require.Equal(t, fh.Name, uploadFields["name"])
+			require.Equal(t, fh.LocalPath, uploadFields["path"])
+			require.Equal(t, fh.RemoteURL, uploadFields["remote_url"])
+			require.Equal(t, fh.RemoteID, uploadFields["remote_id"])
+			require.Equal(t, strconv.FormatInt(test.ObjectSize, 10), uploadFields["size"])
+			require.Equal(t, test.ObjectMD5, uploadFields["md5"])
+			require.Equal(t, test.ObjectSHA1, uploadFields["sha1"])
+			require.Equal(t, test.ObjectSHA256, uploadFields["sha256"])
+			require.Equal(t, test.ObjectSHA512, uploadFields["sha512"])
+			require.NotEmpty(t, uploadFields["upload_duration"])
 		})
 	}
 }
@@ -462,25 +468,4 @@ func TestUploadRemoteFileWithLimit(t *testing.T) {
 			}
 		})
 	}
-}
-
-func checkFileHandlerWithFields(t *testing.T, fh *destination.FileHandler, fields map[string]string, prefix string) {
-	key := func(field string) string {
-		if prefix == "" {
-			return field
-		}
-
-		return fmt.Sprintf("%s.%s", prefix, field)
-	}
-
-	require.Equal(t, fh.Name, fields[key("name")])
-	require.Equal(t, fh.LocalPath, fields[key("path")])
-	require.Equal(t, fh.RemoteURL, fields[key("remote_url")])
-	require.Equal(t, fh.RemoteID, fields[key("remote_id")])
-	require.Equal(t, strconv.FormatInt(test.ObjectSize, 10), fields[key("size")])
-	require.Equal(t, test.ObjectMD5, fields[key("md5")])
-	require.Equal(t, test.ObjectSHA1, fields[key("sha1")])
-	require.Equal(t, test.ObjectSHA256, fields[key("sha256")])
-	require.Equal(t, test.ObjectSHA512, fields[key("sha512")])
-	require.NotEmpty(t, fields[key("upload_duration")])
 }

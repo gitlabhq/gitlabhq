@@ -23,25 +23,24 @@ class Import::GithubController < Import::BaseController
     if !ci_cd_only? && github_import_configured? && logged_in_with_provider?
       go_to_provider_for_permissions
     elsif session[access_token_key]
-      redirect_to status_import_url(namespace_id: params[:namespace_id])
+      redirect_to status_import_url
     end
   end
 
   def callback
     auth_state = session.delete(auth_state_key)
-    namespace_id = session.delete(:namespace_id)
 
     if auth_state.blank? || !ActiveSupport::SecurityUtils.secure_compare(auth_state, params[:state])
       provider_unauthorized
     else
       session[access_token_key] = get_token(params[:code])
-      redirect_to status_import_url(namespace_id: namespace_id)
+      redirect_to status_import_url
     end
   end
 
   def personal_access_token
     session[access_token_key] = params[:personal_access_token]&.strip
-    redirect_to status_import_url(namespace_id: params[:namespace_id].presence)
+    redirect_to status_import_url
   end
 
   def status
@@ -205,15 +204,15 @@ class Import::GithubController < Import::BaseController
   end
 
   def new_import_url
-    public_send("new_import_#{provider_name}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("new_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: params[:namespace_id] })) # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  def status_import_url(namespace_id: nil)
-    public_send("status_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: namespace_id })) # rubocop:disable GitlabSecurity/PublicSend
+  def status_import_url
+    public_send("status_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: params[:namespace_id].presence })) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def callback_import_url
-    public_send("users_import_#{provider_name}_callback_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("users_import_#{provider_name}_callback_url", extra_import_params.merge({ namespace_id: params[:namespace_id] })) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def provider_unauthorized
@@ -255,7 +254,6 @@ class Import::GithubController < Import::BaseController
 
   def provider_auth
     if !ci_cd_only? && session[access_token_key].blank?
-      session[:namespace_id] = params[:namespace_id]
       go_to_provider_for_permissions
     end
   end

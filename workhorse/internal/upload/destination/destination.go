@@ -68,42 +68,31 @@ func (fh *FileHandler) MD5() string {
 
 // GitLabFinalizeFields returns a map with all the fields GitLab Rails needs in order to finalize the upload.
 func (fh *FileHandler) GitLabFinalizeFields(prefix string) (map[string]string, error) {
-	// TODO: remove `data` these once rails fully and exclusively support `signedData` (https://gitlab.com/gitlab-org/gitlab/-/issues/324873)
-	data := make(map[string]string)
-	signedData := make(map[string]string)
-	key := func(field string) string {
-		if prefix == "" {
-			return field
-		}
-
-		return fmt.Sprintf("%s.%s", prefix, field)
-	}
-
-	for k, v := range map[string]string{
+	signedData := map[string]string{
 		"name":            fh.Name,
 		"path":            fh.LocalPath,
 		"remote_url":      fh.RemoteURL,
 		"remote_id":       fh.RemoteID,
 		"size":            strconv.FormatInt(fh.Size, 10),
 		"upload_duration": strconv.FormatFloat(fh.uploadDuration, 'f', -1, 64),
-	} {
-		data[key(k)] = v
-		signedData[k] = v
 	}
 
 	for hashName, hash := range fh.hashes {
-		data[key(hashName)] = hash
 		signedData[hashName] = hash
 	}
 
-	claims := uploadClaims{Upload: signedData, RegisteredClaims: secret.DefaultClaims}
+	claims := uploadClaims{
+		Upload:           signedData,
+		RegisteredClaims: secret.DefaultClaims,
+	}
 	jwtData, err := secret.JWTTokenString(claims)
 	if err != nil {
 		return nil, err
 	}
-	data[key("gitlab-workhorse-upload")] = jwtData
 
-	return data, nil
+	return map[string]string{
+		prefix + ".gitlab-workhorse-upload": jwtData,
+	}, nil
 }
 
 type consumer interface {

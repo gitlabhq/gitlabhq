@@ -15,7 +15,7 @@ GitLab uses [k6](https://k6.io/), a free and open source
 tool, for measuring the system performance of applications under
 load.
 
-Unlike [Browser Performance Testing](browser_performance_testing.md), which is
+Unlike [Browser Performance Testing](../../../ci/testing/browser_performance_testing.md), which is
 used to measure how web sites perform in client browsers, Load Performance Testing
 can be used to perform various types of [load tests](https://k6.io/docs/#use-cases)
 against application endpoints such as APIs, Web Controllers, and so on.

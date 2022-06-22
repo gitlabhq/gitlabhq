@@ -7,7 +7,7 @@ class Import::GiteaController < Import::GithubController
 
   def new
     if session[access_token_key].present? && provider_url.present?
-      redirect_to status_import_url(namespace_id: params[:namespace_id])
+      redirect_to status_import_url
     end
   end
 

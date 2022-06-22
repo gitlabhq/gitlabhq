@@ -89,14 +89,16 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 
 		require.Empty(t, r.MultipartForm.File, "Expected to not receive any files")
 		require.Equal(t, "test", r.FormValue("token"), "Expected to receive token")
-		require.Equal(t, "my.file", r.FormValue("file.name"), "Expected to receive a filename")
 
-		filePath = r.FormValue("file.path")
+		fileParams := testhelper.GetUploadParams(t, r, "file")
+		require.Equal(t, "my.file", fileParams["name"], "Expected to receive a filename")
+
+		filePath = fileParams["path"]
 		require.True(t, strings.HasPrefix(filePath, tempPath), "Expected to the file to be in tempPath")
 
-		require.Empty(t, r.FormValue("file.remote_url"), "Expected to receive empty remote_url")
-		require.Empty(t, r.FormValue("file.remote_id"), "Expected to receive empty remote_id")
-		require.Equal(t, "4", r.FormValue("file.size"), "Expected to receive the file size")
+		require.Empty(t, fileParams["remote_url"], "Expected to receive empty remote_url")
+		require.Empty(t, fileParams["remote_id"], "Expected to receive empty remote_id")
+		require.Equal(t, "4", fileParams["size"], "Expected to receive the file size")
 
 		hashes := map[string]string{
 			"md5":    "098f6bcd4621d373cade4e832627b4f6",
@@ -106,10 +108,10 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 		}
 
 		for algo, hash := range hashes {
-			require.Equal(t, hash, r.FormValue("file."+algo), "file hash %s", algo)
+			require.Equal(t, hash, fileParams[algo], "file hash %s", algo)
 		}
 
-		require.Len(t, r.MultipartForm.Value, 12, "multipart form values")
+		require.Len(t, fileParams, 10, "multipart form values")
 
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")
@@ -147,7 +149,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 }
 
 func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
-	var filePath string
+	testhelper.ConfigureSecret()
 
 	tests := []struct {
 		name     string
@@ -155,13 +157,8 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 		response int
 	}{
 		{
-			name:     "injected file.path",
-			field:    "file.path",
-			response: 400,
-		},
-		{
-			name:     "injected file.remote_id",
-			field:    "file.remote_id",
+			name:     "injected file.gitlab-workhorse-upload",
+			field:    "file.gitlab-workhorse-upload",
 			response: 400,
 		},
 		{
@@ -194,6 +191,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			require.NoError(t, err)
 
 			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
 			httpRequest = httpRequest.WithContext(ctx)
 			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 			response := httptest.NewRecorder()
@@ -202,9 +200,6 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 
 			testInterceptMultipartFiles(t, response, httpRequest, handler, &testFormProcessor{})
 			require.Equal(t, test.response, response.Code)
-
-			cancel() // this will trigger an async cleanup
-			waitUntilDeleted(t, filePath)
 		})
 	}
 }
@@ -425,7 +420,8 @@ func TestUploadHandlerRemovingExif(t *testing.T) {
 		err := r.ParseMultipartForm(100000)
 		require.NoError(t, err)
 
-		size, err := strconv.Atoi(r.FormValue("file.size"))
+		fileParams := testhelper.GetUploadParams(t, r, "file")
+		size, err := strconv.Atoi(fileParams["size"])
 		require.NoError(t, err)
 		require.True(t, size < len(content), "Expected the file to be smaller after removal of exif")
 		require.True(t, size > 0, "Expected to receive not empty file")
@@ -443,7 +439,8 @@ func TestUploadHandlerRemovingExifTiff(t *testing.T) {
 		err := r.ParseMultipartForm(100000)
 		require.NoError(t, err)
 
-		size, err := strconv.Atoi(r.FormValue("file.size"))
+		fileParams := testhelper.GetUploadParams(t, r, "file")
+		size, err := strconv.Atoi(fileParams["size"])
 		require.NoError(t, err)
 		require.True(t, size < len(content), "Expected the file to be smaller after removal of exif")
 		require.True(t, size > 0, "Expected to receive not empty file")
@@ -461,7 +458,8 @@ func TestUploadHandlerRemovingExifInvalidContentType(t *testing.T) {
 		err := r.ParseMultipartForm(100000)
 		require.NoError(t, err)
 
-		output, err := os.ReadFile(r.FormValue("file.path"))
+		fileParams := testhelper.GetUploadParams(t, r, "file")
+		output, err := os.ReadFile(fileParams["path"])
 		require.NoError(t, err)
 		require.Equal(t, content, output, "Expected the file to be same as before")
 

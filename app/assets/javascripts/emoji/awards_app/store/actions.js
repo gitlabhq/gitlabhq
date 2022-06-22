@@ -14,8 +14,6 @@ import {
 export const setInitialData = ({ commit }, data) => commit(SET_INITIAL_DATA, data);
 
 export const fetchAwards = async ({ commit, dispatch, state }, page = '1') => {
-  if (!window.gon?.current_user_id) return;
-
   try {
     const { data, headers } = await axios.get(joinPaths(gon.relative_url_root || '', state.path), {
       params: { per_page: 100, page },

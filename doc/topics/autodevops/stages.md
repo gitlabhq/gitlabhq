@@ -178,7 +178,7 @@ Auto Code Quality uses the
 static analysis and other code checks on the current code. After creating the
 report, it's uploaded as an artifact which you can later download and check
 out. The merge request widget also displays any
-[differences between the source and target branches](../../user/project/merge_requests/code_quality.md).
+[differences between the source and target branches](../../ci/testing/code_quality.md).
 
 ## Auto SAST
 
@@ -336,7 +336,7 @@ You can disable DAST:
 
 > Introduced in GitLab 10.4.
 
-Auto [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md)
+Auto [Browser Performance Testing](../../ci/testing/browser_performance_testing.md)
 measures the browser performance of a web page with the
 [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/),
 creates a JSON report including the overall performance score for each page, and
@@ -351,7 +351,7 @@ file named `.gitlab-urls.txt` in the root directory, one file per line. For exam
 ```
 
 Any browser performance differences between the source and target branches are also
-[shown in the merge request widget](../../user/project/merge_requests/browser_performance_testing.md).
+[shown in the merge request widget](../../ci/testing/browser_performance_testing.md).
 
 ## Auto Load Performance Testing **(PREMIUM)**
 

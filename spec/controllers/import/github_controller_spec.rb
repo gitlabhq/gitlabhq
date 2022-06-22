@@ -83,11 +83,10 @@ RSpec.describe Import::GithubController do
         expect(flash[:alert]).to eq('Access denied to your GitHub account.')
       end
 
-      it "includes namespace_id from session if it is present" do
+      it "includes namespace_id from query params if it is present" do
         namespace_id = 1
-        session[:namespace_id] = 1
 
-        get :callback, params: { state: valid_auth_state }
+        get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
 
         expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
       end

@@ -12,8 +12,8 @@ class Import::GitlabController < Import::BaseController
   rescue_from OAuth2::Error, with: :gitlab_unauthorized
 
   def callback
-    session[:gitlab_access_token] = client.get_token(params[:code], callback_import_gitlab_url)
-    redirect_to status_import_gitlab_url
+    session[:gitlab_access_token] = client.get_token(params[:code], callback_import_gitlab_url(namespace_id: params[:namespace_id]))
+    redirect_to status_import_gitlab_url(namespace_id: params[:namespace_id])
   end
 
   # We need to re-expose controller's internal method 'status' as action.
@@ -79,7 +79,7 @@ class Import::GitlabController < Import::BaseController
   end
 
   def go_to_gitlab_for_permissions
-    redirect_to client.authorize_url(callback_import_gitlab_url)
+    redirect_to client.authorize_url(callback_import_gitlab_url(namespace_id: params[:namespace_id]))
   end
 
   def gitlab_unauthorized

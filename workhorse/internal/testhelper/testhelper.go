@@ -154,6 +154,13 @@ type UploadClaims struct {
 	jwt.RegisteredClaims
 }
 
+func GetUploadParams(t testing.TB, r *http.Request, name string) map[string]string {
+	t.Helper()
+	token, err := jwt.ParseWithClaims(r.PostFormValue(name+".gitlab-workhorse-upload"), &UploadClaims{}, ParseJWT)
+	require.NoError(t, err)
+	return token.Claims.(*UploadClaims).Upload
+}
+
 func Retry(t testing.TB, timeout time.Duration, fn func() error) {
 	t.Helper()
 	start := time.Now()

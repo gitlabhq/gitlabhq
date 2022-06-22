@@ -3,4 +3,4 @@
   = sprite_icon('heart', css_class: 'gl-vertical-align-middle')
   = _('Import projects from GitLab.com')
 
-= render 'import/githubish_status', provider: 'gitlab', filterable: false
+= render 'import/githubish_status', provider: 'gitlab', filterable: false, default_namespace: @namespace

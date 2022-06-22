@@ -24,7 +24,7 @@ The following table lists examples with step-by-step tutorials that are containe
 
 | Use case                      | Resource |
 |-------------------------------|----------|
-| Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../../user/project/merge_requests/browser_performance_testing.md). |
+| Browser performance testing   | [Browser Performance Testing with the Sitespeed.io container](../testing/browser_performance_testing.md). |
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/index.md). |
 | GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
 | End-to-end testing            | [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md). |

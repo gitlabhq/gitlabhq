@@ -223,7 +223,7 @@ These variables are injected into the pipeline jobs and can access the ECS API.
    |`AWS_SECRET_ACCESS_KEY`|`<Secret access key of the deployer>`| For authenticating `aws` CLI. |
    |`AWS_DEFAULT_REGION`|`us-east-2`| For authenticating `aws` CLI. |
    |`CI_AWS_ECS_CLUSTER`|`ecs-demo`| The ECS cluster is accessed by `production_ecs` job. |
-   |`CI_AWS_ECS_SERVICE`|`ecs_demo`| The ECS service of the cluster is updated by `production_ecs` job. |
+   |`CI_AWS_ECS_SERVICE`|`ecs_demo`| The ECS service of the cluster is updated by `production_ecs` job. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
    |`CI_AWS_ECS_TASK_DEFINITION`|`ecs_demo`| The ECS task definition is updated by `production_ecs` job. |
 
 ### Make a change to the demo application
@@ -245,6 +245,24 @@ Congratulations! You successfully set up continuous deployment to ECS.
 NOTE:
 ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
 set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
+
+## Set up Review Apps
+
+In order to use [Review Apps](../../../development/testing_guide/review_apps.md) with ECS, you should create another
+[service](#create-an-ecs-service) and specify its name using the `CI_AWS_ECS_SERVICE` variable scoped to `review/*`.
+Since this service is shared by all review apps, there is a limitation that only one Review App can be deployed at a time.
+
+## Set up Security Testing
+
+### Configure SAST
+
+Using [SAST](../../../user/application_security/sast/index.md) with ECS requires no extra configuration. For more
+details about how to configure SAST, see the SAST [documentation](../../../user/application_security/sast/index.md).
+
+### Configure DAST
+
+To use [DAST](../../../user/application_security/dast/index.md) on non-default branches, [set up review apps](#set-up-review-apps)
+and then follow the steps outlined in the DAST [documentation](../../../user/application_security/dast/index.md). 
 
 ## Further reading
 

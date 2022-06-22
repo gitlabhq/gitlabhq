@@ -45,18 +45,21 @@ RSpec.describe Import::BitbucketController do
     end
 
     context "when auth state param is valid" do
+      let(:expires_at) { Time.current + 1.day }
+      let(:expires_in) { 1.day }
+      let(:access_token) do
+        double(token: token,
+          secret: secret,
+          expires_at: expires_at,
+          expires_in: expires_in,
+          refresh_token: refresh_token)
+      end
+
       before do
         session[:bitbucket_auth_state] = 'state'
       end
 
       it "updates access token" do
-        expires_at = Time.current + 1.day
-        expires_in = 1.day
-        access_token = double(token: token,
-                              secret: secret,
-                              expires_at: expires_at,
-                              expires_in: expires_in,
-                              refresh_token: refresh_token)
         allow_any_instance_of(OAuth2::Client)
           .to receive(:get_token)
           .with(hash_including(
@@ -74,6 +77,18 @@ RSpec.describe Import::BitbucketController do
         expect(session[:bitbucket_expires_at]).to eq(expires_at)
         expect(session[:bitbucket_expires_in]).to eq(expires_in)
         expect(controller).to redirect_to(status_import_bitbucket_url)
+      end
+
+      it "passes namespace_id query param to status if provided" do
+        namespace_id = 30
+
+        allow_any_instance_of(OAuth2::Client)
+          .to receive(:get_token)
+          .and_return(access_token)
+
+        get :callback, params: { code: code, state: 'state', namespace_id: namespace_id }
+
+        expect(controller).to redirect_to(status_import_bitbucket_url(namespace_id: namespace_id))
       end
     end
   end

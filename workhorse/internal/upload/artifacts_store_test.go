@@ -84,8 +84,9 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 
 	responseProcessorCalled := 0
 	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "store-id", r.FormValue("file.remote_id"))
-		require.NotEmpty(t, r.FormValue("file.remote_url"))
+		fileParams := testhelper.GetUploadParams(t, r, "file")
+		require.Equal(t, "store-id", fileParams["remote_id"])
+		require.NotEmpty(t, fileParams["remote_url"])
 		w.WriteHeader(200)
 		responseProcessorCalled++
 	}

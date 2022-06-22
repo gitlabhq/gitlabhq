@@ -36,9 +36,9 @@ The `accessibility` report uses [pa11y](https://pa11y.org/) to report on the acc
 of changes introduced in merge requests.
 
 GitLab can display the results of one or more reports in the merge request
-[accessibility widget](../../user/project/merge_requests/accessibility_testing.md#accessibility-merge-request-widget).
+[accessibility widget](../testing/accessibility_testing.md#accessibility-merge-request-widget).
 
-For more information, see [Accessibility testing](../../user/project/merge_requests/accessibility_testing.md).
+For more information, see [Accessibility testing](../testing/accessibility_testing.md).
 
 ## `artifacts:reports:api_fuzzing` **(ULTIMATE)**
 
@@ -59,11 +59,11 @@ GitLab can display the results of one or more reports in:
 
 > [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
-The `browser_performance` report collects [Browser Performance Testing metrics](../../user/project/merge_requests/browser_performance_testing.md)
+The `browser_performance` report collects [Browser Performance Testing metrics](../testing/browser_performance_testing.md)
 as artifacts.
 
 GitLab can display the results of one report in the merge request
-[browser performance testing widget](../../user/project/merge_requests/browser_performance_testing.md#how-browser-performance-testing-works).
+[browser performance testing widget](../testing/browser_performance_testing.md#how-browser-performance-testing-works).
 
 GitLab cannot display the combined results of multiple `browser_performance` reports.
 
@@ -122,14 +122,14 @@ GitLab can display the results of coverage report in the merge request
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
 
-The `codequality` report collects [code quality issues](../../user/project/merge_requests/code_quality.md). The
+The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
 
 GitLab can display the results of:
 
-- One or more reports in the merge request [code quality widget](../../user/project/merge_requests/code_quality.md#code-quality-widget).
+- One or more reports in the merge request [code quality widget](../testing/code_quality.md#code-quality-widget).
 - Only one report in:
-  - The merge request [diff annotations](../../user/project/merge_requests/code_quality.md#code-quality-in-diff-view).
+  - The merge request [diff annotations](../testing/code_quality.md#code-quality-in-diff-view).
     Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328257).
   - The [full report](../metrics_reports.md). Track progress on adding support for multiple reports in
     [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/9014).
