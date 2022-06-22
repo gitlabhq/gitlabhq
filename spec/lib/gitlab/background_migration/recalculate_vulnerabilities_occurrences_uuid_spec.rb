@@ -73,26 +73,6 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrence
 
   subject { described_class.new.perform(start_id, end_id) }
 
-  context 'when the migration is disabled by the feature flag' do
-    let(:start_id) { 1 }
-    let(:end_id) { 1001 }
-
-    before do
-      stub_feature_flags(migrate_vulnerability_finding_uuids: false)
-    end
-
-    it 'logs the info message and does not run the migration' do
-      expect_next_instance_of(Gitlab::BackgroundMigration::Logger) do |instance|
-        expect(instance).to receive(:info).once.with(message: 'Migration is disabled by the feature flag',
-                                                     migrator: 'RecalculateVulnerabilitiesOccurrencesUuid',
-                                                     start_id: start_id,
-                                                     end_id: end_id)
-      end
-
-      subject
-    end
-  end
-
   context "when finding has a UUIDv4" do
     before do
       @uuid_v4 = create_finding!(

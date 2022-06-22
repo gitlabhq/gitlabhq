@@ -18998,9 +18998,6 @@ msgstr ""
 msgid "Hook execution failed. Ensure the group has a project with commits."
 msgstr ""
 
-msgid "Hook was successfully created."
-msgstr ""
-
 msgid "Hook was successfully updated."
 msgstr ""
 
@@ -37450,9 +37447,6 @@ msgid "System default (%{default})"
 msgstr ""
 
 msgid "System header and footer"
-msgstr ""
-
-msgid "System hook was successfully updated."
 msgstr ""
 
 msgid "System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events."

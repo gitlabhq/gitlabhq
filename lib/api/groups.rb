@@ -109,6 +109,19 @@ module API
         present paginate(groups), options
       end
 
+      def present_group_details(params, group, with_projects: true)
+        options = {
+          with: Entities::GroupDetail,
+          with_projects: with_projects,
+          current_user: current_user,
+          user_can_admin_group: can?(current_user, :admin_group, group)
+        }
+
+        group, options = with_custom_attributes(group, options) if params[:with_custom_attributes]
+
+        present group, options
+      end
+
       def present_groups_with_pagination_strategies(params, groups)
         return present_groups(params, groups) if current_user.present?
 
@@ -236,7 +249,7 @@ module API
         authorize! :admin_group, group
 
         if update_group(group)
-          present group, with: Entities::GroupDetail, current_user: current_user
+          present_group_details(params, group, with_projects: true)
         else
           render_validation_error!(group)
         end
@@ -254,15 +267,7 @@ module API
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
-        options = {
-          with: params[:with_projects] ? Entities::GroupDetail : Entities::Group,
-          current_user: current_user,
-          user_can_admin_group: can?(current_user, :admin_group, group)
-        }
-
-        group, options = with_custom_attributes(group, options)
-
-        present group, options
+        present_group_details(params, group, with_projects: params[:with_projects])
       end
 
       desc 'Remove a group.'

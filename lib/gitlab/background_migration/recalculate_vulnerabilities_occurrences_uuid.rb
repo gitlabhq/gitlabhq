@@ -79,10 +79,6 @@ class Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid # r
 
   # rubocop: disable Metrics/AbcSize,Metrics/MethodLength,Metrics/BlockLength
   def perform(start_id, end_id)
-    unless Feature.enabled?(:migrate_vulnerability_finding_uuids)
-      return log_info('Migration is disabled by the feature flag', start_id: start_id, end_id: end_id)
-    end
-
     log_info('Migration started', start_id: start_id, end_id: end_id)
 
     VulnerabilitiesFinding

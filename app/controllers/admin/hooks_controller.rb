@@ -8,40 +8,6 @@ class Admin::HooksController < Admin::ApplicationController
   feature_category :integrations
   urgency :low, [:test]
 
-  def index
-    @hooks = SystemHook.all.load
-    @hook = SystemHook.new
-  end
-
-  def create
-    @hook = SystemHook.new(hook_params.to_h)
-
-    if @hook.save
-      redirect_to admin_hooks_path, notice: _('Hook was successfully created.')
-    else
-      @hooks = SystemHook.all
-      render :index
-    end
-  end
-
-  def edit
-  end
-
-  def update
-    if hook.update(hook_params)
-      flash[:notice] = _('System hook was successfully updated.')
-      redirect_to admin_hooks_path
-    else
-      render 'edit'
-    end
-  end
-
-  def destroy
-    destroy_hook(hook)
-
-    redirect_to admin_hooks_path, status: :found
-  end
-
   def test
     result = TestHooks::SystemService.new(hook, current_user, params[:trigger]).execute
 
@@ -52,6 +18,10 @@ class Admin::HooksController < Admin::ApplicationController
 
   private
 
+  def relation
+    SystemHook
+  end
+
   def hook
     @hook ||= SystemHook.find(params[:id])
   end
@@ -60,12 +30,11 @@ class Admin::HooksController < Admin::ApplicationController
     @hook_logs ||= hook.web_hook_logs.recent.page(params[:page])
   end
 
-  def hook_params
-    params.require(:hook).permit(
-      :enable_ssl_verification,
-      :token,
-      :url,
-      *SystemHook.triggers.values
-    )
+  def hook_param_names
+    %i[enable_ssl_verification token url]
+  end
+
+  def trigger_values
+    SystemHook.triggers.values
   end
 end

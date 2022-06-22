@@ -645,7 +645,7 @@ RSpec.describe API::Groups do
         project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
 
-        get api("/groups/#{group1.id}", user1), params: { with_projects: false }
+        get api("/groups/#{group2.id}", user1), params: { with_projects: false }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['projects']).to be_nil
@@ -745,6 +745,18 @@ RSpec.describe API::Groups do
         get api("/groups/#{group2.id}", admin)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('runners_token')
+      end
+
+      it "returns runners_token and no projects when with_projects option is set to false" do
+        project = create(:project, namespace: group2, path: 'Foo')
+        create(:project_group_link, project: project, group: group1)
+
+        get api("/groups/#{group2.id}", admin), params: { with_projects: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['projects']).to be_nil
+        expect(json_response['shared_projects']).to be_nil
         expect(json_response).to include('runners_token')
       end
 
