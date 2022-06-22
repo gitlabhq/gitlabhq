@@ -163,6 +163,20 @@ module QA
         end
       end
 
+      # Get users from the API
+      #
+      # @param [Integer] per_page the number of pages to traverse (used for pagination)
+      # @return [Array<Hash>] parsed response body
+      def self.all(per_page: 100)
+        response = nil
+        Resource::User.init do |user|
+          response = user.get(Runtime::API::Request.new(Runtime::API::Client.as_admin,
+                                                           '/users',
+                                                           per_page: per_page.to_s).url)
+          raise ResourceQueryError unless response.code == 200
+        end.parse_body(response)
+      end
+
       def approve!
         response = post(Runtime::API::Request.new(api_client, api_approve_path).url, nil)
         return if response.code == 201

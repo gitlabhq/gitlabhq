@@ -825,7 +825,9 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 
 ## Control groups
 
-> Introduced in GitLab 13.10.
+FLAG:
+On self-managed GitLab, by default cgroups are not available. To make it available, ask an administrator to
+[enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
 
 Gitaly shells out to Git for many of its operations. Git can consume a lot of resources for certain operations,
 especially for large repositories.
@@ -861,10 +863,6 @@ Two ways of configuring cgroups are available.
 #### Configure cgroups (new method)
 
 > This method of configuring cgroups introduced in GitLab 15.1.
-
-FLAG:
-On self-managed GitLab, by default this method of configuring cgroups is not available. To make it available, ask an administrator to
-[enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
 
 Gitaly creates a pool of cgroups that are isolated based on the repository used in the Git command to be placed under one of these cgroups.
 

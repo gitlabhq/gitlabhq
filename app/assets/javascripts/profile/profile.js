@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { Rails } from '~/lib/utils/rails_ujs';
@@ -10,7 +10,7 @@ import TimezoneDropdown, {
 export default class Profile {
   constructor({ form } = {}) {
     this.onSubmitForm = this.onSubmitForm.bind(this);
-    this.form = form || $('.edit-user');
+    this.form = form || $('.js-edit-user');
     this.setRepoRadio();
     this.bindEvents();
     this.initAvatarGlCrop();
@@ -84,9 +84,9 @@ export default class Profile {
           this.updateHeaderAvatar();
         }
 
-        createFlash({
+        createAlert({
           message: data.message,
-          type: data.status === 'error' ? FLASH_TYPES.ALERT : FLASH_TYPES.NOTICE,
+          variant: data.status === 'error' ? VARIANT_DANGER : VARIANT_INFO,
         });
       })
       .then(() => {
@@ -95,8 +95,9 @@ export default class Profile {
         self.form.find(':input[disabled]').enable();
       })
       .catch((error) =>
-        createFlash({
+        createAlert({
           message: error.message,
+          variant: VARIANT_DANGER,
         }),
       );
   }

@@ -5,9 +5,7 @@
 - availability = availability_values
 - custom_emoji = show_status_emoji?(@user.status)
 
-= gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
-  = form_errors(@user)
-
+= gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
   .row.js-search-settings-section
     .col-lg-4.profile-settings-sidebar
       %h4.gl-mt-0

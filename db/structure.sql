@@ -29124,10 +29124,6 @@ CREATE UNIQUE INDEX index_projects_on_project_namespace_id ON projects USING btr
 
 CREATE INDEX index_projects_on_repository_storage ON projects USING btree (repository_storage);
 
-CREATE INDEX index_projects_on_runners_token ON projects USING btree (runners_token);
-
-CREATE INDEX index_projects_on_runners_token_encrypted ON projects USING btree (runners_token_encrypted);
-
 CREATE INDEX index_projects_on_star_count ON projects USING btree (star_count);
 
 CREATE INDEX index_projects_on_updated_at_and_id ON projects USING btree (updated_at, id);
@@ -29594,6 +29590,10 @@ CREATE INDEX index_u2f_registrations_on_user_id ON u2f_registrations USING btree
 
 CREATE UNIQUE INDEX index_uniq_im_issuable_escalation_statuses_on_issue_id ON incident_management_issuable_escalation_statuses USING btree (issue_id);
 
+CREATE UNIQUE INDEX index_uniq_projects_on_runners_token ON projects USING btree (runners_token);
+
+CREATE UNIQUE INDEX index_uniq_projects_on_runners_token_encrypted ON projects USING btree (runners_token_encrypted);
+
 CREATE UNIQUE INDEX index_unique_ci_runner_projects_on_runner_id_and_project_id ON ci_runner_projects USING btree (runner_id, project_id);
 
 CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
@@ -30007,10 +30007,6 @@ CREATE INDEX tmp_index_merge_requests_draft_and_status ON merge_requests USING b
 CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
-
-CREATE INDEX tmp_index_projects_on_id_and_runners_token ON projects USING btree (id, runners_token) WHERE (runners_token IS NOT NULL);
-
-CREATE INDEX tmp_index_projects_on_id_and_runners_token_encrypted ON projects USING btree (id, runners_token_encrypted) WHERE (runners_token_encrypted IS NOT NULL);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
 

@@ -1,8 +1,0 @@
----
-name: ci_minutes_cost_factor_for_all_public_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85357
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/359094
-milestone: '15.0'
-type: development
-group: group::pipeline execution
-default_enabled: false

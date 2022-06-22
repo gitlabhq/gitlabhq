@@ -458,11 +458,27 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.2.0 (unreleased)
+
+GitLab installations that have multiple web nodes should be
+[upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
+configuration change in Rails that can result in inconsistent ETag key
+generation.
+
 ### 15.1.0
 
 - If you run external PostgreSQL, particularly AWS RDS,
   [check you have a PostgreSQL bug fix](#postgresql-segmentation-fault-issue)
   to avoid the database crashing.
+- In GitLab 15.1.0, we are switching Rails `ActiveSupport::Digest` to use SHA256 instead of MD5.
+  This affects ETag key generation for resources such as raw Snippet file
+  downloads. In order to ensure consistent ETag key generation across multiple
+  web nodes when upgrading, all servers must first be upgraded to 15.1.Z before
+  upgrading to 15.2.0 or later:
+
+  1. Ensure all GitLab web nodes are running GitLab 15.1.Z.
+  1. [Enable the `active_support_hash_digest_sha256` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
+  1. Only then, continue to upgrade to later versions of GitLab.
 
 ### 15.0.0
 

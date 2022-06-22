@@ -12,12 +12,15 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 |:---|:------|:---------|:-----|
 | [1004.1](1004.1.md) | Sensitive cookie without HttpOnly attribute | Low | Passive |
 | [16.1](16.1.md) | Missing Content-Type header | Low | Passive |
+| [16.10](16.10.md) | Content-Security-Policy violations | Info | Passive |
 | [16.2](16.2.md) | Server header exposes version information | Low | Passive |
 | [16.3](16.3.md) | X-Powered-By header exposes version information | Low | Passive |
 | [16.4](16.4.md) | X-Backend-Server header exposes server information | Info | Passive |
 | [16.5](16.5.md) | AspNet header exposes version information | Low | Passive |
 | [16.6](16.6.md) | AspNetMvc header exposes version information | Low | Passive |
 | [16.7](16.7.md) | Strict-Transport-Security header missing or invalid | Low | Passive |
+| [16.8](16.8.md) | Content-Security-Policy analysis | Info | Passive |
+| [16.9](16.9.md) | Content-Security-Policy-Report-Only analysis | Info | Passive |
 | [200.1](200.1.md) | Exposure of sensitive information to an unauthorized actor (private IP address) | Low | Passive |
 | [209.1](209.1.md) | Generation of error message containing sensitive information | Low | Passive |
 | [319.1](319.1.md) | Mixed Content | Info | Passive |

@@ -128,7 +128,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetStates < Gitlab::Database::Migration[1.0]
+  class CreateCoolWidgetStates < Gitlab::Database::Migration[2.0]
     VERIFICATION_STATE_INDEX_NAME = "index_cool_widget_states_on_verification_state"
     PENDING_VERIFICATION_INDEX_NAME = "index_cool_widget_states_pending_verification"
     FAILED_VERIFICATION_INDEX_NAME = "index_cool_widget_states_failed_verification"
