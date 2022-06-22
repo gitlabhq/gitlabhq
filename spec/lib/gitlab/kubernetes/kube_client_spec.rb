@@ -171,20 +171,6 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
-  describe '#extensions_client' do
-    subject { client.extensions_client }
-
-    it_behaves_like 'a Kubeclient'
-
-    it 'has the extensions API group endpoint' do
-      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/extensions\Z})
-    end
-
-    it 'has the api_version' do
-      expect(subject.instance_variable_get(:@api_version)).to eq('v1beta1')
-    end
-  end
-
   describe '#istio_client' do
     subject { client.istio_client }
 
@@ -307,86 +293,38 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
-  describe '#get_deployments' do
-    let(:extensions_client) { client.extensions_client }
+  describe 'apps/v1 API group' do
     let(:apps_client) { client.apps_client }
 
-    include_examples 'redirection not allowed', 'get_deployments'
-    include_examples 'dns rebinding not allowed', 'get_deployments'
-
-    it 'delegates to the extensions client' do
-      expect(extensions_client).to receive(:get_deployments)
-
-      client.get_deployments
-    end
-
-    context 'extensions does not have deployments for Kubernetes 1.16+ clusters' do
-      before do
-        WebMock
-          .stub_request(:get, api_url + '/apis/extensions/v1beta1')
-          .to_return(kube_response(kube_1_16_extensions_v1beta1_discovery_body))
-      end
+    describe 'get_deployments' do
+      include_examples 'redirection not allowed', 'get_deployments'
+      include_examples 'dns rebinding not allowed', 'get_deployments'
 
       it 'delegates to the apps client' do
-        expect(apps_client).to receive(:get_deployments)
+        expect(client).to delegate_method(:get_deployments).to(:apps_client)
+      end
 
-        client.get_deployments
+      it 'responds to the method' do
+        expect(client).to respond_to :get_deployments
       end
     end
   end
 
-  describe '#get_ingresses' do
-    let(:extensions_client) { client.extensions_client }
+  describe 'networking.k8s.io/v1 API group' do
     let(:networking_client) { client.networking_client }
 
-    include_examples 'redirection not allowed', 'get_ingresses'
-    include_examples 'dns rebinding not allowed', 'get_ingresses'
+    [:get_ingresses, :patch_ingress].each do |method|
+      describe "##{method}" do
+        include_examples 'redirection not allowed', method
+        include_examples 'dns rebinding not allowed', method
 
-    it 'delegates to the extensions client' do
-      expect(extensions_client).to receive(:get_ingresses)
+        it 'delegates to the networking client' do
+          expect(client).to delegate_method(method).to(:networking_client)
+        end
 
-      client.get_ingresses
-    end
-
-    context 'extensions does not have deployments for Kubernetes 1.22+ clusters' do
-      before do
-        WebMock
-          .stub_request(:get, api_url + '/apis/extensions/v1beta1')
-          .to_return(kube_response(kube_1_22_extensions_v1beta1_discovery_body))
-      end
-
-      it 'delegates to the apps client' do
-        expect(networking_client).to receive(:get_ingresses)
-
-        client.get_ingresses
-      end
-    end
-  end
-
-  describe '#patch_ingress' do
-    let(:extensions_client) { client.extensions_client }
-    let(:networking_client) { client.networking_client }
-
-    include_examples 'redirection not allowed', 'patch_ingress'
-    include_examples 'dns rebinding not allowed', 'patch_ingress'
-
-    it 'delegates to the extensions client' do
-      expect(extensions_client).to receive(:patch_ingress)
-
-      client.patch_ingress
-    end
-
-    context 'extensions does not have ingress for Kubernetes 1.22+ clusters' do
-      before do
-        WebMock
-          .stub_request(:get, api_url + '/apis/extensions/v1beta1')
-          .to_return(kube_response(kube_1_22_extensions_v1beta1_discovery_body))
-      end
-
-      it 'delegates to the apps client' do
-        expect(networking_client).to receive(:patch_ingress)
-
-        client.patch_ingress
+        it 'responds to the method' do
+          expect(client).to respond_to method
+        end
       end
     end
   end

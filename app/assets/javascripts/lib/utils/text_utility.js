@@ -498,3 +498,17 @@ export const markdownConfig = {
  * escaped to `'fix-'\''bug-behavior'\'''`.
  */
 export const escapeShellString = (str) => `'${str.replace(allSingleQuotes, () => "'\\''")}'`;
+
+/**
+ * Adds plus character as delimiter for count
+ * if count is greater than limit of 1000
+ * FE creation of `app/helpers/numbers_helper.rb`
+ *
+ * @param {Number} count
+ * @return {Number|String}
+ */
+export const limitedCounterWithDelimiter = (count) => {
+  const limit = 1000;
+
+  return count > limit ? '1,000+' : count;
+};

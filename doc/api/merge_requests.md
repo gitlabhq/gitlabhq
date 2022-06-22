@@ -785,6 +785,8 @@ the `approvals_before_merge` parameter:
   field `merge_user` can be either user who merged this merge request,
   user who set it to merge when pipeline succeeds or `null`.
   Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
+- `pipeline` is an old parameter and should not be used. Use `head_pipeline` instead,
+  as it is faster and returns more information.
 
 ## Get single MR participants
 

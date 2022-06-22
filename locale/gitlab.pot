@@ -41118,9 +41118,6 @@ msgstr ""
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr ""
 
-msgid "UsageQuota|Because of a known issue, the artifact total for some projects may be incorrect. For more details, read %{warningLinkStart}the epic%{warningLinkEnd}."
-msgstr ""
-
 msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 

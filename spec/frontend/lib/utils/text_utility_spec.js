@@ -384,4 +384,17 @@ describe('text_utility', () => {
       );
     });
   });
+
+  describe('limitedCounterWithDelimiter', () => {
+    it('returns 1,000+ for count greater than 1000', () => {
+      const expectedOutput = '1,000+';
+
+      expect(textUtils.limitedCounterWithDelimiter(1001)).toBe(expectedOutput);
+      expect(textUtils.limitedCounterWithDelimiter(2300)).toBe(expectedOutput);
+    });
+
+    it('returns exact number for count less than 1000', () => {
+      expect(textUtils.limitedCounterWithDelimiter(120)).toBe(120);
+    });
+  });
 });

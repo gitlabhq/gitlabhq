@@ -25,11 +25,7 @@ const loadExamples = (dir, fileName) => {
 };
 
 // eslint-disable-next-line jest/no-export
-export const describeMarkdownSnapshots = (
-  description,
-  glfmSpecificationDir,
-  glfmExampleSnapshotsDir,
-) => {
+export const describeMarkdownSnapshots = (description, glfmSpecificationDir) => {
   let actualHtmlAndJsonExamples;
   let skipRunningSnapshotWysiwygHtmlTests;
   let skipRunningSnapshotProsemirrorJsonTests;
@@ -38,6 +34,7 @@ export const describeMarkdownSnapshots = (
     path.join(glfmSpecificationDir, 'input', 'gitlab_flavored_markdown'),
     'glfm_example_status.yml',
   );
+  const glfmExampleSnapshotsDir = path.join(glfmSpecificationDir, 'example_snapshots');
   const markdownExamples = loadExamples(glfmExampleSnapshotsDir, 'markdown.yml');
   const expectedHtmlExamples = loadExamples(glfmExampleSnapshotsDir, 'html.yml');
   const expectedProseMirrorJsonExamples = loadExamples(
