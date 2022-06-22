@@ -4,8 +4,7 @@ module QA
   module Page
     module Alert
       class FreeTrial < Chemlab::Page
-        # TODO: Supplant with data-qa-selectors
-        h4 :trial_activated_message, class: 'gl-banner-title'
+        element :trial_activated_message
       end
     end
   end

@@ -4,6 +4,7 @@ import {
   GlLoadingIcon,
   GlBadge,
   GlIcon,
+  GlLabel,
   GlTooltipDirective,
   GlSafeHtmlDirective,
 } from '@gitlab/ui';
@@ -28,11 +29,8 @@ export default {
     GlBadge,
     GlLoadingIcon,
     GlIcon,
+    GlLabel,
     UserAccessRoleBadge,
-    ComplianceFrameworkLabel: () =>
-      import(
-        'ee_component/vue_shared/components/compliance_framework_label/compliance_framework_label.vue'
-      ),
     itemCaret,
     itemTypeIcon,
     itemActions,
@@ -184,12 +182,13 @@ export default {
             <user-access-role-badge v-if="group.permission" class="gl-mt-3">
               {{ group.permission }}
             </user-access-role-badge>
-            <compliance-framework-label
+            <gl-label
               v-if="hasComplianceFramework"
               class="gl-mt-3"
-              :name="complianceFramework.name"
-              :color="complianceFramework.color"
+              :title="complianceFramework.name"
+              :background-color="complianceFramework.color"
               :description="complianceFramework.description"
+              size="sm"
             />
           </div>
           <div v-if="group.description" class="description">

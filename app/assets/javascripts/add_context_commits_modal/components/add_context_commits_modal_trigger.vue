@@ -37,8 +37,8 @@ export default {
   <gl-button
     :class="[
       {
-        'ml-3': !contextCommitsEmpty,
-        'mt-3': !commitsEmpty && contextCommitsEmpty,
+        'gl-ml-5': !contextCommitsEmpty,
+        'gl-mt-5': !commitsEmpty && contextCommitsEmpty,
       },
     ]"
     :variant="commitsEmpty ? 'info' : 'default'"

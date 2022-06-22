@@ -12,12 +12,8 @@ jest.mock('~/api/user_api', () => ({
 describe('User Popovers', () => {
   const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
 
-  const selector = '.js-user-link, .gfm-project_member';
-  const findFixtureLinks = () => {
-    return Array.from(document.querySelectorAll(selector)).filter(
-      ({ dataset }) => dataset.user || dataset.userId,
-    );
-  };
+  const selector = '.js-user-link[data-user], .js-user-link[data-user-id]';
+  const findFixtureLinks = () => Array.from(document.querySelectorAll(selector));
   const createUserLink = () => {
     const link = document.createElement('a');
 
@@ -93,6 +89,24 @@ describe('User Popovers', () => {
 
       expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
     });
+  });
+
+  it('does not initialize the popovers for group references', async () => {
+    const [groupLink] = Array.from(document.querySelectorAll('.js-user-link[data-group]'));
+
+    triggerEvent('mouseover', groupLink);
+    jest.runOnlyPendingTimers();
+
+    expect(findPopovers().length).toBe(0);
+  });
+
+  it('does not initialize the popovers for @all references', async () => {
+    const [projectLink] = Array.from(document.querySelectorAll('.js-user-link[data-project]'));
+
+    triggerEvent('mouseover', projectLink);
+    jest.runOnlyPendingTimers();
+
+    expect(findPopovers().length).toBe(0);
   });
 
   it('does not initialize the user popovers twice for the same element', async () => {

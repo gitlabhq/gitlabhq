@@ -339,7 +339,7 @@ The trailing forward slash is required.
 This configuration corresponds with the `Supported account types` setting used when
   creating the `IdentityExperienceFramework` app.
 
-#### Keycloak
+### Keycloak
 
 GitLab works with OpenID providers that use HTTPS. Although a Keycloak
 server can be set up using HTTP, GitLab can only communicate
@@ -380,7 +380,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-##### Configure Keycloak with a symmetric key algorithm
+#### Configure Keycloak with a symmetric key algorithm
 
 > Introduced in GitLab 14.2.
 
@@ -461,7 +461,7 @@ To use symmetric key encryption:
 If after reconfiguring, you see the error `JSON::JWS::VerificationFailed` error message, this means
 the incorrect secret was specified.
 
-#### Casdoor
+### Casdoor
 
 GitLab works with OpenID providers that use HTTPS. To connect to GitLab using OpenID with Casdoor, use HTTPS instead of HTTP.
 
