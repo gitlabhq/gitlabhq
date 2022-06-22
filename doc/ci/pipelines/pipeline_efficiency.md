@@ -174,7 +174,7 @@ to stop them from running:
 Ensure that errors are detected early in the CI/CD pipeline. A job that takes a very long
 time to complete keeps a pipeline from returning a failed status until the job completes.
 
-Design pipelines so that jobs that can [fail fast](../../user/project/merge_requests/fail_fast_testing.md)
+Design pipelines so that jobs that can [fail fast](../testing/fail_fast_testing.md)
 run earlier. For example, add an early stage and move the syntax, style linting,
 Git commit message verification, and similar jobs in there.
 

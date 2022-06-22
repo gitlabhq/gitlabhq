@@ -11321,6 +11321,8 @@ CREATE TABLE application_settings (
     container_registry_pre_import_tags_rate numeric(6,2) DEFAULT 0.5 NOT NULL,
     license_usage_data_exported boolean DEFAULT false NOT NULL,
     phone_verification_code_enabled boolean DEFAULT false NOT NULL,
+    max_number_of_repository_downloads smallint DEFAULT 0 NOT NULL,
+    max_number_of_repository_downloads_within_time_period integer DEFAULT 0 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),

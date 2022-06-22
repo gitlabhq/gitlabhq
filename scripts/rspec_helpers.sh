@@ -309,7 +309,7 @@ function retry_failed_rspec_examples() {
   rspec_run_status=$?
 
   # Merge the JUnit report from retry into the first-try report
-  junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}"
+  junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}" --update-only
 
   exit $rspec_run_status
 }

@@ -216,13 +216,17 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'pull_policy' => nil })
-            expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
-                                                       'alias' => nil, 'command' => nil, 'ports' => [], 'variables' => nil },
-                                                     { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
-                                                       'alias' => 'docker', 'command' => 'sleep 30', 'ports' => [], 'variables' => [] },
-                                                     { 'name' => 'mysql:latest', 'entrypoint' => nil,
-                                                       'alias' => nil, 'command' => nil, 'ports' => [], 'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }] }])
+            expect(json_response['image']).to eq(
+              { 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'pull_policy' => nil }
+            )
+            expect(json_response['services']).to eq([
+              { 'name' => 'postgres', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
+                'variables' => nil, 'pull_policy' => nil },
+              { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh', 'alias' => 'docker', 'command' => 'sleep 30',
+                'ports' => [], 'variables' => [], 'pull_policy' => nil },
+              { 'name' => 'mysql:latest', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
+                'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }], 'pull_policy' => nil }
+            ])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to match(expected_cache)
@@ -844,6 +848,47 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               expect(json_response).to include(
                 'id' => job.id,
                 'image' => { 'name' => 'ruby', 'entrypoint' => nil, 'ports' => [] }
+              )
+            end
+          end
+        end
+
+        context 'when service has pull_policy' do
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
+
+          let(:options) do
+            {
+              services: [{
+                name: 'postgres:11.9',
+                pull_policy: ['if-not-present']
+              }]
+            }
+          end
+
+          it 'returns the service with pull policy' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              'id' => job.id,
+              'services' => [{ 'alias' => nil, 'command' => nil, 'entrypoint' => nil, 'name' => 'postgres:11.9',
+                               'ports' => [], 'pull_policy' => ['if-not-present'], 'variables' => [] }]
+            )
+          end
+
+          context 'when the FF ci_docker_image_pull_policy is disabled' do
+            before do
+              stub_feature_flags(ci_docker_image_pull_policy: false)
+            end
+
+            it 'returns the service without pull policy' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response).to include(
+                'id' => job.id,
+                'services' => [{ 'alias' => nil, 'command' => nil, 'entrypoint' => nil, 'name' => 'postgres:11.9',
+                                 'ports' => [], 'variables' => [] }]
               )
             end
           end

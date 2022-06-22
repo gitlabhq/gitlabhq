@@ -3519,6 +3519,52 @@ in that container.
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Use Docker to build Docker images](../docker/using_docker_build.md).
 
+#### `service:pull_policy`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
+> - Requires GitLab Runner 15.1 or later.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`.
+The feature is not ready for production use.
+
+The pull policy that the runner uses to fetch the Docker image.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Possible inputs**:
+
+- A single pull policy, or multiple pull policies in an array.
+  Can be `always`, `if-not-present`, or `never`.
+
+**Examples of `service:pull_policy`**:
+
+```yaml
+job1:
+  script: echo "A single pull policy."
+  services:
+    - name: postgres:11.6
+      pull_policy: if-not-present
+
+job2:
+  script: echo "Multiple pull policies."
+  services:
+    - name: postgres:11.6
+      pull_policy: [always, if-not-present]
+```
+
+**Additional details**:
+
+- If the runner does not support the defined pull policy, the job fails with an error similar to:
+  `ERROR: Job failed (system failure): the configured PullPolicies ([always]) are not allowed by AllowedPullPolicies ([never])`.
+
+**Related topics**:
+
+- [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
+- [How runner pull policies work](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work).
+- [Using multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#using-multiple-pull-policies).
+
 ### `stage`
 
 Use `stage` to define which [stage](#stages) a job runs in. Jobs in the same

@@ -14,7 +14,6 @@ module Projects
       respond_to :json, only: [:reset_alerting_token, :reset_pagerduty_token]
 
       helper_method :error_tracking_setting
-      helper_method :tracing_setting
 
       feature_category :incident_management
       urgency :low
@@ -60,17 +59,7 @@ module Projects
           ::Gitlab::Tracking::IncidentManagement.track_from_params(
             update_params[:incident_management_setting_attributes]
           )
-          track_tracing_external_url
         end
-      end
-
-      def track_tracing_external_url
-        external_url_previous_change = project&.tracing_setting&.external_url_previous_change
-
-        return unless external_url_previous_change
-        return unless external_url_previous_change[0].blank? && external_url_previous_change[1].present?
-
-        ::Gitlab::Tracking.event('project:operations:tracing', 'external_url_populated', user: current_user, project: project, namespace: project.namespace)
       end
 
       def alerting_params
@@ -124,10 +113,6 @@ module Projects
           project.build_error_tracking_setting
       end
 
-      def tracing_setting
-        @tracing_setting ||= project.tracing_setting || project.build_tracing_setting
-      end
-
       def update_params
         params.require(:project).permit(permitted_project_params)
       end
@@ -147,8 +132,7 @@ module Projects
             project: [:slug, :name, :organization_slug, :organization_name]
           ],
 
-          grafana_integration_attributes: [:token, :grafana_url, :enabled],
-          tracing_setting_attributes: [:external_url]
+          grafana_integration_attributes: [:token, :grafana_url, :enabled]
         }
       end
     end

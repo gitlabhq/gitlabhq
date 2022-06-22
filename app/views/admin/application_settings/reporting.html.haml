@@ -27,3 +27,5 @@
       = link_to _('Learn more.'), help_page_path('user/admin_area/review_abuse_reports.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'abuse'
+
+= render_if_exists 'admin/application_settings/git_abuse_rate_limit'

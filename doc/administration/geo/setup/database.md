@@ -17,8 +17,11 @@ PostgreSQL instances, the Omnibus roles cannot perform all necessary
 configuration steps. In this case, use the [Geo with external PostgreSQL instances](external_database.md)
 process instead.
 
+NOTE:
 The stages of the setup process must be completed in the documented order.
-Before you attempt the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
+If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
+
+Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added the [premium or higher licenses](https://about.gitlab.com/pricing/) to your **primary** site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.

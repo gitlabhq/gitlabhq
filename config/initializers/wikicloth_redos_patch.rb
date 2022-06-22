@@ -2,15 +2,22 @@
 
 require 'wikicloth'
 require 'wikicloth/wiki_buffer/var'
+require 'digest/sha2'
 
-# Adds patch for changes in this PR: https://github.com/nricciar/wikicloth/pull/112/files
+# Adds patch for changes in these PRs:
 #
-# That fix has already been merged, but the maintainers are not releasing new versions, so we
-# need to patch it here.
+# https://github.com/nricciar/wikicloth/pull/112
+# https://github.com/nricciar/wikicloth/pull/131
+#
+# The first fix has already been merged, but the second has not,
+# and the maintainers are not releasing new versions, so we
+# need to patch them here.
 #
 # If they ever do release a version, then we can remove this file.
 #
-# See: https://gitlab.com/gitlab-org/gitlab/-/issues/334056#note_745336618
+# See:
+# - https://gitlab.com/gitlab-org/gitlab/-/issues/334056#note_745336618
+# - https://gitlab.com/gitlab-org/gitlab/-/issues/361266
 
 # Guard to ensure we remember to delete this patch if they ever release a new version of wikicloth
 raise 'New version of WikiCloth detected, please remove this patch' unless Gem::Version.new(WikiCloth::VERSION) == Gem::Version.new('0.8.1')
@@ -30,9 +37,12 @@ raise 'New version of WikiCloth detected, please remove this patch' unless Gem::
 # rubocop:disable Layout/EmptyLineAfterGuardClause
 # rubocop:disable Performance/ReverseEach
 # rubocop:disable Style/BlockDelimiters
-# rubocop:disable Cop/LineBreakAroundConditionalBlock
 # rubocop:disable Layout/MultilineBlockLayout
 # rubocop:disable Layout/BlockEndNewline
+# rubocop:disable Style/PerlBackrefs
+# rubocop:disable Style/RegexpLiteralMixedPreserve
+# rubocop:disable Style/RedundantRegexpCharacterClass
+# rubocop:disable Performance/StringInclude
 module WikiCloth
   class WikiCloth
     def render(opt={})
@@ -110,7 +120,7 @@ module WikiCloth
           key = params[0].to_s.strip
           key_options = params[1..].collect { |p| p.is_a?(Hash) ? { :name => p[:name].strip, :value => p[:value].strip } : p.strip }
           key_options ||= []
-          key_digest = Digest::MD5.hexdigest(key_options.to_a.sort {|x,y| (x.is_a?(Hash) ? x[:name] : x) <=> (y.is_a?(Hash) ? y[:name] : y) }.inspect)
+          key_digest = Digest::SHA256.hexdigest(key_options.to_a.sort {|x,y| (x.is_a?(Hash) ? x[:name] : x) <=> (y.is_a?(Hash) ? y[:name] : y) }.inspect)
 
           return @options[:params][key] if @options[:params].has_key?(key)
           # if we have a valid cache fragment use it
@@ -138,6 +148,54 @@ module WikiCloth
       end
     end
   end
+
+  class WikiBuffer::HTMLElement < WikiBuffer
+    def to_html
+      if NO_NEED_TO_CLOSE.include?(self.element_name)
+        return "<#{self.element_name} />" if SHORT_TAGS.include?(self.element_name)
+        return "</#{self.element_name}><#{self.element_name}>" if @tag_check == self.element_name
+      end
+
+      if ESCAPED_TAGS.include?(self.element_name)
+        # remove empty first line
+        self.element_content = $1 if self.element_content =~ /^\s*\n(.*)$/m
+        # escape all html inside this element
+        self.element_content = self.element_content.gsub('<','&lt;').gsub('>','&gt;')
+        # hack to fix <code><nowiki> nested mess
+        self.element_content = self.element_content.gsub(/&lt;[\/]*\s*nowiki\s*&gt;/,'')
+      end
+
+      case self.element_name
+      when "template"
+        @options[:link_handler].cache({ :name => self.element_attributes["__name"], :content => self.element_content, :sha256 => self.element_attributes["__hash"] })
+        return self.element_content
+      when "noinclude"
+        return self.in_template? ? "" : self.element_content
+      when "includeonly"
+        return self.in_template? ? self.element_content : ""
+      when "nowiki"
+        return self.element_content
+      when "a"
+        if self.element_attributes['href'] =~ /:\/\//
+          return @options[:link_handler].external_link(self.element_attributes['href'], self.element_content)
+        elsif self.element_attributes['href'].nil? || self.element_attributes['href'] =~ /^\s*([\?\/])/
+          # if a element has no href attribute, or href starts with / or ?
+          return elem.tag!(self.element_name, self.element_attributes) { |x| x << self.element_content }
+        end
+      else
+        if Extension.element_exists?(self.element_name)
+          return Extension.html_elements[self.element_name][:klass].new(@options).instance_exec( self, &Extension.html_elements[self.element_name][:block] ).to_s
+        end
+      end
+
+      tmp = elem.tag!(self.element_name, self.element_attributes) { |x| x << self.element_content }
+      unless ALLOWED_ELEMENTS.include?(self.element_name)
+        tmp.gsub!(/[\-!\|&"\{\}\[\]]/) { |r| self.escape_char(r) }
+        return tmp.gsub('<', '&lt;').gsub('>', '&gt;')
+      end
+      tmp
+    end
+  end
 end
 # rubocop:enable Style/ClassAndModuleChildren
 # rubocop:enable Layout/SpaceAroundEqualsInParameterDefault
@@ -154,6 +212,9 @@ end
 # rubocop:enable Layout/EmptyLineAfterGuardClause
 # rubocop:enable Performance/ReverseEach
 # rubocop:enable Style/BlockDelimiters
-# rubocop:enable Cop/LineBreakAroundConditionalBlock
 # rubocop:enable Layout/MultilineBlockLayout
 # rubocop:enable Layout/BlockEndNewline
+# rubocop:enable Style/PerlBackrefs
+# rubocop:enable Style/RegexpLiteralMixedPreserve
+# rubocop:enable Style/RedundantRegexpCharacterClass
+# rubocop:enable Performance/StringInclude

@@ -507,7 +507,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
       secondary_store.flushdb
     end
 
-    describe "command execution in a transaction" do
+    describe "command execution in a pipelined command" do
       let(:counter) { Gitlab::Metrics::NullMetric.instance }
 
       before do
@@ -557,7 +557,15 @@ RSpec.describe Gitlab::Redis::MultiStore do
           include_examples 'verify that store contains values', :secondary_store
         end
 
-        describe 'return values from a transaction' do
+        describe 'return values from a pipelined command' do
+          RSpec::Matchers.define :pipeline_diff_error_with_stacktrace do |message|
+            match do |object|
+              expect(object).to be_a(Gitlab::Redis::MultiStore::PipelinedDiffError)
+              expect(object.backtrace).not_to be_nil
+              expect(object.message).to eq(message)
+            end
+          end
+
           subject do
             multi_store.send(name) do |redis|
               redis.get(key1)
@@ -585,7 +593,10 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
             it 'returns the value from the secondary store, logging an error' do
               expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-                an_instance_of(Gitlab::Redis::MultiStore::PipelinedDiffError),
+                pipeline_diff_error_with_stacktrace(
+                  'Pipelined command executed on both stores successfully but results differ between them. ' \
+                    "Result from the primary: [#{value1.inspect}]. Result from the secondary: [#{value2.inspect}]."
+                ),
                 hash_including(command_name: name, instance_name: instance_name)
               ).and_call_original
               expect(counter).to receive(:increment).with(command: name, instance_name: instance_name)
@@ -601,7 +612,10 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
             it 'returns the value from the secondary store, logging an error' do
               expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-                an_instance_of(Gitlab::Redis::MultiStore::PipelinedDiffError),
+                pipeline_diff_error_with_stacktrace(
+                  'Pipelined command executed on both stores successfully but results differ between them. ' \
+                    "Result from the primary: [nil]. Result from the secondary: [#{value2.inspect}]."
+                ),
                 hash_including(command_name: name, instance_name: instance_name)
               )
               expect(counter).to receive(:increment).with(command: name, instance_name: instance_name)

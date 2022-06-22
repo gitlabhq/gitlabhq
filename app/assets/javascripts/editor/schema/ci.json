@@ -436,6 +436,33 @@
                   "type": "string"
                 }
               },
+              "pull_policy": {
+                "markdownDescription": "Specifies how to pull the image in Runner. It can be one of `always`, `never` or `if-not-present`. The default value is `always`. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#servicepull_policy).",
+                "default": "always",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "always",
+                      "never",
+                      "if-not-present"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "always",
+                        "never",
+                        "if-not-present"
+                      ]
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  }
+                ]
+              },
               "command": {
                 "type": "array",
                 "description": "Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to Dockerfile's CMD directive, where each shell token is a separate string in the array.",

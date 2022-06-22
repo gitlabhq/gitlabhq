@@ -38,10 +38,24 @@ RSpec.describe API::AwardEmoji do
     end
   end
 
+  shared_examples 'unauthenticated request to public awardable' do
+    before do
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    end
+
+    it 'returns the awarded emoji' do
+      get api(request_path)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji" do
     context 'on an issue' do
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji" }
+
       it "returns an array of award_emoji" do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user)
+        get api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
@@ -70,6 +84,9 @@ RSpec.describe API::AwardEmoji do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      it_behaves_like 'unauthenticated request to public awardable'
+      it_behaves_like 'request with insufficient permissions', :get
     end
 
     context 'on a merge request' do
@@ -95,60 +112,30 @@ RSpec.describe API::AwardEmoji do
         expect(json_response.first['name']).to eq(award.name)
       end
     end
-
-    context 'when unauthenticated and project is public' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-
-      it 'returns the awarded emoji' do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji")
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(award_emoji.name)
-      end
-    end
-
-    it_behaves_like 'request with insufficient permissions', :get do
-      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji" }
-    end
   end
 
   describe 'GET /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji' do
-    let!(:rocket)  { create(:award_emoji, awardable: note, name: 'rocket') }
+    let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
+    let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
 
     it 'returns an array of award emoji' do
-      get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user)
+      get api(request_path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_an Array
       expect(json_response.first['name']).to eq(rocket.name)
     end
 
-    context 'when unauthenticated and project is public' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-
-      it 'returns the awarded emoji' do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji")
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(rocket.name)
-      end
-    end
-
-    it_behaves_like 'request with insufficient permissions', :get do
-      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
-    end
+    it_behaves_like 'unauthenticated request to public awardable'
+    it_behaves_like 'request with insufficient permissions', :get
   end
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji/:award_id" do
     context 'on an issue' do
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}" }
+
       it "returns the award emoji" do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}", user)
+        get api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(award_emoji.name)
@@ -161,6 +148,9 @@ RSpec.describe API::AwardEmoji do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      it_behaves_like 'unauthenticated request to public awardable'
+      it_behaves_like 'request with insufficient permissions', :get
     end
 
     context 'on a merge request' do
@@ -187,55 +177,22 @@ RSpec.describe API::AwardEmoji do
         expect(json_response['awardable_type']).to eq("Snippet")
       end
     end
-
-    context 'when unauthenticated and project is public' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-
-      it 'returns the awarded emoji' do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}", user)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['name']).to eq(award_emoji.name)
-        expect(json_response['awardable_id']).to eq(issue.id)
-        expect(json_response['awardable_type']).to eq("Issue")
-      end
-    end
-
-    it_behaves_like 'request with insufficient permissions', :get do
-      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}" }
-    end
   end
 
   describe 'GET /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji/:award_id' do
-    let!(:rocket)  { create(:award_emoji, awardable: note, name: 'rocket') }
+    let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
+    let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
 
     it 'returns an award emoji' do
-      get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}", user)
+      get api(request_path, user)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).not_to be_an Array
       expect(json_response['name']).to eq(rocket.name)
     end
 
-    context 'when unauthenticated and project is public' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-      end
-
-      it 'returns the awarded emoji' do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}")
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).not_to be_an Array
-        expect(json_response['name']).to eq(rocket.name)
-      end
-    end
-
-    it_behaves_like 'request with insufficient permissions', :get do
-      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
-    end
+    it_behaves_like 'unauthenticated request to public awardable'
+    it_behaves_like 'request with insufficient permissions', :get
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/award_emoji" do
@@ -262,12 +219,6 @@ RSpec.describe API::AwardEmoji do
         post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user)
 
         expect(response).to have_gitlab_http_status(:bad_request)
-      end
-
-      it "returns a 404 if the user is not authenticated" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji"), params: { name: 'thumbsup' }
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it "normalizes +1 as thumbsup award" do

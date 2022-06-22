@@ -150,3 +150,23 @@ To [include](index.md#include) it:
 include:
   - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
 ```
+
+## Troubleshooting
+
+### Merge request stuck with `Checking pipeline status.` message
+
+If a merge request displays `Checking pipeline status.`, but the message never goes
+away (the "spinner" never stops spinning), it might be due to `workflow:rules`.
+This issue can happen if a project has [**Pipelines must succeed**](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds)
+enabled, but the `workflow:rules` prevent a pipeline from running for the merge request.
+
+For example, with this workflow, merge requests cannot be merged, because no
+pipeline can run:
+
+```yaml
+workflow:
+  rules:
+    - changes:
+      - .gitlab/**/**.md
+      when: never
+```

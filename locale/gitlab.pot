@@ -2607,6 +2607,9 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|Automatically ban users who download more than a specified number of repositories in a given time."
+msgstr ""
+
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
@@ -2679,6 +2682,9 @@ msgstr ""
 msgid "AdminSettings|Feed token"
 msgstr ""
 
+msgid "AdminSettings|Git abuse rate limit"
+msgstr ""
+
 msgid "AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)."
 msgstr ""
 
@@ -2704,6 +2710,24 @@ msgid "AdminSettings|Limit project size at a global, group, and project level. %
 msgstr ""
 
 msgid "AdminSettings|Limit the number of namespaces and projects that can be indexed."
+msgstr ""
+
+msgid "AdminSettings|Max number of repository downloads is not a number"
+msgstr ""
+
+msgid "AdminSettings|Max number of repository downloads must be greater than or equal to 0"
+msgstr ""
+
+msgid "AdminSettings|Max number of repository downloads must be less than or equal to 10000"
+msgstr ""
+
+msgid "AdminSettings|Max number of repository downloads within time period is not a number"
+msgstr ""
+
+msgid "AdminSettings|Max number of repository downloads within time period must be greater than or equal to 0"
+msgstr ""
+
+msgid "AdminSettings|Max number of repository downloads within time period must be less than or equal to 864000"
 msgstr ""
 
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
@@ -2739,6 +2763,9 @@ msgstr ""
 msgid "AdminSettings|No required pipeline"
 msgstr ""
 
+msgid "AdminSettings|Number of repositories"
+msgstr ""
+
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
@@ -2755,6 +2782,9 @@ msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr ""
 
 msgid "AdminSettings|Registration Features include:"
+msgstr ""
+
+msgid "AdminSettings|Reporting time period (seconds)"
 msgstr ""
 
 msgid "AdminSettings|Require users to prove ownership of custom domains"
@@ -2818,6 +2848,9 @@ msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Dep
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of unique repositories a user can download in the specified time period before they're banned."
 msgstr ""
 
 msgid "AdminSettings|The projects in this group can be selected as templates for new projects created on the instance. %{link_start}Learn more.%{link_end} "
@@ -8564,9 +8597,6 @@ msgstr ""
 msgid "ClusterIntegration|Allow GitLab to manage namespaces and service accounts for this cluster."
 msgstr ""
 
-msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Elasticsearch for pod logs."
-msgstr ""
-
 msgid "ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics."
 msgstr ""
 
@@ -8649,9 +8679,6 @@ msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
 msgid "ClusterIntegration|Elastic Kubernetes Service"
-msgstr ""
-
-msgid "ClusterIntegration|Enable Elastic Stack integration"
 msgstr ""
 
 msgid "ClusterIntegration|Enable Prometheus integration"
@@ -8840,7 +8867,7 @@ msgstr ""
 msgid "ClusterIntegration|The certificate-based method to connect clusters to GitLab was %{linkStart}deprecated%{linkEnd} in GitLab 14.5."
 msgstr ""
 
-msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
+msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, and Web terminals."
 msgstr ""
 
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."
@@ -13676,6 +13703,9 @@ msgstr ""
 msgid "Edit %{name}"
 msgstr ""
 
+msgid "Edit %{profileType} profile"
+msgstr ""
+
 msgid "Edit Comment"
 msgstr ""
 
@@ -13701,9 +13731,6 @@ msgid "Edit Password"
 msgstr ""
 
 msgid "Edit Pipeline Schedule"
-msgstr ""
-
-msgid "Edit Profile"
 msgstr ""
 
 msgid "Edit Release"
@@ -13995,9 +14022,6 @@ msgid "EmailsOnPushService|tanuki@example.com gitlab@example.com"
 msgstr ""
 
 msgid "Embed"
-msgstr ""
-
-msgid "Embed an image of your existing Jaeger server in GitLab."
 msgstr ""
 
 msgid "Empty file"
@@ -21718,9 +21742,6 @@ msgstr ""
 msgid "Iteration|cannot be more than 500 years in the future"
 msgstr ""
 
-msgid "Jaeger URL"
-msgstr ""
-
 msgid "Jan"
 msgstr ""
 
@@ -22630,9 +22651,6 @@ msgid "Learn how to %{no_packages_link_start}publish and share your packages%{no
 msgstr ""
 
 msgid "Learn more"
-msgstr ""
-
-msgid "Learn more about %{link_start_tag}Jaeger configuration%{link_end_tag}."
 msgstr ""
 
 msgid "Learn more about %{username}"

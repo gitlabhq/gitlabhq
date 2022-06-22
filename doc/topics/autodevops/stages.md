@@ -357,7 +357,7 @@ Any browser performance differences between the source and target branches are a
 
 > Introduced in GitLab 13.2.
 
-Auto [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md)
+Auto [Load Performance Testing](../../ci/testing/load_performance_testing.md)
 measures the server performance of an application with the
 [k6 container](https://hub.docker.com/r/loadimpact/k6/),
 creates a JSON report including several key result metrics, and
@@ -368,7 +368,7 @@ written that's tailored to your specific application. The test also needs to be
 configured so it can pick up the environment's dynamic URL via a CI/CD variable.
 
 Any load performance test result differences between the source and target branches are also
-[shown in the merge request widget](../../user/project/merge_requests/load_performance_testing.md).
+[shown in the merge request widget](../../user/project/merge_requests/widgets.md).
 
 ## Auto Deploy
 

@@ -100,7 +100,7 @@ instead.
 
 Use `coverage_report` to collect coverage report in Cobertura format.
 
-The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
+The `cobertura` report collects [Cobertura coverage XML files](../testing/test_coverage_visualization.md).
 
 Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
 JavaScript, Python, and Ruby.
@@ -116,7 +116,7 @@ artifacts:
 The collected coverage report is uploaded to GitLab as an artifact.
 
 GitLab can display the results of coverage report in the merge request
-[diff annotations](../../user/project/merge_requests/test_coverage_visualization.md).
+[diff annotations](../testing/test_coverage_visualization.md).
 
 ## `artifacts:reports:codequality`
 
@@ -131,7 +131,7 @@ GitLab can display the results of:
 - Only one report in:
   - The merge request [diff annotations](../testing/code_quality.md#code-quality-in-diff-view).
     Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328257).
-  - The [full report](../metrics_reports.md). Track progress on adding support for multiple reports in
+  - The [full report](../testing/metrics_reports.md). Track progress on adding support for multiple reports in
     [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/9014).
 
 ## `artifacts:reports:container_scanning` **(ULTIMATE)**
@@ -263,21 +263,21 @@ GitLab can display the results of one or more reports in:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35260) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
 
-The `load_performance` report collects [Load Performance Testing metrics](../../user/project/merge_requests/load_performance_testing.md).
+The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
 The report is uploaded to GitLab as an artifact.
 
 GitLab can display the results of only one report in the merge request
-[load testing widget](../../user/project/merge_requests/load_performance_testing.md#how-load-performance-testing-works).
+[load testing widget](../testing/load_performance_testing.md#how-load-performance-testing-works).
 
 GitLab cannot display the combined results of multiple `load_performance` reports.
 
 ## `artifacts:reports:metrics` **(PREMIUM)**
 
-The `metrics` report collects [Metrics](../metrics_reports.md). The collected Metrics report uploads to GitLab as an
+The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
 
 GitLab can display the results of one or more reports in the merge request
-[metrics reports widget](../../ci/metrics_reports.md#metrics-reports).
+[metrics reports widget](../testing/metrics_reports.md#metrics-reports).
 
 ## `artifacts:reports:requirements` **(ULTIMATE)**
 

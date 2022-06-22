@@ -11,8 +11,15 @@ module Gitlab
         end
       end
       class PipelinedDiffError < StandardError
+        def initialize(result_primary, result_secondary)
+          @result_primary = result_primary
+          @result_secondary = result_secondary
+        end
+
         def message
-          'Pipelined command executed on both stores successfully but results differ between them.'
+          "Pipelined command executed on both stores successfully but results differ between them. " \
+            "Result from the primary: #{@result_primary.inspect}. " \
+            "Result from the secondary: #{@result_secondary.inspect}."
         end
       end
       class MethodMissingError < StandardError
@@ -246,10 +253,12 @@ module Gitlab
 
         result_secondary = send_command(secondary_store, command_name, *args, **kwargs, &block)
 
-        # Pipelined commands return an array with all results. If they differ,
-        # log an error
-        if result_primary != result_secondary
-          log_error(PipelinedDiffError.new, command_name)
+        # Pipelined commands return an array with all results. If they differ, log an error
+        if result_primary && result_primary != result_secondary
+          error = PipelinedDiffError.new(result_primary, result_secondary)
+          error.set_backtrace(Thread.current.backtrace[1..]) # Manually set backtrace, since the error is not `raise`d
+
+          log_error(error, command_name)
           increment_pipelined_command_error_count(command_name)
         end
 

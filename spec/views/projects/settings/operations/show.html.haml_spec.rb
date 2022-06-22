@@ -10,10 +10,6 @@ RSpec.describe 'projects/settings/operations/show' do
     create(:project_error_tracking_setting, project: project)
   end
 
-  let_it_be_with_reload(:tracing_setting) do
-    create(:project_tracing_setting, project: project)
-  end
-
   let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
 
   before_all do
@@ -25,8 +21,6 @@ RSpec.describe 'projects/settings/operations/show' do
 
     allow(view).to receive(:error_tracking_setting)
       .and_return(error_tracking_setting)
-    allow(view).to receive(:tracing_setting)
-      .and_return(tracing_setting)
     allow(view).to receive(:prometheus_integration)
       .and_return(prometheus_integration)
     allow(view).to receive(:current_user).and_return(user)
@@ -48,16 +42,6 @@ RSpec.describe 'projects/settings/operations/show' do
 
         expect(rendered).to have_content _('Error tracking')
         expect(rendered).to have_content _('Link Sentry to GitLab to discover and view the errors your application generates.')
-      end
-    end
-  end
-
-  describe 'Operations > Tracing' do
-    context 'Settings page ' do
-      it 'renders the Tracing Settings page' do
-        render
-
-        expect(rendered).to have_content _('Embed an image of your existing Jaeger server in GitLab.')
       end
     end
   end

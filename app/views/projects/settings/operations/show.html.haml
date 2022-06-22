@@ -20,7 +20,6 @@
           = html_escape(s_('Deprecations|For information on a possible replacement, %{opstrace_link_start} learn more about Opstrace %{link_end}.')) % {opstrace_link_start: opstrace_link_start, link_end: link_end }
 
 = render 'projects/settings/operations/metrics_dashboard'
-= render 'projects/settings/operations/tracing' if Feature.enabled?(:monitor_tracing, @project)
 = render 'projects/settings/operations/error_tracking'
 = render 'projects/settings/operations/alert_management'
 = render 'projects/settings/operations/incidents'

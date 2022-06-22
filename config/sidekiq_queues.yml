@@ -221,6 +221,8 @@
   - 2
 - - incident_management_apply_incident_sla_exceeded_label
   - 1
+- - incident_management_close_incident
+  - 1
 - - incident_management_oncall_rotations_persist_shifts_job
   - 1
 - - incident_management_pending_escalations_alert_check

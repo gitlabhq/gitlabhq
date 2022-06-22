@@ -347,7 +347,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         cluster = create(:cluster, user: user)
         project = create(:project, creator: user)
         create(:clusters_integrations_prometheus, cluster: cluster)
-        create(:project_tracing_setting)
         create(:project_error_tracking_setting)
         create(:incident)
         create(:incident, alert_management_alert: create(:alert_management_alert))
@@ -358,7 +357,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         clusters: 2,
         clusters_integrations_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
-        projects_with_tracing_enabled: 2,
         projects_with_error_tracking_enabled: 2,
         projects_with_incidents: 4,
         projects_with_alert_incidents: 2,
@@ -370,7 +368,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         clusters: 1,
         clusters_integrations_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
-        projects_with_tracing_enabled: 1,
         projects_with_error_tracking_enabled: 1,
         projects_with_incidents: 2,
         projects_with_alert_incidents: 1
@@ -535,7 +532,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:groups_inheriting_slack_active]).to eq(1)
       expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
-      expect(count_data[:projects_with_tracing_enabled]).to eq(1)
       expect(count_data[:projects_with_enabled_alert_integrations]).to eq(1)
       expect(count_data[:projects_with_terraform_reports]).to eq(2)
       expect(count_data[:projects_with_terraform_states]).to eq(2)
