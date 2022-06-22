@@ -221,20 +221,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        # Legacy routes for `/-/integrations` which are now in `/-/settings/integrations`.
-        # Can be removed in 15.2, see https://gitlab.com/gitlab-org/gitlab/-/issues/334846
-        resources :integrations, controller: 'settings/integrations', constraints: { id: %r{[^/]+} }, only: [:edit, :update] do
-          member do
-            put :test
-          end
-
-          resources :hook_logs, only: [:show], controller: 'settings/integration_hook_logs' do
-            member do
-              post :retry
-            end
-          end
-        end
-
         resources :boards, only: [:index, :show, :create, :update, :destroy], constraints: { id: /\d+/ } do
           collection do
             get :recent

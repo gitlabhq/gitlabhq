@@ -1,8 +1,15 @@
-import { GlTabsBehavior, TAB_SHOWN_EVENT } from '~/tabs';
+import { GlTabsBehavior, TAB_SHOWN_EVENT, HISTORY_TYPE_HASH } from '~/tabs';
 import { ACTIVE_PANEL_CLASS, ACTIVE_TAB_CLASSES } from '~/tabs/constants';
+import { getLocationHash } from '~/lib/utils/url_utility';
+import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
 import { getFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 const tabsFixture = getFixture('tabs/tabs.html');
+
+global.CSS = {
+  escape: (val) => val,
+};
 
 describe('GlTabsBehavior', () => {
   let glTabs;
@@ -41,6 +48,7 @@ describe('GlTabsBehavior', () => {
     });
 
     expect(panel.classList.contains(ACTIVE_PANEL_CLASS)).toBe(true);
+    expect(panel.classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(true);
   };
 
   const expectInactiveTabAndPanel = (name) => {
@@ -67,6 +75,7 @@ describe('GlTabsBehavior', () => {
     });
 
     expect(panel.classList.contains(ACTIVE_PANEL_CLASS)).toBe(false);
+    expect(panel.classList.contains(NO_SCROLL_TO_HASH_CLASS)).toBe(true);
   };
 
   const expectGlTabShownEvent = (name) => {
@@ -261,6 +270,100 @@ describe('GlTabsBehavior', () => {
 
       expectActiveTabAndPanel('bar');
       expectInactiveTabAndPanel('foo');
+    });
+  });
+
+  describe('using history=hash', () => {
+    const defaultTab = 'foo';
+    let tab;
+    let tabsEl;
+
+    beforeEach(() => {
+      setHTMLFixture(tabsFixture);
+      tabsEl = findByTestId('tabs');
+    });
+
+    afterEach(() => {
+      glTabs.destroy();
+      resetHTMLFixture();
+    });
+
+    describe('when a hash exists onInit', () => {
+      beforeEach(() => {
+        tab = 'bar';
+        setWindowLocation(`http://foo.com/index#${tab}`);
+        glTabs = new GlTabsBehavior(tabsEl, { history: HISTORY_TYPE_HASH });
+      });
+
+      it('sets the active tab to the hash and preserves hash', () => {
+        expectActiveTabAndPanel(tab);
+        expect(getLocationHash()).toBe(tab);
+      });
+    });
+
+    describe('when a hash does not exist onInit', () => {
+      beforeEach(() => {
+        setWindowLocation(`http://foo.com/index`);
+        glTabs = new GlTabsBehavior(tabsEl, { history: HISTORY_TYPE_HASH });
+      });
+
+      it('sets the active tab to the first tab and sets hash', () => {
+        expectActiveTabAndPanel(defaultTab);
+        expect(getLocationHash()).toBe(defaultTab);
+      });
+    });
+
+    describe('clicking on an inactive tab', () => {
+      beforeEach(() => {
+        tab = 'qux';
+        setWindowLocation(`http://foo.com/index`);
+        glTabs = new GlTabsBehavior(tabsEl, { history: HISTORY_TYPE_HASH });
+
+        findTab(tab).click();
+      });
+
+      it('changes the tabs and updates the hash', () => {
+        expectInactiveTabAndPanel(defaultTab);
+        expectActiveTabAndPanel(tab);
+        expect(getLocationHash()).toBe(tab);
+      });
+    });
+
+    describe('keyboard navigation', () => {
+      const secondTab = 'bar';
+
+      beforeEach(() => {
+        setWindowLocation(`http://foo.com/index`);
+        glTabs = new GlTabsBehavior(tabsEl, { history: HISTORY_TYPE_HASH });
+      });
+
+      it.each(['ArrowRight', 'ArrowDown'])(
+        'pressing %s moves to next tab and updates hash',
+        (code) => {
+          expectActiveTabAndPanel(defaultTab);
+
+          triggerKeyDown(code, glTabs.activeTab);
+
+          expectInactiveTabAndPanel(defaultTab);
+          expectActiveTabAndPanel(secondTab);
+          expect(getLocationHash()).toBe(secondTab);
+        },
+      );
+
+      it.each(['ArrowLeft', 'ArrowUp'])(
+        'pressing %s moves to previous tab and updates hash',
+        (code) => {
+          // First, make the 2nd tab active
+          findTab(secondTab).click();
+          expectActiveTabAndPanel(secondTab);
+
+          triggerKeyDown(code, glTabs.activeTab);
+
+          expectInactiveTabAndPanel(secondTab);
+          expectActiveTabAndPanel(defaultTab);
+          expect(getLocationHash()).toBe(defaultTab);
+        },
+      );
     });
   });
 });

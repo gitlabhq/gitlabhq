@@ -13,6 +13,7 @@ module Issues
     # in the caller (for example, an issue created via email) and the required arguments to the
     # SpamParams constructor are not otherwise available, spam_params: must be explicitly passed as nil.
     def initialize(project:, current_user: nil, params: {}, spam_params:, build_service: nil)
+      @extra_params = params.delete(:extra_params) || {}
       super(project: project, current_user: current_user, params: params)
       @spam_params = spam_params
       @build_service = build_service || BuildService.new(project: project, current_user: current_user, params: params)
@@ -56,7 +57,7 @@ module Issues
       handle_add_related_issue(issue)
       resolve_discussions_with_issue(issue)
       create_escalation_status(issue)
-      try_to_associate_contact(issue)
+      try_to_associate_contacts(issue)
 
       super
     end
@@ -85,7 +86,7 @@ module Issues
 
     private
 
-    attr_reader :spam_params
+    attr_reader :spam_params, :extra_params
 
     def create_escalation_status(issue)
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
@@ -101,11 +102,14 @@ module Issues
       IssueLinks::CreateService.new(issue, issue.author, { target_issuable: @add_related_issue }).execute
     end
 
-    def try_to_associate_contact(issue)
+    def try_to_associate_contacts(issue)
       return unless issue.external_author
       return unless current_user.can?(:set_issue_crm_contacts, issue)
 
-      set_crm_contacts(issue, [issue.external_author])
+      contacts = [issue.external_author]
+      contacts.concat extra_params[:cc] unless extra_params[:cc].nil?
+
+      set_crm_contacts(issue, contacts)
     end
   end
 end

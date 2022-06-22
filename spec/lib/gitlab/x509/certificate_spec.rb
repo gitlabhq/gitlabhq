@@ -116,9 +116,69 @@ RSpec.describe Gitlab::X509::Certificate do
     end
   end
 
+  describe '.default_cert_dir' do
+    before do
+      described_class.reset_default_cert_paths
+    end
+
+    after(:context) do
+      described_class.reset_default_cert_paths
+    end
+
+    context 'when SSL_CERT_DIR env variable is not set' do
+      before do
+        stub_env('SSL_CERT_DIR', nil)
+      end
+
+      it 'returns default directory from OpenSSL' do
+        expect(described_class.default_cert_dir).to eq(OpenSSL::X509::DEFAULT_CERT_DIR)
+      end
+    end
+
+    context 'when SSL_CERT_DIR env variable is set' do
+      before do
+        stub_env('SSL_CERT_DIR', '/tmp/foo/certs')
+      end
+
+      it 'returns specified directory' do
+        expect(described_class.default_cert_dir).to eq('/tmp/foo/certs')
+      end
+    end
+  end
+
+  describe '.default_cert_file' do
+    before do
+      described_class.reset_default_cert_paths
+    end
+
+    after(:context) do
+      described_class.reset_default_cert_paths
+    end
+
+    context 'when SSL_CERT_FILE env variable is not set' do
+      before do
+        stub_env('SSL_CERT_FILE', nil)
+      end
+
+      it 'returns default file from OpenSSL' do
+        expect(described_class.default_cert_file).to eq(OpenSSL::X509::DEFAULT_CERT_FILE)
+      end
+    end
+
+    context 'when SSL_CERT_FILE env variable is set' do
+      before do
+        stub_env('SSL_CERT_FILE', '/tmp/foo/cert.pem')
+      end
+
+      it 'returns specified file' do
+        expect(described_class.default_cert_file).to eq('/tmp/foo/cert.pem')
+      end
+    end
+  end
+
   describe '.ca_certs_paths' do
     it 'returns all files specified by OpenSSL defaults' do
-      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
+      cert_paths = Dir["#{described_class.default_cert_dir}/*"]
 
       expect(described_class.ca_certs_paths).to match_array(cert_paths + [sample_cert])
     end

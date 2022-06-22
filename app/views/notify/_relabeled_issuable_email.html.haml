@@ -1,3 +1,2 @@
 %p
-  #{'Label'.pluralize(@label_names.size)} added:
-  %em= @label_names.to_sentence
+  = html_escape(n_('Label added: %{labels}', 'Labels added: %{labels}', @label_names.size).html_safe % { labels: content_tag(:em, @label_names.to_sentence).html_safe })

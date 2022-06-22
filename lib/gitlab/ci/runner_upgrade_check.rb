@@ -25,18 +25,16 @@ module Gitlab
 
         raise ArgumentError, "'#{orig_runner_version}' is not a valid version" unless runner_version.valid?
 
-        gitlab_minor_version = version_without_patch(@gitlab_version)
+        gitlab_minor_version = @gitlab_version.without_patch
 
         available_releases = releases
-            .reject { |release| release.major > @gitlab_version.major }
-            .reject do |release|
-              release_minor_version = version_without_patch(release)
+          .reject { |release| release.major > @gitlab_version.major }
+          .reject do |release|
+            # Do not reject a patch update, even if the runner is ahead of the instance version
+            next false if release.same_minor_version?(runner_version)
 
-              # Do not reject a patch update, even if the runner is ahead of the instance version
-              next false if version_without_patch(runner_version) == release_minor_version
-
-              release_minor_version > gitlab_minor_version
-            end
+            release.without_patch > gitlab_minor_version
+          end
 
         return :recommended if available_releases.any? { |available_rel| patch_update?(available_rel, runner_version) }
         return :recommended if outside_backport_window?(runner_version, releases)
@@ -63,18 +61,14 @@ module Gitlab
       def outside_backport_window?(runner_version, releases)
         return false if runner_version >= releases.last # return early if runner version is too new
 
-        latest_minor_releases = releases.map { |r| version_without_patch(r) }.uniq { |v| v.to_s }
+        latest_minor_releases = releases.map(&:without_patch).uniq
         latest_version_position = latest_minor_releases.count - 1
-        runner_version_position = latest_minor_releases.index(version_without_patch(runner_version))
+        runner_version_position = latest_minor_releases.index(runner_version.without_patch)
 
         return true if runner_version_position.nil? # consider outside if version is too old
 
         # https://docs.gitlab.com/ee/policy/maintenance.html#backporting-to-older-releases
         latest_version_position - runner_version_position > 2
-      end
-
-      def version_without_patch(version)
-        ::Gitlab::VersionInfo.new(version.major, version.minor, 0)
       end
     end
   end

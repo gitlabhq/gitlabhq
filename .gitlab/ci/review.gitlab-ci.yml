@@ -5,7 +5,7 @@ review-cleanup:
   extends:
     - .default-retry
     - .review:rules:review-cleanup
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:gitlab-gcloud-helm3.5-kubectl1.17
   stage: prepare
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}

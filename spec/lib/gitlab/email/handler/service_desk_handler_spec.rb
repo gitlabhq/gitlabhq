@@ -52,14 +52,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         expect(new_issue.issue_email_participants.first.email).to eq(author_email)
       end
 
-      it 'attaches existing CRM contact' do
-        contact = create(:contact, group: group, email: author_email)
-        receiver.execute
-        new_issue = Issue.last
-
-        expect(new_issue.issue_customer_relations_contacts.last.contact).to eq(contact)
-      end
-
       it 'sends thank you email' do
         expect { receiver.execute }.to have_enqueued_job.on_queue('mailers')
       end
@@ -76,6 +68,16 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
     context 'when everything is fine' do
       it_behaves_like 'a new issue request'
+
+      it 'attaches existing CRM contacts' do
+        contact = create(:contact, group: group, email: author_email)
+        contact2 = create(:contact, group: group, email: "cc@example.com")
+        contact3 = create(:contact, group: group, email: "kk@example.org")
+        receiver.execute
+        new_issue = Issue.last
+
+        expect(new_issue.issue_customer_relations_contacts.map(&:contact)).to contain_exactly(contact, contact2, contact3)
+      end
 
       context 'with legacy incoming email address' do
         let(:email_raw) { fixture_file('emails/service_desk_legacy.eml') }

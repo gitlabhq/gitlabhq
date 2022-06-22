@@ -22411,6 +22411,11 @@ msgstr ""
 msgid "Label actions dropdown"
 msgstr ""
 
+msgid "Label added: %{labels}"
+msgid_plural "Labels added: %{labels}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Label priority"
 msgstr ""
 
@@ -26188,6 +26193,12 @@ msgstr ""
 msgid "Notify|%{author_link}'s issue %{issue_reference_link} is due soon."
 msgstr ""
 
+msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
+msgstr ""
+
+msgid "Notify|Assignee changed to %{toNames}"
+msgstr ""
+
 msgid "Notify|Author: %{author_name}"
 msgstr ""
 
@@ -29204,7 +29215,7 @@ msgstr ""
 msgid "Profiles|An error occurred while updating your username, please try again."
 msgstr ""
 
-msgid "Profiles|An indicator appears next to your name and avatar"
+msgid "Profiles|An indicator appears next to your name and avatar."
 msgstr ""
 
 msgid "Profiles|Avatar cropper"
@@ -29231,7 +29242,7 @@ msgstr ""
 msgid "Profiles|Choose file..."
 msgstr ""
 
-msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information"
+msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
 msgstr ""
 
 msgid "Profiles|City, country"
@@ -29273,7 +29284,7 @@ msgstr ""
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
-msgid "Profiles|Don't display activity-related personal information on your profile"
+msgid "Profiles|Don't display activity-related personal information on your profile."
 msgstr ""
 
 msgid "Profiles|Edit Profile"
@@ -29282,16 +29293,16 @@ msgstr ""
 msgid "Profiles|Ensure you have two-factor authentication recovery codes stored in a safe place."
 msgstr ""
 
-msgid "Profiles|Enter how your name is pronounced to help people address you correctly"
+msgid "Profiles|Enter how your name is pronounced to help people address you correctly."
 msgstr ""
 
-msgid "Profiles|Enter your name, so people you know can recognize you"
+msgid "Profiles|Enter your name, so people you know can recognize you."
 msgstr ""
 
 msgid "Profiles|Enter your password to confirm the email change"
 msgstr ""
 
-msgid "Profiles|Enter your pronouns to let people know how to refer to you"
+msgid "Profiles|Enter your pronouns to let people know how to refer to you."
 msgstr ""
 
 msgid "Profiles|Example: MacBook key"
@@ -29414,7 +29425,7 @@ msgstr ""
 msgid "Profiles|Set new profile picture"
 msgstr ""
 
-msgid "Profiles|Set your local time zone"
+msgid "Profiles|Set your local time zone."
 msgstr ""
 
 msgid "Profiles|Social sign-in"
@@ -29426,7 +29437,7 @@ msgstr ""
 msgid "Profiles|Static object token was successfully reset"
 msgstr ""
 
-msgid "Profiles|Tell us about yourself in fewer than 250 characters"
+msgid "Profiles|Tell us about yourself in fewer than 250 characters."
 msgstr ""
 
 msgid "Profiles|The ability to update your name has been disabled by your administrator."
@@ -29435,16 +29446,16 @@ msgstr ""
 msgid "Profiles|The maximum file size allowed is 200KB."
 msgstr ""
 
-msgid "Profiles|This email will be displayed on your public profile"
+msgid "Profiles|This email will be displayed on your public profile."
 msgstr ""
 
-msgid "Profiles|This email will be used for web based operations, such as edits and merges. %{commit_email_link_start}Learn more%{commit_email_link_end}"
+msgid "Profiles|This email will be used for web based operations, such as edits and merges. %{commit_email_link_start}Learn more.%{commit_email_link_end}"
 msgstr ""
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr ""
 
-msgid "Profiles|This information will appear on your profile"
+msgid "Profiles|This information will appear on your profile."
 msgstr ""
 
 msgid "Profiles|Time settings"
@@ -29489,7 +29500,7 @@ msgstr ""
 msgid "Profiles|What's your status?"
 msgstr ""
 
-msgid "Profiles|Who you represent or work for"
+msgid "Profiles|Who you represent or work for."
 msgstr ""
 
 msgid "Profiles|You can change your avatar here"
@@ -29529,6 +29540,9 @@ msgid "Profiles|Your location was automatically set based on your %{provider_lab
 msgstr ""
 
 msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you"
+msgstr ""
+
+msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
 msgstr ""
 
 msgid "Profiles|Your status"

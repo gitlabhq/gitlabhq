@@ -41,7 +41,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:contacts_autocomplete, project&.group)
     push_frontend_feature_flag(:incident_timeline, project)
   end
 

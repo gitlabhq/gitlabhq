@@ -1,7 +1,14 @@
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { TEST_HOST } from 'helpers/test_constants';
+import { visitUrl } from '~/lib/utils/url_utility';
 import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  visitUrl: jest.fn(),
+  setUrlParams: jest.requireActual('~/lib/utils/url_utility').setUrlParams,
+}));
 
 Vue.use(Vuex);
 
@@ -26,6 +33,11 @@ function factory({ viewDiffsFileByFile = false, draftsCount = 1, sortedDrafts = 
         namespaced: true,
         actions: { scrollToDraft },
         getters: { draftsCount: () => draftsCount, sortedDrafts: () => sortedDrafts },
+      },
+      notes: {
+        getters: {
+          getNoteableData: () => ({ diff_head_sha: '123' }),
+        },
       },
     },
   });
@@ -66,6 +78,20 @@ describe('Batch comments preview dropdown', () => {
       await nextTick();
 
       expect(scrollToDraft).toHaveBeenCalledWith(expect.anything(), { id: 1 });
+    });
+
+    it('changes window location to navigate to commit', async () => {
+      factory({
+        viewDiffsFileByFile: false,
+        sortedDrafts: [{ id: 1, position: { head_sha: '1234' } }],
+      });
+
+      wrapper.findByTestId('preview-item').vm.$emit('click');
+
+      await nextTick();
+
+      expect(scrollToDraft).not.toHaveBeenCalled();
+      expect(visitUrl).toHaveBeenCalledWith(`${TEST_HOST}/?commit_id=1234#note_1`);
     });
   });
 });

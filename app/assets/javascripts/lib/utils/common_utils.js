@@ -11,6 +11,8 @@ import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
 
+export const NO_SCROLL_TO_HASH_CLASS = 'js-no-scroll-to-hash';
+
 export const getPagePath = (index = 0) => {
   const { page = '' } = document.body.dataset;
   return page.split(':')[index];
@@ -68,6 +70,10 @@ export const handleLocationHash = () => {
   hash = decodeURIComponent(hash);
 
   const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
+
+  // Allow targets to opt out of scroll behavior
+  if (target?.classList.contains(NO_SCROLL_TO_HASH_CLASS)) return;
+
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
   const fixedNav = document.querySelector('.navbar-gitlab');

@@ -788,20 +788,6 @@ RSpec.describe 'project routing' do
     it 'to #test' do
       expect(put('/gitlab/gitlabhq/-/settings/integrations/acme/test')).to route_to('projects/settings/integrations#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
     end
-
-    context 'legacy routes' do
-      it 'to #edit' do
-        expect(get('/gitlab/gitlabhq/-/integrations/acme/edit')).to route_to('projects/settings/integrations#edit', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
-      end
-
-      it 'to #update' do
-        expect(put('/gitlab/gitlabhq/-/integrations/acme')).to route_to('projects/settings/integrations#update', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
-      end
-
-      it 'to #test' do
-        expect(put('/gitlab/gitlabhq/-/integrations/acme/test')).to route_to('projects/settings/integrations#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
-      end
-    end
   end
 
   describe Projects::Settings::IntegrationHookLogsController do
@@ -811,16 +797,6 @@ RSpec.describe 'project routing' do
 
     it 'to #retry' do
       expect(post('/gitlab/gitlabhq/-/settings/integrations/acme/hook_logs/log/retry')).to route_to('projects/settings/integration_hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
-    end
-
-    context 'legacy routes' do
-      it 'to #show' do
-        expect(get('/gitlab/gitlabhq/-/integrations/acme/hook_logs/log')).to route_to('projects/settings/integration_hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
-      end
-
-      it 'to #retry' do
-        expect(post('/gitlab/gitlabhq/-/integrations/acme/hook_logs/log/retry')).to route_to('projects/settings/integration_hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
-      end
     end
   end
 

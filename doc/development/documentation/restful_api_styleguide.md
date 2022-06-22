@@ -66,7 +66,8 @@ Supported attributes:
 | `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 | `attribute`              | datatype | **{dotted-circle}** No | Detailed description. |
 
-Response body attributes:
+If successful, returns [`<status_code>`](../../api/index.md#status-codes) and the following
+response attributes:
 
 | Attribute                | Type     | Description           |
 |:-------------------------|:---------|:----------------------|
@@ -150,6 +151,14 @@ Rendered example:
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
 
 ## Response body description
+
+Start the description with the following sentence, replacing `status code` with the
+relevant [HTTP status code](../../api/index.md#status-codes), for example:
+
+```markdown
+If successful, returns [`200 OK`](../../api/index.md#status-codes) and the
+following response attributes:
+```
 
 Use the following table headers to describe the response bodies. Attributes should
 always be in code blocks using backticks (`` ` ``).
