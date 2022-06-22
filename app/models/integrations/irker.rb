@@ -30,17 +30,10 @@ module Integrations
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
 
-      if Feature.enabled?(:rename_integrations_workers)
-        Integrations::IrkerWorker.perform_async(
-          project_id, channels,
-          colorize_messages, data, settings
-        )
-      else
-        ::IrkerWorker.perform_async(
-          project_id, channels,
-          colorize_messages, data, settings
-        )
-      end
+      Integrations::IrkerWorker.perform_async(
+        project_id, channels,
+        colorize_messages, data, settings
+      )
     end
 
     def settings

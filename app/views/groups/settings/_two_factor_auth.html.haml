@@ -8,14 +8,14 @@
 
 .form-group
   = f.gitlab_ui_checkbox_component :require_two_factor_authentication,
-      _('Require all users in this group to set up two-factor authentication'),
+      _('All users in this group must set up two-factor authentication'),
       checkbox_options: { data: { qa_selector: 'require_2fa_checkbox' } }
 .form-group
-  = f.label :two_factor_grace_period, _('Time before enforced')
+  = f.label :two_factor_grace_period, _('Delay 2FA enforcement (hours)')
   = f.text_field :two_factor_grace_period, class: 'form-control form-control-sm w-auto gl-form-input gl-mb-3'
-  .form-text.text-muted= _('Time (in hours) that users are allowed to skip forced configuration of two-factor authentication.')
+  .form-text.text-muted= _("The maximum amount of time users have to set up two-factor authentication before it's enforced.")
 - unless group.has_parent?
   .form-group
     = f.gitlab_ui_checkbox_component :allow_mfa_for_subgroups,
-        _('Allow subgroups to set up their own two-factor authentication rules'),
+        _('Subgroups can set up their own two-factor authentication rules'),
         checkbox_options: { checked: group.namespace_settings&.allow_mfa_for_subgroups }

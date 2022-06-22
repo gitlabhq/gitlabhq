@@ -570,11 +570,7 @@ class Integration < ApplicationRecord
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    if Feature.enabled?(:rename_integrations_workers)
-      Integrations::ExecuteWorker.perform_async(id, data)
-    else
-      ProjectServiceWorker.perform_async(id, data)
-    end
+    Integrations::ExecuteWorker.perform_async(id, data)
   end
 
   # override if needed

@@ -26,19 +26,6 @@ RSpec.describe Clusters::Integrations::Prometheus do
 
       integration.destroy!
     end
-
-    context 'when the FF :rename_integrations_workers is disabled' do
-      before do
-        stub_feature_flags(rename_integrations_workers: false)
-      end
-
-      it 'uses the old worker' do
-        expect(Clusters::Applications::DeactivateServiceWorker)
-          .to receive(:perform_async).with(cluster.id, 'prometheus')
-
-        integration.destroy!
-      end
-    end
   end
 
   describe 'after_save' do
@@ -69,19 +56,6 @@ RSpec.describe Clusters::Integrations::Prometheus do
           .to receive(:perform_async).with(cluster.id, 'prometheus')
 
         integration.update!(enabled: true)
-      end
-
-      context 'when the FF :rename_integrations_workers is disabled' do
-        before do
-          stub_feature_flags(rename_integrations_workers: false)
-        end
-
-        it 'uses the old worker' do
-          expect(Clusters::Applications::ActivateServiceWorker)
-            .to receive(:perform_async).with(cluster.id, 'prometheus')
-
-          integration.update!(enabled: true)
-        end
       end
     end
 

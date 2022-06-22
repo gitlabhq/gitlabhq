@@ -454,10 +454,10 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     it 'deletes webhooks and logs related to project' do
       expect_next_instance_of(WebHooks::DestroyService, user) do |instance|
-        expect(instance).to receive(:sync_destroy).with(web_hook1).and_call_original
+        expect(instance).to receive(:execute).with(web_hook1).and_call_original
       end
       expect_next_instance_of(WebHooks::DestroyService, user) do |instance|
-        expect(instance).to receive(:sync_destroy).with(web_hook2).and_call_original
+        expect(instance).to receive(:execute).with(web_hook2).and_call_original
       end
 
       expect do
@@ -468,7 +468,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     context 'when an error is raised deleting webhooks' do
       before do
         allow_next_instance_of(WebHooks::DestroyService) do |instance|
-          allow(instance).to receive(:sync_destroy).and_return(message: 'foo', status: :error)
+          allow(instance).to receive(:execute).and_return(message: 'foo', status: :error)
         end
       end
 

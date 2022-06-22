@@ -3768,6 +3768,9 @@ msgstr ""
 msgid "All threads resolved!"
 msgstr ""
 
+msgid "All users in this group must set up two-factor authentication"
+msgstr ""
+
 msgid "All users must accept the Terms of Service and Privacy Policy to access GitLab"
 msgstr ""
 
@@ -3778,12 +3781,6 @@ msgid "All users with matching cards"
 msgstr ""
 
 msgid "Allow \"%{group_name}\" to sign you in"
-msgstr ""
-
-msgid "Allow access only to members of this group"
-msgstr ""
-
-msgid "Allow access to everyone"
 msgstr ""
 
 msgid "Allow access to members of the following group"
@@ -3828,9 +3825,6 @@ msgstr ""
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
 msgstr ""
 
-msgid "Allow subgroups to set up their own two-factor authentication rules"
-msgstr ""
-
 msgid "Allow this key to push to this repository"
 msgstr ""
 
@@ -3841,9 +3835,6 @@ msgid "Allow users to dismiss the broadcast message"
 msgstr ""
 
 msgid "Allow users to register any application to use GitLab as an OAuth provider"
-msgstr ""
-
-msgid "Allow users to request access (if visibility is public or internal)"
 msgstr ""
 
 msgid "Allowed"
@@ -12023,6 +12014,9 @@ msgstr ""
 msgid "Definition"
 msgstr ""
 
+msgid "Delay 2FA enforcement (hours)"
+msgstr ""
+
 msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after its timer finishes."
 msgstr ""
 
@@ -13312,9 +13306,6 @@ msgid "Disable for this project"
 msgstr ""
 
 msgid "Disable group runners"
-msgstr ""
-
-msgid "Disable the group-level wiki"
 msgstr ""
 
 msgid "Disable two-factor authentication"
@@ -15194,6 +15185,9 @@ msgid "Every year on %{day} at %{time} %{timezone}"
 msgstr ""
 
 msgid "Everyone With Access"
+msgstr ""
+
+msgid "Everyone can access the wiki."
 msgstr ""
 
 msgid "Everyone can contribute"
@@ -18000,6 +17994,9 @@ msgstr ""
 msgid "Group wikis"
 msgstr ""
 
+msgid "Group-level wiki is disabled."
+msgstr ""
+
 msgid "Group: %{group_name}"
 msgstr ""
 
@@ -18276,12 +18273,6 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
-msgid "GroupSettings|Allow project and group access token creation"
-msgstr ""
-
-msgid "GroupSettings|Allows creating organizations and contacts and associating them with issues."
-msgstr ""
-
 msgid "GroupSettings|Applied to all subgroups unless overridden by a group owner. Groups already added to the project lose access."
 msgstr ""
 
@@ -18318,28 +18309,37 @@ msgstr ""
 msgid "GroupSettings|Custom project templates"
 msgstr ""
 
+msgid "GroupSettings|Customer relations is enabled"
+msgstr ""
+
 msgid "GroupSettings|Customize this group's badges."
 msgstr ""
 
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr ""
 
-msgid "GroupSettings|Disable email notifications"
-msgstr ""
-
-msgid "GroupSettings|Disable group mentions"
-msgstr ""
-
-msgid "GroupSettings|Enable customer relations"
+msgid "GroupSettings|Email notifications are disabled"
 msgstr ""
 
 msgid "GroupSettings|Export group"
+msgstr ""
+
+msgid "GroupSettings|Group members are not notified if the group is mentioned."
+msgstr ""
+
+msgid "GroupSettings|Group mentions are disabled"
 msgstr ""
 
 msgid "GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
 msgid "GroupSettings|If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
+msgstr ""
+
+msgid "GroupSettings|Members cannot invite groups outside of %{group} and its subgroups"
+msgstr ""
+
+msgid "GroupSettings|Organizations and contacts can be created and associated with issues."
 msgstr ""
 
 msgid "GroupSettings|Overrides user notification preferences for all members of the group, subgroups, and projects."
@@ -18357,13 +18357,7 @@ msgstr ""
 msgid "GroupSettings|Prevent forking setting was not saved"
 msgstr ""
 
-msgid "GroupSettings|Prevent members from sending invitations to groups outside of %{group} and its subgroups"
-msgstr ""
-
-msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
-msgstr ""
-
-msgid "GroupSettings|Prevents group members from being notified if the group is mentioned."
+msgid "GroupSettings|Projects in %{group} cannot be shared with other groups"
 msgstr ""
 
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
@@ -18408,7 +18402,7 @@ msgstr ""
 msgid "GroupSettings|Transfer group"
 msgstr ""
 
-msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group."
+msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
 msgstr ""
 
 msgid "GroupSettings|What are badges?"
@@ -25156,9 +25150,6 @@ msgstr ""
 msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
-msgid "Multiple domains are supported."
-msgstr ""
-
 msgid "Multiple model types found: %{model_types}"
 msgstr ""
 
@@ -26777,6 +26768,9 @@ msgstr ""
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
+msgid "Only members of this group can access the wiki."
+msgstr ""
+
 msgid "Only policy:"
 msgstr ""
 
@@ -26798,10 +26792,10 @@ msgstr ""
 msgid "Only use lowercase letters, numbers, and underscores."
 msgstr ""
 
-msgid "Only users from the specified IP address ranges are able to reach this group, including all subgroups, projects, and Git repositories."
+msgid "Only users from the specified IP address ranges can reach this group, including all subgroups, projects, and Git repositories."
 msgstr ""
 
-msgid "Only verified users with an email address in any of these domains can be added to the group."
+msgid "Only verified users with an email address in any of these domains can be added to the group. Multiple domains are supported."
 msgstr ""
 
 msgid "Only ‘Reporter’ roles and above on tiers Premium and above can see Productivity Analytics."
@@ -28999,9 +28993,6 @@ msgstr ""
 msgid "Prev"
 msgstr ""
 
-msgid "Prevent adding new members to projects within this group"
-msgstr ""
-
 msgid "Prevent auto-stopping"
 msgstr ""
 
@@ -29746,6 +29737,9 @@ msgstr ""
 msgid "ProjectCreationLevel|No one"
 msgstr ""
 
+msgid "ProjectCreationLevel|Roles allowed to create projects"
+msgstr ""
+
 msgid "ProjectFileTree|Name"
 msgstr ""
 
@@ -30476,6 +30470,9 @@ msgid "Projects contributed to"
 msgstr ""
 
 msgid "Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more."
+msgstr ""
+
+msgid "Projects in this group can use Git LFS"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
@@ -32524,9 +32521,6 @@ msgstr ""
 msgid "Require additional authentication for administrative tasks."
 msgstr ""
 
-msgid "Require all users in this group to set up two-factor authentication"
-msgstr ""
-
 msgid "Required approvals (%{approvals_given} given)"
 msgstr ""
 
@@ -32706,6 +32700,9 @@ msgid "Restoring the group will prevent the group, its subgroups and projects fr
 msgstr ""
 
 msgid "Restoring the project will prevent the project from being removed on this date and restore people's ability to make changes to it."
+msgstr ""
+
+msgid "Restrict access by IP address"
 msgstr ""
 
 msgid "Restrict membership by email domain"
@@ -36834,7 +36831,7 @@ msgstr ""
 msgid "Subgroup navigation"
 msgstr ""
 
-msgid "SubgroupCreationLevel|Allowed to create subgroups"
+msgid "SubgroupCreationLevel|Roles allowed to create subgroups"
 msgstr ""
 
 msgid "SubgroupCreationlevel|Allowed to create subgroups"
@@ -36850,6 +36847,9 @@ msgid "Subgroups"
 msgstr ""
 
 msgid "Subgroups and projects"
+msgstr ""
+
+msgid "Subgroups can set up their own two-factor authentication rules"
 msgstr ""
 
 msgid "Subject Key Identifier:"
@@ -38411,6 +38411,9 @@ msgstr ""
 msgid "The list creation wizard is already open"
 msgstr ""
 
+msgid "The maximum amount of time users have to set up two-factor authentication before it's enforced."
+msgstr ""
+
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
@@ -39618,9 +39621,6 @@ msgid "Time before an issue gets scheduled"
 msgstr ""
 
 msgid "Time before an issue starts implementation"
-msgstr ""
-
-msgid "Time before enforced"
 msgstr ""
 
 msgid "Time between merge request creation and merge/close"
@@ -41866,6 +41866,12 @@ msgid "Users can reactivate their account by signing in. %{link_start}Learn more
 msgstr ""
 
 msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki."
+msgstr ""
+
+msgid "Users can request access (if visibility is public or internal)"
+msgstr ""
+
+msgid "Users cannot be added to projects in this group"
 msgstr ""
 
 msgid "Users in License"

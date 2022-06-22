@@ -141,7 +141,7 @@ To enable or disable group access token creation for all sub-groups in a top-lev
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Permissions**, turn on or off **Allow project and group access token creation**.
+1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
 
 Even when creation is disabled, you can still use and revoke existing group access tokens.
 

@@ -76,19 +76,5 @@ RSpec.describe Integrations::Irker do
     ensure
       conn.close if conn
     end
-
-    context 'when the FF :rename_integrations_workers is disabled' do
-      before do
-        stub_feature_flags(rename_integrations_workers: false)
-      end
-
-      it 'queues a IrkerWorker' do
-        expect(::IrkerWorker).to receive(:perform_async)
-          .with(project.id, irker.channels, colorize_messages, sample_data, irker.settings)
-        expect(Integrations::IrkerWorker).not_to receive(:perform_async)
-
-        irker.execute(sample_data)
-      end
-    end
   end
 end

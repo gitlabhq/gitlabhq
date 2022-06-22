@@ -39,7 +39,7 @@ To enable customer relations management in a group or subgroup:
 1. On the top bar, select **Menu > Groups** and find your group or subgroup.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Enable customer relations**.
+1. Select **Customer relations is enabled**.
 1. Select **Save changes**.
 
 ## Contacts

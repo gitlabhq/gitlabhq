@@ -948,26 +948,8 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: gcp_cluster:clusters_applications_activate_service
-  :worker_name: Clusters::Applications::ActivateServiceWorker
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: gcp_cluster:clusters_applications_deactivate_integration
   :worker_name: Clusters::Applications::DeactivateIntegrationWorker
-  :feature_category: :kubernetes_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-- :name: gcp_cluster:clusters_applications_deactivate_service
-  :worker_name: Clusters::Applications::DeactivateServiceWorker
   :feature_category: :kubernetes_management
   :has_external_dependencies: false
   :urgency: :low
@@ -2434,15 +2416,6 @@
   :weight: 2
   :idempotent: false
   :tags: []
-- :name: irker
-  :worker_name: IrkerWorker
-  :feature_category: :integrations
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: issuable_export_csv
   :worker_name: IssuableExportCsvWorker
   :feature_category: :team_planning
@@ -2776,15 +2749,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: project_service
-  :worker_name: ProjectServiceWorker
-  :feature_category: :integrations
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: projects_after_import
   :worker_name: Projects::AfterImportWorker
   :feature_category: :importers
@@ -3100,15 +3064,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: web_hooks_destroy
-  :worker_name: WebHooks::DestroyWorker
-  :feature_category: :integrations
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: web_hooks_log_destroy
   :worker_name: WebHooks::LogDestroyWorker

@@ -241,8 +241,6 @@
   - 1
 - - invalid_gpg_signature_update
   - 2
-- - irker
-  - 1
 - - issuable_export_csv
   - 1
 - - issuable_label_links_destroy
@@ -357,8 +355,6 @@
   - 1
 - - project_import_schedule
   - 1
-- - project_service
-  - 1
 - - project_template_export
   - 1
 - - projects_after_import
@@ -470,8 +466,6 @@
 - - vulnerability_exports_export_deletion
   - 1
 - - web_hook
-  - 1
-- - web_hooks_destroy
   - 1
 - - web_hooks_log_destroy
   - 1

@@ -89,7 +89,7 @@ RSpec.describe 'Edit group settings' do
     it 'shows the selection menu' do
       visit edit_group_path(group)
 
-      expect(page).to have_content('Allowed to create projects')
+      expect(page).to have_content('Roles allowed to create projects')
     end
   end
 
@@ -97,7 +97,7 @@ RSpec.describe 'Edit group settings' do
     it 'shows the selection menu' do
       visit edit_group_path(group)
 
-      expect(page).to have_content('Allowed to create subgroups')
+      expect(page).to have_content('Roles allowed to create subgroups')
     end
   end
 

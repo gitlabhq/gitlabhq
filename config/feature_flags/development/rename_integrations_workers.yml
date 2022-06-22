@@ -1,8 +1,0 @@
----
-name: rename_integrations_workers
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88558
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364112
-milestone: '15.1'
-type: development
-group: group::integrations
-default_enabled: true

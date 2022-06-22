@@ -40,15 +40,6 @@ RSpec.describe Clusters::Applications::ActivateIntegrationWorker, '#perform' do
           expect { described_class.new.perform(cluster.id, integration_name) }
             .to change { project.reload.prometheus_integration&.active }.from(nil).to(true)
         end
-
-        context 'when using the old worker class' do
-          let(:described_class) { Clusters::Applications::ActivateServiceWorker }
-
-          it 'ensures Prometheus integration is activated' do
-            expect { described_class.new.perform(cluster.id, integration_name) }
-              .to change { project.reload.prometheus_integration&.active }.from(nil).to(true)
-          end
-        end
       end
     end
   end

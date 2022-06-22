@@ -21,8 +21,5 @@ module WebHooks
         ServiceResponse.error(message: "Unable to destroy #{web_hook.model_name.human}")
       end
     end
-
-    # Backwards compatibility with WebHooks::DestroyWorker
-    alias_method :sync_destroy, :execute
   end
 end

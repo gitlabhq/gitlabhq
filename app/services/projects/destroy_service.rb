@@ -212,7 +212,7 @@ module Projects
     # produces smaller and faster queries to the database.
     def destroy_web_hooks!
       project.hooks.find_each do |web_hook|
-        result = ::WebHooks::DestroyService.new(current_user).sync_destroy(web_hook)
+        result = ::WebHooks::DestroyService.new(current_user).execute(web_hook)
 
         unless result[:status] == :success
           raise_error(s_('DeleteProject|Failed to remove webhooks. Please try again or contact administrator.'))

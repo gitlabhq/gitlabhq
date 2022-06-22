@@ -1218,7 +1218,6 @@ RSpec.describe Integration do
 
     it 'queues a Integrations::ExecuteWorker' do
       expect(Integrations::ExecuteWorker).to receive(:perform_async).with(integration.id, data)
-      expect(ProjectServiceWorker).not_to receive(:perform_async)
 
       async_execute
     end
@@ -1227,19 +1226,6 @@ RSpec.describe Integration do
       let(:supported_events) { %w[issue] }
 
       it 'does not queue a worker' do
-        expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
-
-        async_execute
-      end
-    end
-
-    context 'when the FF :rename_integration_workers is disabled' do
-      before do
-        stub_feature_flags(rename_integrations_workers: false)
-      end
-
-      it 'queues a ProjectServiceWorker' do
-        expect(ProjectServiceWorker).to receive(:perform_async).with(integration.id, data)
         expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
 
         async_execute

@@ -36,26 +36,4 @@ RSpec.describe Integrations::ExecuteWorker, '#perform' do
       end.not_to raise_error
     end
   end
-
-  context 'when using the old worker class' do
-    let(:described_class) { ProjectServiceWorker }
-
-    it 'uses the correct worker attributes', :aggregate_failures do
-      expect(described_class.sidekiq_options).to include('retry' => 3, 'dead' => false)
-      expect(described_class.get_data_consistency).to eq(:always)
-      expect(described_class.get_feature_category).to eq(:integrations)
-      expect(described_class.get_urgency).to eq(:low)
-      expect(described_class.worker_has_external_dependencies?).to be(true)
-    end
-
-    it 'executes integration with given data' do
-      data = { test: 'test' }
-
-      expect_next_found_instance_of(integration.class) do |integration|
-        expect(integration).to receive(:execute).with(data)
-      end
-
-      worker.perform(integration.id, data)
-    end
-  end
 end

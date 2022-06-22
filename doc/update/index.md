@@ -460,10 +460,11 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.2.0 (unreleased)
 
-GitLab installations that have multiple web nodes should be
-[upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
-configuration change in Rails that can result in inconsistent ETag key
-generation.
+- GitLab installations that have multiple web nodes should be
+  [upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
+  configuration change in Rails that can result in inconsistent ETag key
+  generation.
+- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../raketasks/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
 
 ### 15.1.0
 

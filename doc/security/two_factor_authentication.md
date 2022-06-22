@@ -46,19 +46,22 @@ Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
 
+Prerequisites:
+
+- You must have the Maintainer or Owner role for the group.
+
 To enforce 2FA only for certain groups:
 
-1. Go to the group's **Settings > General** page.
-1. Expand the **Permissions and group features** section.
-1. Select the **Require all users in this group to set up two-factor authentication** option.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Select **All users in this group must set up two-factor authentication**.
+1. Select **Save changes**.
 
-You can also specify a grace period in the **Time before enforced** option.
-
-To change this setting, you must be an administrator or owner of the group.
+You can also specify a grace period in the **Delay 2FA enforcement** option.
 
 If you want to enforce 2FA only for certain groups, you can enable it in the
-group settings and specify a grace period as above. To change this setting you
-must be administrator or owner of the group.
+group settings and specify a grace period as above.
 
 The following are important notes about 2FA:
 
