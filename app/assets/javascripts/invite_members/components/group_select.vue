@@ -136,6 +136,7 @@ export default {
         v-for="group in groups"
         :key="group.id"
         :name="group.name"
+        data-qa-selector="group_select_dropdown_item"
         @click="selectGroup(group)"
       >
         <gl-avatar-labeled

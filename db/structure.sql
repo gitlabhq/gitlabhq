@@ -19202,7 +19202,8 @@ CREATE TABLE project_ci_cd_settings (
     restrict_user_defined_variables boolean DEFAULT false NOT NULL,
     job_token_scope_enabled boolean DEFAULT false NOT NULL,
     runner_token_expiration_interval integer,
-    separated_caches boolean DEFAULT true NOT NULL
+    separated_caches boolean DEFAULT true NOT NULL,
+    opt_in_jwt boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

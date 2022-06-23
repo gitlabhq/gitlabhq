@@ -611,6 +611,13 @@ user.skip_reconfirmation!
 
 ### Disable 2fa for single user
 
+**In GitLab 13.5 and later:**
+
+Use the code under [Disable 2FA | For a single user](../../security/two_factor_authentication.md#for-a-single-user) so that the target user
+is notified that 2FA has been disabled.
+
+**In GitLab 13.4 and earlier:**
+
 ```ruby
 user = User.find_by_username('<username>')
 user.disable_two_factor!

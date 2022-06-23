@@ -63,7 +63,6 @@ export default {
       data-testid="preview-item"
       @click="onClickDraft(draft)"
     >
-      {{ isOnLatestDiff(draft) }}
       <preview-item :draft="draft" :is-last="isLast(index)" />
     </gl-dropdown-item>
   </gl-dropdown>

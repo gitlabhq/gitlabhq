@@ -1,32 +1,11 @@
 ---
-stage: Secure, Protect
-group: all
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: index, dev, reference
+redirect_to: '../index.md'
+remove_date: '2022-09-23'
 ---
 
-# Application Security development documentation
+This document was moved to [another location](../index.md).
 
-Development guides that are specific to the stages that work on Application Security features are listed here.
-
-Please go to [Application Security](../../user/application_security/index.md) if you are looking for documentation on how to use those features.
-
-## Namespaces
-
-Application Security code in the Rails monolith is organized into the following namespaces, which generally follows
-the feature categories in the [Secure](https://about.gitlab.com/stages-devops-lifecycle/secure/) and [Protect](https://about.gitlab.com/stages-devops-lifecycle/protect/) stages.
-
-- `AppSec`: shared code.
-  - `AppSec::ContainerScanning`: Container Scanning code.
-  - `AppSec::Dast`: DAST code.
-  - `AppSec::DependencyScanning`: Dependency Scanning code.
-  - `AppSec::Fuzzing::API`: API Fuzzing code.
-  - `AppSec::Fuzzing::Coverage`: Coverage Fuzzing code.
-  - `AppSec::Fuzzing`: Shared fuzzing code.
-  - `AppSec::LicenseCompliance`: License Compliance code.
-  - `AppSec::Sast`: SAST code.
-  - `AppSec::SecretDetection`: Secret Detection code.
-  - `AppSec::VulnMgmt`: Vulnerability Management code.
-
-Most AppSec code does not conform to these namespace guidelines. When developing, make an effort
-to move existing code into the appropriate namespace whenever possible.
+<!-- This redirect file can be deleted after <2022-09-23>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

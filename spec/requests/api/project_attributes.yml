@@ -100,6 +100,7 @@ ci_cd_settings:
     forward_deployment_enabled: ci_forward_deployment_enabled
     job_token_scope_enabled: ci_job_token_scope_enabled
     separated_caches: ci_separated_caches
+    opt_in_jwt: ci_opt_in_jwt
 
 build_import_state: # import_state
   unexposed_attributes:

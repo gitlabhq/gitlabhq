@@ -17,6 +17,7 @@ module QA
 
           base.view 'app/assets/javascripts/invite_members/components/group_select.vue' do
             element :group_select_dropdown_search_field
+            element :group_select_dropdown_item
           end
 
           base.view 'app/assets/javascripts/invite_members/components/members_token_select.vue' do
@@ -58,6 +59,8 @@ module QA
 
           within_element(:invite_members_modal_content) do
             click_button 'Select a group'
+
+            Support::Waiter.wait_until { has_element?(:group_select_dropdown_item) }
 
             # Helps stabilize race condition with concurrent group API calls while searching
             # TODO: Replace with `fill_element :group_select_dropdown_search_field, group_name` when this bug is resolved: https://gitlab.com/gitlab-org/gitlab/-/issues/349379
