@@ -63,8 +63,8 @@ can still be found in the Git repository:
 ### Installation using Docker
 
 GitLab provides official Docker images for both Community and Enterprise
-editions. They are based on the Omnibus package and instructions on how to
-update them are in [a separate document](https://docs.gitlab.com/omnibus/docker/README.html).
+editions, and they are based on the Omnibus package. See how to
+[install GitLab using Docker](../install/docker.md).
 
 ### Installation using Helm
 

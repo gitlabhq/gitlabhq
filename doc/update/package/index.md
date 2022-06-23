@@ -189,6 +189,11 @@ NOTE:
 For the GitLab Community Edition, replace `gitlab-ee` with
 `gitlab-ce`.
 
+## Upgrade the product documentation
+
+This is an optional step. If you [installed the product documentation](../../administration/docs_self_host.md),
+see how to [upgrade to a later version](../../administration/docs_self_host.md#upgrade-using-docker).
+
 ## Troubleshooting
 
 ### GitLab 13.7 and later unavailable on Amazon Linux 2

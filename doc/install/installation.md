@@ -1013,6 +1013,10 @@ To start and stop GitLab when using:
 - systemd units: use `sudo systemctl start gitlab.target` or `sudo systemctl stop gitlab.target`.
 - The SysV init script: use `sudo service gitlab start` or `sudo service gitlab stop`.
 
+### Install the product documentation
+
+This is an optional step. See how to [self-host the product documentation](../administration/docs_self_host.md).
+
 ## Advanced Setup Tips
 
 ### Relative URL support

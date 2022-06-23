@@ -47,10 +47,9 @@ RSpec.describe Key, :mailer do
     end
 
     describe 'validation of banned keys' do
-      let_it_be(:user) { create(:user) }
-
       let(:key) { build(:key) }
-      let(:banned_keys) do
+
+      where(:key_content) do
         [
           'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEAwRIdDlHaIqZXND/l1vFT7ue3rc/DvXh2y' \
           'x5EFtuxGQRHVxGMazDhV4vj5ANGXDQwUYI0iZh6aOVrDy8I/y9/y+YDGCvsnqrDbuPDjW' \
@@ -131,68 +130,13 @@ RSpec.describe Key, :mailer do
         ]
       end
 
-      context 'when ssh_banned_key feature flag is enabled with a user' do
-        before do
-          stub_feature_flags(ssh_banned_key: user)
-        end
+      with_them do
+        it 'does not allow banned keys' do
+          key.key = key_content
 
-        where(:key_content) { banned_keys }
-
-        with_them do
-          it 'does not allow banned keys' do
-            key.key = key_content
-            key.user = user
-
-            expect(key).to be_invalid
-            expect(key.errors[:key]).to include(
-              _('cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one.'))
-          end
-
-          it 'allows when the user is a ghost user' do
-            key.key = key_content
-            key.user = User.ghost
-
-            expect(key).to be_valid
-          end
-
-          it 'allows when the user is nil' do
-            key.key = key_content
-            key.user = nil
-
-            expect(key).to be_valid
-          end
-        end
-
-        it 'allows other keys' do
-          key.user = user
-
-          expect(key).to be_valid
-        end
-
-        it 'allows other users' do
-          key.user = User.ghost
-
-          expect(key).to be_valid
-        end
-      end
-
-      context 'when ssh_banned_key feature flag is disabled' do
-        before do
-          stub_feature_flags(ssh_banned_key: false)
-        end
-
-        where(:key_content) { banned_keys }
-
-        with_them do
-          it 'allows banned keys' do
-            key.key = key_content
-
-            expect(key).to be_valid
-          end
-        end
-
-        it 'allows other keys' do
-          expect(key).to be_valid
+          expect(key).to be_invalid
+          expect(key.errors[:key]).to include(
+            _('cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one.'))
         end
       end
     end

@@ -84,10 +84,10 @@ the defined policy.
 |-------|------|-----------------|-------------|
 | `type` | `string` | `require_approval` | The action's type. |
 | `approvals_required` | `integer` | Greater than or equal to zero | The number of MR approvals required. |
-| `user_approvers` | `array` of `string` | Username of one of more users | The users to consider as approvers. |
-| `user_approvers_ids` | `array` of `integer` | ID of one of more users | The IDs of users to consider as approvers. |
-| `group_approvers` | `array` of `string` | Path of one of more groups | The groups to consider as approvers. |
-| `group_approvers_ids` | `array` of `integer` | ID of one of more groups | The IDs of groups to consider as approvers. |
+| `user_approvers` | `array` of `string` | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `user_approvers_ids` | `array` of `integer` | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `group_approvers` | `array` of `string` | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `group_approvers_ids` | `array` of `integer` | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 
 Requirements and limitations:
 

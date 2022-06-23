@@ -288,6 +288,9 @@ regular expression displayed in the settings. Available in GitLab 14.10 and earl
 
 The regular expression you need is in the **Test coverage parsing** field.
 
+If you need to retrieve the project coverage setting from many projects, you can
+[use the API to programmatically retrieve the setting](https://gitlab.com/gitlab-org/gitlab/-/issues/17633#note_945941397).
+
 <!-- end_remove -->
 
 ### Test coverage examples

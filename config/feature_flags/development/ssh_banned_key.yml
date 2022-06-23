@@ -1,8 +1,0 @@
----
-name: ssh_banned_key
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87541
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363410
-milestone: '15.1'
-type: development
-group: 'group::authentication and authorization'
-default_enabled: true

@@ -42,20 +42,20 @@ The API of this method is similar to `in_batches`, though it doesn't support
 all of the arguments that `in_batches` supports. You should always use
 `each_batch` _unless_ you have a specific need for `in_batches`.
 
-## Avoid iterating over non-unique columns
+## Iterating over non-unique columns
 
-One should proceed with extra caution, and possibly avoid iterating over a column that can contain
-duplicate values. When you iterate over an attribute that is not unique, even with the applied max
-batch size, there is no guarantee that the resulting batches do not surpass it. The following
-snippet demonstrates this situation when one attempt to select `Ci::Build` entries for users with
-`id` between `1` and `10,000`, the database returns `1 215 178` matching rows.
+One should proceed with extra caution. When you iterate over an attribute that is not unique,
+even with the applied max batch size, there is no guarantee that the resulting batches do not
+surpass it. The following snippet demonstrates this situation when one attempt to select
+`Ci::Build` entries for users with `id` between `1` and `10,000`, the database returns
+`1 215 178` matching rows.
 
 ```ruby
 [ gstg ] production> Ci::Build.where(user_id: (1..10_000)).size
 => 1215178
 ```
 
-This happens because built relation is translated into the following query
+This happens because the built relation is translated into the following query:
 
 ```ruby
 [ gstg ] production> puts Ci::Build.where(user_id: (1..10_000)).to_sql
@@ -68,6 +68,27 @@ even though the range size is limited to a certain threshold (`10,000` in the pr
 threshold does not translate to the size of the returned dataset. That happens because when taking
 `n` possible values of attributes, one can't tell for sure that the number of records that contains
 them is less than `n`.
+
+### Loose-index scan with `distinct_each_batch`
+
+When iterating over a non-unique column is necessary, use the `distinct_each_batch` helper
+method. The helper uses the [loose-index scan technique](https://wiki.postgresql.org/wiki/Loose_indexscan)
+(skip-index scan) to skip duplicated values within a database index.
+
+Example: iterating over distinct `author_id` in the Issue model
+
+```ruby
+Issue.distinct_each_batch(column: :author_id, of: 1000) do |relation|
+  users = User.where(id: relation.select(:author_id)).to_a
+end
+```
+
+The technique provides stable performance between the batches regardless of the data distribution.
+The `relation` object returns an ActiveRecord scope where only the given `column` is available.
+Other columns are not loaded.
+
+The underlying database queries use recursive CTEs, which adds extra overhead. We therefore advise to use
+smaller batch sizes than those used for a standard `each_batch` iteration.
 
 ## Column definition
 

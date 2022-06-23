@@ -2,6 +2,7 @@
 
 module EachBatch
   extend ActiveSupport::Concern
+  include LooseIndexScan
 
   class_methods do
     # Iterates over the rows in a relation in batches, similar to Rails'
@@ -95,6 +96,66 @@ module EachBatch
 
         # Using unscoped is necessary to prevent leaking the current scope used by
         # ActiveRecord to chain `each_batch` method.
+        unscoped { yield relation, index }
+
+        break unless stop
+      end
+    end
+
+    # Iterates over the rows in a relation in batches by skipping duplicated values in the column.
+    # Example: counting the number of distinct authors in `issues`
+    #
+    #  - Table size: 100_000
+    #  - Column: author_id
+    #  - Distinct author_ids in the table: 1000
+    #
+    #  The query will read maximum 1000 rows if we have index coverage on user_id.
+    #
+    #  > count = 0
+    #  > Issue.distinct_each_batch(column: 'author_id', of: 1000) { |r| count += r.count(:author_id) }
+    def distinct_each_batch(column:, order: :asc, of: 1000)
+      start = except(:select)
+        .select(column)
+        .reorder(column => order)
+
+      start = start.take
+
+      return unless start
+
+      start_id = start[column]
+      arel_table = self.arel_table
+      arel_column = arel_table[column.to_s]
+
+      1.step do |index|
+        stop = loose_index_scan(column: column, order: order) do |cte_query, inner_query|
+          if order == :asc
+            [cte_query.where(arel_column.gteq(start_id)), inner_query]
+          else
+            [cte_query.where(arel_column.lteq(start_id)), inner_query]
+          end
+        end.offset(of).take
+
+        if stop
+          stop_id = stop[column]
+
+          relation = loose_index_scan(column: column, order: order) do |cte_query, inner_query|
+            if order == :asc
+              [cte_query.where(arel_column.gteq(start_id)), inner_query.where(arel_column.lt(stop_id))]
+            else
+              [cte_query.where(arel_column.lteq(start_id)), inner_query.where(arel_column.gt(stop_id))]
+            end
+          end
+          start_id = stop_id
+        else
+          relation = loose_index_scan(column: column, order: order) do |cte_query, inner_query|
+            if order == :asc
+              [cte_query.where(arel_column.gteq(start_id)), inner_query]
+            else
+              [cte_query.where(arel_column.lteq(start_id)), inner_query]
+            end
+          end
+        end
+
         unscoped { yield relation, index }
 
         break unless stop

@@ -58,7 +58,7 @@ itself, increasing visibility.
 
 ## Development guidelines
 
-Danger code is Ruby code, so all our [usual backend guidelines](index.md#backend-guides)
+Danger code is Ruby code, so all our [usual backend guidelines](feature_development.md#backend-guides)
 continue to apply. However, there are a few things that deserve special emphasis.
 
 ### When to use Danger
