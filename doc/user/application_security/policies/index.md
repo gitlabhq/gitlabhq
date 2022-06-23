@@ -81,7 +81,7 @@ status), and create and edit deployed policies:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Policies**.
 
-![Policies List Page](img/policies_list_v15_0.png)
+![Policies List Page](img/policies_list_v15_1.png)
 
 ## Policy editor
 

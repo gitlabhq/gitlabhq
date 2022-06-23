@@ -30,8 +30,8 @@ RSpec.describe Gitlab::Ci::RunnerUpgradeCheck do
       context 'with invalid runner_version' do
         let(:runner_version) { 'junk' }
 
-        it 'raises ArgumentError' do
-          expect { subject }.to raise_error(ArgumentError)
+        it 'returns :invalid' do
+          is_expected.to eq(:invalid)
         end
       end
 

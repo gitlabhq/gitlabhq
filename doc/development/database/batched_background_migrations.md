@@ -244,8 +244,6 @@ background migration.
 
    ```ruby
    class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.0]
-     disable_ddl_transaction!
-
      MIGRATION = 'BackfillRouteNamespaceId'
      DELAY_INTERVAL = 2.minutes
 

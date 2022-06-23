@@ -1,8 +1,0 @@
----
-name: use_status_for_repository_update_mirror
-introduced_by_url: 
-rollout_issue_url: 
-milestone: '15.1'
-type: development
-group: group::source code
-default_enabled: false

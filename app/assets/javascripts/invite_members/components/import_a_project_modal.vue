@@ -95,7 +95,7 @@ export default {
   },
   projectSelectLabelId: 'project-select',
   modalId: uniqueId('import-a-project-modal-'),
-  formClasses: 'gl-mt-3 gl-sm-w-auto gl-w-full',
+  formClasses: 'gl-md-w-auto gl-w-full',
   buttonClasses: 'gl-w-full',
 };
 </script>

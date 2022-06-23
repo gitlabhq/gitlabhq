@@ -17,14 +17,11 @@ module Gitlab
       end
 
       def check_runner_upgrade_status(runner_version)
-        return :invalid unless runner_version
-
-        releases = RunnerReleases.instance.releases
-        orig_runner_version = runner_version
         runner_version = ::Gitlab::VersionInfo.parse(runner_version) unless runner_version.is_a?(::Gitlab::VersionInfo)
 
-        raise ArgumentError, "'#{orig_runner_version}' is not a valid version" unless runner_version.valid?
+        return :invalid unless runner_version.valid?
 
+        releases = RunnerReleases.instance.releases
         gitlab_minor_version = @gitlab_version.without_patch
 
         available_releases = releases

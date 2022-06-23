@@ -8,7 +8,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.htm
 # Repository mirroring **(FREE)**
 
 You can _mirror_ a repository to and from external sources. You can select which repository
-serves as the source. Branches, tags, and commits can be mirrored.
+serves as the source. Branches, tags, and commits are synced automatically.
 
 NOTE:
 SCP-style URLs are **not** supported. However, the work for implementing SCP-style URLs is tracked

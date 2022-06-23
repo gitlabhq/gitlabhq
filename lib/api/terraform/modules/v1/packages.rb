@@ -97,6 +97,24 @@ module API
               present presenter, with: ::API::Entities::Terraform::ModuleVersions
             end
 
+            get 'download' do
+              latest_version = packages.order_version.last&.version
+
+              render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found) if latest_version.nil?
+
+              download_path = api_v4_packages_terraform_modules_v1_module_version_download_path(
+                {
+                  module_namespace: params[:module_namespace],
+                  module_name: params[:module_name],
+                  module_system: params[:module_system],
+                  module_version: latest_version
+                },
+                true
+              )
+
+              redirect(download_path)
+            end
+
             params do
               includes :module_version
             end

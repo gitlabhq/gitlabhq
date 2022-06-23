@@ -181,7 +181,7 @@ The following are PostgreSQL upgrade validation tests we performed.
   - [Geo multi-node upgrade from 12.0.9 to 12.1.9 does not upgrade PostgreSQL](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4705).
   - [Refresh foreign tables fails on app server in multi-node setup after upgrade to 12.1.9](https://gitlab.com/gitlab-org/gitlab/-/issues/32119).
 
-## Other tests
+## Object storage replication tests
 
 The following are additional validation tests we performed.
 
@@ -193,13 +193,6 @@ The following are additional validation tests we performed.
 - Outcome: The test was successful. Data in object storage was replicated and present after a failover.
 - Follow up issues:
   - [Geo: Failing to replicate initial Monitoring project](https://gitlab.com/gitlab-org/gitlab/-/issues/330485)
-
-### August 2020
-
-[Test Gitaly Cluster on a Geo Deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/223210):
-
-- Description: Tested a Geo deployment with Gitaly clusters configured on both the primary and secondary Geo sites. Triggered automatic Gitaly cluster failover on the primary Geo site, and ran end-to-end Geo tests. Then triggered Gitaly cluster failover on the secondary Geo site, and re-ran the end-to-end Geo tests.
-- Outcome: Successful end-to-end tests before and after Gitaly cluster failover on the primary site, and before and after Gitaly cluster failover on the secondary site.
 
 ### January 2022
 
@@ -221,3 +214,12 @@ The following are additional validation tests we performed.
 
 - Description: Tested the average time it takes for a single image to replicate from the primary object storage location to the secondary when using GCP based object storage replication and [GitLab based object storage replication](object_storage.md#enabling-gitlab-managed-object-storage-replication). This was tested by uploading a 1mb image to a project on the primary site every second for 60 seconds. The time was then measured until a image was available on the secondary site. This was achieved using a [Ruby Script](https://gitlab.com/gitlab-org/quality/geo-replication-tester).
 - Outcome: GCP handles replication differently than other Cloud Providers. In GCP, the process is to a create single bucket that is either multi, dual or single region based. This means that the bucket will automatically store replicas in a region based on the option chosen. Even when using multi region, this will still only replicate within a single continent, the options being America, Europe, or Asia. At current there doesn't seem to be any way to replicate objects between continents using GCP based replication. For Geo managed replication the average time when replicating within the same region was 6 seconds, and when replicating cross region this rose to just 9 seconds.
+
+## Other tests
+
+### August 2020
+
+[Test Gitaly Cluster on a Geo Deployment](https://gitlab.com/gitlab-org/gitlab/-/issues/223210):
+
+- Description: Tested a Geo deployment with Gitaly clusters configured on both the primary and secondary Geo sites. Triggered automatic Gitaly cluster failover on the primary Geo site, and ran end-to-end Geo tests. Then triggered Gitaly cluster failover on the secondary Geo site, and re-ran the end-to-end Geo tests.
+- Outcome: Successful end-to-end tests before and after Gitaly cluster failover on the primary site, and before and after Gitaly cluster failover on the secondary site.

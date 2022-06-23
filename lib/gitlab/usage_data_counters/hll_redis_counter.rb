@@ -39,6 +39,7 @@ module Gitlab
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
         error_tracking
+        ide_edit
       ].freeze
 
       # Track event on entity_id

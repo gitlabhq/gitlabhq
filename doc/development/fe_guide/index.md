@@ -89,6 +89,10 @@ How to use [GraphQL](graphql.md).
 
 How to use [HAML](haml.md).
 
+## ViewComponent
+
+How we use [ViewComponent](view_component.md).
+
 ## Icons and Illustrations
 
 How we use SVG for our [Icons and Illustrations](icons.md).

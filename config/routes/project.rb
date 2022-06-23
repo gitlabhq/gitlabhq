@@ -363,8 +363,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
 
-        resource :tracing, only: [:show]
-
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
         resources :incidents, only: [:index]
@@ -624,7 +622,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
                                             :commits, :commit, :find_file, :files, :compare,
                                             :cycle_analytics, :mattermost, :variables, :triggers,
                                             :environments, :protected_environments, :error_tracking, :alert_management,
-                                            :tracing,
                                             :serverless, :clusters, :audit_events, :wikis, :merge_requests,
                                             :vulnerability_feedback, :security, :dependencies, :issues,
                                             :pipelines, :pipeline_schedules, :runners, :snippets)

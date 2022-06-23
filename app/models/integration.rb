@@ -154,6 +154,8 @@ class Integration < ApplicationRecord
     else
       raise ArgumentError, "Unknown field storage: #{storage}"
     end
+
+    boolean_accessor(name) if attrs[:type] == 'checkbox'
   end
   # :nocov:
 

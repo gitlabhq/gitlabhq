@@ -71,9 +71,9 @@ module Gitlab
           end
 
           def compose!(deps = nil)
-            super do
-              has_workflow_rules = deps&.workflow_entry&.has_rules?
+            has_workflow_rules = deps&.workflow_entry&.has_rules?
 
+            super do
               # If workflow:rules: or rules: are used
               # they are considered not compatible
               # with `only/except` defaults
@@ -86,11 +86,15 @@ module Gitlab
                 @entries.delete(:except) unless except_defined? # rubocop:disable Gitlab/ModuleWithInstanceVariables
               end
 
-              unless has_workflow_rules
-                validate_against_warnings
+              unless ::Feature.enabled?(:ci_value_change_for_processable_and_rules_entry)
+                validate_against_warnings unless has_workflow_rules
               end
 
               yield if block_given?
+            end
+
+            if ::Feature.enabled?(:ci_value_change_for_processable_and_rules_entry)
+              validate_against_warnings unless has_workflow_rules
             end
           end
 

@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value stream analytics for groups **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in GitLab 12.9 for groups.
-
 Value stream analytics provides metrics about each stage of your software development process.
 
 A **value stream** is the entire work process that delivers value to customers. For example,
@@ -20,14 +18,13 @@ Use value stream analytics to identify:
 - The amount of time it takes to go from an idea to production.
 - The velocity of a given project.
 - Bottlenecks in the development process.
-- Detecting long-running issues or merge requests.
+- Long-running issues or merge requests.
 - Factors that cause your software development lifecycle to slow down.
 
 Value stream analytics is also available for [projects](../../analytics/value_stream_analytics.md).
 
 ## View value stream analytics
 
-> - Date range filter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 12.4
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 
@@ -68,7 +65,11 @@ The table shows a list of related workflow items for the selected stage. Based o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
-The **Overview** dashboard in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select, the dashboard automatically aggregates DORA metrics and displays the current status of the value stream.
+The **Overview** dashboard in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select,
+the dashboard automatically aggregates DORA metrics and displays the current status of the value stream.
+
+To view deployment metrics, you must have a
+[production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
 
 To view the DORA metrics and key metrics:
 
@@ -83,14 +84,14 @@ To view the DORA metrics and key metrics:
       - In the **To** field, select an end date.
 Key metrics and DORA metrics display below the **Filter results** text box.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/wQU-mWvNSiI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 ### Key metrics in the value stream
 
 The **Overview** dashboard shows the following key metrics that measure team performance:
 
 - Lead time: Median time from when the issue was created to when it was closed.
-- Cycle time: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages) to when that issue is closed. The cycle time approach underestimates the lead time because merge request creation is always later than commit time.
+- Cycle time: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
+  [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages) to when that issue is closed.
+  The cycle time approach underestimates the lead time because merge request creation is always later than commit time.
 - New issues: Number of new issues created.
 - Deploys: Total number of deployments to production.
 
@@ -102,20 +103,24 @@ The **Overview** dashboard shows the following key metrics that measure team per
 
 The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/index.md) metrics:
 
-These [four DORA metrics](../../../user/analytics/index.md) are: Deployment Frequency, Lead time for changes, Time to restore service and Change failure rate.
+- Deployment Frequency.
+- Lead time for changes.
+- Time to restore service.
+- Change failure rate.
+
 DORA metrics are calculated based on data from the
 [DORA API](../../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
-
-To view deployment metrics, you must have a
-[production environment configured](../../../ci/environments/index.md#deployment-tier-of-environments).
-
-NOTE:
-The date range selector filters items by the event time. This is the time when the currently
-selected stage finished for the given item.
 
 NOTE:
 In GitLab 13.9 and later, deployment frequency metrics are calculated based on when the deployment was finished.
 In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on when the deployment was created.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/embed/wQU-mWvNSiI">DORA metrics and value stream analytics</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/wQU-mWvNSiI" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ### How value stream analytics aggregates data
 
@@ -158,6 +163,10 @@ To view the median time spent in each stage by a group:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 1. To view the metrics for each stage, above the **Filter results** text box, hover over a stage.
+
+NOTE:
+The date range selector filters items by the event time. The event time is when the
+selected stage finished for the given item.
 
 ## How value stream analytics measures stages
 
@@ -320,7 +329,6 @@ To delete a custom value stream:
 
 ## View number of days for a cycle to complete
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
 
@@ -341,8 +349,6 @@ The chart shows data for the last 500 workflow items.
       - In the **To** field, select an end date.
 
 ## Tasks by type chart
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
 
 This chart shows a cumulative count of issues and merge requests per day.
 

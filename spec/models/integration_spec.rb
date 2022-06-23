@@ -824,7 +824,7 @@ RSpec.describe Integration do
               { name: 'safe_field' },
               { name: 'url' },
               { name: 'trojan_horse', type: 'password' },
-              { name: 'trojan_gift', type: 'gift' }
+              { name: 'trojan_gift', type: 'text' }
             ].shuffle
           end
         end
@@ -849,7 +849,7 @@ RSpec.describe Integration do
           field :safe_field
           field :url
           field :trojan_horse, type: 'password'
-          field :trojan_gift, type: 'gift'
+          field :trojan_gift, type: 'text'
         end
       end
 
@@ -1051,11 +1051,9 @@ RSpec.describe Integration do
         field :bar, type: 'password'
         field :password
 
-        field :with_help,
-              help: -> { 'help' }
-
-        field :a_number,
-              type: 'number'
+        field :with_help, help: -> { 'help' }
+        field :select, type: 'select'
+        field :boolean, type: 'checkbox'
       end
     end
 
@@ -1084,6 +1082,19 @@ RSpec.describe Integration do
       expect(integration).to be_foo_p_changed
     end
 
+    it 'provides boolean accessors for checkbox fields' do
+      integration.boolean = 'yes'
+      expect(integration.boolean?).to be(true)
+
+      integration.boolean = nil
+      expect(integration.boolean?).to be(false)
+
+      expect(integration).not_to respond_to(:foo?)
+      expect(integration).not_to respond_to(:bar?)
+      expect(integration).not_to respond_to(:password?)
+      expect(integration).not_to respond_to(:select?)
+    end
+
     it 'provides data fields' do
       integration.foo_dt = 3
       expect(integration.foo_dt).to eq 3
@@ -1093,21 +1104,24 @@ RSpec.describe Integration do
 
     it 'registers fields in the fields list' do
       expect(integration.fields.pluck(:name)).to match_array %w[
-        foo foo_p foo_dt bar password with_help a_number
+        foo foo_p foo_dt bar password with_help select boolean
       ]
 
       expect(integration.api_field_names).to match_array %w[
-        foo foo_p foo_dt with_help a_number
+        foo foo_p foo_dt with_help select boolean
       ]
     end
 
     specify 'fields have expected attributes' do
       expect(integration.fields).to include(
         have_attributes(name: 'foo', type: 'text'),
+        have_attributes(name: 'foo_p', type: 'text'),
+        have_attributes(name: 'foo_dt', type: 'text'),
         have_attributes(name: 'bar', type: 'password'),
         have_attributes(name: 'password', type: 'password'),
-        have_attributes(name: 'a_number', type: 'number'),
-        have_attributes(name: 'with_help', help: 'help')
+        have_attributes(name: 'with_help', help: 'help'),
+        have_attributes(name: 'select', type: 'select'),
+        have_attributes(name: 'boolean', type: 'checkbox')
       )
     end
   end
