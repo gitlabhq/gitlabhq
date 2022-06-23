@@ -49,7 +49,7 @@ class Import::BitbucketServerController < Import::BaseController
     session[bitbucket_server_username_key] = params[:bitbucket_server_username]
     session[bitbucket_server_url_key] = params[:bitbucket_server_url]
 
-    redirect_to status_import_bitbucket_server_path
+    redirect_to status_import_bitbucket_server_path(namespace_id: params[:namespace_id])
   end
 
   # We need to re-expose controller's internal method 'status' as action.
@@ -115,7 +115,7 @@ class Import::BitbucketServerController < Import::BaseController
     unless session[bitbucket_server_url_key].present? &&
         session[bitbucket_server_username_key].present? &&
         session[personal_access_token_key].present?
-      redirect_to new_import_bitbucket_server_path
+      redirect_to new_import_bitbucket_server_path(namespace_id: params[:namespace_id])
     end
   end
 
@@ -169,9 +169,6 @@ class Import::BitbucketServerController < Import::BaseController
             redirect: new_import_bitbucket_server_path
           }
         }, status: :unprocessable_entity
-      end
-      format.html do
-        redirect_to new_import_bitbucket_server_path
       end
     end
   end

@@ -1,4 +1,4 @@
-import { GlPagination, GlTable } from '@gitlab/ui';
+import { GlButton, GlPagination, GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
@@ -164,8 +164,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(cells.at(3).text()).toBe(__('Never'));
     expect(cells.at(4).text()).toBe(__('Never'));
     expect(cells.at(5).text()).toBe('Maintainer');
-    let anchor = cells.at(6).find('a');
-    expect(anchor.attributes()).toMatchObject({
+    let button = cells.at(6).findComponent(GlButton);
+    expect(button.attributes()).toMatchObject({
       'aria-label': __('Revoke'),
       'data-qa-selector': __('revoke_button'),
       href: '/-/profile/personal_access_tokens/1/revoke',
@@ -176,8 +176,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         { accessTokenType },
       ),
     });
-
-    expect(anchor.classes()).toContain('btn-danger-secondary');
+    expect(button.props('category')).toBe('tertiary');
 
     // Second row
     expect(cells.at(7).text()).toBe('b');
@@ -186,9 +185,9 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(cells.at(10).text()).not.toBe(__('Never'));
     expect(cells.at(11).text()).toBe(__('Expired'));
     expect(cells.at(12).text()).toBe('Maintainer');
-    anchor = cells.at(13).find('a');
-    expect(anchor.attributes('href')).toBe('/-/profile/personal_access_tokens/2/revoke');
-    expect(anchor.classes()).toEqual(['btn', 'btn-danger', 'btn-md', 'gl-button', 'btn-icon']);
+    button = cells.at(13).findComponent(GlButton);
+    expect(button.attributes('href')).toBe('/-/profile/personal_access_tokens/2/revoke');
+    expect(button.props('category')).toBe('tertiary');
   });
 
   it('sorts rows alphabetically', async () => {

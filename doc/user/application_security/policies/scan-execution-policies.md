@@ -209,16 +209,10 @@ scan_execution_policy:
   rules:
   - type: schedule
     cadence: "15 3 * * *"
-    clusters:
-      production-cluster:
-        containers:
-        - database
-        resources:
-        - production-application
+    agents:
+      production-agent:
         namespaces:
         - production-namespace
-        kinds:
-        - deployment
   actions:
   - scan: cluster_image_scanning
 ```

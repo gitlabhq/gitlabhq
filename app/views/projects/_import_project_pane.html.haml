@@ -31,7 +31,7 @@
             Bitbucket Cloud
       - if bitbucket_server_import_enabled?
         %div
-          = link_to status_import_bitbucket_server_path, class: "gl-button btn-default btn import_bitbucket js-import-project-btn", data: { platform: 'bitbucket_server', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } do
+          = link_to status_import_bitbucket_server_path(namespace_id: namespace_id), class: "gl-button btn-default btn import_bitbucket js-import-project-btn", data: { platform: 'bitbucket_server', **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } do
             .gl-button-icon
               = sprite_icon('bitbucket')
             Bitbucket Server

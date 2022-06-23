@@ -134,6 +134,15 @@ RSpec.describe Import::BitbucketServerController do
       expect(response).to have_gitlab_http_status(:found)
       expect(response).to redirect_to(status_import_bitbucket_server_path)
     end
+
+    it 'passes namespace_id to status page if provided' do
+      namespace_id = 5
+      allow(controller).to receive(:allow_local_requests?).and_return(true)
+
+      post :configure, params: { personal_access_token: token, bitbucket_server_username: username, bitbucket_server_url: url, namespace_id: namespace_id }
+
+      expect(response).to redirect_to(status_import_bitbucket_server_path(namespace_id: namespace_id))
+    end
   end
 
   describe 'GET status' do
@@ -158,6 +167,14 @@ RSpec.describe Import::BitbucketServerController do
       expect(json_response.dig("incompatible_repos", 0, "id")).to eq("#{@invalid_repo.project_key}/#{@invalid_repo.slug}")
       expect(json_response['provider_repos'].length).to eq(1)
       expect(json_response.dig("provider_repos", 0, "id")).to eq(@repo.full_name)
+    end
+
+    it 'redirects to connection form if session is missing auth data' do
+      session[:bitbucket_server_url] = nil
+
+      get :status, format: :html
+
+      expect(response).to redirect_to(new_import_bitbucket_server_path)
     end
 
     it_behaves_like 'import controller status' do

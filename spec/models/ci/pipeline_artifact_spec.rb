@@ -196,6 +196,80 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     end
   end
 
+  describe '.create_or_replace_for_pipeline!' do
+    let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+
+    let(:file_type) { :code_coverage }
+    let(:file) { CarrierWaveStringFile.new_file(file_content: 'content', filename: 'file.json', content_type: 'json') }
+    let(:size) { file['tempfile'].size }
+
+    subject do
+      Ci::PipelineArtifact.create_or_replace_for_pipeline!(
+        pipeline: pipeline,
+        file_type: file_type,
+        file: file,
+        size: size
+      )
+    end
+
+    around do |example|
+      freeze_time { example.run }
+    end
+
+    context 'when there is no existing record' do
+      it 'creates a new pipeline artifact for the given parameters' do
+        expect { subject }.to change { Ci::PipelineArtifact.count }.from(0).to(1)
+
+        expect(subject.code_coverage?).to be(true)
+        expect(subject.pipeline).to eq(pipeline)
+        expect(subject.project_id).to eq(pipeline.project_id)
+        expect(subject.file.filename).to eq(file['filename'])
+        expect(subject.size).to eq(size)
+        expect(subject.file_format).to eq(Ci::PipelineArtifact::REPORT_TYPES[file_type].to_s)
+        expect(subject.expire_at).to eq(Ci::PipelineArtifact::EXPIRATION_DATE.from_now)
+      end
+    end
+
+    context 'when there are existing records with different types' do
+      let!(:existing_artifact) do
+        create(:ci_pipeline_artifact, pipeline: pipeline, file_type: file_type, expire_at: 1.day.from_now)
+      end
+
+      let!(:other_artifact) { create(:ci_pipeline_artifact, pipeline: pipeline, file_type: :code_quality_mr_diff) }
+
+      it 'replaces the existing pipeline artifact record with the given file type' do
+        expect { subject }.not_to change { Ci::PipelineArtifact.count }
+
+        expect(subject.id).not_to eq(existing_artifact.id)
+
+        expect(subject.code_coverage?).to be(true)
+        expect(subject.pipeline).to eq(pipeline)
+        expect(subject.project_id).to eq(pipeline.project_id)
+        expect(subject.file.filename).to eq(file['filename'])
+        expect(subject.size).to eq(size)
+        expect(subject.file_format).to eq(Ci::PipelineArtifact::REPORT_TYPES[file_type].to_s)
+        expect(subject.expire_at).to eq(Ci::PipelineArtifact::EXPIRATION_DATE.from_now)
+      end
+    end
+
+    context 'when ActiveRecordError is raised' do
+      let(:pipeline) { instance_double(Ci::Pipeline, id: 1) }
+      let(:file_type) { :code_coverage }
+      let(:error) { ActiveRecord::ActiveRecordError.new('something went wrong') }
+
+      before do
+        allow(pipeline).to receive(:pipeline_artifacts).and_raise(error)
+      end
+
+      it 'tracks and raise the exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_exception)
+          .with(error, { pipeline_id: pipeline.id, file_type: file_type }).and_call_original
+
+        expect { subject }.to raise_error(ActiveRecord::ActiveRecordError, 'something went wrong')
+      end
+    end
+  end
+
   describe '#present' do
     subject(:presenter) { report.present }
 

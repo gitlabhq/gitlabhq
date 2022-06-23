@@ -1004,6 +1004,10 @@ module Ci
       object_hierarchy(project_condition: :same).base_and_descendants
     end
 
+    def self_and_descendants_complete?
+      self_and_descendants.all?(&:complete?)
+    end
+
     # Follow the parent-child relationships and return the top-level parent
     def root_ancestor
       return self unless child?

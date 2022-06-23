@@ -138,10 +138,9 @@ export default {
           }}</span>
         </template>
 
-        <template #cell(action)="{ item: { revokePath, expiresAt } }">
+        <template #cell(action)="{ item: { revokePath } }">
           <gl-button
-            variant="danger"
-            :category="expiresAt ? 'primary' : 'secondary'"
+            category="tertiary"
             :aria-label="$options.i18n.revokeButton"
             :data-confirm="modalMessage"
             data-confirm-btn-variant="danger"

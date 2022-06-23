@@ -83,7 +83,6 @@ FactoryBot.define do
 
       # Cluster Integrations
       create(:clusters_integrations_prometheus, cluster: gcp_cluster)
-      create(:clusters_integrations_elastic_stack, cluster: gcp_cluster)
 
       create(:grafana_integration, project: projects[0], enabled: true)
       create(:grafana_integration, project: projects[1], enabled: true)

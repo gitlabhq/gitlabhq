@@ -105,7 +105,6 @@ module Gitlab
             clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_management_project: count(::Clusters::Cluster.with_management_project),
-            clusters_integrations_elastic_stack: count(::Clusters::Integrations::ElasticStack.enabled),
             clusters_integrations_prometheus: count(::Clusters::Integrations::Prometheus.enabled),
             kubernetes_agents: count(::Clusters::Agent),
             kubernetes_agents_with_token: distinct_count(::Clusters::AgentToken, :agent_id),

@@ -560,7 +560,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:clusters_platforms_eks]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
-      expect(count_data[:clusters_integrations_elastic_stack]).to eq(1)
       expect(count_data[:clusters_integrations_prometheus]).to eq(1)
       expect(count_data[:grafana_integrated_projects]).to eq(2)
       expect(count_data[:clusters_management_project]).to eq(1)

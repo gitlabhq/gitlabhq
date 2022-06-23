@@ -106,6 +106,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe 'state machine transitions' do
+    context 'from failed to success' do
+      let_it_be(:pipeline) { create(:ci_empty_pipeline, :failed) }
+
+      it 'schedules CoverageReportWorker' do
+        expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
+
+        pipeline.succeed!
+      end
+    end
+  end
+
   describe '#set_status' do
     let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
@@ -3757,6 +3769,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
         expect(pipeline.ci_ref).to be_present
       end
+    end
+  end
+
+  describe '#self_and_descendants_complete?' do
+    let_it_be(:pipeline) { create(:ci_pipeline, :success) }
+    let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+    let_it_be_with_reload(:grandchild_pipeline) { create(:ci_pipeline, :success, child_of: child_pipeline) }
+
+    context 'when all pipelines in the hierarchy is complete' do
+      it { expect(pipeline.self_and_descendants_complete?).to be(true) }
+    end
+
+    context 'when a pipeline in the hierarchy is not complete' do
+      before do
+        grandchild_pipeline.update!(status: :running)
+      end
+
+      it { expect(pipeline.self_and_descendants_complete?).to be(false) }
     end
   end
 
