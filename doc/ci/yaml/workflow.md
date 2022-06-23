@@ -61,7 +61,7 @@ This example prevents pipelines for schedules or `push` (branches and tags) pipe
 The final `when: always` rule runs all other pipeline types, **including** merge
 request pipelines.
 
-## Switch between branch pipelines and merge request pipelines
+### Switch between branch pipelines and merge request pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) in GitLab 13.8.
 
@@ -114,6 +114,25 @@ workflow:
 set and could be blocked by a similar rule. Triggered pipelines have a pipeline source
 of `trigger` or `pipeline`, so `&& $CI_PIPELINE_SOURCE == "push"` ensures the rule
 does not block triggered pipelines.
+
+### Git Flow with merge request pipelines
+
+You can use `workflow: rules` as part of [Git Flow or similar strategies](../../topics/gitlab_flow.md)
+with merge request pipelines. With these rules, you can use [merge request pipeline features](../pipelines/merge_request_pipelines.md)
+with feature branches, while keeping long-lived branches to support multiple versions
+of your software.
+
+For example, to only run pipelines for your merge requests, tags, and protected branches:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_REF_PROTECTED
+```
+
+This example assumes that your long-lived branches are [protected](../../user/project/protected_branches.md).
 
 ## `workflow:rules` templates
 

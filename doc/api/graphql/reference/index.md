@@ -2904,6 +2904,25 @@ Input type: `IssuableResourceLinkCreateInput`
 | <a id="mutationissuableresourcelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationissuableresourcelinkcreateissuableresourcelink"></a>`issuableResourceLink` | [`IssuableResourceLink`](#issuableresourcelink) | Issuable resource link. |
 
+### `Mutation.issuableResourceLinkDestroy`
+
+Input type: `IssuableResourceLinkDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuableresourcelinkdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuableresourcelinkdestroyid"></a>`id` | [`IncidentManagementIssuableResourceLinkID!`](#incidentmanagementissuableresourcelinkid) | Issuable resource link ID to remove. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuableresourcelinkdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuableresourcelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationissuableresourcelinkdestroyissuableresourcelink"></a>`issuableResourceLink` | [`IssuableResourceLink`](#issuableresourcelink) | Issuable resource link. |
+
 ### `Mutation.issueMove`
 
 Input type: `IssueMoveInput`
