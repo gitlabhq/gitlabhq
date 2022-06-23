@@ -98,31 +98,21 @@ RSpec.describe Projects::BlameService, :aggregate_failures do
       end
     end
 
-    describe 'Current page' do
-      subject { service.pagination.current_page }
+    describe 'Pagination attributes' do
+      using RSpec::Parameterized::TableSyntax
 
-      context 'with page = 1' do
-        let(:page) { 1 }
-
-        it { is_expected.to eq(1) }
+      where(:page, :current_page, :total_pages) do
+        1 | 1 | 2
+        2 | 2 | 2
+        3 | 1 | 2 # Overlimit
+        0 | 1 | 2 # Incorrect
       end
 
-      context 'with page = 2' do
-        let(:page) { 2 }
-
-        it { is_expected.to eq(2) }
-      end
-
-      context 'with page = 3 (overlimit)' do
-        let(:page) { 3 }
-
-        it { is_expected.to eq(1) }
-      end
-
-      context 'with page = 0 (incorrect)' do
-        let(:page) { 0 }
-
-        it { is_expected.to eq(1) }
+      with_them do
+        it 'returns the correct pagination attributes' do
+          expect(subject.current_page).to eq(current_page)
+          expect(subject.total_pages).to eq(total_pages)
+        end
       end
     end
   end

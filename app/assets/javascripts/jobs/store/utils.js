@@ -104,7 +104,7 @@ export const getIncrementalLineNumber = (acc) => {
  * @param Array accumulator
  * @returns Array parsed log lines
  */
-export const logLinesParserLegacy = (lines = [], accumulator = []) =>
+export const logLinesParser = (lines = [], accumulator = []) =>
   lines.reduce(
     (acc, line, index) => {
       const lineNumber = accumulator.length > 0 ? getIncrementalLineNumber(acc) : index;
@@ -130,82 +130,6 @@ export const logLinesParserLegacy = (lines = [], accumulator = []) =>
     },
     [...accumulator],
   );
-
-export const logLinesParser = (lines = [], previousJobLogState = {}, prevParsedLines = []) => {
-  let currentLineCount = previousJobLogState?.prevLineCount ?? 0;
-  let currentHeader = previousJobLogState?.currentHeader;
-  let isPreviousLineHeader = previousJobLogState?.isPreviousLineHeader ?? false;
-  const parsedLines = prevParsedLines.length > 0 ? prevParsedLines : [];
-  const sectionsQueue = previousJobLogState?.sectionsQueue ?? [];
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i];
-    // First run we can use the current index, later runs we have to retrieve the last number of lines
-    currentLineCount = previousJobLogState?.prevLineCount ? currentLineCount + 1 : i + 1;
-
-    if (line.section_header && !isPreviousLineHeader) {
-      // If there's no previous line header that means we're at the root of the log
-
-      isPreviousLineHeader = true;
-      parsedLines.push(parseHeaderLine(line, currentLineCount));
-      currentHeader = { index: parsedLines.length - 1 };
-    } else if (line.section_header && isPreviousLineHeader) {
-      // If there's a current section, we can't push to the parsedLines array
-      sectionsQueue.push(currentHeader);
-      currentHeader = parseHeaderLine(line, currentLineCount); // Let's parse the incoming header line
-    } else if (line.section && !line.section_duration) {
-      // We're inside a collapsible section and want to parse a standard line
-      if (currentHeader?.index) {
-        // If the current section header is only an index, add the line as part of the lines
-        // array of the current collapsible section
-        parsedLines[currentHeader.index].lines.push(parseLine(line, currentLineCount));
-      } else {
-        // Otherwise add it to the innermost collapsible section lines array
-        currentHeader.lines.push(parseLine(line, currentLineCount));
-      }
-    } else if (line.section && line.section_duration) {
-      // NOTE: This marks the end of a section_header
-      const previousSection = sectionsQueue.pop();
-
-      // Add the duration to section header
-      // If at the root, just push the end to the current parsedLine,
-      // otherwise, push it to the previous sections queue
-      if (currentHeader?.index) {
-        parsedLines[currentHeader.index].line.section_duration = line.section_duration;
-        isPreviousLineHeader = false;
-        currentHeader = null;
-      } else if (currentHeader?.isHeader) {
-        currentHeader.line.section_duration = line.section_duration;
-
-        if (previousSection && previousSection?.index) {
-          // Is the previous section on root?
-          parsedLines[previousSection.index].lines.push(currentHeader);
-        } else if (previousSection && !previousSection?.index) {
-          previousSection.lines.push(currentHeader);
-        }
-
-        currentHeader = previousSection;
-      } else {
-        // On older job logs, there's no `section_header: true` response, it's just an object
-        // with the `section_duration` and `section` props, so we just parse it
-        // as a standard line
-        parsedLines.push(parseLine(line, currentLineCount));
-      }
-    } else {
-      parsedLines.push(parseLine(line, currentLineCount));
-    }
-  }
-
-  return {
-    parsedLines,
-    auxiliaryPartialJobLogHelpers: {
-      isPreviousLineHeader,
-      currentHeader,
-      sectionsQueue,
-      prevLineCount: currentLineCount,
-    },
-  };
-};
 
 /**
  * Finds the repeated offset, removes the old one
@@ -253,5 +177,5 @@ export const findOffsetAndRemove = (newLog = [], oldParsed = []) => {
 export const updateIncrementalJobLog = (newLog = [], oldParsed = []) => {
   const parsedLog = findOffsetAndRemove(newLog, oldParsed);
 
-  return logLinesParserLegacy(newLog, parsedLog);
+  return logLinesParser(newLog, parsedLog);
 };

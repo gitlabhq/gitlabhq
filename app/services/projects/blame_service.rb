@@ -21,10 +21,9 @@ module Projects
     def pagination
       return unless pagination_enabled?
 
-      Kaminari.paginate_array([], total_count: blob_lines_count)
+      Kaminari.paginate_array([], total_count: blob_lines_count, limit: per_page)
+        .tap { |pagination| pagination.max_paginates_per(per_page) }
         .page(page)
-        .per(per_page)
-        .limit(per_page)
     end
 
     private

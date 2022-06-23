@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import { INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF } from '../constants';
 import * as types from './mutation_types';
-import { logLinesParser, logLinesParserLegacy, updateIncrementalJobLog } from './utils';
+import { logLinesParser, updateIncrementalJobLog } from './utils';
 
 export default {
   [types.SET_JOB_ENDPOINT](state, endpoint) {
@@ -21,26 +20,12 @@ export default {
   },
 
   [types.RECEIVE_JOB_LOG_SUCCESS](state, log = {}) {
-    const infinitelyCollapsibleSectionsFlag =
-      gon.features?.[INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF];
     if (log.state) {
       state.jobLogState = log.state;
     }
 
     if (log.append) {
-      if (infinitelyCollapsibleSectionsFlag) {
-        if (log.lines) {
-          const parsedResult = logLinesParser(
-            log.lines,
-            state.auxiliaryPartialJobLogHelpers,
-            state.jobLog,
-          );
-          state.jobLog = parsedResult.parsedLines;
-          state.auxiliaryPartialJobLogHelpers = parsedResult.auxiliaryPartialJobLogHelpers;
-        }
-      } else {
-        state.jobLog = log.lines ? updateIncrementalJobLog(log.lines, state.jobLog) : state.jobLog;
-      }
+      state.jobLog = log.lines ? updateIncrementalJobLog(log.lines, state.jobLog) : state.jobLog;
 
       state.jobLogSize += log.size;
     } else {
@@ -49,13 +34,7 @@ export default {
       // html or size. We keep the old value otherwise these
       // will be set to `null`
 
-      if (infinitelyCollapsibleSectionsFlag) {
-        const parsedResult = logLinesParser(log.lines);
-        state.jobLog = parsedResult.parsedLines;
-        state.auxiliaryPartialJobLogHelpers = parsedResult.auxiliaryPartialJobLogHelpers;
-      } else {
-        state.jobLog = log.lines ? logLinesParserLegacy(log.lines) : state.jobLog;
-      }
+      state.jobLog = log.lines ? logLinesParser(log.lines) : state.jobLog;
 
       state.jobLogSize = log.size || state.jobLogSize;
     }

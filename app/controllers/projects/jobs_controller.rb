@@ -23,7 +23,6 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
 
   before_action do
-    push_frontend_feature_flag(:infinitely_collapsible_sections, @project)
     push_frontend_feature_flag(:trigger_job_retry_action, @project)
   end
 

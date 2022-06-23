@@ -56,6 +56,35 @@ RSpec.describe ErrorTracking::StacktraceBuilder do
       end
     end
 
+    context 'when exception payload is a list' do
+      let(:payload_file) { 'error_tracking/go_two_exception_event.json' }
+
+      it 'extracts a stracktrace' do
+        expected_entry = {
+          'lineNo' => 54,
+          'context' => [
+            [49, "\t// Set the timeout to the maximum duration the program can afford to wait."],
+            [50, "\tdefer sentry.Flush(2 * time.Second)"],
+            [51, ""],
+            [52, "\tresp, err := http.Get(os.Args[1])"],
+            [53, "\tif err != nil {"],
+            [54, "\t\tsentry.CaptureException(err)"],
+            [55, "\t\tlog.Printf(\"reported to Sentry: %s\", err)"],
+            [56, "\t\treturn"],
+            [57, "\t}"],
+            [58, "\tdefer resp.Body.Close()"],
+            [59, ""]
+          ],
+          'filename' => nil,
+          'function' => 'main',
+          'colNo' => 0
+        }
+
+        expect(stacktrace).to be_kind_of(Array)
+        expect(stacktrace.first).to eq(expected_entry)
+      end
+    end
+
     context 'with empty payload' do
       let(:payload) { {} }
 

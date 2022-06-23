@@ -675,6 +675,45 @@ artifacts are restored after [caches](#cache).
 
 [Read more about artifacts](../pipelines/job_artifacts.md).
 
+#### `artifacts:paths`
+
+Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly
+link outside it.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- An array of file paths, relative to the project directory.
+- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+  patterns and:
+  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
+    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+
+**Example of `artifacts:paths`**:
+
+```yaml
+job:
+  artifacts:
+    paths:
+      - binaries/
+      - .config
+```
+
+This example creates an artifact with `.config` and all the files in the `binaries` directory.
+
+**Additional details**:
+
+- If not used with [`artifacts:name`](#artifactsname), the artifacts file
+  is named `artifacts`, which becomes `artifacts.zip` when downloaded.
+
+**Related topics**:
+
+- To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
+- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
+
 #### `artifacts:exclude`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1
@@ -843,45 +882,6 @@ job:
 
 - [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name).
 
-#### `artifacts:paths`
-
-Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly
-link outside it.
-
-**Keyword type**: Job keyword. You can use it only as part of a job or in the
-[`default` section](#default).
-
-**Possible inputs**:
-
-- An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-  patterns and:
-  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
-
-**Example of `artifacts:paths`**:
-
-```yaml
-job:
-  artifacts:
-    paths:
-      - binaries/
-      - .config
-```
-
-This example creates an artifact with `.config` and all the files in the `binaries` directory.
-
-**Additional details**:
-
-- If not used with [`artifacts:name`](#artifactsname) defined, the artifacts file
-  is named `artifacts`, which becomes `artifacts.zip` when downloaded.
-
-**Related topics**:
-
-- To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
-- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
-
 #### `artifacts:public`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49775) in GitLab 13.8
@@ -910,7 +910,7 @@ pipelines, set `artifacts:public` to `false`:
 
 - `true` (default if not defined) or `false`.
 
-**Example of `artifacts:paths`**:
+**Example of `artifacts:public`**:
 
 ```yaml
 job:
@@ -2428,13 +2428,6 @@ You can use `only` and `except` to control when to add jobs to pipelines.
 - Use `only` to define when a job runs.
 - Use `except` to define when a job **does not** run.
 
-Four keywords can be used with `only` and `except`:
-
-- [`refs`](#onlyrefs--exceptrefs)
-- [`variables`](#onlyvariables--exceptvariables)
-- [`changes`](#onlychanges--exceptchanges)
-- [`kubernetes`](#onlykubernetes--exceptkubernetes)
-
 See [specify when jobs run with `only` and `except`](../jobs/job_control.md#specify-when-jobs-run-with-only-and-except)
 for more details and examples.
 
@@ -2442,6 +2435,10 @@ for more details and examples.
 
 Use the `only:refs` and `except:refs` keywords to control when to add jobs to a
 pipeline based on branch names or pipeline types.
+
+`only:refs` and `except:refs` are not being actively developed. [`rules:if`](#rulesif)
+is the preferred keyword when using refs, regular expressions, or variables to control
+when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2528,6 +2525,10 @@ job2:
 Use the `only:variables` or `except:variables` keywords to control when to add jobs
 to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
 
+`only:variables` and `except:variables` are not being actively developed. [`rules:if`](#rulesif)
+is the preferred keyword when using refs, regular expressions, or variables to control
+when to add jobs to pipelines.
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**:
@@ -2559,6 +2560,9 @@ Use `changes` in pipelines with the following refs:
 - `branches`
 - `external_pull_requests`
 - `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
+
+`only:changes` and `except:changes` are not being actively developed. [`rules:changes`](#ruleschanges)
+is the preferred keyword when using changed files to control when to add jobs to pipelines.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2609,6 +2613,10 @@ docker build:
 
 Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
 when the Kubernetes service is active in the project.
+
+`only:refs` and `except:refs` are not being actively developed. Use [`rules:if`](#rulesif)
+with the [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable
+to control if jobs are added to the pipeline when the Kubernetes service is active in the project.
 
 **Keyword type**: Job-specific. You can use it only as part of a job.
 

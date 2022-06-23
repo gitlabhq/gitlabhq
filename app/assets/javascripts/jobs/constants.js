@@ -24,5 +24,3 @@ export const JOB_RETRY_FORWARD_DEPLOYMENT_MODAL = {
 };
 
 export const SUCCESS_STATUS = 'SUCCESS';
-
-export const INFINITELY_NESTED_COLLAPSIBLE_SECTIONS_FF = 'infinitelyCollapsibleSections';

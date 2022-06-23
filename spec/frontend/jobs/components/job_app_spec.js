@@ -22,7 +22,6 @@ describe('Job App', () => {
   let store;
   let wrapper;
   let mock;
-  let origGon;
 
   const initSettings = {
     endpoint: `${TEST_HOST}jobs/123.json`,
@@ -80,17 +79,11 @@ describe('Job App', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     store = createStore();
-
-    origGon = window.gon;
-
-    window.gon = { features: { infinitelyCollapsibleSections: false } }; // NOTE: All of this passes with the feature flag
   });
 
   afterEach(() => {
     wrapper.destroy();
     mock.restore();
-
-    window.gon = origGon;
   });
 
   describe('while loading', () => {
