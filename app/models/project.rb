@@ -247,7 +247,6 @@ class Project < ApplicationRecord
   has_many :export_jobs, class_name: 'ProjectExportJob'
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
   has_one :project_repository, inverse_of: :project
-  has_one :tracing_setting, class_name: 'ProjectTracingSetting'
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
   has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
@@ -434,7 +433,6 @@ class Project < ApplicationRecord
                                 allow_destroy: true,
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
-  accepts_nested_attributes_for :tracing_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
   accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
@@ -667,7 +665,6 @@ class Project < ApplicationRecord
   scope :created_by, -> (user) { where(creator: user) }
   scope :imported_from, -> (type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }
-  scope :with_tracing_enabled, -> { joins(:tracing_setting) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
 
   scope :with_service_desk_key, -> (key) do
@@ -2760,10 +2757,6 @@ class Project < ApplicationRecord
   def feature_flags_client_token
     instance = operations_feature_flags_client || create_operations_feature_flags_client!
     instance.token
-  end
-
-  def tracing_external_url
-    tracing_setting&.external_url
   end
 
   override :git_garbage_collect_worker_klass

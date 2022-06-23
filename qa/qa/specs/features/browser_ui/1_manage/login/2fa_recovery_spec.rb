@@ -4,10 +4,9 @@ module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env, :reliable do
     describe '2FA' do
       let(:owner_user) do
-        Resource::User.fabricate_or_use(
-          Runtime::Env.gitlab_qa_2fa_owner_username_1,
-          Runtime::Env.gitlab_qa_2fa_owner_password_1
-        )
+        Resource::User.fabricate_via_api! do |usr|
+          usr.api_client = admin_api_client
+        end
       end
 
       let(:developer_user) do

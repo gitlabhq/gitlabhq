@@ -19,6 +19,7 @@ export default function initWorkItemLinks() {
   if (!workItemLinksRoot) {
     return;
   }
+
   // eslint-disable-next-line no-new
   new Vue({
     el: workItemLinksRoot,
@@ -26,6 +27,9 @@ export default function initWorkItemLinks() {
     apolloProvider,
     components: {
       workItemLinks: WorkItemLinks,
+    },
+    provide: {
+      projectPath: workItemLinksRoot.dataset.projectPath,
     },
     render: (createElement) =>
       createElement('work-item-links', {

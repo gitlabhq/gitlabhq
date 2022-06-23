@@ -3,13 +3,15 @@
 module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env do
     describe '2FA' do
-      let(:owner_user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_2fa_owner_username_1, Runtime::Env.gitlab_qa_2fa_owner_password_1)
+      let!(:owner_user) do
+        Resource::User.fabricate_via_api! do |usr|
+          usr.api_client = admin_api_client
+        end
       end
 
       let(:sandbox_group) do
         Resource::Sandbox.fabricate! do |sandbox_group|
-          sandbox_group.path = "gitlab-qa-2fa-sandbox-group"
+          sandbox_group.path = "gitlab-qa-2fa-sandbox-group-#{SecureRandom.hex(8)}"
           sandbox_group.api_client = owner_api_client
         end
       end

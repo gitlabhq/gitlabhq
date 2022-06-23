@@ -44,6 +44,32 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert do
         expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
         expect(other_job.reload.tag_list).to match_array(%w[tag2 tag3 tag4])
       end
+
+      context 'when batching inserts for tags' do
+        before do
+          stub_const("#{described_class}::TAGS_BATCH_SIZE", 2)
+        end
+
+        it 'inserts tags in batches' do
+          recorder = ActiveRecord::QueryRecorder.new { service.insert! }
+          count = recorder.log.count { |query| query.include?('INSERT INTO "tags"') }
+
+          expect(count).to eq(2)
+        end
+      end
+
+      context 'when batching inserts for taggings' do
+        before do
+          stub_const("#{described_class}::TAGGINGS_BATCH_SIZE", 2)
+        end
+
+        it 'inserts taggings in batches' do
+          recorder = ActiveRecord::QueryRecorder.new { service.insert! }
+          count = recorder.log.count { |query| query.include?('INSERT INTO "taggings"') }
+
+          expect(count).to eq(3)
+        end
+      end
     end
 
     context 'with tags for only one job' do

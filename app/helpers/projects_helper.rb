@@ -683,7 +683,6 @@ module ProjectsHelper
       product_analytics
       metrics_dashboard
       feature_flags
-      tracings
       terraform
     ]
   end

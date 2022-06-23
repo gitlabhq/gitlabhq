@@ -557,7 +557,6 @@ project:
 - packages
 - package_files
 - packages_cleanup_policy
-- tracing_setting
 - alerting_setting
 - project_setting
 - webide_pipelines
@@ -695,8 +694,6 @@ epic_issues:
 feature_flag_issues:
 - issue
 - feature_flag
-tracing_setting:
-- project
 reviews:
 - project
 - merge_request

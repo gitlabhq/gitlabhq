@@ -111,6 +111,7 @@ module Tooling
         %r{\Atooling/} => :tooling,
         %r{(CODEOWNERS)} => :tooling,
         %r{(tests.yml)} => :tooling,
+        %r{\A\.gitpod\.yml} => :tooling,
 
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 

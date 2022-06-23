@@ -1,5 +1,7 @@
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
 - add_page_specific_style 'page_bundles/wiki'
+- @gfm_form = true
+- @noteable_type = 'Wiki'
 
 - if @error
   #js-wiki-error{ data: { error: @error, wiki_page_path: wiki_page_path(@wiki, @page) } }

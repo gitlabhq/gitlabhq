@@ -111,6 +111,10 @@ if changes.any?
     markdown_row_for_spin(spin.category, spin)
   end
 
+  roulette.required_approvals.each do |approval|
+    rows << markdown_row_for_spin(approval.category, approval.spin)
+  end
+
   markdown(REVIEW_ROULETTE_SECTION)
 
   if rows.empty?

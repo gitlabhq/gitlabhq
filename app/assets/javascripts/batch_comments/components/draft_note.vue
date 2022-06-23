@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlSafeHtmlDirective, GlBadge } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
 
@@ -14,6 +15,7 @@ export default {
   directives: {
     SafeHtml: GlSafeHtmlDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     draft: {
       type: Object,
@@ -92,6 +94,7 @@ export default {
         :note="draft"
         :line="line"
         :discussion-root="true"
+        :class="{ 'gl-mb-0!': glFeatures.mrReviewSubmitComment }"
         class="draft-note"
         @handleEdit="handleEditing"
         @cancelForm="handleNotEditing"
@@ -113,7 +116,11 @@ export default {
         class="referenced-commands draft-note-commands"
       ></div>
 
-      <p class="draft-note-actions d-flex" data-qa-selector="draft_note_content">
+      <p
+        v-if="!glFeatures.mrReviewSubmitComment"
+        class="draft-note-actions d-flex"
+        data-qa-selector="draft_note_content"
+      >
         <publish-button
           :show-count="true"
           :should-publish="false"

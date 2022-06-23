@@ -42,7 +42,7 @@ module Gitlab
           return false if taggings.empty?
 
           taggings.each_slice(TAGGINGS_BATCH_SIZE) do |taggings_slice|
-            ActsAsTaggableOn::Tagging.insert_all!(taggings)
+            ActsAsTaggableOn::Tagging.insert_all!(taggings_slice)
           end
 
           true

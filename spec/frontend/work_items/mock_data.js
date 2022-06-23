@@ -275,3 +275,28 @@ export const workItemHierarchyResponse = {
     },
   },
 };
+
+export const availableWorkItemsResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        edges: [
+          {
+            node: {
+              id: 'gid://gitlab/WorkItem/458',
+              title: 'Task 1',
+            },
+          },
+          {
+            node: {
+              id: 'gid://gitlab/WorkItem/459',
+              title: 'Task 2',
+            },
+          },
+        ],
+      },
+    },
+  },
+};

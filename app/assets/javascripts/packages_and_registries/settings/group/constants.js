@@ -19,6 +19,9 @@ export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
 );
 
 export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
+export const DEPENDENCY_PROXY_DESCRIPTION = s__(
+  'DependencyProxy|Enable the Dependency Proxy and settings for clearing the cache.',
+);
 
 // Parameters
 

@@ -3,221 +3,58 @@
 require 'spec_helper'
 
 RSpec.describe API::SystemHooks do
-  include StubRequests
+  let_it_be(:non_admin) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be_with_refind(:hook) { create(:system_hook, url: "http://example.com") }
 
-  let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
-  let!(:hook) { create(:system_hook, url: "http://example.com") }
+  it_behaves_like 'web-hook API endpoints', '' do
+    let(:user) { admin }
+    let(:unauthorized_user) { non_admin }
 
-  before do
-    stub_full_request(hook.url, method: :post)
-  end
-
-  describe "GET /hooks" do
-    context "when no user" do
-      it "returns authentication error" do
-        get api("/hooks")
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+    def scope
+      SystemHook
     end
 
-    context "when not an admin" do
-      it "returns forbidden error" do
-        get api("/hooks", user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
+    def collection_uri
+      "/hooks"
     end
 
-    context "when authenticated as admin" do
-      it "returns an array of hooks" do
-        get api("/hooks", admin)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(response).to match_response_schema('public_api/v4/system_hooks')
-        expect(json_response.first).not_to have_key("token")
-        expect(json_response.first['url']).to eq(hook.url)
-        expect(json_response.first['push_events']).to be false
-        expect(json_response.first['tag_push_events']).to be false
-        expect(json_response.first['merge_requests_events']).to be false
-        expect(json_response.first['repository_update_events']).to be true
-        expect(json_response.first['enable_ssl_verification']).to be true
-        expect(json_response.first['disabled_until']).to be nil
-        expect(json_response.first['alert_status']).to eq 'executable'
-      end
-    end
-  end
-
-  describe "GET /hooks/:id" do
-    context "when no user" do
-      it "returns authentication error" do
-        get api("/hooks/#{hook.id}")
-
-        expect(response).to have_gitlab_http_status(:unauthorized)
-      end
+    def match_collection_schema
+      match_response_schema('public_api/v4/system_hooks')
     end
 
-    context "when not an admin" do
-      it "returns forbidden error" do
-        get api("/hooks/#{hook.id}", user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
+    def hook_uri(hook_id = hook.id)
+      "/hooks/#{hook_id}"
     end
 
-    context "when authenticated as admin" do
-      it "gets a hook", :aggregate_failures do
-        get api("/hooks/#{hook.id}", admin)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('public_api/v4/system_hook')
-        expect(json_response).to match(
-          'id' => be(hook.id),
-          'url' => eq(hook.url),
-          'created_at' => eq(hook.created_at.iso8601(3)),
-          'push_events' => be(hook.push_events),
-          'tag_push_events' => be(hook.tag_push_events),
-          'merge_requests_events' => be(hook.merge_requests_events),
-          'repository_update_events' => be(hook.repository_update_events),
-          'enable_ssl_verification' => be(hook.enable_ssl_verification),
-          'alert_status' => eq(hook.alert_status.to_s),
-          'disabled_until' => eq(hook.disabled_until&.iso8601(3))
-        )
-      end
-
-      context 'the hook is disabled' do
-        before do
-          hook.disable!
-        end
-
-        it "has the correct alert status", :aggregate_failures do
-          get api("/hooks/#{hook.id}", admin)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('public_api/v4/system_hook')
-          expect(json_response).to include('alert_status' => 'disabled')
-        end
-      end
-
-      context 'the hook is backed-off' do
-        before do
-          hook.backoff!
-        end
-
-        it "has the correct alert status", :aggregate_failures do
-          get api("/hooks/#{hook.id}", admin)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('public_api/v4/system_hook')
-          expect(json_response).to include(
-            'alert_status' => 'temporarily_disabled',
-            'disabled_until' => hook.disabled_until.iso8601(3)
-          )
-        end
-      end
-
-      it 'returns 404 if the system hook does not exist' do
-        get api("/hooks/#{non_existing_record_id}", admin)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
-  describe "POST /hooks" do
-    it "creates new hook" do
-      expect do
-        post api("/hooks", admin), params: { url: 'http://example.com' }
-      end.to change { SystemHook.count }.by(1)
+    def match_hook_schema
+      match_response_schema('public_api/v4/system_hook')
     end
 
-    it "responds with 400 if url not given" do
-      post api("/hooks", admin)
-
-      expect(response).to have_gitlab_http_status(:bad_request)
+    def event_names
+      %i[
+        push_events
+        tag_push_events
+        merge_requests_events
+        repository_update_events
+      ]
     end
 
-    it "responds with 400 if url is invalid" do
-      post api("/hooks", admin), params: { url: 'hp://mep.mep' }
-
-      expect(response).to have_gitlab_http_status(:bad_request)
+    def hook_param_overrides
+      {}
     end
 
-    it "does not create new hook without url" do
-      expect do
-        post api("/hooks", admin)
-      end.not_to change { SystemHook.count }
+    let(:update_params) do
+      {
+        push_events: false,
+        tag_push_events: true
+      }
     end
 
-    it 'sets default values for events' do
-      stub_full_request('http://mep.mep', method: :post)
-
-      post api('/hooks', admin), params: { url: 'http://mep.mep' }
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(response).to match_response_schema('public_api/v4/system_hook')
-      expect(json_response['enable_ssl_verification']).to be true
-      expect(json_response['push_events']).to be false
-      expect(json_response['tag_push_events']).to be false
-      expect(json_response['merge_requests_events']).to be false
-      expect(json_response['repository_update_events']).to be true
+    let(:default_values) do
+      { repository_update_events: true }
     end
 
-    it 'sets explicit values for events' do
-      stub_full_request('http://mep.mep', method: :post)
-
-      post api('/hooks', admin),
-        params: {
-          url: 'http://mep.mep',
-          enable_ssl_verification: false,
-          push_events: true,
-          tag_push_events: true,
-          merge_requests_events: true,
-          repository_update_events: false
-        }
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(response).to match_response_schema('public_api/v4/system_hook')
-      expect(json_response['enable_ssl_verification']).to be false
-      expect(json_response['push_events']).to be true
-      expect(json_response['tag_push_events']).to be true
-      expect(json_response['merge_requests_events']).to be true
-      expect(json_response['repository_update_events']).to be false
-    end
-  end
-
-  describe 'POST /hooks/:id' do
-    it "returns and trigger hook by id" do
-      post api("/hooks/#{hook.id}", admin)
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['event_name']).to eq('project_create')
-    end
-
-    it "returns 404 on failure" do
-      post api("/hooks/404", admin)
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-  end
-
-  describe "DELETE /hooks/:id" do
-    it "deletes a hook" do
-      expect do
-        delete api("/hooks/#{hook.id}", admin)
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end.to change { SystemHook.count }.by(-1)
-    end
-
-    it 'returns 404 if the system hook does not exist' do
-      delete api("/hooks/#{non_existing_record_id}", admin)
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
-
-    it_behaves_like '412 response' do
-      let(:request) { api("/hooks/#{hook.id}", admin) }
-    end
+    it_behaves_like 'web-hook API endpoints test hook', ''
   end
 end

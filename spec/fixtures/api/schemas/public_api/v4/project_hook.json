@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "url",
+    "created_at",
+    "push_events",
+    "push_events_branch_filter",
+    "tag_push_events",
+    "merge_requests_events",
+    "repository_update_events",
+    "enable_ssl_verification",
+    "project_id",
+    "issues_events",
+    "confidential_issues_events",
+    "note_events",
+    "confidential_note_events",
+    "pipeline_events",
+    "wiki_page_events",
+    "job_events",
+    "deployment_events",
+    "releases_events",
+    "alert_status",
+    "disabled_until",
+    "url_variables"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "project_id": { "type": "integer" },
+    "url": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "push_events": { "type": "boolean" },
+    "push_events_branch_filter": { "type": ["string", "null"] },
+    "tag_push_events": { "type": "boolean" },
+    "merge_requests_events": { "type": "boolean" },
+    "repository_update_events": { "type": "boolean" },
+    "enable_ssl_verification": { "type": "boolean" },
+    "issues_events": { "type": "boolean" },
+    "confidential_issues_events": { "type": ["boolean", "null"] },
+    "note_events": { "type": "boolean" },
+    "confidential_note_events": { "type": ["boolean", "null"] },
+    "pipeline_events": { "type": "boolean" },
+    "wiki_page_events": { "type": "boolean" },
+    "job_events": { "type": "boolean" },
+    "deployment_events": { "type": "boolean" },
+    "releases_events": { "type": "boolean" },
+    "alert_status": { "type": "string", "enum": ["executable","disabled","temporarily_disabled"] },
+    "disabled_until": { "type": ["string", "null"] },
+    "url_variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key"],
+        "properties": {
+          "key": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

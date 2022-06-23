@@ -151,7 +151,8 @@ You can use a GitLab-managed Terraform state backend as a
      a [Personal Access Token](../../profile/personal_access_tokens.md) for
      authentication, this value is your GitLab username. If you are using GitLab CI/CD, this value is `'gitlab-ci-token'`.
    - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
-     authentication, this value is the token value. If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
+     authentication, this value is the token value (the token must have the **API** scope).
+     If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
 
 Outputs from the data source can now be referenced in your Terraform resources
 using `data.terraform_remote_state.example.outputs.<OUTPUT-NAME>`.

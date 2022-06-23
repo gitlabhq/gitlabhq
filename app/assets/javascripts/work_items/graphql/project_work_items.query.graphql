@@ -1,0 +1,13 @@
+query projectWorkItems($searchTerm: String, $projectPath: ID!) {
+  workspace: project(fullPath: $projectPath) {
+    id
+    workItems(search: $searchTerm) {
+      edges {
+        node {
+          id
+          title
+        }
+      }
+    }
+  }
+}

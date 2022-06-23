@@ -112,6 +112,12 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   yaml: 'yaml',
 };
 
+export const EVENT_ACTION = 'view_source';
+
+export const EVENT_LABEL_VIEWER = 'source_viewer';
+
+export const EVENT_LABEL_FALLBACK = 'legacy_fallback';
+
 export const LINES_PER_CHUNK = 70;
 
 export const BIDI_CHARS = [

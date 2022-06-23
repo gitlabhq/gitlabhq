@@ -8,6 +8,11 @@ module API
 
       expose :alert_status
       expose :disabled_until
+      expose :url_variables
+
+      def url_variables
+        object.url_variables.keys.map { { key: _1 } }
+      end
     end
   end
 end

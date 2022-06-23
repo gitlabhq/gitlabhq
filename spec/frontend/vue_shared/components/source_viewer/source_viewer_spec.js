@@ -5,10 +5,16 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
 import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
-import { ROUGE_TO_HLJS_LANGUAGE_MAP } from '~/vue_shared/components/source_viewer/constants';
+import {
+  EVENT_ACTION,
+  EVENT_LABEL_VIEWER,
+  EVENT_LABEL_FALLBACK,
+  ROUGE_TO_HLJS_LANGUAGE_MAP,
+} from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
+import Tracking from '~/tracking';
 
 jest.mock('~/blob/line_highlighter');
 jest.mock('highlight.js/lib/core');
@@ -52,11 +58,32 @@ describe('Source Viewer component', () => {
     hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
     jest.spyOn(eventHub, '$emit');
+    jest.spyOn(Tracking, 'event');
 
     return createComponent();
   });
 
   afterEach(() => wrapper.destroy());
+
+  describe('event tracking', () => {
+    it('fires a tracking event when the component is created', () => {
+      const eventData = { label: EVENT_LABEL_VIEWER, property: language };
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
+    });
+
+    it('does not emit an error event when the language is supported', () => {
+      expect(wrapper.emitted('error')).toBeUndefined();
+    });
+
+    it('fires a tracking event and emits an error when the language is not supported', () => {
+      const unsupportedLanguage = 'apex';
+      const eventData = { label: EVENT_LABEL_FALLBACK, property: unsupportedLanguage };
+      createComponent({ language: unsupportedLanguage });
+
+      expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
+      expect(wrapper.emitted('error')).toHaveLength(1);
+    });
+  });
 
   describe('highlight.js', () => {
     beforeEach(() => createComponent({ language: mappedLanguage }));

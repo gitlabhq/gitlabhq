@@ -74,12 +74,7 @@ module QA
 
       def list_of_runners(tag_list: nil)
         url = tag_list ? "#{api_post_path}?tag_list=#{tag_list.compact.join(',')}" : api_post_path
-        response = get(request_url(url, per_page: '100'))
-
-        # Capturing 500 error code responses to log this issue better. We can consider cleaning it up once https://gitlab.com/gitlab-org/gitlab/-/issues/331753 is addressed.
-        raise "Response returned a #{response.code} error code. #{response.body}" if response.code == Support::API::HTTP_STATUS_SERVER_ERROR
-
-        parse_body(response)
+        auto_paginated_response(request_url(url))
       end
 
       def reload!

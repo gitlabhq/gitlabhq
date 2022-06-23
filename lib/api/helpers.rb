@@ -476,9 +476,9 @@ module API
       render_api_error!('202 Accepted', 202)
     end
 
-    def render_validation_error!(model)
+    def render_validation_error!(model, status = 400)
       if model.errors.any?
-        render_api_error!(model_error_messages(model) || '400 Bad Request', 400)
+        render_api_error!(model_error_messages(model) || '400 Bad Request', status)
       end
     end
 
