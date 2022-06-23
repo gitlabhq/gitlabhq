@@ -92,16 +92,15 @@ func echoProxy(t *testing.T, expectedBodyLength int) http.Handler {
 
 		require.Equal(t, "application/x-www-form-urlencoded", r.Header.Get("Content-Type"), "Wrong Content-Type header")
 
-		fileParams := testhelper.GetUploadParams(t, r, "file")
-		require.Contains(t, fileParams, "md5")
-		require.Contains(t, fileParams, "sha1")
-		require.Contains(t, fileParams, "sha256")
-		require.Contains(t, fileParams, "sha512")
+		require.Contains(t, r.PostForm, "file.md5")
+		require.Contains(t, r.PostForm, "file.sha1")
+		require.Contains(t, r.PostForm, "file.sha256")
+		require.Contains(t, r.PostForm, "file.sha512")
 
-		require.Contains(t, fileParams, "path")
-		require.Contains(t, fileParams, "size")
-
-		require.Equal(t, strconv.Itoa(expectedBodyLength), fileParams["size"])
+		require.Contains(t, r.PostForm, "file.path")
+		require.Contains(t, r.PostForm, "file.size")
+		require.Contains(t, r.PostForm, "file.gitlab-workhorse-upload")
+		require.Equal(t, strconv.Itoa(expectedBodyLength), r.PostFormValue("file.size"))
 
 		token, err := jwt.ParseWithClaims(r.Header.Get(RewrittenFieldsHeader), &MultipartClaims{}, testhelper.ParseJWT)
 		require.NoError(t, err, "Wrong JWT header")
@@ -111,7 +110,10 @@ func echoProxy(t *testing.T, expectedBodyLength int) http.Handler {
 			t.Fatalf("Unexpected rewritten_fields value: %v", rewrittenFields)
 		}
 
-		uploadFields := testhelper.GetUploadParams(t, r, "file")
+		token, jwtErr := jwt.ParseWithClaims(r.PostFormValue("file.gitlab-workhorse-upload"), &testhelper.UploadClaims{}, testhelper.ParseJWT)
+		require.NoError(t, jwtErr, "Wrong signed upload fields")
+
+		uploadFields := token.Claims.(*testhelper.UploadClaims).Upload
 		require.Contains(t, uploadFields, "name")
 		require.Contains(t, uploadFields, "path")
 		require.Contains(t, uploadFields, "remote_url")
@@ -122,10 +124,9 @@ func echoProxy(t *testing.T, expectedBodyLength int) http.Handler {
 		require.Contains(t, uploadFields, "sha256")
 		require.Contains(t, uploadFields, "sha512")
 
-		path := uploadFields["path"]
+		path := r.PostFormValue("file.path")
 		uploaded, err := os.Open(path)
 		require.NoError(t, err, "File not uploaded")
-		defer uploaded.Close()
 
 		//sending back the file for testing purpose
 		io.Copy(w, uploaded)

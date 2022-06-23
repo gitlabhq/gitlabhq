@@ -32,6 +32,7 @@ module Ci
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
         "runner-help-page-path" => help_page_path('ci/runners/index'),
+        "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
         "total-branches" => total_branches,
         "validate-tab-illustration-path" => image_path('illustrations/project-run-CICD-pipelines-sm.svg'),
         "yml-help-page-path" => help_page_path('ci/yaml/index')

@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlDropdown, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlDropdown, GlIcon, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import ValidatePipelinePopover from '../popovers/validate_pipeline_popover.vue';
 
 export const i18n = {
   help: __('Help'),
@@ -22,7 +23,9 @@ export default {
   components: {
     GlButton,
     GlDropdown,
+    GlIcon,
     GlSprintf,
+    ValidatePipelinePopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -42,6 +45,15 @@ export default {
         :text="$options.i18n.pipelineSourceDefault"
         disabled
         data-testid="pipeline-source"
+      />
+      <validate-pipeline-popover />
+      <gl-icon
+        id="validate-pipeline-help"
+        name="question-o"
+        class="gl-ml-1 gl-fill-blue-500"
+        category="secondary"
+        variant="confirm"
+        :aria-label="$options.i18n.help"
       />
     </div>
     <div class="gl-display-flex gl-flex-direction-column gl-align-items-center gl-mt-11">

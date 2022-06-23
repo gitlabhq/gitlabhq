@@ -150,6 +150,7 @@ export default {
           :ci-config-data="ciConfigData"
           :ci-file-content="ciFileContent"
           :commit-sha="commitSha"
+          :current-tab="currentTab"
           :is-new-ci-config-file="isNewCiConfigFile"
           :show-drawer="showDrawer"
           v-on="$listeners"

@@ -62,6 +62,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
+          "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
           "total-branches" => project.repository.branches.length,
           "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')
@@ -91,6 +92,7 @@ RSpec.describe Ci::PipelineEditorHelper do
           "project-full-path" => project.full_path,
           "project-namespace" => project.namespace.full_path,
           "runner-help-page-path" => help_page_path('ci/runners/index'),
+          "simulate-pipeline-help-page-path" => help_page_path('ci/lint', anchor: 'simulate-a-pipeline'),
           "total-branches" => 0,
           "validate-tab-illustration-path" => 'illustrations/validate.svg',
           "yml-help-page-path" => help_page_path('ci/yaml/index')

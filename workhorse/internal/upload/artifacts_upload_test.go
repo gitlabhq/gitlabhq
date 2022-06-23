@@ -65,31 +65,26 @@ func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyPro
 		if r.Method != "POST" {
 			t.Fatal("Expected POST request")
 		}
-
-		fileParams := testhelper.GetUploadParams(t, r, "file")
 		if opts.IsLocalTempFile() {
-			fPath := fileParams["path"]
-			if fPath == "" {
+			if r.FormValue("file.path") == "" {
 				t.Fatal("Expected file to be present")
 				return
 			}
 
-			_, err := os.ReadFile(fPath)
+			_, err := os.ReadFile(r.FormValue("file.path"))
 			if err != nil {
 				t.Fatal("Expected file to be readable")
 				return
 			}
 		} else {
-			if fileParams["remote_url"] == "" {
+			if r.FormValue("file.remote_url") == "" {
 				t.Fatal("Expected file to be remote accessible")
 				return
 			}
 		}
 
-		if r.FormValue("metadata.gitlab-workhorse-upload") != "" {
-			metadataParams := testhelper.GetUploadParams(t, r, "metadata")
-
-			metadata, err := os.ReadFile(metadataParams["path"])
+		if r.FormValue("metadata.path") != "" {
+			metadata, err := os.ReadFile(r.FormValue("metadata.path"))
 			if err != nil {
 				t.Fatal("Expected metadata to be readable")
 				return

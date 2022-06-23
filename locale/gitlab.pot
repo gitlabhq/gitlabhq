@@ -25171,6 +25171,9 @@ msgstr ""
 msgid "My-Reaction"
 msgstr ""
 
+msgid "NEW"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -27976,6 +27979,9 @@ msgstr ""
 msgid "PipelineEditor|Pipeline behavior will be simulated including the %{codeStart}rules%{codeEnd} %{codeStart}only%{codeEnd} %{codeStart}except%{codeEnd} and %{codeStart}needs%{codeEnd} job dependencies."
 msgstr ""
 
+msgid "PipelineEditor|Pipeline behavior will be simulated including the %{codeStart}rules%{codeEnd} %{codeStart}only%{codeEnd} %{codeStart}except%{codeEnd} and %{codeStart}needs%{codeEnd} job dependencies. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "PipelineEditor|The CI/CD configuration is continuously validated. Errors and warnings are displayed when the CI/CD configuration file is not empty."
 msgstr ""
 
@@ -27992,6 +27998,9 @@ msgid "PipelineEditor|Validate pipeline"
 msgstr ""
 
 msgid "PipelineEditor|Validate pipeline under selected conditions"
+msgstr ""
+
+msgid "PipelineEditor|Validate pipeline under simulated conditions"
 msgstr ""
 
 msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Cron syntax%{linkEnd})"
@@ -31097,6 +31106,9 @@ msgid "ProtectedTag|default"
 msgstr ""
 
 msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
+msgid "Provide Feedback"
 msgstr ""
 
 msgid "Provide a number our sales team can use to call you."

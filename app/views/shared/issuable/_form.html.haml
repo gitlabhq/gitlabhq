@@ -67,11 +67,11 @@
     = form.submit _('Save changes'), class: 'gl-button btn btn-confirm gl-mr-2', data: { track_experiment: 'promote_mr_approvals_in_free', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
 
   - if issuable.new_record?
-    = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'btn gl-button btn-default'
+    = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'btn gl-button btn-default js-reset-autosave'
   - else
-    = link_to _('Cancel'), polymorphic_path([@project, issuable]), class: 'gl-button btn btn-default'
+    = link_to _('Cancel'), polymorphic_path([@project, issuable]), class: 'gl-button btn btn-default js-reset-autosave'
     - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
-      = link_to 'Delete', polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { confirm: _('%{issuableType} will be removed! Are you sure?') % { issuableType: issuable.human_class_name } }, method: :delete, class: 'btn gl-button btn-danger btn-danger-secondary gl-float-right'
+      = link_to 'Delete', polymorphic_path([@project, issuable], params: { destroy_confirm: true }), data: { confirm: _('%{issuableType} will be removed! Are you sure?') % { issuableType: issuable.human_class_name } }, method: :delete, class: 'btn gl-button btn-danger btn-danger-secondary gl-float-right js-reset-autosave'
 
 - if issuable.respond_to?(:issue_type)
   = form.hidden_field :issue_type

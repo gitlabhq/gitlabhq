@@ -1,4 +1,4 @@
-import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -15,6 +15,8 @@ import {
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_VALID,
   TAB_QUERY_PARAM,
+  VALIDATE_TAB,
+  VALIDATE_TAB_BADGE_DISMISSED_KEY,
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import { mockLintResponse, mockLintResponseWithoutMerged, mockCiYml } from '../mock_data';
@@ -38,6 +40,7 @@ describe('Pipeline editor tabs component', () => {
       propsData: {
         ciConfigData: mockLintResponse,
         ciFileContent: mockCiYml,
+        currentTab: CREATE_TAB,
         isNewCiConfigFile: true,
         showDrawer: false,
         ...props,
@@ -63,6 +66,7 @@ describe('Pipeline editor tabs component', () => {
   const findVisualizationTab = () => wrapper.find('[data-testid="visualization-tab"]');
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findBadge = () => wrapper.findComponent(GlBadge);
   const findCiLint = () => wrapper.findComponent(CiLint);
   const findCiValidate = () => wrapper.findComponent(CiValidate);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
@@ -147,6 +151,55 @@ describe('Pipeline editor tabs component', () => {
           expect(findCiValidate().exists()).toBe(true);
         });
       });
+
+      describe('NEW badge', () => {
+        describe('default', () => {
+          beforeEach(() => {
+            createComponent({
+              mountFn: mount,
+              props: {
+                currentTab: VALIDATE_TAB,
+              },
+              provide: {
+                glFeatures: { simulatePipeline: true },
+                simulatePipelineHelpPagePath: 'path/to/help/page',
+                validateTabIllustrationPath: 'path/to/svg',
+              },
+            });
+          });
+
+          it('renders badge by default', () => {
+            expect(findBadge().exists()).toBe(true);
+            expect(findBadge().text()).toBe(wrapper.vm.$options.i18n.new);
+          });
+
+          it('hides badge when moving away from the validate tab', async () => {
+            expect(findBadge().exists()).toBe(true);
+
+            await findEditorTab().vm.$emit('click');
+
+            expect(findBadge().exists()).toBe(false);
+          });
+        });
+
+        describe('if badge has been dismissed before', () => {
+          beforeEach(() => {
+            localStorage.setItem(VALIDATE_TAB_BADGE_DISMISSED_KEY, 'true');
+            createComponent({
+              mountFn: mount,
+              provide: {
+                glFeatures: { simulatePipeline: true },
+                simulatePipelineHelpPagePath: 'path/to/help/page',
+                validateTabIllustrationPath: 'path/to/svg',
+              },
+            });
+          });
+
+          it('does not render badge if it has been dismissed before', () => {
+            expect(findBadge().exists()).toBe(false);
+          });
+        });
+      });
     });
 
     describe('with simulatePipeline feature flag OFF', () => {
@@ -181,7 +234,6 @@ describe('Pipeline editor tabs component', () => {
         expect(findCiLint().exists()).toBe(false);
       });
     });
-
     describe('after loading', () => {
       beforeEach(() => {
         createComponent();

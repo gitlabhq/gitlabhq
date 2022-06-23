@@ -81,10 +81,9 @@ func uploadTestServer(t *testing.T, authorizeTests func(r *http.Request), extraT
 		}
 
 		require.NoError(t, r.ParseMultipartForm(100000))
-		require.Len(t, r.MultipartForm.Value, 1) // Expect 1 key: "file.gitlab-workhorse-upload"
 
-		const nValues = 10 // file name, path, remote_url, remote_id, size, md5, sha1, sha256, sha512, upload_duration (no metadata because we are not POSTing a valid zip file)
-		require.Len(t, testhelper.GetUploadParams(t, r, "file"), nValues)
+		const nValues = 11 // file name, path, remote_url, remote_id, size, md5, sha1, sha256, sha512, upload_duration, gitlab-workhorse-upload for just the upload (no metadata because we are not POSTing a valid zip file)
+		require.Len(t, r.MultipartForm.Value, nValues)
 
 		require.Empty(t, r.MultipartForm.File, "multipart form files")
 
@@ -175,7 +174,10 @@ func TestAcceleratedUpload(t *testing.T) {
 						t.Fatalf("Unexpected rewritten_fields value: %v", rewrittenFields)
 					}
 
-					uploadFields := testhelper.GetUploadParams(t, r, "file")
+					token, jwtErr := jwt.ParseWithClaims(r.PostFormValue("file.gitlab-workhorse-upload"), &testhelper.UploadClaims{}, testhelper.ParseJWT)
+					require.NoError(t, jwtErr)
+
+					uploadFields := token.Claims.(*testhelper.UploadClaims).Upload
 					require.Contains(t, uploadFields, "name")
 					require.Contains(t, uploadFields, "path")
 					require.Contains(t, uploadFields, "remote_url")
@@ -337,11 +339,12 @@ func TestLfsUpload(t *testing.T) {
 		case resource:
 			expectSignedRequest(t, r)
 
-			fileParams := testhelper.GetUploadParams(t, r, "file")
-			require.Equal(t, oid, fileParams["sha256"], "Invalid SHA256 populated")
-			require.Equal(t, strconv.Itoa(len(reqBody)), fileParams["size"], "Invalid size populated")
+			// Expect the request to point to a file on disk containing the data
+			require.NoError(t, r.ParseForm())
+			require.Equal(t, oid, r.Form.Get("file.sha256"), "Invalid SHA256 populated")
+			require.Equal(t, strconv.Itoa(len(reqBody)), r.Form.Get("file.size"), "Invalid size populated")
 
-			tempfile, err := os.ReadFile(fileParams["path"])
+			tempfile, err := os.ReadFile(r.Form.Get("file.path"))
 			require.NoError(t, err)
 			require.Equal(t, reqBody, string(tempfile), "Temporary file has the wrong body")
 
@@ -459,12 +462,13 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 		case resource:
 			expectSignedRequest(t, r)
 
-			fileParams := testhelper.GetUploadParams(t, r, "file")
+			// Expect the request to point to a file on disk containing the data
+			require.NoError(t, r.ParseForm())
 
 			len := strconv.Itoa(len(reqBody))
-			require.Equal(t, len, fileParams["size"], "Invalid size populated")
+			require.Equal(t, len, r.Form.Get("file.size"), "Invalid size populated")
 
-			tmpFilePath := fileParams["path"]
+			tmpFilePath := r.Form.Get("file.path")
 			fileData, err := os.ReadFile(tmpFilePath)
 			defer os.Remove(tmpFilePath)
 

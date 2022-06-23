@@ -333,6 +333,9 @@ code_quality:
     CODECLIMATE_PREFIX: "my-private-registry.local:12345/"
 ```
 
+The images in the private container image registry must be available without authentication. 
+Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/355814) for more information.
+
 This example is specific to GitLab Code Quality. For more general
 instructions on how to configure DinD with a registry mirror, see the
 relevant [documentation](../docker/using_docker_build.md#enable-registry-mirror-for-dockerdind-service).
