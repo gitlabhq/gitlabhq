@@ -104,7 +104,7 @@ You can create a merge request from your fork to contribute back to the main pro
 After your work is merged, if you don't intend to
 make any other contributions to the upstream project, you can unlink your
 fork from its upstream project. Go to **Settings > Advanced Settings** and
-[remove the forking relationship](../settings/index.md#removing-a-fork-relationship).
+[remove the forking relationship](../settings/index.md#remove-a-fork-relationship).
 
 For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
 

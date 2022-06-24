@@ -385,6 +385,6 @@ See the following for information on troubleshooting repository moves.
 ### Repository move fails for archived projects
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/363670),
-[archived projects](../../user/project/settings/index.md#advanced-settings) fail to move even though the data is cloned
+[archived projects](../../user/project/settings/index.md#advanced-project-settings) fail to move even though the data is cloned
 by Gitaly. Make sure archived projects are
-[unarchived](../../user/project/settings/index.md#unarchiving-a-project) before initiating a move. 
+[unarchived](../../user/project/settings/index.md#unarchive-a-project) before initiating a move.

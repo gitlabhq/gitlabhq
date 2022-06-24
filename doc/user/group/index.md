@@ -865,7 +865,7 @@ Support for group-level settings for merge request approval rules is tracked in 
 - [Audit Events](../../administration/audit_events.md#group-events).
 - [CI/CD minutes quota](../../ci/pipelines/cicd_minutes.md): Keep track of the CI/CD minute quota for the group.
 - [Integrations](../admin_area/settings/project_integration_management.md).
-- [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
+- [Transfer a project into a group](../project/settings/index.md#transfer-a-project-to-another-namespace).
 - [Share a project with a group](../project/members/share_project_with_groups.md): Give all group members access to the project at once.
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA

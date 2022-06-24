@@ -7,6 +7,7 @@ import {
   GlDropdownText,
   GlDropdownSectionHeader,
   GlSearchBoxByType,
+  GlTruncate,
 } from '@gitlab/ui';
 import { joinPaths, PATH_SEPARATOR } from '~/lib/utils/url_utility';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
@@ -26,6 +27,7 @@ export default {
     GlDropdownText,
     GlDropdownSectionHeader,
     GlSearchBoxByType,
+    GlTruncate,
   },
   mixins: [Tracking.mixin()],
   apollo: {
@@ -137,13 +139,20 @@ export default {
     >
 
     <gl-dropdown
-      :text="selectedNamespace.fullPath"
       class="js-group-namespace-dropdown gl-flex-grow-1"
       :toggle-class="`gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20 ${dropdownPlaceholderClass}`"
       data-qa-selector="select_namespace_dropdown"
       @show="track('activate_form_input', { label: trackLabel, property: 'project_path' })"
       @shown="handleDropdownShown"
     >
+      <template #button-text>
+        <gl-truncate
+          v-if="selectedNamespace.fullPath"
+          :text="selectedNamespace.fullPath"
+          position="start"
+          with-tooltip
+        />
+      </template>
       <gl-search-box-by-type
         ref="search"
         v-model.trim="search"

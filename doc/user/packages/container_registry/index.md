@@ -564,7 +564,7 @@ project or branch name. Special characters can include:
 - Trailing hyphen/dash
 
 To get around this, you can [change the group path](../../group/index.md#change-a-groups-path),
-[change the project path](../../project/settings/index.md#renaming-a-repository) or change the branch
+[change the project path](../../project/settings/index.md#rename-a-repository) or change the branch
 name.
 
 You may also get a `404 Not Found` or `Unknown Manifest` message if you are using

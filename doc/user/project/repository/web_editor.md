@@ -137,7 +137,7 @@ The **Create merge request** button doesn't display if:
 - Your project has an active fork relationship.
 
 To make this button appear, one possible workaround is to
-[remove your project's fork relationship](../settings/index.md#removing-a-fork-relationship).
+[remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
 

@@ -2662,7 +2662,7 @@ DELETE /projects/:id/push_rule
 
 > The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
-See the [Project documentation](../user/project/settings/index.md#transferring-an-existing-project-into-another-namespace)
+See the [Project documentation](../user/project/settings/index.md#transfer-a-project-to-another-namespace)
 for prerequisites to transfer a project.
 
 ```plaintext

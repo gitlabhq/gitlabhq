@@ -744,6 +744,10 @@ export const setFileCollapsedByUser = ({ commit }, { filePath, collapsed }) => {
   commit(types.SET_FILE_COLLAPSED, { filePath, collapsed, trigger: DIFF_FILE_MANUAL_COLLAPSE });
 };
 
+export const setFileCollapsedAutomatically = ({ commit }, { filePath, collapsed }) => {
+  commit(types.SET_FILE_COLLAPSED, { filePath, collapsed, trigger: DIFF_FILE_AUTOMATIC_COLLAPSE });
+};
+
 export const setSuggestPopoverDismissed = ({ commit, state }) =>
   axios
     .post(state.dismissEndpoint, {
