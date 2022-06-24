@@ -269,7 +269,7 @@ module PrometheusHelpers
 
   def prometheus_alert_payload_fingerprint(prometheus_alert)
     # timestamp is hard-coded in #prometheus_map_alert_payload
-    fingerprint = "#{prometheus_alert.id}/2018-09-24T08:57:31.095725221Z"
+    fingerprint = "#{prometheus_alert.prometheus_metric_id}/2018-09-24T08:57:31.095725221Z"
 
     Gitlab::AlertManagement::Fingerprint.generate(fingerprint)
   end
