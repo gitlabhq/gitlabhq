@@ -71,7 +71,12 @@ module Banzai
       private
 
       def random_number
-        @random_number ||= rand(10000)
+        # We allow overriding the randomness with a static value from GITLAB_TEST_FOOTNOTE_ID.
+        # This allows stable generation of example HTML during GLFM Snapshot Testing
+        # (https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#markdown-snapshot-testing),
+        # and reduces the need for normalization of the example HTML
+        # (https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization)
+        @random_number ||= ENV.fetch('GITLAB_TEST_FOOTNOTE_ID', rand(10000))
       end
 
       def fn_id(num)
