@@ -1453,12 +1453,12 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 <div class="deprecation removal-150">
 
-### `artifacts:report:cobertura` keyword
+### `artifacts:reports:cobertura` keyword
 
 Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
-`artifacts:report:cobertura` keyword will be replaced by
+`artifacts:reports:cobertura` keyword will be replaced by
 [`artifacts:reports:coverage_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/344533). Cobertura will be the
 only supported report file in 15.0, but this is the first step towards GitLab supporting other report types.
 

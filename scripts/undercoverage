@@ -1,3 +1,25 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
 
-bundle exec undercover -c "${1:-$(git merge-base origin/master HEAD)}"
+# frozen_string_literal: true
+
+require 'undercover'
+
+module Undercover
+  class Changeset
+    # Rugged merge_base complains when graft/shallow
+    # (https://github.com/libgit2/rugged/issues/846)
+    #
+    # So we assume we provide the merge-base ourself. Modified from
+    # https://github.com/grodowski/undercover/blob/32e62f66682ee566032b5970437ed2934ef29701/lib/undercover/changeset.rb#L74-L78
+    def compare_base_obj
+      return unless compare_base
+
+      repo.lookup(compare_base.to_s)
+    end
+  end
+end
+
+compare_base = ARGV[0]
+compare_base ||= IO.popen(%w(git merge-base origin/master HEAD)) { |p| p.read.chomp }
+
+Undercover::CLI.run(%W(-c #{compare_base}))

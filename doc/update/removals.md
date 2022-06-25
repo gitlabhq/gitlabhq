@@ -557,9 +557,9 @@ Review the details carefully before upgrading.
 
 The `Managed-Cluster-Applications.gitlab-ci.yml` CI/CD template is being removed. If you need an  alternative, try the [Cluster Management project template](https://gitlab.com/gitlab-org/gitlab/-/issues/333610) instead. If your are not ready to move, you can copy the [last released version](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/v14.10.1/lib/gitlab/ci/templates/Managed-Cluster-Applications.gitlab-ci.yml) of the template into your project.
 
-### `artifacts:report:cobertura` keyword
+### `artifacts:reports:cobertura` keyword
 
-As of GitLab 15.0, the [`artifacts:report:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
+As of GitLab 15.0, the [`artifacts:reports:cobertura`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscobertura-removed)
 keyword has been [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) by
 [`artifacts:reports:coverage_report`](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscoverage_report).
 Cobertura is the only supported report file, but this is the first step towards GitLab supporting other report types.
