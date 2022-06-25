@@ -468,7 +468,7 @@ class ContainerRepository < ApplicationRecord
   def size
     strong_memoize(:size) do
       next unless Gitlab.com?
-      next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT)
+      next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT) && self.migration_state != 'import_done'
       next unless gitlab_api_client.supports_gitlab_api?
 
       gitlab_api_client.repository_details(self.path, sizing: :self)['size_bytes']

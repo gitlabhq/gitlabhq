@@ -244,7 +244,7 @@ export default {
             </template>
           </gl-sprintf>
         </template>
-        <div class="mt-2">
+        <div class="gl-mt-3">
           <gl-search-box-by-type
             ref="searchInput"
             :placeholder="__(`Search by commit title or SHA`)"

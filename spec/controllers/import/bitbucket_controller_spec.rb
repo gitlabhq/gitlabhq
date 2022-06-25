@@ -97,7 +97,6 @@ RSpec.describe Import::BitbucketController do
     before do
       @repo = double(name: 'vim', slug: 'vim', owner: 'asd', full_name: 'asd/vim', clone_url: 'http://test.host/demo/url.git', 'valid?' => true)
       @invalid_repo = double(name: 'mercurialrepo', slug: 'mercurialrepo', owner: 'asd', full_name: 'asd/mercurialrepo', clone_url: 'http://test.host/demo/mercurialrepo.git', 'valid?' => false)
-      allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
     end
 
     context "when token does not exists" do
@@ -124,10 +123,6 @@ RSpec.describe Import::BitbucketController do
       end
 
       it_behaves_like 'import controller status' do
-        before do
-          allow(controller).to receive(:provider_url).and_return('http://demobitbucket.org')
-        end
-
         let(:repo) { @repo }
         let(:repo_id) { @repo.full_name }
         let(:import_source) { @repo.full_name }

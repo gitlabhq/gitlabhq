@@ -439,18 +439,6 @@ RSpec.describe SearchController do
         make_abusive_request
         expect(response).to have_gitlab_http_status(:ok)
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(prevent_abusive_searches: false)
-        end
-
-        it 'returns a regular search result' do
-          expect(Gitlab::EmptySearchResults).not_to receive(:new)
-          make_abusive_request
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
     end
   end
 

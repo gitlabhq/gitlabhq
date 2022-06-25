@@ -25,7 +25,7 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
     >
        
       <div
-        class="mt-2"
+        class="gl-mt-3"
       >
         <gl-search-box-by-type-stub
           clearbuttontitle="Clear"

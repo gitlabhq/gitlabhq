@@ -84,15 +84,8 @@ its performance:
 
 ## Global Search validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346263) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `prevent_abusive_searches`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `prevent_abusive_searches`.
-The feature is not ready for production use.
-
 To prevent abusive searches, such as searches that may result in a Distributed Denial of Service (DDoS), Global Search ignores, logs, and
-doesn't return any results for searches considered abusive according to the following criteria, if `prevent_abusive_searches` feature flag is enabled:
+doesn't return any results for searches considered abusive according to the following criteria:
 
 - Searches with less than 2 characters.
 - Searches with any term greater than 100 characters. URL search terms have a maximum of 200 characters.
@@ -101,8 +94,7 @@ doesn't return any results for searches considered abusive according to the foll
 - Searches with a `repository_ref` or `project_ref` parameter that has special characters not allowed by [Git refname](https://git-scm.com/docs/git-check-ref-format).
 - Searches with a `scope` that is unknown.
 
-Regardless of the status of the `prevent_abusive_searches` feature flag, searches that don't
-comply with the criteria described below aren't logged as abusive but are flagged with an error:
+Searches that don't comply with the criteria described below aren't logged as abusive but are flagged with an error:
 
 - Searches with more than 4096 characters.
 - Searches with more than 64 terms.

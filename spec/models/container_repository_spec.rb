@@ -689,10 +689,29 @@ RSpec.describe ContainerRepository, :aggregate_failures do
       it { is_expected.to eq(nil) }
     end
 
-    context 'with an old repository' do
+    context 'supports gitlab api on .com with an old repository' do
+      let(:on_com) { true }
       let(:created_at) { described_class::MIGRATION_PHASE_1_STARTED_AT - 3.months }
 
-      it { is_expected.to eq(nil) }
+      before do
+        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
+        allow(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
+        expect(repository).to receive(:migration_state).and_return(migration_state)
+      end
+
+      context 'with migration_state import_done' do
+        let(:response) { { 'size_bytes' => 12345 } }
+        let(:migration_state) { 'import_done' }
+
+        it { is_expected.to eq(12345) }
+      end
+
+      context 'with migration_state not import_done' do
+        let(:response) { { 'size_bytes' => 12345 } }
+        let(:migration_state) { 'default' }
+
+        it { is_expected.to eq(nil) }
+      end
     end
   end
 

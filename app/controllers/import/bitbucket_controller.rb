@@ -78,6 +78,10 @@ class Import::BitbucketController < Import::BaseController
     bitbucket_repos.reject { |repo| repo.valid? }
   end
 
+  def provider_url
+    nil
+  end
+
   override :provider_name
   def provider_name
     :bitbucket

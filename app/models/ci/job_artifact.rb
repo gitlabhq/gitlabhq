@@ -322,7 +322,7 @@ module Ci
     def expire_in=(value)
       self.expire_at =
         if value
-          ::Gitlab::Ci::Build::Artifacts::ExpireInParser.new(value).seconds_from_now
+          ::Gitlab::Ci::Build::DurationParser.new(value).seconds_from_now
         end
     end
 
