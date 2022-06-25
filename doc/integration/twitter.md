@@ -4,7 +4,10 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Twitter OAuth 2.0 OmniAuth Provider **(FREE SELF)**
+# Twitter OAuth 1.0a OmniAuth Provider **(FREE SELF)**
+
+NOTE:
+Twitter OAuth 2.0 support is [not yet supported](https://gitlab.com/gitlab-org/gitlab/-/issues/366213).
 
 To enable the Twitter OmniAuth provider you must register your application with
 Twitter. Twitter generates a client ID and secret key for you to use.
