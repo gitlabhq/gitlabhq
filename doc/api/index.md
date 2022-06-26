@@ -525,6 +525,15 @@ options:
 | [Projects](projects.md)  | `order_by=id` only               | Authenticated and unauthenticated users |
 | [Groups](groups.md)      | `order_by=name`, `sort=asc` only | Unauthenticated users only              |
 
+### Pagination response headers
+
+For performance reasons, if a query returns more than 10,000 records, GitLab
+doesn't return the following headers:
+
+- `x-total`.
+- `x-total-pages`.
+- `rel="last"` `link`
+
 ## Path parameters
 
 If an endpoint has path parameters, the documentation displays them with a

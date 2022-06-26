@@ -407,12 +407,7 @@ No response headers are provided.
 
 ### Pagination response headers
 
-For performance reasons, if a query returns more than 10,000 records, GitLab
-doesn't return the following headers:
-
-- `x-total`.
-- `x-total-pages`.
-- `rel="last"` `link`.
+For performance reasons, if a query returns more than 10,000 records, [GitLab excludes some headers](../../api/index.md#pagination-response-headers).
 
 ### Visibility settings
 
