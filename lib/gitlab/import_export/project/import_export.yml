@@ -761,6 +761,7 @@ excluded_attributes:
     - :exported_protected_branches
     - :repository_size_limit
     - :external_webhook_token
+    - :incident_management_issuable_escalation_statuses
   namespaces:
     - :runners_token
     - :runners_token_encrypted
@@ -819,6 +820,7 @@ excluded_attributes:
     - :upvotes_count
     - :work_item_type_id
     - :email_message_id
+    - :incident_management_issuable_escalation_status
   merge_request: &merge_request_excluded_definition
     - :milestone_id
     - :sprint_id

@@ -24,11 +24,29 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute' do
         expect { subject.execute(link) }.to change { shared_group.shared_with_group_links.count }.from(1).to(0)
       end
 
-      it 'revokes project authorization', :sidekiq_inline do
-        group.add_developer(user)
+      context 'with skip_group_share_unlink_auth_refresh feature flag disabled' do
+        before do
+          stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
+        end
 
-        expect { subject.execute(link) }.to(
-          change { Ability.allowed?(user, :read_project, project) }.from(true).to(false))
+        it 'revokes project authorization', :sidekiq_inline do
+          group.add_developer(user)
+
+          expect { subject.execute(link) }.to(
+            change { Ability.allowed?(user, :read_project, project) }.from(true).to(false))
+        end
+      end
+
+      context 'with skip_group_share_unlink_auth_refresh feature flag enabled' do
+        before do
+          stub_feature_flags(skip_group_share_unlink_auth_refresh: true)
+        end
+
+        it 'maintains project authorization', :sidekiq_inline do
+          group.add_developer(user)
+
+          expect(Ability.allowed?(user, :read_project, project)).to be_truthy
+        end
       end
     end
 
@@ -45,12 +63,32 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute' do
         ]
       end
 
-      it 'updates project authorization once per group' do
-        expect(GroupGroupLink).to receive(:delete).and_call_original
-        expect(group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true, blocking: false).once
-        expect(another_group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true, blocking: false).once
+      context 'with skip_group_share_unlink_auth_refresh feature flag disabled' do
+        before do
+          stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
+        end
 
-        subject.execute(links)
+        it 'updates project authorization once per group' do
+          expect(GroupGroupLink).to receive(:delete).and_call_original
+          expect(group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true, blocking: false).once
+          expect(another_group).to receive(:refresh_members_authorized_projects).with(direct_members_only: true, blocking: false).once
+
+          subject.execute(links)
+        end
+      end
+
+      context 'with skip_group_share_unlink_auth_refresh feature flag enabled' do
+        before do
+          stub_feature_flags(skip_group_share_unlink_auth_refresh: true)
+        end
+
+        it 'does not update project authorization once per group' do
+          expect(GroupGroupLink).to receive(:delete).and_call_original
+          expect(group).not_to receive(:refresh_members_authorized_projects)
+          expect(another_group).not_to receive(:refresh_members_authorized_projects)
+
+          subject.execute(links)
+        end
       end
     end
   end

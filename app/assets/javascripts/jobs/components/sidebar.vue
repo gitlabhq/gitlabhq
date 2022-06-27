@@ -89,7 +89,7 @@ export default {
       <div class="blocks-container">
         <div class="gl-py-5 gl-display-flex gl-align-items-center">
           <tooltip-on-truncate :title="job.name" truncate-target="child"
-            ><h4 class="my-0 mr-2 gl-text-truncate">
+            ><h4 class="gl-my-0 gl-mr-3 gl-text-truncate">
               {{ job.name }}
             </h4>
           </tooltip-on-truncate>

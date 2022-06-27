@@ -1151,19 +1151,6 @@ RSpec.describe API::Issues do
           expected_url = expose_url(api_v4_project_issue_path(id: new_issue.project_id, issue_iid: new_issue.iid))
           expect(json_response.dig('_links', 'closed_as_duplicate_of')).to eq(expected_url)
         end
-
-        context 'feature flag is disabled' do
-          before do
-            stub_feature_flags(closed_as_duplicate_of_issues_api: false)
-          end
-
-          it 'does not return the issue as closed_as_duplicate_of' do
-            get api("/projects/#{project.id}/issues/#{issue_closed_as_dup.iid}", user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.dig('_links', 'closed_as_duplicate_of')).to eq(nil)
-          end
-        end
       end
     end
   end

@@ -16,6 +16,8 @@ module Groups
 
           groups_to_refresh = links.map(&:shared_with_group)
           groups_to_refresh.uniq.each do |group|
+            next if Feature.enabled?(:skip_group_share_unlink_auth_refresh, group.root_ancestor)
+
             group.refresh_members_authorized_projects(blocking: false, direct_members_only: true)
           end
         else

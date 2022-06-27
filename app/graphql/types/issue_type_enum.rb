@@ -8,5 +8,9 @@ module Types
     ::WorkItems::Type.allowed_types_for_issues.each do |issue_type|
       value issue_type.upcase, value: issue_type, description: "#{issue_type.titleize} issue type"
     end
+
+    value 'TASK', value: 'task',
+                  description: 'Task issue type. Available only when feature flag `work_items` is enabled.',
+                  deprecated: { milestone: '15.2', reason: :alpha }
   end
 end

@@ -1553,33 +1553,6 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe 'deployment' do
-    describe '#outdated_deployment?' do
-      subject { build.outdated_deployment? }
-
-      context 'when build succeeded' do
-        let(:build) { create(:ci_build, :success) }
-        let!(:deployment) { create(:deployment, :success, deployable: build) }
-
-        context 'current deployment is latest' do
-          it { is_expected.to be_falsey }
-        end
-
-        context 'current deployment is not latest on environment' do
-          let!(:deployment2) { create(:deployment, :success, environment: deployment.environment) }
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'when build failed' do
-        let(:build) { create(:ci_build, :failed) }
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
   describe 'environment' do
     describe '#has_environment?' do
       subject { build.has_environment? }
@@ -1959,16 +1932,6 @@ RSpec.describe Ci::Build do
         expect(build.job_artifacts.erasable).to be_empty
       end
     end
-  end
-
-  describe '#first_pending' do
-    let!(:first) { create(:ci_build, pipeline: pipeline, status: 'pending', created_at: Date.yesterday) }
-    let!(:second) { create(:ci_build, pipeline: pipeline, status: 'pending') }
-
-    subject { described_class.first_pending }
-
-    it { is_expected.to be_a(described_class) }
-    it('returns with the first pending build') { is_expected.to eq(first) }
   end
 
   describe '#failed_but_allowed?' do

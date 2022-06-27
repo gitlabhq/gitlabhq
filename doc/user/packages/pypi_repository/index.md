@@ -99,45 +99,54 @@ Hello from MyPyPiPackage
 After you create a project, you can create a package.
 
 1. In your terminal, go to the `MyPyPiPackage` directory.
-1. Create a `setup.py` file:
+1. Create a `pyproject.toml` file:
 
    ```shell
-   touch setup.py
+   touch pyproject.toml
    ```
 
    This file contains all the information about the package. For more information
-   about this file, see [creating setup.py](https://packaging.python.org/tutorials/packaging-projects/#creating-setup-py).
+   about this file, see [creating `pyproject.toml`](https://packaging.python.org/en/latest/tutorials/packaging-projects/#creating-pyproject-toml).
    Because GitLab identifies packages based on
    [Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names),
    ensure your package name meets these requirements. See the [installation section](#authenticate-with-a-ci-job-token)
    for details.
 
-1. Open the `setup.py` file, and then add basic information:
+1. Open the `pyproject.toml` file, and then add basic information:
 
-   ```python
-   import setuptools
+   ```toml
+   [build-system]
+   requires = ["setuptools>=61.0"]
+   build-backend = "setuptools.build_meta"
 
-   setuptools.setup(
-       name="mypypipackage",
-       version="0.0.1",
-       author="Example Author",
-       author_email="author@example.com",
-       description="A small example package",
-       packages=setuptools.find_packages(),
-       classifiers=[
-           "Programming Language :: Python :: 3",
-           "License :: OSI Approved :: MIT License",
-           "Operating System :: OS Independent",
-       ],
-       python_requires='>=3.6',
-   )
+   [project]
+   name = "mypypipackage"
+   version = "0.0.1"
+   authors = [
+       { name="Example Author", email="author@example.com" },
+   ]
+   description = "A small example package"
+   requires-python = ">=3.7"
+   classifiers = [
+      "Programming Language :: Python :: 3",
+      "Operating System :: OS Independent",
+   ]
+
+   [tool.setuptools.packages]
+   find = {}
    ```
 
 1. Save the file.
-1. Execute the setup:
+1. Install the package build library:
 
    ```shell
-   python3 setup.py sdist bdist_wheel
+   pip install build
+   ```
+
+1. Build the package:
+
+   ```shell
+   python -m build
    ```
 
 The output should be visible in a newly-created `dist` folder:
@@ -218,8 +227,8 @@ image: python:latest
 
 run:
   script:
-    - pip install twine
-    - python setup.py sdist bdist_wheel
+    - pip install build twine
+    - python -m build
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 

@@ -54,14 +54,25 @@ module Gitlab
       # be throttled.
       #
       # @param key [Symbol] Key attribute registered in `.rate_limits`
-      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models, Strings or Symbols to scope throttling to a specific request (e.g. per user per project)
-      # @param threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
-      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
-      # @param peek [Boolean] Optional. When true the key will not be incremented but the current throttled state will be returned.
+      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models, Strings
+      #     or Symbols to scope throttling to a specific request (e.g. per user
+      #     per project)
+      # @param resource [ActiveRecord] An ActiveRecord model to count an action
+      #     for (e.g. limit unique project (resource) downloads (action) to five
+      #     per user (scope))
+      # @param threshold [Integer] Optional threshold value to override default
+      #     one registered in `.rate_limits`
+      # @param users_allowlist [Array<String>] Optional list of usernames to
+      #     exclude from the limit. This param will only be functional if Scope
+      #     includes a current user.
+      # @param peek [Boolean] Optional. When true the key will not be
+      #     incremented but the current throttled state will be returned.
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def throttled?(key, scope:, threshold: nil, users_allowlist: nil, peek: false)
+      def throttled?(key, scope:, resource: nil, threshold: nil, users_allowlist: nil, peek: false)
         raise InvalidKeyError unless rate_limits[key]
+
+        strategy = resource.present? ? IncrementPerActionedResource.new(resource.id) : IncrementPerAction.new
 
         ::Gitlab::Instrumentation::RateLimitingGates.track(key)
 
@@ -72,6 +83,9 @@ module Gitlab
         return false if threshold_value == 0
 
         interval_value = interval(key)
+
+        return false if interval_value == 0
+
         # `period_key` is based on the current time and interval so when time passes to the next interval
         # the key changes and the rate limit count starts again from 0.
         # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
@@ -79,9 +93,12 @@ module Gitlab
         cache_key = cache_key(key, scope, period_key)
 
         value = if peek
-                  read(cache_key)
+                  strategy.read(cache_key)
                 else
-                  increment(cache_key, interval_value, time_elapsed_in_period)
+                  # We add a 1 second buffer to avoid timing issues when we're at the end of a period
+                  expiry = interval_value - time_elapsed_in_period + 1
+
+                  strategy.increment(cache_key, expiry)
                 end
 
         value > threshold_value
@@ -129,40 +146,25 @@ module Gitlab
       def threshold(key)
         value = rate_limit_value_by_key(key, :threshold)
 
-        return value.call if value.is_a?(Proc)
-
-        value.to_i
+        rate_limit_value(value)
       end
 
       def interval(key)
-        rate_limit_value_by_key(key, :interval).to_i
+        value = rate_limit_value_by_key(key, :interval)
+
+        rate_limit_value(value)
+      end
+
+      def rate_limit_value(value)
+        value = value.call if value.is_a?(Proc)
+
+        value.to_i
       end
 
       def rate_limit_value_by_key(key, setting)
         action = rate_limits[key]
 
         action[setting] if action
-      end
-
-      # Increments the rate limit count and returns the new count value.
-      def increment(cache_key, interval_value, time_elapsed_in_period)
-        # We add a 1 second buffer to avoid timing issues when we're at the end of a period
-        expiry = interval_value - time_elapsed_in_period + 1
-
-        ::Gitlab::Redis::RateLimiting.with do |redis|
-          redis.pipelined do
-            redis.incr(cache_key)
-            redis.expire(cache_key, expiry)
-          end.first
-        end
-      end
-
-      # Returns the rate limit count.
-      # Will be 0 if there is no data in the cache.
-      def read(cache_key)
-        ::Gitlab::Redis::RateLimiting.with do |redis|
-          redis.get(cache_key).to_i
-        end
       end
 
       def cache_key(key, scope, period_key)

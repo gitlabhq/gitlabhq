@@ -1,8 +1,0 @@
----
-name: closed_as_duplicate_of_issues_api
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89375
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364749
-milestone: '15.1'
-type: development
-group: group::respond
-default_enabled: false

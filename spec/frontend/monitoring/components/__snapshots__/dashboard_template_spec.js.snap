@@ -35,7 +35,7 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
   >
     <div
-      class="mb-2 mr-2 d-flex d-sm-block"
+      class="gl-mb-3 gl-mr-3 gl-display-flex gl-sm-display-block"
     >
       <dashboards-dropdown-stub
         class="flex-grow-1"

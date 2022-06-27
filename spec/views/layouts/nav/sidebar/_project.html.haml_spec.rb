@@ -419,24 +419,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
       end
     end
 
-    describe 'Logs' do
-      it 'has a link to the pod logs page' do
-        render
-
-        expect(rendered).to have_link('Logs', href: project_logs_path(project))
-      end
-
-      describe 'when the user does not have access' do
-        let(:user) { nil }
-
-        it 'does not have a link to the pod logs page' do
-          render
-
-          expect(rendered).not_to have_link('Logs')
-        end
-      end
-    end
-
     describe 'Error Tracking' do
       it 'has a link to the error tracking page' do
         render

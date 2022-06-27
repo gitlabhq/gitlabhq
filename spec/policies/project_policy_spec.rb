@@ -612,6 +612,24 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'create_task' do
+    context 'when user is member of the project' do
+      let(:current_user) { developer }
+
+      context 'when work_items feature flag is enabled' do
+        it { expect_allowed(:create_task) }
+      end
+
+      context 'when work_items feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it { expect_disallowed(:create_task) }
+      end
+    end
+  end
+
   describe 'update_max_artifacts_size' do
     context 'when no user' do
       let(:current_user) { anonymous }

@@ -99,6 +99,9 @@
 
 #js-review-bar
 
+- if Feature.enabled?(:mr_experience_survey, @project)
+  #js-mr-experience-survey
+
 - if current_user&.mr_attention_requests_enabled?
   #js-need-attention-sidebar-onboarding
 

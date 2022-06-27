@@ -179,6 +179,8 @@ class ProjectPolicy < BasePolicy
   with_scope :subject
   condition(:packages_disabled) { !@subject.packages_enabled }
 
+  condition(:work_items_enabled, scope: :subject) { project&.work_items_feature_flag_enabled? }
+
   features = %w[
     merge_requests
     issues
@@ -274,10 +276,9 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
 
-  rule { can?(:create_issue) }.policy do
-    enable :create_task
-    enable :create_work_item
-  end
+  rule { can?(:create_issue) }.enable :create_work_item
+
+  rule { can?(:create_issue) & work_items_enabled }.enable :create_task
 
   # These abilities are not allowed to admins that are not members of the project,
   # that's why they are defined separately.

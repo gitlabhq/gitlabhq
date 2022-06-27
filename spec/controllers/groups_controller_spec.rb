@@ -1112,9 +1112,11 @@ RSpec.describe GroupsController, factory_default: :keep do
       before do
         sign_in(admin)
 
-        allow(Gitlab::ApplicationRateLimiter)
-          .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          allow(strategy)
+            .to receive(:increment)
+            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_export][:threshold].call + 1)
+        end
       end
 
       it 'throttles the endpoint' do
@@ -1194,9 +1196,11 @@ RSpec.describe GroupsController, factory_default: :keep do
       before do
         sign_in(admin)
 
-        allow(Gitlab::ApplicationRateLimiter)
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          allow(strategy)
           .to receive(:increment)
           .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
+        end
       end
 
       it 'throttles the endpoint' do

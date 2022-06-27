@@ -170,7 +170,7 @@ export default {
 
 <template>
   <div ref="prometheusGraphsHeader">
-    <div class="mb-2 mr-2 d-flex d-sm-block">
+    <div class="gl-mb-3 gl-mr-3 gl-display-flex gl-sm-display-block">
       <dashboards-dropdown
         id="monitor-dashboards-dropdown"
         data-qa-selector="dashboards_filter_dropdown"
@@ -240,7 +240,7 @@ export default {
     <div class="flex-grow-1"></div>
 
     <div class="d-sm-flex">
-      <div v-if="showRearrangePanelsBtn" class="mb-2 mr-2 d-flex">
+      <div v-if="showRearrangePanelsBtn" class="gl-mb-3 gl-mr-3 gl-display-flex">
         <gl-button
           :pressed="isRearrangingPanels"
           variant="default"
@@ -253,7 +253,7 @@ export default {
 
       <div
         v-if="externalDashboardUrl && externalDashboardUrl.length"
-        class="mb-2 mr-2 d-flex d-sm-block"
+        class="gl-mb-3 gl-mr-3 gl-display-flex gl-sm-display-block"
       >
         <gl-button
           class="flex-grow-1 js-external-dashboard-link"
@@ -280,7 +280,7 @@ export default {
       <template v-if="shouldShowSettingsButton">
         <span aria-hidden="true" class="gl-pl-3 border-left gl-mb-3 d-none d-sm-block"></span>
 
-        <div class="mb-2 mr-2 d-flex d-sm-block">
+        <div class="gl-mb-3 gl-mr-3 d-flex d-sm-block">
           <gl-button
             v-gl-tooltip
             data-testid="metrics-settings-button"

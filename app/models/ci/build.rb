@@ -14,8 +14,6 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
-    BuildArchivedError = Class.new(StandardError)
-
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
@@ -172,7 +170,6 @@ module Ci
     end
 
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
-    scope :with_expired_artifacts, -> { with_downloadable_artifacts.where('artifacts_expire_at < ?', Time.current) }
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
@@ -188,11 +185,6 @@ module Ci
     end
 
     scope :queued_before, ->(time) { where(arel_table[:queued_at].lt(time)) }
-
-    scope :preload_project_and_pipeline_project, -> do
-      preload(Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
-              pipeline: Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE)
-    end
 
     scope :with_coverage, -> { where.not(coverage: nil) }
     scope :without_coverage, -> { where(coverage: nil) }
@@ -215,10 +207,6 @@ module Ci
       # as the controller is JobsController
       def model_name
         ActiveModel::Name.new(self, nil, 'job')
-      end
-
-      def first_pending
-        pending.unstarted.order('created_at ASC').first
       end
 
       def with_preloads
@@ -554,10 +542,6 @@ module Ci
 
     def environment_deployment_tier
       self.options.dig(:environment, :deployment_tier) if self.options
-    end
-
-    def outdated_deployment?
-      success? && !deployment.try(:last?)
     end
 
     def triggered_by?(current_user)

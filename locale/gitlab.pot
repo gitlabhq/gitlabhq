@@ -25129,6 +25129,21 @@ msgstr ""
 msgid "MrList|Review requested from %{name}"
 msgstr ""
 
+msgid "MrSurvey|By continuing, you acknowledge that responses will be used to improve GitLab and in accordance with the %{linkStart}GitLab Privacy Policy%{linkEnd}."
+msgstr ""
+
+msgid "MrSurvey|How satisfied are you with %{strongStart}speed/performance%{strongEnd} of merge requests?"
+msgstr ""
+
+msgid "MrSurvey|Merge request experience survey"
+msgstr ""
+
+msgid "MrSurvey|Overall, how satisfied are you with merge requests?"
+msgstr ""
+
+msgid "MrSurvey|Thank you for your feedback!"
+msgstr ""
+
 msgid "Multi-project"
 msgstr ""
 
@@ -37415,6 +37430,21 @@ msgstr ""
 msgid "Survey Response"
 msgstr ""
 
+msgid "Surveys|Delighted"
+msgstr ""
+
+msgid "Surveys|Happy"
+msgstr ""
+
+msgid "Surveys|Neutral"
+msgstr ""
+
+msgid "Surveys|Sad"
+msgstr ""
+
+msgid "Surveys|Unhappy"
+msgstr ""
+
 msgid "Switch Branches"
 msgstr ""
 
@@ -38266,7 +38296,7 @@ msgstr ""
 msgid "The download link will expire in 24 hours."
 msgstr ""
 
-msgid "The environment tier must be one of %{environment_tiers}."
+msgid "The environment tiers must be from %{environment_tiers}."
 msgstr ""
 
 msgid "The errors we encountered were:"
