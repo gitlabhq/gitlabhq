@@ -354,7 +354,7 @@ can do this by using the command in the [previous topic](#use-different-keys-for
 However, even if you set `IdentitiesOnly` to `yes`, you cannot sign in if an
 `IdentityFile` exists outside of a `Host` block.
 
-Instead, you can assign aliases to hosts in the `~.ssh/config` file.
+Instead, you can assign aliases to hosts in the `~/.ssh/config` file.
 
 - For the `Host`, use an alias like `user_1.gitlab.com` and
   `user_2.gitlab.com`. Advanced configurations

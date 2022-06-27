@@ -358,7 +358,7 @@ Add `[collapsed=true]` after the section name and before the `\r`. The section e
 remains unchanged:
 
 - Section start marker with `[collapsed=true]`: `\e[0Ksection_start:UNIX_TIMESTAMP:SECTION_NAME[collapsed=true]\r\e[0K` + `TEXT_OF_SECTION_HEADER`
-- Section end marker: `section_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
+- Section end marker: `\e[0Ksection_end:UNIX_TIMESTAMP:SECTION_NAME\r\e[0K`
 
 Add the updated section start text to the CI configuration. For example,
 using `echo`:

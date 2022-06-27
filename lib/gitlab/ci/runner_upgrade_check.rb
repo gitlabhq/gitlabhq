@@ -12,41 +12,40 @@ module Gitlab
         recommended: 'Upgrade is available and recommended for the runner.'
       }.freeze
 
-      def initialize
-        reset!
-      end
-
       def check_runner_upgrade_status(runner_version)
         runner_version = ::Gitlab::VersionInfo.parse(runner_version) unless runner_version.is_a?(::Gitlab::VersionInfo)
 
         return :invalid unless runner_version.valid?
 
         releases = RunnerReleases.instance.releases
-        gitlab_minor_version = @gitlab_version.without_patch
 
-        available_releases = releases
-          .reject { |release| release.major > @gitlab_version.major }
-          .reject do |release|
-            # Do not reject a patch update, even if the runner is ahead of the instance version
-            next false if release.same_minor_version?(runner_version)
-
-            release.without_patch > gitlab_minor_version
+        # Recommend patch update if there's a newer release in a same minor branch as runner
+        releases.each do |available_release|
+          if available_release.same_minor_version?(runner_version) && available_release > runner_version
+            return :recommended
           end
+        end
 
-        return :recommended if available_releases.any? { |available_rel| patch_update?(available_rel, runner_version) }
-        return :recommended if outside_backport_window?(runner_version, releases)
-        return :available if available_releases.any? { |available_rel| available_rel > runner_version }
+        # Recommend update if outside of backport window
+        if outside_backport_window?(runner_version, releases)
+          return :recommended
+        end
+
+        # Consider update if there's a newer release within the currently deployed GitLab version
+        releases.each do |available_release|
+          if available_release.same_minor_version?(gitlab_version) && available_release > runner_version
+            return :available
+          end
+        end
 
         :not_available
       end
 
-      def reset!
-        @gitlab_version = ::Gitlab::VersionInfo.parse(::Gitlab::VERSION)
-      end
-
-      public_class_method :instance
-
       private
+
+      def gitlab_version
+        @gitlab_version ||= ::Gitlab::VersionInfo.parse(::Gitlab::VERSION)
+      end
 
       def patch_update?(available_release, runner_version)
         # https://docs.gitlab.com/ee/policy/maintenance.html#patch-releases

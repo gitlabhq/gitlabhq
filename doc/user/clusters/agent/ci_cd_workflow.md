@@ -54,6 +54,8 @@ You can authorize the agent to access individual projects, or authorize a group 
 so all projects within have access. For added security, you can also
 [use impersonation](#use-impersonation-to-restrict-project-and-group-access).
 
+Authorization configuration can take one or two minutes to propagate.
+
 ### Authorize the agent to access your projects
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
@@ -169,6 +171,8 @@ You can impersonate:
 - The agent itself (default).
 - The CI/CD job that accesses the cluster.
 - A specific user or system account defined within the cluster.
+
+Authorization configuration can take one or two minutes to propagate.
 
 ### Impersonate the agent
 

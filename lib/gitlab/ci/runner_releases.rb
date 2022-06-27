@@ -30,8 +30,6 @@ module Gitlab
         @backoff_count = 0
       end
 
-      public_class_method :instance
-
       private
 
       def fetch_new_releases

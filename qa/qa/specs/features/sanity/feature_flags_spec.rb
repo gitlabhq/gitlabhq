@@ -52,6 +52,7 @@ module QA
             QA::Runtime::Feature.enable(flag)
 
             expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_truthy
+                                                                .within(max_duration: 60, sleep_interval: 5)
           end
         end
 
@@ -66,6 +67,7 @@ module QA
             QA::Runtime::Feature.disable(flag)
 
             expect { QA::Runtime::Feature.enabled?(flag) }.to eventually_be_falsey
+                                                                .within(max_duration: 60, sleep_interval: 5)
           end
         end
       end

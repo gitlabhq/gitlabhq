@@ -608,15 +608,14 @@ To ensure only people from your organization can access particular
 resources, you can restrict access to groups by IP address. This group-level setting
 applies to:
 
-- The GitLab UI, including subgroups, projects, and issues.
+- The GitLab UI, including subgroups, projects, issues, and pages.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
+- Using Git over SSH on GitLab.com.
 
 ### Security implications
 
 You should consider some security implications before configuring IP address restrictions.
 
-- Restricting HTTP traffic on GitLab.com with IP address restrictions causes SSH requests (including Git operations over
-  SSH) to fail. For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271673).
 - Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
   - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.

@@ -50,6 +50,9 @@ namespace :dev do
         connection.execute(cmd)
       rescue ActiveRecord::NoDatabaseError
       end
+
+      # Clear connections opened by this rake task too
+      ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
     end
   end
 
