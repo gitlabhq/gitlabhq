@@ -17,6 +17,7 @@ import Api, { DEFAULT_PER_PAGE } from '~/api';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { __, s__, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -36,6 +37,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [Tracking.mixin()],
   inject: ['projectId', 'admin', 'fileSizeLimit'],
   docsLink: helpPagePath('ci/secure_files/index'),
   DEFAULT_PER_PAGE,
@@ -113,6 +115,8 @@ export default {
       try {
         await Api.deleteProjectSecureFile(this.projectId, secureFileId);
         this.getProjectSecureFiles();
+
+        this.track('delete_secure_file');
       } catch (error) {
         Sentry.captureException(error);
         this.error = true;
@@ -129,6 +133,7 @@ export default {
 
       this.loading = false;
       this.uploading = false;
+      this.track('render_secure_files_list');
     },
     async uploadSecureFile() {
       this.error = null;
@@ -137,6 +142,7 @@ export default {
       try {
         await Api.uploadProjectSecureFile(this.projectId, this.uploadFormData(file));
         this.getProjectSecureFiles();
+        this.track('upload_secure_file');
       } catch (error) {
         this.error = true;
         this.errorMessage = this.formattedErrorMessage(error);

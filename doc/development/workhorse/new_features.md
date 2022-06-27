@@ -74,5 +74,5 @@ The Workhorse maintainers can help you assess the situation.
 - In 2020, `@nolith` presented the talk
   ["Speed up the monolith. Building a smart reverse proxy in Go"](https://archive.fosdem.org/2020/schedule/event/speedupmonolith/)
   at FOSDEM. The talk includes more details on the history of Workhorse and the NFS removal.
-- The [uploads development documentation](../uploads.md) contains the most common
+- The [uploads development documentation](../uploads/index.md) contains the most common
   use cases for adding a new type of upload.

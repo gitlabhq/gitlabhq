@@ -5,7 +5,7 @@ data_category: optional
 name: count_promoted_issues
 product_section: growth
 product_stage: growth
-product_group: group::product intelligence
+product_group: product_intelligence
 product_category: collection
 value_type: number
 status: active

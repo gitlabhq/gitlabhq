@@ -4,7 +4,7 @@ key_path: redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthl
 description: Monthly active users of GitLab Managed Terraform states
 product_section: ops
 product_stage: configure
-product_group: group::configure
+product_group: configure
 product_category: infrastructure_as_code
 value_type: number
 status: active

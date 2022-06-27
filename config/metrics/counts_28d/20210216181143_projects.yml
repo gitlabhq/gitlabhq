@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.plan.projects
 description: Count of MAU creating projects
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: projects
 value_type: number
 status: active

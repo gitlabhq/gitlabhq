@@ -1,12 +1,10 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
 import DuplicatesSettings from '~/packages_and_registries/settings/group/components/duplicates_settings.vue';
 import GenericSettings from '~/packages_and_registries/settings/group/components/generic_settings.vue';
 import MavenSettings from '~/packages_and_registries/settings/group/components/maven_settings.vue';
 import {
   PACKAGE_SETTINGS_HEADER,
   PACKAGE_SETTINGS_DESCRIPTION,
-  PACKAGES_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
@@ -19,12 +17,7 @@ export default {
     PACKAGE_SETTINGS_HEADER,
     PACKAGE_SETTINGS_DESCRIPTION,
   },
-  links: {
-    PACKAGES_DOCS_PATH,
-  },
   components: {
-    GlSprintf,
-    GlLink,
     SettingsBlock,
     MavenSettings,
     GenericSettings,
@@ -98,13 +91,7 @@ export default {
     <template #title> {{ $options.i18n.PACKAGE_SETTINGS_HEADER }}</template>
     <template #description>
       <span data-testid="description">
-        <gl-sprintf :message="$options.i18n.PACKAGE_SETTINGS_DESCRIPTION">
-          <template #link="{ content }">
-            <gl-link :href="$options.links.PACKAGES_DOCS_PATH" target="_blank">{{
-              content
-            }}</gl-link>
-          </template>
-        </gl-sprintf>
+        {{ $options.i18n.PACKAGE_SETTINGS_DESCRIPTION }}
       </span>
     </template>
     <template #default>

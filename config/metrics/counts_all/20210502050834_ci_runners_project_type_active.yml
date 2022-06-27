@@ -5,7 +5,7 @@ name: "count_active_project_ci_runners"
 description: Total active Specific (Project) Runners
 product_section: ops
 product_stage: verify
-product_group: group::pipeline execution
+product_group: pipeline_execution
 product_category: continuous_integration
 value_type: number
 status: active

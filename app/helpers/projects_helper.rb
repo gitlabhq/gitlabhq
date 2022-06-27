@@ -376,7 +376,7 @@ module ProjectsHelper
       canDisableEmails: can_disable_emails?(project, current_user),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
-      visibilityHelpPath: help_page_path('public_access/public_access'),
+      visibilityHelpPath: help_page_path('user/public_access'),
       registryAvailable: Gitlab.config.registry.enabled,
       registryHelpPath: help_page_path('user/packages/container_registry/index'),
       lfsAvailable: Gitlab.config.lfs.enabled,

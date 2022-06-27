@@ -4,7 +4,7 @@ key_path: counts.service_desk_issues
 description: Count of service desk issues
 product_section: dev
 product_stage: plan
-product_group: group::certify
+product_group: certify
 product_category: service_desk
 value_type: number
 status: active

@@ -6,7 +6,7 @@ description: What PostgreSQL flavor is being used. Possible values are
   or "null".
 product_section: enablement
 product_stage: enablement
-product_group: group::database
+product_group: database
 product_category: database
 value_type: string
 status: active

@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_security_sast_iac_weekl
 description: Count of pipelines using the stable SAST IaC template
 product_section: sec
 product_stage: secure
-product_group: "group::static analysis"
+product_group: "static_analysis"
 product_category: SAST
 value_type: number
 status: active

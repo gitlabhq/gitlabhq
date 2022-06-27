@@ -5,7 +5,7 @@ description: Count of WAU using the `/award` quick action to set an award emoji 
   an issuable
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: issue_tracking
 value_type: number
 status: active

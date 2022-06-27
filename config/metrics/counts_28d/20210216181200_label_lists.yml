@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.plan.label_lists
 description: Count of MAU creating label lists on Boards
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: boards
 value_type: number
 status: active

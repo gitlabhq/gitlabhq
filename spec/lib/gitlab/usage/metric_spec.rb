@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Usage::Metric do
       description: "Count of Issues created",
       product_section: "dev",
       product_stage: "plan",
-      product_group: "group::plan",
+      product_group: "plan",
       product_category: "issue_tracking",
       value_type: "number",
       status: "active",

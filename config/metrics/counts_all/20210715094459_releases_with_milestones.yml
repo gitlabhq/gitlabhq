@@ -4,7 +4,7 @@ description: Unique users creating releases with milestones associated
 performance_indicator_type: []
 product_section: ops
 product_stage: release
-product_group: 'group::release'
+product_group: 'release'
 product_category: Release Orchestration
 value_type: number
 status: active

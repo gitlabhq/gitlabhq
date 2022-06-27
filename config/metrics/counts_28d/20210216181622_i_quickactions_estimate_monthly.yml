@@ -5,7 +5,7 @@ description: Count of MAU using the `/estimate` quick action to set a time estim
   on an issue
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: time_tracking
 value_type: number
 status: active

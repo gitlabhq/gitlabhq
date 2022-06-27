@@ -48,6 +48,6 @@ RSpec.describe 'User searches group settings', :js do
       visit group_settings_packages_and_registries_path(group)
     end
 
-    it_behaves_like 'can highlight results', 'Use GitLab as a private registry'
+    it_behaves_like 'can highlight results', 'Allow packages with the same name and version'
   end
 end

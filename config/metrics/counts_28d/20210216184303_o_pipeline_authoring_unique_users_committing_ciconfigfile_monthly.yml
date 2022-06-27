@@ -5,7 +5,7 @@ description: Monthly unique user count doing commits which contains the CI confi
   file
 product_section: ops
 product_stage: verify
-product_group: group::pipeline authoring
+product_group: pipeline_authoring
 product_category: pipeline_authoring
 value_type: number
 status: active

@@ -4,7 +4,7 @@ key_path: redis_hll_counters.issues_edit.g_project_management_issue_time_estimat
 description: Count of MAU changing an issue time estimate
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: time_tracking
 value_type: number
 status: active

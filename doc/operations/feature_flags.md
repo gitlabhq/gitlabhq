@@ -297,7 +297,6 @@ For API content, see:
 - [Feature Flags API](../api/feature_flags.md)
 - [Feature Flag Specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/213369) in GitLab 14.0.)
 - [Feature Flag User Lists API](../api/feature_flag_user_lists.md)
-- [Legacy Feature Flags API](../api/feature_flags_legacy.md)
 
 ### Golang application example
 

@@ -5,7 +5,7 @@ description: Count of WAU using the `/assign @user1` quick action to assign a si
   individual to an issuable
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: issue_tracking
 value_type: number
 status: active

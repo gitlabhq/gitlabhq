@@ -4,7 +4,7 @@ description: Unique users interacting with Plan features
 product_category: team planning
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 value_type: number
 status: active
 milestone: '14.9'

@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.plan.service_desk_issues
 description: Count of service desk issues
 product_section: dev
 product_stage: plan
-product_group: group::plan
+product_group: plan
 product_category:
 value_type: number
 status: active

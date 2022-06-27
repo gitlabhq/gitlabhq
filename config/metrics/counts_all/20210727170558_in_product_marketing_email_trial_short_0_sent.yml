@@ -4,7 +4,7 @@ name: "count_sent_first_email_of_the_trial_short_track_for_in_product_marketing_
 description: Total sent emails of the trial_short track's first email
 product_section: growth
 product_stage: growth
-product_group: group::activation
+product_group: activation
 product_category: onboarding
 value_type: number
 status: active

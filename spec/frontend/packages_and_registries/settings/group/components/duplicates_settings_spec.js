@@ -4,8 +4,6 @@ import component from '~/packages_and_registries/settings/group/components/dupli
 
 import {
   DUPLICATES_TOGGLE_LABEL,
-  DUPLICATES_ALLOWED_ENABLED,
-  DUPLICATES_ALLOWED_DISABLED,
   DUPLICATES_SETTING_EXCEPTION_TITLE,
   DUPLICATES_SETTINGS_EXCEPTION_LEGEND,
 } from '~/packages_and_registries/settings/group/constants';
@@ -36,7 +34,6 @@ describe('Duplicates Settings', () => {
   });
 
   const findToggle = () => wrapper.findComponent(GlToggle);
-  const findToggleLabel = () => wrapper.find('[data-testid="toggle-label"');
 
   const findInputGroup = () => wrapper.findComponent(GlFormGroup);
   const findInput = () => wrapper.findComponent(GlFormInput);
@@ -62,13 +59,6 @@ describe('Duplicates Settings', () => {
   });
 
   describe('when the duplicates are disabled', () => {
-    it('the toggle has the disabled message', () => {
-      mountComponent();
-
-      expect(findToggleLabel().exists()).toBe(true);
-      expect(findToggleLabel().text()).toMatchInterpolatedText(DUPLICATES_ALLOWED_DISABLED);
-    });
-
     it('shows a form group with an input field', () => {
       mountComponent();
 
@@ -130,13 +120,6 @@ describe('Duplicates Settings', () => {
   });
 
   describe('when the duplicates are enabled', () => {
-    it('has the correct toggle label', () => {
-      mountComponent({ ...defaultProps, duplicatesAllowed: true });
-
-      expect(findToggleLabel().exists()).toBe(true);
-      expect(findToggleLabel().text()).toMatchInterpolatedText(DUPLICATES_ALLOWED_ENABLED);
-    });
-
     it('hides the form input group', () => {
       mountComponent({ ...defaultProps, duplicatesAllowed: true });
 

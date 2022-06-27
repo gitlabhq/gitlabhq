@@ -13,8 +13,6 @@ class Integration < ApplicationRecord
   include IgnorableColumns
   extend ::Gitlab::Utils::Override
 
-  ignore_column :properties, remove_with: '15.1', remove_after: '2022-05-22'
-
   UnknownType = Class.new(StandardError)
 
   self.inheritance_column = :type_new

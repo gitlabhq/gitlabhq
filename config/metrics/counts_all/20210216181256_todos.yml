@@ -4,7 +4,7 @@ key_path: counts.todos
 description: Count of todos created
 product_section: dev
 product_stage: plan
-product_group: group::project management
+product_group: project_management
 product_category: issue_tracking
 value_type: number
 status: active

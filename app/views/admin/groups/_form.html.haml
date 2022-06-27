@@ -8,33 +8,28 @@
   = render_if_exists 'shared/old_repository_size_limit_setting', form: f, type: :group
   = render_if_exists 'admin/namespace_plan', f: f
 
-  .form-group.row.group-description-holder
-    .col-sm-2.col-form-label
-      = f.label :avatar, _("Group avatar")
-    .col-sm-10
-      = render 'shared/choose_avatar_button', f: f
+  .form-group.gl-form-group{ role: 'group' }
+    = f.label :avatar, _("Group avatar"), class: 'gl-display-block col-form-label'
+    = render 'shared/choose_avatar_button', f: f
 
   = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
-  .form-group.row
-    .offset-sm-2.col-sm-10
-      = render 'shared/allow_request_access', form: f
+  .form-group.gl-form-group{ role: 'group' }
+    = render 'shared/allow_request_access', form: f
 
   = render 'groups/group_admin_settings', f: f
 
   = render_if_exists 'namespaces/shared_runners_minutes_settings', group: @group, form: f
 
   - if @group.new_record?
-    .form-group.row
-      .offset-sm-2.col-sm-10
-        = render Pajamas::AlertComponent.new(dismissible: false) do |c|
-          = c.body do
-            = render 'shared/group_tips'
-    .form-actions
+    = render Pajamas::AlertComponent.new(dismissible: false) do |c|
+      = c.body do
+        = render 'shared/group_tips'
+    .gl-mt-5
       = f.submit _('Create group'), class: "gl-button btn btn-confirm"
       = link_to  _('Cancel'), admin_groups_path, class: "gl-button btn btn-default btn-cancel"
 
   - else
-    .form-actions
+    .gl-mt-5
       = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
       = link_to  _('Cancel'), admin_group_path(@group), class: "gl-button btn btn-cancel"

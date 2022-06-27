@@ -628,6 +628,8 @@ You should consider some security implications before configuring IP address res
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
   push, merge, issue, or comment events.
+- IP access restrictions for Git operations via SSH are supported only on **(PREMIUM SAAS)**
+  and higher tiers. IP access restrictions applied to self-managed instances block SSH completely.
 
 ### Restrict group access by IP address
 
@@ -869,7 +871,7 @@ Support for group-level settings for merge request approval rules is tracked in 
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
-- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md).
+- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/index.md).
 - [Control access and visibility](../admin_area/settings/visibility_and_access_controls.md).
 
 ## Troubleshooting

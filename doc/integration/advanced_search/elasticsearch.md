@@ -95,11 +95,13 @@ The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gi
 First, we need to install some dependencies, then we build and install
 the indexer itself.
 
+#### Install dependencies
+
 This project relies on [International Components for Unicode](https://icu.unicode.org/) (ICU) for text encoding,
 therefore we must ensure the development packages for your platform are
 installed before running `make`.
 
-#### Debian / Ubuntu
+##### Debian / Ubuntu
 
 To install on Debian or Ubuntu, run:
 
@@ -107,7 +109,7 @@ To install on Debian or Ubuntu, run:
 sudo apt install libicu-dev
 ```
 
-#### CentOS / RHEL
+##### CentOS / RHEL
 
 To install on CentOS or RHEL, run:
 
@@ -115,7 +117,7 @@ To install on CentOS or RHEL, run:
 sudo yum install libicu-devel
 ```
 
-#### macOS
+##### macOS
 
 NOTE:
 You must first [install Homebrew](https://brew.sh/).
@@ -127,7 +129,7 @@ brew install icu4c
 export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
 ```
 
-### Build and install
+#### Build and install
 
 To build and install the indexer, run:
 
