@@ -1,5 +1,6 @@
 @import './pages/branches';
 @import './pages/clusters';
+@import './pages/colors';
 @import './pages/commits';
 @import './pages/deploy_keys';
 @import './pages/detail_page';
@@ -8,6 +9,7 @@
 @import './pages/events';
 @import './pages/groups';
 @import './pages/help';
+@import './pages/hierarchy';
 @import './pages/issuable';
 @import './pages/issues';
 @import './pages/labels';
@@ -25,9 +27,8 @@
 @import './pages/registry';
 @import './pages/search';
 @import './pages/service_desk';
-@import './pages/settings';
 @import './pages/settings_ci_cd';
+@import './pages/settings';
 @import './pages/storage_quota';
 @import './pages/tree';
 @import './pages/users';
-@import './pages/hierarchy';

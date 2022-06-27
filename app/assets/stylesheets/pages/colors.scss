@@ -1,0 +1,24 @@
+.color-item {
+  @include gl-align-items-center;
+  @include gl-display-flex;
+}
+
+.color-item-color {
+  @include gl-flex-shrink-0;
+  @include gl-mr-3;
+  @include gl-top-0;
+}
+
+.right-sidebar-collapsed {
+  .color-item {
+    @include gl-pt-3;
+  }
+
+  .color-item-color {
+    margin: 0;
+  }
+
+  .color-item-text {
+    display: none;
+  }
+}

@@ -1060,6 +1060,9 @@ License.current.expires_at
 
 # Is this a trial license?
 License.current.trial?
+
+# License ID for lookup on CustomersDot
+License.current.license_id
 ```
 
 ### Check if a project feature is available on the instance

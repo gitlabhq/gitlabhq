@@ -1,4 +1,5 @@
 <script>
+import { isString } from 'lodash';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
@@ -52,13 +53,23 @@ export default {
       required: false,
       default: s__('ColorWidget|Assign epic color'),
     },
+    defaultColor: {
+      type: Object,
+      required: false,
+      validator(value) {
+        return isString(value?.color) && isString(value?.title);
+      },
+      default() {
+        return {
+          color: '',
+          title: '',
+        };
+      },
+    },
   },
   data() {
     return {
-      issuableColor: {
-        color: '',
-        title: '',
-      },
+      issuableColor: this.defaultColor,
       colorUpdateInProgress: false,
       oldIid: null,
       sidebarExpandedOnClick: false,

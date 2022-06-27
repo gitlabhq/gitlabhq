@@ -9035,6 +9035,9 @@ msgstr ""
 msgid "Collector hostname"
 msgstr ""
 
+msgid "Color"
+msgstr ""
+
 msgid "ColorWidget|An error occurred while updating color."
 msgstr ""
 
@@ -30331,6 +30334,9 @@ msgstr ""
 msgid "ProjectSettings|What are merge trains?"
 msgstr ""
 
+msgid "ProjectSettings|What is squashing?"
+msgstr ""
+
 msgid "ProjectSettings|When merge request pipelines are enabled in the CI/CD configuration file, pipelines validate the combined results of the source and target branches. %{link_start}How to configure merge request pipelines?%{link_end}"
 msgstr ""
 
@@ -34764,6 +34770,9 @@ msgid "Select a branch"
 msgstr ""
 
 msgid "Select a branch to compare"
+msgstr ""
+
+msgid "Select a color"
 msgstr ""
 
 msgid "Select a compliance framework to apply to this project. %{linkStart}How are these added?%{linkEnd}"

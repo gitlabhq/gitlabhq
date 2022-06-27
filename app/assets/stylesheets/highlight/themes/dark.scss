@@ -188,7 +188,11 @@ $dark-il: #de935f;
     .diff-line-num.new,
     .line-coverage.new,
     .line-codequality.new,
-    .line_content.new {
+    .line_content.new,
+    .diff-line-num.new-nomappinginraw,
+    .line-coverage.new-nomappinginraw,
+    .line-codequality.new-nomappinginraw,
+    .line_content.new-nomappinginraw {
       @include diff-background($dark-new-bg, $dark-new-idiff, $dark-border);
 
       &::before,
@@ -200,7 +204,11 @@ $dark-il: #de935f;
     .diff-line-num.old,
     .line-coverage.old,
     .line-codequality.old,
-    .line_content.old {
+    .line_content.old,
+    .diff-line-num.old-nomappinginraw,
+    .line-coverage.old-nomappinginraw,
+    .line-codequality.old-nomappinginraw,
+    .line_content.old-nomappinginraw {
       @include diff-background($dark-old-bg, $dark-old-idiff, $dark-border);
 
       &::before,

@@ -10,7 +10,7 @@ import { diffViewerModes } from '~/ide/constants';
 import NoteForm from '~/notes/components/note_form.vue';
 import NoPreviewViewer from '~/vue_shared/components/diff_viewer/viewers/no_preview.vue';
 import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_diffable.vue';
-import diffFileMockData from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 Vue.use(Vuex);
 
@@ -28,7 +28,7 @@ describe('DiffContent', () => {
   const getCommentFormForDiffFileGetterMock = jest.fn();
 
   const defaultProps = {
-    diffFile: JSON.parse(JSON.stringify(diffFileMockData)),
+    diffFile: getDiffFileMock(),
   };
 
   const createComponent = ({ props, state, provide } = {}) => {
@@ -70,7 +70,7 @@ describe('DiffContent', () => {
             isInlineView: isInlineViewGetterMock,
             isParallelView: isParallelViewGetterMock,
             getCommentFormForDiffFile: getCommentFormForDiffFileGetterMock,
-            diffLines: () => () => [...diffFileMockData.parallel_diff_lines],
+            diffLines: () => () => [...getDiffFileMock().parallel_diff_lines],
             fileLineCodequality: () => () => [],
           },
           actions: {

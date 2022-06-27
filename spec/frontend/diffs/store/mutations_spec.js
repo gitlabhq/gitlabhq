@@ -3,7 +3,7 @@ import createState from '~/diffs/store/modules/diff_state';
 import * as types from '~/diffs/store/mutation_types';
 import mutations from '~/diffs/store/mutations';
 import * as utils from '~/diffs/store/utils';
-import diffFileMockData from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 describe('DiffsStoreMutations', () => {
   describe('SET_BASE_CONFIG', () => {
@@ -71,6 +71,7 @@ describe('DiffsStoreMutations', () => {
 
   describe('SET_DIFF_METADATA', () => {
     it('should overwrite state with the camelCased data that is passed in', () => {
+      const diffFileMockData = getDiffFileMock();
       const state = {
         diffFiles: [],
       };
@@ -94,7 +95,7 @@ describe('DiffsStoreMutations', () => {
     it('should set diff data batch type properly', () => {
       const state = { diffFiles: [] };
       const diffMock = {
-        diff_files: [diffFileMockData],
+        diff_files: [getDiffFileMock()],
       };
 
       mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);

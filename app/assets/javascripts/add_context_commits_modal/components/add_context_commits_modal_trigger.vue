@@ -41,7 +41,7 @@ export default {
         'gl-mt-5': !commitsEmpty && contextCommitsEmpty,
       },
     ]"
-    :variant="commitsEmpty ? 'info' : 'default'"
+    :variant="commitsEmpty ? 'confirm' : 'default'"
     @click="openModal"
   >
     {{ buttonText }}

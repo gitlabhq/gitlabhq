@@ -6,7 +6,7 @@ import {
   match,
 } from '~/diffs/utils/diff_file';
 import { diffViewerModes } from '~/ide/constants';
-import mockDiffFile from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 function getDiffFiles() {
   const loadFull = 'namespace/project/-/merge_requests/12345/diff_for_path?file_identifier=abc';
@@ -210,7 +210,7 @@ describe('diff_file utilities', () => {
     ];
     const validFile = [
       'computes the correct stats from a file',
-      mockDiffFile,
+      getDiffFileMock(),
       {
         changed: 1024,
         percent: 100,
@@ -223,7 +223,7 @@ describe('diff_file utilities', () => {
     const negativeChange = [
       'computed the correct states from a file with a negative size change',
       {
-        ...mockDiffFile,
+        ...getDiffFileMock(),
         new_size: 0,
         old_size: 1024,
       },

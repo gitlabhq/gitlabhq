@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import initMRPage from '~/mr_notes';
-import diffFileMockData from '../diffs/mock_data/diff_file';
+import { getDiffFileMock } from '../diffs/mock_data/diff_file';
 import { userDataMock, notesDataMock, noteableDataMock } from '../notes/mock_data';
 
 export default function initVueMRPage() {
@@ -39,7 +39,7 @@ export default function initVueMRPage() {
   const mock = new MockAdapter(axios);
   mock.onGet(diffsAppEndpoint).reply(200, {
     branch_name: 'foo',
-    diff_files: [diffFileMockData],
+    diff_files: [getDiffFileMock()],
   });
 
   initMRPage();

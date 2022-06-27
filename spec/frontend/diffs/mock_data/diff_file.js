@@ -1,4 +1,4 @@
-export default {
+export const getDiffFileMock = () => ({
   submodule: false,
   submodule_link: null,
   blob: {
@@ -305,4 +305,4 @@ export default {
   ],
   discussions: [],
   renderingLines: false,
-};
+});

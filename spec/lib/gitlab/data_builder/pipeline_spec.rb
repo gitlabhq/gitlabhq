@@ -36,6 +36,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
       expect(build_data).to be_a(Hash)
       expect(build_data[:id]).to eq(build.id)
       expect(build_data[:status]).to eq(build.status)
+      expect(build_data[:failure_reason]).to be_nil
       expect(build_data[:allow_failure]).to eq(build.allow_failure)
       expect(build_data[:environment]).to be_nil
       expect(runner_data).to eq(nil)
@@ -195,6 +196,16 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
 
         expect { described_class.build(pipeline.reload).with_retried_builds.to_json }.not_to exceed_query_limit(control_count)
       end
+    end
+  end
+
+  describe '.build failed' do
+    let(:build) { create(:ci_build, :failed, pipeline: pipeline, failure_reason: :script_failure) }
+    let(:data) { described_class.build(pipeline) }
+    let(:build_data) { data[:builds].last }
+
+    it 'has failure_reason' do
+      expect(build_data[:failure_reason]).to eq(build.failure_reason)
     end
   end
 end

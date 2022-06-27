@@ -3,7 +3,7 @@ import Cookies from '~/lib/utils/cookies';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
@@ -754,7 +754,7 @@ describe('DiffsStoreActions', () => {
     it('dispatches actions', () => {
       const commitId = 'something';
       const formData = {
-        diffFile: { ...mockDiffFile },
+        diffFile: getDiffFileMock(),
         noteableData: {},
       };
       const note = {};

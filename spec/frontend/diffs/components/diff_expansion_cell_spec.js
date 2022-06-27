@@ -1,10 +1,9 @@
 import { mount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { getPreviousLineIndex } from '~/diffs/store/utils';
 import { createStore } from '~/mr_notes/stores';
-import diffFileMockData from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 const EXPAND_UP_CLASS = '.js-unfold';
 const EXPAND_DOWN_CLASS = '.js-unfold-down';
@@ -26,7 +25,7 @@ function makeLoadMoreLinesPayload({
   isExpandDown = false,
 }) {
   return {
-    endpoint: diffFileMockData.context_lines_path,
+    endpoint: getDiffFileMock().context_lines_path,
     params: {
       since: sinceLine,
       to: toLine,
@@ -57,7 +56,7 @@ describe('DiffExpansionCell', () => {
   let store;
 
   beforeEach(() => {
-    mockFile = cloneDeep(diffFileMockData);
+    mockFile = getDiffFileMock();
     mockLine = getLine(mockFile, INLINE_DIFF_VIEW_TYPE, 8);
     store = createStore();
     store.state.diffs.diffFiles = [mockFile];
@@ -117,102 +116,102 @@ describe('DiffExpansionCell', () => {
   });
 
   describe('any row', () => {
-    [
-      { diffViewType: INLINE_DIFF_VIEW_TYPE, lineIndex: 8, file: cloneDeep(diffFileMockData) },
-    ].forEach(({ diffViewType, file, lineIndex }) => {
-      describe(`with diffViewType (${diffViewType})`, () => {
-        beforeEach(() => {
-          mockLine = getLine(mockFile, diffViewType, lineIndex);
-          store.state.diffs.diffFiles = [{ ...mockFile, ...file }];
-          store.state.diffs.diffViewType = diffViewType;
-        });
-
-        it('does not initially dispatch anything', () => {
-          expect(store.dispatch).not.toHaveBeenCalled();
-        });
-
-        it('on expand all clicked, dispatch loadMoreLines', () => {
-          const oldLineNumber = mockLine.meta_data.old_pos;
-          const newLineNumber = mockLine.meta_data.new_pos;
-          const previousIndex = getPreviousLineIndex(mockFile, {
-            oldLineNumber,
-            newLineNumber,
+    [{ diffViewType: INLINE_DIFF_VIEW_TYPE, lineIndex: 8, file: getDiffFileMock() }].forEach(
+      ({ diffViewType, file, lineIndex }) => {
+        describe(`with diffViewType (${diffViewType})`, () => {
+          beforeEach(() => {
+            mockLine = getLine(mockFile, diffViewType, lineIndex);
+            store.state.diffs.diffFiles = [{ ...mockFile, ...file }];
+            store.state.diffs.diffViewType = diffViewType;
           });
 
-          const wrapper = createComponent({ file, lineCountBetween: 10 });
+          it('does not initially dispatch anything', () => {
+            expect(store.dispatch).not.toHaveBeenCalled();
+          });
 
-          findExpandAll(wrapper).trigger('click');
-
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'diffs/loadMoreLines',
-            makeLoadMoreLinesPayload({
-              fileHash: mockFile.file_hash,
-              toLine: newLineNumber - 1,
-              sinceLine: previousIndex,
+          it('on expand all clicked, dispatch loadMoreLines', () => {
+            const oldLineNumber = mockLine.meta_data.old_pos;
+            const newLineNumber = mockLine.meta_data.new_pos;
+            const previousIndex = getPreviousLineIndex(mockFile, {
               oldLineNumber,
-            }),
-          );
-        });
+              newLineNumber,
+            });
 
-        it('on expand up clicked, dispatch loadMoreLines', () => {
-          mockLine.meta_data.old_pos = 200;
-          mockLine.meta_data.new_pos = 200;
+            const wrapper = createComponent({ file, lineCountBetween: 10 });
 
-          const oldLineNumber = mockLine.meta_data.old_pos;
-          const newLineNumber = mockLine.meta_data.new_pos;
+            findExpandAll(wrapper).trigger('click');
 
-          const wrapper = createComponent({ file });
+            expect(store.dispatch).toHaveBeenCalledWith(
+              'diffs/loadMoreLines',
+              makeLoadMoreLinesPayload({
+                fileHash: mockFile.file_hash,
+                toLine: newLineNumber - 1,
+                sinceLine: previousIndex,
+                oldLineNumber,
+              }),
+            );
+          });
 
-          findExpandUp(wrapper).trigger('click');
+          it('on expand up clicked, dispatch loadMoreLines', () => {
+            mockLine.meta_data.old_pos = 200;
+            mockLine.meta_data.new_pos = 200;
 
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'diffs/loadMoreLines',
-            makeLoadMoreLinesPayload({
+            const oldLineNumber = mockLine.meta_data.old_pos;
+            const newLineNumber = mockLine.meta_data.new_pos;
+
+            const wrapper = createComponent({ file });
+
+            findExpandUp(wrapper).trigger('click');
+
+            expect(store.dispatch).toHaveBeenCalledWith(
+              'diffs/loadMoreLines',
+              makeLoadMoreLinesPayload({
+                fileHash: mockFile.file_hash,
+                toLine: newLineNumber - 1,
+                sinceLine: 179,
+                oldLineNumber,
+                diffViewType,
+                unfold: true,
+              }),
+            );
+          });
+
+          it('on expand down clicked, dispatch loadMoreLines', () => {
+            mockFile[lineSources[diffViewType]][lineIndex + 1] = getDiffFileMock()[
+              lineSources[diffViewType]
+            ][lineIndex];
+            const nextLine = getLine(mockFile, diffViewType, lineIndex + 1);
+
+            nextLine.meta_data.old_pos = 300;
+            nextLine.meta_data.new_pos = 300;
+            mockLine.meta_data.old_pos = 200;
+            mockLine.meta_data.new_pos = 200;
+
+            const wrapper = createComponent({ file });
+
+            findExpandDown(wrapper).trigger('click');
+
+            expect(store.dispatch).toHaveBeenCalledWith('diffs/loadMoreLines', {
+              endpoint: mockFile.context_lines_path,
+              params: {
+                since: 1,
+                to: 21, // the load amount, plus 1 line
+                offset: 0,
+                unfold: true,
+                bottom: true,
+              },
+              lineNumbers: {
+                // when expanding down, these are based on the previous line, 0, in this case
+                oldLineNumber: 0,
+                newLineNumber: 0,
+              },
+              nextLineNumbers: { old_line: 200, new_line: 200 },
               fileHash: mockFile.file_hash,
-              toLine: newLineNumber - 1,
-              sinceLine: 179,
-              oldLineNumber,
-              diffViewType,
-              unfold: true,
-            }),
-          );
-        });
-
-        it('on expand down clicked, dispatch loadMoreLines', () => {
-          mockFile[lineSources[diffViewType]][lineIndex + 1] = cloneDeep(
-            mockFile[lineSources[diffViewType]][lineIndex],
-          );
-          const nextLine = getLine(mockFile, diffViewType, lineIndex + 1);
-
-          nextLine.meta_data.old_pos = 300;
-          nextLine.meta_data.new_pos = 300;
-          mockLine.meta_data.old_pos = 200;
-          mockLine.meta_data.new_pos = 200;
-
-          const wrapper = createComponent({ file });
-
-          findExpandDown(wrapper).trigger('click');
-
-          expect(store.dispatch).toHaveBeenCalledWith('diffs/loadMoreLines', {
-            endpoint: diffFileMockData.context_lines_path,
-            params: {
-              since: 1,
-              to: 21, // the load amount, plus 1 line
-              offset: 0,
-              unfold: true,
-              bottom: true,
-            },
-            lineNumbers: {
-              // when expanding down, these are based on the previous line, 0, in this case
-              oldLineNumber: 0,
-              newLineNumber: 0,
-            },
-            nextLineNumbers: { old_line: 200, new_line: 200 },
-            fileHash: mockFile.file_hash,
-            isExpandDown: true,
+              isExpandDown: true,
+            });
           });
         });
-      });
-    });
+      },
+    );
   });
 });

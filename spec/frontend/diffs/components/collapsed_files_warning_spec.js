@@ -6,7 +6,7 @@ import { EVT_EXPAND_ALL_FILES } from '~/diffs/constants';
 import eventHub from '~/diffs/event_hub';
 import createStore from '~/diffs/store/modules';
 
-import file from '../mock_data/diff_file';
+import { getDiffFileMock } from '../mock_data/diff_file';
 
 const propsData = {
   limited: true,
@@ -15,7 +15,7 @@ const propsData = {
 };
 
 async function files(store, count) {
-  const copies = Array(count).fill(file);
+  const copies = Array(count).fill(getDiffFileMock());
   store.state.diffs.diffFiles.push(...copies);
 
   await nextTick();

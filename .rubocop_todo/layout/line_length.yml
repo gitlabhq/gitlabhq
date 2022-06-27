@@ -2825,7 +2825,6 @@ Layout/LineLength:
     - 'ee/spec/services/ee/boards/issues/list_service_spec.rb'
     - 'ee/spec/services/ee/boards/lists/max_limits_spec.rb'
     - 'ee/spec/services/ee/ci/pipeline_processing/atomic_processing_service_spec.rb'
-    - 'ee/spec/services/ee/commits/create_service_spec.rb'
     - 'ee/spec/services/ee/git/wiki_push_service_spec.rb'
     - 'ee/spec/services/ee/groups/autocomplete_service_spec.rb'
     - 'ee/spec/services/ee/groups/deploy_tokens/create_service_spec.rb'

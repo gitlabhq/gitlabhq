@@ -33,7 +33,7 @@ describe('DropdownValue', () => {
 
     it.each`
       index | cssClass
-      ${0}  | ${['gl-font-base', 'gl-line-height-24']}
+      ${0}  | ${[]}
       ${1}  | ${['hide-collapsed']}
     `(
       'passes correct props to the ColorItem with CSS class `$cssClass`',
