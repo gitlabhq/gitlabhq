@@ -938,7 +938,7 @@ Prerequisites:
   [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 - You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
   Running garbage collection causes downtime for the Container Registry. When you run this command
-  on an instance in an environment where another instances is still writing to the Registry storage,
+  on an instance in an environment where another instance is still writing to the Registry storage,
   referenced manifests are removed.
 
 ### Understanding the content-addressable layers

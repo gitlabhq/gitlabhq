@@ -1,20 +1,15 @@
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-
+import { GlAvatar } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
-
 import DiffsModule from '~/diffs/store/modules';
-
 import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import issueNote from '~/notes/components/noteable_note.vue';
 import NotesModule from '~/notes/stores/modules';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
-
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 Vue.use(Vuex);
@@ -205,19 +200,21 @@ describe('issue_note', () => {
 
         await nextTick();
 
-        expect(wrapper.findComponent(UserAvatarLink).props('imgSize')).toBe(24);
+        const avatar = wrapper.findComponent(GlAvatar);
+        const avatarProps = avatar.props();
+        expect(avatarProps.size).toBe(24);
       });
     });
 
-    it('should render user information', () => {
+    it('should render user avatar', () => {
       const { author } = note;
-      const avatar = wrapper.findComponent(UserAvatarLink);
+      const avatar = wrapper.findComponent(GlAvatar);
       const avatarProps = avatar.props();
 
-      expect(avatarProps.linkHref).toBe(author.path);
-      expect(avatarProps.imgSrc).toBe(author.avatar_url);
-      expect(avatarProps.imgAlt).toBe(author.name);
-      expect(avatarProps.imgSize).toBe(40);
+      expect(avatarProps.src).toBe(author.avatar_url);
+      expect(avatarProps.entityName).toBe(author.username);
+      expect(avatarProps.alt).toBe(author.name);
+      expect(avatarProps.size).toEqual({ default: 24, md: 32 });
     });
 
     it('should render note header content', () => {

@@ -1098,25 +1098,117 @@ RSpec.describe ProjectPolicy do
 
     subject { described_class.new(deploy_token, project) }
 
-    context 'a deploy token with read_package_registry scope' do
-      let(:deploy_token) { create(:deploy_token, read_package_registry: true) }
+    context 'private project' do
+      let(:project) { private_project }
 
-      it { is_expected.to be_allowed(:read_package) }
-      it { is_expected.to be_allowed(:read_project) }
-      it { is_expected.to be_disallowed(:create_package) }
+      context 'a deploy token with read_registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_registry: true, write_registry: false) }
 
-      it_behaves_like 'package access with repository disabled'
+        it { is_expected.to be_allowed(:read_container_image) }
+        it { is_expected.to be_disallowed(:create_container_image) }
+
+        context 'with registry disabled' do
+          include_context 'registry disabled via project features'
+
+          it { is_expected.to be_disallowed(:read_container_image) }
+          it { is_expected.to be_disallowed(:create_container_image) }
+        end
+      end
+
+      context 'a deploy token with write_registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: true) }
+
+        it { is_expected.to be_disallowed(:read_container_image) }
+        it { is_expected.to be_allowed(:create_container_image) }
+
+        context 'with registry disabled' do
+          include_context 'registry disabled via project features'
+
+          it { is_expected.to be_disallowed(:read_container_image) }
+          it { is_expected.to be_disallowed(:create_container_image) }
+        end
+      end
+
+      context 'a deploy token with no registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: false) }
+
+        it { is_expected.to be_disallowed(:read_container_image) }
+        it { is_expected.to be_disallowed(:create_container_image) }
+      end
+
+      context 'a deploy token with read_package_registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_repository: false, read_registry: false, read_package_registry: true) }
+
+        it { is_expected.to be_allowed(:read_project) }
+        it { is_expected.to be_allowed(:read_package) }
+        it { is_expected.to be_disallowed(:create_package) }
+
+        it_behaves_like 'package access with repository disabled'
+      end
+
+      context 'a deploy token with write_package_registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_repository: false, read_registry: false, write_package_registry: true) }
+
+        it { is_expected.to be_allowed(:create_package) }
+        it { is_expected.to be_allowed(:read_package) }
+        it { is_expected.to be_allowed(:read_project) }
+        it { is_expected.to be_disallowed(:destroy_package) }
+
+        it_behaves_like 'package access with repository disabled'
+      end
     end
 
-    context 'a deploy token with write_package_registry scope' do
-      let(:deploy_token) { create(:deploy_token, write_package_registry: true) }
+    context 'public project' do
+      let(:project) { public_project }
 
-      it { is_expected.to be_allowed(:create_package) }
-      it { is_expected.to be_allowed(:read_package) }
-      it { is_expected.to be_allowed(:read_project) }
-      it { is_expected.to be_disallowed(:destroy_package) }
+      context 'a deploy token with read_registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_registry: true, write_registry: false) }
 
-      it_behaves_like 'package access with repository disabled'
+        it { is_expected.to be_allowed(:read_container_image) }
+        it { is_expected.to be_disallowed(:create_container_image) }
+
+        context 'with registry disabled' do
+          include_context 'registry disabled via project features'
+
+          it { is_expected.to be_disallowed(:read_container_image) }
+          it { is_expected.to be_disallowed(:create_container_image) }
+        end
+
+        context 'with registry private' do
+          include_context 'registry set to private via project features'
+
+          it { is_expected.to be_allowed(:read_container_image) }
+          it { is_expected.to be_disallowed(:create_container_image) }
+        end
+      end
+
+      context 'a deploy token with write_registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: true) }
+
+        it { is_expected.to be_allowed(:read_container_image) }
+        it { is_expected.to be_allowed(:create_container_image) }
+
+        context 'with registry disabled' do
+          include_context 'registry disabled via project features'
+
+          it { is_expected.to be_disallowed(:read_container_image) }
+          it { is_expected.to be_disallowed(:create_container_image) }
+        end
+
+        context 'with registry private' do
+          include_context 'registry set to private via project features'
+
+          it { is_expected.to be_allowed(:read_container_image) }
+          it { is_expected.to be_allowed(:create_container_image) }
+        end
+      end
+
+      context 'a deploy token with no registry scope' do
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: false) }
+
+        it { is_expected.to be_disallowed(:read_container_image) }
+        it { is_expected.to be_disallowed(:create_container_image) }
+      end
     end
   end
 

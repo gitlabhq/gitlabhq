@@ -226,14 +226,26 @@ RSpec.describe API::MavenPackages do
     end
   end
 
+  shared_examples 'file download in FIPS mode' do
+    context 'in FIPS mode', :fips_mode do
+      it_behaves_like 'successfully returning the file'
+
+      it 'rejects the request for an md5 file' do
+        download_file(file_name: package_file.file_name + '.md5')
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
   describe 'GET /api/v4/packages/maven/*path/:file_name' do
     context 'a public project' do
       subject { download_file(file_name: package_file.file_name) }
 
       shared_examples 'getting a file' do
         it_behaves_like 'tracking the file download event'
-
         it_behaves_like 'successfully returning the file'
+        it_behaves_like 'file download in FIPS mode'
 
         it 'returns sha1 of the file' do
           download_file(file_name: package_file.file_name + '.sha1')
@@ -402,8 +414,8 @@ RSpec.describe API::MavenPackages do
 
       shared_examples 'getting a file for a group' do
         it_behaves_like 'tracking the file download event'
-
         it_behaves_like 'successfully returning the file'
+        it_behaves_like 'file download in FIPS mode'
 
         it 'returns sha1 of the file' do
           download_file(file_name: package_file.file_name + '.sha1')
@@ -625,8 +637,8 @@ RSpec.describe API::MavenPackages do
       subject { download_file(file_name: package_file.file_name) }
 
       it_behaves_like 'tracking the file download event'
-
       it_behaves_like 'successfully returning the file'
+      it_behaves_like 'file download in FIPS mode'
 
       it 'returns sha1 of the file' do
         download_file(file_name: package_file.file_name + '.sha1')
@@ -833,6 +845,16 @@ RSpec.describe API::MavenPackages do
 
       subject { upload_file_with_token(params: params) }
 
+      context 'FIPS mode', :fips_mode do
+        it_behaves_like 'package workhorse uploads'
+
+        it 'rejects the request for md5 file' do
+          upload_file_with_token(params: params, file_extension: 'jar.md5')
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+
       context 'file size is too large' do
         it 'rejects the request' do
           allow_next_instance_of(UploadedFile) do |uploaded_file|
@@ -995,11 +1017,21 @@ RSpec.describe API::MavenPackages do
       end
 
       context 'for md5 file' do
+        subject { upload_file_with_token(params: params, file_extension: 'jar.md5') }
+
         it 'returns an empty body' do
-          upload_file_with_token(params: params, file_extension: 'jar.md5')
+          subject
 
           expect(response.body).to eq('')
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'with FIPS mode enabled', :fips_mode do
+          it 'rejects the request' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
         end
       end
     end

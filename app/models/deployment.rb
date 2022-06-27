@@ -185,7 +185,7 @@ class Deployment < ApplicationRecord
   def self.last_deployment_group_for_environment(env)
     return self.none unless env.last_deployment_pipeline&.latest_successful_builds&.present?
 
-    BatchLoader.for(env).batch do |environments, loader|
+    BatchLoader.for(env).batch(default_value: self.none) do |environments, loader|
       latest_successful_build_ids = []
       environments_hash = {}
 

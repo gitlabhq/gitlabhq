@@ -692,6 +692,37 @@ RSpec.describe Deployment do
             .to contain_exactly(stop_env_b)
         end
       end
+
+      context 'When last deployment for environment is a retried build' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:environment_b) { create(:environment, project: project) }
+
+        let(:build_a) do
+          create(:ci_build, :success, project: project, pipeline: pipeline, environment: environment.name)
+        end
+
+        let(:build_b) do
+          create(:ci_build, :success, project: project, pipeline: pipeline, environment: environment_b.name)
+        end
+
+        let!(:deployment_a) do
+          create(:deployment, :success, project: project, environment: environment, deployable: build_a)
+        end
+
+        let!(:deployment_b) do
+          create(:deployment, :success, project: project, environment: environment_b, deployable: build_b)
+        end
+
+        before do
+          # Retry build_b
+          build_b.update!(retried: true)
+
+          # New successful build after retry.
+          create(:ci_build, :success, project: project, pipeline: pipeline, environment: environment_b.name)
+        end
+
+        it { expect(subject_method(environment_b)).not_to be_nil }
+      end
     end
   end
 

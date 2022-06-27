@@ -9,11 +9,16 @@ class AddIndexesIssuesOnProjectIdAndClosedAt < Gitlab::Database::Migration[2.0]
 
   def up
     # Index to improve performance when sorting issues by closed_at desc
-    add_concurrent_index :issues, 'project_id, closed_at DESC NULLS LAST, state_id, id', name: NEW_INDEX_NAME_1
+    unless index_exists_by_name?(:issues, NEW_INDEX_NAME_1)
+      add_concurrent_index :issues, 'project_id, closed_at DESC NULLS LAST, state_id, id', name: NEW_INDEX_NAME_1
+    end
 
     # Index to improve performance when sorting issues by closed_at asc
     # This replaces the old index which didn't account for state_id and id
-    add_concurrent_index :issues, [:project_id, :closed_at, :state_id, :id], name: NEW_INDEX_NAME_2
+    unless index_exists_by_name?(:issues, NEW_INDEX_NAME_2)
+      add_concurrent_index :issues, [:project_id, :closed_at, :state_id, :id], name: NEW_INDEX_NAME_2
+    end
+
     remove_concurrent_index_by_name :issues, OLD_INDEX_NAME
   end
 

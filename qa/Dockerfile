@@ -54,4 +54,8 @@ COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
 
 COPY ./qa /home/gitlab/qa
 
+# Add JH files when JH dir exist.
+COPY ./j[h]/qa /home/gitlab/jh/qa
+COPY ./j[h]/lib /home/gitlab/jh/lib
+
 ENTRYPOINT ["bin/test"]
