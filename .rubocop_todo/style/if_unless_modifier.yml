@@ -1251,7 +1251,6 @@ Style/IfUnlessModifier:
     - 'spec/views/projects/edit.html.haml_spec.rb'
     - 'spec/views/shared/access_tokens/_table.html.haml_spec.rb'
     - 'spec/workers/analytics/usage_trends/counter_job_worker_spec.rb'
-    - 'tooling/bin/qa/check_if_qa_only_spec_changes'
     - 'tooling/danger/product_intelligence.rb'
     - 'tooling/lib/tooling/image.rb'
     - 'tooling/lib/tooling/test_map_packer.rb'

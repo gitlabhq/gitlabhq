@@ -236,14 +236,14 @@ RSpec.describe UsersController do
       let!(:deploy_key) { create(:deploy_key, user: user) }
 
       shared_examples_for 'renders all public keys' do
-        it 'renders all non-deploy keys separated with a new line with text/plain content type without the comment key' do
+        it 'renders all non-deploy keys terminated with a new line with text/plain content type without the comment key' do
           get "/#{user.username}.keys"
 
           expect(response).to be_successful
           expect(response.media_type).to eq("text/plain")
 
           expect(response.body).not_to eq('')
-          expect(response.body).to eq(user.all_ssh_keys.join("\n"))
+          expect(response.body).to eq(user.all_ssh_keys.map { |key| key + "\n" }.join)
 
           expect(response.body).to include(key.key.sub(' dummy@gitlab.com', ''))
           expect(response.body).to include(another_key.key.sub(' dummy@gitlab.com', ''))
@@ -308,7 +308,7 @@ RSpec.describe UsersController do
       let!(:another_gpg_key) { create(:another_gpg_key, user: user.reload) }
 
       shared_examples_for 'renders all verified GPG keys' do
-        it 'renders all verified keys separated with a new line with text/plain content type' do
+        it 'renders all verified keys terminated with a new line with text/plain content type' do
           get "/#{user.username}.gpg"
 
           expect(response).to be_successful
@@ -316,7 +316,7 @@ RSpec.describe UsersController do
           expect(response.media_type).to eq("text/plain")
 
           expect(response.body).not_to eq('')
-          expect(response.body).to eq(user.gpg_keys.select(&:verified?).map(&:key).join("\n"))
+          expect(response.body).to eq(user.gpg_keys.filter_map { |gpg_key| gpg_key.key + "\n" if gpg_key.verified? }.join)
 
           expect(response.body).to include(gpg_key.key)
           expect(response.body).to include(another_gpg_key.key)

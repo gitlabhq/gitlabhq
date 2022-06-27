@@ -20349,7 +20349,8 @@ CREATE TABLE routes (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     name character varying,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE routes_id_seq
@@ -24301,9 +24302,6 @@ ALTER TABLE ONLY chat_teams
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE routes
-    ADD CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
@@ -29996,8 +29994,6 @@ CREATE INDEX tmp_index_container_repositories_on_id_migration_state ON container
 CREATE INDEX tmp_index_for_namespace_id_migration_on_group_members ON members USING btree (id) WHERE ((member_namespace_id IS NULL) AND ((type)::text = 'GroupMember'::text));
 
 CREATE INDEX tmp_index_for_namespace_id_migration_on_project_members ON members USING btree (id) WHERE ((member_namespace_id IS NULL) AND ((type)::text = 'ProjectMember'::text));
-
-CREATE INDEX tmp_index_for_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Namespace'::text));
 
 CREATE INDEX tmp_index_for_null_project_namespace_id ON projects USING btree (id) WHERE (project_namespace_id IS NULL);
 
