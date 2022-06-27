@@ -28289,8 +28289,6 @@ CREATE INDEX index_issues_on_milestone_id ON issues USING btree (milestone_id);
 
 CREATE INDEX index_issues_on_moved_to_id ON issues USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
 
-CREATE INDEX index_issues_on_project_id_and_closed_at ON issues USING btree (project_id, closed_at);
-
 CREATE INDEX index_issues_on_project_id_and_created_at_issue_type_incident ON issues USING btree (project_id, created_at) WHERE (issue_type = 1);
 
 CREATE UNIQUE INDEX index_issues_on_project_id_and_external_key ON issues USING btree (project_id, external_key) WHERE (external_key IS NOT NULL);
@@ -28300,6 +28298,10 @@ CREATE UNIQUE INDEX index_issues_on_project_id_and_iid ON issues USING btree (pr
 CREATE INDEX index_issues_on_project_id_and_state_id_and_created_at_and_id ON issues USING btree (project_id, state_id, created_at, id);
 
 CREATE INDEX index_issues_on_project_id_and_upvotes_count ON issues USING btree (project_id, upvotes_count);
+
+CREATE INDEX index_issues_on_project_id_closed_at_desc_state_id_and_id ON issues USING btree (project_id, closed_at DESC NULLS LAST, state_id, id);
+
+CREATE INDEX index_issues_on_project_id_closed_at_state_id_and_id ON issues USING btree (project_id, closed_at, state_id, id);
 
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
 
