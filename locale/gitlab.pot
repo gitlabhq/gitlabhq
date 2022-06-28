@@ -11553,6 +11553,9 @@ msgstr ""
 msgid "DastProfiles|Include debug messages in the DAST console output."
 msgstr ""
 
+msgid "DastProfiles|Manage %{profileType} profiles"
+msgstr ""
+
 msgid "DastProfiles|Manage profiles"
 msgstr ""
 
@@ -16663,9 +16666,6 @@ msgid "Geo|Allowed Geo IP should be between 1 and 255 characters"
 msgstr ""
 
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
-msgstr ""
-
-msgid "Geo|Beta"
 msgstr ""
 
 msgid "Geo|Checksummed"

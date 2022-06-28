@@ -21,6 +21,7 @@ module QA
     describe 'feature flag definition files' do
       let(:file) do
         path = Pathname.new("#{root}/config/feature_flags/development").expand_path(Runtime::Path.qa_root)
+        path.mkpath
         Tempfile.new(%w[ff-test .yml], path)
       end
 

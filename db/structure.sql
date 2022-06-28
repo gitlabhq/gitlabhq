@@ -20423,6 +20423,42 @@ CREATE SEQUENCE saved_replies_id_seq
 
 ALTER SEQUENCE saved_replies_id_seq OWNED BY saved_replies.id;
 
+CREATE TABLE sbom_component_versions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    component_id bigint NOT NULL,
+    version text NOT NULL,
+    CONSTRAINT check_e71cad08d3 CHECK ((char_length(version) <= 255))
+);
+
+CREATE SEQUENCE sbom_component_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_component_versions_id_seq OWNED BY sbom_component_versions.id;
+
+CREATE TABLE sbom_components (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    component_type smallint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_91a8f6ad53 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE sbom_components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_components_id_seq OWNED BY sbom_components.id;
+
 CREATE TABLE schema_migrations (
     version character varying NOT NULL,
     finished_at timestamp with time zone DEFAULT now()
@@ -23316,6 +23352,10 @@ ALTER TABLE ONLY saml_providers ALTER COLUMN id SET DEFAULT nextval('saml_provid
 
 ALTER TABLE ONLY saved_replies ALTER COLUMN id SET DEFAULT nextval('saved_replies_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_component_versions ALTER COLUMN id SET DEFAULT nextval('sbom_component_versions_id_seq'::regclass);
+
+ALTER TABLE ONLY sbom_components ALTER COLUMN id SET DEFAULT nextval('sbom_components_id_seq'::regclass);
+
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
@@ -25496,6 +25536,12 @@ ALTER TABLE ONLY saml_providers
 
 ALTER TABLE ONLY saved_replies
     ADD CONSTRAINT saved_replies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sbom_component_versions
+    ADD CONSTRAINT sbom_component_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sbom_components
+    ADD CONSTRAINT sbom_components_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
@@ -29329,6 +29375,8 @@ CREATE INDEX index_saml_providers_on_group_id ON saml_providers USING btree (gro
 
 CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replies USING btree (user_id, name text_pattern_ops);
 
+CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_versions USING btree (component_id);
+
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
 
 CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON scim_identities USING btree (lower((extern_uid)::text), group_id);
@@ -32851,6 +32899,9 @@ ALTER TABLE ONLY dependency_proxy_group_settings
 
 ALTER TABLE ONLY group_deploy_tokens
     ADD CONSTRAINT fk_rails_61a572b41a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY sbom_component_versions
+    ADD CONSTRAINT fk_rails_61a83aa892 FOREIGN KEY (component_id) REFERENCES sbom_components(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY status_page_published_incidents
     ADD CONSTRAINT fk_rails_61e5493940 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

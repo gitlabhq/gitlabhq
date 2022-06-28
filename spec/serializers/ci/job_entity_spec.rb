@@ -52,6 +52,10 @@ RSpec.describe Ci::JobEntity do
     expect(subject[:status]).to include :icon, :favicon, :text, :label, :tooltip
   end
 
+  it 'contains queued_at' do
+    expect(subject).to include :queued_at
+  end
+
   context 'when job is retryable' do
     before do
       job.update!(status: :failed)

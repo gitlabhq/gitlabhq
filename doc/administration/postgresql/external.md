@@ -48,3 +48,20 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+## Troubleshooting
+
+### Resolve `SSL SYSCALL error: EOF detected` error
+
+When using an external PostgreSQL instance, you may see an error like:
+
+```shell
+pg_dump: error: Error message from server: SSL SYSCALL error: EOF detected
+```
+
+To resolve this error, ensure that you are meeting the
+[minimum PostgreSQL requirements](../../install/requirements.md#postgresql-requirements). After
+upgrading your RDS instance to a suitable version, you should be able to perform a backup without
+this error. Refer to issue #64763
+([Segmentation fault citing `LooseForeignKeys::CleanupWorker` causes complete database restart](https://gitlab.com/gitlab-org/gitlab/-/issues/364763))
+for more information.

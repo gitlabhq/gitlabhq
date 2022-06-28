@@ -15,15 +15,15 @@ module Emails
     end
 
     # existing_commits - an array containing the first and last commits
-    def push_to_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil, new_commits: [], total_new_commits_count: nil, existing_commits: [], total_existing_commits_count: nil)
+    def push_to_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil, new_commits:, total_new_commits_count:, existing_commits:, total_existing_commits_count:)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @new_commits = new_commits
-      @total_new_commits_count = total_new_commits_count || @new_commits.length
+      @total_new_commits_count = total_new_commits_count
       @total_stripped_new_commits_count = @total_new_commits_count - @new_commits.length
 
       @existing_commits = existing_commits
-      @total_existing_commits_count = total_existing_commits_count || @existing_commits.length
+      @total_existing_commits_count = total_existing_commits_count
 
       @updated_by_user = User.find(updated_by_user_id)
 

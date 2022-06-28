@@ -1,5 +1,5 @@
 = gitlab_ui_form_for [:admin, @application], url: @url, html: {role: 'form'} do |f|
-  = form_errors(application)
+  = form_errors(application, pajamas_alert: true)
 
   = content_tag :div, class: 'form-group row' do
     .col-sm-2.col-form-label
