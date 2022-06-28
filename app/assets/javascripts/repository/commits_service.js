@@ -35,7 +35,7 @@ const fetchData = (projectPath, path, ref, offset) => {
     gon.relative_url_root || '/',
     projectPath,
     '/-/refs/',
-    ref,
+    encodeURIComponent(ref),
     '/logs_tree/',
     encodeURIComponent(removeLeadingSlash(path)),
   );

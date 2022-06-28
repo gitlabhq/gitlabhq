@@ -1,9 +1,7 @@
-import $ from 'jquery';
-
 export const initDetailsButton = () => {
-  $('body').on('click', '.js-details-expand', function expand(e) {
+  document.querySelector('.commit-info').addEventListener('click', function expand(e) {
     e.preventDefault();
-    $(this).next('.js-details-content').removeClass('hide');
-    $(this).hide();
+    this.querySelector('.js-details-content').classList.remove('hide');
+    this.querySelector('.js-details-expand').classList.add('gl-display-none');
   });
 };

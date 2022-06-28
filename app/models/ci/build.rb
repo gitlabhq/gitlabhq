@@ -2,6 +2,7 @@
 
 module Ci
   class Build < Ci::Processable
+    prepend Ci::BulkInsertableTags
     include Ci::Metadatable
     include Ci::Contextable
     include TokenAuthenticatable
@@ -432,10 +433,6 @@ module Ci
 
     def runnable?
       true
-    end
-
-    def save_tags
-      super unless Thread.current['ci_bulk_insert_tags']
     end
 
     def archived?

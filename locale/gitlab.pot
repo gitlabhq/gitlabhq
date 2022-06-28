@@ -8220,6 +8220,9 @@ msgstr ""
 msgid "Closed MRs"
 msgstr ""
 
+msgid "Closed date"
+msgstr ""
+
 msgid "Closed issues"
 msgstr ""
 
@@ -33478,6 +33481,21 @@ msgstr ""
 msgid "SAML for %{group_name}"
 msgstr ""
 
+msgid "SAML|Selecting \"Authorize\" will transfer ownership of your GitLab account \"%{username}\" (%{email}) to your organization."
+msgstr ""
+
+msgid "SAML|Sign in to GitLab to connect your organization's account"
+msgstr ""
+
+msgid "SAML|The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account."
+msgstr ""
+
+msgid "SAML|To access \"%{group_name}\" you must sign in with your Single Sign-On account, through an external sign-in page."
+msgstr ""
+
+msgid "SAML|Your organization's SSO has been connected to your GitLab account"
+msgstr ""
+
 msgid "SAST Configuration"
 msgstr ""
 
@@ -38177,9 +38195,6 @@ msgstr ""
 msgid "That's it, well done!"
 msgstr ""
 
-msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"
-msgstr ""
-
 msgid "The %{link_start}true-up model%{link_end} allows having more users, and additional users will incur a retroactive charge on renewal."
 msgstr ""
 
@@ -39648,9 +39663,6 @@ msgid "This will invalidate your registered applications and U2F / WebAuthn devi
 msgstr ""
 
 msgid "This will invalidate your registered applications and U2F devices."
-msgstr ""
-
-msgid "This will redirect you to an external sign in page."
 msgstr ""
 
 msgid "This will remove the fork relationship between this project and %{fork_source}."
@@ -45214,6 +45226,9 @@ msgid "ciReport|is loading, errors when loading results"
 msgstr ""
 
 msgid "closed"
+msgstr ""
+
+msgid "closed %{timeago}"
 msgstr ""
 
 msgid "closed issue"

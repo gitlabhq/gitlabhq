@@ -2083,6 +2083,27 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '#save_tags' do
+    let(:build) { create(:ci_build, tag_list: ['tag']) }
+
+    it 'saves tags' do
+      build.save!
+
+      expect(build.tags.count).to eq(1)
+      expect(build.tags.first.name).to eq('tag')
+    end
+
+    context 'with BulkInsertableTags.with_bulk_insert_tags' do
+      it 'does not save_tags' do
+        Ci::BulkInsertableTags.with_bulk_insert_tags do
+          build.save!
+        end
+
+        expect(build.tags).to be_empty
+      end
+    end
+  end
+
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }

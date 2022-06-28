@@ -217,19 +217,18 @@ func (u *upstream) pollGeoProxyAPI() {
 func (u *upstream) callGeoProxyAPI() {
 	geoProxyData, err := u.APIClient.GetGeoProxyData()
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{"geoProxyBackend": u.geoProxyBackend}).Error("Geo Proxy: Unable to determine Geo Proxy URL. Fallback on cached value.")
+		// Unable to determine Geo Proxy URL. Fallback on cached value.
 		return
 	}
 
 	hasProxyDataChanged := false
 	if u.geoProxyBackend.String() != geoProxyData.GeoProxyURL.String() {
-		log.WithFields(log.Fields{"oldGeoProxyURL": u.geoProxyBackend, "newGeoProxyURL": geoProxyData.GeoProxyURL}).Info("Geo Proxy: URL changed")
+		// URL changed
 		hasProxyDataChanged = true
 	}
 
 	if u.geoProxyExtraData != geoProxyData.GeoProxyExtraData {
-		// extra data is usually a JWT, thus not explicitly logging it
-		log.Info("Geo Proxy: signed data changed")
+		// Signed data changed
 		hasProxyDataChanged = true
 	}
 

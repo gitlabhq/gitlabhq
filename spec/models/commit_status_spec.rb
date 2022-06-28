@@ -984,22 +984,6 @@ RSpec.describe CommitStatus do
     end
   end
 
-  describe '.bulk_insert_tags!' do
-    let(:statuses) { double('statuses') }
-    let(:inserter) { double('inserter') }
-
-    it 'delegates to bulk insert class' do
-      expect(Gitlab::Ci::Tags::BulkInsert)
-        .to receive(:new)
-        .with(statuses)
-        .and_return(inserter)
-
-      expect(inserter).to receive(:insert!)
-
-      described_class.bulk_insert_tags!(statuses)
-    end
-  end
-
   describe '#expire_etag_cache!' do
     it 'expires the etag cache' do
       expect_next_instance_of(Gitlab::EtagCaching::Store) do |etag_store|

@@ -97,10 +97,10 @@ describe('isSortKey', () => {
 describe('getSortOptions', () => {
   describe.each`
     hasIssueWeightsFeature | hasBlockedIssuesFeature | length | containsWeight | containsBlocking
-    ${false}               | ${false}                | ${9}   | ${false}       | ${false}
-    ${true}                | ${false}                | ${10}  | ${true}        | ${false}
-    ${false}               | ${true}                 | ${10}  | ${false}       | ${true}
-    ${true}                | ${true}                 | ${11}  | ${true}        | ${true}
+    ${false}               | ${false}                | ${10}  | ${false}       | ${false}
+    ${true}                | ${false}                | ${11}  | ${true}        | ${false}
+    ${false}               | ${true}                 | ${11}  | ${false}       | ${true}
+    ${true}                | ${true}                 | ${12}  | ${true}        | ${true}
   `(
     'when hasIssueWeightsFeature=$hasIssueWeightsFeature and hasBlockedIssuesFeature=$hasBlockedIssuesFeature',
     ({

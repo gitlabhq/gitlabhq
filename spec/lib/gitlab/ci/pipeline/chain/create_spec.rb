@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
     context 'without tags' do
       it 'extracts an empty tag list' do
-        expect(CommitStatus)
+        expect(Gitlab::Ci::Tags::BulkInsert)
           .to receive(:bulk_insert_tags!)
           .with([job])
           .and_call_original
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
       end
 
       it 'bulk inserts tags' do
-        expect(CommitStatus)
+        expect(Gitlab::Ci::Tags::BulkInsert)
           .to receive(:bulk_insert_tags!)
           .with([job])
           .and_call_original

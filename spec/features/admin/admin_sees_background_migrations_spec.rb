@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Admin > Admin sees background migrations" do
   let_it_be(:admin) { create(:admin) }
+  let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
   let_it_be(:active_migration) { create(:batched_background_migration, :active, table_name: 'active') }
   let_it_be(:failed_migration) { create(:batched_background_migration, :failed, table_name: 'failed', total_tuple_count: 100) }
@@ -107,7 +108,8 @@ RSpec.describe "Admin > Admin sees background migrations" do
           anything,
           batch_min_value: 6,
           batch_size: 5,
-          job_arguments: failed_migration.job_arguments
+          job_arguments: failed_migration.job_arguments,
+          job_class: job_class
         ).and_return([6, 10])
       end
     end

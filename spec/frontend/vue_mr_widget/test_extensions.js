@@ -109,6 +109,39 @@ export const pollingExtension = {
   enablePolling: true,
 };
 
+export const pollingFullDataExtension = {
+  ...workingExtension(),
+  enableExpandedPolling: true,
+  methods: {
+    fetchCollapsedData({ targetProjectFullPath }) {
+      return Promise.resolve({ targetProjectFullPath, count: 1 });
+    },
+    fetchFullData() {
+      return Promise.resolve([
+        {
+          headers: { 'poll-interval': 0 },
+          status: 200,
+          data: {
+            id: 1,
+            text: 'Hello world',
+            icon: {
+              name: EXTENSION_ICONS.failed,
+            },
+            badge: {
+              text: 'Closed',
+            },
+            link: {
+              href: 'https://gitlab.com',
+              text: 'GitLab.com',
+            },
+            actions: [{ text: 'Full report', href: 'https://gitlab.com', target: '_blank' }],
+          },
+        },
+      ]);
+    },
+  },
+};
+
 export const fullReportExtension = {
   ...workingExtension(),
   computed: {

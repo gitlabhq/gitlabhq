@@ -82,6 +82,13 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :unprocessable_entity)
   end
 
+  rescue_from ActiveRecord::QueryAborted do |exception|
+    log_exception(exception)
+
+    error = "Request timed out. Please try a less complex query or a smaller set of records."
+    render_error(error, status: :service_unavailable)
+  end
+
   override :feature_category
   def feature_category
     ::Gitlab::FeatureCategories.default.from_request(request) || super

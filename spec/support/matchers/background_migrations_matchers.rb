@@ -74,6 +74,13 @@ RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: :git
         .for_configuration(gitlab_schema, migration, table_name, column_name, job_arguments)
 
     expect(batched_migrations.count).to be(1)
+
+    # the :batch_min_value & :batch_max_value attribute argument values get applied to the
+    # :min_value & :max_value columns on the database. Here we change the attribute names
+    # for the rspec have_attributes matcher used below to pass
+    attributes[:min_value] = attributes.delete :batch_min_value if attributes.include?(:batch_min_value)
+    attributes[:max_value] = attributes.delete :batch_max_value if attributes.include?(:batch_max_value)
+
     expect(batched_migrations).to all(have_attributes(attributes)) if attributes.present?
   end
 

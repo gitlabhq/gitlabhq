@@ -20,6 +20,7 @@ export const registerExtension = (extension) => {
     i18n: extension.i18n,
     expandEvent: extension.expandEvent,
     enablePolling: extension.enablePolling,
+    enableExpandedPolling: extension.enableExpandedPolling,
     modalComponent: extension.modalComponent,
     computed: {
       ...extension.props.reduce(

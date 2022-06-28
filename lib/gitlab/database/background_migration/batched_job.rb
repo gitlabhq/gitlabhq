@@ -128,7 +128,8 @@ module Gitlab
               batched_migration.column_name,
               batch_min_value: min_value,
               batch_size: new_batch_size,
-              job_arguments: batched_migration.job_arguments
+              job_arguments: batched_migration.job_arguments,
+              job_class: batched_migration.job_class
             )
             midpoint = next_batch_bounds.last
 

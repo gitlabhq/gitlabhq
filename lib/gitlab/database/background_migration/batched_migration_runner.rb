@@ -101,7 +101,8 @@ module Gitlab
             active_migration.column_name,
             batch_min_value: batch_min_value,
             batch_size: active_migration.batch_size,
-            job_arguments: active_migration.job_arguments)
+            job_arguments: active_migration.job_arguments,
+            job_class: active_migration.job_class)
 
           return if next_batch_bounds.nil?
 

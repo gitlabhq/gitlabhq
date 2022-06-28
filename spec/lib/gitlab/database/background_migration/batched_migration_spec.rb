@@ -322,6 +322,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
   describe '#retry_failed_jobs!' do
     let(:batched_migration) { create(:batched_background_migration, status: 'failed') }
+    let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
     subject(:retry_failed_jobs) { batched_migration.retry_failed_jobs! }
 
@@ -335,7 +336,8 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
             anything,
             batch_min_value: 6,
             batch_size: 5,
-            job_arguments: batched_migration.job_arguments
+            job_arguments: batched_migration.job_arguments,
+            job_class: job_class
           ).and_return([6, 10])
         end
       end

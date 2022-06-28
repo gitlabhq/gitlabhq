@@ -26,7 +26,7 @@ module API
     EOF
 
     desc 'Get the metadata information of the GitLab instance.' do
-      detail 'This feature was introduced in GitLab 15.1.'
+      detail 'This feature was introduced in GitLab 15.2.'
     end
     get '/metadata' do
       run_graphql!(

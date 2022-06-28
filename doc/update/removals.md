@@ -447,6 +447,22 @@ You can still customize the behavior of the Secret Detection analyzer using the 
 
 For further details, see [the deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).
 
+### Self-managed certificate-based integration with Kubernetes feature flagged
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/contributing/#breaking-changes).
+Review the details carefully before upgrading.
+
+In 15.0 the certificate-based integration with Kubernetes will be disabled by default.
+
+After 15.0, you should use the [agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. The agent for Kubernetes is a more robust, secure, and reliable integration with Kubernetes. [How do I migrate to the agent?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+If you need more time to migrate, you can enable the `certificate_based_clusters` [feature flag](https://docs.gitlab.com/ee/administration/feature_flags.html), which re-enables the certificate-based integration.
+
+In GitLab 16.0, we will [remove the feature, its related code, and the feature flag](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). GitLab will continue to fix any security or critical issues until 16.0.
+
+For updates and details, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
 ### Sidekiq configuration for metrics and health checks
 
 WARNING:

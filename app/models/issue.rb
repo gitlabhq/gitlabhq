@@ -332,7 +332,7 @@ class Issue < ApplicationRecord
     when 'severity_desc'                                  then order_severity_desc.with_order_id_desc
     when 'escalation_status_asc'                          then order_escalation_status_asc.with_order_id_desc
     when 'escalation_status_desc'                         then order_escalation_status_desc.with_order_id_desc
-    when 'closed_at_asc'                                  then order_closed_at_asc
+    when 'closed_at', 'closed_at_asc'                     then order_closed_at_asc
     when 'closed_at_desc'                                 then order_closed_at_desc
     else
       super

@@ -106,7 +106,7 @@ RSpec.describe BlobPresenter do
   end
 
   describe '#find_file_path' do
-    it { expect(presenter.find_file_path).to eq("/#{project.full_path}/-/find_file/HEAD/files/ruby/regex.rb") }
+    it { expect(presenter.find_file_path).to eq("/#{project.full_path}/-/find_file/HEAD") }
   end
 
   describe '#blame_path' do

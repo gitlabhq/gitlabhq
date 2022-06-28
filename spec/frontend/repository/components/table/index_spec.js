@@ -11,7 +11,7 @@ const MOCK_BLOBS = [
   {
     id: '123abc',
     sha: '123abc',
-    flatPath: 'blob',
+    flatPath: 'main/blob.md',
     name: 'blob.md',
     type: 'blob',
     webPath: '/blob',
@@ -19,7 +19,7 @@ const MOCK_BLOBS = [
   {
     id: '124abc',
     sha: '124abc',
-    flatPath: 'blob2',
+    flatPath: 'main/blob2.md',
     name: 'blob2.md',
     type: 'blob',
     webUrl: 'http://test.com',
@@ -27,7 +27,7 @@ const MOCK_BLOBS = [
   {
     id: '125abc',
     sha: '125abc',
-    flatPath: 'blob3',
+    flatPath: 'main/blob3.md',
     name: 'blob3.md',
     type: 'blob',
     webUrl: 'http://test.com',
@@ -37,21 +37,21 @@ const MOCK_BLOBS = [
 
 const MOCK_COMMITS = [
   {
-    fileName: 'blob.md',
+    filePath: 'main/blob.md',
     type: 'blob',
     commit: {
       message: 'Updated blob.md',
     },
   },
   {
-    fileName: 'blob2.md',
+    filePath: 'main/blob2.md',
     type: 'blob',
     commit: {
       message: 'Updated blob2.md',
     },
   },
   {
-    fileName: 'blob3.md',
+    filePath: 'main/blob3.md',
     type: 'blob',
     commit: {
       message: 'Updated blob3.md',

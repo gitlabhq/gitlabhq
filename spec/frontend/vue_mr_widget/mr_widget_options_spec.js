@@ -32,6 +32,7 @@ import {
   fullReportExtension,
   noTelemetryExtension,
   pollingExtension,
+  pollingFullDataExtension,
   pollingErrorExtension,
   multiPollingExtension,
 } from './test_extensions';
@@ -1079,6 +1080,37 @@ describe('MrWidgetOptions', () => {
         });
         await createComponent();
         expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
+      });
+    });
+
+    describe('success - full data polling', () => {
+      it('sets data when polling is complete', async () => {
+        registerExtension(pollingFullDataExtension);
+
+        createComponent();
+
+        await waitForPromises();
+
+        api.trackRedisHllUserEvent.mockClear();
+        api.trackRedisCounterEvent.mockClear();
+
+        findExtensionToggleButton().trigger('click');
+
+        // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_expand',
+        );
+        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_expand_warning',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_count_expand',
+        );
+        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
+          'i_merge_request_widget_test_extension_count_expand_warning',
+        );
       });
     });
 

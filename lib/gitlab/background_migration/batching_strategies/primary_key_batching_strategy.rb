@@ -18,12 +18,13 @@ module Gitlab
         # batch_min_value - The minimum value which the next batch will start at
         # batch_size - The size of the next batch
         # job_arguments - The migration job arguments
-        def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:)
+        # job_class - The migration job class
+        def next_batch(table_name, column_name, batch_min_value:, batch_size:, job_arguments:, job_class: nil)
           model_class = define_batchable_model(table_name, connection: connection)
 
           quoted_column_name = model_class.connection.quote_column_name(column_name)
           relation = model_class.where("#{quoted_column_name} >= ?", batch_min_value)
-          relation = apply_additional_filters(relation, job_arguments: job_arguments)
+          relation = apply_additional_filters(relation, job_arguments: job_arguments, job_class: job_class)
           next_batch_bounds = nil
 
           relation.each_batch(of: batch_size, column: column_name) do |batch| # rubocop:disable Lint/UnreachableLoop
@@ -35,19 +36,11 @@ module Gitlab
           next_batch_bounds
         end
 
-        # Strategies based on PrimaryKeyBatchingStrategy can use
-        # this method to easily apply additional filters.
-        #
-        # Example:
-        #
-        #   class MatchingType < PrimaryKeyBatchingStrategy
-        #     def apply_additional_filters(relation, job_arguments:)
-        #       type = job_arguments.first
-        #
-        #       relation.where(type: type)
-        #     end
-        #   end
-        def apply_additional_filters(relation, job_arguments: [])
+        def apply_additional_filters(relation, job_arguments: [], job_class: nil)
+          if job_class.respond_to?(:batching_scope)
+            return job_class.batching_scope(relation, job_arguments: job_arguments)
+          end
+
           relation
         end
       end

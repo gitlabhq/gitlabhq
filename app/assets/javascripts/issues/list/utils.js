@@ -44,6 +44,8 @@ import {
   urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
+  CLOSED_ASC,
+  CLOSED_DESC,
 } from './constants';
 
 export const getInitialPageParams = (
@@ -92,6 +94,14 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
     },
     {
       id: 4,
+      title: __('Closed date'),
+      sortDirection: {
+        ascending: CLOSED_ASC,
+        descending: CLOSED_DESC,
+      },
+    },
+    {
+      id: 5,
       title: __('Milestone due date'),
       sortDirection: {
         ascending: MILESTONE_DUE_ASC,
@@ -99,7 +109,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       },
     },
     {
-      id: 5,
+      id: 6,
       title: __('Due date'),
       sortDirection: {
         ascending: DUE_DATE_ASC,
@@ -107,7 +117,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       },
     },
     {
-      id: 6,
+      id: 7,
       title: __('Popularity'),
       sortDirection: {
         ascending: POPULARITY_ASC,
@@ -115,7 +125,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       },
     },
     {
-      id: 7,
+      id: 8,
       title: __('Label priority'),
       sortDirection: {
         ascending: LABEL_PRIORITY_ASC,
@@ -123,7 +133,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       },
     },
     {
-      id: 8,
+      id: 9,
       title: __('Manual'),
       sortDirection: {
         ascending: RELATIVE_POSITION_ASC,
@@ -131,7 +141,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       },
     },
     {
-      id: 9,
+      id: 10,
       title: __('Title'),
       sortDirection: {
         ascending: TITLE_ASC,

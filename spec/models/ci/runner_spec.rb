@@ -1193,6 +1193,40 @@ RSpec.describe Ci::Runner do
     end
   end
 
+  describe '#save_tags' do
+    let(:runner) { build(:ci_runner, tag_list: ['tag']) }
+
+    it 'saves tags' do
+      runner.save!
+
+      expect(runner.tags.count).to eq(1)
+      expect(runner.tags.first.name).to eq('tag')
+    end
+
+    context 'with BulkInsertableTags.with_bulk_insert_tags' do
+      it 'does not save_tags' do
+        Ci::BulkInsertableTags.with_bulk_insert_tags do
+          runner.save!
+        end
+
+        expect(runner.tags).to be_empty
+      end
+
+      context 'over TAG_LIST_MAX_LENGTH' do
+        let(:tag_list) { (1..described_class::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } }
+        let(:runner) { build(:ci_runner, tag_list: tag_list) }
+
+        it 'fails validation if over tag limit' do
+          Ci::BulkInsertableTags.with_bulk_insert_tags do
+            expect { runner.save! }.to raise_error(ActiveRecord::RecordInvalid)
+          end
+
+          expect(runner.tags).to be_empty
+        end
+      end
+    end
+  end
+
   describe '#has_tags?' do
     context 'when runner has tags' do
       subject { create(:ci_runner, tag_list: ['tag']) }

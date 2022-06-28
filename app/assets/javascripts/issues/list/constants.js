@@ -90,6 +90,8 @@ export const UPDATED_ASC = 'UPDATED_ASC';
 export const UPDATED_DESC = 'UPDATED_DESC';
 export const WEIGHT_ASC = 'WEIGHT_ASC';
 export const WEIGHT_DESC = 'WEIGHT_DESC';
+export const CLOSED_ASC = 'CLOSED_AT_ASC';
+export const CLOSED_DESC = 'CLOSED_AT_DESC';
 
 export const urlSortParams = {
   [PRIORITY_ASC]: 'priority',
@@ -98,6 +100,8 @@ export const urlSortParams = {
   [CREATED_DESC]: 'created_date',
   [UPDATED_ASC]: 'updated_asc',
   [UPDATED_DESC]: 'updated_desc',
+  [CLOSED_ASC]: 'closed_asc',
+  [CLOSED_DESC]: 'closed_desc',
   [MILESTONE_DUE_ASC]: 'milestone',
   [MILESTONE_DUE_DESC]: 'milestone_due_desc',
   [DUE_DATE_ASC]: 'due_date',

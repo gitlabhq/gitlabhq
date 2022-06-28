@@ -55,7 +55,7 @@
       .oauth-authorized-applications.prepend-top-20.gl-mb-3
         - if oauth_applications_enabled
           %h5
-            = _("Authorized applications (%{size})") % { size: @authorized_apps.size + @authorized_anonymous_tokens.size }
+            = _("Authorized applications (%{size})") % { size: @authorized_tokens.size }
 
         - if @authorized_tokens.any?
           .table-responsive
@@ -67,22 +67,22 @@
                   %th= _('Scope')
                   %th
               %tbody
-                - @authorized_apps.each do |app|
-                  - token = app.authorized_tokens.order('created_at desc').first # rubocop: disable CodeReuse/ActiveRecord
-                  %tr{ id: "application_#{app.id}" }
-                    %td= app.name
-                    %td= token.created_at
-                    %td= token.scopes
-                    %td= render 'doorkeeper/authorized_applications/delete_form', application: app
-                - @authorized_anonymous_tokens.each do |token|
-                  %tr
+                - @authorized_tokens.each do |token|
+                  %tr{ id: ("application_#{token.application.id}" if token.application) }
                     %td
-                      = _('Anonymous')
-                      .form-text.text-muted
-                        %em= _("Authorization was granted by entering your username and password in the application.")
+                      - if token.application
+                        = token.application.name
+                      - else
+                        = _('Anonymous')
+                        .form-text.text-muted
+                          %em= _("Authorization was granted by entering your username and password in the application.")
                     %td= token.created_at
                     %td= token.scopes
-                    %td= render 'doorkeeper/authorized_applications/delete_form', token: token
+                    %td
+                      - if token.application
+                        = render 'doorkeeper/authorized_applications/delete_form', application: token.application
+                      - else
+                        = render 'doorkeeper/authorized_applications/delete_form', token: token
         - else
           .settings-message.text-center
             = _("You don't have any authorized applications")

@@ -709,10 +709,6 @@
         line-height: 20px;
         padding: 0;
       }
-
-      .issue-updated-at {
-        line-height: 20px;
-      }
     }
 
     @include media-breakpoint-down(xs) {
@@ -736,7 +732,7 @@
     .issuable-milestone,
     .issuable-info,
     .task-status,
-    .issuable-updated-at {
+    .issuable-timestamp {
       font-weight: $gl-font-weight-normal;
       color: $gl-text-color-secondary;
 

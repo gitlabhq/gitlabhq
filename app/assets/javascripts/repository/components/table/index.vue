@@ -2,6 +2,7 @@
 import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintf, __ } from '~/locale';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';
@@ -103,13 +104,14 @@ export default {
 
       return this.rowNumbers[key];
     },
-    getCommit(fileName, type) {
+    getCommit(flatPath, type) {
       if (!this.glFeatures.lazyLoadCommits) {
         return {};
       }
 
       return this.commits.find(
-        (commitEntry) => commitEntry.fileName === fileName && commitEntry.type === type,
+        (commitEntry) =>
+          cleanLeadingSeparator(commitEntry.filePath) === flatPath && commitEntry.type === type,
       );
     },
   },
@@ -152,7 +154,7 @@ export default {
               :loading-path="loadingPath"
               :total-entries="totalEntries"
               :row-number="generateRowNumber(entry.flatPath, entry.id, index)"
-              :commit-info="getCommit(entry.name, entry.type)"
+              :commit-info="getCommit(entry.flatPath, entry.type)"
               v-on="$listeners"
             />
           </template>

@@ -7185,6 +7185,29 @@ The edge type for [`IncidentManagementOncallShift`](#incidentmanagementoncallshi
 | <a id="incidentmanagementoncallshiftedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="incidentmanagementoncallshiftedgenode"></a>`node` | [`IncidentManagementOncallShift`](#incidentmanagementoncallshift) | The item at the end of the edge. |
 
+#### `IssuableResourceLinkConnection`
+
+The connection type for [`IssuableResourceLink`](#issuableresourcelink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issuableresourcelinkconnectionedges"></a>`edges` | [`[IssuableResourceLinkEdge]`](#issuableresourcelinkedge) | A list of edges. |
+| <a id="issuableresourcelinkconnectionnodes"></a>`nodes` | [`[IssuableResourceLink]`](#issuableresourcelink) | A list of nodes. |
+| <a id="issuableresourcelinkconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `IssuableResourceLinkEdge`
+
+The edge type for [`IssuableResourceLink`](#issuableresourcelink).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issuableresourcelinkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="issuableresourcelinkedgenode"></a>`node` | [`IssuableResourceLink`](#issuableresourcelink) | The item at the end of the edge. |
+
 #### `IssueConnection`
 
 The connection type for [`Issue`](#issue).
@@ -11342,6 +11365,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="epicissuecurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
 
+##### `EpicIssue.issuableResourceLinks`
+
+Issuable resource links of the incident issue.
+
+Returns [`IssuableResourceLinkConnection`](#issuableresourcelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epicissueissuableresourcelinksincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
+
 ##### `EpicIssue.reference`
 
 Internal reference of the issue. Returned in shortened format by default.
@@ -12716,6 +12755,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="issuecurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
+
+##### `Issue.issuableResourceLinks`
+
+Issuable resource links of the incident issue.
+
+Returns [`IssuableResourceLinkConnection`](#issuableresourcelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issueissuableresourcelinksincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
 
 ##### `Issue.reference`
 

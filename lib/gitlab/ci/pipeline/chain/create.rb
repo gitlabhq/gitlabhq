@@ -11,10 +11,10 @@ module Gitlab
           def perform!
             logger.instrument_with_sql(:pipeline_save) do
               BulkInsertableAssociations.with_bulk_insert do
-                with_bulk_insert_tags do
+                ::Ci::BulkInsertableTags.with_bulk_insert_tags do
                   pipeline.transaction do
                     pipeline.save!
-                    CommitStatus.bulk_insert_tags!(statuses)
+                    Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!(statuses)
                   end
                 end
               end
@@ -28,14 +28,6 @@ module Gitlab
           end
 
           private
-
-          def with_bulk_insert_tags
-            previous = Thread.current['ci_bulk_insert_tags']
-            Thread.current['ci_bulk_insert_tags'] = true
-            yield
-          ensure
-            Thread.current['ci_bulk_insert_tags'] = previous
-          end
 
           def statuses
             strong_memoize(:statuses) do

@@ -4903,7 +4903,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         .to delegate_method(:builds_with_coverage)
         .to(:head_pipeline)
         .with_prefix
-        .with_arguments(allow_nil: true)
+        .allow_nil
     end
   end
 

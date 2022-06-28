@@ -318,11 +318,15 @@ module QA
         end
 
         def merge_immediately!
-          if has_element?(:merge_moment_dropdown)
-            click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
-            click_element(:merge_immediately_menu_item, skip_finished_loading_check: true)
-          else
-            click_element(:merge_button, skip_finished_loading_check: true)
+          retry_until(reload: true, sleep_interval: 1, max_attempts: 12) do
+            if has_element?(:merge_moment_dropdown)
+              click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
+              click_element(:merge_immediately_menu_item, skip_finished_loading_check: true)
+            else
+              click_element(:merge_button, skip_finished_loading_check: true)
+            end
+
+            merged?
           end
         end
 

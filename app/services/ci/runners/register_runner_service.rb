@@ -8,7 +8,19 @@ module Ci
 
         return unless runner_type_attrs
 
-        ::Ci::Runner.create(attributes.merge(runner_type_attrs))
+        runner = ::Ci::Runner.new(attributes.merge(runner_type_attrs))
+
+        Ci::BulkInsertableTags.with_bulk_insert_tags do
+          Ci::Runner.transaction do
+            if runner.save
+              Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!([runner])
+            else
+              raise ActiveRecord::Rollback
+            end
+          end
+        end
+
+        runner
       end
 
       private

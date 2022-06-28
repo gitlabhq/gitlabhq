@@ -53,6 +53,7 @@ module Projects
     def success
       @commit_status.success
       @project.mark_pages_as_deployed
+      publish_deployed_event
       super
     end
 
@@ -202,6 +203,16 @@ module Projects
 
     def pages_file_entries_limit
       project.actual_limits.pages_file_entries
+    end
+
+    def publish_deployed_event
+      event = ::Pages::PageDeployedEvent.new(data: {
+        project_id: project.id,
+        namespace_id: project.namespace_id,
+        root_namespace_id: project.root_namespace.id
+      })
+
+      Gitlab::EventStore.publish(event)
     end
   end
 end

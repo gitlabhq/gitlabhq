@@ -43,6 +43,16 @@ RSpec.describe Projects::UpdatePagesService do
         expect(project.pages_deployed?).to be_truthy
       end
 
+      it 'publishes a PageDeployedEvent event with project id and namespace id' do
+        expected_data = {
+          project_id: project.id,
+          namespace_id: project.namespace_id,
+          root_namespace_id: project.root_namespace.id
+        }
+
+        expect { subject.execute }.to publish_event(Pages::PageDeployedEvent).with(expected_data)
+      end
+
       it 'creates pages_deployment and saves it in the metadata' do
         expect do
           expect(execute).to eq(:success)

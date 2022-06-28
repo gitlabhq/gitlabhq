@@ -86,7 +86,18 @@ export default {
     createdAt() {
       return getTimeago().format(this.issuable.createdAt);
     },
-    updatedAt() {
+    timestamp() {
+      if (this.issuable.state === 'closed') {
+        return this.issuable.closedAt;
+      }
+      return this.issuable.updatedAt;
+    },
+    formattedTimestamp() {
+      if (this.issuable.state === 'closed') {
+        return sprintf(__('closed %{timeago}'), {
+          timeago: getTimeago().format(this.issuable.closedAt),
+        });
+      }
       return sprintf(__('updated %{timeAgo}'), {
         timeAgo: getTimeago().format(this.issuable.updatedAt),
       });
@@ -311,10 +322,10 @@ export default {
       <div
         v-gl-tooltip.bottom
         class="gl-text-gray-500 gl-display-none gl-sm-display-inline-block"
-        :title="tooltipTitle(issuable.updatedAt)"
-        data-testid="issuable-updated-at"
+        :title="tooltipTitle(timestamp)"
+        data-testid="issuable-timestamp"
       >
-        {{ updatedAt }}
+        {{ formattedTimestamp }}
       </div>
     </div>
   </li>

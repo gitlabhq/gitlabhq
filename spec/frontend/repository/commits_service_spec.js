@@ -39,10 +39,11 @@ describe('commits service', () => {
     expect(axios.get).toHaveBeenCalledWith(testUrl, { params: { format: 'json', offset } });
   });
 
-  it('encodes the path correctly', async () => {
-    await requestCommits(1, 'some-project', 'with $peci@l ch@rs/');
+  it('encodes the path and ref correctly', async () => {
+    await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', 'r€f-#');
 
-    const encodedUrl = '/some-project/-/refs/main/logs_tree/with%20%24peci%40l%20ch%40rs%2F';
+    const encodedUrl =
+      '/some-project/-/refs/r%E2%82%ACf-%23/logs_tree/with%20%24peci%40l%20ch%40rs%2F';
     expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
   });
 

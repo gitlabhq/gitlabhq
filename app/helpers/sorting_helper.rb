@@ -254,6 +254,7 @@ module SortingHelper
     options = [
       { value: sort_value_priority, text: sort_title_priority, href: page_filter_path(sort: sort_value_priority) },
       { value: sort_value_created_date, text: sort_title_created_date, href: page_filter_path(sort: sort_value_created_date) },
+      { value: sort_value_closed_date, text: sort_title_closed_date, href: page_filter_path(sort: sort_value_closed_date) },
       { value: sort_value_recently_updated, text: sort_title_recently_updated, href: page_filter_path(sort: sort_value_recently_updated) },
       { value: sort_value_milestone, text: sort_title_milestone, href: page_filter_path(sort: sort_value_milestone) }
     ]
@@ -261,7 +262,7 @@ module SortingHelper
     options.concat([due_date_option]) if viewing_issues
 
     options.concat([popularity_option, label_priority_option])
-    options.concat([merged_option, closed_option]) if viewing_merge_requests
+    options.concat([merged_option]) if viewing_merge_requests
     options.concat([relative_position_option]) if viewing_issues
 
     options.concat([title_option])
@@ -285,10 +286,6 @@ module SortingHelper
 
   def merged_option
     { value: sort_value_merged_date, text: sort_title_merged_date, href: page_filter_path(sort: sort_value_merged_date) }
-  end
-
-  def closed_option
-    { value: sort_value_closed_date, text: sort_title_closed_date, href: page_filter_path(sort: sort_value_closed_date) }
   end
 
   def relative_position_option

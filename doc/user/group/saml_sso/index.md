@@ -513,7 +513,7 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not the identity provider.
 
-### Message: "Login to a GitLab account to link with your SAML identity"
+### Message: "Sign in to GitLab to connect your organization's account"
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account).
 

@@ -2,6 +2,7 @@
 
 module Ci
   class Runner < Ci::ApplicationRecord
+    prepend Ci::BulkInsertableTags
     include Gitlab::SQL::Pattern
     include RedisCacheable
     include ChronicDurationAttribute

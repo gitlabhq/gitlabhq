@@ -28740,8 +28740,6 @@ CREATE INDEX index_oauth_access_tokens_on_application_id ON oauth_access_tokens 
 
 CREATE UNIQUE INDEX index_oauth_access_tokens_on_refresh_token ON oauth_access_tokens USING btree (refresh_token);
 
-CREATE INDEX index_oauth_access_tokens_on_resource_owner_id ON oauth_access_tokens USING btree (resource_owner_id);
-
 CREATE UNIQUE INDEX index_oauth_access_tokens_on_token ON oauth_access_tokens USING btree (token);
 
 CREATE INDEX index_oauth_applications_on_owner_id_and_owner_type ON oauth_applications USING btree (owner_id, owner_type);
@@ -30021,6 +30019,8 @@ CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON ci_b
 CREATE INDEX partial_index_deployments_for_legacy_successful_deployments ON deployments USING btree (id) WHERE ((finished_at IS NULL) AND (status = 2));
 
 CREATE INDEX partial_index_deployments_for_project_id_and_tag ON deployments USING btree (project_id) WHERE (tag IS TRUE);
+
+CREATE INDEX partial_index_resource_owner_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, created_at) WHERE (revoked_at IS NULL);
 
 CREATE INDEX partial_index_slack_integrations_with_bot_user_id ON slack_integrations USING btree (id) WHERE (bot_user_id IS NOT NULL);
 

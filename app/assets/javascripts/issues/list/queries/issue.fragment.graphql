@@ -13,6 +13,7 @@ fragment IssueFragment on Issue {
   state
   title
   updatedAt
+  closedAt
   upvotes
   userDiscussionsCount @include(if: $isSignedIn)
   webPath

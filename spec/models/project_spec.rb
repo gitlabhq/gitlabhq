@@ -826,26 +826,33 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
-    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).with_arguments(allow_nil: true) }
-    it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).allow_nil }
+    it { is_expected.to delegate_method(:root_ancestor).to(:namespace).allow_nil }
+    it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).allow_nil }
+    it { is_expected.to delegate_method(:last_pipeline).to(:commit).allow_nil }
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
 
-    describe 'project settings' do
+    describe 'read project settings' do
       %i(
         show_default_award_emojis
-        show_default_award_emojis=
         show_default_award_emojis?
         warn_about_potentially_unwanted_characters
-        warn_about_potentially_unwanted_characters=
         warn_about_potentially_unwanted_characters?
         enforce_auth_checks_on_uploads
-        enforce_auth_checks_on_uploads=
         enforce_auth_checks_on_uploads?
       ).each do |method|
-        it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(allow_nil: true) }
+        it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
+      end
+    end
+
+    describe 'write project settings' do
+      %i(
+        show_default_award_emojis=
+        warn_about_potentially_unwanted_characters=
+        enforce_auth_checks_on_uploads=
+      ).each do |method|
+        it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
       end
     end
 

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Metadata API **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.2.
 
 Retrieve metadata information for this GitLab instance. 
 
@@ -35,7 +35,7 @@ Example response:
 
 ```json
 {
-  "version": "15.0-pre",
+  "version": "15.2-pre",
   "revision": "c401a659d0c",
   "kas": {
     "enabled": true,

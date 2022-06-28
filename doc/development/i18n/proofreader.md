@@ -54,6 +54,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrei Jiroh Halili - [GitLab](https://gitlab.com/ajhalili2006), [Crowdin](https://crowdin.com/profile/AndreiJirohHaliliDev2006)
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
+  - Germain Gorisse - [GitLab](https://gitlab.com/ggorisse), [Crowdin](https://crowdin.com/profile/germaingorisse)
 - Galician
   - Antón Méixome - [Crowdin](https://crowdin.com/profile/meixome)
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
