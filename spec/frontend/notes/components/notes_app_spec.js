@@ -217,8 +217,7 @@ describe('note_app', () => {
     });
 
     afterEach(() => {
-      waitForDiscussionsRequest();
-      resetHTMLFixture();
+      return waitForDiscussionsRequest().then(() => resetHTMLFixture());
     });
 
     it('renders skeleton notes', () => {
@@ -471,7 +470,7 @@ describe('note_app', () => {
         wrapper = shallowMount(NotesApp, { propsData, store: createStore() });
         await waitForPromises();
 
-        expect(axiosMock.history.get[0].params).toBeUndefined();
+        expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
       });
     });
 
@@ -496,14 +495,14 @@ describe('note_app', () => {
         wrapper = mountWithNotesFilter(undefined);
         await waitForPromises();
 
-        expect(axiosMock.history.get[0].params).toBeUndefined();
+        expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
       });
 
       it('does not include extra query params when filter is already set to default', async () => {
         wrapper = mountWithNotesFilter(constants.DISCUSSION_FILTERS_DEFAULT_VALUE);
         await waitForPromises();
 
-        expect(axiosMock.history.get[0].params).toBeUndefined();
+        expect(axiosMock.history.get[0].params).toEqual({ per_page: 20 });
       });
 
       it('includes extra query params when filter is not set to default', async () => {
@@ -512,6 +511,7 @@ describe('note_app', () => {
 
         expect(axiosMock.history.get[0].params).toEqual({
           notes_filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,
+          per_page: 20,
           persist_filter: false,
         });
       });

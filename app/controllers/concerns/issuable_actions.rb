@@ -184,7 +184,6 @@ module IssuableActions
 
   def paginated_discussions
     return if params[:per_page].blank?
-    return if issuable.instance_of?(Issue) && Feature.disabled?(:paginated_issue_discussions, project)
     return if issuable.instance_of?(MergeRequest) && Feature.disabled?(:paginated_mr_discussions, project)
 
     strong_memoize(:paginated_discussions) do

@@ -2,8 +2,13 @@
 
 module Integrations
   class ExternalWiki < Integration
-    prop_accessor :external_wiki_url
     validates :external_wiki_url, presence: true, public_url: true, if: :activated?
+
+    field :external_wiki_url,
+      title: -> { s_('ExternalWikiService|External wiki URL') },
+      placeholder: -> { s_('ExternalWikiService|https://example.com/xxx/wiki/...') },
+      help: -> { s_('ExternalWikiService|Enter the URL to the external wiki.') },
+      required: true
 
     def title
       s_('ExternalWikiService|External wiki')
@@ -15,19 +20,6 @@ module Integrations
 
     def self.to_param
       'external_wiki'
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'external_wiki_url',
-          title: s_('ExternalWikiService|External wiki URL'),
-          placeholder: s_('ExternalWikiService|https://example.com/xxx/wiki/...'),
-          help: 'Enter the URL to the external wiki.',
-          required: true
-        }
-      ]
     end
 
     def help

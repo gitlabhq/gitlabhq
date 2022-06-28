@@ -23,7 +23,7 @@ module Integrations
         integration.event_channel_name(event)
       end
       expose :value do |event|
-        integration.get_channel_field(event)
+        integration.event_channel_value(event)
       end
     end
 

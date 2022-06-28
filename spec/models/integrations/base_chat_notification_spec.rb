@@ -292,15 +292,15 @@ RSpec.describe Integrations::BaseChatNotification do
     end
   end
 
-  describe '#get_channel_field' do
+  describe '#event_channel_value' do
     it 'returns the channel field value for the given event' do
       subject.push_channel = '#pushes'
 
-      expect(subject.get_channel_field(:push)).to eq('#pushes')
+      expect(subject.event_channel_value(:push)).to eq('#pushes')
     end
 
     it 'raises an error for unsupported events' do
-      expect { subject.get_channel_field(:foo) }.to raise_error(NoMethodError)
+      expect { subject.event_channel_value(:foo) }.to raise_error(NoMethodError)
     end
   end
 end

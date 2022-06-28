@@ -2,8 +2,15 @@
 
 module Integrations
   class Flowdock < Integration
-    prop_accessor :token
     validates :token, presence: true, if: :activated?
+
+    field :token,
+      type: 'password',
+      help: -> { s_('FlowdockService|Enter your Flowdock token.') },
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: '1b609b52537...',
+      required: true
 
     def title
       'Flowdock'
@@ -20,20 +27,6 @@ module Integrations
 
     def self.to_param
       'flowdock'
-    end
-
-    def fields
-      [
-        {
-          type: 'password',
-          name: 'token',
-          help: s_('FlowdockService|Enter your Flowdock token.'),
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          placeholder: '1b609b52537...',
-          required: true
-        }
-      ]
     end
 
     def self.supported_events

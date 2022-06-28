@@ -15520,6 +15520,9 @@ msgstr ""
 msgid "ExternalIssueIntegration|This issue is synchronized with %{trackerName}"
 msgstr ""
 
+msgid "ExternalWikiService|Enter the URL to the external wiki."
+msgstr ""
+
 msgid "ExternalWikiService|External wiki"
 msgstr ""
 
@@ -20765,6 +20768,9 @@ msgid "Integrations|Reset integration?"
 msgstr ""
 
 msgid "Integrations|Resetting this integration will clear the settings and deactivate this integration."
+msgstr ""
+
+msgid "Integrations|Restrict to branch (optional)"
 msgstr ""
 
 msgid "Integrations|Return to GitLab for Jira"

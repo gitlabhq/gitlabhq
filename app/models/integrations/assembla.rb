@@ -2,8 +2,17 @@
 
 module Integrations
   class Assembla < Integration
-    prop_accessor :token, :subdomain
     validates :token, presence: true, if: :activated?
+
+    field :token,
+      type: 'password',
+      non_empty_password_title: -> { s_('ProjectService|Enter new token') },
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      placeholder: '',
+      required: true
+
+    field :subdomain,
+      placeholder: ''
 
     def title
       'Assembla'
@@ -15,24 +24,6 @@ module Integrations
 
     def self.to_param
       'assembla'
-    end
-
-    def fields
-      [
-        {
-          type: 'password',
-          name: 'token',
-          non_empty_password_title: s_('ProjectService|Enter new token'),
-          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
-          placeholder: '',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'subdomain',
-          placeholder: ''
-        }
-      ]
     end
 
     def self.supported_events

@@ -56,37 +56,6 @@ RSpec.describe ClusterEntity do
       end
     end
 
-    context 'gitlab_managed_apps_logs_path' do
-      let(:cluster) { create(:cluster, :project) }
-      let(:user) { create(:user) }
-
-      subject { described_class.new(cluster, request: request).as_json }
-
-      before do
-        allow_next_instance_of(Clusters::ClusterPresenter) do |presenter|
-          allow(presenter).to receive(:show_path).and_return(nil)
-        end
-      end
-
-      it 'return projects log explorer path' do
-        log_explorer_path = project_logs_path(cluster.project, cluster_id: cluster.id)
-
-        expect_next_instance_of(Clusters::ClusterPresenter, cluster, current_user: user) do |presenter|
-          expect(presenter).to receive(:gitlab_managed_apps_logs_path).and_return(log_explorer_path)
-        end
-
-        expect(subject[:gitlab_managed_apps_logs_path]).to eq(log_explorer_path)
-      end
-
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(monitor_logging: false)
-        end
-
-        specify { is_expected.not_to include(:gitlab_managed_apps_logs_path) }
-      end
-    end
-
     context 'enable_advanced_logs_querying' do
       let(:cluster) { create(:cluster, :project) }
       let(:user) { create(:user) }

@@ -104,7 +104,10 @@ for the section. For example:
 > `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
 ```
 
-## Attribute deprecation
+## Deprecations
+
+To document the deprecation of an API endpoint, follow the steps to
+[deprecate a page or topic](versions.md#deprecate-a-page-or-topic).
 
 To deprecate an attribute:
 
@@ -122,8 +125,8 @@ To deprecate an attribute:
    | `widget_name` | string | **{dotted-circle}** No | [Deprecated](<link-to-issue>) in GitLab 14.7 and is planned for removal in 15.4. Use `widget_id` instead. The name of the widget. |
    ```
 
-1. Optional. To widely announce the change, or if it's a breaking change,
-   [update the deprecations and removals documentation](../deprecation_guidelines/#update-the-deprecations-and-removals-documentation).
+To widely announce a deprecation, or if it's a breaking change,
+[update the deprecations and removals documentation](../deprecation_guidelines/#update-the-deprecations-and-removals-documentation).
 
 ## Method description
 

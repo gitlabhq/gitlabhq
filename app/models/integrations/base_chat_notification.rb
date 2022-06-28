@@ -78,7 +78,7 @@ module Integrations
           type: 'select',
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: branch_choices
+          choices: self.class.branch_choices
         }.freeze,
         {
           type: 'text',
@@ -118,7 +118,7 @@ module Integrations
 
       event_type = data[:event_type] || object_kind
 
-      channel_names = get_channel_field(event_type).presence || channel.presence
+      channel_names = event_channel_value(event_type).presence || channel.presence
       channels = channel_names&.split(',')&.map(&:strip)
 
       opts = {}
@@ -161,7 +161,7 @@ module Integrations
       EVENT_CHANNEL[event]
     end
 
-    def get_channel_field(event)
+    def event_channel_value(event)
       field_name = event_channel_name(event)
       self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
     end

@@ -83,14 +83,17 @@ export const setExpandDiscussions = ({ commit }, { discussionIds, expanded }) =>
   commit(types.SET_EXPAND_DISCUSSIONS, { discussionIds, expanded });
 };
 
-export const fetchDiscussions = ({ commit, dispatch }, { path, filter, persistFilter }) => {
+export const fetchDiscussions = (
+  { commit, dispatch, getters },
+  { path, filter, persistFilter },
+) => {
   const config =
     filter !== undefined
       ? { params: { notes_filter: filter, persist_filter: persistFilter } }
       : null;
 
   if (
-    window.gon?.features?.paginatedIssueDiscussions ||
+    getters.noteableType === constants.ISSUE_NOTEABLE_TYPE ||
     window.gon?.features?.paginatedMrDiscussions
   ) {
     return dispatch('fetchDiscussionsBatch', { path, config, perPage: 20 });
@@ -114,7 +117,7 @@ export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, curs
   return axios.get(path, { params }).then(({ data, headers }) => {
     commit(types.ADD_OR_UPDATE_DISCUSSIONS, data);
 
-    if (headers['x-next-page-cursor']) {
+    if (headers && headers['x-next-page-cursor']) {
       const nextConfig = { ...config };
 
       if (config?.params?.persist_filter) {

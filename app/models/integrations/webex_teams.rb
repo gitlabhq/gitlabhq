@@ -35,7 +35,7 @@ module Integrations
           type: 'select',
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: branch_choices
+          choices: self.class.branch_choices
         }
       ]
     end

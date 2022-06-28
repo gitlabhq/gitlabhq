@@ -6,10 +6,13 @@ module Integrations
     VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}.freeze
     VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}.freeze
 
-    prop_accessor :confluence_url
-
     validates :confluence_url, presence: true, if: :activated?
     validate :validate_confluence_url_is_cloud, if: :activated?
+
+    field :confluence_url,
+      title: -> { s_('Confluence Cloud Workspace URL') },
+      placeholder: 'https://example.atlassian.net/wiki',
+      required: true
 
     def self.to_param
       'confluence'
@@ -36,18 +39,6 @@ module Integrations
       else
         s_('ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the "Wiki" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL.').html_safe
       end
-    end
-
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'confluence_url',
-          title: s_('Confluence Cloud Workspace URL'),
-          placeholder: 'https://example.atlassian.net/wiki',
-          required: true
-        }
-      ]
     end
 
     def testable?

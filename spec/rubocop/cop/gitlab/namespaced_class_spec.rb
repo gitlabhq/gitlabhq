@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass do
     it 'flags a class definition without additional namespace' do
       expect_offense(namespaced(<<~SOURCE))
         class MyClass
-        ^^^^^^^^^^^^^ #{described_class::MSG}
+              ^^^^^^^ #{described_class::MSG}
         end
       SOURCE
     end
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass do
     it 'flags a compact class definition without additional namespace' do
       expect_offense(<<~SOURCE, namespace: namespace)
         class %{namespace}::MyClass
-        ^{namespace}^^^^^^^^^^^^^^^ #{described_class::MSG}
+              ^{namespace}^^^^^^^^^ #{described_class::MSG}
         end
       SOURCE
     end
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass do
     it 'flags a class definition with inheritance without additional namespace' do
       expect_offense(namespaced(<<~SOURCE))
         class MyClass < ApplicationRecord
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG}
+              ^^^^^^^ #{described_class::MSG}
           def some_method
             true
           end

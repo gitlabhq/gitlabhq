@@ -1351,7 +1351,7 @@ describe('Actions Notes Store', () => {
       return testAction(
         actions.fetchDiscussions,
         {},
-        null,
+        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
         [
           { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
           { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
@@ -1360,13 +1360,11 @@ describe('Actions Notes Store', () => {
       );
     });
 
-    it('dispatches `fetchDiscussionsBatch` action if `paginatedIssueDiscussions` feature flag is enabled', () => {
-      window.gon = { features: { paginatedIssueDiscussions: true } };
-
+    it('dispatches `fetchDiscussionsBatch` action if noteable is an Issue', () => {
       return testAction(
         actions.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        null,
+        { noteableType: notesConstants.ISSUE_NOTEABLE_TYPE },
         [],
         [
           {
@@ -1389,7 +1387,7 @@ describe('Actions Notes Store', () => {
       return testAction(
         actions.fetchDiscussions,
         { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
-        null,
+        { noteableType: notesConstants.MERGE_REQUEST_NOTEABLE_TYPE },
         [],
         [
           {
