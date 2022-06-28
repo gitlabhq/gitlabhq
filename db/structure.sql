@@ -19350,7 +19350,12 @@ CREATE TABLE project_features (
     analytics_access_level integer DEFAULT 20 NOT NULL,
     security_and_compliance_access_level integer DEFAULT 10 NOT NULL,
     container_registry_access_level integer DEFAULT 0 NOT NULL,
-    package_registry_access_level integer DEFAULT 0 NOT NULL
+    package_registry_access_level integer DEFAULT 0 NOT NULL,
+    monitor_access_level integer DEFAULT 20 NOT NULL,
+    infrastructure_access_level integer DEFAULT 20 NOT NULL,
+    feature_flags_access_level integer DEFAULT 20 NOT NULL,
+    environments_access_level integer DEFAULT 20 NOT NULL,
+    releases_access_level integer DEFAULT 20 NOT NULL
 );
 
 CREATE SEQUENCE project_features_id_seq

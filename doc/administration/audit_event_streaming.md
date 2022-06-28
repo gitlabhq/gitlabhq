@@ -156,7 +156,8 @@ Each streaming destination can have up to 20 custom HTTP headers included with e
 
 ### Add with the API
 
-Group owners can add a HTTP header using the GraphQL `auditEventsStreamingHeadersCreate` mutation.
+Group owners can add a HTTP header using the GraphQL `auditEventsStreamingHeadersCreate` mutation. You can retrieve the destination ID
+by [listing the external audit destinations](#list-streaming-destinations) on the group.
 
 ```graphql
 mutation {
@@ -166,19 +167,48 @@ mutation {
 }
 ```
 
+The header is created if the returned `errors` object is empty.
+
 ### Delete with the API
 
-Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation.
+Group owners can remove a HTTP header using the GraphQL `auditEventsStreamingHeadersDestroy` mutation. You can retrieve the header ID
+by [listing all the custom headers](#list-all-custom-headers-with-the-api) on the group.
 
 ```graphql
 mutation {
-  auditEventsStreamingHeadersDestroy(input: { headerId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/24601" }) {
+  auditEventsStreamingHeadersDestroy(input: { headerId: "gid://gitlab/AuditEvents::Streaming::Header/1" }) {
     errors
   }
 }
 ```
 
-The header is created if the returned `errors` object is empty.
+The header is deleted if the returned `errors` object is empty.
+
+### List all custom headers with the API
+
+You can list all custom headers for a top-level group as well as their value and ID using the GraphQL `externalAuditEventDestinations` query. The ID
+value returned by this query is what you need to pass to the `deletion` mutation.
+
+```graphql
+query {
+  group(fullPath: "your-group") {
+    id
+    externalAuditEventDestinations {
+      nodes {
+        destinationUrl
+        id
+        headers { 
+          nodes {
+            key
+            value
+            id
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 ## Verify event authenticity
 
