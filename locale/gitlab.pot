@@ -4965,6 +4965,9 @@ msgstr ""
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
+msgid "Are you sure you want to remove %{topic_name}?"
+msgstr ""
+
 msgid "Are you sure you want to remove the attachment?"
 msgstr ""
 
@@ -40272,6 +40275,9 @@ msgstr ""
 msgid "Topic %{topic_name} was successfully created."
 msgstr ""
 
+msgid "Topic %{topic_name} was successfully removed."
+msgstr ""
+
 msgid "Topic avatar"
 msgstr ""
 
@@ -45457,6 +45463,11 @@ msgstr ""
 
 msgid "groups only"
 msgstr ""
+
+msgid "had %{count} failed job"
+msgid_plural "had %{count} failed jobs"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "has already been linked to another vulnerability"
 msgstr ""

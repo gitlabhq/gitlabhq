@@ -61,7 +61,7 @@ namespace :admin do
     end
   end
 
-  resources :topics, only: [:index, :new, :create, :edit, :update] do
+  resources :topics, only: [:index, :new, :create, :edit, :update, :destroy] do
     resource :avatar, controller: 'topics/avatars', only: [:destroy]
     collection do
       post :preview_markdown

@@ -151,4 +151,26 @@ RSpec.describe Admin::TopicsController do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    it 'removes topic' do
+      delete :destroy, params: { id: topic.id }
+
+      expect(response).to redirect_to(admin_topics_path)
+      expect { topic.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context 'as a normal user' do
+      before do
+        sign_in(user)
+      end
+
+      it 'renders a 404 error' do
+        delete :destroy, params: { id: topic.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect { topic.reload }.not_to raise_error
+      end
+    end
+  end
 end
