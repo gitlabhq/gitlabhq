@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+# Switch this back to `fast_spec_helper` when removing the `gitlab_sli_new_counters`
+# feature flag
+require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Sli do
   let(:prometheus) { double("prometheus") }
@@ -18,12 +20,16 @@ RSpec.describe Gitlab::Metrics::Sli do
     it 'allows different SLIs to be defined on each subclass' do
       apdex_counters = [
         fake_total_counter('foo_apdex'),
-        fake_numerator_counter('foo_apdex', 'success')
+        fake_numerator_counter('foo_apdex', 'success'),
+        fake_total_counter('foo_apdex', ':'),
+        fake_numerator_counter('foo_apdex', 'success', ':')
       ]
 
       error_rate_counters = [
         fake_total_counter('foo'),
-        fake_numerator_counter('foo', 'error')
+        fake_numerator_counter('foo', 'error'),
+        fake_total_counter('foo', ':'),
+        fake_numerator_counter('foo', 'error', ':')
       ]
 
       apdex = described_class::Apdex.initialize_sli(:foo, [{ hello: :world }])
@@ -78,7 +84,9 @@ RSpec.describe Gitlab::Metrics::Sli do
           it 'returns and stores a new initialized SLI' do
             counters = [
               fake_total_counter("bar#{subclass_info[:suffix]}"),
-              fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator])
+              fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator]),
+              fake_total_counter("bar#{subclass_info[:suffix]}", ':'),
+              fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator], ':')
             ]
 
             sli = described_class.initialize_sli(:bar, [{ hello: :world }])
@@ -91,7 +99,9 @@ RSpec.describe Gitlab::Metrics::Sli do
           it 'does not change labels for an already-initialized SLI' do
             counters = [
               fake_total_counter("bar#{subclass_info[:suffix]}"),
-              fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator])
+              fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator]),
+              fake_total_counter("bar#{subclass_info[:suffix]}", ':'),
+              fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator], ':')
             ]
 
             sli = described_class.initialize_sli(:bar, [{ hello: :world }])
@@ -112,6 +122,8 @@ RSpec.describe Gitlab::Metrics::Sli do
           before do
             fake_total_counter("boom#{subclass_info[:suffix]}")
             fake_numerator_counter("boom#{subclass_info[:suffix]}", subclass_info[:numerator])
+            fake_total_counter("boom#{subclass_info[:suffix]}", ':')
+            fake_numerator_counter("boom#{subclass_info[:suffix]}", subclass_info[:numerator], ':')
           end
 
           it 'is true when an SLI was initialized with labels' do
@@ -130,7 +142,9 @@ RSpec.describe Gitlab::Metrics::Sli do
         it 'initializes counters for the passed label combinations' do
           counters = [
             fake_total_counter("hey#{subclass_info[:suffix]}"),
-            fake_numerator_counter("hey#{subclass_info[:suffix]}", subclass_info[:numerator])
+            fake_numerator_counter("hey#{subclass_info[:suffix]}", subclass_info[:numerator]),
+            fake_total_counter("hey#{subclass_info[:suffix]}", ':'),
+            fake_numerator_counter("hey#{subclass_info[:suffix]}", subclass_info[:numerator], ':')
           ]
 
           described_class.new(:hey).initialize_counters([{ foo: 'bar' }, { foo: 'baz' }])
@@ -138,18 +152,43 @@ RSpec.describe Gitlab::Metrics::Sli do
           expect(counters).to all(have_received(:get).with({ foo: 'bar' }))
           expect(counters).to all(have_received(:get).with({ foo: 'baz' }))
         end
+
+        context 'when `gitlab_sli_new_counters` is disabled' do
+          before do
+            stub_feature_flags(gitlab_sli_new_counters: false)
+          end
+
+          it 'does not initialize the new counters', :aggregate_failures do
+            new_total_counter = fake_total_counter("bar#{subclass_info[:suffix]}")
+            new_numerator_counter = fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator])
+
+            fake_total_counter("bar#{subclass_info[:suffix]}", ':')
+            fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator], ':')
+
+            described_class.new(:bar).initialize_counters([{ hello: :world }])
+
+            expect(new_total_counter).not_to have_received(:get)
+            expect(new_numerator_counter).not_to have_received(:get)
+          end
+        end
       end
 
       describe "#increment" do
         let!(:sli) { described_class.new(:heyo) }
         let!(:total_counter) { fake_total_counter("heyo#{subclass_info[:suffix]}") }
         let!(:numerator_counter) { fake_numerator_counter("heyo#{subclass_info[:suffix]}", subclass_info[:numerator]) }
+        let!(:legacy_total_counter) { fake_total_counter("heyo#{subclass_info[:suffix]}", ':') }
+        let!(:legacy_numerator_counter) do
+          fake_numerator_counter("heyo#{subclass_info[:suffix]}", subclass_info[:numerator], ':')
+        end
 
         it "increments both counters for labels when #{subclass_info[:numerator]} is true" do
           sli.increment(labels: { hello: "world" }, subclass_info[:numerator] => true)
 
           expect(total_counter).to have_received(:increment).with({ hello: 'world' })
           expect(numerator_counter).to have_received(:increment).with({ hello: 'world' })
+          expect(legacy_total_counter).to have_received(:increment).with({ hello: 'world' })
+          expect(legacy_numerator_counter).to have_received(:increment).with({ hello: 'world' })
         end
 
         it "only increments the total counters for labels when #{subclass_info[:numerator]} is false" do
@@ -157,6 +196,31 @@ RSpec.describe Gitlab::Metrics::Sli do
 
           expect(total_counter).to have_received(:increment).with({ hello: 'world' })
           expect(numerator_counter).not_to have_received(:increment).with({ hello: 'world' })
+          expect(legacy_total_counter).to have_received(:increment).with({ hello: 'world' })
+          expect(legacy_numerator_counter).not_to have_received(:increment).with({ hello: 'world' })
+        end
+
+        context 'when `gitlab_sli_new_counters` is disabled' do
+          before do
+            stub_feature_flags(gitlab_sli_new_counters: false)
+          end
+
+          it 'does increment new counters', :aggregate_failures do
+            new_total_counter = fake_total_counter("bar#{subclass_info[:suffix]}")
+            new_numerator_counter = fake_numerator_counter("bar#{subclass_info[:suffix]}", subclass_info[:numerator])
+
+            legacy_total_counter = fake_total_counter("bar#{subclass_info[:suffix]}", ':')
+            legacy_numerator_counter = fake_numerator_counter(
+              "bar#{subclass_info[:suffix]}", subclass_info[:numerator], ':'
+            )
+
+            described_class.new(:bar).increment(labels: { hello: 'world' }, subclass_info[:numerator] => true)
+
+            expect(new_total_counter).not_to have_received(:increment)
+            expect(new_numerator_counter).not_to have_received(:increment)
+            expect(legacy_total_counter).to have_received(:increment)
+            expect(legacy_numerator_counter).to have_received(:increment)
+          end
         end
       end
     end
@@ -172,11 +236,11 @@ RSpec.describe Gitlab::Metrics::Sli do
     fake_counter
   end
 
-  def fake_total_counter(name)
-    fake_prometheus_counter("gitlab_sli:#{name}:total")
+  def fake_total_counter(name, separator = '_')
+    fake_prometheus_counter(['gitlab_sli', name, 'total'].join(separator))
   end
 
-  def fake_numerator_counter(name, numerator_name)
-    fake_prometheus_counter("gitlab_sli:#{name}:#{numerator_name}_total")
+  def fake_numerator_counter(name, numerator_name, separator = '_')
+    fake_prometheus_counter(["gitlab_sli", name, "#{numerator_name}_total"].join(separator))
   end
 end

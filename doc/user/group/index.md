@@ -628,8 +628,8 @@ You should consider some security implications before configuring IP address res
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users may still see some events from the IP restricted groups and projects on their dashboard. Activity may include
   push, merge, issue, or comment events.
-- IP access restrictions for Git operations via SSH are supported only on **(PREMIUM SAAS)**
-  and higher tiers. IP access restrictions applied to self-managed instances block SSH completely.
+- IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
+  IP access restrictions applied to self-managed instances block SSH completely.
 
 ### Restrict group access by IP address
 

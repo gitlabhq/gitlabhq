@@ -268,7 +268,7 @@ gem 'sanitize', '~> 6.0'
 gem 'babosa', '~> 1.0.4'
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.2'
+gem 'loofah', '~> 2.18.0'
 
 # Working with license
 gem 'licensee', '~> 9.14.1'
@@ -344,7 +344,7 @@ gem 'prometheus-client-mmap', '~> 0.15.0', require: 'prometheus/client'
 gem 'warning', '~> 1.2.0'
 
 group :development do
-  gem 'lefthook', '~> 1.0.1', require: false
+  gem 'lefthook', '~> 1.0.0', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.44.3', require: false
 

@@ -17,7 +17,7 @@ following levels are recognized:
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`) - Only valid to set for groups
+- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
 
 ## List access requests for a group or project
 

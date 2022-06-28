@@ -660,6 +660,7 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/yaml_optimizat
 | `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |
 | `code-qa-patterns`           | Combination of `code-patterns` and `qa-patterns`.                        |
 | `code-backstage-qa-patterns` | Combination of `code-patterns`, `backstage-patterns`, and `qa-patterns`. |
+| `static-analysis-patterns`   | Only create jobs for Static Analytics configuration-related changes.     |
 
 ## Performance
 

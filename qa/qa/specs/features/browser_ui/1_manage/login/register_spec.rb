@@ -86,7 +86,10 @@ module QA
           end
 
           after do
-            @recreated_user&.remove_via_api!
+            if @recreated_user
+              @recreated_user.api_client = admin_api_client
+              @recreated_user.remove_via_api!
+            end
           end
 
           def admin_api_client

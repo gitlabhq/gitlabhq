@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-return-assign, @gitlab/require-i18n-strings */
+/* eslint-disable func-names, no-return-assign, @gitlab/require-i18n-strings */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -6,9 +6,9 @@ import RefSelectDropdown from './ref_select_dropdown';
 export default class NewBranchForm {
   constructor(form, availableRefs) {
     this.validate = this.validate.bind(this);
-    this.branchNameError = form.find('.js-branch-name-error');
-    this.name = form.find('.js-branch-name');
-    this.ref = form.find('#ref');
+    this.branchNameError = form.querySelector('.js-branch-name-error');
+    this.name = form.querySelector('.js-branch-name');
+    this.ref = form.querySelector('#ref');
     new RefSelectDropdown($('.js-branch-select'), availableRefs); // eslint-disable-line no-new
     this.setupRestrictions();
     this.addBinding();
@@ -16,12 +16,13 @@ export default class NewBranchForm {
   }
 
   addBinding() {
-    return this.name.on('blur', this.validate);
+    this.name.addEventListener('blur', this.validate);
   }
 
   init() {
-    if (this.name.length && this.name.val().length > 0) {
-      return this.name.trigger('blur');
+    if (this.name != null && this.name.value.length > 0) {
+      const event = new CustomEvent('blur');
+      this.name.dispatchEvent(event);
     }
   }
 
@@ -52,7 +53,7 @@ export default class NewBranchForm {
   validate() {
     const { indexOf } = [];
 
-    this.branchNameError.empty();
+    this.branchNameError.innerHTML = '';
     const unique = function (values, value) {
       if (indexOf.call(values, value) === -1) {
         values.push(value);
@@ -73,7 +74,7 @@ export default class NewBranchForm {
       return `${restriction.prefix} ${formatted.join(restriction.conjunction)}`;
     };
     const validator = (errors, restriction) => {
-      const matched = this.name.val().match(restriction.pattern);
+      const matched = this.name.value.match(restriction.pattern);
       if (matched) {
         return errors.concat(formatter(matched.reduce(unique, []), restriction));
       }
@@ -81,8 +82,7 @@ export default class NewBranchForm {
     };
     const errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {
-      const errorMessage = $('<span/>').text(errors.join(', '));
-      return this.branchNameError.append(errorMessage);
+      this.branchNameError.textContent = errors.join(', ');
     }
   }
 }

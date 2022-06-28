@@ -39,9 +39,5 @@ module Ci
     def suite_error
       tests.dig("suite_error")
     end
-
-    def tests_total
-      [tests_success, tests_failed, tests_errored, tests_skipped].sum
-    end
   end
 end

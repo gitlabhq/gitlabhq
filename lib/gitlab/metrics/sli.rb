@@ -48,14 +48,24 @@ module Gitlab
         # This module is effectively an abstract class
         @initialized_with_combinations = possible_label_combinations.any? # rubocop:disable Gitlab/ModuleWithInstanceVariables
         possible_label_combinations.each do |label_combination|
-          total_counter.get(label_combination)
-          numerator_counter.get(label_combination)
+          legacy_total_counter.get(label_combination)
+          legacy_numerator_counter.get(label_combination)
+
+          if ::Feature.enabled?(:gitlab_sli_new_counters)
+            total_counter.get(label_combination)
+            numerator_counter.get(label_combination)
+          end
         end
       end
 
       def increment(labels:, increment_numerator:)
-        total_counter.increment(labels)
-        numerator_counter.increment(labels) if increment_numerator
+        legacy_total_counter.increment(labels)
+        legacy_numerator_counter.increment(labels) if increment_numerator
+
+        if ::Feature.enabled?(:gitlab_sli_new_counters)
+          total_counter.increment(labels)
+          numerator_counter.increment(labels) if increment_numerator
+        end
       end
 
       def initialized?
@@ -65,7 +75,11 @@ module Gitlab
       private
 
       def total_counter
-        prometheus.counter(counter_name('total'), "Total number of measurements for #{name}")
+        prometheus.counter(counter_name('total', '_'), "Total number of measurements for #{name}")
+      end
+
+      def legacy_total_counter
+        prometheus.counter(counter_name('total', ':'), "Total number of measurements for #{name}")
       end
 
       def prometheus
@@ -81,12 +95,16 @@ module Gitlab
 
         private
 
-        def counter_name(suffix)
-          :"#{COUNTER_PREFIX}:#{name}_apdex:#{suffix}"
+        def counter_name(suffix, separator)
+          [COUNTER_PREFIX, "#{name}_apdex", suffix].join(separator).to_sym
         end
 
         def numerator_counter
-          prometheus.counter(counter_name('success_total'), "Number of successful measurements for #{name}")
+          prometheus.counter(counter_name('success_total', '_'), "Number of successful measurements for #{name}")
+        end
+
+        def legacy_numerator_counter
+          prometheus.counter(counter_name('success_total', ':'), "Legacy number of successful measurements for #{name}")
         end
       end
 
@@ -99,12 +117,16 @@ module Gitlab
 
         private
 
-        def counter_name(suffix)
-          :"#{COUNTER_PREFIX}:#{name}:#{suffix}"
+        def counter_name(suffix, separator)
+          [COUNTER_PREFIX, name, suffix].join(separator).to_sym
         end
 
         def numerator_counter
-          prometheus.counter(counter_name('error_total'), "Number of error measurements for #{name}")
+          prometheus.counter(counter_name('error_total', '_'), "Number of error measurements for #{name}")
+        end
+
+        def legacy_numerator_counter
+          prometheus.counter(counter_name('error_total', ':'), "Number of error measurements for #{name}")
         end
       end
     end

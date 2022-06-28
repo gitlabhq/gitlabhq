@@ -10,6 +10,7 @@ module QA
       end
 
       def self.set_token_for_username(username, token)
+        QA::Runtime::Logger.info(%Q[Caching token for username: #{username}, last six chars of token:#{token[-6..]}])
         @personal_access_tokens[username] = token
       end
     end

@@ -30,7 +30,7 @@ module QA
                      fabricate!
                    end
 
-        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token)
+        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token) if @user
         resource
       end
 
