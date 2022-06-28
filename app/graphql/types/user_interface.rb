@@ -88,7 +88,7 @@ module Types
           null: true,
           description: 'Personal namespace of the user.'
 
-    field :todos, resolver: Resolvers::TodoResolver, description: 'To-do items of the user.'
+    field :todos, resolver: Resolvers::TodosResolver, description: 'To-do items of the user.'
 
     # Merge request field: MRs can be authored, assigned, or assigned-for-review:
     field :authored_merge_requests,

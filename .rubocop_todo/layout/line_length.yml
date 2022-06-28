@@ -4583,7 +4583,7 @@ Layout/LineLength:
     - 'spec/graphql/resolvers/projects/jira_projects_resolver_spec.rb'
     - 'spec/graphql/resolvers/releases_resolver_spec.rb'
     - 'spec/graphql/resolvers/snippets_resolver_spec.rb'
-    - 'spec/graphql/resolvers/todo_resolver_spec.rb'
+    - 'spec/graphql/resolvers/todos_resolver_spec.rb'
     - 'spec/graphql/resolvers/user_discussions_count_resolver_spec.rb'
     - 'spec/graphql/resolvers/users/group_count_resolver_spec.rb'
     - 'spec/graphql/resolvers/users/groups_resolver_spec.rb'

@@ -24,6 +24,7 @@ module QA
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.project = project
           merge_request.title = merge_request_title
+          merge_request.assignee = 'me'
           merge_request.description = merge_request_description
         end
 
@@ -53,6 +54,7 @@ module QA
           merge_request.description = merge_request_description
           merge_request.project = project
           merge_request.milestone = milestone
+          merge_request.assignee = 'me'
           merge_request.labels.push(label)
         end
 

@@ -116,7 +116,7 @@ module Types
             null: true,
             description: 'Runbook for the alert as defined in alert details.'
 
-      field :todos, description: 'To-do items of the current user for the alert.', resolver: Resolvers::TodoResolver
+      field :todos, description: 'To-do items of the current user for the alert.', resolver: Resolvers::TodosResolver
 
       field :details_url,
             GraphQL::Types::String,

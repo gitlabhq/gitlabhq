@@ -1,52 +1,59 @@
-import { GlLink, GlTokenSelector } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlLink, GlTokenSelector, GlSkeletonLoader } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import localUpdateWorkItemMutation from '~/work_items/graphql/local_update_work_item.mutation.graphql';
+import { i18n } from '~/work_items/constants';
+import { temporaryConfig, resolvers } from '~/work_items/graphql/provider';
+import { projectMembersResponse, mockAssignees, workItemQueryResponse } from '../mock_data';
 
-const mockAssignees = [
-  {
-    __typename: 'UserCore',
-    id: 'gid://gitlab/User/1',
-    avatarUrl: '',
-    webUrl: '',
-    name: 'John Doe',
-    username: 'doe_I',
-  },
-  {
-    __typename: 'UserCore',
-    id: 'gid://gitlab/User/2',
-    avatarUrl: '',
-    webUrl: '',
-    name: 'Marcus Rutherford',
-    username: 'ruthfull',
-  },
-];
+Vue.use(VueApollo);
 
 const workItemId = 'gid://gitlab/WorkItem/1';
-
-const mutate = jest.fn();
 
 describe('WorkItemAssignees component', () => {
   let wrapper;
 
   const findAssigneeLinks = () => wrapper.findAllComponents(GlLink);
   const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const findEmptyState = () => wrapper.findByTestId('empty-state');
 
-  const createComponent = ({ assignees = mockAssignees } = {}) => {
+  const successSearchQueryHandler = jest.fn().mockResolvedValue(projectMembersResponse);
+  const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
+
+  const createComponent = ({
+    assignees = mockAssignees,
+    searchQueryHandler = successSearchQueryHandler,
+  } = {}) => {
+    const apolloProvider = createMockApollo([[userSearchQuery, searchQueryHandler]], resolvers, {
+      typePolicies: temporaryConfig.cacheConfig.typePolicies,
+    });
+
+    apolloProvider.clients.defaultClient.writeQuery({
+      query: workItemQuery,
+      variables: {
+        id: workItemId,
+      },
+      data: workItemQueryResponse.data,
+    });
+
     wrapper = mountExtended(WorkItemAssignees, {
+      provide: {
+        fullPath: 'test-project-path',
+      },
       propsData: {
         assignees,
         workItemId,
       },
-      mocks: {
-        $apollo: {
-          mutate,
-        },
-      },
       attachTo: document.body,
+      apolloProvider,
     });
   };
 
@@ -54,40 +61,114 @@ describe('WorkItemAssignees component', () => {
     wrapper.destroy();
   });
 
-  it('should pass the correct data-user-id attribute', () => {
+  it('passes the correct data-user-id attribute', () => {
     createComponent();
 
     expect(findAssigneeLinks().at(0).attributes('data-user-id')).toBe('1');
   });
 
-  describe('when there are assignees', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+  it('focuses token selector on token selector input event', async () => {
+    createComponent();
+    findTokenSelector().vm.$emit('input', [mockAssignees[0]]);
+    await nextTick();
 
-    it('should focus token selector on token removal', async () => {
-      findTokenSelector().vm.$emit('token-remove', mockAssignees[0].id);
-      await nextTick();
+    expect(findEmptyState().exists()).toBe(false);
+    expect(findTokenSelector().element.contains(document.activeElement)).toBe(true);
+  });
 
-      expect(findEmptyState().exists()).toBe(false);
-      expect(findTokenSelector().element.contains(document.activeElement)).toBe(true);
-    });
+  it('calls a mutation on clicking outside the token selector', async () => {
+    createComponent();
+    findTokenSelector().vm.$emit('input', [mockAssignees[0]]);
+    findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+    await waitForPromises();
 
-    it('should call a mutation on clicking outside the token selector', async () => {
-      findTokenSelector().vm.$emit('input', [mockAssignees[0]]);
-      findTokenSelector().vm.$emit('token-remove');
-      await nextTick();
-      expect(mutate).not.toHaveBeenCalled();
+    expect(findTokenSelector().props('selectedTokens')).toEqual([mockAssignees[0]]);
+  });
 
-      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
-      await nextTick();
+  it('does not start user search by default', () => {
+    createComponent();
 
-      expect(mutate).toHaveBeenCalledWith({
-        mutation: localUpdateWorkItemMutation,
-        variables: {
-          input: { id: workItemId, assigneeIds: [mockAssignees[0].id] },
-        },
-      });
-    });
+    expect(findTokenSelector().props('loading')).toBe(false);
+    expect(findTokenSelector().props('dropdownItems')).toEqual([]);
+  });
+
+  it('starts user search on hovering for more than 250ms', async () => {
+    createComponent();
+    findTokenSelector().trigger('mouseover');
+    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    await nextTick();
+
+    expect(findTokenSelector().props('loading')).toBe(true);
+  });
+
+  it('starts user search on focusing token selector', async () => {
+    createComponent();
+    findTokenSelector().vm.$emit('focus');
+    await nextTick();
+
+    expect(findTokenSelector().props('loading')).toBe(true);
+  });
+
+  it('does not start searching if token-selector was hovered for less than 250ms', async () => {
+    createComponent();
+    findTokenSelector().trigger('mouseover');
+    jest.advanceTimersByTime(100);
+    await nextTick();
+
+    expect(findTokenSelector().props('loading')).toBe(false);
+  });
+
+  it('does not start searching if cursor was moved out from token selector before 250ms passed', async () => {
+    createComponent();
+    findTokenSelector().trigger('mouseover');
+    jest.advanceTimersByTime(100);
+
+    findTokenSelector().trigger('mouseout');
+    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    await nextTick();
+
+    expect(findTokenSelector().props('loading')).toBe(false);
+  });
+
+  it('shows skeleton loader on dropdown when loading users', async () => {
+    createComponent();
+    findTokenSelector().vm.$emit('focus');
+    await nextTick();
+
+    expect(findSkeletonLoader().exists()).toBe(true);
+  });
+
+  it('shows correct user list in dropdown when loaded', async () => {
+    createComponent();
+    findTokenSelector().vm.$emit('focus');
+    await nextTick();
+
+    expect(findSkeletonLoader().exists()).toBe(true);
+
+    await waitForPromises();
+
+    expect(findSkeletonLoader().exists()).toBe(false);
+    expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
+  });
+
+  it('emits error event if search users query fails', async () => {
+    createComponent({ searchQueryHandler: errorHandler });
+    findTokenSelector().vm.$emit('focus');
+    await waitForPromises();
+
+    expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
+  });
+
+  it('should search for users with correct key after text input', async () => {
+    const searchKey = 'Hello';
+
+    createComponent();
+    findTokenSelector().vm.$emit('focus');
+    findTokenSelector().vm.$emit('text-input', searchKey);
+    await waitForPromises();
+
+    expect(successSearchQueryHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ search: searchKey }),
+    );
   });
 });

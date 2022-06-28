@@ -2,12 +2,9 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import JobCell from '~/jobs/components/table/cells/job_cell.vue';
-import { mockJobsInTable } from '../../../mock_data';
+import { mockJobsInTable, mockJobsAsGuestInTable } from '../../../mock_data';
 
-const mockJob = mockJobsInTable[0];
-const mockJobCreatedByTag = mockJobsInTable[1];
-const mockJobLimitedAccess = mockJobsInTable[2];
-const mockStuckJob = mockJobsInTable[3];
+const getMockJob = (name) => mockJobsInTable.find((job) => job.name === name);
 
 describe('Job Cell', () => {
   let wrapper;
@@ -22,6 +19,8 @@ describe('Job Cell', () => {
   const findAllTagBadges = () => wrapper.findAllByTestId('job-tag-badge');
 
   const findBadgeById = (id) => wrapper.findByTestId(id);
+
+  const mockJob = getMockJob('build');
 
   const createComponent = (jobData = mockJob) => {
     wrapper = extendedWrapper(
@@ -49,9 +48,11 @@ describe('Job Cell', () => {
     });
 
     it('display the job id with no link', () => {
-      createComponent(mockJobLimitedAccess);
+      const mockJobAsGuest = mockJobsAsGuestInTable[0];
 
-      const expectedJobId = `#${getIdFromGraphQLId(mockJobLimitedAccess.id)}`;
+      createComponent(mockJobAsGuest);
+
+      const expectedJobId = `#${getIdFromGraphQLId(mockJobAsGuest.id)}`;
 
       expect(findJobIdNoLink().text()).toBe(expectedJobId);
       expect(findJobIdNoLink().exists()).toBe(true);
@@ -75,7 +76,7 @@ describe('Job Cell', () => {
     });
 
     it('displays label icon when job is created by a tag', () => {
-      createComponent(mockJobCreatedByTag);
+      createComponent(getMockJob('created_by_tag'));
 
       expect(findLabelIcon().exists()).toBe(true);
       expect(findForkIcon().exists()).toBe(false);
@@ -131,7 +132,7 @@ describe('Job Cell', () => {
     });
 
     it('stuck icon is shown if job is stuck', () => {
-      createComponent(mockStuckJob);
+      createComponent(getMockJob('stuck'));
 
       expect(findStuckIcon().exists()).toBe(true);
       expect(findStuckIcon().attributes('name')).toBe('warning');

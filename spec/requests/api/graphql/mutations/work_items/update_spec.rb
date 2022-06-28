@@ -11,8 +11,17 @@ RSpec.describe 'Update a work item' do
 
   let(:work_item_event) { 'CLOSE' }
   let(:input) { { 'stateEvent' => work_item_event, 'title' => 'updated title' } }
+  let(:fields) do
+    <<~FIELDS
+    workItem {
+      state
+      title
+    }
+    errors
+    FIELDS
+  end
 
-  let(:mutation) { graphql_mutation(:workItemUpdate, input.merge('id' => work_item.to_global_id.to_s)) }
+  let(:mutation) { graphql_mutation(:workItemUpdate, input.merge('id' => work_item.to_global_id.to_s), fields) }
 
   let(:mutation_response) { graphql_mutation_response(:work_item_update) }
 
@@ -78,6 +87,30 @@ RSpec.describe 'Update a work item' do
         end.to not_change(work_item, :title)
 
         expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
+      end
+    end
+
+    context 'with description widget input' do
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          description
+          widgets {
+            type
+            ... on WorkItemWidgetDescription {
+                    description
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      it_behaves_like 'update work item description widget' do
+        let(:new_description) { 'updated description' }
+        let(:input) do
+          { 'descriptionWidget' => { 'description' => new_description } }
+        end
       end
     end
   end

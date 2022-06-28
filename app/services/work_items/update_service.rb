@@ -6,6 +6,7 @@ module WorkItems
       super(project: project, current_user: current_user, params: params, spam_params: nil)
 
       @widget_params = widget_params
+      @widget_services = {}
     end
 
     private
@@ -24,8 +25,20 @@ module WorkItems
 
     def execute_widgets(work_item:, callback:)
       work_item.widgets.each do |widget|
-        widget.try(callback, params: @widget_params[widget.class.api_symbol])
+        widget_service(widget).try(callback, params: @widget_params[widget.class.api_symbol])
       end
+    end
+
+    def widget_service(widget)
+      service_class = begin
+        "WorkItems::Widgets::#{widget.type.capitalize}Service::UpdateService".constantize
+      rescue NameError
+        nil
+      end
+
+      return unless service_class
+
+      @widget_services[widget] ||= service_class.new(widget: widget, current_user: current_user)
     end
   end
 end

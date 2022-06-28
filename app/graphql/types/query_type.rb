@@ -136,6 +136,10 @@ module Types
           null: true,
           resolver: Resolvers::BoardListResolver
 
+    field :todo,
+          null: true,
+          resolver: Resolvers::TodoResolver
+
     field :topics, Types::Projects::TopicType.connection_type,
           null: true,
           resolver: Resolvers::TopicsResolver,

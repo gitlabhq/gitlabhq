@@ -8,7 +8,7 @@ exports[`self monitor component When the self monitor project has not been creat
     class="settings-header"
   >
     <h4
-      class="js-section-header"
+      class="js-section-header settings-title js-settings-toggle js-settings-toggle-trigger-only"
     >
       
       Self monitoring

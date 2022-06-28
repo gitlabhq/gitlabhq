@@ -23,7 +23,7 @@ extend type WorkItem {
 
 type LocalWorkItemAssigneesInput {
   id: WorkItemID!
-  assigneeIds: [ID!]
+  assignees: [UserCore!]
 }
 
 type LocalWorkItemPayload {

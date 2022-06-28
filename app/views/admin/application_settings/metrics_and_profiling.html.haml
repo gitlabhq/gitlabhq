@@ -6,7 +6,7 @@
 
 %section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Metrics - Prometheus')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -17,7 +17,7 @@
 
 %section.settings.as-grafana.no-animate#js-grafana-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Metrics - Grafana')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -30,7 +30,7 @@
 
 %section.settings.as-performance-bar.no-animate#js-performance-bar-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'performance_bar_settings_content' } }
   .settings-header
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Profiling - Performance bar')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -44,7 +44,7 @@
 
 %section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'usage_statistics_settings_content' } }
   .settings-header#usage-statistics
-    %h4
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Usage statistics')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
@@ -56,7 +56,7 @@
 - if Feature.enabled?(:configure_sentry_in_application_settings)
   %section.settings.as-sentry.no-animate#js-sentry-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sentry_settings_content' } }
     .settings-header
-      %h4
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
         = _('Sentry')
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? _('Collapse') : _('Expand')

@@ -70,9 +70,7 @@ export const resolvers = {
         const assigneesWidget = draftData.workItem.mockWidgets.find(
           (widget) => widget.type === WIDGET_TYPE_ASSIGNEE,
         );
-        assigneesWidget.nodes = assigneesWidget.nodes.filter((assignee) =>
-          input.assigneeIds.includes(assignee.id),
-        );
+        assigneesWidget.nodes = [...input.assignees];
       });
 
       cache.writeQuery({

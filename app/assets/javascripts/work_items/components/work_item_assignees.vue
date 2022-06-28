@@ -1,10 +1,23 @@
 <script>
-import { GlTokenSelector, GlIcon, GlAvatar, GlLink } from '@gitlab/ui';
+import { GlTokenSelector, GlIcon, GlAvatar, GlLink, GlSkeletonLoader } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import { n__ } from '~/locale';
+import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
+import { i18n } from '../constants';
 
-function isClosingIcon(el) {
-  return el?.classList.contains('gl-token-close');
+function isTokenSelectorElement(el) {
+  return el?.classList.contains('gl-token-close') || el?.classList.contains('dropdown-item');
+}
+
+function addClass(el) {
+  return {
+    ...el,
+    class: 'gl-bg-transparent',
+  };
 }
 
 export default {
@@ -13,7 +26,10 @@ export default {
     GlIcon,
     GlAvatar,
     GlLink,
+    GlSkeletonLoader,
+    SidebarParticipant,
   },
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -27,44 +43,94 @@ export default {
   data() {
     return {
       isEditing: false,
-      localAssignees: this.assignees.map((assignee) => ({
-        ...assignee,
-        class: 'gl-bg-transparent!',
-      })),
+      searchStarted: false,
+      localAssignees: this.assignees.map(addClass),
+      searchKey: '',
+      searchUsers: [],
     };
   },
-  computed: {
-    assigneeIds() {
-      return this.localAssignees.map((assignee) => assignee.id);
+  apollo: {
+    searchUsers: {
+      query() {
+        return userSearchQuery;
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          search: this.searchKey,
+        };
+      },
+      skip() {
+        return !this.searchStarted;
+      },
+      update(data) {
+        return data.workspace?.users?.nodes.map((node) => addClass({ ...node, ...node.user }));
+      },
+      error() {
+        this.$emit('error', i18n.fetchError);
+      },
     },
+  },
+  computed: {
     assigneeListEmpty() {
       return this.assignees.length === 0;
     },
     containerClass() {
       return !this.isEditing ? 'gl-shadow-none! gl-bg-transparent!' : '';
     },
+    isLoading() {
+      return this.$apollo.queries.searchUsers.loading;
+    },
+    assigneeText() {
+      return n__('WorkItem|Assignee', 'WorkItem|Assignees', this.localAssignees.length);
+    },
+  },
+  watch: {
+    assignees(newVal) {
+      if (!this.isEditing) {
+        this.localAssignees = newVal.map(addClass);
+      }
+    },
+  },
+  created() {
+    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
     getUserId(id) {
       return getIdFromGraphQLId(id);
     },
     setAssignees(e) {
-      if (isClosingIcon(e.relatedTarget) || !this.isEditing) return;
+      if (isTokenSelectorElement(e.relatedTarget) || !this.isEditing) return;
       this.isEditing = false;
       this.$apollo.mutate({
         mutation: localUpdateWorkItemMutation,
         variables: {
           input: {
             id: this.workItemId,
-            assigneeIds: this.assigneeIds,
+            assignees: this.localAssignees,
           },
         },
       });
     },
-    async focusTokenSelector() {
+    handleFocus() {
       this.isEditing = true;
+      this.searchStarted = true;
+    },
+    async focusTokenSelector() {
+      this.handleFocus();
       await this.$nextTick();
       this.$refs.tokenSelector.focusTextInput();
+    },
+    handleMouseOver() {
+      this.timeout = setTimeout(() => {
+        this.searchStarted = true;
+      }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    },
+    handleMouseOut() {
+      clearTimeout(this.timeout);
+    },
+    setSearchKey(value) {
+      this.searchKey = value;
     },
   },
 };
@@ -73,17 +139,21 @@ export default {
 <template>
   <div class="gl-display-flex gl-mb-4 work-item-assignees gl-relative">
     <span class="gl-font-weight-bold gl-w-15 gl-pt-2" data-testid="assignees-title">{{
-      __('Assignee(s)')
+      assigneeText
     }}</span>
     <gl-token-selector
       ref="tokenSelector"
       v-model="localAssignees"
-      hide-dropdown-with-no-items
       :container-class="containerClass"
+      :dropdown-items="searchUsers"
+      :loading="isLoading"
       class="gl-w-full gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base"
-      @token-remove="focusTokenSelector"
-      @focus="isEditing = true"
+      @input="focusTokenSelector"
+      @text-input="debouncedSearchKeyUpdate"
+      @focus="handleFocus"
       @blur="setAssignees"
+      @mouseover.native="handleMouseOver"
+      @mouseout.native="handleMouseOut"
     >
       <template #empty-placeholder>
         <div
@@ -105,6 +175,17 @@ export default {
           <gl-avatar :size="24" :src="token.avatarUrl" />
           <span class="gl-pl-2">{{ token.name }}</span>
         </gl-link>
+      </template>
+      <template #dropdown-item-content="{ dropdownItem }">
+        <sidebar-participant :user="dropdownItem" />
+      </template>
+      <template #loading-content>
+        <gl-skeleton-loader :height="170">
+          <rect width="380" height="20" x="10" y="15" rx="4" />
+          <rect width="280" height="20" x="10" y="50" rx="4" />
+          <rect width="380" height="20" x="10" y="95" rx="4" />
+          <rect width="280" height="20" x="10" y="130" rx="4" />
+        </gl-skeleton-loader>
       </template>
     </gl-token-selector>
   </div>

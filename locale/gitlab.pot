@@ -43507,6 +43507,11 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to delete the work item? This action cannot be reversed."
 msgstr ""
 
+msgid "WorkItem|Assignee"
+msgid_plural "WorkItem|Assignees"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "WorkItem|Cancel"
 msgstr ""
 

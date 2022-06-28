@@ -102,3 +102,8 @@ To avoid this error, make sure you are using the latest stable version of Docker
 ## Lack of IPv6 support
 
 Due to the underlying [ZAProxy engine not supporting IPv6](https://github.com/zaproxy/zaproxy/issues/3705), DAST is unable to scan or crawl IPv6-based applications.
+
+## Additional insight into DAST scan activity
+
+For additional insight into what a DAST scan is doing at a given time, you may find it helpful to review
+the web server access logs for a DAST target endpoint during or following a scan.
