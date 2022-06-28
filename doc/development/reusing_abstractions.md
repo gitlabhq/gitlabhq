@@ -190,6 +190,10 @@ Everything in `app/finders`, typically used for retrieving data from a database.
 Finders can not reuse other finders in an attempt to better control the SQL
 queries they produce.
 
+Finders' `execute` method should return `ActiveRecord::Relation`. Exceptions
+can be added to `spec/support/finder_collection_allowlist.yml`.
+See [`#298771`](https://gitlab.com/gitlab-org/gitlab/-/issues/298771) for more details.
+
 ### Presenters
 
 Everything in `app/presenters`, used for exposing complex data to a Rails view,

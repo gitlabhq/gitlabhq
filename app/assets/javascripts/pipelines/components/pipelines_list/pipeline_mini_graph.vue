@@ -1,31 +1,59 @@
 <script>
-import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
+import { GlIcon } from '@gitlab/ui';
+import PipelineStages from '~/pipelines/components/pipelines_list/pipeline_stages.vue';
 /**
  * Renders the pipeline mini graph.
  */
 export default {
   components: {
-    PipelineStage,
+    GlIcon,
+    PipelineStages,
+    LinkedPipelinesMiniList: () =>
+      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
   },
+  arrowStyles: [
+    'arrow-icon gl-display-inline-block gl-mx-1 gl-text-gray-500 gl-vertical-align-middle!',
+  ],
   props: {
-    stages: {
+    downstreamPipelines: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
-    updateDropdown: {
+    isMergeTrain: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    pipelinePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    stages: {
+      type: Array,
+      required: true,
+      default: () => [],
     },
     stagesClass: {
       type: [Array, Object, String],
       required: false,
       default: '',
     },
-    isMergeTrain: {
+    updateDropdown: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    upstreamPipeline: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+  },
+  computed: {
+    hasDownstreamPipelines() {
+      return Boolean(this.downstreamPipelines.length);
     },
   },
   methods: {
@@ -36,19 +64,39 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="pipeline-mini-graph" class="gl-display-inline gl-vertical-align-middle">
-    <div
-      v-for="stage in stages"
-      :key="stage.name"
-      :class="stagesClass"
-      class="dropdown gl-display-inline-block gl-mr-2 gl-my-2 gl-vertical-align-middle stage-container"
-    >
-      <pipeline-stage
-        :stage="stage"
-        :update-dropdown="updateDropdown"
-        :is-merge-train="isMergeTrain"
-        @pipelineActionRequestComplete="onPipelineActionRequestComplete"
-      />
-    </div>
+  <div class="stage-cell" data-testid="pipeline-mini-graph">
+    <linked-pipelines-mini-list
+      v-if="upstreamPipeline"
+      :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+        upstreamPipeline,
+      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+      data-testid="pipeline-mini-graph-upstream"
+    />
+    <gl-icon
+      v-if="upstreamPipeline"
+      :class="$options.arrowStyles"
+      name="long-arrow"
+      data-testid="upstream-arrow-icon"
+    />
+    <pipeline-stages
+      :is-merge-train="isMergeTrain"
+      :stages="stages"
+      :update-dropdown="updateDropdown"
+      :stages-class="stagesClass"
+      data-testid="pipeline-stages"
+      @pipelineActionRequestComplete="onPipelineActionRequestComplete"
+    />
+    <gl-icon
+      v-if="hasDownstreamPipelines"
+      :class="$options.arrowStyles"
+      name="long-arrow"
+      data-testid="downstream-arrow-icon"
+    />
+    <linked-pipelines-mini-list
+      v-if="hasDownstreamPipelines"
+      :triggered="downstreamPipelines"
+      :pipeline-path="pipelinePath"
+      data-testid="pipeline-mini-graph-downstream"
+    />
   </div>
 </template>

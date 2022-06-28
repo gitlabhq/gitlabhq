@@ -344,6 +344,7 @@ after the limits change in January, 2021:
 | **GitLab Pages** requests (for a given **IP address**)                     |                               | **1000** requests per **50 seconds**    |
 | **GitLab Pages** requests (for a given **GitLab Pages domain**)            |                               | **5000** requests per **10 seconds**    |
 | **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute              |
+| **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw

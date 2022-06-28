@@ -1,0 +1,66 @@
+# Allow list for spec/support/finder_collection.rb
+
+# Permenant excludes
+# For example:
+# FooFinder  # Reason: It uses a memory backend
+
+# Temporary excludes (aka TODOs)
+# For example:
+# BarFinder  # See <ISSUE_URL>
+- AccessRequestsFinder
+- Admin::PlansFinder
+- Analytics::CycleAnalytics::StageFinder
+- ApplicationsFinder
+- Autocomplete::GroupFinder
+- Autocomplete::ProjectFinder
+- Autocomplete::UsersFinder
+- BilledUsersFinder
+- Boards::BoardsFinder
+- Boards::VisitsFinder
+- BranchesFinder
+- Ci::AuthJobFinder
+- Ci::CommitStatusesFinder
+- Ci::DailyBuildGroupReportResultsFinder
+- ClusterAncestorsFinder
+- Clusters::AgentAuthorizationsFinder
+- Clusters::KubernetesNamespaceFinder
+- ComplianceManagement::MergeRequests::ComplianceViolationsFinder
+- ContainerRepositoriesFinder
+- ContextCommitsFinder
+- Environments::EnvironmentNamesFinder
+- Environments::EnvironmentsByDeploymentsFinder
+- EventsFinder
+- GroupDescendantsFinder
+- Groups::ProjectsRequiringAuthorizationsRefresh::OnDirectMembershipFinder
+- Groups::ProjectsRequiringAuthorizationsRefresh::OnTransferFinder
+- KeysFinder
+- LfsPointersFinder
+- LicenseTemplateFinder
+- MergeRequests::OldestPerCommitFinder
+- NotesFinder
+- Packages::BuildInfosFinder
+- Packages::Conan::PackageFileFinder
+- Packages::Go::ModuleFinder
+- Packages::Go::PackageFinder
+- Packages::Go::VersionFinder
+- Packages::PackageFileFinder
+- Packages::PackageFinder
+- Packages::Pypi::PackageFinder
+- Projects::Integrations::Jira::ByIdsFinder
+- Projects::Integrations::Jira::IssuesFinder
+- Releases::EvidencePipelineFinder
+- Repositories::BranchNamesFinder
+- Repositories::ChangelogTagFinder
+- Repositories::TreeFinder
+- Security::FindingsFinder
+- Security::PipelineVulnerabilitiesFinder
+- Security::ScanExecutionPoliciesFinder
+- Security::TrainingProviders::BaseUrlFinder
+- Security::TrainingUrlsFinder
+- SentryIssueFinder
+- ServerlessDomainFinder
+- TagsFinder
+- TemplateFinder
+- UploaderFinder
+- UserGroupNotificationSettingsFinder
+- UserGroupsCounter

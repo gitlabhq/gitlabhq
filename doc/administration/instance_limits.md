@@ -793,19 +793,9 @@ Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
 
-You can limit the number of inbound alerts for [incidents](../operations/incident_management/incidents.md)
-that can be created in a period of time. The inbound [incident management](../operations/incident_management/index.md)
-alert limit can help prevent overloading your incident responders by reducing the
-number of alerts or duplicate issues.
+This setting limits the number of inbound alert payloads over a period of time.
 
-To set inbound incident management alert limits:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > Network**.
-1. Expand General **Incident Management Limits**.
-1. Select the **Enable Incident Management inbound alert limit** checkbox.
-1. Optional. Input a custom value for **Maximum requests per project per rate limit period**. Default is 3600.
-1. Optional. Input a custom value for **Rate limit period**. Default is 3600 seconds.
+Read more about [incident management rate limits](../user/admin_area/settings/rate_limit_on_pipelines_creation.md).
 
 ### Prometheus Alert JSON payloads
 

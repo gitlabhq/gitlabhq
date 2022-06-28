@@ -6,6 +6,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import CommitBoxPipelineMiniGraph from '~/projects/commit_box/info/components/commit_box_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '~/projects/commit_box/info/graphql/queries/get_pipeline_stages.query.graphql';
 import { mockPipelineStagesQueryResponse, mockStages } from './mock_data';
@@ -17,9 +18,7 @@ Vue.use(VueApollo);
 describe('Commit box pipeline mini graph', () => {
   let wrapper;
 
-  const findMiniGraph = () => wrapper.findByTestId('commit-box-mini-graph');
-  const findUpstream = () => wrapper.findByTestId('commit-box-mini-graph-upstream');
-  const findDownstream = () => wrapper.findByTestId('commit-box-mini-graph-downstream');
+  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
 
   const stagesHandler = jest.fn().mockResolvedValue(mockPipelineStagesQueryResponse);
 
@@ -51,13 +50,16 @@ describe('Commit box pipeline mini graph', () => {
       await createComponent();
     });
 
-    it('should display the mini pipeine graph', () => {
-      expect(findMiniGraph().exists()).toBe(true);
+    it('should display the pipeline mini graph', () => {
+      expect(findPipelineMiniGraph().exists()).toBe(true);
     });
 
     it('should not display linked pipelines', () => {
-      expect(findUpstream().exists()).toBe(false);
-      expect(findDownstream().exists()).toBe(false);
+      const downstreamPipelines = findPipelineMiniGraph().props('downstreamPipelines');
+      const upstreamPipeline = findPipelineMiniGraph().props('upstreamPipeline');
+
+      expect(downstreamPipelines).toHaveLength(0);
+      expect(upstreamPipeline).toEqual(undefined);
     });
   });
 

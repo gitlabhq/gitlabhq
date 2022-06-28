@@ -167,14 +167,14 @@ RSpec.describe 'Projects > Settings > Repository settings' do
         expect(project.remote_mirrors.first.only_protected_branches).to eq(false)
       end
 
-      it 'creates a push mirror that only mirrors protected branches', :js do
+      it 'creates a push mirror that only mirrors protected branches', :js,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/337394' do
         find('#only_protected_branches').click
 
         expect(find('.js-mirror-protected-hidden', visible: false).value).to eq('1')
 
         fill_in 'url', with: 'ssh://user@localhost/project.git'
         select 'SSH public key', from: 'Authentication method'
-
         select_direction
 
         Sidekiq::Testing.fake! do
