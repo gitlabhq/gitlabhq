@@ -537,7 +537,7 @@ export default class AccessDropdown {
     return `
       <li>
         <a href="#" class="${isActiveClass}">
-          <strong>${key.title}</strong>
+          <strong>${escape(key.title)}</strong>
           <p>
             ${sprintf(
               __('Owned by %{image_tag}'),
