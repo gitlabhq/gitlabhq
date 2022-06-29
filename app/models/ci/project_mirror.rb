@@ -4,6 +4,8 @@ module Ci
   # This model represents a shadow table of the main database's projects table.
   # It allows us to navigate the project and namespace hierarchy on the ci database.
   class ProjectMirror < ApplicationRecord
+    include FromUnion
+
     belongs_to :project
 
     scope :by_namespace_id, -> (namespace_id) { where(namespace_id: namespace_id) }

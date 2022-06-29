@@ -359,7 +359,8 @@ and will be removed in [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
 
-List jobs that are being processed or were processed by specified runner.
+List jobs that are being processed or were processed by the specified runner. The list of jobs is limited
+to projects where the user has at least the Reporter role.
 
 ```plaintext
 GET /runners/:id/jobs
