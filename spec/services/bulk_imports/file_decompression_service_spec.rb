@@ -80,7 +80,8 @@ RSpec.describe BulkImports::FileDecompressionService do
       subject { described_class.new(tmpdir: tmpdir, filename: 'symlink.gz') }
 
       it 'raises an error and removes the file' do
-        expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid file')
+        expect { subject.execute }
+          .to raise_error(BulkImports::FileDecompressionService::ServiceError, 'File decompression error')
 
         expect(File.exist?(symlink)).to eq(false)
       end

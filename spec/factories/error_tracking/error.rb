@@ -13,7 +13,7 @@ FactoryBot.define do
     message { 'message' }
     culprit { 'culprit' }
     external_url { 'http://example.com/id' }
-    project_id { 'project1' }
+    project_id { '111111' }
     project_name { 'project name' }
     project_slug { 'project_name' }
     short_id { 'ID' }

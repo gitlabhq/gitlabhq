@@ -297,40 +297,54 @@ RSpec.describe Projects::ErrorTrackingController do
       put :update, params: issue_params(issue_id: issue_id, status: 'resolved', format: :json)
     end
 
-    before do
-      expect(ErrorTracking::IssueUpdateService)
-        .to receive(:new).with(project, user, permitted_params)
-        .and_return(issue_update_service)
-    end
-
     describe 'format json' do
-      context 'update result is successful' do
+      context 'when user is a reporter' do
         before do
-          expect(issue_update_service).to receive(:execute)
-            .and_return(status: :success, updated: true, closed_issue_iid: non_existing_record_iid)
-
-          update_issue
+          project.add_reporter(user)
         end
 
-        it 'returns a success' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('error_tracking/update_issue')
+        it 'returns 404 error' do
+          update_issue
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
-      context 'update result is erroneous' do
-        let(:error_message) { 'error message' }
-
+      context 'when user has access to update' do
         before do
-          expect(issue_update_service).to receive(:execute)
-            .and_return(status: :error, message: error_message)
-
-          update_issue
+          expect(ErrorTracking::IssueUpdateService)
+            .to receive(:new).with(project, user, permitted_params)
+            .and_return(issue_update_service)
         end
 
-        it 'returns 400 with message' do
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(error_message)
+        context 'when update result is successful' do
+          before do
+            expect(issue_update_service).to receive(:execute)
+              .and_return(status: :success, updated: true, closed_issue_iid: non_existing_record_iid)
+
+            update_issue
+          end
+
+          it 'returns a success' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('error_tracking/update_issue')
+          end
+        end
+
+        context 'update result is erroneous' do
+          let(:error_message) { 'error message' }
+
+          before do
+            expect(issue_update_service).to receive(:execute)
+              .and_return(status: :error, message: error_message)
+
+            update_issue
+          end
+
+          it 'returns 400 with message' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq(error_message)
+          end
         end
       end
     end
