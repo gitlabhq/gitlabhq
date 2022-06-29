@@ -9,11 +9,7 @@ import ItemTitle from '~/work_items/components/item_title.vue';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
-import {
-  projectWorkItemTypesQueryResponse,
-  createWorkItemMutationResponse,
-  createWorkItemFromTaskMutationResponse,
-} from '../mock_data';
+import { projectWorkItemTypesQueryResponse, createWorkItemMutationResponse } from '../mock_data';
 
 jest.mock('~/lib/utils/uuids', () => ({ uuids: () => ['testuuid'] }));
 
@@ -25,9 +21,6 @@ describe('Create work item component', () => {
 
   const querySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
-  const createWorkItemFromTaskSuccessHandler = jest
-    .fn()
-    .mockResolvedValue(createWorkItemFromTaskMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -119,49 +112,6 @@ describe('Create work item component', () => {
 
     it('does not add padding for content', () => {
       expect(findContent().classes('gl-px-5')).toBe(false);
-    });
-  });
-
-  describe('when displayed in a modal', () => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          isModal: true,
-        },
-        mutationHandler: createWorkItemFromTaskSuccessHandler,
-      });
-    });
-
-    it('emits `closeModal` event on Cancel button click', () => {
-      findCancelButton().vm.$emit('click');
-
-      expect(wrapper.emitted('closeModal')).toEqual([[]]);
-    });
-
-    it('emits `onCreate` on successful mutation', async () => {
-      findTitleInput().vm.$emit('title-input', 'Test title');
-
-      wrapper.find('form').trigger('submit');
-      await waitForPromises();
-
-      expect(wrapper.emitted('onCreate')).toEqual([['<p>New description</p>']]);
-    });
-
-    it('does not right margin for create button', () => {
-      expect(findCreateButton().classes()).not.toContain('gl-mr-3');
-    });
-
-    it('adds right margin for cancel button', () => {
-      expect(findCancelButton().classes()).toContain('gl-mr-3');
-    });
-
-    it('adds padding for content', () => {
-      expect(findContent().classes('gl-px-5')).toBe(true);
-    });
-
-    it('defaults type to `Task`', async () => {
-      await waitForPromises();
-      expect(findSelect().attributes('value')).toBe('gid://gitlab/WorkItems::Type/3');
     });
   });
 

@@ -137,17 +137,19 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-mb-4 work-item-assignees gl-relative">
-    <span class="gl-font-weight-bold gl-w-15 gl-pt-2" data-testid="assignees-title">{{
-      assigneeText
-    }}</span>
+  <div class="form-row gl-mb-5 work-item-assignees gl-relative">
+    <span
+      class="gl-font-weight-bold col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
+      data-testid="assignees-title"
+      >{{ assigneeText }}</span
+    >
     <gl-token-selector
       ref="tokenSelector"
       v-model="localAssignees"
       :container-class="containerClass"
+      class="gl-flex-grow-1 gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base col-9 gl-align-self-start"
       :dropdown-items="searchUsers"
       :loading="isLoading"
-      class="gl-w-full gl-border gl-border-white gl-hover-border-gray-200 gl-rounded-base"
       @input="focusTokenSelector"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"

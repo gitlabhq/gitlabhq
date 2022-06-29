@@ -13,7 +13,7 @@ export const i18n = {
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
 };
 
-export const DEFAULT_MODAL_TYPE = 'Task';
+export const TASK_TYPE_NAME = 'Task';
 
 export const WIDGET_TYPE_ASSIGNEE = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';

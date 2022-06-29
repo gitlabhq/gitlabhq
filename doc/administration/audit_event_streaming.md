@@ -146,10 +146,10 @@ Destination is deleted if:
 ## Custom HTTP header values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361216) in GitLab 15.1 [with a flag](feature_flags.md) named `streaming_audit_event_headers`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) in GitLab 15.2.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/362941) in GitLab 15.2.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `streaming_audit_event_headers`.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `streaming_audit_event_headers`.
 On GitLab.com, this feature is available.
 
 Each streaming destination can have up to 20 custom HTTP headers included with each streamed event.

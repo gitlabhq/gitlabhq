@@ -1,4 +1,11 @@
 PATH
+  remote: vendor/gems/ipynbdiff
+  specs:
+    ipynbdiff (0.4.7)
+      diffy (~> 3.3)
+      json (~> 2.5, >= 2.5.1)
+
+PATH
   remote: vendor/gems/mail-smtp_pool
   specs:
     mail-smtp_pool (0.1.0)
@@ -667,9 +674,6 @@ GEM
     invisible_captcha (1.1.0)
       rails (>= 4.2)
     ipaddress (0.8.3)
-    ipynbdiff (0.4.7)
-      diffy (~> 3.3)
-      json (~> 2.5, >= 2.5.1)
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
@@ -1575,7 +1579,7 @@ DEPENDENCIES
   icalendar
   invisible_captcha (~> 1.1.0)
   ipaddress (~> 0.8.3)
-  ipynbdiff (= 0.4.7)
+  ipynbdiff!
   jira-ruby (~> 2.1.4)
   js_regex (~> 3.7)
   json (~> 2.5.1)

@@ -101,7 +101,7 @@ export default {
 </script>
 
 <template>
-  <section>
+  <section class="gl-pt-5">
     <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
       {{ error }}
     </gl-alert>
@@ -113,6 +113,7 @@ export default {
       </gl-skeleton-loader>
     </div>
     <template v-else>
+      <div class="gl-font-weight-bold gl-text-secondary gl-mb-2">{{ workItemType }}</div>
       <div class="gl-display-flex gl-align-items-start">
         <work-item-title
           :work-item-id="workItem.id"
@@ -125,11 +126,16 @@ export default {
         <work-item-actions
           :work-item-id="workItem.id"
           :can-delete="canDelete"
-          class="gl-ml-auto gl-mt-6"
+          class="gl-mt-4"
           @deleteWorkItem="$emit('deleteWorkItem')"
           @error="error = $event"
         />
       </div>
+      <work-item-state
+        :work-item="workItem"
+        :work-item-parent-id="workItemParentId"
+        @error="error = $event"
+      />
       <template v-if="workItemsMvc2Enabled">
         <work-item-assignees
           v-if="workItemAssignees"
@@ -138,14 +144,10 @@ export default {
         />
         <work-item-weight v-if="workItemWeight" :weight="workItemWeight.weight" />
       </template>
-      <work-item-state
-        :work-item="workItem"
-        :work-item-parent-id="workItemParentId"
-        @error="error = $event"
-      />
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
+        class="gl-pt-5"
         @error="error = $event"
       />
     </template>

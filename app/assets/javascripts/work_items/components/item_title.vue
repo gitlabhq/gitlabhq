@@ -40,7 +40,7 @@ export default {
 
 <template>
   <h2
-    class="gl-font-weight-normal gl-sm-font-weight-bold gl-my-5 gl-w-full"
+    class="gl-font-weight-normal gl-sm-font-weight-bold gl-mb-5 gl-mt-0 gl-w-full"
     :class="{ 'gl-cursor-not-allowed': disabled }"
     aria-labelledby="item-title"
   >

@@ -19,8 +19,10 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasIssueWeightsFeature" class="gl-mb-5">
-    <span class="gl-display-inline-block gl-font-weight-bold gl-w-15">{{ __('Weight') }}</span>
-    {{ weightText }}
+  <div v-if="hasIssueWeightsFeature" class="gl-mb-5 form-row">
+    <span class="gl-font-weight-bold col-lg-2 col-3 gl-overflow-wrap-break">{{
+      __('Weight')
+    }}</span>
+    <span class="gl-ml-5">{{ weightText }}</span>
   </div>
 </template>

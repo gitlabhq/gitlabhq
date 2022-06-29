@@ -6214,6 +6214,12 @@ msgstr ""
 msgid "Billing|You can begin moving members in %{namespaceName} now. A member loses access to the group when you turn off %{strongStart}In a seat%{strongEnd}. If over 5 members have %{strongStart}In a seat%{strongEnd} enabled after June 22, 2022, we'll select the 5 members who maintain access. We'll first count members that have Owner and Maintainer roles, then the most recently active members until we reach 5 members. The remaining members will get a status of Over limit and lose access to the group."
 msgstr ""
 
+msgid "Billing|Your free group is now limited to %{free_user_limit} members"
+msgstr ""
+
+msgid "Billing|Your group recently changed to use the Free plan. Free groups are limited to %{free_user_limit} members and the remaining members will get a status of over-limit and lose access to the group. You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."
+msgstr ""
+
 msgid "Bitbucket Server Import"
 msgstr ""
 
@@ -43524,7 +43530,7 @@ msgstr ""
 msgid "WorkItem|Collapse child items"
 msgstr ""
 
-msgid "WorkItem|Convert to work item"
+msgid "WorkItem|Create task"
 msgstr ""
 
 msgid "WorkItem|Create work item"

@@ -140,13 +140,45 @@ export const createWorkItemFromTaskMutationResponse = {
       __typename: 'WorkItemCreateFromTaskPayload',
       errors: [],
       workItem: {
-        descriptionHtml: '<p>New description</p>',
-        id: 'gid://gitlab/WorkItem/13',
         __typename: 'WorkItem',
+        description: 'New description',
+        id: 'gid://gitlab/WorkItem/1',
+        title: 'Updated title',
+        state: 'OPEN',
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/5',
+          name: 'Task',
+        },
         userPermissions: {
           deleteWorkItem: false,
           updateWorkItem: false,
         },
+        widgets: [
+          {
+            __typename: 'WorkItemWidgetDescription',
+            type: 'DESCRIPTION',
+            description: 'New description',
+            descriptionHtml: '<p>New description</p>',
+          },
+        ],
+      },
+      newWorkItem: {
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/1000000',
+        title: 'Updated title',
+        state: 'OPEN',
+        description: '',
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/5',
+          name: 'Task',
+        },
+        userPermissions: {
+          deleteWorkItem: false,
+          updateWorkItem: false,
+        },
+        widgets: [],
       },
     },
   },

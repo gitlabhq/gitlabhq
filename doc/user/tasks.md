@@ -32,8 +32,7 @@ to work items and adding custom work item types, visit
 To create a task:
 
 1. In an issue description, create a [task list](markdown.md#task-lists).
-1. Hover over a task item and select **Convert to work item** (**{doc-new}**).
-1. Confirm or edit the title, and select **Create work item**.
+1. Hover over a task item and select **Create task** (**{doc-new}**).
 
 ## Edit a task
 

@@ -1,11 +1,5 @@
 <script>
-import {
-  GlSafeHtmlDirective as SafeHtml,
-  GlModal,
-  GlToast,
-  GlTooltip,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlSafeHtmlDirective as SafeHtml, GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
@@ -20,11 +14,16 @@ import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
 import TaskList from '~/task_list';
 import Tracking from '~/tracking';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
 
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
-import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
+import {
+  TRACKING_CATEGORY_SHOW,
+  TASK_TYPE_NAME,
+  WIDGET_TYPE_DESCRIPTION,
+} from '~/work_items/constants';
 import animateMixin from '../mixins/animate';
 import { convertDescriptionWithNewSort } from '../utils';
 
@@ -40,12 +39,11 @@ export default {
     GlModal: GlModalDirective,
   },
   components: {
-    GlModal,
-    CreateWorkItem,
     GlTooltip,
     WorkItemDetailModal,
   },
   mixins: [animateMixin, glFeatureFlagMixin(), Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     canUpdate: {
       type: Boolean,
@@ -103,6 +101,7 @@ export default {
       workItemId: isPositiveInteger(workItemId)
         ? convertToGraphQLId(TYPE_WORK_ITEM, workItemId)
         : undefined,
+      workItemTypes: [],
     };
   },
   apollo: {
@@ -117,10 +116,27 @@ export default {
         return !this.workItemId || !this.workItemsEnabled;
       },
     },
+    workItemTypes: {
+      query: projectWorkItemTypesQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data.workspace?.workItemTypes?.nodes;
+      },
+      skip() {
+        return !this.workItemsEnabled;
+      },
+    },
   },
   computed: {
     workItemsEnabled() {
       return this.glFeatures.workItems;
+    },
+    taskWorkItemType() {
+      return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
     },
     issueGid() {
       return this.issueId ? convertToGraphQLId(TYPE_WORK_ITEM, this.issueId) : null;
@@ -344,8 +360,8 @@ export default {
             <use href="${gon.sprite_icons}#doc-new"></use>
           </svg>
         `;
-        button.setAttribute('aria-label', s__('WorkItem|Convert to work item'));
-        button.addEventListener('click', () => this.openCreateTaskModal(button));
+        button.setAttribute('aria-label', s__('WorkItem|Create task'));
+        button.addEventListener('click', () => this.handleCreateTask(button));
         this.insertButtonNextToTaskText(item, button);
       });
     },
@@ -386,17 +402,11 @@ export default {
         lineNumberEnd: lineNumbers[1],
       };
     },
-    openCreateTaskModal(el) {
-      this.setActiveTask(el);
-      this.$refs.modal.show();
-    },
-    closeCreateTaskModal() {
-      this.$refs.modal.hide();
-    },
     openWorkItemDetailModal(el) {
       if (!el) {
         return;
       }
+
       this.setActiveTask(el);
       this.$refs.detailsModal.show();
     },
@@ -404,9 +414,54 @@ export default {
       this.workItemId = undefined;
       this.updateWorkItemIdUrlQuery(undefined);
     },
-    handleCreateTask(description) {
-      this.$emit('updateDescription', description);
-      this.closeCreateTaskModal();
+    async handleCreateTask(el) {
+      this.setActiveTask(el);
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: createWorkItemFromTaskMutation,
+          variables: {
+            input: {
+              id: this.issueGid,
+              workItemData: {
+                lockVersion: this.lockVersion,
+                title: this.activeTask.title,
+                lineNumberStart: Number(this.activeTask.lineNumberStart),
+                lineNumberEnd: Number(this.activeTask.lineNumberEnd),
+                workItemTypeId: this.taskWorkItemType,
+              },
+            },
+          },
+          update(store, { data: { workItemCreateFromTask } }) {
+            const { newWorkItem } = workItemCreateFromTask;
+
+            store.writeQuery({
+              query: workItemQuery,
+              variables: {
+                id: newWorkItem.id,
+              },
+              data: {
+                workItem: newWorkItem,
+              },
+            });
+          },
+        });
+
+        const { workItem, newWorkItem } = data.workItemCreateFromTask;
+
+        const updatedDescription = workItem?.widgets?.find(
+          (widget) => widget.type === WIDGET_TYPE_DESCRIPTION,
+        )?.descriptionHtml;
+
+        this.$emit('updateDescription', updatedDescription);
+        this.workItemId = newWorkItem.id;
+        this.openWorkItemDetailModal(el);
+      } catch (error) {
+        createFlash({
+          message: s__('WorkItem|Something went wrong when creating a work item. Please try again'),
+          error,
+          captureError: true,
+        });
+      }
     },
     handleDeleteTask(description) {
       this.$emit('updateDescription', description);
@@ -452,19 +507,6 @@ export default {
       data-testid="textarea"
     >
     </textarea>
-
-    <gl-modal ref="modal" size="lg" modal-id="create-task-modal" hide-footer body-class="gl-p-0!">
-      <create-work-item
-        is-modal
-        :initial-title="activeTask.title"
-        :issue-gid="issueGid"
-        :lock-version="lockVersion"
-        :line-number-start="activeTask.lineNumberStart"
-        :line-number-end="activeTask.lineNumberEnd"
-        @closeModal="closeCreateTaskModal"
-        @onCreate="handleCreateTask"
-      />
-    </gl-modal>
     <work-item-detail-modal
       ref="detailsModal"
       :can-update="canUpdate"
@@ -478,7 +520,7 @@ export default {
     />
     <template v-if="workItemsEnabled">
       <gl-tooltip v-for="item in taskButtons" :key="item" :target="item">
-        {{ s__('WorkItem|Convert to work item') }}
+        {{ s__('WorkItem|Create task') }}
       </gl-tooltip>
     </template>
   </div>

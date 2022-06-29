@@ -11520,7 +11520,7 @@ Represents an external resource to send audit events to.
 | ---- | ---- | ----------- |
 | <a id="externalauditeventdestinationdestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
 | <a id="externalauditeventdestinationgroup"></a>`group` | [`Group!`](#group) | Group the destination belongs to. |
-| <a id="externalauditeventdestinationheaders"></a>`headers` | [`AuditEventStreamingHeaderConnection!`](#auditeventstreamingheaderconnection) | List of additional HTTP headers sent with each event. Available only when feature flag `streaming_audit_event_headers` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
+| <a id="externalauditeventdestinationheaders"></a>`headers` | [`AuditEventStreamingHeaderConnection!`](#auditeventstreamingheaderconnection) | List of additional HTTP headers sent with each event. Available only when feature flag `streaming_audit_event_headers` is enabled. This flag is enabled by default. (see [Connections](#connections)) |
 | <a id="externalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="externalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 

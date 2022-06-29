@@ -6,7 +6,6 @@ import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import createWorkItemFromTaskMutation from '../graphql/create_work_item_from_task.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
-import { DEFAULT_MODAL_TYPE } from '../constants';
 
 import ItemTitle from '../components/item_title.vue';
 
@@ -24,11 +23,6 @@ export default {
   },
   inject: ['fullPath'],
   props: {
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     initialTitle: {
       type: String,
       required: false,
@@ -78,13 +72,6 @@ export default {
           text: node.name,
         }));
       },
-      result() {
-        if (!this.selectedWorkItemType && this.isModal) {
-          this.selectedWorkItemType = this.formOptions.find(
-            (options) => options.text === DEFAULT_MODAL_TYPE,
-          )?.value;
-        }
-      },
       error() {
         this.error = this.$options.fetchTypesErrorText;
       },
@@ -104,11 +91,7 @@ export default {
   methods: {
     async createWorkItem() {
       this.loading = true;
-      if (this.isModal) {
-        await this.createWorkItemFromTask();
-      } else {
-        await this.createStandaloneWorkItem();
-      }
+      await this.createStandaloneWorkItem();
       this.loading = false;
     },
     async createStandaloneWorkItem() {
@@ -174,11 +157,7 @@ export default {
       this.title = title;
     },
     handleCancelClick() {
-      if (!this.isModal) {
-        this.$router.go(-1);
-        return;
-      }
-      this.$emit('closeModal');
+      this.$router.go(-1);
     },
   },
 };
@@ -187,7 +166,7 @@ export default {
 <template>
   <form @submit.prevent="createWorkItem">
     <gl-alert v-if="error" variant="danger" @dismiss="error = null">{{ error }}</gl-alert>
-    <div :class="{ 'gl-px-5': isModal }" data-testid="content">
+    <div data-testid="content">
       <item-title :title="initialTitle" data-testid="title-input" @title-input="handleTitleInput" />
       <div>
         <gl-loading-icon
@@ -203,14 +182,11 @@ export default {
         />
       </div>
     </div>
-    <div
-      class="gl-bg-gray-10 gl-py-5 gl-px-6 gl-mt-4"
-      :class="{ 'gl-display-flex gl-justify-content-end': isModal }"
-    >
+    <div class="gl-bg-gray-10 gl-py-5 gl-px-6 gl-mt-4">
       <gl-button
         variant="confirm"
         :disabled="isButtonDisabled"
-        :class="{ 'gl-mr-3': !isModal }"
+        class="gl-mr-3"
         :loading="loading"
         data-testid="create-button"
         type="submit"
@@ -221,7 +197,6 @@ export default {
         type="button"
         data-testid="cancel-button"
         class="gl-order-n1"
-        :class="{ 'gl-mr-3': isModal }"
         @click="handleCancelClick"
       >
         {{ __('Cancel') }}

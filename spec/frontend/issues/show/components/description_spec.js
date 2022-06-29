@@ -15,10 +15,15 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Description from '~/issues/show/components/description.vue';
 import { updateHistory } from '~/lib/utils/url_utility';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_item_from_task.mutation.graphql';
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
+import {
+  projectWorkItemTypesQueryResponse,
+  createWorkItemFromTaskMutationResponse,
+} from 'jest/work_items/mock_data';
 import {
   descriptionProps as initialProps,
   descriptionHtmlWithCheckboxes,
@@ -46,6 +51,10 @@ const workItemQueryResponse = {
 };
 
 const queryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+const workItemTypesQueryHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+const createWorkItemFromTaskSuccessHandler = jest
+  .fn()
+  .mockResolvedValue(createWorkItemFromTaskMutationResponse);
 
 describe('Description component', () => {
   let wrapper;
@@ -60,18 +69,24 @@ describe('Description component', () => {
 
   const findTooltips = () => wrapper.findAllComponents(GlTooltip);
   const findModal = () => wrapper.findComponent(GlModal);
-  const findCreateWorkItem = () => wrapper.findComponent(CreateWorkItem);
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
 
-  function createComponent({ props = {}, provide = {} } = {}) {
+  function createComponent({ props = {}, provide } = {}) {
     wrapper = shallowMountExtended(Description, {
       propsData: {
         issueId: 1,
         ...initialProps,
         ...props,
       },
-      provide,
-      apolloProvider: createMockApollo([[workItemQuery, queryHandler]]),
+      provide: {
+        fullPath: 'gitlab-org/gitlab-test',
+        ...provide,
+      },
+      apolloProvider: createMockApollo([
+        [workItemQuery, queryHandler],
+        [workItemTypesQuery, workItemTypesQueryHandler],
+        [createWorkItemFromTaskMutation, createWorkItemFromTaskSuccessHandler],
+      ]),
       mocks: {
         $toast,
       },
@@ -299,24 +314,16 @@ describe('Description component', () => {
       });
 
       it('does not show a modal by default', () => {
-        expect(findModal().props('visible')).toBe(false);
+        expect(findModal().exists()).toBe(false);
       });
 
-      it('opens a modal when a button is clicked and displays correct title', async () => {
-        await findConvertToTaskButton().trigger('click');
-        expect(findCreateWorkItem().props('initialTitle').trim()).toBe('todo 1');
-      });
-
-      it('closes the modal on `closeCreateTaskModal` event', async () => {
-        await findConvertToTaskButton().trigger('click');
-        findCreateWorkItem().vm.$emit('closeModal');
-        expect(hideModal).toHaveBeenCalled();
-      });
-
-      it('emits `updateDescription` on `onCreate` event', () => {
+      it('emits `updateDescription` after creating new work item', async () => {
         const newDescription = `<p>New description</p>`;
-        findCreateWorkItem().vm.$emit('onCreate', newDescription);
-        expect(hideModal).toHaveBeenCalled();
+
+        await findConvertToTaskButton().trigger('click');
+
+        await waitForPromises();
+
         expect(wrapper.emitted('updateDescription')).toEqual([[newDescription]]);
       });
 

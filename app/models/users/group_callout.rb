@@ -16,7 +16,8 @@ module Users
       storage_enforcement_banner_third_enforcement_threshold: 5,
       storage_enforcement_banner_fourth_enforcement_threshold: 6,
       preview_user_over_limit_free_plan_alert: 7, # EE-only
-      user_reached_limit_free_plan_alert: 8 # EE-only
+      user_reached_limit_free_plan_alert: 8, # EE-only
+      free_group_limited_alert: 9 # EE-only
     }
 
     validates :group, presence: true
