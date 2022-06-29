@@ -87,6 +87,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="queryciminutesusagenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the Namespace for the monthly CI/CD minutes usage. |
 
+### `Query.ciVariables`
+
+List of the instance's CI/CD variables.
+
+Returns [`CiVariableConnection`](#civariableconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.containerRepository`
 
 Find a container repository.
@@ -6248,6 +6258,29 @@ The edge type for [`CiStage`](#cistage).
 | <a id="cistageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cistageedgenode"></a>`node` | [`CiStage`](#cistage) | The item at the end of the edge. |
 
+#### `CiVariableConnection`
+
+The connection type for [`CiVariable`](#civariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="civariableconnectionedges"></a>`edges` | [`[CiVariableEdge]`](#civariableedge) | A list of edges. |
+| <a id="civariableconnectionnodes"></a>`nodes` | [`[CiVariable]`](#civariable) | A list of nodes. |
+| <a id="civariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiVariableEdge`
+
+The edge type for [`CiVariable`](#civariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="civariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="civariableedgenode"></a>`node` | [`CiVariable`](#civariable) | The item at the end of the edge. |
+
 #### `ClusterAgentActivityEventConnection`
 
 The connection type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent).
@@ -9992,6 +10025,20 @@ GitLab CI/CD configuration template.
 | <a id="citemplatecontent"></a>`content` | [`String!`](#string) | Contents of the CI template. |
 | <a id="citemplatename"></a>`name` | [`String!`](#string) | Name of the CI template. |
 
+### `CiVariable`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="civariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="civariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="civariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="civariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="civariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="civariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="civariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
+
 ### `ClusterAgent`
 
 #### Fields
@@ -11747,6 +11794,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="groupcivariables"></a>`ciVariables` | [`CiVariableConnection`](#civariableconnection) | List of the group's CI/CD variables. (see [Connections](#connections)) |
 | <a id="groupclusteragents"></a>`clusterAgents` | [`ClusterAgentConnection`](#clusteragentconnection) | Cluster agents associated with projects in the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. |
@@ -15004,6 +15052,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
+| <a id="projectcivariables"></a>`ciVariables` | [`CiVariableConnection`](#civariableconnection) | List of the project's CI/CD variables. (see [Connections](#connections)) |
 | <a id="projectclusteragents"></a>`clusterAgents` | [`ClusterAgentConnection`](#clusteragentconnection) | Cluster agents associated with the project. (see [Connections](#connections)) |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
@@ -18660,6 +18709,13 @@ Values for sorting runners.
 | <a id="cirunnerupgradestatustypenot_available"></a>`NOT_AVAILABLE` | Upgrade is not available for the runner. |
 | <a id="cirunnerupgradestatustyperecommended"></a>`RECOMMENDED` | Upgrade is available and recommended for the runner. |
 | <a id="cirunnerupgradestatustypeunknown"></a>`UNKNOWN` | Upgrade status is unknown. |
+
+### `CiVariableType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="civariabletypeenv_var"></a>`ENV_VAR` | Env var type. |
+| <a id="civariabletypefile"></a>`FILE` | File type. |
 
 ### `CodeQualityDegradationSeverity`
 

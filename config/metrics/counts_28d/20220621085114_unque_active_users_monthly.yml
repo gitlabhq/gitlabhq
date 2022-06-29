@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.manage.unque_active_users_monthly
+description: Users that have a last_activity_on date within the past 28 days
+product_section: dev
+product_stage: manage
+product_group: manage
+value_type: number
+status: active
+milestone: "15.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90468/
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - unique_active_user
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

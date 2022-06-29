@@ -194,6 +194,13 @@ module Types
           complexity: 5,
           resolver: Resolvers::GroupsResolver
 
+    field :ci_variables,
+          Types::Ci::VariableType.connection_type,
+          null: true,
+          description: "List of the group's CI/CD variables.",
+          authorize: :admin_group,
+          method: :variables
+
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::GroupRunnersResolver,

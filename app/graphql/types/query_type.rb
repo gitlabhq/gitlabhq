@@ -123,6 +123,11 @@ module Types
           resolver: Resolvers::Ci::RunnersResolver,
           description: "Find runners visible to the current user."
 
+    field :ci_variables,
+          Types::Ci::VariableType.connection_type,
+          null: true,
+          description: "List of the instance's CI/CD variables."
+
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
 
     field :timelogs, Types::TimelogType.connection_type,
@@ -176,6 +181,12 @@ module Types
 
     def ci_application_settings
       application_settings
+    end
+
+    def ci_variables
+      return unless current_user.can_admin_all_resources?
+
+      ::Ci::InstanceVariable.all
     end
 
     def application_settings

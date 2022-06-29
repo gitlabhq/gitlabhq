@@ -205,7 +205,7 @@ describe('Pipeline details header', () => {
       });
 
       it('should call deletePipeline Mutation with pipeline id when modal is submitted', () => {
-        findDeleteModal().vm.$emit('ok');
+        findDeleteModal().vm.$emit('primary');
 
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
           mutation: deletePipelineMutation,
@@ -223,7 +223,7 @@ describe('Pipeline details header', () => {
           },
         });
 
-        findDeleteModal().vm.$emit('ok');
+        findDeleteModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(findAlert().text()).toBe(failureMessage);

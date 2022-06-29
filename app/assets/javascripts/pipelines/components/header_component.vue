@@ -63,6 +63,18 @@ export default {
       default: '',
     },
   },
+  modal: {
+    id: DELETE_MODAL_ID,
+    actionPrimary: {
+      text: __('Delete pipeline'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionCancel: {
+      text: __('Cancel'),
+    },
+  },
   apollo: {
     pipeline: {
       context() {
@@ -275,7 +287,7 @@ export default {
 
       <gl-button
         v-if="pipeline.userPermissions.destroyPipeline"
-        v-gl-modal="$options.DELETE_MODAL_ID"
+        v-gl-modal="$options.modal.id"
         :loading="isDeleting"
         :disabled="isDeleting"
         class="gl-ml-3"
@@ -289,11 +301,11 @@ export default {
     <gl-loading-icon v-if="isLoadingInitialQuery" size="lg" class="gl-mt-3 gl-mb-3" />
 
     <gl-modal
-      :modal-id="$options.DELETE_MODAL_ID"
+      :modal-id="$options.modal.id"
       :title="__('Delete pipeline')"
-      :ok-title="__('Delete pipeline')"
-      ok-variant="danger"
-      @ok="deletePipeline()"
+      :action-primary="$options.modal.actionPrimary"
+      :action-cancel="$options.modal.actionCancel"
+      @primary="deletePipeline()"
     >
       <p>
         {{ deleteModalConfirmationText }}

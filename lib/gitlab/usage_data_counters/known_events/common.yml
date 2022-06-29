@@ -390,3 +390,8 @@
   category: growth
   redis_slot: users
   aggregation: weekly
+# Manage
+- name: unique_active_user
+  category: manage
+  aggregation: weekly
+  expiry: 42

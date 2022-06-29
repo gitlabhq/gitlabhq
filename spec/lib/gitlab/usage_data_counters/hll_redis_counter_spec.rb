@@ -128,7 +128,8 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'growth',
         'work_items',
         'ci_users',
-        'error_tracking'
+        'error_tracking',
+        'manage'
       )
     end
   end

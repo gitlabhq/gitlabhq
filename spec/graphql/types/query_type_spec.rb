@@ -30,6 +30,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       board_list
       topics
       gitpod_enabled
+      ci_variables
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least

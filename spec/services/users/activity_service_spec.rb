@@ -34,6 +34,13 @@ RSpec.describe Users::ActivityService do
 
         subject.execute
       end
+
+      it 'tracks RedisHLL event' do
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+                                                                .with('unique_active_user', values: user.id)
+
+        subject.execute
+      end
     end
 
     context 'when a bad object is passed' do
