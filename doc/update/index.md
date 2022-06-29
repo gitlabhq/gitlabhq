@@ -407,6 +407,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - The upgrade to GitLab 14.10 executes a [concurrent index drop](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84308) of unneeded
   entries from the `ci_job_artifacts` database table. This could potentially run for multiple minutes, especially if the table has a lot of
   traffic and the migration is unable to acquire a lock. It is advised to let this process finish as restarting may result in data loss.
+- Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
+  Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
+  The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
 
 ### 14.9.0
 

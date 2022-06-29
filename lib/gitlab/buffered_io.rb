@@ -14,6 +14,7 @@ module Gitlab
 
     HEADER_READ_TIMEOUT = 20
 
+    # rubocop: disable Style/RedundantBegin
     # rubocop: disable Style/RedundantReturn
     # rubocop: disable Cop/LineBreakAfterGuardClauses
     # rubocop: disable Layout/EmptyLineAfterGuardClause
@@ -21,9 +22,7 @@ module Gitlab
     # Original method:
     # https://github.com/ruby/ruby/blob/cdb7d699d0641e8f081d590d06d07887ac09961f/lib/net/protocol.rb#L190-L200
     override :readuntil
-    def readuntil(terminator, ignore_eof = false)
-      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-
+    def readuntil(terminator, ignore_eof = false, start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC))
       begin
         until idx = @rbuf.index(terminator)
           if (elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) > HEADER_READ_TIMEOUT
@@ -39,6 +38,7 @@ module Gitlab
         return rbuf_consume(@rbuf.size)
       end
     end
+    # rubocop: disable Style/RedundantBegin
     # rubocop: enable Style/RedundantReturn
     # rubocop: enable Cop/LineBreakAfterGuardClauses
     # rubocop: enable Layout/EmptyLineAfterGuardClause
