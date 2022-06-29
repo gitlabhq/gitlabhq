@@ -38,4 +38,23 @@ RSpec.describe TimeboxesHelper do
       end
     end
   end
+
+  describe "#recent_releases_with_counts" do
+    let_it_be(:milestone) { create(:milestone) }
+    let_it_be(:project) { milestone.project }
+    let_it_be(:user) { create(:user) }
+
+    subject { helper.recent_releases_with_counts(milestone, user) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it "returns releases with counts" do
+      _old_releases = create_list(:release, 2, project: project, milestones: [milestone])
+      recent_public_releases = create_list(:release, 3, project: project, milestones: [milestone], released_at: '2022-01-01T18:00:00Z')
+
+      is_expected.to match([match_array(recent_public_releases), 5, 2])
+    end
+  end
 end
