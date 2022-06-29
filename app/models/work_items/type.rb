@@ -21,11 +21,11 @@ module WorkItems
     }.freeze
 
     WIDGETS_FOR_TYPE = {
-      issue: [Widgets::Description, Widgets::Hierarchy],
+      issue: [Widgets::Description, Widgets::Hierarchy, Widgets::Assignees],
       incident: [Widgets::Description],
       test_case: [Widgets::Description],
       requirement: [Widgets::Description],
-      task: [Widgets::Description, Widgets::Hierarchy]
+      task: [Widgets::Description, Widgets::Hierarchy, Widgets::Assignees]
     }.freeze
 
     cache_markdown_field :description, pipeline: :single_line

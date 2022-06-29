@@ -14,7 +14,7 @@ module WaitableWorker
       # are not likely to finish within the timeout. This assumes we can process
       # 10 jobs per second:
       # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/205
-      return bulk_perform_async(args_list) if args_list.length >= 10 * timeout
+      return bulk_perform_async(args_list) if (args_list.length >= 10 * timeout) || async_only_refresh?
 
       waiter = Gitlab::JobWaiter.new(args_list.size, worker_label: self.to_s)
 
@@ -40,6 +40,10 @@ module WaitableWorker
       end
 
       bulk_perform_async(failed) if failed.present?
+    end
+
+    def async_only_refresh?
+      Feature.enabled?(:async_only_project_authorizations_refresh)
     end
   end
 

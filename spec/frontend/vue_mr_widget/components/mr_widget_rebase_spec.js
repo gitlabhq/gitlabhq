@@ -2,6 +2,9 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import toast from '~/vue_shared/plugins/global_toast';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 let wrapper;
 
@@ -261,6 +264,7 @@ describe('Merge request widget rebase component', () => {
                   return Promise.resolve({
                     data: {
                       rebase_in_progress: false,
+                      should_be_rebased: false,
                       merge_error: null,
                     },
                   });
@@ -280,6 +284,7 @@ describe('Merge request widget rebase component', () => {
           await nextTick();
 
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetRebaseSuccess');
+          expect(toast).toHaveBeenCalledWith('Rebase completed');
         });
       });
     });

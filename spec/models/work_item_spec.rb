@@ -38,7 +38,8 @@ RSpec.describe WorkItem do
 
     it 'returns instances of supported widgets' do
       is_expected.to match_array([instance_of(WorkItems::Widgets::Description),
-                                  instance_of(WorkItems::Widgets::Hierarchy)])
+                                  instance_of(WorkItems::Widgets::Hierarchy),
+                                  instance_of(WorkItems::Widgets::Assignees)])
     end
   end
 

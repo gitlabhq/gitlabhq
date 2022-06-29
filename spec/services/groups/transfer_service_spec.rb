@@ -659,7 +659,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
             it 'schedules authorizations job' do
               expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
-                .with(array_including(group.all_projects.ids.map { |id| [id, anything] }))
+                .with(array_including(group.all_projects.ids.map { |id| [id] }))
 
               transfer_service.execute(new_parent_group)
             end

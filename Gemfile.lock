@@ -1,11 +1,4 @@
 PATH
-  remote: vendor/gems/ipynbdiff
-  specs:
-    ipynbdiff (0.4.7)
-      diffy (~> 3.3)
-      json (~> 2.5, >= 2.5.1)
-
-PATH
   remote: vendor/gems/mail-smtp_pool
   specs:
     mail-smtp_pool (0.1.0)
@@ -594,13 +587,13 @@ GEM
     graphql-client (0.17.0)
       activesupport (>= 3.0)
       graphql (~> 1.10)
-    graphql-docs (1.6.0)
+    graphql-docs (2.1.0)
       commonmarker (~> 0.16)
       escape_utils (~> 1.2)
       extended-markdown-filter (~> 0.4)
       gemoji (~> 3.0)
-      graphql (~> 1.6)
-      html-pipeline (~> 2.8)
+      graphql (~> 1.12)
+      html-pipeline (~> 2.9)
       sass (~> 3.4)
     grpc (1.42.0)
       google-protobuf (~> 3.18)
@@ -674,6 +667,9 @@ GEM
     invisible_captcha (1.1.0)
       rails (>= 4.2)
     ipaddress (0.8.3)
+    ipynbdiff (0.4.7)
+      diffy (~> 3.3)
+      json (~> 2.5, >= 2.5.1)
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
@@ -1563,7 +1559,7 @@ DEPENDENCIES
   graphiql-rails (~> 1.8)
   graphlient (~> 0.5.0)
   graphql (~> 1.13.12)
-  graphql-docs (~> 1.6.0)
+  graphql-docs (~> 2.1.0)
   grpc (~> 1.42.0)
   gssapi
   guard-rspec
@@ -1579,7 +1575,7 @@ DEPENDENCIES
   icalendar
   invisible_captcha (~> 1.1.0)
   ipaddress (~> 0.8.3)
-  ipynbdiff!
+  ipynbdiff (= 0.4.7)
   jira-ruby (~> 2.1.4)
   js_regex (~> 3.7)
   json (~> 2.5.1)

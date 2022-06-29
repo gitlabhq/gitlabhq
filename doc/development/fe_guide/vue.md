@@ -369,6 +369,155 @@ harder to 'manage' component and class separately.
 Please refer to the Vue section of our [style guide](style/vue.md)
 for best practices while writing and testing your Vue components and templates.
 
+## Composition API
+
+With Vue 2.7 it is possible to use [Composition API](https://vuejs.org/guide/introduction.html#api-styles) in Vue components and as standalone composables.
+
+### Prefer `<script>` over `<script setup>`
+
+Composition API allows you to place the logic in the `<script>` section of the component or to have a dedicated `<script setup>` section. We should use `<script>` and add Composition API to components using `setup()` property:
+
+```html
+<script>
+  import { computed } from 'vue';
+
+  export default {
+    name: 'MyComponent',
+    setup(props) {
+      const doubleCount = computed(() => props.count*2)
+    }
+  }
+</script>
+```
+
+### Aim to have one API style per component
+
+When adding `setup()` property to Vue component, consider refactoring it to Composition API entirely. It's not always feasible, especially for large components, but we should aim to have one API style per component for readability and maintainability.
+
+### Composables
+
+With Composition API, we have a new way of abstracting logic including reactive state to _composables_. Composable is the function that can accept parameters and return reactive properties and methods to be used in Vue component.
+
+```javascript
+// useCount.js
+import { ref } from 'vue';
+
+export function useCount(initialValue) {
+  const count = ref(initialValue)
+
+  function incrementCount() {
+    ref.value += 1
+  }
+
+  function decrementCount() {
+    ref.value -= 1
+  }
+
+  return { count, incrementCount, decrementCount }
+}
+```
+
+```javascript
+// MyComponent.vue
+import { useCount } from 'useCount'
+
+export default {
+  name: 'MyComponent',
+  setup() {
+    const { count, incrementCount, decrementCount } = useCount(5)
+
+    return { count, incrementCount, decrementCount }
+  }
+}
+```
+
+#### Prefix function and file names with `use`
+
+Common naming convention in Vue for composables is to prefix them with `use` and then refer to composable functionality briefly (`useBreakpoints`, `useGeolocation` etc). The same rule applies to the `.js` files containing composables - they should start with `use_` even if the file contains more than one composable.
+
+#### Avoid lifecycle pitfalls
+
+When building a composable, we should aim to keep it as simple as possible. Lifecycle hooks add complexity to composables and might lead to unexpected side effects. In order to avoid that we should follow these principles:
+
+- minimize lifecycle hooks usage whenever possible, prefer accepting/returning callbacks instead;
+- if you need to have lifecycle hooks in the composable, make sure this composable also performs a cleanup: if we are adding a listener on `onMounted`, we should remove it on `onUnmounted` within the same composable;
+- always set up lifecycle hooks immediately:
+
+```javascript
+// bad
+const useAsyncLogic = () => {
+  const action = async () => {
+    await doSomething();
+    onMounted(doSomethingElse);
+  };
+  return { action };
+};
+
+// OK
+const useAsyncLogic = () => {
+  const done = ref(false);
+  onMounted(() => {
+    watch(
+      done,
+      () => done.value && doSomethingElse(),
+      { immediate: true },
+    );
+  });
+  const action = async () => {
+    await doSomething();
+    done.value = true;
+  };
+  return { action };
+};
+```
+
+#### Avoid escape hatches
+
+It might be tempting to write a composable that does everything as a black box with a help of some of the escape hatches that Vue provides. But for most of the cases this makes them too complex and hard to maintain. One of these escape hatches is `getCurrentInstance` method which returns an instance of a current rendering component. Instead of using that method you should prefer passing down the data or methods to a composable via arguments.
+
+```javascript
+const useSomeLogic = () => {
+  doSomeLogic();
+  getCurrentInstance().emit('done'); // bad
+};
+```
+
+```javascript
+const done = () => emit('done'); 
+
+const useSomeLogic = (done) => {
+  doSomeLogic();
+  done(); // good, composable doesn't try to be too smart
+}
+```
+
+#### Composables and Vuex
+
+We should always prefer to avoid using Vuex state in composables. In case it's not possible we should use props to receive that state and emit events from the `setup` to update the Vuex state. A parent component should be responsible to get that state from Vuex and mutate it on events emitted from a child. You should **never mutate a state that's coming down from a prop**. If a composable needs to mutate a Vuex state it should use a callback to emit an event.
+
+```javascript
+const useAsyncComposable = ({ state, update }) => {
+  const start = async () => {
+    const newState = await doSomething(state);
+    update(newState);
+  };
+  return { start };
+};
+
+const ComponentWithComposable = {
+  setup(props, { emit }) {
+    const update = (data) => emit('update', data);
+    const state = computed(() => props.state); // state from Vuex
+    const { start } = useAsyncComposable({ state, update });
+    start();
+  },
+};
+```
+
+#### Testing composables
+
+<!-- TBD -->
+
 ## Testing Vue Components
 
 Please refer to the [Vue testing style guide](style/vue.md#vue-testing)

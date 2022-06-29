@@ -1083,11 +1083,8 @@ RSpec.describe Integration do
     end
 
     it 'provides boolean accessors for checkbox fields' do
-      integration.boolean = 'yes'
-      expect(integration.boolean?).to be(true)
-
-      integration.boolean = nil
-      expect(integration.boolean?).to be(false)
+      expect(integration).to respond_to(:boolean)
+      expect(integration).to respond_to(:boolean?)
 
       expect(integration).not_to respond_to(:foo?)
       expect(integration).not_to respond_to(:bar?)
@@ -1129,11 +1126,12 @@ RSpec.describe Integration do
   describe 'boolean_accessor' do
     let(:klass) do
       Class.new(Integration) do
+        prop_accessor :test_value
         boolean_accessor :test_value
       end
     end
 
-    let(:integration) { klass.new(properties: { test_value: input }) }
+    let(:integration) { klass.new(test_value: input) }
 
     where(:input, :method_result, :predicate_method_result) do
       true     | true  | true
@@ -1163,6 +1161,35 @@ RSpec.describe Integration do
           test_value: be(method_result),
           test_value?: be(predicate_method_result)
         )
+
+        # Make sure the original value is stored correctly
+        expect(integration.send(:test_value_before_type_cast)).to eq(input)
+        expect(integration.properties).to include('test_value' => input)
+      end
+
+      context 'when using data fields' do
+        let(:klass) do
+          Class.new(Integration) do
+            field :project_url, storage: :data_fields, type: 'checkbox'
+
+            def data_fields
+              issue_tracker_data || self.build_issue_tracker_data
+            end
+          end
+        end
+
+        let(:integration) { klass.new(project_url: input) }
+
+        it 'has the correct value' do
+          expect(integration).to have_attributes(
+            project_url: be(method_result),
+            project_url?: be(predicate_method_result)
+          )
+
+          # Make sure the original value is stored correctly
+          expect(integration.send(:project_url_before_type_cast)).to eq(input == false ? 'false' : input)
+          expect(integration.properties).not_to include('project_url')
+        end
       end
     end
 
@@ -1173,6 +1200,24 @@ RSpec.describe Integration do
         test_value: be(nil),
         test_value?: be(false)
       )
+    end
+
+    context 'when getter is not defined' do
+      let(:input) { true }
+      let(:klass) do
+        Class.new(Integration) do
+          boolean_accessor :test_value
+        end
+      end
+
+      it 'defines a prop_accessor' do
+        expect(integration).to have_attributes(
+          test_value: true,
+          test_value?: true
+        )
+
+        expect(integration.properties['test_value']).to be(true)
+      end
     end
   end
 

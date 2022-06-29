@@ -65,7 +65,8 @@ RSpec.describe WorkItems::Type do
 
     it 'returns list of all possible widgets' do
       is_expected.to match_array([::WorkItems::Widgets::Description,
-                                  ::WorkItems::Widgets::Hierarchy])
+                                  ::WorkItems::Widgets::Hierarchy,
+                                  ::WorkItems::Widgets::Assignees])
     end
   end
 

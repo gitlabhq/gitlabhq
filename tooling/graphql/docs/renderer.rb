@@ -22,7 +22,7 @@ module Tooling
           @output_dir = output_dir
           @template = template
           @layout = Haml::Engine.new(File.read(template))
-          @parsed_schema = GraphQLDocs::Parser.new(schema.graphql_definition, {}).parse
+          @parsed_schema = GraphQLDocs::Parser.new(schema, {}).parse
           @schema = schema
           @seen = Set.new
         end

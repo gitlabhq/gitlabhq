@@ -64,16 +64,13 @@ RSpec.describe 'Query.work_item(id)' do
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => match_array([
+            'widgets' => include(
               hash_including(
                 'type' => 'DESCRIPTION',
                 'description' => work_item.description,
                 'descriptionHtml' => ::MarkupHelper.markdown_field(work_item, :description, {})
-              ),
-              hash_including(
-                'type' => 'HIERARCHY'
               )
-            ])
+            )
           )
         end
       end
@@ -101,10 +98,7 @@ RSpec.describe 'Query.work_item(id)' do
         it 'returns widget information' do
           expect(work_item_data).to include(
             'id' => work_item.to_gid.to_s,
-            'widgets' => match_array([
-              hash_including(
-                'type' => 'DESCRIPTION'
-              ),
+            'widgets' => include(
               hash_including(
                 'type' => 'HIERARCHY',
                 'parent' => nil,
@@ -113,7 +107,7 @@ RSpec.describe 'Query.work_item(id)' do
                   hash_including('id' => child_link2.work_item.to_gid.to_s)
                 ]) }
               )
-            ])
+            )
           )
         end
 
@@ -137,10 +131,7 @@ RSpec.describe 'Query.work_item(id)' do
           it 'filters out not accessible children or parent' do
             expect(work_item_data).to include(
               'id' => work_item.to_gid.to_s,
-              'widgets' => match_array([
-                hash_including(
-                  'type' => 'DESCRIPTION'
-                ),
+              'widgets' => include(
                 hash_including(
                   'type' => 'HIERARCHY',
                   'parent' => nil,
@@ -148,7 +139,7 @@ RSpec.describe 'Query.work_item(id)' do
                     hash_including('id' => child_link1.work_item.to_gid.to_s)
                   ]) }
                 )
-              ])
+              )
             )
           end
         end
@@ -160,18 +151,55 @@ RSpec.describe 'Query.work_item(id)' do
           it 'returns parent information' do
             expect(work_item_data).to include(
               'id' => work_item.to_gid.to_s,
-              'widgets' => match_array([
-                hash_including(
-                  'type' => 'DESCRIPTION'
-                ),
+              'widgets' => include(
                 hash_including(
                   'type' => 'HIERARCHY',
                   'parent' => hash_including('id' => parent_link.work_item_parent.to_gid.to_s),
                   'children' => { 'nodes' => match_array([]) }
                 )
-              ])
+              )
             )
           end
+        end
+      end
+
+      describe 'assignees widget' do
+        let(:assignees) { create_list(:user, 2) }
+        let(:work_item) { create(:work_item, project: project, assignees: assignees) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetAssignees {
+                allowsMultipleAssignees
+                assignees {
+                  nodes {
+                    id
+                    username
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'ASSIGNEES',
+                'allowsMultipleAssignees' => boolean,
+                'assignees' => {
+                  'nodes' => match_array(
+                    assignees.map { |a| { 'id' => a.to_gid.to_s, 'username' => a.username } }
+                  )
+                }
+              )
+            )
+          )
         end
       end
     end

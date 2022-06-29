@@ -31482,6 +31482,9 @@ msgstr ""
 msgid "Rebase"
 msgstr ""
 
+msgid "Rebase completed"
+msgstr ""
+
 msgid "Rebase in progress"
 msgstr ""
 

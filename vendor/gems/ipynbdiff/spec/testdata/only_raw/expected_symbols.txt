@@ -1,4 +1,0 @@
-.cells.0
-
-.cells.0.source.0
-.cells.0.source.1

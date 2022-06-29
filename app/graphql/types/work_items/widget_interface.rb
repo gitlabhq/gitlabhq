@@ -16,13 +16,16 @@ module Types
           ::Types::WorkItems::Widgets::DescriptionType
         when ::WorkItems::Widgets::Hierarchy
           ::Types::WorkItems::Widgets::HierarchyType
+        when ::WorkItems::Widgets::Assignees
+          ::Types::WorkItems::Widgets::AssigneesType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end
       end
 
       orphan_types ::Types::WorkItems::Widgets::DescriptionType,
-                   ::Types::WorkItems::Widgets::HierarchyType
+                   ::Types::WorkItems::Widgets::HierarchyType,
+                   ::Types::WorkItems::Widgets::AssigneesType
     end
   end
 end

@@ -17,6 +17,7 @@ RSpec.describe Types::WorkItems::WidgetInterface do
     where(:widget_class, :widget_type_name) do
       WorkItems::Widgets::Description | Types::WorkItems::Widgets::DescriptionType
       WorkItems::Widgets::Hierarchy   | Types::WorkItems::Widgets::HierarchyType
+      WorkItems::Widgets::Assignees   | Types::WorkItems::Widgets::AssigneesType
     end
 
     with_them do
