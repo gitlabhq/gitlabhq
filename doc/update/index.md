@@ -413,6 +413,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 ### 15.0.0
 
 - Elasticsearch 6.8 [is no longer supported](../integration/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../integration/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
+- Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
+  Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
+  The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
 
 ### 14.10.0
 
