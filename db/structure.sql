@@ -19301,7 +19301,8 @@ CREATE TABLE project_error_tracking_settings (
     encrypted_token_iv character varying,
     project_name character varying,
     organization_name character varying,
-    integrated boolean DEFAULT true NOT NULL
+    integrated boolean DEFAULT true NOT NULL,
+    sentry_project_id bigint
 );
 
 CREATE TABLE project_export_jobs (

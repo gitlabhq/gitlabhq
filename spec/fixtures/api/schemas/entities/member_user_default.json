@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "username",
+    "created_at",
+    "last_activity_on",
+    "avatar_url",
+    "web_url",
+    "blocked",
+    "show_status"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "username": { "type": "string" },
+    "created_at": { "type": ["string"] },
+    "avatar_url": { "type": ["string", "null"] },
+    "web_url": { "type": "string" },
+    "blocked": { "type": "boolean" },
+    "two_factor_enabled": { "type": "boolean" },
+    "availability": { "type": ["string", "null"] },
+    "last_activity_on": { "type": ["string", "null"] },
+    "status": {
+      "type": "object",
+      "required": ["emoji"],
+      "properties": {
+        "emoji": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "show_status": { "type": "boolean" }
+  }
+}

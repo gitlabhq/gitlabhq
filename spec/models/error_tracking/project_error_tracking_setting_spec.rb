@@ -10,7 +10,9 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
   let(:sentry_client) { instance_double(ErrorTracking::SentryClient) }
 
-  subject(:setting) { build(:project_error_tracking_setting, project: project) }
+  let(:sentry_project_id) { 10 }
+
+  subject(:setting) { build(:project_error_tracking_setting, project: project, sentry_project_id: sentry_project_id) }
 
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
@@ -270,7 +272,7 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
   end
 
   describe '#issue_details' do
-    let(:issue) { build(:error_tracking_sentry_detailed_error) }
+    let(:issue) { build(:error_tracking_sentry_detailed_error, project_id: sentry_project_id) }
     let(:commit_id) { issue.first_release_version }
     let(:result) { subject.issue_details(opts) }
     let(:opts) { { issue_id: 1 } }
@@ -317,12 +319,33 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
+  describe '#issue_latest_event' do
+    let(:error_event) { build(:error_tracking_sentry_error_event, project_id: sentry_project_id) }
+    let(:result) { subject.issue_latest_event(opts) }
+    let(:opts) { { issue_id: 1 } }
+
+    before do
+      stub_reactive_cache(subject, error_event, {})
+      synchronous_reactive_cache(subject)
+
+      allow(subject).to receive(:sentry_client).and_return(sentry_client)
+      allow(sentry_client).to receive(:issue_latest_event).with(opts).and_return(error_event)
+    end
+
+    it 'returns the error event' do
+      expect(result[:latest_event].project_id).to eq(sentry_project_id)
+    end
+  end
+
   describe '#update_issue' do
     let(:result) { subject.update_issue(**opts) }
     let(:opts) { { issue_id: 1, params: {} } }
 
     before do
       allow(subject).to receive(:sentry_client).and_return(sentry_client)
+      allow(sentry_client).to receive(:issue_details)
+        .with({ issue_id: 1 })
+        .and_return(Gitlab::ErrorTracking::DetailedError.new(project_id: sentry_project_id))
     end
 
     context 'when sentry response is successful' do
@@ -342,6 +365,56 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
 
       it 'returns the successful response' do
         expect(result).to eq(error: 'Unexpected Error')
+      end
+    end
+
+    context 'when sentry_project_id is not set' do
+      let(:sentry_projects) do
+        [
+          Gitlab::ErrorTracking::Project.new(
+            id: 1111,
+            name: 'Some Project',
+            organization_name: 'Org'
+          ),
+          Gitlab::ErrorTracking::Project.new(
+            id: sentry_project_id,
+            name: setting.project_name,
+            organization_name: setting.organization_name
+          )
+        ]
+      end
+
+      context 'when sentry_project_id is not set' do
+        before do
+          setting.update!(sentry_project_id: nil)
+
+          allow(sentry_client).to receive(:projects).and_return(sentry_projects)
+          allow(sentry_client).to receive(:update_issue).with(opts).and_return(true)
+        end
+
+        it 'tries to backfill it from sentry API' do
+          expect(result).to eq(updated: true)
+
+          expect(setting.reload.sentry_project_id).to eq(sentry_project_id)
+        end
+
+        context 'when the project cannot be found on sentry' do
+          before do
+            sentry_projects.pop
+          end
+
+          it 'raises error' do
+            expect { result }.to raise_error(/Couldn't find project/)
+          end
+        end
+      end
+
+      context 'when mismatching sentry_project_id is detected' do
+        it 'raises error' do
+          setting.update!(sentry_project_id: sentry_project_id + 1)
+
+          expect { result }.to raise_error(/The Sentry issue appers to be outside/)
+        end
       end
     end
   end
