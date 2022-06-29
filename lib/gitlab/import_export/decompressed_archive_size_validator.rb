@@ -8,6 +8,8 @@ module Gitlab
       DEFAULT_MAX_BYTES = 10.gigabytes.freeze
       TIMEOUT_LIMIT = 210.seconds
 
+      ServiceError = Class.new(StandardError)
+
       def initialize(archive_path:, max_bytes: self.class.max_bytes)
         @archive_path = archive_path
         @max_bytes = max_bytes
@@ -28,6 +30,8 @@ module Gitlab
       def validate
         pgrp = nil
         valid_archive = true
+
+        validate_archive_path
 
         Timeout.timeout(TIMEOUT_LIMIT) do
           stdin, stdout, stderr, wait_thr = Open3.popen3(command, pgroup: true)
@@ -78,15 +82,29 @@ module Gitlab
         false
       end
 
+      def validate_archive_path
+        Gitlab::Utils.check_path_traversal!(@archive_path)
+
+        raise(ServiceError, 'Archive path is not a string') unless @archive_path.is_a?(String)
+        raise(ServiceError, 'Archive path is a symlink') if File.lstat(@archive_path).symlink?
+        raise(ServiceError, 'Archive path is not a file') unless File.file?(@archive_path)
+      end
+
       def command
         "gzip -dc #{@archive_path} | wc -c"
       end
 
       def log_error(error)
+        archive_size = begin
+          File.size(@archive_path)
+        rescue StandardError
+          nil
+        end
+
         Gitlab::Import::Logger.info(
           message: error,
           import_upload_archive_path: @archive_path,
-          import_upload_archive_size: File.size(@archive_path)
+          import_upload_archive_size: archive_size
         )
       end
     end
