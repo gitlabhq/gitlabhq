@@ -41,3 +41,5 @@ class GroupGroupLink < ApplicationRecord
     Gitlab::Access.human_access(self.group_access)
   end
 end
+
+GroupGroupLink.prepend_mod_with('GroupGroupLink')
