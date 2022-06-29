@@ -461,6 +461,10 @@ module QA
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
+      def max_capybara_wait_time
+        ENV.fetch('MAX_CAPYBARA_WAIT_TIME', 10).to_i
+      end
+
       private
 
       def remote_grid_credentials
