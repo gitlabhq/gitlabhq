@@ -25,8 +25,8 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
 
     let(:data) do
       {
-        'name' => 'source_name',
-        'visibility' => 'private'
+        'visibility' => 'private',
+        'created_at' => '2016-11-18T09:29:42.634Z'
       }
     end
 
@@ -76,8 +76,21 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
       end
     end
 
-    it 'converts all keys to symbols' do
-      expect(transformed_data.keys).to contain_exactly(:name, :path, :import_type, :visibility_level, :namespace_id)
+    context 'when data has extra keys' do
+      it 'returns a fixed number of keys' do
+        data = {
+          'visibility' => 'private',
+          'created_at' => '2016-11-18T09:29:42.634Z',
+          'my_key' => 'my_key',
+          'another_key' => 'another_key',
+          'last_key' => 'last_key'
+        }
+
+        transformed_data = described_class.new.transform(context, data)
+
+        expect(transformed_data.keys)
+          .to contain_exactly(:created_at, :import_type, :name, :namespace_id, :path, :visibility_level)
+      end
     end
   end
 end
