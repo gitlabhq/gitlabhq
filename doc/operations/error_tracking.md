@@ -106,7 +106,7 @@ button and a link to the GitLab issue displays within the error detail section.
 
 ## Taking Action on errors
 
-You can take action on Sentry Errors from within the GitLab UI.
+You can take action on Sentry Errors from within the GitLab UI. Marking errors ignored or resolved require at least Developer role.
 
 ### Ignoring errors
 
