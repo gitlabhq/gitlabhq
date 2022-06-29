@@ -153,11 +153,11 @@ module TimeboxesHelper
     n_("%{releases} release", "%{releases} releases", count) % { releases: count }
   end
 
-  def recent_releases_with_counts(milestone)
+  def recent_releases_with_counts(milestone, user)
     total_count = milestone.releases.size
     return [[], 0, 0] if total_count == 0
 
-    recent_releases = milestone.releases.recent.to_a
+    recent_releases = milestone.releases.recent.filter { |release| Ability.allowed?(user, :read_release, release) }
     more_count = total_count - recent_releases.size
     [recent_releases, total_count, more_count]
   end
