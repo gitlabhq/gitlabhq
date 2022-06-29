@@ -398,48 +398,31 @@ Self managed installations can also run the security scanners on a GitLab Runner
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
 > - Schema validation message [added](https://gitlab.com/gitlab-org/gitlab/-/issues/321730) in GitLab 14.0.
 
-You can enforce validation of the security report artifacts before ingesting the vulnerabilities.
+GitLab 15.0 enforces validation of the security report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database. GitLab validates the
-artifacts based on the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist).
-When artifact validation is enabled, the pipeline's **Security** tab lists
-any report artifacts that failed validation.
+artifacts against the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist),
+according to the schema version declared in the report.
 
-Validation depends on the schema:
+The pipeline's **Security** tab lists any report artifacts that failed validation, and the
+validation error message.
 
-- If your security report does not specify which schema version it uses, GitLab attempts to verify it against the earliest supported schema version for that report type. Validation fails but it's attempted anyway because it may identify other problems present in the report.
-- If your security report uses a version that is not supported, GitLab attempts to validate it against the earliest supported schema version for that report type. Validation fails but will identify the differences between the schema version used and the earliest supported version.
-- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a warning to the validation result.
+Validation depends on the schema version declared in the security report artifact:
 
-You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb#L9).
+- If your security report specifies a supported schema version, GitLab uses this version to validate.
+- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a deprecation warning to the validation result.
+- If your security report uses a version that is not supported, GitLab attempts to validate it against the latest schema version available in GitLab.
+- If your security report does not specify a schema version, GitLab attempts to validate it against the lastest schema version available in GitLab. Since the `version` property is required, validation always fails in this case, but other validation errors may also be present.
 
-### Enable security report validation
+You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9, and planned for removal in GitLab 15.0.
+<!--- start_remove The following content will be removed on remove_date: '2022-08-22' -->
 
-To enable report artifacts validation, set the `VALIDATE_SCHEMA` environment variable to `"true"`
-for the desired jobs in the `.gitlab-ci.yml` file.
+### Enable security report validation (removed)
 
-For example, to enable validation for only the `sast` job:
-
-```yaml
-include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
-stages:
-  - security-scan
-dependency_scanning:
-  stage: security-scan
-license_scanning:
-  stage: security-scan
-sast:
-  stage: security-scan
-  variables:
-    VALIDATE_SCHEMA: "true"
-.secret-analyzer:
-  stage: security-scan
-```
+   This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/354928) in GitLab 14.9
+   and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85400) in GitLab 15.0.
+   
+   <!--- end_remove -->
 
 ## Interact with findings and vulnerabilities
 

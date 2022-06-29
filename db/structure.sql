@@ -13122,6 +13122,27 @@ CREATE SEQUENCE ci_running_builds_id_seq
 
 ALTER SEQUENCE ci_running_builds_id_seq OWNED BY ci_running_builds.id;
 
+CREATE TABLE ci_secure_file_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    ci_secure_file_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_a79e5a9261 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE ci_secure_file_states_ci_secure_file_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_secure_file_states_ci_secure_file_id_seq OWNED BY ci_secure_file_states.ci_secure_file_id;
+
 CREATE TABLE ci_secure_files (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -22765,6 +22786,8 @@ ALTER TABLE ONLY ci_runners ALTER COLUMN id SET DEFAULT nextval('ci_runners_id_s
 
 ALTER TABLE ONLY ci_running_builds ALTER COLUMN id SET DEFAULT nextval('ci_running_builds_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_secure_file_states ALTER COLUMN ci_secure_file_id SET DEFAULT nextval('ci_secure_file_states_ci_secure_file_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_secure_files ALTER COLUMN id SET DEFAULT nextval('ci_secure_files_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_sources_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_sources_pipelines_id_seq'::regclass);
@@ -24495,6 +24518,9 @@ ALTER TABLE ONLY ci_runners
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT ci_running_builds_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_secure_file_states
+    ADD CONSTRAINT ci_secure_file_states_pkey PRIMARY KEY (ci_secure_file_id);
 
 ALTER TABLE ONLY ci_secure_files
     ADD CONSTRAINT ci_secure_files_pkey PRIMARY KEY (id);
@@ -27570,6 +27596,16 @@ CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USI
 CREATE INDEX index_ci_running_builds_on_project_id ON ci_running_builds USING btree (project_id);
 
 CREATE INDEX index_ci_running_builds_on_runner_id ON ci_running_builds USING btree (runner_id);
+
+CREATE INDEX index_ci_secure_file_states_failed_verification ON ci_secure_file_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_ci_secure_file_states_needs_verification ON ci_secure_file_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_ci_secure_file_states_on_ci_secure_file_id ON ci_secure_file_states USING btree (ci_secure_file_id);
+
+CREATE INDEX index_ci_secure_file_states_on_verification_state ON ci_secure_file_states USING btree (verification_state);
+
+CREATE INDEX index_ci_secure_file_states_pending_verification ON ci_secure_file_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_ci_secure_files_on_project_id ON ci_secure_files USING btree (project_id);
 
@@ -32869,6 +32905,9 @@ ALTER TABLE ONLY badges
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_5ac1d2fc24 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_secure_file_states
+    ADD CONSTRAINT fk_rails_5adba40c5f FOREIGN KEY (ci_secure_file_id) REFERENCES ci_secure_files(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_merge_request_rules_groups
     ADD CONSTRAINT fk_rails_5b2ecf6139 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;

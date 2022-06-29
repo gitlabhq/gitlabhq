@@ -296,7 +296,7 @@ To disable the Elasticsearch integration:
    bundle exec rake gitlab:elastic:delete_index RAILS_ENV=production
    ```
 
-## Unpause Indexing 
+## Unpause Indexing
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Advanced Search**.

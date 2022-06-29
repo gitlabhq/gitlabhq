@@ -401,7 +401,7 @@ The documentation on the implementation is split into three sections:
 
 1. [Scripts](#scripts).
 1. [Specification files](#specification-files).
-1. [Example snapshot files](#example-snapshot-files): 
+1. [Example snapshot files](#example-snapshot-files):
    These YAML files are used as input data
    or fixtures to drive the various tests, and are located under
    `glfm_specification/example_snapshots`. All example snapshot files are automatically

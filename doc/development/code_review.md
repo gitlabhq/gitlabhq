@@ -306,7 +306,7 @@ A maintainer should ask the author to make a merge request smaller if it is:
 - Has a high complexity resulting in additional risk.
 
 The maintainer, any of the
-reviewers, or a merge request coach can step up to help the author to divide work 
+reviewers, or a merge request coach can step up to help the author to divide work
 into smaller iterations, and guide the author on how to split the merge request.
 The author may choose to request that the current maintainers and reviewers review the split MRs
 or request a new group of maintainers and reviewers.

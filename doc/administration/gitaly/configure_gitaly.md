@@ -904,7 +904,7 @@ gitaly['cgroups_repositories_cpu_shares'] => 512
   which represents 100% of CPU. This value cannot exceed that of the top
   level`cgroups_cpu_shares`.
 
-#### Configure cgroups (legacy method) 
+#### Configure cgroups (legacy method)
 
 To configure cgroups in Gitaly for GitLab versions using the legacy method, add `gitaly['cgroups']` to `/etc/gitlab/gitlab.rb`. For
 example:

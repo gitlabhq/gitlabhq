@@ -817,16 +817,16 @@ end
 
 ### Message: curl 18 transfer closed with outstanding read data remaining & fetch-pack: unexpected disconnect while reading sideband packet
 
-Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository 
+Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository
 data from the primary site. This is more likely to happen if a repository has to be
 replicated from scratch between sites.
 
 Geo retries several times, but if the transmission is consistently interrupted
-by network hiccups, an alternative method such as `rsync` can be used to circumvent `git` and 
+by network hiccups, an alternative method such as `rsync` can be used to circumvent `git` and
 create the initial copy of any repository that fails to be replicated by Geo.
 
 We recommend transferring each failing repository individually and checking for consistency
-after each transfer. Follow the [single target `rsync` instructions](../../operations/moving_repositories.md#single-rsync-to-another-server) 
+after each transfer. Follow the [single target `rsync` instructions](../../operations/moving_repositories.md#single-rsync-to-another-server)
 to transfer each affected repository from the primary to the secondary site.
 
 ## Fixing errors during a failover or when promoting a secondary to a primary node

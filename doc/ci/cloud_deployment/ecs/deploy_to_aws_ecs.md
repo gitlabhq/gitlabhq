@@ -262,7 +262,7 @@ details about how to configure SAST, see the SAST [documentation](../../../user/
 ### Configure DAST
 
 To use [DAST](../../../user/application_security/dast/index.md) on non-default branches, [set up review apps](#set-up-review-apps)
-and then follow the steps outlined in the DAST [documentation](../../../user/application_security/dast/index.md). 
+and then follow the steps outlined in the DAST [documentation](../../../user/application_security/dast/index.md).
 
 ## Further reading
 

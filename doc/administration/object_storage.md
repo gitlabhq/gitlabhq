@@ -542,7 +542,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
 
 WARNING:
-The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated configuration is not supported. 
+The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated configuration is not supported.
 You may start getting [ETag mismatch errors](#etag-mismatch) if you use it.
 
 ### Other alternatives to file system storage

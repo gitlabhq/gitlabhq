@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.2.
 
-Retrieve metadata information for this GitLab instance. 
+Retrieve metadata information for this GitLab instance.
 
 ```plaintext
 GET /metadata

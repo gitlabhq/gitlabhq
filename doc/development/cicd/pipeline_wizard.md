@@ -230,7 +230,7 @@ Use as `widget: list`. This inserts a `list` in the YAML file.
 
 #### Checklist
 
-Use as `widget: checklist`. This inserts a list of checkboxes that need to 
+Use as `widget: checklist`. This inserts a list of checkboxes that need to
 be checked before proceeding to the next step.
 
 | Name    | Required               | Type   | Description                                                                                                                                                                        |
