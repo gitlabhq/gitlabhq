@@ -193,8 +193,6 @@ RSpec.describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
   def prepare_repository(project_path, source_project)
     repo_path = File.join(base_dir, project_path)
 
-    return create_bare_repository(repo_path) unless source_project
-
     cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{source_project} #{repo_path})
 
     system(git_env, *cmd, chdir: SEED_STORAGE_PATH, out: '/dev/null', err: '/dev/null')

@@ -29,9 +29,12 @@ module Enums
           builds_disabled: 20,
           environment_creation_failure: 21,
           deployment_rejected: 22,
+          protected_environment_failure: 1_000,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,
           invalid_bridge_trigger: 1_003,
+          upstream_bridge_project_not_found: 1_004,
+          insufficient_upstream_permissions: 1_005,
           bridge_pipeline_is_child_pipeline: 1_006, # not used anymore, but cannot be deleted because of old data
           downstream_pipeline_creation_failed: 1_007,
           secrets_provider_not_found: 1_008,
@@ -41,5 +44,3 @@ module Enums
     end
   end
 end
-
-Enums::Ci::CommitStatus.prepend_mod_with('Enums::Ci::CommitStatus')

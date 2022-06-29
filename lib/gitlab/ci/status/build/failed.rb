@@ -20,10 +20,13 @@ module Gitlab
             scheduler_failure: 'scheduler failure',
             data_integrity_failure: 'data integrity failure',
             forward_deployment_failure: 'forward deployment failure',
+            protected_environment_failure: 'protected environment failure',
             pipeline_loop_detected: 'job would create infinitely looping pipelines',
             invalid_bridge_trigger: 'downstream pipeline trigger definition is invalid',
             downstream_bridge_project_not_found: 'downstream project could not be found',
+            upstream_bridge_project_not_found: 'upstream project could not be found',
             insufficient_bridge_permissions: 'no permissions to trigger downstream pipeline',
+            insufficient_upstream_permissions: 'no permissions to read upstream project',
             bridge_pipeline_is_child_pipeline: 'creation of child pipeline not allowed from another child pipeline',
             downstream_pipeline_creation_failed: 'downstream pipeline can not be created',
             secrets_provider_not_found: 'secrets provider can not be found',
@@ -74,5 +77,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Ci::Status::Build::Failed.prepend_mod_with('Gitlab::Ci::Status::Build::Failed')

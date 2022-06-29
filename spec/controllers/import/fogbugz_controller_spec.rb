@@ -29,10 +29,19 @@ RSpec.describe Import::FogbugzController do
       expect(response).to redirect_to(new_user_map_import_fogbugz_path)
     end
 
-    it 'preserves namespace_id query param' do
+    it 'preserves namespace_id query param on success' do
       post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword', namespace_id: namespace_id }
 
       expect(response).to redirect_to(new_user_map_import_fogbugz_path(namespace_id: namespace_id))
+    end
+
+    it 'redirects to new page maintaining namespace_id when client raises standard error' do
+      namespace_id = 5
+      allow(::Gitlab::FogbugzImport::Client).to receive(:new).and_raise(StandardError)
+
+      post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword', namespace_id: namespace_id }
+
+      expect(response).to redirect_to(new_import_fogbugz_url(namespace_id: namespace_id))
     end
 
     it 'redirects to new page form when client raises authentication exception' do

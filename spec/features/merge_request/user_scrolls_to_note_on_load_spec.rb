@@ -73,7 +73,7 @@ RSpec.describe 'Merge request > User scrolls to note on load', :js do
         note_element = find(collapsed_fragment_id)
 
         expect(note_element.visible?).to eq(true)
-        expect(note_element.sibling('.replies-toggle')[:class]).to include('expanded')
+        expect(note_element.sibling('li:nth-child(2)')).to have_button s_('Notes|Collapse replies')
       end
     end
   end

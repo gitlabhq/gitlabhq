@@ -1,13 +1,20 @@
 <script>
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { uniqBy } from 'lodash';
+import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {
+  i18n: {
+    collapseReplies: s__('Notes|Collapse replies'),
+    expandReplies: s__('Notes|Expand replies'),
+    lastReplyBy: s__('Notes|Last reply by %{name}'),
+  },
   components: {
     GlButton,
-    GlIcon,
+    GlLink,
+    GlSprintf,
     UserAvatarLink,
     TimeAgoTooltip,
   },
@@ -28,63 +35,83 @@ export default {
     uniqueAuthors() {
       const authors = this.replies.map((reply) => reply.author || {});
 
-      return uniqBy(authors, (author) => author.username);
+      return uniqBy(authors, 'username');
     },
-    className() {
-      return this.collapsed ? 'collapsed' : 'expanded';
+    liClasses() {
+      return this.collapsed
+        ? 'gl-text-gray-500 gl-rounded-bottom-left-base gl-rounded-bottom-right-base'
+        : 'gl-border-b';
+    },
+    buttonIcon() {
+      return this.collapsed ? 'chevron-right' : 'chevron-down';
+    },
+    buttonLabel() {
+      return this.collapsed ? this.$options.i18n.expandReplies : this.$options.i18n.collapseReplies;
     },
   },
   methods: {
     toggle() {
+      this.$refs.toggle.$el.focus();
       this.$emit('toggle');
     },
   },
-  ICON_CLASS: 'gl-mr-3 gl-cursor-pointer',
 };
 </script>
 
 <template>
   <li
-    :class="className"
-    class="replies-toggle js-toggle-replies gl-display-flex! gl-align-items-center gl-flex-wrap"
+    :class="liClasses"
+    class="gl-display-flex! gl-align-items-center gl-flex-wrap gl-bg-gray-10 gl-py-3 gl-px-5 gl-border-t"
   >
+    <gl-button
+      ref="toggle"
+      class="gl-my-2 gl-mr-3 gl-p-0!"
+      category="tertiary"
+      :icon="buttonIcon"
+      :aria-label="buttonLabel"
+      @click="toggle"
+    />
     <template v-if="collapsed">
-      <gl-icon :class="$options.ICON_CLASS" name="chevron-right" @click.native="toggle" />
-      <div>
-        <user-avatar-link
-          v-for="author in uniqueAuthors"
-          :key="author.username"
-          :link-href="author.path"
-          :img-alt="author.name"
-          :img-src="author.avatar_url"
-          :img-size="24"
-          :tooltip-text="author.name"
-          tooltip-placement="bottom"
-        />
-      </div>
+      <user-avatar-link
+        v-for="author in uniqueAuthors"
+        :key="author.username"
+        class="gl-mr-3"
+        :link-href="author.path"
+        :img-alt="author.name"
+        img-css-classes="gl-mr-0!"
+        :img-src="author.avatar_url"
+        :img-size="24"
+        :tooltip-text="author.name"
+        tooltip-placement="bottom"
+      />
       <gl-button
-        class="js-replies-text gl-mr-2"
-        category="tertiary"
+        class="gl-mr-2"
         variant="link"
         data-qa-selector="expand_replies_button"
         @click="toggle"
       >
-        {{ replies.length }} {{ n__('reply', 'replies', replies.length) }}
+        {{ n__('%d reply', '%d replies', replies.length) }}
       </gl-button>
-      {{ __('Last reply by') }}
-      <a :href="lastReply.author.path" class="btn btn-link author-link gl-mx-2 gl-button">
-        {{ lastReply.author.name }}
-      </a>
+      <gl-sprintf :message="$options.i18n.lastReplyBy">
+        <template #name>
+          <gl-link
+            :href="lastReply.author.path"
+            class="gl-text-body! gl-text-decoration-none! gl-mx-2"
+          >
+            {{ lastReply.author.name }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
       <time-ago-tooltip :time="lastReply.created_at" tooltip-placement="bottom" />
     </template>
-    <div
+    <gl-button
       v-else
-      class="collapse-replies-btn js-collapse-replies gl-display-flex align-items-center"
+      class="gl-text-body! gl-text-decoration-none!"
+      variant="link"
       data-qa-selector="collapse_replies_button"
       @click="toggle"
     >
-      <gl-icon :class="$options.ICON_CLASS" name="chevron-down" />
-      <span class="gl-cursor-pointer">{{ s__('Notes|Collapse replies') }}</span>
-    </div>
+      {{ $options.i18n.collapseReplies }}
+    </gl-button>
   </li>
 </template>

@@ -483,6 +483,8 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :cherry_pick_conflict
           raise Gitlab::Git::Repository::CreateTreeError, 'CONFLICT'
+        when :changes_already_applied
+          raise Gitlab::Git::Repository::CreateTreeError, 'EMPTY'
         when :target_branch_diverged
           raise Gitlab::Git::CommitError, 'branch diverged'
         else

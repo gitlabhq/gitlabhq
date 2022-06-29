@@ -1,13 +1,14 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import toggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { note } from '../mock_data';
 
-const deepCloneObject = (obj) => JSON.parse(JSON.stringify(obj));
-
 describe('toggle replies widget for notes', () => {
-  let vm;
-  let ToggleRepliesWidget;
+  let wrapper;
+
+  const deepCloneObject = (obj) => JSON.parse(JSON.stringify(obj));
+
   const noteFromOtherUser = deepCloneObject(note);
   noteFromOtherUser.author.username = 'fatihacet';
 
@@ -17,62 +18,62 @@ describe('toggle replies widget for notes', () => {
 
   const replies = [note, note, note, noteFromOtherUser, noteFromAnotherUser];
 
-  beforeEach(() => {
-    ToggleRepliesWidget = Vue.extend(toggleRepliesWidget);
-  });
+  const findCollapseToggleButton = () =>
+    wrapper.findByRole('button', { text: ToggleRepliesWidget.i18n.collapseReplies });
+  const findExpandToggleButton = () =>
+    wrapper.findByRole('button', { text: ToggleRepliesWidget.i18n.expandReplies });
+  const findRepliesButton = () => wrapper.findByRole('button', { text: '5 replies' });
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findUserAvatarLink = () => wrapper.findAllComponents(UserAvatarLink);
+  const findUserLink = () => wrapper.findByRole('link', { text: noteFromAnotherUser.author.name });
+
+  const mountComponent = ({ collapsed = false }) =>
+    mountExtended(ToggleRepliesWidget, { propsData: { replies, collapsed } });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('collapsed state', () => {
     beforeEach(() => {
-      vm = mountComponent(ToggleRepliesWidget, {
-        replies,
-        collapsed: true,
-      });
+      wrapper = mountComponent({ collapsed: true });
     });
 
-    it('should render the collapsed', () => {
-      const vmTextContent = vm.$el.textContent.replace(/\s\s+/g, ' ');
-
-      expect(vm.$el.classList.contains('collapsed')).toEqual(true);
-      expect(vm.$el.querySelectorAll('.user-avatar-link').length).toEqual(3);
-      expect(vm.$el.querySelector('time')).not.toBeNull();
-      expect(vmTextContent).toContain('5 replies');
-      expect(vmTextContent).toContain(`Last reply by ${noteFromAnotherUser.author.name}`);
+    it('renders collapsed state elements', () => {
+      expect(findExpandToggleButton().exists()).toBe(true);
+      expect(findUserAvatarLink()).toHaveLength(3);
+      expect(findRepliesButton().exists()).toBe(true);
+      expect(wrapper.text()).toContain('Last reply by');
+      expect(findUserLink().exists()).toBe(true);
+      expect(findTimeAgoTooltip().exists()).toBe(true);
     });
 
-    it('should emit toggle event when the replies text clicked', () => {
-      const spy = jest.spyOn(vm, '$emit');
+    it('emits "toggle" event when expand toggle button is clicked', () => {
+      findExpandToggleButton().trigger('click');
 
-      vm.$el.querySelector('.js-replies-text').click();
+      expect(wrapper.emitted('toggle')).toEqual([[]]);
+    });
 
-      expect(spy).toHaveBeenCalledWith('toggle');
+    it('emits "toggle" event when replies button is clicked', () => {
+      findRepliesButton().trigger('click');
+
+      expect(wrapper.emitted('toggle')).toEqual([[]]);
     });
   });
 
   describe('expanded state', () => {
     beforeEach(() => {
-      vm = mountComponent(ToggleRepliesWidget, {
-        replies,
-        collapsed: false,
-      });
+      wrapper = mountComponent({ collapsed: false });
     });
 
-    it('should render expanded state', () => {
-      const vmTextContent = vm.$el.textContent.replace(/\s\s+/g, ' ');
-
-      expect(vm.$el.querySelector('.collapse-replies-btn')).not.toBeNull();
-      expect(vmTextContent).toContain('Collapse replies');
+    it('renders expanded state elements', () => {
+      expect(findCollapseToggleButton().exists()).toBe(true);
     });
 
-    it('should emit toggle event when the collapse replies text called', () => {
-      const spy = jest.spyOn(vm, '$emit');
+    it('emits "toggle" event when collapse toggle button is clicked', () => {
+      findCollapseToggleButton().trigger('click');
 
-      vm.$el.querySelector('.js-collapse-replies').click();
-
-      expect(spy).toHaveBeenCalledWith('toggle');
+      expect(wrapper.emitted('toggle')).toEqual([[]]);
     });
   });
 });

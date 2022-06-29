@@ -310,14 +310,6 @@ module TestEnv
     end
   end
 
-  def create_bare_repository(path)
-    FileUtils.mkdir_p(path)
-
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{path} init --bare),
-           out: '/dev/null',
-           err: '/dev/null')
-  end
-
   def repos_path
     @repos_path ||= GitalySetup.repos_path
   end

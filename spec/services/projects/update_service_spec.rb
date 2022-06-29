@@ -348,17 +348,17 @@ RSpec.describe Projects::UpdateService do
     end
 
     context 'when renaming a project' do
-      let(:fake_repo_path) { File.join(TestEnv.repos_path, user.namespace.full_path, 'existing.git') }
+      let(:raw_fake_repo) { Gitlab::Git::Repository.new('default', File.join(user.namespace.full_path, 'existing.git'), nil, nil) }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 
         before do
-          TestEnv.create_bare_repository(fake_repo_path)
+          raw_fake_repo.create_repository
         end
 
         after do
-          FileUtils.rm_rf(fake_repo_path)
+          raw_fake_repo.remove
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do

@@ -27,9 +27,9 @@ alternatives to server hooks include:
 
 [Geo](geo/index.md) doesn't replicate server hooks to secondary nodes.
 
-## Create a server hook for a single repository
+## Create server hooks for a repository
 
-To create a server hook for a single repository:
+To create server hooks for a repository:
 
 1. On the top bar, select **Menu > Admin**.
 1. Go to **Overview > Projects** and select the project you want to add a server hook to.
@@ -41,16 +41,21 @@ To create a server hook for a single repository:
      - For Omnibus GitLab installations, the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
      - For an installation from source, the path is usually `/home/git/repositories/<group>/<project>.git`.
 1. On the file system, create a new directory in the correct location called `custom_hooks`.
-1. In the new `custom_hooks` directory, create a file with a name that matches the hook type. For example, for a
-   `pre-receive` server hook, the filename should be `pre-receive` with no extension.
-1. Make the server hook file executable and ensure that it's owned by the Git user.
+1. In the new `custom_hooks` directory:
+   - To create a single server hook, create a file with a name that matches the hook type. For example, for a
+     `pre-receive` server hook, the filename should be `pre-receive` with no extension.
+   - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
+     `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
+1. Make the server hook files executable and ensure that they are owned by the Git user.
 1. Write the code to make the server hook function as expected. Server hooks can be in any programming language. Ensure
    the [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
+1. Make the hook file executable, ensure that it's owned by the Git user, and ensure it does not match the backup file
+   pattern (`*~`).
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
 
-## Create a global server hook for all repositories
+## Create global server hooks for all repositories
 
 To create a Git hook that applies to all repositories, set a global server hook. The default global server hook directory
 is in the GitLab Shell directory. Any server hook added there applies to all repositories, including:
@@ -80,8 +85,11 @@ To use a different directory for global server hooks, set `custom_hooks_dir` in 
 To create a global server hook for all repositories:
 
 1. On the GitLab server, go to the configured global server hook directory.
-1. Create a new directory in this location called `pre-receive.d`, `post-receive.d`, or `update.d`, depending on the type
-   of server hook. Any other names are ignored.
+1. In the configured global server hook directory:
+   - To create a single server hook, create a file with a name that matches the hook type. For example, for a
+     `pre-receive` server hook, the filename should be `pre-receive` with no extension.
+   - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
+     `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
 1. Inside this new directory, add your server hook. Server hooks can be in any programming language. Ensure the
    [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For example, if the
    script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.

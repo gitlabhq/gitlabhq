@@ -321,5 +321,3 @@ class CommitStatus < Ci::ApplicationRecord
     script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? || data_integrity_failure?
   end
 end
-
-CommitStatus.prepend_mod_with('CommitStatus')
