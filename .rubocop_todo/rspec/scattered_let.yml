@@ -42,7 +42,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/models/approval_wrapped_any_approver_rule_spec.rb'
     - 'ee/spec/models/approvals/scan_finding_wrapped_rule_set_spec.rb'
     - 'ee/spec/models/ci/minutes/notification_spec.rb'
-    - 'ee/spec/models/ci/minutes/quota_spec.rb'
     - 'ee/spec/models/ci/pipeline_spec.rb'
     - 'ee/spec/models/ee/ci/build_dependencies_spec.rb'
     - 'ee/spec/models/ee/namespace/root_storage_size_spec.rb'

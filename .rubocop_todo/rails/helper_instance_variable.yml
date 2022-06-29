@@ -82,4 +82,3 @@ Rails/HelperInstanceVariable:
     - 'ee/app/helpers/ee/wiki_helper.rb'
     - 'ee/app/helpers/path_locks_helper.rb'
     - 'ee/app/helpers/projects/security/discover_helper.rb'
-    - 'ee/app/helpers/seats_count_alert_helper.rb'

@@ -113,26 +113,38 @@ describe('Pipelines Table', () => {
     });
 
     describe('stages cell', () => {
-      it('should render pipeline mini graph', () => {
+      it('should render a pipeline mini graph', () => {
         expect(findPipelineMiniGraph().exists()).toBe(true);
       });
 
       it('should render the right number of stages', () => {
         const stagesLength = pipeline.details.stages.length;
-        expect(findPipelineMiniGraph().props('stages').length).toBe(stagesLength);
+        expect(
+          findPipelineMiniGraph().findAll('[data-testid="mini-pipeline-graph-dropdown"]'),
+        ).toHaveLength(stagesLength);
       });
 
       describe('when pipeline does not have stages', () => {
         beforeEach(() => {
           pipeline = createMockPipeline();
-          pipeline.details.stages = [];
+          pipeline.details.stages = null;
 
           createComponent({ pipelines: [pipeline] });
         });
 
         it('stages are not rendered', () => {
-          expect(findPipelineMiniGraph().props('stages')).toHaveLength(0);
+          expect(findPipelineMiniGraph().exists()).toBe(false);
         });
+      });
+
+      it('should not update dropdown', () => {
+        expect(findPipelineMiniGraph().props('updateDropdown')).toBe(false);
+      });
+
+      it('when update graph dropdown is set, should update graph dropdown', () => {
+        createComponent({ pipelines: [pipeline], updateGraphDropdown: true });
+
+        expect(findPipelineMiniGraph().props('updateDropdown')).toBe(true);
       });
 
       it('when action request is complete, should refresh table', () => {

@@ -11,8 +11,8 @@ import {
 } from '@gitlab/ui';
 import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 import { s__, n__ } from '~/locale';
-import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
+import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
@@ -31,6 +31,8 @@ export default {
     PipelineMiniGraph,
     TimeAgoTooltip,
     TooltipOnTruncate,
+    LinkedPipelinesMiniList: () =>
+      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -274,15 +276,17 @@ export default {
           </div>
         </div>
         <div>
-          <span class="gl-align-items-center gl-display-inline-flex">
-            <pipeline-mini-graph
-              v-if="pipeline.details.stages"
-              :downstream-pipelines="triggered"
-              :is-merge-train="isMergeTrain"
-              :stages="pipeline.details.stages"
-              :upstream-pipeline="triggeredBy[0]"
-              stages-class="mr-widget-pipeline-stages"
-            />
+          <span class="gl-align-items-center gl-display-inline-flex mr-widget-pipeline-graph">
+            <span class="gl-align-items-center gl-display-inline-flex gl-flex-wrap stage-cell">
+              <linked-pipelines-mini-list v-if="triggeredBy.length" :triggered-by="triggeredBy" />
+              <pipeline-mini-graph
+                v-if="hasStages"
+                stages-class="mr-widget-pipeline-stages"
+                :stages="pipeline.details.stages"
+                :is-merge-train="isMergeTrain"
+              />
+            </span>
+            <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
             <pipeline-artifacts :pipeline-id="pipeline.id" :artifacts="artifacts" class="gl-ml-3" />
           </span>
         </div>

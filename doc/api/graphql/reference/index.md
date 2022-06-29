@@ -9477,7 +9477,7 @@ Represents an epic on an issue board.
 | <a id="boardepicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
 | <a id="boardepicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="boardepicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
-| <a id="boardepiccolor"></a>`color` | [`String!`](#string) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="boardepiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
 | <a id="boardepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="boardepiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
 | <a id="boardepicdescendantcounts"></a>`descendantCounts` | [`EpicDescendantCount`](#epicdescendantcount) | Number of open and closed descendant epics and issues. |
@@ -9513,7 +9513,7 @@ Represents an epic on an issue board.
 | <a id="boardepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="boardepicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
 | <a id="boardepicsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates the currently logged in user is subscribed to the epic. |
-| <a id="boardepictextcolor"></a>`textColor` | [`String!`](#string) | Text color generated for the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="boardepictextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
 | <a id="boardepictitle"></a>`title` | [`String`](#string) | Title of the epic. |
 | <a id="boardepictitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | <a id="boardepicupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the epic was updated. |
@@ -11063,7 +11063,7 @@ Represents an epic.
 | <a id="epicblockedbyepics"></a>`blockedByEpics` | [`EpicConnection`](#epicconnection) | Epics blocking this epic. (see [Connections](#connections)) |
 | <a id="epicblockingcount"></a>`blockingCount` | [`Int`](#int) | Count of epics that this epic is blocking. |
 | <a id="epicclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the epic was closed. |
-| <a id="epiccolor"></a>`color` | [`String!`](#string) | Color of the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="epiccolor"></a>`color` | [`String`](#string) | Color of the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
 | <a id="epicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates if the epic is confidential. |
 | <a id="epiccreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the epic was created. |
 | <a id="epicdescendantcounts"></a>`descendantCounts` | [`EpicDescendantCount`](#epicdescendantcount) | Number of open and closed descendant epics and issues. |
@@ -11099,7 +11099,7 @@ Represents an epic.
 | <a id="epicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="epicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
 | <a id="epicsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates the currently logged in user is subscribed to the epic. |
-| <a id="epictextcolor"></a>`textColor` | [`String!`](#string) | Text color generated for the epic. Available only when feature flag `epic_color_highlight` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. |
+| <a id="epictextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the epic. Returns `null` if `epic_color_highlight` feature flag is disabled. |
 | <a id="epictitle"></a>`title` | [`String`](#string) | Title of the epic. |
 | <a id="epictitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | <a id="epicupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the epic was updated. |

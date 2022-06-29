@@ -347,7 +347,6 @@ RSpec/AnyInstanceOf:
   - spec/services/ci/list_config_variables_service_spec.rb
   - spec/services/ci/register_job_service_spec.rb
   - spec/services/ci/resource_groups/assign_resource_from_resource_group_service_spec.rb
-  - spec/services/ci/retry_build_service_spec.rb
   - spec/services/ci/retry_pipeline_service_spec.rb
   - spec/services/ci/stop_environments_service_spec.rb
   - spec/services/clusters/applications/create_service_spec.rb
@@ -481,7 +480,6 @@ RSpec/AnyInstanceOf:
   - spec/workers/email_receiver_worker_spec.rb
   - spec/workers/emails_on_push_worker_spec.rb
   - spec/workers/error_tracking_issue_link_worker_spec.rb
-  - spec/workers/expire_pipeline_cache_worker_spec.rb
   - spec/workers/group_export_worker_spec.rb
   - spec/workers/group_import_worker_spec.rb
   - spec/workers/namespaces/root_statistics_worker_spec.rb

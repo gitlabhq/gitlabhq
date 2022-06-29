@@ -20,7 +20,7 @@ over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
 
 WARNING:
 Rewriting repository history is a destructive operation. Make sure to back up your repository before
-you begin. The best way back up a repository is to
+you begin. The best way to back up a repository is to
 [export the project](../settings/import_export.md#export-a-project-and-its-data).
 
 ## Purge files from repository history

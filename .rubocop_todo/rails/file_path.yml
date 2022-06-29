@@ -103,7 +103,6 @@ Rails/FilePath:
     - 'spec/features/projects/snippets/create_snippet_spec.rb'
     - 'spec/features/projects/tags/user_edits_tags_spec.rb'
     - 'spec/features/projects/tree/upload_file_spec.rb'
-    - 'spec/features/refactor_blob_viewer_disabled/projects/files/user_replaces_files_spec.rb'
     - 'spec/features/snippets/user_creates_snippet_spec.rb'
     - 'spec/features/snippets/user_edits_snippet_spec.rb'
     - 'spec/features/uploads/user_uploads_avatar_to_group_spec.rb'

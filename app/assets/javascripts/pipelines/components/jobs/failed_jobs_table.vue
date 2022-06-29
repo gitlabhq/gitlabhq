@@ -96,7 +96,7 @@ export default {
     <template #cell(actions)="{ item }">
       <gl-button
         v-if="canRetryJob(item)"
-        icon="repeat"
+        icon="retry"
         :title="$options.retry"
         :aria-label="$options.retry"
         @click="retryJob(item.id)"

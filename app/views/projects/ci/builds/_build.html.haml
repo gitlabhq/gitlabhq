@@ -132,4 +132,4 @@
                 = sprite_icon('play', css_class: 'gl-icon')
             - elsif job.retryable?
               = link_to retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Retry'), class: 'gl-button btn btn-default btn-icon' do
-                = sprite_icon('repeat', css_class: 'gl-icon')
+                = sprite_icon('retry', css_class: 'gl-icon')

@@ -2,11 +2,11 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
+import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
-import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import { formatStages } from '../utils';
 import getLinkedPipelinesQuery from '../graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '../graphql/queries/get_pipeline_stages.query.graphql';
@@ -21,6 +21,8 @@ export default {
   components: {
     GlLoadingIcon,
     PipelineMiniGraph,
+    LinkedPipelinesMiniList: () =>
+      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
   },
   inject: {
     fullPath: {
@@ -90,11 +92,11 @@ export default {
     };
   },
   computed: {
+    hasDownstream() {
+      return this.pipeline?.downstream?.nodes.length > 0;
+    },
     downstreamPipelines() {
       return this.pipeline?.downstream?.nodes;
-    },
-    pipelinePath() {
-      return this.pipeline?.path ?? '';
     },
     upstreamPipeline() {
       return this.pipeline?.upstream;
@@ -126,13 +128,23 @@ export default {
 <template>
   <div class="gl-pt-2">
     <gl-loading-icon v-if="$apollo.queries.pipeline.loading" />
-    <pipeline-mini-graph
-      v-else
-      data-testid="commit-box-pipeline-mini-graph"
-      :downstream-pipelines="downstreamPipelines"
-      :pipeline-path="pipelinePath"
-      :stages="formattedStages"
-      :upstream-pipeline="upstreamPipeline"
-    />
+    <div v-else class="gl-align-items-center gl-display-flex">
+      <linked-pipelines-mini-list
+        v-if="upstreamPipeline"
+        :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
+          upstreamPipeline,
+        ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        data-testid="commit-box-mini-graph-upstream"
+      />
+
+      <pipeline-mini-graph :stages="formattedStages" data-testid="commit-box-mini-graph" />
+
+      <linked-pipelines-mini-list
+        v-if="hasDownstream"
+        :triggered="downstreamPipelines"
+        :pipeline-path="pipeline.path"
+        data-testid="commit-box-mini-graph-downstream"
+      />
+    </div>
   </div>
 </template>

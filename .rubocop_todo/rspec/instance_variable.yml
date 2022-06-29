@@ -72,7 +72,6 @@ RSpec/InstanceVariable:
     - qa/qa/specs/features/ee/browser_ui/2_plan/multiple_assignees_for_issues/more_than_four_assignees_spec.rb
     - qa/qa/specs/features/ee/browser_ui/3_create/repository/code_owners_spec.rb
     - qa/qa/specs/features/ee/browser_ui/3_create/repository/push_rules_spec.rb
-    - qa/qa/specs/features/ee/browser_ui/4_verify/cancelling_merge_request_in_merge_train_spec.rb
     - qa/spec/support/repeater_spec.rb
     - spec/commands/metrics_server/metrics_server_spec.rb
     - spec/controllers/admin/clusters_controller_spec.rb

@@ -4,8 +4,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
+import PipelineStage from '~/pipelines/components/pipelines_list/pipeline_stage.vue';
+import PipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import mockData from '../mock_data';
 
@@ -29,13 +30,14 @@ describe('MRWidgetPipeline', () => {
   const findPipelineInfoContainer = () => wrapper.findByTestId('pipeline-info-container');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findPipelineFinishedAt = () => wrapper.findByTestId('finished-at');
+  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
+  const findAllPipelineStages = () => wrapper.findAllComponents(PipelineStage);
   const findPipelineCoverage = () => wrapper.findByTestId('pipeline-coverage');
   const findPipelineCoverageDelta = () => wrapper.findByTestId('pipeline-coverage-delta');
   const findPipelineCoverageTooltipText = () =>
     wrapper.findByTestId('pipeline-coverage-tooltip').text();
   const findPipelineCoverageDeltaTooltipText = () =>
     wrapper.findByTestId('pipeline-coverage-delta-tooltip').text();
-  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
@@ -43,7 +45,7 @@ describe('MRWidgetPipeline', () => {
 
   const createWrapper = (props = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(
-      mountFn(MRWidgetPipelineComponent, {
+      mountFn(PipelineComponent, {
         propsData: {
           ...defaultProps,
           ...props,
@@ -104,10 +106,8 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should render pipeline graph', () => {
-      const stagesCount = mockData.pipeline.details.stages.length;
-
       expect(findPipelineMiniGraph().exists()).toBe(true);
-      expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+      expect(findAllPipelineStages()).toHaveLength(mockData.pipeline.details.stages.length);
     });
 
     describe('should render pipeline coverage information', () => {
@@ -176,11 +176,15 @@ describe('MRWidgetPipeline', () => {
       expect(findPipelineInfoContainer().text()).toMatch(mockData.pipeline.details.status.label);
     });
 
-    it('should render pipeline graph', () => {
+    it('should render pipeline graph with correct styles', () => {
       const stagesCount = mockData.pipeline.details.stages.length;
 
       expect(findPipelineMiniGraph().exists()).toBe(true);
-      expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+      expect(findPipelineMiniGraph().findAll('.mr-widget-pipeline-stages')).toHaveLength(
+        stagesCount,
+      );
+
+      expect(findAllPipelineStages()).toHaveLength(stagesCount);
     });
 
     it('should render coverage information', () => {

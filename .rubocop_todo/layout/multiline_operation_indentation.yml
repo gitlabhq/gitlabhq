@@ -96,7 +96,6 @@ Layout/MultilineOperationIndentation:
     - 'qa/qa/page/component/snippet.rb'
     - 'qa/qa/runtime/api/repository_storage_moves.rb'
     - 'rubocop/cop/gitlab/keys_first_and_values_first.rb'
-    - 'rubocop/cop/migration/hash_index.rb'
     - 'rubocop/migration_helpers.rb'
     - 'spec/frontend/fixtures/tabs.rb'
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'

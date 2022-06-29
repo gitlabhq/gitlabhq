@@ -544,7 +544,6 @@ Rails/SkipsModelValidations:
     - 'spec/lib/gitlab/middleware/go_spec.rb'
     - 'spec/lib/gitlab/middleware/query_analyzer_spec.rb'
     - 'spec/lib/gitlab/object_hierarchy_spec.rb'
-    - 'spec/lib/gitlab/pages_transfer_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/query_analyzer_spec.rb'
     - 'spec/lib/sidebars/projects/menus/project_information_menu_spec.rb'
     - 'spec/mailers/notify_spec.rb'

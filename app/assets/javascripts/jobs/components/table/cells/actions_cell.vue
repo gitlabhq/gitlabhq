@@ -222,7 +222,7 @@ export default {
         />
         <gl-button
           v-else-if="isRetryable"
-          icon="repeat"
+          icon="retry"
           :title="$options.ACTIONS_RETRY"
           :aria-label="$options.ACTIONS_RETRY"
           :method="currentJobMethod"
